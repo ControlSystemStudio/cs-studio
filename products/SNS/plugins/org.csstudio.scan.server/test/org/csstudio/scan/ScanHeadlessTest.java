@@ -105,7 +105,7 @@ public class ScanHeadlessTest
                 new LoopCommand("ypos", 1.0, 4.0, 1.0,
                         new SetCommand("setpoint", 0),
                         new WaitCommand("readback", Comparison.EQUALS, 0, 0.2, 0.0),
-                        new SetCommand("setpoint", 1.0, "readback", true, 0.1, 0.0),
+                        new SetCommand("setpoint", 1.0, false, "readback", true, 0.1, 0.0),
                         new LogCommand("xpos", "ypos", "readback")
                 )
             );

@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-693d</wuid>
-  <boy_version>3.2.6.qualifier</boy_version>
+  <boy_version>3.2.9.qualifier</boy_version>
   <scripts>
     <path pathString="EmbeddedJs" checkConnect="true" sfe="false" seoe="false">
       <scriptName>checkVersion</scriptName>
@@ -18,7 +18,7 @@ var BOYVersion = ScriptUtil.getBOYVersion();
 
 if(opiVersion.compareTo(BOYVersion)<0)
 	MessageDialog.openInformation(
-			null, "Tip", "Your BOY Examples are outdated. To enjoy the latest examples, please delete and install them again.");]]></scriptText>
+			null, "Tip", "Your BOY Examples are outdated. To enjoy the latest examples, please delete and install them again using menu CSS->Utilities->Install Samples.");]]></scriptText>
       <pv trig="true">=1</pv>
     </path>
   </scripts>
@@ -154,7 +154,7 @@ if(opiVersion.compareTo(BOYVersion)<0)
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>755</width>
     <border_style>14</border_style>
@@ -184,18 +184,14 @@ if(opiVersion.compareTo(BOYVersion)<0)
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Widgets</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -238,18 +234,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Border</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -292,18 +284,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Widget Property</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -346,18 +334,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Color Font Macro</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -400,18 +384,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Macro</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -454,18 +434,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Rules and Scripts</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -508,18 +484,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Actions</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -562,18 +534,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Use OPI Editor</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -616,18 +584,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>OPI Editor Perspective</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -670,18 +634,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Start Up</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
       </font>
       <width>210</width>
       <border_style>0</border_style>
@@ -734,7 +694,7 @@ $(pv_value)</tooltip>
     <widget_type>Image</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>735</width>
     <no_animation>false</no_animation>

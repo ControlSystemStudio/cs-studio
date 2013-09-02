@@ -48,7 +48,7 @@ public class ScanCommandUtil
      *  @param readback Readback device
      *  @param wait Wait for readback to match?
      *  @param tolerance Numeric tolerance when checking value
-     *  @param timeout Timeout in seconds, <code>null</code> as "forever"
+     *  @param timeout Timeout, <code>null</code> as "forever"
      *  @throws Exception on error
      */
     public static void write(final ScanContext context,
@@ -59,7 +59,7 @@ public class ScanCommandUtil
 
         // Separate read-back device, or use 'set' device?
         final Device readback;
-        if (readback_name.isEmpty())
+        if (readback_name.isEmpty()  ||  !wait)
             readback = device;
         else
             readback = context.getDevice(context.resolveMacros(readback_name));
@@ -84,7 +84,7 @@ public class ScanCommandUtil
             condition = null;
 
         // Perform write
-        device.write(value);
+        device.write(value, timeout);
 
         // Wait?
         if (condition != null)
@@ -92,7 +92,8 @@ public class ScanCommandUtil
 
         // Log the value?
         if (context.isAutomaticLogMode())
-        {
+        {   // If we're waiting on the readback, log the readback.
+            // Otherwise readback == device, so log that one
             final VType log_value = readback.read();
             final DataLog log = context.getDataLog();
             final long serial = log.getNextScanDataSerial();

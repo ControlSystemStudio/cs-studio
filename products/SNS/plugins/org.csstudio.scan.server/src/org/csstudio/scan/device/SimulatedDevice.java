@@ -8,6 +8,7 @@
 package org.csstudio.scan.device;
 
 import org.csstudio.scan.server.SimulationInfo;
+import org.epics.util.time.TimeDuration;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
@@ -68,7 +69,7 @@ public class SimulatedDevice extends Device
 
 	/** {@inheritDoc} */
 	@Override
-    public void write(final Object value) throws Exception
+    public void write(final Object value, final TimeDuration timeout) throws Exception
     {
 		if (value instanceof Number)
 			this.value = ValueFactory.newVDouble( ((Number) value).doubleValue() );

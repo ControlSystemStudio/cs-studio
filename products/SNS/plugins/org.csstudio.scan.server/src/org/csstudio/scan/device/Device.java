@@ -18,6 +18,7 @@ package org.csstudio.scan.device;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.epics.util.time.TimeDuration;
 import org.epics.vtype.VType;
 
 /** Base interface for all devices
@@ -110,8 +111,19 @@ public class Device extends DeviceInfo
 	 *  @param value Value to write (Double, String)
 	 *  @throws Exception on error: Cannot write, ...
 	 */
-	public void write(final Object value) throws Exception
+	final public void write(final Object value) throws Exception
     {
-		throw new Exception("Device '" + getName() + "' does not support writing");
+	    write(value, null);
+    }
+
+
+    /** Write a value to the device
+     *  @param value Value to write (Double, String)\
+     *  @param timeout Timeout, <code>null</code> as "forever"
+     *  @throws Exception on error: Cannot write, ...
+     */
+    public void write(final Object value, final TimeDuration timeout) throws Exception
+    {
+        throw new Exception("Device '" + getName() + "' does not support writing");
     }
 }

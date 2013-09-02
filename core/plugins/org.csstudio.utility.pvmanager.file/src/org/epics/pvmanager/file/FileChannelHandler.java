@@ -43,12 +43,17 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
     public void connect() {
         processConnection(file);
         try {
-            FileReader fileReader = new FileReader(file);
-            VTable value = io.importVTable(fileReader);
+            Object value = readValueFromFile(file);
             processMessage(value);
         } catch (Exception ex) {
             reportExceptionToAllReadersAndWriters(ex);
         }
+    }
+    
+    protected Object readValueFromFile(File file) throws Exception {
+        FileReader fileReader = new FileReader(file);
+        VTable value = io.importVTable(fileReader);
+        return value;
     }
 
     @Override

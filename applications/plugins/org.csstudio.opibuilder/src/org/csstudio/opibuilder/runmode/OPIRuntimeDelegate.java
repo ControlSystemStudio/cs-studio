@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.UpdateListener;
 import org.eclipse.draw2d.UpdateManager;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -32,6 +33,7 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.Request;
@@ -191,8 +193,15 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			public boolean isSelectable() {
 				return false;
 			}
-		};
-		viewer.createControl(parent);
+		};		
+		// set clipping strategy for connection layer of connection can be hide
+		// when its source or target is not showing.
+		ConnectionLayer connectionLayer = (ConnectionLayer) root
+				.getLayer(LayerConstants.CONNECTION_LAYER);
+		connectionLayer.setClippingStrategy(new PatchedConnectionLayerClippingStrategy(
+				connectionLayer));
+
+	viewer.createControl(parent);
 		viewer.setRootEditPart(root);
 		viewer.setEditPartFactory(new WidgetEditPartFactory(
 				ExecutionMode.RUN_MODE));

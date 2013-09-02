@@ -80,7 +80,7 @@ public class SetCommandImplHeadlessTest
     @Test(timeout=20000)
     public void testSetWithWait() throws Exception
     {
-        final SetCommand command = new SetCommand("setpoint", 1.0, "readback", true, 0.1, 10.0);
+        final SetCommand command = new SetCommand("setpoint", 1.0, false, "readback", true, 0.1, 10.0);
         final ScanCommandImpl<SetCommand> impl = new SetCommandImpl(command);
 
         final Device device = context.getDevice("setpoint");

@@ -18,19 +18,31 @@ import java.util.logging.Logger;
 @SuppressWarnings("nls")
 public class SystemSettings
 {
+    /** Default host for scan server */
+    final public static String DEFAULT_HOST = "localhost";
+
+    /** Default port used by scan server's REST interface */
+    final public static int DEFAULT_PORT = 4810;
+
+    /** System property for overriding the scan server host */
+    final public static String HOST_PROPERTY = "ScanServerHost";
+
+    /** System property for overriding the scan server port */
+    final public static String PORT_PROPERTY = "ScanServerPort";
+
 	/** @return Scan server host name */
     public static String getServerHost()
     {
-        String host = System.getProperty(ScanSystemPreferences.HOST_PROPERTY);
+        String host = System.getProperty(HOST_PROPERTY);
         if (host != null)
             return host;
-        return ScanSystemPreferences.DEFAULT_HOST;
+        return DEFAULT_HOST;
     }
 
     /** @return Scan server TCP port */
     public static int getServerPort()
     {
-        String port = System.getProperty(ScanSystemPreferences.PORT_PROPERTY);
+        String port = System.getProperty(PORT_PROPERTY);
         if (port != null)
         {
             try
@@ -43,6 +55,6 @@ public class SystemSettings
                         "Cannot parse scan server port", ex);
             }
         }
-        return ScanSystemPreferences.DEFAULT_PORT;
+        return DEFAULT_PORT;
     }
 }

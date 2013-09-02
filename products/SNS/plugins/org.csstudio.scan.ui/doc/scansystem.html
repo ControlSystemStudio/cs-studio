@@ -100,13 +100,13 @@ to actually reach the desired value.
 <ul>
 <li>Device: Name of the device to set.</li>
 <li>Value: Desired value of the device.</li>
+<li>Wait for completion: Wait for the write to be confirmed? For EPICS, this uses a 'put-callback', which indicates that processing of a record has completed.</li>
 <li>Wait for readback: By default, the command will wait until the device reaches the commanded value.</li>
 <li>Readback Device: By default, the Device where the value was written is also checked for reaching the commanded value.
     Optionally, a different "read back" device can be used.</li>
 <li>Tolerance: Difference between the actual value of the device and the desired value
     that is considered "good enough".</li>
-<li>Timeout: Time in seconds that the command will wait for the device (or separate read back) to reach
-    the commanded value.</li>
+<li>Timeout: Time in seconds that the command will use when waiting for the completion and/or the readback.</li>
 </ul>
 <p>Example:</p>
 <p>
@@ -120,6 +120,20 @@ In addition to the previous example the command will wait up to 10 seconds
 for the "readback" device to reach the value of 1.0 with a tolerance of 0.1,
 that is a value within 0.9 and 1.0.
 </p>
+<p>
+<code>Set 'setpoint' = 1.0 with completion in 10.0 sec</code>
+will write the value 1.0 to the "setpoint" device, and wait for the confirmation to be returned by the device.
+This can be useful for EPICS motor records, where it should indicate that the motor has finished moving.
+</p>
+<p>
+<code>Set 'setpoint' = 1.0 with completion in 10.0 sec (wait for 'readback' +-0.1, 10.0 sec timeout)</code>
+combines the last two examples:
+A value is written to the "setpoint" device, waiting for confirmation.
+Then, the command waits for the associated "readback" to match.
+The timeout is applied to both steps, so the today time out in this case could be 20 seconds.
+</p>
+
+
 
 
 <h3><a name="WaitCommand"><img alt="wait" src="PLUGINS_ROOT/org.csstudio.scan/icons/waitcommand.gif"/>&nbsp;Wait Command</a></h3>
@@ -180,6 +194,7 @@ It is at the core of most scans.
 <li>Initial Value: Initial value of the device.</li>
 <li>Final Value: Final value of the device.</li>
 <li>Step Size: Step in which value of device should be changed.</li>
+<li>Wait for completion: Wait for the write to be confirmed? For EPICS, this uses a 'put-callback', which indicates that processing of a record has completed.</li>
 <li>Wait for readback: By default, the loop will wait until the device reaches the commanded value.</li>
 <li>Readback Device: By default, the loop device to which the loop writes is also checked for reaching the commanded value.
     Optionally, a different "read back" device can be used.</li>

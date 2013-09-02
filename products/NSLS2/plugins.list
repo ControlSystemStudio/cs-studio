@@ -25,6 +25,7 @@ org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.rdb
 org.csstudio.archive.vtype
 org.csstudio.autocomplete
+org.csstudio.autocomplete.channelfinder
 org.csstudio.autocomplete.logbook
 org.csstudio.autocomplete.ui
 org.csstudio.channel.intro

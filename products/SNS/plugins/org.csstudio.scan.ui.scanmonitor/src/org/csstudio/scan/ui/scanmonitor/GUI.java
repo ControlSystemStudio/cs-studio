@@ -419,6 +419,7 @@ public class GUI implements ScanInfoModelListener
             public void menuAboutToShow(final IMenuManager manager)
             {
                 final ScanInfo[] infos = getSelectedScans();
+                manager.add(new GroupMarker("scan"));
                 if (infos == null)
                     return;
                 // Allow resume if anything's paused
@@ -449,9 +450,7 @@ public class GUI implements ScanInfoModelListener
                         manager.add(new RemoveAction(shell, model, infos));
                         break;
                     }
-                manager.add(new Separator());
                 manager.add(new RemoveCompletedAction(shell, model));
-                manager.add(new Separator());
                 if (infos.length >= 1)
                     manager.add(new ShowDevicesAction(shell, model, infos));
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));

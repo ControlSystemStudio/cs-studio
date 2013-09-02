@@ -19,14 +19,20 @@ import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
 import static org.epics.util.time.TimeDuration.ofSeconds;
 
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.ScanSystemPreferences;
+import org.csstudio.scan.condition.WaitWithTimeout;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriterEvent;
+import org.epics.pvmanager.PVWriterListener;
+import org.epics.util.time.TimeDuration;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Time;
@@ -36,12 +42,21 @@ import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 
 /** {@link Device} that is connected to a Process Variable,
- *  supporting read and write access to that PV
+ *  supporting read and write access to that PV.
+ *  
+ *  <p>The PVManager doesn't have an API for plain write vs. write-with-callback,
+ *  but instead uses an annotation in the PV name.
+ *  This behaves the same way, so a device is either only using plain writes
+ *  or only using write-with-callback, based on the PV name.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class PVDevice extends Device
 {
+    /** PVManager uses this PV name annotation to enable put-callback */
+    final public static String PUT_CALLBACK_ANNOTATION = " {\"putCallback\":true}";
+
     /** 'compile time' option to treat byte arrays as string */
     final private static boolean TREAD_BYTES_AS_STRING = true;
     
@@ -53,6 +68,14 @@ public class PVDevice extends Device
 	 *  @see #TREAD_BYTES_AS_STRING
 	 */
 	private boolean is_byte_array = false;
+	
+	/** Is PV using a confirmed, completed write (EPICS 'put-callback'),
+	 *  i.e. wait in write() until the write confirmation is received?
+	 */
+	final private boolean use_write_completion;
+	
+	/** Flag set when callback is received */
+	private boolean received_write_completion;
 	
 	/** Most recent value of the PV
 	 *  SYNC on this
@@ -71,6 +94,7 @@ public class PVDevice extends Device
 	public PVDevice(final DeviceInfo info) throws Exception
     {
 	    super(info);
+	    use_write_completion = info.getName().endsWith(PUT_CALLBACK_ANNOTATION);
     }
 	
 	/** {@inheritDoc} */
@@ -130,16 +154,30 @@ public class PVDevice extends Device
 				fireDeviceUpdate();
 			}
 		};
+		final PVWriterListener<? extends Object> write_listener = new PVWriterListener<Object>()
+        {
+            @Override
+            public void pvChanged(PVWriterEvent<Object> event)
+            {
+                if (use_write_completion && event.isWriteSucceeded())
+                    synchronized (PVDevice.this)
+                    {
+                        received_write_completion = true;
+                        PVDevice.this.notifyAll();
+                    }
+            }
+        };
 		synchronized (this)
 		{
-			pv = PVManager
+            pv = PVManager
 		        .readAndWrite(latestValueOf(vType(getName())))
 		        .readListener(listener)
-		        .asynchWriteAndMaxReadRate(ofSeconds(0.1));
+		        .writeListener(write_listener)
+		        .asynchWriteAndMaxReadRate(ofSeconds(ScanSystemPreferences.getMinPVUpdatePeriod()));
 		}
 	}
 
-	   /** {@inheritDoc} */
+	/** {@inheritDoc} */
     @Override
     public synchronized boolean isReady()
     {
@@ -175,9 +213,13 @@ public class PVDevice extends Device
 
 	/** {@inheritDoc} */
 	@Override
-    public synchronized VType read() throws Exception
+    public VType read() throws Exception
     {
-		final VType current = this.value;
+		final VType current;
+		synchronized (this)
+        {
+            current = this.value;
+        }
 		Logger.getLogger(getClass().getName()).log(Level.FINER, "Reading: PV {0} = {1}",
 				new Object[] { getName(), current });
 		return current;
@@ -185,18 +227,34 @@ public class PVDevice extends Device
 
 	/** Write value to device, with special handling of EPICS BYTE[] as String 
      *  @param value Value to write (Double, String)
+     *  @param timeout Timeout, <code>null</code> as "forever"
      *  @throws Exception on error: Cannot write, ...
      */
 	@Override
-    public void write(Object value) throws Exception
+    public void write(Object value, final TimeDuration timeout) throws Exception
     {
 	    if (is_byte_array  &&  value instanceof String)
 	        value = ByteHelper.toBytes((String) value);
+
+	    Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
+	            new Object[] { getName(), value });
+	    final PV<VType, Object> pv; // Copy to access PV outside of lock
 	    synchronized (this)
 		{
-			pv.write(value);
+	        pv = this.pv;
+            received_write_completion = false;
 		}
-		Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
-				new Object[] { getName(), value });
+		pv.write(value);
+		if (use_write_completion)
+		{   // Wait for callback, or time out
+	        final WaitWithTimeout wait_time = new WaitWithTimeout(timeout);
+		    synchronized (this)
+            {
+                while (! received_write_completion)
+                    if (wait_time.waitUntilTimeout(this))
+                        throw new TimeoutException("Timeout while awaiting write completion for " + getName());
+            }
+	        Logger.getLogger(getClass().getName()).log(Level.FINER, "Write completed: PV {0}", getName());
+		}
     }
 }

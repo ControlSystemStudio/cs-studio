@@ -28,6 +28,7 @@ public class ScanCommandProperty
     final public static String TAG_DEVICE = "device";
     final public static String TAG_VALUE = "value";
     final public static String TAG_READBACK = "readback";
+    final public static String TAG_COMPLETION = "completion";
     final public static String TAG_WAIT = "wait";
     final public static String TAG_TOLERANCE = "tolerance";
     final public static String TAG_TIMEOUT = "timeout";
@@ -39,6 +40,9 @@ public class ScanCommandProperty
     final public static ScanCommandProperty READBACK =
             new ScanCommandProperty(TAG_READBACK, "Readback Device", DeviceInfo.class);
 
+    final public static ScanCommandProperty COMPLETION =
+            new ScanCommandProperty(TAG_COMPLETION, "Wait for completion", Boolean.class);
+    
     final public static ScanCommandProperty WAIT =
             new ScanCommandProperty(TAG_WAIT, "Wait for readback", Boolean.class);
 

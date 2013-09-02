@@ -29,6 +29,7 @@ public class SetCommand extends ScanCommand
     private volatile String device_name;
 	private volatile Object value;
 	private volatile String readback;
+    private volatile boolean completion;
 	private volatile boolean wait;
     private volatile double tolerance;
     private volatile double timeout;
@@ -36,7 +37,7 @@ public class SetCommand extends ScanCommand
     /** Initialize empty set command */
     public SetCommand()
     {
-        this("device", 0.0, "", true, 0.1, 0.0);
+        this("device", 0.0, false, "", true, 0.1, 0.0);
     }
 
     /** Initialize for readback with default tolerance and timeout
@@ -45,7 +46,7 @@ public class SetCommand extends ScanCommand
      */
     public SetCommand(final String device_name, final Object value)
     {
-        this(device_name, value, device_name, true, 0.1, 0.0);
+        this(device_name, value, false, device_name, true, 0.1, 0.0);
     }
 
     /** Initialize with default tolerance and timeout
@@ -55,7 +56,7 @@ public class SetCommand extends ScanCommand
      */
     public SetCommand(final String device_name, final Object value, final boolean wait)
     {
-        this(device_name, value, device_name, wait, 0.1, 0.0);
+        this(device_name, value, false, device_name, wait, 0.1, 0.0);
     }
 
     /** Initialize
@@ -66,18 +67,20 @@ public class SetCommand extends ScanCommand
     public SetCommand(final String device_name, final Object value,
             final String readback)
     {
-        this(device_name, value, readback, true, 0.1, 0.0);
+        this(device_name, value, false, readback, true, 0.1, 0.0);
     }
 
     /** Initialize
 	 *  @param device_name Name of device
 	 *  @param value Value to write to the device
+	 *  @param completion Wait for write completion?
 	 *  @param readback Readback device
 	 *  @param wait Wait for readback to match?
      *  @param tolerance Numeric tolerance when checking value
      *  @param timeout Timeout in seconds, 0 as "forever"
 	 */
 	public SetCommand(final String device_name, final Object value,
+	        final boolean completion,
 	        final String readback, final boolean wait,
             final double tolerance, final double timeout)
     {
@@ -85,6 +88,7 @@ public class SetCommand extends ScanCommand
 	        throw new NullPointerException();
 		this.device_name = device_name;
 		this.value = value;
+		this.completion = completion;
 		if (readback == null)
             throw new NullPointerException();
 		this.readback = readback;
@@ -99,6 +103,7 @@ public class SetCommand extends ScanCommand
     {
         properties.add(ScanCommandProperty.DEVICE_NAME);
         properties.add(new ScanCommandProperty("value", "Value", Object.class));
+        properties.add(ScanCommandProperty.COMPLETION);
         properties.add(ScanCommandProperty.WAIT);
         properties.add(ScanCommandProperty.READBACK);
         properties.add(ScanCommandProperty.TOLERANCE);
@@ -132,6 +137,18 @@ public class SetCommand extends ScanCommand
         this.value = value;
     }
 
+    /** @return Wait for write completion? */
+    public boolean getCompletion()
+    {
+        return completion;
+    }
+
+    /** @param wait Wait for write completion? */
+    public void setCompletion(final Boolean completion)
+    {
+        this.completion = completion;
+    }
+    
     /** @return Wait for readback to match? */
     public boolean getWait()
     {
@@ -195,15 +212,20 @@ public class SetCommand extends ScanCommand
             out.println("<value>\"" + value + "\"</value>");
         else
             out.println("<value>" + value + "</value>");
-        if (! readback.isEmpty())
+        if (completion)
         {
             writeIndent(out, level+1);
-            out.println("<readback>" + readback + "</readback>");
+            out.println("<completion>true</completion>");
         }
         if (! wait)
         {
             writeIndent(out, level+1);
             out.println("<wait>" + wait + "</wait>");
+        }
+        if (wait  &&  ! readback.isEmpty())
+        {
+            writeIndent(out, level+1);
+            out.println("<readback>" + readback + "</readback>");
         }
         if (tolerance > 0.0)
         {
@@ -226,8 +248,9 @@ public class SetCommand extends ScanCommand
     {
         setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setValue(DOMHelper.getSubelementStringOrDouble(element, ScanCommandProperty.TAG_VALUE));
-        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, getDeviceName()));
+        setCompletion(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_COMPLETION, "false")));
         setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, getDeviceName()));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
         super.readXML(factory, element);
@@ -238,6 +261,12 @@ public class SetCommand extends ScanCommand
      */
     public void appendConditionDetail(final StringBuilder buf)
     {
+        if (completion)
+        {
+            buf.append(" with completion");
+            if (timeout > 0)
+                buf.append(" in ").append(timeout).append(" sec");
+        }
     	if (wait)
     	{
     		buf.append(" (wait for '");

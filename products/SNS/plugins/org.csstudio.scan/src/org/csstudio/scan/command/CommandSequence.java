@@ -109,4 +109,11 @@ public class CommandSequence
     {
         return XMLCommandWriter.toXMLString(getCommands());
     }
+
+    /** @return Debug representation */
+    @Override
+    public String toString()
+    {
+        return commands.toString();
+    }
 }

@@ -98,15 +98,10 @@ public class Device {
 
     private String name;
     private String system;
-    @JsonProperty("install_id")
     private int installId;
-    @JsonProperty("inventory_id")
     private int inventoryId;
-    @JsonProperty("serial_number")
     private int serialNumber;
-    @JsonProperty("cmpnt_type_name")
-    private String componentTypeName;
-    @JsonProperty("type_description")
+    private String componentType;
     private String typeDescription;
     private String vendor;
 
@@ -131,7 +126,7 @@ public class Device {
 	this.system = system;
 	this.installId = installId;
 	this.inventoryId = inventoryId;
-	this.componentTypeName = componentTypeName;
+	this.componentType = componentTypeName;
 	this.typeDescription = typeDescription;
 	this.vendor = vendor;
 	this.serialNumber = serialNumber;
@@ -176,8 +171,8 @@ public class Device {
     /**
      * @return the componentTypeName
      */
-    public String getComponentTypeName() {
-	return componentTypeName;
+    public String getComponentType() {
+	return componentType;
     }
 
     /**
@@ -194,6 +189,13 @@ public class Device {
 	return vendor;
     }
 
+    /**
+     * @return the conversionInfo
+     */
+    public Map<String, Map<String, Conversion>> getConversionInfo() {
+        return conversionInfo;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -205,7 +207,7 @@ public class Device {
 	int result = 1;
 	result = prime
 		* result
-		+ ((componentTypeName == null) ? 0 : componentTypeName
+		+ ((componentType == null) ? 0 : componentType
 			.hashCode());
 	result = prime * result
 		+ ((conversionInfo == null) ? 0 : conversionInfo.hashCode());
@@ -234,10 +236,10 @@ public class Device {
 	if (getClass() != obj.getClass())
 	    return false;
 	Device other = (Device) obj;
-	if (componentTypeName == null) {
-	    if (other.componentTypeName != null)
+	if (componentType == null) {
+	    if (other.componentType != null)
 		return false;
-	} else if (!componentTypeName.equals(other.componentTypeName))
+	} else if (!componentType.equals(other.componentType))
 	    return false;
 	if (conversionInfo == null) {
 	    if (other.conversionInfo != null)

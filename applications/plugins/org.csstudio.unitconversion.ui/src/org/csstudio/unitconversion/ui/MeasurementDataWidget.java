@@ -3,7 +3,7 @@
  */
 package org.csstudio.unitconversion.ui;
 
-import gov.bnl.unitconversion.MeasuredData;
+import gov.bnl.unitconversion.MeasurementData;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class MeasurementDataWidget extends Composite {
 
-    private MeasuredData measuredData;
+    private MeasurementData measurementData;
     
     public MeasurementDataWidget(Composite parent, int style) {
 	super(parent, style);

@@ -18,11 +18,9 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
 
 import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.util.time.TimeDuration.*;
 
 public class VTableDisplayEditPart extends AbstractSelectionWidgetEditpart<VTableDisplayFigure, VTableDisplayModel> {
 

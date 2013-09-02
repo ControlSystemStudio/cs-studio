@@ -73,12 +73,14 @@ record(ai, "motor_x")
 {
     field(INP,  "0")
     field(PINI, "YES")
+    field(TPRO, "1")
 }
 
 record(ai, "motor_y")
 {
     field(INP,  "0")
     field(PINI, "YES")
+    field(TPRO, "1")
 }
 
 # Other 'slow' device with readback
@@ -116,4 +118,18 @@ record(waveform, "text")
     field(DESC, "Text PV")
     field(FTVL, "CHAR")
     field(NELM, "100")
+}
+
+# record that takes ~4 seconds to process,
+# used for put-callback tests
+record(seq, "callback_test")
+{
+  field(TPRO, "1")
+  field(SELM, "All")
+  field(DO1, "1")
+  field(DO2, "1")
+  field(DLY1, "2.0")
+  field(DLY2, "2.0")
+  field(LNK1, "motor_x PP")
+  field(LNK2, "motor_y PP")
 }

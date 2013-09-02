@@ -23,6 +23,7 @@ import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -65,6 +66,7 @@ public class ConsoleCommands implements CommandProvider
         buf.append("---ScanServer commands---\n");
         buf.append("\tscans           - List all scans\n");
         buf.append("\tinfo            - Scan server info\n");
+        buf.append("\tinfo ID         - Info about scan with given ID\n");
         buf.append("\tdevices         - List default devices\n");
         buf.append("\tdevices ID      - List devices used by scan with given ID\n");
         buf.append("\tmacros          - List macros\n");
@@ -112,11 +114,26 @@ public class ConsoleCommands implements CommandProvider
     /** 'info' command */
     public Object _info(final CommandInterpreter intp)
     {
+        final String arg = intp.nextArgument();
+
         try
         {
-        	intp.println(server.getInfo());
+            if (arg == null)
+                intp.println(server.getInfo());
+            else
+            {
+                final long id = Long.parseLong(arg.trim());
+                final ScanInfo info = server.getScanInfo(id);
+                intp.println(info);
+                intp.println("Created    : " + ScanSampleFormatter.format(info.getCreated()));
+                intp.println("Runtime    : " + info.getRuntimeText());
+                if (info.getFinishTime() != null)
+                    intp.println("Finish Time: " + ScanSampleFormatter.format(info.getFinishTime()));
+                intp.println("Address    : " + info.getCurrentAddress());
+                intp.println("Command    : " + info.getCurrentCommand());
+            }
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             intp.printStackTrace(ex);
         }

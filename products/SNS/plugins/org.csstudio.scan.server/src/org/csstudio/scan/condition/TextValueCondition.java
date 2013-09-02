@@ -80,11 +80,7 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
     @Override
     public void await() throws TimeoutException, Exception
     {
-        final long end_ms;
-        if (timeout != null  &&  timeout.isPositive())
-            end_ms = System.currentTimeMillis() + Math.round(timeout.toSeconds() * 1000.0);
-        else
-            end_ms = 0;
+        final WaitWithTimeout timeout = new WaitWithTimeout(this.timeout);
 
         device.addListener(this);
         try
@@ -98,17 +94,9 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
                 is_condition_met = isConditionMet();
                 while (! is_condition_met)
                 {   // Wait for update from device
-                    if (end_ms > 0)
-                    {   // With timeout, see how much time is left
-                        final long ms_left = end_ms - System.currentTimeMillis();
-                        if (ms_left > 0)
-                            wait(ms_left);
-                        else
-                            throw new TimeoutException("Timeout while waiting for " + device
+                    if (timeout.waitUntilTimeout(this))
+                        throw new TimeoutException("Timeout while waiting for " + device
                                     + " " + comparison + " " + desired_value);
-                    }
-                    else // No timeout, wait forever
-                        wait();
                     if (error != null)
                         throw error;
                 }

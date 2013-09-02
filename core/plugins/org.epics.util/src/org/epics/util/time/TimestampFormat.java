@@ -115,6 +115,10 @@ public class TimestampFormat extends Format {
 
     @Override
     public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+        if (obj == null) {
+            return new StringBuffer("null");
+        }
+        
         if (obj instanceof Timestamp) {
             Timestamp time = (Timestamp) obj;
             int begin = toAppendTo.length();

@@ -18,11 +18,14 @@ package org.csstudio.scan.commandimpl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.NumericValueCondition;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
@@ -42,6 +45,9 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
     final private boolean reverse;
 	final private List<ScanCommandImpl<?>> implementation;
 	private int direction = 1;
+
+	/** Logger for execution of loop steps, <code>null</code> unless executing the loop */
+    private Logger step_logger = null;
 
     /** Initialize
      *  @param command Command description
@@ -75,14 +81,28 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             return iterations;
         return iterations * body_units;
     }
+	
+    /** Return the device name that's really used.
+     *  Because of PVManager's way of supporting put-callback,
+     *  that might need to be an annotated name.
+     *  @return Device name which may still include macros but ends in proper annotation
+     */
+    private String getRealDeviceName()
+    {
+        final String name = command.getDeviceName();
+        if (command.getCompletion()  &&  !name.endsWith(PVDevice.PUT_CALLBACK_ANNOTATION))
+            return name + PVDevice.PUT_CALLBACK_ANNOTATION;
+        return name;
+    }
 
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final ScanContext context) throws Exception
     {
+        final String device_name = getRealDeviceName();
         final Set<String> device_names = new HashSet<String>();
-        device_names.add(context.resolveMacros(command.getDeviceName()));
-        if (! command.getReadback().isEmpty())
+        device_names.add(context.resolveMacros(device_name));
+        if (command.getWait()  &&  command.getReadback().length() > 0)
             device_names.add(context.resolveMacros(command.getReadback()));
         for (ScanCommandImpl<?> command : implementation)
         {
@@ -163,34 +183,42 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
-		final Device device = context.getDevice(context.resolveMacros(command.getDeviceName()));
-
-	      // Separate read-back device, or use 'set' device?
-        final Device readback;
-        if (command.getReadback().isEmpty())
-            readback = device;
-        else
-            readback = context.getDevice(context.resolveMacros(command.getReadback()));
-
-        //  Wait for the device to reach the value?
-        final NumericValueCondition condition;
-        if (command.getWait())
-            condition = new NumericValueCondition(readback, Comparison.EQUALS,
-                        command.getStart(),
-                        command.getTolerance(),
-                        TimeDuration.ofSeconds(command.getTimeout()));
-        else
-            condition = null;
-
-		final double start = getLoopStart();
-        final double end   = getLoopEnd();
-        final double step  = getLoopStep();
-		if (step > 0)
-    		for (double value = start; value <= end; value += step)
-    		    executeStep(context, device, condition, readback, value);
-		else // step is < 0, so stepping down
-            for (double value = end; value >= start; value += step)
-                executeStep(context, device, condition, readback, value);
+        step_logger = Logger.getLogger(getClass().getName());
+        try
+        {
+    		final Device device = context.getDevice(context.resolveMacros(getRealDeviceName()));
+    
+    	    // Separate read-back device, or use 'set' device?
+            final Device readback;
+            if (command.getReadback().isEmpty())
+                readback = device;
+            else
+                readback = context.getDevice(context.resolveMacros(command.getReadback()));
+    
+            //  Wait for the device to reach the value?
+            final NumericValueCondition condition;
+            if (command.getWait())
+                condition = new NumericValueCondition(readback, Comparison.EQUALS,
+                            command.getStart(),
+                            command.getTolerance(),
+                            TimeDuration.ofSeconds(command.getTimeout()));
+            else
+                condition = null;
+    
+    		final double start = getLoopStart();
+            final double end   = getLoopEnd();
+            final double step  = getLoopStep();
+    		if (step > 0)
+        		for (double value = start; value <= end; value += step)
+        		    executeStep(context, device, condition, readback, value);
+    		else // step is < 0, so stepping down
+                for (double value = end; value >= start; value += step)
+                    executeStep(context, device, condition, readback, value);
+        }
+        finally
+        {
+            step_logger = null;
+        }
 	}
 
 	/** Execute one step of the loop
@@ -205,6 +233,8 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             final NumericValueCondition condition, final Device readback, double value)
             throws Exception
     {
+        step_logger.log(Level.FINE, "Loop setting {0} = {1}{2}", new Object[] { device.getAlias(), value, (condition!=null ? " (waiting)" : "") });
+        
         // Set device to value for current step of loop
         device.write(value);
 
