@@ -148,11 +148,7 @@ public class GenericCommandAdapter implements IPropertySource
      */
     private PropertyDescriptor createDevicePropertyDescriptor(final String id, final String label)
     {
-        final Collection<DeviceInfo> devices = editor.getDevices();
-        if (devices != null)
-            return new DeviceInfoPropertyDescriptor(id, label, devices);
-        // Fall back to editing device names as string
-        return new TextPropertyDescriptor(id, label);
+        return new DeviceInfoPropertyDescriptor(id, label, editor.getDevices());
     }
 
     /** {@inheritDoc} */
