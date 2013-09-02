@@ -89,6 +89,8 @@ org.csstudio.rap.ui.util/**
 org.csstudio.security.ui/**
 org.csstudio.security/**
 org.csstudio.simplepv/**
+org.csstudio.simplepv.pvmanager/**
+org.csstudio.simplepv.utilitypv/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.sns.startuphelper/**
 org.csstudio.startup/**
