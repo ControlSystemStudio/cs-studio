@@ -98,4 +98,12 @@ public class AutoCompleteTextCellEditor extends TextCellEditor {
 	public AutoCompleteHistory getHistory() {
 		return contentProposalAdapter.getHistory();
 	}
+	
+	@Override
+	protected void fireApplyEditorValue() {
+		if (getValue() != null) {
+			getHistory().addEntry(getValue().toString());
+		}
+		super.fireApplyEditorValue();
+	}
 }

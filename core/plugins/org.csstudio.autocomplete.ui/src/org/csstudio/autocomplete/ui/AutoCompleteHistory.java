@@ -63,8 +63,10 @@ public class AutoCompleteHistory {
 	}
 
 	private void handleSelection() {
-		String new_entry = controlContentAdapter.getControlContents(control);
-		addEntry(new_entry);
+		if (!control.isDisposed()) {
+			String new_entry = controlContentAdapter.getControlContents(control);
+			addEntry(new_entry);
+		}
 	}
 
 	public synchronized void addEntry(final String newEntry) {
