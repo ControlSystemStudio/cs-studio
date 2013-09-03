@@ -18,8 +18,8 @@ package org.csstudio.scan.ui.scanmonitor;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
@@ -35,7 +35,6 @@ import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -48,6 +47,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
@@ -75,6 +76,14 @@ public class GUI implements ScanInfoModelListener
 
     /** {@link TableViewer} for {@link ScanInfoModelContentProvider} */
     private TableViewer table_viewer;
+    
+    /** Set when context menu is open, to suppress table refreshes */
+    private boolean context_menu_is_active = false;
+    
+    /** If table updates arrive while context menu is active,
+     *  this flag is set instead of refreshing the table
+     */
+    private boolean suppressed_table_updates = false;
 
 	private Bar mem_info;
 
@@ -459,6 +468,35 @@ public class GUI implements ScanInfoModelListener
 
         final Table table = table_viewer.getTable();
         final Menu menu = manager.createContextMenu(table);
+        menu.addMenuListener(new MenuListener()
+        {
+            @Override
+            public void menuShown(final MenuEvent e)
+            {
+                context_menu_is_active = true;
+            }
+            
+            @Override
+            public void menuHidden(final MenuEvent e)
+            {
+                context_menu_is_active = false;
+                if (suppressed_table_updates)
+                    // We _are_ on the UI thread, refreshing the table now
+                    // will change the selection, and then selection-based
+                    // context menu entries won't work even though they were
+                    // shown in the menu OK.
+                    // -> Schedule this later
+                    table_viewer.getTable().getDisplay().asyncExec(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            suppressed_table_updates = false;
+                            table_viewer.refresh(false);
+                        }
+                    });
+            }
+        });
         table.setMenu(menu);
 
         // Allow contributions to the menu
@@ -502,7 +540,10 @@ public class GUI implements ScanInfoModelListener
                 // Received update -> enable table and display info
                 if (! table.getEnabled())
                 	table.setEnabled(true);
-                table_viewer.refresh(false);
+                if (context_menu_is_active)
+                    suppressed_table_updates = true;
+                else
+                    table_viewer.refresh(false);
             }
         });
     }
