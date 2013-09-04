@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.nsls2.product.Messages;
-import org.csstudio.nsls2.startuphelper.PasswordInput;
+import org.csstudio.startuphelper.PasswordInput;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.StartupParametersExtPoint;
 import org.csstudio.startup.module.WorkspaceExtPoint;

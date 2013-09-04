@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.csstudio.platform.workspace.WorkspaceIndependentStore;
 import org.csstudio.platform.workspace.WorkspaceInfo;
-import org.csstudio.nsls2.startuphelper.StartupHelper;
+import org.csstudio.startuphelper.StartupHelper;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.WorkspaceExtPoint;
 import org.eclipse.core.runtime.Platform;
