@@ -25,7 +25,7 @@ import org.eclipse.ui.keys.IBindingService;
 public class WorkbenchUtil {
 
 	public static final String[] IGNORE_PERSPECTIVES = new String[] {
-			"org.eclipse.debug.ui.DebugPerspective",
+//                     "org.eclipse.debug.ui.DebugPerspective", // Used by Pydev
 			"org.eclipse.wst.xml.ui.perspective" };
 
 	/**

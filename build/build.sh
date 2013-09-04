@@ -63,6 +63,24 @@ do
   shift
 done
 
+if [ -z "$PRODUCT_ID" ]; then
+  productPath=`readlink -f "../products/$ORGANIZATION"`
+  confBuildDir="$productPath"
+else
+  productPath=`readlink -f "../products/$ORGANIZATION/products/$PRODUCT_ID"`
+  confBuildDir="$productPath/build"
+fi
+if [[ ! -d "$productPath" ]]
+then
+  echo "Directory $productPath not found" >&2
+  exit 1
+fi
+if [[ ! -d "$confBuildDir" ]]
+then
+  echo "Directory $confBuildDir not found" >&2
+  exit 1
+fi
+
 BUILD="build"
 
 # Clean up
@@ -86,16 +104,32 @@ else
   fi
   tar -xzvf eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
   unzip -o eclipse-3.7.2-delta-pack.zip
-
-  if [ "$ORGANIZATION" = "ITER" ]
-  then 
+  cd ..
+fi
+if [ "$ORGANIZATION" = "ITER" ]
+then
+  cd ext
+  if [[ ! -d eclipse/dropins/subclipse ]]
+  then
+    # Download and install subclipse in dropins directory
     if [[ ! -f org.tigris.subclipse-site-1.6.18.zip ]]
     then
       wget -O subclipse-site-1.6.18.zip http://subclipse.tigris.org/files/documents/906/49028/site-1.6.18.zip
     fi
     unzip -o subclipse-site-1.6.18.zip -d eclipse/dropins/subclipse
   fi
-
+  if [[ ! -d eclipse/dropins/pydev ]]
+  then
+    # Download and install pydev in dropins directory
+    if [[ ! -f PyDev_2.8.1.zip ]]
+    then
+      wget -O PyDev_2.8.1.zip http://sourceforge.net/projects/pydev/files/pydev/PyDev%202.8.1/PyDev%202.8.1.zip/download
+    fi
+    unzip -o PyDev_2.8.1.zip -d eclipse/dropins/pydev
+    # Remove signature from pydev jars
+    find eclipse/dropins/pydev -name '*.DSA' -exec rm -f {} \;
+    find eclipse/dropins/pydev -name '*.SF' -exec rm -f {} \;
+  fi
   cd ..
 fi
 
@@ -103,22 +137,17 @@ function copyIfNotExists {
   listfile=$1;
   source=$2;
   target=$3;
-  for dir in `cat "$listfile"`
-  do
-    if [[ ! -d "$target/$dir" && -d "$source/$dir" ]]
-    then
-      cp -R "$source/$dir" "$target"
-    fi
-  done
+  if [[ -d "$source" ]]
+  then
+    for dir in `cat "$listfile"`
+    do
+      if [[ ! -d "$target/$dir" && -d "$source/$dir" ]]
+      then
+        cp -R "$source/$dir" "$target"
+      fi
+    done
+  fi
 }
-
-if [ -z "$PRODUCT_ID" ]; then
-  productPath=`cd "../products/$ORGANIZATION";pwd`
-  confBuildDir="$productPath"
-else
-  productPath=`cd "../products/$ORGANIZATION/products/$PRODUCT_ID";pwd`
-  confBuildDir="$productPath/build"
-fi
 
 if [ $computedeps -ne 0 ]; then
   ## Generate plugins.list and features.list
@@ -126,6 +155,10 @@ if [ $computedeps -ne 0 ]; then
   buildPath=`pwd`
   repoPath=`cd "..";pwd`
   python scan_dependencies.py -p "$productPath" -b "$buildPath" -r "$repoPath" --confBuildDir "$confBuildDir"
+  if [ "$?" -ne "0" ]; then
+    echo Scan dependencies failed. >&2
+    exit 1;
+  fi
 fi
 
 # Copy product sources
@@ -147,8 +180,12 @@ copyIfNotExists "$confBuildDir/plugins.list" "../applications/plugins" "$BUILD/p
 
 if [[ "$ORGANIZATION" = "ITER" ]]
 then
+  # get SNL plugins from DESY
   copyIfNotExists "$confBuildDir/plugins.list" "../products/DESY/plugins" "$BUILD/plugins"
+  # get SCAN plugins from SNS
+  copyIfNotExists "$confBuildDir/plugins.list" "../products/SNS/plugins" "$BUILD/plugins"
 fi
+
 copyIfNotExists "$confBuildDir/features.list" "../core/features" "$BUILD/features"
 copyIfNotExists "$confBuildDir/features.list" "../applications/features" "$BUILD/features"
 
@@ -185,6 +222,11 @@ java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*
 	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.7.*/scripts/productBuild/productBuild.xml \
 	-Dbuilder="$ABSOLUTE_DIR"/build \
 	-Dbuild.dir="$ABSOLUTE_DIR"
+
+if [ "$?" -ne "0" ]; then
+  echo Build failed. >&2
+  exit 1;
+fi
 
 # read properties from the build.properties and set up variable for each of them
 #TEMPFILE=$(mktemp)

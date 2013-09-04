@@ -10,6 +10,7 @@
 				importance="high" />
 		</group>
 		<hidden>
+			<extension id="org.eclipse.jdt" importance="low" />
 			<extension id="org.eclipse.ui.workbench" importance="low" />
 		</hidden>
 	</page>
@@ -19,6 +20,7 @@
 				importance="high" />
 		</group>
 		<hidden>
+			<extension id="org.eclipse.jdt" importance="low" />
 			<extension id="org.eclipse.ui.workbench" importance="low" />
 			<extension id="org.eclipse.ui.workbench.news" importance="low" />
 			<extension id="org.eclipse.ui.workbench.migration" importance="callout"/>
@@ -46,6 +48,9 @@
 			<extension id="org.csstudio.iter.css.product.samples"
 				importance="high" />
 		</group>
+		<hidden>
+			<extension id="org.eclipse.jdt" importance="low" />
+		</hidden>
 	</page>
 	<page id="tutorials">
 		<group path="page-content/bottom-left" default="true">

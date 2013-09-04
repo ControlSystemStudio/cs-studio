@@ -9,6 +9,8 @@ package org.csstudio.scan.ui.scantree.properties;
 
 import java.util.Collection;
 
+import org.csstudio.autocomplete.ui.AutoCompleteHelper;
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.scan.device.DeviceInfo;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +38,16 @@ public class DeviceInfoPropertyDescriptor extends PropertyDescriptor
     @Override
     public CellEditor createPropertyEditor(final Composite parent)
     {
-        final CellEditor editor = new DeviceInfoCellEditor(parent, devices);
+        CellEditor editor = null;
+		if (devices == null || devices.isEmpty()) {
+			// If no device are defined in configuration,
+			// provides a PV autocomplete cell editor
+			editor = AutoCompleteHelper.createAutoCompleteTextCellEditor(
+					parent, AutoCompleteTypes.PV);
+		} else {
+			// Otherwise, provides the devices list
+			editor = new DeviceInfoCellEditor(parent, devices);
+		}
         if (getValidator() != null)
             editor.setValidator(getValidator());
         return editor;

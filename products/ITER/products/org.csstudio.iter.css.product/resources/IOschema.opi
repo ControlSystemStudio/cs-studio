@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.2.6.codac_core_4_1b3</boy_version>
+  <boy_version>3.2.7.codac_core_4_1b3</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1024</height>
@@ -1573,7 +1573,7 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules />
     <fc>false</fc>
-    <lock_children>true</lock_children>
+    <lock_children>false</lock_children>
     <border_width>2</border_width>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -1769,6 +1769,7 @@ $(pv_value)</tooltip>
         </rule>
       </rules>
       <pv_value />
+      <horizontal_buttons_layout>false</horizontal_buttons_layout>
       <border_width>2</border_width>
       <maximum>100.0</maximum>
       <limits_from_pv>true</limits_from_pv>
@@ -2116,7 +2117,7 @@ $(pv_value)</tooltip>
       <width>50</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <effect_3d>true</effect_3d>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
@@ -2182,7 +2183,7 @@ $(pv_value)</tooltip>
       <width>100</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <effect_3d>true</effect_3d>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
@@ -2245,7 +2246,7 @@ $(pv_value)</tooltip>
       <width>39</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
           <exp bool_exp="pv0==1">
@@ -2492,7 +2493,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
           <exp bool_exp="pv0==1">
@@ -2574,7 +2575,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
           <exp bool_exp="pv0==1">
@@ -2609,16 +2610,12 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color name="IO Button" red="178" green="178" blue="178" />
-      </background_color>
       <foreground_color>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>$(actions)</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
       </font>

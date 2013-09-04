@@ -17,7 +17,8 @@ Require-Bundle: org.junit;bundle-version="4.0.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.scan;bundle-version="1.0.0",
  org.csstudio.scan.ui;bundle-version="1.0.0",
- org.csstudio.scan.client;bundle-version="1.0.0"
+ org.csstudio.scan.client;bundle-version="1.0.0",
+ org.csstudio.autocomplete.ui;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.scan.ui.scantree
