@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Product Helper
+Bundle-SymbolicName: org.csstudio.product.helper
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.product.helper.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.csstudio.startup,
+ org.eclipse.ui,
+ org.csstudio.startuphelper,
+ org.eclipse.core.runtime,
+ org.csstudio.workspace,
+ org.eclipse.ui.ide,
+ org.csstudio.logging,
+ org.csstudio.security,
+ org.eclipse.core.resources,
+ org.csstudio.ui.menu;bundle-version="3.2.0",
+ org.csstudio.ui.menu.app;bundle-version="3.0.0"
+Export-Package: org.csstudio.product.helper

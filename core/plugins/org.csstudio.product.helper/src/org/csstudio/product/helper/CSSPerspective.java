@@ -1,4 +1,4 @@
-package org.csstudio.nsls2.product;
+package org.csstudio.product.helper;
 
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
