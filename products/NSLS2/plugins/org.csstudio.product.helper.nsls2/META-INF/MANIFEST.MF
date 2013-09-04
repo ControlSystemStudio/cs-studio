@@ -4,4 +4,3 @@ Bundle-Name: Nsls2
 Bundle-SymbolicName: org.csstudio.product.helper.nsls2
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.product.helper;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7

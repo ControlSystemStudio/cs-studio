@@ -4,7 +4,6 @@ Bundle-Name: Product Helper
 Bundle-SymbolicName: org.csstudio.product.helper
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.product.helper.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.csstudio.startup,
  org.eclipse.ui,
  org.csstudio.startuphelper,
