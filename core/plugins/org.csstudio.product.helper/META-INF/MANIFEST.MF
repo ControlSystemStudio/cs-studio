@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.product.helper.Activator
 Require-Bundle: org.csstudio.startup,
  org.eclipse.ui,
- org.csstudio.startuphelper,
+ org.csstudio.startup.helper,
  org.eclipse.core.runtime,
  org.csstudio.workspace,
  org.eclipse.ui.ide,
