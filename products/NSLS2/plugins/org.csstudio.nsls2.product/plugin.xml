@@ -87,13 +87,13 @@
    <extension
          point="org.csstudio.startup.module">
       <startupParameters
-            class="org.csstudio.nsls2.product.startupmodule.StartupParameters">
+            class="org.csstudio.product.helper.StartupParameters">
       </startupParameters>
       <workspace
-            class="org.csstudio.nsls2.product.startupmodule.WorkspacePrompt">
+            class="org.csstudio.product.helper.WorkspacePrompt">
       </workspace>
       <workbench
-            class="org.csstudio.nsls2.product.startupmodule.Workbench">
+            class="org.csstudio.product.helper.Workbench">
       </workbench>
       <project
             class="org.csstudio.startup.module.defaults.DefaultProject">

@@ -1,6 +1,7 @@
-package org.csstudio.nsls2.product;
+package org.csstudio.product.helper;
 
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
@@ -13,7 +14,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	// private static final String PERSPECTIVE_ID =
-	// "org.csstudio.nsls2.product.perspective";
+	// "org.csstudio.product.perspective";
 	private OpenDocumentEventProcessor openDocProcessor;
 
     public ApplicationWorkbenchAdvisor(
@@ -83,8 +84,9 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	private void declareWorkbenchImage(String symbolicName, String path,
 			boolean shared) {
+	    	String product_plugin_ID = Platform.getPreferencesService().getString("org.csstudio.product", "product_plugin_id", "org.csstudio.product", null); 
 		ImageDescriptor desc = AbstractUIPlugin.imageDescriptorFromPlugin(
-				Activator.PLUGIN_ID, path);
+			product_plugin_ID, path);
 		getWorkbenchConfigurer().declareImage(symbolicName, desc, shared);
 	}
 }
