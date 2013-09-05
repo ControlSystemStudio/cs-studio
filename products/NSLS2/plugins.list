@@ -86,7 +86,7 @@ org.csstudio.service.math
 org.csstudio.simplepv
 org.csstudio.simplepv.pvmanager
 org.csstudio.startup
-org.csstudio.startuphelper
+org.csstudio.startup.helper
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.widgets.rcp
