@@ -23,6 +23,15 @@ class ScanDataTest(unittest.TestCase):
             for j in range(5):
                 self.assertEqual(0, a[i,j]);
 
+    def testCreateOnes(self):
+        a = ones(5)
+        for i in range(5):
+            self.assertEqual(1, a[i]);
+        a = ones([3, 2])
+        for i in range(3):
+            for j in range(2):
+                self.assertEqual(1, a[i,j]);
+
     def testCreateRange(self):
         a = arange(5)
         for i in range(5):

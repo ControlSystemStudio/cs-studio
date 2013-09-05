@@ -386,6 +386,16 @@ def zeros(shape, dtype=float):
     return ndarray(NDMatrix.zeros(dtype, __toNDShape__(shape)))
 
 
+def ones(shape, dtype=float):
+    """ones(shape, dtype=float)
+    
+    Create array of ones, example:
+    
+    ones( (2, 3) )
+    """
+    return ndarray(NDMatrix.ones(dtype, __toNDShape__(shape)))
+
+
 def array(arg, dtype=None):
     """Create N-dimensional array from data
     
