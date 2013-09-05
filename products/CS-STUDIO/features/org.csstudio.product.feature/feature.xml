@@ -43,14 +43,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.startuphelper"
+         id="org.csstudio.startup.intro"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.startup.intro"
+         id="org.csstudio.startup.helper"
          download-size="0"
          install-size="0"
          version="0.0.0"
