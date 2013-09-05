@@ -22,6 +22,7 @@ import java.lang.Class
 nan = float('nan')
 _float = float
 _int = int
+_bool = bool
 
 # Data types
 float = float64 = NDType.FLOAT64
@@ -31,6 +32,17 @@ int32 = NDType.INT64
 int16 = NDType.INT16
 byte = int8 = NDType.INT8
 bool = NDType.BOOL
+
+
+def __isBoolArray__(array):
+    """Check if array is boolean
+       For non-ndarray, only checks first element
+    """
+    if isinstance(array, ndarray):
+        return array.dtype == NDType.BOOL
+    else:
+        return len(array) > 0  and  isinstance(array[0], _bool)
+
 
 def __toNDShape__(shape):
     """Create shape for scalar as well as list"""
@@ -174,7 +186,7 @@ class ndarray:
             return self.nda.getSlice(starts, stops, steps)
         # There was a plain index for every dimension, no slice at all
         return None
-    
+        
     def __getitem__(self, indices):
         """Get element of array, or fetch sub-array
         
@@ -189,7 +201,24 @@ class ndarray:
         """
         slice = self.__getSlice__(indices)
         if slice is None:
-            return self.nda.getDouble(indices)
+            if isinstance(indices, (list, ndarray)):
+                N = len(indices)
+                if __isBoolArray__(indices):
+                    result = []
+                    for i in range(N):
+                        if indices[i]:
+                            result.append(self.nda.getDouble(i))
+                    return array(result)
+                else:
+                    # Array of indices, each addresses one element of the array
+                    result = zeros(N)
+                    for i in range(N):
+                        # Need _int because int is now set to the NDType name 'int'
+                        result[i] = self.nda.getDouble(_int(indices[i]))
+                    return result
+            else:
+                 # Indices address one element of the array
+                return self.nda.getDouble(indices)
         # else: Need to return slice/view of array
         return ndarray(slice)
 

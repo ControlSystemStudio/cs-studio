@@ -165,8 +165,18 @@ class ScanDataTest(unittest.TestCase):
         orig[:, ::2] = array([ [ 41], [ 42 ]])
         self.assertTrue(all(orig == array([ [ 41.0, 1.0, 41.0 ],
                                             [ 42.0, 4.0, 42.0 ] ] ) ) )
-
         
+    def testArraysAsIndices(self):
+        a = array([ 1, 2, 5, 3, 7, 1, 3 ])
+        sub = a[ [ 2, 3, 5 ] ]
+        self.assertTrue(all(sub == array([ 5, 3, 1 ] ) ) )
+
+        sub = a[ array([ 2, 3, 5 ]) ]
+        self.assertTrue(all(sub == array([ 5, 3, 1 ] ) ) )
+        
+        sel = a > 3
+        sub = a[sel]
+        self.assertTrue(all(sub == array([ 5.0, 7.0 ] ) ) )
         
     def testIteration(self):
         # Iteration is always over flat array
