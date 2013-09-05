@@ -45,7 +45,7 @@ except:
             sys.path.append("../../org.csstudio.ndarray/bin")
         else:
             # Add other method of locating ndarray binaries?
-            raise Exception("NumJy library bineries not configured")
+            raise Exception("NumJy library binaries not configured")
 
 
 version_info = (0, 1)
