@@ -198,6 +198,9 @@ class ndarray:
         May also provide slice:
         a = arange(10)
         a[1:6:2] # Result is [ 1, 3, 5 ]
+        
+        Differing from numpy, this returns all values as float,
+        so if they are later used for indexing, int() needs to be used.
         """
         slice = self.__getSlice__(indices)
         if slice is None:
@@ -217,7 +220,7 @@ class ndarray:
                         result[i] = self.nda.getDouble(_int(indices[i]))
                     return result
             else:
-                 # Indices address one element of the array
+                # Indices address one element of the array
                 return self.nda.getDouble(indices)
         # else: Need to return slice/view of array
         return ndarray(slice)
@@ -395,6 +398,15 @@ class ndarray:
     def min(self):
         """Returns minimum array element"""
         return NDMath.min(self.nda)
+
+    def nonzero(self):
+        """Return the indices of the elements that are non-zero.
+           Returns a tuple of arrays, one for each dimension of a, containing the indices of the non-zero elements in that dimension.
+           
+           Compared to numpy, it does not return a tuple of arrays but a matrix,
+           but either one allows addressing as [dimension, i] to get the index of the i'th non-zero element
+        """
+        return ndarray(NDCompare.nonzero(self.nda))
     
     def __str__(self):
         return self.nda.toString()
