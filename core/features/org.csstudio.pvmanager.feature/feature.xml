@@ -27,8 +27,7 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="com.google.common"/>
       <import plugin="org.csstudio.utility.pvmanager.extra" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.ui" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.csdata" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -96,13 +95,6 @@
 
    <plugin
          id="org.csstudio.utility.pvmanager.vtype"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.widgets"
          download-size="0"
          install-size="0"
          version="0.0.0"
