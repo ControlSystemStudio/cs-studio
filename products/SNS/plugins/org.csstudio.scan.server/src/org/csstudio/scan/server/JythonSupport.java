@@ -176,11 +176,12 @@ public class JythonSupport
  	 *  @param type Type of the Java object to return
 	 *  @param class_name Name of the Jython class,
 	 *                    must be in package (file) using lower case of class name
+	 *  @param args Arguments to pass to constructor
 	 *  @return Java object for instance of Jython class
 	 *  @throws Exception on error
 	 */
     @SuppressWarnings("unchecked")
-    public <T> T loadClass(final Class<T> type, final String class_name) throws Exception
+    public <T> T loadClass(final Class<T> type, final String class_name, final String... args) throws Exception
 	{
 		// Get package name
 		final String pack_name = class_name.toLowerCase();
@@ -205,7 +206,16 @@ public class JythonSupport
 		}
 		// Create Java reference
         final PyObject py_class = interpreter.get(class_name);
-        final PyObject py_object = py_class.__call__();
+        final PyObject py_object;
+        if (args.length <= 0)
+            py_object = py_class.__call__();
+        else
+        {
+            final PyObject[] py_args = new PyObject[args.length];
+            for (int i=0; i<py_args.length; ++i)
+                py_args[i] = new PyString(args[i]);
+            py_object = py_class.__call__(py_args);
+        }
         final T java_ref = (T) py_object.__tojava__(type);
         return java_ref;
 	}

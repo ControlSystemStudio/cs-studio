@@ -1,6 +1,6 @@
 """Example for submitting scan file (XML) from command-line
 
-   jython.sh submit_scan my_scan.py
+   jython.sh submit_scan ../examples/demo.scn
 
    @author: Kay Kasemir
 """
@@ -19,7 +19,7 @@ def submitScan(filepath, wait=True):
     filename = os.path.basename(filepath)
 
     # Connect to scan server
-    print 'Connected to %s' % scan.server.getInfo()
+    print 'Connected to %s' % scan.client.getServerInfo()
 
     # Read scan file
     print 'Reading %s' % filepath

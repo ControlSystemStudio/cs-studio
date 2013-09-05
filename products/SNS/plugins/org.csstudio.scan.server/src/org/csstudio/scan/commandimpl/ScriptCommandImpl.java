@@ -41,7 +41,7 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
         super(command, jython);
         try
         {
-            script_object = jython.loadClass(ScanScript.class, command.getScript());
+            script_object = jython.loadClass(ScanScript.class, command.getScript(), command.getArguments());
         }
         catch (PyException ex)
         {
@@ -53,10 +53,17 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
     @Override
     public String[] getDeviceNames(final ScanContext context) throws Exception
     {
-        final String[] names = script_object.getDeviceNames();
-        for (int i=0; i<names.length; ++i)
-            names[i] = context.resolveMacros(names[i]);
-        return names;
+        try
+        {
+            final String[] names = script_object.getDeviceNames();
+            for (int i=0; i<names.length; ++i)
+                names[i] = context.resolveMacros(names[i]);
+            return names;
+        }
+        catch (PyException ex)
+        {
+            throw new Exception(command.getScript() + ":" + JythonSupport.getExceptionMessage(ex), ex);
+        }
     }
 
     /** {@inheritDoc} */

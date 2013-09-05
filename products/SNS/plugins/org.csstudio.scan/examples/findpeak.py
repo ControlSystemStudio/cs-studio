@@ -10,12 +10,17 @@ import sys
 from numjy import *
 
 class FindPeak(ScanScript):
+    def __init__(self, pos_device, sig_device):
+        print "FindPeak", pos_device, sig_device
+        self.pos_device = pos_device
+        self.sig_device = sig_device
+        
     def getDeviceNames(self):
-        return [ "motor_x" ]
+        return [ self.pos_device, self.sig_device ]
     
     def run(self, context):
         # Turn raw python array into ndarray for easier math
-        data = array(context.getData("xpos", "signal"))
+        data = array(context.getData(self.pos_device, self.sig_device))
         x = data[0]
         y = data[1]
         
@@ -38,6 +43,6 @@ class FindPeak(ScanScript):
         context.logData("fit", fit.nda)
         
         # Set PVs with result
-        context.write("motor_x", center)
+        context.write(self.pos_device, center)
         
 

@@ -130,6 +130,12 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <div class="block">Initialize</div>
 </td>
 </tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/ScriptCommand.html#ScriptCommand(java.lang.String, java.lang.String[])">ScriptCommand</a></strong>(java.lang.String&nbsp;script,
+             java.lang.String[]&nbsp;args)</code>
+<div class="block">Initialize</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -146,15 +152,23 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>java.lang.String[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScriptCommand.html#getArguments()">getArguments</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScriptCommand.html#getScript()">getScript</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScriptCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
        org.w3c.dom.Element&nbsp;element)</code>
 <div class="block">Read command parameters from XML element</div>
 </td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScriptCommand.html#setArguments(java.lang.String...)">setArguments</a></strong>(java.lang.String...&nbsp;args)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -213,12 +227,24 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <a name="ScriptCommand(java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ScriptCommand</h4>
 <pre>public&nbsp;ScriptCommand(java.lang.String&nbsp;script)</pre>
 <div class="block">Initialize</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>script</code> - Script</dd></dl>
+</li>
+</ul>
+<a name="ScriptCommand(java.lang.String, java.lang.String[])">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ScriptCommand</h4>
+<pre>public&nbsp;ScriptCommand(java.lang.String&nbsp;script,
+             java.lang.String[]&nbsp;args)</pre>
+<div class="block">Initialize</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>script</code> - Script</dd><dd><code>args</code> - Arguments</dd></dl>
 </li>
 </ul>
 </li>
@@ -247,6 +273,26 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <h4>setScript</h4>
 <pre>public&nbsp;void&nbsp;setScript(java.lang.String&nbsp;script)</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>script</code> - Name of the script class</dd></dl>
+</li>
+</ul>
+<a name="getArguments()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getArguments</h4>
+<pre>public&nbsp;java.lang.String[]&nbsp;getArguments()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Script arguments</dd></dl>
+</li>
+</ul>
+<a name="setArguments(java.lang.String...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setArguments</h4>
+<pre>public&nbsp;void&nbsp;setArguments(java.lang.String...&nbsp;args)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>args</code> - Script arguments</dd></dl>
 </li>
 </ul>
 <a name="writeXML(java.io.PrintStream, int)">
