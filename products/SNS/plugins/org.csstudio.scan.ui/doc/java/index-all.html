@@ -236,6 +236,8 @@
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/device/DeviceInfo.html#getAlias()">getAlias()</a></span> - Method in class org.csstudio.scan.device.<a href="./org/csstudio/scan/device/DeviceInfo.html" title="class in org.csstudio.scan.device">DeviceInfo</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/ScriptCommand.html#getArguments()">getArguments()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ConfigLogCommand.html#getAutomatic()">getAutomatic()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#getBeamlineConfig()">getBeamlineConfig()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
@@ -249,6 +251,10 @@
 <dt><span class="strong"><a href="./org/csstudio/scan/command/CommentCommand.html#getComment()">getComment()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/CommentCommand.html" title="class in org.csstudio.scan.command">CommentCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/WaitCommand.html#getComparison()">getComparison()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#getCompletion()">getCompletion()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/SetCommand.html#getCompletion()">getCompletion()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/Scan.html#getCreated()">getCreated()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</a></dt>
 <dd>&nbsp;</dd>
@@ -300,6 +306,8 @@
 <div class="block">Get serial of last logged sample.</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/IncludeCommand.html#getMacros()">getMacros()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#getMacros()">getMacros()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/server/MemoryInfo.html#getMaxMem()">getMaxMem()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server">MemoryInfo</a></dt>
 <dd>&nbsp;</dd>
@@ -370,6 +378,8 @@
 <div class="block">Obtain information for all scans</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScriptCommand.html#getScript()">getScript()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#getScriptPaths()">getScriptPaths()</a></span> - Method in class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/DelayCommand.html#getSeconds()">getSeconds()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</a></dt>
 <dd>&nbsp;</dd>
@@ -693,7 +703,7 @@
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanScript.html#run(org.csstudio.scan.command.ScanScriptContext)">run(ScanScriptContext)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanScript.html" title="class in org.csstudio.scan.command">ScanScript</a></dt>
 <dd>
-<div class="block">The <code>run</code> is invoked by the scan server
+<div class="block">The <code>run</code> method is invoked by the scan server
   to execute the script</div>
 </dd>
 </dl>
@@ -805,7 +815,10 @@
 <div class="block">Base class for Jython scripts that are executed by a <a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command"><code>ScriptCommand</code></a></div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ScanScript.html#ScanScript()">ScanScript()</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScanScript.html" title="class in org.csstudio.scan.command">ScanScript</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Scan scripts may have arguments,
+  and their constructor will be called with those arguments.</div>
+</dd>
 <dt><a href="./org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command"><span class="strong">ScanScriptContext</span></a> - Class in <a href="./org/csstudio/scan/command/package-summary.html">org.csstudio.scan.command</a></dt>
 <dd>
 <div class="block">Context in which a <a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command"><code>ScriptCommand</code></a>'s script is executed</div>
@@ -816,11 +829,11 @@
 <dd>
 <div class="block">Scan server info</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String)">ScanServerInfo(String, Date, String, String)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String)">ScanServerInfo(String, Date, String, String, String[], String)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
 <dd>
 <div class="block">Initialize</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, long, long)">ScanServerInfo(String, Date, String, String, long, long)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String, long, long)">ScanServerInfo(String, Date, String, String, String[], String, long, long)</a></span> - Constructor for class org.csstudio.scan.server.<a href="./org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</a></dt>
 <dd>
 <div class="block">Initialize</div>
 </dd>
@@ -848,6 +861,10 @@
 <dd>
 <div class="block">Initialize</div>
 </dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/ScriptCommand.html#ScriptCommand(java.lang.String, java.lang.String[])">ScriptCommand(String, String[])</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a></dt>
+<dd>
+<div class="block">Initialize</div>
+</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#setAddress(long)">setAddress(long)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
 <dd>
 <div class="block">Set address of loop as well as body commands
@@ -861,6 +878,8 @@
 <dd>
 <div class="block">Assign consecutive addresses</div>
 </dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/ScriptCommand.html#setArguments(java.lang.String...)">setArguments(String...)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/ConfigLogCommand.html#setAutomatic(java.lang.Boolean)">setAutomatic(Boolean)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#setBody(java.util.List)">setBody(List&lt;ScanCommand&gt;)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
@@ -885,13 +904,17 @@
 <dd>
 <div class="block">Initialize</div>
 </dd>
-<dt><span class="strong"><a href="./org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, java.lang.String, boolean, double, double)">SetCommand(String, Object, String, boolean, double, double)</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a></dt>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, boolean, java.lang.String, boolean, double, double)">SetCommand(String, Object, boolean, String, boolean, double, double)</a></span> - Constructor for class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a></dt>
 <dd>
 <div class="block">Initialize</div>
 </dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/CommentCommand.html#setComment(java.lang.String)">setComment(String)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/CommentCommand.html" title="class in org.csstudio.scan.command">CommentCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/WaitCommand.html#setComparison(org.csstudio.scan.command.Comparison)">setComparison(Comparison)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/LoopCommand.html#setCompletion(java.lang.Boolean)">setCompletion(Boolean)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/SetCommand.html#setCompletion(java.lang.Boolean)">setCompletion(Boolean)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/WaitCommand.html#setDesiredValue(java.lang.Double)">setDesiredValue(Double)</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</a></dt>
 <dd>&nbsp;</dd>
@@ -984,6 +1007,8 @@
 <h2 class="title">T</h2>
 <dl>
 <dt><span class="strong"><a href="./org/csstudio/scan/data/ScanSampleFormatter.html#TIME_FORMAT">TIME_FORMAT</a></span> - Static variable in class org.csstudio.scan.data.<a href="./org/csstudio/scan/data/ScanSampleFormatter.html" title="class in org.csstudio.scan.data">ScanSampleFormatter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/csstudio/scan/command/CommandSequence.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/CommandSequence.html" title="class in org.csstudio.scan.command">CommandSequence</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/CommentCommand.html#toString()">toString()</a></span> - Method in class org.csstudio.scan.command.<a href="./org/csstudio/scan/command/CommentCommand.html" title="class in org.csstudio.scan.command">CommentCommand</a></dt>
 <dt><span class="strong"><a href="./org/csstudio/scan/command/Comparison.html#toString()">toString()</a></span> - Method in enum org.csstudio.scan.command.<a href="./org/csstudio/scan/command/Comparison.html" title="enum in org.csstudio.scan.command">Comparison</a></dt>

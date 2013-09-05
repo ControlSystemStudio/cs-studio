@@ -119,18 +119,22 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
               java.util.Date&nbsp;start_time,
               java.lang.String&nbsp;beamline_config,
-              java.lang.String&nbsp;simulation_config)</code>
+              java.lang.String&nbsp;simulation_config,
+              java.lang.String[]&nbsp;script_paths,
+              java.lang.String&nbsp;macros)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, long, long)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String, long, long)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
               java.util.Date&nbsp;start_time,
               java.lang.String&nbsp;beamline_config,
               java.lang.String&nbsp;simulation_config,
+              java.lang.String[]&nbsp;script_paths,
+              java.lang.String&nbsp;macros,
               long&nbsp;used_mem,
               long&nbsp;max_mem)</code>
 <div class="block">Initialize</div>
@@ -154,6 +158,14 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getBeamlineConfig()">getBeamlineConfig</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getMacros()">getMacros</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getScriptPaths()">getScriptPaths</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
@@ -200,7 +212,7 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String)">
+<a name="ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -209,12 +221,14 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <pre>public&nbsp;ScanServerInfo(java.lang.String&nbsp;version,
               java.util.Date&nbsp;start_time,
               java.lang.String&nbsp;beamline_config,
-              java.lang.String&nbsp;simulation_config)</pre>
+              java.lang.String&nbsp;simulation_config,
+              java.lang.String[]&nbsp;script_paths,
+              java.lang.String&nbsp;macros)</pre>
 <div class="block">Initialize</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - </dd><dd><code>start_time</code> - </dd><dd><code>beamline_config</code> - </dd><dd><code>simulation_config</code> - </dd></dl>
 </li>
 </ul>
-<a name="ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, long, long)">
+<a name="ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String, long, long)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -224,6 +238,8 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
               java.util.Date&nbsp;start_time,
               java.lang.String&nbsp;beamline_config,
               java.lang.String&nbsp;simulation_config,
+              java.lang.String[]&nbsp;script_paths,
+              java.lang.String&nbsp;macros,
               long&nbsp;used_mem,
               long&nbsp;max_mem)</pre>
 <div class="block">Initialize</div>
@@ -276,6 +292,26 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <h4>getSimulationConfig</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getSimulationConfig()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>Simulation configuration path</dd></dl>
+</li>
+</ul>
+<a name="getScriptPaths()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getScriptPaths</h4>
+<pre>public&nbsp;java.lang.String[]&nbsp;getScriptPaths()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Script paths</dd></dl>
+</li>
+</ul>
+<a name="getMacros()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMacros</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getMacros()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Macros</dd></dl>
 </li>
 </ul>
 <a name="toString()">

@@ -395,7 +395,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public Object call() throws Exception
     {
-        Logger.getLogger(getClass().getName()).log(Level.INFO, "Executing {0} [{1}]", new Object[] { getName(), new MemoryInfo()});
+        final Logger log = Logger.getLogger(getClass().getName());
+        log.log(Level.INFO, "Executing {0} [{1}]", new Object[] { getName(), new MemoryInfo()});
 
         try
         (
@@ -424,6 +425,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         		state = ScanState.Failed;
         	}
             error = ex.getMessage();
+            log.log(Level.WARNING, "Scan " + getName() + " failed", ex);
         }
         // Set actual end time, not estimated
         end_ms = System.currentTimeMillis();

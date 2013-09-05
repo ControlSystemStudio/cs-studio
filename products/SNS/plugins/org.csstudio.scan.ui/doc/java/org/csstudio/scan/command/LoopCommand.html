@@ -194,54 +194,62 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getBody()">getBody</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getCompletion()">getCompletion</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getDeviceName()">getDeviceName</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getEnd()">getEnd</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getReadback()">getReadback</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getStart()">getStart</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getStepSize()">getStepSize</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getTimeout()">getTimeout</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getTolerance()">getTolerance</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getWait()">getWait</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
        org.w3c.dom.Element&nbsp;element)</code>
 <div class="block">Read command parameters from XML element</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#setAddress(long)">setAddress</a></strong>(long&nbsp;address)</code>
 <div class="block">Set address of loop as well as body commands
   Set the address of this command.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#setBody(java.util.List)">setBody</a></strong>(java.util.List&lt;<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&gt;&nbsp;body)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#setCompletion(java.lang.Boolean)">setCompletion</a></strong>(java.lang.Boolean&nbsp;completion)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -484,6 +492,26 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <h4>setStepSize</h4>
 <pre>public&nbsp;void&nbsp;setStepSize(java.lang.Double&nbsp;stepsize)</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>stepsize</code> - Increment of the loop variable</dd></dl>
+</li>
+</ul>
+<a name="getCompletion()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCompletion</h4>
+<pre>public&nbsp;boolean&nbsp;getCompletion()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Wait for write completion?</dd></dl>
+</li>
+</ul>
+<a name="setCompletion(java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setCompletion</h4>
+<pre>public&nbsp;void&nbsp;setCompletion(java.lang.Boolean&nbsp;completion)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>wait</code> - Wait for write completion?</dd></dl>
 </li>
 </ul>
 <a name="getWait()">

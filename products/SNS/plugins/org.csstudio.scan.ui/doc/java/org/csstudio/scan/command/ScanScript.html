@@ -100,13 +100,16 @@ extends java.lang.Object</pre>
   <p>Example:
   <pre>
   class MyScript(ScanScript):
-      def getDeviceNames(self):
-       return [ "result1", "result2" ]
+      def __init__(self, args):
+          pass
 
-   def run(self, context):
-       [x, y] = context.getData("xpos", "signal")
-       context.write("result1", x[0])
-       context.write("result2", y[0])
+      def getDeviceNames(self):
+         return [ "result1", "result2" ]
+
+      def run(self, context, args):
+          [x, y] = context.getData("xpos", "signal")
+          context.write("result1", x[0])
+          context.write("result2", y[0])
   </pre>
 
   <p>The jython script that defines the class <code>MyScript</code> must
@@ -132,7 +135,10 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScript.html#ScanScript()">ScanScript</a></strong>()</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScript.html#ScanScript()">ScanScript</a></strong>()</code>
+<div class="block">Scan scripts may have arguments,
+  and their constructor will be called with those arguments.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -159,7 +165,7 @@ extends java.lang.Object</pre>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScript.html#run(org.csstudio.scan.command.ScanScriptContext)">run</a></strong>(<a href="../../../../org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</a>&nbsp;context)</code>
-<div class="block">The <code>run</code> is invoked by the scan server
+<div class="block">The <code>run</code> method is invoked by the scan server
   to execute the script</div>
 </td>
 </tr>
@@ -192,6 +198,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>ScanScript</h4>
 <pre>public&nbsp;ScanScript()</pre>
+<div class="block">Scan scripts may have arguments,
+  and their constructor will be called with those arguments.
+  
+  <p>The default implementation has no arguments.</div>
 </li>
 </ul>
 </li>
@@ -229,7 +239,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>run</h4>
 <pre>public&nbsp;void&nbsp;run(<a href="../../../../org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</a>&nbsp;context)</pre>
-<div class="block">The <code>run</code> is invoked by the scan server
+<div class="block">The <code>run</code> method is invoked by the scan server
   to execute the script</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>context</code> - Access to logged data, devices, ...</dd></dl>
 </li>

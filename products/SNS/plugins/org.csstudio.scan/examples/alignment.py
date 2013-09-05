@@ -32,7 +32,7 @@ seq = CommandSequence(
   ]
   ),
   # Invoke another script on server to find peak
-  ScriptCommand('FindPeak')
+  ScriptCommand('FindPeak', [ 'xpos', 'signal' ])
 ]
 )
 

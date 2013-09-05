@@ -12,13 +12,16 @@ package org.csstudio.scan.command;
  *  <p>Example:
  *  <pre>
  *  class MyScript(ScanScript):
- *      def getDeviceNames(self):
- *       return [ "result1", "result2" ]
+ *      def __init__(self, args):
+ *          pass
  *
- *   def run(self, context):
- *       [x, y] = context.getData("xpos", "signal")
- *       context.write("result1", x[0])
- *       context.write("result2", y[0])
+ *      def getDeviceNames(self):
+ *         return [ "result1", "result2" ]
+ *
+ *      def run(self, context, args):
+ *          [x, y] = context.getData("xpos", "signal")
+ *          context.write("result1", x[0])
+ *          context.write("result2", y[0])
  *  </pre>
  *
  *  <p>The jython script that defines the class <code>MyScript</code> must
@@ -30,6 +33,16 @@ package org.csstudio.scan.command;
  */
 public class ScanScript
 {
+    /** Scan scripts may have arguments,
+     *  and their constructor will be called with those arguments.
+     *  
+     *  <p>The default implementation has no arguments.
+     */
+    public ScanScript()
+    {
+        // Nop
+    }
+    
     /** Scan scripts that intend to access devices
      *  need to list their names.
      *  This allows the scan system to connect to the
@@ -48,7 +61,7 @@ public class ScanScript
         return new String[0];
     }
 
-	/** The <code>run</code> is invoked by the scan server
+	/** The <code>run</code> method is invoked by the scan server
 	 *  to execute the script
 	 *  @param context Access to logged data, devices, ...
 	 */
