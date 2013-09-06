@@ -137,19 +137,20 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, java.lang.String)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, boolean, java.lang.String, boolean, double, double)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
           java.lang.Object&nbsp;value,
-          java.lang.String&nbsp;readback)</code>
-<div class="block">Initialize</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, java.lang.String, boolean, double, double)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
-          java.lang.Object&nbsp;value,
+          boolean&nbsp;completion,
           java.lang.String&nbsp;readback,
           boolean&nbsp;wait,
           double&nbsp;tolerance,
           double&nbsp;timeout)</code>
+<div class="block">Initialize</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, java.lang.String)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
+          java.lang.Object&nbsp;value,
+          java.lang.String&nbsp;readback)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -173,35 +174,43 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#appendConditionDetail(java.lang.StringBuilder)">appendConditionDetail</a></strong>(java.lang.StringBuilder&nbsp;buf)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getCompletion()">getCompletion</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getDeviceName()">getDeviceName</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getReadback()">getReadback</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getTimeout()">getTimeout</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getTolerance()">getTolerance</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getValue()">getValue</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getWait()">getWait</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
        org.w3c.dom.Element&nbsp;element)</code>
 <div class="block">Read command parameters from XML element</div>
 </td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#setCompletion(java.lang.Boolean)">setCompletion</a></strong>(java.lang.Boolean&nbsp;completion)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -315,7 +324,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device</dd></dl>
 </li>
 </ul>
-<a name="SetCommand(java.lang.String, java.lang.Object, java.lang.String, boolean, double, double)">
+<a name="SetCommand(java.lang.String, java.lang.Object, boolean, java.lang.String, boolean, double, double)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -323,12 +332,13 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <h4>SetCommand</h4>
 <pre>public&nbsp;SetCommand(java.lang.String&nbsp;device_name,
           java.lang.Object&nbsp;value,
+          boolean&nbsp;completion,
           java.lang.String&nbsp;readback,
           boolean&nbsp;wait,
           double&nbsp;tolerance,
           double&nbsp;timeout)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device</dd><dd><code>wait</code> - Wait for readback to match?</dd><dd><code>tolerance</code> - Numeric tolerance when checking value</dd><dd><code>timeout</code> - Timeout in seconds, 0 as "forever"</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>completion</code> - Wait for write completion?</dd><dd><code>readback</code> - Readback device</dd><dd><code>wait</code> - Wait for readback to match?</dd><dd><code>tolerance</code> - Numeric tolerance when checking value</dd><dd><code>timeout</code> - Timeout in seconds, 0 as "forever"</dd></dl>
 </li>
 </ul>
 </li>
@@ -377,6 +387,26 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <h4>setValue</h4>
 <pre>public&nbsp;void&nbsp;setValue(java.lang.Object&nbsp;value)</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>value</code> - Value to write to the device</dd></dl>
+</li>
+</ul>
+<a name="getCompletion()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCompletion</h4>
+<pre>public&nbsp;boolean&nbsp;getCompletion()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Wait for write completion?</dd></dl>
+</li>
+</ul>
+<a name="setCompletion(java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setCompletion</h4>
+<pre>public&nbsp;void&nbsp;setCompletion(java.lang.Boolean&nbsp;completion)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>wait</code> - Wait for write completion?</dd></dl>
 </li>
 </ul>
 <a name="getWait()">

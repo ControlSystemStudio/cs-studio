@@ -1,12 +1,12 @@
-package org.csstudio.nsls2.product;
+package org.csstudio.product.helper;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS
 {
-    private static final String BUNDLE_NAME = "org.csstudio.nsls2.product.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.product.helper.messages"; //$NON-NLS-1$
 
-	public static String Application_DefaultProject;
+    public static String Application_DefaultProject;
     public static String Menu_CSS_Alarm;
     public static String Menu_CSS_Configuration;
     public static String Menu_CSS_CSS;
@@ -24,7 +24,7 @@ public class Messages extends NLS
     public static String Menu_Help;
     public static String Menu_Help_CheatSheet;
 
-	public static String Menu_New;
+    public static String Menu_New;
     public static String Menu_Perspectives;
     public static String Menu_Views;
     public static String Menu_Window;
