@@ -9,30 +9,26 @@
 # Jython
 JYTHON=`echo /home/controls/css/CSS/plugins/org.python_*/jython.jar`
 
-# Scan client
+# Scan client: Actual scan client and NumJy
 export SCAN_CLIENT=/home/controls/css/scan.client.jar
 
-# Directory that contains scan_client.py, scan_ui.py
-# from the org.csstudio.scan/jython directory
-# and maybe other local scan related python scripts
+# Directory that contains the content of
+# the org.csstudio.scan/jython 
+# and org.csstudio.numjy/jython directories
+# and maybe other local scan-related python scripts
 export JYTHONPATH="/home/controls/share/scan"
 
 # -----------------------------------------------------------
 # During development, allow usage within the source tree,
 # overriding the above.
-if [ -r ../../../../../applications/plugins/org.python/jython.jar ]
+if [ -r ../../../../../applications/plugins/org.python/jython.jar     \
+  -a -d ../../../../../applications/plugins/org.csstudio.numjy/jython \
+  -a -r ../../org.csstudio.scan.client/scan.client.jar                \
+  -a -f ../jython/scan_client.py ]
 then
     JYTHON=../../../../../applications/plugins/org.python/jython.jar
-fi
-
-if [ -r ../../org.csstudio.scan.client/scan.client.jar ]
-then
-   export SCAN_CLIENT=../../org.csstudio.scan.client/scan.client.jar
-fi
-
-if [ -f ../jython/scan_client.py ]
-then
-    export JYTHONPATH=".:../jython"
+    export SCAN_CLIENT=../../org.csstudio.scan.client/scan.client.jar
+    export JYTHONPATH=".:../jython:../../../../../applications/plugins/org.csstudio.numjy/jython"
 fi
 
 # When running jython as a JAR like this...
