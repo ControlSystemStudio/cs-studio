@@ -378,6 +378,10 @@ class ndarray:
         if not isinstance(value, ndarray):
             value = array([ value ])
         return ndarray(NDCompare.greater_equal(self.nda, value.nda))
+
+    def __abs__(self):
+        """Element-wise absolute values"""
+        return ndarray(NDMath.abs(self.nda))
     
     def any(self):
         """Determine if any element is True (not zero)"""
@@ -507,12 +511,6 @@ def all(value):
 def sum(array):
     """Returns sum over all array elements"""
     return array.sum()
-
-def abs(value):
-    """Determine absolute value of elements"""
-    if not isinstance(value, ndarray):
-        return math.fabs(value)
-    return ndarray(NDMath.abs(value.nda))
 
 def sqrt(value):
     """Determine square root of elements"""
