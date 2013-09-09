@@ -21,14 +21,14 @@ export JYTHONPATH="/home/controls/share/scan"
 # -----------------------------------------------------------
 # During development, allow usage within the source tree,
 # overriding the above.
-if [ -r ../../../../../applications/plugins/org.python/jython.jar     \
-  -a -d ../../../../../applications/plugins/org.csstudio.numjy/jython \
+if [ -r ../../org.python/jython.jar     \
+  -a -d ../../org.csstudio.numjy/jython \
   -a -r ../../org.csstudio.scan.client/scan.client.jar                \
   -a -f ../jython/scan_client.py ]
 then
-    JYTHON=../../../../../applications/plugins/org.python/jython.jar
+    JYTHON=../../org.python/jython.jar
     export SCAN_CLIENT=../../org.csstudio.scan.client/scan.client.jar
-    export JYTHONPATH=".:../jython:../../../../../applications/plugins/org.csstudio.numjy/jython"
+    export JYTHONPATH=".:../jython:../../org.csstudio.numjy/jython"
 fi
 
 # When running jython as a JAR like this...
