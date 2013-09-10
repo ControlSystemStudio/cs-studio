@@ -542,7 +542,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             }
             finally
             {
-                // Try post-scan commands even if submitted commands ran into problems or was aborted.
+                // Try post-scan commands even if submitted commands ran into problems or were aborted.
             	// Save the state before going back to Running for post commands.
             	final long saved_steps = work_performed.get();
                 final ScanState saved_state;
@@ -561,21 +561,29 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 	state = saved_state;
                 }
             }
-            
-            // Final status PV update. Error will be reported via exception.
-            if (device_active != null)
-            {
-                getDevice(device_status).write("");
-                getDevice(device_finish).write(ScanSampleFormatter.format(new Date()));
-                ScanCommandUtil.write(this, device_progress, Double.valueOf(100.0), 0.1, timeout);
-                ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1, timeout);
-            }            
         }
         finally
         {
             current_address = -1;
             current_command = null;
             end_ms = System.currentTimeMillis();
+
+            try
+            {
+                // Final status PV update.
+                if (device_active != null)
+                {
+                    getDevice(device_status).write("");
+                    getDevice(device_finish).write(ScanSampleFormatter.format(new Date()));
+                    ScanCommandUtil.write(this, device_progress, Double.valueOf(100.0), 0.1, timeout);
+                    ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1, timeout);
+                }            
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING, "Final Scan status PV update failed", ex);
+            }
+            
             // Stop devices
             devices.stopDevices();
         }
