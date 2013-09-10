@@ -36,6 +36,6 @@ VARFILES=()
 unset REQUSER
 DAEMONS=(/usr/bin/scan-server)
 NAMES=("CSS Scan Server")
-ARGS=("$(printf "'%s' " "${@:2}")")
+ARGS=("$(printf "'%s' " "-console" "4884" "${@:2}")")
 
 . $CODAC_ROOT/bin/services/service-startup
