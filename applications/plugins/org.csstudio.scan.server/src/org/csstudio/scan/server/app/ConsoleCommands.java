@@ -75,6 +75,7 @@ public class ConsoleCommands implements CommandProvider
         buf.append("\tresume          - Resume paused scan\n");
         buf.append("\tabort  ID       - Abort scan with given ID\n");
         buf.append("\tcommands ID     - Show commands of scan with given ID\n");
+        buf.append("\tremove ID       - Remove (finished) scan with given ID\n");
         buf.append("\tremoveCompleted - Remove completed scans\n");
         buf.append("\tprefs           - List all preferences\n");
         return buf.toString();
@@ -111,18 +112,50 @@ public class ConsoleCommands implements CommandProvider
         return null;
     }
 
+    /** @param intp CommandInterpreter
+     *  @param command Command for whic to get scan ID
+     *  @return Scan ID or <code>null</code> if cannot be obtained
+     */
+    private Long getScanId(final CommandInterpreter intp, final String command)
+    {
+        final String arg = intp.nextArgument();
+        if (arg == null)
+        {
+            intp.println("Syntax:");
+            intp.println("   " + command + " ID-of-scan");
+            return null;
+        }
+        try
+        {
+            return Long.parseLong(arg.trim());
+        }
+        catch (NumberFormatException ex)
+        {
+            intp.println("Expected: " + command + " ID-of-scan");
+            return null;
+        }
+    }
+
     /** 'info' command */
     public Object _info(final CommandInterpreter intp)
     {
         final String arg = intp.nextArgument();
-
         try
         {
             if (arg == null)
                 intp.println(server.getInfo());
             else
             {
-                final long id = Long.parseLong(arg.trim());
+                final long id;
+                try
+                {
+                    id = Long.parseLong(arg.trim());
+                }
+                catch (NumberFormatException ex)
+                {
+                    intp.println("Expected: info ID-of-scan");
+                    return null;
+                }
                 final ScanInfo info = server.getScanInfo(id);
                 intp.println(info);
                 intp.println("Created    : " + ScanSampleFormatter.format(info.getCreated()));
@@ -182,21 +215,15 @@ public class ConsoleCommands implements CommandProvider
 
         return null;
     }
-
+    
     /** 'commands' command */
     public Object _commands(final CommandInterpreter intp)
     {
-        final String arg = intp.nextArgument();
-        if (arg == null)
-        {
-            intp.println("Syntax:");
-            intp.println("   commands  ID-of-scan");
+        final Long id = getScanId(intp, "commands");
+        if (id == null)
             return null;
-        }
         try
         {
-            final long id = Long.parseLong(arg.trim());
-            // Dump scan commands
             intp.print(server.getScanCommands(id));
             intp.println();
         }
@@ -210,16 +237,11 @@ public class ConsoleCommands implements CommandProvider
     /** 'data' command */
     public Object _data(final CommandInterpreter intp)
     {
-        final String arg = intp.nextArgument();
-        if (arg == null)
-        {
-            intp.println("Syntax:");
-            intp.println("   data  ID-of-scan");
+        final Long id = getScanId(intp, "data");
+        if (id == null)
             return null;
-        }
         try
         {
-            final long id = Long.parseLong(arg.trim());
             // Dump data
             final ScanData data = server.getScanData(id);
             final long last_serial = server.getLastScanDataSerial(id);
@@ -280,16 +302,11 @@ public class ConsoleCommands implements CommandProvider
     /** 'abort' command */
     public Object _abort(final CommandInterpreter intp)
     {
-        final String arg = intp.nextArgument();
-        if (arg == null)
-        {
-            intp.println("Syntax:");
-            intp.println("   abort  ID-of-scan-to-abort");
+        final Long id = getScanId(intp, "abort");
+        if (id == null)
             return null;
-        }
         try
         {
-            final long id = Long.parseLong(arg.trim());
             server.abort(id);
         }
         catch (Throwable ex)
@@ -299,6 +316,23 @@ public class ConsoleCommands implements CommandProvider
         return _scans(intp);
     }
 
+    /** 'remove' command */
+    public Object _remove(final CommandInterpreter intp)
+    {
+        final Long id = getScanId(intp, "remove");
+        if (id == null)
+            return null;
+        try
+        {
+            server.remove(id);
+        }
+        catch (Throwable ex)
+        {
+            intp.printStackTrace(ex);
+        }
+        return _scans(intp);
+    }
+    
     /** 'removeCompleted' command */
     public Object _removeCompleted(final CommandInterpreter intp)
     {
@@ -345,5 +379,4 @@ public class ConsoleCommands implements CommandProvider
         for (String child : node.childrenNames())
             dumpPreferences(buf, node.node(child));
     }
-
 }
