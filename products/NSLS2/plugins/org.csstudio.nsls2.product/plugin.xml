@@ -78,22 +78,18 @@
                name="aboutImage"
                value="icons/about.png">
          </property>
-         <property
-               name="aboutText"
-               value="CSS NSLS-II {0}&#x0A;&#x0A;Control System Studio is an Eclipse-based collections of tools to monitor&#x0A;and operate large scale control systems, such as the ones in the accelerator community.&#x0A;&#x0A;http://cs-studio.sourceforge.net">
-          </property>
       </product>
    </extension>
    <extension
          point="org.csstudio.startup.module">
       <startupParameters
-            class="org.csstudio.product.helper.StartupParameters">
+            class="org.csstudio.utility.product.StartupParameters">
       </startupParameters>
       <workspace
-            class="org.csstudio.product.helper.WorkspacePrompt">
+            class="org.csstudio.utility.product.WorkspacePrompt">
       </workspace>
       <workbench
-            class="org.csstudio.product.helper.Workbench">
+            class="org.csstudio.utility.product.Workbench">
       </workbench>
       <project
             class="org.csstudio.startup.module.defaults.DefaultProject">

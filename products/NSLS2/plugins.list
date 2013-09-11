@@ -77,8 +77,6 @@ org.csstudio.platform.libs.jms
 org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.jms.ui
 org.csstudio.platform.utility.rdb
-org.csstudio.product.helper
-org.csstudio.product.helper.nsls2
 org.csstudio.security
 org.csstudio.security.ui
 org.csstudio.service.channelfinder
@@ -112,6 +110,8 @@ org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
 org.csstudio.utility.olog
 org.csstudio.utility.olog.ui
+org.csstudio.utility.product
+org.csstudio.utility.product.default
 org.csstudio.utility.pv
 org.csstudio.utility.pv.epics
 org.csstudio.utility.pv.simu
