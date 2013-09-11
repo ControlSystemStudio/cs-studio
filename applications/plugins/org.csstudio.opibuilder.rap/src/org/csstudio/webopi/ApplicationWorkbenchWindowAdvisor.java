@@ -35,7 +35,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		if(runnerInput == null){
 			IPath path = null;
 			String s = RWT.getRequest().getServletPath();
-			if(s.equals("/" + WebOPIConstants.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
+			if(s.contains(WebOPIConstants.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
 				path = PreferencesHelper.getMobileStartupOPI();
 			else
 				path = PreferencesHelper.getStartupOPI();
