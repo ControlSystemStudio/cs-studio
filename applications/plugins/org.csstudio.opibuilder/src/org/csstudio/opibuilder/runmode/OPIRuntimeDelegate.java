@@ -122,6 +122,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			SingleSourceHelper.removePaintListener(viewer.getControl(),errorMessagePaintListener);
 		}
 		displayModel = new DisplayModel(getOPIFilePath());
+		displayModel.setOpiRuntime(opiRuntime);
 		displayModel.setDisplayID(displayID);
 		displayModelFilled = false;
 		InputStream inputStream = null;
@@ -179,7 +180,10 @@ public class OPIRuntimeDelegate implements IAdaptable{
 	
 	public void createGUI(Composite parent) {
 		viewer = new PatchedScrollingGraphicalViewer();
-
+		if(displayModel!=null){
+			displayModel.setOpiRuntime(opiRuntime);
+			displayModel.setViewer(viewer);
+		}
 		ScalableFreeformRootEditPart root = new PatchedScalableFreeformRootEditPart() {
 
 			// In Run mode, clicking the Display or container should de-select
@@ -444,12 +448,12 @@ public class OPIRuntimeDelegate implements IAdaptable{
 										}													
 										XMLUtil.fillDisplayModelFromInputStream(
 												stream, displayModel);	
+										displayModel.setOpiRuntime(opiRuntime);
 										displayModelFilled = true;
 										addRunnerInputMacros(input);													
 										if(viewer != null){
 											viewer.setContents(displayModel);
-											displayModel.setViewer(viewer);
-											displayModel.setOpiRuntime(opiRuntime);
+											displayModel.setViewer(viewer);											
 										}
 										updateEditorTitle();
 										hideCloseButton(site);
