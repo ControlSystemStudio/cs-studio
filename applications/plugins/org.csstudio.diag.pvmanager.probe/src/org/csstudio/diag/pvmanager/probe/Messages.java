@@ -10,57 +10,69 @@ public class Messages extends NLS
 
     public static String MultipleInstancesTitle;
 
-    public static String Probe_alarmLabelText;
+    public static String Probe_copyValueToClipboardButtonText;
 
-	public static String Probe_infoButtonToolTipText;
+	public static String Probe_copyValueToClipboardButtonToolTipText;
 
-	public static String Probe_infoChannelInformationFor;
+	public static String Probe_errorCopyValueToClipboard;
 
-	public static String Probe_infoDataType;
+	public static String Probe_errorOpenProbe;
 
-	public static String Probe_infoEnumMetadata;
+	public static String Probe_infoAlarmLimits;
 
-	public static String Probe_infoHighAlarmLimit;
+	public static String Probe_infoChannelHandlerName;
 
-	public static String Probe_infoHighDisplayLimit;
+	public static String Probe_infoChannel;
 
-	public static String Probe_infoHighWarnLimit;
+	public static String Probe_infoChannelProperties;
+
+	public static String Probe_infoConnected;
+
+	public static String Probe_infoControlLimits;
+
+	public static String Probe_infoDisplay;
+
+	public static String Probe_infoDisplayLimits;
+    
+    public static String Probe_infoExpressionName;
+    
+    public static String Probe_infoExpressionType;
+
+	public static String Probe_infoFormula;
 
 	public static String Probe_infoLabels;
 
-	public static String Probe_infoLowAlarmLimit;
+	public static String Probe_infoTimestamp;
 
-	public static String Probe_infoLowDisplayLimit;
+	public static String Probe_infoType;
 
-	public static String Probe_infoLowWarnLimit;
+	public static String Probe_infoUnit;
 
-	public static String Probe_infoNoInfoAvailable;
+	public static String Probe_infoUsageCount;
 
-	public static String Probe_infoNumericDisplay;
+	public static String Probe_infoValue;
 
-	public static String Probe_infoStateConnected;
-
-	public static String Probe_infoStateDisconnected;
-
-	public static String Probe_infoStateNotConnected;
-
-	public static String Probe_infoTitle;
+	public static String Probe_infoWarningLimits;
 
 	public static String Probe_newValueFieldToolTipText;
 
 	public static String Probe_newValueLabelText;
 
-	public static String Probe_pvNameFieldToolTipText;
+	public static String Probe_retryAfterTimeout;
 
-	public static String Probe_pvNameLabelText;
+	public static String Probe_sectionChangeValue;
 
-	public static String Probe_saveToIocButtonText;
+	public static String Probe_sectionDetails;
 
-	public static String Probe_saveToIocButtonToolTipText;
+	public static String Probe_sectionMetadata;
 
-	public static String Probe_showMeterButtonText;
+	public static String Probe_sectionValue;
 
-	public static String Probe_showMeterButtonToolTipText;
+	public static String Probe_sectionViewer;
+
+	public static String Probe_showHideButtonText;
+
+	public static String Probe_showHideButtonToolTipText;
 
 	public static String Probe_statusConnected;
 
@@ -69,29 +81,7 @@ public class Messages extends NLS
 	public static String Probe_statusSearching;
 
 	public static String Probe_statusWaitingForPV;
-
-	public static String Probe_timestampLabelText;
-
-	public static String Probe_valueLabelText;
-
-	public static String S_ErrorDialogTitle;
-	public static String S_SaveToIocExecutionError;
-	public static String S_SaveToIocNotDefinedError;
-	public static String S_SaveToIocNotEnabled;
-    public static String S_Adjust;
-    public static String S_AdjustFailed;
-    public static String S_AdjustValue;
-    public static String S_ChannelInfo;
-    public static String S_CreateError;
-    public static String S_Disconnected;
-    // Not used...
-    public static String S_EnvInfo;
-    public static String S_ModValue;
-    public static String S_NoChannel;
-    public static String S_OK;
-    public static String S_Period;
-    public static String S_Seconds;
-    public static String PVManagerProbe_group_text;
+    
     static
     {
         // initialize resource bundle

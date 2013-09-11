@@ -382,7 +382,7 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		if(trace != null && trace.getHotSampleList().size()>0){
 			currentSnappedSample = trace.getHotSampleList().get(trace.getHotSampleList().size()/2);
 			currentPosition = new Point(xAxis.getValuePosition(currentSnappedSample.getXValue(), false),
-				 yAxis.getValuePosition(currentSnappedSample.getXValue(), false));
+				 yAxis.getValuePosition(currentSnappedSample.getYValue(), false));
 			xValue = currentSnappedSample.getXValue();
 			yValue = currentSnappedSample.getYValue();
 		}else{
@@ -400,10 +400,13 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 
 			currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));	
-		}		
+		}
+		
 		updateInfoLableText(true);
-		revalidate();
-		fireAnnotationMoved(oldX, oldY, xValue, yValue);
+		if (oldX != xValue || oldY != yValue) {
+			revalidate();
+			fireAnnotationMoved(oldX, oldY, xValue, yValue);
+		}
 	}
 
 	/** Set the position of the annotation based on plot values

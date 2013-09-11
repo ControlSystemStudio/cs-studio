@@ -165,7 +165,7 @@ public class PVManagerProbe extends ViewPart {
 
 					@Override
 					public void propertyChange(PropertyChangeEvent event) {
-						if ("pvFormula".equals(event.getPropertyName())) {
+						if ("pvFormula".equals(event.getPropertyName())) { //$NON-NLS-1$
 							setPVFormula((String) event.getNewValue());
 						}
 					}
@@ -347,7 +347,7 @@ public class PVManagerProbe extends ViewPart {
 			pv = PVManager
 					.readAndWrite(expression)
 					.timeout(ofMillis(5000),
-							"No connection after 5s. Still trying...")
+							Messages.Probe_retryAfterTimeout)
 					.readListener(new PVReaderListener<Object>() {
 						@Override
 						public void pvChanged(PVReaderEvent<Object> event) {
@@ -434,26 +434,26 @@ public class PVManagerProbe extends ViewPart {
 			final Menu sectionsMenu = new Menu(pvFomulaInputBar.getParent());
 			MenuItem viewerMenuItem = ShowHideForGridLayout
 					.createShowHideMenuItem(sectionsMenu, viewerPanel);
-			viewerMenuItem.setText("Viewer");
+			viewerMenuItem.setText(Messages.Probe_sectionViewer);
 			sectionToMenu.put(viewerPanel, viewerMenuItem);
 			MenuItem valueMenuItem = ShowHideForGridLayout
 					.createShowHideMenuItem(sectionsMenu, valuePanel);
-			valueMenuItem.setText("Value");
+			valueMenuItem.setText(Messages.Probe_sectionValue);
 			sectionToMenu.put(valuePanel, valueMenuItem);
 			MenuItem changeValueMenuItem = ShowHideForGridLayout
 					.createShowHideMenuItem(sectionsMenu, changeValuePanel);
-			changeValueMenuItem.setText("Change value");
+			changeValueMenuItem.setText(Messages.Probe_sectionChangeValue);
 			sectionToMenu.put(changeValuePanel, changeValueMenuItem);
 			MenuItem metadataMenuItem = ShowHideForGridLayout
 					.createShowHideMenuItem(sectionsMenu, metadataPanel);
-			metadataMenuItem.setText("Metadata");
+			metadataMenuItem.setText(Messages.Probe_sectionMetadata);
 			sectionToMenu.put(metadataPanel, metadataMenuItem);
 			MenuItem detailsMenuItem = ShowHideForGridLayout
 					.createShowHideMenuItem(sectionsMenu, detailsPanel);
-			detailsMenuItem.setText("Details");
+			detailsMenuItem.setText(Messages.Probe_sectionDetails);
 			sectionToMenu.put(detailsPanel, detailsMenuItem);
 
-			showHideAction = new Action("Show/Hide", SWT.DROP_DOWN) {
+			showHideAction = new Action(Messages.Probe_showHideButtonText, SWT.DROP_DOWN) {
 				@Override
 				public void runWithEvent(Event event) {
 					// Point point = event.
@@ -467,12 +467,12 @@ public class PVManagerProbe extends ViewPart {
 				}
 			};
 			showHideAction.setImageDescriptor(ResourceManager
-					.getPluginImageDescriptor("org.eclipse.ui",
-							"/icons/full/obj16/submenu.gif"));
+					.getPluginImageDescriptor("org.eclipse.ui", //$NON-NLS-1$
+							"/icons/full/obj16/submenu.gif")); //$NON-NLS-1$
 
 			// showHideAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox",
 			// "icons/source.png"));
-			showHideAction.setToolTipText("Show/Hide");
+			showHideAction.setToolTipText(Messages.Probe_showHideButtonToolTipText);
 			showHideAction.setMenuCreator(new IMenuCreator() {
 
 				@Override
@@ -493,7 +493,7 @@ public class PVManagerProbe extends ViewPart {
 			});
 		}
 		
-		copyValueAction = new Action("Copy value", SWT.NONE) {
+		copyValueAction = new Action(Messages.Probe_copyValueToClipboardButtonText, SWT.NONE) {
 			
 			public void runWithEvent(Event event) {
 				try {
@@ -505,12 +505,12 @@ public class PVManagerProbe extends ViewPart {
 			            clipboard.setContents(new String[] { text },
 			                new Transfer[] { TextTransfer.getInstance() });
 				} catch (Exception ex) {
-					ExceptionDetailsErrorDialog.openError(PVManagerProbe.this.mainPanel.getShell(), "Couln't copy value to clipboard", ex);
+					ExceptionDetailsErrorDialog.openError(PVManagerProbe.this.mainPanel.getShell(), Messages.Probe_errorCopyValueToClipboard, ex);
 				}
 			};
 		};
-		copyValueAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.eclipse.ui", "/icons/full/etool16/paste_edit.gif"));
-		copyValueAction.setToolTipText("Copy value to clipboard");
+		copyValueAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.eclipse.ui", "/icons/full/etool16/paste_edit.gif")); //$NON-NLS-1$ //$NON-NLS-2$
+		copyValueAction.setToolTipText(Messages.Probe_copyValueToClipboardButtonToolTipText);
 		copyValueAction.setEnabled(false);
 	}
 

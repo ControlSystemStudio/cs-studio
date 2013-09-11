@@ -2,9 +2,8 @@
 # then moves xpos to the center of the fit
 
 from org.csstudio.scan.command import ScanScript
-from math import sqrt, exp
 import sys
-
+from gaussian import Gaussian
 #print "findpeak.py path: ", sys.path
 
 from numjy import *
@@ -24,25 +23,15 @@ class FindPeak(ScanScript):
         x = data[0]
         y = data[1]
         
-        # Determine centroid
-        center = sum(x * y) / sum(y)
-        print "Center: ", center
-        
-        # Other parameters...
-        m = max(y)
-        print "Max: ", m
-        
-        width = sqrt( abs(sum((center-x)**2*y)/sum(y)) )
-        print "Width: ", width
-        
         # Compute fit
-        fit = m*exp(-(x-center)**2/(2*width**2))
-        print fit
+        g = Gaussian.fromCentroid(x, y)
+        print g
+        fit = g.values(x)
         
         # Log the 'fit' data for later comparison with raw data
         context.logData("fit", fit.nda)
         
         # Set PVs with result
-        context.write(self.pos_device, center)
+        context.write(self.pos_device, g.center)
         
 
