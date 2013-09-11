@@ -7,12 +7,22 @@
  ******************************************************************************/
 package org.csstudio.utility.product;
 
-import org.eclipse.core.runtime.Platform;
+import static org.eclipse.core.runtime.Platform.getBundle;
+import static org.eclipse.core.runtime.Platform.getPreferencesService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-
-/** Default perspective for CSS
+/** 
+ *  Default perspective for CS-Studio
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -21,28 +31,9 @@ public class CSS_Perspective implements IPerspectiveFactory
     /** Perspective ID registered in plugin.xml */
     final public static String ID = "org.csstudio.utility.product.CSS_Perspective";
 
-    // Other view IDs
-    // Copied them here instead of using their ...View.ID member so that
-    // this plugin doesn't depend on other app plugins.
-    final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
-    final private static String ID_PROBE2 = "org.csstudio.diag.pvmanager.probe";
-    final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
-    final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
-    final private static String ID_ALARM_TREE = "org.csstudio.alarm.beast.ui.alarmtree.View";
-    final private static String ID_ALARM_TABLE= "org.csstudio.alarm.beast.ui.alarmtable.view";
-
     /** Suffix for matching View IDs when multiple instances are allowed */
     final private static String MULTIPLE = ":*";
-    
-    /** Check if certain plugin is available
-     *  @param plugin_id ID of the plugin
-     *  @return <code>true</code> if available
-     */
-    private boolean isPluginAvailable(final String plugin_id)
-    {
-    	return Platform.getBundle(plugin_id) != null;
-    }
-
+   
     @Override
     public void createInitialLayout(IPageLayout layout)
     {
@@ -56,36 +47,142 @@ public class CSS_Perspective implements IPerspectiveFactory
                         IPageLayout.LEFT, 0.25f, editor);
         IFolderLayout bottom = layout.createFolder("bottom",
                         IPageLayout.BOTTOM, 0.66f, editor);
-
-        // Stuff for 'left'
+        
         left.addView("org.eclipse.ui.views.ResourceNavigator");
-        if (isPluginAvailable("org.csstudio.diag.pvutil"))
-            left.addPlaceholder("org.csstudio.diag.pvutil.view.PVUtilView");
-        final boolean have_alarm = isPluginAvailable("org.csstudio.alarm.beast");
-        if (have_alarm)
-        	left.addPlaceholder(ID_ALARM_TREE);
-
-        // Stuff for 'bottom'
-        if (isPluginAvailable("org.csstudio.diag.probe"))
-        {
-            bottom.addPlaceholder(ID_PROBE);
-            bottom.addPlaceholder(ID_PROBE + MULTIPLE);
-        }
-        if (isPluginAvailable("org.csstudio.diag.pvmanager.probe"))
-        {
-            bottom.addPlaceholder(ID_PROBE2);
-            bottom.addPlaceholder(ID_PROBE2 + MULTIPLE);
-        }
-        if (have_alarm)
-        	bottom.addPlaceholder(ID_ALARM_TABLE);
-        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
+        
+	for (Entry<String, Integer> entry : findViews().entrySet()) {
+	    switch (entry.getValue()) {
+	    case IPageLayout.LEFT:
+		left.addPlaceholder(entry.getKey());
+		break;
+	    case IPageLayout.BOTTOM:
+		bottom.addPlaceholder(entry.getKey());
+		break;
+	    default:
+		break;
+	    }
+	}	
 
         // Populate the "Window/Perspectives..." menu with suggested persp.
+
         layout.addPerspectiveShortcut(ID);
-        layout.addPerspectiveShortcut(ID_DATABROWSER_PERSP);
+        for (String perspectiveId : getPerspectiveShortcutIds()) {
+            layout.addPerspectiveShortcut(perspectiveId);
+	}
+        
 
         // Populate the "Window/Views..." menu with suggested views
-        layout.addShowViewShortcut(ID_CLOCK);
-        layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
+        for (String viewId : getViewShortcutIds()) {
+            layout.addShowViewShortcut(viewId);
 	}
+	
+    }
+    
+    /**
+     * Searches for views that require placeholders added to the CS-Studio perspective 
+     * Key is the viewId and the value is the IPageLayout location
+     * @return
+     */
+    private Map<String, Integer> findViews(){
+	Map<String, Integer> viewPlaceholderMap = new HashMap<String, Integer>();
+	
+	// Defaults
+	viewPlaceholderMap.put(IPageLayout.ID_PROGRESS_VIEW, IPageLayout.BOTTOM);
+        
+	// Views from preferences
+	String csStudioPerspectivePreference = getPreferencesService()
+							.getString("org.csstudio.utility.product",
+								   "cs_studio_perspective", 
+								   "", 
+								   null);
+	for (String viewPlaceholderInfoPref : Arrays.asList(csStudioPerspectivePreference.split(";"))) {
+	    String[] viewPlaceholderInfo = viewPlaceholderInfoPref.split(":");
+	    if(viewPlaceholderInfo.length == 4){
+		if (isPluginAvailable(viewPlaceholderInfo[0])) {
+		    int location;
+		    switch (viewPlaceholderInfo[2]) {
+		    case "left":
+			location = IPageLayout.LEFT;
+			break;
+		    case "bottom":
+			location = IPageLayout.BOTTOM;
+			break;
+		    case "right":
+			location = IPageLayout.RIGHT;
+			break;
+		    default:
+			location = IPageLayout.BOTTOM;
+			break;
+		    }
+
+		    if (viewPlaceholderInfo[3].equalsIgnoreCase("true")) {
+			viewPlaceholderMap.put(viewPlaceholderInfo[0], location);
+			viewPlaceholderMap.put(viewPlaceholderInfo[0] + MULTIPLE, location);
+		    } else {
+			viewPlaceholderMap.put(viewPlaceholderInfo[0], location);
+		    }
+		}
+	    }else{
+		// syntax error in preference describing view placeholder 
+	    }
+	};
+	return viewPlaceholderMap;
+    }
+    
+    /**
+     * Get a list of Ids of the perspectives to be added to the open perspective shortcut
+     * 
+     * @return
+     */
+    private List<String> getPerspectiveShortcutIds() {
+	List<String> perspectiveIds = new ArrayList<String>();
+	String[] perspectiveShortcut = getPreferencesService()
+						.getString("org.csstudio.utility.product",
+							   "perspective_shortcut", 
+							   "", 
+							   null).split(";");
+	for (String perspectiveInfoPref : Arrays.asList(perspectiveShortcut)) {
+	    String[] perspectiveInfo =  perspectiveInfoPref.split(":");
+	    if( perspectiveInfo.length == 2 ){
+		if(isPluginAvailable(perspectiveInfo[0])){
+		    perspectiveIds.add(perspectiveInfo[1]);
+		}
+	    }
+	}
+	return perspectiveIds;
+    }
+    
+    /**
+     * Get a list of Ids of the views to be added to the open view shortcut 
+     * @return
+     */
+    private List<String> getViewShortcutIds() {
+	List<String> viewIds = new ArrayList<String>();
+	// defaults
+	viewIds.add(IPageLayout.ID_PROGRESS_VIEW);
+	// additional views read from preferences
+	String[] viewShortcut = getPreferencesService()
+						.getString("org.csstudio.utility.product",
+							   "view_shortcut", 
+							   "", 
+							   null).split(";");
+	for (String viewInfoPref : Arrays.asList(viewShortcut)) {
+	    String[] viewInfo =  viewInfoPref.split(":");
+	    if( viewInfo.length == 2 ){
+		if(isPluginAvailable(viewInfo[0])){
+		    viewIds.add(viewInfo[1]);
+		}
+	    }
+	}
+	return viewIds;
+    }
+    
+    /** Check if certain plugin is available
+     *  @param plugin_id ID of the plugin
+     *  @return <code>true</code> if available
+     */
+    private boolean isPluginAvailable(final String plugin_id)
+    {
+    	return getBundle(plugin_id) != null;
+    }
 }
