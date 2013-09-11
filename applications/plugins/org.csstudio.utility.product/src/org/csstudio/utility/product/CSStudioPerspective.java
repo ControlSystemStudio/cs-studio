@@ -26,10 +26,10 @@ import org.eclipse.ui.IPerspectiveFactory;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CSS_Perspective implements IPerspectiveFactory
+public class CSStudioPerspective implements IPerspectiveFactory
 {
     /** Perspective ID registered in plugin.xml */
-    final public static String ID = "org.csstudio.utility.product.CSS_Perspective";
+    final public static String ID = "org.csstudio.utility.product.CSStudioPerspective";
 
     /** Suffix for matching View IDs when multiple instances are allowed */
     final private static String MULTIPLE = ":*";
