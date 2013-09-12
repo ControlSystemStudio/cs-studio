@@ -74,6 +74,20 @@ function deleteCompletedScans()
     });
 }
 
+// Pad numbers to "05"
+function formatNumber(n)
+{
+    if (n < 10)
+        return "0" + n;
+    return "" + n;
+}
+
+// Format date as "2013-01-17 23:59:59"
+function formatDate(d)
+{
+    return d.getFullYear() + "-" + formatNumber(d.getMonth()+1) + "-" + formatNumber(d.getDate()) +
+     " " + formatNumber(d.getHours()) + ":" + formatNumber(d.getMinutes()) + ":" + formatNumber(d.getSeconds());
+}
 
 // Invoke GET /scans, display result in table 
 $(function()
@@ -101,7 +115,7 @@ $(function()
                 var item = scan.find('name').text();
                 row.append( $('<td/>').append(item));
 
-                item = new Date(+scan.find('created').text()).toLocaleString()
+                item = formatDate(new Date(+scan.find('created').text()))
                 row.append( $('<td/>').append(item));
 
                 item = scan.find('state').text();
@@ -132,15 +146,15 @@ $(function()
                 var performed = scan.find('performed_work_units').text();
                 var total = scan.find('total_work_units').text();
                 if (total > 0)
-                    item = (performed / total) + "%";
+                    item = (100* performed / total).toFixed(1) + "%";
                 else
                     item = "-";
                 row.append( $('<td/>').append(item));
 
                 item = scan.find('runtime').text() / 1000;
-                row.append( $('<td/>').append(item + " seconds"));
+                row.append( $('<td/>').append(item.toFixed(1) + " seconds"));
 
-                item = new Date(+scan.find('finish').text()).toLocaleString()
+                item = formatDate(new Date(+scan.find('finish').text()))
                 row.append( $('<td/>').append(item));
 
                 item = scan.find('command').text();

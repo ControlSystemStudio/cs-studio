@@ -72,14 +72,15 @@ public class DOMHelper
             return default_value;
         Node n = element.getFirstChild();
         n = findFirstElementNode(n, name);
-        if (n != null)
-        {
-            Node text_node = n.getFirstChild();
-            if (text_node == null)
-                return default_value;
-            return text_node.getNodeValue();
-        }
-        return default_value;
+        if (n == null)
+            return default_value;
+        // <name> has been found.
+        // If it's an empty node, <name/>, that's treated as a value of "".
+        // If the node wasn't there at all, the default would have been returned.
+        Node text_node = n.getFirstChild();
+        if (text_node == null)
+            return "";
+        return text_node.getNodeValue();
     }
 
     /** Locate a sub-element tagged 'name', return its value.
@@ -98,13 +99,13 @@ public class DOMHelper
             throw new Exception("Missing '" + name + "'");
         Node n = element.getFirstChild();
         n = findFirstElementNode(n, name);
-        if (n != null)
-        {
-            Node text_node = n.getFirstChild();
-            if (text_node != null)
-                return text_node.getNodeValue();
-        }
-        throw new Exception("Missing '" + name + "'");
+        if (n == null)
+            throw new Exception("Missing '" + name + "'");
+        // <name>...</name> has been found, but it might be empty: <name/>
+        final Node text_node = n.getFirstChild();
+        if (text_node == null)
+            return "";
+        return text_node.getNodeValue();
     }
 
     /** Locate a sub-element tagged 'name', return its double value.
