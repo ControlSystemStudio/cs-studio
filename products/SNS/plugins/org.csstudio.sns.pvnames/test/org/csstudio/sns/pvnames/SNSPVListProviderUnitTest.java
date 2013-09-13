@@ -16,7 +16,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.autocomplete.AutoCompleteResult;
+import org.csstudio.autocomplete.AutoCompleteType;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
 import org.junit.Test;
 
 
@@ -37,7 +39,10 @@ public class SNSPVListProviderUnitTest
         Logger.getLogger("javax").setLevel(Level.WARNING);
         
         final IAutoCompleteProvider provider = new SNSPVListProvider();
-        AutoCompleteResult pvs = provider.listResult("PV", "DTL_LLRF:IOC1:L*", 10);
+		ContentDescriptor cd = new ContentDescriptor();
+		cd.setAutoCompleteType(AutoCompleteType.PV);
+		cd.setValue("DTL_LLRF:IOC1:L*");
+		AutoCompleteResult pvs = provider.listResult(cd, 10);
         System.out.println("Matching PVs: " + pvs.getCount());
         System.out.println(pvs.getProposalsAsString());
         assertThat(pvs.getCount(), greaterThan(1));

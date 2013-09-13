@@ -9,7 +9,7 @@ package org.csstudio.scan.ui.scantree.properties;
 
 import java.util.Collection;
 
-import org.csstudio.autocomplete.ui.AutoCompleteHelper;
+import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.scan.device.DeviceInfo;
 import org.eclipse.jface.viewers.CellEditor;
@@ -42,7 +42,7 @@ public class DeviceInfoPropertyDescriptor extends PropertyDescriptor
 		if (devices == null || devices.isEmpty()) {
 			// If no device are defined in configuration,
 			// provides a PV autocomplete cell editor
-			editor = AutoCompleteHelper.createAutoCompleteTextCellEditor(
+			editor = AutoCompleteUIHelper.createAutoCompleteTextCellEditor(
 					parent, AutoCompleteTypes.PV);
 		} else {
 			// Otherwise, provides the devices list

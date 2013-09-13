@@ -16,7 +16,9 @@ import java.util.logging.Logger;
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
-import org.csstudio.autocomplete.Proposal;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
+import org.csstudio.autocomplete.parser.ContentType;
+import org.csstudio.autocomplete.proposals.Proposal;
 import org.csstudio.platform.utility.rdb.RDBCache;
 
 /** PV Name lookup for SNS 'signal' database
@@ -36,12 +38,23 @@ public class SNSPVListProvider implements IAutoCompleteProvider
     private synchronized void setCurrentStatement(final PreparedStatement statement)
     {
         current_statement = statement;
-    }
+	}
 
-    /** {@inheritDoc} */
-    @Override
-	public AutoCompleteResult listResult(final String type, final String name, final int limit)
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(ContentType type) {
+		if (type == ContentType.PVName)
+			return true;
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public AutoCompleteResult listResult(final ContentDescriptor desc, final int limit)
     {
+		String name = desc.getValue().trim();
+		String type = desc.getAutoCompleteType().value();
+
         final Logger logger = Logger.getLogger(getClass().getName());
         logger.log(Level.FINE, "Lookup type {0}, pattern {1}, limit {2}",
                 new Object[] { type, name, limit });
@@ -130,4 +143,5 @@ public class SNSPVListProvider implements IAutoCompleteProvider
             // Ignore
         }
     }
+
 }
