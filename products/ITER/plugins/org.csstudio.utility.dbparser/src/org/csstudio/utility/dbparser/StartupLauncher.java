@@ -72,12 +72,12 @@ public class StartupLauncher implements IStartup {
 											.toLowerCase().equals("db")) {
 								switch (delta.getKind()) {
 								case IResourceDelta.REMOVED:
-									DBContextValueHolder.get().removeFile((IFile) resource);
+									DBContext.get().removeFile((IFile) resource);
 									break;
 
 								case IResourceDelta.CHANGED:
 								case IResourceDelta.CONTENT:
-									DBContextValueHolder.get().removeFile((IFile) resource);
+									DBContext.get().removeFile((IFile) resource);
 									parseDB((IFile) resource);
 									break;
 									
@@ -106,7 +106,7 @@ public class StartupLauncher implements IStartup {
 			String dbContent = DbUtil.readFile(file);
 			List<Record> records = DbUtil.parseDb(dbContent);
 			for (Record r : records)
-				DBContextValueHolder.get().addRecord(file, r);
+				DBContext.get().addRecord(file, r);
 		} catch (Exception e) {
 			Activator.getLogger().log(Level.WARNING,
 					"Failed to parse " + file.getFullPath() + ": " + e.getMessage());

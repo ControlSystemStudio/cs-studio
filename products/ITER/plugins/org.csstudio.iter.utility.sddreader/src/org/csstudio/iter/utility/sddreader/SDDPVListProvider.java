@@ -16,8 +16,10 @@ import java.util.logging.Level;
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
-import org.csstudio.autocomplete.Proposal;
-import org.csstudio.autocomplete.TopProposalFinder;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
+import org.csstudio.autocomplete.parser.ContentType;
+import org.csstudio.autocomplete.proposals.Proposal;
+import org.csstudio.autocomplete.proposals.TopProposalFinder;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 public class SDDPVListProvider implements IAutoCompleteProvider {
@@ -44,14 +46,20 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 	}
 
 	@Override
-	public AutoCompleteResult listResult(final String type, final String name,
+	public boolean accept(final ContentType type) {
+		if (type.equals(ContentType.PV))
+			return true;
+		return false;
+	}
+
+	public AutoCompleteResult listResult(final ContentDescriptor desc,
 			final int limit) {
 		if (rdb == null)
 			return null;
 		AutoCompleteResult result = new AutoCompleteResult();
 
 		try {
-			String sqlPattern = AutoCompleteHelper.convertToSQL(name);
+			String sqlPattern = AutoCompleteHelper.convertToSQL(desc.getValue());
 			statement_count = rdb.getConnection().prepareStatement(pv_count);
 			statement_count.setString(1, sqlPattern);
 
@@ -87,7 +95,7 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 		}
 		
 		TopProposalFinder trf = new TopProposalFinder(Preferences.getSeparators());
-		List<Proposal> topProposals = trf.getTopProposals(name, result.getProposalsAsString());
+		List<Proposal> topProposals = trf.getTopProposals(desc.getValue(), result.getProposalsAsString());
 		for (Proposal p : topProposals)
 			result.addTopProposal(p);
 		
@@ -114,4 +122,5 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 			}
 		}
 	}
+
 }

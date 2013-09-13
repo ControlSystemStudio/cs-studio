@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
-import org.csstudio.autocomplete.ui.ContentProposalAdapter;
-import org.csstudio.autocomplete.ui.IContentProposalListener2;
+import org.csstudio.autocomplete.ui.content.ContentProposalAdapter;
+import org.csstudio.autocomplete.ui.content.IContentProposalListener2;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -27,7 +28,7 @@ public class PVNameTextCellEditor extends TextCellEditor {
 
 	public PVNameTextCellEditor(Composite parent) {
 		super(parent);
-		AutoCompleteWidget autoCompleteWidget = new AutoCompleteWidget(this, "PV"); //$NON-NLS-1$		
+		AutoCompleteWidget autoCompleteWidget = new AutoCompleteWidget(this, AutoCompleteTypes.Formula); //$NON-NLS-1$		
 		autoCompleteWidget.getContentProposalAdapter().addContentProposalListener(
 				new IContentProposalListener2() {
 
