@@ -35,29 +35,4 @@
   to a server outside of the beamline subnet for basic IOC operation.
   -->
 <beamline>
-    <!-- Devices that are currently on the beam line -->
-    <devices>
-        <!-- In the future, it may be useful to define these in a hierarchy,
-             for example organize devices by "section" or "component"
-             of the beam line.
-             
-             The tools we create for now should ignore those levels of hierarchy
-             and concentrate on the elements of interest.
-             
-             For example, the Scan Server simply
-             look for <pv> anywhere below <device>,
-             optionally using their alias instead of the "real" name.
-             
-             The IOC control tools don't care about the PV names, they only
-             see which <ioc>s need to be operational
-          -->
-        <device>
-            <ioc>
-                <name>ScanServerIOC</name>
-                <script>/opt/codac/css/scan-server/st.cmd</script>
-                <console>4812</console>
-            </ioc>
-        </device>
-        
-    </devices>
 </beamline>
