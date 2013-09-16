@@ -27,7 +27,12 @@ org.csstudio.archive.vtype
 org.csstudio.autocomplete
 org.csstudio.autocomplete.channelfinder
 org.csstudio.autocomplete.logbook
+org.csstudio.autocomplete.pvmanager.formula
+org.csstudio.autocomplete.pvmanager.loc
+org.csstudio.autocomplete.pvmanager.sim
+org.csstudio.autocomplete.pvmanager.sys
 org.csstudio.autocomplete.ui
+org.csstudio.autocomplete.ui.rcp
 org.csstudio.channel.intro
 org.csstudio.channel.opiwidgets
 org.csstudio.channel.views
