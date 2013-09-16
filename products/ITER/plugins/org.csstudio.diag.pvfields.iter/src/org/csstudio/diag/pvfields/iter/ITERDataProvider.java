@@ -19,7 +19,7 @@ import org.csstudio.autocomplete.data.Record;
 import org.csstudio.diag.pvfields.DataProvider;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVInfo;
-import org.csstudio.utility.dbparser.DBContextValueHolder;
+import org.csstudio.utility.dbparser.DBContext;
 
 /**
  * Data provider for ITER Fetches channel information from DB files & SDD
@@ -75,25 +75,14 @@ public class ITERDataProvider implements DataProvider {
 	}
 	
 	private PVInfo searchInDB(String name) {
+		List<Record> records = DBContext.get().findRecord(name);
+		if (records == null || records.size() == 0)
+			return null;
+
 		final Map<String, String> properties = new HashMap<String, String>();
 		final List<PVField> fields = new ArrayList<PVField>();
 
-		List<Record> records = DBContextValueHolder.get().findRecord(name);
-		if (records != null && records.size() == 1) {
-			Record rec = records.get(0); // we take first
-			if (rec != null) {
-				properties.put("Record Name", rec.getName());
-				properties.put("Record Type", rec.getType());
-				properties.put("File Name", rec.getFile().lastSegment());
-				for (Field f : rec.getFields())
-					fields.add(new PVField(name + "." + f.getType(), f.getValue()));
-			}
-			final PVInfo info = new PVInfo(properties, fields);
-			Logger.getLogger(getClass().getName()).log(Level.FINE,
-					"ITER Info for {0}: {1}", new Object[] { name, info });
-			return info;
-
-		} else if (records != null && records.size() > 1) {
+		if (records.size() > 1) {
 			StringBuilder sb = new StringBuilder();
 			for (Record rec : records) {
 				sb.append("\t");
@@ -103,9 +92,22 @@ public class ITERDataProvider implements DataProvider {
 				sb.append("\n");
 			}
 			Logger.getLogger(getClass().getName()).log(Level.WARNING,
-					"{0} matches more than 1 PV:\n {1}", new Object[] { name, sb });
+					"{0} matches more than 1 PV:\n {1}",
+					new Object[] { name, sb });
 		}
 
-		return null;
+		Record rec = records.get(0); // we take first
+		if (rec != null) {
+			properties.put("Record Name", rec.getName());
+			properties.put("Record Type", rec.getType());
+			properties.put("File Name", rec.getFile().lastSegment());
+			for (Field f : rec.getFields())
+				fields.add(new PVField(name + "." + f.getType(), f.getValue()));
+		}
+		final PVInfo info = new PVInfo(properties, fields);
+		Logger.getLogger(getClass().getName()).log(Level.FINE,
+				"ITER Info for {0}: {1}", new Object[] { name, info });
+		return info;
 	}
+	
 }

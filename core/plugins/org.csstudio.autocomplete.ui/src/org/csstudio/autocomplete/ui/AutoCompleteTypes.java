@@ -7,15 +7,17 @@
  ******************************************************************************/
 package org.csstudio.autocomplete.ui;
 
+import org.csstudio.autocomplete.AutoCompleteType;
+
 /**
  * List commonly used types. Each type defines a specific behavior, see
- * AutoComplete provider preferences.
+ * AutoComplete providers preferences.
  * 
  * @author Fred Arnaud (Sopra Group)
- * 
  */
 public class AutoCompleteTypes {
 
-	public static final String PV = "PV";
+	public static final String PV = AutoCompleteType.PV.value();
+	public static final String Formula = AutoCompleteType.Formula.value();
 
 }

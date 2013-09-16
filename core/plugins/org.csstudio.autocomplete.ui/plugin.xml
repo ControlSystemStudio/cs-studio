@@ -2,10 +2,15 @@
 <?eclipse version="3.2"?>
 <plugin>
 
-   <!--
-   <extension point="org.csstudio.autocomplete">
-      <provider name="History" class="org.csstudio.autocomplete.ui.AutoCompleteHistoryProvider" />
+   <extension-point id="helpers" name="Auto-Complete UI Helpers" schema="schema/autocomplete_ui.exsd"/>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.platform"
+            class="org.csstudio.autocomplete.ui.preferences.PreferencePage"
+            id="org.csstudio.autocomplete.ui.preferences"
+            name="Auto-Complete">
+      </page>
    </extension>
-   -->
    
 </plugin>
