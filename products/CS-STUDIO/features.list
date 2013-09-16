@@ -6,5 +6,6 @@ org.csstudio.opibuilder.feature
 org.csstudio.product.feature
 org.csstudio.pvmanager.ca.feature
 org.csstudio.pvmanager.feature
+org.csstudio.pvmanager.exec.feature
 org.csstudio.pvmanager.jdbc.feature
 org.csstudio.utilities.feature
