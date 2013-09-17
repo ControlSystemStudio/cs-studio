@@ -8,6 +8,7 @@
 package org.csstudio.utility.product;
 
 import static org.eclipse.core.runtime.Platform.getBundle;
+import static org.eclipse.core.runtime.Platform.getPreferencesService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,9 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 /** 
  *  Default perspective for CS-Studio
+ *  
+ *  The perspective can be configured using preferences.
+ *  org.csstudio.utility.product/cs_studio_perspective=PluginId:ViewID:Postition:single/multiple;
  *  
  *  @author Kay Kasemir
  */
@@ -88,32 +92,43 @@ public class CSStudioPerspective implements IPerspectiveFactory
 	// Defaults
 	viewPlaceholderMap.put(IPageLayout.ID_PROGRESS_VIEW, IPageLayout.BOTTOM);
         
-	int location = IPageLayout.LEFT;
-	for (String leftPlaceholder :Arrays.asList(Messages.CSStudioPerspective_left.split(";"))) {
-	    String[] leftPlaceholderInfo = leftPlaceholder.split(":");
-	    if (leftPlaceholderInfo.length == 3) {
-		if (leftPlaceholderInfo[2].equalsIgnoreCase("multiple")) {
-		    viewPlaceholderMap.put(leftPlaceholderInfo[0], location);
-		    viewPlaceholderMap.put(leftPlaceholderInfo[0] + MULTIPLE,
-			    location);
-		} else {
-		    viewPlaceholderMap.put(leftPlaceholderInfo[0], location);
+	// Views from preferences
+	String csStudioPerspectivePreference = getPreferencesService()
+							.getString("org.csstudio.utility.product",
+								   "cs_studio_perspective", 
+								   "", 
+								   null);
+	for (String viewPlaceholderInfoPref : Arrays.asList(csStudioPerspectivePreference.split(";"))) {
+	    String[] viewPlaceholderInfo = viewPlaceholderInfoPref.split(":");
+	    if(viewPlaceholderInfo.length == 4){
+		if (isPluginAvailable(viewPlaceholderInfo[0])) {
+		    int location;
+		    switch (viewPlaceholderInfo[2]) {
+		    case "left":
+			location = IPageLayout.LEFT;
+			break;
+		    case "bottom":
+			location = IPageLayout.BOTTOM;
+			break;
+		    case "right":
+			location = IPageLayout.RIGHT;
+			break;
+		    default:
+			location = IPageLayout.BOTTOM;
+			break;
+		    }
+
+		    if (viewPlaceholderInfo[3].equalsIgnoreCase("multiple")) {
+			viewPlaceholderMap.put(viewPlaceholderInfo[0], location);
+			viewPlaceholderMap.put(viewPlaceholderInfo[0] + MULTIPLE, location);
+		    } else {
+			viewPlaceholderMap.put(viewPlaceholderInfo[0], location);
+		    }
 		}
+	    }else{
+		// syntax error in preference describing view placeholder 
 	    }
-	}
-	location = IPageLayout.BOTTOM;
-	for (String bottomPlaceholder :Arrays.asList(Messages.CSStudioPerspective_bottom.split(";"))) {
-	    String[] bottomPlaceholderInfo = bottomPlaceholder.split(":");
-	    if (bottomPlaceholderInfo.length == 3) {
-		if (bottomPlaceholderInfo[2].equalsIgnoreCase("multiple")) {
-		    viewPlaceholderMap.put(bottomPlaceholderInfo[0], location);
-		    viewPlaceholderMap.put(bottomPlaceholderInfo[0] + MULTIPLE,
-			    location);
-		} else {
-		    viewPlaceholderMap.put(bottomPlaceholderInfo[0], location);
-		}
-	    }
-	}
+	};
 	return viewPlaceholderMap;
     }
     
@@ -124,7 +139,11 @@ public class CSStudioPerspective implements IPerspectiveFactory
      */
     private List<String> getPerspectiveShortcutIds() {
 	List<String> perspectiveIds = new ArrayList<String>();
-	String[] perspectiveShortcut = Messages.shortcutPerspective.split(";");
+	String[] perspectiveShortcut = getPreferencesService()
+						.getString("org.csstudio.utility.product",
+							   "perspective_shortcut", 
+							   "", 
+							   null).split(";");
 	for (String perspectiveInfoPref : Arrays.asList(perspectiveShortcut)) {
 	    String[] perspectiveInfo =  perspectiveInfoPref.split(":");
 	    if( perspectiveInfo.length == 2 ){
@@ -145,7 +164,11 @@ public class CSStudioPerspective implements IPerspectiveFactory
 	// defaults
 	viewIds.add(IPageLayout.ID_PROGRESS_VIEW);
 	// additional views read from preferences
-	String[] viewShortcut = Messages.shortcutViews.split(";");
+	String[] viewShortcut = getPreferencesService()
+						.getString("org.csstudio.utility.product",
+							   "view_shortcut", 
+							   "", 
+							   null).split(";");
 	for (String viewInfoPref : Arrays.asList(viewShortcut)) {
 	    String[] viewInfo =  viewInfoPref.split(":");
 	    if( viewInfo.length == 2 ){
