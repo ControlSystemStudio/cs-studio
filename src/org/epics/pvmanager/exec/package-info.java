@@ -4,6 +4,6 @@
  */
 
 /**
- * Support for database services based on JDBC.
+ * Support for services based on command-line execution (<a href="doc-files/exec-xml-syntax.html">exec xml syntax</a>).
  */
 package org.epics.pvmanager.exec;
