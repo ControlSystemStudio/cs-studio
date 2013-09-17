@@ -6,6 +6,7 @@ package org.epics.pvmanager.formula;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,6 +78,24 @@ public class FormulaFunctions {
         }
         
         return null;
+    }
+
+    /**
+     * Finds the functions that match the given types as arguments.
+     * 
+     * @param arguments the possible values
+     * @param formulaFunctions a collection of functions
+     * @return the first function that accepts the give arguments
+     */
+    public static Collection<FormulaFunction> findArgTypeMatch(List<Class<?>> argTypes, Collection<FormulaFunction> formulaFunctions) {
+        Collection<FormulaFunction> functions = new HashSet<>();
+        for (FormulaFunction formulaFunction : formulaFunctions) {
+            if (formulaFunction.getArgumentTypes().equals(argTypes)) {
+                functions.add(formulaFunction);
+            }
+        }
+        
+        return functions;
     }
 
     /**
