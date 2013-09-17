@@ -36,7 +36,8 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
 	 * (non-Javadoc)
 	 * @see org.csstudio.startup.extensions.WorkspacePromptExtPoint#promptForWorkspace(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
-	public Object promptForWorkspace(Display display,
+	@Override
+    public Object promptForWorkspace(Display display,
 			IApplicationContext context, Map<String, Object> parameters)
 	{
 	    
@@ -78,9 +79,9 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
      *  bug 84881 and thus not using the shell to force the dialogs to be
      *  top-level, so we skip the shell altogether.
      *  <p> 
-     *  Note that we must be very careful with use of the CentralLogger:
-     *  Its first use loads the main CSS plugin, which checks preferences
-     *  and thus already activates the default workspace, after which we can no
+     *  Note that we must be very careful with anything that sets the workspace.
+     *  For example, initializing a logger from preferences
+     *  activates the default workspace, after which we can no
      *  longer change it...
      *  @param show_login Show the login (user/password) dialog?
      *  @param force_prompt Set <code>true</code> in a Control Room
