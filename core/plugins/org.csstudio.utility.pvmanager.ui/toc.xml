@@ -5,4 +5,7 @@
     <topic label="Process Variables"  href="html/pvs.html">
        <anchor id="pvsyntax"/>
 	</topic>
+    <topic label="Services"  href="html/services.html">
+       <anchor id="servicesyntax"/>
+	</topic>
 </toc>
