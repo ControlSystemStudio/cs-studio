@@ -38,5 +38,7 @@ Export-Package: com.mysql.jdbc,
  oracle.sql.converter,
  org.csstudio.platform.libs.jdbc,
  org.gjt.mm.mysql,
- org.postgresql
+ org.postgresql,
+ org.postgresql.copy,
+ org.postgresql.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
