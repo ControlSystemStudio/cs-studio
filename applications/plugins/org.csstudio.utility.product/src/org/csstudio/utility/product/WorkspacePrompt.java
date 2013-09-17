@@ -1,4 +1,4 @@
-package org.csstudio.product.helper;
+package org.csstudio.utility.product;
 
 import java.io.File;
 import java.io.IOException;
