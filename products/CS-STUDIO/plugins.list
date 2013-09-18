@@ -9,6 +9,7 @@ org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.autocomplete
 org.csstudio.autocomplete.ui
+org.csstudio.autocomplete.ui.rcp
 org.csstudio.csdata
 org.csstudio.csdata.clipboard
 org.csstudio.data
