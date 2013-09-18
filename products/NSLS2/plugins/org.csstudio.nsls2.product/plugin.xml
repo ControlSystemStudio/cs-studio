@@ -12,15 +12,6 @@
       </application>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.nsls2.product.CSSPerspective"
-            icon="icons/css16.png"
-            id="org.csstudio.nsls2.product.CSSPerspective"
-            name="CSS perspective">
-      </perspective>
-   </extension>
-   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
