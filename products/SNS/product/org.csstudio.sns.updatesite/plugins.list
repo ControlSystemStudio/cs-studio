@@ -31,7 +31,12 @@ org.csstudio.archive.writer.test/**
 org.csstudio.archive.vtype/**
 org.csstudio.autocomplete/**
 org.csstudio.autocomplete.logbook/**
+org.csstudio.autocomplete.pvmanager.formula/**
+org.csstudio.autocomplete.pvmanager.loc/**
+org.csstudio.autocomplete.pvmanager.sim/**
+org.csstudio.autocomplete.pvmanager.sys/**
 org.csstudio.autocomplete.ui/**
+org.csstudio.autocomplete.ui.rcp/**
 org.csstudio.basic.epics.product/**
 org.csstudio.csdata/**
 org.csstudio.csdata.clipboard/**
@@ -144,6 +149,7 @@ org.csstudio.utility.pvmanager.epics/**
 org.csstudio.utility.pvmanager.extra/**
 org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.sim/**
+org.csstudio.utility.pvmanager.sys/**
 org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.pvmanager.ui.toolbox/**
 org.csstudio.utility.pvmanager.widgets/**
