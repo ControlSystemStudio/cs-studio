@@ -623,7 +623,7 @@
                tooltip="Delete this row.">
             <enablement>
                <objectState
-                     name="allowDelete"
+                     name="allowDeleteRow"
                      value="TRUE">
                </objectState>
             </enablement>
@@ -637,7 +637,7 @@
                tooltip="Delete this column">
             <enablement>
                <objectState
-                     name="allowDelete"
+                     name="allowDeleteColumn"
                      value="TRUE">
                </objectState>
             </enablement>
