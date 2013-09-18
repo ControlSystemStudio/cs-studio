@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
@@ -19,9 +21,19 @@ import org.csstudio.autocomplete.IAutoCompleteProvider;
 import org.csstudio.autocomplete.parser.ContentDescriptor;
 import org.csstudio.autocomplete.parser.ContentType;
 import org.csstudio.autocomplete.proposals.Proposal;
+import org.csstudio.autocomplete.proposals.ProposalStyle;
 import org.csstudio.platform.utility.rdb.RDBCache;
 
 /** PV Name lookup for SNS 'signal' database
+ * 
+ *  <p>AutoCompleteService will re-use one instance of this class
+ *  for all lookups, calling <code>listResult</code> whenever
+ *  the user types a new character, using a new thread for each lookup.
+ *  Before starting a new lookup, however, <code>cancel()</code> is invoked.
+ *  This means there are never multiple concurrent lookups started on purpose,
+ *  but a previously started lookup may still continue in its thread
+ *  in case <code>cancel()</code> has no immediate effect.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -42,7 +54,8 @@ public class SNSPVListProvider implements IAutoCompleteProvider
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(ContentType type) {
+	public boolean accept(final ContentType type)
+	{
 		if (type == ContentType.PVName)
 			return true;
 		return false;
@@ -52,37 +65,57 @@ public class SNSPVListProvider implements IAutoCompleteProvider
 	@Override
 	public AutoCompleteResult listResult(final ContentDescriptor desc, final int limit)
     {
-		String name = desc.getValue().trim();
-		String type = desc.getAutoCompleteType().value();
+	    // desc.getValue() is the whole user-entered string
+	    // desc.getOriginalContent() ends at the cursor position
+		final String content = desc.getOriginalContent().trim();
+		final String type = desc.getAutoCompleteType().value();
+		final Logger logger = Logger.getLogger(getClass().getName());
+		logger.log(Level.FINE, "Lookup type {0}, pattern {1}, limit {2}",
+		        new Object[] { type, content, limit });
+		
+		
+		// Support partial matches:
+		// Lookup of "DTL" will actually look for "DTL*".
+		// Could also expand that to "*DTL*", but since SNS RDB is slow enough,
+		// require user to explicitly enter "*.." for a fully non-anchored search.
+		String search_pattern = content;
+		if (! search_pattern.endsWith("*"))
+		    search_pattern += "*";
 
-        final Logger logger = Logger.getLogger(getClass().getName());
-        logger.log(Level.FINE, "Lookup type {0}, pattern {1}, limit {2}",
-                new Object[] { type, name, limit });
-        
         // Create RDB pattern from *, ? wildcards
-    	final String like = AutoCompleteHelper.convertToSQL(name);
+    	final String like = AutoCompleteHelper.convertToSQL(search_pattern);
     
         final AutoCompleteResult pvs = new AutoCompleteResult();
-        pvs.setProvider("SNS");
         try
         {
             if (cache == null)
                 cache = new RDBCache("SNSPVListProvider",
                         Preferences.getURL(), Preferences.getUser(), Preferences.getPassword(),
-                        10, TimeUnit.SECONDS);
+                        2, TimeUnit.MINUTES);
             lookup(pvs, like, limit);
         }
         catch (Throwable ex)
         {
             // Suppress error resulting from call to cancel()
-            if (ex.getMessage().startsWith("ORA-01013"))
-                logger.log(Level.WARNING, "Lookup for {0} cancelled", name);
+            if (ex.getMessage().startsWith("ORA-01013")  ||
+                ex.getMessage().startsWith("ORA-01001"))
+                logger.log(Level.FINE, "Lookup for {0} cancelled", content);
             else
-                logger.log(Level.WARNING, "Lookup for " + name + " failed", ex);
+                logger.log(Level.WARNING, "Lookup for " + content + " failed", ex);
             return pvs;
         }
+        
+        // Mark, i.e. highlight the original search pattern within each result
+        final Pattern namePattern = AutoCompleteHelper.convertToPattern(content);
+        for (Proposal p : pvs.getProposals())
+        {
+            final Matcher m = namePattern.matcher(p.getValue());
+            if (m.find())
+                p.addStyle(ProposalStyle.getDefault(m.start(), m.end()-1));
+        }
+        
         if (logger.isLoggable(Level.FINER))
-            logger.log(Level.FINER, "PVs for {0}: {1}", new Object[] { name, pvs.getProposalsAsString() });
+            logger.log(Level.FINER, "PVs for {0} ({1}): {2}", new Object[] { content, pvs.getCount(), pvs.getProposalsAsString() });
         return pvs;
     }
 
@@ -107,8 +140,8 @@ public class SNSPVListProvider implements IAutoCompleteProvider
                     "SELECT SGNL_ID FROM EPICS.SGNL_REC WHERE SGNL_ID LIKE ? ORDER BY SGNL_ID");
         )
         {
-            statement.setString(1, like);
             setCurrentStatement(statement);
+            statement.setString(1, like);
             final ResultSet result = statement.executeQuery();
             while (result.next())
             {
@@ -119,6 +152,7 @@ public class SNSPVListProvider implements IAutoCompleteProvider
         }
         finally
         {
+            cache.releaseConnection();
             setCurrentStatement(null);
             pvs.setCount(count);
         }
@@ -129,14 +163,12 @@ public class SNSPVListProvider implements IAutoCompleteProvider
     public synchronized void cancel()
     {
         if (current_statement == null)
-        {
-            Logger.getLogger(getClass().getName()).fine("Cancelled while idle");
             return;
-        }
         try
         {
             Logger.getLogger(getClass().getName()).fine("Cancelling ongoing lookup");
             current_statement.cancel();
+            current_statement = null;
         }
         catch (Throwable ex)
         {
