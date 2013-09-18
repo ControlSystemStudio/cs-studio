@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.logging.ui;bundle-version="3.0.0",
  org.csstudio.workspace;bundle-version="3.0.0",
  org.csstudio.ui.menu.app;bundle-version="3.0.0",
- org.csstudio.security;bundle-version="1.0.0"
+ org.csstudio.security;bundle-version="1.0.0",
+ org.csstudio.startup.helper;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.utility.product

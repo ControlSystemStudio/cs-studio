@@ -100,6 +100,55 @@ public class ValueUtil {
             return ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected");
         }
     }
+    
+    /**
+     * Returns the alarm with highest severity. null values can either be ignored or
+     * treated as UNDEFINED severity.
+     * 
+     * @param args a list of values
+     * @param considerNull whether to consider null values
+     * @return the highest alarm; can't be null
+     */
+    public static Alarm highestSeverityOf(final List<Object> args, final boolean considerNull) {
+        Alarm finalAlarm = ValueFactory.alarmNone();
+        for (Object object : args) {
+            Alarm newAlarm;
+            if (object == null && considerNull) {
+                newAlarm = ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No Value");
+            } else {
+                newAlarm = ValueUtil.alarmOf(object);
+                if (newAlarm == null) {
+                    newAlarm = ValueFactory.alarmNone();
+                }
+            }
+            if (newAlarm.getAlarmSeverity().compareTo(finalAlarm.getAlarmSeverity()) > 0) {
+                finalAlarm = newAlarm;
+            }
+        }
+        
+        return finalAlarm;
+    }
+    
+    /**
+     * Returns the time with latest timestamp.
+     * 
+     * @param args a list of values
+     * @return the latest time; can be null
+     */
+    public static Time latestTimeOf(final List<Object> args) {
+        Time finalTime = null;
+        for (Object object : args) {
+            Time newTime;
+            if (object != null)  {
+                newTime = ValueUtil.timeOf(object);
+                if (newTime != null && (finalTime == null || newTime.getTimestamp().compareTo(finalTime.getTimestamp()) > 0)) {
+                    finalTime = newTime;
+                }
+            }
+        }
+        
+        return finalTime;
+    }
 
     /**
      * Extracts the time information if present.

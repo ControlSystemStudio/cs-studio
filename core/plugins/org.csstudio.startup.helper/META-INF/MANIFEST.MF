@@ -1,9 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: CSS-NSLS-II Startuphelper
+Bundle-Name: CS-Studio Startuphelper
 Bundle-SymbolicName: org.csstudio.startup.helper
 Bundle-Version: 3.1.0.qualifier
-Bundle-Activator: org.csstudio.startuphelper.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.workspace
