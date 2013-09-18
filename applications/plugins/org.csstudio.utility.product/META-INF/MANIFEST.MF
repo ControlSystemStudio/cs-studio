@@ -18,6 +18,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.security;bundle-version="1.0.0",
  org.csstudio.startup.helper;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.utility.product
 Import-Package: org.junit;version="4.8.2"
