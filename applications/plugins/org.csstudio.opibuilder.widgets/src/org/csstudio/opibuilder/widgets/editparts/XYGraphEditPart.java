@@ -656,7 +656,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 		CircularBufferDataProvider dataProvider = (CircularBufferDataProvider)traceList.get(i).getDataProvider();
 		double[] YBuffer = new double[dataProvider.getSize()];
 		for (int j = 0; j < dataProvider.getSize(); j++) {
-			YBuffer[j] = dataProvider.getSample(j).getXValue();
+			YBuffer[j] = dataProvider.getSample(j).getYValue();
 		}
 		return YBuffer;
 	}
