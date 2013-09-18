@@ -168,8 +168,10 @@ public class SearchView extends ViewPart
         pattern.setToolTipText(Messages.SearchPatternTT);
         pattern.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         pattern.setEnabled(false);
-		pattern.addListener(SWT.DefaultSelection, new Listener() {
-			public void handleEvent(Event e) {
+		pattern.addListener(SWT.DefaultSelection, new Listener()
+		{
+			@Override
+            public void handleEvent(Event e) {
 				searchForChannels();
 			}
 		});
