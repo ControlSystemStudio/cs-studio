@@ -25,8 +25,14 @@ org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.rdb
 org.csstudio.archive.vtype
 org.csstudio.autocomplete
+org.csstudio.autocomplete.channelfinder
 org.csstudio.autocomplete.logbook
+org.csstudio.autocomplete.pvmanager.formula
+org.csstudio.autocomplete.pvmanager.loc
+org.csstudio.autocomplete.pvmanager.sim
+org.csstudio.autocomplete.pvmanager.sys
 org.csstudio.autocomplete.ui
+org.csstudio.autocomplete.ui.rcp
 org.csstudio.channel.intro
 org.csstudio.channel.opiwidgets
 org.csstudio.channel.views
@@ -55,7 +61,6 @@ org.csstudio.logging
 org.csstudio.logging.ui
 org.csstudio.nsls2.product
 org.csstudio.nsls2.startup.intro
-org.csstudio.nsls2.startuphelper
 org.csstudio.openfile
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
@@ -84,6 +89,7 @@ org.csstudio.service.math
 org.csstudio.simplepv
 org.csstudio.simplepv.pvmanager
 org.csstudio.startup
+org.csstudio.startup.helper
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.widgets.rcp
@@ -109,6 +115,8 @@ org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
 org.csstudio.utility.olog
 org.csstudio.utility.olog.ui
+org.csstudio.utility.product
+org.csstudio.utility.product.default
 org.csstudio.utility.pv
 org.csstudio.utility.pv.epics
 org.csstudio.utility.pv.simu

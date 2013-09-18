@@ -25,36 +25,31 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
 			.addFormulaFunction(new ArrayOfNumberFormulaFunction())
 			.addFormulaFunction(new ArrayOfStringFormulaFunction())
 			.addFormulaFunction(new RescaleArrayFormulaFunction())
+			.addFormulaFunction(new SubArrayFormulaFunction())
+			.addFormulaFunction(new ElementAtArrayFormulaFunction())
 			.addFormulaFunction(
-				new TwoArgArrayFormulaFunction("+",
-					"Add Two Arrays", "arg1", "arg2") {
+				new TwoArgArrayFormulaFunction("+", "Add Two Arrays", "arg1", "arg2") {
 
 				    @Override
-				    ListNumber calculate(ListNumber arg1,
-					    ListNumber arg2) {
+				    ListNumber calculate(ListNumber arg1, ListNumber arg2) {
 					return ListMath.sum(arg1, arg2);
 				    }
 				})
 			.addFormulaFunction(
-				new TwoArgArrayFormulaFunction("-",
-					"Subtract Two Arrays", "arg1", "arg2") {
+				new TwoArgArrayFormulaFunction("-", "Subtract Two Arrays", "arg1", "arg2") {
 
 				    @Override
-				    ListNumber calculate(ListNumber arg1,
-					    ListNumber arg2) {
-				return ListMath.subtract(arg1, arg2);
+				    ListNumber calculate(ListNumber arg1, ListNumber arg2) {
+					return ListMath.subtract(arg1, arg2);
 				    }
 				})
 			.addFormulaFunction(
-				new TwoArgArrayNumberFormulaFunction("*",
-					"Multiply an array with a number",
+				new TwoArgArrayNumberFormulaFunction("*", "Multiply an array with a number",
 					"arg1", "arg2") {
 
 				    @Override
-				    ListNumber calculate(ListNumber arg1,
-					    Number arg2) {
-					return ListMath.rescale(arg1,
-						arg2.doubleValue(), 0.0);
+				    ListNumber calculate(ListNumber arg1, Number arg2) {
+					return ListMath.rescale(arg1, arg2.doubleValue(), 0.0);
 				    }
 				})
 			.addFormulaFunction(
@@ -63,10 +58,8 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
 					"arg1", "arg2") {
 
 				    @Override
-				    ListNumber calculate(ListNumber arg1,
-					    Number arg2) {
-					return ListMath.rescale(arg1,
-						(1 / arg2.doubleValue()), 0.0);
+				    ListNumber calculate(ListNumber arg1, Number arg2) {
+					return ListMath.rescale(arg1, (1 / arg2.doubleValue()), 0.0);
 				    }
 				}));
     }

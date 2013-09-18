@@ -70,7 +70,7 @@
      -->
    <extension point="org.csstudio.startup.module">
       <startupParameters class="org.csstudio.utility.product.StartupParameters"/>
-      <workspace class="org.csstudio.iter.startuphelper.WorkspacePrompt"/>
+      <workspace class="org.csstudio.utility.product.WorkspacePrompt"/>
       <workbench class="org.csstudio.utility.product.Workbench"/>
       <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
    </extension>
@@ -203,6 +203,11 @@
     	<activityPatternBinding
     		activityId="org.csstudio.iter.css.product.disablextensions"
     		pattern="org.csstudio.ui.menu.app/org.eclipse.ui.views.showView"
+    	/>
+    	<!-- Hide JDT coming with Jython -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern="org.eclipse.jdt.*"
     	/>
     	
     </extension>

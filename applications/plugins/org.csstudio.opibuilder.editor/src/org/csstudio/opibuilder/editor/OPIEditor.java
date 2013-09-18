@@ -67,6 +67,7 @@ import org.csstudio.opibuilder.palette.WidgetCreationFactory;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunner;
+import org.csstudio.opibuilder.runmode.PatchedConnectionLayerClippingStrategy;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
@@ -77,6 +78,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.MarginBorder;
@@ -265,13 +267,21 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 				return super.getAdapter(key);
 			}
 		};
+		
+		// set clipping strategy for connection layer of connection can be hide
+		// when its source or target is not showing.
+		ConnectionLayer connectionLayer = (ConnectionLayer) root
+				.getLayer(LayerConstants.CONNECTION_LAYER);
+		connectionLayer.setClippingStrategy(new PatchedConnectionLayerClippingStrategy(
+				connectionLayer));
+
 		viewer.setRootEditPart(root);
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer).setParent(getCommonKeyHandler()));
 		ContextMenuProvider cmProvider =
 			new OPIEditorContextMenuProvider(viewer, getActionRegistry());
 		viewer.setContextMenu(cmProvider);
 		getSite().registerContextMenu(cmProvider, viewer);
-
+		
 		// Grid Action
 		IAction action = new ToggleGridAction(getGraphicalViewer()){
 			@Override

@@ -1,14 +1,17 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
+ * Copyright (c) 2010-2013 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.autocomplete.ui;
 
 import java.util.List;
 
+import org.csstudio.autocomplete.ui.content.ContentProposalAdapter;
+import org.csstudio.autocomplete.ui.content.IContentProposalListener2;
+import org.csstudio.autocomplete.ui.history.AutoCompleteHistory;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -23,14 +26,11 @@ public class AutoCompleteTextCellEditor extends TextCellEditor {
 	public AutoCompleteTextCellEditor(Composite parent, String type) {
 		super(parent);
 
-		AutoCompleteProposalProvider provider = new AutoCompleteProposalProvider(
-				type);
+		AutoCompleteProposalProvider provider = new AutoCompleteProposalProvider(type);
 		contentProposalAdapter = new ContentProposalAdapter(text,
 				new TextContentAdapter(), provider,
 				AutoCompleteWidget.getActivationKeystroke(),
 				AutoCompleteWidget.getAutoactivationChars());
-		contentProposalAdapter
-				.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
 		enableContentProposal(provider,
 				AutoCompleteWidget.getActivationKeystroke(),
 				AutoCompleteWidget.getAutoactivationChars());
@@ -94,8 +94,16 @@ public class AutoCompleteTextCellEditor extends TextCellEditor {
 		// activation of the completion proposal popup. See also bug 58777.
 		return false;
 	}
-	
+
 	public AutoCompleteHistory getHistory() {
 		return contentProposalAdapter.getHistory();
+	}
+
+	@Override
+	protected void fireApplyEditorValue() {
+		if (getValue() != null) {
+			getHistory().addEntry(getValue().toString());
+		}
+		super.fireApplyEditorValue();
 	}
 }

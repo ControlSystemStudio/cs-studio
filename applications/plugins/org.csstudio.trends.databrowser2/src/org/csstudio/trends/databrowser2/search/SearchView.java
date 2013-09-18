@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveReader;
-import org.csstudio.autocomplete.ui.AutoCompleteHelper;
+import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.trends.databrowser2.Messages;
@@ -191,7 +191,7 @@ public class SearchView extends ViewPart
         search.setToolTipText(Messages.SearchTT);
         search.setLayoutData(new GridData());
         search.setEnabled(false);
-		AutoCompleteHelper.handleSelectEvent(search, acw);
+		AutoCompleteUIHelper.handleSelectEvent(search, acw);
 
         // ( ) Add  (*) Replace   [ ] Reg.Exp.
         final Button result_append = new Button(parent, SWT.RADIO);

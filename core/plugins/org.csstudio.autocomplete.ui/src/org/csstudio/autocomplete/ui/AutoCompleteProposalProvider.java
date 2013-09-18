@@ -12,9 +12,18 @@ import java.util.List;
 
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.AutoCompleteService;
+import org.csstudio.autocomplete.AutoCompleteType;
 import org.csstudio.autocomplete.IAutoCompleteResultListener;
-import org.csstudio.autocomplete.Proposal;
+import org.csstudio.autocomplete.proposals.Proposal;
+import org.csstudio.autocomplete.ui.content.ContentProposalList;
+import org.csstudio.autocomplete.ui.content.IContentProposalSearchHandler;
 
+/**
+ * Implements {@link IAutoCompleteProposalProvider} and manages the
+ * {@link ContentProposalList} with results from {@link AutoCompleteService}.
+ * 
+ * @author Fred Arnaud (Sopra Group) - ITER
+ */
 public class AutoCompleteProposalProvider implements
 		IAutoCompleteProposalProvider {
 
@@ -27,6 +36,10 @@ public class AutoCompleteProposalProvider implements
 		this.currentList = new ContentProposalList();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void getProposals(final String contents,
 			final IContentProposalSearchHandler handler) {
 		currentId = System.currentTimeMillis();
@@ -35,8 +48,8 @@ public class AutoCompleteProposalProvider implements
 			currentList.setOriginalValue(contents);
 		}
 		AutoCompleteService cns = AutoCompleteService.getInstance();
-		int expected = cns.get(currentId, type, contents,
-				new IAutoCompleteResultListener() {
+		int expected = cns.get(currentId, AutoCompleteType.valueOf(type),
+				contents, new IAutoCompleteResultListener() {
 
 					@Override
 					public void handleResult(Long uniqueId, Integer index,
@@ -62,11 +75,13 @@ public class AutoCompleteProposalProvider implements
 
 							ContentProposalList cpl = null;
 							synchronized (currentList) {
-								currentList.addProposals(result.getProvider(), contentProposalsArray, result.getCount(), index);
+								if (result.getProvider() != null)
+									currentList.addProposals(result.getProvider(), contentProposalsArray, result.getCount(), index);
 								currentList.addTopProposals(topContentProposals);
 								cpl = currentList.clone();
 							}
 							handler.handleResult(cpl);
+							handler.handleTooltips(result.getTooltips());
 							// System.out.println("PROCESSED: " + uniqueId + ", " + index);
 						}
 					}
@@ -74,16 +89,26 @@ public class AutoCompleteProposalProvider implements
 		currentList.setExpected(expected);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean hasProviders() {
 		return AutoCompleteService.getInstance().hasProviders(type);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void cancel() {
 		AutoCompleteService.getInstance().cancel(type);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getType() {
 		return type;
 	}

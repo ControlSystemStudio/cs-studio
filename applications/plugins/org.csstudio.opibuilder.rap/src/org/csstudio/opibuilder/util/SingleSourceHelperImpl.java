@@ -137,7 +137,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 			IPath opiPath = null;
 			if(runnerInput == null){				
 				String s = RWT.getRequest().getServletPath();
-				if(s.equals(WebOPIConstants.MOBILE_S_SERVELET_NAME)) //$NON-NLS-1$
+				if(s.contains(WebOPIConstants.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
 					opiPath = PreferencesHelper.getMobileStartupOPI();
 				else
 					opiPath = PreferencesHelper.getStartupOPI();

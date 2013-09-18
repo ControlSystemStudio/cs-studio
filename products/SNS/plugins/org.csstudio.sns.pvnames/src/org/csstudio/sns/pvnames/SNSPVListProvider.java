@@ -16,6 +16,9 @@ import java.util.logging.Logger;
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
+import org.csstudio.autocomplete.parser.ContentType;
+import org.csstudio.autocomplete.proposals.Proposal;
 import org.csstudio.platform.utility.rdb.RDBCache;
 
 /** PV Name lookup for SNS 'signal' database
@@ -35,12 +38,27 @@ public class SNSPVListProvider implements IAutoCompleteProvider
     private synchronized void setCurrentStatement(final PreparedStatement statement)
     {
         current_statement = statement;
-    }
+	}
 
-    /** {@inheritDoc} */
-    @Override
-	public AutoCompleteResult listResult(final String type, final String name, final int limit)
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(ContentType type) {
+		if (type == ContentType.PVName)
+			return true;
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public AutoCompleteResult listResult(final ContentDescriptor desc, final int limit)
     {
+		String name = desc.getValue().trim();
+		String type = desc.getAutoCompleteType().value();
+
+        final Logger logger = Logger.getLogger(getClass().getName());
+        logger.log(Level.FINE, "Lookup type {0}, pattern {1}, limit {2}",
+                new Object[] { type, name, limit });
+        
         // Create RDB pattern from *, ? wildcards
     	final String like = AutoCompleteHelper.convertToSQL(name);
     
@@ -57,9 +75,14 @@ public class SNSPVListProvider implements IAutoCompleteProvider
         catch (Throwable ex)
         {
             // Suppress error resulting from call to cancel()
-            if (! ex.getMessage().startsWith("ORA-01013"))
-                Logger.getLogger(getClass().getName()).log(Level.WARNING, "PV Name lookup failed", ex);
+            if (ex.getMessage().startsWith("ORA-01013"))
+                logger.log(Level.WARNING, "Lookup for {0} cancelled", name);
+            else
+                logger.log(Level.WARNING, "Lookup for " + name + " failed", ex);
+            return pvs;
         }
+        if (logger.isLoggable(Level.FINER))
+            logger.log(Level.FINER, "PVs for {0}: {1}", new Object[] { name, pvs.getProposalsAsString() });
         return pvs;
     }
 
@@ -70,27 +93,13 @@ public class SNSPVListProvider implements IAutoCompleteProvider
      *  @param limit Maximum number of PVs to return
      *  @throws Exception on error
      */
-    private void lookup(final AutoCompleteResult pvs, final String like, int limit) throws Exception
+    private void lookup(final AutoCompleteResult pvs, final String like, final int limit) throws Exception
     {
-        // Count PVs
-        try
-        (
-            final PreparedStatement statement =
-                cache.getConnection().prepareStatement(
-                    "SELECT COUNT(*) FROM EPICS.SGNL_REC WHERE SGNL_ID LIKE ?");
-        )
-        {
-            statement.setString(1, like);
-            setCurrentStatement(statement);
-            final ResultSet result = statement.executeQuery();
-            if (! result.next())
-                throw new Exception("Cannot determine channel count");
-            pvs.setCount(result.getInt(1));
-            result.close();
-            setCurrentStatement(null);
-        }
-        
-        // List channels
+        // Initially, "SELECT COUNT(*) .." obtained count, then fetched actual names in second query.
+        // jProfiler showed that the count took longer (3x !!) than fetching the names.
+        // Even considering that a second query for similar information is likely faster because of caching,
+        // having only one query, counting all but only keeping names up to 'limit', is overall faster.
+        int count = 0;
         try
         (
             final PreparedStatement statement =
@@ -103,13 +112,15 @@ public class SNSPVListProvider implements IAutoCompleteProvider
             final ResultSet result = statement.executeQuery();
             while (result.next())
             {
-                pvs.add(result.getString(1));
-                -- limit;
-                if (limit <= 0)
-                    break;
+                if (++count <= limit)
+                    pvs.addProposal(new Proposal(result.getString(1), false));
             }
             result.close();
-            setCurrentStatement(statement);
+        }
+        finally
+        {
+            setCurrentStatement(null);
+            pvs.setCount(count);
         }
     }
 
@@ -118,9 +129,13 @@ public class SNSPVListProvider implements IAutoCompleteProvider
     public synchronized void cancel()
     {
         if (current_statement == null)
+        {
+            Logger.getLogger(getClass().getName()).fine("Cancelled while idle");
             return;
+        }
         try
         {
+            Logger.getLogger(getClass().getName()).fine("Cancelling ongoing lookup");
             current_statement.cancel();
         }
         catch (Throwable ex)
@@ -128,4 +143,5 @@ public class SNSPVListProvider implements IAutoCompleteProvider
             // Ignore
         }
     }
+
 }

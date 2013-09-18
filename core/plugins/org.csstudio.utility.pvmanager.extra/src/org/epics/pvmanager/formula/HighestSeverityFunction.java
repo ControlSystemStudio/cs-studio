@@ -59,34 +59,13 @@ class HighestSeverityFunction implements FormulaFunction {
 
     @Override
     public Object calculate(final List<Object> args) {
-        Alarm finalAlarm = ValueFactory.alarmNone();
-        Time time = null;
-        for (Object object : args) {
-            Alarm newAlarm;
-            if (object == null) {
-                newAlarm = ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No Value");
-            } else {
-                newAlarm = ValueUtil.alarmOf(object);
-                if (newAlarm == null) {
-                    newAlarm = ValueFactory.alarmNone();
-                }
-            }
-            if (newAlarm.getAlarmSeverity().compareTo(finalAlarm.getAlarmSeverity()) > 0) {
-                finalAlarm = newAlarm;
-                time = ValueUtil.timeOf(object);
-                if (time == null) {
-                    time = ValueFactory.timeNow();
-                }
-            }
-            if (time == null) {
-                time = ValueUtil.timeOf(object);
-            }
-        }
+        Alarm alarm = ValueUtil.highestSeverityOf(args, true);
+        Time time = ValueUtil.timeOf(alarm);
         if (time == null) {
             time = ValueFactory.timeNow();
         }
         
-        return ValueFactory.newVEnum(finalAlarm.getAlarmSeverity().ordinal(), AlarmSeverity.labels(), finalAlarm, time);
+        return ValueFactory.newVEnum(alarm.getAlarmSeverity().ordinal(), AlarmSeverity.labels(), alarm, time);
     }
     
 }

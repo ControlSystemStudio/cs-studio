@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.csstudio.autocomplete.ui.AutoCompleteHelper;
+import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
@@ -149,7 +149,7 @@ public class PVTable implements PVTableModelListener
             @Override
 			protected CellEditor getCellEditor(final Object element) 
             {
-				return AutoCompleteHelper
+				return AutoCompleteUIHelper
 						.createAutoCompleteTextCellEditor(table, AutoCompleteTypes.PV);
 			}
 

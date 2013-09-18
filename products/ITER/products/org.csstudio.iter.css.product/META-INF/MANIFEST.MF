@@ -20,7 +20,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.product,
  org.csstudio.apputil.ui,
  org.csstudio.ui.menu.app,
- org.csstudio.iter.startuphelper,
  org.csstudio.security;bundle-version="1.0.0",
  org.csstudio.security.ui;bundle-version="1.0.0"
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
