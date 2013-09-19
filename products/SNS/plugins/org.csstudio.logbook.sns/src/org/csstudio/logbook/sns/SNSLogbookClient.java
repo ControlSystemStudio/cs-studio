@@ -191,7 +191,7 @@ public class SNSLogbookClient implements LogbookClient
             final ELog elog = new ELog(url, user, password);
         )
         {
-            id = elog.createEntry(logbook, title, text);
+            id = elog.createEntry(logbook, title, text, ELogPriority.forName(entry.getLevel()));
         
             // Attach to multiple logbooks?
             while (logbooks.hasNext())

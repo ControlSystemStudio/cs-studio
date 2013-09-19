@@ -20,6 +20,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import oracle.jdbc.OracleTypes;
 
@@ -329,7 +331,7 @@ public class ELog implements Closeable
 	 *  @throws Exception
      *  @return Entry ID
 	 */
-	public long createEntry(final String logbook, final String title, final String text) throws Exception
+	public long createEntry(final String logbook, final String title, final String text, final ELogPriority priority) throws Exception
     {
 		final long entry_id; // Entry ID from RDB
 
@@ -352,6 +354,23 @@ public class ELog implements Closeable
 			addAttachment(entry_id, "FullEntry.txt", "Full Text", stream);
 			stream.close();
 		}
+
+		try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(
+                "UPDATE LOGBOOK.log_entry SET prior_id=? WHERE log_entry_id=?");
+        )
+        {
+            statement.setInt(1, priority.getID());
+            statement.setLong(2, entry_id);
+            statement.executeQuery();
+        }
+		catch (Exception ex)
+		{
+		    Logger.getLogger(getClass().getName()).log(Level.WARNING,
+	            "Cannot set prority of log entry " + entry_id + " to " + priority, ex);
+		}
+		
 		return entry_id;
 	}
 

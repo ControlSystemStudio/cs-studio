@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.logbook.sns.elog;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,21 +30,21 @@ public enum ELogPriority
     // from RDB, but this is unlikely to change.
     // If new priorities are ever added,
     // then this needs to be re-implemented.
-    None,
+    __NotUsed__,
     Urgent,
     High,
     Normal;
     
     public static List<String> getNames()
     {
-        final List<String> names = new ArrayList<>();
-        for (ELogPriority p : ELogPriority.values())
-            names.add(p.getName());
-        return names;
+        // Return order that differs from numeric IDs, and skip __NotUsed__
+        return Arrays.asList(Normal.getName(), High.getName(), Urgent.getName());
     }
     
     public static ELogPriority forName(final String name)
     {
+        if (name == null)
+            return Normal;
         try
         {
             return valueOf(name);
@@ -52,17 +52,26 @@ public enum ELogPriority
         catch (Throwable ex)
         {
             Logger.getLogger(ELogPriority.class.getName()).log(Level.WARNING, "Unknown SNS ELog priority {0}", name);
-            return None;
+            return Normal;
         }
     }
     
+    /** @return Name of the priority, for GUI */
     public String getName()
     {
         return name();
     }
     
+    /** @return Priority ID as used within ELog RDB */
     public int getID()
     {
         return ordinal();
+    }
+    
+    /** @return String representation for debugging */
+    @Override
+    public String toString()
+    {
+        return name() + " (" + ordinal() + ")";
     }
 }
