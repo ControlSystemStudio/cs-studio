@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.properties.StringTableProperty.TitlesProvider;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor.CellEditorType;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -24,17 +25,25 @@ public class StringTableCellEditor extends AbstractDialogCellEditor {
 	private String[][] data;
 
 	private TitlesProvider columnTitles;
+
+	private CellEditorType[] cellEditorTypes;
+
+	private Object[] cellEditorDatas;
 	
-	public StringTableCellEditor(Composite parent, String title, TitlesProvider columnTitles) {
+	public StringTableCellEditor(Composite parent, String title, TitlesProvider columnTitles,
+			CellEditorType[] cellEditorTypes, Object[] cellEditorDatas) {
 		super(parent, title);
 		this.columnTitles = columnTitles;
+		this.cellEditorTypes = cellEditorTypes;
+		this.cellEditorDatas = cellEditorDatas;
 	}
 
 	@Override
 	protected void openDialog(Shell parentShell, String dialogTitle) {
 			
 		StringTableEditDialog dialog = 
-			new StringTableEditDialog(parentShell, arrayToList(data), dialogTitle, columnTitles.getTitles());
+			new StringTableEditDialog(parentShell, arrayToList(data), dialogTitle,
+					columnTitles.getTitles(), cellEditorTypes, cellEditorDatas);
 		if(dialog.open() == Window.OK){
 			data = listToArray(dialog.getResult());			
 		}

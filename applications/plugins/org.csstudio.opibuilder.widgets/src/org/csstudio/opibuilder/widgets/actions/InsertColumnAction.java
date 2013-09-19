@@ -20,6 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -83,15 +84,25 @@ public class InsertColumnAction implements IObjectActionDelegate {
 			
 			Label title = new Label(grpPosition, SWT.None);
 			title.setText("Header");
-			
-			final Text text = new Text(grpPosition, SWT.SINGLE|SWT.BORDER);
-			text.addModifyListener(new ModifyListener() {
-				
-				@Override
-				public void modifyText(ModifyEvent e) {
-					columnTitle = text.getText();
-				}
-			});
+			if (allowedHeaders == null) {
+				final Text text = new Text(grpPosition, SWT.SINGLE | SWT.BORDER);
+				text.addModifyListener(new ModifyListener() {
+
+					@Override
+					public void modifyText(ModifyEvent e) {
+						columnTitle = text.getText();
+					}
+				});
+			} else {
+				final Combo combo = new Combo(grpPosition, SWT.READ_ONLY);
+				combo.setItems(allowedHeaders);
+				combo.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						columnTitle = combo.getText();
+					}
+				});
+			}
 			
 			return container;
 		}
@@ -107,6 +118,7 @@ public class InsertColumnAction implements IObjectActionDelegate {
 
 	private IStructuredSelection selection;
 	private IWorkbenchPart targetPart;
+	private String[] allowedHeaders;
 	
 	public InsertColumnAction() {
 	}
@@ -117,14 +129,13 @@ public class InsertColumnAction implements IObjectActionDelegate {
 
 	public void run(IAction action) {
 		TableEditPart tableEditPart = getSelectedWidget();
-		if(tableEditPart.getTable().isEmpty()){
-			tableEditPart.getTable().insertColumn(0);
-			return;
-		}
+		allowedHeaders = tableEditPart.getAllowedHeaders();
 		InsertColumnDialog dialog = new InsertColumnDialog(targetPart.getSite().getShell());
 		if (dialog.open() == Dialog.OK){
 			boolean before = dialog.isBefore();
-			int index =tableEditPart.getMenuTriggeredCell().y + (before? 0:1);
+			int index =0;
+			if(!tableEditPart.getTable().isEmpty())	
+				index = tableEditPart.getMenuTriggeredCell().y + (before? 0:1);
 			tableEditPart.getTable().insertColumn(index);
 			if(dialog.getColumnTitle() != null && !dialog.getColumnTitle().isEmpty()){
 				tableEditPart.getTable().setColumnHeader(index, dialog.getColumnTitle());
