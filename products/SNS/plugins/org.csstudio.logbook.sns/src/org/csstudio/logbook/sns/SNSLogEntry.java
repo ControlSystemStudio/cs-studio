@@ -38,6 +38,13 @@ public class SNSLogEntry implements LogEntry
     }
 
     @Override
+    public String getLevel()
+    {
+        // TODO Return priority
+        return "Normal";
+    }
+    
+    @Override
     public Collection<Logbook> getLogbooks()
     {
         return Converter.convertLogbooks(entry.getLogbooks());

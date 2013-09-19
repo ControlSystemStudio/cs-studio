@@ -9,6 +9,7 @@ package org.csstudio.logbook.sns;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -68,6 +69,14 @@ public class SNSLogbookClient implements LogbookClient
         {
             return Converter.convertLogbooks(elog.getLogbooks());
         }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public List<String> listLevels() throws Exception
+    {
+        // TODO Lookup priorities
+        return Arrays.asList("Normal", "High", "Urgent");
     }
 
     /** {@inheritDoc} */
