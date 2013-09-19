@@ -62,6 +62,26 @@
          id="org.csstudio.pvmanager.exec.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.pvmanager.ca.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.pvmanager.exec.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.pvmanager.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.pvmanager.jdbc.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.pvmanager.pva.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.csstudio.simplepv"
          download-size="0"
