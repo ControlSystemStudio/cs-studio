@@ -40,8 +40,7 @@ public class SNSLogEntry implements LogEntry
     @Override
     public String getLevel()
     {
-        // TODO Return priority
-        return "Normal";
+        return entry.getPriority().getName();
     }
     
     @Override

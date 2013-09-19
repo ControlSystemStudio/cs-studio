@@ -188,7 +188,7 @@ public class ELog implements Closeable
      */
     public ELogEntry getEntry(final long entry_id) throws Exception
     {
-        // Get user, title, text
+        final ELogPriority prio;
         final String user;
         final Date date;
         final String title;
@@ -196,10 +196,11 @@ public class ELog implements Closeable
         try
         (
             final PreparedStatement statement = rdb.getConnection().prepareStatement(
-                "SELECT e.log_entry_id, d.pref_first_nm, d.pref_last_nm," +
+                "SELECT e.log_entry_id, p.prior_nm, d.pref_first_nm, d.pref_last_nm," +
                 "  e.orig_post, e.title, e.content " +
                 " FROM LOGBOOK.log_entry e" +
                 " LEFT JOIN oper.employee_v d ON d.bn = e.bn" +
+                " JOIN LOGBOOK.log_entry_prior p ON p.prior_id = e.prior_id" +
                 " WHERE (e.pub_stat_id = 'P' OR e.pub_stat_id IS NULL)" +
                 " AND e.log_entry_id = ?");
         )
@@ -208,10 +209,11 @@ public class ELog implements Closeable
             final ResultSet result = statement.executeQuery();
             if (! result.next())
                 return null;
-            user = result.getString(2) + " " + result.getString(3);
-            date = new Date(result.getTimestamp(4).getTime());
-            title = result.getString(5);
-            text = result.getString(6);
+            prio = ELogPriority.forName(result.getString(2));
+            user = result.getString(3) + " " + result.getString(4);
+            date = new Date(result.getTimestamp(5).getTime());
+            title = result.getString(6);
+            text = result.getString(7);
         }
 
         final List<String> logbooks = getLogbooks(entry_id);
@@ -222,7 +224,7 @@ public class ELog implements Closeable
         final List<ELogAttachment> attachments = getOtherAttachments(entry_id);
         
         // Return entry        
-        return new ELogEntry(entry_id, user, date, title, text, logbooks, categories, images, attachments);
+        return new ELogEntry(entry_id, prio, user, date, title, text, logbooks, categories, images, attachments);
     }
     
     /** Read logbook entries
@@ -237,10 +239,11 @@ public class ELog implements Closeable
         try
         (
             final PreparedStatement statement = rdb.getConnection().prepareStatement(
-                "SELECT e.log_entry_id, d.pref_first_nm, d.pref_last_nm," +
+                "SELECT e.log_entry_id, p.prior_nm, d.pref_first_nm, d.pref_last_nm," +
                 "  e.orig_post, e.title, e.content " +
                 " FROM LOGBOOK.log_entry e" +
                 " LEFT JOIN oper.employee_v d ON d.bn = e.bn" +
+                " JOIN LOGBOOK.log_entry_prior p ON p.prior_id = e.prior_id" +
                 " WHERE (e.pub_stat_id = 'P' OR e.pub_stat_id IS NULL)" +
                 " AND e.orig_post BETWEEN ? AND ?" +
                 " ORDER BY e.orig_post DESC");
@@ -252,15 +255,16 @@ public class ELog implements Closeable
             while (result.next())
             {
                 final long entry_id = result.getLong(1);
-                final String user = result.getString(2) + " " + result.getString(3);
-                final Date date = new Date(result.getTimestamp(4).getTime());
-                final String title = result.getString(5);
-                final String text = result.getString(6);
+                final ELogPriority prio = ELogPriority.forName(result.getString(2));
+                final String user = result.getString(3) + " " + result.getString(4);
+                final Date date = new Date(result.getTimestamp(5).getTime());
+                final String title = result.getString(6);
+                final String text = result.getString(7);
                 final List<String> logbooks = getLogbooks(entry_id);
                 final List<ELogCategory> categories = getCategories(entry_id);
                 final List<ELogAttachment> images = getImageAttachments(entry_id);
                 final List<ELogAttachment> attachments = getOtherAttachments(entry_id);
-                entries.add(new ELogEntry(entry_id, user, date, title, text, logbooks, categories, images, attachments));
+                entries.add(new ELogEntry(entry_id, prio, user, date, title, text, logbooks, categories, images, attachments));
             }
         }
         return entries;

@@ -9,7 +9,6 @@ package org.csstudio.logbook.sns;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -24,6 +23,7 @@ import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.sns.elog.ELog;
 import org.csstudio.logbook.sns.elog.ELogEntry;
+import org.csstudio.logbook.sns.elog.ELogPriority;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.epics.util.time.TimeInterval;
 import org.epics.util.time.TimeParser;
@@ -75,8 +75,7 @@ public class SNSLogbookClient implements LogbookClient
     @Override
     public List<String> listLevels() throws Exception
     {
-        // TODO Lookup priorities
-        return Arrays.asList("Normal", "High", "Urgent");
+        return ELogPriority.getNames();
     }
 
     /** {@inheritDoc} */
