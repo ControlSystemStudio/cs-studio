@@ -65,9 +65,7 @@ public class SNSPVListProvider implements IAutoCompleteProvider
 	@Override
 	public AutoCompleteResult listResult(final ContentDescriptor desc, final int limit)
     {
-	    // desc.getValue() is the whole user-entered string
-	    // desc.getOriginalContent() ends at the cursor position
-		final String content = desc.getOriginalContent().trim();
+		final String content = desc.getValue();
 		final String type = desc.getAutoCompleteType().value();
 		final Logger logger = Logger.getLogger(getClass().getName());
 		logger.log(Level.FINE, "Lookup type {0}, pattern {1}, limit {2}",
