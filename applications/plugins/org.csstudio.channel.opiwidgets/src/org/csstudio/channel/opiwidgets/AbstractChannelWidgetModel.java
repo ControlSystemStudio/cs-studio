@@ -8,6 +8,7 @@ import java.util.List;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
 
 /**
  * Abstract class for channel based widgets. Here we put the functionality that is common to
@@ -19,8 +20,8 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
  */
 public abstract class AbstractChannelWidgetModel extends AbstractSelectionWidgetModel {
 	
-	public AbstractChannelWidgetModel(boolean enableConfigurableProperty) {
-		super(enableConfigurableProperty);
+	public AbstractChannelWidgetModel(AbstractSelectionWidgetModelDescription model) {
+		super(model);
 	}
 	
 	public static final String CHANNEL_QUERY = "channel_query"; //$NON-NLS-1$	
