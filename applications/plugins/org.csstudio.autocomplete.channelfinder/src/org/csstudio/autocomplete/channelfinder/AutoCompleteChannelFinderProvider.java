@@ -3,10 +3,14 @@
  */
 package org.csstudio.autocomplete.channelfinder;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
 
+import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
 import org.csstudio.autocomplete.parser.ContentDescriptor;
@@ -22,35 +26,45 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
  */
 public class AutoCompleteChannelFinderProvider implements IAutoCompleteProvider {
 
-	private ChannelFinderClient client;
+    private ChannelFinderClient client;
 
-	@Override
-	public boolean accept(ContentType type) {
-		if (type == ContentType.PVName)
-			return true;
-		return false;
+    @Override
+    public boolean accept(ContentType type) {
+	if (type.value().startsWith(ContentType.PV.value()))
+	    return true;
+	return false;
+    }
+
+    @Override
+    public AutoCompleteResult listResult(ContentDescriptor desc, int limit) {
+	AutoCompleteResult result = new AutoCompleteResult();
+	if (client == null) {
+	    client = ChannelFinder.getClient();
 	}
-
-	@Override
-	public AutoCompleteResult listResult(ContentDescriptor desc, int limit) {
-		AutoCompleteResult result = new AutoCompleteResult();
-		if (client == null) {
-			client = ChannelFinder.getClient();
+	String trimmedName = AutoCompleteHelper.trimWildcards(desc.getValue().trim());
+	Pattern namePattern = AutoCompleteHelper.convertToPattern(trimmedName);
+	int count = 0;
+	for (Channel channel : client.findByName("*" + trimmedName + "*")) {
+	    Proposal proposal = new Proposal(channel.getName(), false);
+	    Matcher m = namePattern.matcher(channel.getName());
+	    if (m.find()) {
+		if (count < limit) {
+		    proposal.addStyle(ProposalStyle.getDefault(m.start(), m.end() - 1));
+		    result.addProposal(proposal);
+		} else {
+		    result.setCount(count);
+		    return result;
 		}
-		String trimmedName = desc.getValue().trim();
-		for (Channel channel : client.findByName("*" + trimmedName + "*")) {
-			Proposal proposal = new Proposal(channel.getName(), false);
-			int from = channel.getName().indexOf(trimmedName);
-			int to = from + trimmedName.length() - 1;
-			proposal.addStyle(ProposalStyle.getDefault(from, to));
-			result.addProposal(proposal);
-		}
-		return result;
+		count++;
+	    }
 	}
+	result.setCount(count);
+	return result;
+    }
 
-	@Override
-	public void cancel() {
+    @Override
+    public void cancel() {
 
-	}
+    }
 
 }

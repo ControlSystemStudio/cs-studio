@@ -20,6 +20,7 @@ import java.util.Map;
 public class LogEntryBuilder {
 
     private Object id;
+    private String level;
     private String text;
     private String owner;
     private Date createdDate;
@@ -37,8 +38,7 @@ public class LogEntryBuilder {
     /**
      * Create a constructor with the text _text_
      * 
-     * @param text
-     *            - the initial text to create the builder with.
+     * @param text - the initial text to create the builder with.
      * @return LogEntryBuilder
      */
     public static LogEntryBuilder withText(String text) {
@@ -46,10 +46,20 @@ public class LogEntryBuilder {
     }
 
     /**
+     * Set the level of the log entry
+     * 
+     * @param Level
+     * @return LogEntryBuilder
+     */
+    public LogEntryBuilder setLevel(String level){
+	this.level = level;
+	return this;	
+    }
+    
+    /**
      * Append the _text_ to the existing text in the builder
      * 
-     * @param text
-     *            - the text to the appended
+     * @param text - the text to the appended
      * @return LogEntryBuilder
      */
     public LogEntryBuilder addText(String text) {
@@ -220,6 +230,7 @@ public class LogEntryBuilder {
 	if (logEntry.getId() != null) {
 	    logEntryBuilder.id = logEntry.getId();
 	}
+	logEntryBuilder.level = logEntry.getLevel();
 	logEntryBuilder.owner = logEntry.getOwner();
 	logEntryBuilder.createdDate = logEntry.getCreateDate();
 	if (logEntry.getModifiedDate() == null) {
@@ -251,7 +262,7 @@ public class LogEntryBuilder {
      * @throws IOException
      */
     public LogEntry build() throws IOException {
-	return new LogEntryImpl(id, text, owner, createdDate, modifiedDate,
+	return new LogEntryImpl(id, level, text, owner, createdDate, modifiedDate,
 		tags.values(), logbooks.values(), properties.values(),
 		attachments.values());
     }
@@ -265,6 +276,7 @@ public class LogEntryBuilder {
     private class LogEntryImpl implements LogEntry {
 
 	private final Object id;
+	private final String level;
 	private final String text;
 	private final String owner;
 	private final Date createdDate;
@@ -286,7 +298,7 @@ public class LogEntryBuilder {
 	 * @param properties
 	 * @throws IOException
 	 */
-	public LogEntryImpl(Object id, String text, String owner,
+	public LogEntryImpl(Object id, String level, String text, String owner,
 		Date createdDate, Date modifiedDate,
 		Collection<TagBuilder> tags,
 		Collection<LogbookBuilder> logbooks,
@@ -294,6 +306,7 @@ public class LogEntryBuilder {
 		Collection<AttachmentBuilder> attachments) throws IOException {
 	    super();
 	    this.id = id;
+	    this.level = level;
 	    this.text = text;
 	    this.owner = owner;
 	    this.createdDate = createdDate;
@@ -328,6 +341,12 @@ public class LogEntryBuilder {
 		    .unmodifiableCollection(newAttachments);
 	}
 
+
+	@Override
+	public String getLevel() {
+	    return level;
+	}
+	
 	@Override
 	public String getText() {
 	    return text;

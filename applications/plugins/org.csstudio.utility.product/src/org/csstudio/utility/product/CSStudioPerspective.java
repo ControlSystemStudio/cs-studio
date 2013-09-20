@@ -101,9 +101,9 @@ public class CSStudioPerspective implements IPerspectiveFactory
 	for (String viewPlaceholderInfoPref : Arrays.asList(csStudioPerspectivePreference.split(";"))) {
 	    String[] viewPlaceholderInfo = viewPlaceholderInfoPref.split(":");
 	    if(viewPlaceholderInfo.length == 4){
-		if (isPluginAvailable(viewPlaceholderInfo[0])) {
+		if (isPluginAvailable(viewPlaceholderInfo[0].trim())) {
 		    int location;
-		    switch (viewPlaceholderInfo[2]) {
+		    switch (viewPlaceholderInfo[2].trim()) {
 		    case "left":
 			location = IPageLayout.LEFT;
 			break;
@@ -118,11 +118,11 @@ public class CSStudioPerspective implements IPerspectiveFactory
 			break;
 		    }
 
-		    if (viewPlaceholderInfo[3].equalsIgnoreCase("multiple")) {
-			viewPlaceholderMap.put(viewPlaceholderInfo[0], location);
-			viewPlaceholderMap.put(viewPlaceholderInfo[0] + MULTIPLE, location);
+		    if (viewPlaceholderInfo[3].trim().equalsIgnoreCase("multiple")) {
+			viewPlaceholderMap.put(viewPlaceholderInfo[0].trim(), location);
+			viewPlaceholderMap.put(viewPlaceholderInfo[0].trim() + MULTIPLE, location);
 		    } else {
-			viewPlaceholderMap.put(viewPlaceholderInfo[0], location);
+			viewPlaceholderMap.put(viewPlaceholderInfo[0].trim(), location);
 		    }
 		}
 	    }else{
@@ -147,8 +147,8 @@ public class CSStudioPerspective implements IPerspectiveFactory
 	for (String perspectiveInfoPref : Arrays.asList(perspectiveShortcut)) {
 	    String[] perspectiveInfo =  perspectiveInfoPref.split(":");
 	    if( perspectiveInfo.length == 2 ){
-		if(isPluginAvailable(perspectiveInfo[0])){
-		    perspectiveIds.add(perspectiveInfo[1]);
+		if(isPluginAvailable(perspectiveInfo[0].trim())){
+		    perspectiveIds.add(perspectiveInfo[1].trim());
 		}
 	    }
 	}
@@ -172,8 +172,8 @@ public class CSStudioPerspective implements IPerspectiveFactory
 	for (String viewInfoPref : Arrays.asList(viewShortcut)) {
 	    String[] viewInfo =  viewInfoPref.split(":");
 	    if( viewInfo.length == 2 ){
-		if(isPluginAvailable(viewInfo[0])){
-		    viewIds.add(viewInfo[1]);
+		if(isPluginAvailable(viewInfo[0].trim())){
+		    viewIds.add(viewInfo[1].trim());
 		}
 	    }
 	}
