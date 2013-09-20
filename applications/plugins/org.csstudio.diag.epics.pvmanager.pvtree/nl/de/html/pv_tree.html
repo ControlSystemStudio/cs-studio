@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
+
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"/>
+	<title>CSS EPICS PV Tree</title>
+</head>
+
+<body>
+<h1>Overview</h1>
+<p>
+Der CSS-EPICS-PV-Tree stellt den hierarchischen Datenfluss zwischen EPICS-Record dar.
+Angezeigt werden die Record-Typen, ihre aktuellen Werte und die Alarm-(severity)-Status.
+Der Tree versucht, dem Datenfluss zu folgen, indem er Input-Links
+verfolgt (INP, INPA, DOL, ...).
+</p>
+<h2>Usage</h2>
+<p>
+Engeben eines Namens in die "PV"-Textbox und sehen, was passiert.
+Namen k&ouml;nnenn auf verschiedene Arten eingegeben werden:
+</p> 
+<ul>
+<li>Tippen eines PV-Namens, gefolgt von "Return". </li>
+<li>Ausw&auml;hlen eines vorher eingegebenen PV-Namens von der Drop-Down-Liste,
+die mit der PV-Namen-Textbox verkn&uuml;pftst. </li>
+<li>Einf&uuml;gen (drop) eines PV-Namens aus einer anderen CSS-Anwendung in die
+Tree-Fl&auml;che unterhalb des PV-Namens.	 </li>
+<li>Senden eines PV-Namens zum EPICS-PV-Tree mittels des Kontextmenus einer
+anderen CSS-Anwendung. </li>
+</ul>
+   
+<h2>Beispiele</h2>
+<p>
+Der erste Screenshot zeigt einen Analog-Input-Record (ai), der seinen Input (INP) direkt
+von einen Device-Support-Modul liest, that happens to understand
+the input description "adm606m....". 
+</p>
+
+<!--center-->
+<img alt="" src="screenshot1.png" />
+<p>
+<!--/center-->
+Der zweite Screenshot zeigt eine interessantere Hierarchie:
+Ein Binary-Input-Record (bi) liest von einer Berechnung (calc), deren erster 
+Input (INPA) von einem mbbi liest, der wiederum von einem anderen calc liest, u.s.w.
+Man beachte, wie die Farbkodierung die Alalrm-Status (severities) anzeigt.
+</p>
+<p>
+<!--center-->
+<img alt="" src="screenshot2.png" />
+<!--/center-->
+</p>
+<h2>Einschr&auml;nkungen</h2>
+<p>
+Dieses Tool benutzt das EPICS-Network-Protocol, Channel Access, um PVs zu lesen.
+Es gibt keine M&ouml;glichkeit, database information von EPICS V3 IOCs abzufragen,
+um die verf&uuml;gbaren "Input"-Links zu bestimmen.
+</p>
+<p>
+Deswegen ist die Verlinkung der Record-Typen in der EPICS-PV-Tree-Anwendung
+konfiguriert.	
+Z.Zt. k&ouml;nnen End-Anwender diese nicht ver&auml;ndern, aber Personen mit Zugriff auf
+den Quellcode k&ouml;nnen die Syntax der Datei preferences.ini bestimmen und in CSS 
+die Datei plugin_customization.ini mit site-spezifischen Settings &uuml;berschreiben.
+</p>
+</body>
+</html>
+ 
