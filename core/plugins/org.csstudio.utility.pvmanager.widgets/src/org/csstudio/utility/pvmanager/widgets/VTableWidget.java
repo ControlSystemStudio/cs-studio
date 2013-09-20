@@ -98,7 +98,7 @@ public class VTableWidget extends SelectionBeanComposite implements ISelectionPr
 			return;
 		}
 
-		pv = PVManager.read(ExpressionLanguage.formula(pvFormula))
+		pv = PVManager.read(ExpressionLanguage.formula(pvFormula, VTable.class))
 				.notifyOn(SWTUtil.swtThread(this))
 				.readListener(new PVReaderListener<Object>() {
 
@@ -107,11 +107,7 @@ public class VTableWidget extends SelectionBeanComposite implements ISelectionPr
 							final PVReaderEvent<Object> event) {
 						errorBar.setException(event.getPvReader().lastException());
 						Object value = event.getPvReader().getValue();
-						if (value == null || value instanceof VTable) {
-							tableDisplay.setVTable((VTable) value);
-						} else {
-							errorBar.setException(new RuntimeException("Formula does not return a VTable"));
-						}
+						tableDisplay.setVTable((VTable) value);
 					}
 				}).maxRate(TimeDuration.ofHertz(25));
 
