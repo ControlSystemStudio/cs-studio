@@ -88,7 +88,7 @@ public class VImageWidget extends SelectionBeanComposite implements ISelectionPr
 			pv= null;
 		}
 
-		if (pvFormula == null) {
+		if (pvFormula == null || pvFormula.trim().equals("")) {
 			return;
 		}
 
