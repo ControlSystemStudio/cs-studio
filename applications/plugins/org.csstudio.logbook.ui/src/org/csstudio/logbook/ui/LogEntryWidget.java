@@ -960,21 +960,20 @@ public class LogEntryWidget extends Composite {
 	    if(!level.getItems().equals(levels)){
 		level.setItems(levels.toArray(new String[levels.size()]));
 	    }
-	    level.setText(logEntry.getLevel() != null ? logEntry.getLevel() : "");
-//	    level.setEnabled(editable);
+	    if(levels.contains(logEntry.getLevel())){
+		level.select(levels.indexOf(logEntry.getLevel()));
+	    }
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
 	    if (!multiSelectionComboLogbook.getItems().equals(logbookNames)) {
 		multiSelectionComboLogbook.setItems(logbookNames);
 	    }
-	    multiSelectionComboLogbook.setSelection(LogEntryUtil
-		    .getLogbookNames(logEntry));
+	    multiSelectionComboLogbook.setSelection(LogEntryUtil.getLogbookNames(logEntry));
 	    if (!multiSelectionComboTag.getItems().equals(tagNames)) {
 		multiSelectionComboTag.setItems(tagNames);
 	    }
-	    multiSelectionComboTag.setSelection(LogEntryUtil
-		    .getTagNames(logEntry));
+	    multiSelectionComboTag.setSelection(LogEntryUtil.getTagNames(logEntry));
 
 	    if (logEntry.getAttachment().size() > 0) {
 		setExpanded(true);
@@ -1013,17 +1012,12 @@ public class LogEntryWidget extends Composite {
 		setLastException(e);
 	    }
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
-	    linkTable.setFiles(new ArrayList<Attachment>(logEntry
-		    .getAttachment()));
-	    propertyTree.setProperties(new ArrayList<Property>(logEntry
-		    .getProperties()));
+	    linkTable.setFiles(new ArrayList<Attachment>(logEntry.getAttachment()));
+	    propertyTree.setProperties(new ArrayList<Property>(logEntry.getProperties()));
 	} else {
 	    text.setText("");
-	    //TODO set to default
-	    level.setText("");
-//	    level.setEnabled(editable);
-	    multiSelectionComboLogbook.setItems(Collections
-		    .<String> emptyList());
+	    level.setItems(new String[0]);
+	    multiSelectionComboLogbook.setItems(Collections.<String> emptyList());
 	    multiSelectionComboTag.setItems(Collections.<String> emptyList());
 	    imageStackWidget.setSelectedImageName(null);
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
