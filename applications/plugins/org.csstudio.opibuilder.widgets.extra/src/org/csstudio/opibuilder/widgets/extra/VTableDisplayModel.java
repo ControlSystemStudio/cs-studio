@@ -5,11 +5,12 @@ import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 
 public class VTableDisplayModel extends AbstractSelectionWidgetModel {
 	
 	public VTableDisplayModel() {
-		super(false);
+		super(AbstractSelectionWidgetModelDescription.newModelFrom(VTableDisplay.class));
 	}
 
 	public final String ID = "org.csstudio.opibuilder.widgets.VTableDisplay"; //$NON-NLS-1$

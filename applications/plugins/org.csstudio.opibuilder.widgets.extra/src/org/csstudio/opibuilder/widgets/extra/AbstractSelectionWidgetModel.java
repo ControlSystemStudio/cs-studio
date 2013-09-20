@@ -16,8 +16,8 @@ public abstract class AbstractSelectionWidgetModel extends AbstractWidgetModel {
 	public static final String CONFIGURABLE = "configurable"; //$NON-NLS-1$
 	private final boolean enableConfigurableProperty;
 	
-	public AbstractSelectionWidgetModel(boolean enableConfigurableProperty) {
-		this.enableConfigurableProperty = enableConfigurableProperty;
+	public AbstractSelectionWidgetModel(AbstractSelectionWidgetModelDescription model) {
+		this.enableConfigurableProperty = model.isEnableConfigurableProperty();
 		if (enableConfigurableProperty) {
 			addProperty(new BooleanProperty(CONFIGURABLE,
 					"Configurable", WidgetPropertyCategory.Behavior, false));
