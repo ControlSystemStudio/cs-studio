@@ -27,7 +27,14 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
-      <import feature="org.csstudio.pvmanager.feature" version="3.2.0.qualifier"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.autocomplete.ui"/>
+      <import plugin="org.csstudio.csdata" version="3.2.0" match="greaterOrEqual"/>
+      <import feature="org.csstudio.core.feature" version="3.2.0.qualifier"/>
    </requires>
 
    <plugin
@@ -46,6 +53,13 @@
 
    <plugin
          id="org.csstudio.platform.libs.epics.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.diag.epics.pvmanager.pvtree"
          download-size="0"
          install-size="0"
          version="0.0.0"
