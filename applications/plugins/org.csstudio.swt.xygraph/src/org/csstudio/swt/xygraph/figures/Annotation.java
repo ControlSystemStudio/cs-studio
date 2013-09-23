@@ -679,7 +679,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));
 		updateInfoLableText();
-		layout();
+		if(getParent()!=null)
+			layout();
 	}
 	
 	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
