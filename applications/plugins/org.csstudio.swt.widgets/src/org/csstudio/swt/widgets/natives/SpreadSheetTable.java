@@ -913,7 +913,7 @@ public class SpreadSheetTable extends Composite {
 	
 	private synchronized static Image getOnImage() {
 		if (onImage == null) {
-			String path = "../figures/icons/checked.gif"; //$NON-NLS-1$
+			String path = "images/checked.gif"; //$NON-NLS-1$
 
 			InputStream stream = SpreadSheetTable.class.getResourceAsStream(path);
 			onImage = new Image(Display.getCurrent(), stream);
@@ -927,7 +927,7 @@ public class SpreadSheetTable extends Composite {
 	
 	private synchronized static Image getOffImage() {
 		if (offImage == null) {
-			String path = "../figures/icons/unchecked.gif"; //$NON-NLS-1$
+			String path = "images/unchecked.gif"; //$NON-NLS-1$
 
 			InputStream stream = SpreadSheetTable.class.getResourceAsStream(path);
 			offImage = new Image(Display.getCurrent(), stream);
