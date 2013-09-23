@@ -3,7 +3,7 @@
 # Kay Kasemir
 
 # Version to build
-export VERSION=3.2.9
+export VERSION=3.2.10
 
 if [ `hostname` = 'ics-web4.sns.ornl.gov' ]
 then
