@@ -22,55 +22,7 @@
    </url>
 
    <plugin
-         id="org.csstudio.diag.epics.pvtree"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.clock"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.display.pvtable"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.diag.pvmanager.probe"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.diag.epics.pvtree.intro"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.csstudio.graphene"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.graphene"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.epics.graphene"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -91,14 +43,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.simplepv"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.simplepv.pvmanager"
+         id="org.csstudio.diag.epics.pvmanager.pvtree"
          download-size="0"
          install-size="0"
          version="0.0.0"
