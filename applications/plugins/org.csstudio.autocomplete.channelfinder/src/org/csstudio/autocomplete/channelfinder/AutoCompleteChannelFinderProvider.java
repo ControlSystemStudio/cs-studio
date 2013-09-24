@@ -45,18 +45,18 @@ public class AutoCompleteChannelFinderProvider implements IAutoCompleteProvider 
 	Pattern namePattern = AutoCompleteHelper.convertToPattern(trimmedName);
 	int count = 0;
 	for (Channel channel : client.findByName("*" + trimmedName + "*")) {
-	    Proposal proposal = new Proposal(channel.getName(), false);
-	    Matcher m = namePattern.matcher(channel.getName());
-	    if (m.find()) {
-		if (count < limit) {
+	    if (count < limit) {
+		Proposal proposal = new Proposal(channel.getName(), false);
+		Matcher m = namePattern.matcher(channel.getName());
+		if (m.find()) {
 		    proposal.addStyle(ProposalStyle.getDefault(m.start(), m.end() - 1));
 		    result.addProposal(proposal);
-		} else {
-		    result.setCount(count);
-		    return result;
+		    count++;
 		}
-		count++;
-	    }
+	    } else {
+		result.setCount(count);
+		return result;
+	    }	    
 	}
 	result.setCount(count);
 	return result;
