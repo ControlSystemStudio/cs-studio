@@ -523,13 +523,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.autocomplete.ui.rcp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
          id="org.csstudio.autocomplete.logbook"
          download-size="0"
          install-size="0"
@@ -671,6 +664,13 @@
 
    <plugin
          id="org.csstudio.startup.helper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.autocomplete.ui.rcp"
          download-size="0"
          install-size="0"
          version="0.0.0"

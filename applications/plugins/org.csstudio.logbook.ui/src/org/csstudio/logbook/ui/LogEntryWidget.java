@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
 import org.csstudio.logbook.Attachment;
@@ -103,6 +104,7 @@ public class LogEntryWidget extends Composite {
     // logEntry.
     private List<String> logbookNames = Collections.emptyList();
     private List<String> tagNames = Collections.emptyList();
+    private List<String> levels = Collections.emptyList();
 
     // TODO
     private java.util.Map<String, PropertyWidgetFactory> propertyWidgetFactories;
@@ -148,6 +150,7 @@ public class LogEntryWidget extends Composite {
     private Button addFileButton;
     private Button btnCurrentContext;
     private PropertyTree propertyTree;
+    private Combo level;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
 	changeSupport.addPropertyChangeListener(listener);
@@ -326,19 +329,33 @@ public class LogEntryWidget extends Composite {
 	fd_btnAddTags.left = new FormAttachment(100, -40);
 	btnAddTags.setLayoutData(fd_btnAddTags);
 
-	Combo combo = new Combo(composite, SWT.NONE);
-	fd_text.top = new FormAttachment(combo, 6);
-	fd_lblDate.top = new FormAttachment(combo, 4, SWT.TOP);
-	fd_textDate.top = new FormAttachment(combo, 4, SWT.TOP);
+	level = new Combo(composite, SWT.NONE);
+	fd_text.top = new FormAttachment(level, 6);
+	fd_lblDate.top = new FormAttachment(level, 4, SWT.TOP);
+	fd_textDate.top = new FormAttachment(level, 4, SWT.TOP);
 	FormData fd_combo = new FormData();
 	fd_combo.top = new FormAttachment(0, 5);
 	fd_combo.right = new FormAttachment(100, -5);
-	combo.setLayoutData(fd_combo);
+	level.setLayoutData(fd_combo);
+	level.addSelectionListener(new SelectionAdapter() {
+	    
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+
+		try {
+		    LogEntryBuilder logEntryBuilder = logEntry(
+			    logEntryChangeset.getLogEntry()).setLevel(level.getItem(level.getSelectionIndex()));
+		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		} catch (IOException e1) {
+		    setLastException(e1);
+		}
+	    }
+	});
 
 	lblNewLabel = new Label(composite, SWT.NONE);
 	FormData fd_lblNewLabel = new FormData();
-	fd_lblNewLabel.top = new FormAttachment(combo, 4, SWT.TOP);
-	fd_lblNewLabel.right = new FormAttachment(combo, -5);
+	fd_lblNewLabel.top = new FormAttachment(level, 4, SWT.TOP);
+	fd_lblNewLabel.right = new FormAttachment(level, -5);
 	lblNewLabel.setLayoutData(fd_lblNewLabel);
 	lblNewLabel.setText("Level:");
 
@@ -743,15 +760,17 @@ public class LogEntryWidget extends Composite {
 	tbtmPropertyTreeComposite.setLayout(new GridLayout());
 
 	propertyTree = new PropertyTree(tbtmPropertyTreeComposite, SWT.NONE);
-	propertyTree
-		.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+	propertyTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 	tabFolder.showItem(tbtmAttachments);
 
+	final AtomicReference<PropertyChangeEvent> eventRef = new AtomicReference<PropertyChangeEvent>();
+	
 	this.addPropertyChangeListener(new PropertyChangeListener() {
 
 	    @Override
 	    public void propertyChange(PropertyChangeEvent evt) {
+		eventRef.set(evt);
 		switch (evt.getPropertyName()) {
 		case "expand":
 		    FormData fd = ((FormData) label.getLayoutData());
@@ -766,7 +785,17 @@ public class LogEntryWidget extends Composite {
 		    label.getParent().layout();
 		    break;
 		case "logEntry":
-		    init();
+		    getDisplay().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+			    if (eventRef.getAndSet(null) == null) {
+				return;
+			    } else {
+				init();
+			    }
+			}
+		    });
 		    break;
 		case "logEntryBuilder":
 		    updateUI();
@@ -815,6 +844,7 @@ public class LogEntryWidget extends Composite {
 					return input.getName();
 				    };
 				});
+			levels = logbookClient.listLevels();
 			getDisplay().asyncExec(new Runnable() {
 
 			    @Override
@@ -926,20 +956,24 @@ public class LogEntryWidget extends Composite {
 	}
 	if (logEntry != null) {
 	    // Show the logEntry
-	    text.setText(logEntry.getText());
+	    text.setText(logEntry.getText());	    
+	    if(!level.getItems().equals(levels)){
+		level.setItems(levels.toArray(new String[levels.size()]));
+	    }
+	    if(levels.contains(logEntry.getLevel())){
+		level.select(levels.indexOf(logEntry.getLevel()));
+	    }
 	    textDate.setText(DateFormat.getDateInstance().format(
 		    logEntry.getCreateDate() == null ? System
 			    .currentTimeMillis() : logEntry.getCreateDate()));
 	    if (!multiSelectionComboLogbook.getItems().equals(logbookNames)) {
 		multiSelectionComboLogbook.setItems(logbookNames);
 	    }
-	    multiSelectionComboLogbook.setSelection(LogEntryUtil
-		    .getLogbookNames(logEntry));
+	    multiSelectionComboLogbook.setSelection(LogEntryUtil.getLogbookNames(logEntry));
 	    if (!multiSelectionComboTag.getItems().equals(tagNames)) {
 		multiSelectionComboTag.setItems(tagNames);
 	    }
-	    multiSelectionComboTag.setSelection(LogEntryUtil
-		    .getTagNames(logEntry));
+	    multiSelectionComboTag.setSelection(LogEntryUtil.getTagNames(logEntry));
 
 	    if (logEntry.getAttachment().size() > 0) {
 		setExpanded(true);
@@ -978,14 +1012,12 @@ public class LogEntryWidget extends Composite {
 		setLastException(e);
 	    }
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
-	    linkTable.setFiles(new ArrayList<Attachment>(logEntry
-		    .getAttachment()));
-	    propertyTree.setProperties(new ArrayList<Property>(logEntry
-		    .getProperties()));
+	    linkTable.setFiles(new ArrayList<Attachment>(logEntry.getAttachment()));
+	    propertyTree.setProperties(new ArrayList<Property>(logEntry.getProperties()));
 	} else {
 	    text.setText("");
-	    multiSelectionComboLogbook.setItems(Collections
-		    .<String> emptyList());
+	    level.setItems(new String[0]);
+	    multiSelectionComboLogbook.setItems(Collections.<String> emptyList());
 	    multiSelectionComboTag.setItems(Collections.<String> emptyList());
 	    imageStackWidget.setSelectedImageName(null);
 	    linkTable.setFiles(Collections.<Attachment> emptyList());

@@ -28,8 +28,6 @@
       <plugin id="org.csstudio.opibuilder.widgets.rap" fragment="true"/>
       <plugin id="org.csstudio.opibuilder.widgets.symbol"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
-      <plugin id="org.csstudio.platform.libs.epics.macosx" fragment="true"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.rap.core"/>
@@ -54,6 +52,7 @@
       <plugin id="org.csstudio.utility.pvmanager.extra"/>
       <plugin id="org.csstudio.utility.pvmanager.loc"/>
       <plugin id="org.csstudio.utility.pvmanager.sim"/>
+      <plugin id="org.csstudio.utility.pvmanager.sys"/>
       <plugin id="org.csstudio.utility.pvmanager.ui"/>
       <plugin id="org.csstudio.utility.pvmanager.vtype"/>
       <plugin id="org.csstudio.utility.singlesource"/>
@@ -149,6 +148,7 @@
       <plugin id="org.csstudio.utility.pvmanager.extra" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.loc" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pvmanager.sys" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />

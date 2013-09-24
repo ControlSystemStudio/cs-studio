@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="Core CSS Components"
-      version="3.2.1.qualifier"
+      version="3.2.10.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS"
       plugin="org.csstudio.sns.product">
 
@@ -84,6 +84,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.logging.ui" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup.helper" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.epics" version="1.1.6" match="greaterOrEqual"/>
@@ -109,7 +110,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.epics.util" version="0.2.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pv" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.startup.helper" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.product" version="1.1.0" match="greaterOrEqual"/>
    </requires>
 
@@ -599,7 +599,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.csstudio.startup.helper"
          download-size="0"
@@ -613,6 +613,20 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          install-size="0"
          version="0.0.0"
          fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.autocomplete.pvmanager.sys"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.sys"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

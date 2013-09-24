@@ -27,6 +27,10 @@ public class FormulaFunctions {
      * @return true if the function can accept the given arguments
      */
     public static boolean matchArgumentTypes(List<Object> arguments, FormulaFunction function) {
+        return matchArgumentTypes(arguments, function, false);
+    }
+    
+    public static boolean matchArgumentTypes(List<Object> arguments, FormulaFunction function, boolean allowNull) {
         List<Class<?>> types = function.getArgumentTypes();
         
         if (!matchArgumentCount(arguments.size(), function)) {
@@ -36,7 +40,10 @@ public class FormulaFunctions {
         for (int i = 0; i < arguments.size(); i++) {
             int j = Math.min(i, types.size() - 1);
             if (!types.get(j).isInstance(arguments.get(i))) {
-                return false;
+                if (allowNull && arguments.get(i) == null) {
+                } else {
+                    return false;
+                }
             }
         }
         return true;
@@ -72,7 +79,7 @@ public class FormulaFunctions {
      */
     public static FormulaFunction findFirstMatch(List<Object> arguments, Collection<FormulaFunction> formulaFunctions) {
         for (FormulaFunction formulaFunction : formulaFunctions) {
-            if (matchArgumentTypes(arguments, formulaFunction)) {
+            if (matchArgumentTypes(arguments, formulaFunction, true)) {
                 return formulaFunction;
             }
         }

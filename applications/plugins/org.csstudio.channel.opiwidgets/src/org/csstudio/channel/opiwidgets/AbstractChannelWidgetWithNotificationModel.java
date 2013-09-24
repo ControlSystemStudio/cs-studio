@@ -2,6 +2,7 @@ package org.csstudio.channel.opiwidgets;
 
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
 
 /**
  * This model adds the property for selection notification.
@@ -10,8 +11,8 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
  */
 public abstract class AbstractChannelWidgetWithNotificationModel extends AbstractChannelWidgetModel {
 	
-	public AbstractChannelWidgetWithNotificationModel(boolean enableConfigurableProperty) {
-		super(enableConfigurableProperty);
+	public AbstractChannelWidgetWithNotificationModel(AbstractSelectionWidgetModelDescription model) {
+		super(model);
 	}
 	
 	public static final String SELECTION_PV = "selection_pv"; //$NON-NLS-1$	

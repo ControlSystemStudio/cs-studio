@@ -3,6 +3,9 @@
  */
 package org.csstudio.channel.opiwidgets;
 
+import org.csstudio.channel.widgets.TunerWidget;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
+
 
 /**
  * @author shroffk
@@ -11,7 +14,7 @@ package org.csstudio.channel.opiwidgets;
 public class TunerModel extends AbstractChannelWidgetModel {
 	
 	public TunerModel() {
-		super(true);
+		super(AbstractSelectionWidgetModelDescription.newModelFrom(TunerWidget.class));
 	}
 
 	public final String ID = "org.csstudio.channel.opiwidgets.AbstractChannelWidget"; //$NON-NLS-1$

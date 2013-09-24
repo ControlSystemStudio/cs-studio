@@ -400,8 +400,51 @@ public class StartupDialog extends TitleAreaDialog {
             return false;
         }
         
+        // Check if there are already workspaces within the selected directory.
+        final String nested = checkForWorkspacesInSubdirs(ws_file);
+        if (nested != null)
+        {
+            setErrorMessage(NLS.bind(Messages.Workspace_ContainsWorkspacesErrorFMT, nested));
+            return false;
+        }
+        
         // Looks good so far, so report the selected workspace.
         info.setSelectedWorkspace(workspace);
         return true;
+    }
+    
+    /** Check if directory or any subdirectory contains a workspace
+     *  @param dir Directory where to start
+     *  @return Name of workspace in subdir or <code>null</code> if none found
+     * @throws Exception on error
+     */
+    private String checkForWorkspacesInSubdirs(final File dir)
+    {
+        final File subdirs[] = dir.listFiles();
+        if (subdirs == null)
+            return null;
+        for (File subdir : subdirs)
+        {
+            if (! subdir.isDirectory())
+                continue;
+            try
+            {   // Is there a .metadata file?
+                final File meta = new File(subdir.getCanonicalPath()
+                        + File.separator + ".metadata"); //$NON-NLS-1$
+                if (meta.exists())
+                    return subdir.getName();
+            }
+            catch (Exception ex)
+            {
+                // Ignore errors. If there's a workspace we can't read, don't worry.
+            }
+            // Could recurse further down, but that means when somebody tries
+            // "/" as the workspace, it would search the whole hard drive!
+            // So don't do that...
+            //            final String nested = checkForWorkspacesInSubdirs(subdir);
+            //            if (nested != null)
+            //                return nested;
+        }
+        return null;
     }
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="beamline">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="info" type="beamline_info"/>
+      <xs:element name="devices" type="devices"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:complexType name="beamline_info">
+  <xs:sequence>
+    <xs:element name="name" type="xs:string"/>
+    <xs:element name="description" type="xs:string"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="devices">
+	<xs:sequence>
+	     <xs:element name="device" type="device" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="device">
+	<xs:sequence>
+	    <xs:element name="name" type="xs:string"/>
+	    <xs:element name="ioc" type="ioc"/>
+	    <xs:element name="pv" type="pv" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+    <xs:attribute name="active" type="xs:boolean" default="true"/>
+</xs:complexType>
+
+<xs:complexType name="ioc">
+	<xs:sequence>
+	    <xs:element name="name" type="xs:string"/>
+	    <xs:element name="script" type="xs:string" minOccurs="0" />
+	    <xs:element name="console" type="xs:integer" minOccurs="0" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pv">
+	<xs:sequence>
+	    <xs:element name="name" type="xs:string"/>
+	    <xs:element name="alias" type="xs:string" minOccurs="0"/>
+	    <xs:element name="log" minOccurs="0">
+	      <xs:complexType></xs:complexType>
+	    </xs:element>
+	</xs:sequence>
+</xs:complexType>
+
+</xs:schema>

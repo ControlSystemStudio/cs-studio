@@ -150,7 +150,7 @@ public class ExpressionLanguage {
      */
     public static <T> DesiredRateExpression<T> formula(String formula, Class<T> readType) {
         DesiredRateExpression<?> exp = parseFormula(formula);
-        return checkReturnType(readType, exp);
+        return checkReturnType(readType, "Value", exp);
     }
     
     static DesiredRateExpression<?> cachedPv(String channelName) {
@@ -225,7 +225,7 @@ public class ExpressionLanguage {
         return new ErrorDesiredRateExpression<>(error, "");
     }
     
-    static <T> DesiredRateExpression<T> checkReturnType(final Class<T> clazz, final DesiredRateExpression<?> arg1) {
+    static <T> DesiredRateExpression<T> checkReturnType(final Class<T> clazz, final String argName, final DesiredRateExpression<?> arg1) {
         return new DesiredRateExpressionImpl<T>(arg1, new ReadFunction<T>() {
 
             @Override
@@ -238,7 +238,7 @@ public class ExpressionLanguage {
                 if (clazz.isInstance(obj)) {
                     return clazz.cast(obj);
                 } else {
-                    throw new RuntimeException("Formula does not return " + clazz.getSimpleName() + " (was " + ValueUtil.typeOf(obj).getSimpleName() + ")");
+                    throw new RuntimeException(argName + " must be a " + clazz.getSimpleName() + " (was " + ValueUtil.typeOf(obj).getSimpleName() + ")");
                 }
             }
         }, arg1.getName());

@@ -22,6 +22,7 @@ import org.epics.util.array.ArrayInt;
 import org.epics.util.time.TimeDuration;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.VTable;
+import org.epics.vtype.VTypeValueEquals;
 import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 import org.epics.vtype.table.VTableFactory;
@@ -31,7 +32,7 @@ import org.epics.vtype.table.VTableFactory;
  * 
  * @author carcassi
  */
-public class VTableWidget extends SelectionBeanComposite implements ISelectionProvider {
+public class VTableWidget extends SelectionBeanComposite implements AlarmProvider, ISelectionProvider {
 
 	private String pvFormula;
 	private PVReader<?> pv;
@@ -98,7 +99,7 @@ public class VTableWidget extends SelectionBeanComposite implements ISelectionPr
 			return;
 		}
 
-		pv = PVManager.read(ExpressionLanguage.formula(pvFormula))
+		pv = PVManager.read(ExpressionLanguage.formula(pvFormula, VTable.class))
 				.notifyOn(SWTUtil.swtThread(this))
 				.readListener(new PVReaderListener<Object>() {
 
@@ -107,11 +108,8 @@ public class VTableWidget extends SelectionBeanComposite implements ISelectionPr
 							final PVReaderEvent<Object> event) {
 						errorBar.setException(event.getPvReader().lastException());
 						Object value = event.getPvReader().getValue();
-						if (value == null || value instanceof VTable) {
-							tableDisplay.setVTable((VTable) value);
-						} else {
-							errorBar.setException(new RuntimeException("Formula does not return a VTable"));
-						}
+						tableDisplay.setVTable((VTable) value);
+						setAlarm(calculateAlarm());
 					}
 				}).maxRate(TimeDuration.ofHertz(25));
 
@@ -150,7 +148,24 @@ public class VTableWidget extends SelectionBeanComposite implements ISelectionPr
 		}
 	}
 	
+	private Alarm alarm = calculateAlarm();
+	
+	@Override
 	public Alarm getAlarm() {
+		return alarm;
+	}
+	
+	public void setAlarm(Alarm alarm) {
+		if (VTypeValueEquals.alarmEquals(this.alarm, alarm)) {
+			return;
+		}
+		
+		Alarm oldAlarm = this.alarm;
+		this.alarm = alarm;
+		changeSupport.firePropertyChange("alarm", oldAlarm, alarm);
+	}
+	
+	private Alarm calculateAlarm() {
 		if (pv == null) {
 			return ValueFactory.alarmNone();
 		}

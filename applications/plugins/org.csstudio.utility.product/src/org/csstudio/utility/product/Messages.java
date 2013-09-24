@@ -19,12 +19,6 @@ public class Messages extends NLS
     public static String StartupAuthenticationHelper_LoginTip;
     public static String Window_Title;
     
-    public static String CSStudioPerspective_left;
-    public static String CSStudioPerspective_bottom;
-    
-    public static String shortcutPerspective;
-    public static String shortcutViews;
-
     static
     {
         // initialize resource bundle

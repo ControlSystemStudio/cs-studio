@@ -73,37 +73,7 @@ public class VTableDisplayEditPart extends AbstractSelectionWidgetEditpart<VTabl
 			}
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
-		((VTableDisplayFigure) getFigure()).getSWTWidget().addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if ("value".equals(event.getPropertyName())) {
-					setFigureBorder(createBorderFromAlarm(((VTableWidget) event.getSource()).getAlarm()));
-				}
-			}
-		});
-		setFigureBorder(calculateBorder());
-	}
-	
-	@Override
-	public Border calculateBorder() {
-		if (getWidgetModel().isAlarmSensitive()) {
-			return createBorderFromAlarm((((VTableDisplayFigure) getFigure()).getSWTWidget()).getAlarm());
-		} else {
-			return super.calculateBorder();
-		}
-	}
-	
-	protected Border createBorderFromAlarm(Alarm alarm) {
-		if (alarm.getAlarmSeverity() == AlarmSeverity.NONE) {
-			return super.calculateBorder();
-		} else {
-			java.awt.Color awtColor = new java.awt.Color(ValueUtil.colorFor(alarm.getAlarmSeverity()));
-			RGB swtColor = SWTResourceManager.getColor(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue()).getRGB();
-			return BorderFactory.createBorder(BorderStyle.LINE,
-					getWidgetModel().getBorderWidth(), swtColor,
-					"");
-		}
+		registerCommonProperties();
 	}
 
 

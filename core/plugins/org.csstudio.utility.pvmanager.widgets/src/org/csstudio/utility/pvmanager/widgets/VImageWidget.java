@@ -88,11 +88,11 @@ public class VImageWidget extends SelectionBeanComposite implements ISelectionPr
 			pv= null;
 		}
 
-		if (pvFormula == null) {
+		if (pvFormula == null || pvFormula.trim().equals("")) {
 			return;
 		}
 
-		pv = PVManager.read(ExpressionLanguage.formula(pvFormula))
+		pv = PVManager.read(ExpressionLanguage.formula(pvFormula, VImage.class))
 				.notifyOn(SWTUtil.swtThread(this))
 				.readListener(new PVReaderListener<Object>() {
 
@@ -101,11 +101,7 @@ public class VImageWidget extends SelectionBeanComposite implements ISelectionPr
 							final PVReaderEvent<Object> event) {
 						errorBar.setException(event.getPvReader().lastException());
 						Object value = event.getPvReader().getValue();
-						if (value == null || value instanceof VImage) {
-							imageDisplay.setVImage((VImage) value);
-						} else {
-							errorBar.setException(new RuntimeException("Formula does not return a VImage"));
-						}
+						imageDisplay.setVImage((VImage) value);
 					}
 				}).maxRate(TimeDuration.ofHertz(25));
 

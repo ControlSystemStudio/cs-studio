@@ -2,14 +2,16 @@ package org.csstudio.channel.opiwidgets;
 
 import java.util.List;
 
+import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
 
 public class ChannelTreeByPropertyModel extends AbstractChannelWidgetWithNotificationModel {
 	
 	public ChannelTreeByPropertyModel() {
-		super(true);
+		super(AbstractSelectionWidgetModelDescription.newModelFrom(ChannelTreeByPropertyWidget.class));
 	}
 	
 	public final String ID = "org.csstudio.channel.opiwidgets.ChannelTreeByProperty"; //$NON-NLS-1$

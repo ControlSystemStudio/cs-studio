@@ -110,7 +110,7 @@ public class Preferences
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String urls = prefs.getString(Activator.PLUGIN_ID, URLS, "", null).trim();
         if (urls.length() <= 0)
-            return null;
+            return new ArchiveServerURL[0];
         
         ArrayList<ArchiveServerURL> list = new ArrayList<ArchiveServerURL>(); 
         for (String fragment : urls.split("\\*")) {
