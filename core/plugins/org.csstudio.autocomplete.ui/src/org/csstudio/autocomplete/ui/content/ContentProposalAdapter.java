@@ -155,6 +155,7 @@ public class ContentProposalAdapter {
 
 	private boolean hasSelectedTopProposal = false;
 	private boolean preventTopProposalSelection = false;
+	private Proposal selectedTopProposal = null;
 
 	/**
 	 * Construct a content proposal adapter that can assist the user with
@@ -466,9 +467,7 @@ public class ContentProposalAdapter {
 	}
 
 	public void handleTooltipData(List<TooltipData> tooltips) {
-		synchronized (helper) {
-			helper.updateData(tooltips);
-		}
+		helper.updateData(tooltips);
 	}
 
 	/**
@@ -607,9 +606,9 @@ public class ContentProposalAdapter {
 	public void handleTopProposals(final ContentProposalList proposalList) {
 		List<Proposal> topProposals = proposalList.getTopProposalList();
 		if (topProposals.size() == 2) {
-			Proposal topProposal = topProposals.get(0);
+			selectedTopProposal = topProposals.get(0);
 			hasSelectedTopProposal = true;
-			setControlContent(topProposal, false);
+			setControlContent(selectedTopProposal, false);
 		}
 	}
 
@@ -622,7 +621,11 @@ public class ContentProposalAdapter {
 	public boolean hasSelectedTopProposal() {
 		return hasSelectedTopProposal;
 	}
-	
+
+	public Proposal getSelectedTopProposal() {
+		return selectedTopProposal;
+	}
+
 	public boolean isPreventTopProposalSelection() {
 		return preventTopProposalSelection;
 	}
@@ -647,10 +650,8 @@ public class ContentProposalAdapter {
 			history.addEntry(proposal.getValue());
 		
 		// Update helper
-		synchronized (helper) {
-			helper.clearData();
-			helper.updateData(proposal.getTooltips());
-		}
+		helper.clearData();
+		helper.updateData(proposal.getTooltips());
 
 		// TODO: remove useless stuff
 		// In all cases, notify listeners of an accepted proposal.

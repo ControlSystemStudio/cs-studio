@@ -8,9 +8,10 @@
 package org.csstudio.autocomplete.tooltips;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
 import org.csstudio.autocomplete.proposals.ProposalStyle;
+
 
 /**
  * Handles a list of {@link TooltipData} to provide a {@link TooltipContent}.
@@ -22,7 +23,8 @@ public class TooltipDataHandler {
 	private List<TooltipData> tooltipDataList;
 
 	public TooltipDataHandler() {
-		this.tooltipDataList = new ArrayList<TooltipData>();
+		this.tooltipDataList = Collections
+				.synchronizedList(new ArrayList<TooltipData>());
 	}
 
 	public void addData(TooltipData data) {
@@ -42,19 +44,21 @@ public class TooltipDataHandler {
 		int offset = 0, maxLineLenght = 0, numberOfLines = 0;
 		StringBuilder sb = new StringBuilder();
 		List<ProposalStyle> styleList = new ArrayList<ProposalStyle>();
-		for (TooltipData data : tooltipDataList) {
-			int startLenght = sb.length();
-			sb.append(data.value);
-			sb.append("\n");
-			for (ProposalStyle style : data.styles) {
-				ProposalStyle ps = new ProposalStyle(style);
-				ps.from += offset;
-				ps.to += offset;
-				styleList.add(ps);
+		synchronized (tooltipDataList) {
+			for (TooltipData data : tooltipDataList) {
+				int startLenght = sb.length();
+				sb.append(data.value);
+				sb.append("\n");
+				for (ProposalStyle style : data.styles) {
+					ProposalStyle ps = new ProposalStyle(style);
+					ps.from += offset;
+					ps.to += offset;
+					styleList.add(ps);
+				}
+				offset += sb.length() - startLenght;
+				maxLineLenght = Math.max(maxLineLenght, sb.length() - startLenght);
+				numberOfLines++;
 			}
-			offset += sb.length() - startLenght;
-			maxLineLenght = Math.max(maxLineLenght, sb.length() - startLenght);
-			numberOfLines++;
 		}
 
 		if (sb.length() == 0) {
