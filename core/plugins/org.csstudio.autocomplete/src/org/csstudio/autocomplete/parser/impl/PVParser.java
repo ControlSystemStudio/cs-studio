@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.csstudio.autocomplete.AutoCompleteConstants;
 import org.csstudio.autocomplete.parser.ContentDescriptor;
 import org.csstudio.autocomplete.parser.ContentType;
 import org.csstudio.autocomplete.parser.IContentParser;
@@ -33,7 +34,7 @@ public class PVParser implements IContentParser {
 
 	@Override
 	public boolean accept(final ContentDescriptor desc) {
-		if (desc.getValue().startsWith("="))
+		if (desc.getValue().startsWith(AutoCompleteConstants.FORMULA_PREFIX))
 			return false;
 		if (desc.getValue().startsWith(CA_SOURCE)
 				|| (desc.getValue().indexOf("://") == -1 && CA_SOURCE

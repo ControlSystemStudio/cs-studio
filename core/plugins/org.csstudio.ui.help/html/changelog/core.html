@@ -6,6 +6,27 @@
 </head>
 <body>
 <h1>Core Changelog</h1>
+<h2>Version 3.2.10 - 2013-09-28</h2>
+<ul>
+  <li>Auto-Complete improvements:</li>
+  <ul>
+    <li>Proposal management and interface refactoring.</li>
+    <li>Added helper management (tooltip).</li>
+    <li>Implemented common Data Source prefix parser + provider.</li>
+    <li>Implemented common PV parser (handles Channel Access Data Source).</li>
+    <li>Implemented formula functions, sim, sys and loc parsers + providers in dedicated plugins.</li>
+    <ul>
+      <li>New <i>Formula</i> auto-completion type added to BOY and Probe interfaced with PV Manager.</li>
+      <li>Sim, Sys and Loc parsers/providers are available for both <i>Formula</i> and already existing <i>PV</i> fields.</li>
+    </ul>
+    <li>Handles <i>Default Process Variable Type</i> defined in <i>CSS Core -> Process Variables</i>.</li>
+    <li>Handles completion on cursor position.</li>
+    <li>Improved management of pop-up size to better fit the displayed proposals.</li>
+    <li>Provider name can no longer be selected.</li>
+    <li>Added preference page for history size configuration + clear button in <i>CSS Core -> Auto-Complete</i>.</li>
+    <li>Added 1 line proposals description displayed close to the selected item.</li>
+  </ul>
+</ul>
 <h2>Version 3.2.6 - 2013-05-31</h2>
 <ul>
   <li>libs.epics - Upgrading CAJ to 1.1.12</li>
