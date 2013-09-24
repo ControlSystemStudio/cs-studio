@@ -376,7 +376,7 @@
               <crop_bottom>0</crop_bottom>
               <degree>0</degree>
               <border_width>2</border_width>
-              <image_file>ITERLogo_50x24.png</image_file>
+              <image_file>pictures/ITERLogo_50x24.png</image_file>
               <border_color>
                 <color name="IO Border" red="215" green="215" blue="215" />
               </border_color>
@@ -1055,7 +1055,7 @@
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
-                <visible>false</visible>
+                <visible>true</visible>
                 <wuid>-203b6f4:1411132e3c7:-7d07</wuid>
                 <scripts />
                 <height>832</height>
@@ -4620,7 +4620,7 @@ $(pv_value)</tooltip>
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
-                <visible>true</visible>
+                <visible>false</visible>
                 <wuid>-203b6f4:1411132e3c7:-7a8f</wuid>
                 <scripts />
                 <height>832</height>
