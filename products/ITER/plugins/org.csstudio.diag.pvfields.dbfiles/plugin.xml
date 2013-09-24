@@ -3,8 +3,8 @@
 <plugin>
    <extension point="org.csstudio.diag.pvfields.dataprovider">
       <dataprovider
-            class="org.csstudio.diag.pvfields.iter.ITERDataProvider"
-            name="ITER RDB Data"/>
+            class="org.csstudio.diag.pvfields.dbfiles.DBFilesDataProvider"
+            name="DB Files Data Provider"/>
    </extension>
    <extension
          point="org.eclipse.ui.intro.configExtension">

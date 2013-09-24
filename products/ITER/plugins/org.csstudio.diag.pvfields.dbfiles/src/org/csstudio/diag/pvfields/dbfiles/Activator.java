@@ -5,11 +5,11 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
-package org.csstudio.diag.pvfields.iter;
+package org.csstudio.diag.pvfields.dbfiles;
 
 
 public class Activator {
 
 	// The plug-in ID
-	public static final String ID = "org.csstudio.diag.pvfields.iter"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.diag.pvfields.dbfiles"; //$NON-NLS-1$
 }
