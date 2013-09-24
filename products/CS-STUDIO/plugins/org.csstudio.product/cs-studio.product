@@ -63,6 +63,7 @@
       <feature id="org.csstudio.utilities.feature" version="3.2.0.qualifier"/>
       <feature id="org.csstudio.boy.feature" version="3.2.0.qualifier"/>
       <feature id="org.csstudio.product.feature" version="3.2.0.qualifier"/>
+      <feature id="org.csstudio.pvmanager.autocomplete.feature" version="1.0.0.qualifier"/>
    </features>
 
 
