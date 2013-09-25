@@ -7,14 +7,15 @@
  ******************************************************************************/
 package org.csstudio.ui.util.dnd;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -43,10 +44,19 @@ abstract public class ControlSystemDropTarget
     {
         target = new DropTarget(control, DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
         
-        List<Transfer> supportedTransfers = new ArrayList<Transfer>();
-        supportedTransfers.addAll(Arrays.asList(SerializableItemTransfer.getTransfers(accepted)));
-        if (Arrays.asList(accepted).contains(String.class)) {
+        final List<Transfer> supportedTransfers = new ArrayList<Transfer>();
+        for (Class<?> clazz : accepted)
+        {
+            if (clazz == String.class)
         	supportedTransfers.add(TextTransfer.getInstance());
+            if (clazz == File.class)
+                supportedTransfers.add(FileTransfer.getInstance());
+            else
+            {
+                final SerializableItemTransfer xfer = SerializableItemTransfer.getTransfer(clazz.getName());
+                if (xfer != null)
+                    supportedTransfers.add(xfer);
+            }
         }
         target.setTransfer(supportedTransfers.toArray(new Transfer[supportedTransfers.size()]));
 

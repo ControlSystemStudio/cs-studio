@@ -10,10 +10,15 @@ package org.csstudio.ui.util.swt.stringtable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor.CellEditorType;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Table;
 
 /** Editor for table with multiple columns (List<String[]>)
@@ -23,13 +28,21 @@ class StringMultiColumnsEditor extends EditingSupport {
     final private TableViewer table_viewer;
 	final private int columnNo;
 	final private int numOfColumns;
+	private CellEditorType cellEditorType;
+	private Object cellEditorData;
 
 	public StringMultiColumnsEditor(final TableViewer viewer,
-			final int numOfColumns, final int columnNo) {
+			final int numOfColumns, final int columnNo, final CellEditorType cellEditorType, final Object cellData) {
 		super(viewer);
 		this.table_viewer = viewer;
 		this.columnNo = columnNo;
 		this.numOfColumns = numOfColumns;
+		this.cellEditorType = cellEditorType;		
+		this.cellEditorData = cellData;
+		if(cellEditorType == CellEditorType.CHECKBOX){
+			if(cellEditorData==null || !(cellEditorData instanceof String[]) || ((String[])cellEditorData).length<2)
+				cellEditorData = new String[]{"Yes", "No"};
+		}
 	}
 
 	@Override
@@ -40,7 +53,38 @@ class StringMultiColumnsEditor extends EditingSupport {
 	@Override
 	protected CellEditor getCellEditor(Object element) {
 		final Table parent = (Table) getViewer().getControl();
-		return new TextCellEditor(parent);
+		switch (cellEditorType) {
+		case CHECKBOX:
+			return new CheckboxCellEditor(parent){
+				protected Object doGetValue() {
+					return (Boolean) super.doGetValue()?((String[])cellEditorData)[1]:((String[])cellEditorData)[0];
+				};
+				@Override
+				protected void doSetValue(Object value) {
+					if(value.toString().toLowerCase().equals(((String[])cellEditorData)[1].toLowerCase()))
+						super.doSetValue(true);
+					else
+						super.doSetValue(false);
+				}
+			};
+		case DROPDOWN: 
+			return new ComboBoxCellEditor(parent,
+					(String[])cellEditorData,SWT.NONE){
+				@Override
+				protected Object doGetValue() {
+					return ((CCombo)getControl()).getText();
+				}
+				
+				@Override
+				protected void doSetValue(Object value) {
+					((CCombo)getControl()).setText(value.toString());
+				}
+			};
+
+		default:
+			return new TextCellEditor(parent);
+		}
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,7 +95,10 @@ class StringMultiColumnsEditor extends EditingSupport {
 			return ""; //$NON-NLS-1$
 		final int index = ((Integer)element).intValue();
 		final List<String[]> items = (List<String[]>) table_viewer.getInput();
-		return items.get(index)[columnNo];
+		if (columnNo < items.get(index).length)
+			return items.get(index)[columnNo];
+		else
+			return "";
 	}
 
     @SuppressWarnings("unchecked")
@@ -71,6 +118,17 @@ class StringMultiColumnsEditor extends EditingSupport {
 		// else
 		final int index = ((Integer)element).intValue();
 		rowData = items.get(index);
+		if (columnNo >= rowData.length) {
+			String [] newRowData = new String[columnNo + 1];
+			int i = 0;
+			for (; i<rowData.length; i++) {
+				newRowData[i] = rowData[i];
+			}
+			for (; i<newRowData.length; i++) {
+				newRowData[i] = "";
+			}
+			rowData = newRowData;
+		}
 		rowData[columnNo] = value.toString();
 		items.set(index, rowData);
 		getViewer().refresh(element);
