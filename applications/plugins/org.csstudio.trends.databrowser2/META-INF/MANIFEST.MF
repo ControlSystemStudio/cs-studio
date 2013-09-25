@@ -36,7 +36,7 @@ Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.csstudio.utility.pvmanager.sim;bundle-version="3.1.0";resolution:=optional,
  org.csstudio.autocomplete.ui
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Eclipse-ExtensibleAPI: true
 Export-Package: org.csstudio.trends.databrowser2,
