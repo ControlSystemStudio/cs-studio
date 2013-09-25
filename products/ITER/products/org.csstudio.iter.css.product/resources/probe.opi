@@ -47,7 +47,7 @@
     <active_tab>0</active_tab>
     <tab_1_title>Trend</tab_1_title>
     <border_style>6</border_style>
-    <tab_3_icon_path>pictures/gauge.png</tab_3_icon_path>
+    <tab_3_icon_path>pictures/analog.png</tab_3_icon_path>
     <tab_4_font>
       <opifont.name fontName="arial" height="12" style="1">IO SubTitle</opifont.name>
     </tab_4_font>
@@ -70,7 +70,7 @@
     <foreground_color>
       <color name="IO Text Fg" red="0" green="32" blue="92" />
     </foreground_color>
-    <tab_2_icon_path>pictures/gauge.png</tab_2_icon_path>
+    <tab_2_icon_path>pictures/digital.png</tab_2_icon_path>
     <tab_0_foreground_color>
       <color name="IO Text Fg" red="0" green="32" blue="92" />
     </tab_0_foreground_color>
