@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.dbparser;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,8 +90,7 @@ public class DBContentProvider implements IAutoCompleteProvider {
 			for (Field f : rec.getFields()) {
 				if (f.getType().startsWith(pvDesc.getField())) {
 					Proposal proposal = new Proposal(pvDesc.getName() + "." + f.getType(), false);
-					proposal.addStyle(ProposalStyle.getDefault(0, offset
-							+ pvDesc.getField().length()));
+					proposal.addStyle(ProposalStyle.getDefault(0, offset + pvDesc.getField().length()));
 					proposal.setInsertionPos(pvDesc.getStartIndex());
 					result.addProposal(proposal);
 					count++;
@@ -107,6 +107,7 @@ public class DBContentProvider implements IAutoCompleteProvider {
 				result.addTopProposal(topProposal);
 		}
 		// TODO: handle params ?
+		Collections.sort(result.getProposals());
 		return result;
 	}
 

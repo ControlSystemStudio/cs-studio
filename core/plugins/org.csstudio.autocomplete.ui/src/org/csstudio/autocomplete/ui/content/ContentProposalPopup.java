@@ -1104,17 +1104,12 @@ public class ContentProposalPopup extends PopupDialog {
 				handleTopProposals = false;
 			}
 		}
-		// Select the top proposal that was displayed
-		int index = 0;
-		String contents = adapter.getControlContentAdapter()
-				.getControlContents(control);
-		List<Proposal> topProposals = proposalList.getTopProposalList();
-		if (topProposals.isEmpty())
-			proposalTable.deselectAll();
-		for (Proposal proposal : topProposals) {
-			if (proposal.getValue().equals(contents))
-				selectProposal(index);
-			index++;
+		// Select the top proposal that was displayed, if any
+		proposalTable.deselectAll();
+		if (adapter.hasSelectedTopProposal()) {
+			int index = proposalList.getTopProposalList().indexOf(
+					adapter.getSelectedTopProposal());
+			selectProposal(index);
 		}
 	}
 
@@ -1380,7 +1375,7 @@ public class ContentProposalPopup extends PopupDialog {
 						public void handleResult(
 								final ContentProposalList proposalList) {
 							if (control != null && !control.isDisposed()) {
-								control.getDisplay().syncExec(new Runnable() {
+								control.getDisplay().asyncExec(new Runnable() {
 									public void run() {
 										recomputeProposals(proposalList);
 									}

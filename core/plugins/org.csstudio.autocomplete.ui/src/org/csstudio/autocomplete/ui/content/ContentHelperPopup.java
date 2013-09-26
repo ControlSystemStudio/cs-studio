@@ -317,7 +317,7 @@ public class ContentHelperPopup extends PopupDialog {
 		for (TooltipData data : dataList)
 			dataHandler.addData(data);
 		if (control != null && !control.isDisposed())
-			control.getDisplay().syncExec(new Runnable() {
+			control.getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					if (!refresh())
 						open();

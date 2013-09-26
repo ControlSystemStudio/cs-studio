@@ -8,6 +8,10 @@ org.apache.log4j
 org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.autocomplete
+org.csstudio.autocomplete.pvmanager.formula
+org.csstudio.autocomplete.pvmanager.loc
+org.csstudio.autocomplete.pvmanager.sim
+org.csstudio.autocomplete.pvmanager.sys
 org.csstudio.autocomplete.ui
 org.csstudio.autocomplete.ui.rcp
 org.csstudio.csdata
