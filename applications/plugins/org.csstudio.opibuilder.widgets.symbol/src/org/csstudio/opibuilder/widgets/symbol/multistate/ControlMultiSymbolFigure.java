@@ -21,8 +21,10 @@ import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolBrowser;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Cursors;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -30,6 +32,7 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
@@ -42,19 +45,25 @@ import org.eclipse.swt.widgets.MessageBox;
  * @author Fred Arnaud (Sopra Group)
  */
 public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
-	
+
+	protected final static Color DISABLE_COLOR = CustomMediaFactory
+			.getInstance().getColor(CustomMediaFactory.COLOR_GRAY);
+
+	/** The alpha (0 is transparency and 255 is opaque) for disabled paint */
+	protected static final int DISABLED_ALPHA = 100;
+
 	private Composite composite;
 	private SymbolBrowser symbolBrowser;
-	
+
 	protected boolean showConfirmDialog = false;
 	protected boolean displayWidget = false;
 	protected boolean figureClicked = false;
-	
+
 	protected String password = "";
 	protected String confirmTip = "Are you sure you want to do this?";
-	
+
 	protected ButtonPresser buttonPresser;
-	
+
 	@Override
 	protected AbstractSymbolImage createSymbolImage(boolean runMode) {
 		ControlSymbolImage csi = new ControlSymbolImage(runMode);
@@ -124,7 +133,17 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 		symbolBrowser.setCurrentState(currentState);
 		symbolBrowser.initCurrentDisplay();
 	}
-	
+
+	@Override
+	public synchronized void paintFigure(final Graphics gfx) {
+		super.paintFigure(gfx);
+		if (!isEnabled()) {
+			gfx.setAlpha(DISABLED_ALPHA);
+			gfx.setBackgroundColor(DISABLE_COLOR);
+			gfx.fillRectangle(bounds);
+		}
+	}
+
 	// ************************************************************
 	// Control listeners
 	// ************************************************************
