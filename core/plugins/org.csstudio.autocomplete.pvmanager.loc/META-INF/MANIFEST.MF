@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.csstudio.autocomplete.pvmanager.loc;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.autocomplete.pvmanager.loc.Activator
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.junit4,
+ org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager.loc,
  org.csstudio.autocomplete
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
