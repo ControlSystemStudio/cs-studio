@@ -35,8 +35,8 @@ public class RequestUtil {
 		 if(mode!=null && mode.equals(WebOPIConstants.SIMPLE_ENTRY_POINT)) //$NON-NLS-1$
 			 return true;	
 		 String s = request.getServletPath();
-		if(s.equals(WebOPIConstants.MOBILE_S_SERVELET_NAME) 
-				|| s.equals(WebOPIConstants.STANDALONE_SERVELET_NAME))
+		if(s.contains(WebOPIConstants.MOBILE_S_SERVELET_NAME) 
+				|| s.contains(WebOPIConstants.STANDALONE_SERVELET_NAME))
 			return true;
 		 return false;
 	}
