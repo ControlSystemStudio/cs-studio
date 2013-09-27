@@ -144,4 +144,14 @@ public class LocalContentDescriptor extends ContentDescriptor {
 		this.complete = complete;
 	}
 
+	@Override
+	public String toString() {
+		return "LocalContentDescriptor [vType=" + vType + ", pvName=" + pvName
+				+ ", initialValues=" + initialValues + ", initialValuesTypes="
+				+ initialValuesTypes + ", completingVType=" + completingVType
+				+ ", completingInitialValue=" + completingInitialValue
+				+ ", complete=" + complete + ", toString()=" + super.toString()
+				+ "]";
+	}
+
 }

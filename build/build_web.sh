@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Check parameters
-ORGANIZATION=$1
-WARPRODUCT=$2
+ORGANIZATION="$1"
+WARPRODUCT="$2"
 
 BUILD="build"
 if [ -z "$ORGANIZATION" ]
@@ -29,7 +29,7 @@ then
 fi
 
 # Clean up
-rm -rf $BUILD
+rm -rf "$BUILD"
 
 # Install Eclipse if not there
 if [[ -d ext/eclipse ]]
@@ -49,15 +49,6 @@ else
   fi
   tar -xzvf eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
   unzip -o eclipse-3.7.2-delta-pack.zip
-
-  if [ "$ORGANIZATION" = "ITER" ]
-  then 
-    if [[ ! -f org.tigris.subclipse-site-1.6.18.zip ]]
-    then
-      wget -O subclipse-site-1.6.18.zip http://subclipse.tigris.org/files/documents/906/49028/site-1.6.18.zip
-    fi
-    unzip -o subclipse-site-1.6.18.zip -d eclipse/dropins/subclipse
-  fi
 
   cd ..
 fi
@@ -83,14 +74,14 @@ else
 fi
 
 function copyIfNotExists {
-  pluginlist=$1;
-  source=$2;
-  target=$3;
+  pluginlist="$1";
+  source="$2";
+  target="$3";
   for dir in $pluginlist
   do
     if [[ ! -d "$target/$dir" && -d "$source/$dir" ]]
     then
-      cp -R $source/$dir $target
+      cp -R "$source/$dir" "$target"
     fi
   done
 }
@@ -98,10 +89,10 @@ function copyIfNotExists {
 mkdir $BUILD
 
 ORGANIZATION_tolower=`echo $ORGANIZATION | awk '{print tolower($0)}'`
-warproductname=`grep '<product' $WARPRODUCT | sed -e 's/.*name="\([^"]*\)".*/\1/' | awk '{print tolower($0)}'`
+warproductname=`grep '<product' "$WARPRODUCT" | sed -e 's/.*name="\([^"]*\)".*/\1/' | awk '{print tolower($0)}'`
 featureid=org.csstudio.${ORGANIZATION_tolower}.${warproductname}.feature
 
-pluginlist=`grep '<plugin id=".*"/>' $WARPRODUCT | sed -e 's,.*<plugin id="\([^"]*\)".*,\1,g'`
+pluginlist=`grep '<plugin id=".*"/>' "$WARPRODUCT" | sed -e 's,.*<plugin id="\([^"]*\)".*,\1,g'`
 pluginlist=`echo $pluginlist | sed -e 's,org.csstudio.platform.libs.epics.macosx ,,g'`
 pluginlist=`echo $pluginlist | sed -e 's,org.csstudio.platform.libs.epics.win32 ,,g'`
 
@@ -114,14 +105,14 @@ osgibundles=`echo $osgibundles | sed -e 's,org.eclipse.osgi[^@]*@start\,,,g'`
 osgibundles=$osgibundles"@start,org.eclipse.osgi.services@start"
 #echo $osgibundles
 
-cp -r rap-build-template/* $BUILD/
+cp -r rap-build-template/* "$BUILD/"
 cd rap-build-template
 for file in `find . -name '*.xml'` `find . -name '*.ini'`
 do
-  mkdir -p ../$BUILD/`dirname $file`
-  sed -e "s/@PLUGINLIST@/${pluginlistwithunpack}/g" $file | \
+  mkdir -p "../$BUILD/"`dirname "$file"`
+  sed -e "s/@PLUGINLIST@/${pluginlistwithunpack}/g" "$file" | \
      sed -e "s/@FEATUREID@/${featureid}/g" | \
-     sed -e "s/@OSGIBUNDLES@/${osgibundles}/g" > ../$BUILD/$file
+     sed -e "s/@OSGIBUNDLES@/${osgibundles}/g" > "../$BUILD/$file"
 done
 cd ..
 
@@ -130,18 +121,18 @@ echo "Prepare sources"
 #echo $pluginlist
 
 mkdir $BUILD/plugins
-copyIfNotExists "$pluginlist" ../products/$ORGANIZATION/plugins $BUILD/plugins
-copyIfNotExists "$pluginlist" ../core/plugins $BUILD/plugins
-copyIfNotExists "$pluginlist" ../applications/plugins $BUILD/plugins
+copyIfNotExists "$pluginlist" "../products/$ORGANIZATION/plugins" "$BUILD/plugins"
+copyIfNotExists "$pluginlist" "../core/plugins" "$BUILD/plugins"
+copyIfNotExists "$pluginlist" "../applications/plugins" "$BUILD/plugins"
 
-mkdir $BUILD/BuildDirectory
-cd $BUILD
+mkdir "$BUILD/BuildDirectory"
+cd "$BUILD"
 mv plugins BuildDirectory
 cd ..
 
 # Run the build
 # XXX Doing it in the plugin directory: it was breaking otherwise
-ABSOLUTE_DIR=$PWD
+ABSOLUTE_DIR="$PWD"
 echo "Start build"
 echo $ABSOLUTE_DIR
 java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar \

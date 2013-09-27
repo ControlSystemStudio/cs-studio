@@ -78,7 +78,7 @@ public class LocalContentParser implements IContentParser {
 				currentDescriptor.setCompletingVType(true);
 			}
 		}
-		currentDescriptor.setvType(vType);
+		currentDescriptor.setvType(vType == null ? null : vType.trim());
 
 		// handle initialValue (ignore macros)
 		Pattern pattern = Pattern.compile("[^\\$]\\(");
@@ -86,14 +86,14 @@ public class LocalContentParser implements IContentParser {
 		if (matcher.find()) {
 			currentDescriptor.setCompletingInitialValue(true);
 			if (pvName == null) // no VType found
-				pvName = locContent.substring(0, matcher.start());
+				pvName = locContent.substring(0, matcher.start() + 1);
 			try {
 				parseInitialValues(locContent.substring(matcher.start() + 1));
 			} catch (IOException ex) {
 				// TODO something
 			}
 		}
-		currentDescriptor.setPvName(pvName);
+		currentDescriptor.setPvName(pvName == null ? locContent.trim() : pvName.trim());
 	}
 
 	private void parseInitialValues(String content) throws IOException {

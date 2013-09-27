@@ -800,6 +800,8 @@ public class ContentProposalPopup extends PopupDialog {
 						showProposalDescription();
 						adapter.proposalSelected(proposal);
 					} else {
+						if (infoPopup != null)
+							infoPopup.close();
 						proposalTable.deselectAll();
 					}
 				}
@@ -1109,7 +1111,8 @@ public class ContentProposalPopup extends PopupDialog {
 		if (adapter.hasSelectedTopProposal()) {
 			int index = proposalList.getTopProposalList().indexOf(
 					adapter.getSelectedTopProposal());
-			selectProposal(index);
+			if (index >= 0)
+				selectProposal(index);
 		}
 	}
 

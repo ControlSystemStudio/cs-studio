@@ -6,4 +6,5 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Xihui Chen <SNS-chenx1@ornl.gov>
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.csstudio.utility.singlesource;bundle-version="1.0.0",
- org.csstudio.rap.core;bundle-version="1.0.0"
+ org.csstudio.rap.core;bundle-version="1.0.0",
+ org.eclipse.rap.rwt

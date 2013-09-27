@@ -74,15 +74,6 @@
       <workbench class="org.csstudio.utility.product.Workbench"/>
       <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
    </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.iter.css.product.CSS_Perspective"
-            icon="icons/perspective.gif"
-            id="org.csstudio.iter.css.product.CSS_Perspective"
-            name="ITER Control System Studio">
-      </perspective>
-   </extension>
 
    <extension
          point="org.eclipse.ui.intro">

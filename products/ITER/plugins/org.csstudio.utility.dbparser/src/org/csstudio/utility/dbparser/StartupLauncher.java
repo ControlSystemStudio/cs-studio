@@ -10,7 +10,7 @@ package org.csstudio.utility.dbparser;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.csstudio.autocomplete.data.Record;
+import org.csstudio.utility.dbparser.data.Record;
 import org.csstudio.utility.dbparser.util.DbUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
