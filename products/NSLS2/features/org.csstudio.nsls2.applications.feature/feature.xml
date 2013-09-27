@@ -26,10 +26,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.trends.databrowser2.opiwidget.feature"
-         version="0.0.0"/>   
-
-   <includes
          id="org.csstudio.nsls2.basic.applications.feature"
          version="0.0.0"
          optional="true"/>
@@ -50,6 +46,10 @@
          id="org.csstudio.boy.feature"
          version="0.0.0"/>
          
+   <includes
+         id="org.csstudio.trends.databrowser2.opiwidget.feature"
+         version="0.0.0"/>   
+
    <includes
          id="org.csstudio.channel.feature"
          version="0.0.0"/>
