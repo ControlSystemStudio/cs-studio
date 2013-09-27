@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSS Olog Authentification adapter for ITER
-Bundle-SymbolicName: org.csstudio.iter.utility.ologauth;singleton:=true
+Bundle-SymbolicName: org.csstudio.iter.utility.ologauthentication;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
