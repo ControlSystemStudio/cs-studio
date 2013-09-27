@@ -123,8 +123,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		if (!isEditMode() && value) 			
-			setCursor(Cursors.HAND);	
+		setCursor(!isEditMode() && value ? Cursors.HAND : null);
 	}
 	
 	@Override
