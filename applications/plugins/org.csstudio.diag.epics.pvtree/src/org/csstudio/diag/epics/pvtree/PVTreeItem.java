@@ -369,13 +369,16 @@ class PVTreeItem
     /** Thread-safe handling of the 'link_pv' update. */
     private void updateLink()
     {
-        Plugin.getLogger().log(Level.FINE,
-                "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
         if (link_pv == null)
         {
             Plugin.getLogger().log(Level.FINE,
                     "{0} already disposed", pv_name);
             return;
+        }
+        else
+        {
+        	Plugin.getLogger().log(Level.FINE,
+                    "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
         }
         disposeLinkPV();
 

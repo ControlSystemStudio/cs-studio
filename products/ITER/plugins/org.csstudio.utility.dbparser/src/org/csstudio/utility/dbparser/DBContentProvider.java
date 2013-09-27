@@ -15,14 +15,14 @@ import java.util.regex.Pattern;
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
-import org.csstudio.autocomplete.data.Field;
-import org.csstudio.autocomplete.data.Record;
 import org.csstudio.autocomplete.parser.ContentDescriptor;
 import org.csstudio.autocomplete.parser.ContentType;
 import org.csstudio.autocomplete.parser.PVDescriptor;
 import org.csstudio.autocomplete.proposals.Proposal;
 import org.csstudio.autocomplete.proposals.ProposalStyle;
 import org.csstudio.autocomplete.proposals.TopProposalFinder;
+import org.csstudio.utility.dbparser.data.Field;
+import org.csstudio.utility.dbparser.data.Record;
 
 /**
  * @author Fred Arnaud (Sopra Group) - ITER

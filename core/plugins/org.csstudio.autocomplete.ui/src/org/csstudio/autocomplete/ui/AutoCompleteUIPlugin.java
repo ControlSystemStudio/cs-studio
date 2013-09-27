@@ -58,7 +58,6 @@ public class AutoCompleteUIPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		fifos = new HashMap<String, LinkedList<String>>();
-		imageRegistry = new ImageRegistry(Display.getDefault());
 		readExtensionRegistry();
 		loadSettings();
 	}
@@ -158,6 +157,9 @@ public class AutoCompleteUIPlugin extends AbstractUIPlugin {
 	 */
 	public Image getImageFromPlugin(final String pluginId,
 			final String relativePath) {
+		if (imageRegistry == null) {
+			imageRegistry = new ImageRegistry(Display.getDefault());
+		}
 		String key = pluginId + "." + relativePath; //$NON-NLS-1$
 		// does image exist
 		if (imageRegistry.get(key) == null) {
