@@ -11,6 +11,6 @@ public class EA4ArchiveReaderFactory implements ArchiveReaderFactory {
     /** {@inheritDoc}*/
     @Override
     public ArchiveReader getArchiveReader(final String url) throws Exception {
-        return new EA4ArchiveReader();
+        return new EA4ArchiveReader(url);
     }
 }

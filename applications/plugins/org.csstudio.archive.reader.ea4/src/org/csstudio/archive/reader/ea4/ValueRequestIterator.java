@@ -42,9 +42,12 @@ public class ValueRequestIterator implements ValueIterator
      * @throws Exception on error
      */
     public ValueRequestIterator(final EA4ArchiveReader reader,
-    		final int key, final String name, final Timestamp start, final Timestamp end, final boolean optimized,
-    		final int count) throws Exception
-    {
+    		final int key, 
+    	    final String name, 
+    	    final Timestamp start,
+    	    final Timestamp end, 
+    	    final boolean optimized,
+    		final int count) throws Exception {
         this.reader = reader;
         this.key = key;
         this.name = name;
@@ -61,8 +64,7 @@ public class ValueRequestIterator implements ValueIterator
      *         (greater or equal to overall start time)
      *  @throws Exception on error
      */
-    private void fetch(final Timestamp fetch_start) throws Exception
-    {
+    private void fetch(final Timestamp fetch_start) throws Exception {
         index = 0;
         samples = reader.getSamples(key, name, fetch_start, end, optimized, count);
         // Empty samples?
@@ -72,22 +74,24 @@ public class ValueRequestIterator implements ValueIterator
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         return samples != null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public VType next() throws Exception
-    {
+    public VType next() throws Exception {
+    	
         final VType result = samples[index];
+        
         ++index;
+        
         if (index < samples.length)
             return result;
 
         // Prepare next batch of samples
         fetch(VTypeHelper.getTimestamp(result));
+        
         if (samples == null)
             return result;
 
@@ -122,25 +126,26 @@ public class ValueRequestIterator implements ValueIterator
         // Which one exactly depends on optimization inside the data server.
 
         // From the end of the new samples, go backward:
-        for (index=samples.length-1;  index>=0;  --index)
-        {   // If we find the previous batch's last sample...
+        for (index=samples.length-1;  index>=0;  --index) {   
+        	
+        	// If we find the previous batch's last sample...
             if (samples[index].equals(result))
                 // Skip all the samples up to and including it
                 break;
         }
+        
         // Nothing to skip? Return as is.
-        if (index < 0)
-            index = 0;
+        if (index < 0) index = 0;
+        
         // Nothing left? Clear samples.
-        if (index >= samples.length-1)
-            samples = null;
+        if (index >= samples.length-1) samples = null;
+        
         return result;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void close()
-    {
+    public void close() {
         samples = null;
     }
 }

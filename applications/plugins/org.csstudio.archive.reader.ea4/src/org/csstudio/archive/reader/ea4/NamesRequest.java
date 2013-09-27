@@ -14,6 +14,7 @@ import org.epics.pvdata.pv.PVStructureArray;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.Structure;
 import org.epics.pvdata.pv.StructureArrayData;
+import org.epics.util.time.Timestamp;
 
 /** Handles the "archiver.names" request and its results. */
 @SuppressWarnings("nls")
@@ -35,6 +36,9 @@ public class NamesRequest {
     final private String pattern;
       
     private String chNames[];
+    private Timestamp starts[];
+    private Timestamp ends[];
+
 	
     /** Create a name lookup.
       * @param pattern Regular expression pattern for the name.
@@ -66,16 +70,37 @@ public class NamesRequest {
         StructureArrayData data = new StructureArrayData();       
         infos.get(0, infos.getLength(), data);
         
-        chNames = new String[data.data.length];
-        for(int i=0; i < data.data.length; i++) {          
+        this.chNames  = new String[data.data.length];      
+        this.starts   = new Timestamp[data.data.length];
+        this.ends     = new Timestamp[data.data.length];
+        
+        for(int i=0; i < data.data.length; i++) {   
+        	
             PVStructure info = data.data[i];
-            chNames[i] = info.getStringField("name").get();        
+            
+            chNames[i]    = info.getStringField("name").get();   
+            
+            int start_secs = info.getIntField("start_sec").get();  
+            int start_nano = info.getIntField("start_nano").get();
+            starts[i] = Timestamp.of(start_secs, start_nano);
+ 
+            int end_secs  = info.getIntField("end_sec").get();  
+            int end_nano  = info.getIntField("end_nano").get();  
+            ends[i] = Timestamp.of(end_secs, end_nano);
         }   
     }
 
     /** @return Returns the name infos that were found. */
     public final String[] getNameInfos() {
         return chNames;
+    }
+    
+    public final Timestamp[] getStarts() {
+        return starts;
+    }
+    
+    public final Timestamp[] getEnds() {
+        return ends;
     }
 	
     /** @return Returns a more or less useful string. */

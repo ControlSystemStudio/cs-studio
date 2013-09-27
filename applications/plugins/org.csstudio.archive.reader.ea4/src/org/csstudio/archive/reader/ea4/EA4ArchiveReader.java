@@ -19,11 +19,11 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class EA4ArchiveReader implements ArchiveReader
 {
-    final private String url = new String();
+    final private String url;
     
-    final private  RPCClientImpl client;
+    final public  RPCClientImpl client;
 
-    final private double REQUEST_TIMEOUT = 3.0;
+    final public double REQUEST_TIMEOUT = 3.0;
     
     final private ServerInfoRequest server_info_request;
     final private ArchivesRequest   archives_request;
@@ -32,7 +32,11 @@ public class EA4ArchiveReader implements ArchiveReader
      *
      * @throws Exception
      */
-    EA4ArchiveReader() throws Exception {
+    EA4ArchiveReader(final String url) throws Exception {
+    	
+    	System.out.println("EA4ArchiverReader");
+    	
+    	this.url = url;
         
         // Start the pvAccess client side.
 	org.epics.pvaccess.ClientFactory.start();
@@ -130,6 +134,7 @@ public class EA4ArchiveReader implements ArchiveReader
     @Override
     public String[] getNamesByPattern(final int key, final String glob_pattern)
             throws Exception {
+    	System.out.println("getNamesByPattern");
         return getNamesByRegExp(key, RegExHelper.fullRegexFromGlob(glob_pattern));
     }
 
@@ -176,7 +181,7 @@ public class EA4ArchiveReader implements ArchiveReader
     }
 
     /** Active request. Synchronize on this for access */
-    // private ValueRequest current_request = null;
+    private ValueRequest current_request = null;
 
     /** Issue request for values for one channel to the data server.
      *  @return Samples
@@ -184,25 +189,26 @@ public class EA4ArchiveReader implements ArchiveReader
      */
     public VType[] getSamples(final int key, final String name,
             final Timestamp start, final Timestamp end,
-            final boolean optimized, final int count) throws Exception
-    {
-        /*
+            final boolean optimized, final int count) throws Exception {
+    	
     	final ValueRequest request;
-        synchronized (this)
-        {
+        synchronized (this) {
+        	
             current_request =
                 new ValueRequest(this, key, name, start, end, optimized, count);
             request = current_request;
         }
-        request.read(xmlrpc);
+        
+        request.read(client, REQUEST_TIMEOUT);
+        
         final VType result[] = request.getSamples();
-        synchronized (this)
-        {
+        
+        synchronized (this) {
             current_request = null;
         }
+        
         return result;
-        */
-        return null;
+ 
     }
 
     /** {@inheritDoc}*/
@@ -211,6 +217,7 @@ public class EA4ArchiveReader implements ArchiveReader
                                       final String name,
                                       final Timestamp start, 
                                       final Timestamp end) throws Exception {
+    	System.out.println("getRawValues");
         return new ValueRequestIterator(this, key, name, start, end, false, 10);
     }
 
@@ -221,26 +228,28 @@ public class EA4ArchiveReader implements ArchiveReader
                                             final Timestamp start, 
                                             final Timestamp end, 
                                             final int count) throws Exception {
-        return new ValueRequestIterator(this, key, name, start, end, true, count);
+      	System.out.println("getOptimizedValues");
+      	return new ValueRequestIterator(this, key, name, start, end, false, 10);
+        // return new ValueRequestIterator(this, key, name, start, end, true, count);
     }
 
     /** {@inheritDoc}*/
     @Override
     public void cancel() {
-        /*
+    	System.out.println("cancel");
         synchronized (this) {
             if (current_request != null)
                 current_request.cancel();
         }
-        */
     }
 
     /** {@inheritDoc}*/
     @Override
     public void close() {
+    	System.out.println("close");
         cancel();
-        if(client != null) client.destroy();
-        org.epics.pvaccess.ClientFactory.stop();
+        // if(client != null) client.destroy();
+        // org.epics.pvaccess.ClientFactory.stop();
     }
     
     private void destroy(){
