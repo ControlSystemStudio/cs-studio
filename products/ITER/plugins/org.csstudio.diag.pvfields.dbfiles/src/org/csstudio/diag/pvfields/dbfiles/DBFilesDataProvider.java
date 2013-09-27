@@ -14,12 +14,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.autocomplete.data.Field;
-import org.csstudio.autocomplete.data.Record;
 import org.csstudio.diag.pvfields.DataProvider;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVInfo;
 import org.csstudio.utility.dbparser.DBContext;
+import org.csstudio.utility.dbparser.data.Field;
+import org.csstudio.utility.dbparser.data.Record;
 
 /**
  * PV Fields Data provider from DB files.
