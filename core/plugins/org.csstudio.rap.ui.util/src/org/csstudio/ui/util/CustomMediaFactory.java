@@ -24,10 +24,9 @@ package org.csstudio.ui.util;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.jface.resource.ColorRegistry;
-import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -46,7 +45,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * All resources created via this factory get automatically disposed, when the
  * application is stopped.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Xihui Chen
  * @version $Revision$
  * 
  */
@@ -56,10 +55,6 @@ public final class CustomMediaFactory {
 	 */
 	private static CustomMediaFactory _instance;
 
-	/**
-	 * The color registry.
-	 */
-	private ColorRegistry _colorRegistry;
 
 	/**
 	 * The image registry.
@@ -67,10 +62,6 @@ public final class CustomMediaFactory {
 	private ImageRegistry _imageRegistry;
 
 	
-	/**
-	 * The font registry.
-	 */
-	private FontRegistry _fontRegistry;
 
 	/**
 	 * Map that holds the provided image descriptors.
@@ -82,9 +73,7 @@ public final class CustomMediaFactory {
 	 */
 	private CustomMediaFactory() {
 		Display display = Display.getDefault();
-		_colorRegistry = new ColorRegistry(display);
 		_imageRegistry = new ImageRegistry(display);
-		_fontRegistry = new FontRegistry(display);
 
 		_imageCache = new HashMap<String, Image>();
 
@@ -137,17 +126,7 @@ public final class CustomMediaFactory {
 	 */
 	public Color getColor(final RGB rgb) {
 		assert rgb != null : "rgb!=null"; //$NON-NLS-1$
-		Color result = null;
-
-		String key = String.valueOf(rgb.hashCode());
-
-		if (!_colorRegistry.hasValueFor(key)) {
-			_colorRegistry.put(key, rgb);
-		}
-
-		result = _colorRegistry.get(key);
-
-		return result;
+		return Graphics.getColor(rgb);
 	}
 
 	/**
@@ -163,14 +142,7 @@ public final class CustomMediaFactory {
 	 */
 	public Font getFont(final String name, final int height, final int style) {
 		assert name != null : "name!=null"; //$NON-NLS-1$
-		FontData fd = new FontData(name, height, style);
-
-		String key = String.valueOf(fd.hashCode());
-		if (!_fontRegistry.hasValueFor(key)) {
-			_fontRegistry.put(key, new FontData[] { fd });
-		}
-
-		return _fontRegistry.get(key);
+		return getFont(new FontData(name, height, style));
 	}
 
 	/**
@@ -182,7 +154,7 @@ public final class CustomMediaFactory {
 	 */
 	public Font getFont(final FontData[] fontData) {
 		FontData f = fontData[0];
-		return getFont(f.getName(), f.getHeight(), f.getStyle());
+		return Graphics.getFont(f);
 	}
 
 	/**
@@ -212,8 +184,7 @@ public final class CustomMediaFactory {
 	 *         given style code.
 	 */
 	public Font getFont(final FontData fontData) {
-		Font font = getFont(fontData.getName(), fontData.getHeight(), fontData.getStyle());
-		return font;
+		return Graphics.getFont(fontData);
 	}
 
 	/**
@@ -224,8 +195,6 @@ public final class CustomMediaFactory {
 	 * @return The system's default font.
 	 */
 	public Font getDefaultFont(final int style) {
-		// FIXME Die default Schriftart bzw. Schriftgr§e hngt vom
-		// Betriebssystem ab
 		return getFont("Arial", 10, style); //$NON-NLS-1$
 	}
 
