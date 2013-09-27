@@ -5,7 +5,7 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
-package org.csstudio.autocomplete.data;
+package org.csstudio.iter.utility.sddreader.data;
 
 import java.util.ArrayList;
 import java.util.List;
