@@ -55,7 +55,10 @@ public class PVManagerPV implements IPV {
 	private volatile PVReader<?> pvReader;
 	private volatile PVWriter<Object> pvWriter;
 	private int minUpdatePeriod;
+	//If start() has been called.
 	private AtomicBoolean startFlag = new AtomicBoolean(false);
+	//If the PV is during start
+	private AtomicBoolean starting = new AtomicBoolean(false);
 	/**
 	 * If the pv is created for read only.
 	 */
@@ -347,19 +350,14 @@ public class PVManagerPV implements IPV {
 	@Override
 	public void start() throws Exception {
 		if (!startFlag.getAndSet(true)) {
-			final CountDownLatch latch = new CountDownLatch(1);
-			//make sure internal start is called before return.
+			starting.set(true);
 			notificationThread.execute(new Runnable() {
-
 				@Override
 				public void run() {
 					internalStart();
-					latch.countDown();
+					starting.set(false);
 				}
 			});
-			if(!latch.await(minUpdatePeriod + 10000, TimeUnit.MILLISECONDS)){
-				throw new Exception("Failed to start pv " + getName());
-			}
 		}else
 			throw new IllegalStateException(
 					NLS.bind("PV {0} has already been started.", getName()));
@@ -372,6 +370,15 @@ public class PVManagerPV implements IPV {
 					NLS.bind("PV {0} has already been stopped or was not started yet.", getName()));
 			return;
 		}		
+		if(starting.get()){
+			notificationThread.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					stop();
+				}
+			});
+		};
 		if (pvReader != null){
 			pvReader.close();
 			if(debug){
