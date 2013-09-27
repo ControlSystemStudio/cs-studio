@@ -85,7 +85,7 @@ public class SpinnerModel extends LabelModel {
 		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step Increment", 
 				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT), true);		
 	
-		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page_Increment",
+		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page Increment",
 				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT), true);
 		
 		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits from PV",
