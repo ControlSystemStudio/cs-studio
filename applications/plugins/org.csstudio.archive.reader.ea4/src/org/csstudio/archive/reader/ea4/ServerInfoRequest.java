@@ -55,10 +55,10 @@ final class ServerInfoRequest {
         // send request
 
 	PVStructure pvRequest = createRequest();
-	PVStructure pvResult = client.request(pvRequest, REQUEST_TIMEOUT);
+	PVStructure pvResult  = client.request(pvRequest, REQUEST_TIMEOUT);
         
         // process result
-        		//	{ int32             ver,
+        //	{ int32             ver,
 		//	  string            desc,
 		//	  string            how[],
 		//	  string            stat[],
@@ -69,7 +69,7 @@ final class ServerInfoRequest {
 		//	  }                 sevr[]
 		//	} = archiver.info()
 
-	version     = pvResult.getIntField("ver").get(); 
+		version     = pvResult.getIntField("ver").get(); 
         description = pvResult.getStringField("desc").get();
         
         // Get 'how'. Silly code to copy that into a type-safe vector.
@@ -84,12 +84,12 @@ final class ServerInfoRequest {
 
     /** @return Returns the version number. */
     public int getVersion() {
-	return version;
+    	return version;
     }
 
     /** @return Returns the description. */
     public String getDescription() {
-	return description;
+    	return description;
     }
 
     /** @return Returns the list of supported request types. */
@@ -119,14 +119,14 @@ final class ServerInfoRequest {
 
     /** @return Returns a more or less useful string for debugging. */
     @Override public String toString() {
-	final StringBuffer result = new StringBuffer();
-	result.append(String.format("Server version : %d\n", version));
-	result.append(String.format("Description    :\n%s", description));
-	result.append("Available request methods:\n");
-	for (int i=0; i<how_strings.length; ++i){
-		result.append(String.format("%d = '%s'\n", i, how_strings[i]));
+    	final StringBuffer result = new StringBuffer();
+    	result.append(String.format("Server version : %d\n", version));
+    	result.append(String.format("Description    :\n%s", description));
+    	result.append("Available request methods:\n");
+    	for (int i=0; i<how_strings.length; ++i){
+    		result.append(String.format("%d = '%s'\n", i, how_strings[i]));
         }
-	return result.toString();
+    	return result.toString();
     }
     
     public String getName() {
@@ -145,7 +145,7 @@ final class ServerInfoRequest {
         return request;     
     }
     
-       // private methods
+    // private methods
     
     private void createRequestType(){
         
@@ -170,8 +170,8 @@ final class ServerInfoRequest {
         StringArrayData howsData = new StringArrayData();
         howsArray.get(0, length, howsData);
         
-	how_strings = new String[length];
-	for (int i=0; i < length; ++i){
+        how_strings = new String[length];
+        for (int i=0; i < length; ++i){
             how_strings[i] = howsData.data[i];
         }
         
@@ -187,8 +187,8 @@ final class ServerInfoRequest {
         StringArrayData statData = new StringArrayData();
         statArray.get(0, length, statData);
         
-	status_strings = new String[length];
-	for (int i=0; i < length; ++i){            
+        status_strings = new String[length];
+        for (int i=0; i < length; ++i){            
             status_strings[i] = statData.data[i];
             // Patch "NO ALARM" into "OK"
             if (status_strings[i].equals("NO_ALARM"))
@@ -209,7 +209,7 @@ final class ServerInfoRequest {
             PVStructure info = data.data[i];
 
             int num        = info.getIntField("num").get();
-	    String  sevr   = info.getStringField("sevr").get();
+            String  sevr   = info.getStringField("sevr").get();
             int int_has_value  = info.getIntField("has_value").get();
             int int_txt_stat   = info.getIntField("txt_stat").get();
             
@@ -220,7 +220,7 @@ final class ServerInfoRequest {
             if(int_txt_stat > 0) txt_stat = true;           
                       
             // Patch "NO ALARM" into "OK"
-	    AlarmSeverity severity;
+            AlarmSeverity severity;
             
             if ("NO_ALARM".equals(sevr)  ||  NO_ALARM.equals(sevr))
             	severity = AlarmSeverity.NONE;

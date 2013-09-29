@@ -169,8 +169,12 @@ public class ValueRequest {
 	    PVStructure pvResult = pvResults.getStructureField("0");
 	     
         final String name = pvResult.getStringField("name").get();
-        final ScalarType type  = ScalarType.values()[pvResult.getIntField("type").get()];
-        final int count   = pvResult.getIntField("count").get();
+        
+        final int pv_type = pvResult.getIntField("type").get();
+        final ScalarType type  = ScalarType.values()[pv_type];
+        final int pv_count   = pvResult.getIntField("count").get();
+        
+        // System.out.println("scalar type: " + pv_type + ", count: " + pv_count);       
 		
 	    PVStructure pvMeta   = pvResult.getStructureField("meta");
 	    PVStructureArray pvValues = pvResult.getStructureArrayField("values");
@@ -193,7 +197,7 @@ public class ValueRequest {
 				labels = null;
 			}
 			
-			samples = decodeValues(type, count, display, labels, pvValues);
+			samples = decodeValues(pv_type, pv_count, display, labels, pvValues);
 			
 		} catch (Exception e) {
 			throw new Exception("Error while decoding values for channel '"
@@ -286,7 +290,7 @@ public class ValueRequest {
 
 	/** Parse the values from the received XML-RPC response. */
 	@SuppressWarnings({ "rawtypes" })
-    private VType[] decodeValues(final ScalarType type, 
+    private VType[] decodeValues(final int type, 
     			final int count, 
     			final Display display,
     		    final List<String> labels, 
@@ -321,33 +325,7 @@ public class ValueRequest {
 			          			
 			switch(type){
 			
-			case pvShort: // 2
-			{				
-				final PVShortArray vvArray = (PVShortArray)
-						pvValue.getScalarArrayField("value", ScalarType.pvShort);	
-				
-				ShortArrayData vvData = new ShortArrayData();
-				vvArray.get(0,  vvArray.getLength(), vvData);
-				
-				if (count == 1) {
-					final int value = vvData.data[0];
-					samples[si] = new ArchiveVNumber(time, 
-													 severity, stat, 
-													 display, 
-													 value);
-				}
-				else {
-					final int values[] = new int[count];
-					for (int vi=0; vi < count; ++vi) values[vi] = vvData.data[vi];
-					samples[si] = new ArchiveVNumberArray(time, 
-								                          severity, stat, 
-								                          display, 
-								                          values);
-				}
-			}
-			break;
-
-			case pvInt: // 3
+			case 3: // pvInt
 			{				
 				final PVIntArray vvArray = (PVIntArray)
 						pvValue.getScalarArrayField("value", ScalarType.pvInt);	
@@ -355,6 +333,8 @@ public class ValueRequest {
 				IntArrayData vvData = new IntArrayData();
 				vvArray.get(0,  vvArray.getLength(), vvData);
 				
+				// System.out.println(si + ", " + vvData.data[0]);
+				
 				if (count == 1) {
 					final int value = vvData.data[0];
 					samples[si] = new ArchiveVNumber(time, 
@@ -373,54 +353,9 @@ public class ValueRequest {
 			}
 			break;
 			
-			case pvFloat: // 9
-			{		
-					final PVFloatArray vvArray = (PVFloatArray)
-						pvValue.getScalarArrayField("value", ScalarType.pvFloat);
-				
-					FloatArrayData vvData = new FloatArrayData();
-					vvArray.get(0,  vvArray.getLength(), vvData);
-				
-					final double values[] = new double[count];				
-					for (int vi=0; vi < count; ++vi) values[vi] = vvData.data[vi];
-				
-					final PVDouble minField = pvValue.getDoubleField("min");
-					final PVDouble maxField = pvValue.getDoubleField("max");
-				
-					// Check for "min", "max".
-					// Only handles min/max for double, but that's OK
-					// since for now that's all that the server does as well.
-				
-					if (minField != null && maxField != null) {   
-						// It's a min/max double, certainly interpolated
-						final double min = minField.get();
-						final double max = maxField.get();
-						samples[si] = new ArchiveVStatistics(time, 
-															severity, stat, 
-															display,
-															values[0], 
-															min, max, 
-															0.0, 1);
-					} else {   
-						// Was this from a min/max/avg request?
-						// Yes: Then we ran into a raw value.
-						// No: Then it's whatever quality we expected in general
-						if (values.length == 1){
-							samples[si] = new ArchiveVNumber(time, 
-															severity, stat, 
-															display, 
-															values[0]);
-						} else {
-							samples[si] = new ArchiveVNumberArray(time, 
-																  severity, stat, 
-																  display, 
-																  values);
-						}
-					}
-			}
-			break;	
+	
 			
-			case pvDouble: // 10
+			case 10: //  pvDouble
 			{		
 					final PVDoubleArray vvArray = (PVDoubleArray)
 						pvValue.getScalarArrayField("value", ScalarType.pvDouble);
@@ -429,12 +364,18 @@ public class ValueRequest {
 					vvArray.get(0,  vvArray.getLength(), vvData);
 				
 					final double values[] = new double[count];				
-					for (int vi=0; vi < count; ++vi) values[vi] = vvData.data[vi];
+					for (int vi=0; vi < count; ++vi) {
+						values[vi] = vvData.data[vi];
+					} 
+					
+					// System.out.println(si + ", " + vvData.data[0]);
 					
 					Structure valueType = pvValue.getStructure();
 				
 					final int minIndex = valueType.getFieldIndex("min");
 					final int maxIndex = valueType.getFieldIndex("max");
+					
+					// System.out.println("min: " + minIndex + ", max: " + maxIndex);
 				
 					// Check for "min", "max".
 					// Only handles min/max for double, but that's OK
@@ -469,7 +410,7 @@ public class ValueRequest {
 			}
 			break;	
 				
-			case pvString: // 11
+			case 11: //  pvString
 			{
 				final PVStringArray vvArray = (PVStringArray)
 					pvValue.getScalarArrayField("value", ScalarType.pvString);	

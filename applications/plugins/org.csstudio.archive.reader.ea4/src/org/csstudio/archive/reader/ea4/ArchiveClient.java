@@ -42,9 +42,9 @@ public class ArchiveClient {
                     ", path: " + aInfos[i].getDescription());
         }
         
-        int key = 1;
+        int key           = 1;
         boolean optimized = false;
-        int count = 21;
+        int count         = 21;
         
         System.out.println("NamesRequest: ");
        
@@ -58,8 +58,8 @@ public class ArchiveClient {
         
         System.out.println("ValuesRequest: ");
         
-        int start_delta = 300000000;
-        int end_delta   = 300000000;
+        int start_delta = -10;
+        int end_delta   =  10;
         
         for (int i = 0; i < chNames.length; i++){
         	

@@ -34,12 +34,10 @@ public class EA4ArchiveReader implements ArchiveReader
      */
     EA4ArchiveReader(final String url) throws Exception {
     	
-    	System.out.println("EA4ArchiverReader");
-    	
     	this.url = url;
         
         // Start the pvAccess client side.
-	org.epics.pvaccess.ClientFactory.start();
+    	ClientFactorySingleton.getInstance();
  
         try {
             
@@ -59,11 +57,11 @@ public class EA4ArchiveReader implements ArchiveReader
             destroy();
 	    throw new Exception("Archiver Request was not successful, " +
                 "service responded with an error: " + ex.getMessage());
-	} catch (IllegalStateException ex) {
+        } catch (IllegalStateException ex) {
             destroy();
-	    throw new Exception("Failed to connect Archive Service: " 
+            throw new Exception("Failed to connect Archive Service: " 
                         + ex.getMessage());
-	} 
+        } 
     }
 
     /** {@inheritDoc}*/
@@ -81,7 +79,7 @@ public class EA4ArchiveReader implements ArchiveReader
     /** {@inheritDoc}*/
     @Override
     public String getDescription() {
-        
+    	
         final StringBuilder buf = new StringBuilder();
 
         buf.append(server_info_request.getDescription());
@@ -133,8 +131,7 @@ public class EA4ArchiveReader implements ArchiveReader
     /** {@inheritDoc}*/
     @Override
     public String[] getNamesByPattern(final int key, final String glob_pattern)
-            throws Exception {
-    	System.out.println("getNamesByPattern");
+            throws Exception {   	
         return getNamesByRegExp(key, RegExHelper.fullRegexFromGlob(glob_pattern));
     }
 
@@ -156,9 +153,11 @@ public class EA4ArchiveReader implements ArchiveReader
      */
     int getRequestCode(String request_name) throws Exception {
         final String request_types[] = server_info_request.getRequestTypes();
-        for (int i=0; i<request_types.length; ++i)
+        
+        for (int i=0; i<request_types.length; ++i){
             if (request_types[i].equalsIgnoreCase(request_name)) // add  IgnoreCase Albert
                 return i;
+        }
         throw new Exception("Unsupported request type '" + request_name + "'");
     }
 
@@ -169,7 +168,6 @@ public class EA4ArchiveReader implements ArchiveReader
 
     /** @return EPICS/ChannelArchiver status string for given code */
     String getStatus(final SeverityImpl severity, final int status) {
-        
         if (severity.statusIsText()) {
             final String[] status_strings = server_info_request.getStatusStrings();
             if (status >= 0  &&  status < status_strings.length)
@@ -190,7 +188,7 @@ public class EA4ArchiveReader implements ArchiveReader
     public VType[] getSamples(final int key, final String name,
             final Timestamp start, final Timestamp end,
             final boolean optimized, final int count) throws Exception {
-    	
+    	    	
     	final ValueRequest request;
         synchronized (this) {
         	
@@ -202,6 +200,8 @@ public class EA4ArchiveReader implements ArchiveReader
         request.read(client, REQUEST_TIMEOUT);
         
         final VType result[] = request.getSamples();
+        
+        // System.out.println("EA4ArchiverReader::getSamples, size: " + result.length);
         
         synchronized (this) {
             current_request = null;
@@ -217,7 +217,6 @@ public class EA4ArchiveReader implements ArchiveReader
                                       final String name,
                                       final Timestamp start, 
                                       final Timestamp end) throws Exception {
-    	System.out.println("getRawValues");
         return new ValueRequestIterator(this, key, name, start, end, false, 10);
     }
 
@@ -228,7 +227,6 @@ public class EA4ArchiveReader implements ArchiveReader
                                             final Timestamp start, 
                                             final Timestamp end, 
                                             final int count) throws Exception {
-      	System.out.println("getOptimizedValues");
       	return new ValueRequestIterator(this, key, name, start, end, false, 10);
         // return new ValueRequestIterator(this, key, name, start, end, true, count);
     }
@@ -236,7 +234,6 @@ public class EA4ArchiveReader implements ArchiveReader
     /** {@inheritDoc}*/
     @Override
     public void cancel() {
-    	System.out.println("cancel");
         synchronized (this) {
             if (current_request != null)
                 current_request.cancel();
@@ -246,16 +243,16 @@ public class EA4ArchiveReader implements ArchiveReader
     /** {@inheritDoc}*/
     @Override
     public void close() {
-    	System.out.println("close");
         cancel();
         // if(client != null) client.destroy();
         // org.epics.pvaccess.ClientFactory.stop();
     }
     
     private void destroy(){
+    	System.out.println("EA4ArchiverReader::destroy");
         cancel();
         if(client != null) client.destroy();
-        org.epics.pvaccess.ClientFactory.stop();
+        // org.epics.pvaccess.ClientFactory.stop();
     }
 }
 
