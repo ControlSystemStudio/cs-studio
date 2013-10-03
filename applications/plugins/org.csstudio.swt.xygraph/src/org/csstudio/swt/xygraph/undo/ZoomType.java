@@ -82,6 +82,12 @@ public enum ZoomType{
 				XYGraphMediaFactory.getInstance().getImage("images/PanningCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEALL),
 				
+        /** Hover labels */
+		HOVER_LABELS(Messages.Zoom_HoverLabels,
+				XYGraphMediaFactory.getInstance().getImage("images/HoverLabels.png"),
+				XYGraphMediaFactory.getTransparentImage(),
+                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_CROSS),
+				
         /** Disarm zoom behavior */
 		NONE(Messages.Zoom_None,
 				XYGraphMediaFactory.getInstance().getImage("images/MouseArrow.png"), null,
@@ -107,7 +113,7 @@ public enum ZoomType{
 			this.description = description;
 			this.iconImage = iconImage;
 			if(cursorImage == null)
-				cursor = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
+				cursor = new Cursor(Display.getDefault(), backUpSWTCursorType);
 			else
 				cursor = SingleSourceHelper.createCursor(
 						Display.getDefault(), cursorImage.getImageData(),
