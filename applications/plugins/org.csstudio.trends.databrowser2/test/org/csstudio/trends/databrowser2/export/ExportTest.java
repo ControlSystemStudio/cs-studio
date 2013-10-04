@@ -11,6 +11,8 @@ import org.csstudio.archive.vtype.Style;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,7 +38,9 @@ public class ExportTest implements ExportErrorHandler
         model.addItem(createPVItem("DTL_Vac:CCG301:Pcalc"));
         model.addItem(createPVItem("SCL_LLRF:IOC01a:Load"));
         model.getItem(0).setDisplayName("CPU Load");
-        model.setTimespan(2*60*24);
+        final Timestamp end_time = Timestamp.now();
+        final Timestamp start_time = end_time.minus(TimeDuration.ofHours(2*24));
+        model.setTimerange(start_time, end_time);
         return model;
     }
 

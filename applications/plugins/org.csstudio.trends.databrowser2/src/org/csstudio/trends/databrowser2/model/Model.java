@@ -197,6 +197,9 @@ public class Model
     /** <code>true</code> if scrolling is enabled */
     private boolean scroll_enabled = true;
 
+    // TODO Need to store start/end 'spec'
+    private String start_spec, end_spec;
+    
     /** Time span of data in seconds */
     private double time_span = Preferences.getTimeSpan();
 
@@ -611,8 +614,12 @@ public class Model
         return time_span;
     }
 
-    /** @param start_time Start and ..
+    /** Set time range.
+     *  <p>In 'scroll' mode, this determines the displayed time range.
+     *  Otherwise, it determines the absolute start and end times
+     *  @param start_time Start and ..
      *  @param end_time   end time of the range to display
+     *  TODO Use time_spec
      */
     public void setTimerange(final Timestamp start_time, final Timestamp end_time)
     {
@@ -623,23 +630,6 @@ public class Model
             {
                 this.end_time = end_time;
                 time_span = new_span;
-            }
-        }
-        // Notify listeners
-        for (ModelListener listener : listeners)
-            listener.changedTimerange();
-    }
-
-    /** @param time_span time span of data in seconds
-     *  @see #isScrollEnabled()
-     */
-    public void setTimespan(final double time_span)
-    {
-        if (time_span > 0)
-        {
-            synchronized (this)
-            {
-                this.time_span = time_span;
             }
         }
         // Notify listeners

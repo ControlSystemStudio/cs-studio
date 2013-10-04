@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.eclipse.swt.graphics.RGB;
+import org.epics.util.time.TimeDuration;
 import org.junit.Test;
 
 /** JUnit test of the ModelListener
@@ -173,7 +174,7 @@ public class ModelListenerUnitTest
         model.setTimerange(model.getStartTime(), model.getEndTime());
         assertEquals(6, changes);
 
-        model.setTimespan(120);
+        model.setTimerange(model.getEndTime().minus(TimeDuration.ofMinutes(2)), model.getEndTime());
         assertEquals(7, changes);
 
         // Visibility

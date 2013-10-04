@@ -67,17 +67,8 @@ public class ChangeTimerangeCommand implements IUndoableCommand
      */
     private void apply(final boolean scroll, final Timestamp start, final Timestamp end)
     {
-        if (scroll)
-        {
-            model.enableScrolling(true);
-            final double time_span = end.durationFrom(start).toSeconds();
-            model.setTimespan(time_span);
-        }
-        else
-        {
-            model.enableScrolling(false);
-            model.setTimerange(start, end);
-        }
+    	model.enableScrolling(scroll);
+        model.setTimerange(start, end);
     }
 
     /** @return Command name that appears in undo/redo menu */

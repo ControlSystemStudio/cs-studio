@@ -16,6 +16,8 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
 import org.eclipse.swt.graphics.RGB;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of Model's XML config read/write
@@ -86,8 +88,10 @@ public class ModelReadWriteUnitTest
     private Model createModel() throws Exception
     {
         final Model model = new Model();
-        model.setTimespan(60*60 + 10);
         model.enableScrolling(true);
+        final Timestamp end_time = Timestamp.now();
+        final Timestamp start_time = end_time.minus(TimeDuration.ofSeconds(60*60 + 10));
+        model.setTimerange(start_time, end_time);
 
         model.addAxis(new AxisConfig(true, "Value", new RGB(0, 0, 255), 0, 10, false, false));
 

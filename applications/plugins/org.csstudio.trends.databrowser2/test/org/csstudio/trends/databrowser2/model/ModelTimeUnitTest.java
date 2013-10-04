@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 import static org.csstudio.utility.test.HamcrestMatchers.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
@@ -27,7 +28,9 @@ public class ModelTimeUnitTest
         final Model model = new Model();
 
         // Check scroll mode
-        model.setTimespan(hour);
+        final Timestamp end_time = Timestamp.now();
+        final Timestamp start_time = end_time.minus(TimeDuration.ofSeconds(hour));
+        model.setTimerange(start_time, end_time);
         assertEquals(true, model.isScrollEnabled());
         assertEquals(hour, model.getTimespan(), 1.0);
 
