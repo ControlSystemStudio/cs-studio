@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.logging.Level;
@@ -22,7 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.csstudio.apputil.macros.IMacroTableProvider;
 import org.csstudio.apputil.macros.InfiniteLoopException;
 import org.csstudio.apputil.macros.MacroUtil;
-import org.csstudio.apputil.time.AbsoluteTimeParser;
+import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.xml.DOMHelper;
@@ -197,7 +196,7 @@ public class Model
     /** <code>true</code> if scrolling is enabled */
     private boolean scroll_enabled = true;
 
-    // TODO Need to store start/end 'spec'
+    /** Start and end time specification */
     private String start_spec, end_spec;
     
     /** Time span of data in seconds */
@@ -222,6 +221,13 @@ public class Model
      */
 	private XYGraphSettings graphSettings = new XYGraphSettings();
 
+	public Model()
+	{
+		start_spec = "-" + PeriodFormat.formatSeconds(time_span);
+		end_spec = RelativeTime.NOW;
+	}
+	
+	
     public XYGraphSettings getGraphSettings() {
 		return graphSettings;
 	}
@@ -617,26 +623,46 @@ public class Model
     /** Set time range.
      *  <p>In 'scroll' mode, this determines the displayed time range.
      *  Otherwise, it determines the absolute start and end times
-     *  @param start_time Start and ..
-     *  @param end_time   end time of the range to display
-     *  TODO Use time_spec
+     *  @param start_spec Start and ..
+     *  @param end_spec   end time specification of the range to display
+     *  @throws Exception on error in the time specifications
      */
-    public void setTimerange(final Timestamp start_time, final Timestamp end_time)
+    public void setTimerange(final String start_spec, final String end_spec) throws Exception
     {
+        final StartEndTimeParser times = new StartEndTimeParser(start_spec, end_spec);
+        final Timestamp start_time = TimestampHelper.fromCalendar(times.getStart());
+        final Timestamp end_time = TimestampHelper.fromCalendar(times.getEnd());
         final double new_span = end_time.durationFrom(start_time).toSeconds();
         if (new_span > 0)
         {
             synchronized (this)
             {
+            	if (this.start_spec.equals(start_spec)  &&
+            	    this.end_spec.equals(end_spec))
+            		return;
+            	this.start_spec = start_spec;
+            	this.end_spec = end_spec;
                 this.end_time = end_time;
                 time_span = new_span;
             }
+            // Notify listeners
+            for (ModelListener listener : listeners)
+            	listener.changedTimerange();
         }
-        // Notify listeners
-        for (ModelListener listener : listeners)
-            listener.changedTimerange();
     }
 
+    /** @return Start time specification of the data range */
+    synchronized public String getStartSpec()
+    {
+        return start_spec;
+    }
+
+    /** @return End time specification of the data range */
+    synchronized public String getEndSpec()
+    {
+        return end_spec;
+    }
+    
     /** @return Start time of the data range
      *  @see #isScrollEnabled()
      */
@@ -899,19 +925,11 @@ public class Model
         // Time axis
         XMLWriter.XML(writer, 1, TAG_SCROLL, isScrollEnabled());
         XMLWriter.XML(writer, 1, TAG_UPDATE_PERIOD, getUpdatePeriod());
-        if (isScrollEnabled())
+        synchronized (this)
         {
-            XMLWriter.XML(writer, 1, TAG_START, new RelativeTime(-getTimespan()));
-            XMLWriter.XML(writer, 1, TAG_END, RelativeTime.NOW);
-        }
-        else
-        {
-            final Calendar cal = Calendar.getInstance();
-            cal.setTime(getStartTime().toDate());
-            XMLWriter.XML(writer, 1, TAG_START, AbsoluteTimeParser.format(cal));
-            cal.setTime(getEndTime().toDate());
-            XMLWriter.XML(writer, 1, TAG_END, AbsoluteTimeParser.format(cal));
-        }
+        	XMLWriter.XML(writer, 1, TAG_START, start_spec);
+        	XMLWriter.XML(writer, 1, TAG_END, end_spec);			
+		}
 
         // Time axis config
         if (timeAxis != null)
@@ -996,12 +1014,7 @@ public class Model
         final String start = DOMHelper.getSubelementString(root_node, TAG_START);
         final String end = DOMHelper.getSubelementString(root_node, TAG_END);
         if (start.length() > 0  &&  end.length() > 0)
-        {
-            final StartEndTimeParser times = new StartEndTimeParser(start, end);
-            setTimerange(TimestampHelper.fromCalendar(times.getStart()),
-                         TimestampHelper.fromCalendar(times.getEnd()));
-        }
-
+            setTimerange(start, end);
         RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
         if (color != null)
             background = color;

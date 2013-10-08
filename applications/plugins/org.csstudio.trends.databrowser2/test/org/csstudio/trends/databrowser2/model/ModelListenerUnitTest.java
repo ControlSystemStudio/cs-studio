@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.eclipse.swt.graphics.RGB;
-import org.epics.util.time.TimeDuration;
 import org.junit.Test;
 
 /** JUnit test of the ModelListener
@@ -170,24 +169,25 @@ public class ModelListenerUnitTest
         model.enableScrolling(false);
         assertEquals(5, changes);
 
-        // Change start/end
-        model.setTimerange(model.getStartTime(), model.getEndTime());
-        assertEquals(6, changes);
+        // Re-set the current time, no change
+        model.setTimerange(model.getStartSpec(), model.getEndSpec());
+        assertEquals(5, changes);
 
-        model.setTimerange(model.getEndTime().minus(TimeDuration.ofMinutes(2)), model.getEndTime());
-        assertEquals(7, changes);
+        // Change start/end
+        model.setTimerange("-2 min", "now");
+        assertEquals(6, changes);
 
         // Visibility
         item.setVisible(true);
+        assertEquals(6, changes);
+        item.setVisible(false);
         assertEquals(7, changes);
         item.setVisible(false);
-        assertEquals(8, changes);
-        item.setVisible(false);
-        assertEquals(8, changes);
+        assertEquals(7, changes);
 
         // Change waveform index
         item.setWaveformIndex(1);
-        assertEquals(9, changes);
+        assertEquals(8, changes);
 
         // Remove
         assertEquals(0, removals);
@@ -207,9 +207,9 @@ public class ModelListenerUnitTest
 
         // Change model some more
         model.setUpdatePeriod(10.0);
-        assertEquals(10, changes);
+        assertEquals(9, changes);
 
         model.setPlotBackground(new RGB(1,2,3));
-        assertEquals(11, changes);
+        assertEquals(10, changes);
     }
 }
