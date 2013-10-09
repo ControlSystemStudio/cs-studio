@@ -133,10 +133,9 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         }
         ReadFunction<T> aggregatedFunction = aggregatedPVExpression.getFunction();
         
-        // TODO: we are ignoring the exception handler for now
-        
         PVReaderDirector<T> director = new PVReaderDirector<T>(pv, aggregatedFunction, PVManager.getReadScannerExecutorService(),
                 notificationExecutor, dataSource, exceptionHandler);
+        pv.setDirector(director);
         if (timeout != null) {
             if (timeoutMessage == null)
                 timeoutMessage = "Read timeout";
