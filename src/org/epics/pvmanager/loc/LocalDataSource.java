@@ -24,7 +24,7 @@ import org.epics.util.array.ArrayDouble;
  *
  * @author carcassi
  */
-public final class LocalDataSource extends DataSource {
+public class LocalDataSource extends DataSource {
 
     private final boolean zeroInitialization;
 
