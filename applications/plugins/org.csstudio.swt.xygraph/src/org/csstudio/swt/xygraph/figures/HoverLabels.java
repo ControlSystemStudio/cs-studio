@@ -187,7 +187,7 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 		graphics.setLineWidth(1);
 		graphics.drawLine(cursor_x, bounds.y, cursor_x, bounds.y
 				+ bounds.height);
-		graphics.drawLine(bounds.x, cursor_y, bounds.x + bounds.width, cursor_y);
+//		graphics.drawLine(bounds.x, cursor_y, bounds.x + bounds.width, cursor_y);
 	}
 
 	private void drawLabels(Graphics graphics) {
@@ -304,6 +304,8 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 		// the cross
 		labelList.clear();
 		for (Trace trace : traceList) {
+			if(!trace.isVisible())
+				continue;
 			final Axis xAxis = trace.getXAxis();
 
 			final double xValue = xAxis.getPositionValue(cursor_x, false);
