@@ -9,7 +9,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.help,
- org.eclipse.help.appserver,
  org.eclipse.help.base,
  org.eclipse.help.ui,
  org.eclipse.help.webapp,
