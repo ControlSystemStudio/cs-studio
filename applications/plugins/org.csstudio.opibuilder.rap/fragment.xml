@@ -75,4 +75,13 @@
             class="org.csstudio.webopi.RedirectServlet">
       </servlet>
    </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.filters">
+      <filter
+            alias="/"
+            class="org.csstudio.webopi.RedirectServletFilter"
+            load-on-startup="true">
+      </filter>
+   </extension>
+   
 </fragment>

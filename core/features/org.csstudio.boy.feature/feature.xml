@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.boy.feature"
+      label="CS-Studio Operator Interface (BOY)"
+      version="3.2.0.qualifier"
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
+
+   <description url="http://controlsystemstudio.github.io/">
+      Operator Interface support with BOY.
+   </description>
+
+   <copyright url="http://controlsystemstudio.github.io/">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse public license.
+   </license>
+
+   <includes
+         id="org.csstudio.opibuilder.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import feature="org.csstudio.core.feature" version="3.2.0.qualifier"/>
+      <import feature="org.csstudio.utilities.feature" version="3.2.0.qualifier"/>
+      <import plugin="org.epics.vtype" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.simplepv" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.csstudio.graphene"/>
+      <import plugin="org.csstudio.opibuilder.widgets" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.graphene"/>
+      <import plugin="org.csstudio.utility.pvmanager.graphene"/>
+      <import plugin="org.csstudio.utility.pvmanager.widgets" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder.widgets.extra" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui.toolbox" version="3.2.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.simplepv"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.simplepv.pvmanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.graphene.opiwidgets"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.opibuilder.widgets.extra"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

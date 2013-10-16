@@ -12,6 +12,7 @@ import org.csstudio.opibuilder.widgetActions.OpenFileAction;
 import org.csstudio.rap.core.DisplayManager;
 import org.csstudio.rap.core.preferences.ServerScope;
 import org.csstudio.rap.core.security.SecurityService;
+import org.csstudio.utility.singlesource.PathEditorInput;
 import org.csstudio.webopi.WebOPIConstants;
 import org.csstudio.webopi.util.RequestUtil;
 import org.eclipse.core.runtime.IPath;
@@ -32,9 +33,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 public class SingleSourceHelperImpl extends SingleSourceHelper {
+	
+	public static final String WEBDATABROWSER_CONTEXT = "/d";
 
 	@Override
 	protected GC iGetImageGC(Image image) {
@@ -132,7 +137,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 			IPath opiPath = null;
 			if(runnerInput == null){				
 				String s = RWT.getRequest().getServletPath();
-				if(s.equals(WebOPIConstants.MOBILE_S_SERVELET_NAME)) //$NON-NLS-1$
+				if(s.contains(WebOPIConstants.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
 					opiPath = PreferencesHelper.getMobileStartupOPI();
 				else
 					opiPath = PreferencesHelper.getStartupOPI();
@@ -181,6 +186,17 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 	@Override
 	protected boolean iRapIsLoggedIn(Display display) {
 		return SecurityService.isLoggedIn(display);
+	}
+
+	@Override
+	protected void iOpenEditor(IWorkbenchPage page, IPath path)
+			throws Exception {
+		IEditorDescriptor defaultEditor = page.getWorkbenchWindow().getWorkbench().
+						getEditorRegistry().getDefaultEditor(path.toString());
+		if(defaultEditor == null)
+			throw new Exception("No editor was found for this file " + path); 
+		String id = defaultEditor.getId();
+		page.openEditor(new PathEditorInput(path), id);
 	}
 
 }

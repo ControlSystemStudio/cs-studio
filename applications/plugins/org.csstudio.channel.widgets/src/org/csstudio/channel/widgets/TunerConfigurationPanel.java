@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.ui.util.widgets.StringListSelectionWidget;
+import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationPanel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,7 +21,7 @@ import org.eclipse.swt.widgets.TabItem;
  * @author shroffk
  * 
  */
-public class TunerConfigurationPanel extends AbstractConfigurationComposite {
+public class TunerConfigurationPanel extends AbstractConfigurationPanel{
 
 
 

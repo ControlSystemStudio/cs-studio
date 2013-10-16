@@ -23,6 +23,13 @@ import org.csstudio.platform.utility.rdb.internal.RDBImpl;
  *  After a timeout, the connection is closed.
  *  On next access, it is re-opened.
  *  
+ *  <p>In Sept. 2013, <code>releaseConnection()</code>
+ *  was added, and must be called.
+ *  Before, the connection would simply be closed after the timeout,
+ *  even if the user of the connection was still within an operation.
+ *  Now, the user of the connection needs to release it, and only
+ *  then will the timeout start.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -107,17 +114,21 @@ public class RDBCache
      */
     public synchronized Connection getConnection() throws Exception
     {
+        if (expire != null)
+            expire.cancel();
         if (connection == null)
         {
             Activator.getLogger().log(Level.FINE, toString() + " connecting");
             connection = impl.connect(url, user, password);
         }
-        reset();
         return connection;
     }
-    
-    /** Reset the expiration timer */
-    private synchronized void reset()
+
+    /** Release the connection.
+     *  Starts an expiration timer to close
+     *  the connection unless it's used again within the timeout.
+     */
+    public synchronized void releaseConnection()
     {
         if (expire != null)
             expire.cancel();

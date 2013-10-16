@@ -15,9 +15,11 @@
  ******************************************************************************/
 package org.csstudio.scan.server.app;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
+import org.csstudio.apputil.macros.IMacroTableProvider;
+import org.csstudio.apputil.macros.MacroTable;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
@@ -62,6 +64,7 @@ public class ConsoleCommands implements CommandProvider
         buf.append("\tinfo            - Scan server info\n");
         buf.append("\tdevices         - List default devices\n");
         buf.append("\tdevices ID      - List devices used by scan with given ID\n");
+        buf.append("\tmacros          - List macros\n");
         buf.append("\tdata  ID        - Dump log data for scan with given ID\n");
         buf.append("\tpause           - Pause current scan\n");
         buf.append("\tresume          - Resume paused scan\n");
@@ -95,13 +98,12 @@ public class ConsoleCommands implements CommandProvider
                 for (int i=infos.size()-1; i>=0; --i)
                     intp.println(infos.get(i).toString());
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }
         return null;
     }
-
 
     /** 'info' command */
     public Object _info(final CommandInterpreter intp)
@@ -110,13 +112,12 @@ public class ConsoleCommands implements CommandProvider
         {
         	intp.println(server.getInfo());
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }
         return null;
     }
-
 
     /** 'devices' command */
     public Object _devices(final CommandInterpreter intp)
@@ -144,6 +145,22 @@ public class ConsoleCommands implements CommandProvider
         return null;
     }
 
+    /** 'macros' command */
+    public Object _macros(final CommandInterpreter intp)
+    {
+        try
+        {
+            final IMacroTableProvider macros = new MacroTable(ScanSystemPreferences.getMacros());
+            intp.println(macros);
+        }
+        catch (Throwable ex)
+        {
+            intp.printStackTrace(ex);
+            return null;
+        }
+
+        return null;
+    }
 
     /** 'commands' command */
     public Object _commands(final CommandInterpreter intp)
@@ -168,7 +185,6 @@ public class ConsoleCommands implements CommandProvider
         }
         return null;
     }
-
     
     /** 'data' command */
     public Object _data(final CommandInterpreter intp)
@@ -185,6 +201,7 @@ public class ConsoleCommands implements CommandProvider
             final long id = Long.parseLong(arg.trim());
             // Dump data
             final ScanData data = server.getScanData(id);
+            final long last_serial = server.getLastScanDataSerial(id);
             final ScanDataIterator sheet = new ScanDataIterator(data);
 
             // Header: Device names
@@ -199,6 +216,8 @@ public class ConsoleCommands implements CommandProvider
                 	intp.print(sample + "  ");
                 intp.println();
             }
+            intp.println("Last sample serial: " + last_serial);
+
             // Dump scan info
             intp.println(server.getScanInfo(id));
         }
@@ -209,7 +228,6 @@ public class ConsoleCommands implements CommandProvider
         return null;
     }
 
-
     /** 'pause' command */
     public Object _pause(final CommandInterpreter intp)
     {
@@ -217,7 +235,7 @@ public class ConsoleCommands implements CommandProvider
         {
             server.pause(-1);
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }
@@ -231,7 +249,7 @@ public class ConsoleCommands implements CommandProvider
         {
             server.resume(-1);
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }
@@ -267,7 +285,7 @@ public class ConsoleCommands implements CommandProvider
         {
             server.removeCompletedScans();
         }
-        catch (RemoteException ex)
+        catch (Exception ex)
         {
             intp.printStackTrace(ex);
         }

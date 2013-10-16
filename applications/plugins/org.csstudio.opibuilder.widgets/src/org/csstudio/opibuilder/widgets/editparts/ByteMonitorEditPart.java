@@ -7,28 +7,24 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.pvmanager.PMObjectValue;
-import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
 import org.csstudio.opibuilder.scriptUtil.ConsoleUtil;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.ByteMonitorModel;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.ByteMonitorFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.osgi.util.NLS;
+import org.epics.vtype.VType;
 
 /**
  * This class implements the widget edit part for the Byte Monitor widget.  This
  * displays the bits in a value as s series of LEDs
  * @author hammonds
- *
+ * @author Takashi Nakamoto - added labels property
  */
 public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
@@ -76,6 +72,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getSWTColor() );
 		fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getSWTColor() );
 		fig.setEffect3D((Boolean)getPropertyValue(ByteMonitorModel.PROP_EFFECT3D));
+		fig.setLabels(model.getLabels());
 		fig.setValue(0x1111);
 		fig.drawValue();
 
@@ -114,22 +111,13 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				boolean succeed = true;
-				if((newValue != null) && (newValue instanceof IValue) ){
-					if(newValue instanceof PMObjectValue){
-						Number number = PVManagerHelper.getNumber(
-								((PMObjectValue)newValue).getLatestValue());
-						if(number != null){
-							setValue(number);
-						}else
-							succeed = false;
-					}else if(newValue instanceof IDoubleValue)
-						setValue(((IDoubleValue)newValue).getValue());
-					else if(newValue instanceof ILongValue)
-						setValue(((ILongValue)newValue).getValue());
-					else if(newValue instanceof IEnumeratedValue)
-						setValue(((IEnumeratedValue)newValue).getValue());
-					else
+				if((newValue != null) && (newValue instanceof VType) ){					
+					Number number = VTypeHelper.getNumber(((VType) newValue));
+					if (number != null) {
+						setValue(number);
+					} else
 						succeed = false;
+					
 				}
 				else {
 		            succeed = false;
@@ -273,7 +261,18 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		};
 		setPropertyChangeHandler(ByteMonitorModel.PROP_EFFECT3D, effect3DHandler);
 
-
+		// labels
+		IWidgetPropertyChangeHandler labelsHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ByteMonitorFigure bmFig = (ByteMonitorFigure) refreshableFigure;
+				ByteMonitorModel model = getWidgetModel();
+				bmFig.setLabels(model.getLabels());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ByteMonitorModel.PROP_LABELS, labelsHandler);
 	}
 
 }

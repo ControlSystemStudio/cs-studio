@@ -166,13 +166,38 @@ public class XMLUtil {
 		IPath opiPath = displayModel.getOpiFilePath();
 		if (OPIBuilderPlugin.isRAP() && opiPath != null
 				&& !SingleSourceHelper.rapIsLoggedIn(display)) {
-			String securedPath = PreferencesHelper.getSecuredOpiDirectory();
-			if (securedPath != null && opiPath.toString().startsWith(securedPath)) {
-				if (!SingleSourceHelper.rapAuthenticate(display)) {
-					inputStream.close();
-					throw new FailedLoginException();
+			//check secured opi paths
+			String[] securedPaths = PreferencesHelper.getSecuredOpiPaths();
+			if (securedPaths != null){
+				for(String securedPath : securedPaths){
+					if(opiPath.toString().startsWith(securedPath)) {
+						if (!SingleSourceHelper.rapAuthenticate(display)) {
+							inputStream.close();
+							throw new FailedLoginException();
+						}
+					}
+				}				
+			}
+			//check unsecured opi paths
+			if(PreferencesHelper.isWholeSiteSecured()){
+				String[] unSecuredPaths = PreferencesHelper.getUnSecuredOpiPaths();
+				if (unSecuredPaths != null){
+					boolean shouldBeSecured=true;
+					for(String unSecuredPath : unSecuredPaths){
+						if(opiPath.toString().startsWith(unSecuredPath)) {
+							shouldBeSecured=false;
+							break;
+						}
+					}				
+					if(shouldBeSecured){
+						if (!SingleSourceHelper.rapAuthenticate(display)) {
+							inputStream.close();
+							throw new FailedLoginException();
+						}
+					}
 				}
 			}
+			
 		}
 		
 		SAXBuilder saxBuilder = new SAXBuilder();
@@ -225,9 +250,8 @@ public class XMLUtil {
 
 	/**Convert XML Element to a widget model.
 	 * @param element
-	 * @param displayModel If root of the element is a display, use this display model as root model 
-	 * instead of creating a new one. If this is null, a new one will be created. If root of the element
-	 * is not a display, it will be ignored.
+	 * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
+	 * instead of creating a new one. If this is null, a new one will be created. 
 	 * @return the root widget model
 	 * @throws Exception
 	 */
@@ -283,7 +307,7 @@ public class XMLUtil {
 				}
 			}else if(subElement.getName().equals(XMLTAG_WIDGET)){
 				if(rootWidgetModel instanceof AbstractContainerModel){
-					AbstractWidgetModel child =XMLElementToWidget(subElement);
+					AbstractWidgetModel child =XMLElementToWidget(subElement, displayModel);
 					if(child != null)
 						((AbstractContainerModel) rootWidgetModel).addChild(child);
 				}
@@ -295,8 +319,8 @@ public class XMLUtil {
 				}				
 			}
 		}
-		
-		rootWidgetModel.processVersionDifference();
+		if(displayModel !=null)
+			rootWidgetModel.processVersionDifference(displayModel.getBOYVersion());
 		
 		return rootWidgetModel;
 	}

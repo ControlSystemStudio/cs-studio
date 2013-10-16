@@ -88,8 +88,12 @@ See <a class="ext-link" href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=3311
 	 This macro is useful for avoiding 
 	name conflict. For example, if we add a prefix of <code>$(DID)_</code> to a local PV name, we can easily 
 	guarantee the PV name is unique to this display. </li>
+	<li><code>$(DNAME)</code>: The name of the display.</li>
+	<li><code>$(LCID)</code>: The unique ID for linking container instance in runtime mode.
+	Even if there are multiple linking containers refering to the same physical OPI file, each OPI file in 
+	the linking container has a unique ID.
+	</li>
 </ul>
-<ul><li><code>$(DNAME)</code>: The name of the display.</li></ul>
 
 </p>  
   

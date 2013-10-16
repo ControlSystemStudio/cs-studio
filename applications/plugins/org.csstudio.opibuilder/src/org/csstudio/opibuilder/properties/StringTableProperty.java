@@ -12,6 +12,7 @@ import java.util.List;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor.CellEditorType;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
@@ -43,6 +44,10 @@ public class StringTableProperty extends AbstractWidgetProperty {
 	private String[] titles;
 	
 	private TitlesProvider titlesProvider;
+
+	private CellEditorType[] cellEditorTypes;
+
+	private Object[] cellEditorDatas;
 	
 
 	/**StringList Property Constructor. The property value type is 2D string array.
@@ -57,8 +62,27 @@ public class StringTableProperty extends AbstractWidgetProperty {
 	 */
 	public StringTableProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String[][] default_value, String[] titles) {
+		this(prop_id, description, category, default_value, titles, null, null);
+		
+	}
+	
+	/**StringList Property Constructor. The property value type is 2D string array.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created. It cannot be null.
+	 * @param titles the title for each column. 
+	 * The length of titles array is the number of columns. it can be null if the property is not
+	 * visible.
+	 */
+	public StringTableProperty(String prop_id, String description,
+			WidgetPropertyCategory category, String[][] default_value, String[] titles,
+			CellEditorType[] cellEditorTypes,  Object[] cellEditorDatas) {
 		super(prop_id, description, category, default_value);
 		this.titles = titles;
+		this.cellEditorTypes = cellEditorTypes;
+		this.cellEditorDatas = cellEditorDatas;
 		titlesProvider = new TitlesProvider();
 	}
 
@@ -105,7 +129,7 @@ public class StringTableProperty extends AbstractWidgetProperty {
 			return null;
 		PropertyDescriptor propertyDescriptor = 
 				PropertySSHelper.getIMPL().getStringTablePropertyDescriptor(
-						prop_id, description, titlesProvider);
+						prop_id, description, titlesProvider, cellEditorTypes, cellEditorDatas);
 		return propertyDescriptor;
 	}
 

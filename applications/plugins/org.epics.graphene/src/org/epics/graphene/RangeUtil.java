@@ -18,8 +18,8 @@ public class RangeUtil {
      * @return the range
      */
     public static Range range(final double minValue, final double maxValue) {
-        if (minValue >= maxValue) {
-            throw new IllegalArgumentException("minValue should be less then maxValue (" + minValue+ ", " + maxValue + ")");
+        if (minValue > maxValue) {
+            throw new IllegalArgumentException("minValue should be less then or equal to maxValue (" + minValue+ ", " + maxValue + ")");
         }
         return new Range() {
 

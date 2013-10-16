@@ -26,6 +26,8 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -125,11 +127,13 @@ public class GUI implements AlarmClientModelListener
                     // as that happens to not flicker.
                     AlarmTreePV[] alarms = model.getActiveAlarms();
                     current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, alarms.length));
-					((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
+                    current_alarms.pack();
+                    ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
 
                     alarms = model.getAcknowledgedAlarms();
                     acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, alarms.length));
-					((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(alarms);
+                    acknowledged_alarms.pack();
+                    ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(alarms);
                 }
             });
         }
@@ -147,8 +151,12 @@ public class GUI implements AlarmClientModelListener
         this.model = model;
         createComponents(parent);
 
-        if (!model.isServerAlive())
+        if (model.isServerAlive()) {
+            setErrorMessage(null);
+        } else {
             setErrorMessage(Messages.WaitingForServer);
+        }
+        
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
         parent.addDisposeListener(new DisposeListener()
@@ -392,6 +400,8 @@ public class GUI implements AlarmClientModelListener
             final IWorkbenchPartSite site)
     {
         final Table table = table_viewer.getTable();
+		final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
+				.getUI());
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
@@ -415,8 +425,10 @@ public class GUI implements AlarmClientModelListener
                     manager.add(new ConfigureItemAction(shell, model, item));
                 }
                 manager.add(new Separator());
-                manager.add(new AlarmPerspectiveAction());
-                manager.add(new Separator());
+                if(isRcp) {
+                    manager.add(new AlarmPerspectiveAction());
+                    manager.add(new Separator());
+                }
                 // Placeholder for CSS PV contributions
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
@@ -489,6 +501,17 @@ public class GUI implements AlarmClientModelListener
     public void newAlarmConfiguration(final AlarmClientModel model)
     {
         gui_update.trigger();
+        display.asyncExec(new Runnable()
+        {
+            @Override
+            public void run() {
+		    	if (model.isServerAlive()) {
+		            setErrorMessage(null);
+		        } else {
+		            setErrorMessage(Messages.WaitingForServer);
+		        }
+        	}
+        });
     }
 
     // @see AlarmClientModelListener
@@ -497,6 +520,7 @@ public class GUI implements AlarmClientModelListener
             final AlarmTreePV pv, final boolean parent_changed)
     {
         gui_update.trigger();
+        
         if (model.isServerAlive() && have_error_message)
         {   // Clear error message now that we have info from the alarm server
             display.asyncExec(new Runnable()

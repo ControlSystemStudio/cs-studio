@@ -7,14 +7,16 @@
  ******************************************************************************/
 package org.csstudio.apputil.ui.swt;
 
+
 import org.csstudio.apputil.ui.Activator;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -108,15 +110,13 @@ public class CheckBoxImages
         shell.setSize(size, size);
         // Briefly display shell, take snapshot, close
         shell.open();
-        final GC gc = new GC(shell);
-        final Image image = new Image(shell.getDisplay(), size, size);
         // If switching windows during application startup,
         // the image would sometimes contain stuff from whatever
         // happened to be on top of the screen.
         // Maybe this helps to avoid that?
         shell.forceActive();
-        gc.copyArea(image, 0, 0);
-        gc.dispose();
+		final Image image = SingleSourcePlugin.getUIHelper().getScreenshot(
+				shell.getDisplay(), button, new Rectangle(0, 0, size, size));
         shell.close();
     
         return image;

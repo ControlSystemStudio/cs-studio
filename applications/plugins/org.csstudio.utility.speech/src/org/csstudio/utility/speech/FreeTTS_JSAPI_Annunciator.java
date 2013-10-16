@@ -9,6 +9,10 @@ package org.csstudio.utility.speech;
 
 import java.util.Locale;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
 import javax.speech.EngineCreate;
 import javax.speech.EngineList;
 import javax.speech.EngineModeDesc;
@@ -29,8 +33,20 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
     final private static boolean debug = false;
     final private Synthesizer synthesizer;
 
-    public FreeTTS_JSAPI_Annunciator() throws Exception
+    public FreeTTS_JSAPI_Annunciator(final String voice_name) throws Exception
     {
+		// Test if a sound card is available first
+    	AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
+        DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+        try {
+            AudioSystem.getLine(info);
+        } catch (IllegalArgumentException e) {
+			if (e.getMessage() != null && e.getMessage().startsWith("No line")) {
+				throw new NoSoundCardAvailableException(
+						"No sound card available.", e);
+			}
+        }
+		
         FreeTTSHacks.perform();
 
         // Start the synthesizer
@@ -41,11 +57,8 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
         // List/set voice
         if (debug)
             listTTSVoices();
-        // "kevin" - default
-        // "kevin16" - sounds clearer
-        // "alan" -falls back to "kevin" ?
         final Voice voice = new Voice(
-                "kevin16", Voice.AGE_DONT_CARE,
+        		voice_name, Voice.AGE_DONT_CARE,
                  Voice.GENDER_DONT_CARE, null);
         synthesizer.getSynthesizerProperties().setVoice(voice);
 

@@ -10,85 +10,117 @@ package org.csstudio.iter.utility.sddreader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.csstudio.autocomplete.AutoCompleteHelper;
+import org.csstudio.autocomplete.AutoCompleteResult;
+import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
+import org.csstudio.autocomplete.parser.ContentType;
+import org.csstudio.autocomplete.proposals.Proposal;
+import org.csstudio.autocomplete.proposals.TopProposalFinder;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.pvnames.IPVListProvider;
-import org.csstudio.pvnames.PVListResult;
-import org.csstudio.pvnames.PVNameHelper;
 
-public class SDDPVListProvider implements IPVListProvider {
+public class SDDPVListProvider implements IAutoCompleteProvider {
+
+	public static final String NAME = "SDD Database";
 
 	private RDBUtil rdb;
 
 	private final String pv_count = "SELECT count(*) FROM functionalvariables WHERE name like ?";
-	private final String pv_get = "SELECT name FROM functionalvariables WHERE name like ?";
-	
+	private final String pv_get = "SELECT name FROM functionalvariables WHERE name like ? order by name";
+
 	private PreparedStatement statement_get = null;
 	private PreparedStatement statement_count = null;
 
 	public SDDPVListProvider() {
 		try {
 			rdb = RDBUtil.connect(Preferences.getRDB_Url(),
-					Preferences.getRDB_User(), 
-					Preferences.getRDB_Password(), 
-					true);
+					Preferences.getRDB_User(), Preferences.getRDB_Password(), true);
 			Activator.getLogger().log(Level.INFO,
 					"SDDPVListProvider connected to DB: " + Preferences.getRDB_Url());
 		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE, e.getMessage());
+			Activator.getLogger().log(Level.WARNING, e.getMessage());
 		}
 	}
 
 	@Override
-	public PVListResult listPVs(final String name, final int limit) {
-		PVListResult pvList = new PVListResult();
-		
+	public boolean accept(final ContentType type) {
+		if (type.equals(ContentType.PV))
+			return true;
+		return false;
+	}
+
+	public AutoCompleteResult listResult(final ContentDescriptor desc,
+			final int limit) {
+		if (rdb == null)
+			return null;
+		AutoCompleteResult result = new AutoCompleteResult();
+
 		try {
-			String sqlPattern = PVNameHelper.convertToSQL(name);
+			String sqlPattern = AutoCompleteHelper.convertToSQL(desc.getValue());
 			statement_count = rdb.getConnection().prepareStatement(pv_count);
 			statement_count.setString(1, sqlPattern);
-			
+
 			final ResultSet result_count = statement_count.executeQuery();
-			if(result_count.next())
-				pvList.setCount(result_count.getInt(1));
-			
+			if (result_count.next())
+				result.setCount(result_count.getInt(1));
+
 			statement_get = rdb.getConnection().prepareStatement(pv_get);
 			statement_get.setString(1, sqlPattern);
 			statement_get.setMaxRows(limit);
-			
+
 			final ResultSet result_get = statement_get.executeQuery();
 			while (result_get.next()) {
-				pvList.add(result_get.getString(1));
+				String value = result_get.getString(1);
+				if (value != null && !value.isEmpty()) {
+					result.addProposal(new Proposal(value, false));
+				}
 			}
 		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE, e.getMessage());
+			if ("!ERROR: canceling statement due to user request".equals(e
+					.getMessage())) {
+				Activator.getLogger().log(Level.WARNING, e.getMessage());
+			}
 		} finally {
 			try {
-				if (statement_count != null) statement_count.close();
-				if (statement_get != null) statement_get.close();
+				if (statement_count != null && !statement_count.isClosed())
+					statement_count.close();
+				if (statement_get != null && !statement_get.isClosed())
+					statement_get.close();
 			} catch (SQLException e) {
-				Activator.getLogger().log(Level.SEVERE, e.getMessage());
+				Activator.getLogger().log(Level.WARNING, e.getMessage());
 			}
 		}
-		return pvList;
+		
+		TopProposalFinder trf = new TopProposalFinder(Preferences.getSeparators());
+		List<Proposal> topProposals = trf.getTopProposals(desc.getValue(), result.getProposalsAsString());
+		for (Proposal p : topProposals)
+			result.addTopProposal(p);
+		
+		return result;
 	}
 
 	@Override
 	public void cancel() {
 		try {
-			if (statement_count != null) statement_count.cancel();
-			if (statement_get != null) statement_get.cancel();
+			if (statement_count != null && !statement_count.isClosed())
+				statement_count.cancel();
+			if (statement_get != null && !statement_get.isClosed())
+				statement_get.cancel();
 		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE, e.getMessage());
+			Activator.getLogger().log(Level.WARNING, e.getMessage());
 		} finally {
 			try {
-				if (statement_count != null) statement_count.close();
-				if (statement_get != null) statement_get.close();
+				if (statement_count != null && !statement_count.isClosed())
+					statement_count.close();
+				if (statement_get != null && !statement_get.isClosed())
+					statement_get.close();
 			} catch (SQLException e) {
-				Activator.getLogger().log(Level.SEVERE, e.getMessage());
+				Activator.getLogger().log(Level.WARNING, e.getMessage());
 			}
 		}
 	}
-	
+
 }

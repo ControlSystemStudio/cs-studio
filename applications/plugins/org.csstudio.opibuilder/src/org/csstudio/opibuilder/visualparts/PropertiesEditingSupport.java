@@ -58,7 +58,7 @@ public class PropertiesEditingSupport extends EditingSupport {
 		protected CellEditor getCellEditor(final Object element) {
 			AbstractWidgetProperty property;
 			if((property = getSelectedProperty()) != null){
-				return property.getPropertyDescriptor().createPropertyEditor(table);				
+				return property.getPropertyDescriptor().createPropertyEditor(table);
 			}			
 			return null;
 		}

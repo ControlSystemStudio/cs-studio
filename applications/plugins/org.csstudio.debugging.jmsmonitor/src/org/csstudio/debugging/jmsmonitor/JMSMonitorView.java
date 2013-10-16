@@ -49,7 +49,8 @@ public class JMSMonitorView extends ViewPart
     @Override
     public void createPartControl(final Composite parent)
     {
-        gui = new GUI(Preferences.getJMS_URL(),
+        gui = new GUI(getSite(),
+                      Preferences.getJMS_URL(),
                       Preferences.getJMS_User(),
                       Preferences.getJMS_Password(),
                       parent);

@@ -13,6 +13,8 @@ import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.Preferences;
 import org.csstudio.email.ui.AbstractSendEMailAction;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action to send information about selected alarms via EMail
@@ -31,6 +33,11 @@ public class SendEMailAction extends AbstractSendEMailAction
 		super(shell, Preferences.getDefaultEmailSender(),
 				Messages.DefaultEMailTitle);
 		this.alarms = alarms;
+		
+		// send email actions are disabled in RAP version
+		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+			setEnabled(false);
+		}
     }
 
 	/** Pre-populate body with alarm info

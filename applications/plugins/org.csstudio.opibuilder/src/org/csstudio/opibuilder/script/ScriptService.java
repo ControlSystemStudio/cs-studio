@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.utility.pv.PV;
+import org.csstudio.simplepv.IPV;
 import org.eclipse.osgi.util.NLS;
 
 /**The center service for script execution.
@@ -90,7 +90,7 @@ public class ScriptService {
 	 * @param pvArray
 	 * @throws Exception
 	 */
-	public void registerScript(final ScriptData scriptData, final AbstractBaseEditPart editpart, final PV[] pvArray){
+	public void registerScript(final ScriptData scriptData, final AbstractBaseEditPart editpart, final IPV[] pvArray){
 //		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 //			public void run() {
 				try {

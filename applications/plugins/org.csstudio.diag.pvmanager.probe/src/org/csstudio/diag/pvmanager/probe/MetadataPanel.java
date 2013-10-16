@@ -49,7 +49,7 @@ public class MetadataPanel extends Composite {
 		typeSection.setLayout(gl_typeSection);
 		
 		typeLabel = new Label(typeSection, SWT.NONE);
-		typeLabel.setText("Type:");
+		typeLabel.setText(Messages.Probe_infoType);
 		typeLabel.setBounds(0, 0, 45, 20);
 		
 		typeField = new Text(typeSection, SWT.BORDER);
@@ -66,7 +66,7 @@ public class MetadataPanel extends Composite {
 		labelsSection.setLayout(gl_labelsSection);
 		
 		labelsLabel = new Label(labelsSection, SWT.NONE);
-		labelsLabel.setText("Labels:");
+		labelsLabel.setText(Messages.Probe_infoLabels);
 		
 		labelsField = new Text(labelsSection, SWT.BORDER);
 		labelsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -81,35 +81,35 @@ public class MetadataPanel extends Composite {
 		displaySection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label displayLimitsLabel = new Label(displaySection, SWT.NONE);
-		displayLimitsLabel.setText("Display limits:");
+		displayLimitsLabel.setText(Messages.Probe_infoDisplayLimits);
 		
 		displayLimitsField = new Text(displaySection, SWT.BORDER);
 		displayLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		displayLimitsField.setEditable(false);
 		
 		Label alarmLimitsLabel = new Label(displaySection, SWT.NONE);
-		alarmLimitsLabel.setText("Alarm limits:");
+		alarmLimitsLabel.setText(Messages.Probe_infoAlarmLimits);
 		
 		alarmLimitsField = new Text(displaySection, SWT.BORDER);
 		alarmLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		alarmLimitsField.setEditable(false);
 		
 		Label warningLimitsLabel = new Label(displaySection, SWT.NONE);
-		warningLimitsLabel.setText("Warning limits:");
+		warningLimitsLabel.setText(Messages.Probe_infoWarningLimits);
 		
 		warningLimitsField = new Text(displaySection, SWT.BORDER);
 		warningLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		warningLimitsField.setEditable(false);
 		
 		Label controlLimitsLabel = new Label(displaySection, SWT.NONE);
-		controlLimitsLabel.setText("Control limits:");
+		controlLimitsLabel.setText(Messages.Probe_infoControlLimits);
 		
 		controlLimitsField = new Text(displaySection, SWT.BORDER);
 		controlLimitsField.setEditable(false);
 		controlLimitsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		unitLabel = new Label(displaySection, SWT.NONE);
-		unitLabel.setText("Unit:");
+		unitLabel.setText(Messages.Probe_infoUnit);
 		
 		unitField = new Text(displaySection, SWT.BORDER);
 		unitField.setEditable(false);
@@ -150,7 +150,7 @@ public class MetadataPanel extends Composite {
 			}
 			typeField.setText(type.getSimpleName());
 		} else {
-			typeField.setText("");
+			typeField.setText(""); //$NON-NLS-1$
 		}
 	}
 	
@@ -170,10 +170,10 @@ public class MetadataPanel extends Composite {
 			if (format == null) {
 				format = ValueUtil.getDefaultNumberFormat();
 			}
-			displayLimitsField.setText(format.format(display.getLowerDisplayLimit()) + " - " + format.format(display.getUpperDisplayLimit()));
-			alarmLimitsField.setText(format.format(display.getLowerAlarmLimit()) + " - " + format.format(display.getUpperAlarmLimit()));
-			warningLimitsField.setText(format.format(display.getLowerWarningLimit()) + " - " + format.format(display.getUpperWarningLimit()));
-			controlLimitsField.setText(format.format(display.getLowerCtrlLimit()) + " - " + format.format(display.getUpperCtrlLimit()));
+			displayLimitsField.setText(format.format(display.getLowerDisplayLimit()) + " - " + format.format(display.getUpperDisplayLimit())); //$NON-NLS-1$
+			alarmLimitsField.setText(format.format(display.getLowerAlarmLimit()) + " - " + format.format(display.getUpperAlarmLimit())); //$NON-NLS-1$
+			warningLimitsField.setText(format.format(display.getLowerWarningLimit()) + " - " + format.format(display.getUpperWarningLimit())); //$NON-NLS-1$
+			controlLimitsField.setText(format.format(display.getLowerCtrlLimit()) + " - " + format.format(display.getUpperCtrlLimit())); //$NON-NLS-1$
 			unitField.setText(String.valueOf(display.getUnits()));
 			showSection(displaySection);
 		} else {

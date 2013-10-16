@@ -127,6 +127,14 @@ public class JCADataSource extends DataSource {
         } else {
             ctxt = builder.jcaContext;
         }
+
+        try {
+            if (ctxt instanceof CAJContext) {
+                ((CAJContext) ctxt).setDoNotShareChannels(true);
+            }
+        } catch (Throwable t) {
+            log.log(Level.WARNING, "Couldn't change CAJContext to doNotShareChannels: this may cause some rare notification problems.", t);
+        }
         
         // Default type support are the VTypes
         if (builder.typeSupport == null) {

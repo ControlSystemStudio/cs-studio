@@ -1,0 +1,4 @@
+#Update site url to be defined
+#instructions.configure=\
+#  addRepository(type:0,name:ITER CSS update site,location:http${#58}//www.iter.org/css-update/,enabled:true);\
+#  addRepository(type:1,name:ITER CSS update site,location:http${#58}//www.iter.org/css-update/,enabled:true);\

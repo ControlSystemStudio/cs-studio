@@ -20,8 +20,11 @@ import java.io.PrintStream;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.TreeItem;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
+import org.osgi.service.prefs.Preferences;
 
 /** Commands for the OSGi console
  *  Application registers this {@link CommandProvider}
@@ -60,6 +63,7 @@ public class ConsoleCommands implements CommandProvider
         buf.append("\tlsa '/path/to/item' - List alarm tree based on path\n");
         buf.append("\tpwd                 - Print working 'directory'\n");
         buf.append("\tcd '/path'          - Change working 'directory'\n");
+        buf.append("\tprefs               - List all preferences\n");
         return buf.toString();
     }
 
@@ -147,5 +151,38 @@ public class ConsoleCommands implements CommandProvider
             intp.printStackTrace(ex);
         }
         return null;
+    }
+
+    /** 'prefs' command */
+    public Object _prefs(final CommandInterpreter intp)
+    {
+        final StringBuilder buf = new StringBuilder();
+        final IPreferencesService service = Platform.getPreferencesService();
+        try
+        {
+            dumpPreferences(buf, service.getRootNode());
+        }
+        catch (Exception ex)
+        {
+            buf.append("Exception: ").append(ex.getMessage());
+        }
+        intp.println(buf.toString());
+        return null;
+    }
+
+    /** @param buf Buffer to which to add preferences
+     *  @param node Node from which preferences are read, recursively
+     *  @throws Exception on error
+     */
+    private void dumpPreferences(final StringBuilder buf, final Preferences node) throws Exception
+    {
+        for (String key : node.keys())
+        {
+            final String path = node.absolutePath();
+            buf.append(path).append('/');
+            buf.append(key).append(" = ").append(node.get(key, "<null>")).append("\n");
+        }
+        for (String child : node.childrenNames())
+            dumpPreferences(buf, node.node(child));
     }
 }

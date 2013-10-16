@@ -1,7 +1,11 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.epics.util.array.ListNumber;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.VTable;
 
 public class VTableContentProvider implements IStructuredContentProvider {
@@ -25,12 +29,14 @@ public class VTableContentProvider implements IStructuredContentProvider {
 		
 		public Object getValue(int column) {
 			if (vTable.getColumnType(column).equals(Integer.TYPE)) {
-				return ((int[]) vTable.getColumnArray(column))[row];
+				return ((ListNumber) vTable.getColumnData(column)).getInt(row);
 			} else if (vTable.getColumnType(column).equals(Double.TYPE)) {
-				return ((double[]) vTable.getColumnArray(column))[row];
+				return ((ListNumber) vTable.getColumnData(column)).getDouble(row);
 			} else if (vTable.getColumnType(column).equals(String.class)) {
-				return ((String[]) vTable.getColumnArray(column))[row];
-			} else {
+				return ((List<?>) vTable.getColumnData(column)).get(row).toString();
+			} else if (vTable.getColumnType(column).equals(Timestamp.class)){
+			 	return ((List<?>) vTable.getColumnData(column)).get(row);
+		 	} else {
 				throw new RuntimeException("Table contain unsupported type " + vTable.getColumnType(column).getName());
 			}
 		}

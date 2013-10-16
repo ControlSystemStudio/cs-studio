@@ -7,9 +7,8 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.figures;
 
-import org.eclipse.swt.graphics.Color;
-
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.eclipse.swt.graphics.Color;
 
 /** 
  * A listener on the axis when axis was revalidated.

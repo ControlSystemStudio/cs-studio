@@ -15,8 +15,8 @@ $ANT clean
 echo Fetching sources
 $ANT get_sources
 
-#for prod in alarmconfig alarmserver archiveengine css engineconfig jms2rdb
-for prod in css
+for prod in alarmconfig alarmserver archiveengine css engineconfig jms2rdb
+#for prod in css
 do
 	echo Building $prod Product
 	$ECLIPSE_ANT \
@@ -29,20 +29,20 @@ do
 	  -Ddeltapack=$DELTAPACK 2>&1 | tee $prod/build.log
 done
 
-for feature in optional 
-do
-	echo Building $feature Features
-	# Features depend on the CSS product, so they will only compile
-	# after the product compiled OK
-	$ECLIPSE_ANT \
-	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER/scripts/build.xml \
-	  -Dbuilder=$TOP/products/KEK/plugins/org.csstudio.kek.build/$feature \
-	  -DbuildDirectory=$BUILDDIR \
-	  -Dbase=$ECLIPSE_BASE \
-	  -Dversion=$VERSION \
-	  -Dqualifier=$QUALIFIER \
-	  -Ddeltapack=$DELTAPACK 2>&1 | tee $feature/build.log
-done
+# for feature in optional 
+# do
+# 	echo Building $feature Features
+# 	# Features depend on the CSS product, so they will only compile
+# 	# after the product compiled OK
+# 	$ECLIPSE_ANT \
+# 	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER/scripts/build.xml \
+# 	  -Dbuilder=$TOP/products/KEK/plugins/org.csstudio.kek.build/$feature \
+# 	  -DbuildDirectory=$BUILDDIR \
+# 	  -Dbase=$ECLIPSE_BASE \
+# 	  -Dversion=$VERSION \
+# 	  -Dqualifier=$QUALIFIER \
+# 	  -Ddeltapack=$DELTAPACK 2>&1 | tee $feature/build.log
+# done
 
 if [ $CYGWIN ]
 then

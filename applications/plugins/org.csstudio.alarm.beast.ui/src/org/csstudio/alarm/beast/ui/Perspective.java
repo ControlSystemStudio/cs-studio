@@ -11,7 +11,6 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.IConsoleConstants;
 
 /** Alarm Perspective
  *  @author Kay Kasemir
@@ -33,7 +32,10 @@ public class Perspective implements IPerspectiveFactory
     final private static String ID_ALARM_TREE =
         "org.csstudio.alarm.beast.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE =
-        "org.csstudio.alarm.beast.ui.alarmtable.view";
+            "org.csstudio.alarm.beast.ui.alarmtable.view";
+    
+    final private static String ID_CONSOLE_VIEW =
+            "org.eclipse.ui.console.ConsoleView";
 
     @Override
     @SuppressWarnings("deprecation")
@@ -63,12 +65,12 @@ public class Perspective implements IPerspectiveFactory
         left.addPlaceholder(ID_SNS_PV_UTIL);
 
         // Stuff for 'bottom'
-        bottom.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
+        bottom.addPlaceholder(ID_CONSOLE_VIEW);
         bottom.addView(ID_ALARM_TABLE);
 
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
-        layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
+        layout.addShowViewShortcut(ID_CONSOLE_VIEW);
     }
 
     /** Check if view is available, i.e. suitable plugin was included in product */

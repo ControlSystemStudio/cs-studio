@@ -60,9 +60,9 @@ public class LabelModel extends AbstractPVWidgetModel implements ITextModel{
 		addProperty(new ComboProperty(PROP_ALIGN_V, "Vertical Alignment", 
 				WidgetPropertyCategory.Display, V_ALIGN.stringValues(), 1));
 		addProperty(new BooleanProperty(PROP_WRAP_WORDS, "Wrap Words", 
-				WidgetPropertyCategory.Behavior, true));
+				WidgetPropertyCategory.Behavior, false));
 		addProperty(new BooleanProperty(PROP_SHOW_SCROLLBAR, "Show Scrollbar", 
-				WidgetPropertyCategory.Display, false));
+				WidgetPropertyCategory.Behavior, false));
 
 		if(!pvModel){
 			setTooltip("");

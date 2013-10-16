@@ -16,6 +16,7 @@ import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.ConnectJob;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser2.preferences.ArchiveServerURL;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveAction;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
@@ -46,9 +47,10 @@ import org.eclipse.swt.widgets.Table;
  *  <p>
  *  Used by {@link AddArchiveAction} and {@link SearchView}
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto - added archive server alias
  */
 public abstract class ArchiveListGUI
-{
+{	
     // GUI elements
     private Combo urls;
     private Button info;
@@ -56,12 +58,17 @@ public abstract class ArchiveListGUI
 
     /** Most recently selected archive reader */
     protected ArchiveReader reader;
-
+    
+    /** Archive servers */
+    private ArchiveServerURL[] server_urls;
+    
     /** Initialize
      *  @param parent Parent widget
      */
     public ArchiveListGUI(final Composite parent)
     {
+    	server_urls = Preferences.getArchiveServerURLs();
+    	
         createGUI(parent);
 
         // When URL is selected, connect to server to get info, list of archives
@@ -70,7 +77,9 @@ public abstract class ArchiveListGUI
             @Override
             public void widgetDefaultSelected(final SelectionEvent e)
             {
-                connectToArchiveServer(urls.getText());
+            	int i = urls.getSelectionIndex();
+            	if (i >= 0 && i < server_urls.length)
+            		connectToArchiveServer(server_urls[i].getURL());
             }
 
             @Override
@@ -99,8 +108,11 @@ public abstract class ArchiveListGUI
         });
 
         // Activate the first archive server URL
-        if (urls.getEnabled())
-            connectToArchiveServer(urls.getText());
+        if (urls.getEnabled()) {
+        	int i = urls.getSelectionIndex();
+        	if (i >= 0 && i < server_urls.length)
+        		connectToArchiveServer(server_urls[i].getURL());
+        }
 
         // Archive table: Allow dragging of multiple archive data sources
         new ControlSystemDragSource(archive_table.getTable())
@@ -137,7 +149,8 @@ public abstract class ArchiveListGUI
 
         urls = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         urls.setToolTipText(Messages.Search_URL_TT);
-        urls.setItems(Preferences.getArchiveServerURLs());
+        for (ArchiveServerURL url : server_urls)
+        	urls.add(url.getDisplayName());
         urls.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         if (urls.getItemCount() <= 0)
         {

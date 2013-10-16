@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.iter.utility.sddreader;
 
-import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -20,9 +20,11 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 @SuppressWarnings("nls")
 public class Preferences {
+
 	final public static String RDB_URL = "rdb_url";
 	final public static String RDB_USER = "rdb_user";
 	final public static String RDB_PASSWORD = "rdb_password";
+	final public static String SEPARATORS = "separators";
 
 	/**
 	 * @param setting Preference identifier
@@ -46,8 +48,7 @@ public class Preferences {
 	}
 
 	private static String getSecureString(final String setting) {
-		String value = SecureStorage.retrieveSecureStorage(Activator.PLUGIN_ID, setting);
-		return value;
+		return SecurePreferences.get(Activator.PLUGIN_ID, setting, "");
 	}
 
 	/** @return RDB URL */
@@ -63,6 +64,11 @@ public class Preferences {
 	/** @return RDB Password */
 	public static String getRDB_Password() {
 		return getSecureString(RDB_PASSWORD);
+	}
+	
+	/** @return Top result separators */
+	public static String getSeparators() {
+		return getString(SEPARATORS);
 	}
 
 }

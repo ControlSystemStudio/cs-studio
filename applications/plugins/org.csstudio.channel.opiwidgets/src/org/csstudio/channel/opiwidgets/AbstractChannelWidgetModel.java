@@ -1,13 +1,14 @@
 package org.csstudio.channel.opiwidgets;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import gov.bnl.channelfinder.api.ChannelQuery;
-
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
 
 /**
  * Abstract class for channel based widgets. Here we put the functionality that is common to
@@ -17,7 +18,11 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
  * 
  * @author carcassi
  */
-public abstract class AbstractChannelWidgetModel extends AbstractWidgetModel {
+public abstract class AbstractChannelWidgetModel extends AbstractSelectionWidgetModel {
+	
+	public AbstractChannelWidgetModel(AbstractSelectionWidgetModelDescription model) {
+		super(model);
+	}
 	
 	public static final String CHANNEL_QUERY = "channel_query"; //$NON-NLS-1$	
 	

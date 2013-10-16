@@ -13,6 +13,7 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import static org.epics.graphene.InterpolationScheme.CUBIC;
 import static org.epics.graphene.InterpolationScheme.LINEAR;
@@ -180,7 +181,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     public Range getYPlotRange() {
         return yPlotRange;
     }
-
+    
     /**
      * Applies the update to the renderer.
      * <p>
@@ -253,12 +254,27 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     }
     
     protected void calculateGraphArea() {
-        ValueAxis xAxis = xValueScale.references(xPlotRange, 2, Math.max(2, getImageWidth() / 60));
-        ValueAxis yAxis = yValueScale.references(yPlotRange, 2, Math.max(2, getImageHeight() / 60));
-        xReferenceLabels = Arrays.asList(xAxis.getTickLabels());
-        yReferenceLabels = Arrays.asList(yAxis.getTickLabels());
-        xReferenceValues = new ArrayDouble(xAxis.getTickValues());
-        yReferenceValues = new ArrayDouble(yAxis.getTickValues());
+        // Calculate horizontal axis references. If range is zero, use special logic
+        if (!xPlotRange.getMinimum().equals(xPlotRange.getMaximum())) {
+            ValueAxis xAxis = xValueScale.references(xPlotRange, 2, Math.max(2, getImageWidth() / 60));
+            xReferenceLabels = Arrays.asList(xAxis.getTickLabels());
+            xReferenceValues = new ArrayDouble(xAxis.getTickValues());
+        } else {
+            // TODO: use something better to format the number
+            xReferenceLabels = Collections.singletonList(xPlotRange.getMinimum().toString());
+            xReferenceValues = new ArrayDouble(xPlotRange.getMinimum().doubleValue());
+        }
+
+        // Calculate vertical axis references. If range is zero, use special logic
+        if (!yPlotRange.getMinimum().equals(yPlotRange.getMaximum())) {
+            ValueAxis yAxis = yValueScale.references(yPlotRange, 2, Math.max(2, getImageHeight() / 60));
+            yReferenceLabels = Arrays.asList(yAxis.getTickLabels());
+            yReferenceValues = new ArrayDouble(yAxis.getTickValues());
+        } else {
+            // TODO: use something better to format the number
+            yReferenceLabels = Collections.singletonList(yPlotRange.getMinimum().toString());
+            yReferenceValues = new ArrayDouble(yPlotRange.getMinimum().doubleValue());
+        }
         
         labelFontMetrics = g.getFontMetrics(labelFont);
         
@@ -276,18 +292,29 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         int areaFromLeft = leftMargin + yLabelMaxWidth + yLabelMargin;
 
         xPlotValueStart = getXPlotRange().getMinimum().doubleValue();
-        yPlotValueStart = getYPlotRange().getMinimum().doubleValue();
         xPlotValueEnd = getXPlotRange().getMaximum().doubleValue();
-        yPlotValueEnd = getYPlotRange().getMaximum().doubleValue();
+        if (xPlotValueStart == xPlotValueEnd) {
+            // If range is zero, fake a range
+            xPlotValueStart -= 1.0;
+            xPlotValueEnd += 1.0;
+        }
         xAreaStart = areaFromLeft;
-        yAreaStart = topMargin;
         xAreaEnd = getImageWidth() - rightMargin - 1;
-        yAreaEnd = getImageHeight() - areaFromBottom - 1;
         xPlotCoordStart = xAreaStart + topAreaMargin + 0.5;
-        yPlotCoordStart = yAreaStart + leftAreaMargin + 0.5;
         xPlotCoordEnd = xAreaEnd - bottomAreaMargin + 0.5;
-        yPlotCoordEnd = yAreaEnd - rightAreaMargin + 0.5;
         xPlotCoordWidth = xPlotCoordEnd - xPlotCoordStart;
+        
+        yPlotValueStart = getYPlotRange().getMinimum().doubleValue();
+        yPlotValueEnd = getYPlotRange().getMaximum().doubleValue();
+        if (yPlotValueStart == yPlotValueEnd) {
+            // If range is zero, fake a range
+            yPlotValueStart -= 1.0;
+            yPlotValueEnd += 1.0;
+        }
+        yAreaStart = topMargin;
+        yAreaEnd = getImageHeight() - areaFromBottom - 1;
+        yPlotCoordStart = yAreaStart + leftAreaMargin + 0.5;
+        yPlotCoordEnd = yAreaEnd - rightAreaMargin + 0.5;
         yPlotCoordHeight = yPlotCoordEnd - yPlotCoordStart;
         
         double[] xRefCoords = new double[xReferenceValues.size()];
@@ -321,6 +348,10 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     }
 
     private ScaledData scaleNoReducation(ListNumber xValues, ListNumber yValues) {
+        return scaleNoReducation(xValues, yValues, 0);
+    }
+
+    private ScaledData scaleNoReducation(ListNumber xValues, ListNumber yValues, int dataStart) {
         ScaledData scaledData = new ScaledData();
         int dataCount = xValues.size();
         scaledData.scaledX = new double[dataCount];
@@ -328,19 +359,20 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         for (int i = 0; i < scaledData.scaledY.length; i++) {
             scaledData.scaledX[i] = scaledX(xValues.getDouble(i));
             scaledData.scaledY[i] = scaledY(yValues.getDouble(i));;
+            processScaledValue(dataStart + i, xValues.getDouble(i), yValues.getDouble(i), scaledData.scaledX[i], scaledData.scaledY[i]);
         }
         scaledData.end = dataCount;
         return scaledData;
     }
 
-    private ScaledData scaleFirstMaxMinLastReduction(ListNumber xValues, ListNumber yValues) {
+    private ScaledData scaleFirstMaxMinLastReduction(ListNumber xValues, ListNumber yValues, int dataStart) {
         // The number of points generated by this is about 4 times the 
         // number of points on the x axis. If the number of points is less
         // than that, it's not worth it. Don't do the data reduction.
         if (xValues.size() < xPlotCoordWidth * 4) {
-            return scaleNoReducation(xValues, yValues);
+            return scaleNoReducation(xValues, yValues, dataStart);
         }
-        
+
         ScaledData scaledData = new ScaledData();
         scaledData.scaledX = new double[((int) xPlotCoordWidth + 1)*4 ];
         scaledData.scaledY = new double[((int) xPlotCoordWidth + 1)*4];
@@ -351,13 +383,16 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         double max = last;
         scaledData.scaledX[0] = previousPixel;
         scaledData.scaledY[0] = min;
+        processScaledValue(dataStart, xValues.getDouble(0), yValues.getDouble(0), scaledX(xValues.getDouble(0)), last);
         cursor++;
         for (int i = 1; i < xValues.size(); i++) {
-            int currentPixel = (int) scaledX(xValues.getDouble(i));
+            double currentScaledX = scaledX(xValues.getDouble(i));
+            int currentPixel = (int) currentScaledX;
             if (currentPixel == previousPixel) {
                 last = scaledY(yValues.getDouble(i));
                 min = MathIgnoreNaN.min(min, last);
                 max = MathIgnoreNaN.max(max, last);
+                processScaledValue(dataStart + i, xValues.getDouble(i), yValues.getDouble(i), currentScaledX, last);
             } else {
                 scaledData.scaledX[cursor] = previousPixel;
                 scaledData.scaledY[cursor] = max;
@@ -385,6 +420,9 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         cursor++;
         scaledData.end = cursor;
         return scaledData;
+    }
+    
+    protected void processScaledValue(int index, double valueX, double valueY, double scaledX, double scaledY) {
     }
     
     private static class ScaledData {
@@ -440,10 +478,10 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             default:
                 throw new IllegalArgumentException("Reduction scheme " + reduction + " not supported");
             case NONE:
-                scaledData = scaleNoReducation(xValues, yValues);
+                scaledData = scaleNoReducation(xValues, yValues, start);
                 break;
             case FIRST_MAX_MIN_LAST:
-                scaledData = scaleFirstMaxMinLastReduction(xValues, yValues);
+                scaledData = scaleFirstMaxMinLastReduction(xValues, yValues, start);
                 break;
         }
         

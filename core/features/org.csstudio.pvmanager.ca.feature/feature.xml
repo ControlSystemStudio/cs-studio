@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.pvmanager.ca.feature"
+      label="CS-Studio Epics v3 Support (Channel Access)"
+      version="3.2.0.qualifier"
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
+
+   <description url="http://pvmanager.sourceforge.net/">
+      Support for Channel Access (EPICS v3) datasource.
+   </description>
+
+   <copyright url="http://pvmanager.sourceforge.net/">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://pvmanager.sourceforge.net/license.html">
+      GPL 2 with Classpath Exception for pvmanager libraries.
+      EPICS license for CAJ.
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.autocomplete.ui"/>
+      <import plugin="org.csstudio.csdata" version="3.2.0" match="greaterOrEqual"/>
+      <import feature="org.csstudio.core.feature" version="3.2.0.qualifier"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.epics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.diag.epics.pvmanager.pvtree"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

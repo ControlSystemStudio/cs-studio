@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.kek.optional.feature"
       label="Optional Alarm UI for CSS KEK"
-      version="3.1.1.qualifier"
+      version="3.2.1.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS, Takashi Nakamoto &lt;takashi.nakamoto@cosylab.com&gt;">
 
    <description>
@@ -32,7 +32,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <requires>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.jaasAuthentication" version="3.0.0" match="greaterOrEqual"/>
@@ -41,6 +41,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -58,17 +59,32 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sns.dummyAuthorization"
+         id="org.csstudio.alarm.beast.ui.globaltable"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.alarm.beast.ui.globaltable"
+         id="org.csstudio.dummyauthorization"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.auth"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.opibuilder.alarm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>

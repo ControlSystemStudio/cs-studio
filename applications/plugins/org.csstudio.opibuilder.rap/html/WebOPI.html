@@ -94,13 +94,21 @@ org.csstudio.opibuilder/font_file=font.def
 org.csstudio.opibuilder/top_opis=http://www.xxx.com/xxx/Site/main.opi
 org.csstudio.opibuilder/opi_gui_refresh_cycle=200
 org.csstudio.opibuilder/macros="N","North"|"W","West"|"SYS","LLRF"|"SubSys","HPM"
+#PV connection layer pv factory ID, for example, utility_pv or pvmanager
+org.csstudio.opibuilder/pv_connection_layer=pvmanager
 
-#True if needs authentication for the whole webopi site. It is false by default.
-#org.csstudio.opibuilder/secure_whole_site=true
+#True if it needs authentication for the whole webopi site except those paths
+#defined by the preference unsecured_opi_paths. It is false by default.
+org.csstudio.opibuilder/secure_whole_site=true
 
-#The opi directory that needs authentication to access any opi under it.
-#It can be absolute local directory path, an URL path or relative path to opi_repository.
-org.csstudio.opibuilder/secured_opi_directory=/any/path
+#The opi paths that don't need to be authenticated if the opi starts with one of these paths when secure_whole_site is true.
+#It can be absolute local directory path, an URL path or relative path to opi_repository. For example:
+org.csstudio.opibuilder/unsecured_opi_paths=/home/public/opis|http://xxx.com/css/
+
+#The opi paths that need to be authenticated to access any opi started with one of these paths regardless the value of secure_whole_site.
+#If same path is set for unsecured_opi_paths too, it will be treated as secured path. 
+#It can be absolute local directory path, an URL path or relative path to opi_repository. For example:
+#org.csstudio.opibuilder/secured_opi_paths=http://xxx.com/css/CCR_Screens|/home/controls/opis
 
 #-----------------Core Configuration---------------------
 #Extension id of the login module. It supports following login modules:
@@ -207,6 +215,9 @@ Remove <code>$CATALINA_HOME/work/Catalina/localhost/webopi</code>.
 Before redeploy WebOPI, a full uninstall is required.
 
 </p>
+
+<h3>Developer Document</h3>
+<p>Please see <a href="WebOPI_developer.html">Developer Manual</a></p>
 
 <h3> Known Issues</h3>
 <p> 

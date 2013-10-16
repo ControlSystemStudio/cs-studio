@@ -19,6 +19,7 @@ import org.epics.util.array.ListNumber;
 public class StringVTypeFormat extends DefaultVTypeFormat
 {
     /** {@inheritDoc} */
+    @Override
     public StringBuilder format(final VType value, final StringBuilder buf)
     {
         if (value instanceof VEnum)

@@ -4,8 +4,6 @@
  */
 package org.epics.util.array;
 
-import java.util.Arrays;
-
 /**
  * Utilities for manipulating ListNumbers.
  *
@@ -37,6 +35,7 @@ public class ListNumbers {
                 SortedListView.quicksort(view);
                 return view;
             }
+            value = newValue;
         }
 
         return view;
@@ -60,6 +59,13 @@ public class ListNumbers {
         return view;
     }
     
+    /**
+     * Finds the value in the list, or the one right below it.
+     * 
+     * @param values a list of values
+     * @param value a value
+     * @return the index of the value
+     */
     public static int binarySearchValueOrLower(ListNumber values, double value) {
         if (value <= values.getDouble(0)) {
             return 0;
@@ -76,7 +82,14 @@ public class ListNumbers {
         
         return index;
     }
-    
+
+    /**
+     * Finds the value in the list, or the one right above it.
+     * 
+     * @param values a list of values
+     * @param value a value
+     * @return the index of the value
+     */
     public static int binarySearchValueOrHigher(ListNumber values, double value) {
         if (value <= values.getDouble(0)) {
             return 0;
@@ -121,5 +134,68 @@ public class ListNumbers {
         }
         
         return low - 1;  // key not found.
+    }
+    
+    /**
+     * Creates a list of equally spaced values given the range and the number of
+     * elements.
+     * <p>
+     * Note that, due to rounding errors in double precision, the difference
+     * between the elements may not be exactly the same.
+     * 
+     * @param minValue the first value in the list
+     * @param maxValue the last value in the list
+     * @param size the size of the list
+     * @return a new list
+     */
+    public static ListNumber linearListFromRange(final double minValue, final double maxValue, final int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Size must be positive (was " + size + " )");
+        }
+        return new ListDouble() {
+
+            @Override
+            public double getDouble(int index) {
+                if (index < 0 || index >= size) {
+                    throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+                }
+                return minValue + (index * (maxValue - minValue)) / (size - 1);
+            }
+
+            @Override
+            public int size() {
+                return size;
+            }
+        };
+    }
+    
+    /**
+     * Creates a list of equally spaced values given the first value, the
+     * step between element and the size of the list.
+     * 
+     * @param initialValue the first value in the list
+     * @param increment the difference between elements
+     * @param size the size of the list
+     * @return a new list
+     */
+    public static ListNumber linearList(final double initialValue, final double increment, final int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Size must be positive (was " + size + " )");
+        }
+        return new ListDouble() {
+
+            @Override
+            public double getDouble(int index) {
+                if (index < 0 || index >= size) {
+                    throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+                }
+                return initialValue + index * increment;
+            }
+
+            @Override
+            public int size() {
+                return size;
+            }
+        };
     }
 }

@@ -12,10 +12,11 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
 import org.eclipse.swt.graphics.RGB;
+import org.epics.vtype.AlarmSeverity;
 
 /**The scheme for alarm color which provide unified colors and borders for alarms.
  * @author Xihui Chen
- *
+ * @author Takashi Nakamoto - implemented getAlarmColor() method.
  */
 public class AlarmRepresentationScheme {
 
@@ -29,6 +30,26 @@ public class AlarmRepresentationScheme {
 	private static final AbstractBorder DISCONNECT_BORDER = BorderFactory.createBorder(
 			BorderStyle.TITLE_BAR, 1, AlarmRepresentationScheme.getDisconnectedColor(), 
 			"Disconnected");
+
+	/**
+	 * Returns color of alarm severity.
+	 * @param severity
+	 * @return RGB color of the given alarm severity. Null if alarm severity is "OK".
+	 */
+	public static RGB getAlarmColor(AlarmSeverity severity) {
+		switch (severity) {
+		case MAJOR:
+			return getMajorColor();
+		case NONE:
+			return null;
+		case MINOR:
+			return getMinorColor();
+		case INVALID:
+		case UNDEFINED:
+		default:
+			return getInValidColor();
+		}		
+	}
 
 	public static RGB getMajorColor(){
 		return MediaService.getInstance().getColor(MAJOR); 

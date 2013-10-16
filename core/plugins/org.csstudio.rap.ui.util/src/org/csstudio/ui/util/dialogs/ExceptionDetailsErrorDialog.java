@@ -134,8 +134,13 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 						.format("Reason", new Object[] { message, status.getMessage() }); //$NON-NLS-1$
 		this.status = status;
 		this.displayMask = displayMask;
-		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
+
+	/** Allow resize */
+	@Override
+    protected boolean isResizable() {
+	    return true;
+    }
 
 	/*
 	 * (non-Javadoc) Method declared on Dialog. Handles the pressing of the Ok
@@ -598,6 +603,13 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 		IStatus status = new Status(IStatus.ERROR, Activator.ID, ex.getLocalizedMessage(), ex);
 		return ExceptionDetailsErrorDialog.openError(shell,
 				title, null, 
+				status);
+	}
+
+	public static int openError(Shell shell, String title, String message, Exception ex) {
+		IStatus status = new Status(IStatus.ERROR, Activator.ID, message, ex);
+		return ExceptionDetailsErrorDialog.openError(shell,
+				title, null,
 				status);
 	}
 

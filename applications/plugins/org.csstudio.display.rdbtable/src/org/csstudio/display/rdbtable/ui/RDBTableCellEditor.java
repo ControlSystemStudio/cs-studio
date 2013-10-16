@@ -67,7 +67,11 @@ public class RDBTableCellEditor extends EditingSupport
     protected Object getValue(final Object element)
     {
         final RDBTableRow row = (RDBTableRow) element;
-        return row.getColumn(column);
+        String value = row.getColumn(column);
+        if (value == null) {
+            value = "";
+        }
+        return value;
     }
 
     /** User entered a new value into a table call

@@ -38,7 +38,7 @@ public class BypassModel implements BypassListener
 	private Bypass[] filtered_bypasses = new Bypass[0];
 
 	/** Filter: Which bypass state to show */
-	private BypassState state_filter = BypassState.All;
+	private BypassState state_filter = BypassState.Bypassed;
 
 	/** Filter: Which request type to show */
 	private RequestState request_filter = RequestState.All;

@@ -6,10 +6,8 @@ package org.epics.pvmanager.service;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.epics.pvmanager.WriteFunction;
-import static org.epics.pvmanager.service.Service.namePattern;
 
 /**
  *

@@ -71,8 +71,6 @@ public class ScriptCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<script>");
         writeIndent(out, level+1);
-        out.println("<address>" + getAddress() + "</address>");
-        writeIndent(out, level+1);
         out.print("<path>");
         out.print(script);
         out.println("</path>");
@@ -85,7 +83,6 @@ public class ScriptCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setScript(DOMHelper.getSubelementString(element, "path", ""));
         super.readXML(factory, element);
     }

@@ -9,6 +9,8 @@ package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
@@ -18,7 +20,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 /**
  * @author hammonds, Xihui Chen
- *
+ * @author Takashi Nakamoto - added labels
  */
 
 public class ByteMonitorFigure extends Figure implements Introspectable{
@@ -46,6 +48,12 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 	private boolean effect3D = true;
 	private boolean squareLED = false;
 	
+	/** LEDs */
+	private List<LEDFigure> ledFigures = new ArrayList<LEDFigure>();
+	
+	/** Labels */
+	private List<TextFigure> textFigures = new ArrayList<TextFigure>();
+	private List<String> labels = new ArrayList<String>();
 	
 	public ByteMonitorFigure() {
 		setNumBits(16);
@@ -61,13 +69,18 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 		return led;
 	}
 	
+	private TextFigure createText(){
+		TextFigure text = new TextFigure();
+		text.setText("");
+		alignText(text);
+		return text;
+	}
+	
 	/**
 	 * Color the rectangles with values appropriate for the value.  Rectangles are colored with onColor if the bit
 	 * is 1.  They are colored offColor if the bit is 0.
 	 */
 	public void drawValue() {
-		Object[] children = getChildren().toArray();
-		
 		for (int ii=startBit; ii< startBit+numBits; ii++){
 			int widgetIndex =0;
 			if (reverseBits){
@@ -76,7 +89,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 			else{
 				widgetIndex = (numBits - 1) -(ii-startBit);
 			}
-			LEDFigure led = ((LEDFigure)children[widgetIndex]);
+			LEDFigure led = ledFigures.get(widgetIndex);
 			if (((value>>ii)&0x1) == 1){
 				led.setBooleanValue(true);
 			}
@@ -178,18 +191,58 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 			Rectangle clientArea = getClientArea();
 			if (isHorizontal){
 				int avgWidth = clientArea.width/numBits;
-				int startX = clientArea.x;		
-				for(Object child : getChildren()){
-					((Figure)child).setBounds(new Rectangle(startX,clientArea.y, avgWidth, clientArea.height));
+				int startX = clientArea.x;
+				
+				int ledHeight = 0;
+				if (avgWidth > clientArea.height || squareLED) {
+					ledHeight = clientArea.height;
+				} else {
+					ledHeight = avgWidth;
+				}
+				
+				for (LEDFigure led : ledFigures) {
+					led.setBounds(new Rectangle(startX,clientArea.y, avgWidth, ledHeight));
+					startX += avgWidth;
+				}
+				
+				startX = clientArea.x;
+				for (TextFigure text : textFigures) {
+					if (squareLED) {
+						text.setBounds(new Rectangle(
+								startX, clientArea.y, avgWidth, ledHeight));
+					} else {
+						text.setBounds(new Rectangle(
+								startX, clientArea.y + ledHeight, avgWidth, clientArea.height - ledHeight));
+					}
 					startX += avgWidth;
 				}
 			}
 			else {
 				int avgHeight = clientArea.height/numBits;
-				int startY = clientArea.y;		
-				for(Object child : getChildren()){
-					((Figure)child).setBounds(new Rectangle(
-							clientArea.x, startY, clientArea.width, avgHeight));
+				int startY = clientArea.y;
+				
+				int ledWidth = 0;
+				if (avgHeight > clientArea.width || squareLED) {
+					ledWidth = clientArea.width;
+				} else {
+					ledWidth = avgHeight;
+				}
+				
+				for (LEDFigure led : ledFigures) {
+					led.setBounds(new Rectangle(
+							clientArea.x, startY, ledWidth, avgHeight));
+					startY += avgHeight;
+				}
+				
+				startY = clientArea.y;
+				for (TextFigure text : textFigures) {
+					if (squareLED) {
+						text.setBounds(new Rectangle(
+								clientArea.x, startY, ledWidth, avgHeight));
+					} else {
+						text.setBounds(new Rectangle(
+								clientArea.x + ledWidth, startY, clientArea.width - ledWidth, avgHeight));
+					}
 					startY += avgHeight;
 				}
 			}
@@ -204,8 +257,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 		if(this.effect3D == newValue)
 			return;
 		this.effect3D = newValue;
-		for (Object child : getChildren()){
-			LEDFigure bulb = (LEDFigure)child;
+		for (LEDFigure bulb : ledFigures) {
 			bulb.setEffect3D(this.effect3D);
 		}
 		repaint();
@@ -220,6 +272,11 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 		if(this.isHorizontal == isHorizontal)
 			return;
 		this.isHorizontal = isHorizontal;
+		
+		for (TextFigure text : textFigures) {
+			alignText(text);
+		}
+		
 		layout();
 		revalidate();
 	}
@@ -233,9 +290,18 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 			return;
 		this.numBits = numBits;
 		removeAll();
+		ledFigures.clear();
+		textFigures.clear();
 		for (int ii =0; ii < numBits; ii++){
-			add(createLED());
+			LEDFigure led = createLED();
+			add(led);
+			ledFigures.add(led);
+
+			TextFigure text = createText();
+			add(text);
+			textFigures.add(text);
 		}
+		updateLabels();
 		revalidate();
 	}
 
@@ -248,8 +314,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 		if(this.offColor != null && this.offColor.equals(rgb))
 			return;
 		this.offColor = rgb;
-		for (Object child : getChildren()){
-			LEDFigure led = (LEDFigure)child;
+		for (LEDFigure led : ledFigures){
 			led.setOffColor(rgb);
 		}
 	}
@@ -261,8 +326,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 		if(this.onColor != null && this.onColor.equals(rgb))
 			return;
 		this.onColor = rgb;
-		for (Object child : getChildren()){
-			LEDFigure led = (LEDFigure)child;
+		for (LEDFigure led : ledFigures) {
 			led.setOnColor(rgb);
 		}
 	}
@@ -276,6 +340,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 		if(this.reverseBits == reverseBits)
 			return;
 		this.reverseBits = reverseBits;
+		updateLabels();
 		repaint();
 	}
 
@@ -287,9 +352,11 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 		if(this.squareLED == squareLED)
 			return;
 		this.squareLED = squareLED;
-		for (Object child : getChildren()){
-			LEDFigure bulb = (LEDFigure)child;
+		for (LEDFigure bulb : ledFigures) {
 			bulb.setSquareLED(this.squareLED);
+		}
+		for (TextFigure text : textFigures) {
+			alignText(text);
 		}
 		revalidate();
 		repaint();
@@ -330,4 +397,45 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
 	}
 
+	public void setLabels(List<String> labels) {
+		this.labels = labels;
+		updateLabels();
+	}
+	
+	private void updateLabels() {
+		for (int i = 0; i<textFigures.size(); i++) {
+			TextFigure text;
+			if (reverseBits) {
+				text = textFigures.get(i);
+			} else {
+				text = textFigures.get(textFigures.size() - i - 1);
+			}
+			
+			if (i < labels.size()) {
+				text.setText(labels.get(i));
+			} else {
+				text.setText("");
+			}
+		}
+	}
+	
+	private void alignText(TextFigure text) {
+		if (isHorizontal) {
+			text.setRotate(270.0);
+			text.setHorizontalAlignment(TextFigure.H_ALIGN.CENTER);
+			if (squareLED) {
+				text.setVerticalAlignment(TextFigure.V_ALIGN.MIDDLE);
+			} else {
+				text.setVerticalAlignment(TextFigure.V_ALIGN.TOP);
+			}
+		} else {
+			text.setRotate(0.0);
+			if (squareLED) {
+				text.setHorizontalAlignment(TextFigure.H_ALIGN.CENTER);
+			} else {
+				text.setHorizontalAlignment(TextFigure.H_ALIGN.LEFT);
+			}
+			text.setVerticalAlignment(TextFigure.V_ALIGN.MIDDLE);
+		}
+	}
 }

@@ -49,11 +49,14 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
         }
     }
 
-    /** @return Device (alias) names used by the command */
+    /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames()
+    public String[] getDeviceNames(final ScanContext context) throws Exception
     {
-    	return script_object.getDeviceNames();
+        final String[] names = script_object.getDeviceNames();
+        for (int i=0; i<names.length; ++i)
+            names[i] = context.resolveMacros(names[i]);
+        return names;
     }
 
     /** {@inheritDoc} */

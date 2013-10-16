@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.xygraph.linearscale;
 
 /** A value range of 'start' ... 'end' or 'lower' .. 'upper'.
@@ -19,20 +26,10 @@ public class Range {
      * @param end
      *            the end value of range
      */
-    public Range(final double start, final double end) {
-    	//if(end == start)
-    	//	end = start + 1;
-//        if (start <= end)
-//        {
-            lower = start;
-            upper = end;
-//        }
-//        else
-//        {
-//            lower = end;
-//            upper = start;
-//        }
-    }
+	public Range(final double start, final double end) {
+		lower = start;
+		upper = end;
+	}
 
     /**If a value in the range or not.
      * @param value

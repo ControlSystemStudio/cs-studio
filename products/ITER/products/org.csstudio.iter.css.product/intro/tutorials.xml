@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+	<extensionContent id="org.csstudio.iter.css.product.tutorials"
+		name="ITER CSS Tutorials" style="css/style.css" path="tutorials/@">
+		<group id="content-group" style-id="content-group">
+			<link id="cssiter" label="How to import a SDD project" style-id="content-link"
+				url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.csstudio.iter.css.product.product.cheatSheetContent.import">
+				<text>Learn how to import a generated project
+				</text>
+			</link>
+		</group>
+		<group id="content-group" style-id="content-group">
+			<link id="cssiter" label="Probe Exercise" style-id="content-link"
+				url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.csstudio.iter.css.product.product.cheatSheetContent.probe">
+				<text>Learn how to use your first CSS tool
+				</text>
+			</link>
+		</group>
+		<group id="content-group" style-id="content-group">
+			<link id="cssiter" label="Data Browser Exercise" style-id="content-link"
+				url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.csstudio.iter.css.product.product.cheatSheetContent.databrowser">
+				<text>Learn how to plot a process variable
+				</text>
+			</link>
+		</group>
+		<group id="content-group" style-id="content-group">
+			<link id="cssiter" label="Probe via Data Exchange Exercise" style-id="content-link"
+				url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.csstudio.iter.css.product.product.cheatSheetContent.dataexchange">
+				<text>Learn how to exchange process variable information between CSS Tools
+				</text>
+			</link>
+		</group>
+	</extensionContent>
+</introContent>

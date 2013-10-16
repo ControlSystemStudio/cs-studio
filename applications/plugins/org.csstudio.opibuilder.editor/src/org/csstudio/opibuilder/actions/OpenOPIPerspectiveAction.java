@@ -15,8 +15,11 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 
 /**The action that opens the OPI Editor perspective
  * @author Xihui Chen
@@ -34,17 +37,19 @@ public class OpenOPIPerspectiveAction implements IWorkbenchWindowActionDelegate 
 	}
 
 	public void run(IAction action) {
-		try {
-//			PlatformUI.getWorkbench().showPerspective(
-//			        OPIEditorPerspective.ID, window);
+		if(window == null)
+			window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		final IWorkbenchPage page = window.getActivePage();
+		final String current = page.getPerspective().getId();
+		if (current.equals(OPIEditorPerspective.ID))
+		{
+		    if (MessageDialog.openQuestion(window.getShell(),
+		            "Reset OPI Editor Perspective?",
+		            "You are already in OPI Editor perspective.\n" +
+		            "Do you want to reset it to default arrangement?"))
+		        page.resetPerspective();
+		}else			
 			E4Utils.showPerspective(OPIEditorPerspective.ID, window.getActivePage());
-		} catch (Exception e) {
-			final String message = NLS.bind(
-					"Failed to open OPI Editor perspective. \n{0}", e.getMessage());
-			MessageDialog.openError(null, "Error",
-						message);
-			OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-		}
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {

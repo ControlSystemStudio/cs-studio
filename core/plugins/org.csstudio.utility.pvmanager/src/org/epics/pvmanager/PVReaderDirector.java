@@ -147,11 +147,17 @@ public class PVReaderDirector<T> {
             }
         }
     }
+    
+    private volatile boolean closed = false;
+    
+    void close() {
+        closed = true;
+    }
 
     /**
      * Closed and disconnects all the child expressions.
      */
-    private void close() {
+    private void disconnect() {
         synchronized(lock) {
             while (!recipes.isEmpty()) {
                 DesiredRateExpression<?> expression = recipes.keySet().iterator().next();
@@ -201,7 +207,7 @@ public class PVReaderDirector<T> {
         final PVReader<T> pv = pvRef.get();
         if (pv != null && !pv.isClosed()) {
             return true;
-        } else if (pv == null) {
+        } else if (pv == null && closed != true) {
             log.warning("PVReader wasn't properly closed and it was garbage collected. Closing the associated connections...");
             return false;
         } else {
@@ -323,7 +329,7 @@ public class PVReaderDirector<T> {
                     }
                 } else {
                     stopScan();
-                    close();
+                    disconnect();
                 }
             }
         }, 0, duration.toNanosLong(), TimeUnit.NANOSECONDS);

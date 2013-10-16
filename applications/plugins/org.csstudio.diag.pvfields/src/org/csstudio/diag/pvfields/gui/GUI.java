@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVHelper;
@@ -20,7 +22,6 @@ import org.csstudio.diag.pvfields.model.PVModelExport;
 import org.csstudio.diag.pvfields.model.PVModelListener;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
-import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -41,14 +42,16 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
@@ -63,8 +66,8 @@ public class GUI implements PVModelListener
 {
 	final private Composite parent;
 	private PVModel model = null;
-	private Combo combo;
-	private ComboHistoryHelper combo_history;
+	private Text combo;
+	// private ComboHistoryHelper combo_history;
 	private TableViewer property_view;
 	private TableViewer field_view;
 	private Button export;
@@ -78,18 +81,18 @@ public class GUI implements PVModelListener
 	{
 		this.parent = parent;
 		createComponents();
-		
-		combo_history = new ComboHistoryHelper(settings, "pv_name", combo)
-		{
-			@Override
-			public void newSelection(final String name)
-			{
-				setPVName(name);
-			}
-		};
-		combo_history.loadSettings();
-		
-    	// Enable 'Drop' on to combo box (entry box) and tables
+
+		// combo_history = new ComboHistoryHelper(settings, "pv_name", combo)
+		// {
+		// @Override
+		// public void newSelection(final String name)
+		// {
+		// setPVName(name);
+		// }
+		// };
+		// combo_history.loadSettings();
+
+		// Enable 'Drop' on to combo box (entry box) and tables
 		hookDrop(combo);
 		hookDrop(property_view.getControl());
 		hookDrop(field_view.getControl());
@@ -117,9 +120,15 @@ public class GUI implements PVModelListener
 		l.setText("PV Name:");
 		l.setLayoutData(new GridData());
 		
-		combo = new Combo(parent, SWT.DROP_DOWN);
+		combo = new Text(parent, SWT.BORDER);
 		combo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		combo.setToolTipText("Enter PV Name");
+		combo.addListener(SWT.DefaultSelection, new Listener() {
+			public void handleEvent(Event e) {
+				setPVName(combo.getText());
+			}
+		});
+		new AutoCompleteWidget(combo, AutoCompleteTypes.PV);
 		
 		export = new Button(parent, SWT.PUSH);
 		export.setText("Export");
@@ -310,7 +319,7 @@ public class GUI implements PVModelListener
 		if (! combo.getText().equals(name))
 		{
 			combo.setText(name);
-			combo_history.addEntry(name);
+			// combo_history.addEntry(name);
 		}
 		// Stop previous model
 		if (model != null)

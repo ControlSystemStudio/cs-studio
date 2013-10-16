@@ -55,7 +55,7 @@ import com.sun.security.auth.module.LdapLoginModule;
  *  that Linux would also consider to be a member of the "archive_config"
  *  Linux group, but for authorization purposes such a user must also be
  *  listed via <code>memberUid</code>. The numeric group ID is not used
- *  for autorization.
+ *  for authorization.
  *  
  *  <p>See comments in {@link LdapLoginModule} for Certificate Issues.
  *
@@ -112,7 +112,7 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
 
                 // LDAP 'posixGroup' schema uses 'cn' to name the group
                 final String authorization = r.getAttributes().get("cn").get().toString();
-                System.out.println("Found: '" + authorization +  "'");
+                logger.log(Level.FINE, "Found: '" + authorization +  "'");
                 authorizations.add(authorization);
             }
         }

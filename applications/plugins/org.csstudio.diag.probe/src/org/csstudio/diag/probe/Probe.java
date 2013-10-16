@@ -11,8 +11,9 @@ import java.text.NumberFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
@@ -51,10 +52,11 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
@@ -89,7 +91,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     public static final String ID = "org.csstudio.diag.probe.Probe"; //$NON-NLS-1$
 
     /** Memento tag */
-    private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
+    // private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
     /** Memento tag */
     private static final String PV_TAG = "PVName"; //$NON-NLS-1$
     /** Memento tag */
@@ -122,9 +124,9 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     private IMemento memento = null;
 
     // GUI
-    private Combo cbo_name;
-    private ComboHistoryHelper name_helper;
-    private Label lbl_value;
+	private Text cbo_name;
+	// private ComboHistoryHelper name_helper;
+	private Label lbl_value;
     private Label lbl_time;
     private Label lbl_status;
     private MeterWidget meter;
@@ -321,12 +323,18 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 		label.setText(Messages.S_PVName);
 		label.setLayoutData(new GridData());
 
-        cbo_name = new Combo(top_box, SWT.SINGLE | SWT.BORDER);
+        cbo_name = new Text(top_box, SWT.SINGLE | SWT.BORDER);
         cbo_name.setToolTipText(Messages.S_EnterPVName);
         GridData gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         cbo_name.setLayoutData(gd);
+		cbo_name.addListener(SWT.DefaultSelection, new Listener() {
+			public void handleEvent(Event e) {
+				setPVName(cbo_name.getText());
+			}
+		});
+		new AutoCompleteWidget(cbo_name, AutoCompleteTypes.PV);
 
         final Button btn_info = new Button(top_box, SWT.PUSH);
         btn_info.setText(Messages.S_Info);
@@ -436,25 +444,25 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         fd.bottom = new FormAttachment(100, 0);
         bottom_box.setLayoutData(fd);
 
-        // Connect actions
-        name_helper = new ComboHistoryHelper(
-                        Activator.getDefault().getDialogSettings(),
-                        PV_LIST_TAG, cbo_name)
-        {
-            @Override
-            public void newSelection(final String pv_name)
-            {
-                setPVName(pv_name);
-            }
-        };
+		// Connect actions
+		// name_helper = new ComboHistoryHelper(
+		// Activator.getDefault().getDialogSettings(),
+		// PV_LIST_TAG, cbo_name)
+		// {
+		// @Override
+		// public void newSelection(final String pv_name)
+		// {
+		// setPVName(pv_name);
+		// }
+		// };
 
         cbo_name.addDisposeListener(new DisposeListener()
         {
             @Override
             public void widgetDisposed(final DisposeEvent e)
             {
-                setPV(null);
-                name_helper.saveSettings();
+				setPV(null);
+				// name_helper.saveSettings();
             }
         });
 
@@ -519,7 +527,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
             {   showMeter(show_meter.getSelection());   }
         });
 
-        name_helper.loadSettings();
+        // name_helper.loadSettings();
 
         if (memento != null)
         {
@@ -709,7 +717,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
             return false;
         }
 
-        name_helper.addEntry(pv_name);
+        // name_helper.addEntry(pv_name);
         // Update displayed name, unless it's already current
         if (! (cbo_name.getText().equals(pv_name)))
             cbo_name.setText(pv_name);

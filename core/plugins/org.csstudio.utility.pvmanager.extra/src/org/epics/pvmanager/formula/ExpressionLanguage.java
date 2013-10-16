@@ -2,10 +2,6 @@
  * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.epics.pvmanager.formula;
 
 import java.util.ArrayList;
@@ -18,6 +14,7 @@ import org.epics.vtype.VDouble;
 import org.epics.vtype.VNumber;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import static org.epics.pvmanager.ExpressionLanguage.*;
+import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
@@ -25,10 +22,12 @@ import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
 import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.WriteExpression;
+import org.epics.util.text.StringUtil;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /**
  *
@@ -54,6 +53,14 @@ public class ExpressionLanguage {
      * @return the channel it represents or null
      */
     public static String channelFromFormula(String formula) {
+        if (!formula.startsWith("=")) {
+            if (formula.trim().matches(StringUtil.SINGLEQUOTED_STRING_REGEX)) {
+                return StringUtil.unquote(formula);
+            }
+            return formula;
+        } else {
+            formula = formula.substring(1);
+        }
         try {
             FormulaParser parser = createParser(formula);
             DesiredRateExpression<?> exp = parser.singlePv();
@@ -80,28 +87,74 @@ public class ExpressionLanguage {
      * @return an expression for the formula
      */
     public static DesiredRateReadWriteExpression<?, Object> formula(String formula) {
+        DesiredRateExpression<?> exp = parseFormula(formula);
+            
+        if (exp instanceof LastOfChannelExpression) {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, org.epics.pvmanager.vtype.ExpressionLanguage.vType(exp.getName()));
+        } else if (exp instanceof ErrorDesiredRateExpression) {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Parsing error")); 
+        } else {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Read-only formula"));
+        }
+    }
+    
+    private static DesiredRateExpression<?> parseFormula(String formula) {
+        if (!formula.startsWith("=")) {
+            return cachedPv(channelFromFormula(formula));
+        } else {
+            formula = formula.substring(1);
+        }
+        
         RuntimeException parsingError;
         try {
             DesiredRateExpression<?> exp = createParser(formula).formula();
             if (exp == null) {
                 throw new NullPointerException("Parsing failed");
             }
-            
-            if (exp instanceof LastOfChannelExpression) {
-                return new DesiredRateReadWriteExpressionImpl<>(exp, org.epics.pvmanager.vtype.ExpressionLanguage.vType(exp.getName()));
-            } else {
-                return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Read-only formula"));
-            }
+            return exp;
         } catch (RecognitionException ex) {
             parsingError = new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
         } catch (Exception ex) {
             parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
         }
-        return new DesiredRateReadWriteExpressionImpl<>(errorDesiredRateExpression(parsingError), readOnlyWriteExpression("Parsing error")); 
+        return errorDesiredRateExpression(parsingError); 
+    }
+    
+    /**
+     * An expression that returns the value of the formula and return null
+     * for empty or null formula.
+     * <p>
+     * Some expressions allow for null expression arguments to handle
+     * optional elements. In those cases, using this method makes
+     * undeclared arguments fall through.
+     * 
+     * @param formula the formula, can be null
+     * @return an expression of the given type; null if formula is null or empty
+     */
+    public static DesiredRateExpression<?> formulaArg(String formula) {
+        if (formula == null || formula.trim().isEmpty()) {
+            return null;
+        }
+        
+        return parseFormula(formula);
+    }
+    
+    /**
+     * An expression that returns the value of the formula making sure
+     * it's of the given type.
+     * 
+     * @param <T> the type to read
+     * @param formula the formula
+     * @param readType the type to read
+     * @return an expression of the given type
+     */
+    public static <T> DesiredRateExpression<T> formula(String formula, Class<T> readType) {
+        DesiredRateExpression<?> exp = parseFormula(formula);
+        return checkReturnType(readType, "Value", exp);
     }
     
     static DesiredRateExpression<?> cachedPv(String channelName) {
-        return new LastOfChannelExpression<Object>(channelName, Object.class);
+        return new LastOfChannelExpression<>(channelName, Object.class);
     }
     
     static <T> DesiredRateExpression<T> cast(Class<T> clazz, DesiredRateExpression<?> arg1) {
@@ -134,32 +187,20 @@ public class ExpressionLanguage {
         return fun + "(" + arg.getName()+ ")";
     }
     
-    static DesiredRateExpression<?> addCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("+", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
-    }
-    
     static DesiredRateExpression<?> powCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
         return function("^", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
     }
-    
-    static DesiredRateExpression<?> subtractCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("-", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
-    }
-    
-    static DesiredRateExpression<?> negateCast(DesiredRateExpression<?> arg) {
-        return function("-", new DesiredRateExpressionListImpl<Object>().and(arg));
-    }
-    
-    static DesiredRateExpression<?> multiplyCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("*", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+
+    static DesiredRateExpression<?> threeArgOp(String opName, DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2, DesiredRateExpression<?> arg3) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2).and(arg3));
     }
 
-    static DesiredRateExpression<?> divideCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("/", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+    static DesiredRateExpression<?> twoArgOp(String opName, DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
     }
-    
-    static DesiredRateExpression<?> remainderCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return function("%", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+
+    static DesiredRateExpression<?> oneArgOp(String opName, DesiredRateExpression<?> arg) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg));
     }
     
     static DesiredRateExpression<?> function(String function, DesiredRateExpressionList<?> args) {
@@ -170,25 +211,10 @@ public class ExpressionLanguage {
             for (DesiredRateExpression<? extends Object> arg : args.getDesiredRateExpressions()) {
                 argNames.add(arg.getName());
             }
-            return new DesiredRateExpressionImpl<>(args, readFunction, FormulaFunctions.format(function, argNames));
+            return new FormulaFunctionReadExpression(args, readFunction, FormulaFunctions.format(function, argNames));
         }
         
-        if ("columnOf".equals(function)) {
-            if (args.getDesiredRateExpressions().size() != 2) {
-                throw new IllegalArgumentException("columnOf takes 2 arguments");
-            }
-            return columnOf(cast(VTable.class, args.getDesiredRateExpressions().get(0)),
-                    cast(VString.class, args.getDesiredRateExpressions().get(1)));
-        }
         throw new IllegalArgumentException("No function named '" + function + "' is defined");
-    }
-    
-    static <R, A> DesiredRateExpression<R> function(String name, OneArgFunction<R, A> function, Class<A> argClazz, DesiredRateExpressionList<?> args) {
-        if (args.getDesiredRateExpressions().size() != 1) {
-            throw new IllegalArgumentException(name + " function accepts only one argument");
-        }
-        DesiredRateExpression<A> arg = cast(argClazz, args.getDesiredRateExpressions().get(0));
-        return resultOf(function, arg, funName(name, arg));
     }
     
     static <T> WriteExpression<T> readOnlyWriteExpression(String errorMessage) {
@@ -199,11 +225,22 @@ public class ExpressionLanguage {
         return new ErrorDesiredRateExpression<>(error, "");
     }
     
-    static DesiredRateExpression<VType>
-            columnOf(DesiredRateExpression<VTable> tableExpression, DesiredRateExpression<VString> columnExpression) {
-        ColumnOfVTableConverter converter =
-                new ColumnOfVTableConverter(tableExpression.getFunction(), columnExpression.getFunction());
-        return new DesiredRateExpressionImpl<VType>(new DesiredRateExpressionListImpl<Object>()
-                .and(tableExpression).and(columnExpression), converter, "columnOf");
+    static <T> DesiredRateExpression<T> checkReturnType(final Class<T> clazz, final String argName, final DesiredRateExpression<?> arg1) {
+        return new DesiredRateExpressionImpl<T>(arg1, new ReadFunction<T>() {
+
+            @Override
+            public T readValue() {
+                Object obj = arg1.getFunction().readValue();
+                if (obj == null) {
+                    return null;
+                }
+                
+                if (clazz.isInstance(obj)) {
+                    return clazz.cast(obj);
+                } else {
+                    throw new RuntimeException(argName + " must be a " + clazz.getSimpleName() + " (was " + ValueUtil.typeOf(obj).getSimpleName() + ")");
+                }
+            }
+        }, arg1.getName());
     }
 }

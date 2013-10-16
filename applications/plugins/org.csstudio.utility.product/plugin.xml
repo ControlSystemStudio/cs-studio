@@ -4,9 +4,9 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.csstudio.utility.product.CSS_Perspective"
+            class="org.csstudio.utility.product.CSStudioPerspective"
             icon="icons/css16.png"
-            id="org.csstudio.utility.product.CSS_Perspective"
+            id="org.csstudio.utility.product.CSStudioPerspective"
             name="%Perspective">
       </perspective>
    </extension>

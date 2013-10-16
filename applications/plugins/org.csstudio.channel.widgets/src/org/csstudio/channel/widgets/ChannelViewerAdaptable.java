@@ -3,13 +3,14 @@
  */
 package org.csstudio.channel.widgets;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
-import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelQuery;
-
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 
 /**
  * @author shroffk
@@ -29,7 +30,7 @@ public class ChannelViewerAdaptable implements ChannelAdaptable,
 	}
 
 	@Override
-	public Collection<ProcessVariable> toProcesVariables() {
+	public Collection<ProcessVariable> toProcessVariables() {
 		return toPVArray(channels);
 	}
 

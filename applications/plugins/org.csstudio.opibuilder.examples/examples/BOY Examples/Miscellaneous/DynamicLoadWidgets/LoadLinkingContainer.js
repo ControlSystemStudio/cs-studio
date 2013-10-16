@@ -28,6 +28,7 @@ for(var i=0; i<groups.size(); i++){
 	
 	//add linking container to widget
 	widget.addChildToBottom(linkingContainer);
-	
 }
+
+widget.performAutosize();
 

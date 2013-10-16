@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.scan.server.application"
+            name="Scan Server">
+         <property
+               name="appName"
+               value="Scan Server">
+         </property>
+      </product>
+   </extension>
+</plugin>

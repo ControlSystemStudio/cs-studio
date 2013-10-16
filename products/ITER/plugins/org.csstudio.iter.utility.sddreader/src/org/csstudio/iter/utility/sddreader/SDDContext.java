@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import org.csstudio.iter.utility.sddreader.data.Field;
+import org.csstudio.iter.utility.sddreader.data.Record;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.pvnames.data.Field;
-import org.csstudio.pvnames.data.Record;
 
 public class SDDContext implements Serializable {
 

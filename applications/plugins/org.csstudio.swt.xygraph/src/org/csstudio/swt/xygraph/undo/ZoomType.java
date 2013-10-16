@@ -22,6 +22,11 @@ import org.eclipse.swt.widgets.Display;
  */
 @SuppressWarnings("nls")
 public enum ZoomType{
+		/** Hover labels */
+		HOVER_LABELS(Messages.Zoom_HoverLabels,
+			XYGraphMediaFactory.getInstance().getImage("images/HoverLabels.png"),
+			XYGraphMediaFactory.getTransparentImage(),
+            XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_CROSS),
         /** Interactive Rubberband zoom */
         RUBBERBAND_ZOOM(Messages.Zoom_Rubberband,
 		        XYGraphMediaFactory.getInstance().getImage("images/RubberbandZoom.png"),
@@ -32,13 +37,13 @@ public enum ZoomType{
 		HORIZONTAL_ZOOM(Messages.Zoom_Horiz,
 				XYGraphMediaFactory.getInstance().getImage("images/HorizontalZoom.png"),
 				XYGraphMediaFactory.getInstance().getImage("images/HorizontalZoomCursor.png"),
-                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_CROSS),
+                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEWE),
 				
 		/** Zoom via 'cursors' for vertical start/end position */     
 		VERTICAL_ZOOM(Messages.Zoom_Vert,
 				XYGraphMediaFactory.getInstance().getImage("images/VerticalZoom.png"),
 				XYGraphMediaFactory.getInstance().getImage("images/VerticalZoomCursor.png"),
-                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_CROSS),
+                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZENS),
 				
 		/** Zoom 'in' around mouse pointer */
 		ZOOM_IN(Messages.Zoom_In,
@@ -56,31 +61,33 @@ public enum ZoomType{
         ZOOM_IN_HORIZONTALLY(Messages.Zoom_InHoriz,
         		XYGraphMediaFactory.getInstance().getImage("images/ZoomInHoriz.png"),
         		XYGraphMediaFactory.getInstance().getImage("images/ZoomInHorizCursor.png"),
-                XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_HAND),
+                XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEWE),
 				
         /** Zoom 'out' around mouse pointer along horizontal axis */
         ZOOM_OUT_HORIZONTALLY(Messages.Zoom_OutHoriz,
         		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutHoriz.png"),
         		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutHorizCursor.png"),
-                XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_HAND),
+                XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEWE),
 
         /** Zoom 'in' around mouse pointer along vertical axis */
         ZOOM_IN_VERTICALLY(Messages.Zoom_InVert,
         		XYGraphMediaFactory.getInstance().getImage("images/ZoomInVert.png"),
         		XYGraphMediaFactory.getInstance().getImage("images/ZoomInVertCursor.png"),
-                XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_HAND),
+                XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZENS),
 				
         /** Zoom 'out' around mouse pointer along vertical axes */
         ZOOM_OUT_VERTICALLY(Messages.Zoom_OutVert,
         		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutVert.png"),
         		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutVertCursor.png"),
-                XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_HAND),
+                XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZENS),
 				
         /** Zoom 'out' around mouse pointer */
 		PANNING(Messages.Zoom_Pan,
 				XYGraphMediaFactory.getInstance().getImage("images/Panning.png"),
 				XYGraphMediaFactory.getInstance().getImage("images/PanningCursor.png"),
-                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_HAND),
+                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEALL),
+				
+        
 				
         /** Disarm zoom behavior */
 		NONE(Messages.Zoom_None,
@@ -107,7 +114,7 @@ public enum ZoomType{
 			this.description = description;
 			this.iconImage = iconImage;
 			if(cursorImage == null)
-				cursor = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
+				cursor = new Cursor(Display.getDefault(), backUpSWTCursorType);
 			else
 				cursor = SingleSourceHelper.createCursor(
 						Display.getDefault(), cursorImage.getImageData(),

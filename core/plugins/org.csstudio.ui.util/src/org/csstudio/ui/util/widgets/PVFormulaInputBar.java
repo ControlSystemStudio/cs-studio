@@ -3,18 +3,20 @@ package org.csstudio.ui.util.widgets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
+import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * A widget to enter a pv formula.
@@ -31,7 +33,8 @@ import org.eclipse.swt.widgets.Menu;
 public class PVFormulaInputBar extends AbstractPVFormulaWidget {
 	// implements ISelectionProvider {
 
-	private Combo combo;
+	// ITER: changed text to text to integrate auto-complete
+	private Text text;
 	private Label lblPvFormula;
 
 	/**
@@ -39,8 +42,8 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
 	 * 
 	 * @param parent the parent
 	 * @param style the SWT style
-	 * @param dialogSettings where to store the combo history
-	 * @param settingsKey the key to use for storing the combo history
+	 * @param dialogSettings where to store the text history
+	 * @param settingsKey the key to use for storing the text history
 	 */
 	public PVFormulaInputBar(Composite parent, int style,
 			IDialogSettings dialogSettings, String settingsKey) {
@@ -51,18 +54,24 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
 		lblPvFormula.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblPvFormula.setText("PV Formula:");
 
-		ComboViewer comboViewer = new ComboViewer(this, SWT.NONE);
-		combo = comboViewer.getCombo();
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-				1));
-
-		ComboHistoryHelper name_helper = new ComboHistoryHelper(dialogSettings,
-				settingsKey, combo, 20, true) {
-			@Override
-			public void newSelection(final String queryText) {
-				setPVFormula(queryText);
+		text = new Text(this, SWT.BORDER);
+		text.addListener(SWT.DefaultSelection, new Listener() {
+			public void handleEvent(Event e) {
+				setPVFormula(text.getText());
 			}
-		};
+		});
+		new AutoCompleteWidget(text, AutoCompleteTypes.Formula);
+		// ComboViewer comboViewer = new ComboViewer(this, SWT.NONE);
+		// text = comboViewer.getCombo();
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+		// ComboHistoryHelper name_helper = new
+		// ComboHistoryHelper(dialogSettings, settingsKey, text, 20, true) {
+		// @Override
+		// public void newSelection(final String queryText) {
+		// setPVFormula(queryText);
+		// }
+		// };
 
 		// selectionProvider = new AbstractSelectionProviderWrapper(comboViewer,
 		// this) {
@@ -76,13 +85,13 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
 		// }
 		// };
 
-		combo.addFocusListener(new FocusListener() {
+		text.addFocusListener(new FocusListener() {
 
 			@Override
 			public void focusLost(FocusEvent e) {
 				// If focus is lost and the text is different,
 				// change the query
-				String comboText = combo.getText();
+				String comboText = text.getText();
 				String queryText = "";
 				if (getPVFormula() != null) {
 					queryText = getPVFormula();
@@ -106,14 +115,14 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
 					String newValue = "";
 					if (event.getNewValue() != null)
 						newValue = (String) event.getNewValue();
-					if (!newValue.equals(combo.getText())) {
-						combo.setText(newValue);
+					if (!newValue.equals(text.getText())) {
+						text.setText(newValue);
 					}
 				}
 			}
 		});
 
-		name_helper.loadSettings();
+		// name_helper.loadSettings();
 	}
 
 	@Override
@@ -124,7 +133,15 @@ public class PVFormulaInputBar extends AbstractPVFormulaWidget {
 	@Override
 	public void setMenu(Menu menu) {
 		super.setMenu(menu);
-		combo.setMenu(menu);
+		text.setMenu(menu);
+	}
+	
+	public String getLabelText() {
+		return lblPvFormula.getText();
+	}
+	
+	public void setLabelText(String text) {
+		lblPvFormula.setText(text);
 	}
 
 	// private AbstractSelectionProviderWrapper selectionProvider;

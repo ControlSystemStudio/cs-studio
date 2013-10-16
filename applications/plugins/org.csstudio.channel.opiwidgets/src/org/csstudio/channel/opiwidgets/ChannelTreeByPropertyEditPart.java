@@ -31,7 +31,7 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 			}
 		}
 		widget.setProperties(model.getTreeProperties());
-		widget.setConfigurable(model.getConfigurable());
+		widget.setConfigurable(model.isConfigurable());
 		widget.setShowChannelNames(model.isShowChannelNames());
 	}
 

@@ -1,12 +1,11 @@
 package org.csstudio.channel.widgets;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.ui.util.widgets.StringListSelectionWidget;
+import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationPanel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -18,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 public class PVTableByPropertyConfigurationPanel extends
-AbstractConfigurationComposite {
+AbstractConfigurationPanel{
 	private Combo rowProperty;
 	private Combo columnProperty;
 	private StringListSelectionWidget columnTags;
@@ -74,19 +73,6 @@ AbstractConfigurationComposite {
 		columnTags.addPropertyChangeListener(forwardPropertyChangeListener("selectedValues", "columnTags"));
 	}
 	
-	private PropertyChangeListener forwardPropertyChangeListener(final String widgetProperty,
-			final String panelProperty) {
-		return new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (widgetProperty.equals(evt.getPropertyName())) {
-					changeSupport.firePropertyChange(panelProperty, evt.getOldValue(), evt.getNewValue());
-				}
-			}
-		};
-	}
-
 	protected SelectionListener forwardSelectionListener(final String propertyName) {
 		return new SelectionListener() {
 			

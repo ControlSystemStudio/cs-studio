@@ -2,22 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.opibuilder.examples.actionSet"
-            label="examples"
-            visible="true">
-         <action
-               class="org.csstudio.opibuilder.examples.InstallExamplesAction"
-               icon="icons/OPIBuilder.png"
-               id="org.csstudio.opibuilder.examples.InstallExamplesAction"
-               label="Install OPI Examples"
-               menubarPath="css/display/"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.importWizards">
       <category
             id="org.csstudio.opibuilder.examples.BOYcategory"
@@ -31,5 +15,12 @@
             name="BOY Examples">
       </wizard>
    </extension>
+   <extension
+         point="org.csstudio.examples.sampleset">
+      <sampleset
+            name="BOY Examples"
+            sampleset="org.csstudio.opibuilder.examples.Basic">
+      </sampleset>
+  org.csstudio.opibuilder.examples.Basic </extension>
 
 </plugin>

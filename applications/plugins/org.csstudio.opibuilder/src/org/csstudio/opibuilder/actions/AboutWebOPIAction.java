@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.scriptUtil.FileUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
@@ -88,28 +89,30 @@ public class AboutWebOPIAction extends Action {
 			rapLabel.setText("Built on RAP " + "v" + UIPlugin. //$NON-NLS-2$
 					getDefault().getBundle().getVersion().toString());
 			
-			Link link = new Link(container, SWT.NONE);
-			GridData gd_link = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-			gd_link.heightHint = 20;
-			link.setLayoutData(gd_link);
-			link.setText("<a>Visit WebOPI home page</a>");
-			link.addSelectionListener(new SelectionAdapter() {
-				
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					FileUtil.openWebPage("http://sourceforge.net/apps/trac/cs-studio/wiki/webopi"); //$NON-NLS-1$
-				}
-			});
-			Link link_1 = new Link(container, 0);
-			link_1.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-			link_1.setText("WebOPI is a subproject of <a>Control System Studio (CSS)</a>");
-			link_1.addSelectionListener(new SelectionAdapter() {
-
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					FileUtil.openWebPage("http://cs-studio.sourceforge.net/"); //$NON-NLS-1$
-				}
-			});
+			if(PreferencesHelper.isAboutShowLinks()) {
+				Link link = new Link(container, SWT.NONE);
+				GridData gd_link = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+				gd_link.heightHint = 20;
+				link.setLayoutData(gd_link);
+				link.setText("<a>Visit WebOPI home page</a>");
+				link.addSelectionListener(new SelectionAdapter() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						FileUtil.openWebPage("http://sourceforge.net/apps/trac/cs-studio/wiki/webopi"); //$NON-NLS-1$
+					}
+				});
+				Link link_1 = new Link(container, 0);
+				link_1.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+				link_1.setText("WebOPI is a subproject of <a>Control System Studio (CSS)</a>");
+				link_1.addSelectionListener(new SelectionAdapter() {
+	
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						FileUtil.openWebPage("http://cs-studio.sourceforge.net/"); //$NON-NLS-1$
+					}
+				});
+			}
 			return container;
 		}
 

@@ -45,7 +45,7 @@ public class SQL
      */
     public SQL(final Dialect dialect, String prefix)
     {
-    	if (prefix == null)
+    	if (prefix == null  ||  dialect == Dialect.MySQL)
     		prefix = "";
     	else
     		if (prefix.length() > 0   &&   !prefix.endsWith("."))

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Probe via Data Exchange Exercise">
+   <intro>
+      <description>
+  The following steps show how to <b>exchange</b> process variable information between CSS Tools.
+      </description>
+   </intro>
+   <item
+         title="Run the previous tutorial - the Data Browser exercise ">
+      <description>
+         If you have already plotted a sine wave, just skip the following steps.
+      </description>
+   </item>
+   <item
+         skip="true"
+         title="Open the dedicated perspective">
+      <description>
+         Menu Window -> Open Perspective -> Other… and select <b>Data Browser</b>.
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.perspectives.showPerspective"/>
+   </item>
+   <item
+        skip="true"
+         title="Open a new plot">
+      <description>
+         From the Tool bar, click on icon "new Data Browser plot" in CSS toolbar or use the menu CSS -> Trends -> Data Browser.
+      </description>
+      <command
+            required="false"
+            serialization="org.csstudio.trends.databrowser.NewDataBrowserHandler"/>
+   </item>
+   <item
+        skip="true"
+         title="Add a PV">
+      <description>
+        Right-click on the plot contextual menu, select the option "Add PV". Enter Name “sim://sine”
+       </description>
+   </item>
+   <item
+         title="Data Browser Perspective -> Properties View">
+      <description>
+        Click on the plot area and the Properties view will display information about the PV name, trace color, scan period...
+       </description>
+   </item>
+   <item
+         title="Process Variable contextual menu">
+      <description>
+        If you have lost the focus, click on the plot and from the Data Browser Perspective -> Properties View, right-click on “sim://sine”,
+        select the contextual menu <b>"Process Variable"</b>, use the little arrow on the right and select CSS <b>Probe</b> Tool. The Probe tool
+        is started and should display the current value of the plotted sine PV together with time stamp and status      </description>
+   </item>
+ </cheatsheet>
+   

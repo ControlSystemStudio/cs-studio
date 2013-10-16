@@ -12,11 +12,9 @@ import java.util.List;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.ui.PlatformUI;
 
 /** Action to send information about selected alarms to clipboard
  *  @author Kay Kasemir
@@ -30,6 +28,11 @@ public class CopyToClipboardAction extends Action
 		super(Messages.CopyToClipboard,
 				Activator.getImageDescriptor("icons/clipboard.gif")); //$NON-NLS-1$
 		this.alarms = alarms;
+
+		// Copy to clipboard is not available in RAP version
+		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+			setEnabled(false);
+		}
     }
 
 	@Override
@@ -37,9 +40,7 @@ public class CopyToClipboardAction extends Action
     {
 		final String alarm_info = AlarmTextHelper.createAlarmInfoText(alarms);
         // Copy as text to clipboard
-        final Clipboard clipboard = new Clipboard(
-            PlatformUI.getWorkbench().getDisplay());
-        clipboard.setContents(new String[] { alarm_info },
-            new Transfer[] { TextTransfer.getInstance() });
+		SingleSourcePlugin.getUIHelper().copyToClipboard(
+				new String[] { alarm_info });
     }
 }
