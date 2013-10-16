@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
+import org.csstudio.opibuilder.util.E4Utils;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
@@ -43,7 +44,6 @@ import org.eclipse.ui.WorkbenchException;
  * @author Xihui Chen
  *
  */
-@SuppressWarnings("restriction")
 public class RunModeService {
 
 	public enum TargetWindow{
@@ -221,14 +221,8 @@ public class RunModeService {
 							if(!dialog.isShowThisDialogAgain())
 								PreferencesHelper.setShowOpiRuntimePerspectiveDialog(false);
 						}
-						if(openCode==0 ||openCode==Window.OK)						
-							try {
-								workbench.showPerspective(OPIRunnerPerspective.ID, window);
-							} catch (WorkbenchException e) {
-								ErrorHandlerUtil.handleError(
-									"Faile to switch to OPI Runtime perspective", e, false, true);
-							}
-						
+						if(openCode==0 ||openCode==Window.OK)
+							E4Utils.showPerspective(OPIRunnerPerspective.ID, window.getActivePage());						
 					}
 					
 					

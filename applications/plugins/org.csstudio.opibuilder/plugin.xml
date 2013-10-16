@@ -21,7 +21,7 @@
       <perspective
             class="org.csstudio.opibuilder.runmode.OPIRunnerPerspective"
             icon="icons/OPIBuilder.png"
-            id="org.csstudio.opibuilder.OPIRunner"
+            id="org.csstudio.opibuilder.OPIRuntime.perspective"
             name="%OPIRunner">
       </perspective>
    </extension>
