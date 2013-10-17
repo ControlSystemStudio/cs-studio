@@ -8,12 +8,16 @@
 package org.csstudio.trends.databrowser2.ui;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.apputil.time.AbsoluteTimeParser;
+import org.csstudio.apputil.time.PeriodFormat;
+import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.csdata.ProcessVariable;
@@ -179,6 +183,7 @@ public class Controller implements ArchiveFetchJobListener
             @Override
             public void timeAxisChanged(final long start_ms, final long end_ms)
             {
+            	final String start_spec, end_spec;
                 if (model.isScrollEnabled())
                 {
                     final long dist = Math.abs(end_ms - System.currentTimeMillis());
@@ -202,11 +207,28 @@ public class Controller implements ArchiveFetchJobListener
                         // us about a new time range that resulted from scrolling.
                         return;
                     }
+                    start_spec = "-" + PeriodFormat.formatSeconds(range / 1000.0);
+                    end_spec = RelativeTime.NOW;
                 }
-                final Timestamp start_time = TimestampHelper.fromMillisecs(start_ms);
-                final Timestamp end_time = TimestampHelper.fromMillisecs(end_ms);
+                else
+                {
+                	final Calendar cal = Calendar.getInstance();
+                	cal.setTimeInMillis(start_ms);
+                	start_spec = AbsoluteTimeParser.format(cal);
+                	cal.setTimeInMillis(end_ms);
+                	end_spec = AbsoluteTimeParser.format(cal);
+                }
                 // Update model's time range
-                model.setTimerange(start_time, end_time);
+                System.out.println("Plot changed to " + start_spec + " .. " + end_spec);
+                try
+                {
+                	model.setTimerange(start_spec, end_spec);
+                }
+                catch (Exception ex)
+                {
+                	Logger.getLogger(Controller.class.getName()).log(Level.WARNING,
+            			"Cannot adjust time range to " + start_spec + " .. " + end_spec, ex);
+                }
                 // Controller's ModelListener will fetch new archived data
             }
 
