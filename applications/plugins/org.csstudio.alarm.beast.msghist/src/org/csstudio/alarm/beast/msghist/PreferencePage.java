@@ -49,7 +49,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         final Composite parent = getFieldEditorParent();
         addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Pref_URL, parent));
-        addField(new PasswordFieldEditor(Activator.ID, Preferences.RDB_USER, Messages.Pref_User, parent));
+        addField(new StringFieldEditor(Preferences.RDB_USER, Messages.Pref_User, parent));
         addField(new PasswordFieldEditor(Activator.ID, Preferences.RDB_PASSWORD, Messages.Pref_Password, parent));
         addField(new StringFieldEditor(Preferences.RDB_SCHEMA, Messages.Pref_Schema, parent));
         addField(new StringFieldEditor(Preferences.START, Messages.Pref_Starttime, parent));

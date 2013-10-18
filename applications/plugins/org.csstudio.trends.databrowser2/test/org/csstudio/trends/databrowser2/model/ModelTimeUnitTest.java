@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import static org.junit.Assert.*;
-import static org.csstudio.utility.test.HamcrestMatchers.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.csstudio.utility.test.HamcrestMatchers.closeTo;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.epics.util.time.Timestamp;
 import org.junit.Test;
@@ -21,13 +22,13 @@ import org.junit.Test;
 public class ModelTimeUnitTest
 {
     @Test
-    public void testTimes() throws InterruptedException
+    public void testTimes() throws Exception
     {
         final double hour = 60.0*60;
         final Model model = new Model();
 
         // Check scroll mode
-        model.setTimespan(hour);
+        model.setTimerange("-1 hour", "now");
         assertEquals(true, model.isScrollEnabled());
         assertEquals(hour, model.getTimespan(), 1.0);
 
