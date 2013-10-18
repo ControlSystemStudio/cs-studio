@@ -9,7 +9,7 @@
       <description>Menu CSS -> Diagnostic Tools -> <b>Probe</b></description>
       <command
             required="false"
-            serialization="org.csstudio.diag.probe.OpenProbe"/>
+            serialization="org.csstudio.diag.pvmanager.probe.OpenProbe"/>
    </item>
    <item
          title="Enter a PV Name">
@@ -26,7 +26,7 @@
       <description>Menu CSS -> Diagnostic Tools -> <b>Probe</b></description>
       <command
             required="false"
-            serialization="org.csstudio.diag.probe.OpenProbe"/>
+            serialization="org.csstudio.diag.pvmanager.probe.OpenProbe"/>
    </item>
    <item
          title="Select the sine signal using autocomplete">
@@ -43,7 +43,7 @@ Select it and type Enter.</description>
    </item>
    <item
          skip="true"
-         href="/org.csstudio.diag.probe/html/probe.html"
+         href="/org.csstudio.diag.pvmanager.probe/html/probe.html"
          title="For more information">
       <description>Click on the <b>Question Mark</b> on the right to open related help.</description>
    </item>
