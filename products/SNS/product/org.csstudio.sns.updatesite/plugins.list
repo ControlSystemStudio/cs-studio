@@ -79,14 +79,12 @@ org.csstudio.opibuilder.imagelib/**
 org.csstudio.opibuilder.rcp/**
 org.csstudio.opibuilder.pvmanager.util/**
 org.csstudio.opibuilder.widgets/**
+org.csstudio.opibuilder.widgets.extra/**
 org.csstudio.opibuilder.widgets.rcp/**
 org.csstudio.opibuilder.widgets.symbol/**
 org.csstudio.platform.jaasAuthentication/**
 org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.libs.epics/**
-org.csstudio.platform.libs.epics.linux/**
-org.csstudio.platform.libs.epics.macosx/**
-org.csstudio.platform.libs.epics.win32/**
 org.csstudio.platform.libs.epics.ui/**
 org.csstudio.platform.libs.jdbc/**
 org.csstudio.platform.libs.jmock/**
@@ -147,9 +145,11 @@ org.csstudio.utility.pv.simu/**
 org.csstudio.utility.pvmanager/**
 org.csstudio.utility.pvmanager.epics/**
 org.csstudio.utility.pvmanager.extra/**
+org.csstudio.utility.pvmanager.jdbc/**
 org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.sys/**
+org.csstudio.utility.pvmanager.pva/**
 org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.pvmanager.ui.toolbox/**
 org.csstudio.utility.pvmanager.widgets/**
