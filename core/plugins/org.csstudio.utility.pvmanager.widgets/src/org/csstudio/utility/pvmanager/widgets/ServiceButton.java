@@ -1,7 +1,5 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.ExpressionLanguage.readMapOf;
 import static org.epics.pvmanager.ExpressionLanguage.writeMapOf;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
@@ -13,8 +11,9 @@ import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.epics.pvmanager.PVManager;
@@ -28,15 +27,11 @@ import org.epics.pvmanager.expression.WriteMap;
 import org.epics.pvmanager.service.ServiceMethod;
 import org.epics.pvmanager.service.ServiceRegistry;
 import org.epics.util.time.TimeDuration;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
 
 /**
  *
  * 
- * @author carcassi
+ * @author carcassi, shroffk
  */
 public class ServiceButton extends Composite {
 
@@ -169,7 +164,6 @@ public class ServiceButton extends Composite {
 	if(serviceMethod.getArgumentDescriptions().keySet().containsAll(argumentPvs.keySet())){
 	    ReadMap<Object> map = readMapOf(Object.class);
 		for (Entry<String, String> argumentPV : argumentPvs.entrySet()) {
-		    //map.add(latestValueOf(channel(argumentPV.getValue())).as(argumentPV.getKey()));
 		    map.add(formula(argumentPV.getValue(),Object.class).as(argumentPV.getKey()));
 		}
 		setArgumentExpression(map);
@@ -187,7 +181,6 @@ public class ServiceButton extends Composite {
 		.containsAll(resultPvs.keySet())) {
 	    WriteMap<Object> map = writeMapOf(Object.class);
 	    for (Entry<String, String> resultPV : resultPvs.entrySet()) {
-//		map.add(channel(resultPV.getValue())).as(resultPV.getKey());
 		map.add(formula(resultPV.getValue()).as(resultPV.getKey()));
 	    }
 	    setResultExpression(map);
@@ -195,6 +188,10 @@ public class ServiceButton extends Composite {
 	    // raise exception, invalid arguments
 	}
 	
+    }
+
+    public void setLabel(String label) {
+	executeButton.setText(label);
     }
 
 }
