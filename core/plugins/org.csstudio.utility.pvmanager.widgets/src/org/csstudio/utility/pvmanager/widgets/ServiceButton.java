@@ -53,6 +53,7 @@ public class ServiceButton extends Composite {
 	fd_executeButton.right = new FormAttachment(100);
 	fd_executeButton.top = new FormAttachment(0);
 	fd_executeButton.left = new FormAttachment(0);
+	fd_executeButton.bottom = new FormAttachment(100);
 	executeButton.setLayoutData(fd_executeButton);
 	executeButton.setEnabled(false);
 	executeButton.addSelectionListener(new SelectionAdapter() {

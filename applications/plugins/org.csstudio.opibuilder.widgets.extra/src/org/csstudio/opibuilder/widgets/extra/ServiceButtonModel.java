@@ -17,8 +17,7 @@ public class ServiceButtonModel extends AbstractWidgetModel {
     protected void configureProperties() {
 	addProperty(new ServiceMethodProperty(SERVICE_METHOD,
 		"Service Method Definition", WidgetPropertyCategory.Basic));
-	addProperty(new StringProperty(PROP_LABEL, "Label",
-		WidgetPropertyCategory.Display, ""));
+	addProperty(new StringProperty(PROP_LABEL, "Label", WidgetPropertyCategory.Display, "Execute"));
     }
 
     public ServiceMethodDescription getServiceMethodDescription() {
