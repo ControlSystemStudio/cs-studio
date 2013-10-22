@@ -240,9 +240,11 @@ public class Messages extends NLS
     public static String TraceLineWidthTT;
     public static String TraceType;
     public static String TraceType_Area;
+    public static String TraceType_AreaDirect;
     public static String TraceType_ErrorBars;
     public static String TraceType_Squares;
     public static String TraceType_SingleLine;
+    public static String TraceType_SingleLineDirect;
     public static String TraceType_Circles;
     public static String TraceType_Diamonds;
     public static String TraceType_Crosses;
