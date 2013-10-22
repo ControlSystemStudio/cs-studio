@@ -7,6 +7,7 @@ import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,6 +15,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.epics.pvmanager.PVManager;
@@ -38,6 +41,7 @@ public class ServiceButton extends Composite {
     private DesiredRateExpression<Map<String, Object>> argumentExpression;
     private WriteExpression<Map<String, Object>> resultExpression;
     private String serviceName;
+    private ErrorBar errorBar;
 
     /**
      * Creates a new display.
@@ -46,15 +50,18 @@ public class ServiceButton extends Composite {
      */
     public ServiceButton(Composite parent) {
 	super(parent, SWT.NONE);
-	setLayout(new FormLayout());
+	GridLayout gridLayout = new GridLayout(1, false);
+	gridLayout.verticalSpacing = 0;
+	gridLayout.marginWidth = 0;
+	gridLayout.marginHeight = 0;
+	gridLayout.horizontalSpacing = 0;
+	setLayout(gridLayout);
 
+	errorBar = new ErrorBar(this, SWT.NONE);
+	errorBar.setMarginBottom(5);
+	
 	executeButton = new Button(this, SWT.NONE);
-	FormData fd_executeButton = new FormData();
-	fd_executeButton.right = new FormAttachment(100);
-	fd_executeButton.top = new FormAttachment(0);
-	fd_executeButton.left = new FormAttachment(0);
-	fd_executeButton.bottom = new FormAttachment(100);
-	executeButton.setLayoutData(fd_executeButton);
+	executeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	executeButton.setEnabled(false);
 	executeButton.addSelectionListener(new SelectionAdapter() {
 	    @Override
@@ -77,6 +84,7 @@ public class ServiceButton extends Composite {
 
 					    @Override
 					    public void run() {
+						errorBar.setException(newValue);
 						// TODO Display exception
 					    }
 					});
@@ -116,6 +124,7 @@ public class ServiceButton extends Composite {
 	    serviceMethod = ServiceRegistry.getDefault().findServiceMethod(
 		    serviceName);
 	} catch (Exception ex) {
+	    errorBar.setException(ex);
 	    // TODO display exception
 	    return;
 	}
