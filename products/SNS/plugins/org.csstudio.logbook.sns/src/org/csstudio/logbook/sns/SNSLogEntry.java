@@ -24,21 +24,25 @@ import org.csstudio.logbook.sns.elog.ELogEntry;
 @SuppressWarnings("nls")
 public class SNSLogEntry implements LogEntry
 {
-    final private Long id;
     final private ELogEntry entry;
     
-    public SNSLogEntry(final long entry_id, final ELogEntry entry)
+    public SNSLogEntry(final ELogEntry entry)
     {
-        this.id = entry_id;
         this.entry = entry;
     }
 
     @Override
     public Object getId()
     {
-        return id;
+        return entry.getId();
     }
 
+    @Override
+    public String getLevel()
+    {
+        return entry.getPriority().getName();
+    }
+    
     @Override
     public Collection<Logbook> getLogbooks()
     {

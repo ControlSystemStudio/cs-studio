@@ -7,17 +7,21 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.StringListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.RGB;
 
 /**
  * @author hammonds
- *
+ * @author Takashi Nakamoto - added labels property
  */
 public class ByteMonitorModel extends AbstractPVWidgetModel {
 
@@ -55,6 +59,8 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 	/** The ID of the effect 3D property. */
 	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 	
+	/** Label of each bit */
+	public static final String PROP_LABELS = "label"; //$NON-NLS-1$
 
 	public ByteMonitorModel() {
 		setSize(292, 20);
@@ -81,7 +87,8 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, false));
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
 				WidgetPropertyCategory.Display, true));
-
+		addProperty(new StringListProperty(PROP_LABELS, "Labels",
+				WidgetPropertyCategory.Display, new ArrayList<String>()));
 	}
 
 	/* (non-Javadoc)
@@ -142,4 +149,8 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 		super.rotate90(true);
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<String> getLabels(){
+		return (List<String>)getPropertyValue(PROP_LABELS);
+	}
 }

@@ -9,7 +9,9 @@ package org.csstudio.apputil.ui.dialog;
 
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogLabelKeys;
 import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -120,7 +122,7 @@ public class ErrorDetailDialog  extends TrayDialog
     @Override
     protected void createButtonsForButtonBar(final Composite parent)
     {
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-                true);
+		createButton(parent, IDialogConstants.OK_ID,
+				JFaceResources.getString( IDialogLabelKeys.OK_LABEL_KEY), true);
     }
 }

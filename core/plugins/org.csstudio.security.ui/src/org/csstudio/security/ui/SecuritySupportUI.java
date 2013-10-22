@@ -20,6 +20,7 @@ import org.csstudio.security.SecurityListener;
 import org.csstudio.security.SecuritySupport;
 import org.csstudio.security.authorization.Authorizations;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.swt.SWT;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -33,7 +34,8 @@ import org.osgi.framework.BundleContext;
  */
 public class SecuritySupportUI implements BundleActivator, SecurityListener
 {
-    /** Map of authorizations and actions that require them */
+    private static final String RUNTIME_PLATFORM = "org.csstudio.runtime.platform"; //$NON-NLS-1$
+	/** Map of authorizations and actions that require them */
     final private static Map<String, Collection<WeakReference<IAction>>> authorized_actions = new HashMap<>();
 
     /** {@inheritDoc} */
@@ -41,6 +43,9 @@ public class SecuritySupportUI implements BundleActivator, SecurityListener
     public void start(final BundleContext context) throws Exception
     {
         SecuritySupport.addListener(this);
+        System.setProperty(RUNTIME_PLATFORM,
+        		SWT.getPlatform().startsWith("rap")?"rap":"rcp"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
     }
 
     /** {@inheritDoc} */

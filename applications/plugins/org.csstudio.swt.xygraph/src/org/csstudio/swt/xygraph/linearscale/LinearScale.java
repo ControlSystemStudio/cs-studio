@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.xygraph.linearscale;
 
 
@@ -160,14 +167,10 @@ public class LinearScale extends AbstractScale {
 	public int getValuePosition(double value, boolean relative) {		
 		if(dirty)
 			updateTick();
-		//coerce to range		
-		//value = value < min ? min : (value > max ? max : value);
 		int pixelsToStart =0;
 		if(logScaleEnabled){
 			if(value <=0)
 				value = min;
-			//	throw new IllegalArgumentException(
-			//			"Invalid value: value must be greater than 0");
 			pixelsToStart = (int) ((Math.log10(value) - Math.log10(min))/
 							(Math.log10(max) - Math.log10(min)) * (length - 2*margin)) + margin;
 		}else			

@@ -5,7 +5,6 @@ package org.csstudio.logbook.ui;
 
 import java.util.List;
 
-import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;

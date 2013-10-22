@@ -3,6 +3,7 @@ package org.csstudio.utility.pvmanager.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.ui.util.composites.BeanComposite;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -38,7 +39,7 @@ import org.eclipse.swt.layout.FillLayout;
  * 
  * @author carcassi
  */
-public class VTableDisplay extends Composite implements ISelectionProvider {
+public class VTableDisplay extends BeanComposite implements ISelectionProvider {
 	TableViewer tableViewer;
 	private Table table;
 	private Composite tableContainer;
@@ -79,7 +80,7 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 					if (header)
 						row = -1;
 					int column = cell.getColumnIndex();
-					setSelection(new StructuredSelection(new VTableDisplayCell(row, column)));
+					setSelection(new StructuredSelection(new VTableDisplayCell(VTableDisplay.this, row, column)));
 				}
 			}
 		});
@@ -93,7 +94,7 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 				} else {
 					int row = ((VTableContentProvider.VTableRow) cell.getElement()).getRow();
 					int column = cell.getColumnIndex();
-					setSelection(new StructuredSelection(new VTableDisplayCell(row, column)));
+					setSelection(new StructuredSelection(new VTableDisplayCell(VTableDisplay.this, row, column)));
 				}
 			}
 		});
@@ -119,11 +120,13 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 	 * @param vTable the new table
 	 */
 	public void setVTable(VTable vTable) {
+		VTable oldVTable = this.vTable;
 		if (!isDisposed()) {
 			this.vTable = vTable;
 			refreshColumns();
 			tableViewer.setInput(vTable);
 		}
+		changeSupport.firePropertyChange("vTable", oldVTable, vTable);
 	}
 	
 	public VTableCellLabelProvider getCellLabelProvider() {

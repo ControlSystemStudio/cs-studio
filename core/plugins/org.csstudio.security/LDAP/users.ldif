@@ -1,0 +1,24 @@
+
+dn: uid=fred,ou=Users,dc=css-demo,dc=org
+objectClass: account
+objectClass: posixAccount
+uid: fred
+cn: Test, Fred
+gidNumber: 100
+homeDirectory: /users/fred
+uidNumber: 1234
+# slappasswd -s '$fred'
+userPassword: {SSHA}p8arX6D+g0N9gTnG3NBZ2CYhy8TEOQi0
+
+dn: uid=jane,ou=Users,dc=css-demo,dc=org
+objectClass: account
+objectClass: posixAccount
+uid: jane
+cn: Test, Jane
+gidNumber: 100
+homeDirectory: /users/jane
+uidNumber: 1234
+# slappasswd -s '$jane'
+userPassword: {SSHA}ksoM8JXaAGV4/h+VZtmh+vv+UKgY05uw
+
+

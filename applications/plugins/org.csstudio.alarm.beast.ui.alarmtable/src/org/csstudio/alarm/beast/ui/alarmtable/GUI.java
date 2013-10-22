@@ -127,11 +127,13 @@ public class GUI implements AlarmClientModelListener
                     // as that happens to not flicker.
                     AlarmTreePV[] alarms = model.getActiveAlarms();
                     current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, alarms.length));
-					((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
+                    current_alarms.pack();
+                    ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
 
                     alarms = model.getAcknowledgedAlarms();
                     acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, alarms.length));
-					((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(alarms);
+                    acknowledged_alarms.pack();
+                    ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(alarms);
                 }
             });
         }
@@ -149,8 +151,12 @@ public class GUI implements AlarmClientModelListener
         this.model = model;
         createComponents(parent);
 
-        if (!model.isServerAlive())
+        if (model.isServerAlive()) {
+            setErrorMessage(null);
+        } else {
             setErrorMessage(Messages.WaitingForServer);
+        }
+        
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
         parent.addDisposeListener(new DisposeListener()
@@ -495,6 +501,17 @@ public class GUI implements AlarmClientModelListener
     public void newAlarmConfiguration(final AlarmClientModel model)
     {
         gui_update.trigger();
+        display.asyncExec(new Runnable()
+        {
+            @Override
+            public void run() {
+		    	if (model.isServerAlive()) {
+		            setErrorMessage(null);
+		        } else {
+		            setErrorMessage(Messages.WaitingForServer);
+		        }
+        	}
+        });
     }
 
     // @see AlarmClientModelListener
@@ -503,6 +520,7 @@ public class GUI implements AlarmClientModelListener
             final AlarmTreePV pv, final boolean parent_changed)
     {
         gui_update.trigger();
+        
         if (model.isServerAlive() && have_error_message)
         {   // Clear error message now that we have info from the alarm server
             display.asyncExec(new Runnable()

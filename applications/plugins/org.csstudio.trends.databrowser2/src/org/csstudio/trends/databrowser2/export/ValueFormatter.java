@@ -7,11 +7,14 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.export;
 
+import org.csstudio.archive.vtype.StringVTypeFormat;
 import org.csstudio.archive.vtype.Style;
 import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.epics.vtype.VStatistics;
+import org.epics.vtype.VString;
+import org.epics.vtype.VStringArray;
 import org.epics.vtype.VType;
 
 /** Format an IValue as default, decimal, ...
@@ -55,14 +58,22 @@ public class ValueFormatter
     /** @return Value formatted into columns */
     public String format(final VType value)
     {
-        if (Double.isNaN(VTypeHelper.toDouble(value)))
+        final VTypeFormat format_for_this_value;
+        if (value instanceof VString ||
+            value instanceof VStringArray)
+            format_for_this_value = new StringVTypeFormat();
+        else
         {
-            if (min_max_column)
-                return Messages.Export_NoValueMarker +
-                       Messages.Export_Delimiter + Messages.Export_NoValueMarker +
-                       Messages.Export_Delimiter + Messages.Export_NoValueMarker;
-            else
-                return Messages.Export_NoValueMarker;
+            if (Double.isNaN(VTypeHelper.toDouble(value)))
+            {
+                if (min_max_column)
+                    return Messages.Export_NoValueMarker +
+                           Messages.Export_Delimiter + Messages.Export_NoValueMarker +
+                           Messages.Export_Delimiter + Messages.Export_NoValueMarker;
+                else
+                    return Messages.Export_NoValueMarker;
+            }
+            format_for_this_value = format;
         }
 
         final VStatistics stats = (value instanceof VStatistics) ? (VStatistics) value : null;
@@ -70,9 +81,9 @@ public class ValueFormatter
         final StringBuilder buf = new StringBuilder();
         if (stats != null)
             // Show only the average, since min/max handled separately
-            format.format(stats.getAverage(), stats, buf);
+            format_for_this_value.format(stats.getAverage(), stats, buf);
         else
-            format.format(value, buf);
+            format_for_this_value.format(value, buf);
         // Optional min, max
         if (min_max_column)
         {

@@ -3,69 +3,54 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.graphene.LineGraph2DWidget;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
+
 
 /**
  * @author shroffk
  * 
  */
-public class LineGraph2DWidgetModel extends AbstractWidgetModel {
+public class LineGraph2DWidgetModel extends
+		AbstractPointDatasetGraph2DWidgetModel {
 
-    public final String ID = "org.csstudio.graphene.opiwidgets.LineGraph2D"; //$NON-NLS-1$
+	public LineGraph2DWidgetModel() {
+		super(AbstractSelectionWidgetModelDescription.newModelFrom(LineGraph2DWidget.class));
+	}
 
-    public static final String PROP_XPVNAME = "x_pv_name"; //$NON-NLS-1$
-    public static final String PROP_SHOW_AXIS = "show_axis"; //$NON-NLS-1$
-    public static final String CONFIGURABLE = "configurable"; //$NON-NLS-1$
+	public final String ID = "org.csstudio.graphene.opiwidgets.LineGraph2D"; //$NON-NLS-1$
+	
+	public static final String PROP_HIGHLIGHT_SELECTION_VALUE = "highlight_selection_value"; //$NON-NLS-1$
+	public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv"; //$NON-NLS-1$
+	
+	@Override
+	protected void configureProperties() {
+		super.configureProperties();
+		addProperty(new BooleanProperty(PROP_HIGHLIGHT_SELECTION_VALUE,
+				"Highlight Selection Value", WidgetPropertyCategory.Basic, false));
+		addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
+				"Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
+	}
+	
+	@Override
+	protected String getDataType() {
+		return "VTable/VNumberArray";
+	}
+	
+	public String getSelectionValuePv() {
+		return (String) getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.csstudio.opibuilder.model.AbstractWidgetModel#configureProperties()
-     */
-    @Override
-    protected void configureProperties() {
-	addProperty(new StringProperty(AbstractPVWidgetModel.PROP_PVNAME,
-		"PV Name", WidgetPropertyCategory.Basic, ""));
-	addProperty(new StringProperty(LineGraph2DWidgetModel.PROP_XPVNAME,
-		"X PV Name", WidgetPropertyCategory.Basic, ""));
-	addProperty(new BooleanProperty(LineGraph2DWidgetModel.CONFIGURABLE,
-		"configurable", WidgetPropertyCategory.Basic, true));
-	addProperty(new BooleanProperty(LineGraph2DWidgetModel.PROP_SHOW_AXIS,
-		"Show Axis", WidgetPropertyCategory.Display, true));
+	public boolean isHighlightSelectionValue() {
+		return (Boolean) getCastedPropertyValue(PROP_HIGHLIGHT_SELECTION_VALUE);
+	}
 
-    }
-
-    public ProcessVariable getProcessVariable() {
-	return new ProcessVariable(
-		(String) getCastedPropertyValue(AbstractPVWidgetModel.PROP_PVNAME));
-    }
-
-    public String getXPvName() {
-	return (String) getCastedPropertyValue(LineGraph2DWidgetModel.PROP_XPVNAME);
-    }
-
-    public boolean getShowAxis() {
-	return getCastedPropertyValue(LineGraph2DWidgetModel.PROP_SHOW_AXIS);
-    }
-
-    public boolean isConfigurable() {
-	return getCastedPropertyValue(CONFIGURABLE);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.opibuilder.model.AbstractWidgetModel#getTypeID()
-     */
-    @Override
-    public String getTypeID() {
-	return ID;
-    }
+	@Override
+	public String getTypeID() {
+		return ID;
+	}
 
 }

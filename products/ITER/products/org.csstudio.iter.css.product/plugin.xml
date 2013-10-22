@@ -17,7 +17,7 @@
                value="icons/about.gif"/>
          <property
                name="aboutText"
-               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including:&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN)&#x0A;- ITER (Cadarache, France)&#x0A;- BNL (Brookhaven, NY)&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See http://sourceforge.net/apps/trac/cs-studio">
+               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including:&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN)&#x0A;- ITER (Cadarache, France)&#x0A;- BNL (Brookhaven, NY)&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;See https://github.com/ControlSystemStudio/cs-studio/wiki">
          </property>
          <property
                name="startupForegroundColor"
@@ -70,18 +70,9 @@
      -->
    <extension point="org.csstudio.startup.module">
       <startupParameters class="org.csstudio.utility.product.StartupParameters"/>
-      <workspace class="org.csstudio.iter.startuphelper.WorkspacePrompt"/>
+      <workspace class="org.csstudio.utility.product.WorkspacePrompt"/>
       <workbench class="org.csstudio.utility.product.Workbench"/>
       <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.iter.css.product.CSS_Perspective"
-            icon="icons/perspective.gif"
-            id="org.csstudio.iter.css.product.CSS_Perspective"
-            name="ITER Control System Studio">
-      </perspective>
    </extension>
 
    <extension
@@ -198,6 +189,16 @@
     	<activityPatternBinding
     		activityId="org.csstudio.iter.css.product.disablextensions"
     		pattern=".*org.eclipse.wst.xml.ui.XMLExampleProjectCreationWizard"
+    	/>
+    	<!-- Disable Help -> Cheat Sheet... from showView -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern="org.csstudio.ui.menu.app/org.eclipse.ui.views.showView"
+    	/>
+    	<!-- Hide JDT coming with Jython -->
+    	<activityPatternBinding
+    		activityId="org.csstudio.iter.css.product.disablextensions"
+    		pattern="org.eclipse.jdt.*"
     	/>
     	
     </extension>

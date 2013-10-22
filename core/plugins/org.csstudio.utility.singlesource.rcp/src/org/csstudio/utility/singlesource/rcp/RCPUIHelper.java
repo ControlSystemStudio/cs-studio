@@ -12,7 +12,10 @@ package org.csstudio.utility.singlesource.rcp;
 import java.io.IOException;
 
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -26,6 +29,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -49,12 +53,15 @@ public class RCPUIHelper extends UIHelper
      * @throws Exception */
     @Override
 	public void openEditor(final IWorkbenchPage page, IPath path) throws Exception {
-        // Copied from org.eclipse.ui.actions.OpenFileAction
-        // in org.eclipse.ui.ide
-        final IFile resource = RCPResourceHelper.getFileForPath(path);
-        if (resource == null)
-            throw new Exception(NLS.bind("Cannot find {0} in workspace", path));
-        IDE.openEditor(page, resource);
+		if (path == null || !SingleSourcePlugin.getResourceHelper().exists(path))
+			throw new Exception(NLS.bind("Cannot find {0}", path));
+		final IFile resource = RCPResourceHelper.getFileForPath(path);
+		if (resource != null && resource.exists()) {
+			IDE.openEditor(page, resource);
+		} else {
+			IFileStore fileStore = EFS.getLocalFileSystem().getStore(path);
+			IDE.openEditorOnFileStore(page, fileStore);
+		}
 	}
 	
     /** {@inheritDoc} */
@@ -97,6 +104,20 @@ public class RCPUIHelper extends UIHelper
         
         return res.getSelectedResource();
 	}
+	
+    /** {@inheritDoc} */
+    @Override
+	public String openOutsideWorkspaceDialog(final Shell shell,
+			final int style, final IPath original, final String extension) {
+        final FileDialog dlg = new FileDialog(shell, style);
+		if (extension != null)
+			dlg.setFilterExtensions(new String[] { extension });
+		
+        final IFile orig_file = RCPResourceHelper.getFileForPath(original);
+        if (orig_file != null)
+    		dlg.setFileName(orig_file.toString());
+        return dlg.open();
+    }
 
 	/** {@inheritDoc} */
 	@Override
@@ -104,7 +125,7 @@ public class RCPUIHelper extends UIHelper
 		// Copy as text to clipboard
 		final Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
 				.getDisplay());
-		clipboard.setContents(new Object[] { contents },
+		clipboard.setContents(contents,
 				new Transfer[] { TextTransfer.getInstance() });
 	}
 
@@ -169,5 +190,6 @@ public class RCPUIHelper extends UIHelper
         gc.dispose();
 
         return image;
-    }
+	}
+
 }

@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPage;
 
 public abstract class SingleSourceHelper {
 
@@ -171,5 +172,14 @@ public abstract class SingleSourceHelper {
 	}
 
 	protected abstract boolean iRapIsLoggedIn(Display display);
+	
+	public static void openEditor(final IWorkbenchPage page, IPath path)
+			throws Exception {
+		if (IMPL != null)
+			IMPL.iOpenEditor(page, path);
+	}
+
+	protected abstract void iOpenEditor(final IWorkbenchPage page, IPath path)
+			throws Exception;
 	
 }

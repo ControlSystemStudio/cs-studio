@@ -33,10 +33,10 @@ public class LogEntryBuilderDialog extends Dialog {
     private LogEntryWidget logEntryWidget;
     private UserCredentialsWidget userCredentialWidget;
 
-    private final IPreferencesService service = Platform
-	    .getPreferencesService();
+    private final IPreferencesService service = Platform.getPreferencesService();
     private boolean authenticate = true;
-    private String defaultLogbook;
+    private String defaultLogbook = "";
+    private String defaultLevel;
     private ErrorBar errorBar;
 
     public LogEntryBuilderDialog(Shell parentShell,
@@ -57,10 +57,9 @@ public class LogEntryBuilderDialog extends Dialog {
 	errorBar = new ErrorBar(container, SWT.NONE);
 
 	try {
-	    authenticate = service.getBoolean("org.csstudio.logbook.ui",
-		    "Autenticate.user", true, null);
-	    defaultLogbook = service.getString("org.csstudio.logbook.ui",
-		    "Default.logbook", "", null);
+	    authenticate = service.getBoolean("org.csstudio.logbook.ui","Autenticate.user", true, null);
+	    defaultLogbook = service.getString("org.csstudio.logbook.ui","Default.logbook", "", null);
+	    defaultLevel = service.getString("org.csstudio.logbook.ui","Default.level", "", null);
 	} catch (Exception ex) {
 	    errorBar.setException(ex);
 	}
@@ -75,10 +74,11 @@ public class LogEntryBuilderDialog extends Dialog {
 	GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true,
 		true, 1, 1);
 	gd_logEntryWidget.heightHint = 450;
+	gd_logEntryWidget.widthHint = 450;
 	logEntryWidget.setLayoutData(gd_logEntryWidget);
 	if (this.logEntryBuilder != null) {
 	    try {
-		logEntryWidget.setLogEntry(logEntryBuilder.addLogbook(
+		logEntryWidget.setLogEntry(logEntryBuilder.setLevel(defaultLevel).addLogbook(
 		    LogbookBuilder.logbook(defaultLogbook)).build());
 	    } catch (IOException e) {
 		errorBar.setException(e);

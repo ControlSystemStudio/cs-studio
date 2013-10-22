@@ -63,8 +63,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 	protected void initialize() {
 		super.initialize();
 	}
-	
-	// TODO (shroffk) better checking for enabling the username and password fields.
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		super.propertyChange(event);

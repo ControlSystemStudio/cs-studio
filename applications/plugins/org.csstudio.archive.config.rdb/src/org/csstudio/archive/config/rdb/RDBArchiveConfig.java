@@ -35,6 +35,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
  *
  *  @author Kay Kasemir
  *  @author Lana Abadie - Disable autocommit as needed.
+ *  @author Takashi Nakamoto - Added an option to skip reading last sampled time.
  */
 @SuppressWarnings("nls")
 public class RDBArchiveConfig implements ArchiveConfig
@@ -85,18 +86,16 @@ public class RDBArchiveConfig implements ArchiveConfig
     @Override
     public EngineConfig[] getEngines() throws Exception
     {
-        final Statement statement = rdb.getConnection().createStatement();
         final List<EngineConfig> engines = new ArrayList<EngineConfig>();
         try
-        {
+        (
+            final Statement statement = rdb.getConnection().createStatement();
             final ResultSet result = statement.executeQuery(sql.smpl_eng_list);
+        )
+        {
             while (result.next())
                 engines.add(new RDBEngineConfig(result.getInt(1),
                         result.getString(2), result.getString(3), result.getString(4)));
-        }
-        finally
-        {
-            statement.close();
         }
         return engines.toArray(new EngineConfig[engines.size()]);
     }
@@ -104,10 +103,12 @@ public class RDBArchiveConfig implements ArchiveConfig
     /** Load RDB information about sample modes */
     private void loadSampleModes() throws Exception
     {
-        final Statement statement = rdb.getConnection().createStatement();
         try
-        {
+        (
+            final Statement statement = rdb.getConnection().createStatement();
             final ResultSet result = statement.executeQuery(sql.sample_mode_sel);
+        )
+        {
             while (result.next())
             {
                 final String name = result.getString(2);
@@ -116,11 +117,6 @@ public class RDBArchiveConfig implements ArchiveConfig
                 else
                     scan_mode_id = result.getInt(1);
             }
-            result.close();
-        }
-        finally
-        {
-            statement.close();
         }
         if (monitor_mode_id < 0  ||  scan_mode_id < 0)
             throw new Exception("Undefined sample modes");
@@ -153,23 +149,15 @@ public class RDBArchiveConfig implements ArchiveConfig
     /** @return Next available engine ID */
     private int getNextEngineId() throws Exception
     {
-        final Statement statement = rdb.getConnection().createStatement();
         try
-        {
+        (
+            final Statement statement = rdb.getConnection().createStatement();
             final ResultSet result = statement.executeQuery(sql.smpl_eng_next_id);
-            int next_id = 1;
-            if (result.next())
-            {
-                final int id = result.getInt(1);
-                if (id > 0)
-                    next_id = id + 1;
-            }
-            result.close();
-            return next_id;
-        }
-        finally
+        )
         {
-            statement.close();
+            if (result.next())
+                return result.getInt(1) + 1;
+            return 1;
         }
     }
 
@@ -185,9 +173,11 @@ public class RDBArchiveConfig implements ArchiveConfig
     {
         final int id = getNextEngineId();
         rdb.getConnection().setAutoCommit(false);
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.smpl_eng_insert);
         try
+        (
+            final PreparedStatement statement =
+                rdb.getConnection().prepareStatement(sql.smpl_eng_insert);
+        )
         {
             statement.setInt(1, id);
             statement.setString(2, engine_name);
@@ -203,7 +193,6 @@ public class RDBArchiveConfig implements ArchiveConfig
         }
         finally
         {
-            statement.close();
             rdb.getConnection().setAutoCommit(true);
         }
         return new RDBEngineConfig(id, engine_name, description, engine_url);
@@ -213,19 +202,17 @@ public class RDBArchiveConfig implements ArchiveConfig
     @Override
     public EngineConfig findEngine(final String name) throws Exception
     {
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.smpl_eng_sel_by_name);
         try
+        (
+            final PreparedStatement statement =
+                rdb.getConnection().prepareStatement(sql.smpl_eng_sel_by_name);
+        )
         {
             statement.setString(1, name);
             final ResultSet res = statement.executeQuery();
             if (res.next())
                 return new RDBEngineConfig(res.getInt(1), name,
                         res.getString(2), res.getString(3));
-        }
-        finally
-        {
-            statement.close();
         }
         return null;
     }
@@ -237,8 +224,10 @@ public class RDBArchiveConfig implements ArchiveConfig
      */
     public EngineConfig getEngine(final RDBGroupConfig group) throws Exception
     {
-        final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.smpl_eng_sel_by_group_id);
         try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.smpl_eng_sel_by_group_id);
+        )
         {
             statement.setInt(1, group.getId());
             final ResultSet result = statement.executeQuery();
@@ -249,10 +238,6 @@ public class RDBArchiveConfig implements ArchiveConfig
                 engine = null;
             result.close();
             return engine;
-        }
-        finally
-        {
-            statement.close();
         }
     }
 
@@ -269,39 +254,34 @@ public class RDBArchiveConfig implements ArchiveConfig
         connection.setAutoCommit(false);
         try
         {
-            PreparedStatement statement = connection.prepareStatement(
-                        sql.channel_clear_grp_for_engine);
             try
+            (
+                final PreparedStatement statement = connection.prepareStatement(
+                            sql.channel_clear_grp_for_engine);
+            )
             {
                 statement.setInt(1, engine_id);
                 statement.executeUpdate();
-            }
-            finally
-            {
-                statement.close();
             }
             // Delete all groups under engine...
-            statement = connection.prepareStatement(
-                    sql.chan_grp_delete_by_engine_id);
             try
+            (
+                final PreparedStatement statement = connection.prepareStatement(
+                        sql.chan_grp_delete_by_engine_id);
+            )
             {
                 statement.setInt(1, engine_id);
                 statement.executeUpdate();
-            }
-            finally
-            {
-                statement.close();
             }
             // Delete Engine entry
-            statement = connection.prepareStatement(sql.smpl_eng_delete);
             try
+            (
+                final PreparedStatement statement = connection.prepareStatement(
+                        sql.smpl_eng_delete);
+            )
             {
                 statement.setInt(1, engine_id);
                 statement.executeUpdate();
-            }
-            finally
-            {
-                statement.close();
             }
             connection.commit();
         }
@@ -321,23 +301,15 @@ public class RDBArchiveConfig implements ArchiveConfig
      */
     private int getNextGroupId() throws Exception
     {
-        final Statement statement = rdb.getConnection().createStatement();
         try
-        {
+        (
+            final Statement statement = rdb.getConnection().createStatement();
             final ResultSet result = statement.executeQuery(sql.chan_grp_next_id);
-            int next_id = 1;
-            if (result.next())
-            {
-                final int id = result.getInt(1);
-                if (id > 0)
-                    next_id = id + 1;
-            }
-            result.close();
-            return next_id;
-        }
-        finally
+        )
         {
-            statement.close();
+            if (result.next())
+                return result.getInt(1) + 1;
+            return 1;
         }
     }
 
@@ -351,8 +323,10 @@ public class RDBArchiveConfig implements ArchiveConfig
         final Connection connection = rdb.getConnection();
         final int group_id = getNextGroupId();
         connection.setAutoCommit(false);
-        final PreparedStatement statement = connection.prepareStatement(sql.chan_grp_insert);
         try
+        (
+            final PreparedStatement statement = connection.prepareStatement(sql.chan_grp_insert);
+        )
         {
             statement.setInt(1, group_id);
             statement.setString(2, name);
@@ -367,7 +341,6 @@ public class RDBArchiveConfig implements ArchiveConfig
         }
         finally
         {
-            statement.close();
             connection.setAutoCommit(true);
         }
         return new RDBGroupConfig(group_id, name, null);
@@ -378,9 +351,11 @@ public class RDBArchiveConfig implements ArchiveConfig
     public GroupConfig[] getGroups(final EngineConfig engine) throws Exception
     {
         final RDBEngineConfig rdb_engine = (RDBEngineConfig) engine;
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.chan_grp_sel_by_eng_id);
         try
+        (
+            final PreparedStatement statement =
+                rdb.getConnection().prepareStatement(sql.chan_grp_sel_by_eng_id);
+        )
         {
             statement.setInt(1, rdb_engine.getId());
             final ResultSet result = statement.executeQuery();
@@ -416,10 +391,6 @@ public class RDBArchiveConfig implements ArchiveConfig
             });
             return grp_arr;
         }
-        finally
-        {
-            statement.close();
-        }
     }
 
     /** @param channel_name Name of a channel
@@ -428,8 +399,10 @@ public class RDBArchiveConfig implements ArchiveConfig
      */
     public RDBGroupConfig getChannelGroup(final String channel_name) throws Exception
     {
-        final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.chan_grp_sel_by_channel);
         try
+        (
+            final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.chan_grp_sel_by_channel);
+        )
         {
             statement.setString(1, channel_name);
             final ResultSet result = statement.executeQuery();
@@ -440,10 +413,6 @@ public class RDBArchiveConfig implements ArchiveConfig
                 group = null;
             result.close();
             return group;
-        }
-        finally
-        {
-            statement.close();
         }
     }
 
@@ -456,8 +425,10 @@ public class RDBArchiveConfig implements ArchiveConfig
     {
         final Connection connection = rdb.getConnection();
         connection.setAutoCommit(false);
-        final PreparedStatement statement = connection.prepareStatement(sql.chan_grp_set_enable_channel);
         try
+        (
+            final PreparedStatement statement = connection.prepareStatement(sql.chan_grp_set_enable_channel);
+        )
         {
             if (channel == null)
                 statement.setNull(1, Types.INTEGER);
@@ -477,7 +448,6 @@ public class RDBArchiveConfig implements ArchiveConfig
         }
         finally
         {
-            statement.close();
             connection.setAutoCommit(true);
         }
     }
@@ -487,23 +457,15 @@ public class RDBArchiveConfig implements ArchiveConfig
      */
     private int getNextChannelId() throws Exception
     {
-        final Statement statement = rdb.getConnection().createStatement();
         try
-        {
+        (
+            final Statement statement = rdb.getConnection().createStatement();
             final ResultSet result = statement.executeQuery(sql.channel_next_id);
-            int next_id = 1;
-            if (result.next())
-            {
-                final int id = result.getInt(1);
-                if (id > 0)
-                    next_id = id + 1;
-            }
-            result.close();
-            return next_id;
-        }
-        finally
+        )
         {
-            statement.close();
+            if (result.next())
+                return result.getInt(1) + 1;
+            return 1;
         }
     }
 
@@ -528,8 +490,10 @@ public class RDBArchiveConfig implements ArchiveConfig
         try
         {
             // Check for existing channel
-            PreparedStatement statement = connection.prepareStatement(sql.channel_sel_by_name);
             try
+            (
+                final PreparedStatement statement = connection.prepareStatement(sql.channel_sel_by_name);
+            )
             {
                 statement.setString(1, name);
                 final ResultSet result = statement.executeQuery();
@@ -540,16 +504,14 @@ public class RDBArchiveConfig implements ArchiveConfig
                 }
                 result.close();
             }
-            finally
-            {
-                statement.close();
-            }
 
             if (new_channel)
                 channel_id = getNextChannelId();
 
-            statement = connection.prepareStatement(new_channel ? sql.channel_insert : sql.channel_update);
             try
+            (
+                final PreparedStatement statement = connection.prepareStatement(new_channel ? sql.channel_insert : sql.channel_update);
+            )
             {    // grp_id, name, smpl_mode_id, smpl_val, smpl_per, channel_id
                 statement.setInt(1, group.getId());
                 statement.setString(2, name);
@@ -567,10 +529,6 @@ public class RDBArchiveConfig implements ArchiveConfig
                 connection.rollback();
                 throw ex;
             }
-            finally
-            {
-                statement.close();
-            }
         }
         finally
         {
@@ -581,13 +539,15 @@ public class RDBArchiveConfig implements ArchiveConfig
 
     /** {@inheritDoc} */
     @Override
-    public ChannelConfig[] getChannels(final GroupConfig group) throws Exception
+    public ChannelConfig[] getChannels(final GroupConfig group, final boolean skip_last) throws Exception
     {
         final RDBGroupConfig rdb_group = (RDBGroupConfig) group;
         final List<ChannelConfig> channels = new ArrayList<ChannelConfig>();
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.channel_sel_by_group_id);
         try
+        (
+            final PreparedStatement statement =
+                rdb.getConnection().prepareStatement(sql.channel_sel_by_group_id);
+        )
         {
             statement.setInt(1, rdb_group.getId());
             final ResultSet result = statement.executeQuery();
@@ -596,15 +556,13 @@ public class RDBArchiveConfig implements ArchiveConfig
                 final int id = result.getInt(1);
                 final SampleMode sample_mode =
                     getSampleMode(result.getInt(3), result.getDouble(4), result.getDouble(5));
-                final org.epics.util.time.Timestamp last_sample_time = getLastSampleTime(id);
+                org.epics.util.time.Timestamp last_sample_time = null;
+                if (!skip_last)
+                	 last_sample_time = getLastSampleTime(id);
                 channels.add(new RDBChannelConfig(id, result.getString(2),
                                                   sample_mode, last_sample_time));
             }
             result.close();
-        }
-        finally
-        {
-            statement.close();
         }
 
         final ChannelConfig[] chan_arr = channels.toArray(new ChannelConfig[channels.size()]);
@@ -629,9 +587,11 @@ public class RDBArchiveConfig implements ArchiveConfig
      */
     private String getChannelName(final int channel_id) throws Exception
     {
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.channel_sel_by_id);
         try
+        (
+            final PreparedStatement statement =
+                rdb.getConnection().prepareStatement(sql.channel_sel_by_id);
+        )
         {
             statement.setInt(1, channel_id);
             final ResultSet result = statement.executeQuery();
@@ -640,10 +600,6 @@ public class RDBArchiveConfig implements ArchiveConfig
             final String name = result.getString(1);
             result.close();
             return name;
-        }
-        finally
-        {
-            statement.close();
         }
     }
 
@@ -659,8 +615,10 @@ public class RDBArchiveConfig implements ArchiveConfig
         if (last_sample_time_statement == null)
             last_sample_time_statement = rdb.getConnection().prepareStatement(sql.sel_last_sample_time_by_id);
         last_sample_time_statement.setInt(1, channel_id);
-        final ResultSet result = last_sample_time_statement.executeQuery();
         try
+        (
+            final ResultSet result = last_sample_time_statement.executeQuery();
+        )
         {
             if (result.next())
             {
@@ -678,10 +636,6 @@ public class RDBArchiveConfig implements ArchiveConfig
                 }
                 return TimestampHelper.fromSQLTimestamp(stamp);
             }
-        }
-        finally
-        {
-            result.close();
         }
         return null;
     }

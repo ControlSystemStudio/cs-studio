@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends Plugin implements BundleActivator {
 
     /** Plugin ID defined in MANIFEST.MF */
-    final public static String ID = "org.csstudio.ui.util";
+    final public static String ID = "org.csstudio.rap.ui.util";
 
     // The shared instance
 	private static Activator plugin;

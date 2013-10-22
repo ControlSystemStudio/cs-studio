@@ -31,6 +31,14 @@ public class StringListSelectionDialog extends Dialog {
 
 	private final String title;
 
+	/**
+	 * Create a string list selection dialog. 
+	 * 
+	 * @param parent
+	 * @param possibleValues -  a List of Values
+	 * @param selectedValues - a List of selected Values
+	 * @param title
+	 */
 	public StringListSelectionDialog(Shell parent, List<String> possibleValues,
 			List<String> selectedValues, String title) {
 		super(parent);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="4.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="3.2.11.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.sns.product/icons/aboutSide.png"/>
@@ -31,7 +31,8 @@ openFile</programArgs>
 -XX:MaxPermSize=128M
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
--Dpython.cachedir.skip=true</vmArgs>
+-Dpython.cachedir.skip=true
+-Declipse.p2.unsignedPolicy=allow</vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.csstudio.sns.product/icons/css16.png" i32="/org.csstudio.sns.product/icons/css32.png" i48="/org.csstudio.sns.product/icons/css48.png" i64="/org.csstudio.sns.product/icons/css64.png" i128="/org.csstudio.sns.product/icons/css128.png"/>
@@ -75,12 +76,12 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </plugins>
 
    <features>
-      <feature id="org.csstudio.sns.feature.eclipse" version="4.0.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.core" version="3.2.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.snscore" version="3.2.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.applications" version="3.2.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.repository" version="3.2.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.snsapps" version="3.1.1.qualifier"/>
+      <feature id="org.csstudio.sns.feature.eclipse" version="3.2.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.core" version="3.2.11.qualifier"/>
+      <feature id="org.csstudio.sns.feature.snscore" version="3.2.1.qualifier"/>
+      <feature id="org.csstudio.sns.feature.applications" version="3.2.1.qualifier"/>
+      <feature id="org.csstudio.sns.feature.repository" version="3.2.1.qualifier"/>
+      <feature id="org.csstudio.sns.feature.snsapps" version="3.2.1.qualifier"/>
    </features>
 
 

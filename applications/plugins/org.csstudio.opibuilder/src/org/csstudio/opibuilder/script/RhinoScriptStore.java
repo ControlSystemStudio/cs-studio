@@ -7,11 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.utility.pv.PV;
+import org.csstudio.simplepv.IPV;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
@@ -35,7 +37,7 @@ public class RhinoScriptStore extends AbstractScriptStore{
 
 
 	public RhinoScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-			final PV[] pvArray) throws Exception {		
+			final IPV[] pvArray) throws Exception {		
 		super(scriptData, editpart, pvArray);		
 		
 	}
@@ -63,12 +65,15 @@ public class RhinoScriptStore extends AbstractScriptStore{
 	}
 
 	@Override
-	protected void compileReader(Reader reader) throws IOException {
-		script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$		
+	protected void compileInputStream(InputStream s) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(s));
+		script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$
+		s.close();
+		reader.close();
 	}
 
 	@Override
-	protected void execScript(final PV triggerPV) throws Exception {
+	protected void execScript(final IPV triggerPV) throws Exception {
 		ScriptableObject.putProperty(scriptScope, 
 				ScriptService.TRIGGER_PV, Context.javaToJS(triggerPV, scriptScope));
 		script.exec(scriptContext, scriptScope);

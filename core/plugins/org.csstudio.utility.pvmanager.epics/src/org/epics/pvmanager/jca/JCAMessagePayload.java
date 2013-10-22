@@ -63,5 +63,14 @@ public class JCAMessagePayload {
     public DBR getMetadata() {
         return metadata;
     }
+
+    @Override
+    public String toString() {
+        DBR value = null;
+        if (event != null) {
+            value = event.getDBR();
+        }
+        return "Metadata " + metadata + " value " + value;
+    }
     
 }

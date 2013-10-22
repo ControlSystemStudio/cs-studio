@@ -110,7 +110,7 @@ public class AttachmentBuilder {
      * @return Attachment - an immutable instance of an {@link Attachment}
      * @throws IOException
      */
-    Attachment build() throws IOException {
+    public Attachment build() throws IOException {
 	return new AttachmentImpl(byteArray, fileName, contentType, thumbnail,
 		fileSize);
     }

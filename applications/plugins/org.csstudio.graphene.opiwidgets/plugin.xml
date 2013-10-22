@@ -6,18 +6,10 @@
       <widget
             category="Monitors"
             editpart_class="org.csstudio.graphene.opiwidgets.LineGraph2DWidgetEditpart"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+            icon="platform:/plugin/org.csstudio.graphene/icons/graphene-line-16.png"
             model_class="org.csstudio.graphene.opiwidgets.LineGraph2DWidgetModel"
             name="Line Graph"
             typeId="org.csstudio.graphene.opiwidgets.LineGraph2D">
-      </widget>
-      <widget
-            category="Multi-channel"
-            editpart_class="org.csstudio.graphene.HistogramEditPart"
-            icon="platform:/plugin/org.csstudio.graphene/icons/graphene-histogram-16.png"
-            model_class="org.csstudio.graphene.HistogramModel"
-            name="Histogram"
-            typeId="org.csstudio.graphene.Histogram">
       </widget>
       <widget
             category="Monitors"
@@ -26,6 +18,14 @@
             model_class="org.csstudio.graphene.opiwidgets.ScatterGraph2DWidgetModel"
             name="Scatter Graph"
             typeId="org.csstudio.graphene.opiwidgets.ScatterGraph2D">
+      </widget>
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.graphene.opiwidgets.BubbleGraph2DWidgetEditPart"
+            icon="platform:/plugin/org.csstudio.graphene/icons/graphene-bubble-16.png"
+            model_class="org.csstudio.graphene.opiwidgets.BubbleGraph2DWidgetModel"
+            name="Scatter Graph"
+            typeId="org.csstudio.graphene.opiwidgets.BubbleGraph2D">
       </widget>
    </extension>
 

@@ -24,13 +24,22 @@ public class EngineConfig
 	 *  @param name Engine name
 	 *  @param description .. description
 	 *  @param url Engine's web server URL
-	 *  @throws URISyntaxException if URL is malformed
+	 *  @throws Exception if URL is malformed
 	 */
-	public EngineConfig(final String name, final String description, final String url) throws URISyntaxException
+	public EngineConfig(final String name, final String description, final String url) throws Exception
     {
 	    this.name = name;
 	    this.description = description;
-		this.url = new URI(url);
+	    
+	    // Catch invalid URLs, create exception that mentions the affected engine
+	    try
+	    {
+	        this.url = new URI(url);
+	    }
+	    catch (URISyntaxException ex)
+	    {
+	        throw new Exception("Engine '" + name + "' has malformed URL '" + url + "'", ex);
+	    }
     }
 
 	/** @return Engine name */

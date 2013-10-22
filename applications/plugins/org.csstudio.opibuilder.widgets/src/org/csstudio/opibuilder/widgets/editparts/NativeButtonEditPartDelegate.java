@@ -114,7 +114,7 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
 		final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {			
-				editpart.updatePropSheet((Boolean) newValue);
+				editpart.updatePropSheet();
 				return true;
 			}			
 		};

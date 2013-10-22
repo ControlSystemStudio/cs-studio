@@ -67,7 +67,7 @@ public class OpenProbe extends AbstractHandler implements IHandler
 		catch (Exception ex)
 		{
             ExceptionDetailsErrorDialog.openError(shell,
-	            "Cannot open probe", ex);
+	            Messages.Probe_errorOpenProbe, ex);
 		}
 		return null;
 	}

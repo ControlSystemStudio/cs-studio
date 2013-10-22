@@ -1,0 +1,446 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>ScanScriptContext (Scan System API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="ScanScriptContext (Scan System API)";
+    }
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../index-all.html">Index</a></li>
+<li><a href="../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../org/csstudio/scan/command/ScanScript.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../index.html?org/csstudio/scan/command/ScanScriptContext.html" target="_top">Frames</a></li>
+<li><a href="ScanScriptContext.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<!-- ======== START OF CLASS DATA ======== -->
+<div class="header">
+<div class="subTitle">org.csstudio.scan.command</div>
+<h2 title="Class ScanScriptContext" class="title">Class ScanScriptContext</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li>java.lang.Object</li>
+<li>
+<ul class="inheritance">
+<li>org.csstudio.scan.command.ScanScriptContext</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre>public abstract class <span class="strong">ScanScriptContext</span>
+extends java.lang.Object</pre>
+<div class="block">Context in which a <a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command"><code>ScriptCommand</code></a>'s script is executed
+
+  <p>Script can access the scan data that has been collected to far,
+  and write to devices.</div>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#ScanScriptContext()">ScanScriptContext</a></strong>()</code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+<!-- ========== METHOD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double[][]</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#getData(java.lang.String...)">getData</a></strong>(java.lang.String...&nbsp;devices)</code>
+<div class="block">Get data for devices in a form suitable for computations.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>abstract <a href="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data">ScanData</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#getScanData()">getScanData</a></strong>()</code>
+<div class="block">Access to the <a href="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data"><code>ScanData</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>abstract void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#logData(java.lang.String, java.lang.Object)">logData</a></strong>(java.lang.String&nbsp;device,
+       java.lang.Object&nbsp;data)</code>
+<div class="block">Add data for a device to the log.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>abstract java.lang.Object</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#read(java.lang.String)">read</a></strong>(java.lang.String&nbsp;device_name)</code>
+<div class="block">Read value from a device</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object)">write</a></strong>(java.lang.String&nbsp;device_name,
+     java.lang.Object&nbsp;value)</code>
+<div class="block">Write to device, waiting for readback with default tolerance and timeout</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, boolean)">write</a></strong>(java.lang.String&nbsp;device_name,
+     java.lang.Object&nbsp;value,
+     boolean&nbsp;wait)</code>
+<div class="block">Write to device, with or without waiting for readback</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, java.lang.String)">write</a></strong>(java.lang.String&nbsp;device_name,
+     java.lang.Object&nbsp;value,
+     java.lang.String&nbsp;readback)</code>
+<div class="block">Write to device, using alternate readback device</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>abstract void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, TimeDuration)">write</a></strong>(java.lang.String&nbsp;device_name,
+     java.lang.Object&nbsp;value,
+     java.lang.String&nbsp;readback,
+     boolean&nbsp;wait,
+     double&nbsp;tolerance,
+     TimeDuration&nbsp;timeout)</code>
+<div class="block">Write to device</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
+<code>equals, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="ScanScriptContext()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ScanScriptContext</h4>
+<pre>public&nbsp;ScanScriptContext()</pre>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="getScanData()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getScanData</h4>
+<pre>public abstract&nbsp;<a href="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data">ScanData</a>&nbsp;getScanData()
+                              throws java.lang.Exception</pre>
+<div class="block">Access to the <a href="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data"><code>ScanData</code></a>
+
+  <p>Provides access to the scan data in its basic form.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd><a href="../../../../org/csstudio/scan/data/ScanData.html" title="class in org.csstudio.scan.data"><code>ScanData</code></a> of currently logged data or <code>null</code></dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#getData(java.lang.String...)"><code>getData(java.lang.String...)</code></a></dd></dl>
+</li>
+</ul>
+<a name="getData(java.lang.String...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getData</h4>
+<pre>public&nbsp;double[][]&nbsp;getData(java.lang.String...&nbsp;devices)
+                   throws java.lang.Exception</pre>
+<div class="block">Get data for devices in a form suitable for computations.
+
+  <p>Data will be interpolated onto matching serial numbers
+  via 'staircase' interpolation, holding a value until it changes.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>devices</code> - Names of devices for which to get logged data</dd>
+<dt><span class="strong">Returns:</span></dt><dd>2D array: result[0][...] has data for first device,
+                    result[1][...] has data for second device and so on</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+<a name="logData(java.lang.String, java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>logData</h4>
+<pre>public abstract&nbsp;void&nbsp;logData(java.lang.String&nbsp;device,
+           java.lang.Object&nbsp;data)
+                      throws java.lang.Exception</pre>
+<div class="block">Add data for a device to the log.
+
+  <p>The data will typically be the result of a computation
+  performed in the <a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command"><code>ScriptCommand</code></a>, and it is added to
+  the log to allow plotting or later analysis
+
+  <p>Supported data is
+  <ul>
+  <li>NDArray</li>
+  <li>Anything that NDArray.create(Object) can read: double[], int[], ...
+  </ul>
+
+  <p>The data will be logged as a flat array of samples with
+  serial numbers equal to the array index.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device</code> - Device name</dd><dd><code>data</code> - Data to log for the device</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+<a name="read(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>read</h4>
+<pre>public abstract&nbsp;java.lang.Object&nbsp;read(java.lang.String&nbsp;device_name)
+                               throws java.lang.Exception</pre>
+<div class="block">Read value from a device</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd>
+<dt><span class="strong">Returns:</span></dt><dd>Value of the device: String, Double, ...</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+<a name="write(java.lang.String, java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>write</h4>
+<pre>public&nbsp;void&nbsp;write(java.lang.String&nbsp;device_name,
+         java.lang.Object&nbsp;value)
+           throws java.lang.Exception</pre>
+<div class="block">Write to device, waiting for readback with default tolerance and timeout</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device and readback</dd><dd><code>value</code> - Value to write to the device</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+<a name="write(java.lang.String, java.lang.Object, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>write</h4>
+<pre>public&nbsp;void&nbsp;write(java.lang.String&nbsp;device_name,
+         java.lang.Object&nbsp;value,
+         boolean&nbsp;wait)
+           throws java.lang.Exception</pre>
+<div class="block">Write to device, with or without waiting for readback</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device and readback (if used)</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>wait</code> - Wait for readback to match?</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+<a name="write(java.lang.String, java.lang.Object, java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>write</h4>
+<pre>public&nbsp;void&nbsp;write(java.lang.String&nbsp;device_name,
+         java.lang.Object&nbsp;value,
+         java.lang.String&nbsp;readback)
+           throws java.lang.Exception</pre>
+<div class="block">Write to device, using alternate readback device</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+<a name="write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, TimeDuration)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>write</h4>
+<pre>public abstract&nbsp;void&nbsp;write(java.lang.String&nbsp;device_name,
+         java.lang.Object&nbsp;value,
+         java.lang.String&nbsp;readback,
+         boolean&nbsp;wait,
+         double&nbsp;tolerance,
+         TimeDuration&nbsp;timeout)
+                    throws java.lang.Exception</pre>
+<div class="block">Write to device</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device</dd><dd><code>wait</code> - Wait for readback to match?</dd><dd><code>tolerance</code> - Numeric tolerance when checking value</dd><dd><code>timeout</code> - Timeout in seconds, <code>null</code> as "forever"</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<!-- ========= END OF CLASS DATA ========= -->
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../index-all.html">Index</a></li>
+<li><a href="../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../org/csstudio/scan/command/ScanScript.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../index.html?org/csstudio/scan/command/ScanScriptContext.html" target="_top">Frames</a></li>
+<li><a href="ScanScriptContext.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+</body>
+</html>

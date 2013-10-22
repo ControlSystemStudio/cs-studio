@@ -13,6 +13,7 @@ import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
+import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -37,6 +38,18 @@ public class ValueFactory {
      */
     public static VString newVString(final String value, final Alarm alarm, final Time time) {
         return new IVString(value, alarm, time);
+    }
+    
+    /**
+     * Creates a new VBoolean.
+     * 
+     * @param value the boolean value
+     * @param alarm the alarm
+     * @param time the time
+     * @return the new value
+     */
+    public static VBoolean newVBoolean(final boolean value, final Alarm alarm, final Time time) {
+        return new IVBoolean(value, alarm, time);
     }
 
     
@@ -91,6 +104,8 @@ public class ValueFactory {
     }
     
     private static final Alarm alarmNone = newAlarm(AlarmSeverity.NONE, "NONE");
+    private static final Display displayBoolean = newDisplay(0.0, 0.0, 0.0, "", NumberFormats.toStringFormat(),
+            1.0, 1.0, 1.0, 0.0, 1.0);
     
     /**
      * No alarm.
@@ -262,6 +277,32 @@ public class ValueFactory {
         return displayNone;
     }
     
+    /**
+     * Returns a display from 0 to 1, suitable for booleans.
+     * 
+     * @return a display for boolean
+     */
+    public static Display displayBoolean() {
+        return displayBoolean;
+    }
+    
+    /**
+     * Creates a new VNumber based on the type of the data
+     * 
+     * @param value
+     * @param alarm
+     * @param time
+     * @param display
+     * @return
+     */
+    public static VNumber newVNumber(Number value, Alarm alarm, Time time, Display display){
+	if(value instanceof Double){
+	    return newVDouble((Double) value, alarm, time, display);
+	}else if(value instanceof Integer){
+	    return newVInt((Integer)value, alarm, time, display);
+	}	
+	throw new UnsupportedOperationException();
+    }
     
     /**
      * Creates a new VDouble.
@@ -367,6 +408,24 @@ public class ValueFactory {
      */
     public static VDoubleArray newVDoubleArray(final double[] values, final ListInt sizes, Alarm alarm, Time time, Display display) {
         return new IVDoubleArray(new ArrayDouble(values), sizes, alarm, time, display);
+    }
+    
+    /**
+     * Creates a new VNumberArray based on the type of the data.
+     * 
+     * @param data
+     * @param alarm
+     * @param time
+     * @param display
+     * @return
+     */
+    public static VNumberArray newVNumberArray(final ListNumber data, final Alarm alarm, final Time time, final Display display){
+	if(data instanceof ListDouble){
+	    return newVDoubleArray((ListDouble)data, alarm, time, display);
+	}else if(data instanceof ListInt){
+	    return newVIntArray((ListInt)data, alarm, time, display);
+	}	
+	throw new UnsupportedOperationException();
     }
     
     /**
@@ -493,18 +552,32 @@ public class ValueFactory {
      * @return the wrapped value
      */
     public static VType wrapValue(Object value) {
+        return wrapValue(value, alarmNone());
+    }
+    
+    /**
+     * Takes a java objects and wraps it into a vType. All numbers are wrapped
+     * as VDouble. String is wrapped as VString. double[] and ListDouble are wrapped as
+     * VDoubleArray. A List of String is wrapped to a VStringArray. Alarms
+     * are alarm, time are timeNow() and display are displayNone();
+     * 
+     * @param value the value to wrap
+     * @param alarm the alarm for the value
+     * @return the wrapped value
+     */
+    public static VType wrapValue(Object value, Alarm alarm) {
         if (value instanceof Number) {
             // Special support for numbers
-            return newVDouble(((Number) value).doubleValue(), alarmNone(), timeNow(),
+            return newVDouble(((Number) value).doubleValue(), alarm, timeNow(),
                     displayNone());
         } else if (value instanceof String) {
             // Special support for strings
             return newVString(((String) value),
-                    alarmNone(), timeNow());
+                    alarm, timeNow());
         } else if (value instanceof double[]) {
-            return newVDoubleArray(new ArrayDouble((double[]) value), alarmNone(), timeNow(), displayNone());
+            return newVDoubleArray(new ArrayDouble((double[]) value), alarm, timeNow(), displayNone());
         } else if (value instanceof ListDouble) {
-            return newVDoubleArray((ListDouble) value, alarmNone(), timeNow(), displayNone());
+            return newVDoubleArray((ListDouble) value, alarm, timeNow(), displayNone());
         } else if (value instanceof List) {
             boolean matches = true;
             List list = (List) value;
@@ -516,7 +589,7 @@ public class ValueFactory {
             if (matches) {
                 @SuppressWarnings("unchecked")
                 List<String> newList = (List<String>) list;
-                return newVStringArray(Collections.unmodifiableList(newList), alarmNone(), timeNow());
+                return newVStringArray(Collections.unmodifiableList(newList), alarm, timeNow());
             } else {
                 throw new UnsupportedOperationException("Type " + value.getClass().getName() + " contains non Strings");
             }

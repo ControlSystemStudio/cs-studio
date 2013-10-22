@@ -87,5 +87,10 @@ public class JCAConnectionPayload {
     public boolean isLongString() {
         return longString;
     }
+
+    @Override
+    public String toString() {
+        return "JCAConnection [connected: " +isChannelConnected() + " writeConnected: " + isWriteConnected() + " channel: " + channel + "]";
+    }
     
 }

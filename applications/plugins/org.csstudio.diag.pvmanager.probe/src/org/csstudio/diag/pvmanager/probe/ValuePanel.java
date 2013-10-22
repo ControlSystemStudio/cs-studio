@@ -62,7 +62,7 @@ public class ValuePanel extends Composite {
 		valueSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		valueLabel = new Label(valueSection, SWT.NONE);
-		valueLabel.setText("Value:");
+		valueLabel.setText(Messages.Probe_infoValue);
 		
 		valueField = new Text(valueSection, SWT.BORDER);
 		valueField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -77,7 +77,7 @@ public class ValuePanel extends Composite {
 		timestampSection.setLayout(gl_timestampSection);
 		
 		timestampLabel = new Label(timestampSection, SWT.NONE);
-		timestampLabel.setText("Timestamp:");
+		timestampLabel.setText(Messages.Probe_infoTimestamp);
 		
 		timestampField = new Text(timestampSection, SWT.BORDER);
 		timestampField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -92,7 +92,7 @@ public class ValuePanel extends Composite {
 		labelsSection.setLayout(gl_labelsSection);
 		
 		labelsLabel = new Label(labelsSection, SWT.NONE);
-		labelsLabel.setText("Labels:");
+		labelsLabel.setText(Messages.Probe_infoLabels);
 		
 		labelsField = new Text(labelsSection, SWT.BORDER);
 		labelsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -107,7 +107,7 @@ public class ValuePanel extends Composite {
 		displaySection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		displayLabel = new Label(displaySection, SWT.NONE);
-		displayLabel.setText("Display:");
+		displayLabel.setText(Messages.Probe_infoDisplay);
 		
 		displayField = new Text(displaySection, SWT.BORDER);
 		displayField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -117,10 +117,10 @@ public class ValuePanel extends Composite {
 	
 	private boolean needsDoLayout;
 	
-	public void changeValue(Object value) {
+	public void changeValue(Object value, boolean connection) {
 		needsDoLayout = false;
 		
-		setValue(value);
+		setValue(value, connection);
 		setTime(ValueUtil.timeOf(value));
 		
 		if (value instanceof Enum) {
@@ -173,13 +173,13 @@ public class ValuePanel extends Composite {
 			}
 			builder.append('[')
 			       .append(alarm.getAlarmSeverity())
-			       .append(" - ")
+			       .append(" - ") //$NON-NLS-1$
 			       .append(alarm.getAlarmName())
 			       .append(']');
 		}
 	}
 	
-	private void setValue(Object value) {
+	private void setValue(Object value, boolean connection) {
 		StringBuilder formattedValue = new StringBuilder();
 		
 		if (value != null) {
@@ -189,7 +189,7 @@ public class ValuePanel extends Composite {
 			}
 		}
 		
-		appendAlarm(formattedValue, ValueUtil.alarmOf(value));
+		appendAlarm(formattedValue, ValueUtil.alarmOf(value, connection));
 
 		valueField.setText(formattedValue.toString());
 	}

@@ -9,7 +9,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
@@ -57,11 +56,12 @@ class ChangeValuePanel extends Composite {
 		valueSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		newValueLabel = new Label(valueSection, SWT.NONE);
-		newValueLabel.setText("New value:");
+		newValueLabel.setText(Messages.Probe_newValueLabelText);
 		
 		newValueField = new Text(valueSection, SWT.BORDER);
 		newValueField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		newValueField.setEditable(false);
+		newValueField.setToolTipText(Messages.Probe_newValueFieldToolTipText);
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -106,6 +106,10 @@ class ChangeValuePanel extends Composite {
 		errorBar.setException(null);
 		setValue(null);
 		newValueField.setEditable(false);
+	}
+	
+	public void setPvWriter(PVWriter<Object> pvWriter) {
+		this.pvWriter = pvWriter;
 	}
 	
 	/**

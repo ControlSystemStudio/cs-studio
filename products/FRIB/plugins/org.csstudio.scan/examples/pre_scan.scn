@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands>
+  <comment><address>0</address><text>Commands that server executes before each scan</text></comment>
+  <set>
+    <address>1</address>
+    <device>shutter</device>
+    <value>1.0</value>
+    <readback>shutter</readback>
+    <tolerance>0.1</tolerance>
+  </set>
+</commands>

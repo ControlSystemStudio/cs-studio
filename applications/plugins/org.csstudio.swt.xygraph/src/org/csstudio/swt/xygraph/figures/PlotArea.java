@@ -73,6 +73,7 @@ public class PlotArea extends Figure {
 	final private List<Trace> traceList = new ArrayList<Trace>();
 	final private List<Grid> gridList = new ArrayList<Grid>();
 	final private List<Annotation> annotationList = new ArrayList<Annotation>();
+	final private HoverLabels hoverLabels;
 
 	final private Cursor grabbing;
 
@@ -98,6 +99,9 @@ public class PlotArea extends Figure {
 		PlotMouseListener zoomer = new PlotMouseListener();
 		addMouseListener(zoomer);
 		addMouseMotionListener(zoomer);
+		hoverLabels = new HoverLabels(this);
+		addMouseMotionListener(hoverLabels);
+		add(hoverLabels);
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);
 		zoomType = ZoomType.NONE;
 	}
@@ -124,6 +128,10 @@ public class PlotArea extends Figure {
 	public void addTrace(final Trace trace) {
 		traceList.add(trace);
 		add(trace);
+		hoverLabels.addTrace(trace);
+		// Keep hoverLabels figure to front
+		remove(hoverLabels);
+		add(hoverLabels);
 		revalidate();
 	}
 
@@ -135,6 +143,7 @@ public class PlotArea extends Figure {
 	 */
 	public boolean removeTrace(final Trace trace) {
 		boolean result = traceList.remove(trace);
+		hoverLabels.removeTrace(trace);
 		if (result) {
 			remove(trace);
 			revalidate();
@@ -151,6 +160,9 @@ public class PlotArea extends Figure {
 	public void addGrid(final Grid grid) {
 		gridList.add(grid);
 		add(grid);
+		// Keep hoverLabels figure to front
+		remove(hoverLabels);
+		add(hoverLabels);
 		revalidate();
 	}
 
@@ -221,6 +233,9 @@ public class PlotArea extends Figure {
 			if (grid != null && grid.isVisible())
 				grid.setBounds(clientArea);
 		}
+		if(hoverLabels.isVisible()) {
+			hoverLabels.setBounds(clientArea);
+		}
 
 		for (Annotation annotation : annotationList) {
 			if (annotation != null && annotation.isVisible())
@@ -281,6 +296,19 @@ public class PlotArea extends Figure {
 	public void setZoomType(final ZoomType zoomType) {
 		this.zoomType = zoomType;
 		setCursor(zoomType.getCursor());
+
+		switch (zoomType) {
+		case HOVER_LABELS:
+			hoverLabels.setVisible(true);
+			revalidate();
+			break;
+		default:
+			if(hoverLabels.isVisible()) {
+				hoverLabels.setVisible(false);
+				revalidate();
+			}
+			// NOP
+		}
 	}
 
 	/**

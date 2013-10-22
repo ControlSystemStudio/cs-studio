@@ -272,7 +272,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		cmb_modes = new Combo(box, SWT.DROP_DOWN | SWT.READ_ONLY);
 		cmb_modes.setLayoutData(new GridData());
 		cmb_modes.setItems(MachineMode.getNames());
-		cmb_modes.select(0);
+		cmb_modes.select(model.getMachineMode().ordinal());
 
 		l = new Label(box, 0);
 		l.setText("State:");
@@ -280,7 +280,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		cmb_states = new Combo(box, SWT.DROP_DOWN | SWT.READ_ONLY);
 		cmb_states.setLayoutData(new GridData());
 		cmb_states.setItems(BypassState.getNames());
-		cmb_states.select(0);
+		cmb_states.select(model.getBypassFilter().ordinal());
 
 		l = new Label(box, 0);
 		l.setText("Requested?:");
@@ -289,7 +289,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		cmb_requested = new Combo(box, SWT.DROP_DOWN | SWT.READ_ONLY);
 		cmb_requested.setLayoutData(new GridData());
 		cmb_requested.setItems(RequestState.getNames());
-		cmb_requested.select(0);
+		cmb_requested.select(model.getRequestFilter().ordinal());
 
 		final Button reload = new Button(box, SWT.PUSH);
 		reload.setText("Reload");
@@ -540,7 +540,8 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 					cell.setText("");
 			}
 		});
-        new TableColumnSortHelper<Bypass>(table_viewer, view_col)
+		final TableColumnSortHelper<Bypass> request_sort =
+		        new TableColumnSortHelper<Bypass>(table_viewer, view_col)
         {
 			@Override
             public int compare(final Bypass item1, final Bypass item2)
@@ -555,6 +556,9 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 				return item2.getName().compareTo(item1.getName());
             }
         };
+        // By default, sort on requestor "downwards"
+        request_sort.widgetSelected(null);
+        request_sort.widgetSelected(null);
 
         // Bypass Request date, sorted by date with fallback to bypass name
 		view_col = createColumn(table_viewer, table_layout, "Request Date", 100);

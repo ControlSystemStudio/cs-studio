@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="webopi" sequenceNumber="25">
+<?pde version="3.6"?><target name="webopi" sequenceNumber="27">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rap.runtime.requirements.feature.group" version="1.5.0.20120612-1510"/>
 <unit id="org.eclipse.rap.runtime.feature.group" version="1.5.0.20120612-1510"/>
 <repository location="http://download.eclipse.org/rt/rap/1.5/runtime"/>
 </location>
-<location path="/home/ITER/dequidd/git/cs-studio.iter/core/plugins/org.csstudio.rap.core/third_party_plugins/JUnit" type="Directory"/>
-<location path="/home/ITER/dequidd/git/cs-studio.iter/core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0" type="Directory"/>
+<location path="C:\Users\5hz\work\java\git_repo\cs-studio\core\plugins\org.csstudio.rap.core\third_party_plugins\RAP_GEF_1.5.0" type="Directory"/>
+<location path="C:\Users\5hz\work\java\git_repo\cs-studio\core\plugins\org.csstudio.rap.core\third_party_plugins\JUnit" type="Directory"/>
 </locations>
 </target>

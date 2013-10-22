@@ -46,6 +46,8 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 	
 	private static boolean openFromPerspective = false;
 	
+	private static boolean openFromUser = false;
+	
 	public OPIView() {
 		opiRuntimeDelegate = new OPIRuntimeDelegate(this);
 	}
@@ -119,13 +121,18 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 									bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
 								else
 									bounds = new Rectangle(0, 0, 800, 600);
-								if(bounds.x >=0 && bounds.y > 1)
-									parent.getShell().setLocation(bounds.x, bounds.y);
-								else{
-								   org.eclipse.swt.graphics.Rectangle winSize = getSite().getWorkbenchWindow().getShell().getBounds();
-									parent.getShell().setLocation( 
-											winSize.x + winSize.width/5 + (int)(Math.random()*100), 
-											winSize.y + winSize.height/8+ (int)(Math.random()*100));
+								if (openFromUser) {
+									if (bounds.x >= 0 && bounds.y > 1)
+										parent.getShell().setLocation(bounds.x, bounds.y);
+									else {
+										org.eclipse.swt.graphics.Rectangle winSize = getSite()
+												.getWorkbenchWindow().getShell().getBounds();
+										parent.getShell().setLocation(
+												winSize.x + winSize.width / 5
+														+ (int) (Math.random() * 100),
+												winSize.y + winSize.height / 8
+														+ (int) (Math.random() * 100));
+									}
 								}
 								parent.getShell().setSize(bounds.width+45, bounds.height+65);							
 							}
@@ -179,6 +186,7 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 
 	public void setWorkbenchPartName(String name) {
 		setPartName(name);
+		setTitleToolTip(getOPIInput().getToolTipText());
 	}
 
 	public OPIRuntimeDelegate getOPIRuntimeDelegate() {
@@ -210,6 +218,10 @@ public class OPIView extends ViewPart implements IOPIRuntime {
 
 	public static void setOpenFromPerspective(boolean openFromPerspective) {
 		OPIView.openFromPerspective = openFromPerspective;
+	}
+	
+	public static void setOpenFromUser(boolean openFromUser) {
+		OPIView.openFromUser = openFromUser;
 	}
 
 	

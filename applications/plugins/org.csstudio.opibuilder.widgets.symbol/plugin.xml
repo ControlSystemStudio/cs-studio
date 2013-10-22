@@ -45,12 +45,6 @@
       </widget>
    </extension>
    <extension
-         point="org.eclipse.help.index">
-      <index
-            file="index.xml">
-      </index>
-   </extension>
-   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc_bool.xml"
@@ -60,11 +54,5 @@
             file="toc_multi.xml"
             primary="true">
       </toc>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="OPIContextHelp.xml">
-      </contexts>
    </extension>
 </plugin>

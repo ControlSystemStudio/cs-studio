@@ -9,8 +9,7 @@
             extensions="opi"
             icon="icons/OPIBuilder.png"
             id="org.csstudio.opibuilder.OPIEditor"
-            name="OPI Editor"
-            matchingStrategy="org.csstudio.opibuilder.editor.OPIEditorMatcher">
+            name="OPI Editor">
       </editor>
       <editor
             class="org.eclipse.ui.editors.text.TextEditor"
@@ -225,6 +224,23 @@
                   </objectClass>
                </not>
             </and>
+         </visibility>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.editor.openPerspective"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.OpenOPIPerspectiveAction"
+               icon="icons/OPIBuilder.png"
+               id="org.csstudio.opibuilder.editor.openPerspective"
+               label="OPI Editor Perspective">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="EDIT_MODE">
+            </objectState>
          </visibility>
       </objectContribution>
    </extension>

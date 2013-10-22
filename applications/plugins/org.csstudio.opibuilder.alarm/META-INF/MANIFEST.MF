@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ScriptUtil to access alarm information
+Bundle-SymbolicName: org.csstudio.opibuilder.alarm;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Takashi Nakamoto <takashi.nakamoto@cosylab.com>
+Fragment-Host: org.csstudio.opibuilder;bundle-version="3.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.csstudio.alarm.beast.ui;bundle-version="3.2.0"
+Import-Package: org.csstudio.alarm.beast.ui.clientmodel

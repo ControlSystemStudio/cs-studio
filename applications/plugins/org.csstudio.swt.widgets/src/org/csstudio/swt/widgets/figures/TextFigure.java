@@ -12,6 +12,7 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.TextUtilities;
@@ -19,6 +20,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 
 /**
  * A text figure without wrapping capability.
@@ -42,6 +45,11 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 	private final Point POINT_ZERO = new Point(0,0);
 	
 	private double rotate = 0;
+	
+	/**
+	 * The real font that is used for drawing. Sometime the font need to be shrinked to fit the widget.
+	 */
+	private Font realFont;
 
 	public TextFigure() {
 		this(false);
@@ -56,47 +64,153 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 		this.runMode = runMode;		
 	}
 
-	protected void calculateTextLocation() {
-		if(verticalAlignment == V_ALIGN.TOP && horizontalAlignment == H_ALIGN.LEFT){
-			textLocation = POINT_ZERO;
-			return;
-		}
-		Rectangle textArea = getTextArea();		
-		Dimension textSize = getTextSize();
-			int x=0;
-				
-		switch (horizontalAlignment) {
-		case CENTER:
-			x = (textArea.width - textSize.width) / 2;
-			break;
-		case RIGHT:
-			x = textArea.width - textSize.width;
-			break;
-		case LEFT:
-		default:
-			break;
-		}
-			
-		int y = 0;
-		if (textArea.height > textSize.height) {
-			switch (verticalAlignment) {
-			case MIDDLE:
-				y = (textArea.height - textSize.height) / 2;
+	protected void calculateTextLocation(Font font) {
+		if (getRotate() == 0) {
+			if(verticalAlignment == V_ALIGN.TOP && horizontalAlignment == H_ALIGN.LEFT){
+				textLocation = POINT_ZERO;
+				return;
+			}
+			Rectangle textArea = getTextArea();		
+			Dimension textSize = getTextSize(font);
+				int x=0;
+					
+			switch (horizontalAlignment) {
+			case CENTER:
+				x = (textArea.width - textSize.width) / 2;
 				break;
-			case BOTTOM:
-				y = textArea.height - textSize.height;
+			case RIGHT:
+				x = textArea.width - textSize.width;
 				break;
-			case TOP:
+			case LEFT:
 			default:
 				break;
 			}
-		}
+				
+			int y = 0;
+			if (textArea.height > textSize.height) {
+				switch (verticalAlignment) {
+				case MIDDLE:
+					y = (textArea.height - textSize.height) / 2;
+					break;
+				case BOTTOM:
+					y = textArea.height - textSize.height;
+					break;
+				case TOP:
+				default:
+					break;
+				}
+			}
+	
+			textLocation = new Point(x, y);
+		} else {
+			// rotated text
+			Rectangle textArea = getTextArea();		
+			Dimension textSize = getTextSize(font);
+			double theta = Math.toRadians(getRotate());
+	
+			int x = textArea.width / 2;
+			int y = textArea.height / 2;
 
-		textLocation = new Point(x, y);
+			switch (horizontalAlignment) {
+			case CENTER:
+				if (getRotate() <= 90) {
+					double w = textSize.width * Math.cos(theta)
+							 + textSize.height * Math.sin(theta);
+					x = (int) (((double) textArea.width - w) / 2.0 + textSize.height * Math.sin(theta));
+				} else if (getRotate() <= 180) {
+					double w = textSize.height * Math.sin(theta)
+							 - textSize.width * Math.cos(theta);
+					x = (int) ((double) textArea.width - ((double) textArea.width - w) / 2.0);
+				} else if (getRotate() <= 270) {
+					double w = - textSize.width * Math.cos(theta)
+							   - textSize.height * Math.sin(theta);
+					x = (int) (((double) textArea.width - w) / 2.0 - textSize.width * Math.cos(theta));
+				} else {
+					double w = textSize.width * Math.cos(theta)
+							 - textSize.height * Math.sin(theta);
+					x = (int) (((double) textArea.width - w) / 2.0); 
+				}
+				break;
+			case RIGHT:
+				if (getRotate() <= 90) {
+					x = textArea.width - (int) (textSize.width * Math.cos(theta));
+				} else if (getRotate() <= 180) {
+					x = textArea.width;
+				} else if (getRotate() <= 270) {
+					x = textArea.width - (int) (- textSize.height * Math.sin(theta));
+				} else {
+					x = textArea.width
+						- (int) (textSize.width * Math.cos(theta) - textSize.height * Math.sin(theta)); 
+				}
+				break;
+			case LEFT:
+			default:
+				if (getRotate() <= 90) {
+					x = (int) (textSize.height * Math.sin(theta));
+				} else if (getRotate() <= 180) {
+					x = (int) (textSize.height * Math.sin(theta)
+							 - textSize.width * Math.cos(theta));
+				} else if (getRotate() <= 270) {
+					x = (int) (- textSize.width * Math.cos(theta));
+				} else {
+					x = 0;
+				}
+				break;
+			}
+			
+			switch (verticalAlignment) {
+			case MIDDLE:
+				if (getRotate() <= 90) {
+					double h = textSize.width * Math.sin(theta)
+							 + textSize.height * Math.cos(theta);
+					y = (int) (((double) textArea.height - h) / 2.0); 
+				} else if (getRotate() <= 180) {
+					double h = textSize.width * Math.sin(theta)
+							 - textSize.height * Math.cos(theta);
+					y = (int) (((double) textArea.height - h) / 2.0 - textSize.height * Math.cos(theta));
+				} else if (getRotate() <= 270) {
+					double h = - textSize.width * Math.sin(theta)
+							   - textSize.height * Math.cos(theta);
+					y = (int) ((double) textArea.height - ((double) textArea.height - h) / 2.0);
+				} else {
+					double h = textSize.height * Math.cos(theta)
+							 - textSize.width * Math.sin(theta);
+					y = (int) (((double) textArea.height - h) / 2.0 - textSize.height * Math.sin(theta));
+				}
+				break;
+			case BOTTOM:
+				if (getRotate() <= 90) {
+					y = textArea.height
+						- (int) (textSize.width * Math.sin(theta) + textSize.height * Math.cos(theta));
+				} else if (getRotate() <= 180) {
+					y = textArea.height - (int) (textSize.width * Math.sin(theta));
+				} else if (getRotate() <= 270) {
+					y = textArea.height;
+				} else {
+					y = textArea.height - (int) (textSize.height * Math.cos(theta));
+				}
+				break;
+			case TOP:
+			default:
+				if (getRotate() <= 90) {
+					y = 0;
+				} else if (getRotate() <= 180) {
+					y = (int) (- textSize.height * Math.cos(theta));
+				} else if (getRotate() <= 270) {
+					y = (int) (- textSize.width * Math.sin(theta)
+							   - textSize.height * Math.cos(theta));
+				} else {
+					y = (int) (- textSize.width * Math.sin(theta));
+				}
+				break;
+			}
+			
+			textLocation = new Point(x, y);
+		}
 	}
 
-	protected Dimension calculateTextSize() {
-		return TextUtilities.INSTANCE.getTextExtents(text, getFont());
+	protected Dimension calculateTextSize(Font font) {
+		return TextUtilities.INSTANCE.getTextExtents(text, font);
 	}
 	
 	protected void clearLocationSize(){		
@@ -132,12 +246,12 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 
 	@Override
 	public Dimension getMinimumSize(int wHint, int hHint) {
-		return getTextSize();
+		return getTextSize(getFont());
 	}
 
 	@Override
 	public Dimension getPreferredSize(int wHint, int hHint) {
-		return getTextSize();
+		return getTextSize(getFont());
 
 	}
 
@@ -150,16 +264,19 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 	}
 
 	
-	protected Point getTextLocation() {
+	protected Point getTextLocation(Font font) {
 		if (textLocation != null)
 			return textLocation;			
-		calculateTextLocation();
+		calculateTextLocation(font);
 		return textLocation;
 	}	
 	
-	protected Dimension getTextSize() {
+	protected Dimension getTextSize(Font font) {
+		if(font != getFont()){
+			return calculateTextSize(font);
+		}
 		if (textSize == null)
-			textSize = calculateTextSize();
+			textSize = calculateTextSize(font);
 		return textSize;
 	}
 	
@@ -191,27 +308,44 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 	}	
 	
 	@Override
-	protected void paintFigure(Graphics graphics) {
+	protected void paintFigure(Graphics graphics) {		
 		super.paintFigure(graphics);
 		if(text.length() == 0)
 			return;
+		Rectangle clientArea = getClientArea();
+		if(realFont == null)
+			realFont = getFont();
+		int h = getTextSize(realFont).height;
+		if (realFont != getFont() && h < clientArea.height-2) {
+			realFont =getFont();
+			h = getTextSize(realFont).height;
+		}
+		Font font = realFont;	
+			
+		int i=0;
+		//shrink font size to fit the figure.
+		while(h > (clientArea.height+2) && h > 10 && i++<20){			
+			FontData fd = font.getFontData()[0];
+			fd.setHeight(fd.getHeight()-1);
+			font = CustomMediaFactory.getInstance().getFont(fd);
+			h = getTextSize(font).height;
+		}
+		realFont = font;
+		graphics.setFont(font);
 		Rectangle textArea = getTextArea();
 		graphics.translate(textArea.x, textArea.y);
 		if(getRotate() ==0)
-			graphics.drawText(text, getTextLocation());
+			graphics.drawText(text, getTextLocation(font));
 		else{
 			//rap doesn't support rotate
 			if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-				graphics.drawText(text, getTextLocation());
+				graphics.drawText(text, getTextLocation(font));
 			else{
 				try {
 					graphics.pushState();
-					Rectangle c = getClientArea();
-					graphics.translate(c.width/2, c.height/2);
+					graphics.translate(getTextLocation(font));
 					graphics.rotate((float) getRotate());
-					graphics.drawText(
-							text,
-							0,	0);				
+					graphics.drawText(text, 0, 0);
 				} finally{
 					graphics.popState();
 				}
@@ -220,6 +354,12 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 			
 		
 		graphics.translate(-textArea.x, -textArea.y);		
+	}
+	
+	@Override
+	public void setFont(Font f) {
+		realFont = f;
+		super.setFont(f);
 	}
 	
 	@Override
@@ -257,8 +397,10 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 			s = "";//$NON-NLS-1$
 		if (text.equals(s))
 			return;
+		if(s.length() !=  text.length())
+			clearLocationSize();
 		text = s;
-		clearLocationSize();
+		
 		repaint();
 	}
 

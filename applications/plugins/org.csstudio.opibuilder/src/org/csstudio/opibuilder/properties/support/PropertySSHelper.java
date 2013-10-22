@@ -4,6 +4,7 @@ package org.csstudio.opibuilder.properties.support;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.StringTableProperty.TitlesProvider;
 import org.csstudio.opibuilder.util.ImplementationLoader;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor.CellEditorType;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 /**Single source helper for PropertyDescriptor. IMPL can be null.
@@ -67,7 +68,8 @@ public abstract class PropertySSHelper {
 			String description);
 
 	public abstract PropertyDescriptor getStringTablePropertyDescriptor(String prop_id,
-			String description, TitlesProvider titlesProvider);
+			String description, TitlesProvider titlesProvider,
+			CellEditorType[] cellEditorTypes,  Object[] cellEditorDatas);
 
 	public abstract PropertyDescriptor getComplexDataPropertyDescriptor(String prop_id,
 			String description, String dialogTitle);
@@ -77,5 +79,9 @@ public abstract class PropertySSHelper {
 	
 	public abstract PropertyDescriptor getMatrixPropertyDescriptor(String prop_id,
 			String description);
+
+	public abstract PropertyDescriptor getPVNamePropertyDescriptor(String prop_id,
+			String description, String detailedDescription);
+	
 	
 }

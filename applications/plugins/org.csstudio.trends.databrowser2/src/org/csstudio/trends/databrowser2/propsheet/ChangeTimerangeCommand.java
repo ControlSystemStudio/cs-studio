@@ -7,14 +7,13 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.swt.xygraph.undo.IUndoableCommand;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
-import org.epics.util.time.Timestamp;
 
 /** Undo-able command to change time axis
  *  @author Kay Kasemir
@@ -23,7 +22,7 @@ public class ChangeTimerangeCommand implements IUndoableCommand
 {
     final private Model model;
     final private boolean old_scroll, new_scroll;
-    final private Timestamp old_start, new_start, old_end, new_end;
+    final private String old_start, new_start, old_end, new_end;
 
     /** Register and perform the command
      *  @param model Model
@@ -33,15 +32,15 @@ public class ChangeTimerangeCommand implements IUndoableCommand
      *  @param end
      */
     public ChangeTimerangeCommand(final Model model, final OperationsManager operationsManager,
-            final boolean scroll, final Calendar start, final Calendar end)
+            final boolean scroll, final String start, final String end)
     {
         this.model = model;
         this.old_scroll = model.isScrollEnabled();
-        this.old_start = model.getStartTime();
-        this.old_end = model.getEndTime();
+        this.old_start = model.getStartSpec();
+        this.old_end = model.getEndSpec();
         this.new_scroll = scroll;
-        this.new_start = TimestampHelper.fromCalendar(start);
-        this.new_end = TimestampHelper.fromCalendar(end);
+        this.new_start = start;
+        this.new_end = end;
         operationsManager.addCommand(this);
         redo();
     }
@@ -65,19 +64,18 @@ public class ChangeTimerangeCommand implements IUndoableCommand
      *  @param start
      *  @param end
      */
-    private void apply(final boolean scroll, final Timestamp start, final Timestamp end)
+    private void apply(final boolean scroll, final String start, final String end)
     {
-        if (scroll)
-        {
-            model.enableScrolling(true);
-            final double time_span = end.durationFrom(start).toSeconds();
-            model.setTimespan(time_span);
-        }
-        else
-        {
-            model.enableScrolling(false);
-            model.setTimerange(start, end);
-        }
+    	model.enableScrolling(scroll);
+    	try
+    	{
+    		model.setTimerange(start, end);
+    	}
+    	catch (Exception ex)
+    	{
+    		Logger.getLogger(getClass().getName()).log(Level.WARNING,
+				"Cannot update time range to " + start + " .. " + end, ex);
+    	}
     }
 
     /** @return Command name that appears in undo/redo menu */

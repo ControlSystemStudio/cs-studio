@@ -7,8 +7,17 @@
  ******************************************************************************/
 package org.csstudio.startup.application;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -21,6 +30,7 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -45,6 +55,7 @@ public class OpenDocumentEventProcessor implements Listener {
     final private List<String> filesToOpen = new ArrayList<String>(0);
 
 	public final static String OPEN_DOC_PROCESSOR = "css.openDocProcessor"; //$NON-NLS-1$
+	private static final String SEM_PAH = "/dev/shm/"; //$NON-NLS-1$
 
 	/**
 	 * Constructor.
@@ -73,6 +84,9 @@ public class OpenDocumentEventProcessor implements Listener {
 	public void catchUp(Display display) {
 		if (filesToOpen.isEmpty())
 			return;
+		
+		// Eclipse Bug 386995 - --launcher.openFile doesn't work in multiuser environment
+		updatePermissions();
 
 		// If we start supporting events that can arrive on a non-UI thread, the following
 		// lines will need to be in a "synchronized" block:
@@ -83,6 +97,61 @@ public class OpenDocumentEventProcessor implements Listener {
 		for(int i = 0; i < filePaths.length; i++) {
 			openFile(display, filePaths[i]);
 		}
+	}
+	
+	// Grant 777 access rights to UISynchronizer semaphores
+	private void updatePermissions() {
+		if (!isUnix())
+			return;
+
+		// Using PosixFilePermission to set file permissions 777
+		Set<PosixFilePermission> perms = new HashSet<PosixFilePermission>();
+		// Add owners permission
+		perms.add(PosixFilePermission.OWNER_READ);
+		perms.add(PosixFilePermission.OWNER_WRITE);
+		perms.add(PosixFilePermission.OWNER_EXECUTE);
+		// Add group permissions
+		perms.add(PosixFilePermission.GROUP_READ);
+		perms.add(PosixFilePermission.GROUP_WRITE);
+		perms.add(PosixFilePermission.GROUP_EXECUTE);
+		// Add others permissions
+		perms.add(PosixFilePermission.OTHERS_READ);
+		perms.add(PosixFilePermission.OTHERS_WRITE);
+		perms.add(PosixFilePermission.OTHERS_EXECUTE);
+
+		String productName = Platform.getProduct().getName();
+		final Pattern semPattern = Pattern.compile("sem\\.SWT_Window_"
+				+ productName + ".*");
+
+		File semFolder = new File(SEM_PAH);
+		if (semFolder.exists() && semFolder.isDirectory()) {
+			File[] semFiles = semFolder.listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File file) {
+					Matcher m = semPattern.matcher(file.getName());
+					if (m.matches())
+						return true;
+					return false;
+				}
+			});
+			if (semFiles != null) {
+				for (File sem : semFiles) {
+					try {
+						java.nio.file.Path path = Paths.get(sem.getAbsolutePath());
+						UserPrincipal owner = Files.getOwner(path);
+						String username = owner.getName();
+						if (System.getProperty("user.name").equals(username)) {
+							Files.setPosixFilePermissions(path, perms);
+						}
+					} catch (IOException e) {
+					}
+				}
+			}
+		}
+	}
+	
+	private boolean isUnix() {
+		return System.getProperty("os.name").equals("Linux");
 	}
 
 	private void openFile(Display display, final String path) {

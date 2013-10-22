@@ -4,7 +4,10 @@
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +30,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceMethod;
+import org.epics.pvmanager.service.ServiceRegistry;
 
 import com.google.common.base.Joiner;
 
@@ -37,13 +41,12 @@ import com.google.common.base.Joiner;
 public class ServicesView extends ViewPart {
 
     public static final String ID = "org.csstudio.utility.pvmanager.ui.toolbox.ServicesView"; //$NON-NLS-1$
-    private TreeViewer treeViewer;
-
+    private ServiceTreeWidget serviceTreeWidget;
+    
     /**
      * 
      */
     public ServicesView() {
-	// TODO Auto-generated constructor stub
     }
 
     /*
@@ -55,78 +58,17 @@ public class ServicesView extends ViewPart {
      */
     @Override
     public void createPartControl(Composite parent) {
+    	
+    	serviceTreeWidget = new ServiceTreeWidget(parent, SWT.NONE);
 
-	Composite composite = new Composite(parent, SWT.NONE);
-	TreeColumnLayout tcl_composite = new TreeColumnLayout();
-	composite.setLayout(tcl_composite);
-
-	treeViewer = new TreeViewer(composite, SWT.BORDER);
-	Tree tree = treeViewer.getTree();
-	tree.setHeaderVisible(true);
-	tree.setLinesVisible(true);
-
-	TreeViewerColumn treeViewerColumn = new TreeViewerColumn(treeViewer,
-		SWT.NONE);
-	treeViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-	    public Image getImage(Object element) {
-		return null;
-	    }
-
-	    public String getText(Object element) {
-		if (element instanceof Service) {
-		    return ((Service) element).getName();
-		} else if (element instanceof ServiceMethod) {
-		    return serviceMethod2String((ServiceMethod) element);
-		} else if (element instanceof Entry) {
-		    return ((Entry<String, String>) element).getKey();
-		}
-		return "";
-	    }
-	});
-	TreeColumn trclmnNewColumn = treeViewerColumn.getColumn();
-	tcl_composite.setColumnData(trclmnNewColumn, new ColumnWeightData(10,
-		ColumnWeightData.MINIMUM_WIDTH, true));
-	trclmnNewColumn.setText("Name");
-
-	TreeViewerColumn treeViewerColumn_1 = new TreeViewerColumn(treeViewer,
-		SWT.NONE);
-	treeViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
-	    public Image getImage(Object element) {
-		return null;
-	    }
-
-	    public String getText(Object element) {
-		if (element instanceof Service) {
-		    return ((Service) element).getDescription();
-		} else if (element instanceof Entry) {
-		    return ((Entry<String, String>) element).getValue();
-		}
-		return "";
-	    }
-	});
-	TreeColumn trclmnNewColumn_1 = treeViewerColumn_1.getColumn();
-	tcl_composite.setColumnData(trclmnNewColumn_1, new ColumnWeightData(7,
-		ColumnWeightData.MINIMUM_WIDTH, true));
-	trclmnNewColumn_1.setText("Description");
-	treeViewer.setContentProvider(new ServiceTreeContentProvider());
-
-	IConfigurationElement[] config = Platform.getExtensionRegistry()
-		.getConfigurationElementsFor(
-			"org.csstudio.utility.pvmanager.service");
-
+	List<String> serviceNames = new ArrayList<String>(ServiceRegistry
+		.getDefault().listServices());
+	Collections.sort(serviceNames);
 	List<Service> services = new ArrayList<Service>();
-	for (IConfigurationElement iConfigurationElement : config) {
-	    Object o;
-	    try {
-		o = iConfigurationElement.createExecutableExtension("service");
-		if (o instanceof Service) {
-		    services.add((Service) o);
-		}
-	    } catch (CoreException e) {
-		e.printStackTrace();
-	    }
-	}
-	treeViewer.setInput(services);
+	for (String serviceName : serviceNames) {
+	    services.add(ServiceRegistry.getDefault().findService(serviceName));
+	}	
+	serviceTreeWidget.setServiceNames(services);
     }
 
     /*
@@ -136,28 +78,7 @@ public class ServicesView extends ViewPart {
      */
     @Override
     public void setFocus() {
-	treeViewer.getControl().setFocus();
+	serviceTreeWidget.setFocus();
     }
 
-    private String serviceMethod2String(ServiceMethod serviceMethod) {
-	StringBuffer stringBuffer = new StringBuffer();
-	stringBuffer.append(serviceMethod.getName()).append("(");
-	List<String> arguments = new ArrayList<String>();
-	for (Entry<String, Class<?>> argument : serviceMethod
-		.getArgumentTypes().entrySet()) {
-	    arguments.add(argument.getValue().getSimpleName() + " "
-		    + argument.getKey());
-	}
-	stringBuffer.append(Joiner.on(", ").join(arguments));
-	stringBuffer.append(")");
-	stringBuffer.append(": ");
-	List<String> results = new ArrayList<String>();
-	for (Entry<String, Class<?>> result : serviceMethod.getResultTypes()
-		.entrySet()) {
-	    results.add(result.getValue().getSimpleName() + " "
-		    + result.getKey());
-	}
-	stringBuffer.append(Joiner.on(", ").join(results));
-	return stringBuffer.toString();
-    }
 }

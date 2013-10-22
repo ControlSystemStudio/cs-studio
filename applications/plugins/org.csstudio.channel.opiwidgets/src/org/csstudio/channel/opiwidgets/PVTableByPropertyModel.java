@@ -2,10 +2,16 @@ package org.csstudio.channel.opiwidgets;
 
 import java.util.List;
 
+import org.csstudio.channel.widgets.PVTableByPropertyWidget;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
 
 public class PVTableByPropertyModel extends AbstractChannelWidgetWithNotificationModel {
+	
+	public PVTableByPropertyModel() {
+		super(AbstractSelectionWidgetModelDescription.newModelFrom(PVTableByPropertyWidget.class));
+	}
 	
 	public final String ID = "org.csstudio.channel.opiwidgets.PVTableByProperty"; //$NON-NLS-1$
 	

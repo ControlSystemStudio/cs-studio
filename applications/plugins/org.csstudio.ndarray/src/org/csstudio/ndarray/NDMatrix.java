@@ -37,6 +37,20 @@ public class NDMatrix
         return new NDArray(flat, shape, type == NDType.BOOL);
     }
 
+    /** Create one-filled array
+     *  @param type Data type {@link Double}, {@link Integer}, ...
+     *  @param shape Array shape, e.g. [2, 3]
+     *  @return NDArray for data
+     */
+    public static NDArray ones(final NDType type, final NDShape shape)
+    {
+        final ListNumber flat = NDArray.createDataArray(type, shape.getSize());
+         final int size = shape.getSize();
+         for (int i=0; i<size; ++i)
+              flat.setInt(i, 1);
+        return new NDArray(flat, shape, type == NDType.BOOL);
+    }
+    
 	/** Create array for range
      *  @param start Initial value
      *  @param stop Next-to-end value, not included in result

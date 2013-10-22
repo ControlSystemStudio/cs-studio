@@ -1,0 +1,43 @@
+FRIB Product Release Procedure
+------------------------------------------------------------
+
+Pre-release
+* Make sure all the dependencies were released (if possible)
+* Change version number in splash screen
+* Change version number in about
+* Change version number in product.xml
+* Change version number in the product plugin.xml
+* Ensure COMMON CORE and FRIB builds succeed
+
+Release
+* Let Jenkins finish the build
+* Login as Jenkins on the build server
+rm -rf release
+* While Jenkins is _NOT_ building
+mv ~/.jenkins/CSS-FRIB/build/build release
+* Write down which build number on jenkins, so that you know what to tag later
+* set version number
+export VERSION=3.1.0
+* rename and push tarballs
+cd release/BuildDirectory/I.CSS-FRIB/
+mv CSS-FRIB-linux.gtk.x86.zip CSS-FRIB-linux-$VERSION.zip
+mv CSS-FRIB-linux.gtk.x86_64.zip CSS-FRIB-linux64-$VERSION.zip
+mv CSS-FRIB-macosx.cocoa.x86.zip CSS-FRIB-macosx-$VERSION.zip
+mv CSS-FRIB-win32.win32.x86.zip CSS-FRIB-win32-$VERSION.zip
+mv CSS-FRIB-win32.win32.x86_64.zip CSS-FRIB-win64-$VERSION.zip
+ln -s CSS-FRIB-linux-$VERSION.zip CSS-FRIB-linux.zip
+ln -s CSS-FRIB-linux64-$VERSION.zip CSS-FRIB-linux64.zip
+ln -s CSS-FRIB-macosx-$VERSION.zip CSS-FRIB-macosx.zip
+ln -s CSS-FRIB-win32-$VERSION.zip CSS-FRIB-win32.zip
+ln -s CSS-FRIB-win64-$VERSION.zip CSS-FRIB-win64.zip
+scp *.zip bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/frib
+* update p2 repository
+cd ~
+rm updates -rf
+scp -r bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/frib/updates updates
+scp -r release/fribRepository bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/frib/updates-$VERSION
+java -jar .jenkins/CSS-FRIB/build/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.artifact.repository.mirrorApplication -verbose -source updates -destination release/nsls2Repository/
+java -jar .jenkins/CSS-FRIB/build/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.metadata.repository.mirrorApplication -verbose -source updates -destination release/nsls2Repository/
+scp -r updates bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/frib/updates-previous
+scp -r release/fribRepository bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/frib/updates
+* tag repository with tag FRIB_$VERSION
