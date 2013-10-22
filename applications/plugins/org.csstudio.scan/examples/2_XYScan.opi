@@ -1042,7 +1042,7 @@ $(pv_value)</tooltip>
       </scale_options>
       <selector_type>0</selector_type>
       <transparent>false</transparent>
-      <pv_name>loc://dx(1)</pv_name>
+      <pv_name>loc://dx(0.1)</pv_name>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
