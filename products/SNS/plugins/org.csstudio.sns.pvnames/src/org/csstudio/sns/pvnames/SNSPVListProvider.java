@@ -95,8 +95,9 @@ public class SNSPVListProvider implements IAutoCompleteProvider
         catch (Throwable ex)
         {
             // Suppress error resulting from call to cancel()
-            if (ex.getMessage().startsWith("ORA-01013")  ||
-                ex.getMessage().startsWith("ORA-01001"))
+            final String message = ex.getMessage();
+            if (message != null  &&
+                (message.startsWith("ORA-01013")  ||  message.startsWith("ORA-01001")))
                 logger.log(Level.FINE, "Lookup for {0} cancelled", content);
             else
                 logger.log(Level.WARNING, "Lookup for " + content + " failed", ex);
