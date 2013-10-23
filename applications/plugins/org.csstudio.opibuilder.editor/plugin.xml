@@ -21,15 +21,6 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.opibuilder.editor.OPIEditorPerspective"
-            icon="icons/OPIBuilder.png"
-            id="org.csstudio.opibuilder.opieditor"
-            name="OPI Editor">
-      </perspective>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             description="Run the OPI file currently in the editor"

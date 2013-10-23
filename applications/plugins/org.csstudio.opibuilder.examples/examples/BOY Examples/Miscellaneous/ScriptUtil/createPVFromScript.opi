@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
   <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>35f70300:13b95dedeab:-7fea</wuid>
-  <boy_version>3.1.3.qualifier</boy_version>
+  <boy_version>3.2.10.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>600</height>
@@ -32,7 +32,7 @@
   <actions hook="false" hook_all="false" />
   <y>-1</y>
   <x>-1</x>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>35f70300:13b95dedeab:-7fba</wuid>
@@ -41,18 +41,18 @@
       <path pathString="EmbeddedPy" checkConnect="true" sfe="false" seoe="false">
         <scriptName>CreatePVExample</scriptName>
         <scriptText><![CDATA[from org.csstudio.opibuilder.scriptUtil import PVUtil
-from org.csstudio.utility.pv import PVListener
+from org.csstudio.simplepv import IPVListener
 
 
-class MyPVListener(PVListener):
-	def pvValueUpdate(self, pv):
+class MyPVListener(IPVListener):
+	def valueChanged(self, pv):
 		widget.setPropertyValue("text", PVUtil.getTimeString(pv) + "\n" + PVUtil.getString(pv))
 
 pv = PVUtil.createPV("sim://noise", widget)
 pv.addListener(MyPVListener())
 
 ]]></scriptText>
-        <pv trig="true">1</pv>
+        <pv trig="true">=1</pv>
       </path>
     </scripts>
     <height>63</height>
@@ -74,7 +74,7 @@ pv.addListener(MyPVListener())
     <enabled>true</enabled>
     <text></text>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>289</width>
     <border_style>1</border_style>
@@ -90,7 +90,7 @@ pv.addListener(MyPVListener())
     <tooltip></tooltip>
     <x>367</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>35f70300:13b95dedeab:-7f98</wuid>
@@ -115,7 +115,7 @@ pv.addListener(MyPVListener())
     <enabled>true</enabled>
     <text>This examples shows how to create PV from script. Label on the right is updated from the PV created in script. It also writes its value to the console.</text>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>248</width>
     <border_style>0</border_style>
@@ -131,7 +131,7 @@ pv.addListener(MyPVListener())
     <tooltip></tooltip>
     <x>71</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>35f70300:13b95dedeab:-7f4f</wuid>
@@ -154,18 +154,18 @@ pv.addListener(MyPVListener())
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>from org.csstudio.opibuilder.scriptUtil import PVUtil
-from org.csstudio.utility.pv import PVListener
-
-
-class MyPVListener(PVListener):
-	def pvValueUpdate(self, pv):
-		widget.setPropertyValue("text", PVUtil.getTimeString(pv) + "\n" + PVUtil.getString(pv))
-
-pv = PVUtil.createPV("sim://noise", widget)
+    <text>from org.csstudio.opibuilder.scriptUtil import PVUtil&#xD;
+from org.csstudio.simplepv import IPVListener&#xD;
+&#xD;
+&#xD;
+class MyPVListener(IPVListener):&#xD;
+	def valueChanged(self, pv):&#xD;
+		widget.setPropertyValue("text", PVUtil.getTimeString(pv) + "\n" + PVUtil.getString(pv))&#xD;
+&#xD;
+pv = PVUtil.createPV("sim://noise", widget)&#xD;
 pv.addListener(MyPVListener())</text>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>678</width>
     <border_style>0</border_style>
@@ -181,7 +181,7 @@ pv.addListener(MyPVListener())</text>
     <tooltip></tooltip>
     <x>71</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <wuid>35f70300:13b95dedeab:-7f34</wuid>
@@ -206,7 +206,7 @@ pv.addListener(MyPVListener())</text>
     <enabled>true</enabled>
     <text>Script:</text>
     <font>
-      <opifont.name fontName="Verdana" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
     </font>
     <width>200</width>
     <border_style>0</border_style>
