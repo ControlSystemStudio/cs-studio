@@ -37,8 +37,8 @@ public class ELog implements Closeable
 {
     final private RDBUtil rdb;
 
-    /** Maximum allowed size for text entry */
-	final private int MAX_TEXT_SIZE;
+    /** Maximum allowed size for title and text entry */
+	final private int MAX_TITLE_SIZE, MAX_TEXT_SIZE;
 	
 	private static final String DEFAULT_BADGE_NUMBER = "999992"; //$NON-NLS-1$
 	final private String badge_number;
@@ -58,7 +58,8 @@ public class ELog implements Closeable
 	{
 	    this.rdb = RDBUtil.connect(url, user, password, false);
 		badge_number = getBadgeNumber(user);
-		MAX_TEXT_SIZE = getMaxContentLength();
+		MAX_TITLE_SIZE = getMaxEntryColumnLength("TITLE");
+		MAX_TEXT_SIZE = getMaxEntryColumnLength("CONTENT");
 		// Only initialize logbooks and categories once per JVM
 		synchronized (ELog.class)
         {
@@ -98,16 +99,17 @@ public class ELog implements Closeable
 	    return DEFAULT_BADGE_NUMBER;
 	}
 
-    /** Query the RDB for the specified Content length.
+    /** Query the RDB for the max length of an entry's column
+     * @param column Name of the column (uppercase)
      * @throws Exception
      * @return Content length specified in the RDB
      */
-    private int getMaxContentLength() throws Exception
+    private int getMaxEntryColumnLength(final String column) throws Exception
     {
         final ResultSet tables = rdb.getConnection().getMetaData()
-                .getColumns(null, "LOGBOOK", "LOG_ENTRY", "CONTENT");
+                .getColumns(null, "LOGBOOK", "LOG_ENTRY", column);
         if (!tables.next())
-            throw new Exception("Unable to locate LOGBOOK.LOG_ENTRY.CONTENT");
+            throw new Exception("Unable to locate LOGBOOK.LOG_ENTRY." + column);
         final int max_elog_text = tables.getInt("COLUMN_SIZE");
         return max_elog_text;
     }
@@ -331,10 +333,19 @@ public class ELog implements Closeable
 	 *  @throws Exception
      *  @return Entry ID
 	 */
-	public long createEntry(final String logbook, final String title, final String text, final ELogPriority priority) throws Exception
+	public long createEntry(final String logbook, String title, String text, final ELogPriority priority) throws Exception
     {
 		final long entry_id; // Entry ID from RDB
 
+		if (title.length() >= MAX_TITLE_SIZE)
+		{   // Shorten title.
+		    // If the title and body are actually the same, that's it.
+		    // Otherwise add title overflow to text.
+		    if (! title.equals(text))
+		        text = "..." + title.substring(MAX_TITLE_SIZE-4) + "\n" + text;
+		    title = title.substring(0, MAX_TITLE_SIZE-4) + "...";
+		}
+		
 		if (text.length() < MAX_TEXT_SIZE)
 		{
 			// Short text goes into entry
