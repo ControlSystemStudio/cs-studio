@@ -48,7 +48,7 @@ abstract public class ModelItem implements Cloneable
     private int line_width = Preferences.getLineWidths();
 
     /** How to display the trace */
-    private TraceType trace_type = TraceType.AREA;
+    private TraceType trace_type = Preferences.getTraceType();
 
     /** Y-Axis */
     private AxisConfig axis = null;

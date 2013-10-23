@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
+import org.csstudio.trends.databrowser2.model.TraceType;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -45,6 +46,7 @@ public class Preferences
 	final public static String TIME_SPAN = "time_span",
 			SCAN_PERIOD = "scan_period", BUFFER_SIZE = "live_buffer_size",
 			UPDATE_PERIOD = "update_period", LINE_WIDTH = "line_width",
+			TRACE_TYPE = "trace_type",
 			ARCHIVE_FETCH_DELAY = "archive_fetch_delay",
 			PLOT_BINS = "plot_bins", URLS = "urls", ARCHIVES = "archives",
 			USE_DEFAULT_ARCHIVES = "use_default_archives",
@@ -91,6 +93,24 @@ public class Preferences
         if (prefs == null)
             return 2;
         return prefs.getInt(Activator.PLUGIN_ID, LINE_WIDTH, 2, null);
+    }
+
+    public static TraceType getTraceType()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs != null)
+        {
+            final String type_name = prefs.getString(Activator.PLUGIN_ID, TRACE_TYPE, TraceType.AREA.name(), null);
+            try
+            {
+                return TraceType.valueOf(type_name);
+            }
+            catch (Exception ex)
+            {
+                Activator.getLogger().log(Level.WARNING, "Undefined trace type option '" + type_name + "'", ex);
+            }
+        }
+        return TraceType.AREA;
     }
 
     public static long getArchiveFetchDelay()

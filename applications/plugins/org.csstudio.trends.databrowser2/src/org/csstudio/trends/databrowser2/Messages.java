@@ -250,6 +250,7 @@ public class Messages extends NLS
     public static String TraceType_Crosses;
     public static String TraceType_Triangles;
     public static String TraceTypeTT;
+    public static String TraceTypes_Label;    
     public static String TracesTab;
     public static String TraceVisibility;
     public static String TraceVisibilityTT;

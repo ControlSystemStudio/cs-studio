@@ -10,8 +10,10 @@ package org.csstudio.trends.databrowser2.preferences;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
+import org.csstudio.trends.databrowser2.model.TraceType;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -128,6 +130,18 @@ public class PreferencePage extends FieldEditorPreferencePage
         linewidth.setValidRange(0, 100);
         addField(linewidth);
 
+        // Trace type options
+        final TraceType trace_values[] = TraceType.values();
+        final String trace_labels_and_values[][] = new String[trace_values.length][2];
+        for (int i=0; i<trace_values.length; ++i)
+        {
+            trace_labels_and_values[i][0] = trace_values[i].toString();
+            trace_labels_and_values[i][1] = trace_values[i].name();
+        }
+        final ComboFieldEditor trace_types = new ComboFieldEditor(Preferences.TRACE_TYPE,
+                Messages.TraceTypes_Label, trace_labels_and_values, parent);
+        addField(trace_types);
+        
         // Archive fetch delay:  0.1 .. 10 seconds
         final IntegerFieldEditor fetch_delay = new IntegerFieldEditor(Preferences.ARCHIVE_FETCH_DELAY,
                 Messages.PrefPage_ArchiveFetchDelay, parent);
