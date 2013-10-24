@@ -4,6 +4,7 @@
 package org.csstudio.logbook.ui;
 
 import java.io.IOException;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.LogbookBuilder;
@@ -34,11 +35,17 @@ public class LogEntryBuilderDialog extends Dialog {
     private UserCredentialsWidget userCredentialWidget;
 
     private final IPreferencesService service = Platform.getPreferencesService();
-    private boolean authenticate = true;
+    private boolean authenticate = true;    
     private String defaultLogbook = "";
-    private String defaultLevel;
+	/** The default level. */
+	private String defaultLevel;
     private ErrorBar errorBar;
-
+    
+    /** The listeners. */
+    final private CopyOnWriteArrayList<LogEntryBuilderListener> listeners =
+    new CopyOnWriteArrayList<LogEntryBuilderListener>();
+    
+    
     public LogEntryBuilderDialog(Shell parentShell,
 	    LogEntryBuilder logEntryBuilder) {
 	super(parentShell);
@@ -89,38 +96,111 @@ public class LogEntryBuilderDialog extends Dialog {
     }
 
     @Override
-    protected void createButtonsForButtonBar(Composite parent) {
-	// create OK and Cancel buttons by default
-	createButton(parent, IDialogConstants.OK_ID, "Submit", true);
-	createButton(parent, IDialogConstants.CANCEL_ID,
-		IDialogConstants.CANCEL_LABEL, false);
+	protected void createButtonsForButtonBar(Composite parent) {
+		// create OK and Cancel buttons by default
+		createButton(parent, IDialogConstants.OK_ID, "Submit", true);
+		createButton(parent, IDialogConstants.CANCEL_ID,
+				IDialogConstants.CANCEL_LABEL, false);
+	}
+
+	@Override
+	protected void okPressed() {
+		// Create the logEntry
+		// Create logbook client
+		Cursor originalCursor = getShell().getCursor();
+		try {
+			// get logbook client
+			LogbookClient logbookClient;
+			if (authenticate) {
+				logbookClient = LogbookClientManager.getLogbookClientFactory()
+						.getClient(userCredentialWidget.getUsername(),
+								userCredentialWidget.getPassword());
+
+				fireInitializeSave(userCredentialWidget.getUsername());
+			} else {
+				logbookClient = LogbookClientManager.getLogbookClientFactory()
+						.getClient();
+				fireInitializeSave("");
+			}
+
+			getShell().setCursor(
+					Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
+
+			// Start save process
+			fireStartSave();
+			// create log entry
+			logbookClient.createLogEntry(logEntryWidget.getLogEntry());
+
+			getShell().setCursor(originalCursor);
+			setReturnCode(OK);
+			
+			// Stop save process
+			fireStopSave();
+			close();
+		} catch (Exception ex) {
+			getShell().setCursor(originalCursor);
+			errorBar.setException(ex);
+
+			// Cancel save process
+			fireCancelSave();
+		}
+	}
+	
+	
+    /**
+     * @param listener
+     * 				Listener to add
+     */
+    public void addListener(final LogEntryBuilderListener listener) {
+        listeners.add(listener);
     }
 
-    @Override
-    protected void okPressed() {
-	// Create the logEntry
-	// Create logbook client
-	Cursor originalCursor = getShell().getCursor();
-	try {
-	    LogbookClient logbookClient;
-	    if (authenticate) {
-		logbookClient = LogbookClientManager.getLogbookClientFactory()
-			.getClient(userCredentialWidget.getUsername(),
-				userCredentialWidget.getPassword());
-	    } else {
-		logbookClient = LogbookClientManager.getLogbookClientFactory()
-			.getClient();
-	    }
+    /** 
+     * @param listener 
+     * 				Listener to remove 
+     * */
+    public void removeListener(final LogEntryBuilderListener listener) {
+        listeners.remove(listener);
+    }
 
-	    getShell().setCursor(
-		    Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
-	    logbookClient.createLogEntry(logEntryWidget.getLogEntry());
-	    getShell().setCursor(originalCursor);
-	    setReturnCode(OK);
-	    close();
-	} catch (Exception ex) {
-	    getShell().setCursor(originalCursor);
-	    errorBar.setException(ex);
-	}
+    /**
+     * Fire start save.
+     *
+     * @param userName the user name
+     */
+    void fireInitializeSave(String userName) {
+        for (LogEntryBuilderListener listener : listeners)
+            listener.initializeSaveAction(userName);
+    }
+    
+    /**
+     * Fire start save.
+     * @throws Exception 
+     */
+    void fireStartSave() throws Exception {
+        for (LogEntryBuilderListener listener : listeners)
+            listener.saveProcessStatus(LogEntryBuilderEnum.START_SAVE);
+    }
+    
+    /**
+     * Fire cancel save.
+     */
+    void fireCancelSave()  {
+        for (LogEntryBuilderListener listener : listeners) {
+			try {
+				listener.saveProcessStatus(LogEntryBuilderEnum.CANCEL_SAVE);
+			} catch (Exception e) {
+				continue;
+			};	
+        }
+    }
+    
+    /**
+     * Fire finish save.
+     * @throws Exception 
+     */
+    void fireStopSave() throws Exception {
+        for (LogEntryBuilderListener listener : listeners)
+        	   listener.saveProcessStatus(LogEntryBuilderEnum.STOP_SAVE);
     }
 }
