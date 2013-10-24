@@ -43,8 +43,8 @@ public class ArchiveClient {
         }
         
         int key           = 1;
-        boolean optimized = false;
-        int count         = 21;
+        boolean optimized = true;
+        int secs          = 10;
         
         System.out.println("NamesRequest: ");
        
@@ -65,6 +65,8 @@ public class ArchiveClient {
         	
         	Timestamp start = Timestamp.of(starts[i].getSec() + start_delta, starts[i].getNanoSec());
           	Timestamp end = Timestamp.of(ends[i].getSec() + end_delta, ends[i].getNanoSec());
+          	
+          	int count = (int) (end.durationFrom(start).toSeconds() / secs);
  
         	VType[] values = reader.getSamples(key, chNames[i], start, end, optimized, count);
         

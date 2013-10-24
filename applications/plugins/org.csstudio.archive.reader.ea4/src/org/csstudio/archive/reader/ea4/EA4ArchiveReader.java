@@ -227,8 +227,8 @@ public class EA4ArchiveReader implements ArchiveReader
                                             final Timestamp start, 
                                             final Timestamp end, 
                                             final int count) throws Exception {
-      	return new ValueRequestIterator(this, key, name, start, end, false, 10);
-        // return new ValueRequestIterator(this, key, name, start, end, true, count);
+      	// return new ValueRequestIterator(this, key, name, start, end, false, 10);
+        return new ValueRequestIterator(this, key, name, start, end, true, count);
     }
 
     /** {@inheritDoc}*/
