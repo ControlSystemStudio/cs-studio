@@ -647,6 +647,7 @@ public class ContentProposalPopup extends PopupDialog {
 	private int maxItemWidth = 0;
 
 	private List<Integer> nonSelectableItems;
+	private Long uniqueId = Long.MIN_VALUE;
 
 	/**
 	 * Constructs a new instance of this popup, specifying the control for which
@@ -665,7 +666,7 @@ public class ContentProposalPopup extends PopupDialog {
 		// On platforms where SWT.ON_TOP overrides SWT.RESIZE,
 		// we will live with this.
 		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=126138
-		super(adapter.getControl().getShell(), SWT.RESIZE | SWT.ON_TOP, false,
+		super(adapter.getControl().getShell(), SWT.RESIZE | SWT.ON_TOP | SWT.NO_FOCUS, false,
 				false, false, false, false, null, infoText);
 		this.adapter = adapter;
 		this.control = adapter.getControl();
@@ -727,7 +728,8 @@ public class ContentProposalPopup extends PopupDialog {
 
 		// Use virtual where appropriate (see flag definition).
 		if (USE_VIRTUAL) {
-			proposalTable = new Table(wrapper, SWT.H_SCROLL | SWT.V_SCROLL | SWT.VIRTUAL);
+			proposalTable = new Table(wrapper, SWT.H_SCROLL | SWT.V_SCROLL
+					| SWT.VIRTUAL | SWT.NO_FOCUS);
 			Listener listener = new Listener() {
 				public void handleEvent(Event event) {
 					handleSetData(event);
@@ -768,10 +770,11 @@ public class ContentProposalPopup extends PopupDialog {
 				});
 			}
 		} else {
-			proposalTable = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+			proposalTable = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL
+					| SWT.NO_FOCUS);
 		}
 
-		footer = new Text(wrapper, SWT.READ_ONLY | SWT.WRAP);
+		footer = new Text(wrapper, SWT.READ_ONLY | SWT.WRAP | SWT.NO_FOCUS);
 		GridData textGridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
 		textGridData.heightHint = FOOTER_MINIMUM_HEIGHT;
 		textGridData.widthHint = 100;
@@ -819,7 +822,7 @@ public class ContentProposalPopup extends PopupDialog {
 		});
 
 		// Added to solve a item resize bug on windows:
-		new TableColumn(proposalTable, SWT.NONE);
+		new TableColumn(proposalTable, SWT.NONE | SWT.NO_FOCUS);
 		proposalTable.addControlListener(new ControlAdapter() {
 			public void controlResized(ControlEvent event) {
 				if (proposalTable.getColumnCount() > 0) {
@@ -955,7 +958,8 @@ public class ContentProposalPopup extends PopupDialog {
 			}
 		}
 		for (SSTextLayout sstl : textLayouts)
-			if (sstl.getBounds().width > maxItemWidth)
+			if (sstl != null && sstl.getBounds() != null
+					&& sstl.getBounds().width > maxItemWidth)
 				maxItemWidth = sstl.getBounds().width;
 		adjustTableBounds();
 	}
@@ -1370,17 +1374,24 @@ public class ContentProposalPopup extends PopupDialog {
 	private void asyncRecomputeProposals() {
 		footer.setText("Searching...");
 		if (isValid()) {
+			synchronized (uniqueId) {
+				if (uniqueId == Long.MAX_VALUE)
+					uniqueId = Long.MIN_VALUE;
+				uniqueId++;
+			}
+			final Long currentId = new Long(uniqueId);
 			control.getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					adapter.getProposals(new IContentProposalSearchHandler() {
-						
+
 						@Override
 						public void handleResult(
 								final ContentProposalList proposalList) {
 							if (control != null && !control.isDisposed()) {
 								control.getDisplay().asyncExec(new Runnable() {
 									public void run() {
-										recomputeProposals(proposalList);
+										if (currentId.equals(uniqueId))
+											recomputeProposals(proposalList);
 									}
 								});
 							}
