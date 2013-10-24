@@ -210,6 +210,7 @@ public class EA4ArchiveReader implements ArchiveReader
         return result;
  
     }
+    
 
     /** {@inheritDoc}*/
     @Override

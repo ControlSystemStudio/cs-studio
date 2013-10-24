@@ -61,6 +61,7 @@ public class ArchiveClient {
         int start_delta = -10;
         int end_delta   =  10;
         
+        
         for (int i = 0; i < chNames.length; i++){
         	
         	Timestamp start = Timestamp.of(starts[i].getSec() + start_delta, starts[i].getNanoSec());
