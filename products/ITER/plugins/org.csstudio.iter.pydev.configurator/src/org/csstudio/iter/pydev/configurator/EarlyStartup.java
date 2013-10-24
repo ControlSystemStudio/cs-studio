@@ -14,7 +14,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class EarlyStartup implements IStartup {
@@ -57,7 +60,7 @@ public class EarlyStartup implements IStartup {
 		}
 	}
 
-	private void updateOpiBuilderPythonPath() throws IOException {
+	private boolean updateOpiBuilderPythonPath() throws IOException {
 		File scanPluginDir = BundleUtils.getBundleLocation("org.csstudio.scan");
 		final File scanJythonLibDir = new File(scanPluginDir, "jython");
 		if (scanJythonLibDir.exists()) {
@@ -73,18 +76,22 @@ public class EarlyStartup implements IStartup {
 			for (String oldPythonPath : oldPythonPaths) {
 				if (!"".equals(oldPythonPath.trim())) {
 					if (!oldPythonPath.endsWith("org.csstudio.scan/jython")) {
-					} else {
 						newPythonPaths.append(oldPythonPath);
+						newPythonPaths.append('|');
 					}
-					newPythonPaths.append('|');
 				}
 			}
-
-			final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(
-					InstanceScope.INSTANCE, "org.csstudio.opibuilder");
-			prefStore.setValue("python_path",
-					newPythonPaths.substring(0, newPythonPaths.length() - 1));
+			String newPythonPathString = newPythonPaths.substring(0,
+					newPythonPaths.length() - 1);
+			if (!oldPythonPathString.equals(newPythonPathString)) {
+				final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(
+						InstanceScope.INSTANCE, "org.csstudio.opibuilder");
+				prefStore.setValue("python_path", newPythonPathString);
+				prefStore.save();
+				return true;
+			}
 		}
+		return false;
 	}
 
 	@Override
@@ -93,23 +100,46 @@ public class EarlyStartup implements IStartup {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				removeUnWantedLog();
+				boolean confChanged = false;
 				try {
-					InterpreterUtils.createPythonInterpreter("default_python",
-							monitor);
+					boolean changed = InterpreterUtils.createPythonInterpreter(
+							"default_python", monitor);
+					confChanged |= changed;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				try {
-					InterpreterUtils.createJythonInterpreter("default_jython",
-							monitor);
+					boolean changed = InterpreterUtils.createJythonInterpreter(
+							"default_jython", monitor);
+					confChanged |= changed;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
 				try {
-					updateOpiBuilderPythonPath();
+					boolean changed = updateOpiBuilderPythonPath();
+					confChanged |= changed;
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+
+				if (confChanged) {
+					Display.getDefault().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							MessageDialog dialog = new MessageDialog(
+									null,
+									"Restart required",
+									null,
+									"Python Configuration has been updated automatically and requires a restart.",
+									MessageDialog.QUESTION, new String[] {
+											"Restart Now", "Restart Later" }, 0);
+							int result = dialog.open();
+							if (result == 0) {
+								PlatformUI.getWorkbench().restart();
+							}
+						}
+					});
 				}
 
 				return Status.OK_STATUS;
