@@ -711,9 +711,10 @@ public class ContentProposalAdapter {
 			this.insertionRange.y = insertionPos + insertionLength;
 			
 			if ((!after.isEmpty() && !accepted) || hasSelectedTopProposal)
-				this.selectionRange = this.insertionRange;
+				this.selectionRange = new Point(this.insertionRange.x,
+						this.insertionRange.y);
 			else this.selectionRange = new Point(-1, -1);
-
+			
 			String text = before + value + after;
 			controlContentAdapter.setControlContents(control, text, insertionRange.y);
 			if (controlContentAdapter instanceof IControlContentAdapter2
@@ -721,6 +722,7 @@ public class ContentProposalAdapter {
 				((IControlContentAdapter2) controlContentAdapter).setSelection(
 						control, selectionRange);
 			}
+			control.forceFocus();
 		}
 	}
 
