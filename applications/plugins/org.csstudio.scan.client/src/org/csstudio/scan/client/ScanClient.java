@@ -192,10 +192,11 @@ public class ScanClient
             final String simulation_config = DOMHelper.getSubelementString(root_node, "simulation_config");
             final long used_mem = DOMHelper.getSubelementLong(root_node, "used_mem", 0);
             final long max_mem = DOMHelper.getSubelementLong(root_node, "max_mem", 0);
+            final long non_heap = DOMHelper.getSubelementLong(root_node, "non_heap", 0);
             final String[] paths = PathUtil.splitPath(DOMHelper.getSubelementString(root_node, "script_paths", ""));
             final String macros = DOMHelper.getSubelementString(root_node, "macros", "");
             return new ScanServerInfo(version, start_time,
-                    beamline_config, simulation_config, paths, macros, used_mem, max_mem);
+                    beamline_config, simulation_config, paths, macros, used_mem, max_mem, non_heap);
         }
         finally
         {
