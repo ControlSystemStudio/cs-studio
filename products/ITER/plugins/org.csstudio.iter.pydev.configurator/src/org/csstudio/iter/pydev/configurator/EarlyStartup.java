@@ -6,6 +6,8 @@ import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,6 +28,9 @@ public class EarlyStartup implements IStartup {
 			"Restoring info for", "Finished restoring information for",
 			"Info: Rebuilding internal caches:",
 			"Plug-in 'org.python.pydev' contributed an invalid Menu Extension" };
+
+	private static Pattern SCAN_JYTHON_PLUGIN_PATH_PATTERN = Pattern
+			.compile(".*/org\\.csstudio\\.scan(_[^/]*)?/jython");
 
 	private static class HideUnWantedLogFilter implements Filter {
 
@@ -75,7 +80,9 @@ public class EarlyStartup implements IStartup {
 			String[] oldPythonPaths = oldPythonPathString.split("\\|");
 			for (String oldPythonPath : oldPythonPaths) {
 				if (!"".equals(oldPythonPath.trim())) {
-					if (!oldPythonPath.endsWith("org.csstudio.scan/jython")) {
+					Matcher m = SCAN_JYTHON_PLUGIN_PATH_PATTERN
+							.matcher(oldPythonPath.trim());
+					if (!m.matches()) {
 						newPythonPaths.append(oldPythonPath);
 						newPythonPaths.append('|');
 					}
