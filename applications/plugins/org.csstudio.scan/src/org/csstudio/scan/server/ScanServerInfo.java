@@ -58,17 +58,20 @@ public class ScanServerInfo extends MemoryInfo
      *  @param start_time
      *  @param beamline_config
      *  @param simulation_config
+     *  @param script_paths
+     *  @param macros
      *  @param used_mem Used memory (kB)
      *  @param max_mem Maximum available memory (kB)
+     *  @param non_heap
      */
     public ScanServerInfo(final String version, final Date start_time,
             final String beamline_config,
             final String simulation_config,
             final String[] script_paths,
             final String macros,
-            final long used_mem, final long max_mem)
+            final long used_mem, final long max_mem, final long non_heap)
     {
-        super(used_mem, max_mem);
+        super(used_mem, max_mem, non_heap);
         this.version = version;
         this.start_time = start_time;
         this.beamline_config = beamline_config;
