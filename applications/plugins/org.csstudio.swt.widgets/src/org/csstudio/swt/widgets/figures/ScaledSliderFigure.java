@@ -812,18 +812,38 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			String text = getValueText();
 			Dimension textSize = FigureUtilities.getStringExtents(text, label.getFont());
 			label.setText(text);
-			if(horizontal)
-				label.setBounds(new Rectangle(
-					thumb.getBounds().x + thumb.getBounds().width/2 
-					- (textSize.width + 2*LABEL_MARGIN)/2,
-					thumb.getBounds().y  - textSize.height - 2*LABEL_MARGIN,
-					textSize.width + 2 * LABEL_MARGIN, textSize.height+LABEL_MARGIN));
-			else
-				label.setBounds(new Rectangle(
-						thumb.getBounds().x - textSize.width - 3*LABEL_MARGIN,
-						thumb.getBounds().y + thumb.getBounds().height/2 
-					- (textSize.height + LABEL_MARGIN)/2, 
-					textSize.width + 2 * LABEL_MARGIN, textSize.height+LABEL_MARGIN));
+			Rectangle thumbBounds = thumb.getBounds();
+			Rectangle clientArea = getClientArea();
+			if (horizontal) {
+				int topY = thumbBounds.y - textSize.height - 2 * LABEL_MARGIN;
+				if (topY > clientArea.y) { // show on top of thumb
+					label.setBounds(new Rectangle(thumbBounds.x + thumbBounds.width / 2
+							- (textSize.width + 2 * LABEL_MARGIN) / 2, topY, textSize.width + 2
+							* LABEL_MARGIN, textSize.height + LABEL_MARGIN));
+				} else { // show on right of thumb
+					int rightX = thumbBounds.x + thumbBounds.width + LABEL_MARGIN;
+					if ((rightX + textSize.width + 2 * LABEL_MARGIN) > clientArea.getRight().x)
+						rightX = thumbBounds.x - textSize.width - 2 * LABEL_MARGIN;
+
+					label.setBounds(new Rectangle(rightX, thumbBounds.y, textSize.width + 2
+							* LABEL_MARGIN, textSize.height + LABEL_MARGIN));
+				}
+			} else {
+				int leftX = thumbBounds.x - textSize.width - 2 * LABEL_MARGIN;
+				if (leftX > clientArea.x) { // show on left of thumb
+					label.setBounds(new Rectangle(leftX, thumbBounds.y + thumbBounds.height / 2
+							- (textSize.height + LABEL_MARGIN) / 2, textSize.width + 2
+							* LABEL_MARGIN, textSize.height + LABEL_MARGIN));
+
+				} else { // show on top of thumb					
+					int topY = thumbBounds.y- textSize.height - LABEL_MARGIN;
+					if((topY - textSize.height - LABEL_MARGIN)<clientArea.y)
+						topY = thumbBounds.y+thumbBounds.height;
+					label.setBounds(new Rectangle(thumbBounds.x + thumbBounds.width / 2
+							- (textSize.width + 2 * LABEL_MARGIN) / 2, topY, textSize.width + 2 * LABEL_MARGIN,
+							textSize.height + LABEL_MARGIN));
+				}
+			}
 		}
 		
 		private void verticalLayout(IFigure container) {
