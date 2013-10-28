@@ -30,7 +30,7 @@ import edu.msu.nscl.olog.api.Tag;
 import edu.msu.nscl.olog.api.TagBuilder;
 
 /**
- * Client to be regestered to the extension point.
+ * Client to be registered to the extension point.
  * 
  * @author shroffk
  * 

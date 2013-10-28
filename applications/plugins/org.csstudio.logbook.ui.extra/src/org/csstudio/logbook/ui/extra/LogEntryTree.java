@@ -7,13 +7,21 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.Tag;
+import org.csstudio.logbook.ui.extra.GridViewerSnippet3.MyModel;
 import org.csstudio.ui.util.AbstractSelectionProviderWrapper;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -23,10 +31,11 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
@@ -37,11 +46,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
+
 /**
  * @author shroffk
  * 
  */
-public class LogEntryTable extends Composite implements ISelectionProvider {
+public class LogEntryTree extends Composite implements ISelectionProvider {
 
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
@@ -57,11 +68,11 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     private final String eol = System.getProperty("line.separator");
     private AbstractSelectionProviderWrapper selectionProvider;
 
-    private GridTableViewer gridTableViewer;
+    private GridTreeViewer gridTreeViewer;
     private List<LogEntry> logEntries = Collections.emptyList();
     private Grid grid;
 
-    public LogEntryTable(Composite parent, int style) {
+    public LogEntryTree(Composite parent, int style) {
 	super(parent, style);
 	setLayout(new GridLayout(1, false));
 
@@ -71,9 +82,10 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    public void propertyChange(PropertyChangeEvent event) {
 		switch (event.getPropertyName()) {
 		case "logEntries":
-		    gridTableViewer.setSelection(null, true);
-		    gridTableViewer.setInput(logEntries
-			    .toArray(new LogEntry[logEntries.size()]));
+		    gridTreeViewer.setSelection(null, true);
+		    // gridTreeViewer.setInput(logEntries
+		    // .toArray(new LogEntry[logEntries.size()]));
+		    gridTreeViewer.setInput(createModel(logEntries));
 		    break;
 		default:
 		    break;
@@ -81,10 +93,10 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    }
 	});
 
-	gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL
-		| SWT.DOUBLE_BUFFERED);
+	gridTreeViewer = new GridTreeViewer(this, SWT.BORDER | SWT.V_SCROLL
+		| SWT.H_SCROLL | SWT.DOUBLE_BUFFERED);
 	selectionProvider = new AbstractSelectionProviderWrapper(
-		gridTableViewer, this) {
+		gridTreeViewer, this) {
 
 	    @Override
 	    protected ISelection transform(IStructuredSelection selection) {
@@ -93,86 +105,68 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	};
 
-	grid = gridTableViewer.getGrid();
+	grid = gridTreeViewer.getGrid();
 	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	grid.setAutoHeight(true);
 	grid.setRowsResizeable(true);
 	grid.setHeaderVisible(true);
-	gridTableViewer.getGrid().setLinesVisible(true);
-	gridTableViewer.setContentProvider(new IStructuredContentProvider() {
-
-	    @Override
-	    public void inputChanged(Viewer viewer, Object oldInput,
-		    Object newInput) {
-
-	    }
-
-	    @Override
-	    public void dispose() {
-
-	    }
-
-	    @Override
-	    public Object[] getElements(Object inputElement) {
-		return (Object[]) inputElement;
-	    }
-	});
-
-	ColumnViewerToolTipSupport.enableFor(gridTableViewer,
+	grid.setLinesVisible(true);
+	gridTreeViewer.setContentProvider(new LogEntryTreeContentProvider());
+	ColumnViewerToolTipSupport.enableFor(gridTreeViewer,
 		ToolTip.NO_RECREATE);
 
 	// First Columns displays the Date
-	GridViewerColumn column = new GridViewerColumn(gridTableViewer,
-		SWT.NONE);
+	GridViewerColumn column = new GridViewerColumn(gridTreeViewer, SWT.NONE);
 	GridColumn gridColumn = column.getColumn();
 	gridColumn.setMoveable(true);
 	column.setLabelProvider(new CellLabelProvider() {
 
 	    @Override
 	    public void update(ViewerCell cell) {
-		LogEntry item = ((LogEntry) cell.getElement());
+		LogEntry item = ((LogEntryTreeModel) cell.getElement()).logEntry;
 		String date = item == null || item.getCreateDate() == null ? "No Data"
 			: DateFormat.getDateTimeInstance(DateFormat.SHORT,
 				DateFormat.SHORT).format(item.getCreateDate());
 		cell.setText(date);
 	    }
 	});
+	column.getColumn().setTree(true);
 	column.getColumn().setText("Date");
 	column.getColumn().setWordWrap(true);
-	new TableColumnViewerLayout(gridTableViewer, column, 15, 100);
-//	new ColumnViewerWeightedLayout(gridTableViewer, column, 15, 100);
-	new ColumnViewerSorter(gridTableViewer, column) {
+	new TreeColumnViewerLayout(gridTreeViewer, column, 15, 100);
+	new ColumnViewerSorter(gridTreeViewer, column) {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
-		return Long.compare(((LogEntry) e1).getCreateDate().getTime(),
-			((LogEntry) e2).getCreateDate().getTime());
+		return Long.compare(((LogEntryTreeModel) e1).logEntry.getCreateDate()
+			.getTime(), ((LogEntryTreeModel) e2).logEntry.getCreateDate()
+			.getTime());
 	    }
 	};
-
+	column.getColumn().setSort(SWT.UP);
 	// Second column is the first line of the logEntry
 
 	GridViewerColumn gridViewerColumnDescription = new GridViewerColumn(
-		gridTableViewer, SWT.DOUBLE_BUFFERED);
+		gridTreeViewer, SWT.DOUBLE_BUFFERED);
 	gridViewerColumnDescription.setLabelProvider(new ColumnLabelProvider() {
 
 	    public String getText(Object element) {
-		LogEntry item = ((LogEntry) element);
+		LogEntry item = ((LogEntryTreeModel) element).logEntry;
 		return item == null ? "" : item.getText();
 	    }
 	});
 	GridColumn tblclmnDescription = gridViewerColumnDescription.getColumn();
 	tblclmnDescription.setWordWrap(true);
 	tblclmnDescription.setText("Description");
-	new TableColumnViewerLayout(gridTableViewer,
-		gridViewerColumnDescription, 50, 250);
+	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnDescription,
+		50, 250);
 
 	// Third column is the owner of the logEntry
 
 	GridViewerColumn gridViewerColumnOwner = new GridViewerColumn(
-		gridTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+		gridTreeViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
 	gridViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
 	    public String getText(Object element) {
-		LogEntry item = ((LogEntry) element);
+		LogEntry item = ((LogEntryTreeModel) element).logEntry;
 		return item == null ? "" : item.getOwner();
 	    }
 	});
@@ -180,24 +174,24 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	// gridViewerColumnOwner.getColumn().setSort(SWT.UP);
 	GridColumn tblclmnOwner = gridViewerColumnOwner.getColumn();
 	tblclmnOwner.setText("Owner");
-	new TableColumnViewerLayout(gridTableViewer, gridViewerColumnOwner,
-		10, 75);
-	new ColumnViewerSorter(gridTableViewer, gridViewerColumnOwner) {
+	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnOwner, 10,
+		75);
+	new ColumnViewerSorter(gridTreeViewer, gridViewerColumnOwner) {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
-		return ((LogEntry) e1).getOwner().compareTo(
-			((LogEntry) e2).getOwner());
+		return ((LogEntryTreeModel) e1).logEntry.getOwner().compareTo(
+			((LogEntryTreeModel) e2).logEntry.getOwner());
 	    }
 	};
 
 	// Forth column lists the logbooks
 	GridViewerColumn gridViewerColumnLogbooks = new GridViewerColumn(
-		gridTableViewer, SWT.MULTI | SWT.DOUBLE_BUFFERED);
+		gridTreeViewer, SWT.MULTI | SWT.DOUBLE_BUFFERED);
 	gridViewerColumnLogbooks.setLabelProvider(new ColumnLabelProvider() {
 
 	    @Override
 	    public String getText(Object element) {
-		LogEntry item = ((LogEntry) element);
+		LogEntry item = ((LogEntryTreeModel) element).logEntry;
 		StringBuilder logbooks = new StringBuilder();
 		for (Logbook logbook : item.getLogbooks()) {
 		    logbooks.append(logbook.getName() + eol);
@@ -208,16 +202,16 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	GridColumn tblclmnLogbooks = gridViewerColumnLogbooks.getColumn();
 	tblclmnLogbooks.setWordWrap(true);
 	tblclmnLogbooks.setText("Logbooks");
-	new TableColumnViewerLayout(gridTableViewer,
-		gridViewerColumnLogbooks, 10, 75);
+	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnLogbooks,
+		10, 75);
 
 	// column lists the tags
 	GridViewerColumn gridViewerColumnTags = new GridViewerColumn(
-		gridTableViewer, SWT.DOUBLE_BUFFERED);
+		gridTreeViewer, SWT.DOUBLE_BUFFERED);
 	gridViewerColumnTags.setLabelProvider(new ColumnLabelProvider() {
 
 	    public String getText(Object element) {
-		LogEntry item = ((LogEntry) element);
+		LogEntry item = ((LogEntryTreeModel) element).logEntry;
 		StringBuilder tags = new StringBuilder();
 		for (Tag tag : item.getTags()) {
 		    tags.append(tag.getName() + eol);
@@ -228,33 +222,32 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	GridColumn tblclmnTags = gridViewerColumnTags.getColumn();
 	tblclmnTags.setWordWrap(true);
 	tblclmnTags.setText("Tags");
-	new TableColumnViewerLayout(gridTableViewer, gridViewerColumnTags,
-		10, 75);
+	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnTags, 10, 75);
 
 	// Attachments
 	GridViewerColumn gridViewerColumnAttachments = new GridViewerColumn(
-		gridTableViewer, SWT.DOUBLE_BUFFERED);
+		gridTreeViewer, SWT.DOUBLE_BUFFERED);
 	gridViewerColumnAttachments.setLabelProvider(new ColumnLabelProvider() {
 
 	    @Override
 	    public String getText(Object element) {
-		LogEntry item = ((LogEntry) element);
+		LogEntry item = ((LogEntryTreeModel) element).logEntry;
 		return String.valueOf(item.getAttachment().size());
 	    }
 	});
 	GridColumn tblclmnAttachment = gridViewerColumnAttachments.getColumn();
 	tblclmnAttachment.setText("Attachments");
-	new TableColumnViewerLayout(gridTableViewer,
-		gridViewerColumnAttachments, 5, 30);
+	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnAttachments,
+		5, 30);
 
-	new ColumnViewerSorter(gridTableViewer, gridViewerColumnAttachments) {
+	new ColumnViewerSorter(gridTreeViewer, gridViewerColumnAttachments) {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
 		return Integer.compare(((LogEntry) e1).getAttachment().size(),
 			((LogEntry) e2).getAttachment().size());
 	    }
 	};
-	gridTableViewer.refresh();
+	gridTreeViewer.refresh();
     }
 
     public Collection<LogEntry> getlogEntries() {
@@ -270,12 +263,12 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
     @Override
     public void addMouseListener(MouseListener listener) {
-	gridTableViewer.getGrid().addMouseListener(listener);
+	gridTreeViewer.getGrid().addMouseListener(listener);
     };
 
     @Override
     public void removeMouseListener(MouseListener listener) {
-	gridTableViewer.getGrid().removeMouseListener(listener);
+	gridTreeViewer.getGrid().removeMouseListener(listener);
     };
 
     @Override
@@ -302,6 +295,89 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     @Override
     public void setMenu(Menu menu) {
 	super.setMenu(menu);
-	gridTableViewer.getGrid().setMenu(menu);
+	gridTreeViewer.getGrid().setMenu(menu);
+    }
+
+    public class LogEntryTreeModel {
+	public LogEntryTreeModel parent;
+
+	public ArrayList<LogEntryTreeModel> child = new ArrayList<LogEntryTreeModel>();
+
+	public final LogEntry logEntry;
+
+	public LogEntryTreeModel(LogEntry logEntry, LogEntryTreeModel root) {
+	    this.parent = root;
+	    this.logEntry = logEntry;
+	}
+
+	public String toString() {
+	    String rv = "Item ";
+	    if (parent != null) {
+		rv = parent.toString() + ".";
+	    }
+
+	    rv += logEntry.toString();
+
+	    return rv;
+	}
+    }
+
+    private class LogEntryTreeContentProvider implements ITreeContentProvider {
+
+	public Object[] getElements(Object inputElement) {
+	    return ((LogEntryTreeModel) inputElement).child.toArray();
+	}
+
+	public void dispose() {
+	}
+
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	}
+
+	public Object[] getChildren(Object parentElement) {
+	    return getElements(parentElement);
+	}
+
+	public Object getParent(Object element) {
+	    if (element == null) {
+		return null;
+	    }
+	    return ((LogEntryTreeModel) element).parent;
+	}
+
+	public boolean hasChildren(Object element) {
+	    return ((LogEntryTreeModel) element).child.size() > 0;
+	}
+
+    }
+
+    private LogEntryTreeModel createModel(List<LogEntry> logEntries) {
+
+	LogEntryTreeModel root = new LogEntryTreeModel(null, null);
+
+	LogEntryTreeModel tmp;
+	LogEntryTreeModel subItem;
+
+	Map<Long, List<LogEntry>> model = new TreeMap<Long, List<LogEntry>>();
+	for (LogEntry logEntry : logEntries) {
+	    if (model.containsKey(logEntry.getId())) {
+		model.get(logEntry.getId()).add(logEntry);
+	    } else {
+		List<LogEntry> versions = new ArrayList<LogEntry>();
+		versions.add(logEntry);
+		model.put((Long) logEntry.getId(), versions);
+	    }
+	}
+
+	for (Entry<Long, List<LogEntry>> entry : model.entrySet()) {
+	    tmp = root;
+	    for (LogEntry logEntry : entry.getValue()) {
+		subItem = new LogEntryTreeModel(logEntry, tmp);
+		tmp.child.add(subItem);
+		tmp = subItem;
+	    }
+	}
+
+	return root;
     }
 }

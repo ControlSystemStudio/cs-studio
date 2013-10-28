@@ -10,6 +10,13 @@
             name="Log Table"
             restorable="true">
       </view>
+      <view
+            class="org.csstudio.logbook.ui.LogTreeView"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogTreeView"
+            name="Log Tree"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

@@ -31,5 +31,6 @@ public class LogViewerPerspective implements IPerspectiveFactory {
 	final IFolderLayout left = layout.createFolder("Left",
 		IPageLayout.LEFT, 0.33f, editor);
 	left.addView(org.csstudio.logbook.ui.LogTableView.ID);
+	left.addView(org.csstudio.logbook.ui.LogTreeView.ID);
     }
 }
