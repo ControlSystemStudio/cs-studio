@@ -32,6 +32,7 @@ public class AnchorHandle extends SquareHandle {
 			@Override
 			public void relocate(IFigure target) {
 				Point center = anchor.getLocation(null);
+				target.translateToRelative(center);
 				target.setBounds(new Rectangle(
 						center.x - DEFAULT_HANDLE_SIZE/2,
 						center.y - DEFAULT_HANDLE_SIZE/2,
