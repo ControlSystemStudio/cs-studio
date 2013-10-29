@@ -251,7 +251,7 @@ public class OlogLogbookClient implements LogbookClient {
      * @return
      */
     private LogBuilder LogBuilder(LogEntry logEntry) {
-	LogBuilder logBuilder = log().description(logEntry.getText()).level(logEntry.getLevel());
+	LogBuilder logBuilder = log().description(logEntry.getText()).level(logEntry.getLevel()).id((Long) logEntry.getId());
 	for (Tag tag : logEntry.getTags())
 	    logBuilder.appendTag(tag(tag.getName(), tag.getState()));
 	for (Logbook logbook : logEntry.getLogbooks())

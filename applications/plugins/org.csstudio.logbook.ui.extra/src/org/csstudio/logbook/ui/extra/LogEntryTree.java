@@ -8,10 +8,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,17 +19,17 @@ import java.util.TreeMap;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.Tag;
-import org.csstudio.logbook.ui.extra.GridViewerSnippet3.MyModel;
 import org.csstudio.ui.util.AbstractSelectionProviderWrapper;
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
@@ -45,8 +43,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-
-import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
 /**
  * @author shroffk
@@ -68,6 +64,8 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
     private final String eol = System.getProperty("line.separator");
     private AbstractSelectionProviderWrapper selectionProvider;
 
+
+    private ErrorBar errorBar;
     private GridTreeViewer gridTreeViewer;
     private List<LogEntry> logEntries = Collections.emptyList();
     private Grid grid;
@@ -83,8 +81,6 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 		switch (event.getPropertyName()) {
 		case "logEntries":
 		    gridTreeViewer.setSelection(null, true);
-		    // gridTreeViewer.setInput(logEntries
-		    // .toArray(new LogEntry[logEntries.size()]));
 		    gridTreeViewer.setInput(createModel(logEntries));
 		    break;
 		default:
@@ -93,14 +89,29 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	    }
 	});
 
-	gridTreeViewer = new GridTreeViewer(this, SWT.BORDER | SWT.V_SCROLL
-		| SWT.H_SCROLL | SWT.DOUBLE_BUFFERED);
+	errorBar = new ErrorBar(this, SWT.NONE);
+	errorBar.setMarginBottom(5);
+	
+	gridTreeViewer = new GridTreeViewer(this, 
+		SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.DOUBLE_BUFFERED | SWT.MULTI);
 	selectionProvider = new AbstractSelectionProviderWrapper(
 		gridTreeViewer, this) {
 
 	    @Override
 	    protected ISelection transform(IStructuredSelection selection) {
-		return selection;
+		if(selection.size() == 1){
+		    LogEntryTreeModel element = (LogEntryTreeModel) selection.getFirstElement();
+		    return new StructuredSelection(element.logEntry);
+		} else if(!selection.isEmpty()){
+		    List<LogEntry> selectedEntries = new ArrayList<LogEntry>();
+		    for (Iterator<LogEntryTreeModel> iterator = selection.iterator(); iterator.hasNext();) {
+			LogEntryTreeModel domain = (LogEntryTreeModel) iterator.next();
+			selectedEntries.add(domain.logEntry);			
+		    }
+		    return new StructuredSelection(selectedEntries);
+		} else{
+		    return selection;
+		}
 	    }
 
 	};
@@ -112,8 +123,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	grid.setHeaderVisible(true);
 	grid.setLinesVisible(true);
 	gridTreeViewer.setContentProvider(new LogEntryTreeContentProvider());
-	ColumnViewerToolTipSupport.enableFor(gridTreeViewer,
-		ToolTip.NO_RECREATE);
+	ColumnViewerToolTipSupport.enableFor(gridTreeViewer, ToolTip.NO_RECREATE);
 
 	// First Columns displays the Date
 	GridViewerColumn column = new GridViewerColumn(gridTreeViewer, SWT.NONE);
@@ -142,7 +152,6 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 			.getTime());
 	    }
 	};
-	column.getColumn().setSort(SWT.UP);
 	// Second column is the first line of the logEntry
 
 	GridViewerColumn gridViewerColumnDescription = new GridViewerColumn(
@@ -157,13 +166,12 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	GridColumn tblclmnDescription = gridViewerColumnDescription.getColumn();
 	tblclmnDescription.setWordWrap(true);
 	tblclmnDescription.setText("Description");
-	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnDescription,
-		50, 250);
+	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnDescription, 50, 250);
 
 	// Third column is the owner of the logEntry
 
-	GridViewerColumn gridViewerColumnOwner = new GridViewerColumn(
-		gridTreeViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+	GridViewerColumn gridViewerColumnOwner = new GridViewerColumn(gridTreeViewer, 
+		SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
 	gridViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntryTreeModel) element).logEntry;
@@ -174,8 +182,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	// gridViewerColumnOwner.getColumn().setSort(SWT.UP);
 	GridColumn tblclmnOwner = gridViewerColumnOwner.getColumn();
 	tblclmnOwner.setText("Owner");
-	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnOwner, 10,
-		75);
+	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnOwner, 10, 75);
 	new ColumnViewerSorter(gridTreeViewer, gridViewerColumnOwner) {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {

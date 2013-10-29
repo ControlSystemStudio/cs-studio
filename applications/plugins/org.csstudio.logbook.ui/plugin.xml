@@ -44,6 +44,37 @@
                            type="org.csstudio.logbook.LogEntryBuilder">
                      </adapt>
                   </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+               label="%UpdateLogEntry"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="org.csstudio.logbook.LogEntryBuilder">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
                </with>
             </visibleWhen>
          </command>
@@ -61,6 +92,11 @@
             defaultHandler="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
             id="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
             name="%MakeLogEntry">
+      </command>
+      <command
+            defaultHandler="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+            id="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+            name="%UpdateLogEntry">
       </command>
    </extension>
    <extension

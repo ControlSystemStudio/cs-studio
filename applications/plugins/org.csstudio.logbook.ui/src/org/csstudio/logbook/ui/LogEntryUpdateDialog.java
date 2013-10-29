@@ -3,11 +3,9 @@
  */
 package org.csstudio.logbook.ui;
 
-import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.logbook.LogEntryBuilder;
-import org.csstudio.logbook.LogbookBuilder;
+import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -28,17 +26,14 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  * 
  */
-public class LogEntryBuilderDialog extends Dialog {
-    private LogEntryBuilder logEntryBuilder;
+public class LogEntryUpdateDialog extends Dialog {
+    private LogEntry logEntry;
     // GUI
     private LogEntryWidget logEntryWidget;
     private UserCredentialsWidget userCredentialWidget;
 
     private final IPreferencesService service = Platform.getPreferencesService();
     private boolean authenticate = true;    
-    private String defaultLogbook = "";
-    /** The default level. */
-    private String defaultLevel;
     private ErrorBar errorBar;
     
     /** The listeners. */
@@ -46,17 +41,16 @@ public class LogEntryBuilderDialog extends Dialog {
     new CopyOnWriteArrayList<LogEntryBuilderListener>();
     
     
-    public LogEntryBuilderDialog(Shell parentShell,
-	    LogEntryBuilder logEntryBuilder) {
+    public LogEntryUpdateDialog(Shell parentShell, LogEntry logEntryBuilder) {
 	super(parentShell);
 	setBlockOnOpen(false);
 	setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
-	this.logEntryBuilder = logEntryBuilder;
+	this.logEntry = logEntryBuilder;
     }
 
     @Override
     public Control createDialogArea(Composite parent) {
-	getShell().setText("Create Log Entry");
+	getShell().setText("Update Log Entry");
 	Composite container = (Composite) super.createDialogArea(parent);
 	GridLayout gridLayout = (GridLayout) container.getLayout();
 	gridLayout.marginWidth = 2;
@@ -65,31 +59,26 @@ public class LogEntryBuilderDialog extends Dialog {
 
 	try {
 	    authenticate = service.getBoolean("org.csstudio.logbook.ui","Autenticate.user", true, null);
-	    defaultLogbook = service.getString("org.csstudio.logbook.ui","Default.logbook", "", null);
-	    defaultLevel = service.getString("org.csstudio.logbook.ui","Default.level", "", null);
+	    service.getString("org.csstudio.logbook.ui","Default.logbook", "", null);
+	    service.getString("org.csstudio.logbook.ui","Default.level", "", null);
 	} catch (Exception ex) {
 	    errorBar.setException(ex);
 	}
 	if (authenticate) {
-	    userCredentialWidget = new UserCredentialsWidget(container,
-		    SWT.NONE);
+	    userCredentialWidget = new UserCredentialsWidget(container, SWT.NONE);
 	    userCredentialWidget.setLayoutData(new GridData(SWT.FILL,
 		    SWT.CENTER, true, false, 1, 1));
 	}
 
 	logEntryWidget = new LogEntryWidget(container, SWT.NONE, true, true);
-	GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true,
-		true, 1, 1);
+	GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 	gd_logEntryWidget.heightHint = 450;
 	gd_logEntryWidget.widthHint = 450;
 	logEntryWidget.setLayoutData(gd_logEntryWidget);
-	if (this.logEntryBuilder != null) {
-	    try {
-		logEntryWidget.setLogEntry(logEntryBuilder.setLevel(defaultLevel).addLogbook(
-		    LogbookBuilder.logbook(defaultLogbook)).build());
-	    } catch (IOException e) {
-		errorBar.setException(e);
-	    }
+	if (this.logEntry != null) {
+	    logEntryWidget.setLogEntry(logEntry);
+	}else{
+	    errorBar.setException(new IllegalArgumentException("Cannot reply to a non existing log entry"));
 	}
 
 	return container;
@@ -129,7 +118,7 @@ public class LogEntryBuilderDialog extends Dialog {
 			// Start save process
 			fireStartSave();
 			// create log entry
-			logbookClient.createLogEntry(logEntryWidget.getLogEntry());
+			logbookClient.updateLogEntry(logEntryWidget.getLogEntry());
 
 			getShell().setCursor(originalCursor);
 			setReturnCode(OK);
