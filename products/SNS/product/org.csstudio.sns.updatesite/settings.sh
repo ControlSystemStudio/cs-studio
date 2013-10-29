@@ -8,7 +8,7 @@ export VERSION=3.2.11
 if [ `hostname` = 'ics-web4.sns.ornl.gov' ]
 then
    # Must use Java 7
-   export JAVA_HOME=/usr/local/java/jdk1.7.0_21
+   export JAVA_HOME=/usr/local/java/jdk1.7.0_45
 
    # Top of repository tree
    export TOP=/usr/local/hudson/config/jobs/CSS/workspace
@@ -26,7 +26,7 @@ then
 
    export JRE_Win64=/home/kasemir/Eclipse/CSS_Additions/Win64/jre/
 else
-   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_21.jdk/Contents/Home
+   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home
    export TOP=/Users/ky9/git/cs-studio_3
    export WORKSPACE=/Users/ky9/Eclipse/Workspace4.3_3.7_target
    export ECLIPSE=/Users/ky9/Eclipse/3.7.2/rcp
@@ -38,7 +38,7 @@ else
    then
       echo "On OS X, to make new Oracle JDK look like old Apple JDK for Eclipse 3.x"
       echo "that RCP headless build still expects, do this:"
-      echo "ln -s $JAVA_HOME/jre/lib $JAVA_HOME/Classes"
+      echo "sudo ln -s $JAVA_HOME/jre/lib $JAVA_HOME/Classes"
       exit -1
    fi
 fi
