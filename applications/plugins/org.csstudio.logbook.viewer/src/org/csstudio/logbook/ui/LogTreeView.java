@@ -83,8 +83,7 @@ public class LogTreeView extends ViewPart {
 			try {
 			    if (logbooks.isEmpty() && initializeClient()) {
 				logbooks = new ArrayList<String>();
-				for (Logbook logbook : logbookClient
-					.listLogbooks()) {
+				for (Logbook logbook : logbookClient.listLogbooks()) {
 				    logbooks.add(logbook.getName());
 				}
 			    }
