@@ -1,7 +1,5 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.ExpressionLanguage.readMapOf;
 import static org.epics.pvmanager.ExpressionLanguage.writeMapOf;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
@@ -9,10 +7,14 @@ import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -28,21 +30,18 @@ import org.epics.pvmanager.expression.WriteMap;
 import org.epics.pvmanager.service.ServiceMethod;
 import org.epics.pvmanager.service.ServiceRegistry;
 import org.epics.util.time.TimeDuration;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
 
 /**
  *
  * 
- * @author carcassi
+ * @author carcassi, shroffk
  */
 public class ServiceButton extends Composite {
 
     private DesiredRateExpression<Map<String, Object>> argumentExpression;
     private WriteExpression<Map<String, Object>> resultExpression;
     private String serviceName;
+    private ErrorBar errorBar;
 
     /**
      * Creates a new display.
@@ -51,14 +50,18 @@ public class ServiceButton extends Composite {
      */
     public ServiceButton(Composite parent) {
 	super(parent, SWT.NONE);
-	setLayout(new FormLayout());
+	GridLayout gridLayout = new GridLayout(1, false);
+	gridLayout.verticalSpacing = 0;
+	gridLayout.marginWidth = 0;
+	gridLayout.marginHeight = 0;
+	gridLayout.horizontalSpacing = 0;
+	setLayout(gridLayout);
 
+	errorBar = new ErrorBar(this, SWT.NONE);
+	errorBar.setMarginBottom(5);
+	
 	executeButton = new Button(this, SWT.NONE);
-	FormData fd_executeButton = new FormData();
-	fd_executeButton.right = new FormAttachment(100);
-	fd_executeButton.top = new FormAttachment(0);
-	fd_executeButton.left = new FormAttachment(0);
-	executeButton.setLayoutData(fd_executeButton);
+	executeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	executeButton.setEnabled(false);
 	executeButton.addSelectionListener(new SelectionAdapter() {
 	    @Override
@@ -81,6 +84,7 @@ public class ServiceButton extends Composite {
 
 					    @Override
 					    public void run() {
+						errorBar.setException(newValue);
 						// TODO Display exception
 					    }
 					});
@@ -120,6 +124,7 @@ public class ServiceButton extends Composite {
 	    serviceMethod = ServiceRegistry.getDefault().findServiceMethod(
 		    serviceName);
 	} catch (Exception ex) {
+	    errorBar.setException(ex);
 	    // TODO display exception
 	    return;
 	}
@@ -169,7 +174,6 @@ public class ServiceButton extends Composite {
 	if(serviceMethod.getArgumentDescriptions().keySet().containsAll(argumentPvs.keySet())){
 	    ReadMap<Object> map = readMapOf(Object.class);
 		for (Entry<String, String> argumentPV : argumentPvs.entrySet()) {
-		    //map.add(latestValueOf(channel(argumentPV.getValue())).as(argumentPV.getKey()));
 		    map.add(formula(argumentPV.getValue(),Object.class).as(argumentPV.getKey()));
 		}
 		setArgumentExpression(map);
@@ -187,7 +191,6 @@ public class ServiceButton extends Composite {
 		.containsAll(resultPvs.keySet())) {
 	    WriteMap<Object> map = writeMapOf(Object.class);
 	    for (Entry<String, String> resultPV : resultPvs.entrySet()) {
-//		map.add(channel(resultPV.getValue())).as(resultPV.getKey());
 		map.add(formula(resultPV.getValue()).as(resultPV.getKey()));
 	    }
 	    setResultExpression(map);
@@ -195,6 +198,10 @@ public class ServiceButton extends Composite {
 	    // raise exception, invalid arguments
 	}
 	
+    }
+
+    public void setLabel(String label) {
+	executeButton.setText(label);
     }
 
 }

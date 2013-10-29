@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.ServiceMethodDescription;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
+import org.csstudio.opibuilder.widgets.model.CheckBoxModel;
 import org.csstudio.utility.pvmanager.widgets.ServiceButton;
 import org.eclipse.draw2d.IFigure;
 
@@ -23,20 +24,18 @@ public class ServiceButtonEditPart extends AbstractWidgetEditPart {
     private static void configure(ServiceButton widget,
 	    ServiceButtonModel model, boolean runMode) {
 	if (runMode) {
-	    ServiceMethodDescription serviceMethodDescription = model
-		    .getServiceMethodDescription();
+	    widget.setLabel(model.getLabel());
+	    ServiceMethodDescription serviceMethodDescription = model.getServiceMethodDescription();
 	    widget.setServiceName(serviceMethodDescription.getService() + "/"
 		    + serviceMethodDescription.getMethod());
-	    widget.configureArgumentMap(serviceMethodDescription
-		    .getArgumentPvs());
+	    widget.configureArgumentMap(serviceMethodDescription.getArgumentPvs());
 	    widget.configureResultMap(serviceMethodDescription.getResultPvs());
 	}
     }
 
     @Override
     public ServiceButtonModel getWidgetModel() {
-	ServiceButtonModel widgetModel = (ServiceButtonModel) super
-		.getWidgetModel();
+	ServiceButtonModel widgetModel = (ServiceButtonModel) super.getWidgetModel();
 	return widgetModel;
     }
 
@@ -51,10 +50,21 @@ public class ServiceButtonEditPart extends AbstractWidgetEditPart {
 			((AbstractSWTWidgetFigure<ServiceButton>) getFigure())
 				.getSWTWidget(),
 			getWidgetModel(), ((ServiceButtonFigure) getFigure())
-				.isRunMode());return false;
+				.isRunMode());
+		return true;
 	    }
 	};
 	setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
+	// label
+	IWidgetPropertyChangeHandler updateLabel = new IWidgetPropertyChangeHandler() {
+	    public boolean handleChange(final Object oldValue,
+		    final Object newValue, final IFigure figure) {
+		((AbstractSWTWidgetFigure<ServiceButton>) getFigure())
+		.getSWTWidget().setLabel(getWidgetModel().getLabel());
+		return true;
+	    }
+	};
+	setPropertyChangeHandler(CheckBoxModel.PROP_LABEL, updateLabel);
     }
 
 }

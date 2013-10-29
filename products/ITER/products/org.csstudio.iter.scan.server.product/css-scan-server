@@ -36,6 +36,16 @@ VARFILES=()
 unset REQUSER
 DAEMONS=(/usr/bin/scan-server)
 NAMES=("CSS Scan Server")
+
+function scan_server_tmp_db_clean {
+  TMP_DB_PATH=/tmp/css-scan-server_log_db
+  if [ -d "$TMP_DB_PATH" ] ; then
+    rm -rf $TMP_DB_PATH
+  fi
+}
+export -f scan_server_tmp_db_clean
+
+STARTHOOKS=("${STARTHOOKS[@]}" "scan_server_tmp_db_clean")
 ARGS=("$(printf "'%s' " "-console" "4884" "${@:2}")")
 
 . $CODAC_ROOT/bin/services/service-startup

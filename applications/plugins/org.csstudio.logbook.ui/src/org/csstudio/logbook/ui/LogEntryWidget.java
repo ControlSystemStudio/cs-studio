@@ -940,6 +940,9 @@ public class LogEntryWidget extends Composite {
     }
 
     private void updateUI() {
+    	if (isDisposed()) {
+    		return;
+    	}
 	// Dispose the contributed tabs, only keep the default attachments tab
 	for (CTabItem cTabItem : tabFolder.getItems()) {
 	    if (!cTabItem.equals(tbtmAttachments)
@@ -1083,7 +1086,9 @@ public class LogEntryWidget extends Composite {
 
 	    @Override
 	    public void run() {
-		errorBar.setException(exception);
+	    	if (!errorBar.isDisposed()) {
+	    		errorBar.setException(exception);
+	    	}
 	    }
 	});
 
