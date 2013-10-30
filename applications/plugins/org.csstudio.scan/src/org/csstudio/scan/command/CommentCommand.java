@@ -15,9 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Command that adds comment to a scan
@@ -64,11 +64,12 @@ public class CommentCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
     {
-        writeIndent(out, level);
-        out.println("<comment><text>" + comment + "</text></comment>");
-        // NOT calling super.writeXML(out, level);
+        Element element = dom.createElement("text");
+        element.appendChild(dom.createTextNode(comment));
+        command_element.appendChild(element);
+        // NOT calling super.addXMLElements(dom, command_element);
     }
 
     /** {@inheritDoc} */

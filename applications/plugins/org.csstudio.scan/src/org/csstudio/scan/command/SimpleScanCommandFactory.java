@@ -51,6 +51,23 @@ import org.w3c.dom.Node;
 @SuppressWarnings("nls")
 public class SimpleScanCommandFactory
 {
+    /** Convert command ID "do_some_thing" into "DoSomeThingCommand" class name
+     *  @param id Command ID
+     *  @return Command class name
+     */
+    public static String ID2CommandName(final String id)
+    {
+        final String[] sections = id.split("_");
+        final StringBuilder buf = new StringBuilder();
+        for (String section : sections)
+        {
+            buf.append(section.substring(0, 1).toUpperCase());
+            buf.append(section.substring(1).toLowerCase());
+        }
+        buf.append("Command");
+        return buf.toString();
+    }
+    
     /** Create a {@link ScanCommand} for a command ID
      *
      *  <p>This is the basic implementation that does NOT use the Eclipse registry.
@@ -63,9 +80,7 @@ public class SimpleScanCommandFactory
     public ScanCommand createCommandForID(final String id) throws Exception
     {
         // Guess class name based on the ID: Turn ID "set" into "....SetCommand"
-        final String classname = "org.csstudio.scan.command." +
-                id.substring(0, 1).toUpperCase() +
-                id.substring(1).toLowerCase() + "Command";
+        final String classname = "org.csstudio.scan.command." + ID2CommandName(id);
         try
         {
             final Class<?> command_class = Class.forName(classname);

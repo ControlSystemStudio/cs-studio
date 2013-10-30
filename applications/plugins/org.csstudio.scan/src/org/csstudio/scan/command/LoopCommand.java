@@ -15,10 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Command that performs a loop
@@ -295,52 +295,61 @@ public class LoopCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
     {
-        writeIndent(out, level);
-        out.println("<loop>");
-        writeIndent(out, level+1);
-        out.println("<device>" + device_name + "</device>");
-        writeIndent(out, level+1);
-        out.println("<start>" + start + "</start>");
-        writeIndent(out, level+1);
-        out.println("<end>" + end + "</end>");
-        writeIndent(out, level+1);
-        out.println("<step>" + stepsize + "</step>");
+        Element element = dom.createElement("device");
+        element.appendChild(dom.createTextNode(device_name));
+        command_element.appendChild(element);
+
+        element = dom.createElement("start");
+        element.appendChild(dom.createTextNode(Double.toString(start)));
+        command_element.appendChild(element);
+
+        element = dom.createElement("end");
+        element.appendChild(dom.createTextNode(Double.toString(end)));
+        command_element.appendChild(element);
+
+        element = dom.createElement("step");
+        element.appendChild(dom.createTextNode(Double.toString(stepsize)));
+        command_element.appendChild(element);
+
         if (completion)
         {
-            writeIndent(out, level+1);
-            out.println("<completion>true</completion>");
+            element = dom.createElement("completion");
+            element.appendChild(dom.createTextNode(Boolean.toString(completion)));
+            command_element.appendChild(element);
         }
         if (! wait)
         {
-            writeIndent(out, level+1);
-            out.println("<wait>" + wait + "</wait>");
+            element = dom.createElement("wait");
+            element.appendChild(dom.createTextNode(Boolean.toString(wait)));
+            command_element.appendChild(element);
         }
         if (wait  &&  ! readback.isEmpty())
         {
-            writeIndent(out, level+1);
-            out.println("<readback>" + readback + "</readback>");
+            element = dom.createElement("readback");
+            element.appendChild(dom.createTextNode(readback));
+            command_element.appendChild(element);
         }
         if (tolerance > 0.0)
         {
-            writeIndent(out, level+1);
-            out.println("<tolerance>" + tolerance + "</tolerance>");
+            element = dom.createElement("tolerance");
+            element.appendChild(dom.createTextNode(Double.toString(tolerance)));
+            command_element.appendChild(element);
         }
         if (timeout > 0.0)
         {
-            writeIndent(out, level+1);
-            out.println("<timeout>" + timeout + "</timeout>");
+            element = dom.createElement("timeout");
+            element.appendChild(dom.createTextNode(Double.toString(timeout)));
+            command_element.appendChild(element);
         }
-        writeIndent(out, level+1);
-        out.println("<body>");
+
+        element = dom.createElement("body");
         for (ScanCommand cmd : body)
-            cmd.writeXML(out, level + 2);
-        writeIndent(out, level+1);
-        out.println("</body>");
-        super.writeXML(out, level);
-        writeIndent(out, level);
-        out.println("</loop>");
+            cmd.writeXML(dom, element);
+        command_element.appendChild(element);
+        
+        super.addXMLElements(dom, command_element);
     }
 
     /** {@inheritDoc} */
