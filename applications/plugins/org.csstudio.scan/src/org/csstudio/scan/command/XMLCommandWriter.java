@@ -7,11 +7,20 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /** Persist {@link ScanCommand}s as XML to stream.
  *  @author Kay Kasemir
@@ -19,6 +28,26 @@ import java.util.List;
 @SuppressWarnings("nls")
 public class XMLCommandWriter
 {
+    /** Create DOM for commands
+     *  @param commands Commands to write into DOM
+     *  @return {@link Document}
+     *  @throws Exception on error
+     */
+    private static Document createDOM(final List<ScanCommand> commands) throws Exception
+    {
+        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder builder = dbf.newDocumentBuilder();
+        final Document dom = builder.newDocument();
+        
+        final Element root = dom.createElement("commands");
+        dom.appendChild(root);
+        
+        for (ScanCommand command : commands)
+            command.writeXML(dom, root);
+        
+        return dom;
+    }
+
     /** Write XML-formatted commands into stream
      *  @param stream Where to write the commands
      *  @param commands Commands to write as XML to output stream
@@ -26,15 +55,19 @@ public class XMLCommandWriter
      */
     public static void write(final OutputStream stream, final List<ScanCommand> commands) throws Exception
     {
-        final PrintStream out = new PrintStream(new BufferedOutputStream(stream));
-        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        out.println("<commands>");
-        for (ScanCommand command : commands)
-            command.writeXML(out, 1);
-        out.println("</commands>");
-        out.flush();
-    }
+        final Document dom = createDOM(commands);
 
+        // Write XML into stream
+        final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        final Transformer transformer = transformerFactory.newTransformer();
+        final DOMSource source = new DOMSource(dom);
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        final StreamResult result = new StreamResult(stream);
+        transformer.transform(source, result);
+    }
+    
     /** Convert commands to XML-formatted commands into stream
      *  @param commands Commands
      *  @return XML-formatted document text for the commands

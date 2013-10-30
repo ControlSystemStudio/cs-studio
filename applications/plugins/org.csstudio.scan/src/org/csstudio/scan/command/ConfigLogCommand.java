@@ -15,9 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Command that configures logging
@@ -56,18 +56,12 @@ public class ConfigLogCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
     {
-        writeIndent(out, level);
-        out.println("<config_log>");
-        if (automatic)
-        {
-            writeIndent(out, level+1);
-            out.println("<automatic>" + automatic + "</automatic>");
-        }
-        super.writeXML(out, level);
-        writeIndent(out, level);
-        out.println("</config_log>");
+        final Element element = dom.createElement("automatic");
+        element.appendChild(dom.createTextNode(Boolean.toString(automatic)));
+        command_element.appendChild(element);
+        super.addXMLElements(dom, command_element);
     }
 
     /** {@inheritDoc} */

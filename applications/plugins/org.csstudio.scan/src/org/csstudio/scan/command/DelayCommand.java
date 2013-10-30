@@ -15,9 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Command that delays the scan for some time
@@ -64,15 +64,12 @@ public class DelayCommand extends ScanCommand
 
     /** {@inheritDoc} */
 	@Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
 	{
-	    writeIndent(out, level);
-	    out.println("<delay>");
-        writeIndent(out, level+1);
-        out.println("<seconds>" + seconds + "</seconds>");
-        super.writeXML(out, level);
-        writeIndent(out, level);
-        out.println("</delay>");
+        Element element = dom.createElement("seconds");
+        element.appendChild(dom.createTextNode(Double.toString(seconds)));
+        command_element.appendChild(element);
+        super.addXMLElements(dom, command_element);
 	}
 
     /** {@inheritDoc} */
