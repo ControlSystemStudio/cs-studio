@@ -49,7 +49,7 @@ public class EdmColor extends EdmAttribute {
 		if (genericEntity == null || getValueCount() == 0) {
 			if (isRequired()) {
 				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-				"Trying to initialize a required attribute from null object.");
+				"Trying to initialize a required attribute from null object.", null);
 			} else {
 				log.warn("Missing optional property.");
 				return;
@@ -78,7 +78,7 @@ public class EdmColor extends EdmAttribute {
 		name = getValue(0);
 		//new EdmString(new EdmAttribute(getValue(0)), true);
 		if (name == null || name.length() == 0) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Color name is empty");
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Color name is empty", null);
 		}
 
 		try {
@@ -100,7 +100,7 @@ public class EdmColor extends EdmAttribute {
 			}
 			
 		} catch (Exception exception) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, exception.getMessage());
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "", exception);
 		}
 
 		log.debug("Parsed colorsList definition.");
@@ -112,7 +112,7 @@ public class EdmColor extends EdmAttribute {
 		Matcher m = p.matcher(getValue(0));
 
 		if (!m.find()) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.", null);
 		}
 
 		try {
@@ -125,7 +125,7 @@ public class EdmColor extends EdmAttribute {
 			log.debug("Parsed RGB color.");
 		}
 		catch (Exception e) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.",e);
 		}
 	}
 
@@ -134,7 +134,7 @@ public class EdmColor extends EdmAttribute {
 		EdmColor color = EdmModel.getColorsList().getColor(i);
 		if (color == null) {
 			throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
-					"Color index " + i + " is not in given EdmColorsList instance.");
+					"Color index " + i + " is not in given EdmColorsList instance.", null);
 		}
 			
 		name = color.getName();

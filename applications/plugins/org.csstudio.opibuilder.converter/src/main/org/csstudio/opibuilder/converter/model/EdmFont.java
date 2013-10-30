@@ -42,7 +42,7 @@ public class EdmFont extends EdmAttribute {
 		if (genericAttribute == null || getValueCount() == 0) {
 			if (isRequired())
 				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-						"Trying to initialize a required attribute from null object.");
+						"Trying to initialize a required attribute from null object.", null);
 			else {
 				log.warn("Missing optional property.");
 				return;
@@ -67,7 +67,7 @@ public class EdmFont extends EdmAttribute {
 			sizeStr = m.group(4);
 		}
 		catch (Exception e) {
-			throw new EdmException(EdmException.FONT_FORMAT_ERROR, fontString + "is an invalid font format.");
+			throw new EdmException(EdmException.FONT_FORMAT_ERROR, fontString + "is an invalid font format.", e);
 		}
 
 		name = nameStr;
@@ -78,7 +78,7 @@ public class EdmFont extends EdmAttribute {
 			bold = false;
 		} else {
 			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-			"Error parsing font weight (bold) value.");
+			"Error parsing font weight (bold) value.", null);
 		}
 
 		if (styleStr.equals("i")) {
@@ -87,13 +87,13 @@ public class EdmFont extends EdmAttribute {
 			italic = false;
 		} else {
 			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-			"Error parsing font style (italic) value.");
+			"Error parsing font style (italic) value.", null);
 		}
 
 		try {
 			size = Double.valueOf(sizeStr).doubleValue();
 		} catch (Exception e) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.", e);
 		}
 		setInitialized(true);
 	}

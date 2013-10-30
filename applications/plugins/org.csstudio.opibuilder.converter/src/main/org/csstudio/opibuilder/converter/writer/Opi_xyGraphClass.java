@@ -31,8 +31,9 @@ public class Opi_xyGraphClass extends OpiWidget {
 
 		context.getElement().setAttribute("version", version);		
 		new OpiString(context, "name", name);
+		new OpiBoolean(context, "show_toolbar", false);
 
-		new OpiInt(context, "axis_count", 3);  //axis count, Ä¬ÈÏÎª3¸ö
+		new OpiInt(context, "axis_count", 3);  //axis count, Ä¬ï¿½ï¿½Îª3ï¿½ï¿½
 		//Title
 		if(r.getAttribute("graphTitle").isInitialized())
 			new OpiString(context, "title", r.getGraphTitle());
@@ -42,12 +43,12 @@ public class Opi_xyGraphClass extends OpiWidget {
 			new OpiString(context, "axis_1_axis_title", r.getYLabel());
 		if(r.getAttribute("y2Label").isInitialized())
 			new OpiString(context, "axis_2_axis_title", r.getY2Label());
-		//Ó³ÉäfgColor bgColor gridColor
+		//Ó³ï¿½ï¿½fgColor bgColor gridColor
 		new OpiColor(context, "foreground_color", r.getFgColor());
 		new OpiColor(context, "background_color", r.getBgColor());
 		new OpiColor(context, "axis_0_grid_color", r.getGridColor());
 		
-		//borderÓ³Éä
+		//borderÓ³ï¿½ï¿½
 		if(r.isBorder())
 			{
 			new OpiInt(context, "border_width", 1);
@@ -64,7 +65,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 		else
 			new OpiBoolean(context, "show_plot_area_border", r.isPlotAreaBorder());
 			
-		//AxisÓ³Éä²Ù×÷
+		//AxisÓ³ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(r.getAttribute("showXAxis").isInitialized())	
 			new OpiBoolean(context, "axis_0_visible", r.isShowXAxis());
 		if(r.getAttribute("showYAxis").isInitialized())	
@@ -84,14 +85,14 @@ public class Opi_xyGraphClass extends OpiWidget {
 		new OpiInt(context, "axis_1_time_format", 0);
 		new OpiInt(context, "axis_2_time_format", 0);
 		//trace properties
-		new OpiInt(context, "trace_count",r.getNumTraces()); //¸ú×ÙÊýÁ¿
+		new OpiInt(context, "trace_count",r.getNumTraces()); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		
-		//PV X,Y ×ª»»
+		//PV X,Y ×ªï¿½ï¿½
 		int x=0,y=0;
 		for (x=0;x<r.getXPv().getLineCount();x++)
 		{
 		y=0;
-		String[] getXpvs=r.getXPv().getLine(x).split(" ");//Ê¹ÓÃ¿Õ°××Ö·û·Ö¸î×Ö·û´®
+		String[] getXpvs=r.getXPv().getLine(x).split(" ");//Ê¹ï¿½Ã¿Õ°ï¿½ï¿½Ö·ï¿½Ö¸ï¿½ï¿½Ö·ï¿½
 		for(String Xstring:getXpvs){
 			if(y==1) 	new OpiString(context, "trace_"+x+"_x_pv", Xstring);
 				y++;
@@ -100,7 +101,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 		for (x=0;x<r.getYPv().getLineCount();x++)
 		{
 		y=0;
-		String[] getYpvs=r.getYPv().getLine(x).split(" ");//Ê¹ÓÃ¿Õ°××Ö·û·Ö¸î×Ö·û´®
+		String[] getYpvs=r.getYPv().getLine(x).split(" ");//Ê¹ï¿½Ã¿Õ°ï¿½ï¿½Ö·ï¿½Ö¸ï¿½ï¿½Ö·ï¿½
 		for(String Ystring:getYpvs){
 			if(y==1) 	new OpiString(context, "trace_"+x+"_y_pv", Ystring);
 				y++;

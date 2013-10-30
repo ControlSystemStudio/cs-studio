@@ -84,7 +84,7 @@ public class EdmParser {
 		}
 		catch (Exception e) {
 			if (e instanceof FileNotFoundException)
-				throw new EdmException(EdmException.FILE_NOT_FOUND, fileName);
+				throw new EdmException(EdmException.FILE_NOT_FOUND, fileName, e);
 			else
 				e.printStackTrace();
 		}

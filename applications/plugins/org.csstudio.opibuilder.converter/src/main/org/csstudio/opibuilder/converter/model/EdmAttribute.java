@@ -55,7 +55,7 @@ public class EdmAttribute {
 		// Multiple specializations test.
 		if (genericAttribute != null && !genericAttribute.getClass().equals(EdmAttribute.class)) {
 			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-			"Trying to initialize from an already specialized attribute.");
+			"Trying to initialize from an already specialized attribute.", null);
 		}
 		
 		initDefaultValues();

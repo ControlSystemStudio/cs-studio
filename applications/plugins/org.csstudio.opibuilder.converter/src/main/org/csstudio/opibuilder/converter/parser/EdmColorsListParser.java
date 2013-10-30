@@ -80,7 +80,7 @@ public class EdmColorsListParser extends EdmParser {
 							error = true;
 						else
 							throw new EdmException(EdmException.STRING_FORMAT_ERROR,
-									"String value does not start with quote at line: " + colorData);
+									"String value does not start with quote at line: " + colorData, null);
 					}
 						
 					else {
@@ -99,7 +99,7 @@ public class EdmColorsListParser extends EdmParser {
 									error = true;
 								else 
 									throw new EdmException(EdmException.STRING_FORMAT_ERROR,
-											"String value does not end with quote at line: " + colorData);
+											"String value does not end with quote at line: " + colorData, null);
 							}
 						}
 						a.appendValue(nameValue.toString());
@@ -119,7 +119,7 @@ public class EdmColorsListParser extends EdmParser {
 								error = true;
 							else
 								throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
-										"Wrong color input at line: " + colorData);
+										"Wrong color input at line: " + colorData, null);
 						}
 					}
 					a.appendValue(colorValue.toString());

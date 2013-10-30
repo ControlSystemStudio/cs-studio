@@ -39,7 +39,7 @@ public class EdmMultilineText extends EdmAttribute {
 		if (genericAtrtibute == null || getValueCount() == 0) {
 			if (isRequired()) {
 				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-						"Trying to initialize a required attribute from null object.");
+						"Trying to initialize a required attribute from null object.", null);
 			} else {
 				log.warn("Missing optional property.");
 				return;
