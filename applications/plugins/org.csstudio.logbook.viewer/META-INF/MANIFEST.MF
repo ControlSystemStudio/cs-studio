@@ -14,3 +14,5 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.logbook.ui.extra;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.logbook.ui,
+ org.csstudio.logbook.viewer

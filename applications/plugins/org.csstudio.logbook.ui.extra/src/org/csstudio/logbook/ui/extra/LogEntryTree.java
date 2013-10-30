@@ -366,8 +366,6 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	LogEntryTreeModel subItem;
 
 	Map<Long, List<LogEntry>> model = new LinkedHashMap<Long, List<LogEntry>>();
-	// TODO shroffk
-//	Collections.reverse(logEntries);
 	for (LogEntry logEntry : logEntries) {
 	    if (model.containsKey(logEntry.getId())) {
 		model.get(logEntry.getId()).add(logEntry);
