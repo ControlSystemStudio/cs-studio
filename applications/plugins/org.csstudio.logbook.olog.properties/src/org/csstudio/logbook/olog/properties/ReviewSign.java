@@ -51,7 +51,7 @@ public class ReviewSign extends AbstractHandler {
 			    IStatus.ERROR, ID, null));
 	} else {
 	    try {
-		logbookClient = LogbookClientManager.getLogbookClientFactory().getClient("shroffk", "1234");
+		logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
 
 		String signature = SecuritySupport
 			.getSubjectName(SecuritySupport.getSubject());
