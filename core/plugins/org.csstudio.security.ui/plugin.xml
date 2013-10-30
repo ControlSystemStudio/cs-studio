@@ -58,6 +58,11 @@
                   style="push"
                   tooltip="%LogoutTT">
             </command>
+            <command
+                  commandId="org.csstudio.security.ui.test"
+                  label="Test"
+                  style="push">
+            </command>
       </menuContribution>
    </extension>
    <extension point="org.eclipse.ui.commands">
@@ -89,6 +94,10 @@
          </variable>
          <variable
                name="org.csstudio.security.ui.current_user"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="org.csstudio.security.ui.current_authorization"
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
