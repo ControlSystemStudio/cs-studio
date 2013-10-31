@@ -206,7 +206,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    }
 	});
 	GridColumn tblclmnLogbooks = gridViewerColumnLogbooks.getColumn();
-	tblclmnLogbooks.setWordWrap(true);
+	tblclmnLogbooks.setWordWrap(false);
 	tblclmnLogbooks.setText("Logbooks");
 	new TableColumnViewerLayout(gridTableViewer,
 		gridViewerColumnLogbooks, 10, 75);
@@ -226,7 +226,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    }
 	});
 	GridColumn tblclmnTags = gridViewerColumnTags.getColumn();
-	tblclmnTags.setWordWrap(true);
+	tblclmnTags.setWordWrap(false);
 	tblclmnTags.setText("Tags");
 	new TableColumnViewerLayout(gridTableViewer, gridViewerColumnTags,
 		10, 75);

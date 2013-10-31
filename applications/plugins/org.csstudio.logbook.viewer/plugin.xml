@@ -59,6 +59,16 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.logbook.ui.LogTreeView">
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
+               label="Create New LogEntry"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
