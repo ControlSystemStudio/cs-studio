@@ -9,13 +9,9 @@ package org.csstudio.swt.xygraph.figures;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import org.csstudio.swt.xygraph.Preferences;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
@@ -50,18 +46,6 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 	private static final int GAP_BEETWEEN_LABEL = 1;
 	private static final int ARROW_LENGTH = 20;
 	private static final double ARROW_HEIGHT_RATIO = 0.6;
-
-	private static volatile DecimalFormatSymbols symbols;
-
-	static {
-		Locale newLocale = Locale.getDefault();
-		DecimalFormatSymbols newSymbols = new DecimalFormatSymbols(newLocale);
-		newSymbols.setNaN("NaN");
-		newSymbols.setInfinity("Infinity");
-		symbols = newSymbols;
-	}
-	private static final NumberFormat DOUBLE_FORMAT = new DecimalFormat("0.##",
-			symbols);
 
 	private final List<Trace> traceList = new ArrayList<Trace>();
 	private final List<HoverLabel> labelList = new ArrayList<HoverLabel>();
@@ -184,15 +168,18 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 	private void drawMouseCross(Graphics graphics) {
 		graphics.setForegroundColor(revertBackColor);
 		graphics.setLineStyle(SWTConstants.LINE_DOT);
-		graphics.setLineWidth(1);
+		graphics.setLineWidth(2);
 		graphics.drawLine(cursor_x, bounds.y, cursor_x, bounds.y
 				+ bounds.height);
-//		graphics.drawLine(bounds.x, cursor_y, bounds.x + bounds.width, cursor_y);
+		graphics.setLineWidth(1);
+		// graphics.drawLine(bounds.x, cursor_y, bounds.x + bounds.width,
+		// cursor_y);
 	}
 
 	private void drawLabels(Graphics graphics) {
 		graphics.setBackgroundColor(backColor);
 		graphics.setLineStyle(SWTConstants.LINE_SOLID);
+		graphics.setLineWidth(1);
 
 		final int plotHeight = bounds.y + bounds.height;
 
@@ -231,15 +218,14 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 
 	private void drawLabel(Graphics graphics, String text, int xPos, int yPos,
 			int xLabelPos, int yLabelPos) {
-		final Dimension textSize = FigureUtilities.getTextExtents(text,
-				textFont);
 		PointList points = new PointList();
 		final int yTextPos = yLabelPos - textHeight / 2;
-		int xTextPos = xLabelPos - textSize.width - ARROW_LENGTH;
+		final int textWidth = (int) (FigureUtilities.getTextWidth(text, textFont) * 1.08);
+		int xTextPos = xLabelPos - textWidth - ARROW_LENGTH;
 		if (xTextPos < bounds.x) {
 			// Display label on right
 			xTextPos = xLabelPos + ARROW_LENGTH + TEXT_MARGIN;
-			points.addPoint(xTextPos + textSize.width + TEXT_MARGIN, yTextPos
+			points.addPoint(xTextPos + textWidth + TEXT_MARGIN, yTextPos
 					- TEXT_MARGIN);
 			points.addPoint(xTextPos - TEXT_MARGIN, yTextPos - TEXT_MARGIN);
 			points.addPoint(xTextPos - TEXT_MARGIN, yTextPos + textHeight
@@ -247,19 +233,19 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 			points.addPoint(xPos, yPos);
 			points.addPoint(xTextPos - TEXT_MARGIN, yTextPos + arrowHeight);
 			points.addPoint(xTextPos - TEXT_MARGIN, yTextPos + textHeight);
-			points.addPoint(xTextPos + textSize.width + TEXT_MARGIN, yTextPos
+			points.addPoint(xTextPos + textWidth + TEXT_MARGIN, yTextPos
 					+ textHeight);
 		} else {
 			// Display label on left
 			points.addPoint(xTextPos - TEXT_MARGIN, yTextPos - TEXT_MARGIN);
-			points.addPoint(xTextPos + textSize.width + TEXT_MARGIN, yTextPos
+			points.addPoint(xTextPos + textWidth + TEXT_MARGIN, yTextPos
 					- TEXT_MARGIN);
-			points.addPoint(xTextPos + textSize.width + TEXT_MARGIN, yTextPos
+			points.addPoint(xTextPos + textWidth + TEXT_MARGIN, yTextPos
 					+ textHeight - arrowHeight);
 			points.addPoint(xPos, yPos);
-			points.addPoint(xTextPos + textSize.width + TEXT_MARGIN, yTextPos
+			points.addPoint(xTextPos + textWidth + TEXT_MARGIN, yTextPos
 					+ arrowHeight - 2);
-			points.addPoint(xTextPos + textSize.width + TEXT_MARGIN, yTextPos
+			points.addPoint(xTextPos + textWidth + TEXT_MARGIN, yTextPos
 					+ textHeight);
 			points.addPoint(xTextPos - TEXT_MARGIN, yTextPos + textHeight);
 		}
@@ -304,7 +290,7 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 		// the cross
 		labelList.clear();
 		for (Trace trace : traceList) {
-			if(!trace.isVisible())
+			if (!trace.isVisible())
 				continue;
 			final Axis xAxis = trace.getXAxis();
 
@@ -356,8 +342,8 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 		if (yAxis.getRange().inRange(yValue)) {
 			// Show label only if the point is in the plot area
 			labelList.add(new HoverLabel(xPos, yAxis.getValuePosition(yValue,
-					false), DOUBLE_FORMAT.format(yValue), yAxis
-					.getForegroundColor(), false));
+					false), yAxis.format(yValue), yAxis.getForegroundColor(),
+					false));
 		}
 
 		if (sample.getYMinusError() != 0
@@ -376,7 +362,7 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 					// Show label only if the point is in the plot area
 					labelList.add(new HoverLabel(xPos, yAxis.getValuePosition(
 							yMinError, false), "Min: "
-							+ DOUBLE_FORMAT.format(yMinError), yAxis
+							+ yAxis.format(yMinError), yAxis
 							.getForegroundColor(), true));
 				}
 				if (yErrorBarType != ErrorBarType.BOTH)
@@ -385,7 +371,7 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 				if (yAxis.getRange().inRange(yPlusError)) {
 					labelList.add(new HoverLabel(xPos, yAxis.getValuePosition(
 							yPlusError, false), "Max: "
-							+ DOUBLE_FORMAT.format(yPlusError), yAxis
+							+ yAxis.format(yPlusError), yAxis
 							.getForegroundColor(), true));
 				}
 				break;
