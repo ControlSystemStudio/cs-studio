@@ -1,10 +1,10 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
+ * Copyright (c) 2010-2013 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.alarm.beast.notifier.test;
 
 import javax.jms.Connection;
@@ -18,22 +18,22 @@ import javax.jms.Topic;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 
 /**
- * Simple JMS publisher for test purpose.
- * Publish messages on a given URL/Topic.
+ * Simple JMS publisher for test purpose. Publish messages on a given URL/Topic.
+ * 
  * @author Fred Arnaud (Sopra Group)
- *
+ * 
  */
-public class SimpleJMSPublisher
-{
+public class SimpleJMSPublisher {
+
 	private String url;
 	private Session session;
 	private Connection connection;
 	private MessageProducer producer;
 
-    public int msgCount = 0;
+	public int msgCount = 0;
 
-	public SimpleJMSPublisher(String jms_url, String jms_topic) throws JMSException 
-	{
+	public SimpleJMSPublisher(String jms_url, String jms_topic)
+			throws JMSException {
 		this.url = jms_url;
 		connection = JMSConnectionFactory.connect(url);
 		connection.start();
@@ -44,16 +44,14 @@ public class SimpleJMSPublisher
 		producer.setTimeToLive(10000);
 		producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 	}
-	
-	public MapMessage createMapMessage() throws JMSException
-	{
+
+	public MapMessage createMapMessage() throws JMSException {
 		return session.createMapMessage();
 	}
-	
-	public void sendMessage(MapMessage msg) throws JMSException
-	{
+
+	public void sendMessage(MapMessage msg) throws JMSException {
 		producer.send(msg);
 		msgCount++;
 	}
-	
+
 }

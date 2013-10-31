@@ -30,6 +30,7 @@ public class SmsActionImpl extends AbstractMailActionImpl {
 	public void init(ItemInfo item, AAData auto_action, IActionHandler handler)
 			throws Exception {
 		this.item = item;
+		this.manuallyExecuted = auto_action.isManual();
 		mailSender = new JavaxMailSender();
 		SmsCommandHandler smsCmdHandler = (SmsCommandHandler) handler;
 		List<String> phoneNumbers = smsCmdHandler.getTo();
