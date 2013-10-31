@@ -7,6 +7,15 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+
+import org.csstudio.alarm.beast.msghist.Activator;
 import org.csstudio.alarm.beast.msghist.Preferences;
 import org.csstudio.alarm.beast.msghist.PropertyColumnPreference;
 import org.csstudio.alarm.beast.msghist.model.Message;
@@ -16,22 +25,30 @@ import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper.UI;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -44,30 +61,77 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-/** SWT GUI for Model: Table of messages
- *  @author Kay Kasemir
+/**
+ * SWT GUI for Model: Table of messages.
+ *
+ * @author Kay Kasemir
+ * @author benhadj naceur
  */
 @SuppressWarnings("nls")
-public class GUI implements ModelListener
+public class GUI implements ModelListener, DisposeListener
 {
+	
+	/** The model. */
 	final private Model model;
 
-    /** Properties for the table columns */
+    /** Properties for the table columns. */
     private String properties[];
+    
+    /** The table_viewer. */
     private TableViewer table_viewer;
+    
+    /** The end. */
     private Text start, end;
-    private Button times, filter;
+    
+    /** The auto refresh. */
+    private Button times, filter, refresh, autoRefresh;
+    
+    /** The scheduled executor service. */
+    private ScheduledExecutorService scheduledExecutorService = null;
 
-    /** Construct GUI
-     *  @param site Workbench site or <code>null</code>.
-     *  @param parent Parent widget/shell
-     *  @param model Model to display in GUI
+    /** The time unit. */
+    private TimeUnit timeUnit = TimeUnit.SECONDS;
+    
+    /** The image refresh button */
+    private Image imageAutoRefreshRun, imageManualRefresh = null;
+    
+    /** The auto refresh enable msg. */
+    private String autoRefreshEnableMsg = "Enable auto refresh";
+    
+    private int autoRefreshPeriod;
+    
+    /** The auto refresh disable msg. */
+    private String autoRefreshDisableMsg = "Automatic refresh every ";
+    
+    /** The end time. */
+    private String endTime = "now";
+    
+    /** The log info msg auto refresh started. */
+    private String LOG_INFO_MSG_AUTO_REFRESH_STARTED = "Auto refresh is running every " ;
+    
+    /** The log info msg auto refresh stopped. */
+    private String LOG_INFO_MSG_AUTO_REFRESH_STOPPED = "Auto refresh is stopped ";
+    
+    /** The log info msg auto refresh condition not verified. */
+    private String LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED = "Cannot start auto refresh one of conditions is not verified ";
+    
+    
+    /**
+     * Construct GUI.
+     *
+     * @param site Workbench site or <code>null</code>.
+     * @param parent Parent widget/shell
+     * @param model Model to display in GUI
      */
     public GUI(IWorkbenchPartSite site, final Composite parent, final Model model)
     {
         this.model = model;
-
+        this.imageAutoRefreshRun = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/pause.gif").createImage();
+        this.imageManualRefresh = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/refresh.gif").createImage();
+        this.autoRefreshPeriod = Preferences.getAutoRefreshPeriod();
         try
         {
             createGUI(parent);
@@ -84,23 +148,53 @@ public class GUI implements ModelListener
         connectGUIActions();
 
         connectContextMenu(site);
+        
+        //listener on preferences
+    	final IPreferenceStore archiveRDBStore = new ScopedPreferenceStore(
+    			InstanceScope.INSTANCE, org.csstudio.alarm.beast.msghist.Activator.ID);
+    	archiveRDBStore.addPropertyChangeListener(new IPropertyChangeListener() {
+			
+			/* (non-Javadoc)
+			 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+			 */
+			@Override
+			public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+				if (Preferences.AUTO_REFRESH_PERIOD.equals(propertyChangeEvent.getProperty())) {
+					autoRefreshPeriod = Preferences.getAutoRefreshPeriod();
+					if (autoRefreshPeriod == 0) {
+						resetAutoRefresh();
+					} else if (autoRefreshPeriod > 0) {
+						activateAutoRefresh();
+					}
+				}
+			}
+		});
 
         // Publish the current selection to the site
         // (to allow context menu extensions based on the selection)
         if (site != null)
         	site.setSelectionProvider(table_viewer);
+        
     }
 
-    /** @return Table which provides the currently selected message */
+    /**
+     * Gets the selection provider.
+     *
+     * @return Table which provides the currently selected message
+     */
 	public ISelectionProvider getSelectionProvider()
 	{
 		return table_viewer;
 	}
 
-	/** Update Model's time range, display exception in dialog box.
-     *  If all goes well, GUI should update in response to model's
-     *  update event.
-     */
+	/**
+	 * Update Model's time range, display exception in dialog box.
+	 * If all goes well, GUI should update in response to model's
+	 * update event.
+	 *
+	 * @param start_spec the start_spec
+	 * @param end_spec the end_spec
+	 */
     private void updateTimeRange(final String start_spec, final String end_spec)
     {
         try
@@ -136,14 +230,16 @@ public class GUI implements ModelListener
         }
     }
 
-    /** Create GUI elements
-     *  @param parent Parent shell/site/window
-     *  @throws Exception on error
+    /**
+     * Create GUI elements.
+     *
+     * @param parent Parent shell/site/window
+     * @throws Exception on error
      */
     private void createGUI(final Composite parent) throws Exception
     {
         GridLayout layout = new GridLayout();
-        layout.numColumns = 6;
+        layout.numColumns = 8;
         parent.setLayout(layout);
         GridData gd;
 
@@ -179,6 +275,17 @@ public class GUI implements ModelListener
         filter.setText("Filter");
         filter.setToolTipText("Configure filters");
         filter.setLayoutData(new GridData());
+        
+        refresh = new Button(parent, SWT.PUSH);
+        refresh.setImage(imageManualRefresh);
+        refresh.setToolTipText("Manual refresh");
+        refresh.setLayoutData(new GridData());
+        
+        autoRefresh = new Button(parent, SWT.TOGGLE);
+        autoRefresh.setImage(imageAutoRefreshRun);
+        autoRefresh.setSelection(true);
+		autoRefresh.setToolTipText(autoRefreshEnableMsg);
+        autoRefresh.setLayoutData(new GridData());
 
         // New row: Table of messages
         // TableColumnLayout requires the TableViewer to be in its own Composite
@@ -190,7 +297,7 @@ public class GUI implements ModelListener
         table_parent.setLayout(table_layout);
 
         table_viewer = new TableViewer(table_parent,
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.MULTI | SWT.VIRTUAL);
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -246,9 +353,13 @@ public class GUI implements ModelListener
         }
 
         table_viewer.setInput(model);
+        
+        parent.addDisposeListener(this);
     }
 
-    /** Connect listeners to GUI elements */
+    /**
+     * Connect listeners to GUI elements.
+     */
     private void connectGUIActions()
     {
         times.addSelectionListener(new SelectionAdapter()
@@ -294,10 +405,56 @@ public class GUI implements ModelListener
             	new OpenViewAction(IPageLayout.ID_PROP_SHEET).run();
             }
         });
+        
+        refresh.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                updateTimeRange(start.getText(), end.getText());
+            }
+        });
+        
+        initializeAutoRefresh();
+        autoRefresh.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+				// No automatic refresh When the period is set to 0
+				// updates only if the "End" time is set to now
+            	autoRefreshPeriod = Preferences.getAutoRefreshPeriod();
+				if (autoRefreshPeriod == 0
+						|| !endTime.equals(model.getEndSpec())) {
+					disableAutoRefresh();
+					Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED);
+					return;
+				}
+				// normal case
+				if (!autoRefresh.getSelection()) {
+					if (scheduledExecutorService == null) {
+						scheduledExecutorService = Executors
+								.newScheduledThreadPool(1);
+						scheduledExecutorService.scheduleAtFixedRate(
+								new StartAutoRefreshTask(), 0,
+								autoRefreshPeriod, timeUnit);
+						Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STARTED + Preferences.getAutoRefreshPeriod() + " seconds");
+					}
+					autoRefresh.setToolTipText(autoRefreshDisableMsg + Preferences.getAutoRefreshPeriod() + " " + timeUnit.toString());
+				} else if (scheduledExecutorService != null) {
+					scheduledExecutorService.shutdown();
+					scheduledExecutorService = null;
+				    autoRefresh.setToolTipText(autoRefreshEnableMsg);
+				    Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STOPPED);
+				}
+			}
+        });
     }
 
-    /** Add context menu to table
-     *  @param site
+    /**
+     * Add context menu to table.
+     *
+     * @param site the site
      */
     private void connectContextMenu(final IWorkbenchPartSite site)
     {
@@ -316,8 +473,11 @@ public class GUI implements ModelListener
         	site.registerContextMenu(manager, table_viewer);
     }
 
-    /** Update GUI when model changed
-     *  @see ModelListener
+    /**
+     * Update GUI when model changed.
+     *
+     * @param model the model
+     * @see ModelListener
      */
     @Override
     public void modelChanged(final Model model)
@@ -325,15 +485,174 @@ public class GUI implements ModelListener
     	final Display display = table_viewer.getTable().getDisplay();
     	display.asyncExec(new Runnable()
         {
-            @Override
+			@Override
             public void run()
             {
                 if (start.isDisposed())
                     return;
-                start.setText(model.getStartSpec());
-                end.setText(model.getEndSpec());
+                if (!start.isFocusControl())
+                	start.setText(model.getStartSpec());
+                if (!end.isFocusControl()) 
+                	end.setText(model.getEndSpec());
+                
+                //refresh table and keep selections
+                int[] tableSelectionIndices = table_viewer.getTable().getSelectionIndices();
+                Message[] messages = new Message[tableSelectionIndices.length];
+                
+                for (int i = 0; i < tableSelectionIndices.length; i++) {
+					int index = tableSelectionIndices[i];
+					messages[i] = (Message) table_viewer.getElementAt(index);
+				}
                 table_viewer.refresh();
+                
+                if (messages.length != 0) {
+                	List<Message> listMsgSelect = new ArrayList<Message>();
+                	Message[] msgModel = model.getMessages();
+                	for (int i = 0; i < msgModel.length; i++) {
+                		for (int j = 0; j < messages.length; j++) {
+                			if (msgModel[i].getId() == messages[j].getId()) 
+    							listMsgSelect.add(msgModel[i]);
+                		} // FOR messages
+					} // FOR msgModel
+                	table_viewer.setSelection(new StructuredSelection(listMsgSelect), true);
+                } 
             }
         });
     }
+   
+
+    
+    
+	/**
+	 * The Class StartAutoRefreshTask.
+	 */
+	public class StartAutoRefreshTask extends TimerTask {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void run() {
+			try {
+				model.refresh();
+				
+				// Check auto refresh cases: period > 0 second and end time is set to  now
+				if (Preferences.getAutoRefreshPeriod() == 0
+						|| !endTime.equals(model.getEndSpec())) {
+					final Display display = table_viewer.getTable()
+							.getDisplay();
+					display.asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							resetAutoRefresh();
+						}
+					});
+				}
+			} catch (Exception ex) {
+				MessageDialog.openError(times.getShell(), "Error",
+						"Error during the refresh of the model :\n" + ex.getMessage());
+			}
+		}
+    }
+
+	
+	/**
+	 * Reset auto refresh.
+	 */
+	public void resetAutoRefresh() {
+		if (scheduledExecutorService !=null && !scheduledExecutorService.isShutdown()) {
+  			scheduledExecutorService.shutdownNow();
+          	scheduledExecutorService = null;
+        
+			disableAutoRefresh();
+        	Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STOPPED);
+  	   } 
+	}
+	
+	/**
+	 * Initialize auto refresh.
+	 * <p>Start auto refresh only if conditions are verified: <br />
+	 * <li>period is not set to 0</li>
+	 * <li>end time is set to "now"</li>
+	 */
+	private void initializeAutoRefresh() {
+		 // No automatic refresh When the period is set to 0
+		 // AND updates only if the "End" time is set to now
+		autoRefreshPeriod = Preferences.getAutoRefreshPeriod();
+		if (autoRefreshPeriod == 0 || !this.endTime.equals(this.model.getEndSpec())) {
+			Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED);
+			return;
+		}
+		
+		scheduledExecutorService = Executors.newScheduledThreadPool(1);
+		scheduledExecutorService.scheduleAtFixedRate(
+				new StartAutoRefreshTask(), 0,
+				autoRefreshPeriod, timeUnit);
+		enableAutoRefresh();
+		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STARTED + Preferences.getAutoRefreshPeriod() + " seconds");
+	}
+	
+	
+	/**
+	 * Activate auto refresh.
+	 */
+	private void activateAutoRefresh() {
+		if (scheduledExecutorService != null) return;
+		Activator.getLogger().log(Level.INFO, "Auto refresh is running every " + autoRefreshPeriod + " seconds");
+		enableAutoRefresh();
+		scheduledExecutorService = Executors.newScheduledThreadPool(1);
+		scheduledExecutorService.scheduleAtFixedRate(
+				new StartAutoRefreshTask(), 0,
+				autoRefreshPeriod, timeUnit);
+	
+	}
+	
+    
+	/**
+	 * Enable auto refresh.
+	 */
+	private void enableAutoRefresh() {
+			autoRefresh.setToolTipText(autoRefreshDisableMsg + Preferences.getAutoRefreshPeriod() + " " + timeUnit.toString());
+			autoRefresh.setSelection(false);
+	}
+	
+	
+	/**
+	 * Disable auto refresh.
+	 */
+	private void disableAutoRefresh() {
+		autoRefresh.setToolTipText(autoRefreshEnableMsg);
+		autoRefresh.setSelection(true);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void widgetDisposed(DisposeEvent disposeEvent) {
+		// stop scheduler auto refresh
+		if (scheduledExecutorService != null) {
+			scheduledExecutorService.shutdown();
+			scheduledExecutorService = null;
+		}
+		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STOPPED);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onErrorModel(String errorMsg) {
+		// if exception stop scheduler auto refresh and reset button
+		final Display display = table_viewer.getTable().getDisplay();
+		display.asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				resetAutoRefresh();
+			}
+		});
+		Activator.getLogger().log(Level.WARNING, errorMsg);
+	}
+	
 }
