@@ -13,6 +13,7 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
+import org.csstudio.logbook.ui.extra.LogEntryTree;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * A view to search for logEntries and then display them in a Tree form
@@ -66,7 +68,7 @@ public class LogTreeView extends ViewPart {
 
     @Override
     public void createPartControl(final Composite parent) {
-	GridLayout gridLayout = new GridLayout(3, false);
+	GridLayout gridLayout = new GridLayout(4, false);
 	gridLayout.verticalSpacing = 1;
 	gridLayout.horizontalSpacing = 1;
 	gridLayout.marginHeight = 1;
@@ -135,13 +137,33 @@ public class LogTreeView extends ViewPart {
 	btnNewButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 	btnNewButton.setText("Adv Search");
 	
+	Button configureButton = new Button(parent, SWT.NONE);
+	configureButton.setImage(ResourceManager.getPluginImage(
+		"org.csstudio.channel.widgets", "icons/gear-16.png"));
+	configureButton.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+			    LogViewConfigurationDialog dialog = new LogViewConfigurationDialog(
+				    parent.getShell(), logEntryTree.isExpanded(), logEntryTree.getLogEntryOrder());
+			    dialog.setBlockOnOpen(true);
+			    if (dialog.open() == IDialogConstants.OK_ID) {
+				logEntryTree.setLogEntryOrder(dialog.getOrder());
+				logEntryTree.setExpanded(dialog.isExpandable());
+			    }
+			}
+		    });
+	    }
+	});
+
 	// Add AutoComplete support, use type logEntrySearch
 	new AutoCompleteWidget(text, "LogentrySearch");
 
 	
 	
 	label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 
 	logEntryTree = new org.csstudio.logbook.ui.extra.LogEntryTree(parent,
 		SWT.NONE | SWT.SINGLE);
@@ -159,7 +181,7 @@ public class LogTreeView extends ViewPart {
 	    }
 	});
 
-	logEntryTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+	logEntryTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
 
 	PopupMenuUtil.installPopupForView(logEntryTree, getSite(),
 		logEntryTree);

@@ -64,6 +64,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
     private final String eol = System.getProperty("line.separator");
     private AbstractSelectionProviderWrapper selectionProvider;
     private int logEntryOrder = SWT.UP;
+    private boolean expanded = true;   
 
     private ErrorBar errorBar;
     private GridTreeViewer gridTreeViewer;
@@ -84,6 +85,11 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 		    gridTreeViewer.setInput(createModel(logEntries));
 		    break;
 		case "logEntryOrder":
+		    gridTreeViewer.setInput(createModel(logEntries));
+		    break;
+		case "expanded":
+		    //TODO shroffk fix the refresh
+		    gridTreeViewer.getGrid().setAutoHeight(expanded);
 		    gridTreeViewer.setInput(createModel(logEntries));
 		    break;
 		default:
@@ -108,10 +114,8 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 		    return new StructuredSelection(element.logEntry);
 		} else if (!selection.isEmpty()) {
 		    List<LogEntry> selectedEntries = new ArrayList<LogEntry>();
-		    for (Iterator<LogEntryTreeModel> iterator = selection
-			    .iterator(); iterator.hasNext();) {
-			LogEntryTreeModel domain = (LogEntryTreeModel) iterator
-				.next();
+		    for (Iterator<LogEntryTreeModel> iterator = selection.iterator(); iterator.hasNext();) {
+			LogEntryTreeModel domain = (LogEntryTreeModel) iterator.next();
 			selectedEntries.add(domain.logEntry);
 		    }
 		    return new StructuredSelection(selectedEntries);
@@ -124,13 +128,12 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
 	grid = gridTreeViewer.getGrid();
 	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-	grid.setAutoHeight(true);
+	grid.setAutoHeight(expanded);
 	grid.setRowsResizeable(true);
 	grid.setHeaderVisible(true);
 	grid.setLinesVisible(true);
 	gridTreeViewer.setContentProvider(new LogEntryTreeContentProvider());
-	ColumnViewerToolTipSupport.enableFor(gridTreeViewer,
-		ToolTip.NO_RECREATE);
+	ColumnViewerToolTipSupport.enableFor(gridTreeViewer, ToolTip.NO_RECREATE);
 
 	// First Columns displays the Date
 	GridViewerColumn column = new GridViewerColumn(gridTreeViewer, SWT.NONE);
@@ -284,8 +287,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
     public void setLogs(List<LogEntry> logEntries) {
 	Collection<LogEntry> oldValue = this.logEntries;
 	this.logEntries = logEntries;
-	changeSupport.firePropertyChange("logEntries", oldValue,
-		this.logEntries);
+	changeSupport.firePropertyChange("logEntries", oldValue, this.logEntries);
     }
 
     /**
@@ -302,8 +304,23 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
     public void setLogEntryOrder(int logEntryOrder) {
 	int oldValue = this.logEntryOrder;
 	this.logEntryOrder = logEntryOrder;
-	changeSupport.firePropertyChange("logEntryOrder", oldValue,
-		this.logEntryOrder);
+	changeSupport.firePropertyChange("logEntryOrder", oldValue, this.logEntryOrder);
+    }
+    
+    /**
+     * @return the expanded
+     */
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    /**
+     * @param expanded the expanded to set
+     */
+    public void setExpanded(boolean expanded) {
+	boolean oldValue = this.expanded;	
+        this.expanded = expanded;
+        changeSupport.firePropertyChange("expanded", oldValue, this.expanded);
     }
 
     @Override
