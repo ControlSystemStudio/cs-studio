@@ -32,6 +32,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -64,13 +66,27 @@ public class LogTreeView extends ViewPart {
 
     @Override
     public void createPartControl(final Composite parent) {
-	parent.setLayout(new FormLayout());
+	GridLayout gridLayout = new GridLayout(3, false);
+	gridLayout.verticalSpacing = 1;
+	gridLayout.horizontalSpacing = 1;
+	gridLayout.marginHeight = 1;
+	gridLayout.marginWidth = 1;
+	parent.setLayout(gridLayout);
 
 	Label lblLogQuery = new Label(parent, SWT.NONE);
-	FormData fd_lblLogQuery = new FormData();
-	fd_lblLogQuery.top = new FormAttachment(0, 5);
-	lblLogQuery.setLayoutData(fd_lblLogQuery);
+	lblLogQuery.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 	lblLogQuery.setText("Log Query:");
+
+	text = new Text(parent, SWT.BORDER);
+	text.addKeyListener(new KeyAdapter() {
+	    @Override
+	    public void keyReleased(KeyEvent e) {
+		if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+		    search();
+		}
+	    }
+	});	
+	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 	Button btnNewButton = new Button(parent, SWT.NONE);
 	btnNewButton.addSelectionListener(new SelectionAdapter() {
@@ -116,48 +132,16 @@ public class LogTreeView extends ViewPart {
 		BusyIndicator.showWhile(Display.getDefault(), openSearchDialog);
 	    }
 	});
-	FormData fd_btnNewButton = new FormData();
-	fd_btnNewButton.top = new FormAttachment(0, 3);
-	fd_btnNewButton.right = new FormAttachment(100, -5);
-	btnNewButton.setLayoutData(fd_btnNewButton);
+	btnNewButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 	btnNewButton.setText("Adv Search");
-
-	text = new Text(parent, SWT.BORDER);
-	text.addKeyListener(new KeyAdapter() {
-	    @Override
-	    public void keyReleased(KeyEvent e) {
-		if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-		    search();
-		}
-	    }
-	});
-	FormData fd_text = new FormData();
-	fd_text.right = new FormAttachment(btnNewButton, -5);
-	fd_text.left = new FormAttachment(lblLogQuery, 5);
-	fd_text.top = new FormAttachment(0, 5);
-	text.setLayoutData(fd_text);
-
+	
 	// Add AutoComplete support, use type logEntrySearch
 	new AutoCompleteWidget(text, "LogentrySearch");
 
+	
+	
 	label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-	label.addMouseMoveListener(new MouseMoveListener() {
-	    public void mouseMove(MouseEvent e) {
-		FormData fd = (FormData) label.getLayoutData();
-		long calNumerator = fd.top.numerator + (e.y * 100)
-			/ e.display.getActiveShell().getClientArea().height;
-		fd.top = new FormAttachment((int) calNumerator);
-		label.setLayoutData(fd);
-		label.getParent().layout();
-		logEntryTree.layout();
-	    }
-	});
-	label.setCursor(Display.getCurrent().getSystemCursor(SWT.CURSOR_SIZENS));
-	FormData fd_label = new FormData();
-	fd_label.top = new FormAttachment(100);
-	fd_label.right = new FormAttachment(100, -2);
-	fd_label.left = new FormAttachment(0, 2);
-	label.setLayoutData(fd_label);
+	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
 	logEntryTree = new org.csstudio.logbook.ui.extra.LogEntryTree(parent,
 		SWT.NONE | SWT.SINGLE);
@@ -174,14 +158,8 @@ public class LogTreeView extends ViewPart {
 		}
 	    }
 	});
-	fd_lblLogQuery.left = new FormAttachment(logEntryTree, 0, SWT.LEFT);
-	FormData fd_logEntryTable = new FormData();
-	fd_logEntryTable.top = new FormAttachment(text, 5);
-	fd_logEntryTable.right = new FormAttachment(100, -3);
-	fd_logEntryTable.left = new FormAttachment(0, 3);
-	fd_logEntryTable.bottom = new FormAttachment(label, -5);
 
-	logEntryTree.setLayoutData(fd_logEntryTable);
+	logEntryTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 
 	PopupMenuUtil.installPopupForView(logEntryTree, getSite(),
 		logEntryTree);

@@ -65,7 +65,7 @@ public class OlogClientFromPreferences implements OlogClient {
 									Activator.PLUGIN_ID,
 									PreferenceConstants.Password,
 									null));
-		} else {
+		}  else {
 			ologClientBuilder.withHTTPAuthentication(false);
 		}
 		log.info("Creating Olog client : " + url);
