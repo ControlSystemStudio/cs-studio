@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+<!-- The same overall format is used for beamline configuration
+     and scan simulation configuration.
+  -->
 <xs:element name="beamline">
   <xs:complexType>
     <xs:sequence>
-      <xs:element name="info" type="beamline_info"/>
+      <xs:element name="info" type="beamline_info" minOccurs="0"/>
       <xs:element name="devices" type="devices"/>
     </xs:sequence>
   </xs:complexType>
@@ -13,7 +16,7 @@
 <xs:complexType name="beamline_info">
   <xs:sequence>
     <xs:element name="name" type="xs:string"/>
-    <xs:element name="description" type="xs:string"/>
+    <xs:element name="description" type="xs:string" minOccurs="0"/>
   </xs:sequence>
 </xs:complexType>
 
@@ -25,8 +28,8 @@
 
 <xs:complexType name="device">
 	<xs:sequence>
-	    <xs:element name="name" type="xs:string"/>
-	    <xs:element name="ioc" type="ioc"/>
+	    <xs:element name="name" type="xs:string" minOccurs="0"/>
+	    <xs:element name="ioc" type="ioc" minOccurs="0"/>
 	    <xs:element name="pv" type="pv" minOccurs="0" maxOccurs="unbounded"/>
 	</xs:sequence>
     <xs:attribute name="active" type="xs:boolean" default="true"/>
@@ -42,11 +45,20 @@
 
 <xs:complexType name="pv">
 	<xs:sequence>
-	    <xs:element name="name" type="xs:string"/>
-	    <xs:element name="alias" type="xs:string" minOccurs="0"/>
+	    <xs:choice>
+	        <!-- In beamline file, PVs should have a name.
+	             For simulation config, a name pattern (regular expression)
+	             is allowed instead of one specific name
+	          -->
+		    <xs:element name="name" type="xs:string"/>
+	        <xs:element name="name_pattern" type="xs:string"/>
+	    </xs:choice>
+        <xs:element name="alias" type="xs:string" minOccurs="0"/>
 	    <xs:element name="log" minOccurs="0">
 	      <xs:complexType></xs:complexType>
 	    </xs:element>
+	    <!-- Slew rate (value change per second) for simulation -->
+        <xs:element name="slew_rate" type="xs:double" minOccurs="0"/>
 	</xs:sequence>
 </xs:complexType>
 
