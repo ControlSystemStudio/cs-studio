@@ -31,18 +31,13 @@ public class Opi_activeXTextClass extends OpiWidget {
 		else 
 			setTypeId(typeId);
 		
-		context.getElement().setAttribute("version", version);
+		setName(name);
+		setVersion(version);;
 		
-		new OpiString(context, "name", name);
-//		
-		new OpiFont(context, "font", t.getFont());
-		new OpiColor(context, "foreground_color", t.getFgColor());
-		new OpiColor(context, "background_color", t.getBgColor());
-		
-		new OpiString(context, "text", t.getValue().get());
+		new OpiString(widgetContext, "text", t.getValue().get());
 		
 		boolean autoSize = t.getAttribute("autoSize").isInitialized() && t.isAutoSize();
-		new OpiBoolean(context, "auto_size", autoSize);
+		new OpiBoolean(widgetContext, "auto_size", autoSize);
 		
 		// There is no border (border style == 0) when border attribute is not set. 
 		int borderStyle = 0;
@@ -50,21 +45,21 @@ public class Opi_activeXTextClass extends OpiWidget {
 			// From EDM C code it looks like activeXText always uses solid style. 
 			borderStyle = 1;
 		}
-		new OpiInt(context, "border_style", borderStyle);
+		new OpiInt(widgetContext, "border_style", borderStyle);
 		
 		if (t.getAttribute("lineWidth").isInitialized()) {
-			new OpiInt(context, "border_width", t.getLineWidth());
+			new OpiInt(widgetContext, "border_width", t.getLineWidth());
 		}
 		
-		new OpiColor(context, "border_color", t.getFgColor());
+		new OpiColor(widgetContext, "border_color", t.getFgColor());
 				
 		boolean useDisplayBg = t.getAttribute("useDisplayBg").isInitialized() && t.isUseDisplayBg();  
-		new OpiBoolean(context, "transparent", useDisplayBg);
+		new OpiBoolean(widgetContext, "transparent", useDisplayBg);
 		
 		if(t.getAttribute("alarmPv").isInitialized()){
-			new OpiString(context, "pv_name", t.getAlarmPv());
-			new OpiBoolean(context, "backcolor_alarm_sensitive", t.isBgAlarm());
-			new OpiBoolean(context, "forecolor_alarm_sensitive", t.isFgAlarm());
+			new OpiString(widgetContext, "pv_name", t.getAlarmPv());
+			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", t.isBgAlarm());
+			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", t.isFgAlarm());
 		}
 		
 		

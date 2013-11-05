@@ -10,15 +10,13 @@ package org.csstudio.opibuilder.converter.model;
 /**
  * Specific class representing activeRectangleClass widget.
  *
- * @author Matevz
+ * @author Lei Hu
  *
  */
 public class Edm_activePipClass extends EdmWidget {
 
 	@EdmAttributeAn @EdmOptionalAn private String displaySource;
 	@EdmAttributeAn @EdmOptionalAn private String file;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor fgColor;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor bgColor;
 
 	public Edm_activePipClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
@@ -38,10 +36,4 @@ public class Edm_activePipClass extends EdmWidget {
 
 
 
-	public EdmColor getFgColor() {
-		return fgColor;
-	}
-	public EdmColor getBgColor() {
-		return bgColor;
-	}
 }

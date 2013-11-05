@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_ByteClass;
 
 /**
@@ -28,23 +27,23 @@ public class Opi_ByteClass extends OpiWidget {
 	public Opi_ByteClass(Context con, Edm_ByteClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);
+		setName(name);
+		setVersion(version);
 		
 		if (r.getOnColor().isInitialized()) {
-			new OpiColor(context, "on_color", r.getOnColor());
+			new OpiColor(widgetContext, "on_color", r.getOnColor());
 		}
 		if (r.getOffColor().isInitialized()) {
-			new OpiColor(context, "off_color", r.getOffColor());
+			new OpiColor(widgetContext, "off_color", r.getOffColor());
 		}
 		if(r.getAttribute("controlPv").isInitialized())
-			new OpiString(context, "pv_name", r.getControlPv());
+			new OpiString(widgetContext, "pv_name", r.getControlPv());
 		if(r.getAttribute("endian").isInitialized())
-			new OpiBoolean(context, "horizontal", false);
+			new OpiBoolean(widgetContext, "horizontal", false);
 		if(r.getAttribute("numBits").isInitialized())
-			new OpiInt(context, "numBits", r.getNumBits());
+			new OpiInt(widgetContext, "numBits", r.getNumBits());
 		if(r.getAttribute("shift").isInitialized())
-			new OpiInt(context, "startBit", r.getShift());
+			new OpiInt(widgetContext, "startBit", r.getShift());
 		log.debug("Edm_ByteClass written.");
 
 	}

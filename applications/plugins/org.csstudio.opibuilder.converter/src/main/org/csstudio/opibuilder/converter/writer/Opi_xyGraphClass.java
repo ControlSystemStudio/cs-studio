@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_xyGraphClass;
 
 /**
@@ -29,63 +28,63 @@ public class Opi_xyGraphClass extends OpiWidget {
 		super(con, r);
 		setTypeId(typeId);
 
-		context.getElement().setAttribute("version", version);		
-		new OpiString(context, "name", name);
-		new OpiBoolean(context, "show_toolbar", false);
+		widgetContext.getElement().setAttribute("version", version);		
+		new OpiString(widgetContext, "name", name);
+		new OpiBoolean(widgetContext, "show_toolbar", false);
 
-		new OpiInt(context, "axis_count", 3);  //axis count, Ĭ��Ϊ3��
+		new OpiInt(widgetContext, "axis_count", 3);  //axis count, Ĭ��Ϊ3��
 		//Title
 		if(r.getAttribute("graphTitle").isInitialized())
-			new OpiString(context, "title", r.getGraphTitle());
+			new OpiString(widgetContext, "title", r.getGraphTitle());
 		if(r.getAttribute("xLabel").isInitialized())
-			new OpiString(context, "axis_0_axis_title", r.getXLabel());
+			new OpiString(widgetContext, "axis_0_axis_title", r.getXLabel());
 		if(r.getAttribute("yLabel").isInitialized())
-			new OpiString(context, "axis_1_axis_title", r.getYLabel());
+			new OpiString(widgetContext, "axis_1_axis_title", r.getYLabel());
 		if(r.getAttribute("y2Label").isInitialized())
-			new OpiString(context, "axis_2_axis_title", r.getY2Label());
+			new OpiString(widgetContext, "axis_2_axis_title", r.getY2Label());
 		//ӳ��fgColor bgColor gridColor
-		new OpiColor(context, "foreground_color", r.getFgColor());
-		new OpiColor(context, "background_color", r.getBgColor());
-		new OpiColor(context, "axis_0_grid_color", r.getGridColor());
+		new OpiColor(widgetContext, "foreground_color", r.getFgColor());
+		new OpiColor(widgetContext, "background_color", r.getBgColor());
+		new OpiColor(widgetContext, "axis_0_grid_color", r.getGridColor());
 		
 		//borderӳ��
 		if(r.isBorder())
 			{
-			new OpiInt(context, "border_width", 1);
-			new OpiInt(context, "border_style", 1);
+			new OpiInt(widgetContext, "border_width", 1);
+			new OpiInt(widgetContext, "border_style", 1);
 			}
 		else
 			{
-			new OpiInt(context, "border_width", 0);
-			new OpiInt(context, "border_style", 0);
+			new OpiInt(widgetContext, "border_width", 0);
+			new OpiInt(widgetContext, "border_style", 0);
 			}
 		//plotAreaBorder
 		if(r.isPlotAreaBorder())
-			new OpiBoolean(context, "show_plot_area_border", r.isPlotAreaBorder());
+			new OpiBoolean(widgetContext, "show_plot_area_border", r.isPlotAreaBorder());
 		else
-			new OpiBoolean(context, "show_plot_area_border", r.isPlotAreaBorder());
+			new OpiBoolean(widgetContext, "show_plot_area_border", r.isPlotAreaBorder());
 			
 		//Axisӳ�����
 		if(r.getAttribute("showXAxis").isInitialized())	
-			new OpiBoolean(context, "axis_0_visible", r.isShowXAxis());
+			new OpiBoolean(widgetContext, "axis_0_visible", r.isShowXAxis());
 		if(r.getAttribute("showYAxis").isInitialized())	
-			new OpiBoolean(context, "axis_1_visible", r.isShowYAxis());
+			new OpiBoolean(widgetContext, "axis_1_visible", r.isShowYAxis());
 		if(r.getAttribute("showY2Axis").isInitialized())	
-			new OpiBoolean(context, "axis_2_visible", r.isShowY2Axis());
+			new OpiBoolean(widgetContext, "axis_2_visible", r.isShowY2Axis());
 		
 		if(r.getAttribute("xAxisStyle").isInitialized() && (r.getXAxisStyle().equals("time")))
-			new OpiInt(context, "axis_0_time_format", 1);				
+			new OpiInt(widgetContext, "axis_0_time_format", 1);				
 		else 
-			new OpiInt(context, "axis_0_time_format", 0);
+			new OpiInt(widgetContext, "axis_0_time_format", 0);
 		if(r.getAttribute("yAxisStyle").isInitialized() && (r.getYAxisStyle().equals("time")))
-			new OpiInt(context, "axis_1_time_format", 1);				
+			new OpiInt(widgetContext, "axis_1_time_format", 1);				
 		else 
-			new OpiInt(context, "axis_1_time_format", 0);
+			new OpiInt(widgetContext, "axis_1_time_format", 0);
 		
-		new OpiInt(context, "axis_1_time_format", 0);
-		new OpiInt(context, "axis_2_time_format", 0);
+		new OpiInt(widgetContext, "axis_1_time_format", 0);
+		new OpiInt(widgetContext, "axis_2_time_format", 0);
 		//trace properties
-		new OpiInt(context, "trace_count",r.getNumTraces()); //��������
+		new OpiInt(widgetContext, "trace_count",r.getNumTraces()); //��������
 		
 		//PV X,Y ת��
 		int x=0,y=0;
@@ -94,7 +93,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 		y=0;
 		String[] getXpvs=r.getXPv().getLine(x).split(" ");//ʹ�ÿհ��ַ�ָ��ַ�
 		for(String Xstring:getXpvs){
-			if(y==1) 	new OpiString(context, "trace_"+x+"_x_pv", Xstring);
+			if(y==1) 	new OpiString(widgetContext, "trace_"+x+"_x_pv", Xstring);
 				y++;
 		}
 		}
@@ -103,13 +102,13 @@ public class Opi_xyGraphClass extends OpiWidget {
 		y=0;
 		String[] getYpvs=r.getYPv().getLine(x).split(" ");//ʹ�ÿհ��ַ�ָ��ַ�
 		for(String Ystring:getYpvs){
-			if(y==1) 	new OpiString(context, "trace_"+x+"_y_pv", Ystring);
+			if(y==1) 	new OpiString(widgetContext, "trace_"+x+"_y_pv", Ystring);
 				y++;
 		}
 		}
 		
 		if(r.getAttribute("triggerPv").isInitialized())
-			new OpiString(context, "trigger_pv", r.getTriggerPv());
+			new OpiString(widgetContext, "trigger_pv", r.getTriggerPv());
 		log.debug("Edm_xyGraphClass written.");
 
 	}

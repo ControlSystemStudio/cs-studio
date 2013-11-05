@@ -1,9 +1,12 @@
 package org.csstudio.opibuilder.converter.model;
 
+/**
+ * @author Lei Hu
+ *
+ */
 public class Edm_activeButtonClass extends EdmWidget {
 
 	
-	@EdmAttributeAn @EdmOptionalAn private EdmColor fgColor;
 	@EdmAttributeAn @EdmOptionalAn private EdmColor onColor;
 	@EdmAttributeAn @EdmOptionalAn private EdmColor offColor;
 	@EdmAttributeAn @EdmOptionalAn private EdmColor inconsistentColor;
@@ -11,9 +14,6 @@ public class Edm_activeButtonClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private EdmColor botShadowColor;
 	
 	@EdmAttributeAn @EdmOptionalAn private String controlPv;
-	@EdmAttributeAn @EdmOptionalAn private String visPv;
-	@EdmAttributeAn @EdmOptionalAn private double visMax;
-	@EdmAttributeAn @EdmOptionalAn private double visMin;	
 	@EdmAttributeAn @EdmOptionalAn private String onLabel;
 	@EdmAttributeAn @EdmOptionalAn private String offLabel;
 	
@@ -23,15 +23,6 @@ public class Edm_activeButtonClass extends EdmWidget {
 	}
 
 	
-
-	
-
-	/**
-	 * @return the lineAlarm
-	 */
-	public EdmColor getFgColor() {
-		return fgColor;
-	}
 	public EdmColor getOnColor() {
 		return onColor;
 	}
@@ -51,9 +42,7 @@ public class Edm_activeButtonClass extends EdmWidget {
 	public final String getControlPv() {
 		return controlPv;
 	}	
-	public final String getVisPv() {
-		return visPv;
-	}	
+
 	public final String getOnLabel() {
 		return onLabel;
 	}	
@@ -61,13 +50,5 @@ public class Edm_activeButtonClass extends EdmWidget {
 		return offLabel;
 	}	
 
-
-	public double getVisMax() {
-		return visMax;
-	}
-
-	public double getVisMin() {
-		return visMin;
-	}
 
 }

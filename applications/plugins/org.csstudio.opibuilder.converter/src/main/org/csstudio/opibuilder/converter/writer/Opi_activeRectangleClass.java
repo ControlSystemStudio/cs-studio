@@ -28,33 +28,31 @@ public class Opi_activeRectangleClass extends OpiWidget {
 	public Opi_activeRectangleClass(Context con, Edm_activeRectangleClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);
-		
-		new OpiString(context, "name", name);
-		new OpiColor(context, "foreground_color", r.getLineColor());
+		setName(name);
+		setVersion(version);
+		new OpiColor(widgetContext, "foreground_color", r.getLineColor());
 		
 		if(r.getAttribute("fill").isInitialized())
-			new OpiBoolean(context, "transparent", !r.isFill());
+			new OpiBoolean(widgetContext, "transparent", !r.isFill());
 		
 		if (r.getFillColor().isInitialized()) {
-			new OpiColor(context, "background_color", r.getFillColor());
+			new OpiColor(widgetContext, "background_color", r.getFillColor());
 		}
 		
 		if(r.getAttribute("fillAlarm").isInitialized())
-			new OpiBoolean(context, "backcolor_alarm_sensitive", r.isFillAlarm());
+			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
 		
 		
 		if(r.getAttribute("lineAlarm").isInitialized())
-			new OpiBoolean(context, "forecolor_alarm_sensitive", r.isLineAlarm());
+			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isLineAlarm());
 	
 		if(r.getAttribute("alarmPv").isInitialized())
-			new OpiString(context, "pv_name", r.getAlarmPv());
+			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
 		
 		int line_width = 1;
 		if(r.getAttribute("lineWidth").isInitialized() && (r.getLineWidth() != 0 || r.isFill()))
 			line_width = r.getLineWidth();
-		new OpiInt(context, "line_width", line_width);
+		new OpiInt(widgetContext, "line_width", line_width);
 
 		int lineStyle = 0;
 		if (r.getLineStyle().isInitialized()) {
@@ -69,7 +67,7 @@ public class Opi_activeRectangleClass extends OpiWidget {
 			}
 
 		}
-		new OpiInt(context, "line_style", lineStyle);
+		new OpiInt(widgetContext, "line_style", lineStyle);
 		
 
 		log.debug("Edm_activeRectangleClass written.");
@@ -78,7 +76,7 @@ public class Opi_activeRectangleClass extends OpiWidget {
 	
 	protected void setDefaultPropertyValue(){
 		super.setDefaultPropertyValue();		
-		new OpiBoolean(context, "transparent", true);
+		new OpiBoolean(widgetContext, "transparent", true);
 	}
 
 }

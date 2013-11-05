@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeButtonClass;
 
 /**
@@ -28,16 +27,12 @@ public class Opi_activeButtonClass extends OpiWidget {
 	public Opi_activeButtonClass(Context con, Edm_activeButtonClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);
-		
-		new OpiString(context, "name", name);
-		if(r.getAttribute("fgColor").isInitialized())
-			new OpiColor(context, "foreground_color", r.getFgColor());
-		
+		setName(name);
+		widgetContext.getElement().setAttribute("version", version);
+				
 	
 		if(r.getAttribute("controlPv").isInitialized())
-			new OpiString(context, "pv_name", r.getControlPv());
+			new OpiString(widgetContext, "pv_name", r.getControlPv());
 		
 
 		log.debug("Edm_activeButtonClass written.");

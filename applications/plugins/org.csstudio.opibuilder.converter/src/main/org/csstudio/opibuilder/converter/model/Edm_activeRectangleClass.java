@@ -26,10 +26,6 @@ public class Edm_activeRectangleClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
 	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
 	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
-	@EdmAttributeAn @EdmOptionalAn private String visPv;
-	@EdmAttributeAn @EdmOptionalAn private double visMax;
-	@EdmAttributeAn @EdmOptionalAn private double visMin;
-	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
 
 	public Edm_activeRectangleClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
@@ -94,22 +90,5 @@ public class Edm_activeRectangleClass extends EdmWidget {
 
 	public boolean isFill(){
 		return fill;
-	}
-	
-	
-	public String getVisPv() {
-		return visPv;
-	}
-
-	public double getVisMax() {
-		return visMax;
-	}
-
-	public double getVisMin() {
-		return visMin;
-	}
-
-	public boolean isVisInvert() {
-		return visInvert;
 	}
 }

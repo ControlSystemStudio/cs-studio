@@ -29,32 +29,32 @@ public class Opi_activeArcClass extends OpiWidget {
 		super(con, r);
 		setTypeId(typeId);
 
-		context.getElement().setAttribute("version", version);
+		widgetContext.getElement().setAttribute("version", version);
 		
-		new OpiString(context, "name", name);
-		new OpiColor(context, "foreground_color", r.getLineColor());
+		new OpiString(widgetContext, "name", name);
+		new OpiColor(widgetContext, "foreground_color", r.getLineColor());
 		
 		if(r.getAttribute("fill").isInitialized())
-			new OpiBoolean(context, "fill", r.isFill());
+			new OpiBoolean(widgetContext, "fill", r.isFill());
 		
 		if (r.getFillColor().isInitialized()) {
-			new OpiColor(context, "background_color", r.getFillColor());
+			new OpiColor(widgetContext, "background_color", r.getFillColor());
 		}
 		
 		if(r.getAttribute("fillAlarm").isInitialized())
-			new OpiBoolean(context, "backcolor_alarm_sensitive", r.isFillAlarm());
+			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
 		
 		
 		if(r.getAttribute("lineAlarm").isInitialized())
-			new OpiBoolean(context, "forecolor_alarm_sensitive", r.isLineAlarm());
+			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isLineAlarm());
 	
 		if(r.getAttribute("alarmPv").isInitialized())
-			new OpiString(context, "pv_name", r.getAlarmPv());
+			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
 		
 		int line_width = 1;
 		if(r.getAttribute("lineWidth").isInitialized() && (r.getLineWidth() != 0 || r.isFill()))
 			line_width = r.getLineWidth();
-		new OpiInt(context, "line_width", line_width);
+		new OpiInt(widgetContext, "line_width", line_width);
 
 		int lineStyle = 0;
 		if (r.getLineStyle().isInitialized()) {
@@ -69,19 +69,20 @@ public class Opi_activeArcClass extends OpiWidget {
 			}
 
 		}
-		new OpiInt(context, "line_style", lineStyle);
+		new OpiInt(widgetContext, "line_style", lineStyle);
 		
-		if(r.getAttribute("startAngle").isInitialized())
-			new OpiDouble(context, "start_angle", r.getStartAngle());
-		if(r.getAttribute("startAngle").isInitialized())
-			new OpiDouble(context, "total_angle", r.getTotalAngle());
+		
+		new OpiDouble(widgetContext, "start_angle", 
+				r.getAttribute("startAngle").isInitialized()? r.getStartAngle():0);
+		if(r.getAttribute("totalAngle").isInitialized())
+			new OpiDouble(widgetContext, "total_angle", r.getTotalAngle());
 		log.debug("Edm_activeArcClass written.");
 
 	}
 	
 	protected void setDefaultPropertyValue(){
 		super.setDefaultPropertyValue();		
-		new OpiBoolean(context, "transparent", true);
+		new OpiBoolean(widgetContext, "transparent", true);
 	}
 
 }

@@ -451,6 +451,9 @@ public class EdmDisplayParser extends EdmParser{
 				else {
 					int start = m.start();
 					int end = m.end();
+					if(objType.contains(":")){
+						objType=objType.replace(":", "_");
+					}
 					parseObject(getRoot(), objType, objData);
 					
 					edmData.delete(start, end);

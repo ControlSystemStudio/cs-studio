@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activePipClass;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * @author Matevz
+ * @author Lei Hu, Xihui Chen
  */
 public class Opi_activePipClass extends OpiWidget {
 
@@ -28,17 +28,13 @@ public class Opi_activePipClass extends OpiWidget {
 		super(con, r);
 		setTypeId(typeId);
 
-		context.getElement().setAttribute("version", version);
+		widgetContext.getElement().setAttribute("version", version);
 		
-		new OpiString(context, "name", name);
-		new OpiColor(context, "foreground_color", r.getFgColor());
-		
-		if (r.getBgColor().isInitialized()) {
-			new OpiColor(context, "background_color", r.getBgColor());
-		}
+		new OpiString(widgetContext, "name", name);
+
 		if(r.getAttribute("displaySource").isInitialized() && (r.getDisplaySource().equals("file")))
 		{
-			new OpiString(context, "opi_file", r.getFile().replace(".edl", ".opi"));				
+			new OpiString(widgetContext, "opi_file", r.getFile().replace(".edl", ".opi"));				
 		}
 		log.debug("Edm_activePipClass written.");
 

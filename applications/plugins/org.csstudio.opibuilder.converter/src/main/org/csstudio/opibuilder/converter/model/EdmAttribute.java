@@ -23,6 +23,7 @@ public class EdmAttribute {
 	
 	private boolean required;
 	private boolean initialized;
+	private boolean isExist;
 	
 	private void initDefaultValues() {
 		values = new Vector<String>();
@@ -52,6 +53,8 @@ public class EdmAttribute {
 	 */
 	public EdmAttribute(EdmAttribute genericAttribute) throws EdmException {
 
+		if(genericAttribute!=null)
+			isExist=true;
 		// Multiple specializations test.
 		if (genericAttribute != null && !genericAttribute.getClass().equals(EdmAttribute.class)) {
 			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
@@ -104,6 +107,10 @@ public class EdmAttribute {
 
 	public boolean isInitialized() {
 		return initialized;
+	}
+	
+	public boolean isExistInEDL(){
+		return isExist;
 	}
 	
 	@Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,40 +8,39 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeXTextDspClass;
 
 /**
- * XML conversion class for Edm_activeRectangleClass
- * @author Matevz
+ * XML conversion class for Edm_activeXTextDspClass
+ * @author Xihui Chen
  */
-public class Opi_activeXTextDspClass extends OpiWidget {
+public class Opi_activeXTextDspClass extends Opi_activeXTextDspClass_noedit {
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeXTextDspClass");
 	private static final String typeId = "TextInput";
 	private static final String name = "EDM TextInput";
-	private static final String version = "1.0";
 
 	/**
 	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
 	 */
 	public Opi_activeXTextDspClass(Context con, Edm_activeXTextDspClass r) {
 		super(con, r);
-		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);		
-		new OpiString(context, "name", name);
-		
-		if(r.getAttribute("controlPv").isInitialized())
-		{
-			new OpiString(context, "pv_name", r.getControlPv());
-			new OpiBoolean(context, "actions_from_pv", true);
+		setName(name);
+		if(r.isEditable()){
+			setTypeId(typeId);
+			if(r.isDate())
+				new OpiInt(widgetContext, "selector_type", 2);
+			if(r.isFile()){
+				new OpiInt(widgetContext, "selector_type", 1);		
+				new OpiInt(widgetContext, "file_source", 1);
+				int f=0;
+				if(r.getFileComponent().equals("nameAndExt"))
+					f=1;
+				else if(r.getFileComponent().equals("name"))
+					f=2;
+				new OpiInt(widgetContext, "file_return_part", f);
+			}
 		}
-		if(r.getAttribute("fgColor").isInitialized())
-			new OpiColor(context, "foreground_color", r.getFgColor());
-		if(r.getAttribute("bgColor").isInitialized())
-			new OpiColor(context, "background_color", r.getBgColor());
-		
 		
 
 		log.debug("Edm_activeXTextDspClass written.");

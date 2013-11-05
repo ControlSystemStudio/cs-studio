@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeBarClass;
 
 /**
@@ -29,27 +28,26 @@ public class Opi_activeBarClass extends OpiWidget {
 		super(con, r);
 		setTypeId(typeId);
 
-		context.getElement().setAttribute("version", version);		
-		new OpiString(context, "name", name);
+		widgetContext.getElement().setAttribute("version", version);		
+		new OpiString(widgetContext, "name", name);
 		
-		if(r.getAttribute("showScale").isInitialized())
-			new OpiBoolean(context, "show_scale", false);
-		else
-			new OpiBoolean(context, "show_scale", true);
+		
+		new OpiBoolean(widgetContext, "show_scale", r.isShowScale());
+		new OpiBoolean(widgetContext, "show_markers", false);
 		
 		if(r.getAttribute("border").isInitialized())
-			new OpiInt(context, "border_width", 1);
+			new OpiInt(widgetContext, "border_width", 1);
 		else
-			new OpiInt(context, "border_width", 0);
+			new OpiInt(widgetContext, "border_width", 0);
 		
 		if(r.getAttribute("indicatorPv").isInitialized())
-			new OpiString(context, "pv_name", r.getIndicatorPv());
-		new OpiColor(context, "fill_color", r.getIndicatorColor());
+			new OpiString(widgetContext, "pv_name", r.getIndicatorPv());
+		new OpiColor(widgetContext, "fill_color", r.getIndicatorColor());
 		
 		if(r.getOrientation().equals("vertical"))
-			new OpiBoolean(context, "horizontal", true);
+			new OpiBoolean(widgetContext, "horizontal", true);
 		else
-			new OpiBoolean(context, "horizontal", false);
+			new OpiBoolean(widgetContext, "horizontal", false);
 
 		log.debug("Edm_activeBarClass written.");
 

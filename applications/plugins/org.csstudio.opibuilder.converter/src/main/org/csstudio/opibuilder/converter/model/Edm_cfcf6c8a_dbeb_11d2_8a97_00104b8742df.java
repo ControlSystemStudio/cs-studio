@@ -8,20 +8,20 @@
 package org.csstudio.opibuilder.converter.model;
 
 /**
- * Specific class representing activePngClass widget.
- *
- * @author Matevz, Lei Hu, Xihui Chen
+ * Specific class representing EDM gif widget
+ * @author Xihui Chen
  *
  */
-public class Edm_activePngClass extends EdmWidget {
+public class Edm_cfcf6c8a_dbeb_11d2_8a97_00104b8742df extends EdmWidget {
 
 	@EdmAttributeAn private String file;
+	@EdmAttributeAn @EdmOptionalAn private int refreshRate;
 	@EdmAttributeAn @EdmOptionalAn private boolean uniformSize;
 	@EdmAttributeAn @EdmOptionalAn private boolean fastErase;
 	@EdmAttributeAn @EdmOptionalAn private boolean noErase;
 	
 
-	public Edm_activePngClass(EdmEntity genericEntity) throws EdmException {
+	public Edm_cfcf6c8a_dbeb_11d2_8a97_00104b8742df(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
 	}
 
@@ -30,6 +30,9 @@ public class Edm_activePngClass extends EdmWidget {
 		return file;
 	}
 
+	public int getRefreshRate() {
+		return refreshRate;
+	}
 
 	public boolean isUniformSize() {
 		return uniformSize;

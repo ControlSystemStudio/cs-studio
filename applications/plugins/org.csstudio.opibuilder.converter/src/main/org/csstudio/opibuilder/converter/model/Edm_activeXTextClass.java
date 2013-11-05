@@ -24,10 +24,7 @@ public class Edm_activeXTextClass extends EdmWidget {
 //	@EdmAttributeAn private int w;
 //	@EdmAttributeAn private int h;
 
-	@EdmAttributeAn private EdmFont font;
 
-	@EdmAttributeAn private EdmColor fgColor;
-	@EdmAttributeAn private EdmColor bgColor;
 
 	@EdmAttributeAn private EdmMultilineText value;
 	@EdmAttributeAn @EdmOptionalAn private boolean autoSize;
@@ -35,33 +32,10 @@ public class Edm_activeXTextClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
 	@EdmAttributeAn @EdmOptionalAn private boolean border;
 	@EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
-	@EdmAttributeAn @EdmOptionalAn private boolean fgAlarm;
-	@EdmAttributeAn @EdmOptionalAn private boolean bgAlarm;
 	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
 		
-	@EdmAttributeAn @EdmOptionalAn private String visPv;
-	@EdmAttributeAn @EdmOptionalAn private double visMax;
-	@EdmAttributeAn @EdmOptionalAn private double visMin;
-	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
-	
 	public Edm_activeXTextClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
-	}
-
-
-	/**
-	 * @return the fgAlarm
-	 */
-	public final boolean isFgAlarm() {
-		return fgAlarm;
-	}
-
-
-	/**
-	 * @return the bgAlarm
-	 */
-	public final boolean isBgAlarm() {
-		return bgAlarm;
 	}
 
 
@@ -73,17 +47,7 @@ public class Edm_activeXTextClass extends EdmWidget {
 	}
 
 
-	public EdmFont getFont() {
-		return font;
-	}
 
-	public EdmColor getFgColor() {
-		return fgColor;
-	}
-
-	public EdmColor getBgColor() {
-		return bgColor;
-	}
 
 	public EdmMultilineText getValue() {
 		return value;
@@ -105,19 +69,4 @@ public class Edm_activeXTextClass extends EdmWidget {
 		return useDisplayBg;
 	}
 
-	public String getVisPv() {
-		return visPv;
-	}
-
-	public double getVisMax() {
-		return visMax;
-	}
-
-	public double getVisMin() {
-		return visMin;
-	}
-
-	public boolean isVisInvert() {
-		return visInvert;
-	}
 }

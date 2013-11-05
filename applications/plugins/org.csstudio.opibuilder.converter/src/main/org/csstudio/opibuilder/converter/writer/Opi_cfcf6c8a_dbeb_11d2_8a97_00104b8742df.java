@@ -8,13 +8,13 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.Edm_activePngClass;
+import org.csstudio.opibuilder.converter.model.Edm_cfcf6c8a_dbeb_11d2_8a97_00104b8742df;
 
 /**
- * XML conversion class for Edm_activePngClass
- * @author Lei Hu, Xihui Chen
+ * XML conversion class for EDM gif widget
+ * @author Matevz
  */
-public class Opi_activePngClass extends OpiWidget {
+public class Opi_cfcf6c8a_dbeb_11d2_8a97_00104b8742df extends OpiWidget {
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activePngClass");
 	private static final String typeId = "Image";
@@ -24,11 +24,12 @@ public class Opi_activePngClass extends OpiWidget {
 	/**
 	 * Converts the Edm_activePngClass to OPI Rectangle widget XML.  
 	 */
-	public Opi_activePngClass(Context con, Edm_activePngClass r) {
+	public Opi_cfcf6c8a_dbeb_11d2_8a97_00104b8742df(Context con, Edm_cfcf6c8a_dbeb_11d2_8a97_00104b8742df r) {
 		super(con, r);
 		setTypeId(typeId);
 		setName(name);
-		setVersion(version);		
+		setVersion(version);
+		
 		
 		if(r.getAttribute("file").isInitialized())
 			new OpiString(widgetContext, "image_file", r.getFile());	

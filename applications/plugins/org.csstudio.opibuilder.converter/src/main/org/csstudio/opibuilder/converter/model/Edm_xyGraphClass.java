@@ -7,15 +7,13 @@ public class Edm_xyGraphClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private String yLabel;
 	@EdmAttributeAn @EdmOptionalAn private String y2Label;
 	
-	@EdmAttributeAn @EdmOptionalAn private EdmColor fgColor;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor bgColor;
+
 	@EdmAttributeAn @EdmOptionalAn private EdmColor gridColor;
 	
 	@EdmAttributeAn @EdmOptionalAn private boolean border;
 	@EdmAttributeAn @EdmOptionalAn private boolean plotAreaBorder;
 	@EdmAttributeAn @EdmOptionalAn private EdmMultilineText plotColor;
 	
-	//axis ×ª»»
 	@EdmAttributeAn @EdmOptionalAn private boolean showXAxis;
 	@EdmAttributeAn @EdmOptionalAn private boolean showYAxis;
 	@EdmAttributeAn @EdmOptionalAn private boolean showY2Axis;
@@ -53,12 +51,7 @@ public class Edm_xyGraphClass extends EdmWidget {
 		return y2Label;
 	}
 	
-	public EdmColor getFgColor() {
-		return fgColor;
-	}
-	public EdmColor getBgColor() {
-		return bgColor;
-	}
+
 	public EdmColor getGridColor() {
 		return gridColor;
 	}

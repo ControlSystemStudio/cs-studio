@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeMotifSliderClass;
 
 /**
@@ -29,15 +28,13 @@ public class Opi_activeMotifSliderClass extends OpiWidget {
 		super(con, r);
 		setTypeId(typeId);
 
-		context.getElement().setAttribute("version", version);
+		widgetContext.getElement().setAttribute("version", version);
 		
-		new OpiString(context, "name", name);
+		new OpiString(widgetContext, "name", name);
 		
 		if(r.getAttribute("controlPv").isInitialized())
-			new OpiString(context, "pv_name", r.getControlPv());
-		
-		new OpiColor(context, "foreground_color", r.getFgColor());
-		new OpiColor(context, "background_color", r.getBgColor());
+			new OpiString(widgetContext, "pv_name", r.getControlPv());		
+
 
 		log.debug("Edm_activeMotifSliderClass written.");
 
@@ -45,7 +42,7 @@ public class Opi_activeMotifSliderClass extends OpiWidget {
 	
 	protected void setDefaultPropertyValue(){
 		super.setDefaultPropertyValue();		
-		new OpiBoolean(context, "transparent", true);
+		new OpiBoolean(widgetContext, "transparent", true);
 	}
 
 }
