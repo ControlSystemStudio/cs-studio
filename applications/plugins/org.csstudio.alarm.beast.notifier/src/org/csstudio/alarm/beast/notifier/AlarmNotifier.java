@@ -90,6 +90,9 @@ public class AlarmNotifier {
 	 */
 	public void handleAlarmUpdate(AlarmTreePV pvItem) {
 		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
+		// Avoid to send 'fake' alarms when the PV is enabled for example
+		if (snapshot.getValue().isEmpty())
+			return;
 		// Process PV automated actions
 		if (pvItem.getAutomatedActions() != null) {
 			for (AADataStructure aa : pvItem.getAutomatedActions()) {

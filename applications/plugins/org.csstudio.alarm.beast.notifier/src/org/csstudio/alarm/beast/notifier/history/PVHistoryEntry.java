@@ -66,4 +66,11 @@ public class PVHistoryEntry {
 		return acknowledged;
 	}
 
+	@Override
+	public String toString() {
+		return "PVHistoryEntry [currentSeverity=" + currentSeverity
+				+ ", severity=" + severity + ", acknowledged=" + acknowledged
+				+ "]";
+	}
+
 }
