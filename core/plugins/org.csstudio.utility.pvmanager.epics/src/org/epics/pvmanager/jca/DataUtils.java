@@ -6,6 +6,7 @@ package org.epics.pvmanager.jca;
 
 import gov.aps.jca.dbr.Severity;
 import gov.aps.jca.dbr.Status;
+import gov.aps.jca.dbr.TimeStamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.epics.util.time.TimeDuration;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.util.time.Timestamp;
 
@@ -42,7 +44,8 @@ class DataUtils {
         if (epicsTimeStamp == null)
             return null;
         
-        return org.epics.util.time.Timestamp.of(epicsTimeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970, (int) epicsTimeStamp.nsec());
+        return org.epics.util.time.Timestamp.of(epicsTimeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970, 0)
+                .plus(TimeDuration.ofNanos(epicsTimeStamp.nsec()));
     }
 
     /**
@@ -94,14 +97,20 @@ class DataUtils {
      * @param timeStamp a timestamp
      * @return false if timeStamp is null or represents a UNIX 0 or an Epics 0
      */
-    static boolean isTimeValid(Timestamp timeStamp) {
+    static boolean isTimeValid(TimeStamp timeStamp) {
         if (timeStamp == null)
             return false;
         
-        long sec = timeStamp.getSec();
+        long sec = timeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970;
         if (sec == 0 || sec == TS_EPOCH_SEC_PAST_1970) {
             return false;
         }
+        
+        long nanosec = timeStamp.nsec();
+        if (nanosec < 0 || nanosec > 999_999_999) {
+            return false;
+        }
+        
         return true;
     }
 
