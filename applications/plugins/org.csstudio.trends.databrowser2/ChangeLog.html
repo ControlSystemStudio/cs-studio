@@ -9,8 +9,12 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.trends.databrowser2.</p>
 
-<h2>Version 3.2.1  - 2013-10-22</h2>
+<h2>Version 3.2.11 - 2013-11-06</h2>
 <ul>
+  <li>Fix zoom bug:
+      When scrolling, zooming into 'left' area of plot such that the
+      scrolling gets disabled because 'end' is no longer close to 'now', the
+      start/end times were wrong, using start of the zoomed area as the end.
   <li>'Trace Type' includes "direct" option for Area and Single line that uses a linear connection from sample to sample, no stair-step.</li>
 </ul>
 
