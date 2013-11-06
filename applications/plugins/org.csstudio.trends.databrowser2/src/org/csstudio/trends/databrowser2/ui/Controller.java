@@ -9,7 +9,6 @@ package org.csstudio.trends.databrowser2.ui;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -229,7 +228,6 @@ public class Controller implements ArchiveFetchJobListener
                 	end_spec = AbsoluteTimeParser.format(cal);
                 }
                 // Update model's time range
-                System.out.println("Plot changed to " + start_spec + " .. " + end_spec);
                 try
                 {
                 	model.setTimerange(start_spec, end_spec);
@@ -760,10 +758,6 @@ public class Controller implements ArchiveFetchJobListener
             return;
         final long end_ms = System.currentTimeMillis();
         final long start_ms = end_ms - (long) (model.getTimespan()*1000);
-        
-        
-        System.out.println("Scroll to " + new Date(start_ms) + " ... " + new Date(end_ms));
-        
         plot.setTimeRange(start_ms, end_ms);
         if (scrolling_was_off)
         {   // Scrolling was just turned on.
