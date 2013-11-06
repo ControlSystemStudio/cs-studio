@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.ui;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -197,6 +198,12 @@ public class Controller implements ArchiveFetchJobListener
                     if (dist * 100 / range > 10)
                     {   // Time range 10% away from 'now', disable scrolling
                         model.enableScrolling(false);
+                        // Use absolute start/end time
+                        final Calendar cal = Calendar.getInstance();
+                        cal.setTimeInMillis(start_ms);
+                        start_spec = AbsoluteTimeParser.format(cal);
+                        cal.setTimeInMillis(end_ms);
+                        end_spec = AbsoluteTimeParser.format(cal);
                     }
                     else if (Math.abs(100*(range - (long)(model.getTimespan()*1000))/range) <= 1)
                     {
@@ -207,8 +214,11 @@ public class Controller implements ArchiveFetchJobListener
                         // us about a new time range that resulted from scrolling.
                         return;
                     }
-                    start_spec = "-" + PeriodFormat.formatSeconds(range / 1000.0);
-                    end_spec = RelativeTime.NOW;
+                    else
+                    {   // Still scrolling, adjust relative time, i.e. width of plot
+                        start_spec = "-" + PeriodFormat.formatSeconds(range / 1000.0);
+                        end_spec = RelativeTime.NOW;
+                    }
                 }
                 else
                 {
@@ -750,6 +760,10 @@ public class Controller implements ArchiveFetchJobListener
             return;
         final long end_ms = System.currentTimeMillis();
         final long start_ms = end_ms - (long) (model.getTimespan()*1000);
+        
+        
+        System.out.println("Scroll to " + new Date(start_ms) + " ... " + new Date(end_ms));
+        
         plot.setTimeRange(start_ms, end_ms);
         if (scrolling_was_off)
         {   // Scrolling was just turned on.
