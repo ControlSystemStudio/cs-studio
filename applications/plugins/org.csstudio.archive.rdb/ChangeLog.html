@@ -9,6 +9,14 @@
 
 <p>Version numbers in here refer to the version of the plugin org.csstudio.archive.rdb.</p>
 
+<h2>Version 3.2.11 - 2013-11-06</h2>
+<ul>
+<li>Fix 'cast' error in Linear interpolation.
+    Invocation from Data Browser export for time range that included string samples like "Disconnected", "Archive Off"
+    resulted in <code>ClassCastException: ..VString cannot be cast to .. vtype.Display</code>
+</li>
+</ul>
+
 <h2>Version 3.2.0 - 2013-09-18</h2>
 <ul>
 <li>ArchiveEngine uses PVManager.</li>
