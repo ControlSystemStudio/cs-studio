@@ -26,7 +26,7 @@ public class OpiAttributeTest extends TestCase {
 		// instantiating OpiAttribute
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null,  0, 0);
 		new OpiAttribute(context, name);
 		
 		// testing

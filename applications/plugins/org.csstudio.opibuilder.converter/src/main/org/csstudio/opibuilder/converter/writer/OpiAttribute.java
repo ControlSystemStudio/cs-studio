@@ -27,6 +27,6 @@ public class OpiAttribute {
 	    con.getElement().appendChild(element);
 		
 	    // Move context to this object. 
-		this.context = new Context(con.getDocument(), element, con.getX(), con.getY());
+		this.context = new Context(con.getDocument(), element, con.getRootDisplay(), con.getX(), con.getY());
 	}
 }

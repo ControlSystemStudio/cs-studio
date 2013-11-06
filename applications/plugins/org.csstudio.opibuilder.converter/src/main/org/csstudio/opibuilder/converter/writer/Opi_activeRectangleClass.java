@@ -32,30 +32,30 @@ public class Opi_activeRectangleClass extends OpiWidget {
 		setVersion(version);
 		new OpiColor(widgetContext, "foreground_color", r.getLineColor());
 		
-		if(r.getAttribute("fill").isInitialized())
+		if(r.getAttribute("fill").isExistInEDL())
 			new OpiBoolean(widgetContext, "transparent", !r.isFill());
 		
-		if (r.getFillColor().isInitialized()) {
+		if (r.getFillColor().isExistInEDL()) {
 			new OpiColor(widgetContext, "background_color", r.getFillColor());
 		}
 		
-		if(r.getAttribute("fillAlarm").isInitialized())
+		if(r.getAttribute("fillAlarm").isExistInEDL())
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
 		
 		
-		if(r.getAttribute("lineAlarm").isInitialized())
+		if(r.getAttribute("lineAlarm").isExistInEDL())
 			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isLineAlarm());
 	
-		if(r.getAttribute("alarmPv").isInitialized())
+		if(r.getAttribute("alarmPv").isExistInEDL())
 			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
 		
 		int line_width = 1;
-		if(r.getAttribute("lineWidth").isInitialized() && (r.getLineWidth() != 0 || r.isFill()))
+		if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
 			line_width = r.getLineWidth();
 		new OpiInt(widgetContext, "line_width", line_width);
 
 		int lineStyle = 0;
-		if (r.getLineStyle().isInitialized()) {
+		if (r.getLineStyle().isExistInEDL()) {
 
 			switch (r.getLineStyle().get()) {
 			case EdmLineStyle.SOLID: {

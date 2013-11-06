@@ -33,26 +33,27 @@ public class OpiWidget {
 		parentContext.getElement().appendChild(element);
 		
 		// Move context to this object. 
-		this.widgetContext = new Context(parentContext.getDocument(), element, parentContext.getX(), parentContext.getY());
+		this.widgetContext = new Context(parentContext.getDocument(), 
+				element, parentContext.getRootDisplay(), parentContext.getX(), parentContext.getY());
 		setDefaultPropertyValue();
 		new OpiInt(widgetContext, "x", r.getX() - widgetContext.getX());
 		new OpiInt(widgetContext, "y", r.getY() - widgetContext.getY());
 		new OpiInt(widgetContext, "width", r.getW()+1);
 		new OpiInt(widgetContext, "height", r.getH()+1);
 		
-		if(r.getAttribute("fgColor").isExistInEDL())
+		if(r.getFgColor()!=null)
 			new OpiColor(widgetContext, "foreground_color", r.getFgColor());
-		if(r.getAttribute("bgColor").isExistInEDL())
+		if(r.getBgColor() !=null)
 			new OpiColor(widgetContext, "background_color", r.getBgColor());		
 		if(r.getAttribute("fgAlarm").isExistInEDL())
 			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isFgAlarm());
 		if(r.getAttribute("bgAlarm").isExistInEDL())
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isBgAlarm());
-		if(r.getAttribute("font").isExistInEDL())
+		if(r.getFont()!=null)
 			new OpiFont(widgetContext, "font", r.getFont());
 		
 		EdmAttribute visPvAttr = r.getAttribute("visPv");
-		if(visPvAttr!=null && visPvAttr.isInitialized()){			
+		if(visPvAttr!=null && visPvAttr.isExistInEDL()){			
 			LinkedHashMap<String, Element> expressions = 
 					new LinkedHashMap<String, Element>();	
 			Element valueNode = parentContext.getDocument().createElement("value");

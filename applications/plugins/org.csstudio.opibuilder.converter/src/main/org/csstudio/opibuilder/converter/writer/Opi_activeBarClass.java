@@ -35,12 +35,12 @@ public class Opi_activeBarClass extends OpiWidget {
 		new OpiBoolean(widgetContext, "show_scale", r.isShowScale());
 		new OpiBoolean(widgetContext, "show_markers", false);
 		
-		if(r.getAttribute("border").isInitialized())
+		if(r.getAttribute("border").isExistInEDL())
 			new OpiInt(widgetContext, "border_width", 1);
 		else
 			new OpiInt(widgetContext, "border_width", 0);
 		
-		if(r.getAttribute("indicatorPv").isInitialized())
+		if(r.getAttribute("indicatorPv").isExistInEDL())
 			new OpiString(widgetContext, "pv_name", r.getIndicatorPv());
 		new OpiColor(widgetContext, "fill_color", r.getIndicatorColor());
 		

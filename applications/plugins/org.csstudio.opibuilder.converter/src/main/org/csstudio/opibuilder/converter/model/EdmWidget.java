@@ -89,7 +89,7 @@ public class EdmWidget extends EdmEntity {
 
 
 	public final EdmFont getFont() {
-		return font;
+		return font;		
 	}
 
 

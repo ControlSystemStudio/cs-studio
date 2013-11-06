@@ -34,7 +34,7 @@ public class Opi_TextupdateClassTest extends TestCase {
 		assertTrue(d.getSubEntity(0) instanceof Edm_TextupdateClass);
 		Edm_TextupdateClass t = (Edm_TextupdateClass)d.getSubEntity(0);
 
-		Context context = new Context(doc, root, 0, 0);
+		Context context = new Context(doc, root, d, 0, 0);
 		Opi_TextupdateClass o = new Opi_TextupdateClass(context, t);
 		assertTrue(o instanceof OpiWidget);
 

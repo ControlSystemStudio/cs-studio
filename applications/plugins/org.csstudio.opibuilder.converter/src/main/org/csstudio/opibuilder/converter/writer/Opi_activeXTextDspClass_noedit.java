@@ -30,7 +30,7 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
 		setName(name);
 		setVersion(version);
 		
-		if(r.getAttribute("controlPv").isInitialized())
+		if(r.getAttribute("controlPv").isExistInEDL())
 		{
 			new OpiString(widgetContext, "pv_name", r.getControlPv());
 		}

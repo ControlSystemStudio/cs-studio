@@ -27,7 +27,7 @@ public class OpiDoubleTest extends TestCase {
 		String val = "12.3";
 		EdmDouble d = new EdmDouble(new EdmAttribute(val), true);
 		
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null, 0, 0);
 		OpiDouble o = new OpiDouble(context, name, d);
 		assertTrue(o instanceof OpiAttribute);
 		

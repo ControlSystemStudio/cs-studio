@@ -28,7 +28,7 @@ public class OpiColorTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null, 0, 0);
 		new OpiColor(context, "color", c);
 		//XMLFileHandler.writeXML(doc);		
 		
@@ -46,7 +46,7 @@ public class OpiColorTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null, 0, 0);
 		new OpiColor(context, "color", c);
 		//XMLFileHandler.writeXML(doc);		
 		

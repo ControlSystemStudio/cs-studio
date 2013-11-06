@@ -32,7 +32,7 @@ public class Opi_activePipClass extends OpiWidget {
 		
 		new OpiString(widgetContext, "name", name);
 
-		if(r.getAttribute("displaySource").isInitialized() && (r.getDisplaySource().equals("file")))
+		if(r.getAttribute("displaySource").isExistInEDL() && (r.getDisplaySource().equals("file")))
 		{
 			new OpiString(widgetContext, "opi_file", r.getFile().replace(".edl", ".opi"));				
 		}

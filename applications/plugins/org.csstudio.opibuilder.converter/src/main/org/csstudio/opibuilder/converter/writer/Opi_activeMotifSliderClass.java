@@ -32,7 +32,7 @@ public class Opi_activeMotifSliderClass extends OpiWidget {
 		
 		new OpiString(widgetContext, "name", name);
 		
-		if(r.getAttribute("controlPv").isInitialized())
+		if(r.getAttribute("controlPv").isExistInEDL())
 			new OpiString(widgetContext, "pv_name", r.getControlPv());		
 
 

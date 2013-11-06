@@ -31,7 +31,7 @@ public class Opi_activeButtonClass extends OpiWidget {
 		widgetContext.getElement().setAttribute("version", version);
 				
 	
-		if(r.getAttribute("controlPv").isInitialized())
+		if(r.getAttribute("controlPv").isExistInEDL())
 			new OpiString(widgetContext, "pv_name", r.getControlPv());
 		
 

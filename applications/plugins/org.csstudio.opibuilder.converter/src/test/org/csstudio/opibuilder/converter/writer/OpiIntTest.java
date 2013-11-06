@@ -27,7 +27,7 @@ public class OpiIntTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null, 0, 0);
 		OpiInt o = new OpiInt(context, name, i);
 		assertTrue(o instanceof OpiAttribute);
 		

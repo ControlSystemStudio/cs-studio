@@ -34,7 +34,7 @@ public class Opi_activeRectangleClassTest extends TestCase {
 		assertTrue(d.getSubEntity(0) instanceof Edm_activeRectangleClass);
 		Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getSubEntity(0);
 
-		Context context = new Context(doc, root, 0, 0);
+		Context context = new Context(doc, root, d, 0, 0);
 		Opi_activeRectangleClass o = new Opi_activeRectangleClass(context, r);
 		assertTrue(o instanceof OpiWidget);
 

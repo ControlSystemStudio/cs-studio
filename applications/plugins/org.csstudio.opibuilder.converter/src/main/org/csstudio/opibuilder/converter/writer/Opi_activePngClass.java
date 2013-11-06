@@ -30,7 +30,7 @@ public class Opi_activePngClass extends OpiWidget {
 		setName(name);
 		setVersion(version);		
 		
-		if(r.getAttribute("file").isInitialized())
+		if(r.getAttribute("file").isExistInEDL())
 			new OpiString(widgetContext, "image_file", r.getFile());	
 
 		log.debug("Edm_activePngClass written.");

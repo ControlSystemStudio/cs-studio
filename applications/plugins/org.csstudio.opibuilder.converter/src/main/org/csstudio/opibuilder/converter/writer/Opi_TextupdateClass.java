@@ -36,7 +36,7 @@ public class Opi_TextupdateClass extends OpiWidget {
 		new OpiBoolean(widgetContext, "transparent", !t.isFill());
 		
 		
-		if (t.getAttribute("fontAlign").isInitialized()){
+		if (t.getAttribute("fontAlign").isExistInEDL()){
 			int align = 0;
 			if(t.getFontAlign().equals("right"))
 				align = 2;
@@ -47,12 +47,12 @@ public class Opi_TextupdateClass extends OpiWidget {
 		}
 			
 		
-		if (t.getAttribute("lineWidth").isInitialized()) { 
+		if (t.getAttribute("lineWidth").isExistInEDL()) { 
 			new OpiInt(widgetContext, "border_width", t.getLineWidth());
 			new OpiInt(widgetContext, "border_style", 1);
 		}
 		
-		if(t.getAttribute("mode").isInitialized()){
+		if(t.getAttribute("mode").isExistInEDL()){
 			int mode = 0;
 			if(t.getDisplayMode().equals("decimal"))
 				mode =1;
@@ -63,10 +63,10 @@ public class Opi_TextupdateClass extends OpiWidget {
 			new OpiInt(widgetContext, "format_type", mode);
 		}
 		
-		if(t.getAttribute("precision").isInitialized())
+		if(t.getAttribute("precision").isExistInEDL())
 			new OpiInt(widgetContext, "precision", t.getPrecision());	
 		
-		boolean lineAlarm = t.getAttribute("lineAlarm").isInitialized() && t.isLineAlarm();
+		boolean lineAlarm = t.getAttribute("lineAlarm").isExistInEDL() && t.isLineAlarm();
 		new OpiBoolean(widgetContext, "border_alarm_sensitive", lineAlarm);
 		
 

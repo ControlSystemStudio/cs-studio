@@ -51,7 +51,7 @@ public class Edm_activeXTextDspClass_noedit extends EdmWidget {
 
 
 	public String getFontAlign() {
-		if(getAttribute("fontAlign").isInitialized())
+		if(getAttribute("fontAlign").isExistInEDL())
 			return fontAlign;
 		return "left";
 	}

@@ -35,7 +35,7 @@ public class Opi_activeXTextClassTest extends TestCase {
 		assertTrue(d.getSubEntity(6) instanceof Edm_activeXTextClass);
 		Edm_activeXTextClass t = (Edm_activeXTextClass)d.getSubEntity(6);
 
-		Context context = new Context(doc, root, 0, 0);
+		Context context = new Context(doc, root, d, 0, 0);
 		Opi_activeXTextClass o = new Opi_activeXTextClass(context, t);
 		assertTrue(o instanceof OpiWidget);
 

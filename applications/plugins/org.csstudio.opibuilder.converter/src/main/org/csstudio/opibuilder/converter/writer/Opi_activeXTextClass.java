@@ -26,7 +26,7 @@ public class Opi_activeXTextClass extends OpiWidget {
 	 */
 	public Opi_activeXTextClass(Context con, Edm_activeXTextClass t) {
 		super(con,t);
-		if(t.getAttribute("alarmPv").isInitialized())
+		if(t.getAttribute("alarmPv").isExistInEDL())
 			setTypeId("TextUpdate");
 		else 
 			setTypeId(typeId);
@@ -36,27 +36,27 @@ public class Opi_activeXTextClass extends OpiWidget {
 		
 		new OpiString(widgetContext, "text", t.getValue().get());
 		
-		boolean autoSize = t.getAttribute("autoSize").isInitialized() && t.isAutoSize();
+		boolean autoSize = t.getAttribute("autoSize").isExistInEDL() && t.isAutoSize();
 		new OpiBoolean(widgetContext, "auto_size", autoSize);
 		
 		// There is no border (border style == 0) when border attribute is not set. 
 		int borderStyle = 0;
-		if (t.getAttribute("border").isInitialized() && t.isBorder()) {
+		if (t.getAttribute("border").isExistInEDL() && t.isBorder()) {
 			// From EDM C code it looks like activeXText always uses solid style. 
 			borderStyle = 1;
 		}
 		new OpiInt(widgetContext, "border_style", borderStyle);
 		
-		if (t.getAttribute("lineWidth").isInitialized()) {
+		if (t.getAttribute("lineWidth").isExistInEDL()) {
 			new OpiInt(widgetContext, "border_width", t.getLineWidth());
 		}
 		
 		new OpiColor(widgetContext, "border_color", t.getFgColor());
 				
-		boolean useDisplayBg = t.getAttribute("useDisplayBg").isInitialized() && t.isUseDisplayBg();  
+		boolean useDisplayBg = t.getAttribute("useDisplayBg").isExistInEDL() && t.isUseDisplayBg();  
 		new OpiBoolean(widgetContext, "transparent", useDisplayBg);
 		
-		if(t.getAttribute("alarmPv").isInitialized()){
+		if(t.getAttribute("alarmPv").isExistInEDL()){
 			new OpiString(widgetContext, "pv_name", t.getAlarmPv());
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", t.isBgAlarm());
 			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", t.isFgAlarm());

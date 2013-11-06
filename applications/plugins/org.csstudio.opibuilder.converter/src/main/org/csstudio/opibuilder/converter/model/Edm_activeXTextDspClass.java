@@ -44,7 +44,7 @@ public class Edm_activeXTextDspClass extends Edm_activeXTextDspClass_noedit {
 	}	
 	
 	public String getFileComponent() {
-		if(getAttribute("fileComponent").isInitialized())
+		if(getAttribute("fileComponent").isExistInEDL())
 			return fileComponent;
 		return "";
 	}

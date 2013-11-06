@@ -33,7 +33,7 @@ public class Opi_activeLineClass extends OpiWidget {
 		super(con, r);
 
 		// set it as ployline or polygon
-		if (r.getAttribute("fill").isInitialized() && r.isFill()) {
+		if (r.getAttribute("fill").isExistInEDL() && r.isFill()) {
 			setTypeId(typeId_polygon);
 			isPolygon = true;
 			new OpiColor(widgetContext, "line_color", r.getLineColor());
@@ -45,7 +45,7 @@ public class Opi_activeLineClass extends OpiWidget {
 			setTypeId(typeId_polyline);
 			new OpiColor(widgetContext, "background_color", r.getLineColor());
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isLineAlarm());
-			if (r.getAttribute("arrows").isInitialized()) {
+			if (r.getAttribute("arrows").isExistInEDL()) {
 				int a = 0;
 				if (r.getArrows().equals("from"))
 					a = 1;
@@ -65,7 +65,7 @@ public class Opi_activeLineClass extends OpiWidget {
 		new OpiPointsList(widgetContext, "points", r.getXPoints(), r.getYPoints());
 		
 
-		if (r.getAttribute("alarmPv").isInitialized())
+		if (r.getAttribute("alarmPv").isExistInEDL())
 			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
 
 		new OpiInt(widgetContext, "line_width", r.getLineWidth() == 0 ? 1 : r.getLineWidth());
@@ -79,7 +79,7 @@ public class Opi_activeLineClass extends OpiWidget {
 		 * The alternative would be to use lineWidth?
 		 */
 		int lineStyle = 0;
-		if (r.getLineStyle().isInitialized()) {
+		if (r.getLineStyle().isExistInEDL()) {
 
 			switch (r.getLineStyle().get()) {
 			case EdmLineStyle.SOLID: {

@@ -30,7 +30,7 @@ public class OpiBooleanTest extends TestCase {
 		// instantiating OpiBoolean
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null, 0, 0);
 		OpiBoolean o = new OpiBoolean(context, name, bT);
 		assertTrue(o instanceof OpiAttribute);
 		new OpiBoolean(context, name, bF);

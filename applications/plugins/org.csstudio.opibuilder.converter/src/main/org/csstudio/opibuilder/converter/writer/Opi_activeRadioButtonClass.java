@@ -30,7 +30,7 @@ public class Opi_activeRadioButtonClass extends OpiWidget {
 		setName(name);
 		setVersion(version);
 		
-		if(r.getAttribute("controlPv").isInitialized())
+		if(r.getAttribute("controlPv").isExistInEDL())
 		{
 			new OpiString(widgetContext, "pv_name", r.getControlPv());
 			new OpiBoolean(widgetContext, "items_from_pv", true);

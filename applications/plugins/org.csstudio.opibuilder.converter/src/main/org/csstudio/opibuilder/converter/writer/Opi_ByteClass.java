@@ -30,19 +30,19 @@ public class Opi_ByteClass extends OpiWidget {
 		setName(name);
 		setVersion(version);
 		
-		if (r.getOnColor().isInitialized()) {
+		if (r.getOnColor().isExistInEDL()) {
 			new OpiColor(widgetContext, "on_color", r.getOnColor());
 		}
-		if (r.getOffColor().isInitialized()) {
+		if (r.getOffColor().isExistInEDL()) {
 			new OpiColor(widgetContext, "off_color", r.getOffColor());
 		}
-		if(r.getAttribute("controlPv").isInitialized())
+		if(r.getAttribute("controlPv").isExistInEDL())
 			new OpiString(widgetContext, "pv_name", r.getControlPv());
-		if(r.getAttribute("endian").isInitialized())
+		if(r.getAttribute("endian").isExistInEDL())
 			new OpiBoolean(widgetContext, "horizontal", false);
-		if(r.getAttribute("numBits").isInitialized())
+		if(r.getAttribute("numBits").isExistInEDL())
 			new OpiInt(widgetContext, "numBits", r.getNumBits());
-		if(r.getAttribute("shift").isInitialized())
+		if(r.getAttribute("shift").isExistInEDL())
 			new OpiInt(widgetContext, "startBit", r.getShift());
 		log.debug("Edm_ByteClass written.");
 
