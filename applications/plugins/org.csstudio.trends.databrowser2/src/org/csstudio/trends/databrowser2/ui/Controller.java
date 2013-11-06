@@ -197,6 +197,12 @@ public class Controller implements ArchiveFetchJobListener
                     if (dist * 100 / range > 10)
                     {   // Time range 10% away from 'now', disable scrolling
                         model.enableScrolling(false);
+                        // Use absolute start/end time
+                        final Calendar cal = Calendar.getInstance();
+                        cal.setTimeInMillis(start_ms);
+                        start_spec = AbsoluteTimeParser.format(cal);
+                        cal.setTimeInMillis(end_ms);
+                        end_spec = AbsoluteTimeParser.format(cal);
                     }
                     else if (Math.abs(100*(range - (long)(model.getTimespan()*1000))/range) <= 1)
                     {
@@ -207,8 +213,11 @@ public class Controller implements ArchiveFetchJobListener
                         // us about a new time range that resulted from scrolling.
                         return;
                     }
-                    start_spec = "-" + PeriodFormat.formatSeconds(range / 1000.0);
-                    end_spec = RelativeTime.NOW;
+                    else
+                    {   // Still scrolling, adjust relative time, i.e. width of plot
+                        start_spec = "-" + PeriodFormat.formatSeconds(range / 1000.0);
+                        end_spec = RelativeTime.NOW;
+                    }
                 }
                 else
                 {
@@ -219,7 +228,6 @@ public class Controller implements ArchiveFetchJobListener
                 	end_spec = AbsoluteTimeParser.format(cal);
                 }
                 // Update model's time range
-                System.out.println("Plot changed to " + start_spec + " .. " + end_spec);
                 try
                 {
                 	model.setTimerange(start_spec, end_spec);
