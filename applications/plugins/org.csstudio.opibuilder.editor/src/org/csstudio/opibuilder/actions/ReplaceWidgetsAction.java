@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.commands.WidgetCreateCommand;
-import org.csstudio.opibuilder.commands.WidgetDeleteCommand;
+import org.csstudio.opibuilder.commands.ReplaceWidgetCommand;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.WidgetsService;
@@ -63,12 +62,8 @@ public class ReplaceWidgetsAction extends SelectionAction {
 					continue;				
 				widgetModel.setPropertyValue(prop_id, targetWidget.getPropertyValue(prop_id));				
 			}
-			cmd.add(new WidgetDeleteCommand(targetWidget.getParent(), targetWidget));	
-			cmd.add(new WidgetCreateCommand(widgetModel, targetWidget.getParent(),
-					targetWidget.getBounds(),true));
-					
+			cmd.add(new ReplaceWidgetCommand(targetWidget.getParent(), targetWidget, widgetModel));					
 		}
-
 		
 		return cmd;
 		
@@ -78,7 +73,7 @@ public class ReplaceWidgetsAction extends SelectionAction {
 	@Override
 	public void run() {
 		WidgetsSelectDialog dialog = new WidgetsSelectDialog(
-				getWorkbenchPart().getSite().getShell(), 1);		
+				getWorkbenchPart().getSite().getShell(), 1, false);		
 		dialog.setDefaultSelectedWidgetID("org.csstudio.opibuilder.widgets.NativeText"); //$NON-NLS-1$
 		if(dialog.open() == Window.OK){
 			String typeID = dialog.getOutput();
