@@ -38,27 +38,29 @@ public class AutoCompleteChannelFinderProvider implements IAutoCompleteProvider 
     @Override
     public AutoCompleteResult listResult(ContentDescriptor desc, int limit) {
 	AutoCompleteResult result = new AutoCompleteResult();
-	if (client == null) {
-	    client = ChannelFinder.getClient();
-	}
-	String trimmedName = AutoCompleteHelper.trimWildcards(desc.getValue().trim());
-	Pattern namePattern = AutoCompleteHelper.convertToPattern(trimmedName);
-	int count = 0;
-	for (Channel channel : client.findByName("*" + trimmedName + "*")) {
-	    if (count < limit) {
-		Proposal proposal = new Proposal(channel.getName(), false);
-		Matcher m = namePattern.matcher(channel.getName());
-		if (m.find()) {
-		    proposal.addStyle(ProposalStyle.getDefault(m.start(), m.end() - 1));
-		    result.addProposal(proposal);
-		    count++;
+	if(desc.getValue().trim().length() > 8){
+	    if (client == null) {
+		client = ChannelFinder.getClient();
+	    }
+	    String trimmedName = AutoCompleteHelper.trimWildcards(desc.getValue().trim());
+	    Pattern namePattern = AutoCompleteHelper.convertToPattern(trimmedName);
+	    int count = 0;
+	    for (Channel channel : client.findByName("*" + trimmedName + "*")) {
+		if (count < limit) {
+		    Proposal proposal = new Proposal(channel.getName(), false);
+		    Matcher m = namePattern.matcher(channel.getName());
+		    if (m.find()) {
+			proposal.addStyle(ProposalStyle.getDefault(m.start(), m.end() - 1));
+			result.addProposal(proposal);
+			count++;
+		    }
+		} else {
+		    result.setCount(count);
+		    return result;
 		}
-	    } else {
-		result.setCount(count);
-		return result;
-	    }	    
-	}
+	    }
 	result.setCount(count);
+	}
 	return result;
     }
 
