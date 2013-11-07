@@ -62,6 +62,8 @@ public class DBContext implements Serializable {
 	}
 
 	public Record getRecord(String name) {
+		if (records.get(name) == null)
+			return null;
 		return records.get(name).get(0);
 	}
 

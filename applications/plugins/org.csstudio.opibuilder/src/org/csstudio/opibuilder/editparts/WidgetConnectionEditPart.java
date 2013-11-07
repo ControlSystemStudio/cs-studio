@@ -181,11 +181,16 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
 
 						@Override
 						protected void showConnectionMoveFeedback(
-								ReconnectRequest request) {							
+								ReconnectRequest request) {
+							EditPolicy connectionHandlesEditpolicy = getEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE);
+							if(connectionHandlesEditpolicy !=null && connectionHandlesEditpolicy instanceof ManhattanBendpointEditPolicy){
+								((ManhattanBendpointEditPolicy)connectionHandlesEditpolicy).removeSelectionHandles();
+							}
 							if (getConnection().getConnectionRouter() instanceof FixedPointsConnectionRouter) {
 								originalRouter = getConnection()
 										.getConnectionRouter();
 								originalConstraint = originalRouter.getConstraint(getConnection());
+								
 								getConnection().setConnectionRouter(
 										new ManhattanConnectionRouter());
 							}

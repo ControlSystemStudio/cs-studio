@@ -198,4 +198,14 @@ public class Proposal implements Comparable<Proposal> {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Proposal [value=" + value + ", description=" + description
+				+ ", styles=" + styles + ", isPartial=" + isPartial
+				+ ", isFunction=" + isFunction + ", startWithContent="
+				+ startWithContent + ", occurrence=" + occurrence
+				+ ", insertionPos=" + insertionPos + ", originalValue="
+				+ originalValue + ", tooltips=" + tooltips + "]";
+	}
+
 }
