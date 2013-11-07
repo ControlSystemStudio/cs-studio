@@ -73,7 +73,7 @@ public class AutomatedAction extends Action
 			AutomatedActionFactory factory = AutomatedActionFactory.getInstance();
 			factory.init(NotifierUtils.getActions());
 			// Initialize automated action
-			IAutomatedAction action = factory.getNotificationAction(item, auto_action);
+			IAutomatedAction action = factory.getNotificationAction(item, auto_action, true);
 			if (action == null)
 				throw new Exception("Failed to create automated action");
 			// Initialize alarms
