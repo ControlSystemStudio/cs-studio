@@ -9,12 +9,12 @@ package org.csstudio.opibuilder.converter.model;
 
 
 /**
- * Specific class representing multi-EdmColor property.
+ * Specific class representing multi-EdmString property.
  *
  * @author Xihui Chen
  *
  */
-public class EdmMultiColors extends AbstractEdmMultiAttributes<EdmColor> {
+public class EdmMultiStrings extends AbstractEdmMultiAttributes<EdmString> {
 
 
 	/**
@@ -24,14 +24,14 @@ public class EdmMultiColors extends AbstractEdmMultiAttributes<EdmColor> {
 	 * @param required false if this attribute is optional, else true
 	 * @throws EdmException if EdmAttribute contains invalid data.
 	 */
-	public EdmMultiColors(EdmAttribute genericEntity, boolean required) throws EdmException {
+	public EdmMultiStrings(EdmAttribute genericEntity, boolean required) throws EdmException {
 		super(genericEntity, required);
 
 	}
 	
     @Override
-    protected EdmColor createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
-    	return new EdmColor(genericEntity, false);
+    protected EdmString createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
+    	return new EdmString(genericEntity, false);
     }
 
 	

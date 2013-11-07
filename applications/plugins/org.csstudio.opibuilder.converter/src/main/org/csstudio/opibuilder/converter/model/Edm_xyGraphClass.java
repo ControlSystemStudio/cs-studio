@@ -49,7 +49,7 @@ public class Edm_xyGraphClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private String yAxisSrc; 
 	@EdmAttributeAn @EdmOptionalAn private String y2AxisSrc; 
 	
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiColors plotColor;
+	
 	
 	
 	//------------
@@ -65,17 +65,347 @@ public class Edm_xyGraphClass extends EdmWidget {
 	
 	// trace properties
 	@EdmAttributeAn @EdmOptionalAn private int numTraces;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultilineText xPv;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultilineText yPv;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings xPv;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings yPv;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiColors plotColor;
 	
+	//----
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotStyle;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiInts lineThickness;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings lineStyle;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotUpdateMode;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotSymbolType;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans useY2Axis;	
 	
 	public Edm_xyGraphClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
 	}
 
 	
+	
+	
 
 	
+
+	public String getxLabel() {
+		return xLabel;
+	}
+
+
+
+
+
+
+
+	public String getyLabel() {
+		return yLabel;
+	}
+
+
+
+
+
+
+
+	public boolean isAutoScaleBothDirections() {
+		return autoScaleBothDirections;
+	}
+
+
+
+
+
+
+
+	public double getAutoScaleThreshPct() {
+		return autoScaleThreshPct;
+	}
+
+
+
+
+
+
+
+	public String getPlotMode() {
+		return plotMode;
+	}
+
+
+
+
+
+
+
+	public int getnPts() {
+		return nPts;
+	}
+
+
+
+
+
+
+
+	public int getUpdateTimerMs() {
+		return updateTimerMs;
+	}
+
+
+
+
+
+
+
+	public String getResetPv() {
+		return resetPv;
+	}
+
+
+
+
+
+
+
+	public String getResetMode() {
+		return resetMode;
+	}
+
+
+
+
+
+
+
+	public double getxMin() {
+		return xMin;
+	}
+
+
+
+
+
+
+
+	public double getyMin() {
+		return yMin;
+	}
+
+
+
+
+
+
+
+	public double getY2Min() {
+		return y2Min;
+	}
+
+
+
+
+
+
+
+	public double getxMax() {
+		return xMax;
+	}
+
+
+
+
+
+
+
+	public double getyMax() {
+		return yMax;
+	}
+
+
+
+
+
+
+
+	public double getY2Max() {
+		return y2Max;
+	}
+
+
+
+
+
+
+
+	public boolean isxShowMajorGrid() {
+		return xShowMajorGrid;
+	}
+
+
+
+
+
+
+
+	public boolean isyShowMajorGrid() {
+		return yShowMajorGrid;
+	}
+
+
+
+
+
+
+
+	public boolean isY2ShowMajorGrid() {
+		return y2ShowMajorGrid;
+	}
+
+
+
+
+
+
+
+	public String getxAxisSrc() {
+		return xAxisSrc;
+	}
+
+
+
+
+
+
+
+	public String getyAxisSrc() {
+		return yAxisSrc;
+	}
+
+
+
+
+
+
+
+	public String getY2AxisSrc() {
+		return y2AxisSrc;
+	}
+
+
+
+
+
+
+
+	public String getxAxisStyle() {
+		return xAxisStyle;
+	}
+
+
+
+
+
+
+
+	public String getxAxisTimeFormat() {
+		return xAxisTimeFormat;
+	}
+
+
+
+
+
+
+
+	public String getyAxisStyle() {
+		return yAxisStyle;
+	}
+
+
+
+
+
+
+
+	public EdmMultiStrings getxPv() {
+		return xPv;
+	}
+
+
+
+
+
+
+
+	public EdmMultiStrings getyPv() {
+		return yPv;
+	}
+
+
+
+
+
+
+
+	public EdmMultiStrings getPlotStyle() {
+		return plotStyle;
+	}
+
+
+
+
+
+
+
+	public EdmMultiInts getLineThickness() {
+		return lineThickness;
+	}
+
+
+
+
+
+
+
+	public EdmMultiStrings getLineStyle() {
+		return lineStyle;
+	}
+
+
+
+
+
+
+
+	public EdmMultiStrings getPlotUpdateMode() {
+		return plotUpdateMode;
+	}
+
+
+
+
+
+
+
+	public EdmMultiStrings getPlotSymbolType() {
+		return plotSymbolType;
+	}
+
+
+
+
+
+
+
+	public EdmMultiBooleans getUseY2Axis() {
+		return useY2Axis;
+	}
+
+
+
+
+
+
 
 	/**
 	 * @return the lineAlarm
@@ -132,10 +462,10 @@ public class Edm_xyGraphClass extends EdmWidget {
 	public final EdmMultiColors getPlotColor() {
 		return plotColor;
 	}	
-	public final EdmMultilineText getXPv() {
+	public final EdmMultiStrings getXPv() {
 		return xPv;
 	}	
-	public final EdmMultilineText getYPv() {
+	public final EdmMultiStrings getYPv() {
 		return yPv;
 	}
 	public int getNumTraces() {

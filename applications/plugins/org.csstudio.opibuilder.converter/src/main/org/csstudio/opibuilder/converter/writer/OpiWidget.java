@@ -41,15 +41,15 @@ public class OpiWidget {
 		new OpiInt(widgetContext, "width", r.getW()+1);
 		new OpiInt(widgetContext, "height", r.getH()+1);
 		
-		if(r.getFgColor()!=null)
+		if(r.getFgColor().isExistInEDL())
 			new OpiColor(widgetContext, "foreground_color", r.getFgColor());
-		if(r.getBgColor() !=null)
+		if(r.getBgColor().isExistInEDL())
 			new OpiColor(widgetContext, "background_color", r.getBgColor());		
 		if(r.getAttribute("fgAlarm").isExistInEDL())
 			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isFgAlarm());
 		if(r.getAttribute("bgAlarm").isExistInEDL())
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isBgAlarm());
-		if(r.getFont()!=null)
+		if(r.getFont().isExistInEDL())
 			new OpiFont(widgetContext, "font", r.getFont());
 		
 		EdmAttribute visPvAttr = r.getAttribute("visPv");

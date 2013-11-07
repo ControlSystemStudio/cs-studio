@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,12 +9,12 @@ package org.csstudio.opibuilder.converter.model;
 
 
 /**
- * Specific class representing multi-EdmColor property.
+ * Specific class representing multi-EdmFont property.
  *
  * @author Xihui Chen
  *
  */
-public class EdmMultiColors extends AbstractEdmMultiAttributes<EdmColor> {
+public class EdmMultiFonts extends AbstractEdmMultiAttributes<EdmFont> {
 
 
 	/**
@@ -24,14 +24,14 @@ public class EdmMultiColors extends AbstractEdmMultiAttributes<EdmColor> {
 	 * @param required false if this attribute is optional, else true
 	 * @throws EdmException if EdmAttribute contains invalid data.
 	 */
-	public EdmMultiColors(EdmAttribute genericEntity, boolean required) throws EdmException {
+	public EdmMultiFonts(EdmAttribute genericEntity, boolean required) throws EdmException {
 		super(genericEntity, required);
 
 	}
 	
     @Override
-    protected EdmColor createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
-    	return new EdmColor(genericEntity, false);
+    protected EdmFont createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
+    	return new EdmFont(genericEntity, false);
     }
 
 	
