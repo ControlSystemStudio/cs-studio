@@ -21,7 +21,14 @@ import org.w3c.dom.Node;
 public class OpiRule{
 
 	/**
-	 * Creates an element with the given rule value.
+	 * Creates an OPI Rule property.
+	 * @param widgetContext
+	 * @param ruleName
+	 * @param prop_id opi property id
+	 * @param output_exp true if output expression
+	 * @param pvNames PV inputs of the rule
+	 * @param expressions The expressions list. Key is the boolean expression, Value is 
+	 * the value xml element.
 	 */
 	public OpiRule(Context widgetContext, String ruleName, String prop_id, boolean output_exp,
 			List<String> pvNames, LinkedHashMap<String, Element> expressions) {

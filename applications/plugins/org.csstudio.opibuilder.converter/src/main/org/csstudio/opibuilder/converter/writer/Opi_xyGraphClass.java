@@ -110,31 +110,48 @@ public class Opi_xyGraphClass extends OpiWidget {
 			new OpiString(widgetContext, "trigger_pv", r.getTriggerPv());
 		
 
-		
-		//axis properties
-		for(int i=0; i<2; i++){
-			new OpiBoolean(widgetContext, "axis_"+i+"_auto_scale", r.isAutoScaleBothDirections());
-			new OpiDouble(widgetContext, "axis_"+i+"_auto_scale_threshold", r.getAutoScaleThreshPct()/100);
-			
+		// axis properties
+		for (int i = 0; i < 2; i++) {
+			new OpiBoolean(widgetContext, "axis_" + i + "_auto_scale",
+					r.isAutoScaleBothDirections());
+			new OpiDouble(widgetContext, "axis_" + i + "_auto_scale_threshold",
+					r.getAutoScaleThreshPct() / 100);
+
 		}
+		if(r.getxAxisSrc()!=null && r.getxAxisSrc().equals("AutoScale"))
+			new OpiBoolean(widgetContext, "axis_0_auto_scale",	true);
+
+		if(r.getyAxisSrc()!=null && r.getyAxisSrc().equals("AutoScale"))
+			new OpiBoolean(widgetContext, "axis_1_auto_scale",	true);
+
+		if(r.getY2AxisSrc()!=null && r.getY2AxisSrc().equals("AutoScale"))
+			new OpiBoolean(widgetContext, "axis_2_auto_scale",	true);
+		
 		
 		// trace properties
 		new OpiInt(widgetContext, "trace_count", r.getNumTraces()); 
 			
-		for(int i=0; i<r.getNumTraces(); i++){
-			new OpiInt(widgetContext, "trace_"+i+"_plot_mode", r.getPlotMode().equals("plotLastNPts")?0:1);
-			new OpiInt(widgetContext, "trace_"+i+"_buffer_size", r.getnPts());
-			new OpiInt(widgetContext, "trace_"+i+"_update_delay", r.getUpdateTimerMs());			
-		}
 		
-		
+		boolean hasXPV = false;
 		
 		// PV X,Y
 		if (r.getXPv().isExistInEDL()) {
 			for (Entry<String, EdmString>  entry: r.getXPv().getEdmAttributesMap().entrySet()) {
 				new OpiString(widgetContext, "trace_" + entry.getKey()+ "_x_pv", entry.getValue());
+				hasXPV=true;
 			}
+			
 		}
+		for(int i=0; i<r.getNumTraces(); i++){			
+			if(!hasXPV){ //assume it is a scalar pv
+				new OpiInt(widgetContext, "trace_"+i+"_plot_mode", (r.getPlotMode()!=null && r.getPlotMode().equals("plotLastNPts"))?0:1);
+				
+			}
+			//give it a big buffer if it is waveform, edm will show all waveform values regardless nPts.
+			new OpiInt(widgetContext, "trace_"+i+"_buffer_size", hasXPV?1000:r.getnPts());
+			new OpiInt(widgetContext, "trace_"+i+"_update_delay", r.getUpdateTimerMs());			
+		}
+		
 		
 		if (r.getYPv().isExistInEDL()) {
 			for (Entry<String, EdmString> entry : r.getYPv().getEdmAttributesMap().entrySet()) {
@@ -210,6 +227,8 @@ public class Opi_xyGraphClass extends OpiWidget {
 					new OpiInt(widgetContext, "trace_"+entry.getKey()+"_y_axis_index", 2);
 			}
 		}
+		
+	
 		
 		log.debug("Edm_xyGraphClass written.");
 

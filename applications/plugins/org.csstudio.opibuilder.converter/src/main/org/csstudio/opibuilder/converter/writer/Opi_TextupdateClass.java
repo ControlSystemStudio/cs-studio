@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.converter.model.Edm_TextupdateClass;
 
 /**
  * XML conversion class for Edm_TextupdateClass.
- * @author Matevz
+ * @author Matevz, Xihui Chen
  */
 public class Opi_TextupdateClass extends OpiWidget {
 
@@ -35,24 +35,23 @@ public class Opi_TextupdateClass extends OpiWidget {
 		
 		new OpiBoolean(widgetContext, "transparent", !t.isFill());
 		
-		
-		if (t.getAttribute("fontAlign").isExistInEDL()){
-			int align = 0;
+		int align = 0;
+		if (t.getFontAlign()!=null){			
 			if(t.getFontAlign().equals("right"))
 				align = 2;
 			else if(t.getFontAlign().equals("center"))
-				align = 1;
-			
-			new OpiInt(widgetContext, "horizontal_alignment", align);
+				align = 1;			
 		}
+		new OpiInt(widgetContext, "horizontal_alignment", align);
+
 			
 		
-		if (t.getAttribute("lineWidth").isExistInEDL()) { 
-			new OpiInt(widgetContext, "border_width", t.getLineWidth());
-			new OpiInt(widgetContext, "border_style", 1);
-		}
+		new OpiInt(widgetContext, "border_width", t.getLineWidth());
+		new OpiInt(widgetContext, "border_style", t.isLineAlarm()?0:1);
+		new OpiColor(widgetContext, "border_color", t.getFgColor());
+		new OpiBoolean(widgetContext, "border_alarm_sensitive", t.isLineAlarm());
 		
-		if(t.getAttribute("mode").isExistInEDL()){
+		if(t.getDisplayMode()!=null){
 			int mode = 0;
 			if(t.getDisplayMode().equals("decimal"))
 				mode =1;
@@ -62,23 +61,10 @@ public class Opi_TextupdateClass extends OpiWidget {
 				mode = 2;
 			new OpiInt(widgetContext, "format_type", mode);
 		}
+		new OpiBoolean(widgetContext, "precision_from_pv", false);
+		new OpiInt(widgetContext, "precision", t.getPrecision());
 		
-		if(t.getAttribute("precision").isExistInEDL())
-			new OpiInt(widgetContext, "precision", t.getPrecision());	
-		
-		boolean lineAlarm = t.getAttribute("lineAlarm").isExistInEDL() && t.isLineAlarm();
-		new OpiBoolean(widgetContext, "border_alarm_sensitive", lineAlarm);
-		
-
-
 		log.debug("Edm_TextupdateClass written.");
-	}
-	
-	@Override
-	protected void setDefaultPropertyValue() {
-		super.setDefaultPropertyValue();
-		new OpiInt(widgetContext, "horizontal_alignment", 0);
-
 	}
 	
 }

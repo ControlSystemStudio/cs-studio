@@ -12,69 +12,75 @@ import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
 
 /**
- * XML conversion class for Edm_activeRectangleClass
- * @author Matevz
+ * XML conversion class for Edm_activeRectangleClass. (Use this as the standard
+ * example for all other widgets!)
+ * 
+ * @author Matevz, Xihui Chen
  */
 public class Opi_activeRectangleClass extends OpiWidget {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeRectangleClass");
+	private static Logger log = Logger
+			.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeRectangleClass");
 	private static final String typeId = "Rectangle";
 	private static final String name = "EDM Rectangle";
 	private static final String version = "1.0";
 
 	/**
-	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
+	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
 	 */
 	public Opi_activeRectangleClass(Context con, Edm_activeRectangleClass r) {
 		super(con, r);
 		setTypeId(typeId);
 		setName(name);
 		setVersion(version);
+		// All EDM color properties are saved in edl file, no need to check if exist.
 		new OpiColor(widgetContext, "line_color", r.getLineColor());
-		
-	
-			new OpiBoolean(widgetContext, "transparent", !r.isFill());
-		
-		if (r.getFillColor().isExistInEDL()) {
-			new OpiColor(widgetContext, "background_color", r.getFillColor());
-		}
-		
-	
-		new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
-		
-		createColorAlarmRule(r, "lineAlarm", "alarmPv", r.getAlarmPv(), "line_color", "lineColorRule");
 
-			
-		if(r.getAlarmPv()!=null)
+		// If a boolean property is not exist in edl file, it is false.
+		// If Double or Int property is not exist, it is 0. 
+		new OpiBoolean(widgetContext, "transparent", !r.isFill());
+
+		new OpiColor(widgetContext, "background_color", r.getFillColor());
+
+		new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
+
+		// If a string property is not exist, it is null.
+		if (r.getAlarmPv() != null && r.isLineAlarm()) {
+			// line color alarm rule.
+			createColorAlarmRule(r, r.getAlarmPv(), "line_color",
+					"lineColorRule", true);
 			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
-		
+		}
+
 		int line_width = 1;
-		if(r.getLineWidth() != 0)
+		if (r.getLineWidth() != 0) //Looks like EDM always show the line.
 			line_width = r.getLineWidth();
 		new OpiInt(widgetContext, "line_width", line_width);
 
 		int lineStyle = 0;
+		//For EDMAttribute property, use isExistInEDL
 		if (r.getLineStyle().isExistInEDL()) {
 
 			switch (r.getLineStyle().get()) {
 			case EdmLineStyle.SOLID: {
 				lineStyle = 0;
-			} break;
+			}
+				break;
 			case EdmLineStyle.DASH: {
 				lineStyle = 1;
-			} break;
+			}
+				break;
 			}
 
 		}
 		new OpiInt(widgetContext, "line_style", lineStyle);
-		
 
 		log.debug("Edm_activeRectangleClass written.");
 
 	}
-	
-	protected void setDefaultPropertyValue(){
-		super.setDefaultPropertyValue();		
+
+	protected void setDefaultPropertyValue() {
+		super.setDefaultPropertyValue();
 		new OpiBoolean(widgetContext, "transparent", true);
 	}
 

@@ -33,13 +33,14 @@ public class Opi_activeLineClass extends OpiWidget {
 		super(con, r);
 
 		// set it as ployline or polygon
-		if (r.getAttribute("fill").isExistInEDL() && r.isFill()) {
+		if (r.isFill()) {
 			setTypeId(typeId_polygon);
 			isPolygon = true;
 			new OpiColor(widgetContext, "line_color", r.getLineColor());
 			new OpiColor(widgetContext, "background_color", r.getFillColor());
-			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());			
-			createColorAlarmRule(r, "lineAlarm", "alarmPv", r.getAlarmPv(), "line_color", "lineColorRule");
+			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());	
+			if(r.getAlarmPv()!=null && r.isLineAlarm())
+			createColorAlarmRule(r, r.getAlarmPv(), "line_color", "lineColorRule", true);
 			
 		} else{
 			setTypeId(typeId_polyline);
