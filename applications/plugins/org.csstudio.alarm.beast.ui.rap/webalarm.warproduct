@@ -19,6 +19,8 @@
       <plugin id="org.csstudio.alarm.beast.ui.rap" fragment="true"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
+      <plugin id="org.csstudio.autocomplete"/>
+      <plugin id="org.csstudio.autocomplete.ui"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
@@ -98,6 +100,8 @@
       <plugin id="org.csstudio.alarm.beast.ui.globaltable" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.apputil" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.apputil.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email.ui" autoStart="true" startLevel="0" />

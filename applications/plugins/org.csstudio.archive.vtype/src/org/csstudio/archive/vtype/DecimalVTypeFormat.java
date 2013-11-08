@@ -41,6 +41,7 @@ public class DecimalVTypeFormat extends VTypeFormat
     }
     
     /** {@inheritDoc} */
+    @Override
     public StringBuilder format(final VType value, final StringBuilder buf)
     {
         if (value instanceof VEnum)
@@ -54,6 +55,7 @@ public class DecimalVTypeFormat extends VTypeFormat
     }
     
     /** {@inheritDoc} */
+    @Override
     public StringBuilder format(final Number number,
             final Display display, final StringBuilder buf)
     {

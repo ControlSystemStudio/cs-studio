@@ -9,14 +9,14 @@ package org.csstudio.utility.product;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-
+import static org.eclipse.core.runtime.Platform.getPreferencesService;
 /** Plugin-related, not really an activator at this point
  *  @author Kay Kasemir
  */
 public class Activator
 {
 	/** Plugin ID defined in MANIFEST.MF */
-	final public static String PLUGIN_ID = "org.csstudio.utility.product"; //$NON-NLS-1$
+	final public static String PLUGIN_ID = getPreferencesService().getString("org.csstudio.utility.product","branding_plugin_id","org.csstudio.utility.product",null);
 
 	/** @param path Image file path within plugin
 	 *  @return {@link ImageDescriptor}

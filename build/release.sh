@@ -29,7 +29,7 @@ echo ::: Build all products :::
 while read PRODUCT
 do
   cd "$BUILD_DIR"
-  ./build.sh $PRODUCT
+  ./build.sh $PRODUCT -c
   cd ../products/$PRODUCT
   ./publish.sh $VERSION
 done < release.products

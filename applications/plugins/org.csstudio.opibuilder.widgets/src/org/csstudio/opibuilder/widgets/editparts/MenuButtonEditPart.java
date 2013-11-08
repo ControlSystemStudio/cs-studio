@@ -23,9 +23,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -36,12 +35,12 @@ import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WritePVAction;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
@@ -58,6 +57,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VType;
 
 /**
  * 
@@ -70,9 +71,9 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 		
 	}
 
-	private PVListener loadActionsFromPVListener;
+	private IPVListener loadActionsFromPVListener;
 
-	private IEnumeratedMetaData meta = null;
+	private List<String>  meta = null;
 
 	/**
 	 * {@inheritDoc}
@@ -201,21 +202,19 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	private void registerLoadActionsListener() {
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			if (getWidgetModel().isActionsFromPV()) {
-				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if (pv != null) {
 					if (loadActionsFromPVListener == null)
-						loadActionsFromPVListener = new PVListener() {
-							public void pvValueUpdate(PV pv) {
-								IValue value = pv.getValue();
+						loadActionsFromPVListener = new IPVListener.Stub() {
+							public void valueChanged(IPV pv) {
+								VType value = pv.getValue();
 								if (value != null
-										&& value.getMetaData() instanceof IEnumeratedMetaData) {
-									IEnumeratedMetaData new_meta = (IEnumeratedMetaData) value
-											.getMetaData();
+										&& value instanceof VEnum) {
+									List<String> new_meta = ((VEnum) value).getLabels();
 									if (meta == null || !meta.equals(new_meta)) {
 										meta = new_meta;
 										ActionsInput actionsInput = new ActionsInput();
-										for (String writeValue : meta
-												.getStates()) {
+										for (String writeValue : meta) {
 											WritePVAction action = new WritePVAction();
 											action.setPropertyValue(
 													WritePVAction.PROP_PVNAME,
@@ -238,9 +237,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 									}
 								}
 							}
-
-							public void pvDisconnected(PV pv) {
-							}
+						
 						};
 					pv.addListener(loadActionsFromPVListener);
 				}
@@ -252,7 +249,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	protected void doDeActivate() {
 		super.doDeActivate();
 		if (getWidgetModel().isActionsFromPV()) {
-			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 			if (pv != null && loadActionsFromPVListener != null) {
 				pv.removeListener(loadActionsFromPVListener);
 			}
@@ -280,9 +277,9 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if (newValue != null && newValue instanceof IValue)
-					((Label) refreshableFigure).setText(ValueUtil
-							.getString((IValue) newValue));
+				if (newValue != null)
+					((Label) refreshableFigure).setText(VTypeHelper
+							.getString((VType) newValue));
 				return true;
 			}
 		};

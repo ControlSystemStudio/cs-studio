@@ -28,9 +28,8 @@ import org.epics.vtype.VType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Device
+public class Device extends DeviceInfo
 {
-	final private DeviceInfo info;
 	final private List<DeviceListener> listeners = new CopyOnWriteArrayList<DeviceListener>();
 
 	/** Initialize
@@ -38,14 +37,8 @@ public class Device
 	 */
 	public Device(final DeviceInfo info)
 	{
-		this.info = info;
+	    super(info.getName(), info.getAlias());
 	}
-
-	/** @return {@link DeviceInfo} for this device */
-	public DeviceInfo getInfo()
-    {
-	    return info;
-    }
 
 	/** @param listener Listener to add */
 	public void addListener(final DeviceListener listener)
@@ -101,7 +94,7 @@ public class Device
 	 */
 	public VType read() throws Exception
     {
-		throw new Exception("Device '" + info.getName() + "' does not support reading");
+		throw new Exception("Device '" + getName() + "' does not support reading");
     }
 
 	/** Read a value from the device
@@ -119,13 +112,6 @@ public class Device
 	 */
 	public void write(final Object value) throws Exception
     {
-		throw new Exception("Device '" + info.getName() + "' does not support writing");
+		throw new Exception("Device '" + getName() + "' does not support writing");
     }
-
-	/** @return Human-readable representation of this device */
-	@Override
-	public String toString()
-	{
-	    return info.toString();
-	}
 }

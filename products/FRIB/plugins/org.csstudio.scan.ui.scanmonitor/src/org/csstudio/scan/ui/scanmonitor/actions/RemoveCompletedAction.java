@@ -15,10 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
-import java.rmi.RemoteException;
-
+import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.client.ScanInfoModel;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.ui.scanmonitor.Activator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -51,7 +49,7 @@ public class RemoveCompletedAction extends AbstractGUIAction
             return;
 
         // Job because removal of many scans and data in log can be slow
-        final ScanServer server = model.getServer();
+        final ScanClient client = model.getScanClient();
         final Job job = new Job( Messages.RemoveScan)
         {
             @Override
@@ -59,9 +57,9 @@ public class RemoveCompletedAction extends AbstractGUIAction
             {
                 try
                 {
-                    server.removeCompletedScans();
+                    client.removeCompletedScans();
                 }
-                catch (final RemoteException ex)
+                catch (final Exception ex)
                 {
                     shell.getDisplay().asyncExec(new Runnable()
                     {

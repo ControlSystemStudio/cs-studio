@@ -151,9 +151,8 @@ public class XYGraph extends Figure{
 	private List<Axis> yAxisList;
 	private PlotArea plotArea;
 
-	// TODO Clients can set these to null. Should these be 'final'? Or provider getter?
-	public Axis primaryXAxis;
-	public Axis primaryYAxis;
+	final public Axis primaryXAxis;
+	final public Axis primaryYAxis;
 
 	private OperationsManager operationsManager;
 

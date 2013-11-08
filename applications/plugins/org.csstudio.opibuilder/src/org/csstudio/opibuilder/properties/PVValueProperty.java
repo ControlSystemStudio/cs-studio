@@ -7,12 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Quality;
-import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.data.values.ValueFactory;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 import org.jdom.Element;
 
 /**
@@ -24,11 +21,11 @@ import org.jdom.Element;
  */
 public class PVValueProperty extends AbstractWidgetProperty {
 
-	/**The property is used to store pv values. The value type is {@link IValue}.
+	/**The property is used to store pv values. The value type is {@link VType}.
 	 * @param prop_id the property ID.
 	 * @param defaultValue the default value.
 	 */
-	public PVValueProperty(String prop_id, IValue defaultValue) {
+	public PVValueProperty(String prop_id, VType defaultValue) {
 		super(prop_id, prop_id, null, defaultValue);
 		setVisibleInPropSheet(false);
 	}
@@ -37,28 +34,23 @@ public class PVValueProperty extends AbstractWidgetProperty {
 	public Object checkValue(Object value) {
 		if(value == null)
 			return null;
-		IValue acceptableValue = null;
-		if(value instanceof IValue)
-			acceptableValue = (IValue) value;
-		else if(value instanceof Double || value instanceof Float){
-	        final ISeverity severity = ValueFactory.createOKSeverity();
-			acceptableValue = ValueFactory.createDoubleValue(
-					TimestampFactory.now(), severity, severity.toString(),
-					null, Quality.Original, new double[]{
-						(value instanceof Double? (Double)value : (Float)value)});
+		VType acceptableValue = null;
+		if(value instanceof VType)
+			acceptableValue = (VType) value;
+		else if(value instanceof Double || value instanceof Float || value instanceof Long){
+			acceptableValue = ValueFactory.newVDouble(
+					(value instanceof Double? (Double)value : (value instanceof Float? (Float)value:(Long)value)));
 		}else if(value instanceof String){
-	        final ISeverity severity = ValueFactory.createOKSeverity();
-			acceptableValue = ValueFactory.createStringValue(
-					TimestampFactory.now(), severity, severity.toString(),
-					Quality.Original, new String[]{(String)value});
-		}else if(value instanceof Long || value instanceof Integer || value instanceof Short 
+			acceptableValue = ValueFactory.newVString(
+					(String)value, ValueFactory.alarmNone(), ValueFactory.timeNow());
+		}else if(value instanceof Integer || value instanceof Short 
 				|| value instanceof Boolean
-				|| value instanceof Byte || value instanceof Character){
-	        final ISeverity severity = ValueFactory.createOKSeverity();
-			long r = 0;
-			if(value instanceof Long)
-				r = (Long)value;
-			else if(value instanceof Integer)
+				|| value instanceof Byte || value instanceof Character){	       
+			int r = 0;
+			//TODO: change it to VLong when VLong is added to VType.
+//			if(value instanceof Long)
+//				r = (Long)value;
+			if(value instanceof Integer)
 				r = (Integer)value;
 			else if(value instanceof Short)
 				r = (Short)value;
@@ -69,9 +61,9 @@ public class PVValueProperty extends AbstractWidgetProperty {
 			else if(value instanceof Character)
 				r=(Character)value;			
 	        
-	        acceptableValue = ValueFactory.createLongValue(
-					TimestampFactory.now(), severity, severity.toString(),
-					null, Quality.Original, new long[]{r});
+	        acceptableValue = ValueFactory.newVInt(
+	        		r, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
+
 		}
 
 		return acceptableValue;

@@ -7,13 +7,11 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.figures;
 
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
-
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.swt.graphics.Color;
 
 /**The grid in the plot area.
  * @author Xihui Chen

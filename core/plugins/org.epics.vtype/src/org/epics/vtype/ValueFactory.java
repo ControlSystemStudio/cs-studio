@@ -13,6 +13,7 @@ import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
+import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -37,6 +38,18 @@ public class ValueFactory {
      */
     public static VString newVString(final String value, final Alarm alarm, final Time time) {
         return new IVString(value, alarm, time);
+    }
+    
+    /**
+     * Creates a new VBoolean.
+     * 
+     * @param value the boolean value
+     * @param alarm the alarm
+     * @param time the time
+     * @return the new value
+     */
+    public static VBoolean newVBoolean(final boolean value, final Alarm alarm, final Time time) {
+        return new IVBoolean(value, alarm, time);
     }
 
     
@@ -91,6 +104,8 @@ public class ValueFactory {
     }
     
     private static final Alarm alarmNone = newAlarm(AlarmSeverity.NONE, "NONE");
+    private static final Display displayBoolean = newDisplay(0.0, 0.0, 0.0, "", NumberFormats.toStringFormat(),
+            1.0, 1.0, 1.0, 0.0, 1.0);
     
     /**
      * No alarm.
@@ -262,6 +277,32 @@ public class ValueFactory {
         return displayNone;
     }
     
+    /**
+     * Returns a display from 0 to 1, suitable for booleans.
+     * 
+     * @return a display for boolean
+     */
+    public static Display displayBoolean() {
+        return displayBoolean;
+    }
+    
+    /**
+     * Creates a new VNumber based on the type of the data
+     * 
+     * @param value
+     * @param alarm
+     * @param time
+     * @param display
+     * @return
+     */
+    public static VNumber newVNumber(Number value, Alarm alarm, Time time, Display display){
+	if(value instanceof Double){
+	    return newVDouble((Double) value, alarm, time, display);
+	}else if(value instanceof Integer){
+	    return newVInt((Integer)value, alarm, time, display);
+	}	
+	throw new UnsupportedOperationException();
+    }
     
     /**
      * Creates a new VDouble.
@@ -367,6 +408,24 @@ public class ValueFactory {
      */
     public static VDoubleArray newVDoubleArray(final double[] values, final ListInt sizes, Alarm alarm, Time time, Display display) {
         return new IVDoubleArray(new ArrayDouble(values), sizes, alarm, time, display);
+    }
+    
+    /**
+     * Creates a new VNumberArray based on the type of the data.
+     * 
+     * @param data
+     * @param alarm
+     * @param time
+     * @param display
+     * @return
+     */
+    public static VNumberArray newVNumberArray(final ListNumber data, final Alarm alarm, final Time time, final Display display){
+	if(data instanceof ListDouble){
+	    return newVDoubleArray((ListDouble)data, alarm, time, display);
+	}else if(data instanceof ListInt){
+	    return newVIntArray((ListInt)data, alarm, time, display);
+	}	
+	throw new UnsupportedOperationException();
     }
     
     /**

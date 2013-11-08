@@ -41,6 +41,8 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	public static final String Y_AXIS_ID = "y_axis";
 
 	public static final String X_AXIS_ID = "x_axis";
+	
+	public static final int MAX_ROIS_AMOUNT = 5;
 
 	public enum AxisProperty{		
 		TITLE("axis_title", "Axis Title"), //$NON-NLS-1$
@@ -66,6 +68,32 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 			return description;
 		}
 	}	
+	
+	public enum ROIProperty{
+		TITLE("title", "Title"),//$NON-NLS-1$
+		VISIBLE("visible", "Visible"),//$NON-NLS-1$
+		XPV("x_pv", "X PV"),//$NON-NLS-1$
+		YPV("y_pv", "Y PV"),//$NON-NLS-1$
+		XPV_VALUE("x_pv_value", "X PV Value"),//$NON-NLS-1$
+		YPV_VALUE("y_pv_value", "Y PV Value"),//$NON-NLS-1$
+		WPV("width_pv", "Width PV"),//$NON-NLS-1$
+		HPV("height_pv", "Height PV"),//$NON-NLS-1$
+		WPV_VALUE("w_pv_value", "W PV Value"),//$NON-NLS-1$
+		HPV_VALUE("h_pv_value", "H PV Value");		//$NON-NLS-1$
+		
+		public String propIDPre;
+		public String description;
+		
+		private ROIProperty(String propertyIDPrefix, String description) {
+			this.propIDPre = propertyIDPrefix;
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+	}
 	
 	/**
 	 * The lower limit of the value in the input data array.
@@ -153,6 +181,8 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	public static final String PROP_ROI_COLOR= "roi_color"; //$NON-NLS-1$
 	
+	public static final String PROP_ROI_COUNT= "roi_count"; //$NON-NLS-1$
+	
 	/** The default value of the minimum property. */	
 	private static final double DEFAULT_MIN = 0;
 	
@@ -234,7 +264,11 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		addProperty(new ColorProperty(PROP_ROI_COLOR, "ROI Color", 
 				WidgetPropertyCategory.Display, CustomMediaFactory.COLOR_CYAN), true);
 		
+		addProperty(new IntegerProperty(PROP_ROI_COUNT, "ROI Count",
+				WidgetPropertyCategory.Behavior, 0, 0, MAX_ROIS_AMOUNT));	
+		
 		addAxisProperties();
+		addROIProperties();
 	}
 	
 	@Override
@@ -246,16 +280,60 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));
 			setPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME)));	
 			setPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME)));	
 			setPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME, 
 					UpgradeUtil.convertUtilityPVNameToPM(
-							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));	
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME)));	
 		}
 	}
 
+	public static String makeROIPropID(String propIDPre, int index){
+		return "roi_" +index + "_" + propIDPre; //$NON-NLS-1$ //$NON-NLS-2$
+	}
+	
+	private void addROIProperties(){
+		for(int i=0; i<MAX_ROIS_AMOUNT; i++){
+			WidgetPropertyCategory category = new NameDefinedCategory("ROI " + i);
+			for(ROIProperty roiProperty : ROIProperty.values()){
+				addROIProperty(roiProperty, i, category);
+			}
+		}
+	}
+	
+	private void addROIProperty(ROIProperty roiProperty, int index, WidgetPropertyCategory category){
+		String propID = makeROIPropID(roiProperty.propIDPre, index);
+		switch (roiProperty) {
+		case TITLE:
+			addProperty(new StringProperty(propID, roiProperty.description, category, category.toString()));
+			break;
+		case VISIBLE:
+			addProperty(new BooleanProperty(propID, roiProperty.description, category, true));
+			break;
+		case XPV:
+			addPVProperty(new PVNameProperty(propID, roiProperty.description, category, ""), 
+					new PVValueProperty(makeROIPropID(ROIProperty.XPV_VALUE.propIDPre, index), null));
+			break;
+		case YPV:
+			addPVProperty(new PVNameProperty(propID, roiProperty.description, category, ""), 
+					new PVValueProperty(makeROIPropID(ROIProperty.YPV_VALUE.propIDPre, index), null));
+			break;
+		case WPV:
+			addPVProperty(new PVNameProperty(propID, roiProperty.description, category, ""), 
+					new PVValueProperty(makeROIPropID(ROIProperty.WPV_VALUE.propIDPre, index), null));
+			break;	
+		case HPV:
+			addPVProperty(new PVNameProperty(propID, roiProperty.description, category, ""), 
+					new PVValueProperty(makeROIPropID(ROIProperty.HPV_VALUE.propIDPre, index), null));
+			break;
+		default:
+			break;
+		}
+	}
+	
+	
 	public static String makeAxisPropID(String axisID, String propIDPre){
 		return axisID+ "_" + propIDPre; //$NON-NLS-1$
 	}

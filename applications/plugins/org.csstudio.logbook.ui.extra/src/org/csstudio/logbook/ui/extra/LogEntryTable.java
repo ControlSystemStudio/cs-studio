@@ -31,12 +31,11 @@ import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 
 /**
  * @author shroffk
@@ -72,6 +71,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    public void propertyChange(PropertyChangeEvent event) {
 		switch (event.getPropertyName()) {
 		case "logEntries":
+		    gridTableViewer.setSelection(null, true);
 		    gridTableViewer.setInput(logEntries
 			    .toArray(new LogEntry[logEntries.size()]));
 		    break;
@@ -81,7 +81,8 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    }
 	});
 
-	gridTableViewer = new GridTableViewer(this, SWT.BORDER);
+	gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.V_SCROLL
+		| SWT.DOUBLE_BUFFERED);
 	selectionProvider = new AbstractSelectionProviderWrapper(
 		gridTableViewer, this) {
 
@@ -90,7 +91,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 		return selection;
 	    }
 
-	};	
+	};
 
 	grid = gridTableViewer.getGrid();
 	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -138,7 +139,15 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	});
 	column.getColumn().setText("Date");
 	column.getColumn().setWordWrap(true);
-	new ColumnViewerSimpleLayout(gridTableViewer, column, 15, 100);
+	// new ColumnViewerSimpleLayout(gridTableViewer, column, 15, 100);
+	new ColumnViewerWeightedLayout(gridTableViewer, column, 15, 100);
+	new ColumnViewerSorter(gridTableViewer, column) {
+	    @Override
+	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
+		return Long.compare(((LogEntry) e1).getCreateDate().getTime(),
+			((LogEntry) e2).getCreateDate().getTime());
+	    }
+	};
 
 	// Second column is the first line of the logEntry
 
@@ -154,7 +163,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	GridColumn tblclmnDescription = gridViewerColumnDescription.getColumn();
 	tblclmnDescription.setWordWrap(true);
 	tblclmnDescription.setText("Description");
-	new ColumnViewerSimpleLayout(gridTableViewer,
+	new ColumnViewerWeightedLayout(gridTableViewer,
 		gridViewerColumnDescription, 50, 250);
 
 	// Third column is the owner of the logEntry
@@ -171,7 +180,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	// gridViewerColumnOwner.getColumn().setSort(SWT.UP);
 	GridColumn tblclmnOwner = gridViewerColumnOwner.getColumn();
 	tblclmnOwner.setText("Owner");
-	new ColumnViewerSimpleLayout(gridTableViewer, gridViewerColumnOwner,
+	new ColumnViewerWeightedLayout(gridTableViewer, gridViewerColumnOwner,
 		10, 75);
 	new ColumnViewerSorter(gridTableViewer, gridViewerColumnOwner) {
 	    @Override
@@ -199,7 +208,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	GridColumn tblclmnLogbooks = gridViewerColumnLogbooks.getColumn();
 	tblclmnLogbooks.setWordWrap(true);
 	tblclmnLogbooks.setText("Logbooks");
-	new ColumnViewerSimpleLayout(gridTableViewer,
+	new ColumnViewerWeightedLayout(gridTableViewer,
 		gridViewerColumnLogbooks, 10, 75);
 
 	// column lists the tags
@@ -219,17 +228,13 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	GridColumn tblclmnTags = gridViewerColumnTags.getColumn();
 	tblclmnTags.setWordWrap(true);
 	tblclmnTags.setText("Tags");
-	new ColumnViewerSimpleLayout(gridTableViewer, gridViewerColumnTags,
+	new ColumnViewerWeightedLayout(gridTableViewer, gridViewerColumnTags,
 		10, 75);
 
 	// Attachments
 	GridViewerColumn gridViewerColumnAttachments = new GridViewerColumn(
 		gridTableViewer, SWT.DOUBLE_BUFFERED);
 	gridViewerColumnAttachments.setLabelProvider(new ColumnLabelProvider() {
-	    @Override
-	    public Image getImage(Object element) {
-		return new Image(getDisplay(), "icons/attachment-16.png");
-	    };
 
 	    @Override
 	    public String getText(Object element) {
@@ -239,7 +244,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	});
 	GridColumn tblclmnAttachment = gridViewerColumnAttachments.getColumn();
 	tblclmnAttachment.setText("Attachments");
-	new ColumnViewerSimpleLayout(gridTableViewer,
+	new ColumnViewerWeightedLayout(gridTableViewer,
 		gridViewerColumnAttachments, 5, 30);
 
 	new ColumnViewerSorter(gridTableViewer, gridViewerColumnAttachments) {
@@ -264,9 +269,18 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     }
 
     @Override
+    public void addMouseListener(MouseListener listener) {
+	gridTableViewer.getGrid().addMouseListener(listener);
+    };
+
+    @Override
+    public void removeMouseListener(MouseListener listener) {
+	gridTableViewer.getGrid().removeMouseListener(listener);
+    };
+
+    @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
 	selectionProvider.addSelectionChangedListener(listener);
-
     }
 
     @Override
@@ -283,5 +297,11 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     @Override
     public void setSelection(ISelection selection) {
 	selectionProvider.setSelection(selection);
+    }
+
+    @Override
+    public void setMenu(Menu menu) {
+	super.setMenu(menu);
+	gridTableViewer.getGrid().setMenu(menu);
     }
 }

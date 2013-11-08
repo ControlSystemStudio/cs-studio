@@ -24,6 +24,7 @@ public class Messages extends NLS
     public static String Name;
     public static String NameFmt;
     public static String NoError;
+    public static String NotConnected;
     public static String Pause;
     public static String Percent;
     public static String PercentFmt;

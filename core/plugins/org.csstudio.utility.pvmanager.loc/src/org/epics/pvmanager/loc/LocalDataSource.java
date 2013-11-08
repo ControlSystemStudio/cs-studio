@@ -7,6 +7,7 @@ package org.epics.pvmanager.loc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.ChannelReadRecipe;
 import org.epics.pvmanager.ChannelWriteRecipe;
@@ -23,7 +24,9 @@ import org.epics.util.array.ArrayDouble;
  *
  * @author carcassi
  */
-public final class LocalDataSource extends DataSource {
+public class LocalDataSource extends DataSource {
+
+    private final boolean zeroInitialization;
 
     static {
         // Install type support for the types it generates.
@@ -34,7 +37,19 @@ public final class LocalDataSource extends DataSource {
      * Creates a new data source.
      */
     public LocalDataSource() {
+        this(false);
+    }
+    
+    /**
+     * Zero initialization is deprecated. Will be removed in a future release.
+     * 
+     * @param zeroInitialization whether to initialize variable to 0
+     * @deprecated do not use zero initialization of local variable: does not work for non numeric variables
+     */
+    @Deprecated
+    public LocalDataSource(boolean zeroInitialization) {
         super(true);
+        this.zeroInitialization = zeroInitialization;
     }
 
     private final String CHANNEL_SYNTAX_ERROR_MESSAGE = 
@@ -83,6 +98,9 @@ public final class LocalDataSource extends DataSource {
             if (channel != null) {
                 channel.setInitialValue(parsedTokens.get(2));
             }
+        } else if (zeroInitialization) {
+            Logger.getLogger(this.getClass().getName()).warning("Using zero initialization for channel " + channelName);
+            channel.setInitialValue(0);
         }
     }
 

@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import org.csstudio.autocomplete.data.Field;
-import org.csstudio.autocomplete.data.Record;
+import org.csstudio.iter.utility.sddreader.data.Field;
+import org.csstudio.iter.utility.sddreader.data.Record;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 public class SDDContext implements Serializable {

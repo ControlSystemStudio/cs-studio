@@ -1,12 +1,12 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.epics.vtype.VImage;
 
@@ -15,7 +15,7 @@ import org.epics.vtype.VImage;
  * 
  * @author carcassi
  */
-public class VImageDisplay extends Canvas {
+public class VImageDisplay extends BeanComposite {
 
 	/**
 	 * Creates a new display.
@@ -65,8 +65,10 @@ public class VImageDisplay extends Canvas {
 	 */
 	public void setVImage(VImage vImage) {
 		if (!isDisposed()) {
+			VImage oldVImage = this.vImage;
 			this.vImage = vImage;
 			redraw();
+			changeSupport.firePropertyChange("vTable", oldVImage, vImage);
 		}
 	}
 	
@@ -147,15 +149,15 @@ public class VImageDisplay extends Canvas {
 
 				gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height,
 						x, y, width, height);
-				drawBackground(gc, 0, 0, x, getClientArea().height);
-				drawBackground(gc, x + width, 0, getClientArea().width, getClientArea().height);
-				drawBackground(gc, 0, 0, getClientArea().width, y);
-				drawBackground(gc, 0, y + height, getClientArea().width, getClientArea().height);
+				drawBackground(gc, 0, 0, x, getClientArea().height, 0, 0);
+				drawBackground(gc, x + width, 0, getClientArea().width, getClientArea().height, 0, 0);
+				drawBackground(gc, 0, 0, getClientArea().width, y, 0, 0);
+				drawBackground(gc, 0, y + height, getClientArea().width, getClientArea().height, 0, 0);
 				
 				image.dispose();
 			} else {
 				// If image is not set, just paint the background
-				drawBackground(gc, 0, 0, getSize().x, getSize().y);
+				drawBackground(gc, 0, 0, getSize().x, getSize().y, 0, 0);
 			}
 		}
 	};

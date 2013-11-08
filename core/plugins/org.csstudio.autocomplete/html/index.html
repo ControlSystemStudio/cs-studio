@@ -23,7 +23,7 @@ It allows wildcards * and ?.
 </p>
 
 <center>
-  <img src="autocomplete.png"/>
+  <img src="ac1.png"/>
 </center>
 
 <p>
@@ -33,8 +33,60 @@ If this list contains only one result, the field will be automatically completed
 </p>
 
 <center>
-  <img src="autocomplete2.png"/>
+  <img src="ac2.png"/>
 </center>
+
+<p>
+Auto-Complete also provides help for formula, sim, sys and loc data sources if the corresponding plug-ins are installed.
+<ul>
+  <li>Formula function provider requests the formula registry from <code>o.c.utility.pvmanager.extra</code> plug-in and uses the provided information (name, parameters, ...) to generate a tooltip.
+    <center>
+      <img src="ac_formula.png"/>
+    </center>
+  </li>
+  <li>Sim Data Source provider makes use of its own formula registry which is very similar to the one defined in <code>o.c.utility.pvmanager.extra</code> plug-in and generates tooltips the same way.
+    <center>
+      <img src="ac_sim.png"/>
+    </center>
+  </li>
+  <li>Sys Data Source provider has a static list of function taken from CSS help content and requests the OS for available properties when the user selects the <i>'system'</i> function.
+    <center>
+      <img src="ac_sys.png"/>
+    </center>
+  </li>
+  <li>Loc Data Source provider provides VTypes from a static list and generate specific tooltips.
+    <center>
+      <img src="ac_loc.png"/>
+    </center>
+  </li>
+</ul>
+</p>
+
+<p>
+Auto-Complete completion is done on cursor position which means that only the text before the cursor will be sent to the auto-complete service. 
+The text after the cursor remains unchanged.
+<center>
+  <img src="ac_cursor.png"/>
+</center>
+</p>
+
+<p>
+An assistance is displayed via a pop-up which content and styling are provided by providers.
+The provider can set a list of tooltip data in the <code>AutoCompleteResult</code>. 
+These ones are displayed as soon as the provider ends processing.
+Another way is to set this list in the Proposal itself. 
+This way, they are displayed when the Proposal is accepted.
+This feature allows providers which receive an already parsed content to assist the user with a styled text.
+<center>
+  <img src="ac_assist1.png"/>
+</center>
+<center>
+  <img src="ac_assist2.png"/>
+</center>
+<center>
+  <img src="ac_assist3.png"/>
+</center>
+</p>
 
 <h2>Usage</h2>
 <p>

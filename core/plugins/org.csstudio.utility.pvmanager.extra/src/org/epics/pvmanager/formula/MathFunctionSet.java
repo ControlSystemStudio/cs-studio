@@ -124,6 +124,19 @@ public class MathFunctionSet extends FormulaFunctionSet {
                         return Math.tanh(arg);
                     }
                 })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("toDegrees", "Converts radians to degrees", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.toDegrees(arg);
+                    }
+                })
+                .addFormulaFunction(new OneArgNumericFormulaFunction("toRadians", "Conerts degrees to radians", "arg") {
+                    @Override
+                    double calculate(double arg) {
+                        return Math.toRadians(arg);
+                    }
+                })
+                .addFormulaFunction(new IntegrateFormulaFunction())
                 );
     }
 

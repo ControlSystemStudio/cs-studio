@@ -7,28 +7,24 @@
  ******************************************************************************/
 package org.csstudio.platform.data;
 
-import java.util.List;
-
-import org.csstudio.data.values.IValue;
-import org.csstudio.opibuilder.pvmanager.PMObjectValue;
-import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
+import org.csstudio.opibuilder.scriptUtil.PVUtil;
+import org.csstudio.simplepv.VTypeHelper;
+import org.epics.vtype.VType;
 
 
 /** Helper for decoding the data in a {@link IValue},
  *  mostly for display purposes. This is extended for compatibility with
  *  PVManager in BOY.
  *  @author Kay Kasemir, Xihui Chen
+ *  @deprecated this class is only for the compatibility of very old version BOY scripts.
+ *  It should be not be used in new BOY scripts. Use {@link PVUtil} instead.
  */
 public class ValueUtil
 {
     /** @return Array length of the value. <code>1</code> for scalars. */
-    public static int getSize(final IValue value)
+    public static int getSize(final VType value)
     {
-    	if(value instanceof PMObjectValue){
-    		return PVManagerHelper.getSize(((PMObjectValue)value).getLatestValue());
-    	}
-    	
-        return org.csstudio.data.values.ValueUtil.getSize(value);
+    	return VTypeHelper.getSize(value);
     }
 
     /** Try to get a double number from the Value.
@@ -42,7 +38,7 @@ public class ValueUtil
      *          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
      *          indicates that there happens to be no useful value.
      */
-    public static double getDouble(final IValue value)
+    public static double getDouble(final VType value)
     {
         return getDouble(value, 0);
     }
@@ -57,16 +53,9 @@ public class ValueUtil
      *          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
      *          indicates that there happens to be no useful value.
      */
-    public static double getDouble(final IValue value, final int index)
+    public static double getDouble(final VType value, final int index)
     {
-    	if (value instanceof PMObjectValue){
-        	Double v = org.epics.vtype.ValueUtil.numericValueOf(
-        			((PMObjectValue)value).getLatestValue());
-        	if(v==null)
-        		return Double.NaN;
-        	return v;
-    	}
-    	return org.csstudio.data.values.ValueUtil.getDouble(value, index);
+    	return VTypeHelper.getDouble(value, index);
        
     }
 
@@ -78,32 +67,9 @@ public class ValueUtil
      *          does not decode into a number, or if the value's severity
      *          indicates that there happens to be no useful value.
      */
-    public static double[] getDoubleArray(final IValue value)
+    public static double[] getDoubleArray(final VType value)
     {
-    	if(value instanceof PMObjectValue){
-        	Object obj = ((PMObjectValue)value).getLatestValue();
-        	return PVManagerHelper.getDoubleArray(obj);
-    	}
-     
-        return org.csstudio.data.values.ValueUtil.getDoubleArray(value);
-    }
-    
-    /**Get all buffered double values for PVManager value.
-     * @param value
-     * @return
-     */
-    public static double[] getAllBufferedDoubles(PMObjectValue value){
-    	List<Object> allValues = value.getAllValues();
-    	if(allValues!=null){
-    		double[] result = new double[allValues.size()];
-    		int i=0;
-    		for(Object obj : allValues){
-    			result[i++] = org.epics.vtype.ValueUtil.numericValueOf(obj);
-    		}
-    		return result;
-    	}else
-    		return new double[]{getDouble(value)};
-    	
+    	return VTypeHelper.getDoubleArray(value);
     }
     
     /**
@@ -118,10 +84,8 @@ public class ValueUtil
      * @return a string representation of the value.
      */
     @SuppressWarnings("nls")
-    public static String getString(final IValue value)
+    public static String getString(final VType value)
     {    	
-    	if (value instanceof PMObjectValue)
-        	return ((PMObjectValue)value).format();
-    	return org.csstudio.data.values.ValueUtil.getString(value);
+    	return VTypeHelper.getString(value);
     }
 }

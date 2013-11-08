@@ -6,8 +6,8 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 import java.util.Collection;
 
 import org.csstudio.channel.widgets.ChannelQueryAdaptable;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetEditpart;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
 
 /**
  * Abstract class for channel based widgets. Here we put the functionality that is common to
@@ -21,7 +21,7 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetEditpart;
  * @param <M> the model type
  */
 public abstract class AbstractChannelWidgetEditPart<F extends AbstractChannelWidgetFigure<?>,
-    M extends AbstractWidgetModel> extends AbstractSelectionWidgetEditpart<F, M>
+    M extends AbstractSelectionWidgetModel> extends AbstractSelectionWidgetEditpart<F, M>
     implements ChannelQueryAdaptable {
 	
 	@Override

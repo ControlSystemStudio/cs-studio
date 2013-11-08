@@ -58,7 +58,7 @@ public final class UpgradeUtil {
 		
 		
 		if(pvName.startsWith("const://")) {//$NON-NLS-1$			
-			final int value_start = pvName.indexOf('('); //$NON-NLS-1$
+			final int value_start = pvName.lastIndexOf('('); //$NON-NLS-1$
 			if (value_start > 0) {
 				final int value_end = pvName.lastIndexOf(')'); //$NON-NLS-1$
 				if (value_end > 0) {
@@ -90,28 +90,8 @@ public final class UpgradeUtil {
 		}	
 		
 		return pvName;
-	}
-	
-	
-	/**Convert PVManager PV name to Utility PV name if the pv name is supported by Utility pv.
-	 * @param pvName
-	 * @return the converted name.
-	 */
-	public static String convertPMPVToUtilityPVName(String pvName){
-		//convert =123 to 123
-		//conver ="fred" to "fred'
-		if(pvName.startsWith("=")){//$NON-NLS-1$
-			return pvName.substring(1);
-		}
-		
-		//convert sim://const(1.23, 34, 34) to const://array(1.23, 34, 34)
-		if(pvName.startsWith("sim://const")){ //$NON-NLS-1$
-			return pvName.replace("sim://const", "const://array"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		
-		return pvName;
-	
-	}
+	}	
+
 	
 	private static int getFirstIndexHelper(String s, int from){
 		if(s== null || s.isEmpty()) return -1;

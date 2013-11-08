@@ -1,14 +1,16 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
+ * Copyright (c) 2010-2013 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.autocomplete.ui;
 
 import java.util.List;
 
+import org.csstudio.autocomplete.ui.content.ContentProposalAdapter;
+import org.csstudio.autocomplete.ui.history.AutoCompleteHistory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
@@ -20,7 +22,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * Enable auto complete PV content on the specified {@link Control}
+ * Enable auto-completed content on the specified {@link Control}.
+ * 
+ * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteWidget {
 
@@ -37,7 +41,6 @@ public class AutoCompleteWidget {
 	 */
 	public AutoCompleteWidget(Control control, String type) {
 		Assert.isNotNull(type);
-
 		this.control = control;
 		this.type = type;
 		enableContentProposal();
@@ -48,7 +51,7 @@ public class AutoCompleteWidget {
 	 * 
 	 * @param control {@link Combo} or {@link Text}
 	 * @param type see {@link AutoCompleteTypes}
-	 * @param historyHandlers control which trigger add entry envent on history
+	 * @param historyHandlers control which trigger add entry event on history
 	 */
 	public AutoCompleteWidget(Control control, String type,
 			List<Control> historyHandlers) {
@@ -59,7 +62,7 @@ public class AutoCompleteWidget {
 			}
 		}
 	}
-	
+
 	/**
 	 * Enable auto-completed content on the specified widget.
 	 * 
@@ -68,7 +71,6 @@ public class AutoCompleteWidget {
 	 */
 	public AutoCompleteWidget(CellEditor cellEditor, String type) {
 		Assert.isNotNull(type);
-
 		this.control = cellEditor.getControl();
 		this.type = type;
 		enableContentProposal();
@@ -79,7 +81,7 @@ public class AutoCompleteWidget {
 	 * 
 	 * @param control {@link Combo} or {@link Text}
 	 * @param type see {@link AutoCompleteTypes}
-	 * @param historyHandlers control which trigger add entry envent on history
+	 * @param historyHandlers control which trigger add entry event on history
 	 */
 	public AutoCompleteWidget(CellEditor cellEditor, String type,
 			List<Control> historyHandlers) {
@@ -102,12 +104,13 @@ public class AutoCompleteWidget {
 		String uppercaseLetters = lowercaseLetters.toUpperCase();
 		String numbers = "0123456789";
 		// String delete = new String(new char[] {SWT.DEL});
-		// the event in {@link ContentProposalAdapter#addControlListener(Control control)}
+		// the event in {@link ContentProposalAdapter#addControlListener(Control
+		// control)}
 		// holds onto a character and when the DEL key is pressed that char
 		// value is 8 so the line below catches the DEL key press
 		String delete = new String(new char[] { 8 });
 		String allChars = lowercaseLetters + uppercaseLetters + numbers
-				+ delete + "*?";
+				+ delete + "*?/<>(),.\"\'";
 		return allChars.toCharArray();
 	}
 
@@ -132,7 +135,6 @@ public class AutoCompleteWidget {
 			adapter = new ContentProposalAdapter(combo,
 					new ComboContentAdapter(), provider,
 					getActivationKeystroke(), getAutoactivationChars());
-			adapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
 
 		} else if (control instanceof Text) {
 
@@ -141,11 +143,10 @@ public class AutoCompleteWidget {
 			adapter = new ContentProposalAdapter(text,
 					new TextContentAdapter(), provider,
 					getActivationKeystroke(), getAutoactivationChars());
-			adapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
 
 		}
 	}
-	
+
 	public ContentProposalAdapter getContentProposalAdapter() {
 		return adapter;
 	}
@@ -153,5 +154,5 @@ public class AutoCompleteWidget {
 	public AutoCompleteHistory getHistory() {
 		return adapter.getHistory();
 	}
-	
+
 }

@@ -531,6 +531,11 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 		getCurrentImage().setBounds(bounds);
 		getCurrentImage().setBorder(getBorder());
 		getCurrentImage().paintFigure(gfx);
+		if (!isEnabled()) {
+			gfx.setAlpha(DISABLED_ALPHA);
+			gfx.setBackgroundColor(DISABLE_COLOR);
+			gfx.fillRectangle(bounds);
+		}
 	}
 
 	/**

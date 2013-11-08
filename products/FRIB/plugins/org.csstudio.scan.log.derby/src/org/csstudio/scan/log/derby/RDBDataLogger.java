@@ -247,6 +247,41 @@ abstract public class RDBDataLogger
 				throw new Exception("Sample insert affected " + rows + " rows");
     }
 
+    /** Get serial of last logged sample.
+     *
+     *  <p>Can be used to determine if there are new samples
+     *  that should be fetched via <code>getScanData()</code>
+     *  @param scan_id ID of the scan
+     *  @return Serial of last sample in scan data or -1 if nothing has been logged
+     *  @throws Exception on error
+     *  @see #getScanData()
+     */
+    public long getLastScanDataSerial(final long scan_id) throws Exception
+    {
+        try
+        (
+            final PreparedStatement statement = connection.prepareStatement(
+                    "SELECT MAX(serial) FROM samples WHERE scan_id=?");
+        )
+        {
+            statement.setLong(1, scan_id);
+            try
+            (
+                final ResultSet result = statement.executeQuery();
+            )
+            {
+                if (result.next())
+                {
+                    final long serial = result.getLong(1);
+                    if (! result.wasNull())
+                        return serial;
+                }
+            }
+        }
+        return -1;
+    }
+
+    
     /** Obtain data for a scan
      *  @param scan_id ID of the scan
      *  @return {@link ScanData}

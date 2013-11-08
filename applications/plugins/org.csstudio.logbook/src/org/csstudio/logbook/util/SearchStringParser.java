@@ -41,7 +41,7 @@ public class SearchStringParser {
 	int end;
 	String key = DefaultKey;
 	while (m.find()) {
-	    end = m.start() - 1;
+	    end = (m.start() - 1) >= 0 ? (m.start() - 1) : 0;
 	    result.put(key, string.substring(start, end).trim());
 	    key = m.group(1);
 	    start = m.end(1) + 1;

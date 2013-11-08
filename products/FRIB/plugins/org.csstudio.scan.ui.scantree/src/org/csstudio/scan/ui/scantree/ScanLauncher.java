@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import org.csstudio.scan.client.ScanInfoModel;
-import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.util.IOUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -43,9 +43,7 @@ public class ScanLauncher implements IEditorLauncher
             		final String scan_name = ScanEditor.getScanNameFromFile(file.toString());
 
             		// Get file content as is
-            		final byte[] buf = new byte[(int)file.length()];
-            		new FileInputStream(file).read(buf);
-            		final String scan = new String(buf);
+            		final String scan = IOUtils.toString(new FileInputStream(file));
 
             		// Parse file, then re-format
 					// final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
@@ -59,10 +57,9 @@ public class ScanLauncher implements IEditorLauncher
                     int attempts = 5;
                     while (attempts > 0)
                     {
-                    	final ScanServer server;
                     	try
                     	{
-                    		server = model.getServer();
+                    	    model.getScanClient().submitScan(scan_name, scan);
                     	}
                 		catch (Exception ex)
                 		{
@@ -74,7 +71,6 @@ public class ScanLauncher implements IEditorLauncher
 		                    monitor.worked(1);
                 			continue;
                 		}
-						server.submitScan(scan_name, scan);
 						break;
                     }
                 }

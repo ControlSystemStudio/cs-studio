@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.ui.scanmonitor.Activator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -40,7 +41,8 @@ public class InfoAction extends AbstractGUIAction
     @Override
     protected void runModelAction() throws Exception
     {
-    	MessageDialog.openInformation(shell, Messages.InfoTitle,
-    			model.getServerInfoText());
+        final ScanServerInfo info = model.getServerInfo();
+        final String text = (info == null) ? Messages.NotConnected : info.toString();
+    	MessageDialog.openInformation(shell, Messages.InfoTitle, text);
     }
 }

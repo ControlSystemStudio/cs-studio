@@ -9,5 +9,8 @@
    <feature url="features/org.csstudio.sns.feature.beamline.image_3.2.0.qualifier.jar" id="org.csstudio.sns.feature.beamline.image" version="3.2.0.qualifier">
       <category name="additions"/>
    </feature>
+   <feature url="features/org.csstudio.sns.feature.pydev_1.0.0.qualifier.jar" id="org.csstudio.sns.feature.pydev" version="1.0.0.qualifier">
+      <category name="additions"/>
+   </feature>
    <category-def name="additions" label="Optional SNS Components"/>
 </site>

@@ -6,10 +6,14 @@
 #
 
 # Version number of CSS
-export VERSION=3.2.0
+export VERSION=3.2.1
 
 # Build host name (lcba03, abco4, lcba07 or JCSL_WS001).
 # Current official build machine is lcba07.
+#
+# If you would like to use other machines, comment out the following line,
+# and set TOP, CYGDRIVE, BUILDDIR, ECLIPSE_BASE, DELTAPACK and JAVA_HOME
+# manually. See the following lines for more details.
 BUILD_HOST=lcba07
 
 # Root of CSS source tree.

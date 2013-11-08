@@ -22,6 +22,7 @@ import java.lang.Class
 nan = float('nan')
 _float = float
 _int = int
+_bool = bool
 
 # Data types
 float = float64 = NDType.FLOAT64
@@ -31,6 +32,17 @@ int32 = NDType.INT64
 int16 = NDType.INT16
 byte = int8 = NDType.INT8
 bool = NDType.BOOL
+
+
+def __isBoolArray__(array):
+    """Check if array is boolean
+       For non-ndarray, only checks first element
+    """
+    if isinstance(array, ndarray):
+        return array.dtype == NDType.BOOL
+    else:
+        return len(array) > 0  and  isinstance(array[0], _bool)
+
 
 def __toNDShape__(shape):
     """Create shape for scalar as well as list"""
@@ -174,7 +186,7 @@ class ndarray:
             return self.nda.getSlice(starts, stops, steps)
         # There was a plain index for every dimension, no slice at all
         return None
-    
+        
     def __getitem__(self, indices):
         """Get element of array, or fetch sub-array
         
@@ -186,10 +198,30 @@ class ndarray:
         May also provide slice:
         a = arange(10)
         a[1:6:2] # Result is [ 1, 3, 5 ]
+        
+        Differing from numpy, this returns all values as float,
+        so if they are later used for indexing, int() needs to be used.
         """
         slice = self.__getSlice__(indices)
         if slice is None:
-            return self.nda.getDouble(indices)
+            if isinstance(indices, (list, ndarray)):
+                N = len(indices)
+                if __isBoolArray__(indices):
+                    result = []
+                    for i in range(N):
+                        if indices[i]:
+                            result.append(self.nda.getDouble(i))
+                    return array(result)
+                else:
+                    # Array of indices, each addresses one element of the array
+                    result = zeros(N)
+                    for i in range(N):
+                        # Need _int because int is now set to the NDType name 'int'
+                        result[i] = self.nda.getDouble(_int(indices[i]))
+                    return result
+            else:
+                # Indices address one element of the array
+                return self.nda.getDouble(indices)
         # else: Need to return slice/view of array
         return ndarray(slice)
 
@@ -346,6 +378,10 @@ class ndarray:
         if not isinstance(value, ndarray):
             value = array([ value ])
         return ndarray(NDCompare.greater_equal(self.nda, value.nda))
+
+    def __abs__(self):
+        """Element-wise absolute values"""
+        return ndarray(NDMath.abs(self.nda))
     
     def any(self):
         """Determine if any element is True (not zero)"""
@@ -366,6 +402,15 @@ class ndarray:
     def min(self):
         """Returns minimum array element"""
         return NDMath.min(self.nda)
+
+    def nonzero(self):
+        """Return the indices of the elements that are non-zero.
+           Returns a tuple of arrays, one for each dimension of a, containing the indices of the non-zero elements in that dimension.
+           
+           Compared to numpy, it does not return a tuple of arrays but a matrix,
+           but either one allows addressing as [dimension, i] to get the index of the i'th non-zero element
+        """
+        return ndarray(NDCompare.nonzero(self.nda))
     
     def __str__(self):
         return self.nda.toString()
@@ -386,6 +431,16 @@ def zeros(shape, dtype=float):
     return ndarray(NDMatrix.zeros(dtype, __toNDShape__(shape)))
 
 
+def ones(shape, dtype=float):
+    """ones(shape, dtype=float)
+    
+    Create array of ones, example:
+    
+    ones( (2, 3) )
+    """
+    return ndarray(NDMatrix.ones(dtype, __toNDShape__(shape)))
+
+
 def array(arg, dtype=None):
     """Create N-dimensional array from data
     
@@ -394,7 +449,10 @@ def array(arg, dtype=None):
           array([ [1, 2], [3, 4]])
     """
     if dtype is None:
-        return ndarray(NDArray.create(arg))
+        if isinstance(arg, ndarray):
+            return ndarray(arg.nda.clone())
+        else:
+            return ndarray(NDArray.create(arg))
     return ndarray(NDArray.create(arg, dtype))
 
 
@@ -453,20 +511,6 @@ def all(value):
 def sum(array):
     """Returns sum over all array elements"""
     return array.sum()
-
-def max(array):
-    """Returns maximum array element"""
-    return array.max()
-
-def min(array):
-    """Returns minimum array element"""
-    return array.min()
-
-def abs(value):
-    """Determine absolute value of elements"""
-    if not isinstance(value, ndarray):
-        return math.fabs(value)
-    return ndarray(NDMath.abs(value.nda))
 
 def sqrt(value):
     """Determine square root of elements"""

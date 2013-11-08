@@ -9,7 +9,9 @@ import org.epics.pvmanager.ChannelHandlerReadSubscription;
 import org.epics.pvmanager.MultiplexedChannelHandler;
 import org.epics.pvmanager.ChannelHandlerWriteSubscription;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.epics.vtype.ValueFactory.*;
@@ -141,7 +143,7 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     private Object initialValue;
     private Class<?> type;
     
-    void setInitialValue(Object value) {
+    synchronized void setInitialValue(Object value) {
         if (initialValue != null && !initialValue.equals(value)) {
             String message = "Different initialization for local channel " + getChannelName() + ": " + value + " but was " + initialValue;
             log.log(Level.WARNING, message);
@@ -153,7 +155,7 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
         }
     }
     
-    void setType(String typeName) {
+    synchronized void setType(String typeName) {
         if (typeName == null) {
             return;
         }
@@ -180,6 +182,15 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
             throw new IllegalArgumentException("Type mismatch for channel " + getChannelName() + ": " + typeName + " but was " + type.getSimpleName());
         }
         type = newType;
+    }
+
+    @Override
+    public synchronized Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("Name", getChannelName());
+        properties.put("Type", type);
+        properties.put("Initial Value", initialValue);
+        return properties;
     }
     
 }

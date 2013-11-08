@@ -7,8 +7,11 @@ package org.epics.pvmanager.formula;
 import java.util.Arrays;
 import java.util.List;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.Time;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.ValueFactory;
+import org.epics.vtype.ValueUtil;
 
 
 /**
@@ -66,10 +69,20 @@ abstract class TwoArgNumericFormulaFunction implements FormulaFunction {
 
     @Override
     public Object calculate(List<Object> args) {
+        Object arg1 = args.get(0);
+        Object arg2 = args.get(1);
+        if (arg1 == null || arg2 == null) {
+            return null;
+        }
+        Alarm alarm = ValueUtil.highestSeverityOf(args, false);
+        Time time = ValueUtil.latestTimeOf(args);
+        if (time == null) {
+            time = ValueFactory.timeNow();
+        }
         return ValueFactory.newVDouble(
                 calculate(((VNumber) args.get(0)).getValue().doubleValue(),
                 ((VNumber) args.get(1)).getValue().doubleValue())
-                , ValueFactory.newTime(Timestamp.now()));
+                , alarm, time, ValueFactory.displayNone());
     }
     
     abstract double calculate(double arg1, double arg2);

@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -43,6 +45,8 @@ public class OlogLogbookClient implements LogbookClient {
 
     private final OlogClient reader;
     private final OlogClient writer;
+    
+    private final List<String> levels = Arrays.asList("Info", "Problem", "Request", "Suggestion", "Urgent");  
 
     public OlogLogbookClient(OlogClient ologClient) {
 	this.reader = ologClient;
@@ -67,6 +71,12 @@ public class OlogLogbookClient implements LogbookClient {
 		}));
     }
 
+
+    @Override
+    public List<String> listLevels() throws Exception {
+	return levels;
+    }
+    
     @Override
     public Collection<Tag> listTags() throws Exception {
 	return Collections.unmodifiableCollection(Collections2.transform(
@@ -137,6 +147,15 @@ public class OlogLogbookClient implements LogbookClient {
     public Collection<LogEntry> findLogEntries(String search) throws Exception {
 	Map<String, String> searchParameters = LogEntrySearchUtil
 		.parseSearchString(search);
+	// append text search with a leading and trailing *
+	if (searchParameters
+		.containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT)) {
+	    String textSearch = "*"
+		    + searchParameters
+			    .get(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT) + "*";
+	    searchParameters.put(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT,
+		    textSearch);
+	}
 	if (searchParameters
 		.containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_START)) {
 	    TimeInterval timeInterval;
@@ -232,8 +251,7 @@ public class OlogLogbookClient implements LogbookClient {
      * @return
      */
     private LogBuilder LogBuilder(LogEntry logEntry) {
-	LogBuilder logBuilder = log().description(logEntry.getText()).level(
-		"Info");
+	LogBuilder logBuilder = log().description(logEntry.getText()).level(logEntry.getLevel());
 	for (Tag tag : logEntry.getTags())
 	    logBuilder.appendTag(tag(tag.getName(), tag.getState()));
 	for (Logbook logbook : logEntry.getLogbooks())
@@ -424,6 +442,12 @@ public class OlogLogbookClient implements LogbookClient {
 			    });
 	}
 
+
+	@Override
+	public String getLevel() {
+	    return log.getLevel();
+	}
+	
 	@Override
 	public String getText() {
 	    return log.getDescription();
@@ -470,5 +494,5 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
     }
-
+    
 }

@@ -16,7 +16,6 @@
 package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -42,20 +41,14 @@ public class BeamlineDeviceInfoReaderUnitTest
 		DeviceInfo device = find(devices, "motor_x");
 		assertNotNull(device);
 		assertEquals("xpos", device.getAlias());
-		assertTrue(device.isLoggable());
-        assertTrue(device.isScannable());
 
         device = find(devices, "setpoint");
         assertNotNull(device);
         assertEquals("setpoint", device.getAlias());
-        assertFalse(device.isLoggable());
-        assertTrue(device.isScannable());
 
         device = find(devices, "readback");
         assertNotNull(device);
         assertEquals("readback", device.getAlias());
-        assertTrue(device.isLoggable());
-        assertFalse(device.isScannable());
 	}
 
 	/** @param devices

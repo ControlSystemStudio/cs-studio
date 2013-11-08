@@ -18,6 +18,14 @@ public interface LogEntry {
      */
     public Object getId();
 
+    
+    /**
+     * The Level of the LegEntry
+     * 
+     * @return String - log entry level
+     */
+    public String getLevel();
+    
     /**
      * 
      * @return String - the text of this logEntry

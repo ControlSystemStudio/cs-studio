@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.properties;
 
+import java.util.Collection;
+
 import org.csstudio.scan.device.DeviceInfo;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -17,14 +19,14 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  */
 public class DeviceInfoPropertyDescriptor extends PropertyDescriptor
 {
-    final private DeviceInfo[] devices;
+    final private Collection<DeviceInfo> devices;
 
     /** Initialize
      *  @param id ID to edit
      *  @param label Label to show
      *  @param devices Available devices
      */
-    public DeviceInfoPropertyDescriptor(final String id, final String label, final DeviceInfo[] devices)
+    public DeviceInfoPropertyDescriptor(final String id, final String label, final Collection<DeviceInfo> devices)
     {
         super(id, label);
         this.devices = devices;

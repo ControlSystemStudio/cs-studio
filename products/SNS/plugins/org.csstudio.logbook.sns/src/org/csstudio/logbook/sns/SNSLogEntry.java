@@ -38,6 +38,12 @@ public class SNSLogEntry implements LogEntry
     }
 
     @Override
+    public String getLevel()
+    {
+        return entry.getPriority().getName();
+    }
+    
+    @Override
     public Collection<Logbook> getLogbooks()
     {
         return Converter.convertLogbooks(entry.getLogbooks());

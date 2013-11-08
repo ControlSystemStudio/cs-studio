@@ -24,7 +24,7 @@
        -->
       <menuContribution
             allPopups="false"
-            locationURI="menu:alarm">
+            locationURI="menu:alarm?endof=org.csstudio.alarm.beast.alarmtable">
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/msg_hist.gif"

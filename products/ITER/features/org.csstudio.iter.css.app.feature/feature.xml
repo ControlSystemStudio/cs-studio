@@ -5,6 +5,10 @@
       version="3.2.0.qualifier"
       provider-name="ITER">
 
+   <description>
+      CSS Apps Component
+   </description>
+
    <copyright>
       Copyright (c) : 2010-2013 ITER Organization,
 CS 90 046
@@ -83,21 +87,14 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.iter.passwordprovider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.iter.startuphelper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.ui.menu.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.startup.helper"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -108,6 +105,14 @@ of the distribution package.
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.product.default"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
    <plugin

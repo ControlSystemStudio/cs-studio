@@ -66,7 +66,12 @@ abstract class OneArgNumericFormulaFunction implements FormulaFunction {
 
     @Override
     public Object calculate(List<Object> args) {
-        return ValueFactory.newVDouble(calculate(((VNumber) args.get(0)).getValue().doubleValue()), ValueFactory.newTime(Timestamp.now()));
+        VNumber arg = (VNumber) args.get(0);
+        if (arg == null) {
+            return null;
+        }
+        return ValueFactory.newVDouble(calculate(arg.getValue().doubleValue()),
+                arg, arg, ValueFactory.displayNone());
     }
     
     abstract double calculate(double arg);

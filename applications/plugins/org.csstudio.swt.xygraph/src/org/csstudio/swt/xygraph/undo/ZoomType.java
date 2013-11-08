@@ -22,6 +22,11 @@ import org.eclipse.swt.widgets.Display;
  */
 @SuppressWarnings("nls")
 public enum ZoomType{
+		/** Hover labels */
+		HOVER_LABELS(Messages.Zoom_HoverLabels,
+			XYGraphMediaFactory.getInstance().getImage("images/HoverLabels.png"),
+			XYGraphMediaFactory.getTransparentImage(),
+            XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_CROSS),
         /** Interactive Rubberband zoom */
         RUBBERBAND_ZOOM(Messages.Zoom_Rubberband,
 		        XYGraphMediaFactory.getInstance().getImage("images/RubberbandZoom.png"),
@@ -82,6 +87,8 @@ public enum ZoomType{
 				XYGraphMediaFactory.getInstance().getImage("images/PanningCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_SIZEALL),
 				
+        
+				
         /** Disarm zoom behavior */
 		NONE(Messages.Zoom_None,
 				XYGraphMediaFactory.getInstance().getImage("images/MouseArrow.png"), null,
@@ -107,7 +114,7 @@ public enum ZoomType{
 			this.description = description;
 			this.iconImage = iconImage;
 			if(cursorImage == null)
-				cursor = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
+				cursor = new Cursor(Display.getDefault(), backUpSWTCursorType);
 			else
 				cursor = SingleSourceHelper.createCursor(
 						Display.getDefault(), cursorImage.getImageData(),

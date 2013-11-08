@@ -10,20 +10,20 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.pvmanager.PMObjectValue;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel.AxisProperty;
+import org.csstudio.opibuilder.widgets.model.IntensityGraphModel.ROIProperty;
 import org.csstudio.opibuilder.widgets.util.ListNumberWrapper;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure;
@@ -36,6 +36,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VType;
 
 /**The widget editpart of intensity graph widget.
  * @author Xihui Chen
@@ -47,7 +48,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	private boolean innerTrig;
 	
 	private IntensityGraphFigure graph;
-
+	
 	@Override
 	protected IFigure doCreateFigure() {
 		IntensityGraphModel model = getWidgetModel();
@@ -106,6 +107,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 			});
 		}
+		
+		//init ROIs
 
 		return graph;
 	}
@@ -119,20 +122,21 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	protected void registerPropertyChangeHandlers() {
 		innerUpdateGraphAreaSizeProperty();
 		registerAxisPropertyChangeHandler();
+		registerROIPropertyChangeHandlers();
+		registerROIAmountChangeHandler();
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				if(newValue == null || !(newValue instanceof IValue))
+				if(newValue == null)
 					return false;
-				IValue value = (IValue)newValue;
-				if(value instanceof PMObjectValue){
-					Object obj = ((PMObjectValue)value).getLatestValue();
-					if(obj instanceof VNumberArray){
-						setValue(((VNumberArray)obj).getData());
+				VType value = (VType)newValue;
+				
+					if(value instanceof VNumberArray){
+						setValue(((VNumberArray)value).getData());
 						return false;
 					}
-				}				
-				((IntensityGraphFigure)figure).setDataArray(ValueUtil.getDoubleArray(value));
+							
+				((IntensityGraphFigure)figure).setDataArray(VTypeHelper.getDoubleArray(value));
 
 				return false;
 			}
@@ -372,7 +376,134 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 				getWidgetModel().getSize().height - d.height);
 		innerTrig = false; // reset innerTrig to false after each inner triggering
 	}
+	
+	
+	private void registerROIAmountChangeHandler() {
+		PropertyChangeListener listener = new PropertyChangeListener() {
 
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+
+				int currentCount = (Integer) evt.getOldValue();
+				int newCount = (Integer) evt.getNewValue();
+				if (newCount > currentCount) {
+					for (int i = currentCount; i < newCount; i++) {
+						for (ROIProperty roiProperty : ROIProperty.values()) {
+							if (roiProperty != ROIProperty.XPV_VALUE
+									&& roiProperty != ROIProperty.YPV_VALUE
+									&& roiProperty != ROIProperty.WPV_VALUE
+									&& roiProperty != ROIProperty.HPV_VALUE) {
+								String propID = IntensityGraphModel.makeROIPropID(
+										roiProperty.propIDPre, i);
+								getWidgetModel().setPropertyVisible(propID, true);
+							}
+						}
+						final int roiIndex = i;
+						graph.addROI(getROIName(roiIndex), new IntensityGraphFigure.IROIListener() {
+							@Override
+							public void roiUpdated(int xIndex, int yIndex, int width, int height) {
+								String propID = IntensityGraphModel.makeROIPropID(
+										ROIProperty.XPV.propIDPre, roiIndex);
+								setPVValue(propID, xIndex);
+								propID = IntensityGraphModel.makeROIPropID(
+										ROIProperty.YPV.propIDPre, roiIndex);
+								setPVValue(propID, yIndex);
+								propID = IntensityGraphModel.makeROIPropID(
+										ROIProperty.WPV.propIDPre, roiIndex);
+								setPVValue(propID, width);
+								propID = IntensityGraphModel.makeROIPropID(
+										ROIProperty.HPV.propIDPre, roiIndex);
+								setPVValue(propID, height);
+							}
+						}, new IntensityGraphFigure.IROIInfoProvider() {
+
+							@Override
+							public String getROIInfo(int xIndex, int yIndex, int width, int height) {
+								String propID = IntensityGraphModel.makeROIPropID(
+										ROIProperty.TITLE.propIDPre, roiIndex);
+								return (String) getPropertyValue(propID);
+							}
+						});
+					}
+				} else if (newCount < currentCount) {
+					for (int i = currentCount - 1; i >= newCount; i--) {
+						graph.removeROI(getROIName(i));
+						for (ROIProperty roiProperty : ROIProperty.values()) {
+							String propID = IntensityGraphModel.makeROIPropID(
+									roiProperty.propIDPre, i);
+							getWidgetModel().setPropertyVisible(propID, false);
+						}
+					}
+				}
+			}
+		};
+		AbstractWidgetProperty countProperty = getWidgetModel().getProperty(IntensityGraphModel.PROP_ROI_COUNT);
+		countProperty.addPropertyChangeListener(listener);
+		
+		//init
+		int currentCount = (Integer) getPropertyValue(IntensityGraphModel.PROP_ROI_COUNT);
+		listener.propertyChange(new PropertyChangeEvent(countProperty, IntensityGraphModel.PROP_ROI_COUNT, 0, 
+				currentCount));
+		for(int i=0; i<currentCount; i++){
+			for(final ROIProperty roiProperty: ROIProperty.values()){
+				String propID = IntensityGraphModel.makeROIPropID(roiProperty.propIDPre, i);
+				Object propertyValue = getPropertyValue(propID);
+				if(propertyValue !=null)
+					setROIProperty(getROIName(i), roiProperty, propertyValue);
+			}
+		}
+		
+		
+	}
+	
+	private static String getROIName(int index){
+		return "ROI_" + index; //$NON-NLS-1$
+	}
+
+	private void registerROIPropertyChangeHandlers(){
+		for(int i=0; i<IntensityGraphModel.MAX_ROIS_AMOUNT; i++){
+			final String roiName = getROIName(i);
+			for(final ROIProperty roiProperty: ROIProperty.values()){
+				String propID = IntensityGraphModel.makeROIPropID(roiProperty.propIDPre, i);
+				if(i>=(Integer)getPropertyValue(IntensityGraphModel.PROP_ROI_COUNT)){
+					getWidgetModel().setPropertyVisible(propID, false);
+				}
+				setPropertyChangeHandler(propID, 
+						new IWidgetPropertyChangeHandler() {
+					
+					@Override
+					public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+						setROIProperty(roiName, roiProperty, newValue);
+						return false;
+					}					
+				});
+			}
+		}
+	}
+	
+	private void setROIProperty(final String roiName, final ROIProperty roiProperty, Object newValue) {
+		switch (roiProperty) {
+		case TITLE:
+			break;
+		case VISIBLE:
+			graph.setROIVisible(roiName, (Boolean) newValue);
+			break;
+		case XPV_VALUE:
+			graph.getROI(roiName).setROIDataBoundsX((int) VTypeHelper.getDouble((VType) newValue));
+			break;
+		case YPV_VALUE:
+			graph.getROI(roiName).setROIDataBoundsY((int) VTypeHelper.getDouble((VType) newValue));
+			break;
+		case WPV_VALUE:
+			graph.getROI(roiName).setROIDataBoundsW((int) VTypeHelper.getDouble((VType) newValue));
+			break;
+		case HPV_VALUE:
+			graph.getROI(roiName).setROIDataBoundsH((int) VTypeHelper.getDouble((VType) newValue));
+			break;
+		default:
+			break;
+		}
+	}
 	private void registerAxisPropertyChangeHandler(){
 		for(String axisID : new String[]{IntensityGraphModel.X_AXIS_ID, IntensityGraphModel.Y_AXIS_ID}){
 			for(AxisProperty axisProperty : AxisProperty.values()){

@@ -7,6 +7,12 @@
  ******************************************************************************/
 package org.csstudio.autocomplete;
 
+/**
+ * Used by {@link AutoCompleteService} to notify that a
+ * {@link IAutoCompleteProvider} has returned a {@link AutoCompleteResult}.
+ * 
+ * @author Fred Arnaud (Sopra Group) - ITER
+ */
 public interface IAutoCompleteResultListener {
 
 	public void handleResult(Long uniqueId, Integer index,

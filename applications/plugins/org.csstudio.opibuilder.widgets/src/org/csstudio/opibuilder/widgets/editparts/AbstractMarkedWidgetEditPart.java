@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -16,10 +14,13 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.AbstractMarkedWidgetFigure;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.Display;
+import org.epics.vtype.VType;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractMarkedWidgetModel}.
@@ -29,8 +30,8 @@ import org.eclipse.draw2d.IFigure;
  */
 public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetEditPart{
 
-	private INumericMetaData meta = null;
-	private PVListener pvLoadLimitsListener;
+	private Display meta = null;
+	private IPVListener pvLoadLimitsListener;
 
 	/**
 	 * Sets those properties on the figure that are defined in the
@@ -80,48 +81,47 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			final AbstractMarkedWidgetModel model = (AbstractMarkedWidgetModel)getModel();
 			if(model.isLimitsFromPV()){
-				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if(pv != null){
 					if(pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new PVListener() {
-							public void pvValueUpdate(PV pv) {
-								IValue value = pv.getValue();
-								if (value != null && value.getMetaData() instanceof INumericMetaData){
-									INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
+						pvLoadLimitsListener = new IPVListener.Stub() {
+							public void valueChanged(IPV pv) {
+								VType value = pv.getValue();
+								if (value != null && VTypeHelper.getDisplayInfo(value) != null){
+									Display new_meta = VTypeHelper.getDisplayInfo(value);
 									if(meta == null || !meta.equals(new_meta)){
 										meta = new_meta;
-										if(!Double.isNaN(meta.getDisplayHigh()))
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getDisplayHigh());
-										if(!Double.isNaN(meta.getDisplayLow()))
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getDisplayLow());
-										if(Double.isNaN(meta.getWarnHigh()))
+										if(!Double.isNaN(meta.getUpperDisplayLimit()))
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getUpperDisplayLimit());
+										if(!Double.isNaN(meta.getLowerDisplayLimit()))
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getLowerDisplayLimit());
+										if(Double.isNaN(meta.getUpperWarningLimit()))
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
 										else{
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, true);
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,	meta.getWarnHigh());
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,	meta.getUpperWarningLimit());
 										}
-										if(Double.isNaN(meta.getAlarmHigh()))
+										if(Double.isNaN(meta.getUpperAlarmLimit()))
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, false);
 										else{
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, true);
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getUpperAlarmLimit());
 										}
-										if(Double.isNaN(meta.getWarnLow()))
+										if(Double.isNaN(meta.getLowerWarningLimit()))
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, false);
 										else{
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, true);
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL,	meta.getWarnLow());
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL,	meta.getLowerWarningLimit());
 										}
-										if(Double.isNaN(meta.getAlarmLow()))
+										if(Double.isNaN(meta.getLowerAlarmLimit()))
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, false);
 										else{
 											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, true);
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL,	meta.getAlarmLow());
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL,	meta.getLowerAlarmLimit());
 										}
 									}
 								}
 							}
-							public void pvDisconnected(PV pv) {}
 						};
 					pv.addListener(pvLoadLimitsListener);
 				}
@@ -137,7 +137,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	protected void doDeActivate() {
 		super.doDeActivate();
 		if(getWidgetModel().isLimitsFromPV()){
-			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 			if(pv != null && pvLoadLimitsListener !=null){
 				pv.removeListener(pvLoadLimitsListener);
 			}

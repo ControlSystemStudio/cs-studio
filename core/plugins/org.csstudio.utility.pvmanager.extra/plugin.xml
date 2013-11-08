@@ -28,6 +28,10 @@
             functionset="org.epics.pvmanager.formula.TableFunctionSet"
             name="org.csstudio.utility.pvmanager.extra.table">
       </functionset>
+      <functionset
+            functionset="org.epics.pvmanager.formula.StringFunctionSet"
+            name="org.csstudio.utility.pvmanager.extra.string">
+      </functionset>
    </extension>
 
 </plugin>

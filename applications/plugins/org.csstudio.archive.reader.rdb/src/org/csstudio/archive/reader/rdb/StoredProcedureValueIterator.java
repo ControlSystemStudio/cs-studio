@@ -166,8 +166,9 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             final Timestamp time = TimestampHelper.fromSQLTimestamp(result.getTimestamp(2));
 
             // Get severity/status
-            AlarmSeverity severity = reader.getSeverity(result.getInt(3));
+            final AlarmSeverity severity;
             final String status;
+            final int sev_id = result.getInt(3);
             if (result.wasNull())
             {
                 severity = AlarmSeverity.NONE;
@@ -176,7 +177,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             else
             {
                 status = reader.getStatus(result.getInt(4));
-                severity = filterSeverity(severity, status);
+                severity = filterSeverity(reader.getSeverity(sev_id), status);
             }
 
             // WB==-1 indicates a String sample
@@ -214,7 +215,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         final ArrayList<VType> values = new ArrayList<VType>();
         while (result.next())
         {
-            final VType value = decodeSampleTableValue(result);
+            final VType value = decodeSampleTableValue(result, false);
             values.add(value);
         }
         return values;

@@ -4,7 +4,7 @@
    <extension
          point="org.csstudio.opibuilder.widget">
       <widget
-            category="Monitors"
+            category="Controls"
             editpart_class="org.csstudio.opibuilder.widgets.extra.ServicePanelEditPart"
             icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/service-16.png"
             model_class="org.csstudio.opibuilder.widgets.extra.ServicePanelModel"
@@ -26,6 +26,14 @@
             model_class="org.csstudio.opibuilder.widgets.extra.VImageDisplayModel"
             name="VImage"
             typeId="org.csstudio.opibuilder.widgets.VImageDisplay">
+      </widget>
+      <widget
+            category="Controls"
+            editpart_class="org.csstudio.opibuilder.widgets.extra.ServiceButtonEditPart"
+            icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/service-16.png"
+            model_class="org.csstudio.opibuilder.widgets.extra.ServiceButtonModel"
+            name="Service button"
+            typeId="org.csstudio.opibuilder.widgets.ServiceButton">
       </widget>
    </extension>
 

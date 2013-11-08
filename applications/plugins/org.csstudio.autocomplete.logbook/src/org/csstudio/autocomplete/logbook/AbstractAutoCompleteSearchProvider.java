@@ -14,6 +14,10 @@ import java.util.regex.Pattern;
 
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
+import org.csstudio.autocomplete.parser.ContentType;
+import org.csstudio.autocomplete.proposals.Proposal;
+import org.csstudio.autocomplete.proposals.ProposalStyle;
 
 import com.google.common.base.Joiner;
 
@@ -22,75 +26,103 @@ import com.google.common.base.Joiner;
  * 
  */
 public abstract class AbstractAutoCompleteSearchProvider implements
-	IAutoCompleteProvider {
+		IAutoCompleteProvider {
 
-    // The keys represent the supported keywords and the values represent
-    // possible values
-    private final Map<String, List<String>> keyValueMap;
+	// The keys represent the supported keywords and the values represent
+	// possible values
+	private Map<String, List<String>> keyValueMap;
 
-    public AbstractAutoCompleteSearchProvider() {
-	this.keyValueMap = Collections.unmodifiableMap(initializeKeyValueMap());
-    }
+	AbstractAutoCompleteSearchProvider() {
 
-    /**
-     * Configure the KeyValueMap to be used to provide the search proposals.
-     * 
-     * @return Map<String, List<String>> where the keys are the search Keywords
-     *         and the values are the list of possible values
-     */
-    abstract Map<String, List<String>> initializeKeyValueMap();
+	}
 
-    @Override
-    public AutoCompleteResult listResult(String type, String name, int limit) {
-	AutoCompleteResult result = new AutoCompleteResult();
-	String searchString = name.trim().substring(0, name.length() - 1);
-	String fixedFirstPart;
-	if (searchString.contains(":")) {
-	    fixedFirstPart = searchString.substring(0,
-		    searchString.lastIndexOf(":") + 1);
-	    Matcher m = Pattern.compile("(\\w*):[^:]*$").matcher(searchString);
-	    m.find();
-	    String lastKey = m.group(1);
-	    String lastValue = searchString.substring(searchString
-		    .lastIndexOf(":") + 1);
-	    String valuePattern;
-	    Set<String> includedValues = new LinkedHashSet<String>();
-	    if (lastValue.contains(",")) {
-		includedValues.addAll(Arrays.asList(lastValue.substring(0,
-			lastValue.lastIndexOf(',')).split(",")));
-		valuePattern = lastValue
-			.substring(lastValue.lastIndexOf(",") + 1);
-	    } else {
-		valuePattern = lastValue;
-	    }
-	    for (String value : keyValueMap.get(lastKey)) {
-		Set<String> proposedValues = new LinkedHashSet<String>(
-			includedValues);
-		if (value.startsWith(valuePattern.trim())) {
-		    proposedValues.add(value);
-		    result.add(fixedFirstPart + ' '
-			    + Joiner.on(',').join(proposedValues));
-		    result.setCount(result.getCount() + 1);
+	/**
+	 * Configure the KeyValueMap to be used to provide the search proposals.
+	 * 
+	 * @return Map<String, List<String>> where the keys are the search Keywords
+	 *         and the values are the list of possible values
+	 */
+	abstract Map<String, List<String>> initializeKeyValueMap();
+
+	@Override
+	public boolean accept(ContentType type) {
+		return true;
+	}
+
+	@Override
+	public AutoCompleteResult listResult(ContentDescriptor desc, int limit) {
+		if (keyValueMap == null) {
+			keyValueMap = Collections.unmodifiableMap(initializeKeyValueMap());
 		}
-	    }
-	}
-	// use the last word of the String to check for keywords
-	fixedFirstPart = searchString.substring(0, searchString
-		.lastIndexOf(' ') > 0 ? searchString.lastIndexOf(' ') : 0);
-	String lastPart = searchString
-		.substring(searchString.lastIndexOf(' ') + 1);
-	for (String key : keyValueMap.keySet()) {
-	    if (lastPart.length() > 0
-	    	    && key.startsWith(lastPart.substring(0, lastPart.length() - 1))) {
-		result.add(fixedFirstPart + ' ' + key + ":");
-		result.setCount(result.getCount() + 1);
-	    }
-	}
-	return result;
-    }
 
-    @Override
-    public void cancel() {
-    }
+		AutoCompleteResult result = new AutoCompleteResult();
+		String searchString = desc.getOriginalContent().trim();
+		String fixedFirstPart;
+		if (searchString.contains(":")) {
+			fixedFirstPart = searchString.substring(0,
+					searchString.lastIndexOf(":") + 1);
+			Matcher m = Pattern.compile("(\\w*):[^:]*$").matcher(searchString);
+			m.find();
+			String lastKey = m.group(1);
+			String lastValue = searchString.substring(searchString
+					.lastIndexOf(":") + 1);
+			String valuePattern;
+			Set<String> includedValues = new LinkedHashSet<String>();
+			if (lastValue.contains(",")) {
+				includedValues.addAll(Arrays.asList(lastValue.substring(0,
+						lastValue.lastIndexOf(',')).split(",")));
+				valuePattern = lastValue
+						.substring(lastValue.lastIndexOf(",") + 1);
+			} else {
+				valuePattern = lastValue;
+			}
+			for (String value : keyValueMap.get(lastKey)) {
+				Set<String> proposedValues = new LinkedHashSet<String>(
+						includedValues);
+				if (value.startsWith(valuePattern.trim())) {
+					proposedValues.add(value);
+					String entry = fixedFirstPart + ' '
+							+ Joiner.on(',').join(proposedValues);
+					Proposal proposal = new Proposal(entry, false);
+					proposal.addStyle(ProposalStyle.getDefault(
+							fixedFirstPart.length(), fixedFirstPart.length()
+									+ (valuePattern.length() - 1)));
+					result.addProposal(proposal);
+					result.setCount(result.getCount() + 1);
+				}
+			}
+		}
+		// use the last word of the String to check for keywords
+		fixedFirstPart = searchString.substring(0, searchString
+				.lastIndexOf(' ') > 0 ? searchString.lastIndexOf(' ') + 1 : 0);
+		if (!fixedFirstPart.isEmpty()) {
+			String lastPart = searchString.substring(searchString
+					.lastIndexOf(' ') + 1);
+			for (String key : keyValueMap.keySet()) {
+				if (lastPart.length() > 0
+						&& key.startsWith(lastPart.substring(0,
+								lastPart.length()))) {
+					String entry = fixedFirstPart + key + ":";
+					Proposal proposal = new Proposal(entry, true);
+					proposal.addStyle(ProposalStyle.getDefault(
+							fixedFirstPart.length(), fixedFirstPart.length()
+									+ (lastPart.length() - 1)));
+					result.addProposal(proposal);
+					result.setCount(result.getCount() + 1);
+				}
+			}
+		}
+		for (String key : keyValueMap.keySet()) {
+			result.addProposal(new Proposal(searchString + ' ' + key + ":",
+					false));
+			result.setCount(result.getCount() + 1);
+
+		}
+		return result;
+	}
+
+	@Override
+	public void cancel() {
+	}
 
 }

@@ -9,17 +9,26 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.trends.databrowser2.</p>
 
-<h2>Next Version</h2>
+<h2>Version 3.2.11 - 2013-11-06</h2>
+<ul>
+  <li>Fix zoom bug:
+      When scrolling, zooming into 'left' area of plot such that the
+      scrolling gets disabled because 'end' is no longer close to 'now', the
+      start/end times were wrong, using start of the zoomed area as the end.
+  <li>'Trace Type' includes "direct" option for Area and Single line that uses a linear connection from sample to sample, no stair-step.</li>
+</ul>
 
+<h2>Version 3.2.2  - 2013-09-23</h2>
+<ul>
+  <li>Fix: 'Export' failed with multiple data sources unless <i>every</i> source knew the channel.</li>
+</ul>
+
+<h2>Version 3.2.1 (KEK  3.2.0) - 2013-06-13</h2>
 <ul>
   <li>Supports alias name of Archive Data Source URLs to recognize Data Source more easily in Archive Search view.
   <p><img src="doc/ArchiverURLs_with_Alias.png" /></p>
   <p><img src="doc/ArchiverURLs_with_Alias2.png" /></p>
   </li>
-</ul>
-
-<h2>Version 3.2.1 - 2013-06-13</h2>
-<ul>
   <li><img src="icons/refresh_remote.gif"/> 'Refresh' option in plot's context menu to re-fetch archived data.</li>
 </ul>
 
