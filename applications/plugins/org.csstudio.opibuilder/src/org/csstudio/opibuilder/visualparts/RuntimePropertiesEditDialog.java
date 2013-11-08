@@ -110,9 +110,7 @@ public class RuntimePropertiesEditDialog extends Dialog {
 		tvColumn.setEditingSupport(editingSupport);
 		
 		
-		viewer.setContentProvider(new ArrayContentProvider(){
-			
-		});
+		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new PropertyDataLabelProvider());		
 		viewer.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
