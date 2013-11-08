@@ -253,7 +253,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 0));
 		
 		addProperty(new BooleanProperty(PROP_RGB_MODE, "RGB Mode",
-				WidgetPropertyCategory.Behavior, false),true);
+				WidgetPropertyCategory.Behavior, false),false);
 		
 		addProperty(new ComboProperty(PROP_COLOR_DEPTH, "Color Depth", 
 				WidgetPropertyCategory.Behavior, ColorDepth.stringValues(), 0), true);
