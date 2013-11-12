@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.csstudio.shift" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.csstudio.shift" id="shiftfactory" name="ShiftFactory"/>
+      </appInfo>
+      <documentation>
+         Allow other plugins to provide a shift interface
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="shiftfactory"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="shiftfactory">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>                                         
+               <documentation>
+                  Name of your shift factory.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>                                         
+               <documentation>
+                  Java class that implements your shift factory
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.shift.IShiftFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         1.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;pre&gt;
+   &lt;extension
+         point=&quot;org.csstudio.shift.shiftfactory&quot;&gt;
+      &lt;logbookfactory
+            class=&quot;org.csstudio.shift.mine.MyShiftFactory&quot;
+            name=&quot;org.csstudio.shift.mine.myshiftfactory&quot;&gt;
+      &lt;/shiftfactory&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Implemetors have to provide an org.csstudio.shift.IShiftFactory
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         org.csstudio.shift.sns is one example
+      </documentation>
+   </annotation>
+
+
+</schema>
