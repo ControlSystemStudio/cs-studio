@@ -99,12 +99,12 @@ public class GUI implements ModelListener, DisposeListener
     private Image imageAutoRefreshRun, imageManualRefresh = null;
     
     /** The auto refresh enable msg. */
-    private String autoRefreshEnableMsg = "Enable auto refresh";
+    private String autoRefreshEnableMsg = "Auto refresh is stopped";
     
-    private int autoRefreshPeriod;
+    private int currentAutoRefreshPeriod = 0;
     
     /** The auto refresh disable msg. */
-    private String autoRefreshDisableMsg = "Automatic refresh every ";
+    private String autoRefreshDisableMsg = "Automatic refresh is running [period set to ";
     
     /** The end time. */
     private String endTime = "now";
@@ -131,7 +131,7 @@ public class GUI implements ModelListener, DisposeListener
         this.model = model;
         this.imageAutoRefreshRun = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/pause.gif").createImage();
         this.imageManualRefresh = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/refresh.gif").createImage();
-        this.autoRefreshPeriod = Preferences.getAutoRefreshPeriod();
+        this.currentAutoRefreshPeriod = Preferences.getAutoRefreshPeriod();
         try
         {
             createGUI(parent);
@@ -160,12 +160,18 @@ public class GUI implements ModelListener, DisposeListener
 			@Override
 			public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
 				if (Preferences.AUTO_REFRESH_PERIOD.equals(propertyChangeEvent.getProperty())) {
-					autoRefreshPeriod = Preferences.getAutoRefreshPeriod();
-					if (autoRefreshPeriod == 0) {
+					int newAutoRefreshPeriod = Preferences.getAutoRefreshPeriod();
+					
+					if (newAutoRefreshPeriod == 0) {
 						resetAutoRefresh();
-					} else if (autoRefreshPeriod > 0) {
+					} else if (newAutoRefreshPeriod != currentAutoRefreshPeriod) {
+						currentAutoRefreshPeriod = newAutoRefreshPeriod;
+						restartAutoRefresh();
+					} else if (newAutoRefreshPeriod > 0) {
+						currentAutoRefreshPeriod = newAutoRefreshPeriod;
 						activateAutoRefresh();
 					}
+					
 				}
 			}
 		});
@@ -238,7 +244,7 @@ public class GUI implements ModelListener, DisposeListener
      */
     private void createGUI(final Composite parent) throws Exception
     {
-        GridLayout layout = new GridLayout();
+    	GridLayout layout = new GridLayout();
         layout.numColumns = 8;
         parent.setLayout(layout);
         GridData gd;
@@ -276,10 +282,11 @@ public class GUI implements ModelListener, DisposeListener
         filter.setToolTipText("Configure filters");
         filter.setLayoutData(new GridData());
         
-        refresh = new Button(parent, SWT.PUSH);
+        refresh = new Button(parent, SWT.PUSH | SWT.NO_FOCUS);
         refresh.setImage(imageManualRefresh);
         refresh.setToolTipText("Manual refresh");
         refresh.setLayoutData(new GridData());
+        
         
         autoRefresh = new Button(parent, SWT.TOGGLE);
         autoRefresh.setImage(imageAutoRefreshRun);
@@ -411,9 +418,11 @@ public class GUI implements ModelListener, DisposeListener
             @Override
             public void widgetSelected(final SelectionEvent e)
             {
+            	refresh.getParent().getShell().setFocus();
                 updateTimeRange(start.getText(), end.getText());
             }
         });
+        
         
         initializeAutoRefresh();
         autoRefresh.addSelectionListener(new SelectionAdapter()
@@ -423,13 +432,8 @@ public class GUI implements ModelListener, DisposeListener
             {
 				// No automatic refresh When the period is set to 0
 				// updates only if the "End" time is set to now
-            	autoRefreshPeriod = Preferences.getAutoRefreshPeriod();
-				if (autoRefreshPeriod == 0
-						|| !endTime.equals(model.getEndSpec())) {
-					disableAutoRefresh();
-					Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED);
-					return;
-				}
+				if (!checkAutoRefreshConditions()) return;
+				
 				// normal case
 				if (!autoRefresh.getSelection()) {
 					if (scheduledExecutorService == null) {
@@ -437,10 +441,10 @@ public class GUI implements ModelListener, DisposeListener
 								.newScheduledThreadPool(1);
 						scheduledExecutorService.scheduleAtFixedRate(
 								new StartAutoRefreshTask(), 0,
-								autoRefreshPeriod, timeUnit);
+								Preferences.getAutoRefreshPeriod(), timeUnit);
 						Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STARTED + Preferences.getAutoRefreshPeriod() + " seconds");
 					}
-					autoRefresh.setToolTipText(autoRefreshDisableMsg + Preferences.getAutoRefreshPeriod() + " " + timeUnit.toString());
+					autoRefresh.setToolTipText(autoRefreshDisableMsg + Preferences.getAutoRefreshPeriod() + " " + timeUnit.toString() + "]");
 				} else if (scheduledExecutorService != null) {
 					scheduledExecutorService.shutdown();
 					scheduledExecutorService = null;
@@ -555,19 +559,7 @@ public class GUI implements ModelListener, DisposeListener
 		}
     }
 
-	
-	/**
-	 * Reset auto refresh.
-	 */
-	public void resetAutoRefresh() {
-		if (scheduledExecutorService !=null && !scheduledExecutorService.isShutdown()) {
-  			scheduledExecutorService.shutdownNow();
-          	scheduledExecutorService = null;
-        
-			disableAutoRefresh();
-        	Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STOPPED);
-  	   } 
-	}
+
 	
 	/**
 	 * Initialize auto refresh.
@@ -578,16 +570,12 @@ public class GUI implements ModelListener, DisposeListener
 	private void initializeAutoRefresh() {
 		 // No automatic refresh When the period is set to 0
 		 // AND updates only if the "End" time is set to now
-		autoRefreshPeriod = Preferences.getAutoRefreshPeriod();
-		if (autoRefreshPeriod == 0 || !this.endTime.equals(this.model.getEndSpec())) {
-			Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED);
-			return;
-		}
+		if (!checkAutoRefreshConditions()) return;
 		
 		scheduledExecutorService = Executors.newScheduledThreadPool(1);
 		scheduledExecutorService.scheduleAtFixedRate(
 				new StartAutoRefreshTask(), 0,
-				autoRefreshPeriod, timeUnit);
+				Preferences.getAutoRefreshPeriod(), timeUnit);
 		enableAutoRefresh();
 		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STARTED + Preferences.getAutoRefreshPeriod() + " seconds");
 	}
@@ -598,13 +586,39 @@ public class GUI implements ModelListener, DisposeListener
 	 */
 	private void activateAutoRefresh() {
 		if (scheduledExecutorService != null) return;
-		Activator.getLogger().log(Level.INFO, "Auto refresh is running every " + autoRefreshPeriod + " seconds");
+		Activator.getLogger().log(Level.INFO, "Auto refresh is running every " + currentAutoRefreshPeriod + " seconds");
 		enableAutoRefresh();
 		scheduledExecutorService = Executors.newScheduledThreadPool(1);
 		scheduledExecutorService.scheduleAtFixedRate(
 				new StartAutoRefreshTask(), 0,
-				autoRefreshPeriod, timeUnit);
+				currentAutoRefreshPeriod, timeUnit);
 	
+	}
+	
+	
+	/**
+	 * Reset auto refresh.
+	 */
+	public void resetAutoRefresh() {
+		if (scheduledExecutorService !=null && !scheduledExecutorService.isShutdown()) {
+  			scheduledExecutorService.shutdownNow();
+          	scheduledExecutorService = null;
+        
+			disableAutoRefresh(false);
+        	Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STOPPED);
+  	   } 
+	}
+	
+	
+	/**
+	 * Restart auto refresh.
+	 */
+	public void restartAutoRefresh() {
+		if (scheduledExecutorService !=null && !scheduledExecutorService.isShutdown()) {
+  			scheduledExecutorService.shutdownNow();
+          	scheduledExecutorService = null;
+  	    }
+		activateAutoRefresh();
 	}
 	
     
@@ -612,20 +626,45 @@ public class GUI implements ModelListener, DisposeListener
 	 * Enable auto refresh.
 	 */
 	private void enableAutoRefresh() {
-			autoRefresh.setToolTipText(autoRefreshDisableMsg + Preferences.getAutoRefreshPeriod() + " " + timeUnit.toString());
-			autoRefresh.setSelection(false);
+		if (autoRefresh.isDisposed()) return;
+		autoRefresh.setToolTipText(autoRefreshDisableMsg + Preferences.getAutoRefreshPeriod() + " " + timeUnit.toString() + "]");
+		autoRefresh.setSelection(false);
 	}
 	
 	
 	/**
 	 * Disable auto refresh.
 	 */
-	private void disableAutoRefresh() {
-		autoRefresh.setToolTipText(autoRefreshEnableMsg);
+	private void disableAutoRefresh(boolean checkCondition) {
+		if (autoRefresh.isDisposed()) return;
 		autoRefresh.setSelection(true);
+		if (checkCondition) {
+			StringBuilder s = new StringBuilder();
+			s.append(autoRefreshEnableMsg).append("\n \t");
+			s.append("period set to ").append(Preferences.getAutoRefreshPeriod());
+			s.append("\n \t").append("end time set to ").append(model.getEndSpec());
+			autoRefresh.setToolTipText(s.toString());
+			return;
+		}
+		autoRefresh.setToolTipText(autoRefreshEnableMsg);
 	}
 
 
+	/**
+	 * Check auto refresh conditions.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean checkAutoRefreshConditions() {
+		if (Preferences.getAutoRefreshPeriod() == 0 || !this.endTime.equals(this.model.getEndSpec())) {
+			Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED);
+			disableAutoRefresh(true);
+			return false;
+		}
+		return true;
+	}
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

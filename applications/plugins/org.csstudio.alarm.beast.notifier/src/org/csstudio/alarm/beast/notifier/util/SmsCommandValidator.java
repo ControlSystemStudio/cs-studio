@@ -22,7 +22,7 @@ public class SmsCommandValidator implements IActionValidator {
 	private SmsCommandHandler handler;
 
 	public void init(String details) {
-		this.details = details.trim();
+		this.details = details == null ? null : details.trim();
 		handler = new SmsCommandHandler(details);
 	}
 

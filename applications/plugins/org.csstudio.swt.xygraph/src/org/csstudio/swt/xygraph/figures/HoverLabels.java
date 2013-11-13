@@ -172,8 +172,7 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 		graphics.drawLine(cursor_x, bounds.y, cursor_x, bounds.y
 				+ bounds.height);
 		graphics.setLineWidth(1);
-		// graphics.drawLine(bounds.x, cursor_y, bounds.x + bounds.width,
-		// cursor_y);
+		graphics.drawLine(bounds.x, cursor_y, bounds.x + bounds.width, cursor_y);
 	}
 
 	private void drawLabels(Graphics graphics) {

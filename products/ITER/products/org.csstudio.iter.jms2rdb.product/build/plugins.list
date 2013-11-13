@@ -13,6 +13,7 @@ org.csstudio.data
 org.csstudio.iter.jms2rdb.product
 org.csstudio.java
 org.csstudio.logging
+org.csstudio.logging.jms2rdb
 org.csstudio.platform.libs.easymock
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.linux
@@ -29,7 +30,6 @@ org.csstudio.servicelocator
 org.csstudio.simplepv
 org.csstudio.simplepv.pvmanager
 org.csstudio.simplepv.utilitypv
-org.csstudio.jms2rdb
 org.csstudio.utility.httpd
 org.csstudio.utility.jms
 org.csstudio.utility.pv

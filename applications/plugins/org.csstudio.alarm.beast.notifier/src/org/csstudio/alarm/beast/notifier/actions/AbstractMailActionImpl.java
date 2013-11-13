@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.notifier.ItemInfo;
 import org.csstudio.alarm.beast.notifier.PVSnapshot;
@@ -26,15 +25,27 @@ public abstract class AbstractMailActionImpl implements IAutomatedAction {
 	protected ItemInfo item;
 	
 	protected List<PVSnapshot> pvs;
+	
+	protected boolean manuallyExecuted = false;
 
 	protected JavaxMailSender mailSender;
 
 	final private static Pattern NLSPattern = Pattern.compile("\\{\\ *\\d+\\ *\\}");
-    final private static Pattern PrefixPattern = Pattern.compile("^\\*(.*)");
+    final private static Pattern PrefixPattern = Pattern.compile("^\\*(.*)$");
     
     protected String buildSubject() {
 		String subject = mailSender.getSubject().trim();
 		StringBuilder builder = new StringBuilder();
+
+		// Global rule => prefix with "ACK:" if the alarm is an acknowledge
+		if (!manuallyExecuted) {
+			boolean acknowledge = false;
+			for (PVSnapshot pv : pvs)
+				if (pv.isAcknowledge())
+					acknowledge = true;
+			if (acknowledge)
+				builder.append("ACK: ");
+		}
 
 		// Subject undefined => build from PV
 		if (subject.isEmpty()) {
@@ -58,12 +69,8 @@ public abstract class AbstractMailActionImpl implements IAutomatedAction {
 			}
 			if (item.isPV()) {
 				PVSnapshot snapshot = pvs.get(0);
-				SeverityLevel current_severity = snapshot.getCurrentSeverity();
-				builder.append(current_severity.name());
-				if (current_severity.equals(SeverityLevel.MINOR_ACK)
-						|| current_severity.equals(SeverityLevel.MAJOR_ACK))
-					builder.append(" alarm ACK: ");
-				else builder.append(" alarm: ");
+				builder.append(snapshot.getCurrentSeverity().name());
+				builder.append(" alarm: ");
 				builder.append(subject);
 			} else {
 				builder.append(buildAlarmCount());
@@ -139,6 +146,7 @@ public abstract class AbstractMailActionImpl implements IAutomatedAction {
 			case MAJOR: majorCount++; break;
 			case INVALID: invalidCount++; break;
 			case UNDEFINED: undefinedCount++; break;
+			default: break;
 			}
 		}
 		// nb MINOR alarms ... nb MINOR alarms - nb INVALID alarms

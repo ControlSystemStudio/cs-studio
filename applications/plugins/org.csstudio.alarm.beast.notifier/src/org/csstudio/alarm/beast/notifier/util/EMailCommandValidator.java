@@ -22,7 +22,7 @@ public class EMailCommandValidator implements IActionValidator {
 	private EMailCommandHandler handler;
 	
 	public void init(String details) {
-		this.details = details.trim();
+		this.details = details == null ? null : details.trim();
 		handler = new EMailCommandHandler(details);
 	}
 	

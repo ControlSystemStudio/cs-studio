@@ -68,6 +68,11 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 	}
 
 	@Override
+	public void removeSelectionHandles() {
+		super.removeSelectionHandles();
+	}
+	
+	@Override
 	public Command getCommand(Request request) {
 		if (REQ_MOVE_BENDPOINT.equals(request.getType())) {
 			return getMoveBendpointCommand((BendpointRequest) request);
