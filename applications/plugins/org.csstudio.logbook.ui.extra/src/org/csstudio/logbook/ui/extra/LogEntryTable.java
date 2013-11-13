@@ -15,6 +15,7 @@ import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.Tag;
 import org.csstudio.ui.util.AbstractSelectionProviderWrapper;
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -56,7 +57,9 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
     private final String eol = System.getProperty("line.separator");
     private AbstractSelectionProviderWrapper selectionProvider;
+    private boolean expanded = true;   
 
+    private ErrorBar errorBar;
     private GridTableViewer gridTableViewer;
     private List<LogEntry> logEntries = Collections.emptyList();
     private Grid grid;
@@ -75,12 +78,21 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 		    gridTableViewer.setInput(logEntries
 			    .toArray(new LogEntry[logEntries.size()]));
 		    break;
+		case "expanded":
+		    //TODO shroffk fix the refresh
+		    gridTableViewer.getGrid().setAutoHeight(expanded);
+		    gridTableViewer.setInput(logEntries
+			    .toArray(new LogEntry[logEntries.size()]));
+		    break;
 		default:
 		    break;
 		}
 	    }
 	});
 
+	errorBar = new ErrorBar(this, SWT.NONE);
+	errorBar.setMarginBottom(5);
+	
 	gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL
 		| SWT.DOUBLE_BUFFERED);
 	selectionProvider = new AbstractSelectionProviderWrapper(
@@ -140,7 +152,6 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	column.getColumn().setText("Date");
 	column.getColumn().setWordWrap(true);
 	new TableColumnViewerLayout(gridTableViewer, column, 15, 100);
-//	new ColumnViewerWeightedLayout(gridTableViewer, column, 15, 100);
 	new ColumnViewerSorter(gridTableViewer, column) {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
@@ -303,5 +314,21 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     public void setMenu(Menu menu) {
 	super.setMenu(menu);
 	gridTableViewer.getGrid().setMenu(menu);
+    }
+    
+    /**
+     * @return the expanded
+     */
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    /**
+     * @param expanded the expanded to set
+     */
+    public void setExpanded(boolean expanded) {
+	boolean oldValue = this.expanded;	
+        this.expanded = expanded;
+        changeSupport.firePropertyChange("expanded", oldValue, this.expanded);
     }
 }

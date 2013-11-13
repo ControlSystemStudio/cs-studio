@@ -107,13 +107,13 @@ public class LogViewConfigurationDialog extends Dialog {
 	    {
 	        switch (combo.getText()) {
 		case "Oldest":
-		    order = SWT.DOWN;
+		    order = SWT.UP;
 		    break;
 		case "Newest":
-		    order = SWT.UP;
+		    order = SWT.DOWN;
 		    break;
 		default:
-		    order = SWT.UP;
+		    order = SWT.DOWN;
 		    break;
 		}
 	    }

@@ -63,7 +63,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
     private final String eol = System.getProperty("line.separator");
     private AbstractSelectionProviderWrapper selectionProvider;
-    private int logEntryOrder = SWT.UP;
+    private int logEntryOrder = SWT.DOWN;
     private boolean expanded = true;   
 
     private ErrorBar errorBar;
@@ -103,8 +103,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
 	gridTreeViewer = new GridTreeViewer(this, SWT.BORDER | SWT.V_SCROLL
 		| SWT.H_SCROLL | SWT.DOUBLE_BUFFERED | SWT.MULTI | SWT.VIRTUAL);
-	selectionProvider = new AbstractSelectionProviderWrapper(
-		gridTreeViewer, this) {
+	selectionProvider = new AbstractSelectionProviderWrapper(gridTreeViewer, this) {
 
 	    @Override
 	    protected ISelection transform(IStructuredSelection selection) {
@@ -204,8 +203,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	// gridViewerColumnOwner.getColumn().setSort(SWT.UP);
 	GridColumn tblclmnOwner = gridViewerColumnOwner.getColumn();
 	tblclmnOwner.setText("Owner");
-	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnOwner, 10,
-		75);
+	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnOwner, 10, 75);
 	new ColumnViewerSorter(gridTreeViewer, gridViewerColumnOwner) {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
@@ -447,7 +445,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	    List<LogEntry> entries = entry.getValue();
 	    if (entries.size() > 0) {
 		subItem = new LogEntryTreeModel(entries.get(0), root);
-		for (LogEntry logEntry : entries.subList(0, entries.size() - 1)) {
+		for (LogEntry logEntry : entries.subList(1, entries.size())) {
 		    subItem.child.add(new LogEntryTreeModel(logEntry, subItem));
 		}
 		root.child.add(subItem);
