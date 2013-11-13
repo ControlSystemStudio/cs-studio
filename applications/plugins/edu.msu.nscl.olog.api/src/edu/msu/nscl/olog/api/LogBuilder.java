@@ -156,7 +156,7 @@ public class LogBuilder {
 
 	}
 
-	public Log build() {
+	Log build() {
 		return new Log(this.toXml());
 	}
 

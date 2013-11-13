@@ -6,7 +6,9 @@ package edu.msu.nscl.olog.api;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
+
+import static edu.msu.nscl.olog.api.LogBuilder.*;
 
 /**
  * @author Eric Beryman taken from shroffk
@@ -27,8 +29,7 @@ public class LogUtil {
 	 * @return string collection of tag names
 	 */
 	public static Collection<String> getTagNames(Log log) {
-		// Create LinkedHashSet to maintain order
-		Collection<String> tagNames = new LinkedHashSet<String>();
+		Collection<String> tagNames = new HashSet<String>();
 		for (Tag tag : log.getTags()) {
 			tagNames.add(tag.getName());
 		}
@@ -42,8 +43,7 @@ public class LogUtil {
 	 * @return string collection of tag names
 	 */
 	public static Collection<String> getAllTagNames(Collection<Log> logs) {
-		// Create LinkedHashSet to maintain order
-		Collection<String> tagNames = new LinkedHashSet<String>();
+		Collection<String> tagNames = new HashSet<String>();
 		for (Log log : logs) {
 			tagNames.addAll(getTagNames(log));
 		}
@@ -57,8 +57,7 @@ public class LogUtil {
 	 * @return string collection of logbook names
 	 */
 	public static Collection<String> getLogbookNames(Log log) {
-		// Create LinkedHashSet to maintain order
-		Collection<String> logbookNames = new LinkedHashSet<String>();
+		Collection<String> logbookNames = new HashSet<String>();
 		for (Logbook logbook : log.getLogbooks()) {
 			logbookNames.add(logbook.getName());
 		}
@@ -73,8 +72,7 @@ public class LogUtil {
 	 */
 	public static Collection<String> getLogbookNames(
 			Collection<Log> logs) {
-		// Create LinkedHashSet to maintain order
-		Collection<String> logbookNames = new LinkedHashSet<String>();
+		Collection<String> logbookNames = new HashSet<String>();
 		for (Log log : logs) {
 			logbookNames.addAll(getLogbookNames(log));
 		}
@@ -89,8 +87,7 @@ public class LogUtil {
 	 */
 	public static Collection<Long> getLogIds(
 			Collection<Log> logs) {
-		// Create LinkedHashSet to maintain order
-		Collection<Long> logIds = new LinkedHashSet<Long>();
+		Collection<Long> logIds = new HashSet<Long>();
 		for (Log log : logs) {
 			logIds.add(log.getId());
 		}
@@ -107,8 +104,7 @@ public class LogUtil {
 	 */
 	static Collection<Log> toLogs(
 			Collection<LogBuilder> logBuilders) {
-		// Create LinkedHashSet to maintain order
-		Collection<Log> logs = new LinkedHashSet<Log>();
+		Collection<Log> logs = new HashSet<Log>();
 		for (LogBuilder builder : logBuilders) {
 			logs.add(builder.build());
 		}
@@ -116,8 +112,7 @@ public class LogUtil {
 	}
 	
 	static Collection<Log> toLogs(XmlLogs xmlLogs){
-		// Create LinkedHashSet to maintain order
-		Collection<Log> logs = new LinkedHashSet<Log>();
+		Collection<Log> logs = new HashSet<Log>();
 		for (XmlLog xmlLog : xmlLogs.getLogs()) {
 			logs.add(new Log(xmlLog));
 		}

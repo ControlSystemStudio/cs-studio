@@ -56,7 +56,7 @@ public class AttachmentBuilder {
 			return xml;
 		}
 
-		public Attachment build(){
+		Attachment build(){
 			return new Attachment(this.toXml());
 		}
 
