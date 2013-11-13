@@ -215,7 +215,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 		    @Override
 		    public String getText(final Object element) {
 		    	final Shift item = ((Shift) element);
-		    	return item == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT).format(item.getEndDate());
+		    	return item == null ||  item.getEndDate() == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT).format(item.getEndDate());
 		    }
 		});
 		final GridColumn tblclmnEndDate = gridViewerColumnEndDate.getColumn();

@@ -7,6 +7,8 @@ import gov.bnl.shiftClient.ShiftFinderException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -109,7 +111,12 @@ public class ShiftClientImpl implements ShiftClient {
 	
 	@Override
 	public Collection<String> listTypes() throws ShiftFinderException {
-		return reader.listTypes();
+		Collection<gov.bnl.shiftClient.Type> types = reader.listTypes();
+		Collection<String> typeNames = new HashSet<String>();
+		for(gov.bnl.shiftClient.Type type : types) {
+			typeNames.add(type.getName());
+		}
+		return typeNames;
 	}
 	
 	private class ShiftToShift implements Shift {
@@ -142,7 +149,7 @@ public class ShiftClientImpl implements ShiftClient {
 
 		@Override
 		public String getType() {
-			return shift.getType();
+			return shift.getType().getName();
 		}
 
 		@Override
@@ -173,7 +180,7 @@ public class ShiftClientImpl implements ShiftClient {
 	private gov.bnl.shiftClient.Shift shiftBuilder(final Shift shift) {
 		gov.bnl.shiftClient.Shift newShift = new gov.bnl.shiftClient.Shift();
 		newShift.setId((Integer) shift.getId());
-		newShift.setType(shift.getType());
+		newShift.setType(new gov.bnl.shiftClient.Type(shift.getType()));
 		newShift.setStartDate(shift.getStartDate());
 		newShift.setOwner(shift.getOwner());
 		newShift.setEndDate(shift.getEndDate());

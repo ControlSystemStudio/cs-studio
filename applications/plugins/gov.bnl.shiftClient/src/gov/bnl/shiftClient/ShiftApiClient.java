@@ -91,5 +91,5 @@ public interface ShiftApiClient {
      * @return string collection of types
      * @throws ShiftFinderException
      */
-    Collection<String> listTypes() throws ShiftFinderException;
+    Collection<Type> listTypes() throws ShiftFinderException;
 }

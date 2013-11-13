@@ -7,6 +7,7 @@ import gov.bnl.shiftClient.Shift;
 import gov.bnl.shiftClient.ShiftApiClient;
 import gov.bnl.shiftClient.ShiftApiClientImpl.ShiftClientBuilder;
 import gov.bnl.shiftClient.ShiftFinderException;
+import gov.bnl.shiftClient.Type;
 
 import java.io.File;
 import java.io.InputStream;
@@ -93,7 +94,7 @@ public class ShiftClientFromPreferences implements ShiftApiClient {
 	}
 
 	@Override
-	public Collection<String> listTypes() throws ShiftFinderException {
+	public Collection<Type> listTypes() throws ShiftFinderException {
 		return client.listTypes();
 	}
 

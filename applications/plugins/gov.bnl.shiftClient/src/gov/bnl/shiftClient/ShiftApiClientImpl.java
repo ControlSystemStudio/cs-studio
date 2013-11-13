@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -242,7 +243,7 @@ public class ShiftApiClientImpl implements ShiftApiClient {
 
             @Override
             public Collection<Shift> call() throws Exception {
-                final Collection<Shift> shifts = new HashSet<Shift>();
+                final Collection<Shift> shifts = new LinkedHashSet<Shift>();
                 final XmlShifts xmlShifts = service.path("shift")
                         .accept(MediaType.APPLICATION_XML)
                         .accept(MediaType.APPLICATION_JSON).get(XmlShifts.class);
@@ -338,7 +339,7 @@ public class ShiftApiClientImpl implements ShiftApiClient {
         return wrappedSubmit(new Callable<Collection<Shift>>() {
         @Override
         public Collection<Shift> call() throws Exception {
-            final Collection<Shift> shifts = new HashSet<Shift>();
+            final Collection<Shift> shifts = new LinkedHashSet<Shift>();
             final XmlShifts xmlShifts = service.path("shift").queryParams(mMap)
                 .accept(MediaType.APPLICATION_XML)
                 .accept(MediaType.APPLICATION_JSON).get(XmlShifts.class);
@@ -355,7 +356,7 @@ public class ShiftApiClientImpl implements ShiftApiClient {
         return wrappedSubmit(new Callable<Collection<Shift>>() {
             @Override
             public Collection<Shift> call() throws Exception {
-                final Collection<Shift> shifts = new HashSet<Shift>();
+                final Collection<Shift> shifts = new LinkedHashSet<Shift>();
                 final XmlShifts xmlShifts = service.path("shift").queryParams(map)
                         .accept(MediaType.APPLICATION_XML)
                         .accept(MediaType.APPLICATION_JSON).get(XmlShifts.class);
@@ -368,16 +369,21 @@ public class ShiftApiClientImpl implements ShiftApiClient {
     }
     
 	@Override
-	public Collection<String> listTypes() throws ShiftFinderException {
-		return wrappedSubmit(new Callable<Collection<String>>() {
-            @Override
-            public Collection<String> call() throws Exception {
-                final String types = service.path("shift").path("type")
-                        .accept(MediaType.TEXT_HTML).get(String.class);
+	public Collection<Type> listTypes() throws ShiftFinderException {
+		return wrappedSubmit(new Callable<Collection<Type>>() {
 
-                return  Collections.unmodifiableCollection(Arrays.asList(types.split(",")));
+            @Override
+            public Collection<Type> call() throws Exception {
+                final Collection<Type> types = new HashSet<Type>();
+                final XmlTypes xmlTypes = service.path("shift").path("type")
+                        .accept(MediaType.APPLICATION_XML)
+                        .accept(MediaType.APPLICATION_JSON).get(XmlTypes.class);
+                for (XmlType xmlType : xmlTypes.getTypes()) {
+                    types.add(new Type(xmlType));
+                }
+                return types;
             }
-        });    
+        });
 	}
 	
 

@@ -10,7 +10,7 @@ import java.util.*;
 public class Shift  {
 
     private Integer id;
-    private String type;
+    private Type type;
     private String owner;
     private Date startDate;
     private Date endDate;
@@ -153,7 +153,7 @@ public class Shift  {
      *
      * @return type shift type
      */
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
@@ -162,7 +162,7 @@ public class Shift  {
      *
      * @param type shift type
      */
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
     /**
