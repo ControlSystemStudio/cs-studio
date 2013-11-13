@@ -102,7 +102,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	errorBar.setMarginBottom(5);
 
 	gridTreeViewer = new GridTreeViewer(this, SWT.BORDER | SWT.V_SCROLL
-		| SWT.H_SCROLL | SWT.DOUBLE_BUFFERED | SWT.MULTI);
+		| SWT.H_SCROLL | SWT.DOUBLE_BUFFERED | SWT.MULTI | SWT.VIRTUAL);
 	selectionProvider = new AbstractSelectionProviderWrapper(
 		gridTreeViewer, this) {
 

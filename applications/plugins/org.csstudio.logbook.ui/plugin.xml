@@ -24,7 +24,7 @@
             locationURI="menu:utility">
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               icon="icons/logentry-add-16.png"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
                label="%MakeLogEntry"
                style="push">
          </command>
@@ -33,7 +33,7 @@
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               icon="icons/logentry-add-16.png"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
                label="%MakeLogEntry"
                style="push">
             <visibleWhen>
@@ -57,6 +57,7 @@
          </command>
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-edit-16.png"
                label="%UpdateLogEntry"
                style="push">
             <visibleWhen>
