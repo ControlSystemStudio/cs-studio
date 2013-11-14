@@ -42,11 +42,11 @@ public class Opi_TwoDProfileMonitorClass extends OpiWidget {
 		
 		
 		if(r.getDataPvStr()!=null)
-			new OpiString(widgetContext, "pv_name", r.getDataPvStr());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getDataPvStr()));
 		
 		if(r.isPvBasedDataSize() && r.getWidthPvStr() != null && r.getHeightPvStr() != null){			
-			createPVOutputRule(r, r.getWidthPvStr(), "data_width", "DataWidthRule");
-			createPVOutputRule(r, r.getHeightPvStr(), "data_height", "DataHeightRule");			
+			createPVOutputRule(r, convertPVName(r.getWidthPvStr()), "data_width", "pv0", "DataWidthRule");
+			createPVOutputRule(r, convertPVName(r.getHeightPvStr()), "data_height", "pv0", "DataHeightRule");			
 		}else{
 			new OpiInt(widgetContext, "data_width", r.getDataWidth());
 			new OpiInt(widgetContext, "data_height", Integer.parseInt(r.getHeightPvStr()));

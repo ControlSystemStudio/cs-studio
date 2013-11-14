@@ -7,31 +7,29 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.Edm_activePipClass;
+import org.csstudio.opibuilder.converter.model.Edm_activeDynSymbolClass;
 
 /**
- * XML conversion class for Edm_activePipClass
- * @author Lei Hu, Xihui Chen
+ * XML conversion class for activeDynSymbolClass
+ * @author Xihui Chen
  */
-public class Opi_activePipClass extends OpiWidget {
+public class Opi_activeDynSymbolClass extends OpiWidget {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activePipClass");
 	private static final String typeId = "linkingContainer";
-	private static final String name = "EDM linkingContainer";
+	private static final String name = "EDM Dynamic Symbol";
 	private static final String version = "1.0";
 
 	/**
 	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
 	 */
-	public Opi_activePipClass(Context con, Edm_activePipClass r) {
+	public Opi_activeDynSymbolClass(Context con, Edm_activeDynSymbolClass r) {
 		super(con, r);
 		setTypeId(typeId);
 		setVersion(version);
 		setName(name);
 		
 
-		if(r.getDisplaySource()!=null && r.getFile()!=null)
+		if(r.getFile()!=null)
 		{
 			String originPath = r.getFile();
 			if (originPath.endsWith(".edl")) {
@@ -40,12 +38,12 @@ public class Opi_activePipClass extends OpiWidget {
 				originPath = originPath + ".opi";
 			new OpiString(widgetContext, "opi_file", originPath);				
 		}
+		new OpiInt(widgetContext, "border_style", 0);
+		new OpiString(widgetContext, "group_name", "0");
+		createPVOutputRule(r, "sim://ramp(0,"+(r.getNumStates()-1)+",1,"+r.getRate()+")",
+				"group_name", "\"\"+pvInt0", "DynamicSymbolRule");
 		
-		if(r.getDisplaySource()==null && r.getFilePv()!=null){
-			createPVOutputRule(r, convertPVName(r.getFilePv()), "opi_file", "pvStr0", "OPIFileFromPVRule");
-		}
 		
-		log.debug("Edm_activePipClass written.");
 
 	}
 

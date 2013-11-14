@@ -33,6 +33,8 @@ public class EdmWidget extends EdmEntity {
 	@EdmAttributeAn @EdmOptionalAn private EdmColor bgColor;
 	@EdmAttributeAn @EdmOptionalAn private boolean fgAlarm;
 	@EdmAttributeAn @EdmOptionalAn private boolean bgAlarm;
+	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
+	
 	/**
 	 * Constructs EdmWidget from general EdmEntity.
 	 *
@@ -43,6 +45,9 @@ public class EdmWidget extends EdmEntity {
 		super(genericEntity);
 	}
 	
+	public final String getAlarmPv() {
+		return alarmPv;
+	}
 	
 	public int getMajor() {
 		return major;

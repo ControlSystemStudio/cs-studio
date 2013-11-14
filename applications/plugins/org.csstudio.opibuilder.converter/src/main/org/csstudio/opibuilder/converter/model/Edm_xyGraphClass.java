@@ -76,15 +76,15 @@ public class Edm_xyGraphClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotUpdateMode;
 	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings plotSymbolType;
 	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans useY2Axis;	
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings opMode;
 	
 	public Edm_xyGraphClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
 	}
 
-	
-	
-	
-
+	public EdmMultiStrings getOpMode() {
+		return opMode;
+	}
 	
 
 	public String getxLabel() {

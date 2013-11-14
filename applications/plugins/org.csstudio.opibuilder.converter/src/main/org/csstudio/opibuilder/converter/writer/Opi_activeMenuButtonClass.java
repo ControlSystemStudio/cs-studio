@@ -27,13 +27,12 @@ public class Opi_activeMenuButtonClass extends OpiWidget {
 	public Opi_activeMenuButtonClass(Context con, Edm_activeMenuButtonClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		widgetContext.getElement().setAttribute("version", version);		
-		new OpiString(widgetContext, "name", name);
+		setName(name);
+		setVersion(version);
 		
-		if(r.getAttribute("controlPv").isExistInEDL())
+		if(r.getControlPv()!=null)
 		{
-			new OpiString(widgetContext, "pv_name", r.getControlPv());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
 			new OpiBoolean(widgetContext, "actions_from_pv", true);
 		}
 

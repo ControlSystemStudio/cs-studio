@@ -45,10 +45,10 @@ public class Opi_activeCircleClass extends OpiWidget {
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
 		
 		if(r.getAlarmPv()!=null && r.isLineAlarm())
-			createColorAlarmRule(r, r.getAlarmPv(), "line_color", "lineColorRule", true);
+			createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color", "lineColorRule", true);
 			
 		if(r.getAttribute("alarmPv").isExistInEDL())
-			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getAlarmPv()));
 		
 		int line_width = 1;
 		if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))

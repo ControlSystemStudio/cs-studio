@@ -35,8 +35,7 @@ public class EdmDouble extends EdmAttribute {
 		
 		if (genericAttribute == null || getValueCount() == 0) {
 			if (isRequired())
-				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-						"Trying to initialize a required attribute from null object.", null);
+				log.warn("Missing required property.");
 			else {
 				log.warn("Missing optional property.");
 				return;
@@ -46,7 +45,11 @@ public class EdmDouble extends EdmAttribute {
 		if (genericAttribute != null)
 		{
 			try {
-				val = Double.parseDouble(genericAttribute.getValue(0));
+				String ds = genericAttribute.getValue(0).replace("\"","");
+				if(ds.toLowerCase().trim().equals("inf"))
+					val=Double.POSITIVE_INFINITY;
+				else 
+					val = Double.parseDouble(ds);
 				setInitialized(true);
 				log.debug("Parsed " + this.getClass().getName() + 
 						" = " + val);

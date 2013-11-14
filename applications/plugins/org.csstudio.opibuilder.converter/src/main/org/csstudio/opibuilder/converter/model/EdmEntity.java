@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 /**
@@ -167,7 +168,6 @@ public class EdmEntity extends Object {
 			if (e instanceof EdmException)
 				throw (EdmException)e;
 			else {
-				e.printStackTrace();
 				throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
 				"Error when parsing annotated field.", 
 				e instanceof InvocationTargetException? e.getCause():e);
@@ -284,7 +284,7 @@ public class EdmEntity extends Object {
 			String wType = "Edm_" + subE.getType();
 
 			log.debug("Parsing specific widget: " + wType);
-
+			wType = wType.replace(":", "_");
 			Object o;
 			try {
 				o = Class.forName(packageName + "." + wType).
@@ -296,7 +296,10 @@ public class EdmEntity extends Object {
 					log.warn("Class not declared: " + wType);
 				}
 			}catch (Exception e) {					
-					ErrorHandlerUtil.handleError("Parse widget error.",
+					if(e instanceof ClassNotFoundException){
+						ConsoleService.getInstance().writeWarning(wType + " is not convertible.");
+					}else
+						ErrorHandlerUtil.handleError("Parse widget error.",
 							e instanceof InvocationTargetException? e.getCause():e);				
 			}
 		}

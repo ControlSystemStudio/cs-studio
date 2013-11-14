@@ -173,7 +173,6 @@ public class OpiWriter {
             
             log.debug("Completed.");
         } catch (Exception e) {
-        	e.printStackTrace();
         	throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error writing to file " + fileName, e);
         } 
 	}

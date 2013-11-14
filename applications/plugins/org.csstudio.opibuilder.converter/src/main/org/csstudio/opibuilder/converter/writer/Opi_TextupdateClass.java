@@ -30,10 +30,11 @@ public class Opi_TextupdateClass extends OpiWidget {
 		setName(name);
 		setVersion(version);
 
-		new OpiString(widgetContext, "pv_name", t.getControlPv());
+		new OpiString(widgetContext, "pv_name", convertPVName(t.getControlPv()));
 
 		
 		new OpiBoolean(widgetContext, "transparent", !t.isFill());
+		new OpiBoolean(widgetContext, "show_units", false);
 		
 		int align = 0;
 		if (t.getFontAlign()!=null){			
@@ -50,18 +51,21 @@ public class Opi_TextupdateClass extends OpiWidget {
 		new OpiInt(widgetContext, "border_style", t.isLineAlarm()?0:1);
 		new OpiColor(widgetContext, "border_color", t.getFgColor());
 		new OpiBoolean(widgetContext, "border_alarm_sensitive", t.isLineAlarm());
-		
+		new OpiBoolean(widgetContext, "precision_from_pv", true);
 		if(t.getDisplayMode()!=null){
 			int mode = 0;
-			if(t.getDisplayMode().equals("decimal"))
+			if(t.getDisplayMode().equals("decimal")){
 				mode =1;
+				new OpiBoolean(widgetContext, "precision_from_pv", false);
+			}
 			else if(t.getDisplayMode().equals("hex"))
 				mode = 3;
 			else if(t.getDisplayMode().equals("engineer") || t.getDisplayMode().equals("exp"))
 				mode = 2;
 			new OpiInt(widgetContext, "format_type", mode);
 		}
-		new OpiBoolean(widgetContext, "precision_from_pv", false);
+		
+		
 		new OpiInt(widgetContext, "precision", t.getPrecision());
 		
 		log.debug("Edm_TextupdateClass written.");

@@ -40,8 +40,8 @@ public class Opi_ByteClass extends OpiWidget {
 		new OpiColor(widgetContext, "off_color", r.getOffColor());
 	
 		if(r.getControlPv() !=null){
-			new OpiString(widgetContext, "pv_name", r.getControlPv());
-			createColorAlarmRule(r, r.getControlPv(), "on_color", "onColorAlarm", false);
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
+			createColorAlarmRule(r, convertPVName(r.getControlPv()), "on_color", "onColorAlarm", false);
 		}
 		new OpiBoolean(widgetContext, "bitReverse", r.getEndian() !=null && 
 				r.getEndian().equals("little"));

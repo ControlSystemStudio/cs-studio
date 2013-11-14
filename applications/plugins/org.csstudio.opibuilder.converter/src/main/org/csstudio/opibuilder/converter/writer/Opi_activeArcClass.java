@@ -49,7 +49,7 @@ public class Opi_activeArcClass extends OpiWidget {
 			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isLineAlarm());
 	
 		if(r.getAttribute("alarmPv").isExistInEDL())
-			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getAlarmPv()));
 		
 		int line_width = 1;
 		if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))

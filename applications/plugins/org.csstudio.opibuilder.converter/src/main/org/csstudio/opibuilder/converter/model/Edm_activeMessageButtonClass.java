@@ -11,51 +11,66 @@ package org.csstudio.opibuilder.converter.model;
  * @author Lei Hu, Xihui Chen
  *
  */
-public class Edm_activeButtonClass extends EdmWidget {
+public class Edm_activeMessageButtonClass extends EdmWidget {
 
 	
 	@EdmAttributeAn @EdmOptionalAn private EdmColor onColor;
 	@EdmAttributeAn @EdmOptionalAn private EdmColor offColor;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor inconsistentColor;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor topShadowColor;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor botShadowColor;
 	
 	@EdmAttributeAn @EdmOptionalAn private String controlPv;
 	@EdmAttributeAn @EdmOptionalAn private String onLabel;
 	@EdmAttributeAn @EdmOptionalAn private String offLabel;
-	@EdmAttributeAn @EdmOptionalAn private String buttonType;
-	@EdmAttributeAn @EdmOptionalAn private int controlBitsPos;
+	
+	@EdmAttributeAn @EdmOptionalAn private String pressValue;
+	@EdmAttributeAn @EdmOptionalAn private String releaseValue;
+	@EdmAttributeAn @EdmOptionalAn private String password;
+	
+	@EdmAttributeAn @EdmOptionalAn private boolean toggle;
+	
 	
 	
 	
 
-	public Edm_activeButtonClass(EdmEntity genericEntity) throws EdmException {
+	public Edm_activeMessageButtonClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
 	}
 
-	
-	public String getButtonType() {
-		return buttonType;
+		
+	public String getPressValue() {
+		return pressValue;
 	}
-	public int getControlBitsPos() {
-		return controlBitsPos;
+
+
+
+
+	public String getReleaseValue() {
+		return releaseValue;
 	}
-	
+
+
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+
+
+	public boolean isToggle() {
+		return toggle;
+	}
+
+
+
+
 	public EdmColor getOnColor() {
 		return onColor;
 	}
 	public EdmColor getOffColor() {
 		return offColor;
 	}
-	public EdmColor getInconsistentColor() {
-		return inconsistentColor;
-	}
-	public EdmColor getTopShadowColor() {
-		return topShadowColor;
-	}
-	public EdmColor getBotShadowColor() {
-		return botShadowColor;
-	}
+	
 
 	public final String getControlPv() {
 		return controlPv;

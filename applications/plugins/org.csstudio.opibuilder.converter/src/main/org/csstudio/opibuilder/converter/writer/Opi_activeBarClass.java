@@ -43,7 +43,7 @@ public class Opi_activeBarClass extends OpiWidget {
 		new OpiColor(widgetContext, "border_color", r.getFgColor());
 		
 		if(r.getIndicatorPv() != null)
-			new OpiString(widgetContext, "pv_name", r.getIndicatorPv());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getIndicatorPv()));
 		
 		new OpiColor(widgetContext, "fill_color", r.getIndicatorColor());
 		new OpiColor(widgetContext, "color_fillbackground", r.getBgColor());

@@ -25,7 +25,6 @@ public class Edm_activeRectangleClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private boolean invisible;
 	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
 	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
-	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
 
 	public Edm_activeRectangleClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
@@ -52,19 +51,6 @@ public class Edm_activeRectangleClass extends EdmWidget {
 	public final boolean isFillAlarm() {
 		return fillAlarm;
 	}
-
-
-
-
-
-	/**
-	 * @return the alarmPv
-	 */
-	public final String getAlarmPv() {
-		return alarmPv;
-	}
-
-
 
 
 

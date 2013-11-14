@@ -13,6 +13,8 @@ public class Edm_activeMeterClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private boolean showScale;
 	
 	@EdmAttributeAn @EdmOptionalAn private boolean scaleAlarm;
+	@EdmAttributeAn @EdmOptionalAn private double scaleMin;
+	@EdmAttributeAn @EdmOptionalAn private double scaleMax;
 
 	public Edm_activeMeterClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
@@ -36,5 +38,12 @@ public class Edm_activeMeterClass extends EdmWidget {
 	}
 	public EdmColor getLabelColor() {
 		return labelColor;
+	}
+	public double getScaleMin() {
+		return scaleMin;
+	}
+	
+	public double getScaleMax() {
+		return scaleMax;
 	}
 }

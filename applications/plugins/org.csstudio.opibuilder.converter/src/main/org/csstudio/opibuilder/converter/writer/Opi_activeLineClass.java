@@ -40,7 +40,7 @@ public class Opi_activeLineClass extends OpiWidget {
 			new OpiColor(widgetContext, "background_color", r.getFillColor());
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());	
 			if(r.getAlarmPv()!=null && r.isLineAlarm())
-			createColorAlarmRule(r, r.getAlarmPv(), "line_color", "lineColorRule", true);
+			createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color", "lineColorRule", true);
 			
 		} else{
 			setTypeId(typeId_polyline);
@@ -67,7 +67,7 @@ public class Opi_activeLineClass extends OpiWidget {
 		
 
 		if (r.getAttribute("alarmPv").isExistInEDL())
-			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getAlarmPv()));
 
 		new OpiInt(widgetContext, "line_width", r.getLineWidth() == 0 ? 1 : r.getLineWidth());
 

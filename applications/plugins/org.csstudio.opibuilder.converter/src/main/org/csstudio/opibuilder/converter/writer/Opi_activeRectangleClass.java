@@ -43,13 +43,15 @@ public class Opi_activeRectangleClass extends OpiWidget {
 		new OpiColor(widgetContext, "background_color", r.getFillColor());
 
 		new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
+		
+		new OpiBoolean(widgetContext, "visible", !r.isInvisible());
 
 		// If a string property is not exist, it is null.
 		if (r.getAlarmPv() != null && r.isLineAlarm()) {
 			// line color alarm rule.
-			createColorAlarmRule(r, r.getAlarmPv(), "line_color",
+			createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
 					"lineColorRule", true);
-			new OpiString(widgetContext, "pv_name", r.getAlarmPv());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getAlarmPv()));
 		}
 
 		int line_width = 1;

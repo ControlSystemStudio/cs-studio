@@ -57,7 +57,7 @@ public class Opi_activeXTextClass extends OpiWidget {
 		new OpiBoolean(widgetContext, "transparent", useDisplayBg);
 		
 		if(t.getAttribute("alarmPv").isExistInEDL()){
-			new OpiString(widgetContext, "pv_name", t.getAlarmPv());
+			new OpiString(widgetContext, "pv_name", convertPVName(t.getAlarmPv()));
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", t.isBgAlarm());
 			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", t.isFgAlarm());
 		}

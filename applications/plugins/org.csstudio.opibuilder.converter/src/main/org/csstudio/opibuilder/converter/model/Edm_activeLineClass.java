@@ -30,7 +30,7 @@ public class Edm_activeLineClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
 	@EdmAttributeAn @EdmOptionalAn private boolean fill;
 	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
-	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
+	
 	
 
 
@@ -101,14 +101,6 @@ public class Edm_activeLineClass extends EdmWidget {
 	 */
 	public final boolean isFillAlarm() {
 		return fillAlarm;
-	}
-
-
-	/**
-	 * @return the alarmPv
-	 */
-	public final String getAlarmPv() {
-		return alarmPv;
 	}
 
 }

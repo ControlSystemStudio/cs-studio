@@ -8,36 +8,39 @@
 package org.csstudio.opibuilder.converter.model;
 
 /**
- * Specific class representing Embedded Window widget.
+ * Specific class representing Dynamic Symbol widget.
  *
- * @author Lei Hu, Xihui Chen
+ * @author Xihui Chen
  *
  */
-public class Edm_activePipClass extends EdmWidget {
+public class Edm_activeDynSymbolClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String displaySource;
 	@EdmAttributeAn @EdmOptionalAn private String file;
-	@EdmAttributeAn @EdmOptionalAn private String filePv;
+	@EdmAttributeAn @EdmOptionalAn private double rate;
+	@EdmAttributeAn @EdmOptionalAn private int numStates;
 	
-	public Edm_activePipClass(EdmEntity genericEntity) throws EdmException {
+	
+	public Edm_activeDynSymbolClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
 	}
 
 
-	/**
-	 * @return the alarmPv
-	 */
-	public final String getDisplaySource() {
-		return displaySource;
-	}
-
-	public final String getFile() {
+	public String getFile() {
 		return file;
 	}
 
-	public String getFilePv() {
-		return filePv;
+
+	public double getRate() {
+		return rate;
 	}
+
+
+	public int getNumStates() {
+		return numStates;
+	}
+
+
+
 
 
 }

@@ -82,34 +82,43 @@
 	<tr><td>Text W. Reg. Exp.</td><td>Label</td><td></td></tr>
 	<tr><td>Gif Image</td><td>Image</td><td></td></tr>
 	<tr><td>Png Image</td><td>Image</td><td></td></tr>
-	<tr><td>Embedded Window</td><td></td><td></td></tr>
-	<tr><td>Dynamic Symbol</td><td>TBD</td><td></td></tr>
-	<tr><td>Meter</td><td>Meter</td><td>Still needs fine tuning</td></tr>
+	<tr><td>Embedded Window</td><td>Linking Container</td><td>"menu" display source is ignored.</td></tr>
+	<tr><td>Dynamic Symbol</td><td>Linking Container</td><td>
+	Only converted the simplest scenario where Gate Up/Down are all ignored.</td></tr>
+	<tr><td>Meter</td><td>Meter</td><td></td></tr>
 	<tr><td>Bar</td><td>Progress Bar</td><td>Still needs fine tuning</td></tr>
-	<tr><td>Indicator</td><td></td><td></td></tr>
+	<tr><td>Indicator</td><td>Progress Bar</td><td></td></tr>
 	<tr><td>Message Box</td><td>N/A</td><td></td></tr>
-	<tr><td>Byte</td><td></td><td></td></tr>
-	<tr><td>X-Y Graph</td><td>XY Graph</td><td></td></tr>
+	<tr><td>Byte</td><td></td><td>Byte Monitor</td></tr>
+	<tr><td>X-Y Graph</td><td>XY Graph</td><td>BOY doesn't support "plot" mode. 
+	BOY cannot automatically increase buffer size if the PV is a big waveform. </td></tr>
 	<tr><td>Table</td><td>N/A</td><td></td></tr>
-	<tr><td>Coef Table</td><td></td><td></td></tr>
+	<tr><td>Coef Table</td><td>N/A</td><td></td></tr>
 	<tr><td>PV Inspector</td><td>N/A</td><td></td></tr>
 	<tr><td>Symbol</td><td>TBD</td><td></td></tr>
 	<tr><td>Animated Symbol</td><td>TBD</td><td></td></tr>
-	<tr><td>Text Monitor</td><td></td><td></td></tr>
-	<tr><td>Text Update</td><td></td><td></td></tr>
-	<tr><td>Reg Text Update</td><td></td><td></td></tr>
-	<tr><td>Hoff Video</td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
+	<tr><td>Text Monitor</td><td>Text Update</td><td></td></tr>
+	<tr><td>Text Update</td><td>Text Update</td><td></td></tr>
+	<tr><td>Reg Text Update</td><td>Text Update</td><td>Regular expression is ignored.</td></tr>
+	<tr><td>Hoff Video</td><td>Intensity Graph</td><td></td></tr>
+	
+	<tr><td>Slider</td><td>Scaled Slider</td><td></td></tr>
+	<tr><td>Text Control</td><td>Text Input</td><td></td></tr>
+	<tr><td>Button</td><td>Boolean Button</td><td></td></tr>
+	<tr><td>Menu Button</td><td>Menu Button</td><td></td></tr>
+	<tr><td>Message Button</td><td>Boolean Button</td><td></td></tr>
+	<tr><td>Choice Button</td><td>Choice Button</td><td></td></tr>
+	<tr><td>Radio Box</td><td>Radio Box</td><td></td></tr>
+	<tr><td>Menu Mux</td><td>N/A</td><td></td></tr>
 	<tr><td>Ramp Button</td><td>N/A</td><td></td></tr>
-	<tr><td>Exit Button</td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
+	<tr><td>Exit Button</td><td>Action Button</td><td>Only exit current OPI</td></tr>
+	
+	<tr><td>Related Display</td><td>Action Button/Rectangle/Menu Button</td><td>
+	If it has only one action and is invislbe, it will be converted to a transparent rectangle wiget.</td></tr>
+	<tr><td>Shell Command</td><td>Action Button or Menu Button</td><td>Password,
+	Initial Exec Delay and Auto Exec Interval are ignored. Always visible in BOY to be effective</td></tr>
+	<tr><td>Text Entry</td><td>Text Input</td><td></td></tr>
+	<tr><td>Motif Slider</td><td>Scaled Slider</td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
@@ -120,6 +129,14 @@
 	
 	</table>
 	
+
+	<h3>Limitations</h3>
+	<p>Some EDM features are very hard or impossible to convert. Here is an imcomplete list of those features:</p>
+	<ul>
+	<li>color rule in colors.list is ignored.</li>
+	<li>EDM CALC\ PV is not converted. LOC\ enum type is not converted.</li>
+	<li>BOY doesn't allow a macro name starts with number while EDM does.</li>
+	</ul>
 	
 	 
       </body>

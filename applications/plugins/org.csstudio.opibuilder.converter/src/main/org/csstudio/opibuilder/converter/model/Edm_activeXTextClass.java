@@ -32,19 +32,12 @@ public class Edm_activeXTextClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
 	@EdmAttributeAn @EdmOptionalAn private boolean border;
 	@EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
-	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
 		
 	public Edm_activeXTextClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
 	}
 
 
-	/**
-	 * @return the alarmPv
-	 */
-	public final String getAlarmPv() {
-		return alarmPv;
-	}
 
 
 

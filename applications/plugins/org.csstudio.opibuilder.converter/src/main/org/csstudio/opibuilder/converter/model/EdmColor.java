@@ -11,6 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 /**
  * Specific class representing EdmColor property.
@@ -33,6 +35,13 @@ public class EdmColor extends EdmAttribute {
 	private int blinkRed;
 	private int blinkGreen;
 	private int blinkBlue;
+	
+	public EdmColor(String name, int red, int green, int blue){
+		this.name= name;
+		this.red = red;
+		this.green = green;
+		this.blue =  blue;
+	}
 
 	/**
 	 * Constructor which parses EdmColor from general EdmAttribute value.
@@ -48,8 +57,7 @@ public class EdmColor extends EdmAttribute {
 
 		if (genericEntity == null || getValueCount() == 0) {
 			if (isRequired()) {
-				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-				"Trying to initialize a required attribute from null object.", null);
+				log.warn("Missing required property.");
 			} else {
 				log.warn("Missing optional property.");
 				return;
@@ -133,8 +141,9 @@ public class EdmColor extends EdmAttribute {
 
 		EdmColor color = EdmModel.getColorsList().getColor(i);
 		if (color == null) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
-					"Color index " + i + " is not in given EdmColorsList instance.", null);
+			ConsoleService.getInstance().writeWarning(
+					"Color index " + i + " is not in colors list file. Use black color instead.");
+			color = new EdmColor(0);
 		}
 			
 		name = color.getName();

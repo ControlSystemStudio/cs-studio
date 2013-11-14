@@ -32,7 +32,7 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
 		
 		if(r.getAttribute("controlPv").isExistInEDL())
 		{
-			new OpiString(widgetContext, "pv_name", r.getControlPv());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
 		}
 		
 		new OpiBoolean(widgetContext, "precision_from_pv", r.isLimitsFromDb());
@@ -49,17 +49,18 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
 		
 		
 		int f=0;
-		if(r.getFormat().equals("float"))
-			f=1;
-		else if(r.getFormat().equals("exponential"))
-			f=2;
-		else if(r.getFormat().equals("decimal"))
-			f=1;
-		else if(r.getFormat().equals("hex"))
-			f=3;
-		else if(r.getFormat().equals("string"))
-			f=4;
-			
+		if (r.getFormat() != null) {
+			if (r.getFormat().equals("float"))
+				f = 1;
+			else if (r.getFormat().equals("exponential"))
+				f = 2;
+			else if (r.getFormat().equals("decimal"))
+				f = 1;
+			else if (r.getFormat().equals("hex"))
+				f = 3;
+			else if (r.getFormat().equals("string"))
+				f = 4;
+		}
 		new OpiInt(widgetContext, "format_type", f);
 		
 		

@@ -25,8 +25,6 @@ public class Edm_activeArcClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private boolean invisible;
 	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
 	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
-	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
-
 	@EdmAttributeAn @EdmOptionalAn private double startAngle;
 	@EdmAttributeAn @EdmOptionalAn private double totalAngle;
 	@EdmAttributeAn @EdmOptionalAn private String fillMode;
@@ -55,20 +53,6 @@ public class Edm_activeArcClass extends EdmWidget {
 	public final boolean isFillAlarm() {
 		return fillAlarm;
 	}
-
-
-
-
-
-	/**
-	 * @return the alarmPv
-	 */
-	public final String getAlarmPv() {
-		return alarmPv;
-	}
-
-
-
 
 
 	public EdmColor getLineColor() {

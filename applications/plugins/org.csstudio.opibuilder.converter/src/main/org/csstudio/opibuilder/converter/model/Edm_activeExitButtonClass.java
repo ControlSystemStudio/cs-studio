@@ -8,20 +8,19 @@
 package org.csstudio.opibuilder.converter.model;
 
 /**
- * @author Lei Hu, Xihui Chen
- *
+ * @author Xihui Chen
+ * 
  */
-public class Edm_activeMotifSliderClass extends Edm_activeSliderClass {
-	
-	@EdmAttributeAn @EdmOptionalAn private String orientation;
+public class Edm_activeExitButtonClass extends EdmWidget {
 
-	public Edm_activeMotifSliderClass(EdmEntity genericEntity) throws EdmException {
+	@EdmAttributeAn @EdmOptionalAn private String label;
+
+	public Edm_activeExitButtonClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
 	}
-	
-	public String getOrientation() {
-		return orientation;
+
+	public String getLabel() {
+		return label;
 	}
-	
 
 }

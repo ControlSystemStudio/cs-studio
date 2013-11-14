@@ -96,7 +96,10 @@ public class EdmAttribute {
 	 * @return		Actual value appended (without quotations).
 	 */
 	public String appendValue(String value) {
-		value = value.replaceAll("\"", "");
+		if(value.startsWith("\"")&&value.endsWith("\""))
+			value=value.substring(1, value.length()-1);
+		
+		value = value.replaceAll("\\\\\"", "\"");
 		values.add(value);
 		return value;
 	}

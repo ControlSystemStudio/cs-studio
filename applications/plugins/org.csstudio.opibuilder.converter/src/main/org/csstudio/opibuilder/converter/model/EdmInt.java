@@ -35,8 +35,7 @@ public class EdmInt extends EdmAttribute {
 
 		if (genericAttribute == null || getValueCount() == 0) {
 			if (isRequired()) {
-				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-						"Trying to initialize a required attribute from null object.", null);
+				log.warn("Missing required property.");
 			}
 			else {
 				log.warn("Missing optional property.");
@@ -45,7 +44,7 @@ public class EdmInt extends EdmAttribute {
 		}
 
 		try {
-			val = Integer.parseInt(getValue(0));
+			val = Integer.parseInt(getValue(0).replace("\"", ""));
 			setInitialized(true);
 			log.debug("Parsed " + this.getClass().getName() + 
 					" = " + val);

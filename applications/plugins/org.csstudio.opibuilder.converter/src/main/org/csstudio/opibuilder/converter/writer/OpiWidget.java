@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.converter.writer;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmWidget;
 import org.w3c.dom.Element;
@@ -45,10 +46,18 @@ public class OpiWidget {
 			new OpiColor(widgetContext, "foreground_color", r.getFgColor());
 		if (r.getBgColor().isExistInEDL())
 			new OpiColor(widgetContext, "background_color", r.getBgColor());
-		if (r.getAttribute("fgAlarm").isExistInEDL())
-			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isFgAlarm());
-		if (r.getAttribute("bgAlarm").isExistInEDL())
-			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isBgAlarm());
+		if (r.getAttribute("fgAlarm").isExistInEDL()){
+			if(r.getAlarmPv()!=null){
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "foreground_color", "ForeColorAlarm", true);
+			}else
+				new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isFgAlarm());
+		}
+		if (r.getAttribute("bgAlarm").isExistInEDL()){
+			if(r.getAlarmPv()!=null){
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color", "BackColorAlarm", true);
+			}else
+				new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isBgAlarm());
+		}
 		if (r.getFont().isExistInEDL())
 			new OpiFont(widgetContext, "font", r.getFont());
 
@@ -62,7 +71,7 @@ public class OpiWidget {
 			valueNode.setTextContent(String.valueOf(r.isVisInvert()));
 			expressions.put("true", valueNode);
 			new OpiRule(widgetContext, "visibleRule", "visible", false,
-					Arrays.asList(r.getVisPv()), expressions);
+					Arrays.asList(convertPVName(r.getVisPv())), expressions);
 		}
 
 	}
@@ -90,17 +99,51 @@ public class OpiWidget {
 		new OpiBoolean(widgetContext, "border_alarm_sensitive", false);
 	}
 	
+	protected String convertPVName(final String pvName){
+		if(pvName.startsWith("LOC\\")){
+			try {
+				String newName = pvName.replace("$(!W)", "$(DID)");
+				String[] parts = StringSplitter.splitIgnoreInQuotes(newName, '=', true);
+				String r="loc://"+parts[0].substring(5);
+				String type="";
+				String initValue=parts[1];
+				if(parts[1].startsWith("d:")){
+					type="<VDouble>";
+					initValue=parts[1].substring(2);
+				}else if(parts[1].startsWith("i:")){
+					type="<VDouble>";
+					initValue=parts[1].substring(2);
+				}else if(parts[1].startsWith("s:")){
+					type="<VString>";
+					initValue=parts[1].substring(2);
+				}else if(parts[1].startsWith("e:")){ //Enumerated pv cannot be converted.
+					return pvName;
+				}
+				
+				r=r+type+"("+initValue+")";
+				return r;	
+				
+			} catch (Exception e) {
+				return pvName;
+			}
+			
+		}
+		
+		return pvName;
+	}
+	
 	/**Create a rule that directly output PV's value to an opi property.
 	 * @param edmWidgetClass
 	 * @param pvName
 	 * @param opiPropId
+	 * @param outputExpression the output expression such as pv0, pvStr0
 	 * @param ruleName
 	 */
-	protected void createPVOutputRule(EdmWidget edmWidgetClass, String pvName, String opiPropId,
+	protected void createPVOutputRule(EdmWidget edmWidgetClass, String pvName, String opiPropId, String outputExpression,
 			String ruleName){
 		LinkedHashMap<String, Element> expressions = new LinkedHashMap<String, Element>();
 		Element valueNode = widgetContext.getDocument().createElement("value");
-		valueNode.setTextContent("pv0");
+		valueNode.setTextContent(outputExpression);
 		expressions.put("true", valueNode);
 		new OpiRule(widgetContext, ruleName, opiPropId, true, Arrays.asList(pvName), expressions);		
 	}

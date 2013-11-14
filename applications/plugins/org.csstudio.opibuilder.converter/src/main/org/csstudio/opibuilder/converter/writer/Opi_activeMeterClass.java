@@ -31,11 +31,12 @@ public class Opi_activeMeterClass extends OpiWidget {
 		widgetContext.getElement().setAttribute("version", version);
 		
 		new OpiString(widgetContext, "name", name);
-		new OpiString(widgetContext, "pv_name", r.getReadPv());
+		new OpiString(widgetContext, "pv_name", convertPVName(r.getReadPv()));
 		new OpiColor(widgetContext, "needle_color", r.getFgColor());
 		new OpiColor(widgetContext, "foreground_color", r.getScaleColor());
 		new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isScaleAlarm());
-		
+		new OpiDouble(widgetContext, "minimum", r.getScaleMin());
+		new OpiDouble(widgetContext, "maximum", r.getScaleMax());
 		
 		if(r.isShowScale())
 			new OpiBoolean(widgetContext, "show_scale", r.isShowScale());

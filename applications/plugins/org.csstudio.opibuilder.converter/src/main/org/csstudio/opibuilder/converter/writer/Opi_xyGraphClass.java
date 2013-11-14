@@ -143,13 +143,13 @@ public class Opi_xyGraphClass extends OpiWidget {
 			
 		}
 		for(int i=0; i<r.getNumTraces(); i++){			
-			if(!hasXPV){ //assume it is a scalar pv
-				new OpiInt(widgetContext, "trace_"+i+"_plot_mode", (r.getPlotMode()!=null && r.getPlotMode().equals("plotLastNPts"))?0:1);
-				
-			}
 			//give it a big buffer if it is waveform, edm will show all waveform values regardless nPts.
-			new OpiInt(widgetContext, "trace_"+i+"_buffer_size", hasXPV?1000:r.getnPts());
-			new OpiInt(widgetContext, "trace_"+i+"_update_delay", r.getUpdateTimerMs());			
+			new OpiInt(widgetContext, "trace_"+i+"_buffer_size", r.getnPts());
+			new OpiInt(widgetContext, "trace_"+i+"_update_delay", r.getUpdateTimerMs());
+			if(r.getPlotMode()==null && r.getnPts()<5){//assume it is a waveform
+				new OpiBoolean(widgetContext, "trace_"+i+"_concatenate_data", false);
+				new OpiInt(widgetContext, "trace_"+i+"_buffer_size", 2000);
+			}
 		}
 		
 		
@@ -180,7 +180,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 				}
 			}
 		}
-		
+				
 		if(r.getLineThickness().isExistInEDL()){
 			for (Entry<String, EdmInt> entry : r.getLineThickness().getEdmAttributesMap().entrySet())
 				new OpiInt(widgetContext, "trace_"+entry.getKey() + "_line_width", entry.getValue().get());				
@@ -193,6 +193,32 @@ public class Opi_xyGraphClass extends OpiWidget {
 				}
 			}
 		}
+		if(r.getPlotSymbolType().isExistInEDL()){
+			for (Entry<String, EdmString> entry : r.getPlotSymbolType().getEdmAttributesMap().entrySet()) {
+				int m = 0;
+				if (entry.getValue().get().equals("circle")) {
+					m=2;
+				}else if (entry.getValue().get().equals("square")) {
+					m=5;
+				}else if (entry.getValue().get().equals("diamond")) {
+					m=7;
+				}				
+				new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_style", m);				
+			}
+		}
+		
+		if(r.getOpMode().isExistInEDL()){
+			for (Entry<String, EdmString> entry : r.getOpMode().getEdmAttributesMap().entrySet()) {
+				//EDM will sort the data in this mode where BOY cannot, so plot it as points
+				if (entry.getValue().get().equals("plot")) { 
+					new OpiInt(widgetContext, "trace_" + entry.getKey() + "_trace_type", 2);
+					if(!r.getPlotSymbolType().getEdmAttributesMap().containsKey(entry.getKey()))
+						new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_style", 1);	
+					new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_size", 2);	
+				}
+			}
+		}
+		
 		if(r.getPlotUpdateMode().isExistInEDL()){
 			for (Entry<String, EdmString> entry : r.getPlotUpdateMode().getEdmAttributesMap().entrySet()) {
 				int m = 1;
@@ -208,19 +234,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 			}
 		}
 		
-		if(r.getPlotSymbolType().isExistInEDL()){
-			for (Entry<String, EdmString> entry : r.getPlotSymbolType().getEdmAttributesMap().entrySet()) {
-				int m = 0;
-				if (entry.getValue().get().equals("circle")) {
-					m=2;
-				}else if (entry.getValue().get().equals("square")) {
-					m=5;
-				}else if (entry.getValue().get().equals("diamond")) {
-					m=7;
-				}				
-				new OpiInt(widgetContext, "trace_" + entry.getKey() + "_point_style", m);				
-			}
-		}
+	
 		if(r.getUseY2Axis().isExistInEDL()){
 			for (Entry<String, EdmBoolean> entry : r.getUseY2Axis().getEdmAttributesMap().entrySet()) {
 				if(entry.getValue().is())
