@@ -101,22 +101,23 @@ public class GUI implements ModelListener, DisposeListener
     private AutoRefreshCurrentState autoRefreshStatus = AutoRefreshCurrentState.STOPPED;
     
     /** The auto refresh enable msg. */
-    private String autoRefreshEnableMsg = "Auto refresh is stopped";
+    private String autoRefreshEnableMsg = "auto-refresh is stopped";
 
     /** The auto refresh disable msg. */
-    private String autoRefreshDisableMsg = "Automatic refresh is running [period set to ";
+    private String autoRefreshDisableMsg = "automatic refresh at ";
     
     /** The end time. */
     private String endTime = "now";
     
     /** The log info msg auto refresh started. */
-    private String LOG_INFO_MSG_AUTO_REFRESH_STARTED = "Auto refresh is running every " ;
+    private String LOG_INFO_MSG_AUTO_REFRESH_STARTED = "auto refresh at " ;
     
     /** The log info msg auto refresh stopped. */
-    private String LOG_INFO_MSG_AUTO_REFRESH_STOPPED = "Auto refresh is stopped ";
+    private String LOG_INFO_MSG_AUTO_REFRESH_STOPPED = "auto refresh is stopped ";
     
     /** The log info msg auto refresh condition not verified. */
-    private String LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED = "Cannot start auto refresh one of conditions are not verified ";
+    @SuppressWarnings("unused")
+	private String LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED = "cannot start auto refresh one of conditions are not verified ";
     
     /** The timer auto refresh. */
     private Timer timerAutoRefresh = new Timer("");
@@ -306,7 +307,6 @@ public class GUI implements ModelListener, DisposeListener
         refresh.setToolTipText("Manual refresh");
         refresh.setLayoutData(new GridData());
         
-        
         autoRefresh = new Button(parent, SWT.TOGGLE);
         autoRefresh.setImage(imageAutoRefreshRun);
         autoRefresh.setSelection(true);
@@ -402,6 +402,8 @@ public class GUI implements ModelListener, DisposeListener
                             dlg.getEndSpecification());
             }
         });
+
+        
         final SelectionListener start_end_handler = new SelectionAdapter()
         {
             @Override
@@ -410,6 +412,7 @@ public class GUI implements ModelListener, DisposeListener
                 updateTimeRange(start.getText(), end.getText());
             }
         };
+        
         start.addSelectionListener(start_end_handler);
         end.addSelectionListener(start_end_handler);
 
@@ -528,10 +531,7 @@ public class GUI implements ModelListener, DisposeListener
         });
     	
     }
-   
-
     
-    ;
 
     /**
      * Initialize auto refresh.
@@ -539,17 +539,19 @@ public class GUI implements ModelListener, DisposeListener
      * @param delay the delay
      */
     private void initializeAutoRefresh(long delay, boolean isPeriodUpdated) {
+    	// check conditions
+    	if (!checkAutoRefreshConditions()) return;
+    	// start auto-refresh process
     	autoRefreshStatus = AutoRefreshCurrentState.STARTED;
-    	boolean conditionsVerified = checkAutoRefreshConditions();
-    	if (!conditionsVerified) return;
-    	timerAutoRefresh = new Timer("");
+    	timerAutoRefresh = new Timer("Timer auto-refresh");
     	timerAutoRefresh.schedule(new StartAutoRefreshTask(), delay);
+    
     	this.autoRefreshCurrentPeriod = delay;
     	if (isPeriodUpdated) {
     		activateAutoRefresh();
     		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STARTED 
         			+ TimeUnit.MILLISECONDS.toSeconds(this.autoRefreshCurrentPeriod) 
-        			+ " seconds");
+        			+ " " + TimeUnit.SECONDS.toString().toLowerCase());
     	}
     }
     
@@ -565,29 +567,37 @@ public class GUI implements ModelListener, DisposeListener
      * Restart auto refresh.
      *
      * @param delay the delay
+     * @param isPeriodUpdated the is period updated
      */
     private void restartAutoRefresh(long delay, boolean isPeriodUpdated) {
-		if (AutoRefreshCurrentState.STOPPED.equals(autoRefreshStatus)) {
-			return;
+    	switch (autoRefreshStatus) {
+		case ERROR:
+			startAutoRefresh();
+			break;
+		case STARTED:
+			timerAutoRefresh.cancel();
+	    	timerAutoRefresh = null;
+	    	initializeAutoRefresh(delay, isPeriodUpdated);	
+			break;
+		case STOPPED:
+		default:
+			break;
 		}
-		timerAutoRefresh.cancel();
-    	timerAutoRefresh = null;
-    	initializeAutoRefresh(delay, isPeriodUpdated);	
     }
     
     /**
      * Stop auto refresh.
      */
     private void stopAutoRefresh() {
-    	if (AutoRefreshCurrentState.STOPPED.equals(autoRefreshStatus) || timerAutoRefresh == null) return;
-    	timerAutoRefresh.cancel();
-    	timerAutoRefresh = null;
-    	deactivateAutoRefresh(true);
-    	autoRefreshStatus = AutoRefreshCurrentState.STOPPED;
-    	Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STOPPED);
+    	if (AutoRefreshCurrentState.STOPPED.equals(autoRefreshStatus) || timerAutoRefresh == null) 
+    		return;
+    	   	
+		timerAutoRefresh.cancel();
+	    timerAutoRefresh = null;
+	    deactivateAutoRefresh(true);
+	    autoRefreshStatus = AutoRefreshCurrentState.STOPPED;
+	    Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STOPPED);
     }
-    
-    
     
     
 	/**
@@ -617,7 +627,7 @@ public class GUI implements ModelListener, DisposeListener
 		if (autoRefresh.isDisposed()) return;
 		autoRefresh.setToolTipText(autoRefreshDisableMsg 
 				+ TimeUnit.MILLISECONDS.toSeconds(this.autoRefreshCurrentPeriod) 
-				+ " " + timeUnit.toString() + "]");	
+				+ " " + timeUnit.toString().toLowerCase());	
 		autoRefresh.setSelection(false);
 	}
 	
@@ -636,9 +646,13 @@ public class GUI implements ModelListener, DisposeListener
 		// if conditions are not verified set overview of values tooltip
 		if (!checkCondition) {
 			StringBuilder s = new StringBuilder();
-			s.append(autoRefreshEnableMsg).append("\n \t");
-			s.append("period set to ").append(TimeUnit.MILLISECONDS.toSeconds(Preferences.getAutoRefreshPeriod()));
-			s.append("\n \t").append("end time set to ").append(model.getEndSpec());
+			s.append(autoRefreshEnableMsg);
+			if (Preferences.getAutoRefreshPeriod() == 0) {
+				s.append("\n \t").append("period set to 0");
+			} 
+			if (!this.endTime.equals(this.model.getEndSpec())) {
+				s.append("\n \t").append("end time not set to \"now\" ");
+			}
 			autoRefresh.setToolTipText(s.toString());
 			return;
 		}
@@ -654,12 +668,12 @@ public class GUI implements ModelListener, DisposeListener
 	 * @return true, if conditions are verified
 	 */
 	private boolean checkAutoRefreshConditions() {
-		if (Preferences.getAutoRefreshPeriod() != 0 && this.endTime.equals(this.model.getEndSpec())) 
+		if (Preferences.getAutoRefreshPeriod() != 0 && this.endTime.equals(this.model.getEndSpec()))  
 			return true;
 		// conditions are not verified: 
 		deactivateAutoRefresh(false);
-		autoRefreshStatus = AutoRefreshCurrentState.STOPPED;
-		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED);
+		autoRefreshStatus = AutoRefreshCurrentState.ERROR;
+//		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED);
 		return false;
 	}
 	
