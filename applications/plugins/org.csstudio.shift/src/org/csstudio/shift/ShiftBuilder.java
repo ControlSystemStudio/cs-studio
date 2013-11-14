@@ -18,15 +18,18 @@ public class ShiftBuilder {
 	private String closeShiftUser;
 	private String onShiftPersonal;
 	private String report;
-    private Map<String, ShiftBuilder> shifts = new HashMap<String, ShiftBuilder>();
+    
+	private Map<String, ShiftBuilder> shifts = new HashMap<String, ShiftBuilder>();
 
 	
 	private ShiftBuilder(final String type) {
 		this.type = type;
 	}
 	
-	public ShiftBuilder() {}
-
+	private ShiftBuilder() {
+	    
+	}
+	
 	public static ShiftBuilder withType(final String type) {
 		return new ShiftBuilder(type);
 	}
