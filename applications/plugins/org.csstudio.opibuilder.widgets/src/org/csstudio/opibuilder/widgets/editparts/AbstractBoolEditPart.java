@@ -248,15 +248,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			AbstractBoolFigure figure) {
 		if(newValue == null)
 			return;
-		if(getWidgetModel().getDataType() == 0)
-			figure.setValue(VTypeHelper.getDouble(newValue));
-		else {
-			if(VTypeHelper.getString(newValue).equals(
-					getWidgetModel().getOnState()))
-				figure.setValue(1);
-			else
-				figure.setValue(0);
-		}
+		figure.setValue(VTypeHelper.getDouble(newValue));
 	}
 
 	private void updatePropSheet(final int dataType) {
