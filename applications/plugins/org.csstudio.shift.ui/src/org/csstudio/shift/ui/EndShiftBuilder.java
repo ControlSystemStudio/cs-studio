@@ -16,7 +16,7 @@ public class EndShiftBuilder extends AbstractAdaptedHandler<ShiftBuilder> {
 	    super(ShiftBuilder.class);
     }
 
-    @Override
+	@Override
     protected void execute(List<ShiftBuilder> data, final ExecutionEvent event) throws Exception {
         final Shell shell = HandlerUtil.getActiveShell(event);
         if (data == null || data.isEmpty()) {

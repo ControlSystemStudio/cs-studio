@@ -13,7 +13,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.autocomplete.ui,
  gov.bnl.shiftClient,
  org.csstudio.shift.ui,
- org.csstudio.shift.ui.extra,
  org.csstudio.autocomplete.shift;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

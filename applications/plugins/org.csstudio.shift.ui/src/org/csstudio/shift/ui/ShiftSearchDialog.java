@@ -230,12 +230,6 @@ public class ShiftSearchDialog extends Dialog {
 	    searchString.setText(ShiftSearchUtil.parseSearchMap(searchParameters));
     }
 
-    /**
-     * @return the searchParameters
-     */
-    private synchronized Map<String, String> getSearchParameters() {
-	    return searchParameters;
-    }
 
     /**
      * @param searchParameters
