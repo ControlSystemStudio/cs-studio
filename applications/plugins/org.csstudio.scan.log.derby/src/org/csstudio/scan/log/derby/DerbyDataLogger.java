@@ -158,7 +158,9 @@ public class DerbyDataLogger extends RDBDataLogger
 							}
 							catch (SQLException ex)
 							{
-								Logger.getLogger(getClass().getName()).log(Level.INFO, "SQL failed: " + sql, ex);
+							    // Ignore RROR 42Y55: 'DROP TABLE' cannot be performed on '...' because it does not exist.
+							    if (! ex.getSQLState().equals("42Y55"))
+							        Logger.getLogger(getClass().getName()).log(Level.INFO, "SQL failed: " + sql, ex);
 							}
 						}
 						cmd = new StringBuilder();
