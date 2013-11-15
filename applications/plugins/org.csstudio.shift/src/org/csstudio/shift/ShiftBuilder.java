@@ -74,8 +74,8 @@ public class ShiftBuilder {
 		return this;
 	}
 	
-	public ShiftBuilder addDescription(final String descrition) {
-		this.description = this.description.concat(description);
+	public ShiftBuilder addDescription(final String description) {		
+		this.description = this.description == null ? description : this.description.concat(description);
 		return this;
 	}
 	

@@ -1,6 +1,5 @@
 package org.csstudio.shift.ui;
 
-import static org.csstudio.shift.ShiftBuilder.shift;
 
 import java.io.IOException;
 
@@ -29,7 +28,6 @@ public class CloseShiftBuilderDialog extends Dialog {
 
     private final IPreferencesService service = Platform.getPreferencesService();
     private boolean authenticate = true;
-    private String defaultShift = "";
     private ErrorBar errorBar;
     private boolean end;
 
@@ -52,7 +50,6 @@ public class CloseShiftBuilderDialog extends Dialog {
 
         try {
             authenticate = service.getBoolean("org.csstudio.shift.ui","Autenticate.user", true, null);
-            defaultShift = service.getString("org.csstudio.shift.ui","Default.shift", "", null);
         } catch (Exception ex) {
             errorBar.setException(ex);
         }
