@@ -38,6 +38,14 @@
                            type="org.csstudio.shift.Shift">
                      </adapt>
                   </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
                </with>
             </visibleWhen>
          </command>

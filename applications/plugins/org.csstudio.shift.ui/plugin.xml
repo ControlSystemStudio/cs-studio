@@ -60,6 +60,14 @@
                            type="org.csstudio.shift.ShiftBuilder">
                      </adapt>
                   </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
                </with>
             </visibleWhen>
          </command>
@@ -72,6 +80,24 @@
            icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-add-16.png"
            label="End Shift"
            style="push">
+        <visibleWhen>
+           <with
+                 variable="activeMenuSelection">
+              <iterate>
+                 <adapt
+                       type="org.csstudio.shift.ShiftBuilder">
+                 </adapt>
+              </iterate>
+              <and>
+                 <with
+                       variable="activeMenuSelection">
+                    <count
+                          value="1">
+                    </count>
+                 </with>
+              </and>
+           </with>
+        </visibleWhen>
      </command>
   	</menuContribution>
   	<menuContribution
@@ -82,6 +108,24 @@
            icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-add-16.png"
            label="Close Shift"
            style="push">
+        <visibleWhen>
+           <with
+                 variable="activeMenuSelection">
+              <iterate>
+                 <adapt
+                       type="org.csstudio.shift.ShiftBuilder">
+                 </adapt>
+              </iterate>
+              <and>
+                 <with
+                       variable="activeMenuSelection">
+                    <count
+                          value="1">
+                    </count>
+                 </with>
+              </and>
+           </with>
+        </visibleWhen>
      </command>
   </menuContribution>
    </extension>
@@ -99,14 +143,14 @@
             name="Start Shift">
       </command>
       <command
-		    defaultHandler="org.csstudio.shift.ui.EndShiftBuilder"
-		    id="org.csstudio.shift.ui.EndShiftBuilder"
-		    name="End Shift">
+            defaultHandler="org.csstudio.shift.ui.EndShiftBuilder"
+            id="org.csstudio.shift.ui.EndShiftBuilder"
+            name="End Shift">
       </command>
       <command
-		    defaultHandler="org.csstudio.shift.ui.CloseShiftBuilder"
-		    id="org.csstudio.shift.ui.CloseShiftBuilder"
-		    name="Close Shift">
+            defaultHandler="org.csstudio.shift.ui.CloseShiftBuilder"
+            id="org.csstudio.shift.ui.CloseShiftBuilder"
+            name="Close Shift">
       </command>
    </extension>
    <extension
