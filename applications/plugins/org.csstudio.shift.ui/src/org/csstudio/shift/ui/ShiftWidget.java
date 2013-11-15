@@ -53,13 +53,13 @@ public class ShiftWidget extends Composite {
     private ErrorBar errorBar;
 
     private Label lblNewLabel;
-    private Label label;
     private Combo type;
 
     private Label lblShiftPersonal;
 
     private Label lblLeadOperator;
-
+    private final String defaultText = "";
+    
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
     }
@@ -71,7 +71,7 @@ public class ShiftWidget extends Composite {
     public ShiftWidget(final Composite parent, int style, final boolean shift, final boolean editable) {
         super(parent, style);
         
-        this.shiftBuilder = ShiftBuilder.withType("");
+        this.shiftBuilder = ShiftBuilder.withType(defaultText);
                 
         this.editable = editable;
         final GridLayout gridLayout = new GridLayout(1, false);
@@ -91,20 +91,19 @@ public class ShiftWidget extends Composite {
 
         final Label lblDate = new Label(composite, SWT.NONE);
         lblDate.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-        lblDate.setText("Date:");
+        lblDate.setText("Start Date:");
 
         textDate = new Text(composite, SWT.NONE);
         textDate.setEditable(false);
-        textDate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        textDate.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
 
     	lblNewLabel = new Label(composite, SWT.NONE);
     	lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
     	lblNewLabel.setText("Type:");
     	
-    	type = new Combo(composite, SWT.NONE);
+    	type = new Combo(composite, SWT.READ_ONLY);
     	type.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    	
         text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
         text.setEditable(editable);
@@ -221,37 +220,36 @@ public class ShiftWidget extends Composite {
     }
     
     private void updateUI() {
-	// Dispose the contributed tabs,
-	Shift shift = null;
-	try {
-	    shift = this.shiftBuilder.build();
-	} catch (IOException e1) {
-	    setLastException(e1);
-	}
-	if (shift != null) {
-	    // Show the shift
-	    text.setText(shift.getDescription() == null ? "" : shift.getDescription());
-	    leadOperator.setText(shift.getLeadOperator() == null ? "" : shift.getLeadOperator());	    
-	    shiftPersonal.setText(shift.getOnShiftPersonal() == null ? "" : shift.getOnShiftPersonal());	    
-	    report.setText(shift.getReport() == null ? "" : shift.getReport());
-	    if(!type.getItems().equals(types)){
-	    	type.setItems(types.toArray(new String[types.size()]));
-	    }
-	    if(types.contains(shift.getType())){
-	    	type.select(types.indexOf(shift.getType()));
-	    }
-	    textDate.setText(DateFormat.getDateInstance().format(
-		    shift.getStartDate() == null ? new Date() : shift.getStartDate()));
-	} else {
-	    if(!type.getItems().equals(types)){
-	    	type.setItems(types.toArray(new String[types.size()]));
-	    }
-	    text.setText("");
-	    shiftPersonal.setText("");
-	    leadOperator.setText("");
-	    textDate.setText(DateFormat.getDateInstance().format(new Date()));
-	}
-	composite.layout();
+		Shift shift = null;
+		try {
+		    shift = this.shiftBuilder.build();
+		} catch (IOException e1) {
+		    setLastException(e1);
+		}
+		if (shift != null) {
+		    // Show the shift
+		    text.setText(shift.getDescription() == null ? defaultText : shift.getDescription());
+		    leadOperator.setText(shift.getLeadOperator() == null ? defaultText : shift.getLeadOperator());	    
+		    shiftPersonal.setText(shift.getOnShiftPersonal() == null ? defaultText : shift.getOnShiftPersonal());	    
+		    report.setText(shift.getReport() == null ? defaultText : shift.getReport());
+		    if(!type.getItems().equals(types)){
+		    	type.setItems(types.toArray(new String[types.size()]));
+		    }
+		    if(types.contains(shift.getType())){
+		    	type.select(types.indexOf(shift.getType()));
+		    }
+		    textDate.setText(DateFormat.getDateInstance().format(
+			    shift.getStartDate() == null ? new Date() : shift.getStartDate()));
+		} else {
+		    if(!type.getItems().equals(types)){
+		    	type.setItems(types.toArray(new String[types.size()]));
+		    }
+		    text.setText(defaultText);
+		    shiftPersonal.setText(defaultText);
+		    leadOperator.setText(defaultText);
+		    textDate.setText(DateFormat.getDateInstance().format(new Date()));
+		}
+		composite.layout();
     }
 
     public void setLastException(final Exception exception) {
@@ -275,27 +273,26 @@ public class ShiftWidget extends Composite {
     }
 
     public Shift getShift() throws IOException {
-	this.shiftBuilder.addDescription(text.getText()).setType(type.getText());
+    	this.shiftBuilder.addDescription(text.getText()).setType(type.getText()).setLeadOperator(leadOperator.getText())
+			.setOnShiftPersonal(shiftPersonal.getText()).setReport(report.getText());
         return this.shiftBuilder.build();
     }
 
     public void setShift(final Shift shift) {
-	try {
-	    Shift oldValue = this.shiftBuilder.build();
-	    this.shiftBuilder = shift(shift);
-	    // TODO
-	    changeSupport.firePropertyChange("shift", oldValue, shift);
-	} catch (IOException e) {
-	    setLastException(e);
-	}
-
+		try {
+		    Shift oldValue = this.shiftBuilder.build();
+		    this.shiftBuilder = shift(shift);
+		    changeSupport.firePropertyChange("shift", oldValue, shift);
+		} catch (IOException e) {
+		    setLastException(e);
+		}
     }
 
     public List<String> getTypes() {
         return types;
     }
 
-    public void setShiftNames(final List<String> types) {
+    public void setShiftTypes(final List<String> types) {
     	final List<String> oldValue = this.types;
         this.types = types;
         changeSupport.firePropertyChange("shiftNames", oldValue, this.types);

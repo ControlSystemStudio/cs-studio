@@ -43,7 +43,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ShiftTableView extends ViewPart {
     private Text text;
-    private org.csstudio.shift.ui.extra.ShiftTable shiftTable;
+    private ShiftTable shiftTable;
 
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.shift.ui.ShiftTableView"; //$NON-NLS-1$
@@ -147,7 +147,7 @@ public class ShiftTableView extends ViewPart {
         fd_label.left = new FormAttachment(0, 2);
         label.setLayoutData(fd_label);
 
-        shiftTable = new org.csstudio.shift.ui.extra.ShiftTable(parent,SWT.NONE | SWT.SINGLE);
+        shiftTable = new ShiftTable(parent,SWT.NONE | SWT.SINGLE);
         shiftTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDoubleClick(final MouseEvent evt) {
