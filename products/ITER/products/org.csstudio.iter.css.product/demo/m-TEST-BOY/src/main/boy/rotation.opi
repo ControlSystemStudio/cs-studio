@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.2.10.codac_core_4_2b1</boy_version>
+  <boy_version>3.2.10.codac_core_4_2b3</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1024</height>
@@ -414,7 +414,7 @@ $(pv_value)</tooltip>
       <wuid>-75b7dbd8:13c39a78082:-74c3</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>14</height>
+      <height>15</height>
       <name>Label Template</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -435,7 +435,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="12" style="1">IO SubTitle</opifont.name>
       </font>
-      <width>124</width>
+      <width>129</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -538,7 +538,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>68</width>
+      <width>69</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -1172,7 +1172,7 @@ $(pv_value)</tooltip>
       <wuid>-75b7dbd8:13c39a78082:-73b5</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>14</height>
+      <height>15</height>
       <name>Label Template_6</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -1193,7 +1193,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="12" style="1">IO SubTitle</opifont.name>
       </font>
-      <width>181</width>
+      <width>192</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -1354,7 +1354,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>22</width>
+      <width>23</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -1395,7 +1395,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>68</width>
+      <width>69</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -1566,7 +1566,7 @@ $(pv_value)</tooltip>
       <wuid>-75b7dbd8:13c39a78082:-719c</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>14</height>
+      <height>15</height>
       <name>Label Template_13</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -1587,7 +1587,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="12" style="1">IO SubTitle</opifont.name>
       </font>
-      <width>180</width>
+      <width>191</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -1669,7 +1669,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>22</width>
+      <width>23</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -1710,7 +1710,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>68</width>
+      <width>69</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -1832,7 +1832,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://bool(1)</pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -1917,7 +1917,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://bool(1)</pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -2051,7 +2051,7 @@ $(pv_value)</tooltip>
       <wuid>-75b7dbd8:13c39a78082:-6f84</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>14</height>
+      <height>15</height>
       <name>Label Template_18</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -2072,7 +2072,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="12" style="1">IO SubTitle</opifont.name>
       </font>
-      <width>189</width>
+      <width>198</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -2154,7 +2154,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>22</width>
+      <width>23</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -2195,7 +2195,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>68</width>
+      <width>69</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -2347,7 +2347,7 @@ $(pv_value)</tooltip>
       <password></password>
       <auto_size>true</auto_size>
       <scripts />
-      <height>74</height>
+      <height>70</height>
       <show_boolean_label>true</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <background_color>
@@ -2368,7 +2368,7 @@ $(pv_value)</tooltip>
           <col>1.0</col>
         </row>
       </permutation_matrix>
-      <width>39</width>
+      <width>35</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
       <flip_vertical>false</flip_vertical>
@@ -2428,7 +2428,7 @@ $(pv_value)</tooltip>
       <password></password>
       <auto_size>true</auto_size>
       <scripts />
-      <height>80</height>
+      <height>76</height>
       <show_boolean_label>true</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <background_color>
@@ -2449,7 +2449,7 @@ $(pv_value)</tooltip>
           <col>0.7071067811865476</col>
         </row>
       </permutation_matrix>
-      <width>80</width>
+      <width>76</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
       <flip_vertical>false</flip_vertical>
@@ -2501,7 +2501,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <wuid>-75b7dbd8:13c39a78082:-6cca</wuid>
       <scripts />
-      <height>29</height>
+      <height>27</height>
       <name>Combo Box Template_1</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -2571,7 +2571,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>86</width>
+      <width>87</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -2768,7 +2768,7 @@ $(pv_value)</tooltip>
       <wuid>-75b7dbd8:13c39a78082:-73b1</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>14</height>
+      <height>15</height>
       <name>Label Template_7</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -2789,7 +2789,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="12" style="1">IO SubTitle</opifont.name>
       </font>
-      <width>190</width>
+      <width>199</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -2871,7 +2871,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>22</width>
+      <width>23</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -3059,7 +3059,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>68</width>
+      <width>69</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
@@ -3129,7 +3129,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <wuid>-75b7dbd8:13c39a78082:-6d48</wuid>
       <scripts />
-      <height>29</height>
+      <height>27</height>
       <name>Combo Box Template</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -3199,7 +3199,7 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>86</width>
+      <width>87</width>
       <border_style>0</border_style>
       <rules />
       <border_width>2</border_width>
