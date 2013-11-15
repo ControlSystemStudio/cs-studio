@@ -40,7 +40,7 @@ public class DropPVtoContainerEditPolicy extends DropPVtoPVWidgetEditPolicy {
 					dropPVRequest.getTargetWidget() instanceof AbstractContainerEditpart){
 					
 					WidgetsSelectDialog dialog = new WidgetsSelectDialog(
-							getHost().getViewer().getControl().getShell(), dropPVRequest.getPvNames().length);
+							getHost().getViewer().getControl().getShell(), dropPVRequest.getPvNames().length, true);
 					
 					if(dialog.open() == Window.OK){
 						String typeID = dialog.getOutput();
