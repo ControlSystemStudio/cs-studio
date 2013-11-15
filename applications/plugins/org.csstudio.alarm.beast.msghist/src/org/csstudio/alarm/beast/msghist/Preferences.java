@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -124,17 +126,17 @@ public class Preferences
 	/**
 	 * Gets the default auto refresh timer.
 	 *
-	 * @return the default auto refresh timer
+	 * @return the default auto refresh timer (milliseconds)
 	 */
-	public static int getAutoRefreshPeriod()
+	public static long getAutoRefreshPeriod()
     {
         // Read preferences
         final IPreferencesService service = Platform.getPreferencesService();
-        int period = 1;
+        long period = 0;
         if (service != null)
-        	period = service.getInt(Activator.ID, Preferences.AUTO_REFRESH_PERIOD,
+        	period = service.getLong(Activator.ID, Preferences.AUTO_REFRESH_PERIOD,
         			period, null);
-        return period;
+        return TimeUnit.SECONDS.toMillis(period);
     }
 	
 }
