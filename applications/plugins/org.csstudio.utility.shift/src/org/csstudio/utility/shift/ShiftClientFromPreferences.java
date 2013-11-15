@@ -9,8 +9,6 @@ import gov.bnl.shiftClient.ShiftApiClientImpl.ShiftClientBuilder;
 import gov.bnl.shiftClient.ShiftFinderException;
 import gov.bnl.shiftClient.Type;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;

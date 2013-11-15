@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -20,17 +19,10 @@ import org.epics.util.time.TimeParser;
 public class ShiftClientImpl implements ShiftClient {
 	
 	private final ShiftApiClient reader;
-    private final ShiftApiClient writer;
     
 
     public ShiftClientImpl(ShiftApiClient shiftApiClient) {
 	this.reader = shiftApiClient;
-	this.writer = shiftApiClient;
-    }
-
-    public ShiftClientImpl(final ShiftApiClient reader, final ShiftApiClient writer) {
-	this.reader = reader;
-	this.writer = writer;
     }
 
     @Override

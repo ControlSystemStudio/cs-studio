@@ -29,7 +29,6 @@ public class ShiftBuilderDialog extends Dialog {
 
     private final IPreferencesService service = Platform.getPreferencesService();
     private boolean authenticate = true;
-    private String defaultShift = "";
     private ErrorBar errorBar;
 
     public ShiftBuilderDialog(Shell parentShell, ShiftBuilder shiftBuilder) {
@@ -50,7 +49,6 @@ public class ShiftBuilderDialog extends Dialog {
 
         try {
             authenticate = service.getBoolean("org.csstudio.shift.ui","Autenticate.user", true, null);
-            defaultShift = service.getString("org.csstudio.shift.ui","Default.shift", "", null);
         } catch (Exception ex) {
             errorBar.setException(ex);
         }
