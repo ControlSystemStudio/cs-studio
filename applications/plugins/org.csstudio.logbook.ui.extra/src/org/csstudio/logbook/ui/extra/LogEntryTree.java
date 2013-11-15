@@ -127,6 +127,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
 	grid = gridTreeViewer.getGrid();
 	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+	grid.setItemHeight(25);
 	grid.setAutoHeight(expanded);
 	grid.setRowsResizeable(true);
 	grid.setHeaderVisible(true);
