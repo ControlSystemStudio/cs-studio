@@ -35,7 +35,8 @@
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
                icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
                label="%MakeLogEntry"
-               style="push">
+               style="push"
+               tooltip="Duplicate the selected log entry">
             <visibleWhen>
                <with
                      variable="activeMenuSelection">

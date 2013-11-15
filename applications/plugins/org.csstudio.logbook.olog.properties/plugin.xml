@@ -45,6 +45,12 @@
                                  value="operation_supervisor">
                            </equals>
                         </iterate>
+                     </with>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="+">
+                        </count>
                      </with></and>
                </with>
             </visibleWhen>
@@ -57,6 +63,19 @@
             class="org.csstudio.logbook.olog.properties.ReviewSign"
             commandId="org.csstudio.logbook.olog.properties.reviewsign">
       </handler>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.logbook.LogEntry"
+            class="org.csstudio.logbook.olog.properties.OlogAdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+         <adapter
+               type="[Lorg.csstudio.csdata.ProcessVariable;">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>
