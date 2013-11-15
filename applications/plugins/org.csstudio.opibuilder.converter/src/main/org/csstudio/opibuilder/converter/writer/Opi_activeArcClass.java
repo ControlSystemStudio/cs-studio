@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
+import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeArcClass;
 
@@ -32,13 +33,14 @@ public class Opi_activeArcClass extends OpiWidget {
 		widgetContext.getElement().setAttribute("version", version);
 		
 		new OpiString(widgetContext, "name", name);
-		new OpiColor(widgetContext, "foreground_color", r.getLineColor());
+		new OpiColor(widgetContext, "foreground_color", r.isLineAlarm()?new EdmColor(null, 0, 255,0):r.getLineColor());
 		
 		if(r.getAttribute("fill").isExistInEDL())
 			new OpiBoolean(widgetContext, "fill", r.isFill());
 		
 		if (r.getFillColor().isExistInEDL()) {
-			new OpiColor(widgetContext, "background_color", r.getFillColor());
+			new OpiColor(widgetContext, "background_color", 
+					r.isFillAlarm()? new EdmColor(null, 0, 255,0):r.getFillColor());
 		}
 		
 		if(r.getAttribute("fillAlarm").isExistInEDL())

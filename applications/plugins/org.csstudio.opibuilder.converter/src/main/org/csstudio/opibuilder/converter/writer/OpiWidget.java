@@ -47,15 +47,9 @@ public class OpiWidget {
 		if (r.getBgColor().isExistInEDL())
 			new OpiColor(widgetContext, "background_color", r.getBgColor());
 		if (r.getAttribute("fgAlarm").isExistInEDL()){
-			if(r.getAlarmPv()!=null){
-				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "foreground_color", "ForeColorAlarm", true);
-			}else
 				new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isFgAlarm());
 		}
 		if (r.getAttribute("bgAlarm").isExistInEDL()){
-			if(r.getAlarmPv()!=null){
-				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color", "BackColorAlarm", true);
-			}else
 				new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isBgAlarm());
 		}
 		if (r.getFont().isExistInEDL())
@@ -104,7 +98,8 @@ public class OpiWidget {
 			try {
 				String newName = pvName.replace("$(!W)", "$(DID)");
 				String[] parts = StringSplitter.splitIgnoreInQuotes(newName, '=', true);
-				String r="loc://"+parts[0].substring(5);
+				StringBuilder sb = new StringBuilder("loc://");
+				sb.append(parts[0].substring(5));
 				String type="";
 				String initValue=parts[1];
 				if(parts[1].startsWith("d:")){
@@ -119,14 +114,12 @@ public class OpiWidget {
 				}else if(parts[1].startsWith("e:")){ //Enumerated pv cannot be converted.
 					return pvName;
 				}
-				
-				r=r+type+"("+initValue+")";
-				return r;	
+				sb.append(type).append("(").append(initValue).append(")");						
+				return sb.toString();	
 				
 			} catch (Exception e) {
 				return pvName;
 			}
-			
 		}
 		
 		return pvName;

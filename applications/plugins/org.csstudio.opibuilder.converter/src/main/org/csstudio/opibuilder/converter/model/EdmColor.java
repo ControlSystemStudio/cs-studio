@@ -38,9 +38,9 @@ public class EdmColor extends EdmAttribute {
 	
 	public EdmColor(String name, int red, int green, int blue){
 		this.name= name;
-		this.red = red;
-		this.green = green;
-		this.blue =  blue;
+		this.red = red<<8;
+		this.green = green<<8;
+		this.blue =  blue<<8;
 	}
 
 	/**

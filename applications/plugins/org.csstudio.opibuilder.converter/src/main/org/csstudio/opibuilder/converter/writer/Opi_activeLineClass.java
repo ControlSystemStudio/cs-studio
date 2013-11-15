@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
+import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeLineClass;
 
@@ -37,14 +38,15 @@ public class Opi_activeLineClass extends OpiWidget {
 			setTypeId(typeId_polygon);
 			isPolygon = true;
 			new OpiColor(widgetContext, "line_color", r.getLineColor());
-			new OpiColor(widgetContext, "background_color", r.getFillColor());
+			new OpiColor(widgetContext, "background_color",
+					r.isFillAlarm()? new EdmColor(null, 0, 255, 0):r.getFillColor());
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());	
 			if(r.getAlarmPv()!=null && r.isLineAlarm())
 			createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color", "lineColorRule", true);
 			
 		} else{
 			setTypeId(typeId_polyline);
-			new OpiColor(widgetContext, "background_color", r.getLineColor());
+			new OpiColor(widgetContext, "background_color", r.isLineAlarm()?new EdmColor(null, 0, 255, 0):r.getLineColor());
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isLineAlarm());
 			if (r.getAttribute("arrows").isExistInEDL()) {
 				int a = 0;

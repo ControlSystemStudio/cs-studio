@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
+import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
 
@@ -40,7 +41,7 @@ public class Opi_activeRectangleClass extends OpiWidget {
 		// If Double or Int property is not exist, it is 0. 
 		new OpiBoolean(widgetContext, "transparent", !r.isFill());
 
-		new OpiColor(widgetContext, "background_color", r.getFillColor());
+		new OpiColor(widgetContext, "background_color", r.isFillAlarm()? new EdmColor(null, 0, 255,0): r.getFillColor());
 
 		new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
 		

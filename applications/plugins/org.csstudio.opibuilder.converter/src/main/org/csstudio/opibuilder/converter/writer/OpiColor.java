@@ -60,6 +60,6 @@ public class OpiColor extends OpiAttribute {
 	 * Converts the 16 bit color component value to 8 bit and returns it.
 	 */
 	public static int colorComponentTo8Bits(int colorComponent) {
-		return colorComponent / 0x100;
+		return colorComponent >>8;
 	}
 }
