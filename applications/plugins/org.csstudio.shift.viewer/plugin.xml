@@ -18,7 +18,7 @@
             locationURI="menu:utility">
          <command
                commandId="org.csstudio.shift.viewer.OpenShiftViewer"
-               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-16.png"
+               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-search.png"
                label="Search Shift"
                style="push">
          </command>
@@ -55,7 +55,7 @@
             locationURI="toolbar:org.csstudio.shift.ui.ShiftTableView">
          <command
                commandId="org.csstudio.shift.ui.OpenShiftBuilderDialog"
-               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-add-16.png"
+               icon="platform:/plugin/org.csstudio.shift.ui/icons/shfit-start.png"
                label="Start New Shift"
                style="push">
          </command>
