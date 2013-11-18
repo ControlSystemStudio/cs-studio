@@ -29,12 +29,17 @@ import org.eclipse.swt.widgets.Text;
 
 import com.google.common.base.Joiner;
 
+import static org.csstudio.logbook.util.LogEntrySearchUtil.*;
 /**
  * @author shroffk
  * 
  */
 public class LogEntrySearchDialog extends Dialog {
 
+    private static final String timeFormatt = "\"now\", \"last min\", \"last hour\", \"last day\", \"last week\" \n" +
+		"\"last 5 mins\", \"last 5 hours\", \"last 5 days\", \"last 5 weeks\" \n" +
+		"\"5 mins ago\", \"5 hours ago\", \"5 days ago\", \"5 weeks ago\"";
+    
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 	    this);
 
@@ -70,7 +75,7 @@ public class LogEntrySearchDialog extends Dialog {
 
     @Override
     public Control createDialogArea(Composite parent) {
-	getShell().setText("Create Log Entry");
+	getShell().setText("Log Entry Search");
 	Composite container = (Composite) super.createDialogArea(parent);
 	container.setLayout(new GridLayout(2, false));
 
@@ -86,13 +91,11 @@ public class LogEntrySearchDialog extends Dialog {
 	});
 
 	Label lblNewLabel = new Label(container, SWT.NONE);
-	lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-		false, 1, 1));
+	lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 	lblNewLabel.setText("Search:");
 
 	searchString = new Text(container, SWT.BORDER);
-	searchString.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
+	searchString.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 	searchString.addModifyListener(new ModifyListener() {
 
 	    private DelayedNotificator notificator = new DelayedNotificator(
@@ -104,20 +107,17 @@ public class LogEntrySearchDialog extends Dialog {
 
 		    @Override
 		    public void run() {
-			setSearchParameters(LogEntrySearchUtil
-				.parseSearchString(searchString.getText()));
+			setSearchParameters(parseSearchString(searchString.getText()));
 		    }
 		});
 	    }
 	});
 
 	Label label = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
-	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
-		1));
+	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 	Label lblText = new Label(container, SWT.NONE);
-	lblText.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-		1, 1));
+	lblText.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 	lblText.setText("Text:");
 
 	text = new Text(container, SWT.BORDER);
@@ -132,9 +132,7 @@ public class LogEntrySearchDialog extends Dialog {
 
 		    @Override
 		    public void run() {
-			searchParameters.put(
-				LogEntrySearchUtil.SEARCH_KEYWORD_TEXT,
-				text.getText());
+			searchParameters.put(SEARCH_KEYWORD_TEXT, text.getText().trim());
 			updateSearch();
 		    }
 		});
@@ -144,50 +142,43 @@ public class LogEntrySearchDialog extends Dialog {
 	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 	Label lblLogbooks = new Label(container, SWT.NONE);
-	lblLogbooks.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-		false, 1, 1));
+	lblLogbooks.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 	lblLogbooks.setText("Logbooks:");
 
 	logbookCombo = new MultipleSelectionCombo<String>(container, SWT.NONE);
-	logbookCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
+	logbookCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 	logbookCombo.addPropertyChangeListener(new PropertyChangeListener() {
 
 	    @Override
 	    public void propertyChange(PropertyChangeEvent evt) {
-		searchParameters.put(
-			LogEntrySearchUtil.SEARCH_KEYWORD_LOGBOOKS,
+		searchParameters.put(SEARCH_KEYWORD_LOGBOOKS, 
 			Joiner.on(",").join(logbookCombo.getSelection()));
 		updateSearch();
 	    }
 	});
 
 	Label lblTags = new Label(container, SWT.NONE);
-	lblTags.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-		1, 1));
+	lblTags.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 	lblTags.setText("Tags:");
 
 	tagCombo = new MultipleSelectionCombo<String>(container, SWT.NONE);
-	tagCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-		1, 1));
+	tagCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 	tagCombo.addPropertyChangeListener(new PropertyChangeListener() {
 
 	    @Override
 	    public void propertyChange(PropertyChangeEvent evt) {
-		searchParameters.put(LogEntrySearchUtil.SEARCH_KEYWORD_TAGS,
+		searchParameters.put(SEARCH_KEYWORD_TAGS,
 			Joiner.on(",").join(tagCombo.getSelection()));
 		updateSearch();
 	    }
 	});
 
 	Label lblFrom = new Label(container, SWT.NONE);
-	lblFrom.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-		1, 1));
+	lblFrom.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 	lblFrom.setText("From:");
 	textFrom = new Text(container, SWT.BORDER);
-	textFrom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-		1, 1));
+	textFrom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,  1, 1));
 	textFrom.addModifyListener(new ModifyListener() {
 
 	    private DelayedNotificator notificator = new DelayedNotificator(
@@ -199,14 +190,13 @@ public class LogEntrySearchDialog extends Dialog {
 
 		    @Override
 		    public void run() {
-			searchParameters.put(
-				LogEntrySearchUtil.SEARCH_KEYWORD_START,
-				textFrom.getText());
+			searchParameters.put(SEARCH_KEYWORD_START, textFrom.getText().trim());
 			updateSearch();
 		    }
 		});
 	    }
 	});
+	textFrom.setToolTipText(timeFormatt);
 
 	Label lblTo = new Label(container, SWT.NONE);
 	lblTo.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
@@ -225,15 +215,14 @@ public class LogEntrySearchDialog extends Dialog {
 		notificator.delayedExec(textTo, new Runnable() {
 
 		    @Override
-		    public void run() {
-			searchParameters.put(
-				LogEntrySearchUtil.SEARCH_KEYWORD_END,
-				textTo.getText());
+		    public void run() {		
+			searchParameters.put(SEARCH_KEYWORD_END, textTo.getText().trim());
 			updateSearch();
 		    }
 		});
 	    }
 	});
+	textTo.setToolTipText(timeFormatt);
 	initialize();
 	return container;
 
@@ -243,27 +232,26 @@ public class LogEntrySearchDialog extends Dialog {
 	logbookCombo.setItems(logbooks);
 	tagCombo.setItems(tags);
 	for (String keyword : searchParameters.keySet()) {
-	    if (LogEntrySearchUtil.SEARCH_KEYWORD_TEXT.equals(keyword)) {
+	    if (SEARCH_KEYWORD_TEXT.equals(keyword)) {
 		text.setText(searchParameters.get(keyword));
-	    }
-	    if (LogEntrySearchUtil.SEARCH_KEYWORD_LOGBOOKS.equals(keyword)) {
+	    } 
+	    if (SEARCH_KEYWORD_LOGBOOKS.equals(keyword)) {
 		logbookCombo.setSelection(searchParameters.get(keyword));
 	    }
-	    if (LogEntrySearchUtil.SEARCH_KEYWORD_TAGS.equals(keyword)) {
+	    if (SEARCH_KEYWORD_TAGS.equals(keyword)) {
 		tagCombo.setSelection(searchParameters.get(keyword));
 	    }
-	    if (LogEntrySearchUtil.SEARCH_KEYWORD_START.equals(keyword)) {
+	    if (SEARCH_KEYWORD_START.equals(keyword)) {
 		textFrom.setText(searchParameters.get(keyword));
 	    }
-	    if (LogEntrySearchUtil.SEARCH_KEYWORD_END.equals(keyword)) {
+	    if (SEARCH_KEYWORD_END.equals(keyword)) {
 		textTo.setText(searchParameters.get(keyword));
 	    }
 	}
     }
 
     protected void updateSearch() {
-	searchString.setText(LogEntrySearchUtil
-		.parseSearchMap(searchParameters));
+	searchString.setText(parseSearchMap(searchParameters));
     }
 
     /**
@@ -286,7 +274,7 @@ public class LogEntrySearchDialog extends Dialog {
     }
 
     public String getSearchString() {
-	return LogEntrySearchUtil.parseSearchMap(searchParameters);
+	return parseSearchMap(searchParameters);
     }
 
 }
