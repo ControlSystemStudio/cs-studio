@@ -13,13 +13,15 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
-import org.csstudio.logbook.ui.extra.LogEntryTree;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -27,12 +29,8 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -54,6 +52,8 @@ public class LogTreeView extends ViewPart {
     private Text text;
     private org.csstudio.logbook.ui.extra.LogEntryTree logEntryTree;
 
+    private final IPreferencesService service = Platform.getPreferencesService();
+    
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.logbook.ui.LogTreeView"; //$NON-NLS-1$
 
@@ -62,18 +62,27 @@ public class LogTreeView extends ViewPart {
 
     private List<String> logbooks = Collections.emptyList();
     private List<String> tags = Collections.emptyList();
+    private ErrorBar errorBar;
+    
+    private String resultSize;
+    private boolean showHistory;
 
     public LogTreeView() {
     }
 
     @Override
-    public void createPartControl(final Composite parent) {
+    public void createPartControl(final Composite parent) {	
+	
 	GridLayout gridLayout = new GridLayout(4, false);
 	gridLayout.verticalSpacing = 1;
 	gridLayout.horizontalSpacing = 1;
 	gridLayout.marginHeight = 1;
 	gridLayout.marginWidth = 1;
 	parent.setLayout(gridLayout);
+	
+	errorBar = new ErrorBar(parent, SWT.NONE);
+	errorBar.setLayoutData(new  GridData(SWT.CENTER, SWT.CENTER, true, false, 4, 1));
+	errorBar.setMarginBottom(5);
 
 	Label lblLogQuery = new Label(parent, SWT.NONE);
 	lblLogQuery.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
@@ -91,6 +100,14 @@ public class LogTreeView extends ViewPart {
 	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 	Button btnNewButton = new Button(parent, SWT.NONE);
+	
+	try {
+	    resultSize = service.getString("org.csstudio.logbook.ui","Result.size", "", null);
+	    showHistory = service.getBoolean("org.csstudio.logbook.ui","Show.history", false, null);
+	} catch (Exception ex) {
+	    errorBar.setException(ex);
+	}
+	
 	btnNewButton.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
@@ -158,9 +175,7 @@ public class LogTreeView extends ViewPart {
 	});
 
 	// Add AutoComplete support, use type logEntrySearch
-	new AutoCompleteWidget(text, "LogentrySearch");
-
-	
+	new AutoCompleteWidget(text, "LogentrySearch");	
 	
 	label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
 	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
@@ -174,9 +189,8 @@ public class LogTreeView extends ViewPart {
 			.getService(IHandlerService.class);
 		try {
 		    handlerService.executeCommand(OpenLogViewer.ID, null);
-		} catch (Exception ex) {
-		    throw new RuntimeException("add.command not found");
-		    // Give message
+		} catch (Exception ex) {		    
+		    errorBar.setException(ex);
 		}
 	    }
 	});
@@ -191,11 +205,10 @@ public class LogTreeView extends ViewPart {
     private boolean initializeClient() {
 	if (logbookClient == null) {
 	    try {
-		logbookClient = LogbookClientManager.getLogbookClientFactory()
-			.getClient();
+		logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
 		return true;
-	    } catch (Exception e1) {
-		e1.printStackTrace();
+	    } catch (Exception ex) {
+		errorBar.setException(ex);
 		return false;
 	    }
 	} else {
@@ -204,15 +217,22 @@ public class LogTreeView extends ViewPart {
     }
 
     private void search() {
-	final String searchString = text.getText();
+	final StringBuilder searchString = new StringBuilder(text.getText());
 	Job search = new Job("Searching") {
 
 	    @Override
 	    protected IStatus run(IProgressMonitor monitor) {
 		if (initializeClient()) {
 		    try {
+			if(!resultSize.isEmpty() && Integer.valueOf(resultSize) >= 0){
+			    searchString.append(" page:1");
+			    searchString.append(" limit:" + resultSize);
+			}
+			if(showHistory){
+			    searchString.append(" history:");
+			}
 			final List<LogEntry> logEntries = new ArrayList<LogEntry>(
-				logbookClient.findLogEntries(searchString+" history:"));
+				logbookClient.findLogEntries(searchString.toString()));
 			Display.getDefault().asyncExec(new Runnable() {
 			    @Override
 			    public void run() {
