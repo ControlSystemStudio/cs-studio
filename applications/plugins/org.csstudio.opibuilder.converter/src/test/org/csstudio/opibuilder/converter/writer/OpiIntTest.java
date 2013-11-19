@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmInt;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class OpiIntTest extends TestCase {
 

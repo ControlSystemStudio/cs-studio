@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.Edm_TextupdateClass;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class Opi_TextupdateClassTest extends TestCase {
 

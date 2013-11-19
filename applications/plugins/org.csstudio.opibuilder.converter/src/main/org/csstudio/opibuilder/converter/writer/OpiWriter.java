@@ -24,6 +24,7 @@ import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.w3c.dom.Document;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -120,9 +121,7 @@ public class OpiWriter {
 			} catch (ClassNotFoundException exception) {
 				log.warn("Class not declared: " + opiClassName);
 			} catch (Exception exception) {
-				if (!robust) {
-					exception.printStackTrace();
-				}
+				ErrorHandlerUtil.handleError("Error in converting " + e, exception);
 			}
 		}
 	}

@@ -8,9 +8,7 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_TwoDProfileMonitorClass;
-import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
 
 /**
  * XML conversion class for Edm_TwoDProfileMonitorClass.

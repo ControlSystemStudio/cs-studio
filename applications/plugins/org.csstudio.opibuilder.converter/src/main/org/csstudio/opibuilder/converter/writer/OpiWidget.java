@@ -125,6 +125,14 @@ public class OpiWidget {
 		return pvName;
 	}
 	
+	public static  String convertFileExtention(String originPath) {
+		if (originPath.endsWith(".edl")) {
+			originPath = originPath.replace(".edl", ".opi");
+		} else
+			originPath = originPath + ".opi";
+		return originPath;
+	}
+	
 	/**Create a rule that directly output PV's value to an opi property.
 	 * @param edmWidgetClass
 	 * @param pvName

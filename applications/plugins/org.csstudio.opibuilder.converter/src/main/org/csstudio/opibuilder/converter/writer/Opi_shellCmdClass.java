@@ -40,7 +40,7 @@ public class Opi_shellCmdClass extends OpiWidget {
 		for (int i = 0; i < r.getNumCmds(); i++) {
 			//path
 			Element cmdNode = widgetContext.getDocument().createElement("command");
-			cmdNode.setTextContent(r.getCommand().getEdmAttributesMap().get("" + i).get());
+			cmdNode.setTextContent(processCommand(r.getCommand().getEdmAttributesMap().get("" + i).get()));
 
 			//command directory
 			Element dirNode = widgetContext.getDocument().createElement("command_directory");
@@ -58,6 +58,13 @@ public class Opi_shellCmdClass extends OpiWidget {
 			new OpiString(widgetContext, r.getNumCmds()==1?"text":"label", r.getButtonLabel());
 		}
 
+	}
+	
+	public static String processCommand(String originCmd){
+		if(originCmd.endsWith(" &")){
+			originCmd=originCmd.substring(0, originCmd.indexOf(" &"));
+		}
+		return originCmd;
 	}
 
 }
