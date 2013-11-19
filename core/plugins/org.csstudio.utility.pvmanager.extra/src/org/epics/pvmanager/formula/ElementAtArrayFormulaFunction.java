@@ -75,9 +75,13 @@ public class ElementAtArrayFormulaFunction implements FormulaFunction {
     @Override
     public Object calculate(List<Object> args) {
 	VNumberArray numberArray = (VNumberArray) args.get(0);
-	int index = ((VNumber) args.get(1)).getValue().intValue();	
-	return newVNumber(numberArray.getData().getDouble(index),
-		alarmNone(), timeNow(), displayNone());
+        VNumber index = (VNumber) args.get(1);
+        if (numberArray == null || index == null) {
+            return null;
+        }
+	int i = index.getValue().intValue();	
+	return newVNumber(numberArray.getData().getDouble(i),
+		numberArray, numberArray, displayNone());
     }
 
 }
