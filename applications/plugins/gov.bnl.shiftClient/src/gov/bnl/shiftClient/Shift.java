@@ -19,6 +19,7 @@ public class Shift  {
     private String onShiftPersonal;
     private String report;
     private String closeShiftUser;
+    private String status;
 
     public Shift() {
     }
@@ -38,6 +39,7 @@ public class Shift  {
         this.report = shift.getReport();
         this.closeShiftUser = shift.getCloseShiftUser();
         this.type = shift.getType();
+        this.status = shift.getStatus();
     }
 
 
@@ -218,6 +220,14 @@ public class Shift  {
      */
     public void setCloseShiftUser(String closeShiftUser) {
         this.closeShiftUser = closeShiftUser;
+    }
+    
+    public String getStatus() {
+    	return status;
+    }
+    
+    public void setStatus(final String status) {
+    	this.status = status;
     }
 
 

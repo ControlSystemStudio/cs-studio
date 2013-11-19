@@ -168,13 +168,33 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         final TableColumnLayout shiftTablelayout = (TableColumnLayout) composite.getLayout();
 
 
-        // First column is the owner of the shift
+        // First column is the status of the shift
+
+        final TableViewerColumn tableViewerColumnStatus = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+        tableViewerColumnStatus.setLabelProvider(new ColumnLabelProvider() {
+            public String getText(final Object element) {
+                final Shift item = ((Shift) element);               
+                return item == null ? "" : item.getStatus();
+            }
+        });
+        final TableColumn tblclmnStatus = tableViewerColumnStatus.getColumn();
+        shiftTablelayout.setColumnData(tblclmnStatus, new ColumnWeightData(15));
+        tblclmnStatus.setWidth(50);
+        tblclmnStatus.setText("Status");
+        new TableViewerColumnSorter(tableViewerColumnStatus) {
+
+            @Override
+            protected Object getValue(final Object o) {
+                return ((Shift) o).getStatus();
+            }
+        };
+        
 
         final TableViewerColumn tableViewerColumnOwner = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
         tableViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
             public String getText(final Object element) {
                 final Shift item = ((Shift) element);
-                return item == null ? "" : item.getOwner();
+                return item == null || item.getOwner() == null ? "" : item.getOwner();           
             }
         });
         final TableColumn tblclmnOwner = tableViewerColumnOwner.getColumn();
@@ -185,7 +205,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-                return ((Shift) o).getOwner();
+            	final Shift item = ((Shift) o);
+                return item == null || item.getOwner() == null ? "" : item.getOwner();           
             }
         };
         
@@ -195,7 +216,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             public String getText(final Object element) {
             	final Shift item = ((Shift) element);
-                return item == null ? "" : item.getDescription();
+                return item == null || item.getDescription() == null ? "" : item.getDescription();
             }
         });
         final TableColumn tblclmnDescription;
@@ -207,7 +228,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-                return ((Shift) o).getDescription();
+            	final Shift item = ((Shift) o);
+                return item == null || item.getDescription() == null ? "" : item.getDescription();
             }
         };
         
@@ -258,7 +280,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             public String getText(final Object element) {
                 final Shift item = ((Shift) element);
                 return item == null || item.getEndDate() == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                        DateFormat.SHORT).format(item.getEndDate());            }
+                        DateFormat.SHORT).format(item.getEndDate());            
+            }
         });
         final TableColumn tblclmnEndDate = tableViewerColumnEndDate.getColumn();
         shiftTablelayout.setColumnData(tblclmnEndDate, new ColumnWeightData(15));
@@ -268,7 +291,9 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-                return ((Shift) o).getEndDate();
+            	final Shift item = ((Shift) o);
+                return item == null || item.getEndDate() == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,
+                        DateFormat.SHORT).format(item.getEndDate());
             }
         };
         
@@ -276,7 +301,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         tableViewerColumnLeadOperator.setLabelProvider(new ColumnLabelProvider() {
             public String getText(final Object element) {
                 final Shift item = ((Shift) element);
-                return item == null ? "" : item.getLeadOperator();
+                return item == null || item.getLeadOperator() == null ? "" : item.getLeadOperator();
             }
         });
         final TableColumn tblclmnLeadOperator = tableViewerColumnLeadOperator.getColumn();
@@ -287,7 +312,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-                return ((Shift) o).getLeadOperator();
+                final Shift item = ((Shift) o);
+                return item == null || item.getLeadOperator() == null ? "" : item.getLeadOperator();
             }
         };
         
@@ -296,7 +322,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         tableViewerColumnOnShiftPersonal.setLabelProvider(new ColumnLabelProvider() {
             public String getText(final Object element) {
                 final Shift item = ((Shift) element);
-                return item == null ? "" : item.getOnShiftPersonal();
+                return item == null || item.getOnShiftPersonal() == null ? "" : item.getOnShiftPersonal();
             }
         });
         final TableColumn tblclmnOnShiftPersonal = tableViewerColumnOnShiftPersonal.getColumn();
@@ -307,7 +333,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-                return ((Shift) o).getOnShiftPersonal();
+                final Shift item = ((Shift) o);
+                return item == null || item.getOnShiftPersonal() == null ? "" : item.getOnShiftPersonal();
             }
         };
         
@@ -315,7 +342,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         tableViewerColumnReport.setLabelProvider(new ColumnLabelProvider() {
             public String getText(final Object element) {
                 final Shift item = ((Shift) element);
-                return item == null ? "" : item.getReport();
+                return item == null || item.getReport() == null ? "" : item.getReport();
             }
         });
         final TableColumn tblclmnOnShiftReport = tableViewerColumnReport.getColumn();
@@ -326,7 +353,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-                return ((Shift) o).getReport();
+            	final Shift item = ((Shift) o);
+                return item == null || item.getReport() == null ? "" : item.getReport();
             }
         };
         
@@ -334,7 +362,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         tableViewerCloseUser.setLabelProvider(new ColumnLabelProvider() {
             public String getText(final Object element) {
                 final Shift item = ((Shift) element);
-                return item == null ? "" : item.getCloseShiftUser();
+                return item == null || item.getCloseShiftUser() == null ? "" : item.getCloseShiftUser();
             }
         });
         final TableColumn tblclmnCloseUser = tableViewerCloseUser.getColumn();
@@ -345,7 +373,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-                return ((Shift) o).getCloseShiftUser();
+                final Shift item = ((Shift) o);
+                return item == null || item.getCloseShiftUser() == null ? "" : item.getCloseShiftUser();
             }
         };
         

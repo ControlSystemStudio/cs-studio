@@ -15,6 +15,7 @@ public class Messages extends NLS {
     public static String onShiftPersonal;
     public static String closeUser;
     public static String type;
+    public static String status;
 
     static {
 	// initialize resource bundle
