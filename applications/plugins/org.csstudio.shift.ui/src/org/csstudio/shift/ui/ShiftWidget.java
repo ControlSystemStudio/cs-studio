@@ -59,6 +59,10 @@ public class ShiftWidget extends Composite {
 
     private Label lblLeadOperator;
     private final String defaultText = "";
+
+	private Label lblStatus;
+
+	private Text status;
     
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
@@ -104,6 +108,24 @@ public class ShiftWidget extends Composite {
     	
     	type = new Combo(composite, SWT.READ_ONLY);
     	type.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    	
+
+        lblStatus = new Label(composite, SWT.NONE);
+        lblStatus.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        lblStatus.setText("Status:");
+    	
+        status = new Text(composite, SWT.NONE);
+        status.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+        status.setEditable(false);
+        status.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(final KeyEvent e) {
+                if (e.keyCode == SWT.CR) {
+                    status.getParent().layout();
+                }
+            }
+        });
+        
         text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
         text.setEditable(editable);
@@ -127,7 +149,7 @@ public class ShiftWidget extends Composite {
             @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.CR) {
-                    text.getParent().layout();
+                	leadOperator.getParent().layout();
                 }
             }
         });
@@ -142,7 +164,7 @@ public class ShiftWidget extends Composite {
             @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.CR) {
-                    text.getParent().layout();
+                	shiftPersonal.getParent().layout();
                 }
             }
         });    	
@@ -158,7 +180,7 @@ public class ShiftWidget extends Composite {
             @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.CR) {
-                    text.getParent().layout();
+                	report.getParent().layout();
                 }
             }
         });
@@ -232,6 +254,7 @@ public class ShiftWidget extends Composite {
 		    leadOperator.setText(shift.getLeadOperator() == null ? defaultText : shift.getLeadOperator());	    
 		    shiftPersonal.setText(shift.getOnShiftPersonal() == null ? defaultText : shift.getOnShiftPersonal());	    
 		    report.setText(shift.getReport() == null ? defaultText : shift.getReport());
+		    status.setText(shift.getStatus() == null ? "New" : shift.getStatus());
 		    if(!type.getItems().equals(types)){
 		    	type.setItems(types.toArray(new String[types.size()]));
 		    }
