@@ -10,8 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.7.101",
  org.csstudio.utility.product,
  org.eclipse.search,
- org.eclipse.ui.ide,
- org.eclipse.core.filebuffers
+ org.eclipse.ui.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.utility.file
 Import-Package: org.eclipse.ui.part
