@@ -26,10 +26,7 @@ public class Opi_activeXTextClass extends OpiWidget {
 	 */
 	public Opi_activeXTextClass(Context con, Edm_activeXTextClass t) {
 		super(con,t);
-		if(t.getAttribute("alarmPv").isExistInEDL())
-			setTypeId("TextUpdate");
-		else 
-			setTypeId(typeId);
+		setTypeId(typeId);
 		
 		setName(name);
 		setVersion(version);;
@@ -51,15 +48,18 @@ public class Opi_activeXTextClass extends OpiWidget {
 			new OpiInt(widgetContext, "border_width", t.getLineWidth());
 		}
 		
-		new OpiColor(widgetContext, "border_color", t.getFgColor());
+		new OpiColor(widgetContext, "border_color", t.getFgColor(), t);
 				
 		boolean useDisplayBg = t.getAttribute("useDisplayBg").isExistInEDL() && t.isUseDisplayBg();  
 		new OpiBoolean(widgetContext, "transparent", useDisplayBg);
 		
-		if(t.getAttribute("alarmPv").isExistInEDL()){
-			new OpiString(widgetContext, "pv_name", convertPVName(t.getAlarmPv()));
-			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", t.isBgAlarm());
-			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", t.isFgAlarm());
+		if(t.getAlarmPv()!=null){
+			if(t.isBgAlarm())
+				createColorAlarmRule(t, convertPVName(t.getAlarmPv()),
+					"background_color", "backcolor_alarm", true);
+			if(t.isFgAlarm())
+				createColorAlarmRule(t, convertPVName(t.getAlarmPv()),
+					"foreground_color", "backcolor_alarm", true);
 		}
 		
 		

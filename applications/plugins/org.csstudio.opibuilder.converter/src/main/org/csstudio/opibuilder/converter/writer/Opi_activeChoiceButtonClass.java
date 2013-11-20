@@ -40,7 +40,7 @@ public class Opi_activeChoiceButtonClass extends OpiWidget {
 		new OpiBoolean(widgetContext, "horizontal", r.getOrientation() != null
 				&& r.getOrientation().equals("horizontal"));
 		
-		new OpiColor(widgetContext, "selected_color", r.getSelectColor());
+		new OpiColor(widgetContext, "selected_color", r.getSelectColor(), r);
 
 		log.debug("Edm_activeChoiceButtonClass written.");
 

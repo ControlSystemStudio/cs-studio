@@ -48,6 +48,8 @@ public class EdmDouble extends EdmAttribute {
 				String ds = genericAttribute.getValue(0).replace("\"","");
 				if(ds.toLowerCase().trim().equals("inf"))
 					val=Double.POSITIVE_INFINITY;
+				else if (ds.toLowerCase().trim().equals("-inf"))
+					val = Double.NEGATIVE_INFINITY;
 				else 
 					val = Double.parseDouble(ds);
 				setInitialized(true);

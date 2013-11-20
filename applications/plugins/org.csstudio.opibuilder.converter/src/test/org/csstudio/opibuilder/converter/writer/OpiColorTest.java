@@ -29,7 +29,7 @@ public class OpiColorTest extends TestCase {
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
 		Context context = new Context(doc, parent, null, 0, 0);
-		new OpiColor(context, "color", c);
+		new OpiColor(context, "color", c, null);
 		//XMLFileHandler.writeXML(doc);		
 		
 		XMLFileHandler.isColorElementEqual("", 255, 2, 1, 0, 0, 0, "color", parent);
@@ -47,7 +47,7 @@ public class OpiColorTest extends TestCase {
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
 		Context context = new Context(doc, parent, null, 0, 0);
-		new OpiColor(context, "color", c);
+		new OpiColor(context, "color", c, null);
 		//XMLFileHandler.writeXML(doc);		
 		
 		XMLFileHandler.isColorElementEqual("blinking purple", 255, 2, 1, 0, 0, 0, "color", parent);

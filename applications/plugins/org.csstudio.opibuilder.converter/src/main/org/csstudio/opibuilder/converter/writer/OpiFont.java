@@ -38,8 +38,8 @@ public class OpiFont extends OpiAttribute {
 	public OpiFont(Context con, String tag, EdmFont f) {
 		super(con, tag);
 
-		Element fontElement = context.getDocument().createElement("fontdata");
-		context.getElement().appendChild(fontElement);
+		Element fontElement = propertyContext.getDocument().createElement("fontdata");
+		propertyContext.getElement().appendChild(fontElement);
 
 		String fontName = f.getName();
 		String height = String.valueOf(f.getSize()-2);

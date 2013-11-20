@@ -40,13 +40,13 @@ public class Opi_activeBarClass extends OpiWidget {
 		
 		new OpiInt(widgetContext, "border_width", r.isBorder()?1:0);
 		new OpiInt(widgetContext, "border_style", r.isBorder()?1:0);
-		new OpiColor(widgetContext, "border_color", r.getFgColor());
+		new OpiColor(widgetContext, "border_color", r.getFgColor(), r);
 		
 		if(r.getIndicatorPv() != null)
 			new OpiString(widgetContext, "pv_name", convertPVName(r.getIndicatorPv()));
 		
-		new OpiColor(widgetContext, "fill_color", r.getIndicatorColor());
-		new OpiColor(widgetContext, "color_fillbackground", r.getBgColor());
+		new OpiColor(widgetContext, "fill_color", r.getIndicatorColor(), r);
+		new OpiColor(widgetContext, "color_fillbackground", r.getBgColor(), r);
 		new OpiBoolean(widgetContext, "fillcolor_alarm_sensitive", r.isIndicatorAlarm());	
 		
 		new OpiBoolean(widgetContext, "horizontal",

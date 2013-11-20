@@ -43,9 +43,9 @@ public class OpiWidget {
 		new OpiInt(widgetContext, "height", r.getH() + 1);
 
 		if (r.getFgColor().isExistInEDL())
-			new OpiColor(widgetContext, "foreground_color", r.getFgColor());
+			new OpiColor(widgetContext, "foreground_color", r.getFgColor(), r);
 		if (r.getBgColor().isExistInEDL())
-			new OpiColor(widgetContext, "background_color", r.getBgColor());
+			new OpiColor(widgetContext, "background_color", r.getBgColor(), r);
 		if (r.getAttribute("fgAlarm").isExistInEDL()){
 				new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isFgAlarm());
 		}
@@ -93,28 +93,33 @@ public class OpiWidget {
 		new OpiBoolean(widgetContext, "border_alarm_sensitive", false);
 	}
 	
-	protected String convertPVName(final String pvName){
+	public static String convertPVName(final String pvName){
 		if(pvName.startsWith("LOC\\")){
 			try {
 				String newName = pvName.replace("$(!W)", "$(DID)");
+				newName = newName.replaceAll("\\x24\\x28\\x21[A-Z]{1}\\x29", "\\$(DID)");
 				String[] parts = StringSplitter.splitIgnoreInQuotes(newName, '=', true);
 				StringBuilder sb = new StringBuilder("loc://");
 				sb.append(parts[0].substring(5));
-				String type="";
-				String initValue=parts[1];
-				if(parts[1].startsWith("d:")){
-					type="<VDouble>";
-					initValue=parts[1].substring(2);
-				}else if(parts[1].startsWith("i:")){
-					type="<VDouble>";
-					initValue=parts[1].substring(2);
-				}else if(parts[1].startsWith("s:")){
-					type="<VString>";
-					initValue=parts[1].substring(2);
-				}else if(parts[1].startsWith("e:")){ //Enumerated pv cannot be converted.
-					return pvName;
+				if (parts.length > 1) {
+					String type = "";
+					String initValue = parts[1];
+					if (parts[1].startsWith("d:")) {
+						type = "<VDouble>";
+						initValue = parts[1].substring(2);
+					} else if (parts[1].startsWith("i:")) {
+						type = "<VDouble>";
+						initValue = parts[1].substring(2);
+					} else if (parts[1].startsWith("s:")) {
+						type = "<VString>";
+						initValue = parts[1].substring(2);
+					} else if (parts[1].startsWith("e:")) { // Enumerated pv
+															// cannot be
+															// converted.
+						return pvName;
+					}
+					sb.append(type).append("(").append(initValue).append(")");
 				}
-				sb.append(type).append("(").append(initValue).append(")");						
 				return sb.toString();	
 				
 			} catch (Exception e) {

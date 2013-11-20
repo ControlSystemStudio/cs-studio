@@ -35,13 +35,14 @@ public class Opi_activeRectangleClass extends OpiWidget {
 		setName(name);
 		setVersion(version);
 		// All EDM color properties are saved in edl file, no need to check if exist.
-		new OpiColor(widgetContext, "line_color", r.getLineColor());
+		new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
 
 		// If a boolean property is not exist in edl file, it is false.
 		// If Double or Int property is not exist, it is 0. 
 		new OpiBoolean(widgetContext, "transparent", !r.isFill());
 
-		new OpiColor(widgetContext, "background_color", r.isFillAlarm()? new EdmColor(null, 0, 255,0): r.getFillColor());
+		new OpiColor(widgetContext, "background_color", 
+				r.isFillAlarm()? new EdmColor(null, 0, 255,0): r.getFillColor(), r);
 
 		new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
 		

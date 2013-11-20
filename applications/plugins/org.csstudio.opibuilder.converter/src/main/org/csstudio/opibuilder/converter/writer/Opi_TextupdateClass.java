@@ -49,7 +49,7 @@ public class Opi_TextupdateClass extends OpiWidget {
 		
 		new OpiInt(widgetContext, "border_width", t.getLineWidth());
 		new OpiInt(widgetContext, "border_style", t.isLineAlarm()?0:1);
-		new OpiColor(widgetContext, "border_color", t.getFgColor());
+		new OpiColor(widgetContext, "border_color", t.getFgColor(), t);
 		new OpiBoolean(widgetContext, "border_alarm_sensitive", t.isLineAlarm());
 		new OpiBoolean(widgetContext, "precision_from_pv", true);
 		if(t.getDisplayMode()!=null){

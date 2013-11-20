@@ -33,14 +33,15 @@ public class Opi_activeArcClass extends OpiWidget {
 		widgetContext.getElement().setAttribute("version", version);
 		
 		new OpiString(widgetContext, "name", name);
-		new OpiColor(widgetContext, "foreground_color", r.isLineAlarm()?new EdmColor(null, 0, 255,0):r.getLineColor());
+		new OpiColor(widgetContext, "foreground_color",
+				r.isLineAlarm()?new EdmColor(null, 0, 255,0):r.getLineColor(), r);
 		
 		if(r.getAttribute("fill").isExistInEDL())
 			new OpiBoolean(widgetContext, "fill", r.isFill());
 		
 		if (r.getFillColor().isExistInEDL()) {
 			new OpiColor(widgetContext, "background_color", 
-					r.isFillAlarm()? new EdmColor(null, 0, 255,0):r.getFillColor());
+					r.isFillAlarm()? new EdmColor(null, 0, 255,0):r.getFillColor(), r);
 		}
 		
 		if(r.getAttribute("fillAlarm").isExistInEDL())

@@ -37,16 +37,17 @@ public class Opi_activeLineClass extends OpiWidget {
 		if (r.isFill()) {
 			setTypeId(typeId_polygon);
 			isPolygon = true;
-			new OpiColor(widgetContext, "line_color", r.getLineColor());
+			new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
 			new OpiColor(widgetContext, "background_color",
-					r.isFillAlarm()? new EdmColor(null, 0, 255, 0):r.getFillColor());
+					r.isFillAlarm()? new EdmColor(null, 0, 255, 0):r.getFillColor(), r);
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());	
 			if(r.getAlarmPv()!=null && r.isLineAlarm())
 			createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color", "lineColorRule", true);
 			
 		} else{
 			setTypeId(typeId_polyline);
-			new OpiColor(widgetContext, "background_color", r.isLineAlarm()?new EdmColor(null, 0, 255, 0):r.getLineColor());
+			new OpiColor(widgetContext, "background_color", 
+					r.isLineAlarm()?new EdmColor(null, 0, 255, 0):r.getLineColor(), r);
 			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isLineAlarm());
 			if (r.getAttribute("arrows").isExistInEDL()) {
 				int a = 0;

@@ -35,8 +35,8 @@ public class Opi_activeRadioButtonClass extends OpiWidget {
 			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
 			new OpiBoolean(widgetContext, "items_from_pv", true);
 		}		
-		new OpiColor(widgetContext, "background_color", r.getButtonColor());
-		new OpiColor(widgetContext, "selected_color", r.getSelectColor());
+		new OpiColor(widgetContext, "background_color", r.getButtonColor(), r);
+		new OpiColor(widgetContext, "selected_color", r.getSelectColor(), r);
 		
 		log.debug("Edm_activeRadioButtonClass written.");
 

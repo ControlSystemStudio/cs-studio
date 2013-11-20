@@ -43,8 +43,8 @@ public class Opi_activeButtonClass extends OpiWidget {
 			createOnOffColorRule(r, convertPVName(r.getControlPv()), "background_color", r.getOnColor(),
 					r.getOffColor(), "OnOffBackgroundRule");
 		}
-		new OpiColor(widgetContext, "on_color", r.getOnColor());
-		new OpiColor(widgetContext, "off_color", r.getOffColor());
+		new OpiColor(widgetContext, "on_color", r.getOnColor(), r);
+		new OpiColor(widgetContext, "off_color", r.getOffColor(), r);
 
 		if (r.getOnLabel() != null)
 			new OpiString(widgetContext, "on_label", r.getOnLabel());

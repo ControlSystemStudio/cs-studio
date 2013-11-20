@@ -35,9 +35,9 @@ public class Opi_ByteClass extends OpiWidget {
 		new OpiBoolean(widgetContext, "square_led", true);
 		
 		
-		new OpiColor(widgetContext, "on_color", r.getOnColor());
+		new OpiColor(widgetContext, "on_color", r.getOnColor(), r);
 	
-		new OpiColor(widgetContext, "off_color", r.getOffColor());
+		new OpiColor(widgetContext, "off_color", r.getOffColor(), r);
 	
 		if(r.getControlPv() !=null){
 			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));

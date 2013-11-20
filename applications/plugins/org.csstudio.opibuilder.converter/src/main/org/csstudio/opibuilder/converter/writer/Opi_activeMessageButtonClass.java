@@ -54,8 +54,8 @@ public class Opi_activeMessageButtonClass extends OpiWidget {
 			new OpiInt(widgetContext, "released_action_index", 1);
 
 		}
-		new OpiColor(widgetContext, "on_color", r.getOnColor());
-		new OpiColor(widgetContext, "off_color", r.getOffColor());
+		new OpiColor(widgetContext, "on_color", r.getOnColor(), r);
+		new OpiColor(widgetContext, "off_color", r.getOffColor(), r);
 
 		if (r.getOnLabel() != null)
 			new OpiString(widgetContext, "on_label", r.getOnLabel());

@@ -36,7 +36,7 @@ public class Opi_activeSliderClass extends OpiWidget {
 		new OpiBoolean(widgetContext, "horizontal", true);
 		new OpiBoolean(widgetContext, "show_markers", false);
 		new OpiBoolean(widgetContext, "log_scale", false);
-		new OpiColor(widgetContext, "thumb_color", r.getControlColor());
+		new OpiColor(widgetContext, "thumb_color", r.getControlColor(), r);
 		if(r.isControlAlarm() && r.getControlPv()!=null){
 			createColorAlarmRule(r, convertPVName(r.getControlPv()), "fill_color", 
 					"FillColorAlarmRule", true);

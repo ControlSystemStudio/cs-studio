@@ -126,6 +126,13 @@ public class EdmColorsList extends EdmEntity {
 	}
 	
 	/**
+	 * Returns the color with the given name.
+	 */
+	public EdmColor getColor(String name) {
+		return colorsNameMap.get(name);
+	}
+	
+	/**
 	 * Maps static color with specified index. This method is only for test purposes.
 	 * @param index Index of static color.
 	 * @param c Static EdmColor.

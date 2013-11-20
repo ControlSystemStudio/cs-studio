@@ -54,8 +54,8 @@ public class OpiDisplay {
 		
 		new OpiFont(context, "font", d.getFont());
 		
-		new OpiColor(context, "foreground_color", d.getFgColor());
-		new OpiColor(context, "background_color", d.getBgColor());
+		new OpiColor(context, "foreground_color", d.getFgColor(), null);
+		new OpiColor(context, "background_color", d.getBgColor(), null);
 		
 		if (d.getAttribute("title").isExistInEDL())
 			new OpiString(context, "name", d.getTitle());

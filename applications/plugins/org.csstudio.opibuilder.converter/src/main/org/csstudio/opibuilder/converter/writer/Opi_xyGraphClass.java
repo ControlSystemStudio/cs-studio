@@ -53,17 +53,17 @@ public class Opi_xyGraphClass extends OpiWidget {
 
 		new OpiBoolean(widgetContext, "axis_2_left_bottom_side", false);
 
-		new OpiColor(widgetContext, "axis_0_axis_color", r.getFgColor());
-		new OpiColor(widgetContext, "axis_1_axis_color", r.getFgColor());
-		new OpiColor(widgetContext, "axis_2_axis_color", r.getFgColor());
+		new OpiColor(widgetContext, "axis_0_axis_color", r.getFgColor(), r);
+		new OpiColor(widgetContext, "axis_1_axis_color", r.getFgColor(), r);
+		new OpiColor(widgetContext, "axis_2_axis_color", r.getFgColor(), r);
 
-		new OpiColor(widgetContext, "background_color", con.getRootDisplay().getBgColor());
+		new OpiColor(widgetContext, "background_color", con.getRootDisplay().getBgColor(), r);
 
-		new OpiColor(widgetContext, "plot_area_background_color", r.getBgColor());
+		new OpiColor(widgetContext, "plot_area_background_color", r.getBgColor(), r);
 
-		new OpiColor(widgetContext, "axis_0_grid_color", r.getGridColor());
-		new OpiColor(widgetContext, "axis_1_grid_color", r.getGridColor());
-		new OpiColor(widgetContext, "axis_2_grid_color", r.getGridColor());
+		new OpiColor(widgetContext, "axis_0_grid_color", r.getGridColor(), r);
+		new OpiColor(widgetContext, "axis_1_grid_color", r.getGridColor(), r);
+		new OpiColor(widgetContext, "axis_2_grid_color", r.getGridColor(), r);
 
 		if (r.isBorder()) {
 			new OpiInt(widgetContext, "border_width", 1);
@@ -132,13 +132,11 @@ public class Opi_xyGraphClass extends OpiWidget {
 		new OpiInt(widgetContext, "trace_count", r.getNumTraces()); 
 			
 		
-		boolean hasXPV = false;
 		
 		// PV X,Y
 		if (r.getXPv().isExistInEDL()) {
 			for (Entry<String, EdmString>  entry: r.getXPv().getEdmAttributesMap().entrySet()) {
 				new OpiString(widgetContext, "trace_" + entry.getKey()+ "_x_pv", entry.getValue());
-				hasXPV=true;
 			}
 			
 		}
@@ -162,7 +160,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 		if (r.getPlotColor().isExistInEDL()) {
 			for (Entry<String, EdmColor> entry : r.getPlotColor().getEdmAttributesMap().entrySet()) {
 				new OpiColor(widgetContext, "trace_" + entry.getKey() + "_trace_color",
-						entry.getValue());
+						entry.getValue(), r);
 			}
 		}
 		
