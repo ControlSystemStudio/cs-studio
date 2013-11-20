@@ -88,10 +88,11 @@ public class ShiftWidget extends Composite {
         errorBar = new ErrorBar(this, SWT.NONE);
 
         composite = new Composite(this, SWT.NONE | SWT.DOUBLE_BUFFERED);
+        
         final GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_composite.heightHint = 638;
         composite.setLayoutData(gd_composite);
-        composite.setLayout(new GridLayout(4, false));
+        composite.setLayout(new GridLayout(5, false));
 
         final Label lblDate = new Label(composite, SWT.NONE);
         lblDate.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -99,7 +100,7 @@ public class ShiftWidget extends Composite {
 
         textDate = new Text(composite, SWT.NONE);
         textDate.setEditable(false);
-        textDate.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        textDate.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
 
 
     	lblNewLabel = new Label(composite, SWT.NONE);
@@ -115,7 +116,7 @@ public class ShiftWidget extends Composite {
         lblStatus.setText("Status:");
     	
         status = new Text(composite, SWT.NONE);
-        status.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+        status.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
         status.setEditable(false);
         status.addKeyListener(new KeyAdapter() {
             @Override
@@ -127,7 +128,7 @@ public class ShiftWidget extends Composite {
         });
         
         text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL);
-        text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
+        text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
         text.setEditable(editable);
         text.addKeyListener(new KeyAdapter() {
             @Override
@@ -139,7 +140,7 @@ public class ShiftWidget extends Composite {
         });
         
         lblLeadOperator = new Label(composite, SWT.NONE);
-        lblLeadOperator.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        lblLeadOperator.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
         lblLeadOperator.setText("Lead Operator:");
         
     	leadOperator = new Text(composite, SWT.BORDER);
@@ -155,7 +156,7 @@ public class ShiftWidget extends Composite {
         });
         
         lblShiftPersonal = new Label(composite, SWT.NONE);
-    	lblShiftPersonal.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+    	lblShiftPersonal.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
     	lblShiftPersonal.setText("Personal on Shift:");
     	
     	shiftPersonal = new Text(composite, SWT.BORDER);
@@ -171,7 +172,7 @@ public class ShiftWidget extends Composite {
     	shiftPersonal.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
     	
     	final Label lblReport = new Label(composite, SWT.NONE);
-    	lblReport.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+    	lblReport.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
     	lblReport.setText("Report:");
     	
     	report = new Text(composite, SWT.BORDER);
