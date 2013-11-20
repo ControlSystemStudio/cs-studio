@@ -175,8 +175,7 @@ public class LogEntryWidget extends Composite {
 	errorBar = new ErrorBar(this, SWT.NONE);
 
 	composite = new Composite(this, SWT.NONE | SWT.DOUBLE_BUFFERED);
-	GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1,
-		1);
+	GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 	gd_composite.heightHint = 638;
 	composite.setLayoutData(gd_composite);
 	composite.setLayout(new FormLayout());
@@ -392,11 +391,9 @@ public class LogEntryWidget extends Composite {
 		    }
 		});
 
-	multiSelectionComboTag = new MultipleSelectionCombo<String>(composite,
-		SWT.NONE);
+	multiSelectionComboTag = new MultipleSelectionCombo<String>(composite, SWT.NONE);
 	FormData fd_multiSelectionCombo_1 = new FormData();
-	fd_multiSelectionCombo_1.top = new FormAttachment(btnAddTags, -3,
-		SWT.TOP);
+	fd_multiSelectionCombo_1.top = new FormAttachment(btnAddTags, -3, SWT.TOP);
 	fd_multiSelectionCombo_1.right = new FormAttachment(
 		multiSelectionComboLogbook, 0, SWT.RIGHT);
 	fd_multiSelectionCombo_1.left = new FormAttachment(
