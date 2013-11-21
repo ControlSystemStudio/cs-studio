@@ -35,23 +35,23 @@ public class Opi_activeCircleClass extends OpiWidget {
 		new OpiString(widgetContext, "name", name);
 		new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
 		
-		if(r.getAttribute("fill").isExistInEDL())
-			new OpiBoolean(widgetContext, "transparent", !r.isFill());
+		new OpiBoolean(widgetContext, "transparent", !r.isFill());
 		
 		if (r.getFillColor().isExistInEDL()) {
 			new OpiColor(widgetContext, "background_color",
 					r.isFillAlarm()? new EdmColor(null, 0, 255,0): r.getFillColor(), r);
 		}
 		
-		if(r.getAttribute("fillAlarm").isExistInEDL())
-			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
-		
-		if(r.getAlarmPv()!=null && r.isLineAlarm())
-			createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color", "lineColorRule", true);
-			
-		if(r.getAttribute("alarmPv").isExistInEDL())
-			new OpiString(widgetContext, "pv_name", convertPVName(r.getAlarmPv()));
-		
+		if (r.getAlarmPv() != null) {
+			// line color alarm rule.
+			if (r.isLineAlarm())
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
+						"lineColorAlarmRule", true);
+			if (r.isFillAlarm())
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
+						"backColorAlarmRule", true);
+		}
+				
 		int line_width = 1;
 		if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
 			line_width = r.getLineWidth();

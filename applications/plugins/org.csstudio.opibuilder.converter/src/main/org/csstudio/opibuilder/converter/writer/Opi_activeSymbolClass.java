@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.opibuilder.converter.model.EdmDouble;
 import org.csstudio.opibuilder.converter.model.EdmInt;
 import org.csstudio.opibuilder.converter.model.Edm_activeSymbolClass;
 import org.w3c.dom.Element;
@@ -45,12 +46,13 @@ public class Opi_activeSymbolClass extends OpiWidget {
 		//single pv, no truth table
 		if (!r.isTruthTable() && r.getNumPvs() == 1 && r.getControlPvs()!=null) {
 			LinkedHashMap<String, Element> expressions = new LinkedHashMap<String, Element>();
-			Map<String, EdmInt> minMap = r.getMinValues().getEdmAttributesMap();
-			Map<String, EdmInt> maxMap = r.getMaxValues().getEdmAttributesMap();
+			Map<String, EdmDouble> minMap = r.getMinValues().getEdmAttributesMap();
+			Map<String, EdmDouble> maxMap = r.getMaxValues().getEdmAttributesMap();
 
 			for (int i = 0; i < r.getNumStates(); i++) {
 				Element valueNode = widgetContext.getDocument().createElement("value");
-				int min = 0, max = 0;
+				double min = 0;
+				double max = 0;
 				if (minMap.get("" + i) != null)
 					min = minMap.get("" + i).get();
 				if (maxMap.get("" + i) != null)
@@ -66,8 +68,8 @@ public class Opi_activeSymbolClass extends OpiWidget {
 					.getControlPvs().getEdmAttributesMap().get("0").get())), expressions);
 		}else if(r.isTruthTable() && r.getNumPvs() >0 && r.getControlPvs()!=null){ //binary truth table
 			LinkedHashMap<String, Element> expressions = new LinkedHashMap<String, Element>();
-			Map<String, EdmInt> minMap = r.getMinValues().getEdmAttributesMap();
-			Map<String, EdmInt> maxMap = r.getMaxValues().getEdmAttributesMap();
+			Map<String, EdmDouble> minMap = r.getMinValues().getEdmAttributesMap();
+			Map<String, EdmDouble> maxMap = r.getMaxValues().getEdmAttributesMap();
 			StringBuilder pvsb = new StringBuilder("(");
 			for(int i=0; i<r.getNumPvs(); i++){
 				if(i!=0)
@@ -79,7 +81,7 @@ public class Opi_activeSymbolClass extends OpiWidget {
 			
 			for (int i = 0; i < r.getNumStates(); i++) {
 				Element valueNode = widgetContext.getDocument().createElement("value");
-				int min = 0, max = 0;
+				double min = 0, max = 0;
 				if (minMap.get("" + i) != null)
 					min = minMap.get("" + i).get();
 				if (maxMap.get("" + i) != null)
@@ -101,8 +103,8 @@ public class Opi_activeSymbolClass extends OpiWidget {
 			new OpiRule(widgetContext, "symbol_binary_truth_table", "group_name", false, pvnames, expressions);
 		}else if(!r.isTruthTable() && r.getNumPvs()>1 && r.getControlPvs()!=null){ //multiple bit fields, no binary truth table
 			LinkedHashMap<String, Element> expressions = new LinkedHashMap<String, Element>();
-			Map<String, EdmInt> minMap = r.getMinValues().getEdmAttributesMap();
-			Map<String, EdmInt> maxMap = r.getMaxValues().getEdmAttributesMap();
+			Map<String, EdmDouble> minMap = r.getMinValues().getEdmAttributesMap();
+			Map<String, EdmDouble> maxMap = r.getMaxValues().getEdmAttributesMap();
 			LinkedHashMap<String, EdmInt> andMap = r.getAndMask().getEdmAttributesMap();
 			LinkedHashMap<String, EdmInt> xorMap = r.getXorMask().getEdmAttributesMap();
 			LinkedHashMap<String, EdmInt> shiftMap = r.getShiftCount().getEdmAttributesMap();
@@ -129,7 +131,7 @@ public class Opi_activeSymbolClass extends OpiWidget {
 			
 			for (int i = 0; i < r.getNumStates(); i++) {
 				Element valueNode = widgetContext.getDocument().createElement("value");
-				int min = 0, max = 0;
+				double min = 0, max = 0;
 				if (minMap.get("" + i) != null)
 					min = minMap.get("" + i).get();
 				if (maxMap.get("" + i) != null)

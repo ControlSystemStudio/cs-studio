@@ -83,7 +83,8 @@ public class Opi_relatedDisplayClass extends OpiWidget {
 								m.setTextContent(rs[1]);
 								macrosNode.appendChild(m);
 							} catch (Exception e) {
-								ErrorHandlerUtil.handleError("Parse Macros Error on: "+s, e);
+								ErrorHandlerUtil.handleError("Parse Macros Error on: "+s + 
+										"(Macro name cannot be number in BOY)", e);
 							}
 						}
 					}

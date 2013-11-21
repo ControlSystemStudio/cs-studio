@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeLineClass;
 
@@ -39,16 +38,22 @@ public class Opi_activeLineClass extends OpiWidget {
 			isPolygon = true;
 			new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
 			new OpiColor(widgetContext, "background_color",
-					r.isFillAlarm()? new EdmColor(null, 0, 255, 0):r.getFillColor(), r);
-			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());	
-			if(r.getAlarmPv()!=null && r.isLineAlarm())
-			createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color", "lineColorRule", true);
+					r.getFillColor(), r);
+			
+			// If a string property is not exist, it is null.
+			if (r.getAlarmPv() != null) {
+				// line color alarm rule.
+				if(r.isLineAlarm())
+					createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
+						"lineColorAlarmRule", true);
+				if(r.isFillAlarm())
+					createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
+						"backColorAlarmRule", true);
+			}
 			
 		} else{
 			setTypeId(typeId_polyline);
-			new OpiColor(widgetContext, "background_color", 
-					r.isLineAlarm()?new EdmColor(null, 0, 255, 0):r.getLineColor(), r);
-			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isLineAlarm());
+			new OpiColor(widgetContext, "background_color", r.getLineColor(), r);
 			if (r.getAttribute("arrows").isExistInEDL()) {
 				int a = 0;
 				if (r.getArrows().equals("from"))
@@ -60,18 +65,21 @@ public class Opi_activeLineClass extends OpiWidget {
 
 				new OpiInt(widgetContext, "arrows", a);
 			}
+			
+			// If a string property is not exist, it is null.
+			if (r.getAlarmPv() != null) {
+				if(r.isLineAlarm())
+					createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
+						"backColorAlarmRule", true);
+			}
 		}
-
+		
 		widgetContext.getElement().setAttribute("version", version);
 
 		new OpiString(widgetContext, "name", name);
 
 		new OpiPointsList(widgetContext, "points", r.getXPoints(), r.getYPoints());
-		
-
-		if (r.getAttribute("alarmPv").isExistInEDL())
-			new OpiString(widgetContext, "pv_name", convertPVName(r.getAlarmPv()));
-
+			
 		new OpiInt(widgetContext, "line_width", r.getLineWidth() == 0 ? 1 : r.getLineWidth());
 
 		/*

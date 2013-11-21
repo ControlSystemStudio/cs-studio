@@ -21,8 +21,8 @@ public class Edm_activeSymbolClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private int numStates;
 	@EdmAttributeAn @EdmOptionalAn private int numPvs;
 	
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiInts minValues;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiInts maxValues;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiDoubles minValues;
+	@EdmAttributeAn @EdmOptionalAn private EdmMultiDoubles maxValues;
 	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings controlPvs;
 	
 	@EdmAttributeAn @EdmOptionalAn private EdmMultiInts andMask;
@@ -49,11 +49,11 @@ public class Edm_activeSymbolClass extends EdmWidget {
 		return numPvs;
 	}
 
-	public EdmMultiInts getMinValues() {
+	public EdmMultiDoubles getMinValues() {
 		return minValues;
 	}
 
-	public EdmMultiInts getMaxValues() {
+	public EdmMultiDoubles getMaxValues() {
 		return maxValues;
 	}
 

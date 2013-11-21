@@ -117,8 +117,17 @@ public class OpiColor extends OpiAttribute {
 				Matcher m = p.matcher(entry.getKey());
 
 				int i = 0;
+				int numOfEqual = 0;
 				while (m.find()) {
-					sb.insert(m.start() + 3 * i, "pv0");
+					String in = "pv0";
+					boolean isEqual = m.group().equals("=");
+					if(isEqual){
+						in=in+"=";						
+					}
+					sb.insert(m.start() + 3 * i+numOfEqual, in);
+					if(isEqual){
+						numOfEqual++;					
+					}
 					i++;
 				}
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2013 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeXTextClass;
 
 /**
  * XML conversion class for Edm_activeXTextClass.
- * @author Matevz
+ * @author Matevz, Xihui Chen
  */
 public class Opi_activeXTextClass extends OpiWidget {
 	
@@ -52,6 +52,15 @@ public class Opi_activeXTextClass extends OpiWidget {
 				
 		boolean useDisplayBg = t.getAttribute("useDisplayBg").isExistInEDL() && t.isUseDisplayBg();  
 		new OpiBoolean(widgetContext, "transparent", useDisplayBg);
+		
+		int a=0;
+		if(t.getFontAlign()==null)
+			a=0;
+		else if(t.getFontAlign().equals("right"))
+			a=2;
+		else if(t.getFontAlign().equals("center"))
+			a=1;		
+		new OpiInt(widgetContext, "horizontal_alignment", a);
 		
 		if(t.getAlarmPv()!=null){
 			if(t.isBgAlarm())

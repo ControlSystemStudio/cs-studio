@@ -41,7 +41,9 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
 		new OpiInt(widgetContext, "precision", r.getPrecision());
 		
 		int a=0;
-		if(r.getFontAlign().equals("right"))
+		if(r.getFontAlign()==null)
+			a=0;
+		else if(r.getFontAlign().equals("right"))
 			a=2;
 		else if(r.getFontAlign().equals("center"))
 			a=1;		

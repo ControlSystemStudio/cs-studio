@@ -46,6 +46,12 @@ public class EdmColor extends EdmAttribute {
 	
 	private LinkedHashMap<String, String> ruleMap;
 	
+	/**
+	 * @param name color name
+	 * @param red red element (0-255)
+	 * @param green
+	 * @param blue
+	 */
 	public EdmColor(String name, int red, int green, int blue){
 		this.name= name;
 		this.red = red<<8;

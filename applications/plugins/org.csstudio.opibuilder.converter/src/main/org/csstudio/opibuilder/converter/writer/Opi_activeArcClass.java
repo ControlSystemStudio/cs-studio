@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeArcClass;
 
@@ -29,30 +28,26 @@ public class Opi_activeArcClass extends OpiWidget {
 	public Opi_activeArcClass(Context con, Edm_activeArcClass r) {
 		super(con, r);
 		setTypeId(typeId);
+		setVersion(version);
+		setName(name);
+		
+		new OpiColor(widgetContext, "foreground_color",r.getLineColor(), r);
+		
 
-		widgetContext.getElement().setAttribute("version", version);
+		new OpiBoolean(widgetContext, "fill", r.isFill());
 		
-		new OpiString(widgetContext, "name", name);
-		new OpiColor(widgetContext, "foreground_color",
-				r.isLineAlarm()?new EdmColor(null, 0, 255,0):r.getLineColor(), r);
-		
-		if(r.getAttribute("fill").isExistInEDL())
-			new OpiBoolean(widgetContext, "fill", r.isFill());
-		
-		if (r.getFillColor().isExistInEDL()) {
-			new OpiColor(widgetContext, "background_color", 
-					r.isFillAlarm()? new EdmColor(null, 0, 255,0):r.getFillColor(), r);
+		new OpiColor(widgetContext, "background_color", r.getFillColor(), r);
+			
+			
+		if (r.getAlarmPv() != null) {
+			// line color alarm rule.
+			if (r.isLineAlarm())
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "foreground_color",
+						"lineColorAlarmRule", true);
+			if (r.isFillAlarm())
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
+						"backColorAlarmRule", true);
 		}
-		
-		if(r.getAttribute("fillAlarm").isExistInEDL())
-			new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isFillAlarm());
-		
-		
-		if(r.getAttribute("lineAlarm").isExistInEDL())
-			new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isLineAlarm());
-	
-		if(r.getAttribute("alarmPv").isExistInEDL())
-			new OpiString(widgetContext, "pv_name", convertPVName(r.getAlarmPv()));
 		
 		int line_width = 1;
 		if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
@@ -75,10 +70,11 @@ public class Opi_activeArcClass extends OpiWidget {
 		new OpiInt(widgetContext, "line_style", lineStyle);
 		
 		
-		new OpiDouble(widgetContext, "start_angle", 
-				r.getAttribute("startAngle").isExistInEDL()? r.getStartAngle():0);
-		if(r.getAttribute("totalAngle").isExistInEDL())
-			new OpiDouble(widgetContext, "total_angle", r.getTotalAngle());
+		new OpiDouble(widgetContext, "start_angle", r.getStartAngle());
+
+		new OpiDouble(widgetContext, "total_angle", 
+					r.getAttribute("totalAngle").isExistInEDL()?r.getTotalAngle():180);
+		
 		log.debug("Edm_activeArcClass written.");
 
 	}

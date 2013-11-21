@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
+import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmWidget;
 import org.w3c.dom.Element;
 
@@ -48,9 +49,13 @@ public class OpiWidget {
 			new OpiColor(widgetContext, "background_color", r.getBgColor(), r);
 		if (r.getAttribute("fgAlarm").isExistInEDL()){
 				new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isFgAlarm());
+				new OpiColor(widgetContext, "foreground_color", 
+						r.isFgAlarm()? new EdmColor("OK", 0, 255, 0):r.getFgColor(), r);
 		}
 		if (r.getAttribute("bgAlarm").isExistInEDL()){
 				new OpiBoolean(widgetContext, "backcolor_alarm_sensitive", r.isBgAlarm());
+				new OpiColor(widgetContext, "background_color", 
+						r.isFgAlarm()? new EdmColor("OK", 0, 255, 0):r.getBgColor(), r);
 		}
 		if (r.getFont().isExistInEDL())
 			new OpiFont(widgetContext, "font", r.getFont());
@@ -201,7 +206,7 @@ public class OpiWidget {
 		colorNode = widgetContext.getDocument().createElement("color");
 		colorNode.setAttribute("name", "Minor");
 		colorNode.setAttribute("red", "255");
-		colorNode.setAttribute("green", "0");
+		colorNode.setAttribute("green", "255");
 		colorNode.setAttribute("blue", "0");
 		valueNode.appendChild(colorNode);
 		expressions.put("pvSev0==2", valueNode);

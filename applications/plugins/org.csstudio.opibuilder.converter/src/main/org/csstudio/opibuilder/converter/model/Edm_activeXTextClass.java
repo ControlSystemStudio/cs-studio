@@ -10,21 +10,10 @@ package org.csstudio.opibuilder.converter.model;
 /**
  * Specific class representing activeXTextClass widget.
  *
- * @author Matevz
+ * @author Matevz, Xihui Chen
  *
  */
 public class Edm_activeXTextClass extends EdmWidget {
-
-//	@EdmAttributeAn private int major;
-//	@EdmAttributeAn private int minor;
-//	@EdmAttributeAn private int release;
-
-//	@EdmAttributeAn private int x;
-//	@EdmAttributeAn private int y;
-//	@EdmAttributeAn private int w;
-//	@EdmAttributeAn private int h;
-
-
 
 	@EdmAttributeAn private EdmMultilineText value;
 	@EdmAttributeAn @EdmOptionalAn private boolean autoSize;
@@ -32,6 +21,8 @@ public class Edm_activeXTextClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
 	@EdmAttributeAn @EdmOptionalAn private boolean border;
 	@EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
+	@EdmAttributeAn @EdmOptionalAn private String fontAlign;
+
 		
 	public Edm_activeXTextClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
@@ -39,13 +30,14 @@ public class Edm_activeXTextClass extends EdmWidget {
 
 
 
-
-
-
 	public EdmMultilineText getValue() {
 		return value;
 	}
 
+	public String getFontAlign() {
+		return fontAlign;
+	}
+	
 	public boolean isAutoSize() {
 		return autoSize;
 	}
