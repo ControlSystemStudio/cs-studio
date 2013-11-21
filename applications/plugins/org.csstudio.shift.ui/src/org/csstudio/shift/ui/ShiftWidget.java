@@ -1,6 +1,9 @@
 package org.csstudio.shift.ui;
 
 import static org.csstudio.shift.ShiftBuilder.shift;
+import gov.bnl.shiftClient.Shift;
+import gov.bnl.shiftClient.ShiftApiClient;
+import gov.bnl.shiftClient.Type;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -14,9 +17,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.csstudio.shift.Shift;
 import org.csstudio.shift.ShiftBuilder;
-import org.csstudio.shift.ShiftClient;
 import org.csstudio.shift.ShiftClientManager;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.swt.SWT;
@@ -37,7 +38,7 @@ public class ShiftWidget extends Composite {
     // Model
     private ShiftBuilder shiftBuilder; 
 
-    private ShiftClient shiftClient;
+    private ShiftApiClient shiftClient;
     private List<String> types = Collections.emptyList();
 
     // UI components
@@ -72,7 +73,7 @@ public class ShiftWidget extends Composite {
         changeSupport.removePropertyChangeListener(listener);
     }
 
-    public ShiftWidget(final Composite parent, int style, final boolean shift, final boolean editable) {
+    public ShiftWidget(final Composite parent, int style, final boolean editable) {
         super(parent, style);
         
         this.shiftBuilder = ShiftBuilder.withType(defaultText);
@@ -223,8 +224,11 @@ public class ShiftWidget extends Composite {
     	    @Override
     	    public void run() {
     		if (shiftClient != null) {
-    		    try {
-    			types = new ArrayList(shiftClient.listTypes());
+    		    try {    		    
+    			types = new ArrayList<String>();
+    			for(Type type : shiftClient.listTypes()) {
+    				types.add(type.getName());
+    			}
    			
     			getDisplay().asyncExec(new Runnable() {
 
@@ -259,8 +263,8 @@ public class ShiftWidget extends Composite {
 		    if(!type.getItems().equals(types)){
 		    	type.setItems(types.toArray(new String[types.size()]));
 		    }
-		    if(types.contains(shift.getType())){
-		    	type.select(types.indexOf(shift.getType()));
+		    if(types.contains(shift.getType().getName())){
+		    	type.select(types.indexOf(shift.getType().getName()));
 		    }
 		    textDate.setText(DateFormat.getDateInstance().format(
 			    shift.getStartDate() == null ? new Date() : shift.getStartDate()));

@@ -1,6 +1,7 @@
 package org.csstudio.shift.ui;
 
-import org.csstudio.shift.Shift;
+import gov.bnl.shiftClient.Shift;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;

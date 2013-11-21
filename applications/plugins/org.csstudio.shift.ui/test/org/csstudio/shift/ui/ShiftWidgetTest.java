@@ -3,11 +3,12 @@
  */
 package org.csstudio.shift.ui;
 
+import gov.bnl.shiftClient.Shift;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.csstudio.shift.Shift;
 import org.csstudio.shift.ShiftBuilder;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
@@ -41,7 +42,7 @@ public class ShiftWidgetTest extends ApplicationWindow {
     protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout(5, false));
-		final ShiftWidget shiftWidget = new ShiftWidget(container, SWT.WRAP, true, false);
+		final ShiftWidget shiftWidget = new ShiftWidget(container, SWT.WRAP, false);
 		shiftWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
 	
 		Button btnNewButton = new Button(container, SWT.NONE);

@@ -25,8 +25,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.TableViewerColumnSorter;
-import org.csstudio.shift.Shift;
-
+import gov.bnl.shiftClient.Shift;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -210,8 +209,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         };
         
-        final TableViewerColumn tableViewerColumnDescription;
-        tableViewerColumnDescription = new TableViewerColumn(shiftTableViewer, SWT.DOUBLE_BUFFERED);
+        final TableViewerColumn tableViewerColumnDescription = new TableViewerColumn(shiftTableViewer, SWT.DOUBLE_BUFFERED);
         tableViewerColumnDescription.setLabelProvider(new ColumnLabelProvider() {
 
             public String getText(final Object element) {
@@ -219,8 +217,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
                 return item == null || item.getDescription() == null ? "" : item.getDescription();
             }
         });
-        final TableColumn tblclmnDescription;
-        tblclmnDescription = tableViewerColumnDescription.getColumn();
+        final TableColumn tblclmnDescription = tableViewerColumnDescription.getColumn();
         tblclmnDescription.setWidth(250);
         tblclmnDescription.setText("Description");
         shiftTablelayout.setColumnData(tblclmnDescription, new ColumnWeightData(40));
@@ -237,7 +234,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         tableViewerColumnType.setLabelProvider(new ColumnLabelProvider() {
             public String getText(final Object element) {
                 final Shift item = ((Shift) element);
-                return item == null ? "" : item.getType();
+                return item == null ? "" : item.getType().getName();
             }
         });
         final TableColumn tblclmnType = tableViewerColumnType.getColumn();
@@ -248,7 +245,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             @Override
             protected Object getValue(final Object o) {
-                return ((Shift) o).getType();
+                return ((Shift) o).getType().getName();
             }
         };
         

@@ -1,5 +1,7 @@
 package org.csstudio.shift;
 
+import gov.bnl.shiftClient.ShiftApiClient;
+
 public interface ShiftClientFactory {
 
 	/** ID of the extension point for providing an ShiftClientFactory */
@@ -11,7 +13,7 @@ public interface ShiftClientFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	ShiftClient getClient() throws Exception;
+	ShiftApiClient getClient() throws Exception;
 
 	/**
 	 * Get an instance of the shiftClient with the usercredentails.
@@ -21,6 +23,6 @@ public interface ShiftClientFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	ShiftClient getClient(final String username, final String password) throws Exception;
+	ShiftApiClient getClient(final String username, final String password) throws Exception;
 
 }
