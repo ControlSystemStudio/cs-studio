@@ -144,6 +144,8 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
 	this.textId.setEditable(isEditable());
 	this.textURL.setVisible(isEditable());
 	this.link.setVisible(!isEditable());
+	this.btnAttach.setVisible(isEditable());
+	
 	Property property = null;
 	try {
 	    property = LogEntryUtil.getProperty(getLogEntryChangeset()
