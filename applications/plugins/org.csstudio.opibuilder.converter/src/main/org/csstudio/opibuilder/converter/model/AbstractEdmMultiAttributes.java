@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.converter.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -23,7 +24,7 @@ public abstract class AbstractEdmMultiAttributes<T extends EdmAttribute> extends
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmColor");
 
 	
-	private Map<String, T> edmAttrMap = new HashMap<String, T>();
+	private LinkedHashMap<String, T> edmAttrMap = new LinkedHashMap<String, T>();
 	
 	/**
 	 * Constructor which parses EdmColor from general EdmAttribute value.
@@ -60,7 +61,7 @@ public abstract class AbstractEdmMultiAttributes<T extends EdmAttribute> extends
 	/**
 	 * @return the color map with name and value.
 	 */
-	public Map<String, T> getEdmAttributesMap() {
+	public LinkedHashMap<String, T> getEdmAttributesMap() {
 		return edmAttrMap;
 	}
 

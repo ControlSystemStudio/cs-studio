@@ -102,23 +102,24 @@ public class OpiWidget {
 				StringBuilder sb = new StringBuilder("loc://");
 				sb.append(parts[0].substring(5));
 				if (parts.length > 1) {
-					String type = "";
+//					String type = "";
 					String initValue = parts[1];
 					if (parts[1].startsWith("d:")) {
-						type = "<VDouble>";
+//						type = "<VDouble>";
 						initValue = parts[1].substring(2);
 					} else if (parts[1].startsWith("i:")) {
-						type = "<VDouble>";
+//						type = "<VDouble>";
 						initValue = parts[1].substring(2);
 					} else if (parts[1].startsWith("s:")) {
-						type = "<VString>";
-						initValue = parts[1].substring(2);
+//						type = "<VString>";
+						initValue = "\""+parts[1].substring(2)+"\"";
 					} else if (parts[1].startsWith("e:")) { // Enumerated pv
 															// cannot be
 															// converted.
 						return pvName;
 					}
-					sb.append(type).append("(").append(initValue).append(")");
+					//doesn't append type yet to support utility pv.
+					sb.append("(").append(initValue).append(")");
 				}
 				return sb.toString();	
 				

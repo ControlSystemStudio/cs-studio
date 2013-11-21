@@ -44,7 +44,11 @@ public class EdmInt extends EdmAttribute {
 		}
 
 		try {
-			val = Integer.parseInt(getValue(0).replace("\"", ""));
+			String stringInt = getValue(0).replace("\"", "");
+			if(stringInt.startsWith("0x")){
+				val = Integer.parseInt(stringInt.substring(2), 16);
+			}else
+				val = Integer.parseInt(stringInt);
 			setInitialized(true);
 			log.debug("Parsed " + this.getClass().getName() + 
 					" = " + val);
