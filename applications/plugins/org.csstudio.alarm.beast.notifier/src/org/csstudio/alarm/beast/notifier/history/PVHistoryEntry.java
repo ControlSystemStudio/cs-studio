@@ -21,6 +21,7 @@ public class PVHistoryEntry {
 	private final String name, path;
 	private SeverityLevel currentSeverity, severity;
 	private boolean acknowledged = false;
+	private boolean recovredWithinDelay = false;
 
 	public static PVHistoryEntry fromSnapshot(PVSnapshot snapshot) {
 		PVHistoryEntry pvhe = new PVHistoryEntry(snapshot.getName(),
@@ -64,6 +65,14 @@ public class PVHistoryEntry {
 
 	public boolean isAcknowledged() {
 		return acknowledged;
+	}
+
+	public boolean hasRecovredWithinDelay() {
+		return recovredWithinDelay;
+	}
+
+	public void setRecovredWithinDelay(boolean recovredWithinDelay) {
+		this.recovredWithinDelay = recovredWithinDelay;
 	}
 
 	@Override

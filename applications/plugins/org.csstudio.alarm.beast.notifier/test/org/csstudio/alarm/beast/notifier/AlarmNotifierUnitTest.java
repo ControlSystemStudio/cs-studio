@@ -175,18 +175,21 @@ public class AlarmNotifierUnitTest {
 
 			// MINOR => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
 
 			// INVALID => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.INVALID, SeverityLevel.INVALID);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
 
 			// OK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.INVALID);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
@@ -231,6 +234,7 @@ public class AlarmNotifierUnitTest {
 
 			// OK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.MAJOR);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
@@ -274,6 +278,7 @@ public class AlarmNotifierUnitTest {
 
 			// ACK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
@@ -301,6 +306,7 @@ public class AlarmNotifierUnitTest {
 
 			// ACK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
@@ -329,14 +335,16 @@ public class AlarmNotifierUnitTest {
 
 			// ACK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR_ACK);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
 
 			// OK => CANCELED
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.OK);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.FORCED,
+			Assert.assertEquals(EActionStatus.CANCELED,
 					history.getAction(actionId).getStatus());
 
 		} catch (Exception e) {
@@ -407,6 +415,7 @@ public class AlarmNotifierUnitTest {
 
 			// ACK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
@@ -420,6 +429,7 @@ public class AlarmNotifierUnitTest {
 
 			// un-ACK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
@@ -467,6 +477,7 @@ public class AlarmNotifierUnitTest {
 
 			// PV2 ACK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv2.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
@@ -474,6 +485,7 @@ public class AlarmNotifierUnitTest {
 			// PV2 Minor + PV1 Major => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv2.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR_ACK);
 			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
@@ -487,6 +499,7 @@ public class AlarmNotifierUnitTest {
 
 			// PV1 ACK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());

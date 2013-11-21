@@ -37,8 +37,10 @@ public class WorkQueue {
 
 		@Override
 		public void run() {
-			if (taskManager.getStatus().equals(EActionStatus.PENDING)) {
-				taskManager.setStatus(EActionStatus.EXECUTED);
+			if (taskManager.getStatus().equals(EActionStatus.PENDING)
+					|| taskManager.getStatus().equals(EActionStatus.FORCED)) {
+				if (taskManager.getStatus().equals(EActionStatus.PENDING))
+					taskManager.setStatus(EActionStatus.EXECUTED);
 				execute(taskManager);
 			} else {
 				if (debug)
@@ -94,6 +96,7 @@ public class WorkQueue {
 	private boolean debug = false;
 
 	/** Overflow timer_threshold */
+	@SuppressWarnings("unused")
 	private final int timer_threshold;
 	private final int thread_threshold;
 
@@ -108,9 +111,20 @@ public class WorkQueue {
 	private Timer timer;
 	private Map<ActionID, ScheduledActionTask> scheduledActions;
 
+	private final Double rate;
+	private final Integer per = 1000;
+	private Double allowance;
+	private Long last_check;
+
+	private boolean overflooded = false;
+	private boolean flushing = false;
+
 	public WorkQueue(final int timer_threshold, final int thread_threshold) {
 		this.timer_threshold = timer_threshold;
 		this.thread_threshold = thread_threshold;
+		this.rate = Double.valueOf(timer_threshold);
+		this.allowance = Double.valueOf(timer_threshold);
+		this.last_check = System.currentTimeMillis();
 		timer = new Timer();
 		scheduledActions = new ConcurrentHashMap<ActionID, ScheduledActionTask>();
 	}
@@ -119,6 +133,28 @@ public class WorkQueue {
 	private void remove(final AlarmHandler taskManager) {
 		if (scheduledActions.remove(taskManager.getID()) != null)
 			decrementPendingActions();
+	}
+
+	private synchronized void checkOverflow() {
+		final Long current = System.currentTimeMillis();
+		final Long time_passed = current - last_check;
+		this.last_check = current;
+		this.allowance += time_passed * (rate / per);
+		if (allowance > rate)
+			allowance = rate; // throttle
+		if (allowance < 1.0) {
+			overflooded = true;
+		} else {
+			overflooded = false;
+			allowance -= 1.0;
+		}
+	}
+
+	private synchronized boolean canFlush() {
+		if (flushing)
+			return false;
+		flushing = true;
+		return true;
 	}
 
 	/**
@@ -132,11 +168,13 @@ public class WorkQueue {
 	}
 
 	/** Add an automated action to the work queue and schedule it. */
-	public void schedule(final AlarmHandler taskManager) {
-		if (isOverflooded()) {
+	public void schedule(final AlarmHandler taskManager, boolean noDelay) {
+		checkOverflow();
+		if (isOverflooded() && canFlush()) {
 			Activator.getLogger().log(Level.WARNING,
 					"Work queue overflooded, start cleaning !");
 			flush();
+			flushing = false;
 		}
 		// If overflow => schedule only Systems actions with a severity level
 		// higher or equal to the one defined as preference.
@@ -154,9 +192,10 @@ public class WorkQueue {
 				scheduledActions.put(actionId, newTask);
 				incrementPendingActions();
 			}
-			timer.schedule(newTask, taskManager.getDelay() * 1000);
+			int delay = noDelay ? 0 : (taskManager.getDelay() * 1000);
+			timer.schedule(newTask, delay);
 			Activator.getLogger().log(Level.INFO,
-					taskManager.getInfos() + " => SCHEDULED: " + taskManager.getDelay() + "s");
+					taskManager.getInfos() + " => SCHEDULED: " + (delay / 1000) + "s");
 		}
 	}
 
@@ -189,21 +228,23 @@ public class WorkQueue {
 
 	/** Flush the work queue. */
 	public void flush() {
+		Map<ActionID, ScheduledActionTask> scheduledActionsClone = null;
 		synchronized (scheduledActions) {
-			for (ScheduledActionTask task : scheduledActions.values()) {
-				task.cancel();
-				AlarmHandler taskManager = task.getTaskManager();
-				// force execution of Systems & PVs with high priority
-				if ((taskManager.getPriority().compareTo(overflow_level) >= 0 && taskManager
-						.getItem().isPV()) || !taskManager.getItem().isPV()) {
-					taskManager.setStatus(EActionStatus.FORCED);
-					execute(taskManager);
-				}
-			}
+			scheduledActionsClone = new ConcurrentHashMap<ActionID, ScheduledActionTask>(scheduledActions);
 			scheduledActions.clear();
 			this.count_pending = 0;
-			Activator.getLogger().log(Level.WARNING, "Work queue cleaned !");
 		}
+		for (ScheduledActionTask task : scheduledActionsClone.values()) {
+			task.cancel();
+			AlarmHandler taskManager = task.getTaskManager();
+			// force execution of Systems with high priority
+			if (taskManager.getPriority().compareTo(overflow_level) >= 0
+					&& !taskManager.getItem().isPV()) {
+				taskManager.setStatus(EActionStatus.FORCED);
+				execute(taskManager);
+			}
+		}
+		Activator.getLogger().log(Level.WARNING, "Work queue cleaned !");
 	}
 
 	/** @return Number of currently queued actions on the work queue */
@@ -236,8 +277,8 @@ public class WorkQueue {
 		count_thread--;
 	}
 
-	public boolean isOverflooded() {
-		return count_pending >= timer_threshold;
+	public synchronized boolean isOverflooded() {
+		return overflooded;
 	}
 
 	/** Dump to stdout */
