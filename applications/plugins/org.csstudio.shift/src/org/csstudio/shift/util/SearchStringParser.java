@@ -24,13 +24,13 @@ public class SearchStringParser {
      * @param string
      * @return
      */
-    public static Map<String, String> searchParser(final String string, final String DefaultKey) {
+    public static Map<String, String> searchParser(final String string, final String defaultKey) {
 	    final Map<String, String> result = new HashMap<String, String>();
         final Pattern p = Pattern.compile("([\\S]*):[.]*");
         final Matcher m = p.matcher(string);
 	    int start = 0;
 	    int end;
-        String key = DefaultKey;
+        String key = defaultKey;
 	    while (m.find()) {
             end = (m.start() - 1) >= 0 ? (m.start() - 1) : 0;
             result.put(key, string.substring(start, end).trim());
@@ -38,6 +38,7 @@ public class SearchStringParser {
             start = m.end(1) + 1;
         }
 	    result.put(key, string.substring(start, string.length()).trim());
+	    result.remove(defaultKey);
 	    return result;
     }
 }

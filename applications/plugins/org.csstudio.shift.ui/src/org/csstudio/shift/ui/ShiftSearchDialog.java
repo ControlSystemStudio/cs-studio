@@ -44,6 +44,7 @@ public class ShiftSearchDialog extends Dialog {
     private MultipleSelectionCombo<String> shiftCombo;
     private MultipleSelectionCombo<String> typeCombo;
     private Text textOwner;
+    private Text textStatus;
     private Text textFrom;
     private Text textTo;
 
@@ -125,7 +126,32 @@ public class ShiftSearchDialog extends Dialog {
         });
 
         textOwner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//
+        final Label lblStatus = new Label(container, SWT.NONE);
+        lblStatus.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        lblStatus.setText("Status:");
 
+        textStatus = new Text(container, SWT.BORDER);
+        textStatus.addModifyListener(new ModifyListener() {
+
+            private DelayedNotificator notificator = new DelayedNotificator(
+                250, TimeUnit.MILLISECONDS);
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+            notificator.delayedExec(textStatus, new Runnable() {
+
+                @Override
+                public void run() {
+                searchParameters.put(ShiftSearchUtil.SEARCH_KEYWORD_STATUS, textStatus.getText());
+                updateSearch();
+                }
+            });
+            }
+        });
+
+        textStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));        
+//
         final Label lbShifts = new Label(container, SWT.NONE);
         lbShifts.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lbShifts.setText("Shifts:");

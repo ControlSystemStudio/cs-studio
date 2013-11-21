@@ -22,6 +22,7 @@ public class XmlShift {
     private String onShiftPersonal;
     private String report;
     private String closeShiftUser;
+    private String status;
 
 
     /** Creates a new instance of XmlShift */
@@ -223,6 +224,20 @@ public class XmlShift {
      */
     public void setCloseShiftUser(String closeShiftUser) {
         this.closeShiftUser = closeShiftUser;
+    }
+
+    /**
+     * Setter for shift status.
+     *
+     * @param status shift type
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    @XmlAttribute
+    public String getStatus() {
+        return status;
     }
 
 

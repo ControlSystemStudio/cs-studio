@@ -18,7 +18,8 @@ public class ShiftBuilder {
 	private String closeShiftUser;
 	private String onShiftPersonal;
 	private String report;
-    
+    private String status;
+	
 	private Map<String, ShiftBuilder> shifts = new HashMap<String, ShiftBuilder>();
 
 	
@@ -84,6 +85,11 @@ public class ShiftBuilder {
 		return this;
 	}
 	
+	public ShiftBuilder setStatus(final String status) {
+		this.status = status;
+		return this;
+	}
+	
 	public static ShiftBuilder shift(final Shift shift) {
 		final ShiftBuilder shiftBuilder = new ShiftBuilder();
 		shiftBuilder.id = shift.getId();
@@ -96,11 +102,12 @@ public class ShiftBuilder {
 		shiftBuilder.leadOperator = shift.getLeadOperator();
 		shiftBuilder.closeShiftUser = shift.getCloseShiftUser();
 		shiftBuilder.report = shift.getReport();
+		shiftBuilder.status = shift.getStatus();
 		return shiftBuilder;
 	}
 	
 	public Shift build() throws IOException {
-		return new ShiftImpl(id, owner, startDate, endDate, type, report, description, leadOperator, closeShiftUser, onShiftPersonal);
+		return new ShiftImpl(id, owner, startDate, endDate, type, report, description, leadOperator, closeShiftUser, onShiftPersonal, status);
 	}
 	
 	private class ShiftImpl implements Shift {
@@ -114,9 +121,10 @@ public class ShiftBuilder {
 		private String closeShiftUser;
 		private String onShiftPersonal;
 		private String report;
+		private String status;
 		
 		public ShiftImpl(final Object id, final String owner, final Date startDate, final Date endDate, final String type, final String report,
-                         final String description, final String leadOperator, final String closeShiftUser, final String onShiftPersonal) {
+                         final String description, final String leadOperator, final String closeShiftUser, final String onShiftPersonal, final String status) {
 			super();
 			this.id = id;
 			this.owner = owner;
@@ -128,6 +136,7 @@ public class ShiftBuilder {
 			this.closeShiftUser = closeShiftUser;
 			this.onShiftPersonal = onShiftPersonal;
 			this.report = report;
+			this.status = status;
 		}
 		
 		@Override
@@ -180,6 +189,11 @@ public class ShiftBuilder {
 		public String getReport() {
 			return report;
 		}
+		
+		@Override
+		public String getStatus() {
+			return status;
+		}	
 				
 	}
 	

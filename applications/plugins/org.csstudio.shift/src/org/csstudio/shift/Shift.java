@@ -24,5 +24,7 @@ public interface Shift {
 	
 	String getReport();
 	
+	String getStatus();
+	
 
 }
