@@ -34,14 +34,14 @@ public class LogEntrySearchUtil {
 		    SEARCH_KEYWORD_HISTORY, SEARCH_KEYWORD_PAGE, SEARCH_KEYWORD_COUNT));
 
     public static Map<String, String> parseSearchString(String search) {
-	Map<String, String> searchMap = searchParser(search,
-		SEARCH_KEYWORD_TEXT);
-	if (keywords.containsAll(searchMap.keySet())) {
-	    return searchMap;
-	} else {
-	    throw new IllegalArgumentException("Search string:" + search //$NON-NLS-1$
-		    + " has an invalid keyword"); //$NON-NLS-1$
-	}
+//	Map<String, String> searchMap = searchParser(search, SEARCH_KEYWORD_TEXT);
+//	if (keywords.containsAll(searchMap.keySet())) {
+//	    return searchMap;
+//	} else {
+//	    throw new IllegalArgumentException("Search string:" + search //$NON-NLS-1$
+//		    + " has an invalid keyword"); //$NON-NLS-1$
+//	}
+	return searchParser(search, SEARCH_KEYWORD_TEXT);
     }
 
     public static String parseSearchMap(Map<String, String> searchMap) {

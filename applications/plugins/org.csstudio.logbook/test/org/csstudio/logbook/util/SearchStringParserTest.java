@@ -39,6 +39,14 @@ public class SearchStringParserTest {
 	assertEquals("Failed to parse " + textAndlogbook,
 		expectedTextAndlogbook,
 		searchParser(textAndlogbook, defaultKey));
+	
+	String textAndProperty = "test shift.Id:1";
+	Map<String, String> expectedTextAndProperty = new HashMap<String, String>();
+	expectedTextAndProperty.put("text", "test");
+	expectedTextAndProperty.put("shift.Id", "1");
+	assertEquals("Failed to parse " + textAndProperty,
+		expectedTextAndProperty,
+		searchParser(textAndProperty, defaultKey));
 
 	String textAndlogbookAndTags = "test logbook:Operations tags:testTag";
 	Map<String, String> expectedTextAndlogbookAndTags = new HashMap<String, String>();
