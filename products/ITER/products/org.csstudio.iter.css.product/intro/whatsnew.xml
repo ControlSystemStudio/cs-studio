@@ -3,7 +3,7 @@
 	<extensionContent id="org.csstudio.iter.css.product.whatsnew" name="ITER CSS News" style="css/style.css" path="whatsnew/@">
 		<group id="content-group" style-id="content-group">
 			<link id="cssiter" label="What's new?" style-id="content-link"
-			      url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.ui.help/html/changelog/core.html">
+			      url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.iter.css.product/toc/Changelog.html">
 			  <text> Read the "Change Log" section of the online help
 			         to learn what's new in ITER CSS</text>
 			</link>
