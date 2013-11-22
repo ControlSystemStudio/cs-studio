@@ -22,7 +22,7 @@ public class CreateShiftView extends ViewPart {
 	@Override
 	public void createPartControl(final Composite parent) {
 		parent.setLayout(new FormLayout());
-		shiftWidget = new ShiftWidget(parent, SWT.NONE, false, true);
+		shiftWidget = new ShiftWidget(parent, SWT.NONE, true);
 		final FormData fd_shiftWidget = new FormData();
 		fd_shiftWidget.top = new FormAttachment(0, 1);
 		fd_shiftWidget.left = new FormAttachment(0, 1);

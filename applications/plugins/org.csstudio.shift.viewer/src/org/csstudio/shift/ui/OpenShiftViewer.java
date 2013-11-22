@@ -1,6 +1,6 @@
 package org.csstudio.shift.ui;
 
-import org.csstudio.shift.Shift;
+import gov.bnl.shiftClient.Shift;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;

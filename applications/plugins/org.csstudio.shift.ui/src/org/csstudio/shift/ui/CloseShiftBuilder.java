@@ -1,8 +1,11 @@
 package org.csstudio.shift.ui;
 
+import gov.bnl.shiftClient.ShiftApiClient;
+
 import java.util.List;
 
 import org.csstudio.shift.ShiftBuilder;
+import org.csstudio.shift.ShiftClientManager;
 import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.window.Window;
@@ -31,7 +34,9 @@ public class CloseShiftBuilder extends AbstractAdaptedHandler<ShiftBuilder> {
             }
         }
         if (data != null && data.size() == 1) {
-        	final ShiftBuilder shift = data.iterator().next();
+        	ShiftBuilder shift = data.iterator().next();
+        	final ShiftApiClient shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
+        	shift = ShiftBuilder.shift(shiftClient.getShift(shift.build().getId(), shift.build().getType().getName()));
         	if(shift.build().getEndDate() != null && shift.build().getCloseShiftUser() == null) {
         	
 	        	final CloseShiftBuilderDialog dialog = new CloseShiftBuilderDialog(shell, shift, false);

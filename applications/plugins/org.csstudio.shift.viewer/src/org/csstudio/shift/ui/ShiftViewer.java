@@ -1,10 +1,11 @@
 package org.csstudio.shift.ui;
 
+import gov.bnl.shiftClient.Shift;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.shift.Shift;
 import org.csstudio.shift.ShiftBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
@@ -156,7 +157,7 @@ public class ShiftViewer extends EditorPart {
      */
     @Override
     public void createPartControl(final Composite parent) {
-        shiftWidget = new ShiftWidget(parent, SWT.NONE, false, false);
+        shiftWidget = new ShiftWidget(parent, SWT.NONE, false);
         final Shift shift = ((ShiftViewerModel) getEditorInput()).getShift();
         if (shift != null) {
             shiftWidget.setShift(((ShiftViewerModel) getEditorInput()).getShift());

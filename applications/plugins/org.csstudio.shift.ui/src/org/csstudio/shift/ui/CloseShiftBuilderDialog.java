@@ -1,10 +1,11 @@
 package org.csstudio.shift.ui;
 
 
+import gov.bnl.shiftClient.ShiftApiClient;
+
 import java.io.IOException;
 
 import org.csstudio.shift.ShiftBuilder;
-import org.csstudio.shift.ShiftClient;
 import org.csstudio.shift.ShiftClientManager;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.core.runtime.Platform;
@@ -30,6 +31,7 @@ public class CloseShiftBuilderDialog extends Dialog {
     private boolean authenticate = true;
     private ErrorBar errorBar;
     private boolean end;
+	private ShiftApiClient shiftClient;
 
     public CloseShiftBuilderDialog(final Shell parentShell, final ShiftBuilder shiftBuilder, final boolean end) {
 		super(parentShell);
@@ -41,7 +43,7 @@ public class CloseShiftBuilderDialog extends Dialog {
 
     @Override
     public Control createDialogArea(final Composite parent) {
-        getShell().setText("Start Shift");
+        getShell().setText(end ? "End Shift" : "Close Shift");
         final Composite container = (Composite) super.createDialogArea(parent);
         final GridLayout gridLayout = (GridLayout) container.getLayout();
         gridLayout.marginWidth = 2;
@@ -58,7 +60,7 @@ public class CloseShiftBuilderDialog extends Dialog {
             userCredentialWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         }
 
-        shiftWidget = new ShiftWidget(container, SWT.NONE, true, false);
+        shiftWidget = new ShiftWidget(container, SWT.NONE, false);
         final GridData gd_shiftWidget = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_shiftWidget.heightHint = 450;
         gd_shiftWidget.widthHint = 450;
@@ -85,7 +87,6 @@ public class CloseShiftBuilderDialog extends Dialog {
     protected void okPressed() {
         final Cursor originalCursor = getShell().getCursor();
         try {
-            ShiftClient shiftClient;
             if (authenticate) {
                 shiftClient = ShiftClientManager.getShiftClientFactory()
                 		.getClient(userCredentialWidget.getUsername(), userCredentialWidget.getPassword());

@@ -62,11 +62,11 @@ public class ShiftApiClientImpl implements ShiftApiClient {
 
         private ShiftProperties properties = new ShiftProperties();
 
-        private static final String DEFAULT_OLOG_URL = "http://localhost:8080/Shift/resources"; //$NON-NLS-1$8
+        private static final String DEFAULT_SHIFT_URL = "http://localhost:8080/Shift/resources"; //$NON-NLS-1$8
 
         private ShiftClientBuilder() {
             this.shiftURI = URI.create(this.properties.getPreferenceValue(
-                    "shift_url", DEFAULT_OLOG_URL));
+                    "shift_url", DEFAULT_SHIFT_URL));
             this.protocol = this.shiftURI.getScheme();
         }
 
@@ -323,8 +323,8 @@ public class ShiftApiClientImpl implements ShiftApiClient {
 
     @Override
     public Collection<Shift> findShiftsBySearch(String pattern) throws ShiftFinderException {
-        //TODO: find if needed to be implemented
-        return null;
+
+	    return null;
     }
 
     @Override

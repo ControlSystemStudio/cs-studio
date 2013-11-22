@@ -1,5 +1,8 @@
 package org.csstudio.shift;
 
+import gov.bnl.shiftClient.Shift;
+import gov.bnl.shiftClient.Type;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -96,7 +99,7 @@ public class ShiftBuilder {
 		shiftBuilder.owner = shift.getOwner();
 		shiftBuilder.startDate = shift.getStartDate();
 		shiftBuilder.endDate = shift.getEndDate();
-		shiftBuilder.type = shift.getType();
+		shiftBuilder.type = shift.getType().getName();
 		shiftBuilder.description = shift.getDescription();
 		shiftBuilder.onShiftPersonal = shift.getOnShiftPersonal();
 		shiftBuilder.leadOperator = shift.getLeadOperator();
@@ -107,95 +110,21 @@ public class ShiftBuilder {
 	}
 	
 	public Shift build() throws IOException {
-		return new ShiftImpl(id, owner, startDate, endDate, type, report, description, leadOperator, closeShiftUser, onShiftPersonal, status);
+		Shift shift = new Shift();
+		shift.setId((Integer) id);
+		shift.setOwner(owner);
+		shift.setDescription(description);
+		shift.setStartDate(startDate);
+		shift.setEndDate(endDate);
+		shift.setType(new Type(type));
+		shift.setOnShiftPersonal(onShiftPersonal);
+		shift.setCloseShiftUser(closeShiftUser);
+		shift.setStatus(status);
+		shift.setLeadOperator(leadOperator);
+		shift.setReport(report);
+		return shift;		
 	}
 	
-	private class ShiftImpl implements Shift {
-		private Object id;
-		private String owner;
-		private Date startDate;
-		private Date endDate;
-		private String type;
-		private String description;
-		private String leadOperator;
-		private String closeShiftUser;
-		private String onShiftPersonal;
-		private String report;
-		private String status;
-		
-		public ShiftImpl(final Object id, final String owner, final Date startDate, final Date endDate, final String type, final String report,
-                         final String description, final String leadOperator, final String closeShiftUser, final String onShiftPersonal, final String status) {
-			super();
-			this.id = id;
-			this.owner = owner;
-			this.startDate = startDate;
-			this.endDate = endDate;
-			this.type = type;
-			this.description = description;
-			this.leadOperator = leadOperator;
-			this.closeShiftUser = closeShiftUser;
-			this.onShiftPersonal = onShiftPersonal;
-			this.report = report;
-			this.status = status;
-		}
-		
-		@Override
-		public Object getId() {
-			return id;
-		}
-		
-		@Override
-		public String getOwner() {
-			return owner;
-		}
-		
-		@Override
-		public Date getStartDate() {
-			return startDate;
-		}
-		
-		@Override
-		public Date getEndDate() {
-			return endDate;
-		}
-		
-		@Override
-		public String getType() { 
-			return type;
-		}
-		
-		@Override
-		public String getDescription() {
-			return description;
-		}
-
-		@Override
-		public String getCloseShiftUser() {
-			return closeShiftUser;
-		}
-
-		@Override
-		public String getOnShiftPersonal() {
-			return onShiftPersonal;
-		}
-
-		@Override
-		public String getLeadOperator() {
-			return leadOperator;
-		}
-		
-		
-		@Override
-		public String getReport() {
-			return report;
-		}
-		
-		@Override
-		public String getStatus() {
-			return status;
-		}	
-				
-	}
 	
     /**
      * Set the list of shifts to shifts
@@ -207,7 +136,7 @@ public class ShiftBuilder {
     public ShiftBuilder setShifts(Collection<ShiftBuilder> shifts) throws IOException {
 		this.shifts = new HashMap<String, ShiftBuilder>(shifts.size());
 		for (ShiftBuilder shiftBuilder : shifts) {
-		    this.shifts.put(shiftBuilder.build().getType(), shiftBuilder);
+		    this.shifts.put(shiftBuilder.build().getType().getName(), shiftBuilder);
 		}
 		return this;
     }
