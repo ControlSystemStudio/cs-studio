@@ -2,12 +2,18 @@
 --
 -- Commands in here are read by java code to initialize the database
 --
+-- Format must be:
+--  '-- ...' for comment to ignore
+--  'whatever ...;' for commands, may be multi-line, must end in ';'
+--
 --  @author Kay Kasemir
 
 -- Warning if database already exists
 --  CONNECT 'jdbc:derby:/tmp/scan_log_db/scan;create=true';
 
--- These will generate errors when table don't exist...
+-- Derby has no convenient "DROP TABLE IF EXISTS", so
+-- these will generate error 42Y55 when tables don't exist.
+-- Error is ignored in DerbyDataLogger#createTables()
 DROP TABLE scans;
 DROP TABLE devices;
 DROP TABLE samples;

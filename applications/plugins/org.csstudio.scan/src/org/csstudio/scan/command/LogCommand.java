@@ -15,12 +15,12 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.device.DeviceInfo;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -77,22 +77,17 @@ public class LogCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
     {
-        writeIndent(out, level);
-        out.println("<log>");
-        writeIndent(out, level+1);
-        out.println("<devices>");
+        final Element devices_element = dom.createElement("devices");
         for (String device : device_names)
         {
-            writeIndent(out, level+2);
-            out.println("<device>" + device + "</device>");
+            final Element element = dom.createElement("device");
+            element.appendChild(dom.createTextNode(device));
+            devices_element.appendChild(element);
         }
-        writeIndent(out, level+1);
-        out.println("</devices>");
-        super.writeXML(out, level);
-        writeIndent(out, level);
-        out.println("</log>");
+        command_element.appendChild(devices_element);
+        super.addXMLElements(dom, command_element);
     }
 
     /** {@inheritDoc} */

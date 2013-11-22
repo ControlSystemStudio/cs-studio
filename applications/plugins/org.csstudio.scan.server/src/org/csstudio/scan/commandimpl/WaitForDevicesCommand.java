@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import java.io.PrintStream;
-
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SimpleScanCommandFactory;
 import org.csstudio.scan.device.Device;
@@ -39,13 +37,6 @@ public class WaitForDevicesCommand extends ScanCommand
     public Device[] getDevices()
     {
         return devices;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void writeXML(final PrintStream out, final int level)
-    {
-        throw new Error("Internal command");
     }
 
     /** {@inheritDoc} */

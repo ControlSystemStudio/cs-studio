@@ -15,9 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Command that delays the scan until a device reaches a certain value
@@ -155,29 +155,34 @@ public class WaitCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
     {
-        writeIndent(out, level);
-        out.println("<wait>");
-        writeIndent(out, level+1);
-        out.println("<device>" + device_name + "</device>");
-        writeIndent(out, level+1);
-        out.println("<value>" + desired_value + "</value>");
-        writeIndent(out, level+1);
-        out.println("<comparison>" + comparison.name() + "</comparison>");
+        Element element = dom.createElement("device");
+        element.appendChild(dom.createTextNode(device_name));
+        command_element.appendChild(element);
+
+        element = dom.createElement("value");
+        element.appendChild(dom.createTextNode(Double.toString(desired_value)));
+        command_element.appendChild(element);
+
+        element = dom.createElement("comparison");
+        element.appendChild(dom.createTextNode(comparison.name()));
+        command_element.appendChild(element);
+        
         if (tolerance > 0.0)
         {
-            writeIndent(out, level+1);
-            out.println("<tolerance>" + tolerance + "</tolerance>");
+            element = dom.createElement("tolerance");
+            element.appendChild(dom.createTextNode(Double.toString(tolerance)));
+            command_element.appendChild(element);
         }
         if (timeout > 0.0)
         {
-            writeIndent(out, level+1);
-            out.println("<timeout>" + timeout + "</timeout>");
+            element = dom.createElement("timeout");
+            element.appendChild(dom.createTextNode(Double.toString(timeout)));
+            command_element.appendChild(element);
         }
-        super.writeXML(out, level);
-        writeIndent(out, level);
-        out.println("</wait>");
+        
+        super.addXMLElements(dom, command_element);
     }
 
     /** {@inheritDoc} */

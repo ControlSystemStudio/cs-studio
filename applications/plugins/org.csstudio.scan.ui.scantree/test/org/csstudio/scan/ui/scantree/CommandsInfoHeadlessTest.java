@@ -17,7 +17,10 @@ package org.csstudio.scan.ui.scantree;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.ui.scantree.gui.CommandsInfo;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -41,7 +44,7 @@ public class CommandsInfoHeadlessTest
         for (ScanCommand command : commands)
         {
             System.out.println(command.getClass().getName() + ":");
-            command.writeXML(System.out, 1);
+            XMLCommandWriter.write(System.out, Arrays.asList(command));
 
             final Image image = info.getImage(command);
             System.out.println("Icon: " +
