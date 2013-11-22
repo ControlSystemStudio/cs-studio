@@ -26,20 +26,18 @@ import org.eclipse.swt.SWT;
 public class AxisMousePosition extends Figure implements MouseMotionListener {
 
 	private static final String MINUS = "-";
-	
+
 	private static final int TEXT_MARGIN = 2;
-	
+
 	/**
 	 * Use advanced graphics?
 	 */
 	private final boolean use_advanced_graphics = Preferences
 			.useAdvancedGraphics();
 
-	/** the array of tick label */
-	private String label;
-
-	/** the array of tick label position in pixels */
+	/** the mouse position in pixels */
 	private Integer mousePosition;
+	private Integer mousePositionRelativeToAxis;
 
 	private LinearScale scale;
 
@@ -56,8 +54,13 @@ public class AxisMousePosition extends Figure implements MouseMotionListener {
 		setFont(this.scale.getFont());
 		setForegroundColor(this.scale.getForegroundColor());
 
-		this.label = "";
 		this.mousePosition = 0;
+		if (scale.isHorizontal()) {
+			mousePositionRelativeToAxis = mousePosition - scale.getBounds().x;
+		} else {
+			mousePositionRelativeToAxis = scale.getBounds().height
+					+ scale.getBounds().y - mousePosition;
+		}
 		setVisible(false);
 	}
 
@@ -70,24 +73,30 @@ public class AxisMousePosition extends Figure implements MouseMotionListener {
 	private void drawXTick(Graphics graphics) {
 		// draw tick labels
 		graphics.setFont(scale.getFont());
-		Dimension fontDimension = FigureUtilities.getTextExtents(label, getFont());
+		String label = scale.format(scale
+				.getPositionValue(mousePosition, false));
+		Dimension fontDimension = FigureUtilities.getTextExtents(label,
+				getFont());
 		int fontWidth = (int) (fontDimension.width * 1.08);
 		int fontHeight = fontDimension.height;
-		int x = (int) Math.ceil(mousePosition - fontWidth / 2.0) + TEXT_MARGIN;
+		int x = (int) Math.ceil(mousePositionRelativeToAxis - fontWidth / 2.0)
+				+ TEXT_MARGIN;
 		int y = TEXT_MARGIN;
-		
+
 		PointList points = new PointList();
 		points.addPoint(x - TEXT_MARGIN, y + fontHeight + TEXT_MARGIN);
-		points.addPoint(x + fontWidth + TEXT_MARGIN, y + fontHeight + TEXT_MARGIN);
+		points.addPoint(x + fontWidth + TEXT_MARGIN, y + fontHeight
+				+ TEXT_MARGIN);
 		points.addPoint(x + fontWidth + TEXT_MARGIN, y - TEXT_MARGIN);
 		points.addPoint(x - TEXT_MARGIN, y - TEXT_MARGIN);
-		
+
 		graphics.fillPolygon(points);
 		graphics.drawPolygon(points);
 		graphics.drawText(label, x, TEXT_MARGIN);
-		
+
 		bounds = getBounds();
-		bounds.height = Math.max(bounds.height, y + fontHeight + TEXT_MARGIN * 2);
+		bounds.height = Math.max(bounds.height, y + fontHeight + TEXT_MARGIN
+				* 2);
 	}
 
 	/**
@@ -99,7 +108,10 @@ public class AxisMousePosition extends Figure implements MouseMotionListener {
 	private void drawYTick(Graphics graphics) {
 		// draw tick labels
 		graphics.setFont(scale.getFont());
-		Dimension fontDimension = FigureUtilities.getTextExtents(label, getFont());
+		String label = scale.format(scale
+				.getPositionValue(mousePosition, false));
+		Dimension fontDimension = FigureUtilities.getTextExtents(label,
+				getFont());
 		int fontWidth = (int) (fontDimension.width * 1.08);
 		int fontHeight = fontDimension.height;
 
@@ -107,15 +119,17 @@ public class AxisMousePosition extends Figure implements MouseMotionListener {
 		if (label.startsWith(MINUS) && !label.startsWith(MINUS)) {
 			x += FigureUtilities.getTextExtents(MINUS, getFont()).width;
 		}
-		int y = (int) Math.ceil(scale.getLength() - mousePosition - fontHeight
-				/ 2.0) + TEXT_MARGIN;
+		int y = (int) Math.ceil(scale.getLength() - mousePositionRelativeToAxis
+				- fontHeight / 2.0)
+				+ TEXT_MARGIN;
 
 		PointList points = new PointList();
 		points.addPoint(x - TEXT_MARGIN, y + fontHeight + TEXT_MARGIN);
-		points.addPoint(x + fontWidth + TEXT_MARGIN, y + fontHeight + TEXT_MARGIN);
+		points.addPoint(x + fontWidth + TEXT_MARGIN, y + fontHeight
+				+ TEXT_MARGIN);
 		points.addPoint(x + fontWidth + TEXT_MARGIN, y - TEXT_MARGIN);
 		points.addPoint(x - TEXT_MARGIN, y - TEXT_MARGIN);
-		
+
 		graphics.fillPolygon(points);
 		graphics.drawPolygon(points);
 		graphics.drawText(label, x, y);
@@ -126,7 +140,7 @@ public class AxisMousePosition extends Figure implements MouseMotionListener {
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		graphics.translate(bounds.x, bounds.y);
-		
+
 		graphics.setAdvanced(use_advanced_graphics);
 		if (use_advanced_graphics) {
 			graphics.setAntialias(SWT.ON);
@@ -161,15 +175,14 @@ public class AxisMousePosition extends Figure implements MouseMotionListener {
 
 	public void mouseMoved(MouseEvent me) {
 		if (isVisible()) {
-			if(scale.isHorizontal()) {
-				int cursor = me.getLocation().x;
-				label = scale.format(scale.getPositionValue(cursor, false));
-				mousePosition = cursor - scale.getBounds().x;
+			if (scale.isHorizontal()) {
+				mousePosition = me.getLocation().x;
+				mousePositionRelativeToAxis = mousePosition
+						- scale.getBounds().x;
 			} else {
-				int cursor = me.getLocation().y;
-				label = scale.format(scale.getPositionValue(cursor, false));
-				mousePosition = scale.getBounds().height + scale.getBounds().y
-						- cursor;
+				mousePosition = me.getLocation().y;
+				mousePositionRelativeToAxis = scale.getBounds().height
+						+ scale.getBounds().y - mousePosition;
 			}
 			repaint();
 		}

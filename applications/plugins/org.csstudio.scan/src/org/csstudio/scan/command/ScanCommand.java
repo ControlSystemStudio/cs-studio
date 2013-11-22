@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.scan.device.DeviceInfo;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Description of a scan server command
@@ -86,6 +87,25 @@ abstract public class ScanCommand
         final String name = getClass().getName();
         final int sep = name.lastIndexOf('.');
         return name.substring(sep + 1);
+    }
+    
+    /** A command with implementing class "DoSomeThingCommand"
+     *  has an ID of "do_some_thing"
+     *  @return ID of this command
+     */
+    final public String getCommandID()
+    {
+        // Split "DoSomeThingCommand" into [ "", "Do", "Some", "Thing", "Command" ] 
+        final String[] sections = getCommandName().split("(?=[A-Z][a-z])");
+        final StringBuilder buf = new StringBuilder();
+        final int N = sections.length;
+        for (int i=1; i<N-1; ++i)
+        {
+            if (i > 1)
+                buf.append("_");
+            buf.append(sections[i].toLowerCase());
+        }
+        return buf.toString();
     }
 
     /** Address of this command within the command sequence
@@ -281,26 +301,41 @@ abstract public class ScanCommand
         this.error_handler = error_handler;
     }
     
-    /** Write the command (and its sub-commands) in an XML format.
+    /** Write the command (and its sub-commands) to XML document.
      *
-     *  <p>A command called AbcCommand should write itself as a tag "abc"
+     *  <p>A command called AbcCommand writes itself as a tag "abc"
      *  so that the {@link XMLCommandReader} can later determine
      *  which class to use for reading the command back from XML.
      *  
-     *  <p>Derived classes must call base class implementation
-     *  to write inherited properties.
+     *  <p>This method creates the overall XML element for the command
+     *  and calls <code>addXMLElements()</code> for the content.
+     *  Derived classes should update <code>addXMLElements()</code>.
      *
-     *  @param out {@link PrintStream}
-     *  @param level Indentation level
+     *  @param dom {@link Document}
+     *  @param root Where to add content for this command
+     *  @see ScanCommand#addXMLElements(Document, Element)
      */
-    public void writeXML(final PrintStream out, final int level)
+    final public void writeXML(final Document dom, final Element root)
+    {
+        final Element command_element = dom.createElement(getCommandID());
+        root.appendChild(command_element);
+        addXMLElements(dom, command_element);
+    }
+
+    /** Add XML elements for command (and its sub-commands) to document.
+     *
+     *  <p>Derived classes should call parent implementation.
+     *
+     *  @param dom {@link Document}
+     *  @param command_element DOM {@link Element} for this command
+     */
+    public void addXMLElements(final Document dom, final Element command_element)
     {
         if (! error_handler.isEmpty())
         {
-            writeIndent(out, level+1);
-            out.print("<error_handler>");
-            out.print(error_handler);
-            out.println("</error_handler>");
+            final Element element = dom.createElement("error_handler");
+            element.appendChild(dom.createTextNode(error_handler));
+            command_element.appendChild(element);
         }
     }
 

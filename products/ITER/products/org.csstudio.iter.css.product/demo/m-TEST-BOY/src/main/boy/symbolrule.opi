@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
   <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.1.4.codac_core_4_0b4</boy_version>
+  <boy_version>3.2.10.codac_core_4_2b3</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1024</height>
@@ -32,7 +32,7 @@
   <actions hook="false" hook_all="false" />
   <y>0</y>
   <x>0</x>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -62,6 +62,7 @@
     <width>1243</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>false</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -71,7 +72,7 @@
     <actions hook="false" hook_all="false" />
     <x>0</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-4c046299:134f0550d24:-6dd5</wuid>
@@ -113,7 +114,7 @@
       <x>0</x>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -143,6 +144,7 @@
     <width>1242</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>false</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -152,7 +154,7 @@
     <actions hook="false" hook_all="false" />
     <x>0</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-7cc1</wuid>
@@ -193,7 +195,7 @@
       <tooltip></tooltip>
       <x>0</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0.0">
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <visible>true</visible>
@@ -248,7 +250,7 @@
       <tooltip></tooltip>
       <x>0</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <vertical_alignment>0</vertical_alignment>
@@ -307,7 +309,7 @@ $(pv_value)</tooltip>
       <x>1105</x>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -337,6 +339,7 @@ $(pv_value)</tooltip>
     <width>251</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>true</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -346,7 +349,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <x>345</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>100.0</fill_level>
@@ -405,7 +408,7 @@ $(pv_value)</tooltip>
       <x>0</x>
       <gradient>false</gradient>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <auto_size>true</auto_size>
@@ -471,7 +474,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://svg</pv>
+          <pv trig="true">loc://svg(0)</pv>
         </rule>
       </rules>
       <degree>0</degree>
@@ -484,7 +487,7 @@ $(pv_value)</tooltip>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-73b5</wuid>
@@ -525,7 +528,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>29</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-7369</wuid>
@@ -566,7 +569,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>59</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <auto_size>true</auto_size>
@@ -632,7 +635,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://png</pv>
+          <pv trig="true">loc://png(0)</pv>
         </rule>
       </rules>
       <degree>0</degree>
@@ -645,7 +648,7 @@ $(pv_value)</tooltip>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-7333</wuid>
@@ -687,7 +690,7 @@ $(pv_value)</tooltip>
       <x>129</x>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -717,6 +720,7 @@ $(pv_value)</tooltip>
     <width>251</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>true</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -726,7 +730,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <x>644</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>100.0</fill_level>
@@ -785,7 +789,7 @@ $(pv_value)</tooltip>
       <x>0</x>
       <gradient>false</gradient>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-719c</wuid>
@@ -826,7 +830,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>29</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-719b</wuid>
@@ -867,7 +871,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>69</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-7199</wuid>
@@ -908,7 +912,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>148</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <password></password>
@@ -965,7 +969,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://bool(1)</pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -978,7 +982,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://svg</pv>
+          <pv trig="true">loc://svg(0)</pv>
         </rule>
       </rules>
       <show_confirm_dialog>1</show_confirm_dialog>
@@ -993,7 +997,7 @@ $(pv_value)</tooltip>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <password></password>
@@ -1050,7 +1054,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://bool(1)</pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -1063,7 +1067,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://png</pv>
+          <pv trig="true">loc://png(0)</pv>
         </rule>
       </rules>
       <show_confirm_dialog>1</show_confirm_dialog>
@@ -1079,7 +1083,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -1109,6 +1113,7 @@ $(pv_value)</tooltip>
     <width>252</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>true</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -1118,7 +1123,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <x>644</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>100.0</fill_level>
@@ -1177,7 +1182,7 @@ $(pv_value)</tooltip>
       <x>0</x>
       <gradient>false</gradient>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-6f84</wuid>
@@ -1218,7 +1223,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>26</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-6f83</wuid>
@@ -1259,7 +1264,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>83</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-6f82</wuid>
@@ -1300,7 +1305,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>154</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <password></password>
@@ -1367,7 +1372,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://svg</pv>
+          <pv trig="true">loc://svg(0)</pv>
         </rule>
       </rules>
       <show_confirm_dialog>false</show_confirm_dialog>
@@ -1381,7 +1386,7 @@ $(pv_value)</tooltip>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <password></password>
@@ -1448,7 +1453,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://png</pv>
+          <pv trig="true">loc://png(0)</pv>
         </rule>
       </rules>
       <show_confirm_dialog>false</show_confirm_dialog>
@@ -1462,7 +1467,7 @@ $(pv_value)</tooltip>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-75b7dbd8:13c39a78082:-6cca</wuid>
@@ -1511,7 +1516,7 @@ $(pv_value)</tooltip>
       <x>65</x>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -1541,6 +1546,7 @@ $(pv_value)</tooltip>
     <width>251</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>true</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -1550,7 +1556,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <x>345</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>100.0</fill_level>
@@ -1609,7 +1615,7 @@ $(pv_value)</tooltip>
       <x>0</x>
       <gradient>false</gradient>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -1666,7 +1672,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://svg</pv>
+          <pv trig="true">loc://svg(0)</pv>
         </rule>
       </rules>
       <pv_value />
@@ -1686,7 +1692,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>45</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-73b1</wuid>
@@ -1727,7 +1733,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>25</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-72b9</wuid>
@@ -1768,7 +1774,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>54</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-72b8</wuid>
@@ -1809,7 +1815,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>134</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -1866,7 +1872,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://png</pv>
+          <pv trig="true">loc://png(0)</pv>
         </rule>
       </rules>
       <pv_value />
@@ -1886,7 +1892,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>125</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>-75b7dbd8:13c39a78082:-6479</wuid>
@@ -1935,7 +1941,7 @@ $(pv_value)</tooltip>
       <x>65</x>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -1965,6 +1971,7 @@ $(pv_value)</tooltip>
     <width>317</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>true</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -1974,7 +1981,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <x>463</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.RoundedRectangle" version="1.0.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>100.0</fill_level>
@@ -2033,7 +2040,7 @@ $(pv_value)</tooltip>
       <x>0</x>
       <gradient>false</gradient>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-74c3</wuid>
@@ -2074,7 +2081,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>20</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0.0">
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <visible>true</visible>
@@ -2120,7 +2127,7 @@ $(pv_value)</tooltip>
           <exp bool_exp="true">
             <value>pvStr0</value>
           </exp>
-          <pv trig="true">loc://png</pv>
+          <pv trig="true">loc://png(0)</pv>
         </rule>
       </rules>
       <flip_vertical>false</flip_vertical>
@@ -2137,7 +2144,7 @@ $(pv_value)</tooltip>
       <x>187</x>
     </widget>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
@@ -2167,6 +2174,7 @@ $(pv_value)</tooltip>
     <width>497</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>true</lock_children>
     <border_width>1</border_width>
     <border_color>
@@ -2176,7 +2184,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <x>326</x>
     <tooltip></tooltip>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>-75b7dbd8:13c39a78082:-74b2</wuid>
@@ -2217,7 +2225,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>4</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>2a4d3503:13c3e77dfc9:-7dab</wuid>
@@ -2230,7 +2238,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://png</pv_name>
+      <pv_name>loc://png(0)</pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2245,14 +2253,7 @@ $(pv_value)</tooltip>
       </font>
       <width>496</width>
       <border_style>6</border_style>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <pv_value />
       <items>
         <s>/opt/codac/opi/boy/SymbolLibrary/PNG/Fluid/Pumps/PL General.png</s>
@@ -2274,7 +2275,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>0</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
       <wuid>2a4d3503:13c3e77dfc9:-7abd</wuid>
@@ -2315,7 +2316,7 @@ $(pv_value)</tooltip>
       <tooltip></tooltip>
       <x>4</x>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <wuid>2a4d3503:13c3e77dfc9:-7abc</wuid>
@@ -2328,7 +2329,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://svg</pv_name>
+      <pv_name>loc://svg(0)</pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2343,14 +2344,7 @@ $(pv_value)</tooltip>
       </font>
       <width>496</width>
       <border_style>6</border_style>
-      <rules>
-        <rule name="BorderRule" prop_id="border_style" out_exp="false">
-          <exp bool_exp="pv0==1">
-            <value>9</value>
-          </exp>
-          <pv trig="true">$(pv_name).SIMM</pv>
-        </rule>
-      </rules>
+      <rules />
       <pv_value />
       <items>
         <s>/opt/codac/opi/boy/SymbolLibrary/SVG/Fluid/Pumps/PL General.svg</s>

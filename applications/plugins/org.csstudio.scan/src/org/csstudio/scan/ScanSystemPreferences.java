@@ -38,7 +38,10 @@ public class ScanSystemPreferences extends SystemSettings
 	public static String getSimulationConfigPath()
 	{
     	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getString(Activator.ID, "simulation_config", "platform:/plugin/org.csstudio.scan/examples/simulation.xml", null);
+    	final String config = service.getString(Activator.ID, "simulation_config", "platform:/plugin/org.csstudio.scan/examples/simulation.xml", null);
+    	if (config.isEmpty())
+    	    return getBeamlineConfigPath();
+    	return config;
 	}
 
 	/** @return Paths to pre-scan commands

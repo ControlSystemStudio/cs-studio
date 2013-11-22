@@ -90,8 +90,8 @@ public class AlarmNotifier {
 	 */
 	public void handleAlarmUpdate(AlarmTreePV pvItem) {
 		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
-		// Avoid to send 'fake' alarms when the PV is enabled for example
-		if (snapshot.getValue().isEmpty())
+		// Avoid to send 'fake' alarms when the PV is re-enabled for example
+		if (snapshot.getValue() != null && snapshot.getValue().isEmpty())
 			return;
 		// Process PV automated actions
 		if (pvItem.getAutomatedActions() != null) {
@@ -125,7 +125,7 @@ public class AlarmNotifier {
 						|| (maintenanceMode && actionTask.getPriority().equals(
 								EActionPriority.IMPORTANT))) {
 					actionTask.setStatus(EActionStatus.FORCED);
-					workQueue.execute(actionTask);
+					workQueue.schedule(actionTask, true);
 				}
 			}
 			// Pending action updated => no need to create a new one
@@ -145,9 +145,9 @@ public class AlarmNotifier {
 						EActionPriority.IMPORTANT))) {
 			if (newTask.getStatus().equals(EActionStatus.NO_DELAY)) {
 				newTask.setStatus(EActionStatus.FORCED);
-				workQueue.execute(newTask);
+				workQueue.schedule(newTask, true);
 			} else {
-				workQueue.schedule(newTask);
+				workQueue.schedule(newTask, false);
 			}
 		}
 	}

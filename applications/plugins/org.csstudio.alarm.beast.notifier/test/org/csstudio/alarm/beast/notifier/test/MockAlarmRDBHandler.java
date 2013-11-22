@@ -85,7 +85,7 @@ public class MockAlarmRDBHandler implements IAlarmRDBHandler {
 	public void updatePV(final String name,
 			final SeverityLevel current_severity,
 			final SeverityLevel alarm_severity) {
-		updatePV(name, current_severity, "", alarm_severity, "", "");
+		updatePV(name, current_severity, "", alarm_severity, "", "0");
 	}
 
 	public void updatePV(final String name,

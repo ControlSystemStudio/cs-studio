@@ -15,9 +15,18 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Command that sets a device to a value
@@ -201,47 +210,52 @@ public class SetCommand extends ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
     {
-        writeIndent(out, level);
-        out.println("<set>");
-        writeIndent(out, level+1);
-        out.println("<device>" + device_name + "</device>");
-        writeIndent(out, level+1);
+        Element element = dom.createElement("device");
+        element.appendChild(dom.createTextNode(device_name));
+        command_element.appendChild(element);
+
+        element = dom.createElement("value");
         if (value instanceof String)
-            out.println("<value>\"" + value + "\"</value>");
+            element.appendChild(dom.createTextNode('"' + (String)value + '"'));
         else
-            out.println("<value>" + value + "</value>");
+            element.appendChild(dom.createTextNode(value.toString()));
+        command_element.appendChild(element);
+        
         if (completion)
         {
-            writeIndent(out, level+1);
-            out.println("<completion>true</completion>");
+            element = dom.createElement("completion");
+            element.appendChild(dom.createTextNode(Boolean.toString(completion)));
+            command_element.appendChild(element);
         }
         if (! wait)
         {
-            writeIndent(out, level+1);
-            out.println("<wait>" + wait + "</wait>");
+            element = dom.createElement("wait");
+            element.appendChild(dom.createTextNode(Boolean.toString(wait)));
+            command_element.appendChild(element);
         }
         if (wait  &&  ! readback.isEmpty())
         {
-            writeIndent(out, level+1);
-            out.println("<readback>" + readback + "</readback>");
+            element = dom.createElement("readback");
+            element.appendChild(dom.createTextNode(readback));
+            command_element.appendChild(element);
         }
         if (tolerance > 0.0)
         {
-            writeIndent(out, level+1);
-            out.println("<tolerance>" + tolerance + "</tolerance>");
+            element = dom.createElement("tolerance");
+            element.appendChild(dom.createTextNode(Double.toString(tolerance)));
+            command_element.appendChild(element);
         }
         if (timeout > 0.0)
         {
-            writeIndent(out, level+1);
-            out.println("<timeout>" + timeout + "</timeout>");
+            element = dom.createElement("timeout");
+            element.appendChild(dom.createTextNode(Double.toString(timeout)));
+            command_element.appendChild(element);
         }
-        super.writeXML(out, level);
-        writeIndent(out, level);
-        out.println("</set>");
+        super.addXMLElements(dom, command_element);
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
@@ -295,4 +309,35 @@ public class SetCommand extends ScanCommand
 	    appendConditionDetail(buf);
 	    return buf.toString();
 	}
+
+    public String toXML() throws Exception
+    {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = dbf.newDocumentBuilder();
+        Document dom = builder.newDocument();
+        
+        Element set_element = dom.createElement("set");
+        dom.appendChild(set_element);
+
+        Element element = dom.createElement("device");
+        element.appendChild(dom.createTextNode("device_name"));
+        set_element.appendChild(element);
+        
+        // Write XML into string.
+        // Waste of memory, but simplifies patching
+        final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        final Transformer transformer = transformerFactory.newTransformer();
+        final DOMSource source = new DOMSource(dom);
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+        final ByteArrayOutputStream buf_stream = new ByteArrayOutputStream();
+        final StreamResult result = new StreamResult(buf_stream);
+        transformer.transform(source, result);
+        String buffer = buf_stream.toString();
+        
+        // Write patched XML to output
+        return new String(buffer.getBytes());
+    }
 }
