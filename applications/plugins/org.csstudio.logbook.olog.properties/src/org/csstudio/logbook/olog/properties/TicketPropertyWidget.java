@@ -24,8 +24,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 class TicketPropertyWidget extends AbstractPropertyWidget {
+    
+    private static final String propertyName = "Ticket";
+    private static final String attrIdName = "Id";
+    private static final String attrURLName = "URL";
+    
     private static final Property widgetProperty = PropertyBuilder
-	    .property("Ticket").attribute("TicketId").attribute("TicketURL")
+	    .property(propertyName).attribute(attrIdName).attribute(attrURLName)
 	    .build();
 
     private Text textId;
@@ -86,8 +91,8 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
 			    .logEntry(getLogEntryChangeset().getLogEntry());
 		    logEntryBuilder.addProperty(PropertyBuilder
 			    .property(widgetProperty)
-			    .attribute("TicketId", textId.getText())
-			    .attribute("TicketURL", textURL.getText()));
+			    .attribute(attrIdName, textId.getText())
+			    .attribute(attrURLName, textURL.getText()));
 		    getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
 		} catch (IOException e1) {
 		    // TODO Auto-generated catch block
@@ -139,6 +144,8 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
 	this.textId.setEditable(isEditable());
 	this.textURL.setVisible(isEditable());
 	this.link.setVisible(!isEditable());
+	this.btnAttach.setVisible(isEditable());
+	
 	Property property = null;
 	try {
 	    property = LogEntryUtil.getProperty(getLogEntryChangeset()
@@ -149,13 +156,13 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
 	}
 	if (property != null) {
 	    this.textId
-		    .setText(property.getAttributeValue("TicketId") == null ? ""
-			    : property.getAttributeValue("TicketId"));
+		    .setText(property.getAttributeValue(attrIdName) == null ? ""
+			    : property.getAttributeValue(attrIdName));
 	    this.textURL
-		    .setText(property.getAttributeValue("TicketURL") == null ? ""
-			    : property.getAttributeValue("TicketURL"));
-	    String ticketURL = property.getAttributeValue("TicketURL") == null ? ""
-		    : property.getAttributeValue("TicketURL");
+		    .setText(property.getAttributeValue(attrURLName) == null ? ""
+			    : property.getAttributeValue(attrURLName));
+	    String ticketURL = property.getAttributeValue(attrURLName) == null ? ""
+		    : property.getAttributeValue(attrURLName);
 	    this.link.setText("<a>" + ticketURL + "</a>");
 	}
 

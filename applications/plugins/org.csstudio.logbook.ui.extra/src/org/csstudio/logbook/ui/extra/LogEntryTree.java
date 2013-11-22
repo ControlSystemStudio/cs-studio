@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -423,27 +424,30 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	Map<Long, List<LogEntry>> model = new LinkedHashMap<Long, List<LogEntry>>();
 
 	for (LogEntry logEntry : logEntries) {
-	    if (model.containsKey(logEntry.getId())) {
-		switch (logEntryOrder) {
-		case SWT.UP:
-		    model.get(logEntry.getId()).add(0, logEntry);
-		    break;
-		case SWT.DOWN:
-		    model.get(logEntry.getId()).add(logEntry);
-		    break;
-		default:
-		    model.get(logEntry.getId()).add(0, logEntry);
-		    break;
-		}
-	    } else {
+	    if (!model.containsKey(logEntry.getId())){
 		List<LogEntry> versions = new ArrayList<LogEntry>();
-		versions.add(logEntry);
 		model.put((Long) logEntry.getId(), versions);
 	    }
+	    model.get(logEntry.getId()).add(logEntry);	  
 	}
 
 	for (Entry<Long, List<LogEntry>> entry : model.entrySet()) {
 	    List<LogEntry> entries = entry.getValue();
+	    if(logEntryOrder == SWT.UP){
+		Collections.sort(entries, new Comparator<LogEntry>(){
+		    @Override
+		    public int compare(LogEntry o1, LogEntry o2) {
+			return o1.getModifiedDate().compareTo(o2.getModifiedDate());
+		    }		    
+		});
+	    }else{
+		Collections.sort(entries, new Comparator<LogEntry>(){
+		    @Override
+		    public int compare(LogEntry o1, LogEntry o2) {
+			return o2.getModifiedDate().compareTo(o1.getModifiedDate());
+		    }		    
+		});
+	    }
 	    if (entries.size() > 0) {
 		subItem = new LogEntryTreeModel(entries.get(0), root);
 		for (LogEntry logEntry : entries.subList(1, entries.size())) {

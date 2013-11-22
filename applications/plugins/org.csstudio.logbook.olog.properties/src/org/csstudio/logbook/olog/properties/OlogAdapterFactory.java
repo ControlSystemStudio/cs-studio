@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.logbook.LogEntry;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+
 
 /**
  * @author shroffk
@@ -18,15 +21,20 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public class OlogAdapterFactory implements IAdapterFactory {
 
-    private static final String pvRegex = "pv:'(.*?)'";
+    private static String pvRegex = "^.*pv:(.*?)$";
+    private final IPreferencesService service = Platform.getPreferencesService();
     
     @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
 	if (adaptableObject instanceof LogEntry) {
 	    LogEntry logEntry = (LogEntry) adaptableObject;
 	    Collection<ProcessVariable> result = new ArrayList<ProcessVariable>();
-	    
-	    Pattern pvPattern = Pattern.compile(pvRegex);
+	    try {
+		pvRegex = service.getString("org.csstudio.logbook.ui", pvRegex, "^.*pv:(.*?)$", null);
+	    } catch (Exception ex) {
+		return null;
+	    }
+	    Pattern pvPattern = Pattern.compile(pvRegex, java.util.regex.Pattern.MULTILINE);
 	    Matcher pvMatcher = pvPattern.matcher(logEntry.getText());
 	    while (pvMatcher.find()) {
 		result.add(new ProcessVariable(pvMatcher.group(1)));
