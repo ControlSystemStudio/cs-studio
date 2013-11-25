@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.logbook.ui;bundle-version="3.0.0",
  org.csstudio.logbook;bundle-version="3.1.0",
  gov.bnl.shiftClient;bundle-version="1.0.0",
- org.csstudio.shift;bundle-version="1.0.0"
+ org.csstudio.shift;bundle-version="1.0.0",
+ org.csstudio.shift.viewer;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.wb.swt
