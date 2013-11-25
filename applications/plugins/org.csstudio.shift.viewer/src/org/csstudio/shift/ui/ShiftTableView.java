@@ -203,11 +203,11 @@ public class ShiftTableView extends ViewPart {
             protected IStatus run(final IProgressMonitor monitor) {
             if (initializeClient()) {
                 try {
-                    final List<Shift> shifts = findShiftsBySearch(searchString);
+                    final List<Shift> shiftsToDisplay = findShiftsBySearch(searchString);
                     Display.getDefault().asyncExec(new Runnable() {
                     @Override
                     public void run() {
-                        shiftTable.setShifts(shifts);
+                        shiftTable.setShifts(shiftsToDisplay);
                     }
                 });
                 } catch (Exception e1) {

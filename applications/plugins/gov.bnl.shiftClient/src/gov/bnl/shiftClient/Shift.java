@@ -284,11 +284,11 @@ public class Shift  {
             return false;
         }
         Shift other = (Shift) obj;
-        if (id == null) {
+        if (this.id == null) {
             if (other.id != null) {
                 return false;
             }
-        } else if (!id.equals(other.id)) {
+        } else if (!this.id.equals(other.id) || !this.status.equals(other.status)) {
             return false;
         }
         return true;
