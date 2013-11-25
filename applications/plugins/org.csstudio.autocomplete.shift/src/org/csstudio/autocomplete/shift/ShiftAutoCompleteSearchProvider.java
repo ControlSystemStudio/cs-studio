@@ -4,7 +4,7 @@
 package org.csstudio.autocomplete.shift;
 
 import gov.bnl.shiftClient.Shift;
-import gov.bnl.shiftClient.ShiftApiClient;
+import gov.bnl.shiftClient.ShiftClient;
 import gov.bnl.shiftClient.Type;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class ShiftAutoCompleteSearchProvider extends AbstractAutoCompleteSearchP
     Map<String, List<String>> initializeKeyValueMap() {
 		try {
 		    Map<String, List<String>> keyValueMap = new HashMap<String, List<String>>();
-		    ShiftApiClient shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
+		    ShiftClient shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
 		    List<String> shifts = new ArrayList<String>();
 		    for (Shift shift : shiftClient.listShifts()) {
 		    	shifts.add(shift.getId().toString());

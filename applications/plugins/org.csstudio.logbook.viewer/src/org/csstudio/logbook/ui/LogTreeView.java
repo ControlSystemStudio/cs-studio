@@ -3,6 +3,9 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +67,9 @@ public class LogTreeView extends ViewPart {
     private List<String> tags = Collections.emptyList();
     private ErrorBar errorBar;
     
+    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+    private String searchString;
+    
     private String resultSize;
     private boolean showHistory;
 
@@ -84,6 +90,15 @@ public class LogTreeView extends ViewPart {
 	errorBar.setLayoutData(new  GridData(SWT.CENTER, SWT.CENTER, true, false, 4, 1));
 	errorBar.setMarginBottom(5);
 
+	changeSupport.addPropertyChangeListener("searchString", new PropertyChangeListener() {
+	    
+	    @Override
+	    public void propertyChange(PropertyChangeEvent arg0) {
+		text.setText(searchString);
+		search();
+	    }
+	});
+	
 	Label lblLogQuery = new Label(parent, SWT.NONE);
 	lblLogQuery.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 	lblLogQuery.setText("Log Query:");
@@ -93,7 +108,8 @@ public class LogTreeView extends ViewPart {
 	    @Override
 	    public void keyReleased(KeyEvent e) {
 		if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-		    search();
+		    setSearchString(text.getText());
+		    // search();
 		}
 	    }
 	});	
@@ -249,6 +265,13 @@ public class LogTreeView extends ViewPart {
 	search.schedule();
     }
 
+
+    public void setSearchString(String searchString) {
+	String oldValue = this.searchString;
+	this.searchString = searchString;
+	changeSupport.firePropertyChange("searchString", oldValue, this.searchString);
+    }
+    
     @Override
     public void setFocus() {
     }
