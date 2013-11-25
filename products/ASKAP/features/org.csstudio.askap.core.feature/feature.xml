@@ -17,6 +17,7 @@
    </license>
 
    <requires>
+     <import plugin="com.google.common"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit4"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -25,10 +26,12 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.data" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.archive.reader" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.vtype" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.reader" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
@@ -38,8 +41,10 @@
       <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
+
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.jms" version="1.1.2" match="greaterOrEqual"/>
@@ -47,6 +52,7 @@
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pv" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.junit4" version="4.5.0" match="greaterOrEqual"/>
@@ -82,7 +88,7 @@
       <import plugin="org.eclipse.help" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.data" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pv" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.epics" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
@@ -91,8 +97,25 @@
       <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="javax.mail"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.antlr.runtime" version="3.4.0" match="greaterOrEqual"/>
    </requires>
+
+   <plugin
+         id="com.google.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+   <plugin
+         id="org.epics.pvdata"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+   <plugin
+         id="org.epics.pvaccess"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
    <plugin
          id="org.csstudio.apputil"
@@ -111,7 +134,8 @@
          id="org.csstudio.archive.reader"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+	 unpack="false"/>
 
    <plugin
          id="org.csstudio.archive.rdb"
@@ -128,6 +152,13 @@
 
    <plugin
          id="org.csstudio.archive.reader.rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.vtype"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -154,13 +185,14 @@
          version="0.0.0"
          unpack="false"/>
 
+<!--
    <plugin
          id="org.csstudio.csdata.clipboard"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+-->
    <plugin
          id="org.csstudio.data"
          download-size="0"
@@ -181,21 +213,20 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+<!--
    <plugin
          id="org.csstudio.diag.epics.pvtree"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
    <plugin
          id="org.csstudio.display.pvtable"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+-->
    <plugin
          id="org.csstudio.display.rdbtable"
          download-size="0"
@@ -243,13 +274,14 @@
          version="0.0.0"
          unpack="false"/>
 
+<!--
    <plugin
          id="org.csstudio.navigator.applaunch"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+-->
    <plugin
          id="javax.mail"
          download-size="0"
@@ -311,13 +343,21 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+   <plugin
+         id="org.csstudio.startup.helper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
+<!--
    <plugin
          id="org.csstudio.swt.chart"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
+         version="0.0.0"
+	 unpack="false"/>
+-->
    <plugin
          id="org.csstudio.swt.widgets"
          download-size="0"
@@ -353,6 +393,7 @@
          version="0.0.0"
          unpack="false"/>
 
+<!--
    <plugin
          id="org.csstudio.ui.menu.pvscript"
          download-size="0"
@@ -366,7 +407,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+-->
    <plugin
          id="org.csstudio.ui.preferences"
          download-size="0"
@@ -381,6 +422,12 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.csstudio.utility.singlesource"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
    <plugin
          id="org.csstudio.utility.pv"
          download-size="0"
@@ -438,7 +485,42 @@
          unpack="false"/>
 
    <plugin
+         id="org.epics.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+
+   <plugin
+         id="org.csstudio.security"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.security.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.autocomplete"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
+         id="org.csstudio.autocomplete.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -520,5 +602,13 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.utility"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 
 </feature>

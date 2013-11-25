@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CSS for ASKAP" uid="askap" id="org.csstudio.askap.product.product" application="org.csstudio.askap.product.application" version="3.1.0" useFeatures="true" includeLaunchers="true">
+<product name="CSS for ASKAP" uid="askap" id="org.csstudio.askap.product.product" application="org.csstudio.askap.product.application" version="3.2.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.askap.product/icons/aboutSide.png"/>

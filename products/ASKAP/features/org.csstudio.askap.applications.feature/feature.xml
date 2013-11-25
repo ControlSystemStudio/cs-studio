@@ -25,12 +25,11 @@
          version="0.0.0"/>
 
    <requires>
+
       <import plugin="org.junit4"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pv" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil"/>
       <import plugin="org.csstudio.apputil.ui"/>
       <import plugin="org.eclipse.help"/>
@@ -60,11 +59,11 @@
       <import plugin="org.eclipse.equinox.security" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.archive.reader" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pv" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.askap.utility.icemanager" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -97,6 +96,27 @@
 
    <plugin
          id="org.csstudio.utility.eliza"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.csdata"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.csdata.clipboard"
          download-size="0"
          install-size="0"
          version="0.0.0"
