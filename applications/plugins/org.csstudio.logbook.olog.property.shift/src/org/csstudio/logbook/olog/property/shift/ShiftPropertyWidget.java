@@ -54,12 +54,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     
     private static final String inactiveShift = "No Active Shift";
     
-    private static final Property widgetProperty = PropertyBuilder
-	    .property(propertyName)
-	    .attribute(attrTypeName)
-	    .attribute(attrIdName)
-	    .attribute(attrURLName)
-	    .build();
+    private static PropertyBuilder widgetProperty;
 
     private Text textId;
     private Text textURL;
@@ -117,11 +112,26 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	    public void widgetSelected(SelectionEvent e) {
 		String selectedType = comboType.getItem(comboType.getSelectionIndex());
 		shift = shiftClient.getShiftByType(selectedType);
-		if (!shift.getStatus().equals("Active")) {
-		    textId.setText(inactiveShift);
+		if (shift.getStatus().equals("Active")) {
+		    widgetProperty = PropertyBuilder
+			    .property(propertyName)
+			    .attribute(attrTypeName, selectedType)
+			    .attribute(attrIdName, shift.getId().toString())
+			    .attribute(
+				    attrURLName,
+				    service.getString(
+					    "org.csstudio.utility.shift",
+					    "shift_url",
+					    "https://localhost:8181/Shift/resources",
+					    null)
+					    + "/shift/"
+					    + selectedType
+					    + "/"
+					    + shift.getId().toString());
 		} else {
-		    textId.setText(shift.getId().toString());
+		    widgetProperty = null;
 		}
+		updateUI();
 	    }
 	});
 	
@@ -168,34 +178,28 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     }
 
     public void init(){
-	
 	try {
 	    if(shiftClient == null){
 		shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
 	    }
+	    widgetProperty = PropertyBuilder.property(propertyName);	    
 	    types = new ArrayList<String>();
 	    for (Type type : shiftClient.listTypes()) {
 		types.add(type.getName());
 	    }
-	    if (!comboType.getItems().equals(types)) {
-		comboType.setItems(types.toArray(new String[types.size()]));
-	    }
-	    defaultType = service.getString("org.csstudio.shift.ui", "Default.type", "", null);
-
-	    comboType.setText(defaultType);
-	    comboType.setSelection(new Point(types.indexOf(defaultType), types.indexOf(defaultType)));
-
+	    comboType.setItems(types.toArray(new String[types.size()]));
+	    defaultType = service.getString("org.csstudio.shift.ui", "Default.type", "", null);	   
 	    shift = shiftClient.getShiftByType(defaultType);
-	    if (!shift.getStatus().equals("Active")) {
-		textId.setText(inactiveShift);
+	    if (types.contains(defaultType) && shift.getStatus().equals("Active")) {
+		widgetProperty.attribute(attrTypeName, defaultType);
+		widgetProperty.attribute(attrIdName, shift.getId().toString());
+		widgetProperty.attribute(attrURLName, service
+			    .getString("org.csstudio.utility.shift", "shift_url",
+				    "https://localhost:8181/Shift/resources", null)
+			    + "/shift/" + defaultType + "/" + shift.getId().toString());
 	    } else {
-		textId.setText(shift.getId().toString());
-	    }
-	    textURL.setText(service
-		    .getString("org.csstudio.utility.shift", "shift_url",
-			    "https://localhost:8181/Shift/resources", null)
-		    + "/shift/" + comboType.getText() + "/" + textId.getText());
-	    attachProperty();	    
+		widgetProperty = null;
+	    }    
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -205,23 +209,18 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     private void attachProperty(){
 	LogEntryBuilder logEntryBuilder;
 	try {
-	    if (!textId.getText().equalsIgnoreCase(inactiveShift)) {
+	    if (widgetProperty != null) {
 		Property oldProperty = LogEntryUtil.getProperty(
-			getLogEntryChangeset().getLogEntry(),
-			ShiftPropertyWidget.widgetProperty.getName());
-		PropertyBuilder newProperty = PropertyBuilder
-			.property(widgetProperty)
-			.attribute(attrTypeName, comboType.getText())
-			.attribute(attrIdName, textId.getText())
-			.attribute(attrURLName, textURL.getText());
+			getLogEntryChangeset().getLogEntry(), propertyName);
+		Property newProperty = widgetProperty.build();
 		if (oldProperty == null
-			|| !newProperty.build().getName()
+			|| !newProperty.getName()
 				.equals(oldProperty.getName())
-			|| !newProperty.build().getAttributes()
+			|| !newProperty.getAttributes()
 				.equals(oldProperty.getAttributes())) {
 		    logEntryBuilder = LogEntryBuilder
 			    .logEntry(getLogEntryChangeset().getLogEntry());
-		    logEntryBuilder.addProperty(newProperty);
+		    logEntryBuilder.addProperty(widgetProperty);
 		    getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
 		}
 	    }
@@ -235,9 +234,8 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     public void updateUI() {
 	this.lblAttached.setVisible(!isEditable());
 	this.comboType.setEnabled(isEditable());
-	this.textId.setEditable(isEditable());
-	
-	this.textURL.setVisible(isEditable());
+	this.textId.setEditable(isEditable());	
+//	this.textURL.setVisible(isEditable());
 	GridData textURLGridData= (GridData) this.textURL.getLayoutData();
 	textURLGridData.exclude = !isEditable();
 	this.textURL.setLayoutData(textURLGridData);
@@ -247,10 +245,12 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	this.link.setLayoutData(linkGridData);
 	
 	this.btnAttach.setVisible(isEditable());
+	if(isEditable()){
+	    attachProperty();
+	}
 	Property property = null;
 	try {
-	    property = LogEntryUtil.getProperty(getLogEntryChangeset()
-	    	.getLogEntry(), ShiftPropertyWidget.widgetProperty.getName());
+	    property = LogEntryUtil.getProperty(getLogEntryChangeset().getLogEntry(), propertyName);
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
@@ -264,9 +264,9 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	    this.textURL
 		    .setText(property.getAttributeValue(attrURLName) == null ? ""
 			    : property.getAttributeValue(attrURLName));
-	    String ticketURL = property.getAttributeValue(attrURLName) == null ? ""
+	    String shiftURL = property.getAttributeValue(attrURLName) == null ? ""		    
 		    : property.getAttributeValue(attrURLName);
-	    this.link.setText("<a>" + ticketURL + "</a>");
+	    this.link.setText("<a>" + shiftURL + "</a>");
 	}
     }
 }
