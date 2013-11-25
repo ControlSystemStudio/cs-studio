@@ -10,7 +10,7 @@
       <view
             category="org.csstudio"
             class="org.csstudio.shift.ui.CreateShiftView"
-            icon="icons/shift-start.png"
+            icon="icons/shift-start-16.png"
             id="org.csstudio.shift.ui.CreateShift"
             name="Start Shift"
             restorable="true">
@@ -39,7 +39,7 @@
             locationURI="menu:utility">
          <command
                commandId="org.csstudio.shift.ui.OpenShiftBuilderDialog"
-               icon="icons/shfit-start.png"
+               icon="icons/shift-start-16.png"
                label="Start Shift"
                style="push">
          </command>
@@ -48,7 +48,7 @@
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
                commandId="org.csstudio.shift.ui.OpenShiftBuilderDialog"
-               icon="icons/shfit-start.png"
+               icon="icons/shift-start-16.png"
                label="Start Shift"
                style="push">
             <visibleWhen>

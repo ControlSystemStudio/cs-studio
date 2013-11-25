@@ -27,7 +27,7 @@
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
                commandId="org.csstudio.shift.viewer.OpenShiftViewer"
-               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-16.png"
+               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-search.png"
                label="View Details"
                style="push">
             <visibleWhen>
@@ -35,7 +35,7 @@
                      variable="activeMenuSelection">
                   <iterate>
                      <adapt
-                           type="org.csstudio.shift.Shift">
+                           type="gov.bnl.shiftClient.Shift">
                      </adapt>
                   </iterate>
                   <and>
@@ -55,7 +55,7 @@
             locationURI="toolbar:org.csstudio.shift.ui.ShiftTableView">
          <command
                commandId="org.csstudio.shift.ui.OpenShiftBuilderDialog"
-               icon="platform:/plugin/org.csstudio.shift.ui/icons/shfit-start.png"
+               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-start-16.png"
                label="Start New Shift"
                style="push">
          </command>
