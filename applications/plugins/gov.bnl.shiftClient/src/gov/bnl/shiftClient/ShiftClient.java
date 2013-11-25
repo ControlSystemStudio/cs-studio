@@ -7,7 +7,7 @@ import java.util.Map;
 /**
 *@author: eschuhmacher
  */
-public interface ShiftApiClient {
+public interface ShiftClient {
 
     /**
      * Get a list of all the shifts currently existings

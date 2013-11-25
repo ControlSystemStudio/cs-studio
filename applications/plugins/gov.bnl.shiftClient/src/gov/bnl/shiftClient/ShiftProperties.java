@@ -17,7 +17,7 @@ public class ShiftProperties {
 
     ShiftProperties(){
 
-        preferences = Preferences.userNodeForPackage(ShiftApiClient.class);
+        preferences = Preferences.userNodeForPackage(ShiftClient.class);
 
         try {
             File userCFPropertiesFile = new File(System.getProperty(

@@ -38,7 +38,7 @@ import javax.ws.rs.core.UriBuilder;
 /**
 *@author: eschuhmacher
  */
-public class ShiftApiClientImpl implements ShiftApiClient {
+public class ShiftClientImpl implements ShiftClient {
     private final WebResource service;
     private final ExecutorService executor;
 
@@ -181,7 +181,7 @@ public class ShiftApiClientImpl implements ShiftApiClient {
             return this;
         }
 
-        public ShiftApiClientImpl create() throws Exception {
+        public ShiftClientImpl create() throws Exception {
             if (this.protocol.equalsIgnoreCase("http")) { //$NON-NLS-1$
                 this.clientConfig = new DefaultClientConfig();
             } else if (this.protocol.equalsIgnoreCase("https")) { //$NON-NLS-1$
@@ -211,7 +211,7 @@ public class ShiftApiClientImpl implements ShiftApiClient {
                     "username", "username");
             this.password = ifNullReturnPreferenceValue(this.password,
                     "password", "password");
-            return new ShiftApiClientImpl(this.shiftURI, this.clientConfig,
+            return new ShiftClientImpl(this.shiftURI, this.clientConfig,
                     this.withHTTPAuthentication, this.username, this.password,
                     this.executor);
         }
@@ -225,7 +225,7 @@ public class ShiftApiClientImpl implements ShiftApiClient {
         }
 
     }
-    private ShiftApiClientImpl(final URI shiftURI, ClientConfig config, final boolean withHTTPBasicAuthFilter,
+    private ShiftClientImpl(final URI shiftURI, ClientConfig config, final boolean withHTTPBasicAuthFilter,
                             final String username, final String password, final ExecutorService executor) {
         this.executor = executor;
         config.getClasses().add(MultiPartWriter.class);
