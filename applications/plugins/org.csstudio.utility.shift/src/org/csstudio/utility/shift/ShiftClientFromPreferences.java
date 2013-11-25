@@ -4,8 +4,8 @@
 package org.csstudio.utility.shift;
 
 import gov.bnl.shiftClient.Shift;
-import gov.bnl.shiftClient.ShiftApiClient;
-import gov.bnl.shiftClient.ShiftApiClientImpl.ShiftClientBuilder;
+import gov.bnl.shiftClient.ShiftClient;
+import gov.bnl.shiftClient.ShiftClientImpl.ShiftClientBuilder;
 import gov.bnl.shiftClient.ShiftFinderException;
 import gov.bnl.shiftClient.Type;
 
@@ -21,10 +21,10 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 
 @SuppressWarnings("deprecation")
-public class ShiftClientFromPreferences implements ShiftApiClient {
+public class ShiftClientFromPreferences implements ShiftClient {
 
 	private static Logger log = Logger.getLogger(ShiftClientFromPreferences.class.getName());
-	private volatile ShiftApiClient client;
+	private volatile ShiftClient client;
 
 	/**
 	 * 

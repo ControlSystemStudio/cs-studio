@@ -1,7 +1,7 @@
 package org.csstudio.shift.ui;
 
 
-import gov.bnl.shiftClient.ShiftApiClient;
+import gov.bnl.shiftClient.ShiftClient;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ public class CloseShiftBuilderDialog extends Dialog {
     private boolean authenticate = true;
     private ErrorBar errorBar;
     private boolean end;
-	private ShiftApiClient shiftClient;
+	private ShiftClient shiftClient;
 
     public CloseShiftBuilderDialog(final Shell parentShell, final ShiftBuilder shiftBuilder, final boolean end) {
 		super(parentShell);

@@ -2,7 +2,7 @@ package org.csstudio.shift.ui;
 
 
 import gov.bnl.shiftClient.Shift;
-import gov.bnl.shiftClient.ShiftApiClient;
+import gov.bnl.shiftClient.ShiftClient;
 import gov.bnl.shiftClient.Type;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class ShiftTableView extends ViewPart {
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.shift.ui.ShiftTableView"; //$NON-NLS-1$
 
-    private ShiftApiClient shiftClient;
+    private ShiftClient shiftClient;
     private Label label;
 
     private List<String> shifts = Collections.emptyList();
