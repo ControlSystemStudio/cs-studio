@@ -301,7 +301,7 @@ public class ShiftWidget extends Composite {
     }
 
     public Shift getShift() throws IOException {
-    	this.shiftBuilder.addDescription(text.getText()).setType(type.getText()).setLeadOperator(leadOperator.getText())
+    	this.shiftBuilder.setDescription(text.getText()).setType(type.getText()).setLeadOperator(leadOperator.getText())
 			.setOnShiftPersonal(shiftPersonal.getText()).setReport(report.getText());
         return this.shiftBuilder.build();
     }
