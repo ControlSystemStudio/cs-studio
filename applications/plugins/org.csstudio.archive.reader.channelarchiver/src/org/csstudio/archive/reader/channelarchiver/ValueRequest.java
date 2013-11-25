@@ -297,6 +297,7 @@ public class ValueRequest implements AsyncCallback
 		//  {secs=1137596400, stat=0, nano=330619666, value=[0.79343], sevr=0},..]
 		final int num_samples = value_vec.size();
 		final VType samples[] = new VType[num_samples];
+		int gg = -1;
 		for (int si=0; si<num_samples; ++si)
 		{
 			final Hashtable sample_hash = (Hashtable) value_vec.get(si);
@@ -309,7 +310,10 @@ public class ValueRequest implements AsyncCallback
             final String stat = reader.getStatus(sevr, stat_code);
 			final Vector vv = (Vector)sample_hash.get("value");
 			final AlarmSeverity severity = sevr.getSeverity();
-
+			
+			if (! sevr.hasValue()) continue;
+			gg += 1;
+			
 			if (type == TYPE_DOUBLE)
 			{
 				final double values[] = new double[count];
@@ -323,7 +327,7 @@ public class ValueRequest implements AsyncCallback
                 {   // It's a min/max double, certainly interpolated
                     final double min = (Double)sample_hash.get("min");
                     final double max = (Double)sample_hash.get("max");
-                    samples[si] = new ArchiveVStatistics(time, severity, stat, display,
+                    samples[gg] = new ArchiveVStatistics(time, severity, stat, display,
                     		values[0], min, max, 0.0, 1);
                 }
                 else
@@ -331,9 +335,9 @@ public class ValueRequest implements AsyncCallback
                     // Yes: Then we ran into a raw value.
                     // No: Then it's whatever quality we expected in general
                 	if (values.length == 1)
-                		samples[si] = new ArchiveVNumber(time, severity, stat, display, values[0]);
+                		samples[gg] = new ArchiveVNumber(time, severity, stat, display, values[0]);
                 	else
-                		samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
+                		samples[gg] = new ArchiveVNumberArray(time, severity, stat, display, values);
                 }
 			}
 			else if (type == TYPE_ENUM)
@@ -347,45 +351,47 @@ public class ValueRequest implements AsyncCallback
 					if (count < 0)
 						throw new Exception("No values");
 					final int index = (Integer)vv.get(0);
-					samples[si] = new ArchiveVEnum(time, severity, stat, labels, index);
+					samples[gg] = new ArchiveVEnum(time, severity, stat, labels, index);
 				}
 				else
 				{
 					if (count == 1)
-                		samples[si] = new ArchiveVNumber(time, severity, stat, display, (Integer)vv.get(0));
+                		samples[gg] = new ArchiveVNumber(time, severity, stat, display, (Integer)vv.get(0));
 					else
 					{
 		                final int values[] = new int[count];
 		                for (int vi=0; vi<count; ++vi)
 		                    values[vi] = ((Integer)vv.get(vi));
-                		samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
+                		samples[gg] = new ArchiveVNumberArray(time, severity, stat, display, values);
 					}
 				}
 			}
 			else if (type == TYPE_STRING)
 			{
 				final String value = (String)vv.get(0);
-                samples[si] = new ArchiveVString(time, severity, stat, value);
+                samples[gg] = new ArchiveVString(time, severity, stat, value);
 			}
 			else if (type == TYPE_INT)
 			{
 				if (count == 1)
 				{
 					final int value = (Integer)vv.get(0);
-					samples[si] = new ArchiveVNumber(time, severity, stat, display, value);
+					samples[gg] = new ArchiveVNumber(time, severity, stat, display, value);
 				}
 				else
 				{
 					final int values[] = new int[count];
 					for (int vi=0; vi<count; ++vi)
 						values[vi] = ((Integer)vv.get(vi));
-					samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
+					samples[gg] = new ArchiveVNumberArray(time, severity, stat, display, values);
 				}
 			}
 			else
 				throw new Exception("Unknown value type " + type);
 		}
-		return samples;
+		final VType good_samples[] = new VType[gg+1];
+		for (int si = 0; si<=gg; ++si) good_samples[si] = samples[si];
+		return good_samples;
 	}
 
 	/** @return Samples */
