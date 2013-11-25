@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="shiftclient"/>
+            <element ref="shiftapiclient"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,15 +47,15 @@
       </complexType>
    </element>
 
-   <element name="shiftclient">
+   <element name="shiftapiclient">
       <complexType>
-         <attribute name="shiftclient" type="string" use="required">
+         <attribute name="shiftapiclient" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":gov.bnl.shiftClient.ShiftClient"/>
+                  <meta.attribute kind="java" basedOn=":gov.bnl.shiftClient.ShiftApiClient"/>
                </appinfo>
             </annotation>
          </attribute>

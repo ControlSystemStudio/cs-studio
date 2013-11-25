@@ -1,7 +1,8 @@
 package org.csstudio.shift.ui;
 
+import gov.bnl.shiftClient.Shift;
+
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.csstudio.shift.Shift;
 import org.csstudio.shift.ShiftBuilder;
 
 public class ShiftAdapterFactory implements IAdapterFactory {

@@ -1,13 +1,16 @@
 package org.csstudio.shift.ui;
 
 
+import gov.bnl.shiftClient.Shift;
+import gov.bnl.shiftClient.ShiftApiClient;
+import gov.bnl.shiftClient.Type;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
-import org.csstudio.shift.Shift;
-import org.csstudio.shift.ShiftClient;
 import org.csstudio.shift.ShiftClientManager;
 import org.csstudio.shift.util.ShiftSearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
@@ -35,6 +38,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.TimeParser;
 
 /**
  * A view to search for shifts and then display them in a tabluar form
@@ -48,7 +53,7 @@ public class ShiftTableView extends ViewPart {
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.shift.ui.ShiftTableView"; //$NON-NLS-1$
 
-    private ShiftClient shiftClient;
+    private ShiftApiClient shiftClient;
     private Label label;
 
     private List<String> shifts = Collections.emptyList();
@@ -83,7 +88,10 @@ public class ShiftTableView extends ViewPart {
 	                        }
 	                    }
 	                    if(types.isEmpty() && initializeClient()) {
-	                    	types = new ArrayList<String>(shiftClient.listTypes());
+	                    	types = new ArrayList<String>();
+	                    	for(Type type : shiftClient.listTypes()) {
+	                    		types.add(type.getName());
+	                    	}
 	                    }
 	                    Display.getDefault().asyncExec(new Runnable() {
 	                        public void run() {
@@ -195,7 +203,7 @@ public class ShiftTableView extends ViewPart {
             protected IStatus run(final IProgressMonitor monitor) {
             if (initializeClient()) {
                 try {
-                    final List<Shift> shifts = new ArrayList<Shift>(shiftClient.findShiftsBySearch(searchString));
+                    final List<Shift> shifts = findShiftsBySearch(searchString);
                     Display.getDefault().asyncExec(new Runnable() {
                     @Override
                     public void run() {
@@ -214,5 +222,24 @@ public class ShiftTableView extends ViewPart {
 
     @Override
     public void setFocus() {
+    }
+    
+    private List<Shift> findShiftsBySearch(final String searchString) {
+    	final Map<String, String> searchParameters = ShiftSearchUtil.parseSearchString(searchString);
+	    if(searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START) || searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
+		    TimeInterval timeInterval = null;
+			if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START) && searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
+				timeInterval = TimeParser.getTimeInterval(searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_START),
+						searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_END));
+			} else if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START)) {
+				timeInterval = TimeParser.getTimeInterval(searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_START), "now");
+			} else if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
+				timeInterval = TimeParser.getTimeInterval("now", searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_END));
+			}
+		    searchParameters.remove(ShiftSearchUtil.SEARCH_KEYWORD_START);
+		    searchParameters.put("from", String.valueOf(timeInterval.getStart().getSec()));
+		    searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
+		}
+	    return new ArrayList<Shift>(shiftClient.findShifts(searchParameters));
     }
 }

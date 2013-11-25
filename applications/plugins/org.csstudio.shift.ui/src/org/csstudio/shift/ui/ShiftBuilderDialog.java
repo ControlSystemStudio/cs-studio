@@ -1,11 +1,11 @@
 package org.csstudio.shift.ui;
 
 import static org.csstudio.shift.ShiftBuilder.shift;
+import gov.bnl.shiftClient.ShiftApiClient;
 
 import java.io.IOException;
 
 import org.csstudio.shift.ShiftBuilder;
-import org.csstudio.shift.ShiftClient;
 import org.csstudio.shift.ShiftClientManager;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.core.runtime.Platform;
@@ -59,13 +59,17 @@ public class ShiftBuilderDialog extends Dialog {
                 SWT.CENTER, true, false, 1, 1));
         }
 
-        shiftWidget = new ShiftWidget(container, SWT.NONE, true, true);
+        shiftWidget = new ShiftWidget(container, SWT.NONE, true);
         final GridData gd_shiftWidget = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_shiftWidget.heightHint = 450;
         gd_shiftWidget.widthHint = 450;
         shiftWidget.setLayoutData(gd_shiftWidget);
-        if (this.shiftBuilder != null) {
+        if (shiftBuilder != null) {
             try {
+            	//If using another shift that already exist as template remove the end date, close user and start date
+            	shiftBuilder.setEndDate(null);
+            	shiftBuilder.setStartDate(null);
+            	shiftBuilder.setCloseShiftUser(null);
                 shiftWidget.setShift(shiftBuilder.build());
             } catch (IOException e) {
             errorBar.setException(e);
@@ -86,7 +90,7 @@ public class ShiftBuilderDialog extends Dialog {
     protected void okPressed() {
         final Cursor originalCursor = getShell().getCursor();
         try {
-            ShiftClient shiftClient;
+            ShiftApiClient shiftClient;
             if (authenticate) {
                 shiftClient = ShiftClientManager.getShiftClientFactory()
                 		.getClient(userCredentialWidget.getUsername(), userCredentialWidget.getPassword());

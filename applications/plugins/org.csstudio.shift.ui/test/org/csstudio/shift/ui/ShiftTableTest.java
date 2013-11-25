@@ -3,12 +3,13 @@
  */
 package org.csstudio.shift.ui;
 
+import gov.bnl.shiftClient.Shift;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.csstudio.shift.Shift;
 import org.csstudio.shift.ShiftBuilder;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;

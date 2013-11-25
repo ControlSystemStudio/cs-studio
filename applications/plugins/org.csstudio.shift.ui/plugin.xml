@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.csstudio.shift.ui.propertywidget" name="Property Widget" schema="schema/org.csstudio.shift.ui.propertywidget.exsd"/>
    <extension
          point="org.eclipse.ui.views">
       <category
@@ -100,34 +99,34 @@
         </visibleWhen>
      </command>
   	</menuContribution>
-  	<menuContribution
-        allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any">
-     <command
-           commandId="org.csstudio.shift.ui.CloseShiftBuilder"
-           icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-close.png"
-           label="Close Shift"
-           style="push">
-        <visibleWhen>
-           <with
-                 variable="activeMenuSelection">
-              <iterate>
-                 <adapt
-                       type="org.csstudio.shift.ShiftBuilder">
-                 </adapt>
-              </iterate>
-              <and>
-                 <with
-                       variable="activeMenuSelection">
-                    <count
-                          value="1">
-                    </count>
-                 </with>
-              </and>
-           </with>
-        </visibleWhen>
-     </command>
-  </menuContribution>
+    <menuContribution
+          allPopups="false"
+          locationURI="popup:org.eclipse.ui.popup.any">
+       <command
+             commandId="org.csstudio.shift.ui.CloseShiftBuilder"
+             icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-close.png"
+             label="Close Shift"
+             style="push">
+          <visibleWhen>
+             <with
+                   variable="activeMenuSelection">
+                <iterate>
+                   <adapt
+                         type="org.csstudio.shift.ShiftBuilder">
+                   </adapt>
+                </iterate>
+                <and>
+                   <with
+                         variable="activeMenuSelection">
+                      <count
+                            value="1">
+                      </count>
+                   </with>
+                </and>
+             </with>
+          </visibleWhen>
+       </command>
+    </menuContribution>
    </extension>
    <extension
          point="org.eclipse.help.toc">
@@ -156,7 +155,7 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="org.csstudio.shift.Shift"
+            adaptableType="gov.bnl.shiftClient.Shift"
             class="org.csstudio.shift.ui.ShiftAdapterFactory">
          <adapter
                type="org.csstudio.shift.ShiftBuilder">

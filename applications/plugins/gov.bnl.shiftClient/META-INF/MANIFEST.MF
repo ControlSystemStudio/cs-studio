@@ -7,9 +7,6 @@ Bundle-Activator: org.csstudio.utility.shift.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: gov.bnl.shiftClient
-Require-Bundle: org.csstudio.platform.libs.jersey,
- net.coobird.thumbnailator,
- org.apache.jackrabbit,
- org.apache.commons.httpclient,
+Require-Bundle: org.csstudio.platform.libs.jersey;bundle-version="1.1.5",
  org.eclipse.core.runtime,
- com.google.common
+ com.google.common;bundle-version="0.9.0"
