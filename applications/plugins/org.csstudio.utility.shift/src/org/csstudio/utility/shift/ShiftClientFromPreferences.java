@@ -55,6 +55,11 @@ public class ShiftClientFromPreferences implements ShiftApiClient {
 	public Collection<Shift> listShifts() throws ShiftFinderException {
 		return client.listShifts();
 	}
+	
+	@Override
+	public Shift getShiftByType(final String type) throws ShiftFinderException {
+		return client.getShiftByType(type);
+	}
 
 	@Override
 	public Shift getShift(final Integer shiftId, final String type) throws ShiftFinderException {

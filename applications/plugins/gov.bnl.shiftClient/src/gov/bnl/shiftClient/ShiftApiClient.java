@@ -17,6 +17,14 @@ public interface ShiftApiClient {
      */
     Collection<Shift> listShifts() throws ShiftFinderException;
 
+    
+    /**
+     * Get last shift for the specify type
+     *
+     * @return string collection of shifts
+     * @throws ShiftFinderException
+     */
+    Shift getShiftByType(final String type) throws ShiftFinderException;
 
     /**
      * Returns a shift that exactly matches the shiftId <tt>shiftId</tt>

@@ -267,7 +267,23 @@ public class ShiftApiClientImpl implements ShiftApiClient {
                 return new Shift(xmlShift);
             }
 
-        });    }
+        });    
+    }
+    
+    @Override
+    public Shift getShiftByType(final String type) throws ShiftFinderException {
+        return wrappedSubmit(new Callable<Shift>() {
+
+            @Override
+            public Shift call() throws Exception {
+                final XmlShift xmlShift = service.path("shift").path(type)
+                        .accept(MediaType.APPLICATION_XML)
+                        .accept(MediaType.APPLICATION_JSON).get(XmlShift.class);
+                return new Shift(xmlShift);
+            }
+
+        });    
+    }
 
     @Override
     public Shift start(final Shift shift) throws ShiftFinderException {
