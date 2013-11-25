@@ -11,6 +11,10 @@ org.csstudio.archive.writer
 org.csstudio.archive.writer.rdb
 org.csstudio.auth
 org.csstudio.autocomplete
+org.csstudio.autocomplete.pvmanager.formula
+org.csstudio.autocomplete.pvmanager.loc
+org.csstudio.autocomplete.pvmanager.sim
+org.csstudio.autocomplete.pvmanager.sys
 org.csstudio.csdata
 org.csstudio.data
 org.csstudio.iter.archive.engine.product

@@ -4,6 +4,10 @@ org.antlr.runtime
 org.csstudio.apputil
 org.csstudio.auth
 org.csstudio.autocomplete
+org.csstudio.autocomplete.pvmanager.formula
+org.csstudio.autocomplete.pvmanager.loc
+org.csstudio.autocomplete.pvmanager.sim
+org.csstudio.autocomplete.pvmanager.sys
 org.csstudio.csdata
 org.csstudio.data
 org.csstudio.iter.scan.server.product
@@ -24,6 +28,7 @@ org.csstudio.platform.utility.rdb
 org.csstudio.remote
 org.csstudio.scan
 org.csstudio.scan.log
+org.csstudio.scan.log.derby
 org.csstudio.scan.server
 org.csstudio.security
 org.csstudio.servicelocator
@@ -45,7 +50,6 @@ org.csstudio.utility.pvmanager.sys
 org.csstudio.utility.pvmanager.vtype
 org.csstudio.utility.singlesource
 org.csstudio.utility.test
-org.csstudio.utility.update
 org.csstudio.workspace
 org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505
 org.eclipse.equinox.launcher.carbon.macosx_1.1.100.v20110502

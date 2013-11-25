@@ -1,0 +1,446 @@
+#/
+## Generated date: Fri Nov  8 15:38:53 UTC 2013
+#/
+
+#/
+## Organization (ITER) specific plugin preferences
+#/
+
+#/
+## Core plugins preferences
+#/
+
+#/
+## org.csstudio.auth 
+#/
+#/ Specify where the secure storage should locate.
+#/ It can be either "INSTALL_LOCATION" or "CONFIGURATION_LOCATION".
+#/ By default it is "CONFIGURATION_LOCATION".
+# org.csstudio.auth/secure_storage_location=CONFIGURATION_LOCATION
+
+#<< org.csstudio.auth/secure_storage_location=CONFIGURATION_LOCATION
+
+#/
+## org.csstudio.autocomplete 
+#/
+#/ # Default preferences for this plugin
+#/ 
+#/ Default max result per provider
+# org.csstudio.autocomplete/default_max_results=10
+#/ 
+#/ Define ordered provider list by type and maximum number of expected results by provider
+#/ providers.TYPE=provider_name[,max_results];provider_name[,max_results]...
+#/ providers.ANOTHER_TYPE=provider_name[,max_results];provider_name[,max_results]...
+#/ Example:
+#/ providers.PV= History; SDD Database, 5; DB Files, 5
+# org.csstudio.autocomplete/providers.PV=History,10
+# org.csstudio.autocomplete/providers.Formula=History,10
+#/ 
+#/ Top results separators
+# org.csstudio.autocomplete/max_top_results=3
+# org.csstudio.autocomplete/separators=-.(
+
+#<< org.csstudio.autocomplete/default_max_results=10
+#<< org.csstudio.autocomplete/max_top_results=3
+#<< org.csstudio.autocomplete/providers.Formula=History,10
+#<< org.csstudio.autocomplete/providers.PV=History,10
+#<< org.csstudio.autocomplete/separators=-.(
+
+#/
+## org.csstudio.logging 
+#/
+#/ Logging preferences
+#/ 
+#/ Detail of message format: LOW, HIGH
+# org.csstudio.logging/detail=HIGH
+#/ 
+#/ Log level for console:
+#/ OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL
+#/ Technically also allows integer level as defined by java.util.logging.Level,
+#/ but suggestion is to use predefined level names
+# org.csstudio.logging/console_level=CONFIG
+#/ 
+#/ Log level for file:
+#/ OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL
+#/ Note that level for file cannot be higher than level for console
+# org.csstudio.logging/file_level=INFO
+#/ 
+#/ Path and pattern for log files
+#/ Leave empty to disable file logging
+# org.csstudio.logging/file_pattern=
+#/ 
+#/ Maximum number of bytes kept in file
+# org.csstudio.logging/file_bytes=8000
+#/ 
+#/ Maximum number of file kept in rotation
+# org.csstudio.logging/file_count=2
+#/ 
+#/ Log level for JMS:
+#/ OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL
+#/ Note that level for JMS cannot be higher than level for console
+# org.csstudio.logging/jms_level=INFO
+#/ 
+#/ URL of JMS used for logging: failover:(tcp://some_host.my.site.org:61616)
+#/ Leave empty to disable JMS logging
+# org.csstudio.logging/jms_url=
+#/ 
+#/ Topic to use for log messages
+# org.csstudio.logging/jms_topic=LOG
+
+#<< org.csstudio.logging/console_level=CONFIG
+#<< org.csstudio.logging/detail=HIGH
+#<< org.csstudio.logging/file_bytes=8000
+org.csstudio.logging/file_bytes=500000
+#<< org.csstudio.logging/file_count=2
+#<< org.csstudio.logging/file_level=INFO
+org.csstudio.logging/file_level=CONFIG
+#<< org.csstudio.logging/file_pattern=
+#<< org.csstudio.logging/jms_level=INFO
+org.csstudio.logging/jms_level=SEVERE
+#<< org.csstudio.logging/jms_topic=LOG
+#<< org.csstudio.logging/jms_url=
+
+#/
+## org.csstudio.platform.libs.epics 
+#/
+#/ # For most of these parameters,
+#/ # refer to the EPICS Channel Access
+#/ # documentation for details
+#/ 
+#/ Use the pure-Java CAJ library, or the binaries for JNI JCA
+#/ (when using JNI, the appropriate binaries may have to be added to lib/..)
+# org.csstudio.platform.libs.epics/use_pure_java=true
+#/ 
+#/ Subscribe to changes in "VALUE", "ARCHIVE" deadband, or "ALARM" state?
+# org.csstudio.platform.libs.epics/monitor=VALUE
+#/ 
+#/ Support the DBE_PROPERTY subscription?
+# org.csstudio.platform.libs.epics/support_dbe_property=false
+#/ 
+#/ PVManager optional configuration.
+#/ 
+#/ These properties map to the configuration options specified in
+#/ http://pvmanager.sourceforge.net/apidocs/org/epics/pvmanager/jca/JCADataSourceBuilder.html
+#/ 
+#/ Use DBE_PROPERTY for metadata notification
+# org.csstudio.platform.libs.epics/dbe_property_supported=false
+#/ Honor zero precision for numeric value (or ignore it)
+# org.csstudio.platform.libs.epics/honor_zero_precision=true
+#/ For RTYP fields, only subscribe to the value (no alarm or timestamp)
+# org.csstudio.platform.libs.epics/rtyp_value_only=true
+#/ Use the dynamic array support (Auto/Enabled/Disabled)
+# org.csstudio.platform.libs.epics/var_array_support=Auto
+#/ 
+#/ JCA/CAJ properties
+#/ 
+#/ EPICS Channel Access address list.
+#/ Space-separated list of IP addresses for individual servers or subnets (...255)
+# org.csstudio.platform.libs.epics/addr_list=
+#/ 
+#/ Use automatic address list _in addition_ to the addr_list?
+# org.csstudio.platform.libs.epics/auto_addr_list=true
+#/ 
+#/ Connection timeout (seconds)
+# org.csstudio.platform.libs.epics/conn_tmo=30.0
+#/ 
+#/ Beacon period (seconds)
+# org.csstudio.platform.libs.epics/beacon_period=15.0
+#/ 
+#/ CA Repeater port
+# org.csstudio.platform.libs.epics/repeater_port=5065
+#/ 
+#/ CA Server port
+# org.csstudio.platform.libs.epics/server_port=5064
+#/ 
+#/ Maximum buffer size for transfer of arrays
+# org.csstudio.platform.libs.epics/max_array_bytes=16384
+
+#<< org.csstudio.platform.libs.epics/addr_list=
+org.csstudio.platform.libs.epics/addr_list=127.0.0.1
+#<< org.csstudio.platform.libs.epics/auto_addr_list=true
+#<< org.csstudio.platform.libs.epics/beacon_period=15.0
+#<< org.csstudio.platform.libs.epics/conn_tmo=30.0
+#<< org.csstudio.platform.libs.epics/dbe_property_supported=false
+#<< org.csstudio.platform.libs.epics/honor_zero_precision=true
+#<< org.csstudio.platform.libs.epics/max_array_bytes=16384
+org.csstudio.platform.libs.epics/max_array_bytes=460000
+#<< org.csstudio.platform.libs.epics/monitor=VALUE
+org.csstudio.platform.libs.epics/monitor=ARCHIVE
+#<< org.csstudio.platform.libs.epics/repeater_port=5065
+#<< org.csstudio.platform.libs.epics/rtyp_value_only=true
+#<< org.csstudio.platform.libs.epics/server_port=5064
+#<< org.csstudio.platform.libs.epics/support_dbe_property=false
+#<< org.csstudio.platform.libs.epics/use_pure_java=true
+#<< org.csstudio.platform.libs.epics/var_array_support=Auto
+
+#/
+## org.csstudio.security 
+#/
+#/ Security Settings
+#/ 
+#/ #
+#/ # Authentication
+#/ #
+#/ 
+#/ Option 1:
+#/ Use a JAAS config file as in normal use of JAAS
+#/ 
+#/ Path to JAAS configuration file
+#/ When located inside a plugin, use
+#/ "platform:/plugin/name.of.plugin/path/within/plugin.conf"
+# org.csstudio.security/jaas_config_file=platform:/plugin/org.csstudio.security/jaas.conf
+#/ 
+#/ Name of a JAAS login configuration to use.
+#/ This must match the name of one of the entries
+#/ in the jaas_config_file.
+# org.csstudio.security/jaas_config_name=dummy
+#/ 
+#/ Option 2:
+#/ Do not use a JAAS config file.
+#/ Instead, provide what would the desired entry in the config file
+#/ as an Eclipse preference.
+#/ 
+#/ If the preference "jaas_config" is defined, it will have
+#/ precedence. "jaas_config_file" and "jaas_config_name" will
+#/ be ignored!
+#/ 
+#/ Format:
+#/ 	ModuleClass Flag option1=value1 option2=value2 ...; ModuleClass Flag ModuleOptions; ...
+#/ ModuleClass, Flag and value options are in the same format as in auth.conf, but all on one line.
+#/ Value strings must be quoted.
+#/ 
+#/ Examples:
+#/ jaas_config=com.sun.jmx.remote.security.FileLoginModule required debug="true" passwordFile="/path/to/my_passwords.conf";
+#/ jaas_config=com.sun.security.auth.module.LdapLoginModule required debug="true" useSSL="false" userProvider="ldap://localhost:389/ou=Users,dc=css-demo,dc=org" authIdentity="uid={USERNAME},ou=Users,dc=css-demo,dc=org";
+# org.csstudio.security/jaas_config=
+#/ 
+#/ #
+#/ # Authorization
+#/ #
+#/ 
+#/ Select authorization provider
+#/ 
+#/ Standard implementations:
+#/ FileBased, see org.csstudio.security.authorization.FileBasedAuthorizationProvider
+#/ LDAPGroup, see org.csstudio.security.authorization.LDAPGroupAuthorizationProvider
+#/ Script, see org.csstudio.security.authorization.ScriptAuthorizationProvider
+#/ 
+#/ Additional providers can be added via extension point,
+#/ see org.csstudio.security.authorization.AuthorizationProvider
+# org.csstudio.security/authorization_provider=FileBased
+#/ 
+#/ Path to FileBased authorization configuration file
+# org.csstudio.security/authorization_file_name=platform:/plugin/org.csstudio.security/authorization.conf
+#/ 
+#/ Settings for authorization_provider=LDAPGroup:
+#/ URL of LDAP server. May list several space-separated URLs.
+# org.csstudio.security/ldap_group_url=ldap://localhost/dc=css-demo,dc=org
+#/ Start of search for LDAPGroup-based authorization
+# org.csstudio.security/ldap_group_base=ou=Groups
+#/ 
+#/ The LDAP search will combine the group of interest with the 'base' and URL path.
+#/ 
+#/ Example:
+#/ ldap_group_url=ldap://localhost/dc=css-demo,dc=org
+#/ ldap_group_base=ou=Groups
+#/ 
+#/ Authorization for which to determine members: alarm_config
+#/ => Locate "cn=alarm_config,ou=Groups,dc=css-demo,dc=org"
+#/ and every "memberUid" will then provide a user name
+#/ who has the alarm_config authorization.
+#/ 
+#/ Path to command used by Script authorization
+# org.csstudio.security/authorization_script_name=/usr/local/bin/id_auth
+#/ 
+#/ 
+#/ #
+#/ # Secure Preferences
+#/ #
+#/ 
+#/ Where secure preferences are located.
+#/ 
+#/ "Default":
+#/ Use the default location, which is typically
+#/ the user's home directory.
+#/ @see SecurePreferencesFactory#getDefault()
+#/ 
+#/ Advantage: It's the default
+#/ Disadvantage: You won't always know where the preferences are.
+#/ 
+#/ "Instance":
+#/ Use the Eclipse 'instance', i.e. the workspace.
+#/ 
+#/ Advantage: You know where it is, and each workspace
+#/ will have its own settings.
+#/ Disadvantage: Each workspace has different settings.
+#/ 
+#/ "Install":
+#/ Use the Eclipse 'install' location, i.e. where the product is installed.
+#/ 
+#/ Advantage: You know where it is, and every workspace for that
+#/ product will have the same settings. Good for a "global" setup.
+#/ Disadvantage: Ordinary users cannot (should not) have write permissions.
+# org.csstudio.security/secure_preference_location=Default
+
+#<< org.csstudio.security/authorization_file_name=platform:/plugin/org.csstudio.security/authorization.conf
+#<< org.csstudio.security/authorization_provider=FileBased
+#<< org.csstudio.security/authorization_script_name=/usr/local/bin/id_auth
+#<< org.csstudio.security/jaas_config=
+#<< org.csstudio.security/jaas_config_file=platform:/plugin/org.csstudio.security/jaas.conf
+#<< org.csstudio.security/jaas_config_name=dummy
+#<< org.csstudio.security/ldap_group_base=ou=Groups
+#<< org.csstudio.security/ldap_group_url=ldap://localhost/dc=css-demo,dc=org
+#<< org.csstudio.security/secure_preference_location=Default
+
+#/
+## org.csstudio.simplepv 
+#/
+#/ Default PV Factory to use
+# org.csstudio.simplepv/default_pvfactory=pvmanager
+
+#<< org.csstudio.simplepv/default_pvfactory=pvmanager
+
+#/
+## org.csstudio.utility.pv 
+#/
+#/ Default PV type
+# org.csstudio.utility.pv/default_type=epics
+
+#<< org.csstudio.utility.pv/default_type=epics
+
+#/
+## org.csstudio.utility.pvmanager.loc 
+#/
+#/ 
+#/ Local variables that are not specifically initialized have an initial value of null, i.e. undefined.
+#/ This compatibility option can be used to create them with an initial value of 0.
+#/ A warning will be logged because the compatibility option may be removed in the future.
+# org.csstudio.utility.pvmanager.loc/org.csstudio.utility.pvmanager.loc/zero_initialization=false
+
+#<< org.csstudio.utility.pvmanager.loc/org.csstudio.utility.pvmanager.loc/zero_initialization=false
+
+#/
+## Application plugins preferences
+#/
+
+#/
+## org.csstudio.archive.engine 
+#/
+#/ Default engine settings.
+#/ plugin_preferences.ini can override
+#/ @author Kay Kasemir
+#/ 
+#/ Seconds between log messages for Not-a-Number, futuristic, back-in-time values, buffer overruns
+#/ 24h = 24*60*60 = 86400
+# org.csstudio.archive.engine/log_trouble_samples=86400
+# org.csstudio.archive.engine/log_overrun=86400
+#/ 
+#/ Write period in seconds
+# org.csstudio.archive.engine/write_period=30
+#/ 
+#/ Maximum number of repeat counts for scanned channels
+# org.csstudio.archive.engine/max_repeats=60
+#/ 
+#/ Write batch size
+# org.csstudio.archive.engine/batch_size=500
+#/ 
+#/ Buffer reserve (N times what's ideally needed)
+# org.csstudio.archive.engine/buffer_reserve=2.0
+#/ 
+#/ Samples with time stamps this far ahead of the local time
+#/ are ignored
+#/ 24*60*60 = 86400 = 1 day
+# org.csstudio.archive.engine/ignored_future=86400
+#/ 
+
+#<< org.csstudio.archive.engine/batch_size=500
+#<< org.csstudio.archive.engine/buffer_reserve=2.0
+#<< org.csstudio.archive.engine/ignored_future=86400
+#<< org.csstudio.archive.engine/log_overrun=86400
+#<< org.csstudio.archive.engine/log_trouble_samples=86400
+#<< org.csstudio.archive.engine/max_repeats=60
+#<< org.csstudio.archive.engine/write_period=30
+
+#/
+## org.csstudio.archive.rdb 
+#/
+#/ Default RDB archive settings.
+#/ plugin_preferences.ini can override
+#/ @author Kay Kasemir
+#/ 
+#/ RDB URL for archived data
+#/ If your site uses the same settings everywhere, you
+#/ can specify them here.
+#/ If you switch between production and test setups, better set these
+#/ preferences in the
+#/ plugin_customization.ini
+#/ of the ArchiveEngine etc., or use the command-line
+#/ arguments of the products.
+#/ 
+#/ Oracle example
+#/ url=jdbc:oracle:thin:user/password@//172.31.73.122:1521/prod
+#/ 
+#/ MySQL example
+# org.csstudio.archive.rdb/url=jdbc:mysql://localhost/archive?rewriteBatchedStatements=true
+#/ 
+#/ RDB user and password
+#/ Some applications also provide command-line option to override.
+# org.csstudio.archive.rdb/user=archive
+# org.csstudio.archive.rdb/password=$archive
+#/ 
+#/ Schema name. Used with an added "." as prefix for table names.
+#/ For now this is only used with Oracle URLs and ignored for MySQL
+# org.csstudio.archive.rdb/schema=
+#/ 
+#/ Timeout [seconds] for certain SQL queries
+#/ Fundamentally, the SQL queries for data take as long as they take
+#/ and any artificial timeout just breaks queries that would otherwise
+#/ have returned OK  few seconds after the timeout.
+#/ We've seen Oracle lockups, though, that caused JDBC to hang forever
+#/ because the SAMPLE table was locked. No error/exception, just hanging.
+#/ A timeout is used for operations other than getting the actual data,
+#/ for example the channel id-by-name query which _should_ return within
+#/ a shot time, to catch that type of RDB lockup.
+#/ timeout_secs=120
+#/ With PostgreSQL, the setQueryTimeout API is not implemented,
+#/ and calling it results in an exception.
+#/ Setting the timeout to 0 disables calls to setQueryTimeout.
+# org.csstudio.archive.rdb/timeout_secs=0
+#/ 
+#/ Use a blob to read/write array samples?
+#/ 
+#/ The original SAMPLE table did not contain an ARRAY_VAL column
+#/ for the array blob data, but instead used a separate ARRAY_VAL table.
+#/ When running against an old database, this parameter must be set to false.
+# org.csstudio.archive.rdb/use_array_blob=true
+#/ 
+
+#<< org.csstudio.archive.rdb/password=$archive
+#<< org.csstudio.archive.rdb/schema=
+#<< org.csstudio.archive.rdb/timeout_secs=0
+#<< org.csstudio.archive.rdb/url=jdbc:mysql://localhost/archive?rewriteBatchedStatements=true
+org.csstudio.archive.rdb/url=jdbc:postgresql://localhost/css_archive_3_0_0
+#<< org.csstudio.archive.rdb/use_array_blob=true
+#<< org.csstudio.archive.rdb/user=archive
+
+#/
+## org.csstudio.archive.writer.rdb 
+#/
+#/ Default RDB archive settings.
+#/ plugin_preferences.ini can override
+#/ @author Kay Kasemir
+#/ 
+#/ Max length of string samples
+# org.csstudio.archive.writer.rdb/max_text_sample_length=80
+#/ 
+#/ Use postgres COPY instead of INSERT to improve write performance
+# org.csstudio.archive.writer.rdb/use_postgres_copy=false
+
+#<< org.csstudio.archive.writer.rdb/max_text_sample_length=80
+#<< org.csstudio.archive.writer.rdb/use_postgres_copy=false
+org.csstudio.archive.writer.rdb/use_postgres_copy=true
+
+#/
+## Unused preferences
+#/
+

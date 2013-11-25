@@ -1,153 +1,284 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
+ * Copyright (c) 2010-2013 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-import org.csstudio.alarm.beast.client.AADataStructure;
-import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.notifier.util.NotifierUtils;
+import org.csstudio.alarm.beast.notifier.history.AlarmNotifierHistory;
+import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 
 /**
- * Automated actions work queue.
- * Each action is ran in a stand-alone thread.
+ * Automated actions work queue. Each action is scheduled in a timer and then
+ * executed in a stand-alone thread. A scheduled task is executed only if its
+ * status is OK.
+ * 
  * @author Fred Arnaud (Sopra Group)
- *
+ * 
  */
 public class WorkQueue {
-	
+
+	private class ScheduledActionTask extends TimerTask {
+
+		private final AlarmHandler taskManager;
+
+		public ScheduledActionTask(final AlarmHandler taskManager) {
+			this.taskManager = taskManager;
+		}
+
+		@Override
+		public void run() {
+			if (taskManager.getStatus().equals(EActionStatus.PENDING)
+					|| taskManager.getStatus().equals(EActionStatus.FORCED)) {
+				if (taskManager.getStatus().equals(EActionStatus.PENDING))
+					taskManager.setStatus(EActionStatus.EXECUTED);
+				execute(taskManager);
+			} else {
+				if (debug)
+					AlarmNotifierHistory.getInstance().addAction(taskManager);
+				Activator.getLogger().log(Level.INFO,
+						taskManager.getInfos() + " => TASK INTERRUPTED");
+			}
+			remove(this.taskManager);
+		}
+
+		@Override
+		public boolean cancel() {
+			Activator.getLogger().log(Level.INFO,
+					taskManager.getInfos() + " => TASK CANCELED");
+			taskManager.setStatus(EActionStatus.CANCELED);
+			return super.cancel();
+		}
+
+		public AlarmHandler getTaskManager() {
+			return taskManager;
+		}
+
+	}
+
+	private class ExecuteActionThread extends Thread {
+
+		private final String infos;
+		private final List<PVSnapshot> snapshots;
+		private final IAutomatedAction action;
+
+		public ExecuteActionThread(final IAutomatedAction action,
+				final String info, final List<PVSnapshot> snapshots) {
+			super("ExecuteActionThread");
+			this.infos = info;
+			this.snapshots = snapshots;
+			this.action = action;
+		}
+
+		@Override
+		public void run() {
+			incrementRunningThreads();
+			try {
+				action.execute(snapshots);
+				Activator.getLogger().log(Level.INFO, infos + " => EXECUTED");
+			} catch (Exception e) {
+				Activator.getLogger().log(Level.SEVERE,
+						"ERROR executing " + infos + " => " + e.getMessage());
+			}
+			decrementRunningThreads();
+		}
+	}
+
+	private boolean debug = false;
+
 	/** Overflow timer_threshold */
+	@SuppressWarnings("unused")
 	private final int timer_threshold;
 	private final int thread_threshold;
-	
+
 	/** Number of running actions */
 	private int count_pending = 0;
 	private int count_thread = 0;
-	
+
 	/** Minimum allowed action priority if overflow occurs */
 	private final EActionPriority overflow_level = EActionPriority.MAJOR;
-	private boolean cleaned = false;
-	
+
 	/** Automated actions scheduler */
 	private Timer timer;
-	
-	private Map<ActionID, ExecuteActionTask> scheduledActions;
-	
+	private Map<ActionID, ScheduledActionTask> scheduledActions;
+
+	private final Double rate;
+	private final Integer per = 1000;
+	private Double allowance;
+	private Long last_check;
+
+	private boolean overflooded = false;
+	private boolean flushing = false;
+
 	public WorkQueue(final int timer_threshold, final int thread_threshold) {
 		this.timer_threshold = timer_threshold;
 		this.thread_threshold = thread_threshold;
+		this.rate = Double.valueOf(timer_threshold);
+		this.allowance = Double.valueOf(timer_threshold);
+		this.last_check = System.currentTimeMillis();
 		timer = new Timer();
-		scheduledActions = new ConcurrentHashMap<ActionID, ExecuteActionTask>();
+		scheduledActions = new ConcurrentHashMap<ActionID, ScheduledActionTask>();
 	}
-	
+
+	// Remove an automated action from the list
+	private void remove(final AlarmHandler taskManager) {
+		if (scheduledActions.remove(taskManager.getID()) != null)
+			decrementPendingActions();
+	}
+
+	private synchronized void checkOverflow() {
+		final Long current = System.currentTimeMillis();
+		final Long time_passed = current - last_check;
+		this.last_check = current;
+		this.allowance += time_passed * (rate / per);
+		if (allowance > rate)
+			allowance = rate; // throttle
+		if (allowance < 1.0) {
+			overflooded = true;
+		} else {
+			overflooded = false;
+			allowance -= 1.0;
+		}
+	}
+
+	private synchronized boolean canFlush() {
+		if (flushing)
+			return false;
+		flushing = true;
+		return true;
+	}
+
+	/**
+	 * Returns currently scheduled automated action if exists, <code>null</code>
+	 * otherwise.
+	 */
+	public AlarmHandler find(final ActionID actionId) {
+		if (scheduledActions.get(actionId) == null)
+			return null;
+		return scheduledActions.get(actionId).getTaskManager();
+	}
+
+	/** Add an automated action to the work queue and schedule it. */
+	public void schedule(final AlarmHandler taskManager, boolean noDelay) {
+		checkOverflow();
+		if (isOverflooded() && canFlush()) {
+			Activator.getLogger().log(Level.WARNING,
+					"Work queue overflooded, start cleaning !");
+			flush();
+			flushing = false;
+		}
+		// If overflow => schedule only Systems actions with a severity level
+		// higher or equal to the one defined as preference.
+		if ((isOverflooded()
+				&& taskManager.getPriority().compareTo(overflow_level) >= 0 && !taskManager
+				.getItem().isPV()) || !isOverflooded()) {
+			ActionID actionId = taskManager.getID();
+			ScheduledActionTask newTask = new ScheduledActionTask(taskManager);
+			// TODO: action already scheduled ? => remove
+			if (scheduledActions.get(actionId) != null) { // replace
+				ScheduledActionTask oldTask = scheduledActions.get(actionId);
+				oldTask.cancel();
+				scheduledActions.put(actionId, newTask);
+			} else {
+				scheduledActions.put(actionId, newTask);
+				incrementPendingActions();
+			}
+			int delay = noDelay ? 0 : (taskManager.getDelay() * 1000);
+			timer.schedule(newTask, delay);
+			Activator.getLogger().log(Level.INFO,
+					taskManager.getInfos() + " => SCHEDULED: " + (delay / 1000) + "s");
+		}
+	}
+
+	/** Execute an automated action. */
+	public void execute(final AlarmHandler taskManager) {
+		new ExecuteActionThread(taskManager.getScheduledAction(),
+				taskManager.getInfos(), taskManager.getCurrentSnapshots()).start();
+		if (debug)
+			AlarmNotifierHistory.getInstance().addAction(taskManager);
+	}
+
+	/** Interrupt an automated action. */
+	public void interrupt(final AlarmHandler taskManager) {
+		ScheduledActionTask task = scheduledActions.get(taskManager.getID());
+		if (task != null) {
+			task.cancel();
+			remove(task.getTaskManager());
+		}
+	}
+
+	/** Interrupt all automated actions. */
+	public void interruptAll() {
+		synchronized (scheduledActions) {
+			for (ScheduledActionTask task : scheduledActions.values())
+				task.cancel();
+			scheduledActions.clear();
+			this.count_pending = 0;
+		}
+	}
+
+	/** Flush the work queue. */
+	public void flush() {
+		Map<ActionID, ScheduledActionTask> scheduledActionsClone = null;
+		synchronized (scheduledActions) {
+			scheduledActionsClone = new ConcurrentHashMap<ActionID, ScheduledActionTask>(scheduledActions);
+			scheduledActions.clear();
+			this.count_pending = 0;
+		}
+		for (ScheduledActionTask task : scheduledActionsClone.values()) {
+			task.cancel();
+			AlarmHandler taskManager = task.getTaskManager();
+			// force execution of Systems with high priority
+			if (taskManager.getPriority().compareTo(overflow_level) >= 0
+					&& !taskManager.getItem().isPV()) {
+				taskManager.setStatus(EActionStatus.FORCED);
+				execute(taskManager);
+			}
+		}
+		Activator.getLogger().log(Level.WARNING, "Work queue cleaned !");
+	}
+
 	/** @return Number of currently queued actions on the work queue */
-	public int CountPendingActions() {
+	public int countPendingActions() {
 		return count_pending;
 	}
-	
+
 	/** @return Number of currently running threads on the work queue */
 	public int countRunningThreads() {
 		return count_thread;
 	}
-	
-	public synchronized void incrementPendingActions() {
+
+	private synchronized void incrementPendingActions() {
 		count_pending++;
 	}
-	public synchronized void incrementRunningThreads() {
+
+	private synchronized void incrementRunningThreads() {
 		count_thread++;
 		if (count_thread > thread_threshold) {
 			Activator.getLogger().log(Level.SEVERE,
 					"Too many threads running: " + count_thread + " !");
 		}
 	}
-	public synchronized void decrementPendingActions() {
+
+	private synchronized void decrementPendingActions() {
 		count_pending--;
 	}
-	public synchronized void decrementRunningThreads() {
+
+	private synchronized void decrementRunningThreads() {
 		count_thread--;
 	}
-	
-	/** @return Currently running automated action for the specified {@link AlarmTreeItem} and {@link AADataStructure} */
-	public ExecuteActionTask findAction(AlarmTreeItem item, AADataStructure aa) {
-		ActionID naID = NotifierUtils.getActionID(item, aa);
-		return scheduledActions.get(naID);
-	}
-	
-	/** Add an automated action to the work queue and runs it */
-	public void add(final ExecuteActionTask newTask) {
-		if (isOverflooded()) {
-			if (!cleaned) {
-				Activator.getLogger().log(Level.WARNING,
-						"Work queue overflooded, start cleaning !");
-				flush();
-				cleaned = true;
-			}
-		} else {
-			cleaned = false;
-		}
-		ActionID naID = newTask.getID();
-		if ((isOverflooded()
-				&& newTask.getPriority().compareTo(overflow_level) >= 0 
-				&& !newTask.getItem().isPV()) 
-				|| !isOverflooded()) {
-			// TODO: action already scheduled ? => remove
-			if (scheduledActions.get(naID) != null) { // replace
-				ExecuteActionTask oldTask = scheduledActions.get(naID);
-				oldTask.cancel();
-				scheduledActions.put(naID, newTask);
-			} else {
-				scheduledActions.put(naID, newTask);
-				incrementPendingActions();
-			}
-			timer.schedule(newTask, newTask.getDelay() * 1000);
-			Activator.getLogger().log(Level.INFO,
-					newTask.getInfos() + " => SCHEDULED: " + newTask.getDelay() + "s");
-		}
-	}
 
-	/** Remove an automated action */
-	public void remove(final ExecuteActionTask task) {
-		if (scheduledActions.remove(task.getID()) != null) {
-			decrementPendingActions();
-		}
-	}
-	
-	public boolean isOverflooded() {
-		return count_pending >= timer_threshold;
-	}
-	
-	/** Interrupt all automated actions */
-	public void interruptAll() {
-		synchronized (scheduledActions) {
-			for (ExecuteActionTask task : scheduledActions.values()) {
-				interrupt(task);
-			}
-		}
-	}
-	
-	/** Interrupt an automated action */
-	public void interrupt(ExecuteActionTask task) {
-		task.cancel();
-	}
-
-	/** Flush the work queue */
-	public void flush() {
-		for (ExecuteActionTask task : scheduledActions.values()) {
-			interrupt(task);
-			// force execution of Components & PV with high priority
-			if ((task.getPriority().compareTo(overflow_level) >= 0 && task.getItem().isPV()) 
-					|| !task.getItem().isPV()) {
-				task.execute();
-			}
-		}
+	public synchronized boolean isOverflooded() {
+		return overflooded;
 	}
 
 	/** Dump to stdout */
@@ -157,10 +288,14 @@ public class WorkQueue {
 		System.out.println(">>>> Pending actions: " + count_pending);
 		System.out.println(">>>> Running threads: " + count_thread);
 		System.out.println("Pending actions list:");
-		for (ExecuteActionTask scheduledAction : scheduledActions.values()) {
-			System.out.println(scheduledAction.getScheduledAction());
+		for (ScheduledActionTask task : scheduledActions.values()) {
+			System.out.println(task.getTaskManager().getScheduledAction());
 		}
 		System.out.println("== Work Queue Snapshot ==");
 	}
-	
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 }

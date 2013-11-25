@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
+import org.csstudio.swt.xygraph.linearscale.LinearScaleTickMarks;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.AxisPanOrZoomCommand;
 import org.csstudio.swt.xygraph.undo.SaveStateCommand;
@@ -28,6 +29,7 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
@@ -56,11 +58,14 @@ public class Axis extends LinearScale{
     
     private String title;
 
+    /** the scale tick marks */
+    protected AxisMousePosition mousePositionLabel;
+
     @Override
 	public void setFont(Font font) {
-		// TODO Auto-generated method stub
 		super.setFont(font);
 		this.scaleFontData = getFont().getFontData()[0];
+        mousePositionLabel.setFont(font);
 	}
 
 
@@ -104,7 +109,6 @@ public class Axis extends LinearScale{
 
 	private RGB colorRGB;
 	private RGB majorGridColorRGB;
-
 	
 
 	public FontData getTitleFontData() {
@@ -128,6 +132,9 @@ public class Axis extends LinearScale{
 		if(GraphicsUtil.isRAP())
 			setMinorTicksVisible(false);
 
+        mousePositionLabel = new AxisMousePosition(this);
+		add(mousePositionLabel);
+		
 		final AxisMouseListener panner = new AxisMouseListener();
 		addMouseListener(panner);
 		addMouseMotionListener(panner);
@@ -174,6 +181,28 @@ public class Axis extends LinearScale{
 	@Override
 	protected void layout() {
 		super.layout();
+      	Rectangle area = getClientArea();
+		if (isHorizontal() && getTickLablesSide() == LabelSide.Primary) {
+			mousePositionLabel.setBounds(new Rectangle(area.x, area.y
+					+ LinearScaleTickMarks.MAJOR_TICK_LENGTH
+					+ SPACE_BTW_MARK_LABEL, area.width, area.height
+					- LinearScaleTickMarks.MAJOR_TICK_LENGTH));
+		} else if (isHorizontal() && getTickLablesSide() == LabelSide.Secondary) {
+			mousePositionLabel.setBounds(new Rectangle(area.x, area.y
+					+ area.height - LinearScaleTickMarks.MAJOR_TICK_LENGTH
+					- getScaleTickLabels().getTickLabelMaxHeight() - SPACE_BTW_MARK_LABEL, area.width,
+					getScaleTickLabels().getTickLabelMaxHeight()));
+		} else if (getTickLablesSide() == LabelSide.Primary) {
+			mousePositionLabel.setBounds(new Rectangle(area.x + area.width
+					- LinearScaleTickMarks.MAJOR_TICK_LENGTH - getScaleTickLabels().getTickLabelMaxLength()
+					- SPACE_BTW_MARK_LABEL, area.y, getScaleTickLabels().getTickLabelMaxLength(),
+					area.height));
+		} else {
+			mousePositionLabel.setBounds(new Rectangle(area.x
+					+ LinearScaleTickMarks.MAJOR_TICK_LENGTH
+					+ SPACE_BTW_MARK_LABEL, area.y, getScaleTickLabels().getTickLabelMaxLength(),
+					area.height));
+		}
 		fireRevalidated();
 	}
 
@@ -187,6 +216,7 @@ public class Axis extends LinearScale{
 		Color oldColor = getForegroundColor();
 		super.setForegroundColor(color);
 		colorRGB = color.getRGB();
+        mousePositionLabel.setForegroundColor(color);
 		if(xyGraph != null)
 			xyGraph.repaint();
 		fireAxisForegroundColorChanged(oldColor, color);
@@ -594,6 +624,7 @@ public class Axis extends LinearScale{
 	 */
 	public void setXyGraph(final XYGraph xyGraph) {
 		this.xyGraph = xyGraph;
+		xyGraph.getPlotArea().addMouseMotionListener(mousePositionLabel);
 	}
 	@Override
 	public String toString() {
@@ -649,6 +680,19 @@ public class Axis extends LinearScale{
 			setCursor(zoomType.getCursor());
 		else
 			setCursor(ZoomType.NONE.getCursor());
+
+		switch (zoomType) {
+		case HOVER_LABELS:
+			mousePositionLabel.setVisible(true);
+			revalidate();
+			break;
+		default:
+			if(mousePositionLabel.isVisible()) {
+				mousePositionLabel.setVisible(false);
+				revalidate();
+			}
+			// NOP
+		}
 	}
 
 	/**
@@ -860,7 +904,7 @@ public class Axis extends LinearScale{
         }
 
         public void mouseDoubleClicked(final MouseEvent me) { /* Ignored */ }
-
+        
         @Override
 		public void mouseDragged(final MouseEvent me)
 		{
@@ -971,4 +1015,6 @@ public class Axis extends LinearScale{
             }
         }
 	}
+	
+	
 }
