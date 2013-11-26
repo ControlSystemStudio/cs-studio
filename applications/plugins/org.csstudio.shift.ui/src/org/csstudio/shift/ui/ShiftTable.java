@@ -49,7 +49,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
     private Composite composite;
     private AbstractSelectionProviderWrapper selectionProvider;
 
-	private TableColumn tblclmnDate;
+        private TableColumn tblclmnDate;
 
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
@@ -75,11 +75,11 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
         shiftTableViewer = new TableViewer(composite, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
         shiftTable = shiftTableViewer.getTable();
-	/*
-	 * NOTE: MeasureItem, PaintItem and EraseItem are called repeatedly.
-	 * Therefore, it is critical for performance that these methods be as
-	 * efficient as possible.
-	 */
+        /*
+         * NOTE: MeasureItem, PaintItem and EraseItem are called repeatedly.
+         * Therefore, it is critical for performance that these methods be as
+         * efficient as possible.
+         */
         shiftTable.addListener(SWT.MeasureItem, new Listener() {
             public void handleEvent(final Event event) {
                 final TableItem item = (TableItem) event.item;
@@ -98,7 +98,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             public void handleEvent(Event event) {
                 final TableItem item = (TableItem) event.item;
                 final String text = item.getText(event.index);
-            	/* center column 1 vertically */
+                    /* center column 1 vertically */
                 int yOffset = 0;
                 if (event.index == 1) {
                     final Point size = event.gc.textExtent(text);
@@ -177,7 +177,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnStatus = tableViewerColumnStatus.getColumn();
-        shiftTablelayout.setColumnData(tblclmnStatus, new ColumnWeightData(15));
+        shiftTablelayout.setColumnData(tblclmnStatus, new ColumnWeightData(15, 50));
         tblclmnStatus.setWidth(50);
         tblclmnStatus.setText("Status");
         new TableViewerColumnSorter(tableViewerColumnStatus) {
@@ -185,67 +185,6 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             @Override
             protected Object getValue(final Object o) {
                 return ((Shift) o).getStatus();
-            }
-        };
-        
-
-        final TableViewerColumn tableViewerColumnOwner = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null || item.getOwner() == null ? "" : item.getOwner();           
-            }
-        });
-        final TableColumn tblclmnOwner = tableViewerColumnOwner.getColumn();
-        shiftTablelayout.setColumnData(tblclmnOwner, new ColumnWeightData(15));
-        tblclmnOwner.setWidth(100);
-        tblclmnOwner.setText("Owner");
-        new TableViewerColumnSorter(tableViewerColumnOwner) {
-
-            @Override
-            protected Object getValue(final Object o) {
-            	final Shift item = ((Shift) o);
-                return item == null || item.getOwner() == null ? "" : item.getOwner();           
-            }
-        };
-        
-        final TableViewerColumn tableViewerColumnDescription = new TableViewerColumn(shiftTableViewer, SWT.DOUBLE_BUFFERED);
-        tableViewerColumnDescription.setLabelProvider(new ColumnLabelProvider() {
-
-            public String getText(final Object element) {
-            	final Shift item = ((Shift) element);
-                return item == null || item.getDescription() == null ? "" : item.getDescription();
-            }
-        });
-        final TableColumn tblclmnDescription = tableViewerColumnDescription.getColumn();
-        tblclmnDescription.setWidth(250);
-        tblclmnDescription.setText("Description");
-        shiftTablelayout.setColumnData(tblclmnDescription, new ColumnWeightData(40));
-        new TableViewerColumnSorter(tableViewerColumnDescription) {
-
-            @Override
-            protected Object getValue(final Object o) {
-            	final Shift item = ((Shift) o);
-                return item == null || item.getDescription() == null ? "" : item.getDescription();
-            }
-        };
-        
-        final TableViewerColumn tableViewerColumnType = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerColumnType.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null ? "" : item.getType().getName();
-            }
-        });
-        final TableColumn tblclmnType = tableViewerColumnType.getColumn();
-        shiftTablelayout.setColumnData(tblclmnType, new ColumnWeightData(15));
-        tblclmnType.setWidth(100);
-        tblclmnType.setText("Type");
-        new TableViewerColumnSorter(tableViewerColumnType) {
-
-            @Override
-            protected Object getValue(final Object o) {
-                return ((Shift) o).getType().getName();
             }
         };
         
@@ -269,7 +208,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         tblclmnDate = tableViewerColumnDate.getColumn();
         tblclmnDate.setWidth(100);
         tblclmnDate.setText("Start Date");
-        shiftTablelayout.setColumnData(tblclmnDate, new ColumnWeightData(15));
+        shiftTablelayout.setColumnData(tblclmnDate, new ColumnWeightData(15, 50));
         
         //column
         final TableViewerColumn tableViewerColumnEndDate = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
@@ -281,16 +220,97 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnEndDate = tableViewerColumnEndDate.getColumn();
-        shiftTablelayout.setColumnData(tblclmnEndDate, new ColumnWeightData(15));
+        shiftTablelayout.setColumnData(tblclmnEndDate, new ColumnWeightData(15, 50));
         tblclmnEndDate.setWidth(100);
         tblclmnEndDate.setText("End Date");
         new TableViewerColumnSorter(tableViewerColumnEndDate) {
 
             @Override
             protected Object getValue(final Object o) {
-            	final Shift item = ((Shift) o);
+                    final Shift item = ((Shift) o);
                 return item == null || item.getEndDate() == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,
                         DateFormat.SHORT).format(item.getEndDate());
+            }
+        };
+       
+        final TableViewerColumn tableViewerColumnId = new TableViewerColumn(shiftTableViewer, SWT.DOUBLE_BUFFERED);
+        tableViewerColumnId.setLabelProvider(new ColumnLabelProvider() {
+
+            public String getText(final Object element) {
+                    final Shift item = ((Shift) element);
+                return item == null || item.getId() == null ? "" : item.getId().toString();
+            }
+        });
+        final TableColumn tblclmnId = tableViewerColumnId.getColumn();
+        tblclmnId.setWidth(50);
+        tblclmnId.setText("Id");
+        shiftTablelayout.setColumnData(tblclmnId, new ColumnWeightData(15, 40));
+        new TableViewerColumnSorter(tableViewerColumnId) {
+
+            @Override
+            protected Object getValue(final Object o) {
+                    final Shift item = ((Shift) o);
+                return item == null || item.getId() == null ? "" : item.getId();
+            }
+        };
+        
+        final TableViewerColumn tableViewerColumnDescription = new TableViewerColumn(shiftTableViewer, SWT.DOUBLE_BUFFERED);
+        tableViewerColumnDescription.setLabelProvider(new ColumnLabelProvider() {
+
+            public String getText(final Object element) {
+                    final Shift item = ((Shift) element);
+                return item == null || item.getDescription() == null ? "" : item.getDescription();
+            }
+        });
+        final TableColumn tblclmnDescription = tableViewerColumnDescription.getColumn();
+        tblclmnDescription.setWidth(250);
+        tblclmnDescription.setText("Description");
+        shiftTablelayout.setColumnData(tblclmnDescription, new ColumnWeightData(40, 200));
+        new TableViewerColumnSorter(tableViewerColumnDescription) {
+
+            @Override
+            protected Object getValue(final Object o) {
+                    final Shift item = ((Shift) o);
+                return item == null || item.getDescription() == null ? "" : item.getDescription();
+            }
+        };
+        
+        final TableViewerColumn tableViewerColumnType = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+        tableViewerColumnType.setLabelProvider(new ColumnLabelProvider() {
+            public String getText(final Object element) {
+                final Shift item = ((Shift) element);
+                return item == null ? "" : item.getType().getName();
+            }
+        });
+        final TableColumn tblclmnType = tableViewerColumnType.getColumn();
+        shiftTablelayout.setColumnData(tblclmnType, new ColumnWeightData(15, 50));
+        tblclmnType.setWidth(100);
+        tblclmnType.setText("Type");
+        new TableViewerColumnSorter(tableViewerColumnType) {
+
+            @Override
+            protected Object getValue(final Object o) {
+                return ((Shift) o).getType().getName();
+            }
+        };
+        
+        final TableViewerColumn tableViewerColumnOwner = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+        tableViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
+            public String getText(final Object element) {
+                final Shift item = ((Shift) element);
+                return item == null || item.getOwner() == null ? "" : item.getOwner();           
+            }
+        });
+        final TableColumn tblclmnOwner = tableViewerColumnOwner.getColumn();
+        shiftTablelayout.setColumnData(tblclmnOwner, new ColumnWeightData(15, 50));
+        tblclmnOwner.setWidth(100);
+        tblclmnOwner.setText("Owner");
+        new TableViewerColumnSorter(tableViewerColumnOwner) {
+
+            @Override
+            protected Object getValue(final Object o) {
+                    final Shift item = ((Shift) o);
+                return item == null || item.getOwner() == null ? "" : item.getOwner();           
             }
         };
         
@@ -302,7 +322,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnLeadOperator = tableViewerColumnLeadOperator.getColumn();
-        shiftTablelayout.setColumnData(tblclmnLeadOperator, new ColumnWeightData(15));
+        shiftTablelayout.setColumnData(tblclmnLeadOperator, new ColumnWeightData(15, 50));
         tblclmnLeadOperator.setWidth(100);
         tblclmnLeadOperator.setText("Lead Operator");
         new TableViewerColumnSorter(tableViewerColumnLeadOperator) {
@@ -323,7 +343,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnOnShiftPersonal = tableViewerColumnOnShiftPersonal.getColumn();
-        shiftTablelayout.setColumnData(tblclmnOnShiftPersonal, new ColumnWeightData(15));
+        shiftTablelayout.setColumnData(tblclmnOnShiftPersonal, new ColumnWeightData(15, 50));
         tblclmnOnShiftPersonal.setWidth(100);
         tblclmnOnShiftPersonal.setText("On Shift Personal");
         new TableViewerColumnSorter(tableViewerColumnOnShiftPersonal) {
@@ -343,14 +363,14 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnOnShiftReport = tableViewerColumnReport.getColumn();
-        shiftTablelayout.setColumnData(tblclmnOnShiftReport, new ColumnWeightData(15));
+        shiftTablelayout.setColumnData(tblclmnOnShiftReport, new ColumnWeightData(15, 50));
         tblclmnOnShiftReport.setWidth(100);
         tblclmnOnShiftReport.setText("Report");
         new TableViewerColumnSorter(tableViewerColumnReport) {
 
             @Override
             protected Object getValue(final Object o) {
-            	final Shift item = ((Shift) o);
+                    final Shift item = ((Shift) o);
                 return item == null || item.getReport() == null ? "" : item.getReport();
             }
         };
@@ -363,7 +383,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnCloseUser = tableViewerCloseUser.getColumn();
-        shiftTablelayout.setColumnData(tblclmnCloseUser, new ColumnWeightData(10));
+        shiftTablelayout.setColumnData(tblclmnCloseUser, new ColumnWeightData(10, 45));
         tblclmnCloseUser.setWidth(100);
         tblclmnCloseUser.setText("Close User");
         new TableViewerColumnSorter(tableViewerCloseUser) {
@@ -401,12 +421,12 @@ public class ShiftTable extends Composite implements ISelectionProvider {
     
     @Override
     public void addMouseListener(MouseListener listener) {
-    	shiftTable.addMouseListener(listener);
+            shiftTable.addMouseListener(listener);
     };
 
     @Override
     public void removeMouseListener(MouseListener listener) {
-    	shiftTable.removeMouseListener(listener);
+            shiftTable.removeMouseListener(listener);
     };
 
     @Override
