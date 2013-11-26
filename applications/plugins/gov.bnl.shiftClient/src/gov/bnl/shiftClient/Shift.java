@@ -278,25 +278,25 @@ public class Shift  {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
 
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Shift other = (Shift) obj;
-        if (this.id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!this.id.equals(other.id) || !this.status.equals(other.status)) {
-            return false;
-        }
-        return true;
+	if (this == obj)
+	    return true;
+	if (obj == null)
+	    return false;
+	if (getClass() != obj.getClass())
+	    return false;
+	Shift other = (Shift) obj;
+	if (id == null) {
+	    if (other.id != null)
+		return false;
+	} else if (!id.equals(other.id))
+	    return false;
+	if (status == null) {
+	    if (other.status != null)
+		return false;
+	} else if (!status.equals(other.status))
+	    return false;
+	return true;
     }
 
 
