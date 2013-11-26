@@ -69,6 +69,10 @@
                name="aboutImage"
                value="icons/about.png">
          </property>
+         <property
+               name="aboutText"
+               value="%aboutText">
+         </property>
       </product>
    </extension>
    <extension
