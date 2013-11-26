@@ -7,7 +7,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.jersey,
  gov.bnl.shiftClient,
  com.google.common,
- org.junit-dep
+ org.junit-dep;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.shift,
  org.csstudio.shift.util
