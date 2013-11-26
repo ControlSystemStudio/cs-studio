@@ -27,6 +27,7 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
 			.addFormulaFunction(new RescaleArrayFormulaFunction())
 			.addFormulaFunction(new SubArrayFormulaFunction())
 			.addFormulaFunction(new ElementAtArrayFormulaFunction())
+			.addFormulaFunction(new ElementAtStringArrayFormulaFunction())
 			.addFormulaFunction(
 				new TwoArgArrayFormulaFunction("+", "Add Two Arrays", "arg1", "arg2") {
 
