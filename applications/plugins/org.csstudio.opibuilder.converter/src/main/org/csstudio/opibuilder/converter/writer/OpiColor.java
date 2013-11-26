@@ -54,17 +54,16 @@ public class OpiColor extends OpiAttribute {
 		if (colorName != null && colorName.length() > 0) {
 			colorElement.setAttribute("name", colorName);
 			log.debug("Written color: " + colorName);
-		} else {
-			String red = String.valueOf(colorComponentTo8Bits(c.getRed()));
-			String green = String.valueOf(colorComponentTo8Bits(c.getGreen()));
-			String blue = String.valueOf(colorComponentTo8Bits(c.getBlue()));
+		} 
+		String red = String.valueOf(colorComponentTo8Bits(c.getRed()));
+		String green = String.valueOf(colorComponentTo8Bits(c.getGreen()));
+		String blue = String.valueOf(colorComponentTo8Bits(c.getBlue()));
 
-			colorElement.setAttribute("red", red);
-			colorElement.setAttribute("green", green);
-			colorElement.setAttribute("blue", blue);
+		colorElement.setAttribute("red", red);
+		colorElement.setAttribute("green", green);
+		colorElement.setAttribute("blue", blue);
 
-			log.debug("Written color property with attributes: " + red + ", " + green + ", " + blue);
-		}
+		log.debug("Written color property with attributes: " + red + ", " + green + ", " + blue);
 
 	}
 	

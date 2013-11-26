@@ -66,19 +66,22 @@ public class ConvertToOPIAction implements IObjectActionDelegate {
 	/**Convert an EDM file to OPI file
 	 * @param edlFile the edl file to be converted.
 	 * @param convertedFilePath local file system path of the converted file.
+	 * @return true if succeeded.
 	 */
-	public static void convertFile(IResource edlFile, IPath convertedFilePath) {
+	public static boolean convertFile(IResource edlFile, IPath convertedFilePath) {
 		try {
 			OpiWriter writer = OpiWriter.getInstance();
 			writer.writeDisplayFile(edlFile.getLocation().toOSString(),
 					convertedFilePath.toOSString());
 
 			IResource r = ResourcesPlugin.getWorkspace().getRoot();
-			r.refreshLocal(IResource.DEPTH_INFINITE, null);			
+			r.refreshLocal(IResource.DEPTH_INFINITE, null);
+			return true;
 		} catch (Exception e) {
 			final String message = "Converting error in file " + edlFile;
 			EDM2OPIConverterPlugin.getLogger().log(Level.WARNING, message, e);
 			ConsoleService.getInstance().writeError(message + "\n" + e.getMessage()); //$NON-NLS-1$
+			return false;
 		}
 	}
 

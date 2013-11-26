@@ -50,6 +50,7 @@ public class Opi_activeButtonClass extends OpiWidget {
 			new OpiString(widgetContext, "on_label", r.getOnLabel());
 		if (r.getOffLabel() != null)
 			new OpiString(widgetContext, "off_label", r.getOffLabel());
+		new OpiBoolean(widgetContext, "show_boolean_label", true);
 
 		new OpiBoolean(widgetContext, "toggle_button", r.getButtonType() != null
 				&& r.getButtonType().equals("push"));

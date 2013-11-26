@@ -38,20 +38,26 @@ public class Opi_activeMessageButtonClass extends OpiWidget {
 		if (r.getControlPv() != null) {
 			createOnOffColorRule(r, convertPVName(r.getControlPv()), "background_color", r.getOnColor(),
 					r.getOffColor(), "OnOffBackgroundRule");
-			Element pvNameNode = widgetContext.getDocument().createElement("pv_name");
-			pvNameNode.setTextContent(convertPVName(r.getControlPv()));
-			Element valueNode = widgetContext.getDocument().createElement("value");
-			valueNode.setTextContent(r.getPressValue());
-			new OpiAction(widgetContext, "WRITE_PV", Arrays.asList(pvNameNode, valueNode), false,
-					false);
-			pvNameNode = widgetContext.getDocument().createElement("pv_name");
-			pvNameNode.setTextContent(convertPVName(r.getControlPv()));
-			valueNode = widgetContext.getDocument().createElement("value");
-			valueNode.setTextContent(r.getReleaseValue());
-			new OpiAction(widgetContext, "WRITE_PV", Arrays.asList(pvNameNode, valueNode), false,
-					false);
-			new OpiInt(widgetContext, "push_action_index", 0);
-			new OpiInt(widgetContext, "released_action_index", 1);
+			Element pvNameNode;
+			Element valueNode;
+			if(r.getPressValue()!=null){
+				pvNameNode = widgetContext.getDocument().createElement("pv_name");
+				pvNameNode.setTextContent(convertPVName(r.getControlPv()));
+				valueNode = widgetContext.getDocument().createElement("value");
+				valueNode.setTextContent(r.getPressValue());
+				new OpiAction(widgetContext, "WRITE_PV", Arrays.asList(pvNameNode, valueNode),
+						false, false);
+			}
+			if (r.getReleaseValue() != null) {
+				pvNameNode = widgetContext.getDocument().createElement("pv_name");
+				pvNameNode.setTextContent(convertPVName(r.getControlPv()));
+				valueNode = widgetContext.getDocument().createElement("value");
+				valueNode.setTextContent(r.getReleaseValue());
+				new OpiAction(widgetContext, "WRITE_PV", Arrays.asList(pvNameNode, valueNode),
+						false, false);
+			}
+			new OpiInt(widgetContext, "push_action_index", r.getPressValue()==null?1:0);
+			new OpiInt(widgetContext, "released_action_index", r.getPressValue()==null?0:1);
 
 		}
 		new OpiColor(widgetContext, "on_color", r.getOnColor(), r);

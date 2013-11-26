@@ -116,7 +116,10 @@ public class ConvertEDLFolderToOPIAction implements IObjectActionDelegate {
 					System.out.println(message);
 					EDM2OPIConverterPlugin.getLogger().log(Level.INFO, message);
 					ConsoleService.getInstance().writeInfo(message);
-					ConvertToOPIAction.convertFile(resource, target.getLocation().append(resource.getName().substring(0, resource.getName().length()-4)+".opi")); //$NON-NLS-1$
+					if(!ConvertToOPIAction.convertFile(resource, target.getLocation().append(resource.getName().substring(0, resource.getName().length()-4)+".opi"))){ //$NON-NLS-1$
+						if(!PreferencesHelper.isRobustParsing())
+							monitor.setCanceled(true);
+					}
 				}else{
 					try {
 						resource.copy(target.getFullPath().append(resource.getName()), false, monitor);
