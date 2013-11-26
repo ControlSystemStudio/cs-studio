@@ -102,7 +102,7 @@
       <command
             defaultHandler="org.csstudio.logbook.ui.OpenLogViewer"
             id="org.csstudio.logbook.viewer.OpenLogViewer"
-            name="Search Logbook">
+            name="View Details">
       </command>
    </extension>
    <extension

@@ -1,8 +1,8 @@
 package org.csstudio.shift;
 
 
-import static gov.bnl.shiftClient.ShiftApiClientImpl.ShiftClientBuilder.*;
-import gov.bnl.shiftClient.ShiftApiClient;
+import static gov.bnl.shiftClient.ShiftClientImpl.ShiftClientBuilder.*;
+import gov.bnl.shiftClient.ShiftClient;
 import gov.bnl.shiftClient.ShiftClientCreator;
 
 import org.csstudio.utility.shift.PreferenceConstants;
@@ -13,12 +13,12 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class ShiftClientFactoryImpl implements ShiftClientFactory {
 	
     @Override
-    public ShiftApiClient getClient() throws Exception {
+    public ShiftClient getClient() throws Exception {
 	return ShiftClientCreator.getClient();
     }
 
     @Override
-    public ShiftApiClient getClient(String username, String password) throws Exception {
+    public ShiftClient getClient(String username, String password) throws Exception {
     	final IPreferencesService prefs = Platform.getPreferencesService();
     	final String url = prefs.getString(org.csstudio.utility.shift.Activator.PLUGIN_ID,
 			PreferenceConstants.Shift_URL,

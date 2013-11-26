@@ -2,7 +2,7 @@ package org.csstudio.shift.ui;
 
 import static org.csstudio.shift.ShiftBuilder.shift;
 import gov.bnl.shiftClient.Shift;
-import gov.bnl.shiftClient.ShiftApiClient;
+import gov.bnl.shiftClient.ShiftClient;
 import gov.bnl.shiftClient.Type;
 
 import java.beans.PropertyChangeEvent;
@@ -38,7 +38,7 @@ public class ShiftWidget extends Composite {
     // Model
     private ShiftBuilder shiftBuilder; 
 
-    private ShiftApiClient shiftClient;
+    private ShiftClient shiftClient;
     private List<String> types = Collections.emptyList();
 
     // UI components

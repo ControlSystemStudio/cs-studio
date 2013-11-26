@@ -1,7 +1,7 @@
 package org.csstudio.shift.ui;
 
 import static org.csstudio.shift.ShiftBuilder.shift;
-import gov.bnl.shiftClient.ShiftApiClient;
+import gov.bnl.shiftClient.ShiftClient;
 
 import java.io.IOException;
 
@@ -90,7 +90,7 @@ public class ShiftBuilderDialog extends Dialog {
     protected void okPressed() {
         final Cursor originalCursor = getShell().getCursor();
         try {
-            ShiftApiClient shiftClient;
+            ShiftClient shiftClient;
             if (authenticate) {
                 shiftClient = ShiftClientManager.getShiftClientFactory()
                 		.getClient(userCredentialWidget.getUsername(), userCredentialWidget.getPassword());

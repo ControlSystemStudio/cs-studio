@@ -1,16 +1,16 @@
 package gov.bnl.shiftClient;
 
-import static gov.bnl.shiftClient.ShiftApiClientImpl.ShiftClientBuilder.*;
+import static gov.bnl.shiftClient.ShiftClientImpl.ShiftClientBuilder.*;
 
 public class ShiftClientCreator {
 
-	private static volatile ShiftApiClient client;
+	private static volatile ShiftClient client;
 
     private ShiftClientCreator() {
 
     }
 
-    public static void setClient(ShiftApiClient client) throws Exception {
+    public static void setClient(ShiftClient client) throws Exception {
     	ShiftClientCreator.client = client;
     }
 
@@ -20,7 +20,7 @@ public class ShiftClientCreator {
      * @return
      * @throws Exception
      */
-    public static ShiftApiClient getClient() throws Exception {
+    public static ShiftClient getClient() throws Exception {
 	if (client == null) {
 		ShiftClientCreator.client = serviceURL().withHTTPAuthentication(false).create();
 	}
@@ -35,7 +35,7 @@ public class ShiftClientCreator {
      * @return
      * @throws Exception
      */
-    public static ShiftApiClient getClient(String username, String password) throws Exception {
+    public static ShiftClient getClient(String username, String password) throws Exception {
     	return serviceURL().withHTTPAuthentication(true).username(username).password(password).create();
     }
 }

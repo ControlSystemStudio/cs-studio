@@ -8,8 +8,8 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import gov.bnl.shiftClient.ShiftApiClient;
-import gov.bnl.shiftClient.ShiftApiClientImpl.ShiftClientBuilder;
+import gov.bnl.shiftClient.ShiftClient;
+import gov.bnl.shiftClient.ShiftClientImpl.ShiftClientBuilder;
 
 public class Activator implements BundleActivator {
 
@@ -17,7 +17,7 @@ public class Activator implements BundleActivator {
 
 
 
-	private ShiftApiClient retrieveClient() {
+	private ShiftClient retrieveClient() {
 		try {
 			IConfigurationElement[] config = Platform
 					.getExtensionRegistry()
@@ -26,12 +26,12 @@ public class Activator implements BundleActivator {
 			if (config.length == 0) {
 				log.log(Level.INFO,
 						"No configured client for Shift found: using default configuration");
-				ShiftApiClient client = ShiftClientBuilder.serviceURL().withHTTPAuthentication(false).create();
+				ShiftClient client = ShiftClientBuilder.serviceURL().withHTTPAuthentication(false).create();
 				return client;
 			}
 
 			if (config.length == 1) {
-				ShiftApiClient client = (ShiftApiClient) config[0].createExecutableExtension("shiftclient");
+				ShiftClient client = (ShiftClient) config[0].createExecutableExtension("shiftclient");
 				return client;
 			}
 

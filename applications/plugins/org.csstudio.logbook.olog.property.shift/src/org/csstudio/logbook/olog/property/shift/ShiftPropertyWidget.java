@@ -1,8 +1,11 @@
 package org.csstudio.logbook.olog.property.shift;
 
+import gov.bnl.shiftClient.Shift;
+import gov.bnl.shiftClient.ShiftClient;
+import gov.bnl.shiftClient.Type;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,8 +15,6 @@ import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.ui.AbstractPropertyWidget;
 import org.csstudio.logbook.ui.LogEntryChangeset;
 import org.csstudio.logbook.util.LogEntryUtil;
-import org.csstudio.shift.Shift;
-import org.csstudio.shift.ShiftClient;
 import org.csstudio.shift.ShiftClientManager;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -46,17 +47,14 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     
     private final IPreferencesService service = Platform.getPreferencesService();
     
-    private static final String propertyName = "Shift";
-    private static final String attrTypeName = "Type";
-    private static final String attrIdName = "Id";
-    private static final String attrURLName = "URL";
+    public static final String propertyName = "Shift";
+    public static final String attrTypeName = "Type";
+    public static final String attrIdName = "Id";
+    public static final String attrURLName = "URL";
     
-    private static final Property widgetProperty = PropertyBuilder
-	    .property(propertyName)
-	    .attribute(attrTypeName)
-	    .attribute(attrIdName)
-	    .attribute(attrURLName)
-	    .build();
+    private static final String inactiveShift = "No Active Shift";
+    
+    private static PropertyBuilder widgetProperty;
 
     private Text textId;
     private Text textURL;
@@ -66,9 +64,9 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     private Combo comboType;
     private Composite container;
     
-    private List<String> levels = Collections.emptyList();
+    private List<String> types = Collections.emptyList();
     private ShiftClient shiftClient;
-    private Collection<Shift> shifts;
+    private Shift shift;
 
     private String defaultType ;
 
@@ -92,7 +90,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	gridLayout.marginHeight = 1;
 	gridLayout.marginWidth = 1;
 	container.setLayout(gridLayout);	
-	
+		
 	Label lblPropertyName = new Label(container, SWT.NONE);
 	lblPropertyName.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 	lblPropertyName.setText(propertyName+":");
@@ -112,11 +110,28 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	    
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
-		for (Shift shift : shifts) {
-		    if(shift.getType().equalsIgnoreCase(comboType.getItem(comboType.getSelectionIndex()))){
-			textId.setText(shift.getId().toString());
-		    }
+		String selectedType = comboType.getItem(comboType.getSelectionIndex());
+		shift = shiftClient.getShiftByType(selectedType);
+		if (shift.getStatus().equals("Active")) {
+		    widgetProperty = PropertyBuilder
+			    .property(propertyName)
+			    .attribute(attrTypeName, selectedType)
+			    .attribute(attrIdName, shift.getId().toString())
+			    .attribute(
+				    attrURLName,
+				    service.getString(
+					    "org.csstudio.utility.shift",
+					    "shift_url",
+					    "https://localhost:8181/Shift/resources",
+					    null)
+					    + "/shift/"
+					    + selectedType
+					    + "/"
+					    + shift.getId().toString());
+		} else {
+		    widgetProperty = null;
 		}
+		updateUI();
 	    }
 	});
 	
@@ -163,33 +178,28 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     }
 
     public void init(){
-	
 	try {
 	    if(shiftClient == null){
 		shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
 	    }
-	    levels = new ArrayList<String>(shiftClient.listTypes());
-	    shifts = shiftClient.listShifts();
-	    if (!comboType.getItems().equals(levels)) {
-		comboType.setItems(levels.toArray(new String[levels.size()]));
+	    widgetProperty = PropertyBuilder.property(propertyName);	    
+	    types = new ArrayList<String>();
+	    for (Type type : shiftClient.listTypes()) {
+		types.add(type.getName());
 	    }
-	    try {
-		defaultType = service.getString("org.csstudio.shift.ui", "Default.type", "", null);		
-		comboType.setText(defaultType);
-		comboType.setSelection(new Point(levels.indexOf(defaultType), levels.indexOf(defaultType)));
-		for (Shift shift : shifts) {
-		    if(shift.getType().equalsIgnoreCase(defaultType)){
-			textId.setText(shift.getId().toString());
-		    }
-		}
-		textURL.setText(service.getString("org.csstudio.utility.shift",
-			"shift_url", "https://localhost:8181/Shift/resources",
-			null)
-			+ "/shift/" + comboType.getText() + "/" + textId.getText());
-		attachProperty();
-	    } catch (Exception ex) {
-		// TODO
-	    }
+	    comboType.setItems(types.toArray(new String[types.size()]));
+	    defaultType = service.getString("org.csstudio.shift.ui", "Default.type", "", null);	   
+	    shift = shiftClient.getShiftByType(defaultType);
+	    if (types.contains(defaultType) && shift.getStatus().equals("Active")) {
+		widgetProperty.attribute(attrTypeName, defaultType);
+		widgetProperty.attribute(attrIdName, shift.getId().toString());
+		widgetProperty.attribute(attrURLName, service
+			    .getString("org.csstudio.utility.shift", "shift_url",
+				    "https://localhost:8181/Shift/resources", null)
+			    + "/shift/" + defaultType + "/" + shift.getId().toString());
+	    } else {
+		widgetProperty = null;
+	    }    
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -199,20 +209,20 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     private void attachProperty(){
 	LogEntryBuilder logEntryBuilder;
 	try {
-	    Property oldProperty = LogEntryUtil.getProperty(getLogEntryChangeset()
-		    .getLogEntry(), ShiftPropertyWidget.widgetProperty
-		    .getName());
-	    PropertyBuilder newProperty = PropertyBuilder
-		    .property(widgetProperty)
-		    .attribute(attrTypeName, comboType.getText())
-		    .attribute(attrIdName, textId.getText())
-		    .attribute(attrURLName, textURL.getText());
-	    if (oldProperty == null ||
-		    !newProperty.build().getName().equals(oldProperty.getName()) ||
-		    !newProperty.build().getAttributes().equals(oldProperty.getAttributes())) {
-		logEntryBuilder = LogEntryBuilder.logEntry(getLogEntryChangeset().getLogEntry());
-		logEntryBuilder.addProperty(newProperty);
-		getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
+	    if (widgetProperty != null) {
+		Property oldProperty = LogEntryUtil.getProperty(
+			getLogEntryChangeset().getLogEntry(), propertyName);
+		Property newProperty = widgetProperty.build();
+		if (oldProperty == null
+			|| !newProperty.getName()
+				.equals(oldProperty.getName())
+			|| !newProperty.getAttributes()
+				.equals(oldProperty.getAttributes())) {
+		    logEntryBuilder = LogEntryBuilder
+			    .logEntry(getLogEntryChangeset().getLogEntry());
+		    logEntryBuilder.addProperty(widgetProperty);
+		    getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
+		}
 	    }
 	} catch (IOException e1) {
 	    // TODO Auto-generated catch block
@@ -224,9 +234,8 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     public void updateUI() {
 	this.lblAttached.setVisible(!isEditable());
 	this.comboType.setEnabled(isEditable());
-	this.textId.setEditable(isEditable());
-	
-	this.textURL.setVisible(isEditable());
+	this.textId.setEditable(isEditable());	
+//	this.textURL.setVisible(isEditable());
 	GridData textURLGridData= (GridData) this.textURL.getLayoutData();
 	textURLGridData.exclude = !isEditable();
 	this.textURL.setLayoutData(textURLGridData);
@@ -236,10 +245,12 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	this.link.setLayoutData(linkGridData);
 	
 	this.btnAttach.setVisible(isEditable());
+	if(isEditable()){
+	    attachProperty();
+	}
 	Property property = null;
 	try {
-	    property = LogEntryUtil.getProperty(getLogEntryChangeset()
-	    	.getLogEntry(), ShiftPropertyWidget.widgetProperty.getName());
+	    property = LogEntryUtil.getProperty(getLogEntryChangeset().getLogEntry(), propertyName);
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
@@ -253,9 +264,9 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	    this.textURL
 		    .setText(property.getAttributeValue(attrURLName) == null ? ""
 			    : property.getAttributeValue(attrURLName));
-	    String ticketURL = property.getAttributeValue(attrURLName) == null ? ""
+	    String shiftURL = property.getAttributeValue(attrURLName) == null ? ""		    
 		    : property.getAttributeValue(attrURLName);
-	    this.link.setText("<a>" + ticketURL + "</a>");
+	    this.link.setText("<a>" + shiftURL + "</a>");
 	}
     }
 }
