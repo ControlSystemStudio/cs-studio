@@ -220,8 +220,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnEndDate = tableViewerColumnEndDate.getColumn();
-        shiftTablelayout.setColumnData(tblclmnEndDate, new ColumnWeightData(15, 50));
         tblclmnEndDate.setWidth(100);
+        shiftTablelayout.setColumnData(tblclmnEndDate, new ColumnWeightData(15, 50));
         tblclmnEndDate.setText("End Date");
         new TableViewerColumnSorter(tableViewerColumnEndDate) {
 

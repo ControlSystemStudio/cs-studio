@@ -64,6 +64,10 @@ public class ShiftWidget extends Composite {
 	private Label lblStatus;
 
 	private Text status;
+
+	private Label lblOwner;
+
+	private Text owner;
     
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
@@ -124,6 +128,22 @@ public class ShiftWidget extends Composite {
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.CR) {
                     status.getParent().layout();
+                }
+            }
+        });
+        
+        lblOwner = new Label(composite, SWT.NONE);
+        lblOwner.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+        lblOwner.setText("Owner:");
+    	
+        owner = new Text(composite, SWT.BORDER);
+        owner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+        owner.setEditable(editable);
+        owner.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(final KeyEvent e) {
+                if (e.keyCode == SWT.CR) {
+                	owner.getParent().layout();
                 }
             }
         });
@@ -256,6 +276,7 @@ public class ShiftWidget extends Composite {
 		if (shift != null) {
 		    // Show the shift
 		    text.setText(shift.getDescription() == null ? defaultText : shift.getDescription());
+		    owner.setText(shift.getOwner() == null ? defaultText : shift.getOwner());	    
 		    leadOperator.setText(shift.getLeadOperator() == null ? defaultText : shift.getLeadOperator());	    
 		    shiftPersonal.setText(shift.getOnShiftPersonal() == null ? defaultText : shift.getOnShiftPersonal());	    
 		    report.setText(shift.getReport() == null ? defaultText : shift.getReport());
@@ -302,7 +323,8 @@ public class ShiftWidget extends Composite {
 
     public Shift getShift() throws IOException {
     	this.shiftBuilder.setDescription(text.getText()).setType(type.getText()).setLeadOperator(leadOperator.getText())
-			.setOnShiftPersonal(shiftPersonal.getText()).setReport(report.getText());
+			.setOnShiftPersonal(shiftPersonal.getText()).setReport(report.getText())
+			.setOwner(owner.getText());
         return this.shiftBuilder.build();
     }
 

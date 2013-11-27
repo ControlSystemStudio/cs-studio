@@ -99,7 +99,10 @@ public class ShiftBuilderDialog extends Dialog {
             }
 
             getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
-            shiftBuilder = shift(shiftWidget.getShift()).setOwner(userCredentialWidget.getUsername());
+            shiftBuilder = shift(shiftWidget.getShift());
+            if (shiftWidget.getShift().getOwner().isEmpty()) {
+            	shiftBuilder = shiftBuilder.setOwner(userCredentialWidget.getUsername());
+            }
             shiftClient.start(shiftBuilder.build());
             getShell().setCursor(originalCursor);
             setReturnCode(OK);

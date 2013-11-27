@@ -28,7 +28,7 @@
             class="org.csstudio.shift.ui.CreateShiftView"
             icon="icons/shift-close.png"
             id="org.csstudio.shift.ui.CreateShift"
-            name="Close Shift"
+            name="Sign off"
             restorable="true">
       </view>
    </extension>
@@ -105,16 +105,11 @@
        <command
              commandId="org.csstudio.shift.ui.CloseShiftBuilder"
              icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-close.png"
-             label="Close Shift"
+             label="Sign off"
              style="push">
           <visibleWhen>
              <with
                    variable="activeMenuSelection">
-                <iterate>
-                   <adapt
-                         type="org.csstudio.shift.ShiftBuilder">
-                   </adapt>
-                </iterate>
                 <and>
                    <with
                          variable="activeMenuSelection">
@@ -122,6 +117,20 @@
                             value="1">
                       </count>
                    </with>
+                   <with
+                         variable="org.csstudio.security.ui.current_authorization">
+                      <iterate
+                            operator="or">
+                         <equals
+                               value="operation_supervisor">
+                         </equals>
+                      </iterate>
+                   </with>
+                   <iterate>
+                      <adapt
+                            type="org.csstudio.shift.ShiftBuilder">
+                      </adapt>
+                   </iterate>
                 </and>
              </with>
           </visibleWhen>
