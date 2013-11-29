@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Documentation Plug-in
-Bundle-SymbolicName: org.csstudio.nams.documentation
-Bundle-Version: 1.0.0
-Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

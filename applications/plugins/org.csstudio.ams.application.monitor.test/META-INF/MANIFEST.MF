@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Test
-Bundle-SymbolicName: org.csstudio.ams.application.monitor.test
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Markus Moeller <Markus.Moeller@desy.de>
-Fragment-Host: org.csstudio.ams.application.monitor;bundle-version="1.0.0.qualifier"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.8.1"
