@@ -20,9 +20,9 @@ if [[ ! -d jdk_linux_x86 ]]
     tar -xvf jdk_linux_x86.tar.gz
   fi
 cp -r jdk_linux_x86/jre cs-studio/
-zip -r CS_STUDIO-linux32-$VERSION.zip cs-studio
+zip -r CS-STUDIO-linux32-$VERSION.zip cs-studio
 rm -rf cs-studio
-rm -rf CS_STUDIO-linux.gtk.x86.zip
+rm -rf CS-STUDIO-linux.gtk.x86.zip
 
 unzip CS-STUDIO-linux.gtk.x86_64.zip
 if [[ ! -d jdk_linux_x64 ]]
