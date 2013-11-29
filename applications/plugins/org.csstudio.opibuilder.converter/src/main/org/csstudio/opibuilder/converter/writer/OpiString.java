@@ -27,6 +27,6 @@ public class OpiString extends OpiAttribute {
 	 */
 	public OpiString(Context con, String name, String s) {
 		super(con, name);
-		context.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(s)));
+		propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(s)));
 	}
 }

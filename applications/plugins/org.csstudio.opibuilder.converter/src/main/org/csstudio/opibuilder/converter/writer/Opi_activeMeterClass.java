@@ -8,12 +8,11 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeMeterClass;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * @author Matevz
+ * @author Lei Hu, Xihui Chen
  */
 public class Opi_activeMeterClass extends OpiWidget {
 
@@ -29,15 +28,18 @@ public class Opi_activeMeterClass extends OpiWidget {
 		super(con, r);
 		setTypeId(typeId);
 
-		context.getElement().setAttribute("version", version);
+		widgetContext.getElement().setAttribute("version", version);
 		
-		new OpiString(context, "name", name);
-		new OpiString(context, "pv_name", r.getReadPv());
-		new OpiColor(context, "needle_color", r.getFgColor());
-		new OpiColor(context, "background_color", r.getBgColor());
+		new OpiString(widgetContext, "name", name);
+		new OpiString(widgetContext, "pv_name", convertPVName(r.getReadPv()));
+		new OpiColor(widgetContext, "needle_color", r.getFgColor(), r);
+		new OpiColor(widgetContext, "foreground_color", r.getScaleColor(), r);
+		new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", r.isScaleAlarm());
+		new OpiDouble(widgetContext, "minimum", r.getScaleMin());
+		new OpiDouble(widgetContext, "maximum", r.getScaleMax());
 		
 		if(r.isShowScale())
-			new OpiBoolean(context, "show_scale", r.isShowScale());
+			new OpiBoolean(widgetContext, "show_scale", r.isShowScale());
 		log.debug("Edm_activeMeterClass written.");
 
 	}

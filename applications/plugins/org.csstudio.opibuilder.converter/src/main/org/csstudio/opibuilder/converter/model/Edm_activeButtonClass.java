@@ -1,9 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+/**
+ * @author Lei Hu, Xihui Chen
+ *
+ */
 public class Edm_activeButtonClass extends EdmWidget {
 
 	
-	@EdmAttributeAn @EdmOptionalAn private EdmColor fgColor;
 	@EdmAttributeAn @EdmOptionalAn private EdmColor onColor;
 	@EdmAttributeAn @EdmOptionalAn private EdmColor offColor;
 	@EdmAttributeAn @EdmOptionalAn private EdmColor inconsistentColor;
@@ -11,11 +21,12 @@ public class Edm_activeButtonClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private EdmColor botShadowColor;
 	
 	@EdmAttributeAn @EdmOptionalAn private String controlPv;
-	@EdmAttributeAn @EdmOptionalAn private String visPv;
-	@EdmAttributeAn @EdmOptionalAn private double visMax;
-	@EdmAttributeAn @EdmOptionalAn private double visMin;	
 	@EdmAttributeAn @EdmOptionalAn private String onLabel;
 	@EdmAttributeAn @EdmOptionalAn private String offLabel;
+	@EdmAttributeAn @EdmOptionalAn private String buttonType;
+	@EdmAttributeAn @EdmOptionalAn private int controlBitsPos;
+	
+	
 	
 
 	public Edm_activeButtonClass(EdmEntity genericEntity) throws EdmException {
@@ -23,15 +34,13 @@ public class Edm_activeButtonClass extends EdmWidget {
 	}
 
 	
-
-	
-
-	/**
-	 * @return the lineAlarm
-	 */
-	public EdmColor getFgColor() {
-		return fgColor;
+	public String getButtonType() {
+		return buttonType;
 	}
+	public int getControlBitsPos() {
+		return controlBitsPos;
+	}
+	
 	public EdmColor getOnColor() {
 		return onColor;
 	}
@@ -51,9 +60,7 @@ public class Edm_activeButtonClass extends EdmWidget {
 	public final String getControlPv() {
 		return controlPv;
 	}	
-	public final String getVisPv() {
-		return visPv;
-	}	
+
 	public final String getOnLabel() {
 		return onLabel;
 	}	
@@ -61,13 +68,5 @@ public class Edm_activeButtonClass extends EdmWidget {
 		return offLabel;
 	}	
 
-
-	public double getVisMax() {
-		return visMax;
-	}
-
-	public double getVisMin() {
-		return visMin;
-	}
 
 }

@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmFont;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class OpiFontTest extends TestCase {
 	
@@ -35,7 +35,7 @@ public class OpiFontTest extends TestCase {
 		EdmFont f = new EdmFont(new EdmAttribute(val), true);
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null, 0, 0);
 		new OpiFont(context, "font", f);
 		
 		XMLFileHandler.isFontElementEqual(val, "font", parent);

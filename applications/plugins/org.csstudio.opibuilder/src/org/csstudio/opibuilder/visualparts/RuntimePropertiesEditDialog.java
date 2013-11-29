@@ -46,10 +46,16 @@ public class RuntimePropertiesEditDialog extends Dialog {
 		List<AbstractWidgetProperty> runningPropertyList = 
 			widgetModel.getRuntimePropertyList();
 		if(runningPropertyList != null){
-			propertyDataArray = new PropertyData[runningPropertyList.size()];
 			int i=0;
 			for(AbstractWidgetProperty prop : runningPropertyList){
-				propertyDataArray[i++] = new PropertyData(prop, 
+				if(prop.isVisibleInPropSheet())
+					i++;
+			}
+			propertyDataArray = new PropertyData[i];
+			i=0;
+			for(AbstractWidgetProperty prop : runningPropertyList){
+				if(prop.isVisibleInPropSheet())
+					propertyDataArray[i++] = new PropertyData(prop, 
 						prop.getPropertyValue());
 			}
 		}else { 
@@ -221,13 +227,14 @@ class PropertyDataLabelProvider extends LabelProvider implements
 			public Image getColumnImage(final Object element,
 					final int columnIndex) {
 				if (columnIndex == 1 && element instanceof PropertyData) {
-					PropertyData propertyData = (PropertyData) element;
+					PropertyData propertyData = (PropertyData) element;					
 					
-					if (propertyData != null) {
-						if (propertyData.property.getPropertyDescriptor().getLabelProvider() != null) 
-							return propertyData.property.getPropertyDescriptor().getLabelProvider().
-								getImage(propertyData.tmpValue);
+					try {
+						return propertyData.property.getPropertyDescriptor().getLabelProvider().
+									getImage(propertyData.tmpValue);
+					} catch (NullPointerException e) {					
 					}
+					
 				}
 				return null;
 			}
@@ -242,10 +249,10 @@ class PropertyDataLabelProvider extends LabelProvider implements
 					if (columnIndex == 0) {
 						return propertyData.property.getDescription();
 					}
-					
-					if (propertyData != null && propertyData.property.getPropertyDescriptor().getLabelProvider() != null) {
+					try {
 						return propertyData.property.getPropertyDescriptor().getLabelProvider().getText(
-								propertyData.tmpValue);
+									propertyData.tmpValue);
+					} catch (NullPointerException e) {						
 					}
 				}
 				if (element != null) {

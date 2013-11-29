@@ -14,7 +14,9 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
+import org.eclipse.core.runtime.IPath;
 
 /**The action executing a system command.
  * @author Xihui Chen
@@ -22,9 +24,10 @@ import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
  */
 public class ExecuteCommandAction extends AbstractWidgetAction {
 
-	public final static String PROP_COMMAND = "command";
-	public final static String PROP_DIRECTORY = "command_directory";
-	public final static String PROP_WAIT_TIME = "wait_time";
+	private static final String OPI_DIR = "opi.dir"; //$NON-NLS-1$
+	public final static String PROP_COMMAND = "command"; //$NON-NLS-1$
+	public final static String PROP_DIRECTORY = "command_directory"; //$NON-NLS-1$
+	public final static String PROP_WAIT_TIME = "wait_time"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {
@@ -72,13 +75,20 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
      *  @return Value where "$(prop)" is replaced by Java system property "prop"
      *  @throws Exception on error
      */
-    private static String replaceProperties(final String value) throws Exception
+    private String replaceProperties(final String value) throws Exception
     {
         final Matcher matcher = Pattern.compile("\\$\\((.*)\\)").matcher(value);
         if (matcher.matches())
         {
             final String prop_name = matcher.group(1);
-            final String prop = System.getProperty(prop_name);
+            String prop = System.getProperty(prop_name);
+            if(prop==null && prop_name.equals(OPI_DIR)){
+            	IPath opiFilePath = getWidgetModel().getRootDisplayModel().getOpiFilePath();
+            	if(ResourceUtil.isExistingWorkspaceFile(opiFilePath))
+            		opiFilePath = ResourceUtil.workspacePathToSysPath(opiFilePath);
+				prop=opiFilePath.removeLastSegments(1).toOSString();
+            }
+            
             if (prop == null)
                 throw new Exception("Property '" + prop_name + "' is not defined");
             return prop;

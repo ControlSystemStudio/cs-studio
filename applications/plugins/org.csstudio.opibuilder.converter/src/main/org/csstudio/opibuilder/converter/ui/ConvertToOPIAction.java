@@ -27,16 +27,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-/**Convert selected EDM filef to OPI files.
+/**
+ * Convert selected EDM filef to OPI files.
+ * 
  * @author Xihui Chen
- *
+ * 
  */
 public class ConvertToOPIAction implements IObjectActionDelegate {
 
 	private List<IResource> selectedFiles;
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	    // NOP
+		// NOP
 	}
 
 	public void run(IAction action) {
@@ -45,11 +47,13 @@ public class ConvertToOPIAction implements IObjectActionDelegate {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask("Converting", selectedFiles.size());
-				for(IResource selectedFile : selectedFiles){
+				for (IResource selectedFile : selectedFiles) {
 					monitor.subTask("Converting " + selectedFile);
-					convertFile(selectedFile);
+					IPath convertedFilePath = selectedFile.getLocation().removeFileExtension()
+							.addFileExtension(OPIBuilderPlugin.OPI_FILE_EXTENSION);
+					convertFile(selectedFile, convertedFilePath);
 					monitor.worked(1);
-					if(monitor.isCanceled())
+					if (monitor.isCanceled())
 						return Status.CANCEL_STATUS;
 				}
 
@@ -59,43 +63,32 @@ public class ConvertToOPIAction implements IObjectActionDelegate {
 		job.schedule();
 	}
 
-	private void convertFile(IResource selectedFile) {
-		IPath convertedFile = null;
-		final String extension = "." + OPIBuilderPlugin.OPI_FILE_EXTENSION; //$NON-NLS-1$
+	/**Convert an EDM file to OPI file
+	 * @param edlFile the edl file to be converted.
+	 * @param convertedFilePath local file system path of the converted file.
+	 * @return true if succeeded.
+	 */
+	public static boolean convertFile(IResource edlFile, IPath convertedFilePath) {
 		try {
 			OpiWriter writer = OpiWriter.getInstance();
-			IPath outputOPIsFolder = PreferencesHelper.getOutputOPIsFolderPath();
-			if(outputOPIsFolder != null && !outputOPIsFolder.isEmpty()){
-				IResource r= ResourcesPlugin.getWorkspace().getRoot().findMember(outputOPIsFolder);
-				if(r != null)
-					convertedFile = r.getLocation().append(
-							selectedFile.getFullPath().removeFileExtension().lastSegment() + extension);
-			}
-			else
-				convertedFile = selectedFile.getLocation().removeFileExtension().addFileExtension(extension);
-			writer.writeDisplayFile(
-					selectedFile.getLocation().toOSString(),
-					convertedFile.toOSString());
+			writer.writeDisplayFile(edlFile.getLocation().toOSString(),
+					convertedFilePath.toOSString());
 
-			IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-					PreferencesHelper.getOutputOPIsFolderPath());
+			IResource r = ResourcesPlugin.getWorkspace().getRoot();
 			r.refreshLocal(IResource.DEPTH_INFINITE, null);
-//			IResource convertedOPI =
-//				ResourcesPlugin.getWorkspace().getRoot().findMember(convertedFile);
-//			if(PreferencesHelper.isOpenOPIsAfterConverted() && convertedOPI != null &&
-//					convertedOPI instanceof IFile)
-//				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-//						new FileEditorInput((IFile) convertedOPI), "org.csstudio.opibuilder.OPIEditor"); //$NON-NLS-1$, editorId)
+			return true;
 		} catch (Exception e) {
-			final String message = "Conversion error in file " + selectedFile;
+			final String message = "Converting error in file " + edlFile;
 			EDM2OPIConverterPlugin.getLogger().log(Level.WARNING, message, e);
 			ConsoleService.getInstance().writeError(message + "\n" + e.getMessage()); //$NON-NLS-1$
+			return false;
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void selectionChanged(IAction action, ISelection selection) {
-		if(selection instanceof IStructuredSelection && !((IStructuredSelection)selection).isEmpty())
-			selectedFiles = ((List<IResource>)((IStructuredSelection)selection).toList());
+		if (selection instanceof IStructuredSelection
+				&& !((IStructuredSelection) selection).isEmpty())
+			selectedFiles = ((List<IResource>) ((IStructuredSelection) selection).toList());
 	}
 }

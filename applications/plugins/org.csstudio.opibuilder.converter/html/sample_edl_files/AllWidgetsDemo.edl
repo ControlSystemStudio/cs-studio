@@ -1,0 +1,1005 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 1733
+y 167
+w 1200
+h 1000
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+ctlFont "courier-bold-r-14.0"
+ctlFontAlign "right"
+btnFont "courier-medium-r-8.0"
+fgColor index 10
+bgColor index 3
+textColor index 10
+ctlFgColor1 index 25
+ctlFgColor2 index 30
+ctlBgColor1 index 5
+ctlBgColor2 index 10
+topShadowColor index 5
+botShadowColor index 10
+pvType "EPICS"
+endScreenProperties
+
+# (PNG Image)
+object activePngClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 33
+y 19
+w 46
+h 48
+file "OnButton.png"
+endObjectProperties
+
+# (GIF Image)
+object cfcf6c8a_dbeb_11d2_8a97_00104b8742df
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 113
+y 21
+w 80
+h 70
+file "fish.gif"
+refreshRate 1000
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 238
+y 23
+w 45
+h 57
+lineColor index 10
+fillColor index 5
+lineWidth 2
+lineStyle "dash"
+arrows "both"
+numPoints 3
+xPoints {
+  0 238
+  1 238
+  2 283
+}
+yPoints {
+  0 23
+  1 80
+  2 26
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 323
+y 16
+w 116
+h 90
+lineColor index 46
+fill
+fillColor index 5
+visPv "$(control)"
+visMin "100"
+visMax "1000"
+closePolygon
+numPoints 5
+xPoints {
+  0 323
+  1 349
+  2 394
+  3 439
+  4 428
+}
+yPoints {
+  0 106
+  1 16
+  2 58
+  3 36
+  4 99
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 682
+y 25
+w 77
+h 64
+lineColor index 130
+fill
+fillColor index 46
+lineWidth 0
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 777
+y 36
+w 58
+h 50
+lineColor index 26
+lineAlarm
+fill
+fillColor index 30
+fillAlarm
+alarmPv "$(monitor)"
+endObjectProperties
+
+# (Arc)
+object activeArcClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 867
+y 13
+w 101
+h 76
+lineColor index 25
+fill
+fillColor index 126
+lineWidth 3
+totalAngle 235
+fillMode "pie"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 1013
+y 31
+w 42
+h 26
+font "courier-bold-i-12.0"
+fontAlign "center"
+fgColor index 10
+bgColor index 5
+useDisplayBg
+value {
+  "Hello,"
+  "world!"
+}
+autoSize
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 29
+y 121
+w 447
+h 101
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+displaySource "file"
+file "embedded.edl"
+sizeOfs 5
+numDsps 0
+endObjectProperties
+
+# (Dynamic Symbol)
+object activeDynSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 489
+y 34
+w 140
+h 40
+file "helpMovingArrow.edl"
+gateUpValue 1
+continuous
+rate 0.5
+numStates 13
+useOriginalSize
+initialIndex 1
+useOriginalColors
+fgColor index 10
+bgColor index 5
+endObjectProperties
+
+# (Meter)
+object activeMeterClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 496
+y 115
+w 181
+h 108
+caseColor index 5
+scaleColor index 10
+labelColor index 130
+fgColor index 126
+bgColor index 10
+topShadowColor index 5
+botShadowColor index 10
+readPv "$(monitor)"
+label "ai1"
+showScale
+scaleFormat "FFloat"
+scalePrecision ""
+scaleLimitsFromDb
+useDisplayBg
+labelIntervals "10"
+complexNeedle
+3d
+labelFontTag "helvetica-bold-i-18.0"
+scaleFontTag "courier-bold-r-14.0"
+endObjectProperties
+
+# (Bar)
+object activeBarClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 704
+y 118
+w 158
+h 103
+indicatorColor index 25
+fgColor index 10
+bgColor index 5
+indicatorPv "$(monitor)"
+showScale
+font "courier-bold-r-14.0"
+labelTicks "2"
+majorTicks "1"
+minorTicks "5"
+border
+limitsFromDb
+scaleFormat "FFloat"
+endObjectProperties
+
+# (Message Box)
+object activeMessageBoxClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 20
+y 239
+w 273
+h 194
+fgColor index 25
+bgColor index 10
+2ndBgColor index 49
+topShadowColor index 5
+botShadowColor index 10
+indicatorPv "$(monitor)"
+font "helvetica-bold-i-18.0"
+bufferSize 1000
+fileSize 100000
+flushTimerValue 600
+readOnly
+endObjectProperties
+
+# (X-Y Graph)
+object xyGraphClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+# Geometry
+x 312
+y 237
+w 351
+h 206
+# Appearance
+border
+plotAreaBorder
+autoScaleBothDirections
+graphTitle "XY Graph"
+yLabel "Y Axis"
+fgColor index 10
+bgColor index 5
+gridColor index 10
+font "courier-bold-r-14.0"
+# Operating Modes
+plotMode "plotLastNPts"
+nPts 100
+# X axis properties
+showXAxis
+xAxisSrc "AutoScale"
+xMax 1
+# Y axis properties
+showYAxis
+yAxisSrc "AutoScale"
+yMax 1
+# Y2 axis properties
+showY2Axis
+y2AxisSrc "AutoScale"
+y2Max 1
+# Trace Properties
+numTraces 2
+yPv {
+  0 "$(monitor)"
+  1 "$(control)"
+}
+plotSymbolType {
+  0 "diamond"
+  1 "square"
+}
+opMode {
+  0 "plot"
+  1 "plot"
+}
+plotColor {
+  0 index 21
+  1 index 26
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 5
+release 0
+x 869
+y 120
+w 121
+h 21
+controlPv "$(monitor)"
+format "hex"
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+fgColor index 47
+bgColor index 5
+useDisplayBg
+autoHeight
+nullColor index 30
+fastUpdate
+useHexPrefix
+showUnits
+newPos
+objType "monitors"
+endObjectProperties
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 881
+y 151
+w 93
+h 69
+numStates 2
+controlPvs {
+  0 "$(monitor)"
+}
+numPvs 1
+useOriginalColors
+fgColor index 10
+bgColor index 5
+endObjectProperties
+
+# (Animated Symbol)
+object aniSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1003
+y 119
+w 102
+h 24
+numStates 2
+controlPvs {
+  0 "$(monitor)"
+}
+numPvs 1
+useOriginalColors
+fgColor index 10
+bgColor index 5
+endObjectProperties
+
+# (Table)
+object activeTableClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 674
+y 237
+w 278
+h 197
+fgColor index 10
+bgColor index 5
+oddColBgColor index 5
+evenColBgColor index 10
+topShadowColor index 5
+botShadowColor index 10
+pv "$(monitor)"
+font "helvetica-bold-i-18.0"
+endObjectProperties
+
+# (Indicator)
+object activeIndicatorClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 961
+y 240
+w 231
+h 54
+indicatorColor index 25
+fgColor index 10
+bgColor index 5
+indicatorPv "$(monitor)"
+showScale
+font "courier-bold-r-14.0"
+labelTicks "5"
+majorTicks "2"
+minorTicks "2"
+border
+limitsFromDb
+scaleFormat "FFloat"
+halfWidth 5
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 965
+y 304
+w 231
+h 37
+controlPv "$(monitor)"
+fgColor index 25
+fgAlarm
+bgColor index 5
+fill
+font "courier-bold-r-14.0"
+fontAlign "right"
+endObjectProperties
+
+# (Reg Text Update)
+object RegTextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 960
+y 342
+w 234
+h 37
+controlPv "$(monitor)"
+fgColor index 25
+fgAlarm
+bgColor index 5
+fill
+font "courier-bold-r-14.0"
+fontAlign "right"
+endObjectProperties
+
+# Additional properties
+beginObjectProperties
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 985
+y 390
+w 192
+h 44
+controlPv "$(monitor)"
+lineColor index 10
+onColor index 18
+offColor index 5
+endObjectProperties
+
+# (Hoff Video)
+object TwoDProfileMonitorClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 30
+y 465
+w 174
+h 112
+dataPvStr "css:imageWaveform"
+widthPvStr "100"
+heightPvStr "100"
+dataWidth -1
+pvBasedDataSize 1
+nBitsPerPixel 8
+endObjectProperties
+
+# (Choice Button)
+object activeChoiceButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 30
+y 588
+w 143
+h 116
+fgColor index 119
+bgColor index 5
+selectColor index 30
+inconsistentColor index 45
+topShadowColor index 5
+botShadowColor index 10
+controlPv "EpicsDemoMbbo"
+font "courier-bold-r-12.0"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 5
+release 0
+x 231
+y 476
+w 129
+h 25
+controlPv "$(control)"
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+fgColor index 10
+bgColor index 5
+useDisplayBg
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 232
+y 512
+w 113
+h 33
+controlPv "$(control)"
+fgColor index 25
+fgAlarm
+bgColor index 5
+fill
+font "courier-bold-r-14.0"
+fontAlign "right"
+endObjectProperties
+
+# (Slider)
+object activeSliderClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 357
+y 479
+w 200
+h 81
+fgColor index 10
+bgColor index 5
+2ndBgColor index 10
+controlColor index 25
+indicatorColor index 30
+font "courier-bold-r-14.0"
+controlPv "$(control)"
+controlLabelType "pvName"
+readLabelType "pvName"
+incMultiplier 1
+limitsFromDb
+displayFormat "FFloat"
+endObjectProperties
+
+# (Motif Slider)
+object activeMotifSliderClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 570
+y 481
+w 169
+h 70
+fgColor index 10
+bgColor index 5
+2ndBgColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "$(control)"
+controlLabelType "pvName"
+font "courier-bold-r-14.0"
+limitsFromDb
+showLimits
+showLabel
+showValue
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 750
+y 484
+w 105
+h 42
+fgColor index 40
+onColor index 15
+offColor index 115
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "$(control)"
+onLabel "On"
+offLabel "Off"
+3d
+font "courier-medium-r-8.0"
+objType "controls"
+controlBitPos 0
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 869
+y 482
+w 106
+h 41
+fgColor index 10
+bgColor index 5
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "$(monitor).SCAN"
+font "courier-medium-r-8.0"
+endObjectProperties
+
+# (Radio Box)
+object activeRadioButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 206
+y 591
+w 121
+h 108
+fgColor index 10
+bgColor index 5
+buttonColor index 10
+selectColor index 25
+topShadowColor index 5
+botShadowColor index 10
+controlPv "EpicsDemoMbbo"
+font "courier-bold-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 981
+y 477
+w 127
+h 68
+fgColor index 10
+onColor index 5
+offColor index 5
+topShadowColor index 5
+botShadowColor index 10
+controlPv "$(control)"
+pressValue "12"
+releaseValue "0"
+onLabel "Pressed"
+offLabel "Released"
+3d
+font "courier-medium-r-8.0"
+endObjectProperties
+
+# (Up/Down Button)
+object activeUpdownButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 339
+y 597
+w 112
+h 43
+fgColor index 130
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+controlPv "$(control)"
+coarseValue "10"
+fineValue "1"
+label "Up / Down"
+3d
+rate 0.1
+font "courier-medium-r-12.0"
+limitsFromDb
+endObjectProperties
+
+# (Ramp Button)
+object activeRampButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 343
+y 645
+w 106
+h 48
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+controlPv "$(control)"
+finalValuePv "LOC\\intPV=i:111"
+updateRate 0.1
+rampRate 1000
+label "Ramp"
+3d
+font "courier-medium-r-12.0"
+limitsFromDb
+endObjectProperties
+
+# (Exit Button)
+object activeExitButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 474
+y 600
+w 74
+h 45
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+label "EXIT"
+font "courier-medium-r-8.0"
+3d
+endObjectProperties
+
+# (Menu Mux)
+object menuMuxClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 601
+y 592
+w 87
+h 43
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-12.0"
+numItems 2
+symbolTag {
+  0 "One"
+  1 "Two"
+}
+symbol0 {
+  0 "loc"
+  1 "loc"
+}
+value0 {
+  0 "1"
+  1 "2"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 597
+y 644
+w 86
+h 21
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+fgColor index 10
+bgColor index 5
+useDisplayBg
+value {
+  "loc=$(loc)"
+}
+autoSize
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 3
+release 0
+x 707
+y 585
+w 91
+h 71
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-8.0"
+buttonLabel "Related Display"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "embedded"
+}
+symbols {
+  0 "Embedded"
+}
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 3
+release 0
+x 821
+y 586
+w 68
+h 63
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-12.0"
+buttonLabel "Say Hello"
+numCmds 1
+commandLabel {
+  0 "See Hello"
+}
+command {
+  0 "echo \"hello\""
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 909
+y 600
+w 95
+h 30
+controlPv "$(control)"
+fgColor index 25
+fgAlarm
+bgColor index 5
+fill
+font "courier-bold-r-14.0"
+fontAlign "right"
+endObjectProperties
+
+# (X-Y Graph)
+object xyGraphClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+# Geometry
+x 45
+y 733
+w 583
+h 291
+# Appearance
+border
+plotAreaBorder
+autoScaleUpdateMs 200
+autoScaleThreshPct 20
+graphTitle "XYGraph Title"
+xLabel "Time-X"
+yLabel "Y1"
+y2Label "Y2"
+fgColor index 44
+bgColor index 37
+gridColor index 10
+font "courier-bold-r-18.0"
+# Operating Modes
+plotMode "plotLastNPts"
+nPts 100
+updateTimerMs 123
+triggerPv "$(control)"
+resetPv "LOC\\reset=i:1"
+resetMode "ifZero"
+# X axis properties
+showXAxis
+xAxisSrc "AutoScale"
+xMax 1
+xLabelIntervals 10
+xShowLabelGrid
+xShowMajorGrid
+# Y axis properties
+showYAxis
+yMin 1
+yMax 100
+yShowLabelGrid
+yShowMajorGrid
+yAxisSmoothing 1
+# Y2 axis properties
+showY2Axis
+y2Min 1
+y2Max 2
+y2ShowLabelGrid
+# Trace Properties
+numTraces 1
+yPv {
+  0 "$(monitor)"
+}
+plotStyle {
+  0 "point"
+}
+plotSymbolType {
+  0 "diamond"
+}
+plotColor {
+  0 index 46
+}
+endObjectProperties

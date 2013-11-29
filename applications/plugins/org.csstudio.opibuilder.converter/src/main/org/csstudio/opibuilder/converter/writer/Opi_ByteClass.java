@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,16 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_ByteClass;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * @author Matevz
+ * @author Lei Hu, Xihui Chen
  */
 public class Opi_ByteClass extends OpiWidget {
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_ByteClass");
-	private static final String typeId = "meter";
+	private static final String typeId = "bytemonitor";
 	private static final String name = "EDM Byte";
 	private static final String version = "1.0";
 
@@ -28,23 +27,29 @@ public class Opi_ByteClass extends OpiWidget {
 	public Opi_ByteClass(Context con, Edm_ByteClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);
+		setName(name);
+		setVersion(version);
 		
-		if (r.getOnColor().isInitialized()) {
-			new OpiColor(context, "on_color", r.getOnColor());
+		new OpiBoolean(widgetContext, "horizontal", true);
+		new OpiBoolean(widgetContext, "effect_3d", false);
+		new OpiBoolean(widgetContext, "square_led", true);
+		
+		
+		new OpiColor(widgetContext, "on_color", r.getOnColor(), r);
+	
+		new OpiColor(widgetContext, "off_color", r.getOffColor(), r);
+	
+		if(r.getControlPv() !=null){
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
+			createColorAlarmRule(r, convertPVName(r.getControlPv()), "on_color", "onColorAlarm", false);
 		}
-		if (r.getOffColor().isInitialized()) {
-			new OpiColor(context, "off_color", r.getOffColor());
-		}
-		if(r.getAttribute("controlPv").isInitialized())
-			new OpiString(context, "pv_name", r.getControlPv());
-		if(r.getAttribute("endian").isInitialized())
-			new OpiBoolean(context, "horizontal", false);
-		if(r.getAttribute("numBits").isInitialized())
-			new OpiInt(context, "numBits", r.getNumBits());
-		if(r.getAttribute("shift").isInitialized())
-			new OpiInt(context, "startBit", r.getShift());
+		new OpiBoolean(widgetContext, "bitReverse", r.getEndian() !=null && 
+				r.getEndian().equals("little"));
+
+		new OpiInt(widgetContext, "numBits", r.getNumBits()==0?16:r.getNumBits());
+		
+		new OpiInt(widgetContext, "startBit", r.getShift());
+		
 		log.debug("Edm_ByteClass written.");
 
 	}

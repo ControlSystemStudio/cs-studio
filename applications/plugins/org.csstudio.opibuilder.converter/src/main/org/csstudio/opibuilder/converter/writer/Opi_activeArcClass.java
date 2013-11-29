@@ -28,36 +28,34 @@ public class Opi_activeArcClass extends OpiWidget {
 	public Opi_activeArcClass(Context con, Edm_activeArcClass r) {
 		super(con, r);
 		setTypeId(typeId);
+		setVersion(version);
+		setName(name);
+		
+		new OpiColor(widgetContext, "foreground_color",r.getLineColor(), r);
+		
 
-		context.getElement().setAttribute("version", version);
+		new OpiBoolean(widgetContext, "fill", r.isFill());
 		
-		new OpiString(context, "name", name);
-		new OpiColor(context, "foreground_color", r.getLineColor());
-		
-		if(r.getAttribute("fill").isInitialized())
-			new OpiBoolean(context, "fill", r.isFill());
-		
-		if (r.getFillColor().isInitialized()) {
-			new OpiColor(context, "background_color", r.getFillColor());
+		new OpiColor(widgetContext, "background_color", r.getFillColor(), r);
+			
+			
+		if (r.getAlarmPv() != null) {
+			// line color alarm rule.
+			if (r.isLineAlarm())
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "foreground_color",
+						"lineColorAlarmRule", true);
+			if (r.isFillAlarm())
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
+						"backColorAlarmRule", true);
 		}
 		
-		if(r.getAttribute("fillAlarm").isInitialized())
-			new OpiBoolean(context, "backcolor_alarm_sensitive", r.isFillAlarm());
-		
-		
-		if(r.getAttribute("lineAlarm").isInitialized())
-			new OpiBoolean(context, "forecolor_alarm_sensitive", r.isLineAlarm());
-	
-		if(r.getAttribute("alarmPv").isInitialized())
-			new OpiString(context, "pv_name", r.getAlarmPv());
-		
 		int line_width = 1;
-		if(r.getAttribute("lineWidth").isInitialized() && (r.getLineWidth() != 0 || r.isFill()))
+		if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
 			line_width = r.getLineWidth();
-		new OpiInt(context, "line_width", line_width);
+		new OpiInt(widgetContext, "line_width", line_width);
 
 		int lineStyle = 0;
-		if (r.getLineStyle().isInitialized()) {
+		if (r.getLineStyle().isExistInEDL()) {
 
 			switch (r.getLineStyle().get()) {
 			case EdmLineStyle.SOLID: {
@@ -69,19 +67,21 @@ public class Opi_activeArcClass extends OpiWidget {
 			}
 
 		}
-		new OpiInt(context, "line_style", lineStyle);
+		new OpiInt(widgetContext, "line_style", lineStyle);
 		
-		if(r.getAttribute("startAngle").isInitialized())
-			new OpiDouble(context, "start_angle", r.getStartAngle());
-		if(r.getAttribute("startAngle").isInitialized())
-			new OpiDouble(context, "total_angle", r.getTotalAngle());
+		
+		new OpiDouble(widgetContext, "start_angle", r.getStartAngle());
+
+		new OpiDouble(widgetContext, "total_angle", 
+					r.getAttribute("totalAngle").isExistInEDL()?r.getTotalAngle():180);
+		
 		log.debug("Edm_activeArcClass written.");
 
 	}
 	
 	protected void setDefaultPropertyValue(){
 		super.setDefaultPropertyValue();		
-		new OpiBoolean(context, "transparent", true);
+		new OpiBoolean(widgetContext, "transparent", true);
 	}
 
 }

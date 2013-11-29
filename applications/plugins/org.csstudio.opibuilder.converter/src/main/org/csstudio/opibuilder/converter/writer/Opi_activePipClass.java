@@ -7,12 +7,18 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
+import org.csstudio.java.string.StringSplitter;
+import org.csstudio.opibuilder.converter.model.EdmString;
 import org.csstudio.opibuilder.converter.model.Edm_activePipClass;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 /**
- * XML conversion class for Edm_activeRectangleClass
- * @author Matevz
+ * XML conversion class for Edm_activePipClass
+ * @author Lei Hu, Xihui Chen
  */
 public class Opi_activePipClass extends OpiWidget {
 
@@ -27,22 +33,86 @@ public class Opi_activePipClass extends OpiWidget {
 	public Opi_activePipClass(Context con, Edm_activePipClass r) {
 		super(con, r);
 		setTypeId(typeId);
+		setVersion(version);
+		setName(name);
+		
 
-		context.getElement().setAttribute("version", version);
-		
-		new OpiString(context, "name", name);
-		new OpiColor(context, "foreground_color", r.getFgColor());
-		
-		if (r.getBgColor().isInitialized()) {
-			new OpiColor(context, "background_color", r.getBgColor());
-		}
-		if(r.getAttribute("displaySource").isInitialized() && (r.getDisplaySource().equals("file")))
+		if(r.getDisplaySource()!=null)
 		{
-			new OpiString(context, "opi_file", r.getFile().replace(".edl", ".opi"));				
+			if(r.getDisplaySource().equals("menu") && r.getDisplayFileName()!=null && r.getFilePv()!=null){
+				
+				Map<String, EdmString> displayFileMap = r.getDisplayFileName().getEdmAttributesMap();
+				if(displayFileMap.size()>0){
+					
+					Map<String, EdmString> symbolsMap=null;
+					if(r.getSymbols()!=null)
+						symbolsMap = r.getSymbols().getEdmAttributesMap();
+
+					StringBuilder sb = new StringBuilder("importPackage(Packages.org.csstudio.opibuilder.scriptUtil);\n");
+					sb.append("var pv0 = PVUtil.getLong(pvs[0]);\n");
+					boolean f= false;
+					for(String key : displayFileMap.keySet()){
+						if(f)
+							sb.append("else ");						
+						f=true;
+						sb.append("if(pv0=="+key+"){\n");
+						boolean append = true;
+						if(r.getReplaceSymbols()!=null&&r.getReplaceSymbols().getEdmAttributesMap().containsKey(key)){
+							append = !r.getReplaceSymbols().getEdmAttributesMap().get(key).is();
+						}
+						sb.append("var macroInput = DataUtil.createMacrosInput("+append+");\n");
+						if(symbolsMap != null && symbolsMap.containsKey(key)){
+							try {
+								EdmString symbols = symbolsMap.get(key);
+								if (symbols != null) {
+									for (String s : StringSplitter.splitIgnoreInQuotes(symbols.get(), ',', true)) {
+										String[] rs = StringSplitter.splitIgnoreInQuotes(s, '=', true);
+										if (rs.length == 2) {
+											try {
+												sb.append("macroInput.put(\"" + rs[0] + "\", \"" + rs[1]+"\");\n");
+											} catch (Exception e) {
+												ErrorHandlerUtil.handleError("Parse Macros Error on: "+s, e);
+											}
+										}
+									}
+								}
+							} catch (Exception e) {
+								ErrorHandlerUtil.handleError("Parse Macros Error", e);
+							}
+						}
+						sb.append("widget.setPropertyValue(\"macros\", macroInput);\n");
+						
+						sb.append("widget.setPropertyValue(\"opi_file\",\""+
+								convertFileExtention(displayFileMap.get(key).get()) +"\");\n");
+						
+						sb.append("}\n");
+					}
+					
+					LinkedHashMap<String, Boolean> pvNames = new LinkedHashMap<String, Boolean>();
+					pvNames.put(convertPVName(r.getFilePv()), true);
+					
+					new OpiScript(widgetContext, "OPIFileScript", pvNames , sb.toString());
+				}
+				
+				
+				
+				
+			}else if (r.getFile() != null) {
+				String originPath = r.getFile();
+				originPath = convertFileExtention(originPath);
+				new OpiString(widgetContext, "opi_file", originPath);
+			}
 		}
+		
+		if(r.getDisplaySource()==null && r.getFilePv()!=null){
+			createPVOutputRule(r, convertPVName(r.getFilePv()), "opi_file", "pvStr0", "OPIFileFromPVRule");
+		}
+		
 		log.debug("Edm_activePipClass written.");
 
 	}
+
+
 
 }
 

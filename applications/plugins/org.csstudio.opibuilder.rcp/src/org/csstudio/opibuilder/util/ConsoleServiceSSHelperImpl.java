@@ -58,7 +58,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 		generalStream = console.newOutputStream();
 		
 		// Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
-		console.setWaterMarks(80000, 100000);
+		console.setWaterMarks(400000, 500000);
 		
 		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
 		consolePlugin.getConsoleManager().addConsoles(
