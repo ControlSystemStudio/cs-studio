@@ -8,6 +8,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
@@ -16,6 +18,7 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
+import org.csstudio.logbook.ui.extra.LogEntryTree.LogEntryTreeModel;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -40,6 +43,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
@@ -66,10 +70,16 @@ public class LogTableView extends ViewPart {
     private List<String> tags = Collections.emptyList();
     private ErrorBar errorBar;
     private Button btnNewButton;
-    private String resultSize;
+    
+    private int resultSize;
+    private int page = 1;
     
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private String searchString;
+    private Composite navigator;
+    private Link previousPage;
+    private Label labelPage;
+    private Link nextPage;
 
     public LogTableView() {
     }
@@ -94,9 +104,22 @@ public class LogTableView extends ViewPart {
 		    @Override
 		    public void propertyChange(PropertyChangeEvent arg0) {
 			text.setText(searchString);
-			search();
+			setPage(1);
 		    }
 		});
+	changeSupport.addPropertyChangeListener("page", new PropertyChangeListener() {
+	    
+	    @Override
+	    public void propertyChange(PropertyChangeEvent arg0) {
+		labelPage.setText(String.valueOf(page));
+		if(page > 1){
+		    previousPage.setEnabled(true);
+		} else {
+		    previousPage.setEnabled(false);
+		}
+		search();
+	    }
+	});
 
 	Label lblLogQuery = new Label(parent, SWT.NONE);
 	lblLogQuery.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
@@ -115,7 +138,7 @@ public class LogTableView extends ViewPart {
 	
 	btnNewButton = new Button(parent, SWT.NONE);	
 	try {
-	    resultSize = service.getString("org.csstudio.logbook.ui","Result.size", "", null);
+	    resultSize = service.getInt("org.csstudio.logbook.ui","Result.size", 100, null);
 	} catch (Exception ex) {
 	    errorBar.setException(ex);
 	}
@@ -192,6 +215,39 @@ public class LogTableView extends ViewPart {
 	});
 	logEntryTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
 
+	navigator = new Composite(parent, SWT.NONE);
+	navigator.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1));
+	navigator.setLayout(new GridLayout(3, false));
+	
+	previousPage = new Link(navigator, SWT.NONE);
+	previousPage.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
+	previousPage.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		if(page > 1){
+		    setPage(page - 1);
+		}
+	    }
+	});	
+	previousPage.setEnabled(false);
+	previousPage.setText("<a>Previous page</a>");
+	
+	labelPage = new Label(navigator, SWT.NONE);
+	labelPage.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+	labelPage.setText(String.valueOf(page));
+	
+	nextPage = new Link(navigator, SWT.NONE);
+	nextPage.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+	nextPage.addSelectionListener(new SelectionAdapter() {
+
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		    setPage(page+1);
+	    }
+	});
+	nextPage.setEnabled(false);
+	nextPage.setText("<a>Next page</a>");
+	
 	PopupMenuUtil.installPopupForView(logEntryTable, getSite(), logEntryTable);
 	initializeClient();
     }
@@ -219,8 +275,8 @@ public class LogTableView extends ViewPart {
 	    protected IStatus run(IProgressMonitor monitor) {
 		if (initializeClient()) {
 		    try {
-			if(!resultSize.isEmpty() && Integer.valueOf(resultSize) >= 0){
-			    searchString.append(" page:1");
+			if(resultSize >= 0){
+			    searchString.append(" page:" + page);
 			    searchString.append(" limit:" + resultSize);
 			}
 			final List<LogEntry> logEntries = new ArrayList<LogEntry>(
@@ -228,9 +284,25 @@ public class LogTableView extends ViewPart {
 			Display.getDefault().asyncExec(new Runnable() {
 			    @Override
 			    public void run() {
+				if(!logEntries.isEmpty()){
+				    nextPage.setEnabled(true);
+				}else{
+				    nextPage.setEnabled(false);
+				}
+				Collections.sort(logEntries, new Comparator<LogEntry>(){
+
+				    @Override
+				    public int compare(LogEntry o1, LogEntry o2) {
+					Date d1 =  o1.getModifiedDate() != null ? o1.getModifiedDate() : o1.getCreateDate();
+					Date d2 =  o2.getModifiedDate() != null ? o2.getModifiedDate() : o2.getCreateDate();
+					return d2.compareTo(d1);
+				    }
+				    
+				});
 				logEntryTable.setLogs(logEntries);
 			    }
 			});
+			
 		    } catch (Exception e1) {
 			errorBar.setException(e1);
 		    }
@@ -241,6 +313,11 @@ public class LogTableView extends ViewPart {
 	search.schedule();
     }
 
+    private void setPage(int page){
+	this.page = page;
+	changeSupport.firePropertyChange("page", null, this.page);
+    }
+    
     public void setSearchString(String searchString) {
 	// Do not ignore events where the search string is the same, we need to re-execute the query
 	// setting the old value to null
