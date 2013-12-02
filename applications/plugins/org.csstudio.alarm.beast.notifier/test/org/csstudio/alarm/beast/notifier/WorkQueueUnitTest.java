@@ -54,7 +54,7 @@ public class WorkQueueUnitTest {
 			String aaPrefix, EActionPriority priority, int nb) {
 		final ItemInfo info = ItemInfo.fromItem(item);
 		for (int count = 0; count < nb; count++) {
-			final AADataStructure aa = new AADataStructure(aaPrefix + count, "smsto:fake", 5);
+			final AADataStructure aa = new AADataStructure(aaPrefix + count, "smsto:fake", 6);
 			final ActionID id = NotifierUtils.getActionID(item, aa);
 			final IAutomatedAction newAction = new EmptyAction(++currentId);
 			final AlarmHandler newTask = new AlarmHandler(id, info, newAction, aa.getDelay());
@@ -67,7 +67,7 @@ public class WorkQueueUnitTest {
 				}
 			}).start();
 		}
-		try { Thread.sleep(50); } catch (InterruptedException e) { }
+		try { Thread.sleep(500); } catch (InterruptedException e) { }
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class WorkQueueUnitTest {
 	public void testSchedule() {
 		actionMap = new ConcurrentHashMap<Integer, Boolean>();
 
-		final WorkQueue workQueue = new WorkQueue(10, 10);
+		final WorkQueue workQueue = new WorkQueue(10, 10000); // 10 actions per 10s
 		final MockAlarmRDBHandler rdbHandler = new MockAlarmRDBHandler(false);
 		try {
 			final AlarmTreePV pv = rdbHandler.findPV(UnitTestConstants.PV_NAME);
@@ -87,8 +87,11 @@ public class WorkQueueUnitTest {
 			final IAutomatedAction newAction = new EmptyAction(0);
 			final AlarmHandler newTask = new AlarmHandler(id, info, newAction, aa.getDelay());
 			actionMap.put(currentId, false);
+			// Schedule with delay = 5s
 			workQueue.schedule(newTask, false);
+			// Wait 5s
 			Thread.sleep(5500);
+			// Check that action as been executed
 			Assert.assertTrue(actionMap.get(0));
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
@@ -109,50 +112,50 @@ public class WorkQueueUnitTest {
 	public void testOverflow() {
 		actionMap = new ConcurrentHashMap<Integer, Boolean>();
 
-		final WorkQueue workQueue = new WorkQueue(10, 10);
+		final WorkQueue workQueue = new WorkQueue(10, 10000); // 10 actions per 10s
 		final MockAlarmRDBHandler rdbHandler = new MockAlarmRDBHandler(false);
 		try {
 			AlarmTreePV pv1 = rdbHandler.findPV(UnitTestConstants.PV_NAME);
 			AlarmTreePV pv2 = rdbHandler.findPV(UnitTestConstants.PV2_NAME);
 			AlarmTreeItem sys = pv1.getParent();
 
-			// Test PVs
-			// PV alarms overflow => ALL CANCELD
+			// PV alarms overflow => execute only MAJOR
 			currentId = 0;
-			fireActions(workQueue, pv1, "AA1_", EActionPriority.MAJOR, 3);
+			fireActions(workQueue, pv1, "AA1_", EActionPriority.MINOR, 3);
 			Assert.assertEquals(3, workQueue.countPendingActions());
 			fireActions(workQueue, pv1, "AA2_", EActionPriority.MAJOR, 3);
 			Assert.assertEquals(6, workQueue.countPendingActions());
-			fireActions(workQueue, pv2, "AA3_", EActionPriority.MAJOR, 3);
+			fireActions(workQueue, pv2, "AA3_", EActionPriority.MINOR, 3);
 			Assert.assertEquals(9, workQueue.countPendingActions());
 			fireActions(workQueue, pv2, "AA4_", EActionPriority.MAJOR, 3);
-			// No action should be triggered
+			// Wait 10s
+			Thread.sleep(10000);
 			Assert.assertEquals(0, workQueue.countPendingActions());
-			for (int i = 1; i < 13; i++)
-				Assert.assertFalse(actionMap.get(i));
-			Thread.sleep(2000);
-
-			// Test Systems
-			// ALL MAJOR should have been executed
-			currentId = 0;
-			fireActions(workQueue, sys, "AA5_", EActionPriority.MAJOR, 5);
-			Assert.assertEquals(5, workQueue.countPendingActions());
-			fireActions(workQueue, sys, "AA6_", EActionPriority.MINOR, 5);
-			fireActions(workQueue, sys, "AA7_", EActionPriority.MAJOR, 2);
 			int count = 0;
-			while (!(actionMap.get(1) && actionMap.get(2) && actionMap.get(3)
-					&& actionMap.get(4) && actionMap.get(5) && actionMap.get(11) && actionMap.get(12))) {
+			while (!(actionMap.get(4) && actionMap.get(5) && actionMap.get(6)
+					&& actionMap.get(10) && actionMap.get(11) && actionMap.get(12))) {
 				Thread.sleep(500);
 				if (++count > 20) { // wait 10s max
 					Assert.fail("No response received from action threads");
 					break;
 				}
 			}
+
+			// System alarms overflow => execute ALL
+			currentId = 0;
+			fireActions(workQueue, sys, "AA5_", EActionPriority.MAJOR, 5);
+			Assert.assertEquals(5, workQueue.countPendingActions());
+			fireActions(workQueue, sys, "AA6_", EActionPriority.MINOR, 5);
+			fireActions(workQueue, sys, "AA7_", EActionPriority.MAJOR, 2);
+			// Wait 6s
+			Thread.sleep(6500);
 			Assert.assertEquals(0, workQueue.countPendingActions());
+			for (int i = 1; i < 13; i++)
+				Assert.assertTrue(actionMap.get(i));
 
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 }

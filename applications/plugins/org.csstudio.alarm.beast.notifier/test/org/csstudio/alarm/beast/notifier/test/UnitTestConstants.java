@@ -11,8 +11,7 @@ public class UnitTestConstants {
 
 	final public static String CONFIG_ROOT = "AlarmHandler";
 
-	final public static int TIMER_THRESHOLD = 10;
-	final public static int THREAD_THRESHOLD = 10;
+	final public static int TIMER_THRESHOLD = 100;
 
 	final public static String SYS_NAME = "Vacuum";
 	final public static String PV_NAME = "DTL_Vac:Sensor1:Pressure";

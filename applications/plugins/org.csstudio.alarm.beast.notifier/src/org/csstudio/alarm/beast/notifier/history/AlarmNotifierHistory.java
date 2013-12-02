@@ -74,7 +74,12 @@ public class AlarmNotifierHistory {
 		return actions.get(id);
 	}
 
-	public void clean() {
+	public void clear(PVSnapshot s) {
+		pvs.remove(s.getPath());
+		Activator.getLogger().log(Level.INFO, s.getPath() + " => REMOVED");
+	}
+
+	public void clearAll() {
 		this.actions.clear();
 		this.pvs.clear();
 	}
