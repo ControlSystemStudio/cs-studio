@@ -145,20 +145,24 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
 	    @Override
 	    public void update(ViewerCell cell) {
-		LogEntry item = ((LogEntryTreeModel) cell.getElement()).logEntry;
-		String date = "";
+		LogEntryTreeModel item = ((LogEntryTreeModel) cell.getElement());
+		StringBuffer date = new StringBuffer();
 		if (item != null) {
-		    if (item.getModifiedDate() != null) {
-			date = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-				DateFormat.SHORT)
-				.format(item.getModifiedDate());
-		    } else {
-			date = item.getCreateDate() == null ? "No Data"
-				: DateFormat.getDateTimeInstance(
-					DateFormat.SHORT, DateFormat.SHORT)
-					.format(item.getCreateDate());
+		    date.append(item.logEntry.getCreateDate() == null ? "No Data"
+			    : DateFormat.getDateTimeInstance(DateFormat.SHORT,
+				    DateFormat.SHORT).format(
+				    item.logEntry.getCreateDate()));
+		    if (item.logEntry.getModifiedDate() != null &&
+			    !item.logEntry.getCreateDate().equals(item.logEntry.getModifiedDate())) {
+			date.append(System.getProperty("line.separator"));
+			date.append("modified:");
+			date.append(System.getProperty("line.separator"));
+			date.append(DateFormat
+					.getDateTimeInstance(DateFormat.SHORT,
+						DateFormat.SHORT)
+					.format(item.logEntry.getModifiedDate()));
 		    }
-		    cell.setText(date);
+		    cell.setText(date.toString());
 		}
 	    }
 	});
@@ -462,8 +466,8 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
 	    @Override
 	    public int compare(LogEntryTreeModel o1, LogEntryTreeModel o2) {
-		Date d1 =  o1.logEntry.getModifiedDate() != null ? o1.logEntry.getModifiedDate() : o1.logEntry.getCreateDate();
-		Date d2 =  o2.logEntry.getModifiedDate() != null ? o2.logEntry.getModifiedDate() : o2.logEntry.getCreateDate();
+		Date d1 =  o1.logEntry.getCreateDate();
+		Date d2 =  o2.logEntry.getCreateDate();
 		return d2.compareTo(d1);
 	    }
 	    

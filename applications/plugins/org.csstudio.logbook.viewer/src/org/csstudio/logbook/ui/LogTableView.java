@@ -293,8 +293,8 @@ public class LogTableView extends ViewPart {
 
 				    @Override
 				    public int compare(LogEntry o1, LogEntry o2) {
-					Date d1 =  o1.getModifiedDate() != null ? o1.getModifiedDate() : o1.getCreateDate();
-					Date d2 =  o2.getModifiedDate() != null ? o2.getModifiedDate() : o2.getCreateDate();
+					Date d1 =  o1.getCreateDate();
+					Date d2 =  o2.getCreateDate();
 					return d2.compareTo(d1);
 				    }
 				    
