@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Shell;
  *  on change.
  *
  *  @author Kay Kasemir
- *  @author benhadj naceur
+ *  @author benhadj naceur @  sopra group - iter
  */
 public class Model
 {

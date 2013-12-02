@@ -67,7 +67,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  * SWT GUI for Model: Table of messages.
  *
  * @author Kay Kasemir
- * @author benhadj naceur
+ * @author benhadj naceur @  sopra group - iter
  */
 @SuppressWarnings("nls")
 public class GUI implements ModelListener, DisposeListener

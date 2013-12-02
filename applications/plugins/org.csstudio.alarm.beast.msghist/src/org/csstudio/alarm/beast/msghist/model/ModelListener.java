@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.msghist.model;
 
 /** Listener gets notified when model changes.
  *  @author Kay Kasemir
- *  @author benhadj naceur
+ *  @author benhadj naceur @  sopra group - iter
  */
 public interface ModelListener
 {
