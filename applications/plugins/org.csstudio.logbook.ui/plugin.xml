@@ -81,6 +81,19 @@
             </visibleWhen>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="org.csstudio.logbook.ui.toolbar">
+            <command
+                  commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+                  icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
+                  label="%MakeLogEntry"
+                  style="push">
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.help.toc">
