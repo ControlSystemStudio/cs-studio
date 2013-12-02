@@ -267,9 +267,10 @@ public class LogTreeView extends ViewPart {
 
 
     public void setSearchString(String searchString) {
-	String oldValue = this.searchString;
+	// Do not ignore events where the search string is the same, we need to re-execute the query
+	// setting the old value to null
 	this.searchString = searchString;
-	changeSupport.firePropertyChange("searchString", oldValue, this.searchString);
+	changeSupport.firePropertyChange("searchString", null, this.searchString);
     }
     
     @Override

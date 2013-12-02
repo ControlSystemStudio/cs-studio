@@ -3,6 +3,9 @@
  */
 package org.csstudio.logbook.ui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +67,9 @@ public class LogTableView extends ViewPart {
     private ErrorBar errorBar;
     private Button btnNewButton;
     private String resultSize;
+    
+    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+    private String searchString;
 
     public LogTableView() {
     }
@@ -82,6 +88,16 @@ public class LogTableView extends ViewPart {
 	errorBar.setLayoutData(new  GridData(SWT.CENTER, SWT.CENTER, true, false, 4, 1));
 	errorBar.setMarginBottom(5);	
 
+	changeSupport.addPropertyChangeListener("searchString",
+		new PropertyChangeListener() {
+
+		    @Override
+		    public void propertyChange(PropertyChangeEvent arg0) {
+			text.setText(searchString);
+			search();
+		    }
+		});
+
 	Label lblLogQuery = new Label(parent, SWT.NONE);
 	lblLogQuery.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 	lblLogQuery.setText("Log Query:");
@@ -91,7 +107,7 @@ public class LogTableView extends ViewPart {
 	    @Override
 	    public void keyReleased(KeyEvent e) {
 		if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-		    search();
+		    setSearchString(text.getText());
 		}
 	    }
 	});
@@ -225,6 +241,13 @@ public class LogTableView extends ViewPart {
 	search.schedule();
     }
 
+    public void setSearchString(String searchString) {
+	// Do not ignore events where the search string is the same, we need to re-execute the query
+	// setting the old value to null
+	this.searchString = searchString;
+	changeSupport.firePropertyChange("searchString", null, this.searchString);
+    }
+    
     @Override
     public void setFocus() {
     }
