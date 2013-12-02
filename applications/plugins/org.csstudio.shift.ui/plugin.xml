@@ -26,7 +26,7 @@
             <view
             category="org.csstudio"
             class="org.csstudio.shift.ui.CreateShiftView"
-            icon="icons/shift-close.png"
+            icon="icons/SignOff-icon.png"
             id="org.csstudio.shift.ui.CreateShift"
             name="Sign off"
             restorable="true">
@@ -104,7 +104,7 @@
           locationURI="popup:org.eclipse.ui.popup.any">
        <command
              commandId="org.csstudio.shift.ui.CloseShiftBuilder"
-             icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-close.png"
+             icon="platform:/plugin/org.csstudio.shift.ui/icons/SignOff-icon.png"
              label="Sign off"
              style="push">
           <visibleWhen>

@@ -68,6 +68,8 @@ public class ShiftWidget extends Composite {
 	private Label lblOwner;
 
 	private Text owner;
+
+	private boolean extraFieldsEditable;
     
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
@@ -77,12 +79,13 @@ public class ShiftWidget extends Composite {
         changeSupport.removePropertyChangeListener(listener);
     }
 
-    public ShiftWidget(final Composite parent, int style, final boolean editable) {
+    public ShiftWidget(final Composite parent, int style, final boolean editable, final boolean extraFieldsEditable) {
         super(parent, style);
         
         this.shiftBuilder = ShiftBuilder.withType(defaultText);
                 
         this.editable = editable;
+        this.extraFieldsEditable = extraFieldsEditable;
         final GridLayout gridLayout = new GridLayout(1, false);
         gridLayout.verticalSpacing = 2;
         gridLayout.marginWidth = 2;
@@ -150,7 +153,7 @@ public class ShiftWidget extends Composite {
         
         text = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED | SWT.V_SCROLL);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
-        text.setEditable(editable);
+        text.setEditable(extraFieldsEditable);
         text.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(final KeyEvent e) {
@@ -181,7 +184,7 @@ public class ShiftWidget extends Composite {
     	lblShiftPersonal.setText("Personal on Shift:");
     	
     	shiftPersonal = new Text(composite, SWT.BORDER);
-    	shiftPersonal.setEditable(editable);
+    	shiftPersonal.setEditable(extraFieldsEditable);
     	shiftPersonal.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(final KeyEvent e) {
@@ -197,7 +200,7 @@ public class ShiftWidget extends Composite {
     	lblReport.setText("Report:");
     	
     	report = new Text(composite, SWT.BORDER);
-    	report.setEditable(editable);
+    	report.setEditable(extraFieldsEditable);
     	report.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(final KeyEvent e) {

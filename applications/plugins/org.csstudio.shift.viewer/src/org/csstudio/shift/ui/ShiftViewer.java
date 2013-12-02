@@ -157,7 +157,7 @@ public class ShiftViewer extends EditorPart {
      */
     @Override
     public void createPartControl(final Composite parent) {
-        shiftWidget = new ShiftWidget(parent, SWT.NONE, false);
+        shiftWidget = new ShiftWidget(parent, SWT.NONE, false, false);
         final Shift shift = ((ShiftViewerModel) getEditorInput()).getShift();
         if (shift != null) {
             shiftWidget.setShift(((ShiftViewerModel) getEditorInput()).getShift());

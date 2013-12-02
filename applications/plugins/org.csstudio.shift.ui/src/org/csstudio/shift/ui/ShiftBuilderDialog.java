@@ -59,7 +59,7 @@ public class ShiftBuilderDialog extends Dialog {
                 SWT.CENTER, true, false, 1, 1));
         }
 
-        shiftWidget = new ShiftWidget(container, SWT.NONE, true);
+        shiftWidget = new ShiftWidget(container, SWT.NONE, true, true);
         final GridData gd_shiftWidget = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_shiftWidget.heightHint = 450;
         gd_shiftWidget.widthHint = 450;
