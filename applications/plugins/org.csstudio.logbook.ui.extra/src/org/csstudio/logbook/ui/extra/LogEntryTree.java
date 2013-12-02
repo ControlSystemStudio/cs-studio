@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -168,10 +169,10 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	new ColumnViewerSorter(gridTreeViewer, column) {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
-		return Long.compare(((LogEntryTreeModel) e1).logEntry
-			.getModifiedDate().getTime(),
-			((LogEntryTreeModel) e2).logEntry.getModifiedDate()
-				.getTime());
+		return ((LogEntryTreeModel) e1).logEntry.getCreateDate()
+			.compareTo(
+				((LogEntryTreeModel) e2).logEntry
+					.getCreateDate());
 	    }
 	};
 	// Second column is the first line of the logEntry
@@ -457,14 +458,16 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	    }
 	}
 
-//	Collections.sort(root.child, new Comparator<LogEntryTreeModel>(){
-//
-//	    @Override
-//	    public int compare(LogEntryTreeModel o1, LogEntryTreeModel o2) {
-//		return o2.logEntry.getModifiedDate().compareTo(o1.logEntry.getModifiedDate());
-//	    }
-//	    
-//	});
+	Collections.sort(root.child, new Comparator<LogEntryTreeModel>(){
+
+	    @Override
+	    public int compare(LogEntryTreeModel o1, LogEntryTreeModel o2) {
+		Date d1 =  o1.logEntry.getModifiedDate() != null ? o1.logEntry.getModifiedDate() : o1.logEntry.getCreateDate();
+		Date d2 =  o2.logEntry.getModifiedDate() != null ? o2.logEntry.getModifiedDate() : o2.logEntry.getCreateDate();
+		return d2.compareTo(d1);
+	    }
+	    
+	});
 	return root;
     }
 }
