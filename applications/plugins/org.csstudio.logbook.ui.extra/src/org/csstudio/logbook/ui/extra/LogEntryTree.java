@@ -169,8 +169,8 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
 		return Long.compare(((LogEntryTreeModel) e1).logEntry
-			.getCreateDate().getTime(),
-			((LogEntryTreeModel) e2).logEntry.getCreateDate()
+			.getModifiedDate().getTime(),
+			((LogEntryTreeModel) e2).logEntry.getModifiedDate()
 				.getTime());
 	    }
 	};
@@ -457,6 +457,14 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	    }
 	}
 
+//	Collections.sort(root.child, new Comparator<LogEntryTreeModel>(){
+//
+//	    @Override
+//	    public int compare(LogEntryTreeModel o1, LogEntryTreeModel o2) {
+//		return o2.logEntry.getModifiedDate().compareTo(o1.logEntry.getModifiedDate());
+//	    }
+//	    
+//	});
 	return root;
     }
 }
