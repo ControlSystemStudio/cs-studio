@@ -231,14 +231,17 @@ public class ShiftTableView extends ViewPart {
 			if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START) && searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
 				timeInterval = TimeParser.getTimeInterval(searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_START),
 						searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_END));
+			    searchParameters.put("from", String.valueOf(timeInterval.getStart().getSec()));
+			    searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
 			} else if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START)) {
 				timeInterval = TimeParser.getTimeInterval(searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_START), "now");
+			    searchParameters.put("from", String.valueOf(timeInterval.getStart().getSec()));
+			    searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
 			} else if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
 				timeInterval = TimeParser.getTimeInterval("now", searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_END));
+			    searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
 			}
 		    searchParameters.remove(ShiftSearchUtil.SEARCH_KEYWORD_START);
-		    searchParameters.put("from", String.valueOf(timeInterval.getStart().getSec()));
-		    searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
 		}
 	    return new ArrayList<Shift>(shiftClient.findShifts(searchParameters));
     }
