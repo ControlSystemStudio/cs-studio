@@ -303,7 +303,7 @@ public class LogTreeView extends ViewPart {
 			Display.getDefault().asyncExec(new Runnable() {
 			    @Override
 			    public void run() {
-				if(!logEntries.isEmpty()){
+				if(!logEntries.isEmpty() && logEntries.size() >= resultSize){
 				    nextPage.setEnabled(true);
 				}else{
 				    nextPage.setEnabled(false);
