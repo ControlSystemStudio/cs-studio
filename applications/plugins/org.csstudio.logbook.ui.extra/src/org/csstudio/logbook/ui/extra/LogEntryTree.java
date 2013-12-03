@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -144,20 +145,24 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
 	    @Override
 	    public void update(ViewerCell cell) {
-		LogEntry item = ((LogEntryTreeModel) cell.getElement()).logEntry;
-		String date = "";
+		LogEntryTreeModel item = ((LogEntryTreeModel) cell.getElement());
+		StringBuffer date = new StringBuffer();
 		if (item != null) {
-		    if (item.getModifiedDate() != null) {
-			date = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-				DateFormat.SHORT)
-				.format(item.getModifiedDate());
-		    } else {
-			date = item.getCreateDate() == null ? "No Data"
-				: DateFormat.getDateTimeInstance(
-					DateFormat.SHORT, DateFormat.SHORT)
-					.format(item.getCreateDate());
+		    date.append(item.logEntry.getCreateDate() == null ? "No Data"
+			    : DateFormat.getDateTimeInstance(DateFormat.SHORT,
+				    DateFormat.SHORT).format(
+				    item.logEntry.getCreateDate()));
+		    if (item.logEntry.getModifiedDate() != null &&
+			    !item.logEntry.getCreateDate().equals(item.logEntry.getModifiedDate())) {
+			date.append(System.getProperty("line.separator"));
+			date.append("modified:");
+			date.append(System.getProperty("line.separator"));
+			date.append(DateFormat
+					.getDateTimeInstance(DateFormat.SHORT,
+						DateFormat.SHORT)
+					.format(item.logEntry.getModifiedDate()));
 		    }
-		    cell.setText(date);
+		    cell.setText(date.toString());
 		}
 	    }
 	});
@@ -168,10 +173,10 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	new ColumnViewerSorter(gridTreeViewer, column) {
 	    @Override
 	    protected int doCompare(Viewer viewer, Object e1, Object e2) {
-		return Long.compare(((LogEntryTreeModel) e1).logEntry
-			.getCreateDate().getTime(),
-			((LogEntryTreeModel) e2).logEntry.getCreateDate()
-				.getTime());
+		return ((LogEntryTreeModel) e1).logEntry.getCreateDate()
+			.compareTo(
+				((LogEntryTreeModel) e2).logEntry
+					.getCreateDate());
 	    }
 	};
 	// Second column is the first line of the logEntry
@@ -457,6 +462,16 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	    }
 	}
 
+	Collections.sort(root.child, new Comparator<LogEntryTreeModel>(){
+
+	    @Override
+	    public int compare(LogEntryTreeModel o1, LogEntryTreeModel o2) {
+		Date d1 =  o1.logEntry.getCreateDate();
+		Date d2 =  o2.logEntry.getCreateDate();
+		return d2.compareTo(d1);
+	    }
+	    
+	});
 	return root;
     }
 }
