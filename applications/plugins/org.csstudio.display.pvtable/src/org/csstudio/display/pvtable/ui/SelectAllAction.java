@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
@@ -19,8 +20,8 @@ public class SelectAllAction extends PVTableAction
 {
     public SelectAllAction(final TableViewer viewer)
     {
-        super("Select All", "icons/checked.gif", viewer); //$NON-NLS-1$
-        setToolTipText("Select all table rows");
+        super(Messages.SelectAll, "icons/checked.gif", viewer); //$NON-NLS-1$
+        setToolTipText(Messages.SelectAll_TT);
     }
     
     public void run()
