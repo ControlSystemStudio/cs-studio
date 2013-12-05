@@ -172,7 +172,10 @@ public class PVTable implements PVTableModelListener
                     viewer.remove(item);
                 }
                 else // Change name of existing item
+                {
                     item.updateName(new_name);
+                    model.fireModelChange();
+                }
             }
             
             @Override
