@@ -49,6 +49,13 @@ Values are highlighted when they differ from the saved snapshot value by a certa
 The currently used tolerance is displayed in the tool-tip of a table row.
 This 'tolerance' value can be configured via the context menu of selected table rows.
 </p>
+<p>
+When configuring the 'tolerance', note that it applies to the rows which are
+selected in the table via the usual selection mechanism (click on one row, shift-click to select multiple rows, ...).
+If no row specific rows are selected to set their tolerance, the tolerance for every row in the table will be updated.
+This is independent of the check mark in the first table column which marks rows to be restored by writing
+their saved value back to the PVs.
+</p>
 
 
 <h1>History</h1>
@@ -56,6 +63,8 @@ This 'tolerance' value can be configured via the context menu of selected table 
 <h2>Version 3.2.1 - 2013-12-05</h2>
 <ul>
 <li>Context menu entries to select/de-select all rows.</li>
+<li>Changing the 'tolerance' can be done for currently selected table rows, or whole model if nothing selected.</li>
+<li>Changing the 'tolerance' marks table as changed, so it can be saved.</li>
 </ul>
 
 
