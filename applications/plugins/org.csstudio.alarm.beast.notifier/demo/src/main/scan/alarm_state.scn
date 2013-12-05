@@ -1,0 +1,76 @@
+<commands>
+  <comment>
+    <text>Alarm Notifier Test Sequence</text>
+  </comment>
+  <config_log>
+    <automatic>false</automatic>
+  </config_log>
+  <comment>
+    <text>A. Set the Value 1.6 to generate a MINOR LOW_ALARM</text>
+  </comment>
+  <set>
+    <device>RFQ_Vac:Pump1:Pressure</device>
+    <value>1.6</value>
+    <wait>false</wait>
+    <tolerance>0.1</tolerance>
+  </set>
+  <log>
+    <devices>
+      <device>RFQ_Vac:Pump1:Pressure</device>
+    </devices>
+  </log>
+  <delay>
+    <seconds>10.0</seconds>
+  </delay>
+  <comment>
+    <text>B. Set the Value 0.5 to generate a MAJOR LOLO_ALARM</text>
+  </comment>
+  <set>
+    <device>RFQ_Vac:Pump1:Pressure</device>
+    <value>0.5</value>
+    <wait>false</wait>
+    <tolerance>0.1</tolerance>
+  </set>
+  <log>
+    <devices>
+      <device>RFQ_Vac:Pump1:Pressure</device>
+    </devices>
+  </log>
+  <delay>
+    <seconds>1.0</seconds>
+  </delay>
+  <comment>
+    <text>C. Set the Value 1.3 to generate a MINOR LOW_ALARM</text>
+  </comment>
+  <set>
+    <device>RFQ_Vac:Pump1:Pressure</device>
+    <value>1.3</value>
+    <wait>false</wait>
+    <tolerance>0.1</tolerance>
+  </set>
+  <log>
+    <devices>
+      <device>RFQ_Vac:Pump1:Pressure</device>
+    </devices>
+  </log>
+  <delay>
+    <seconds>1.0</seconds>
+  </delay>
+  <comment>
+    <text>D. Set the Value 3.2 to generate a OK Alarm</text>
+  </comment>
+  <set>
+    <device>RFQ_Vac:Pump1:Pressure</device>
+    <value>3.2</value>
+    <wait>false</wait>
+    <tolerance>0.1</tolerance>
+  </set>
+  <log>
+    <devices>
+      <device>RFQ_Vac:Pump1:Pressure</device>
+    </devices>
+  </log>
+  <delay>
+    <seconds>1.0</seconds>
+  </delay>
+</commands>

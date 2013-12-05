@@ -8,7 +8,7 @@
                     <annunciating>true</annunciating>
                     <automated_action>
                         <title>Send an email when Pump 1 stops</title>
-                        <details>mailto:your_email@site.org </details>
+                        <details>mailto:css-dev@codac.iter.org </details>
                         <delay>5</delay>
                     </automated_action>
                 </pv>
@@ -24,7 +24,7 @@
                         <annunciating>true</annunciating>
                         <automated_action>
                             <title>Send an email when Pump 2 stops</title>
-                            <details>mailto:your_email@site.org </details>
+                            <details>mailto:css-dev@codac.iter.org </details>
                             <delay>5</delay>
                         </automated_action>
                     </pv>
@@ -34,7 +34,7 @@
                         <annunciating>true</annunciating>
                         <automated_action>
                             <title>Send an email when reduced flow</title>
-                            <details>mailto:your_email@site.org </details>
+                            <details>mailto:css-dev@codac.iter.org </details>
                             <delay>15</delay>
                         </automated_action>
                     </pv>
