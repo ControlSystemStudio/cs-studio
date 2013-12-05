@@ -172,7 +172,10 @@ public class PVTable implements PVTableModelListener
                     viewer.remove(item);
                 }
                 else // Change name of existing item
+                {
                     item.updateName(new_name);
+                    model.fireModelChange();
+                }
             }
             
             @Override
@@ -318,6 +321,8 @@ public class PVTable implements PVTableModelListener
     private void createContextMenu(final TableViewer viewer, IWorkbenchPartSite site)
     {
         final MenuManager manager = new MenuManager();
+        manager.add(new SelectAllAction(viewer));
+        manager.add(new DeSelectAllAction(viewer));
         manager.add(new SnapshotAction(viewer));
         manager.add(new RestoreAction(viewer));
         manager.add(new ToleranceAction(viewer));

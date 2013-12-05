@@ -13,9 +13,12 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.display.pvtable.messages"; //$NON-NLS-1$
 
+
     public static String Alarm;
     public static String Delete;
     public static String Delete_TT;
+    public static String DeSelectAll;
+    public static String DeSelectAll_TT;
     public static String EnterPositiveTolerance;
     public static String EnterTolerance;
     public static String Error;
@@ -23,6 +26,8 @@ public class Messages extends NLS
     public static String Restore;
     public static String Restore_TT;
     public static String Saved;
+    public static String SelectAll;
+    public static String SelectAll_TT;
     public static String Snapshot;
     public static String Snapshot_TT;
     public static String Time;

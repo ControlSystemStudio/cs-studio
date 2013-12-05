@@ -184,4 +184,11 @@ public class PVTableModel implements PVTableItemListener
 			item.dispose();
 		items.clear();
 	}
+
+	/** Inform listeners that model changed */
+	public void fireModelChange()
+	{
+	    for (PVTableModelListener listener : listeners)
+	        listener.modelChanged();
+	}
 }
