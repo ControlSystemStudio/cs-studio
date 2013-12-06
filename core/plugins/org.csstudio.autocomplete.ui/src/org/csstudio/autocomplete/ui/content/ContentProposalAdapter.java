@@ -1099,4 +1099,8 @@ public class ContentProposalAdapter {
 		return history;
 	}
 
+	public ContentHelperPopup getHelper() {
+		return helper;
+	}
+
 }
