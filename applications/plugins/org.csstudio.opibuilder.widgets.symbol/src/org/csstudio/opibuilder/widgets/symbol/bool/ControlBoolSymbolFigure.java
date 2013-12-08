@@ -530,6 +530,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 		getOffImage().setCurrentColor(offColor);
 		getCurrentImage().setBounds(bounds);
 		getCurrentImage().setBorder(getBorder());
+		getCurrentImage().setAbsoluteScale(gfx.getAbsoluteScale());
 		getCurrentImage().paintFigure(gfx);
 		if (!isEnabled()) {
 			gfx.setAlpha(DISABLED_ALPHA);
