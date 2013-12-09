@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.trends.databrowser2.epicsarchiverap.feature"
-      label="Feature"
+      id="org.csstudio.archive.reader.pbraw.feature"
+      label="Appliance Archiver Reader"
       version="1.0.0.qualifier"
       provider-name="Luofeng Li">
 
@@ -18,7 +18,7 @@
    </license>
 
    <plugin
-         id="org.csstudio.trends.databrowser2.epicsarchiverap"
+         id="org.csstudio.archive.reader.pbraw"
          download-size="0"
          install-size="0"
          version="0.0.0"
