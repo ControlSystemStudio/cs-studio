@@ -19,6 +19,7 @@ import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.JythonSupport;
+import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
@@ -58,12 +59,12 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames(final ScanContext context) throws Exception
+    public String[] getDeviceNames(final MacroContext macros) throws Exception
     {
         final String device_name = getRealDeviceName();
         final String readback = command.getReadback();
         if (command.getWait()  &&  readback.length() > 0)
-            return new String[] { context.resolveMacros(device_name), context.resolveMacros(readback) };
+            return new String[] { macros.resolveMacros(device_name), macros.resolveMacros(readback) };
         return new String[] { device_name };
     }
 
@@ -71,7 +72,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	@Override
     public void simulate(final SimulationContext context) throws Exception
     {
-		final SimulatedDevice device = context.getDevice(context.resolveMacros(command.getDeviceName()));
+		final SimulatedDevice device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
 		// Get previous and desired values
 		final double original = device.readDouble();
@@ -92,7 +93,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	    command.appendConditionDetail(buf);
 	    if (! Double.isNaN(original))
 	    	buf.append(" [was ").append(original).append("]");
-    	context.logExecutionStep(context.resolveMacros(buf.toString()), time_estimate);
+    	context.logExecutionStep(context.getMacros().resolveMacros(buf.toString()), time_estimate);
 
     	// Set to (simulated) new value
     	device.write(command.getValue());

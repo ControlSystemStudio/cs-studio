@@ -68,7 +68,7 @@ public class LoopCommandHeadlessTest
     public void testLoopCommand() throws Throwable
     {
         final DeviceContext devices = getDemoContext();
-        final Device counter = devices.getDeviceByAlias("counter");
+        final Device counter = devices.getDevice("counter");
         devices.startDevices();
         try
         {
@@ -115,7 +115,7 @@ public class LoopCommandHeadlessTest
         assertThat(loop2.getWorkUnits(), equalTo(10l));
 
         final ScanContext dummy = new ExecutableScan("dummy", devices);
-        final String[] names = loop2.getDeviceNames(dummy);
+        final String[] names = loop2.getDeviceNames(dummy.getMacros());
         assertEquals(3, names.length);
         Arrays.sort(names);
         assertThat(Arrays.binarySearch(names, "counter"), greaterThanOrEqualTo(0));
@@ -135,7 +135,7 @@ public class LoopCommandHeadlessTest
     public void testOtherLoops() throws Exception
     {
         final DeviceContext devices = getDemoContext();
-        final Device counter = devices.getDeviceByAlias("counter");
+        final Device counter = devices.getDevice("counter");
         devices.startDevices();
         try
         {
@@ -178,7 +178,7 @@ public class LoopCommandHeadlessTest
     public void testReversingLoop() throws Exception
     {
         final DeviceContext devices = getDemoContext();
-        final Device counter = devices.getDeviceByAlias("counter");
+        final Device counter = devices.getDevice("counter");
         devices.startDevices();
         try
         {
