@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+  <extension
+         point="org.csstudio.archive.reader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.trends.databrowser2.epicsarchiverap.EPICSArchiveReaderFactory"
+            name="org.csstudio.trends.databrowser2.epicsarchiverap.EPICS_archive_reader"
+            prefix="pbraw">
+      </ArchiveReader>
+   </extension>
+   
+   
+</plugin>

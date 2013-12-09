@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css-frib" id="org.csstudio.frib.product.product" application="org.csstudio.frib.product.application" version="3.2.11.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css-frib" id="org.csstudio.frib.product.product" application="org.csstudio.frib.product.application" version="3.2.12.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.frib.product/icons/about.png"/>
