@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.archive.reader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.archive.reader.ea4.EA4ArchiveReaderFactory"
+            name="org.csstudio.archive.reader.ea4.archivereader"
+            prefix="ea4">
+      </ArchiveReader>
+   </extension>
+
+</plugin>
