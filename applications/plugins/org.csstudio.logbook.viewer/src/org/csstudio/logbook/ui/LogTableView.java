@@ -45,6 +45,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
@@ -80,8 +83,16 @@ public class LogTableView extends ViewPart {
     private Link previousPage;
     private Label labelPage;
     private Link nextPage;
-
+    
+    private IMemento memento;
+    
     public LogTableView() {
+    }
+
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site);
+        this.memento = memento;
     }
 
     @Override
@@ -134,7 +145,7 @@ public class LogTableView extends ViewPart {
 		}
 	    }
 	});
-	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));	
 	
 	btnNewButton = new Button(parent, SWT.NONE);	
 	try {
@@ -255,11 +266,13 @@ public class LogTableView extends ViewPart {
     private boolean initializeClient() {
 	if (logbookClient == null) {
 	    try {
-		logbookClient = LogbookClientManager.getLogbookClientFactory()
-			.getClient();
+		logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
+		if(memento != null && memento.getString("searchString") != null){
+		    setSearchString(memento.getString("searchString"));
+		}
 		return true;
 	    } catch (Exception e1) {
-		e1.printStackTrace();
+		errorBar.setException(e1);
 		return false;
 	    }
 	} else {
@@ -303,8 +316,14 @@ public class LogTableView extends ViewPart {
 			    }
 			});
 			
-		    } catch (Exception e1) {
-			errorBar.setException(e1);
+		    } catch (final Exception e1) {
+			Display.getDefault().asyncExec(new Runnable() {
+			    
+			    @Override
+			    public void run() {
+				errorBar.setException(e1);
+			    }
+			});
 		    }
 		}
 		return Status.OK_STATUS;
@@ -327,5 +346,11 @@ public class LogTableView extends ViewPart {
     
     @Override
     public void setFocus() {
+    }
+    
+    @Override
+    public void saveState(IMemento memento) {
+	super.saveState(memento);
+	memento.putString("searchString", searchString);
     }
 }

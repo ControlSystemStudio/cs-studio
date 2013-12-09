@@ -42,6 +42,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
@@ -60,7 +63,8 @@ public class LogTreeView extends ViewPart {
     
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.logbook.ui.LogTreeView"; //$NON-NLS-1$
-
+    
+    
     private LogbookClient logbookClient;
     private Label label;
 
@@ -79,9 +83,17 @@ public class LogTreeView extends ViewPart {
     private Link nextPage;
     private Composite navigator;
 
+    private IMemento memento;
+    
     public LogTreeView() {
     }
 
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site);
+        this.memento = memento;
+    }
+    
     @Override
     public void createPartControl(final Composite parent) {	
 	
@@ -273,6 +285,9 @@ public class LogTreeView extends ViewPart {
 	if (logbookClient == null) {
 	    try {
 		logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
+		if(memento != null && memento.getString("searchString") != null){
+		    setSearchString(memento.getString("searchString"));
+		}
 		return true;
 	    } catch (Exception ex) {
 		errorBar.setException(ex);
@@ -336,4 +351,12 @@ public class LogTreeView extends ViewPart {
     @Override
     public void setFocus() {
     }
+    
+    
+    @Override
+    public void saveState(IMemento memento) {
+	super.saveState(memento);
+	memento.putString("searchString", searchString);
+    }
+    
 }
