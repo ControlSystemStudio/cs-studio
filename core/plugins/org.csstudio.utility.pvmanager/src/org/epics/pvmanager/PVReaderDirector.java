@@ -247,6 +247,9 @@ public class PVReaderDirector<T> {
         try {
             // Tries to calculate the value
             newValue = function.readValue();
+            if (newValue != null) {
+                NotificationSupport.findNotificationSupportFor(newValue);
+            }
             calculationSucceeded = true;
         } catch(RuntimeException ex) {
             // Calculation failed
@@ -300,8 +303,10 @@ public class PVReaderDirector<T> {
                             Notification<T> notification =
                                     NotificationSupport.notification(pv.getValue(), finalValue);
                             // Remember to notify anyway if an exception need to be notified
-                            if (notification.isNotificationNeeded() || pv.isLastExceptionToNotify() || pv.isReadConnectionToNotify()) {
+                            if (notification.isNotificationNeeded()) {
                                 pv.setValue(notification.getNewValue());
+                            } else if (pv.isLastExceptionToNotify() || pv.isReadConnectionToNotify()) {
+                                pv.firePvValueChanged();
                             }
                         } else {
                             // Remember to notify anyway if an exception need to be notified

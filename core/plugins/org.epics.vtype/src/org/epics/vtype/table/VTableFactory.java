@@ -315,24 +315,46 @@ public class VTableFactory {
     } 
 
     public static ListNumberProvider range(final double min, final double max) {
-        return new ListNumberProvider(double.class) {
-
-            @Override
-            public ListNumber createListNumber(final int size) {
-                return ListNumbers.linearListFromRange(min, max, size);
-            }
-        };
+        return new Range(min, max);
     }
     
-    public static ListNumberProvider step(final double initialValue, final double increment) {
-        return new ListNumberProvider(double.class) {
+    private static class Range extends ListNumberProvider {
+        
+        private final double min;
+        private final double max;
 
-            @Override
-            public ListNumber createListNumber(int size) {
-                return ListNumbers.linearList(initialValue, increment, size);
-            }
-        };
+        public Range(double min, double max) {
+            super(double.class);
+            this.min = min;
+            this.max = max;
+        }
+
+        @Override
+        public ListNumber createListNumber(int size) {
+            return ListNumbers.linearListFromRange(min, max, size);
+        }
+    };
+    
+    public static ListNumberProvider step(final double initialValue, final double increment) {
+        return new Step(initialValue, increment);
     }
+    
+    private static class Step extends ListNumberProvider {
+        
+        private final double initialValue;
+        private final double increment;
+
+        public Step(double initialValue, double increment) {
+            super(double.class);
+            this.initialValue = initialValue;
+            this.increment = increment;
+        }
+
+        @Override
+        public ListNumber createListNumber(int size) {
+            return ListNumbers.linearList(initialValue, increment, size);
+        }
+    };
     
     public static VTable extractRow(VTable vTable, int row) {
         if (vTable == null || row >= vTable.getRowCount() || row < 0) {
