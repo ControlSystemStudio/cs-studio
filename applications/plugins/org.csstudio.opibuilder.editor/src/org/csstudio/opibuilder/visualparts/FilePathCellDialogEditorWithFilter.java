@@ -72,7 +72,7 @@ public final class FilePathCellDialogEditorWithFilter extends
 		convertFileExtensions();
 		IPreferencesService service = Platform.getPreferencesService();
 		TTT_REGEX = service.getString("org.csstudio.opibuilder.widgets.symbol",
-				"org.csstudio.boy.symbol.filter.regex", ".*", null);
+				"filter_regex", "", null);
 	}
 
 	/**
