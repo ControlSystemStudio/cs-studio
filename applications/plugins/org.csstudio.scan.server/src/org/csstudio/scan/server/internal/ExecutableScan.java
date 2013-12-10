@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -29,7 +27,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
@@ -39,9 +36,11 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.device.DeviceContextHelper;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
+import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.MemoryInfo;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -67,7 +66,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     final private transient List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
     /** Macros for resolving device names */
-    final private MacroStack macros;
+    final private MacroContext macros;
     
     /** Devices used by the scan */
     final protected DeviceContext devices;
@@ -162,7 +161,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
         super(scan);
-        this.macros = new MacroStack(ScanSystemPreferences.getMacros());
+        this.macros = new MacroContext(ScanSystemPreferences.getMacros());
         this.devices = devices;
         this.pre_scan = pre_scan;
         this.implementations = implementations;
@@ -311,23 +310,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
     /** {@inheritDoc} */
     @Override
-    public String resolveMacros(final String text) throws Exception
+    public MacroContext getMacros()
     {
-        return MacroUtil.replaceMacros(text, macros);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void pushMacros(String names_and_values) throws Exception
-    {
-        this.macros.push(names_and_values);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void popMacros()
-    {
-        macros.pop();
+        return macros;
     }
 
     /** Obtain devices used by this scan.
@@ -347,7 +332,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public Device getDevice(final String name) throws Exception
     {
-        return devices.getDeviceByAlias(name);
+        return devices.getDevice(name);
     }
 
     /** {@inheritDoc} */
@@ -460,51 +445,22 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         if (prefix != null   &&   !prefix.isEmpty())
         {
         	device_active = prefix + "Active";
-	        devices.addPVDevice(new DeviceInfo(device_active));
-	        
-	        device_status = prefix + "Status";
-	        devices.addPVDevice(new DeviceInfo(device_status));
+            devices.addPVDevice(new DeviceInfo(device_active));
+            
+            device_status = prefix + "Status";
+            devices.addPVDevice(new DeviceInfo(device_status));
 
-	        device_progress = prefix + "Progress";
-	        devices.addPVDevice(new DeviceInfo(device_progress));
+            device_progress = prefix + "Progress";
+            devices.addPVDevice(new DeviceInfo(device_progress));
 
-	        device_finish = prefix + "Finish";
-	        devices.addPVDevice(new DeviceInfo(device_finish));
+            device_finish = prefix + "Finish";
+            devices.addPVDevice(new DeviceInfo(device_finish));
         }
-
-        // Inspect all commands before executing them:
-        // Add devices that are not available (via alias)
-        // in the device context
-        final Set<String> required_devices = new HashSet<String>();
-        for (ScanCommandImpl<?> command : pre_scan)
-        {
-            for (String device_name : command.getDeviceNames(this))
-                required_devices.add(device_name);
-        }
-        for (ScanCommandImpl<?> command : implementations)
-        {
-            for (String device_name : command.getDeviceNames(this))
-                required_devices.add(device_name);
-        }
-        for (ScanCommandImpl<?> command : post_scan)
-        {
-            for (String device_name : command.getDeviceNames(this))
-                required_devices.add(device_name);
-        }
-        // Add required devices
-        for (String device_name : required_devices)
-        {
-            final String expanded_name = MacroUtil.replaceMacros(device_name, macros);
-            try
-            {
-                if (devices.getDeviceByAlias(expanded_name) != null)
-                    continue;
-            }
-            catch (Exception ex)
-            {   // Add PV device, no alias, for unknown device
-                devices.addPVDevice(new DeviceInfo(expanded_name));
-            }
-        }
+        
+        // Add devices used by commands
+        DeviceContextHelper.addScanDevices(devices, macros, pre_scan);
+        DeviceContextHelper.addScanDevices(devices, macros, implementations);
+        DeviceContextHelper.addScanDevices(devices, macros, post_scan);
 
         // Start Devices
         devices.startDevices();

@@ -205,8 +205,8 @@ public class ScanServerImpl implements ScanServer
             final List<ScanCommandImpl<?>> main_impl = implementor.implement(commands, jython);
             final List<ScanCommandImpl<?>> post_impl = implementor.implement(post_commands, jython);
 
-            // Get default devices
-    		final DeviceContext devices = DeviceContext.getDefault();
+            // Get empty device context
+    		final DeviceContext devices = new DeviceContext();
 
             // Submit scan to engine for execution
             final ExecutableScan scan = new ExecutableScan(scan_name, devices, pre_impl, main_impl, post_impl);

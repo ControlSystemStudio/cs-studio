@@ -19,6 +19,7 @@ import org.csstudio.scan.command.ScanScript;
 import org.csstudio.scan.command.ScriptCommand;
 import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.server.JythonSupport;
+import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.python.core.PyException;
@@ -51,13 +52,13 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
 
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames(final ScanContext context) throws Exception
+    public String[] getDeviceNames(final MacroContext macros) throws Exception
     {
         try
         {
             final String[] names = script_object.getDeviceNames();
             for (int i=0; i<names.length; ++i)
-                names[i] = context.resolveMacros(names[i]);
+                names[i] = macros.resolveMacros(names[i]);
             return names;
         }
         catch (PyException ex)

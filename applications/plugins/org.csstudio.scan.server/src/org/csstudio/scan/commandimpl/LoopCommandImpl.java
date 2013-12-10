@@ -30,6 +30,7 @@ import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.JythonSupport;
+import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
@@ -97,16 +98,16 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 
     /** {@inheritDoc} */
     @Override
-    public String[] getDeviceNames(final ScanContext context) throws Exception
+    public String[] getDeviceNames(final MacroContext macros) throws Exception
     {
         final String device_name = getRealDeviceName();
         final Set<String> device_names = new HashSet<String>();
-        device_names.add(context.resolveMacros(device_name));
+        device_names.add(macros.resolveMacros(device_name));
         if (command.getWait()  &&  command.getReadback().length() > 0)
-            device_names.add(context.resolveMacros(command.getReadback()));
+            device_names.add(macros.resolveMacros(command.getReadback()));
         for (ScanCommandImpl<?> command : implementation)
         {
-            final String[] names = command.getDeviceNames(context);
+            final String[] names = command.getDeviceNames(macros);
             for (String name : names)
                 device_names.add(name);
         }
@@ -134,7 +135,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	@Override
     public void simulate(final SimulationContext context) throws Exception
     {
-		final SimulatedDevice device = context.getDevice(context.resolveMacros(command.getDeviceName()));
+		final SimulatedDevice device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
 		final double start = getLoopStart();
         final double end   = getLoopEnd();
@@ -170,7 +171,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	    command.appendConditionDetail(buf);
 	    if (! Double.isNaN(original))
 	    	buf.append(" [was ").append(original).append("]");
-	    context.logExecutionStep(context.resolveMacros(buf.toString()), time_estimate);
+	    context.logExecutionStep(context.getMacros().resolveMacros(buf.toString()), time_estimate);
 
     	// Set to (simulated) new value
     	device.write(value);
@@ -186,14 +187,14 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         step_logger = Logger.getLogger(getClass().getName());
         try
         {
-    		final Device device = context.getDevice(context.resolveMacros(getRealDeviceName()));
+    		final Device device = context.getDevice(context.getMacros().resolveMacros(getRealDeviceName()));
     
     	    // Separate read-back device, or use 'set' device?
             final Device readback;
             if (command.getReadback().isEmpty())
                 readback = device;
             else
-                readback = context.getDevice(context.resolveMacros(command.getReadback()));
+                readback = context.getDevice(context.getMacros().resolveMacros(command.getReadback()));
     
             //  Wait for the device to reach the value?
             final NumericValueCondition condition;

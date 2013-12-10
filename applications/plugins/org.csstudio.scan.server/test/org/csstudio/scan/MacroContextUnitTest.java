@@ -13,51 +13,51 @@ import static org.junit.Assert.fail;
 
 import org.csstudio.apputil.macros.IMacroTableProvider;
 import org.csstudio.apputil.macros.MacroUtil;
-import org.csstudio.scan.server.internal.MacroStack;
+import org.csstudio.scan.server.MacroContext;
 import org.junit.Test;
 
-/** JUnit Test of the MacroStack
+/** JUnit Test of the {@link MacroContext}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MacroStackUnitTest
+public class MacroContextUnitTest
 {
     @Test
 	public void testMacros() throws Exception
 	{
-		final IMacroTableProvider macros = new MacroStack("x=Hello, y=Dolly");
+		final IMacroTableProvider macros = new MacroContext("x=Hello, y=Dolly");
 		assertThat(MacroUtil.replaceMacros("$(x), ${y}!", macros), equalTo("Hello, Dolly!"));
 	}
 
     @Test
     public void testStacking() throws Exception
     {
-        final MacroStack macros = new MacroStack("x=Hello, y=Dolly");
+        final MacroContext macros = new MacroContext("x=Hello, y=Dolly");
         
-        macros.push("y=Freddy");
+        macros.pushMacros("y=Freddy");
         String text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
         assertThat(text, equalTo("Hello, Freddy!"));
         
-        macros.push("x=Bye,y=Jimmy");
+        macros.pushMacros("x=Bye,y=Jimmy");
         text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
         assertThat(text, equalTo("Bye, Jimmy!"));
         System.out.println(macros);
 
-        macros.pop();
+        macros.popMacros();
         text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
         assertThat(text, equalTo("Hello, Freddy!"));
         
-        macros.pop();
+        macros.popMacros();
         text = MacroUtil.replaceMacros("$(x), ${y}!", macros);
         System.out.println(text);
         assertThat(text, equalTo("Hello, Dolly!"));
         
         try
         {
-            macros.pop();
+            macros.popMacros();
             fail("Allowed pop?");
         }
         catch (IllegalStateException ex)

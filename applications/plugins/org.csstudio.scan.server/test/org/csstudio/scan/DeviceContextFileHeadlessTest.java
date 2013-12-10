@@ -40,7 +40,7 @@ public class DeviceContextFileHeadlessTest
 		for (Device device : context.getDevices())
 			System.out.println(device);
 
-		final Device device = context.getDeviceByAlias("xpos");
+		final Device device = context.getDevice("xpos");
 		assertNotNull(device);
 		assertEquals("xpos", device.getAlias());
         assertEquals("motor_x", device.getName());

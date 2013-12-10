@@ -36,7 +36,7 @@ public class CommentCommandImpl extends ScanCommandImpl<CommentCommand>
     @Override
     public void execute(final ScanContext context) throws Exception
     {
-        System.out.println("Comment: " + context.resolveMacros(command.getComment()));
+        System.out.println("Comment: " + context.getMacros().resolveMacros(command.getComment()));
         context.workPerformed(1);
     }
 }

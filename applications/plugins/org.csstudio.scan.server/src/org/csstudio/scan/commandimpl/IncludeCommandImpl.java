@@ -26,6 +26,7 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.JythonSupport;
+import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
@@ -68,22 +69,22 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
 	
     /** {@inheritDoc} */
 	@Override
-    public String[] getDeviceNames(final ScanContext context) throws Exception
+    public String[] getDeviceNames(final MacroContext macros) throws Exception
 	{
-	    context.pushMacros(command.getMacros());
+	    macros.pushMacros(command.getMacros());
 	    try
 	    {
             final Set<String> devices = new HashSet<String>();
             for (ScanCommandImpl<?> command : scan_impl)
             {
-                for (String device_name : command.getDeviceNames(context))
+                for (String device_name : command.getDeviceNames(macros))
                     devices.add(device_name);
             }
     	    return devices.toArray(new String[devices.size()]);
 	    }
 	    finally
 	    {
-	        context.popMacros();
+	        macros.popMacros();
 	    }
 	}
 	
@@ -91,15 +92,15 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
     @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-        context.pushMacros(command.getMacros());
+        context.getMacros().pushMacros(command.getMacros());
         try
         {
-            context.logExecutionStep(context.resolveMacros(command.toString()), 0.0);
+            context.logExecutionStep(context.getMacros().resolveMacros(command.toString()), 0.0);
             context.simulate(scan_impl);
         }
         finally
         {
-            context.popMacros();
+            context.getMacros().popMacros();
         }
     }
 
@@ -107,14 +108,14 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
-	    context.pushMacros(command.getMacros());
+	    context.getMacros().pushMacros(command.getMacros());
 	    try
 	    {
 	        context.execute(scan_impl);
 	    }
 	    finally
 	    {
-	        context.popMacros();
+	        context.getMacros().popMacros();
 	    }
 	}
 }
