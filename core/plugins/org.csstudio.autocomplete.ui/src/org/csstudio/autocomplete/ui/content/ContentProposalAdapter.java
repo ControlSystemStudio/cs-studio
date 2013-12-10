@@ -202,8 +202,7 @@ public class ContentProposalAdapter {
 		}
 		addControlListener(control);
 
-		history = new AutoCompleteHistory(control, proposalProvider.getType(),
-				controlContentAdapter);
+		history = new AutoCompleteHistory(control, controlContentAdapter);
 		helper = new ContentHelperPopup(this);
 	}
 
@@ -646,9 +645,9 @@ public class ContentProposalAdapter {
 		setControlContent(proposal, true);
 
 		// Add entry to history
-		if (addToHistory)
+		if (addToHistory && !(proposal.isFunction() || proposal.isPartial()))
 			history.addEntry(proposal.getValue());
-		
+
 		// Update helper
 		helper.clearData();
 		helper.updateData(proposal.getTooltips());

@@ -7,8 +7,14 @@
  ******************************************************************************/
 package org.csstudio.autocomplete.ui.history;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteUIPlugin;
 import org.csstudio.autocomplete.ui.preferences.Preferences;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
@@ -29,13 +35,10 @@ import org.eclipse.swt.widgets.Listener;
 public class AutoCompleteHistory {
 
 	private final Control control;
-	private final String type;
 	private final IControlContentAdapter controlContentAdapter;
 
-	public AutoCompleteHistory(Control control, String type,
-			IControlContentAdapter adapter) {
+	public AutoCompleteHistory(Control control, IControlContentAdapter adapter) {
 		this.control = control;
-		this.type = type;
 		this.controlContentAdapter = adapter;
 
 		installListener(control);
@@ -92,14 +95,31 @@ public class AutoCompleteHistory {
 		// Avoid empty entries
 		if (newEntry == null || newEntry.trim().isEmpty())
 			return;
-		LinkedList<String> fifo = AutoCompleteUIPlugin.getDefault().getHistory(type);
+		// Entry => type
+		Map<String, String> entries = new HashMap<String, String>();
+		if (newEntry.startsWith("=")) {
+			entries.put(newEntry, AutoCompleteTypes.Formula);
+			Pattern quotedVariable = Pattern.compile("'([^']+)'");
+			Matcher m = quotedVariable.matcher(newEntry);
+			while (m.find())
+				entries.put(m.group(1), AutoCompleteTypes.PV);
+		} else {
+			entries.put(newEntry, AutoCompleteTypes.PV);
+		}
+		for (Entry<String, String> entry : entries.entrySet())
+			updateHistory(entry.getKey(), entry.getValue());
+	}
+
+	private void updateHistory(String newEntry, String entryType) {
+		if (entryType == null || entryType.isEmpty())
+			return;
+		LinkedList<String> fifo = AutoCompleteUIPlugin.getDefault().getHistory(entryType);
 		if (fifo == null)
 			return;
 		if (Preferences.getHistorySize() == 0) {
 			fifo.clear();
 			return;
 		}
-
 		// Remove if present, so that is re-added on top
 		int index = -1;
 		while ((index = fifo.indexOf(newEntry)) >= 0)
