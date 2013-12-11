@@ -46,6 +46,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 /**
  * @author shroffk
  * 
@@ -202,14 +205,26 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 		gridTreeViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
 	gridViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
 	    public String getText(Object element) {
-		LogEntry item = ((LogEntryTreeModel) element).logEntry;
-		return item == null ? "" : item.getOwner();
+		LogEntryTreeModel item = ((LogEntryTreeModel) element);
+		StringBuffer owner = new StringBuffer();
+		if (item != null && item.logEntry != null){		    
+		    owner.append(item.creater);
+		    if (item.logEntry.getModifiedDate() != null &&
+			    item.logEntry.getCreateDate().getTime()/1000 != item.logEntry.getModifiedDate().getTime()/1000){
+			owner.append(System.getProperty("line.separator"));
+			owner.append("modified by:");
+			owner.append(System.getProperty("line.separator"));
+			owner.append(item.logEntry.getOwner());
+		    }
+		}
+		return owner.toString();
 	    }
 	});
 
 	// gridViewerColumnOwner.getColumn().setSort(SWT.UP);
 	GridColumn tblclmnOwner = gridViewerColumnOwner.getColumn();
 	tblclmnOwner.setText("Owner");
+	tblclmnOwner.setWordWrap(true);
 	new TreeColumnViewerLayout(gridTreeViewer, gridViewerColumnOwner, 10, 75);
 	new ColumnViewerSorter(gridTreeViewer, gridViewerColumnOwner) {
 	    @Override
@@ -398,12 +413,13 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	public LogEntryTreeModel parent;
 
 	public List<LogEntryTreeModel> child = new ArrayList<LogEntryTreeModel>();
-
+	public final String creater;
 	public final LogEntry logEntry;
 
-	public LogEntryTreeModel(LogEntry logEntry, LogEntryTreeModel root) {
+	public LogEntryTreeModel(LogEntry logEntry, String creater, LogEntryTreeModel root) {
 	    this.parent = root;
 	    this.logEntry = logEntry;
+	    this.creater = creater;
 	}
 
 	public String toString() {
@@ -420,7 +436,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
     private LogEntryTreeModel createModel(List<LogEntry> logEntries) {
 
-	LogEntryTreeModel root = new LogEntryTreeModel(null, null);
+	LogEntryTreeModel root = new LogEntryTreeModel(null, null, null);
 
 	LogEntryTreeModel subItem;
 
@@ -437,7 +453,8 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	}
 
 	for (Entry<Long, List<LogEntry>> entry : model.entrySet()) {
-	    List<LogEntry> entries = entry.getValue();
+	    List<LogEntry> entries = entry.getValue();	    
+	    String creater = "";
 	    if(logEntryOrder == SWT.UP){
 		Collections.sort(entries, new Comparator<LogEntry>(){
 		    @Override
@@ -445,6 +462,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 			return o1.getModifiedDate().compareTo(o2.getModifiedDate());
 		    }		    
 		});
+		creater = entries.get(0).getOwner();
 	    }else{
 		Collections.sort(entries, new Comparator<LogEntry>(){
 		    @Override
@@ -452,11 +470,12 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 			return o2.getModifiedDate().compareTo(o1.getModifiedDate());
 		    }		    
 		});
+		creater = entries.get(entries.size()-1).getOwner();
 	    }
 	    if (entries.size() > 0) {
-		subItem = new LogEntryTreeModel(entries.get(0), root);
+		subItem = new LogEntryTreeModel(entries.get(0), creater, root);
 		for (LogEntry logEntry : entries.subList(1, entries.size())) {
-		    subItem.child.add(new LogEntryTreeModel(logEntry, subItem));
+		    subItem.child.add(new LogEntryTreeModel(logEntry, creater, subItem));
 		}
 		root.child.add(subItem);
 	    }
