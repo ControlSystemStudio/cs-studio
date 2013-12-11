@@ -5,7 +5,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.utility.olog.ui.PreferencePage"
+            class="org.csstudio.utility.olog.ui.LogbookPreferencePage"
             id="org.csstudio.utility.olog.ui.preferencepage"
             name="Logbook">
       </page>

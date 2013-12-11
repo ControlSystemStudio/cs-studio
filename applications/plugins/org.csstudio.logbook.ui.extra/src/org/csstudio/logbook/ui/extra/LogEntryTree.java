@@ -153,9 +153,9 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 				    DateFormat.SHORT).format(
 				    item.logEntry.getCreateDate()));
 		    if (item.logEntry.getModifiedDate() != null &&
-			    !item.logEntry.getCreateDate().equals(item.logEntry.getModifiedDate())) {
+			    item.logEntry.getCreateDate().getTime()/1000 != item.logEntry.getModifiedDate().getTime() /1000) {
 			date.append(System.getProperty("line.separator"));
-			date.append("modified:");
+			date.append("modified at:");
 			date.append(System.getProperty("line.separator"));
 			date.append(DateFormat
 					.getDateTimeInstance(DateFormat.SHORT,
