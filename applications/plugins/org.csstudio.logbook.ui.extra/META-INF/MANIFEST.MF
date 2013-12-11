@@ -9,6 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.nebula.jface.gridviewer;bundle-version="1.0.0",
  org.eclipse.nebula.widgets.grid;bundle-version="1.0.0",
  org.csstudio.logbook;bundle-version="3.1.0",
- org.csstudio.ui.util;bundle-version="3.2.0"
+ org.csstudio.ui.util;bundle-version="3.2.0",
+ com.google.common;bundle-version="10.0.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.logbook.ui.extra

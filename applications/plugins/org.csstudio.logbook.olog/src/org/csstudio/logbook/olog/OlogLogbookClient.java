@@ -195,7 +195,22 @@ public class OlogLogbookClient implements LogbookClient {
 
     @Override
     public LogEntry updateLogEntry(LogEntry logEntry) throws Exception {
-	return new OlogEntry(writer.update(LogBuilder(logEntry)));
+	OlogEntry ologEntry = new OlogEntry(writer.update(LogBuilder(logEntry)));
+	// creates the log entry and then adds all the attachments
+	// TODO (shroffk) multiple network calls, one for each attachment, need
+	// to improve
+	Collection<String> existingFiles = new ArrayList<String>();
+	for (edu.msu.nscl.olog.api.Attachment attachment : reader.getLog((Long) ologEntry.getId()).getAttachments()) {
+	    existingFiles.add(attachment.getFileName());
+	}
+	for (Attachment attachment : logEntry.getAttachment()) {
+	    //Check the attachment doe snot already exist.
+	    if (!existingFiles.contains(attachment.getFileName()) && attachment.getInputStream() != null) {
+		addAttachment(ologEntry.getId(), attachment.getInputStream(),
+			attachment.getFileName());
+	    }
+	}
+	return ologEntry;
     }
 
     @Override

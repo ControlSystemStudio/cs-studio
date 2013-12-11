@@ -36,6 +36,7 @@ public class ShiftSearchUtil {
     }
 
     public static String parseSearchMap(final Map<String, String> searchMap) {
+    	//TODO:check if needed multiple variables per search term (example in 2 different owners)
         final StringBuffer search = new StringBuffer();
         for (String keyword : keywords) {
             if (searchMap.containsKey(keyword)

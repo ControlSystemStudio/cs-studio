@@ -40,7 +40,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
@@ -59,7 +63,8 @@ public class LogTreeView extends ViewPart {
     
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.logbook.ui.LogTreeView"; //$NON-NLS-1$
-
+    
+    
     private LogbookClient logbookClient;
     private Label label;
 
@@ -70,12 +75,25 @@ public class LogTreeView extends ViewPart {
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private String searchString;
     
-    private String resultSize;
+    private int resultSize;
     private boolean showHistory;
+    private int page = 1;
+    private Link previousPage;
+    private Label labelPage;
+    private Link nextPage;
+    private Composite navigator;
 
+    private IMemento memento;
+    
     public LogTreeView() {
     }
 
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site);
+        this.memento = memento;
+    }
+    
     @Override
     public void createPartControl(final Composite parent) {	
 	
@@ -95,6 +113,20 @@ public class LogTreeView extends ViewPart {
 	    @Override
 	    public void propertyChange(PropertyChangeEvent arg0) {
 		text.setText(searchString);
+		setPage(1);
+	    }
+	});
+	
+	changeSupport.addPropertyChangeListener("page", new PropertyChangeListener() {
+	    
+	    @Override
+	    public void propertyChange(PropertyChangeEvent arg0) {
+		labelPage.setText(String.valueOf(page));
+		if(page > 1){
+		    previousPage.setEnabled(true);
+		} else {
+		    previousPage.setEnabled(false);
+		}
 		search();
 	    }
 	});
@@ -118,7 +150,7 @@ public class LogTreeView extends ViewPart {
 	Button btnNewButton = new Button(parent, SWT.NONE);
 	
 	try {
-	    resultSize = service.getString("org.csstudio.logbook.ui","Result.size", "", null);
+	    resultSize = service.getInt("org.csstudio.logbook.ui","Result.size", 100, null);
 	    showHistory = service.getBoolean("org.csstudio.logbook.ui","Show.history", false, null);
 	} catch (Exception ex) {
 	    errorBar.setException(ex);
@@ -213,8 +245,39 @@ public class LogTreeView extends ViewPart {
 
 	logEntryTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
 
-	PopupMenuUtil.installPopupForView(logEntryTree, getSite(),
-		logEntryTree);
+	navigator = new Composite(parent, SWT.NONE);
+	navigator.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1));
+	navigator.setLayout(new GridLayout(3, false));
+	
+	previousPage = new Link(navigator, SWT.NONE);
+	previousPage.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
+	previousPage.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		if(page > 1){
+		    setPage(page - 1);
+		}
+	    }
+	});	
+	previousPage.setEnabled(false);
+	previousPage.setText("<a>Previous page</a>");
+	
+	labelPage = new Label(navigator, SWT.NONE);
+	labelPage.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+	labelPage.setText(String.valueOf(page));
+	
+	nextPage = new Link(navigator, SWT.NONE);
+	nextPage.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+	nextPage.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		    setPage(page+1);
+	    }
+	});
+	nextPage.setEnabled(false);
+	nextPage.setText("<a>Next page</a>");
+	
+	PopupMenuUtil.installPopupForView(logEntryTree, getSite(), logEntryTree);
 	initializeClient();
     }
 
@@ -222,6 +285,9 @@ public class LogTreeView extends ViewPart {
 	if (logbookClient == null) {
 	    try {
 		logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
+		if(memento != null && memento.getString("searchString") != null){
+		    setSearchString(memento.getString("searchString"));
+		}
 		return true;
 	    } catch (Exception ex) {
 		errorBar.setException(ex);
@@ -240,8 +306,8 @@ public class LogTreeView extends ViewPart {
 	    protected IStatus run(IProgressMonitor monitor) {
 		if (initializeClient()) {
 		    try {
-			if(!resultSize.isEmpty() && Integer.valueOf(resultSize) >= 0){
-			    searchString.append(" page:1");
+			if(resultSize >= 0){
+			    searchString.append(" page:" + page);
 			    searchString.append(" limit:" + resultSize);
 			}
 			if(showHistory){
@@ -252,6 +318,11 @@ public class LogTreeView extends ViewPart {
 			Display.getDefault().asyncExec(new Runnable() {
 			    @Override
 			    public void run() {
+				if(!logEntries.isEmpty() && logEntries.size() >= resultSize){
+				    nextPage.setEnabled(true);
+				}else{
+				    nextPage.setEnabled(false);
+				}
 				logEntryTree.setLogs(logEntries);
 			    }
 			});
@@ -265,14 +336,27 @@ public class LogTreeView extends ViewPart {
 	search.schedule();
     }
 
+    private void setPage(int page){
+	this.page = page;
+	changeSupport.firePropertyChange("page", null, this.page);
+    }
 
     public void setSearchString(String searchString) {
-	String oldValue = this.searchString;
+	// Do not ignore events where the search string is the same, we need to re-execute the query
+	// setting the old value to null
 	this.searchString = searchString;
-	changeSupport.firePropertyChange("searchString", oldValue, this.searchString);
+	changeSupport.firePropertyChange("searchString", null, this.searchString);
     }
     
     @Override
     public void setFocus() {
     }
+    
+    
+    @Override
+    public void saveState(IMemento memento) {
+	super.saveState(memento);
+	memento.putString("searchString", searchString);
+    }
+    
 }

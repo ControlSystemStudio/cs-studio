@@ -42,7 +42,7 @@ public class ShiftWidgetTest extends ApplicationWindow {
     protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout(5, false));
-		final ShiftWidget shiftWidget = new ShiftWidget(container, SWT.WRAP, false);
+		final ShiftWidget shiftWidget = new ShiftWidget(container, SWT.WRAP, false, false);
 		shiftWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
 	
 		Button btnNewButton = new Button(container, SWT.NONE);

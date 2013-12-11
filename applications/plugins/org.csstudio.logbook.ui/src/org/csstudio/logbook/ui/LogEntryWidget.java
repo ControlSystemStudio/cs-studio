@@ -466,7 +466,6 @@ public class LogEntryWidget extends Composite {
 	    public void widgetSelected(SelectionEvent e) {
 		final FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
 		dlg.setFilterExtensions(supportedImageTypes); //$NON-NLS-1$
-		dlg.setFilterNames(new String[] { "PNG Image" }); //$NON-NLS-1$
 		final String filename = dlg.open();
 		if (filename != null) {
 		    try {
@@ -478,7 +477,7 @@ public class LogEntryWidget extends Composite {
 					new FileInputStream(imgFile)));
 			imageToSelect = imgFile.getName();
 			logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-		    } catch (IOException e1) {
+		    } catch (Exception e1) {
 			setLastException(e1);
 		    }
 		}

@@ -19,13 +19,11 @@ public class Activator implements BundleActivator {
 
 	private ShiftClient retrieveClient() {
 		try {
-			IConfigurationElement[] config = Platform
-					.getExtensionRegistry()
+			IConfigurationElement[] config = Platform.getExtensionRegistry()
 					.getConfigurationElementsFor("gov.bnl.shiftclient");
 
 			if (config.length == 0) {
-				log.log(Level.INFO,
-						"No configured client for Shift found: using default configuration");
+				log.log(Level.INFO, "No configured client for Shift found: using default configuration");
 				ShiftClient client = ShiftClientBuilder.serviceURL().withHTTPAuthentication(false).create();
 				return client;
 			}
@@ -35,11 +33,9 @@ public class Activator implements BundleActivator {
 				return client;
 			}
 
-			throw new IllegalStateException(
-					"More than one OlogClient was configured through extensions.");
+			throw new IllegalStateException("More than one ShiftClient was configured through extensions.");
 		} catch (Exception e) {
-			log.log(Level.SEVERE,
-					"Could not retrieve configured client for Olog", e);
+			log.log(Level.SEVERE, "Could not retrieve configured client for Shift", e);
 			return null;
 		}
 	}
