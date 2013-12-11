@@ -59,7 +59,7 @@ public class ShiftBuilderDialog extends Dialog {
                 SWT.CENTER, true, false, 1, 1));
         }
 
-        shiftWidget = new ShiftWidget(container, SWT.NONE, true);
+        shiftWidget = new ShiftWidget(container, SWT.NONE, true, true);
         final GridData gd_shiftWidget = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_shiftWidget.heightHint = 450;
         gd_shiftWidget.widthHint = 450;
@@ -99,7 +99,10 @@ public class ShiftBuilderDialog extends Dialog {
             }
 
             getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
-            shiftBuilder = shift(shiftWidget.getShift()).setOwner(userCredentialWidget.getUsername());
+            shiftBuilder = shift(shiftWidget.getShift());
+            if (shiftWidget.getShift().getOwner().isEmpty()) {
+            	shiftBuilder = shiftBuilder.setOwner(userCredentialWidget.getUsername());
+            }
             shiftClient.start(shiftBuilder.build());
             getShell().setCursor(originalCursor);
             setReturnCode(OK);

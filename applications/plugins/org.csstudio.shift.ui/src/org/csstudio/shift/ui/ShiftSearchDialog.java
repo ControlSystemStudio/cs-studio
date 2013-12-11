@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,7 @@ public class ShiftSearchDialog extends Dialog {
         this.types = types;
         setBlockOnOpen(false);
         setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
+        this.searchParameters = initialSearchParameters;
     }
 
     @Override
@@ -231,23 +233,31 @@ public class ShiftSearchDialog extends Dialog {
     }
 
     private void initialize() {
+        Map<String, String> initSearchParameters = new HashMap<String,String>();
+        initSearchParameters.putAll(searchParameters);
         shiftCombo.setItems(shifts);
         typeCombo.setItems(types);
-        for (String keyword : searchParameters.keySet()) {
+        for (String keyword : initSearchParameters.keySet()) {
             if (ShiftSearchUtil.SEARCH_KEYWORD_TEXT.equals(keyword)) {
-            	textOwner.setText(searchParameters.get(keyword));
+            	textOwner.setText(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_SHIFTS.equals(keyword)) {
-            	shiftCombo.setSelection(searchParameters.get(keyword));
+            	shiftCombo.setSelection(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_TYPE.equals(keyword)) {
-            	typeCombo.setSelection(searchParameters.get(keyword));
+            	typeCombo.setSelection(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_START.equals(keyword)) {
-            	textFrom.setText(searchParameters.get(keyword));
+            	textFrom.setText(initSearchParameters.get(keyword));
             }
             if (ShiftSearchUtil.SEARCH_KEYWORD_END.equals(keyword)) {
-            	textTo.setText(searchParameters.get(keyword));
+            	textTo.setText(initSearchParameters.get(keyword));
+            }
+            if (ShiftSearchUtil.SEARCH_KEYWORD_OWNER.equals(keyword)) {
+            	textOwner.setText(initSearchParameters.get(keyword));
+            }
+            if (ShiftSearchUtil.SEARCH_KEYWORD_STATUS.equals(keyword)) {
+            	textStatus.setText(initSearchParameters.get(keyword));
             }
         }
     }

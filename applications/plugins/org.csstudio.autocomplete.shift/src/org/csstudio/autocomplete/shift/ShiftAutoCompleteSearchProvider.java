@@ -36,7 +36,7 @@ public class ShiftAutoCompleteSearchProvider extends AbstractAutoCompleteSearchP
 		    List<String> timeOptions = new ArrayList<String>(Arrays.asList(
 			    "lastMin", "1minAgo", "lastHour", "1hourAgo", "lastDay",
 			    "1dayAgo", "lastWeek", "1weekAgo"));
-		    List<String> status = new ArrayList<String>(Arrays.asList("active", "end", "close"));
+		    List<String> status = new ArrayList<String>(Arrays.asList("active", "end", "signed"));
 		    keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_SHIFTS, shifts);
 		    keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_TYPE, types);	   
 		    keyValueMap.put(ShiftSearchUtil.SEARCH_KEYWORD_START, timeOptions);

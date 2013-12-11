@@ -35,8 +35,6 @@ public class OpenShiftViewer extends AbstractHandler {
             final IStructuredSelection strucSelection = (IStructuredSelection) selection;
 		    if (strucSelection.getFirstElement() instanceof Shift) {
 		    	ShiftViewer.createInstance(new ShiftViewerModel((Shift) strucSelection.getFirstElement()));
-		    } else {
-		    	ShiftViewer.createInstance();
 		    }
 		} else {
 			ShiftViewer.createInstance();

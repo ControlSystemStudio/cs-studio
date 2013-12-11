@@ -20,9 +20,9 @@ public class ShiftClientCreator {
      * @return
      * @throws Exception
      */
-    public static ShiftClient getClient() throws Exception {
+    public static ShiftClient getClient(final String url) throws Exception {
 	if (client == null) {
-		ShiftClientCreator.client = serviceURL().withHTTPAuthentication(false).create();
+		ShiftClientCreator.client = serviceURL(url).withHTTPAuthentication(false).create();
 	}
 	return client;
     }
@@ -35,7 +35,7 @@ public class ShiftClientCreator {
      * @return
      * @throws Exception
      */
-    public static ShiftClient getClient(String username, String password) throws Exception {
-    	return serviceURL().withHTTPAuthentication(true).username(username).password(password).create();
+    public static ShiftClient getClient(final String url, final String username, final String password) throws Exception {
+    	return serviceURL(url).withHTTPAuthentication(true).username(username).password(password).create();
     }
 }

@@ -60,7 +60,7 @@ public class CloseShiftBuilderDialog extends Dialog {
             userCredentialWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         }
 
-        shiftWidget = new ShiftWidget(container, SWT.NONE, false);
+        shiftWidget = new ShiftWidget(container, SWT.NONE, false, true);
         final GridData gd_shiftWidget = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_shiftWidget.heightHint = 450;
         gd_shiftWidget.widthHint = 450;
@@ -96,9 +96,9 @@ public class CloseShiftBuilderDialog extends Dialog {
 
             getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
             if(end) {
-            	shiftClient.end(shiftBuilder.build());
+            	shiftClient.end(shiftWidget.getShift());
             } else {
-            	shiftClient.close(shiftBuilder.build());
+            	shiftClient.close(shiftWidget.getShift());
             }
             getShell().setCursor(originalCursor);
             setReturnCode(OK);

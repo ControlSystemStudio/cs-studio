@@ -31,6 +31,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 
 public class ShiftTable extends Composite implements ISelectionProvider {
@@ -220,16 +221,15 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnEndDate = tableViewerColumnEndDate.getColumn();
-        shiftTablelayout.setColumnData(tblclmnEndDate, new ColumnWeightData(15, 50));
         tblclmnEndDate.setWidth(100);
+        shiftTablelayout.setColumnData(tblclmnEndDate, new ColumnWeightData(15, 50));
         tblclmnEndDate.setText("End Date");
         new TableViewerColumnSorter(tableViewerColumnEndDate) {
 
             @Override
             protected Object getValue(final Object o) {
-                    final Shift item = ((Shift) o);
-                return item == null || item.getEndDate() == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                        DateFormat.SHORT).format(item.getEndDate());
+            	final Shift shift = ((Shift) o);
+                return shift.getEndDate() == null ? new Date().getTime() : shift.getEndDate().getTime();
             }
         };
        

@@ -68,15 +68,17 @@ public AutoCompleteResult listResult(ContentDescriptor desc, int limit) {
 		} else {
 			valuePattern = lastValue;
 		}
-		for (String value : keyValueMap.get(lastKey)) {
-			Set<String> proposedValues = new LinkedHashSet<String>(includedValues);
-			if (value.startsWith(valuePattern.trim())) {
-				proposedValues.add(value);
-				final String entry = fixedFirstPart + ' '+ Joiner.on(',').join(proposedValues);
-				final Proposal proposal = new Proposal(entry, false);
-				proposal.addStyle(ProposalStyle.getDefault(fixedFirstPart.length(), fixedFirstPart.length()	+ (valuePattern.length() - 1)));
-				result.addProposal(proposal);
-				result.setCount(result.getCount() + 1);
+		if(keyValueMap.containsKey(lastKey)) {
+			for (String value : keyValueMap.get(lastKey)) {
+				Set<String> proposedValues = new LinkedHashSet<String>(includedValues);
+				if (value.startsWith(valuePattern.trim())) {
+					proposedValues.add(value);
+					final String entry = fixedFirstPart + ' '+ Joiner.on(',').join(proposedValues);
+					final Proposal proposal = new Proposal(entry, false);
+					proposal.addStyle(ProposalStyle.getDefault(fixedFirstPart.length(), fixedFirstPart.length()	+ (valuePattern.length() - 1)));
+					result.addProposal(proposal);
+					result.setCount(result.getCount() + 1);
+				}
 			}
 		}
 	}
