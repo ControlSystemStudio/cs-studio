@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.platform.ui.css.platform"
+            category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.utility.shift.ui.ShiftPreferencePage"
             id="org.csstudio.utility.shift.ui.preferencepage"
             name="Shift">
