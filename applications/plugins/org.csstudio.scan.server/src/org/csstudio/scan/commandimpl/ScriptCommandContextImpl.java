@@ -86,7 +86,7 @@ public class ScriptCommandContextImpl extends ScanScriptContext
     @Override
     public Object read(final String device_name) throws Exception
     {
-        final Device device = context.getDevice(context.resolveMacros(device_name));
+        final Device device = context.getDevice(context.getMacros().resolveMacros(device_name));
         final VType value = device.read();
         if (value instanceof VNumber)
             return ValueUtil.numericValueOf(value);

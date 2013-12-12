@@ -32,15 +32,42 @@ or by selecting one or more PVs and deleting them via the context menu.
 </p>
 
 
+<h2>Restoring PVs</h2>
+<p>
+The value of PVs can be restored, i.e. the saved value will be written to the PV.
+By default, this affects every row of the table, but the check-mark at the start
+of each table row can be use to de-select rows.
+</p>
+<p>
+The context menu of the table offers shortcuts to select or de-select the whole table.
+</p>
+
+
 <h2>Tolerance</h2>
 <p>
 Values are highlighted when they differ from the saved snapshot value by a certain amount.
 The currently used tolerance is displayed in the tool-tip of a table row.
 This 'tolerance' value can be configured via the context menu of selected table rows.
 </p>
+<p>
+When configuring the 'tolerance', note that it applies to the rows which are
+selected in the table via the usual selection mechanism (click on one row, shift-click to select multiple rows, ...).
+If no row specific rows are selected to set their tolerance, the tolerance for every row in the table will be updated.
+This is independent of the check mark in the first table column which marks rows to be restored by writing
+their saved value back to the PVs.
+</p>
 
 
 <h1>History</h1>
+
+<h2>Version 3.2.1 - 2013-12-05</h2>
+<ul>
+<li>Context menu entries to select/de-select all rows.</li>
+<li>Changing the 'tolerance' can be done for currently selected table rows, or whole model if nothing selected.</li>
+<li>Changing the 'tolerance' marks table as changed, so it can be saved.</li>
+<li>Changing an item name marks table as changed, so it can be saved.</li>
+</ul>
+
 
 <h2>Version 3.2.0 - 2012-12-05</h2>
 <p>

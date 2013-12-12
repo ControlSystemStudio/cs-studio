@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.converter.model;
 /**
  * Specific class representing activeArcClass widget.
  *
- * @author Matevz
+ * @author Lei Hu
  *
  */
 public class Edm_activeArcClass extends EdmWidget {
@@ -25,12 +25,6 @@ public class Edm_activeArcClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private boolean invisible;
 	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
 	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
-	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
-	@EdmAttributeAn @EdmOptionalAn private String visPv;
-	@EdmAttributeAn @EdmOptionalAn private double visMax;
-	@EdmAttributeAn @EdmOptionalAn private double visMin;
-	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
-
 	@EdmAttributeAn @EdmOptionalAn private double startAngle;
 	@EdmAttributeAn @EdmOptionalAn private double totalAngle;
 	@EdmAttributeAn @EdmOptionalAn private String fillMode;
@@ -61,20 +55,6 @@ public class Edm_activeArcClass extends EdmWidget {
 	}
 
 
-
-
-
-	/**
-	 * @return the alarmPv
-	 */
-	public final String getAlarmPv() {
-		return alarmPv;
-	}
-
-
-
-
-
 	public EdmColor getLineColor() {
 		return lineColor;
 	}
@@ -99,23 +79,6 @@ public class Edm_activeArcClass extends EdmWidget {
 		return fill;
 	}
 	
-	
-	public String getVisPv() {
-		return visPv;
-	}
-
-	public double getVisMax() {
-		return visMax;
-	}
-
-	public double getVisMin() {
-		return visMin;
-	}
-
-	public boolean isVisInvert() {
-		return visInvert;
-	}
-
 	public double getStartAngle() {
 		return startAngle;
 	}

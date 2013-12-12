@@ -34,7 +34,7 @@ public class OpiDisplay {
 		/* Treat position of widgets inside as absolute positions, not relative
 		 * to the display position.
 		 */
-		context = new Context(doc, element, 0, 0);
+		context = new Context(doc, element, d, 0, 0);
 		
 		writeHeader(context, d);
 		OpiWriter.writeWidgets(context, d.getWidgets());
@@ -53,26 +53,15 @@ public class OpiDisplay {
 		new OpiInt(context, "height", d.getH());
 		
 		new OpiFont(context, "font", d.getFont());
-		new OpiFont(context, "font_ctl", d.getCtlFont());
-		new OpiFont(context, "font_button", d.getBtnFont());
 		
-		new OpiColor(context, "color_foreground", d.getFgColor());
-		new OpiColor(context, "color_background", d.getBgColor());
-		new OpiColor(context, "color_text", d.getTextColor());
-		new OpiColor(context, "color_ctlFgColor1", d.getCtlFgColor1());
-		new OpiColor(context, "color_ctlFgColor2", d.getCtlFgColor2());
-		new OpiColor(context, "color_ctlBgColor1", d.getCtlBgColor1());
-		new OpiColor(context, "color_ctlBgColor2", d.getCtlBgColor2());
-		new OpiColor(context, "color_topshadowcolor", d.getTopShadowColor());
-		new OpiColor(context, "color_botshadowcolor", d.getBotShadowColor());
+		new OpiColor(context, "foreground_color", d.getFgColor(), null);
+		new OpiColor(context, "background_color", d.getBgColor(), null);
 		
-		if (d.getAttribute("title").isInitialized())
+		if (d.getAttribute("title").isExistInEDL())
 			new OpiString(context, "name", d.getTitle());
-		new OpiBoolean(context, "grid_show", d.isShowGrid());
-		if (d.getAttribute("gridSize").isInitialized())
-			new OpiInt(context, "grid_space", d.getGridSize());
-		new OpiBoolean(context, "scroll_disable", d.isDisableScroll());
-		
+		new OpiBoolean(context, "show_grid", d.isShowGrid());
+		if (d.getAttribute("gridSize").isExistInEDL())
+			new OpiInt(context, "grid_space", d.getGridSize());		
 	}
 
 }

@@ -27,7 +27,7 @@ public class OpiDouble extends OpiAttribute {
 	 */
 	public OpiDouble(Context con, String name, double d) {
 		super(con, name);
-		context.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(d)));
+		propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(d)));
 	}
 
 }

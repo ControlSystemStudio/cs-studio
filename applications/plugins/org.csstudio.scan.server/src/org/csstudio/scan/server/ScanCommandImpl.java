@@ -112,11 +112,11 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
     }
 
     /** Determine which devices are required by this command      
-     *  @param context {@link ScanContext} for resolving macros
+     *  @param macros {@link MacroContext} for resolving macros
      *  @return Device (alias) names used by the command
      *  @throws Exception on macro error
      */
-    public String[] getDeviceNames(final ScanContext context) throws Exception
+    public String[] getDeviceNames(final MacroContext macros) throws Exception
     {
         return new String[0];
     }
@@ -132,7 +132,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
      */
     public void simulate(final SimulationContext context) throws Exception
     {
-    	context.logExecutionStep(context.resolveMacros(command.toString()), 0.1);
+    	context.logExecutionStep(context.getMacros().resolveMacros(command.toString()), 0.1);
     }
 
 	/** Execute the command

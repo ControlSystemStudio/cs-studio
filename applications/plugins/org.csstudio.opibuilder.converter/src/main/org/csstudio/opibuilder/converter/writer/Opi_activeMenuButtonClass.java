@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeMenuButtonClass;
 
 /**
@@ -28,23 +27,14 @@ public class Opi_activeMenuButtonClass extends OpiWidget {
 	public Opi_activeMenuButtonClass(Context con, Edm_activeMenuButtonClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);		
-		new OpiString(context, "name", name);
+		setName(name);
+		setVersion(version);
 		
-		if(r.getAttribute("controlPv").isInitialized())
+		if(r.getControlPv()!=null)
 		{
-			new OpiString(context, "pv_name", r.getControlPv());
-			new OpiBoolean(context, "actions_from_pv", true);
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
+			new OpiBoolean(widgetContext, "actions_from_pv", true);
 		}
-		if(r.getAttribute("fgColor").isInitialized())
-			new OpiColor(context, "foreground_color", r.getFgColor());
-		if(r.getAttribute("bgColor").isInitialized())
-			new OpiColor(context, "background_color", r.getBgColor());
-		if(r.isFgAlarm())
-			new OpiBoolean(context, "border_alarm_sensitive", r.isFgAlarm());
-		
-		
 
 		log.debug("Edm_activeMenuButtonClass written.");
 

@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.converter.model;
 /**
  * Specific class representing activePngClass widget.
  *
- * @author Matevz
+ * @author Matevz, Lei Hu, Xihui Chen
  *
  */
 public class Edm_activePngClass extends EdmWidget {
@@ -30,6 +30,23 @@ public class Edm_activePngClass extends EdmWidget {
 		return file;
 	}
 
+
+	public boolean isUniformSize() {
+		return uniformSize;
+	}
+
+
+	public boolean isFastErase() {
+		return fastErase;
+	}
+
+
+	public boolean isNoErase() {
+		return noErase;
+	}
+
+	
+	
 
 }
 

@@ -11,9 +11,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
+import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 
 /**
@@ -36,9 +39,40 @@ public class EdmColorsListParser extends EdmParser {
 		
 		String data = edmData.toString();
 		parseStaticColors(getRoot(), data);
+		parseDynamicColors(getRoot(), data);
 		parseMenuMap(getRoot(), data);
 	}
 
+	private void parseDynamicColors(EdmEntity parent, String data){
+		//rule pattern, for example:
+		/*
+		 * rule 147 "fil-sts" {
+ 			>=-0.5 && <0.5        : "black"            # fil off        = 0
+ 			>=0.5  && <1.5        : "brt-orange"       # fil. on        = 1
+ 			>=1.5  && <2.5        : "blinking orange"  # on too long    = 2
+ 			>=2.5  && <3.5        : "orange-42"	    # black heat     = 3
+		   }
+		 */
+		Pattern p = Pattern.compile("rule [^\\x7B]*\\x7B{1}[^\\x7D]*\\x7D{1}", Pattern.DOTALL); 
+		Matcher m = p.matcher(data);
+		while(m.find()){
+			EdmAttribute a = new EdmAttribute(EdmColor.DYNAMIC);
+			String rule = m.group();
+			try {				
+				String[] pieces = StringSplitter.splitIgnoreInQuotes(rule.substring(0, rule.indexOf('{')), ' ', true);
+				String colorIndex = pieces[1];
+				String colorName = pieces[2];
+				String colorValue = rule.substring(rule.indexOf('{')+1, rule.indexOf('}'));
+				a.appendValue(colorName);
+				a.appendValue(colorValue);
+				parent.addAttribute(colorIndex, a);
+			}catch (Exception e) {
+				ErrorHandlerUtil.handleError("Error in parsing color rule: " + rule, e);
+			}
+			
+		}
+	}
+	
 	/**
 	 * Parses static colors to EdmAttributes on parent.
 	 * 
@@ -64,7 +98,7 @@ public class EdmColorsListParser extends EdmParser {
 			 * then font name and then triple integers for primary color
 			 * and optional another three integers for blinking color.
 			 */
-			EdmAttribute a = new EdmAttribute();
+			EdmAttribute a = new EdmAttribute(EdmColor.STATIC);
 			String colorName = "";
 			boolean error = false;
 			int i = 1;
@@ -80,7 +114,7 @@ public class EdmColorsListParser extends EdmParser {
 							error = true;
 						else
 							throw new EdmException(EdmException.STRING_FORMAT_ERROR,
-									"String value does not start with quote at line: " + colorData);
+									"String value does not start with quote at line: " + colorData, null);
 					}
 						
 					else {
@@ -99,7 +133,7 @@ public class EdmColorsListParser extends EdmParser {
 									error = true;
 								else 
 									throw new EdmException(EdmException.STRING_FORMAT_ERROR,
-											"String value does not end with quote at line: " + colorData);
+											"String value does not end with quote at line: " + colorData, null);
 							}
 						}
 						a.appendValue(nameValue.toString());
@@ -115,11 +149,8 @@ public class EdmColorsListParser extends EdmParser {
 						if (Pattern.matches("^\\d*$", word))
 							colorValue.append(" " + word);
 						else {
-							if (robust)
-								error = true;
-							else
-								throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
-										"Wrong color input at line: " + colorData);
+							ErrorHandlerUtil.handleError("Parsing color file error.", new EdmException(EdmException.COLOR_FORMAT_ERROR,
+										"Wrong color input at line: " + colorData, null));
 						}
 					}
 					a.appendValue(colorValue.toString());
@@ -136,7 +167,7 @@ public class EdmColorsListParser extends EdmParser {
 						parent.addAttribute(colorName, a);
 					}
 					catch (Exception e) {
-						log.error("Error when parsing color attribute. Attribute skipped.");
+						ErrorHandlerUtil.handleError("Error when parsing color attribute. Attribute skipped.", e);
 					}	
 				}
 				else 

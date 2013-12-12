@@ -23,6 +23,7 @@ public class EdmAttribute {
 	
 	private boolean required;
 	private boolean initialized;
+	private boolean isExistInEDl;
 	
 	private void initDefaultValues() {
 		values = new Vector<String>();
@@ -52,10 +53,12 @@ public class EdmAttribute {
 	 */
 	public EdmAttribute(EdmAttribute genericAttribute) throws EdmException {
 
+		if(genericAttribute!=null)
+			isExistInEDl=true;
 		// Multiple specializations test.
 		if (genericAttribute != null && !genericAttribute.getClass().equals(EdmAttribute.class)) {
 			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-			"Trying to initialize from an already specialized attribute.");
+			"Trying to initialize from an already specialized attribute.", null);
 		}
 		
 		initDefaultValues();
@@ -93,7 +96,13 @@ public class EdmAttribute {
 	 * @return		Actual value appended (without quotations).
 	 */
 	public String appendValue(String value) {
-		value = value.replaceAll("\"", "");
+		if(value.startsWith("\"")&&value.endsWith("\"")){
+			if(value.length() <3)
+				System.out.println(value);
+			value=value.substring(1, value.length()-1);
+		}
+		
+		value = value.replaceAll("\\\\\"", "\"");
 		values.add(value);
 		return value;
 	}
@@ -104,6 +113,10 @@ public class EdmAttribute {
 
 	public boolean isInitialized() {
 		return initialized;
+	}
+	
+	public boolean isExistInEDL(){
+		return isExistInEDl;
 	}
 	
 	@Override

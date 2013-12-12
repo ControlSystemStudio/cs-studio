@@ -24,6 +24,7 @@ import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.w3c.dom.Document;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -120,9 +121,7 @@ public class OpiWriter {
 			} catch (ClassNotFoundException exception) {
 				log.warn("Class not declared: " + opiClassName);
 			} catch (Exception exception) {
-				if (!robust) {
-					exception.printStackTrace();
-				}
+				ErrorHandlerUtil.handleError("Error in converting " + e, exception);
 			}
 		}
 	}
@@ -139,7 +138,7 @@ public class OpiWriter {
 
         } catch (ParserConfigurationException e) {
         	throw new EdmException(EdmException.DOM_BUILDER_EXCEPTION, 
-        			"Error instantiating DOM document.");
+        			"Error instantiating DOM document.", e);
         }
     }
 	
@@ -159,6 +158,7 @@ public class OpiWriter {
             format.setLineWidth(65);
             format.setIndenting(true);
             format.setIndent(2);
+            format.setPreserveSpace(false);
             Writer out = new StringWriter();
             XMLSerializer serializer = new XMLSerializer(out, format);
             serializer.serialize(doc);
@@ -172,8 +172,7 @@ public class OpiWriter {
             
             log.debug("Completed.");
         } catch (Exception e) {
-        	e.printStackTrace();
-        	throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error writing to file " + fileName);
+        	throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error writing to file " + fileName, e);
         } 
 	}
 }

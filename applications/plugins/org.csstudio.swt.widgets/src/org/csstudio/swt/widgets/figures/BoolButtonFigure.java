@@ -398,6 +398,14 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			graphics.fillRectangle(bounds);
 		}	
 	}
+	
+	@Override
+	public void setBackgroundColor(Color bg) {
+		super.setBackgroundColor(bg);
+		for(Object child: getChildren()){
+			((Figure) child).setBackgroundColor(bg);
+		}
+	}
 
 	/**
 	 * @param effect3D the effect3D to set

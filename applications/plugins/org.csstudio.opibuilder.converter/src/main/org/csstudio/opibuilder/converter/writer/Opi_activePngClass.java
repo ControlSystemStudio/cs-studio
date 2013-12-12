@@ -12,13 +12,13 @@ import org.csstudio.opibuilder.converter.model.Edm_activePngClass;
 
 /**
  * XML conversion class for Edm_activePngClass
- * @author Matevz
+ * @author Lei Hu, Xihui Chen
  */
 public class Opi_activePngClass extends OpiWidget {
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activePngClass");
 	private static final String typeId = "Image";
-	private static final String name = "EDM Rectangle";
+	private static final String name = "EDM Png";
 	private static final String version = "1.0";
 
 	/**
@@ -27,14 +27,16 @@ public class Opi_activePngClass extends OpiWidget {
 	public Opi_activePngClass(Context con, Edm_activePngClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);
+		setName(name);
+		setVersion(version);		
 		
-		new OpiString(context, "name", name);
-		
-		
-		if(r.getAttribute("file").isInitialized())
-			new OpiString(context, "image_file", r.getFile());	
+		if(r.getAttribute("file").isExistInEDL()){
+			String path = r.getFile();
+			int i = path.indexOf('.');
+			if(i==-1||i!=path.length()-4)
+				path = path+".png";
+			new OpiString(widgetContext, "image_file", path);
+		}
 
 		log.debug("Edm_activePngClass written.");
 

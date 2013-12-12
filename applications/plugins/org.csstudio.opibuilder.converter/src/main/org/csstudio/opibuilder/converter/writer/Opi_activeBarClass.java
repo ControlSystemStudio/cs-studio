@@ -8,12 +8,11 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeBarClass;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * @author Matevz
+ * @author Lei Hu, Xihui Chen
  */
 public class Opi_activeBarClass extends OpiWidget {
 
@@ -28,28 +27,38 @@ public class Opi_activeBarClass extends OpiWidget {
 	public Opi_activeBarClass(Context con, Edm_activeBarClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);		
-		new OpiString(context, "name", name);
+		setVersion(version);
+		setName(name);
+		new OpiBoolean(widgetContext, "effect_3d", false);
+		new OpiBoolean(widgetContext, "indicator_mode", false);
+		new OpiBoolean(widgetContext, "show_scale", r.isShowScale());
+		new OpiBoolean(widgetContext, "transparent_background", false);
+		new OpiBoolean(widgetContext, "show_markers", false);
+		new OpiBoolean(widgetContext, "show_label", false);
+		new OpiBoolean(widgetContext, "forecolor_alarm_sensitive", false);
+		new OpiBoolean(widgetContext, "border_alarm_sensitive", r.isFgAlarm());
 		
-		if(r.getAttribute("showScale").isInitialized())
-			new OpiBoolean(context, "show_scale", false);
-		else
-			new OpiBoolean(context, "show_scale", true);
+		new OpiInt(widgetContext, "border_width", r.isBorder()?1:0);
+		new OpiInt(widgetContext, "border_style", r.isBorder()?1:0);
+		new OpiColor(widgetContext, "border_color", r.getFgColor(), r);
 		
-		if(r.getAttribute("border").isInitialized())
-			new OpiInt(context, "border_width", 1);
-		else
-			new OpiInt(context, "border_width", 0);
+		if(r.getIndicatorPv() != null)
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getIndicatorPv()));
 		
-		if(r.getAttribute("indicatorPv").isInitialized())
-			new OpiString(context, "pv_name", r.getIndicatorPv());
-		new OpiColor(context, "fill_color", r.getIndicatorColor());
+		new OpiColor(widgetContext, "fill_color", r.getIndicatorColor(), r);
+		new OpiColor(widgetContext, "color_fillbackground", r.getBgColor(), r);
+		new OpiBoolean(widgetContext, "fillcolor_alarm_sensitive", r.isIndicatorAlarm());	
 		
-		if(r.getOrientation().equals("vertical"))
-			new OpiBoolean(context, "horizontal", true);
-		else
-			new OpiBoolean(context, "horizontal", false);
+		new OpiBoolean(widgetContext, "horizontal",
+					r.getOrientation()==null || !r.getOrientation().equals("vertical"));
+		
+		new OpiBoolean(widgetContext, "limits_from_pv", r.isLimitsFromDb());
+		new OpiBoolean(widgetContext, "origin_ignored", !r.getAttribute("origin").isExistInEDL());
+		new OpiDouble(widgetContext, "origin", r.getOrigin());
+		new OpiDouble(widgetContext, "minimum", r.getMin());
+		new OpiDouble(widgetContext, "maximum", r.getMax());
+		
+		
 
 		log.debug("Edm_activeBarClass written.");
 

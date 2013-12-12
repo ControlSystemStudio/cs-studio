@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
+import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeCircleClass;
 
@@ -29,35 +30,35 @@ public class Opi_activeCircleClass extends OpiWidget {
 		super(con, r);
 		setTypeId(typeId);
 
-		context.getElement().setAttribute("version", version);
+		widgetContext.getElement().setAttribute("version", version);
 		
-		new OpiString(context, "name", name);
-		new OpiColor(context, "foreground_color", r.getLineColor());
+		new OpiString(widgetContext, "name", name);
+		new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
 		
-		if(r.getAttribute("fill").isInitialized())
-			new OpiBoolean(context, "transparent", !r.isFill());
+		new OpiBoolean(widgetContext, "transparent", !r.isFill());
 		
-		if (r.getFillColor().isInitialized()) {
-			new OpiColor(context, "background_color", r.getFillColor());
+		if (r.getFillColor().isExistInEDL()) {
+			new OpiColor(widgetContext, "background_color",
+					r.isFillAlarm()? new EdmColor(null, 0, 255,0): r.getFillColor(), r);
 		}
 		
-		if(r.getAttribute("fillAlarm").isInitialized())
-			new OpiBoolean(context, "backcolor_alarm_sensitive", r.isFillAlarm());
-		
-		
-		if(r.getAttribute("lineAlarm").isInitialized())
-			new OpiBoolean(context, "forecolor_alarm_sensitive", r.isLineAlarm());
-	
-		if(r.getAttribute("alarmPv").isInitialized())
-			new OpiString(context, "pv_name", r.getAlarmPv());
-		
+		if (r.getAlarmPv() != null) {
+			// line color alarm rule.
+			if (r.isLineAlarm())
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
+						"lineColorAlarmRule", true);
+			if (r.isFillAlarm())
+				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
+						"backColorAlarmRule", true);
+		}
+				
 		int line_width = 1;
-		if(r.getAttribute("lineWidth").isInitialized() && (r.getLineWidth() != 0 || r.isFill()))
+		if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
 			line_width = r.getLineWidth();
-		new OpiInt(context, "line_width", line_width);
+		new OpiInt(widgetContext, "line_width", line_width);
 
 		int lineStyle = 0;
-		if (r.getLineStyle().isInitialized()) {
+		if (r.getLineStyle().isExistInEDL()) {
 
 			switch (r.getLineStyle().get()) {
 			case EdmLineStyle.SOLID: {
@@ -69,7 +70,7 @@ public class Opi_activeCircleClass extends OpiWidget {
 			}
 
 		}
-		new OpiInt(context, "line_style", lineStyle);
+		new OpiInt(widgetContext, "line_style", lineStyle);
 		
 
 		log.debug("Edm_activeCircleClass written.");
@@ -78,7 +79,7 @@ public class Opi_activeCircleClass extends OpiWidget {
 	
 	protected void setDefaultPropertyValue(){
 		super.setDefaultPropertyValue();		
-		new OpiBoolean(context, "transparent", true);
+		new OpiBoolean(widgetContext, "transparent", true);
 	}
 
 }

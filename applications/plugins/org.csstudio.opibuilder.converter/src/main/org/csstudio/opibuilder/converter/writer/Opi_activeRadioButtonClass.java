@@ -8,12 +8,11 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeRadioButtonClass;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * @author Matevz
+ * @author Lei Hu, Xihui Chen
  */
 public class Opi_activeRadioButtonClass extends OpiWidget {
 
@@ -28,24 +27,17 @@ public class Opi_activeRadioButtonClass extends OpiWidget {
 	public Opi_activeRadioButtonClass(Context con, Edm_activeRadioButtonClass r) {
 		super(con, r);
 		setTypeId(typeId);
-
-		context.getElement().setAttribute("version", version);		
-		new OpiString(context, "name", name);
+		setName(name);
+		setVersion(version);
 		
-		if(r.getAttribute("controlPv").isInitialized())
+		if(r.getAttribute("controlPv").isExistInEDL())
 		{
-			new OpiString(context, "pv_name", r.getControlPv());
-			new OpiBoolean(context, "items_from_pv", true);
-		}
-		if(r.getAttribute("fgColor").isInitialized())
-			new OpiColor(context, "foreground_color", r.getFgColor());
-		if(r.getAttribute("bgColor").isInitialized())
-			new OpiColor(context, "background_color", r.getBgColor());
-		if(r.isFgAlarm())
-			new OpiBoolean(context, "border_alarm_sensitive", r.isFgAlarm());
+			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
+			new OpiBoolean(widgetContext, "items_from_pv", true);
+		}		
+		new OpiColor(widgetContext, "background_color", r.getButtonColor(), r);
+		new OpiColor(widgetContext, "selected_color", r.getSelectColor(), r);
 		
-		
-
 		log.debug("Edm_activeRadioButtonClass written.");
 
 	}

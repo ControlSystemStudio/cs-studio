@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
+import junit.framework.TestCase;
+
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
-
-import junit.framework.TestCase;
 
 
 public class EdmDisplayParserTest extends TestCase {

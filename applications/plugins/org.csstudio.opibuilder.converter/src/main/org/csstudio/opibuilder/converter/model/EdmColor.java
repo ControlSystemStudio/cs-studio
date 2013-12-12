@@ -7,10 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import java.util.LinkedHashMap;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.csstudio.java.string.StringSplitter;
+import org.csstudio.opibuilder.util.ConsoleService;
 
 /**
  * Specific class representing EdmColor property.
@@ -20,19 +24,40 @@ import org.apache.log4j.Logger;
  */
 public class EdmColor extends EdmAttribute {
 
+	public static final String DYNAMIC = "d";
+	public static final String STATIC = "s";
+	
+	
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmColor");
 
-	private String name;
+	private String name = "unknown";
 
-	private int red;
-	private int green;
-	private int blue;
+	private int red = 0;
+	private int green =0;
+	private int blue = 0;
 
 	private boolean blinking;
+	
+	private boolean dynamic;
 
 	private int blinkRed;
 	private int blinkGreen;
 	private int blinkBlue;
+	
+	private LinkedHashMap<String, String> ruleMap;
+	
+	/**
+	 * @param name color name
+	 * @param red red element (0-255)
+	 * @param green
+	 * @param blue
+	 */
+	public EdmColor(String name, int red, int green, int blue){
+		this.name= name;
+		this.red = red<<8;
+		this.green = green<<8;
+		this.blue =  blue<<8;
+	}
 
 	/**
 	 * Constructor which parses EdmColor from general EdmAttribute value.
@@ -48,8 +73,7 @@ public class EdmColor extends EdmAttribute {
 
 		if (genericEntity == null || getValueCount() == 0) {
 			if (isRequired()) {
-				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-				"Trying to initialize a required attribute from null object.");
+				log.warn("Missing required property.");
 			} else {
 				log.warn("Missing optional property.");
 				return;
@@ -62,8 +86,10 @@ public class EdmColor extends EdmAttribute {
 			parseRGBColor();
 		} else if (firstVal.startsWith("index ")) {
 			parseStaticColor(Integer.parseInt(firstVal.replace("index ", "")));
-		} else {
-			parseColorListDefinition();
+		} else if (firstVal.equals(STATIC)){
+			parseStaticColorListDefinition();
+		} else if (firstVal.equals(DYNAMIC)){
+			parseDynamicColorListDefinition();
 		}
 
 		setInitialized(true);
@@ -73,24 +99,24 @@ public class EdmColor extends EdmAttribute {
 		parseStaticColor(i);
 	}
 
-	private void parseColorListDefinition() throws EdmException {
+	private void parseStaticColorListDefinition() throws EdmException {
 		//input
-		name = getValue(0);
+		name = getValue(1);
 		//new EdmString(new EdmAttribute(getValue(0)), true);
 		if (name == null || name.length() == 0) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Color name is empty");
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Color name is empty", null);
 		}
 
 		try {
-			String[] color = getValue(1).split(" ");
+			String[] color = getValue(2).split(" ");
 
 			red = Integer.valueOf(color[0]).intValue();
 			green = Integer.valueOf(color[1]).intValue();
 			blue = Integer.valueOf(color[2]).intValue();
 			
-			if (getValueCount() == 3) {
+			if (getValueCount() == 4) {
 				blinking = true;
-				color = getValue(2).split(" ");
+				color = getValue(3).split(" ");
 				blinkRed = Integer.valueOf(color[0]).intValue();
 				blinkGreen = Integer.valueOf(color[1]).intValue();
 				blinkBlue = Integer.valueOf(color[2]).intValue();
@@ -100,19 +126,44 @@ public class EdmColor extends EdmAttribute {
 			}
 			
 		} catch (Exception exception) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, exception.getMessage());
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "", exception);
 		}
 
 		log.debug("Parsed colorsList definition.");
 	}
 
+	private void parseDynamicColorListDefinition() throws EdmException {
+		//input
+		name = getValue(1);
+		//new EdmString(new EdmAttribute(getValue(0)), true);
+		if (name == null || name.length() == 0) {
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Color name is empty", null);
+		}
+		dynamic = true;
+		ruleMap = new LinkedHashMap<String, String>();
+		try {
+			String rule = getValue(2);			
+			Scanner scanner = new Scanner(rule);
+			while(scanner.hasNextLine()){
+				String[] pieces = StringSplitter.splitIgnoreInQuotes(scanner.nextLine(), ':', true);
+				if(pieces.length ==2)
+					ruleMap.put(pieces[0],pieces[1]);
+			}		
+			
+		} catch (Exception exception) {
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "", exception);
+		}
+
+		log.debug("Parsed colorsList definition.");
+	}
+	
 	private void parseRGBColor() throws EdmException {
 
 		Pattern p = Pattern.compile("(\\w*)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
 		Matcher m = p.matcher(getValue(0));
 
 		if (!m.find()) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.", null);
 		}
 
 		try {
@@ -125,7 +176,7 @@ public class EdmColor extends EdmAttribute {
 			log.debug("Parsed RGB color.");
 		}
 		catch (Exception e) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.",e);
 		}
 	}
 
@@ -133,35 +184,61 @@ public class EdmColor extends EdmAttribute {
 
 		EdmColor color = EdmModel.getColorsList().getColor(i);
 		if (color == null) {
-			throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
-					"Color index " + i + " is not in given EdmColorsList instance.");
+			ConsoleService.getInstance().writeWarning(
+					"Color index " + i + " is not in colors list file. Use black color instead.");
+			color = new EdmColor(0);
 		}
 			
 		name = color.getName();
 		red = color.getRed();
 		green = color.getGreen();
 		blue = color.getBlue();
-		blinking = color.isBlinking();
+		blinking = color.isBlinking();		
 		blinkRed = color.getBlinkRed();
 		blinkGreen = color.getBlinkGreen();
 		blinkBlue = color.getBlinkBlue();
+		dynamic = color.isDynamic();
+		ruleMap = color.getRuleMap();
 		
 		log.debug("Parsed static color.");
 	}
+	
 
 	public String getName() {
 		return name;
 	}
 
 	public int getRed() {
+		if(isDynamic() && !ruleMap.isEmpty()){
+			EdmColor color = EdmModel.getColorsList().getColor(ruleMap.values().toArray()[0].toString());
+			if(color!=null)
+				return color.getRed();
+		}
 		return red;
 	}
 
+	/**
+	 * @return the rule map. Key is the rule expression, value is the color name.
+	 */
+	public LinkedHashMap<String, String> getRuleMap() {
+		return ruleMap;
+	}
+	
 	public int getGreen() {
+		if(isDynamic() && !ruleMap.isEmpty()){
+			EdmColor color = EdmModel.getColorsList().getColor(ruleMap.values().toArray()[0].toString());
+			if(color!=null)
+				return color.getGreen();
+		}
 		return green;
 	}
 
 	public int getBlue() {
+		if(isDynamic() && !ruleMap.isEmpty()){
+			EdmColor color = EdmModel.getColorsList().getColor(ruleMap.values().toArray()[0].toString());
+			if(color!=null)
+				return color.getBlue();
+		}
 		return blue;
 	}
 
@@ -179,5 +256,9 @@ public class EdmColor extends EdmAttribute {
 
 	public boolean isBlinking() {
 		return blinking;
+	}
+	
+	public boolean isDynamic() {
+		return dynamic;
 	}
 }

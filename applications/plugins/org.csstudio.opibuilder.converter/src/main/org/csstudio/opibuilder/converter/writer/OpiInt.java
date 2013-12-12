@@ -27,6 +27,6 @@ public class OpiInt extends OpiAttribute {
 	 */
 	public OpiInt(Context con, String name, int i) {
 		super(con, name);
-		context.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(i)));
+		propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(i)));
 	}
 }
