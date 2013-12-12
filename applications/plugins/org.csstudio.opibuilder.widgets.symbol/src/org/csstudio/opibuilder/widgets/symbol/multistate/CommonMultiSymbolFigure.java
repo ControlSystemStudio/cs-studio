@@ -84,6 +84,8 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	
 	private IImageLoadedListener imageLoadedListener;
 	
+	private boolean useForegroundColor = false;
+
 	public CommonMultiSymbolFigure(boolean runMode) {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE
 				: ExecutionMode.EDIT_MODE;
@@ -531,7 +533,11 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		getSymbolImage().setBounds(bounds);
 		getSymbolImage().setBorder(getBorder());
 		int stateIndex = statesStr.indexOf(currentState);
-		getSymbolImage().setCurrentColor(stateIndex == 0 ? offColor : onColor);
+		Color currentcolor = null;
+		if (useForegroundColor) currentcolor = getForegroundColor();
+		else currentcolor = stateIndex == 0 ? offColor : onColor;
+		getSymbolImage().setCurrentColor(currentcolor);
+		getSymbolImage().setAbsoluteScale(gfx.getAbsoluteScale());
 		getSymbolImage().paintFigure(gfx);
 	}
 	

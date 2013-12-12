@@ -65,11 +65,12 @@ public class AlarmHandler {
 		if (pv.isImportant()) {
 			this.priority = EActionPriority.IMPORTANT;
 		} else if (!this.priority.equals(EActionPriority.IMPORTANT)) {
-			switch (pv.getSeverity()) {
+			switch (pv.getCurrentSeverity()) {
 			case OK: this.priority = EActionPriority.OK; break;
 			case MINOR: this.priority = EActionPriority.MINOR; break;
 			case MAJOR: this.priority = EActionPriority.MAJOR; break;
 			case INVALID: this.priority = EActionPriority.MAJOR; break;
+			case UNDEFINED: this.priority = EActionPriority.MAJOR; break;
 			default: break;
 			}
 		}

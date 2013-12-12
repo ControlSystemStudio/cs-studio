@@ -48,11 +48,11 @@ public class AlarmNotifier {
 
 	public AlarmNotifier(final String root_name,
 			final IAlarmRDBHandler rdbHandler,
-			final AutomatedActionFactory factory, final int timer_threshold,
-			final int thread_threshold) throws Exception {
+			final AutomatedActionFactory factory, final int timer_threshold)
+			throws Exception {
 		this.rdb = rdbHandler;
 		this.factory = factory;
-		this.workQueue = new WorkQueue(timer_threshold, thread_threshold);
+		this.workQueue = new WorkQueue(timer_threshold, 60000); // 60s
 	}
 
 	/** @return Name of configuration root element */
@@ -90,6 +90,11 @@ public class AlarmNotifier {
 	 */
 	public void handleAlarmUpdate(AlarmTreePV pvItem) {
 		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
+		if (!pvItem.isEnabled()) {
+			// Ignore PV, it's disabled
+			AlarmNotifierHistory.getInstance().clear(snapshot);
+			return;
+		}
 		// Avoid to send 'fake' alarms when the PV is re-enabled for example
 		if (snapshot.getValue() != null && snapshot.getValue().isEmpty())
 			return;
@@ -168,6 +173,7 @@ public class AlarmNotifier {
 	public void handleModeUpdate(boolean maintenance_mode) {
 		Activator.getLogger().config("Maintenance Mode: " + maintenance_mode);
 		this.maintenanceMode = maintenance_mode;
+		AlarmNotifierHistory.getInstance().clearAll();
 		if (maintenance_mode)
 			workQueue.interruptAll();
 	}

@@ -20,6 +20,7 @@ import org.csstudio.autocomplete.preferences.Preferences;
 import org.csstudio.autocomplete.proposals.Proposal;
 import org.csstudio.autocomplete.proposals.ProposalStyle;
 import org.csstudio.autocomplete.proposals.TopProposalFinder;
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteUIPlugin;
 
 /**
@@ -32,7 +33,7 @@ import org.csstudio.autocomplete.ui.AutoCompleteUIPlugin;
 public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {
 
 	public static final String NAME = "History";
-	
+
 	@Override
 	public boolean accept(final ContentType type) {
 		return true;
@@ -42,15 +43,23 @@ public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {
 	public AutoCompleteResult listResult(final ContentDescriptor desc,
 			final int limit) {
 		String content = desc.getOriginalContent();
+		int startIndex = 0;
+		if (desc.getContentType().equals(ContentType.PVName)) {
+			content = desc.getValue();
+			startIndex = desc.getStartIndex();
+		}
 		AutoCompleteResult result = new AutoCompleteResult();
 		String cleanedName = AutoCompleteHelper.trimWildcards(content);
 		Pattern namePattern = AutoCompleteHelper.convertToPattern(cleanedName);
 		if (namePattern == null)
 			return result;
 
+		String entryType = AutoCompleteTypes.PV;
+		if (content.startsWith("="))
+			entryType = AutoCompleteTypes.Formula;
+
 		LinkedList<String> fifo = new LinkedList<String>();
-		fifo.addAll(AutoCompleteUIPlugin.getDefault().getHistory(
-				desc.getAutoCompleteType().value()));
+		fifo.addAll(AutoCompleteUIPlugin.getDefault().getHistory(entryType));
 		if (fifo.isEmpty())
 			return result; // Empty result
 
@@ -61,6 +70,7 @@ public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {
 				if (count < limit) {
 					Proposal proposal = new Proposal(entry, false);
 					proposal.addStyle(ProposalStyle.getDefault(m.start(), m.end() - 1));
+					proposal.setInsertionPos(startIndex);
 					result.addProposal(proposal);
 				}
 				count++;

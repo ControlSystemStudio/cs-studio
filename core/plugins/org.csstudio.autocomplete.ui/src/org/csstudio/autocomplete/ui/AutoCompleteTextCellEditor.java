@@ -104,6 +104,7 @@ public class AutoCompleteTextCellEditor extends TextCellEditor {
 		if (getValue() != null) {
 			getHistory().addEntry(getValue().toString());
 		}
+		getContentProposalAdapter().getHelper().close(false);
 		super.fireApplyEditorValue();
 	}
 }

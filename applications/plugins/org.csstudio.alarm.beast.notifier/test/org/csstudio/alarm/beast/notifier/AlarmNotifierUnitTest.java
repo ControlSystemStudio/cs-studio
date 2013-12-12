@@ -124,18 +124,17 @@ public class AlarmNotifierUnitTest {
 		factory.init(buildExtensionPoints());
 		final AlarmNotifier notifier = new AlarmNotifier(
 				UnitTestConstants.CONFIG_ROOT, rdbHandler, factory,
-				UnitTestConstants.TIMER_THRESHOLD,
-				UnitTestConstants.THREAD_THRESHOLD);
+				UnitTestConstants.TIMER_THRESHOLD);
 		rdbHandler.init(notifier);
 		notifier.start();
 		final WorkQueue workQueue = notifier.getWorkQueue();
 		workQueue.setDebug(true); // turn on action history
-		AlarmNotifierHistory.getInstance().clean();
+		AlarmNotifierHistory.getInstance().clearAll();
 		return workQueue;
 	}
 
 	/**
-	 * Test alarm raised.
+	 * Test PV alarm state changes.
 	 * 
 	 * Initializes a RDB mock, finds a PV item with 1 automated action and calculates its {@link ActionID}. 
 	 * When the {@link WorkQueue} is set to debug=true, each action is recorded in the history. 
@@ -149,7 +148,7 @@ public class AlarmNotifierUnitTest {
 	 * 
 	 */
 	@Test
-	public void testPVCase1() {
+	public void testPVStateChange() {
 		final MockAlarmRDBHandler rdbHandler = new MockAlarmRDBHandler(false);
 		try {
 			final WorkQueue workQueue = init(rdbHandler);
@@ -158,44 +157,98 @@ public class AlarmNotifierUnitTest {
 			final ActionID actionId = NotifierUtils.getActionID(pv,
 					pv.getAutomatedActions()[0]);
 
-			// MINOR => EXECUTED AFTER DELAY
+			// A. Minor => EXECUTED AFTER DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.EXECUTED,
 					history.getAction(actionId).getStatus());
 
-			// RESET + MAJOR => EXECUTED AFTER DELAY
-			history.clean();
+			// B. Major => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.EXECUTED,
+			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
 
-			// MINOR => EXECUTED NO DELAY
+			// C. Minor => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
 
-			// INVALID => EXECUTED NO DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.INVALID, SeverityLevel.INVALID);
+			// D. Ok => EXECUTED NO DELAY
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.MAJOR);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
 
-			// OK => EXECUTED NO DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.INVALID);
+			// E. ACK => EXECUTED NO DELAY
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.OK);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
 
-			// RESET + MINOR + OK => CANCELED
-			history.clean();
+			// F. Minor => EXECUTED AFTER DELAY
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.EXECUTED,
+					history.getAction(actionId).getStatus());
+
+			// F. ACK => EXECUTED NO DELAY
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR_ACK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.FORCED,
+					history.getAction(actionId).getStatus());
+
+			// G. Major => CANCELED
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
+					history.getAction(actionId).getStatus());
+
+			// G. ACK => CANCELED
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
+					history.getAction(actionId).getStatus());
+
+			// H. Minor => CANCELED
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
+					history.getAction(actionId).getStatus());
+
+			// I. un-ACK => EXECUTED NO DELAY
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.FORCED,
+					history.getAction(actionId).getStatus());
+
+			// J. ACK => EXECUTED NO DELAY
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR_ACK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.FORCED,
+					history.getAction(actionId).getStatus());
+
+			// J. Ok => CANCELED
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.OK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
+					history.getAction(actionId).getStatus());
+
+			// K. Minor + Ok => CANCELED
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.MINOR);
 			wait(workQueue); // wait delay
@@ -203,144 +256,38 @@ public class AlarmNotifierUnitTest {
 			Assert.assertEquals(EActionStatus.CANCELED,
 					history.getAction(actionId).getStatus());
 
-			// RESET + MINOR + MAJOR => EXECUTED AFTER DELAY
-			history.clean();
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.EXECUTED,
-					history.getAction(actionId).getStatus());
-
-			// RESET + MINOR + MAJOR + OK => CANCELED
-			history.clean();
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.MAJOR);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
-			// RESET + MAJOR + OK + MINOR => EXECUTED AFTER DELAY
-			history.clean();
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.MAJOR);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.EXECUTED,
-					history.getAction(actionId).getStatus());
-
-			// OK => EXECUTED NO DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.MAJOR);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.FORCED,
-					history.getAction(actionId).getStatus());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-	}
-
-	/**
-	 * Test acknowledge.
-	 * 
-	 * Initializes a RDB mock, finds a PV item with 1 automated action and calculates its {@link ActionID}. 
-	 * When the {@link WorkQueue} is set to debug=true, each action is recorded in the history. 
-	 * This test sends one or more alarm update to the model, waits for the work queue to finish
-	 * executing scheduled actions if necessary and checks the
-	 * {@link EActionStatus} retrieved with {@link ActionID} from the history.
-	 * 
-	 * EXECUTED => executed by the timer AFTER the delay 
-	 * FORCED => interrupted + executed WITHOUT delay 
-	 * CANCELED => NOT executed AFTER the delay
-	 * 
-	 */
-	@Test
-	public void testPVCase2() {
-		final MockAlarmRDBHandler rdbHandler = new MockAlarmRDBHandler(false);
-		try {
-			final WorkQueue workQueue = init(rdbHandler);
-			final AlarmNotifierHistory history = AlarmNotifierHistory.getInstance();
-			final AlarmTreePV pv = rdbHandler.findPV(UnitTestConstants.PV_NAME);
-			final ActionID actionId = NotifierUtils.getActionID(pv,
-					pv.getAutomatedActions()[0]);
-
-			// MAJOR => EXECUTED AFTER DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.EXECUTED,
-					history.getAction(actionId).getStatus());
-
-			// ACK => EXECUTED NO DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.FORCED,
-					history.getAction(actionId).getStatus());
-
-			// MINOR => CANCELED
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR_ACK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
-			// OK => CANCELED
+			// K. ACK => CANCELED
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.OK);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.CANCELED,
 					history.getAction(actionId).getStatus());
 
-			// MAJOR => EXECUTED AFTER DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.EXECUTED,
-					history.getAction(actionId).getStatus());
-
-			// ACK => EXECUTED NO DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.FORCED,
-					history.getAction(actionId).getStatus());
-
-			// INVALID => CANCELED
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.INVALID, SeverityLevel.INVALID);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
-			// ACK => CANCELED
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.INVALID, SeverityLevel.INVALID_ACK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
-			// MINOR + un-ACK => EXECUTED AFTER DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.INVALID_ACK);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.INVALID);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.EXECUTED,
-					history.getAction(actionId).getStatus());
-
-			// ACK => EXECUTED NO DELAY
+			// L. Minor + ACK => CANCELED
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR_ACK);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.FORCED,
+			Assert.assertEquals(EActionStatus.CANCELED,
 					history.getAction(actionId).getStatus());
 
-			// OK => CANCELED
+			// B. Major => CANCELED
+			// C. Minor => CANCELED
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
+					history.getAction(actionId).getStatus());
+
+			// D. Ok => CANCELED
+			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.MAJOR);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
+					history.getAction(actionId).getStatus());
+
+			// E. ACK => CANCELED
 			rdbHandler.updatePV(pv.getName(), SeverityLevel.OK, SeverityLevel.OK);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
@@ -352,96 +299,9 @@ public class AlarmNotifierUnitTest {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
-	/**
-	 * Test acknowledge with more complex cases.
-	 * 
-	 * Initializes a RDB mock, finds a PV item with 1 automated action and calculates its {@link ActionID}. 
-	 * When the {@link WorkQueue} is set to debug=true, each action is recorded in the history. 
-	 * This test sends one or more alarm update to the model, waits for the work queue to finish
-	 * executing scheduled actions if necessary and checks the
-	 * {@link EActionStatus} retrieved with {@link ActionID} from the history.
-	 * 
-	 * EXECUTED => executed by the timer AFTER the delay 
-	 * FORCED => interrupted + executed WITHOUT delay 
-	 * CANCELED => NOT executed AFTER the delay
-	 * 
-	 */
-	@Test
-	public void testPVCase3() {
-		final MockAlarmRDBHandler rdbHandler = new MockAlarmRDBHandler(false);
-		try {
-			final WorkQueue workQueue = init(rdbHandler);
-			final AlarmNotifierHistory history = AlarmNotifierHistory.getInstance();
-			final AlarmTreePV pv = rdbHandler.findPV(UnitTestConstants.PV_NAME);
-			final ActionID actionId = NotifierUtils.getActionID(pv,
-					pv.getAutomatedActions()[0]);
-
-			// Major + ACK => CANCELED
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
-			// RESET + Major + ACK + Minor => CANCELED
-			history.clean();
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR_ACK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
-			// RESET + Major + ACK + Invalid => CANCELED
-			history.clean();
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.INVALID, SeverityLevel.INVALID);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
-			// RESET + Major => EXECUTED AFTER DELAY
-			history.clean();
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.EXECUTED,
-					history.getAction(actionId).getStatus());
-
-			// ACK => EXECUTED NO DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.FORCED,
-					history.getAction(actionId).getStatus());
-
-			// Minor => CANCELED
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR_ACK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
-			// un-ACK => EXECUTED NO DELAY
-			rdbHandler.updatePV(pv.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.FORCED,
-					history.getAction(actionId).getStatus());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-	}
 
 	/**
-	 * Test systems.
+	 * Test System alarm state changes.
 	 * 
 	 * Initializes a RDB mock, finds 2 PV items and 1 System item with 1 automated action 
 	 * and calculates system's {@link ActionID}. 
@@ -456,11 +316,12 @@ public class AlarmNotifierUnitTest {
 	 * 
 	 */
 	@Test
-	public void testSystemCase1() {
+	public void testSystemStateChange() {
 		final MockAlarmRDBHandler rdbHandler = new MockAlarmRDBHandler(true);
 		try {
 			final WorkQueue workQueue = init(rdbHandler);
-			final AlarmNotifierHistory history = AlarmNotifierHistory.getInstance();
+			final AlarmNotifierHistory history = AlarmNotifierHistory
+					.getInstance();
 			final AlarmTreePV pv1 = rdbHandler.findPV(UnitTestConstants.PV_NAME);
 			final AlarmTreePV pv2 = rdbHandler.findPV(UnitTestConstants.PV2_NAME);
 			final AlarmTreeItem sys = pv1.getParent();
@@ -490,18 +351,18 @@ public class AlarmNotifierUnitTest {
 			Assert.assertEquals(EActionStatus.FORCED,
 					history.getAction(actionId).getStatus());
 
-			// PV2 Ok => CANCELED
-			rdbHandler.updatePV(pv2.getName(), SeverityLevel.OK, SeverityLevel.OK);
-			wait(workQueue); // wait delay
-			Assert.assertNotNull(history.getAction(actionId));
-			Assert.assertEquals(EActionStatus.CANCELED,
-					history.getAction(actionId).getStatus());
-
 			// PV1 ACK => EXECUTED NO DELAY
 			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
 			wait(workQueue); // wait delay
 			Assert.assertNotNull(history.getAction(actionId));
 			Assert.assertEquals(EActionStatus.FORCED,
+					history.getAction(actionId).getStatus());
+
+			// PV2 Ok => CANCELED
+			rdbHandler.updatePV(pv2.getName(), SeverityLevel.OK, SeverityLevel.OK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
 					history.getAction(actionId).getStatus());
 
 		} catch (Exception e) {

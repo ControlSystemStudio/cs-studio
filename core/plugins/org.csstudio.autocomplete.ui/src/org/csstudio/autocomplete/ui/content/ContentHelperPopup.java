@@ -19,15 +19,19 @@ import org.csstudio.autocomplete.ui.util.SSStyledText;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * The popup used to display tooltips.
@@ -36,7 +40,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ContentHelperPopup extends PopupDialog {
 
-	private final class PopupCloserListener implements Listener {
+	private final class PopupCloserListener extends SelectionAdapter implements Listener {
 
 		public void handleEvent(final Event e) {
 			// If focus is leaving an important widget or the field's
@@ -78,6 +82,11 @@ public class ContentHelperPopup extends PopupDialog {
 			close();
 		}
 
+		@Override
+		public void widgetSelected(final SelectionEvent e) {
+			close();
+		}
+
 		// Install the listeners for events that need to be monitored for
 		// helper closure.
 		void installListeners() {
@@ -94,6 +103,12 @@ public class ContentHelperPopup extends PopupDialog {
 			Shell controlShell = control.getShell();
 			controlShell.addListener(SWT.Move, this);
 			controlShell.addListener(SWT.Resize, this);
+			
+			control.addListener(SWT.DefaultSelection, this);
+			if (control instanceof Text)
+				((Text) control).addSelectionListener(this);
+			if (control instanceof Combo)
+				((Combo) control).addSelectionListener(this);
 		}
 
 		// Remove installed listeners
@@ -111,12 +126,19 @@ public class ContentHelperPopup extends PopupDialog {
 				Shell controlShell = control.getShell();
 				controlShell.removeListener(SWT.Move, this);
 				controlShell.removeListener(SWT.Resize, this);
+				
+				control.removeListener(SWT.DefaultSelection, this);
+				if (control instanceof Text)
+					((Text) control).removeSelectionListener(this);
+				if (control instanceof Combo)
+					((Combo) control).removeSelectionListener(this);
 			}
 		}
 	}
 
 	private Dimension margins = new Dimension(8, 8);
 	private boolean isOpened = false;
+	private boolean canOpen = true;
 
 	/*
 	 * The listener installed in order to close the helper.
@@ -246,6 +268,8 @@ public class ContentHelperPopup extends PopupDialog {
 	 * @see org.eclipse.jface.window.Window#open()
 	 */
 	public int open() {
+		if (!canOpen)
+			return 0;
 		String fieldContent = adapter.getControlContentAdapter()
 				.getControlContents(control);
 		content = dataHandler.generateTooltipContent(fieldContent);
@@ -269,10 +293,17 @@ public class ContentHelperPopup extends PopupDialog {
 	 *         <code>false</code> if it is still open
 	 */
 	public boolean close() {
+		if (!isOpened)
+			return false;
 		text.dispose();
 		popupCloser.removeListeners();
 		isOpened = false;
 		return super.close();
+	}
+
+	public boolean close(boolean canOpen) {
+		this.canOpen = canOpen;
+		return close();
 	}
 
 	/**
