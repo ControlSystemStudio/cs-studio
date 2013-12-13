@@ -232,7 +232,8 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 				this.onImagePath = onImagePath;
 			}
 		}
-		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
+		if (imagePath.getFileExtension() != null
+				&& "svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
 			workingWithSVG = true;
 		} else {
 			workingWithSVG = false;

@@ -616,7 +616,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 			staticImage.dispose();
 		}
 		staticImage = null;
-		if ("svg".compareToIgnoreCase(filePath.getFileExtension()) == 0) {
+		if (filePath.getFileExtension() != null
+				&& "svg".compareToIgnoreCase(filePath.getFileExtension()) == 0) {
 			workingWithSVG = true;
 			transcoder = null;
 			failedToLoadDocument = false;
