@@ -357,8 +357,9 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	 * @param model
 	 * @param imagePath
 	 */
-	public synchronized void setSymbolImagePath(CommonMultiSymbolModel model, IPath imagePath) {
-		if (imagePath.isEmpty()) {
+	public synchronized void setSymbolImagePath(CommonMultiSymbolModel model,
+			IPath imagePath) {
+		if (imagePath == null || imagePath.isEmpty()) {
 			return;
 		}
 		if (!ImageUtils.isExtensionAllowed(imagePath)) {
@@ -374,7 +375,9 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		}
 		symbolImagePath = imagePath;
 		if (originalSymbolImagePath == null) originalSymbolImagePath = imagePath;
-		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) workingWithSVG = true;
+		if (imagePath.getFileExtension() != null
+				&& "svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0)
+			workingWithSVG = true;
 		else workingWithSVG = false;
 		if (ImageUtils.isOffImage(imagePath) || ImageUtils.isOnImage(imagePath)) workingWithBool = true;
 		else workingWithBool = false;
