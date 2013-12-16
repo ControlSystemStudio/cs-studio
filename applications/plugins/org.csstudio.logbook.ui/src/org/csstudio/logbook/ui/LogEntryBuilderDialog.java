@@ -115,6 +115,8 @@ public class LogEntryBuilderDialog extends Dialog {
 		// Create the logEntry
 		// Create logbook client
 		final Cursor originalCursor = getShell().getCursor();
+		// Disable Submmit
+		getButton(IDialogConstants.OK_ID).setEnabled(false);
 		try {
 			// get logbook client
 			final LogbookClient logbookClient;
@@ -147,6 +149,7 @@ public class LogEntryBuilderDialog extends Dialog {
 							@Override
 							public void run() {
 								getShell().setCursor(originalCursor);
+								getButton(IDialogConstants.OK_ID).setEnabled(true);
 								errorBar.setException(e);
 							}
 						});
@@ -162,6 +165,7 @@ public class LogEntryBuilderDialog extends Dialog {
 							@Override
 							public void run() {
 								getShell().setCursor(originalCursor);
+								getButton(IDialogConstants.OK_ID).setEnabled(true);
 								setReturnCode(OK);
 
 								// Stop save process
@@ -183,6 +187,7 @@ public class LogEntryBuilderDialog extends Dialog {
 			job.schedule();			
 		} catch (Exception ex) {
 			getShell().setCursor(originalCursor);
+			getButton(IDialogConstants.OK_ID).setEnabled(true);
 			errorBar.setException(ex);
 
 			// Cancel save process

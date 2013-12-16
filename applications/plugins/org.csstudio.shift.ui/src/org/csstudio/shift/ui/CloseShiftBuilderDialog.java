@@ -8,7 +8,13 @@ import java.io.IOException;
 import org.csstudio.shift.ShiftBuilder;
 import org.csstudio.shift.ShiftClientManager;
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -95,17 +101,56 @@ public class CloseShiftBuilderDialog extends Dialog {
             }
 
             getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
-            if(end) {
-            	shiftClient.end(shiftWidget.getShift());
-            } else {
-            	shiftClient.close(shiftWidget.getShift());
-            }
-            getShell().setCursor(originalCursor);
-            setReturnCode(OK);
-            close();
-        } catch (Exception ex) {
-            getShell().setCursor(originalCursor);
-            errorBar.setException(ex);
-        }
+            
+
+
+			Job job = new Job("Create new Entry") {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					try {
+						if(end) {
+			            	shiftClient.end(shiftWidget.getShift());
+			            } else {
+			            	shiftClient.close(shiftWidget.getShift());
+			            }
+						return Status.OK_STATUS;
+					} catch (final Exception e) {
+						getShell().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								getShell().setCursor(originalCursor);
+								getButton(IDialogConstants.OK_ID).setEnabled(true);
+								errorBar.setException(e);
+							}
+						});
+						return Status.CANCEL_STATUS;
+					}
+				}
+			};
+			job.addJobChangeListener(new JobChangeAdapter() {
+				public void done(IJobChangeEvent event) {
+					if (event.getResult().isOK()) {
+						getShell().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								getShell().setCursor(originalCursor);
+								getButton(IDialogConstants.OK_ID).setEnabled(true);
+								setReturnCode(OK);
+									close();
+							}
+						});
+
+					}
+				}
+			});
+			job.schedule();			
+		} catch (Exception ex) {
+			getShell().setCursor(originalCursor);
+			getButton(IDialogConstants.OK_ID).setEnabled(true);
+			errorBar.setException(ex);
+		}   
     }
 }
