@@ -135,36 +135,51 @@ public class LogEntryBuilderDialog extends Dialog {
 			// create log entry
 			
 			Job job = new Job("Create Log Entry") {
-			    
-			    @Override
-			    protected IStatus run(IProgressMonitor monitor) {
-				try {
-				    logbookClient.createLogEntry(logEntryWidget.getLogEntry());				    
-				} catch (final Exception e) {
-				    getShell().getDisplay().asyncExec(new Runnable() {
-				        
-				        @Override
-				        public void run() {
-					    getShell().setCursor(originalCursor);
-					    errorBar.setException(e);
-				        }
-				    });
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					try {
+						logbookClient.createLogEntry(logEntryWidget.getLogEntry());
+						return Status.OK_STATUS;
+					} catch (final Exception e) {
+						getShell().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								getShell().setCursor(originalCursor);
+								errorBar.setException(e);
+							}
+						});
+						return Status.CANCEL_STATUS;
+					}
 				}
-				return Status.OK_STATUS;
-			    }
 			};
-                	    job.addJobChangeListener(new JobChangeAdapter() {
-                		public void done(IJobChangeEvent event) {
-                		    if (event.getResult().isOK()) {
-                			getShell().setCursor(originalCursor);
-                			setReturnCode(OK);
-    
-                			// Stop save process
-                			fireStopSave();
-                			close();
-                		    }
-                		}
-                	    });
+			job.addJobChangeListener(new JobChangeAdapter() {
+				public void done(IJobChangeEvent event) {
+					if (event.getResult().isOK()) {
+						getShell().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								getShell().setCursor(originalCursor);
+								setReturnCode(OK);
+
+								// Stop save process
+								try {
+									fireStopSave();
+									close();
+								} catch (Exception e) {
+									errorBar.setException(e);
+
+									// Cancel save process
+									fireCancelSave();
+								}
+							}
+						});
+
+					}
+				}
+			});
 			job.schedule();			
 		} catch (Exception ex) {
 			getShell().setCursor(originalCursor);
