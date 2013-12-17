@@ -1,6 +1,7 @@
 package org.csstudio.shift.ui;
 
 
+import gov.bnl.shiftClient.Shift;
 import gov.bnl.shiftClient.ShiftClient;
 
 import java.io.IOException;
@@ -100,9 +101,9 @@ public class CloseShiftBuilderDialog extends Dialog {
                 shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
             }
 
-            getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
+            final Shift shift = shiftWidget.getShift();
             
-
+            getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
 
 			Job job = new Job("Create new Entry") {
 
@@ -110,9 +111,9 @@ public class CloseShiftBuilderDialog extends Dialog {
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
 						if(end) {
-			            	shiftClient.end(shiftWidget.getShift());
+			            	shiftClient.end(shift);
 			            } else {
-			            	shiftClient.close(shiftWidget.getShift());
+			            	shiftClient.close(shift);
 			            }
 						return Status.OK_STATUS;
 					} catch (final Exception e) {
