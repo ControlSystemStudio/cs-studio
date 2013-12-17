@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.csstudio.ui.util.composites.BeanComposite;
 import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.viewers.CellLabelProvider;
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -18,6 +16,11 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -25,14 +28,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.epics.vtype.VTable;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 
 /**
  * Basic ui component that can display a VTable on screen.
@@ -101,6 +96,13 @@ public class VTableDisplay extends BeanComposite implements ISelectionProvider {
 		tableViewer.setContentProvider(new VTableContentProvider());
 		tableViewer.setLabelProvider(getCellLabelProvider());
         VTableToolTipSupport.enableFor(tableViewer,ToolTip.NO_RECREATE);
+	}
+	
+	@Override
+    public void setFont(final Font font)
+	{
+	    super.setFont(font);
+	    table.setFont(font);
 	}
 	
 	public void addSelectionListener(SelectionListener listener) {
