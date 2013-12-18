@@ -19,6 +19,8 @@ public class Messages extends NLS
     public static String DefaultDestination;
     public static String EmailDialogMessage;
     public static String From;
+
+    public static String FromErrorMsg;
     public static String FromTT;
     public static String MessageBodyTT;
     public static String Preferences;
@@ -27,6 +29,8 @@ public class Messages extends NLS
     public static String Subject;
     public static String SubjectTT;
     public static String To;
+
+    public static String ToErrorMsg;
     public static String ToTT;
 
     static
