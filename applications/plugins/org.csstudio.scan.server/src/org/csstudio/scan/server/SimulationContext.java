@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.device.ScanConfig;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.server.internal.PathStreamTool;
 
 /** Context used for the simulation of {@link ScanCommandImpl}
  *  @author Kay Kasemir
@@ -40,7 +42,8 @@ public class SimulationContext
 	 */
 	public SimulationContext(final PrintStream log_stream) throws Exception
 	{
-	    this.simulation_info = new ScanConfig(ScanSystemPreferences.getSimulationConfigPath());
+        final InputStream config_stream = PathStreamTool.openStream(ScanSystemPreferences.getSimulationConfigPath());
+	    this.simulation_info = new ScanConfig(config_stream);
         this.macros = new MacroContext(ScanSystemPreferences.getMacros());
 		this.log_stream = log_stream;
 	}
