@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
 <!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF1504.svg Page-1 -->
+
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2013 ITER Organization.
@@ -10,55 +10,190 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.610883in"
-		height="0.729104in" viewBox="0 0 43.9836 52.4955" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
+<svg
+   xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="34"
+   height="54"
+   viewBox="0 0 27.200016 43.200008"
+   xml:space="preserve"
+   color-interpolation-filters="sRGB"
+   class="st2"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="FL_EF1501.svg"
+   style="font-size:12px;fill:none;stroke-linecap:square;stroke-miterlimit:3;overflow:visible"><metadata
+   id="metadata59"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs57">
+		
+		<v:pageProperties
+   v:shadowOffsetY="-8.50394"
+   v:shadowOffsetX="8.50394"
+   v:drawingUnits="24"
+   v:pageScale="0.0393701"
+   v:drawingScale="0.0393701" />
+		
+		
+	
+			
+			
+		
+			
+			
+			
+		
+				
+				
+			
+				
+				
+			
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			</defs><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1366"
+   inkscape:window-height="716"
+   id="namedview55"
+   showgrid="true"
+   fit-margin-top="0"
+   fit-margin-left="0"
+   fit-margin-right="0"
+   fit-margin-bottom="0"
+   inkscape:zoom="14.385998"
+   inkscape:cx="33.958419"
+   inkscape:cy="27.998577"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="svg2"><inkscape:grid
+     type="xygrid"
+     id="grid3036"
+     empspacing="5"
+     visible="true"
+     enabled="true"
+     snapvisiblegridlinesonly="true" /></sodipodi:namedview>
+	<v:documentProperties
+   v:langID="1036"
+   v:metric="true"
+   v:viewMarkup="false" />
+	<style
+   type="text/css"
+   id="style4">
+	
 		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
 		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
 		.st3 {fill:#ffffff}
 		.st4 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-	]]>
+	
 	</style>
-	<defs id="Masters">
-		<symbol id="master6" v:mID="6" class="st2">
-			<title>FL_EF1504</title>
-			<g id="master-shape5-7" v:mID="5" v:groupContext="shape">
-				<title>Feuille.5</title>
-				<path d="M0 52.5 L25.51 52.5 L25.51 9.98 L0 9.98 L0 52.5 Z" class="st3"/>
-				<path d="M0 52.5 L25.51 52.5 L25.51 9.98 L0 9.98 L0 52.5" class="st4"/>
-				<path d="M17.01 18.48 L8.5 18.48" class="st4"/>
-				<path d="M25.51 18.48 L21.26 18.48" class="st4"/>
-				<path d="M0 17.06 L0 45.41" class="st4"/>
-				<path d="M0 43.99 L4.25 43.99" class="st4"/>
-				<path d="M0 18.48 L4.25 18.48" class="st4"/>
-				<path d="M25.51 17.06 L25.51 9.98 L0 9.98 L0 17.06" class="st4"/>
-				<path d="M17.01 43.99 L8.5 43.99" class="st4"/>
-				<path d="M25.51 43.99 L21.26 43.99" class="st4"/>
-				<path d="M25.51 45.41 L25.51 17.06" class="st4"/>
-				<path d="M0 45.41 L0 52.5" class="st4"/>
-				<path d="M0 52.5 L25.51 52.5 L25.51 45.41" class="st4"/>
-			</g>
-		</symbol>
-	</defs>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page-1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="group3-1" transform="translate(0.72,-0.72)" v:mID="3" v:groupContext="group">
-			<title>Feuille.3</title>
-			<g id="shape1-2" v:mID="1" v:groupContext="shape" transform="translate(5.85469E-016,-51.0396)">
-				<title>Feuille.1</title>
-				<rect x="0" y="52.4796" width="0.0159449" height="0.0159449" class="st1"/>
-			</g>
-			<g id="shape2-4" v:mID="2" v:groupContext="shape" transform="translate(42.5277,0)">
-				<title>Feuille.2</title>
-				<rect x="0" y="52.4796" width="0.0159449" height="0.0159449" class="st1"/>
-			</g>
-		</g>
-		<use id="shape4-6" v:mID="4" xlink:href="#master6" transform="translate(9.23191,-4.98791)">
-			<title>FL_EF1504</title>
-		</use>
-	</g>
+	<g
+   id="g3163"><rect
+     x="6.6174449e-024"
+     y="-0.015953606"
+     width="0.0159449"
+     height="0.0159449"
+     class="st1"
+     id="rect16"
+     style="fill:#ffffff;stroke:none" /><rect
+     x="27.200016"
+     y="43.184071"
+     width="0.0159449"
+     height="0.0159449"
+     class="st1"
+     id="rect21"
+     style="fill:#ffffff;stroke:none" /><path
+     d="m 0.9119055,42.830261 25.5100005,0 0,-42.5200003 -25.5100005,0 0,42.5200003 z"
+     class="st3"
+     id="path29"
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff" /><path
+     d="m 0.9119055,42.830261 25.5100005,0 0,-42.5200003 -25.5100005,0 0,42.5200003"
+     class="st4"
+     id="path31"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 17.921905,8.8102607 -8.5099995,0"
+     class="st4"
+     id="path33"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 26.421905,8.8102607 -4.25,0"
+     class="st4"
+     id="path35"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 0.9119055,7.3902607 0,28.3500003"
+     class="st4"
+     id="path37"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 0.9119055,34.320261 4.25,0"
+     class="st4"
+     id="path39"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 0.9119055,8.8102607 4.25,0"
+     class="st4"
+     id="path41"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 26.421905,7.3902607 0,-7.08 -25.5099995,0 0,7.08"
+     class="st4"
+     id="path43"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 17.921905,34.320261 -8.5099995,0"
+     class="st4"
+     id="path45"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 26.421905,34.320261 -4.25,0"
+     class="st4"
+     id="path47"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 26.421905,35.740261 0,-28.3500003"
+     class="st4"
+     id="path49"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 0.9119055,35.740261 0,7.09"
+     class="st4"
+     id="path51"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
+     d="m 0.9119055,42.830261 25.5100005,0 0,-7.09"
+     class="st4"
+     id="path53"
+     inkscape:connector-curvature="0"
+     style="stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /></g>
 </svg>
