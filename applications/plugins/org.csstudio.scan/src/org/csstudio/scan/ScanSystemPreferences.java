@@ -31,6 +31,9 @@ import static org.csstudio.scan.PathUtil.splitPath;
 @SuppressWarnings("nls")
 public class ScanSystemPreferences extends SystemSettings
 {
+    private static volatile boolean warned_about_beamline_config = false;
+    private static volatile boolean warned_about_simulation_config = false;
+    
     /** @return Path to the scan configuration file */
 	public static String getScanConfigPath()
 	{
@@ -39,8 +42,12 @@ public class ScanSystemPreferences extends SystemSettings
     	final String config = service.getString(Activator.ID, "beamline_config", "", null);
     	if (! config.isEmpty())
     	{
-    	    Logger.getLogger(ScanSystemPreferences.class.getName())
-               .log(Level.WARNING, Activator.ID + "/beamline_config is deprecated, use ../scan_config");
+    	    if (! warned_about_beamline_config)
+    	    {
+        	    Logger.getLogger(ScanSystemPreferences.class.getName())
+                   .log(Level.WARNING, Activator.ID + "/beamline_config is deprecated, use ../scan_config");
+        	    warned_about_beamline_config = true;
+    	    }
     	    return config;
     	}
     	return service.getString(Activator.ID, "scan_config", "", null);
@@ -58,8 +65,12 @@ public class ScanSystemPreferences extends SystemSettings
     	final String config = service.getString(Activator.ID, "simulation_config", "", null);
     	if (! config.isEmpty())
     	{
-    	    Logger.getLogger(ScanSystemPreferences.class.getName())
-    	        .log(Level.WARNING, Activator.ID + "/simulation_config is deprecated, use ../scan_config");
+    	    if (! warned_about_simulation_config)
+    	    {
+        	    Logger.getLogger(ScanSystemPreferences.class.getName())
+        	        .log(Level.WARNING, Activator.ID + "/simulation_config is deprecated, use ../scan_config");
+        	    warned_about_simulation_config = true;
+    	    }
     	    return config;
     	}
 	    return getScanConfigPath();
