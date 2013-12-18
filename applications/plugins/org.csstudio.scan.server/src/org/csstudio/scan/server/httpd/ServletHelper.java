@@ -99,7 +99,7 @@ public class ServletHelper
         final Element server = doc.createElement("server");
         server.appendChild(createXMLElement(doc, "version", info.getVersion()));
         server.appendChild(createXMLElement(doc, "start_time", info.getStartTime()));
-        server.appendChild(createXMLElement(doc, "beamline_config", info.getBeamlineConfig()));
+        server.appendChild(createXMLElement(doc, "scan_config", info.getScanConfig()));
         server.appendChild(createXMLElement(doc, "simulation_config", info.getSimulationConfig()));
         
         server.appendChild(createXMLElement(doc, "script_paths", PathUtil.joinPaths(info.getScriptPaths())));

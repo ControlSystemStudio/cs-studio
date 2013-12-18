@@ -77,7 +77,7 @@ public class ScanServerImpl implements ScanServer
     {
         return new ScanServerInfo("V" + ScanServer.VERSION + " (" + Application.getBundleVersion() + ")",
     			start_time,
-    			ScanSystemPreferences.getBeamlineConfigPath(),
+    			ScanSystemPreferences.getScanConfigPath(),
     			ScanSystemPreferences.getSimulationConfigPath(),
     			ScanSystemPreferences.getScriptPaths(),
     			ScanSystemPreferences.getMacros());
