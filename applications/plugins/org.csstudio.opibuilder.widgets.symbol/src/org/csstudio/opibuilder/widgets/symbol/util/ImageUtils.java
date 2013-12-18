@@ -13,7 +13,6 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -706,116 +705,30 @@ public final class ImageUtils {
 		return extList.contains(imagePath.getFileExtension());
 	}
 
-	public static String getMultistateBaseImagePath(IPath imagePath,
-			List<String> states) {
-		if (imagePath == null || imagePath.isEmpty())
-			return null;
-		if (states == null || states.isEmpty())
-			return null;
-		// Clean empty states
-		Iterator<String> it = states.iterator();
-		while (it.hasNext()) {
-			String s = it.next();
-			if (s == null || s.isEmpty()) {
-				it.remove();
-			}
-		}
-		// build regular expression to match: <absolute base path> <state>.<extension>
-		StringBuilder sb = new StringBuilder();
-		sb.append("^(.*)(");
-		for (int i = 0; i < IMAGE_EXTENSIONS.length; i++) {
-			if (i > 0) {
-				sb.append("|");
-			}
-			sb.append("\\.");
-			sb.append(IMAGE_EXTENSIONS[i]);
-		}
-		sb.append(")$");
-		Pattern pattern = Pattern.compile(sb.toString());
-		Matcher matcher = pattern.matcher(imagePath.toString());
-		// extract "<absolute base path> <state>" & ".<extension>"
-		String ext = null;
-		String pathWOExt = null;
-		if (matcher.matches()) {
-			pathWOExt = matcher.group(1);
-			ext = matcher.group(2);
-		} else {
-			return null;
-		}
-		// search if the state list contains <state> 
-		int stateIndex = 0;
-		// Bug 3479: update widget to use state index instead of string value
-//		for (String state : states) {
-//			int index = pathWOExt.lastIndexOf(state);
-//			if (index > 0 && index + state.length() == pathWOExt.length()) {
-//				stateIndex = index;
-//				break;
-//			}
-//		}
-		for (int count = 0; count < states.size(); count++) {
-			String countStr = String.valueOf(count);
-			int index = pathWOExt.lastIndexOf(countStr);
-			if (index > 0 && index + countStr.length() == pathWOExt.length()) {
-				stateIndex = index;
-				break;
-			}
-		}
-		if (stateIndex == 0) {
-			return null;
-		}
-		String path = pathWOExt.substring(0, stateIndex);
-		path += STATE_MARKER + ext;
-		return path;
-	}
-	
 	public static String getMultistateBaseImagePath(IPath imagePath) {
 		if (imagePath == null || imagePath.isEmpty())
 			return null;
 
-		// build regular expression to match: <absolute base path>
-		// <state>.<extension>
-		StringBuilder sb = new StringBuilder();
-		sb.append("^(.*)\\ (\\w+)(");
-		for (int i = 0; i < IMAGE_EXTENSIONS.length; i++) {
-			if (i > 0) {
-				sb.append("|");
-			}
-			sb.append("\\.");
-			sb.append(IMAGE_EXTENSIONS[i]);
-		}
-		sb.append(")$");
-		Pattern pattern = Pattern.compile(sb.toString());
+		Pattern pattern = Pattern.compile("^(.+)\\s+(\\w+)(_.+)?(\\.\\w+)$");
 		Matcher matcher = pattern.matcher(imagePath.toString());
-		// extract "<absolute base path> <state>" & ".<extension>"
-		String ext = null;
-		String pathWOExt = null;
+		// extract "<absolute base path> <state>_<comment>.<extension>"
+		String ext = null, basePath = null;
 		if (matcher.matches()) {
-			pathWOExt = matcher.group(1);
-			ext = matcher.group(3);
+			basePath = matcher.group(1);
+			ext = matcher.group(4);
 		} else {
 			return null;
 		}
-		// replace last word by the state marker
-		String path = pathWOExt + " " + STATE_MARKER + ext;
+		// replace <state>_<comment> by the state marker
+		String path = basePath + " " + STATE_MARKER + ext;
 		return path;
 	}
 
-	public static IPath searchStateImage(String state, String basePath) {
-		if (basePath == null || basePath.isEmpty())
-			return null;
-		String path = basePath.replace(STATE_MARKER, state);
-		IPath stateImagePath = new Path(path);
-		if (isFileExists(stateImagePath)) {
-			return stateImagePath;
-		}
-		return null;
-	}
-	
+	// Bug 3479: update widget to use state index instead of string value
 	public static IPath searchStateImage(int stateIndex, String basePath) {
 		if (basePath == null || basePath.isEmpty())
 			return null;
-		String path = basePath
-				.replace(STATE_MARKER, String.valueOf(stateIndex));
+		String path = basePath.replace(STATE_MARKER, String.valueOf(stateIndex));
 		IPath stateImagePath = new Path(path);
 		if (isFileExists(stateImagePath)) {
 			return stateImagePath;

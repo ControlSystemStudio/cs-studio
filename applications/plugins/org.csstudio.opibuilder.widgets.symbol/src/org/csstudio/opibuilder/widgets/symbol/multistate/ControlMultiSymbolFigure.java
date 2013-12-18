@@ -246,7 +246,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 			return;
 		}
 		// Get base name
-		String imageBasePath = ImageUtils.getMultistateBaseImagePath(originalSymbolImagePath, statesStr);
+		String imageBasePath = ImageUtils.getMultistateBaseImagePath(originalSymbolImagePath);
 		if (imageBasePath == null) { // Image do not match any state
 			// TODO: alert state image missing
 			for (int stateIndex = 0; stateIndex < statesStr.size(); stateIndex++) {

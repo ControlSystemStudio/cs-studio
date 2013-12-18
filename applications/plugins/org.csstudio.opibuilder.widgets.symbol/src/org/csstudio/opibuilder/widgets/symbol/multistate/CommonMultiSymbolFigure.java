@@ -84,6 +84,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	
 	private IImageLoadedListener imageLoadedListener;
 	
+	private Color foregroundColor;
 	private boolean useForegroundColor = false;
 
 	public CommonMultiSymbolFigure(boolean runMode) {
@@ -110,7 +111,8 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	 * Return the current displayed image. If null, returns an empty image.
 	 */
 	public AbstractSymbolImage getSymbolImage() {
-		if (ExecutionMode.RUN_MODE.equals(executionMode)) {
+		if (ExecutionMode.RUN_MODE.equals(executionMode)
+				&& currentState != null) {
 			symbolImage = images.get(currentState);
 		}
 		if (symbolImage == null) { // create an empty image
@@ -300,7 +302,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 				loadImageFromFile(onImagePath, state);
 			}
 		} else { // Standard behavior
-			String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath, states);
+			String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath);
 			if (imageBasePath == null) { // Image do not match any state
 				// TODO: alert state image missing
 				for (int stateIndex = 0; stateIndex < states.size(); stateIndex++) {
@@ -427,7 +429,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 								asi.updateData();
 								setImage(state, asi);
 							} else {
-								symbolImage = createSymbolImage(false);
+								symbolImage = createSymbolImage(!isEditMode());
 								symbolImage.setImagePath(imagePath);
 								if (!workingWithSVG) {
 									tempImage = new Image(Display.getDefault(), stream);
@@ -496,6 +498,22 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		if (this.onColor != null && this.onColor.equals(onColor))
 			return;
 		this.onColor = onColor;
+		repaint();
+	}
+
+	public void setUseForegroundColor(boolean useForegroundColor) {
+		this.useForegroundColor = useForegroundColor;
+		repaint();
+	}
+
+	@Override
+	public Color getForegroundColor() {
+		return foregroundColor;
+	}
+
+	@Override
+	public void setForegroundColor(Color foregroundColor) {
+		this.foregroundColor = foregroundColor;
 		repaint();
 	}
 	

@@ -7,6 +7,8 @@
 ******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.bool;
 
+import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.editparts.AbstractBoolEditPart;
 import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
@@ -15,6 +17,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.widgets.Display;
+import org.epics.vtype.AlarmSeverity;
 
 /**
  * Base edit part controller for a Boolean Symbol Image widget based on
@@ -56,6 +59,9 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 		sip.setFlipV(model.isFlipVertical());
 		sip.setMatrix(model.getPermutationMatrix());
 		figure.setSymbolProperties(sip);
+
+		if (model.getPVName() == null || model.getPVName().isEmpty())
+			figure.setUseForegroundColor(true);
 	}
 
 	/**
@@ -74,8 +80,36 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(
-				CommonBoolSymbolModel.PROP_SYMBOL_IMAGE_FILE, handler);
+		setPropertyChangeHandler(CommonBoolSymbolModel.PROP_SYMBOL_IMAGE_FILE, handler);
+		
+		// PV Name ForeColor color rule
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				if (newValue == null || ((String) newValue).isEmpty())
+					((CommonBoolSymbolFigure) figure).setUseForegroundColor(true);
+				else ((CommonBoolSymbolFigure) figure).setUseForegroundColor(false);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, handler);
+		
+		// ForeColor Alarm Sensitive
+		getPVWidgetEditpartDelegate().addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(AlarmSeverity severity,
+					IFigure refreshableFigure) {
+				CommonBoolSymbolFigure figure = (CommonBoolSymbolFigure) refreshableFigure;
+				if (!getWidgetModel().isForeColorAlarmSensitve()) {
+					figure.setUseForegroundColor(false);
+				} else {
+					if (severity.equals(AlarmSeverity.NONE))
+						figure.setUseForegroundColor(false);
+					else figure.setUseForegroundColor(true);
+				}
+				return true;
+			}
+		});
 	}
 
 	/**

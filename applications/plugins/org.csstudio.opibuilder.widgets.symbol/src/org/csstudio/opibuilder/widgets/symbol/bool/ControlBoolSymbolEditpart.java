@@ -7,6 +7,7 @@
 ******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.bool;
 
+import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -18,6 +19,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.widgets.Display;
+import org.epics.vtype.AlarmSeverity;
 
 /**
  * Edit part Controller for a Control Boolean Symbol Image widget based on
@@ -67,7 +69,10 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 		sip.setFlipV(model.isFlipVertical());
 		sip.setMatrix(model.getPermutationMatrix());
 		figure.setSymbolProperties(sip);
-		
+
+		if (model.getPVName() == null || model.getPVName().isEmpty())
+			figure.setUseForegroundColor(true);
+
 		figure.addManualValueChangeListener(new IManualValueChangeListener() {
 			public void manualValueChanged(double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
@@ -93,8 +98,36 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ControlBoolSymbolModel.PROP_SYMBOL_IMAGE_FILE,
-				handler);
+		setPropertyChangeHandler(ControlBoolSymbolModel.PROP_SYMBOL_IMAGE_FILE, handler);
+
+		// PV Name ForeColor color rule
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				if (newValue == null || ((String) newValue).isEmpty())
+					((ControlBoolSymbolFigure) figure).setUseForegroundColor(true);
+				else ((ControlBoolSymbolFigure) figure).setUseForegroundColor(false);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, handler);
+
+		// ForeColor Alarm Sensitive
+		getPVWidgetEditpartDelegate().addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(AlarmSeverity severity,
+					IFigure refreshableFigure) {
+				ControlBoolSymbolFigure figure = (ControlBoolSymbolFigure) refreshableFigure;
+				if (!getWidgetModel().isForeColorAlarmSensitve()) {
+					figure.setUseForegroundColor(false);
+				} else {
+					if (severity.equals(AlarmSeverity.NONE))
+						figure.setUseForegroundColor(false);
+					else figure.setUseForegroundColor(true);
+				}
+				return true;
+			}
+		});
 	}
 
 	/**
