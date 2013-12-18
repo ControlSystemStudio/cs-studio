@@ -33,7 +33,8 @@ import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
-import org.csstudio.trends.databrowser2.model.XYGraphSettings;
+import org.csstudio.trends.databrowser2.persistence.XYGraphSettings;
+import org.csstudio.trends.databrowser2.persistence.XYGraphSettingsUtil;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.draw2d.IFigure;
@@ -872,7 +873,7 @@ public class Plot
 
 	public XYGraphSettings getGraphSettings()
 	{
-		return XYGraphSettingsUtil.createGraphSettings(plot.getXYGraph());
+		return XYGraphSettingsUtil.createSettings(plot.getXYGraph());
 	}
 
 	public void setGraphSettings(final XYGraphSettings settings)

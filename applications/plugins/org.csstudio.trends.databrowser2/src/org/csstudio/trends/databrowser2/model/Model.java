@@ -30,6 +30,8 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
+import org.csstudio.trends.databrowser2.persistence.XYGraphSettings;
+import org.csstudio.trends.databrowser2.persistence.XYGraphSettingsXMLUtil;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
@@ -37,6 +39,7 @@ import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /** Data Browser model
  *  <p>
@@ -106,14 +109,6 @@ public class Model
     final public static String TAG_WAVEFORM_INDEX = "waveform_index";
 
 
-    /**AJOUT XYGraphMemento
-     * @author L.PHILIPPE GANIL
-     */
-    final public static String TAG_TITLE = "title";
-    final public static String TAG_TITLE_TEXT = "text";
-    final public static String TAG_TITLE_COLOR= "color";
-    final public static String TAG_TITLE_FONT ="font";
-
     public static final String TAG_FONT = "font";
 	public static final String TAG_SCALE_FONT = "scale_font";
 
@@ -131,12 +126,6 @@ public class Model
 	public static final String TAG_TIME_FORMAT = "time_format";
 	public static final String TAG_FORMAT_PATTERN = "format_pattern";
 
-
-    public static final String TAG_GRAPH_SETTINGS = "graph_settings";
-    public static final String TAG_SHOW_TITLE = "show_title";
-    public static final String TAG_SHOW_LEGEND = "show_legend";
-    public static final String TAG_SHOW_PLOT_AREA_BORDER = "show_plot_area_border";
-    public static final String TAG_TRANSPARENT = "transparent";
 
     /** Default colors for newly added item, used over when reaching the end.
      *  <p>
@@ -882,7 +871,7 @@ public class Model
      *  @param color_tag Name of tag that contains the color
      *  @return RGB or <code>null</code> if no color found
      */
-    static RGB loadColorFromDocument(final Element node, final String color_tag)
+    public static RGB loadColorFromDocument(final Element node, final String color_tag)
     {
     	if (node == null)
     		return new RGB(0, 0, 0);
@@ -916,11 +905,9 @@ public class Model
         XMLWriter.start(writer, 0, TAG_DATABROWSER);
         writer.println();
 
-        //L.PHILIPPE
-        //Save config graph settings
-        XYGraphSettingsXMLUtil XYGraphMemXML = new XYGraphSettingsXMLUtil(graphSettings);
-        XYGraphMemXML.write(writer);
-
+        // Save XYGraph settings
+        XYGraphSettingsXMLUtil.write(graphSettings, writer);
+        writer.println();
 
         // Time axis
         XMLWriter.XML(writer, 1, TAG_SCROLL, isScrollEnabled());
@@ -1077,18 +1064,21 @@ public class Model
             annotations = infos.toArray(new AnnotationInfo[infos.size()]);
         }
 
-        //ADD by Laurent PHILIPPE
-        // Load Title and graph settings
-    	try
-    	{
-    		graphSettings = XYGraphSettingsXMLUtil.fromDocument(root_node.getFirstChild());
-    	}
-    	catch (Throwable ex)
-        {
-    		Activator.getLogger().log(Level.INFO, "XML error in Title or  graph settings", ex);
-        }
+		// Load XYGraph settings
+		try {
+			NodeList nodeList = root_node.getElementsByTagName(XYGraphSettings.TAG_NAME);
+			if (nodeList.getLength() > 0) {
+				graphSettings = XYGraphSettingsXMLUtil.read(nodeList.item(0));
+			} else { // retro-compatibility
+				graphSettings = XYGraphSettingsXMLUtil
+						.readOldSettings(root_node.getFirstChild());
+			}
+		} catch (Throwable ex) {
+			Activator.getLogger().log(Level.INFO,
+					"XML error in XYGraph settings", ex);
+		}
 
-        // Backwards compatibility with previous data browser which
+		// Backwards compatibility with previous data browser which
         // used global buffer size for all PVs
         final int buffer_size = DOMHelper.getSubelementInt(root_node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, -1);
 
