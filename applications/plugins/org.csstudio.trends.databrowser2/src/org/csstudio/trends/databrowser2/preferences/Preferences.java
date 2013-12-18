@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 /** Helper for reading preference settings
  *
  *  @author Kay Kasemir
+ *  @author Naceur Benhadj (add property to hide "Property" view)
  */
 @SuppressWarnings("nls")
 public class Preferences
@@ -55,6 +56,7 @@ public class Preferences
 			USE_AUTO_SCALE = "use_auto_scale",
 			EMAIL_DEFAULT_SENDER = "email_default_sender",
 			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view",
+			RAP_HIDE_PROPERTIES_VIEW = "rap.hide_properties_view",		
 			SECURE_DATA_BROWSER = "secure_data_browser";
 
     public static double getTimeSpan()
@@ -247,6 +249,18 @@ public class Preferences
 		if (prefs == null)
 			return false;
 		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_SEARCH_VIEW, false, null);
+    }
+    
+    
+
+    /** @return <code>true</code> to hide properties view on rap version.
+     */
+    public static boolean hidePropertiesView()
+    {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return false;
+		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_PROPERTIES_VIEW, false, null);
     }
     
     /** @return <code>true</code> to authentication is required to open data browser in rap.
