@@ -9,6 +9,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -86,7 +87,15 @@ public class VTableWidget extends SelectionBeanComposite implements AlarmProvide
 		tableDisplay.setMenu(menu);
 	}
 
-	private VTableDisplay tableDisplay;
+	@Override
+    public void setFont(final Font font)
+    {
+        super.setFont(font);
+        tableDisplay.setFont(font);
+        errorBar.setFont(font);
+    }
+
+    private VTableDisplay tableDisplay;
 	private ErrorBar errorBar;
 
 	private void reconnect() {
