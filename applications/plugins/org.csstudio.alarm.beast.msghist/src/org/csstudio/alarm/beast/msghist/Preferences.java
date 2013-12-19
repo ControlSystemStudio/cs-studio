@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -24,6 +26,8 @@ public class Preferences
 	public static final String COLUMNS = "prop_cols";
     public static final String START = "start";
     public static final String MAX_PROPERTIES = "max_properties"; 
+    public static final String AUTO_REFRESH_PERIOD = "auto_refresh_period"; 
+    
     
     /** Get preference settings for column definitions
      *  @return Array of raw strings for column preferences
@@ -85,6 +89,11 @@ public class Preferences
         return prefs;
     }
 
+    /**
+     * Gets the default start.
+     *
+     * @return the default start
+     */
     public static String getDefaultStart()
     {
         // Read preferences
@@ -95,7 +104,14 @@ public class Preferences
                     start, null);
         return start;
     }
+      
+    
 
+	/**
+	 * Gets the max properties.
+	 *
+	 * @return the max properties
+	 */
 	public static int getMaxProperties()
     {
         final IPreferencesService service = Platform.getPreferencesService();
@@ -105,4 +121,22 @@ public class Preferences
         			max_properties, null);
         return max_properties;
     }
+	
+	
+	/**
+	 * Gets the default auto refresh timer.
+	 *
+	 * @return the default auto refresh timer (milliseconds)
+	 */
+	public static long getAutoRefreshPeriod()
+    {
+        // Read preferences
+        final IPreferencesService service = Platform.getPreferencesService();
+        long period = 0;
+        if (service != null)
+        	period = service.getLong(Activator.ID, Preferences.AUTO_REFRESH_PERIOD,
+        			period, null);
+        return TimeUnit.SECONDS.toMillis(period);
+    }
+	
 }

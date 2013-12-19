@@ -1,10 +1,10 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
+ * Copyright (c) 2010-2013 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
 import java.text.DateFormat;
@@ -18,8 +18,10 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.notifier.actions.AutomatedActionFactory;
+import org.csstudio.alarm.beast.notifier.history.AlarmNotifierHistory;
 import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 import org.csstudio.alarm.beast.notifier.rdb.IAlarmRDBHandler;
+import org.csstudio.alarm.beast.notifier.util.NotifierUtils;
 import org.csstudio.logging.JMSLogMessage;
 
 /**
@@ -29,47 +31,33 @@ import org.csstudio.logging.JMSLogMessage;
  * 
  */
 public class AlarmNotifier {
+	
 	/** Name of alarm tree root element */
-	final String root_name = Preferences.getAlarmTreeRoot();
+	final String rootName = Preferences.getAlarmTreeRoot();
 
 	/** Alarm model handler */
 	final private IAlarmRDBHandler rdb;
 
 	/** Automated actions factory */
 	final private AutomatedActionFactory factory;
-	
-	final private AutomatedActionInvoker invoker;
+
+	/** Queue which handles pending actions */
+	final private WorkQueue workQueue;
+
+	private boolean maintenanceMode = false;
 
 	public AlarmNotifier(final String root_name,
 			final IAlarmRDBHandler rdbHandler,
-			final AutomatedActionFactory factory, 
-			final int timer_threshold, 
-			final int thread_threshold)
+			final AutomatedActionFactory factory, final int timer_threshold)
 			throws Exception {
 		this.rdb = rdbHandler;
 		this.factory = factory;
-		this.invoker = new AutomatedActionInvoker(timer_threshold, thread_threshold);
+		this.workQueue = new WorkQueue(timer_threshold, 60000); // 60s
 	}
 
 	/** @return Name of configuration root element */
 	public String getRootName() {
-		return root_name;
-	}
-
-	/** Dump to stdout */
-	public void dump() {
-		System.out.println("== Alarm Notifier Snapshot ==");
-		// TODO: improve 
-//		System.out.println("Work work_queue size: " + work_queue.size());
-
-		// Log memory usage in MB
-		final double free = Runtime.getRuntime().freeMemory() / (1024.0 * 1024.0);
-		final double total = Runtime.getRuntime().totalMemory() / (1024.0 * 1024.0);
-		final double max = Runtime.getRuntime().maxMemory() / (1024.0 * 1024.0);
-
-		final DateFormat format = new SimpleDateFormat( JMSLogMessage.DATE_FORMAT);
-		System.out.format("%s == Alarm Notifer Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
-						format.format(new Date()), max, free, 100.0 * free / max, total, 100.0 * total / max);
+		return rootName;
 	}
 
 	/** Connect to JMS */
@@ -79,13 +67,14 @@ public class AlarmNotifier {
 
 	/** Release all resources */
 	public void stop() {
-		invoker.stop();
 		rdb.close();
+		workQueue.flush();
 		Activator.getLogger().log(Level.INFO, "Alarm Notifier stopped");
 	}
 
 	/**
 	 * Read info about {@link AlarmTreeItem} from model.
+	 * 
 	 * @param path, path of the item
 	 * @return ItemInfo
 	 */
@@ -96,10 +85,19 @@ public class AlarmNotifier {
 
 	/**
 	 * Start automated action for the given PV and its parents.
+	 * 
 	 * @param pvItem
 	 */
 	public void handleAlarmUpdate(AlarmTreePV pvItem) {
 		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
+		if (!pvItem.isEnabled()) {
+			// Ignore PV, it's disabled
+			AlarmNotifierHistory.getInstance().clear(snapshot);
+			return;
+		}
+		// Avoid to send 'fake' alarms when the PV is re-enabled for example
+		if (snapshot.getValue() != null && snapshot.getValue().isEmpty())
+			return;
 		// Process PV automated actions
 		if (pvItem.getAutomatedActions() != null) {
 			for (AADataStructure aa : pvItem.getAutomatedActions()) {
@@ -116,15 +114,47 @@ public class AlarmNotifier {
 			if (item.getPosition().equals(AlarmTreePosition.Root))
 				break;
 		}
+		AlarmNotifierHistory.getInstance().addSnapshot(snapshot);
 	}
 
 	private void handleAutomatedAction(PVSnapshot snapshot,
 			AlarmTreeItem aaItem, AADataStructure aa) {
-		if (invoker.update(aaItem, aa, snapshot))
-			return; // Pending action updated => no need to create a new one
-		final IAutomatedAction newAction = factory.getNotificationAction( aaItem, aa);
-		if (newAction == null) return;
-		invoker.storeExec(aaItem, aa, newAction, snapshot);
+		final ActionID naID = NotifierUtils.getActionID(aaItem, aa);
+		AlarmHandler actionTask = workQueue.find(naID);
+		if (actionTask != null) {
+			// Update only if action is scheduled and not yet executed
+			actionTask.updateAlarms(snapshot);
+			if (actionTask.getStatus().equals(EActionStatus.NO_DELAY)) {
+				workQueue.interrupt(actionTask);
+				if (!maintenanceMode
+						|| (maintenanceMode && actionTask.getPriority().equals(
+								EActionPriority.IMPORTANT))) {
+					actionTask.setStatus(EActionStatus.FORCED);
+					workQueue.schedule(actionTask, true);
+				}
+			}
+			// Pending action updated => no need to create a new one
+			return;
+		}
+		final ItemInfo info = ItemInfo.fromItem(aaItem);
+		// No automated action if PV disabled
+		if (info.isPV() && !info.isEnabled())
+			return;
+		final IAutomatedAction newAction = factory.getNotificationAction(aaItem, aa);
+		if (newAction == null)
+			return;
+		final AlarmHandler newTask = new AlarmHandler(naID, info, newAction, aa.getDelay());
+		newTask.updateAlarms(snapshot);
+		if (!maintenanceMode
+				|| (maintenanceMode && newTask.getPriority().equals(
+						EActionPriority.IMPORTANT))) {
+			if (newTask.getStatus().equals(EActionStatus.NO_DELAY)) {
+				newTask.setStatus(EActionStatus.FORCED);
+				workQueue.schedule(newTask, true);
+			} else {
+				workQueue.schedule(newTask, false);
+			}
+		}
 	}
 
 	/**
@@ -133,7 +163,7 @@ public class AlarmNotifier {
 	 */
 	public void handleNewAlarmConfiguration() {
 		Activator.getLogger().config("New Alarm Configuration");
-		invoker.clean();
+		workQueue.interruptAll();
 	}
 
 	/**
@@ -142,7 +172,29 @@ public class AlarmNotifier {
 	 */
 	public void handleModeUpdate(boolean maintenance_mode) {
 		Activator.getLogger().config("Maintenance Mode: " + maintenance_mode);
-		invoker.setMaintenance_mode(maintenance_mode);
+		this.maintenanceMode = maintenance_mode;
+		AlarmNotifierHistory.getInstance().clearAll();
+		if (maintenance_mode)
+			workQueue.interruptAll();
+	}
+
+	/** Dump to stdout */
+	public void dump() {
+		System.out.println("== Alarm Notifier Snapshot ==");
+
+		// Log memory usage in MB
+		final double free = Runtime.getRuntime().freeMemory() / (1024.0 * 1024.0);
+		final double total = Runtime.getRuntime().totalMemory() / (1024.0 * 1024.0);
+		final double max = Runtime.getRuntime().maxMemory() / (1024.0 * 1024.0);
+		final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
+		System.out.format("%s == Alarm Notifer Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
+						format.format(new Date()), max, free, 100.0 * free / max, total, 100.0 * total / max);
+
+		workQueue.dump();
+	}
+
+	public WorkQueue getWorkQueue() {
+		return workQueue;
 	}
 
 }

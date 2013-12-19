@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.ui;
 
+import java.util.logging.Logger;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -25,6 +27,9 @@ public class ScanUIActivator
     /** ID of the Scan Monitor View */
     public static final String ID_SCAN_PLOT_VIEW = "org.csstudio.scan.ui.plot.view";
 
+    /** The Constant logger. */
+    final private static Logger logger = Logger.getLogger(PLUGIN_ID);
+    
 	/** @param path Path to plugin image
 	 *  @return {@link ImageDescriptor}
 	 */
@@ -32,4 +37,11 @@ public class ScanUIActivator
     {
         return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
+    
+	/** @return Logger for plugin ID */
+	public static Logger getLogger()
+	{
+	    return logger;
+	}
+    
 }

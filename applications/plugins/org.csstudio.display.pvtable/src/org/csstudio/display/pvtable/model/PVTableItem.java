@@ -99,17 +99,19 @@ public class PVTableItem implements PVReaderListener<VType>
      *  <p>Also resets saved and current value,
      *  since it no longer applies to the new name.
      *  @param new_name PV Name
+     *  @return <code>true</code> if name was indeed changed
      */
-    public void updateName(final String new_name)
+    public boolean updateName(final String new_name)
     {
         if (name.equals(new_name))
-            return;
+            return false;
         if (pv != null)
             pv.close();
         saved = null;
         value = null;
         has_changed = false;
         createPV(new_name);
+        return true;
     }
 
     /** PVReaderListener

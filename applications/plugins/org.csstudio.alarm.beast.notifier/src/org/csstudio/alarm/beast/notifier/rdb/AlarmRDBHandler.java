@@ -74,11 +74,8 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
 	@Override
 	public void newAlarmState(AlarmClientModel model, AlarmTreePV pv,
 			boolean parent_changed) {
-		if (pv == null) return;
-		if (!pv.isEnabled()) {
-			// Ignore PV, it's disabled
+		if (pv == null)
 			return;
-		}
 		notifier.handleAlarmUpdate(pv);
 	}
 	

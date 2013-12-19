@@ -14,6 +14,8 @@ import static org.epics.util.time.TimeDuration.ofSeconds;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.ThrottledLogger;
 import org.csstudio.archive.vtype.VTypeHelper;
@@ -21,6 +23,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.vtype.Time;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VType;
 import org.epics.util.time.TimeDuration;
@@ -221,13 +224,46 @@ abstract public class ArchiveChannel
 				{
 					if (enablement != Enablement.Passive)
 						handleEnablement(value);
-					handleNewValue(value);
+					handleNewValue(checkReceivedValue(value));
 				}
 			}
 		};
 		pv = PVManager.read(newValuesOf(vType(name))).timeout(ofSeconds(30)).readListener(listener).maxRate(ofSeconds(1));
     }
 
+    /** Check a received value for basic problems before
+     *  passing it on to the sample mechanism
+     *  @param value Value as received from network layer
+     *  @return Value to be used for archive
+     */
+    private VType checkReceivedValue(VType value)
+    {
+        if (value instanceof Time)
+        {
+            try
+            {
+                final Time time = (Time) value;
+                // Invoke time.getTimestamp() to detect RuntimeError in VType 2013/11/01
+                if (time.isTimeValid()  &&  time.getTimestamp() != null)
+                    return value;
+                else
+                {
+                    trouble_sample_log.log("'" + getName() + "': Invalid time stamp ");
+                    value = VTypeHelper.transformTimestamp(value, Timestamp.now());
+                }
+            }
+            catch (RuntimeException ex)
+            {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                        "'" + getName() + "': Exception getting time stamp", ex);
+                value = VTypeHelper.transformTimestamp(value, Timestamp.now());
+            }
+        }
+        else
+            trouble_sample_log.log("'" + getName() + "': Received no time information for " + value);
+       return value;
+    }
+    
     /** Stop archiving this channel */
     final void stop()
     {

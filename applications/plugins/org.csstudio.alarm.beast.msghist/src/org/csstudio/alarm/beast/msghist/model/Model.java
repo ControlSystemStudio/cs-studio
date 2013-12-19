@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import org.csstudio.alarm.beast.msghist.Activator;
 import org.csstudio.alarm.beast.msghist.Preferences;
 import org.csstudio.apputil.time.StartEndTimeParser;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /** Model of CSS log messages.
@@ -21,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
  *  on change.
  *
  *  @author Kay Kasemir
+ *  @author benhadj naceur @  sopra group - iter
  */
 public class Model
 {
@@ -37,6 +39,7 @@ public class Model
     private int max_properties;
     private GetMessagesJob message_job;
     private Shell shell;
+    private boolean errorCase;
 
     /** Constructor
      *  @param url URL for RDB that holds log messages
@@ -56,6 +59,7 @@ public class Model
         this.schema = schema;
         this.max_properties = max_properties;
         this.shell = shell;
+        this.errorCase = false;
     }
 
     /** Add Model Listener */
@@ -123,8 +127,20 @@ public class Model
         launchQuery();
     }
 
+   
+    
+    /**
+     * Refresh.
+     *
+     * @throws Exception the exception
+     */
+    public void refresh() throws Exception {
+        launchQuery();
+    }
+    
+    
     /** Launch RDB query with current settings. */
-    private void launchQuery() throws Exception
+    private synchronized void launchQuery() throws Exception
     {
         // Cancel a job that might already be running
         if (message_job != null)
@@ -136,7 +152,7 @@ public class Model
         message_job = new GetMessagesJob(
                 url, user, password, schema,
                 times.getStart(), times.getEnd(),
-                filters, max_properties, shell)
+                filters, max_properties)
         {
             @Override
             void gotMessages(final Message[] messages)
@@ -146,6 +162,33 @@ public class Model
                 Model.this.messages = messages;
                 fireModelChanged();
             }
+
+            
+			@Override
+			void handleError(final String message, final Exception ex) {
+			    	Activator.getLogger().log(Level.WARNING, message, ex);
+			    	// notify scheduler auto refresh 
+	                fireErrorModel(message);
+			        if (shell == null) {
+			        	return;
+			        }
+			        if (shell.isDisposed()) {
+			            return;
+			        }
+			        shell.getDisplay().asyncExec(new Runnable() {
+			            @Override
+			            public void run() {
+			                if (shell.isDisposed()) {
+			                    return;
+			                }
+			                //check error dialog already open
+			                if (errorCase) return;
+		                	errorCase = true;
+		                	ExceptionDetailsErrorDialog.openError(shell, message, ex);
+			            }
+			        });
+			}
+            
         };
         message_job.schedule();
     }
@@ -175,4 +218,19 @@ public class Model
             }
         }
     }
+    
+    /**
+     * Fire error model.
+     *
+     * @param errorMsg the error msg
+     */
+	protected void fireErrorModel(final String errorMsg) {
+		for (ModelListener listener : listeners) {
+			try {
+				listener.onErrorModel(errorMsg);
+			} catch (Throwable ex) {
+				Activator.getLogger().log(Level.WARNING, "Notify error", ex);
+			}
+		}
+	}
 }

@@ -18,6 +18,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -57,7 +58,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 		generalStream = console.newOutputStream();
 		
 		// Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
-		console.setWaterMarks(80000, 100000);
+		console.setWaterMarks(400000, 500000);
 		
 		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
 		consolePlugin.getConsoleManager().addConsoles(
@@ -190,17 +191,35 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 	}
 
 	public void writeString(final String s){
-		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
-				if (infoStream == null) {
+				if(infoStream == null){
 					infoStream = console.newOutputStream();
-					infoStream.setColor(CustomMediaFactory.getInstance()
-							.getColor(CustomMediaFactory.COLOR_BLACK));
+					infoStream.setColor(CustomMediaFactory.getInstance().getColor(
+							CustomMediaFactory.COLOR_BLACK));
 				}
 				writeToConsole(infoStream, s);
 			}
 		});
 	}
+	
+	public void writeString(final String s, final RGB color){
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			public void run() {
+				IOConsoleOutputStream stream = console.newOutputStream();
+				try {
+					stream.setColor(CustomMediaFactory.getInstance().getColor(color));
+					writeToConsole(stream, s);
+				} finally {
+					try {
+						stream.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+		});
+	}
+	
 
 
 

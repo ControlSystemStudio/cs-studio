@@ -23,6 +23,19 @@ public class EdmWidget extends EdmEntity {
 	@EdmAttributeAn private int major;
 	@EdmAttributeAn private int minor;
 	@EdmAttributeAn private int release;
+	@EdmAttributeAn @EdmOptionalAn private String visPv;
+	@EdmAttributeAn @EdmOptionalAn private double visMax;
+	@EdmAttributeAn @EdmOptionalAn private double visMin;
+	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
+	
+	@EdmAttributeAn @EdmOptionalAn private EdmFont font;
+	@EdmAttributeAn @EdmOptionalAn private EdmColor fgColor;
+	@EdmAttributeAn @EdmOptionalAn private EdmColor bgColor;
+	@EdmAttributeAn @EdmOptionalAn private boolean fgAlarm;
+	@EdmAttributeAn @EdmOptionalAn private boolean bgAlarm;
+	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
+	@EdmAttributeAn @EdmOptionalAn private String colorPv;
+	
 	/**
 	 * Constructs EdmWidget from general EdmEntity.
 	 *
@@ -33,6 +46,9 @@ public class EdmWidget extends EdmEntity {
 		super(genericEntity);
 	}
 	
+	public final String getAlarmPv() {
+		return alarmPv==null?colorPv:alarmPv;
+	}
 	
 	public int getMajor() {
 		return major;
@@ -60,4 +76,47 @@ public class EdmWidget extends EdmEntity {
 	public int getH() {
 		return h;
 	}
+	
+	public final String getVisPv() {
+		return visPv;
+	}
+
+	public final double getVisMax() {
+		return visMax;
+	}
+
+	public final double getVisMin() {
+		return visMin;
+	}
+
+	public final boolean isVisInvert() {
+		return visInvert;
+	}
+
+
+	public final EdmFont getFont() {
+		return font;		
+	}
+
+
+	public final EdmColor getFgColor() {
+		return fgColor;
+	}
+
+
+	public final EdmColor getBgColor() {
+		return bgColor;
+	}
+
+
+	public final boolean isFgAlarm() {
+		return fgAlarm;
+	}
+
+
+	public final boolean isBgAlarm() {
+		return bgAlarm;
+	}
+	
+	
 }

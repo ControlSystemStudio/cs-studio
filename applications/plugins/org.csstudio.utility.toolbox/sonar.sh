@@ -1,1 +1,0 @@
-sonar-runner -D sonar.projectKey=desy -D sonar.projectName=Toolbox -D sonar.projectVersion=1.0 -D sources=/Users/roger/Documents/desy/css/applications/plugins/org.csstudio.utility.toolbox/src -D binaries=/Users/roger/Documents/desy/css/applications/plugins/org.csstudio.utility.toolbox/bin

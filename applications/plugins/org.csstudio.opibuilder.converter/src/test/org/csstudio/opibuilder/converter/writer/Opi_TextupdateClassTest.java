@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.Edm_TextupdateClass;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class Opi_TextupdateClassTest extends TestCase {
 
@@ -34,7 +34,7 @@ public class Opi_TextupdateClassTest extends TestCase {
 		assertTrue(d.getSubEntity(0) instanceof Edm_TextupdateClass);
 		Edm_TextupdateClass t = (Edm_TextupdateClass)d.getSubEntity(0);
 
-		Context context = new Context(doc, root, 0, 0);
+		Context context = new Context(doc, root, d, 0, 0);
 		Opi_TextupdateClass o = new Opi_TextupdateClass(context, t);
 		assertTrue(o instanceof OpiWidget);
 

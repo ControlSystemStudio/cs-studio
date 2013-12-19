@@ -23,6 +23,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.JythonSupport;
+import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.vtype.VType;
@@ -47,11 +48,11 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 
     /** {@inheritDoc} */
 	@Override
-    public String[] getDeviceNames(final ScanContext context) throws Exception
+    public String[] getDeviceNames(final MacroContext macros) throws Exception
 	{
 	    final String[] names = command.getDeviceNames();
 	    for (int i=0; i<names.length; ++i)
-	        names[i] = context.resolveMacros(names[i]);
+	        names[i] = macros.resolveMacros(names[i]);
         return names;
 	}
 
@@ -66,7 +67,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 		final String[] device_names = command.getDeviceNames();
 		for (String device_name : device_names)
 		{
-			final Device device = context.getDevice(context.resolveMacros(device_name));
+			final Device device = context.getDevice(context.getMacros().resolveMacros(device_name));
 			final VType value = device.read();
 			logger.log(Level.FINER, "Log: {0} = {1}", new Object[] { device, value });
 			log.log(device.getAlias(), VTypeHelper.createSample(serial, value));

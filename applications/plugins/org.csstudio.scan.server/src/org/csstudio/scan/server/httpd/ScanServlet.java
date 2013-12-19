@@ -49,11 +49,11 @@ public class ScanServlet extends HttpServlet
             final HttpServletResponse response)
             throws ServletException, IOException
     {
-        // Require XML
+        // Require XML: "text/xml", "text/xml; charset=UTF-8", ...
         final String format = request.getContentType();
-        if (! format.endsWith("/xml"))
+        if (! format.contains("/xml"))
         {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expecting XML content with scan");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expecting XML content with scan, got format '" + format + "'");
             return;
         }
 

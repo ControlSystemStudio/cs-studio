@@ -6,6 +6,7 @@
       <plugin id="com.ibm.icu.base"/>
       <plugin id="javax.mail"/>
       <plugin id="org.antlr.runtime"/>
+      <plugin id="org.apache.batik"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.archive.rdb"/>

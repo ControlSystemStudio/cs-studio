@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
-  	<extensionContent id="org.csstudio.diag.pvmanager.probe.intro" style="probe-intro.css" name="Probe intro Extension" path="tutorials/@">
-		<group style-id="content-group" id="org.csstudio.diag.probe.intro-group">
+  	<extensionContent id="org.csstudio.diag.pvmanager.probe.intro" style="probe-intro.css" name="CSS" path="firststeps/@">
+		<group style-id="content-group" id="content-group">
        		<link label="Probe"
-       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.diag.pvmanager.probe/html/probe.html&amp;embed=true" 
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.diag.pvmanager.probe/html/probe.html#pv_config" 
        		id="probe-Link" style-id="content-link">
           		<text>A simple utility to test channels.</text>
        		</link>

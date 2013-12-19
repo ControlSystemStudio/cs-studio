@@ -32,6 +32,7 @@ public class EmailActionImpl extends AbstractMailActionImpl {
 	public void init(ItemInfo item, AAData auto_action, IActionHandler handler)
 			throws Exception {
 		this.item = item;
+		this.manuallyExecuted = auto_action.isManual();
 		mailSender = new JavaxMailSender();
 		EMailCommandHandler emailCmdHandler = (EMailCommandHandler) handler;
 		mailSender.setTo(emailCmdHandler.getTo());

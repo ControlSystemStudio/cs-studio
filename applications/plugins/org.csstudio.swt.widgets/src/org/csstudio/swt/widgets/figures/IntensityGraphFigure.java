@@ -1495,7 +1495,8 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	public ColorDepth getColorDepth() {
 		return colorDepth;
 	}
-	/**Set Color depth of the image.
+	/**Set Color depth of the image. 
+	 * See http://en.wikipedia.org/wiki/Color_depth
 	 * @param colorDepth the colorDepth to set
 	 */
 	public void setColorDepth(ColorDepth colorDepth) {

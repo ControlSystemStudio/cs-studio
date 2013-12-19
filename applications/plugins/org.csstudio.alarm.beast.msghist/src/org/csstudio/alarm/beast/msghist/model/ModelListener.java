@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.msghist.model;
 
 /** Listener gets notified when model changes.
  *  @author Kay Kasemir
+ *  @author benhadj naceur @  sopra group - iter
  */
 public interface ModelListener
 {
@@ -19,4 +20,13 @@ public interface ModelListener
 	 *  @param model Model that has new data or is somehow different
 	 */
     public void modelChanged(Model model);
+    
+    /**
+     * Listener on error model.
+     *
+     * @param errorMsg the error msg
+     */
+    public void onErrorModel(final String errorMsg);
+    
+    
 }

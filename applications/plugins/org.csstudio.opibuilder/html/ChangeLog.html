@@ -8,6 +8,7 @@
  <body>
 <h1>BOY Changelog</h1>
 <ul>
+<li><a href="#3.3.0">Version 3.3.0</a></li>
 <li><a href="#3.2.10">Version 3.2.10</a></li>
 <li><a href="#3.2.9">Version 3.2.9</a></li>
 <li><a href="#3.1.4">Version 3.1.4</a></li>
@@ -19,6 +20,20 @@
 <li><a href="#1.1.0">Version 1.1.0</a></li>
 <li><a href="#1.0.6">Version 1.0.6</a></li>
 </ul>
+
+<A NAME="3.3.0"></A>
+<h2>Version 3.3.0</h2>
+<ul>
+	<li><a href="../../org.csstudio.opibuilder.converter/html/Getting_Started.html">EDM2OPI converter </a>has been finished to be able to convert 95% of EDM features to BOY. 
+	(Some of the widgets conversion was contributed by <a href="http://english.ihep.cas.cn/">IHEP</a>)
+	<p>  <a href="../../org.csstudio.opibuilder.converter/html/img/EDM2BOYDemo.png"><img src ="img/edm2boy_small.png" alt="EDM2OPI converter example"> </a></p></li>
+	
+	<li>Add <code>$(opi.dir)</code> macros to "Execute Command" widget action.
+	<code>$(opi.dir)</code> points to the directory of the OPI file on the OS file system. 
+	</li>
+</ul>
+
+
 
 <A NAME="3.2.10"></A>
 <h2>Version 3.2.10</h2>
@@ -89,7 +104,7 @@
 	<li>Support PV Name auto-complete. By default, it only supports history inputs, but a site may implement 
 	its own PV name provider. For more details, please see <code>CSS online help->CSS Core->Auto-Complete</code>  
 	(Primarily contributed by ITER).
-	<p><img src="img/autocomplete.png"</p>
+	<p><img src="img/autocomplete.png"></p>
 	
 	</li>    
     
@@ -209,7 +224,7 @@ If the message is not empty, a confirm dialog will pop up before writing the new
 
 <h2>Version 3.1.1 (2012-07-18)</h2>
 <ul>
-<li>Add Native <a href="widgets/NativeButton.html">Button<a>, <a href="widgets/NativeText.html">Text</a> widgets. 
+<li>Add Native <a href="widgets/NativeButton.html">Button</a>, <a href="widgets/NativeText.html">Text</a> widgets. 
 Native widgets will have significantly better performance in WebOPI. 
 They also support Tab key traversing.
 The native text widget can be used as either label, text update or text input. 

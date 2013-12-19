@@ -17,9 +17,9 @@ import java.util.Vector;
  */
 public class EdmDisplay extends EdmEntity {
 
-	@EdmAttributeAn private int major;
-	@EdmAttributeAn private int minor;
-	@EdmAttributeAn private int release;
+	@EdmAttributeAn @EdmOptionalAn private int major;
+	@EdmAttributeAn @EdmOptionalAn private int minor;
+	@EdmAttributeAn @EdmOptionalAn private int release;
 
 	@EdmAttributeAn private int x;
 	@EdmAttributeAn private int y;

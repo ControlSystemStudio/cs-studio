@@ -10,7 +10,6 @@ package org.csstudio.alarm.beast.notifier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimestampHelper;
 import org.eclipse.osgi.util.NLS;
 
@@ -22,14 +21,13 @@ import org.eclipse.osgi.util.NLS;
 public class PVSummary {
 
 	private String name, description;
-	private String current_severity, severity;
-	private String current_message, message;
-	private String value;
-	private String timestamp;
-	
-	private char prefix;
-	boolean isNLSMessage = false;
-	private static Pattern NLSPattern = Pattern.compile("\\{\\ *\\d+\\ *\\}");
+	private final String current_severity, severity;
+	private final String current_message, message;
+	private final String value;
+	private final String timestamp;
+
+	private final char prefix;
+	private final static Pattern NLSPattern = Pattern.compile("\\{\\ *\\d+\\ *\\}");
 
 	/** Pattern for description prefixes */
     final private static Pattern PrefixPattern = Pattern.compile("^(\\*|\\!)(.*)");
@@ -84,7 +82,6 @@ public class PVSummary {
 		this.message = message;
 		this.value = value;
 		this.timestamp = timestamp;
-		this.isNLSMessage = isNLSMessage;
 		this.prefix = prefix;
 		if (isNLSMessage) {
 			String[] bindings = { current_severity, value };
@@ -97,10 +94,7 @@ public class PVSummary {
 		if (prefix == '*') return description;
 		StringBuilder builder = new StringBuilder();
 		builder.append(current_severity);
-		if (current_severity.equals(SeverityLevel.MINOR_ACK)
-				|| current_severity.equals(SeverityLevel.MAJOR_ACK))
-			builder.append(" alarm ACK: ");
-		else builder.append(" alarm: ");
+		builder.append(" alarm: ");
 		builder.append(description);
 		return builder.toString();
 	}

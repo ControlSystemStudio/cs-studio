@@ -611,6 +611,12 @@ public class Plot
 			trace.setErrorBarEnabled(true);
 			trace.setDrawYErrorInArea(true);
 			break;
+		case AREA_DIRECT:
+            trace.setTraceType(TraceType.SOLID_LINE);
+            trace.setPointStyle(PointStyle.NONE);
+            trace.setErrorBarEnabled(true);
+            trace.setDrawYErrorInArea(true);
+            break;
 		case ERROR_BARS:
 			trace.setTraceType(TraceType.STEP_HORIZONTALLY);
 			trace.setPointStyle(PointStyle.NONE);
@@ -623,6 +629,12 @@ public class Plot
 			trace.setErrorBarEnabled(false);
 			trace.setDrawYErrorInArea(false);
 			break;
+        case SINGLE_LINE_DIRECT:
+            trace.setTraceType(TraceType.SOLID_LINE);
+            trace.setPointStyle(PointStyle.NONE);
+            trace.setErrorBarEnabled(false);
+            trace.setDrawYErrorInArea(false);
+            break;
 		case SQUARES:
 			trace.setTraceType(TraceType.POINT);
 			trace.setPointStyle(PointStyle.FILLED_SQUARE);

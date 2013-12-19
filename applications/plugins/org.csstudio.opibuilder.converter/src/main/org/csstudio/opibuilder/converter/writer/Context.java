@@ -28,6 +28,7 @@
 
 package org.csstudio.opibuilder.converter.writer;
 
+import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -40,16 +41,18 @@ import org.w3c.dom.Element;
 public class Context {
 	private Document document;
 	private Element element;
+	private EdmDisplay rootDisplay;
 	private int x;
 	private int y;
 	
 	/**
 	 * Creates a context with all information.
 	 */
-	public Context(Document document, Element element, int x, int y) {
+	public Context(Document document, Element element, EdmDisplay rootWidget,int x, int y) {
 		super();
 		this.document = document;
 		this.element = element;
+		this.rootDisplay = rootWidget;
 		this.x = x;
 		this.y = y;
 	}
@@ -75,6 +78,21 @@ public class Context {
 		return element;
 	}
 
+	/**
+	 * @return the root display.
+	 */
+	public EdmDisplay getRootDisplay() {
+		return rootDisplay;
+	}
+	
+	/**Set the root display widget
+	 * If it is not a widget, set this to null.
+	 * @param rootDisplay 
+	 */
+	public void setRootDisplay(EdmDisplay rootDisplay) {
+		this.rootDisplay = rootDisplay;
+	}
+	
 	/**
 	 * Sets current DOM element.
 	 */

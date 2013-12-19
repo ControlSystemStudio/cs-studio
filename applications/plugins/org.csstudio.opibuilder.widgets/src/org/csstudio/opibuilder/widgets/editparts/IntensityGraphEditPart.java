@@ -108,7 +108,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 			});
 		}
 		
-		//init ROIs
+		updatePropSheet();
 
 		return graph;
 	}
@@ -118,6 +118,20 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		return (IntensityGraphModel)getModel();
 	}
 
+		/**
+		* @param actionsFromPV
+		*/
+	private void updatePropSheet() {
+		boolean rgbMode = getWidgetModel().isRGBMode();
+		getWidgetModel().setPropertyVisible(
+				IntensityGraphModel.PROP_COLOR_DEPTH, rgbMode);
+		getWidgetModel().setPropertyVisible(
+				IntensityGraphModel.PROP_COLOR_MAP, !rgbMode);
+		getWidgetModel().setPropertyVisible(
+				IntensityGraphModel.PROP_SHOW_RAMP, !rgbMode);
+		
+	}
+	
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		innerUpdateGraphAreaSizeProperty();
@@ -323,15 +337,15 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 					}
 		});		
 
-		handler = new IWidgetPropertyChangeHandler() {
+	
+		getWidgetModel().getProperty(IntensityGraphModel.PROP_RGB_MODE).addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((IntensityGraphFigure)getFigure()).setInRGBMode((Boolean)newValue);
-				return false;
+			public void propertyChange(PropertyChangeEvent evt) {
+				updatePropSheet();
+				((IntensityGraphFigure)getFigure()).setInRGBMode((Boolean)(evt.getNewValue()));				
 			}
-		};
-		setPropertyChangeHandler(IntensityGraphModel.PROP_RGB_MODE, handler);
+		});
 
 		
 		handler = new IWidgetPropertyChangeHandler() {

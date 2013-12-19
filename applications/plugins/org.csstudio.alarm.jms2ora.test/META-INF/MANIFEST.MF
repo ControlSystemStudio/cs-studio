@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Jms2ora Test Plugin
-Bundle-SymbolicName: org.csstudio.alarm.jms2ora.test
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Markus Moeller <markus.moeller@desy.de>
-Fragment-Host: org.csstudio.alarm.jms2ora;bundle-version="2.3.5"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.8.1"

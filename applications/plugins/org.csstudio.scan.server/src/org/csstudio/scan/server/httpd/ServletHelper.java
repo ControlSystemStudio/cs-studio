@@ -105,10 +105,10 @@ public class ServletHelper
         server.appendChild(createXMLElement(doc, "script_paths", PathUtil.joinPaths(info.getScriptPaths())));
         server.appendChild(createXMLElement(doc, "macros", info.getMacros()));
         
-        
-        
         server.appendChild(createXMLElement(doc, "used_mem", info.getUsedMem()));
         server.appendChild(createXMLElement(doc, "max_mem", info.getMaxMem()));
+        server.appendChild(createXMLElement(doc, "non_heap", info.getNonHeapUsedMem()));
+
         return server;
     }
 

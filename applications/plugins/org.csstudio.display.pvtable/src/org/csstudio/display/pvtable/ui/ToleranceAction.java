@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableItem;
@@ -29,18 +31,31 @@ public class ToleranceAction extends PVTableAction
         super(Messages.Tolerance, "icons/pvtable.png", viewer); //$NON-NLS-1$
         setToolTipText(Messages.Tolerance_TT);
     }
-    
+
     public void run()
     {
         final PVTableModel model = (PVTableModel) viewer.getInput();
         if (model == null)
             return;
+        final List<PVTableItem> items = new ArrayList<>();
         final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
-        if (sel == null  ||  sel.size() <= 0)
-            return;
+        if (sel != null  &&  sel.size() > 0)
+        {	// Use selected model items
+        	final Iterator<?> iterator = sel.iterator();
+        	while (iterator.hasNext())
+        		items.add((PVTableItem) iterator.next());
+        }
+        else
+        {	// Use all model items
+        	final int N = model.getItemCount();
+        	for (int i=0; i<N; ++i)
+        		items.add(model.getItem(i));
+        }
         
-        PVTableItem item = (PVTableItem) sel.getFirstElement();
-        double tolerance = item.getTolerance();
+        if (items.isEmpty())
+        	return;
+        
+        double tolerance = items.get(0).getTolerance();
         
         final InputDialog dlg = new InputDialog(viewer.getControl().getShell(),
                 Messages.Tolerance, Messages.EnterTolerance,
@@ -68,11 +83,8 @@ public class ToleranceAction extends PVTableAction
             return;
         
         tolerance = Double.parseDouble(dlg.getValue());
-        final Iterator<?> iterator = sel.iterator();
-        while (iterator.hasNext())
-        {
-            item = (PVTableItem) iterator.next();
+        for (PVTableItem item : items)
             item.setTolerance(tolerance);
-        }
+        model.fireModelChange();
     }
 }

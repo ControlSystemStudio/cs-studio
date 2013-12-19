@@ -178,7 +178,7 @@ public class ScanTreeGUI implements ScanTreeModelListener
         manager.add(new AddCommandAction());
         manager.add(new OpenPropertiesAction());
         manager.add(new OpenCommandListAction());
-        manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/perspective.gif"), //$NON-NLS-1$
+        manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/scantree.gif"), //$NON-NLS-1$
                 Messages.OpenScanTreePerspective, Perspective.ID));
         manager.add(new Separator("additions")); //$NON-NLS-1$
 

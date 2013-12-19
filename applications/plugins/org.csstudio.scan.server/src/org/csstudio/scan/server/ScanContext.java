@@ -36,8 +36,11 @@ import org.csstudio.scan.server.internal.ExecutableScan;
  *
  *  @author Kay Kasemir
  */
-public interface ScanContext extends MacroContext
+public interface ScanContext
 {
+    /** @return Macro support */
+    public MacroContext getMacros();
+
     /** Get a device by (alias) name.
 	 *  @param name (Alias) name of the device.
 	 *  @return {@link Device} with that name

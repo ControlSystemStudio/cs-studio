@@ -21,6 +21,8 @@
  */
 package org.csstudio.swt.widgets.figures;
 
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -29,6 +31,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.batik.utils.SVGUtils;
+import org.apache.batik.utils.SimpleImageTranscoder;
 import org.csstudio.java.thread.ExecutionService;
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
@@ -54,6 +60,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Display;
+import org.w3c.dom.Document;
 
 /**
  * An image figure.
@@ -152,6 +159,14 @@ public final class ImageFigure extends Figure implements Introspectable {
 	private PermutationMatrix oldPermutationMatrix = null;
 	private PermutationMatrix permutationMatrix = PermutationMatrix
 			.generateIdentityMatrix();
+	
+	// SVG attributes
+	private boolean workingWithSVG = false;
+	private boolean failedToLoadDocument;
+	private SimpleImageTranscoder transcoder;
+	private Document svgDocument;
+
+	private double scale = 1.0;
 
 	/**
 	 * dispose the resources used by this figure
@@ -340,7 +355,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 		bound.crop(this.getInsets());
 		if(bound.width<=0 || bound.height<=0)
 			return;
-		if (loadingError) {
+		if (loadingError || failedToLoadDocument) {
 			if (staticImage != null) {
 				staticImage.dispose();
 			}
@@ -367,7 +382,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 		}
 
 		// create static image
-		if (staticImage == null && originalStaticImageData != null) {
+		if (staticImage == null && originalStaticImageData != null
+				&& !workingWithSVG) {
 			ImageData imageData = (staticImageData == null) ? originalStaticImageData : staticImageData;
 			// Apply rotation / flip
 			if (permutationMatrix != null
@@ -432,6 +448,59 @@ public final class ImageFigure extends Figure implements Introspectable {
 				|| topCrop + cropedHeight > imgHeight)
 			return;
 
+		if (workingWithSVG) { // draw refreshing SVG image
+			double newScale = gfx.getAbsoluteScale();
+			if (newScale != scale) {
+				this.scale = newScale;
+				resizeSVG();
+			}
+			if (staticImageData == null) {
+				// Load document if do not exist
+				Document document = getDocument();
+				if (document == null)
+					return;
+				transcoder.setTransformMatrix(permutationMatrix.getMatrix());
+
+				// Scale image
+				java.awt.Dimension dims = transcoder.getDocumentSize();
+				int imgWidth = dims.width;
+				int imgHeight = dims.height;
+				if (stretch) {
+					Rectangle bounds = getBounds().getCopy();
+					if (!bounds.equals(0, 0, 0, 0)) {
+						imgWidth = bounds.width;
+						imgHeight = bounds.height;
+					}
+				}
+				imgWidth = (int) Math.round(scale * (imgWidth + leftCrop + rightCrop));
+				imgHeight = (int) Math.round(scale * (imgHeight + bottomCrop + topCrop));
+				transcoder.setCanvasSize(imgWidth, imgHeight);
+
+				BufferedImage awtImage = transcoder.getBufferedImage();
+				if (awtImage != null)
+					staticImageData = SVGUtils.toSWT(Display.getCurrent(),
+							awtImage);
+			}
+			if (staticImage == null && staticImageData != null)
+				staticImage = new Image(Display.getDefault(), staticImageData);
+
+			imgWidth = staticImage.getBounds().width;
+			imgHeight = staticImage.getBounds().height;
+
+			// Calculate areas
+			cropedWidth = imgWidth - (int) Math.round(scale * (leftCrop + rightCrop));
+			cropedHeight = imgHeight - (int) Math.round(scale * (bottomCrop + topCrop));
+			Rectangle srcArea = new Rectangle(leftCrop, topCrop, cropedWidth, cropedHeight);
+			Rectangle destArea = new Rectangle(bounds.x, bounds.y,
+					(int) Math.round(cropedWidth / scale),
+					(int) Math.round(cropedHeight / scale));
+
+			// Draw graphic image
+			if (staticImage != null)
+				gfx.drawImage(staticImage, srcArea, destArea);
+			return;
+		}
+
 		if (animated) { // draw refreshing image
 			if (startAnimationRequested)
 				realStartAnimation();
@@ -487,6 +556,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 			stopAnimation();
 			startAnimation();
 		}
+		if (workingWithSVG)
+			resizeSVG();
 		repaint();
 	}
 
@@ -511,17 +582,6 @@ public final class ImageFigure extends Figure implements Introspectable {
 			startAnimation();
 		}
 	}
-
-	/**
-	 * Automatically make the widget bounds be adjusted to the size of the
-	 * static image
-	 * 
-	 * @param autoSize
-	 */
-	// public void setAutoSize(final boolean autoSize){
-	// if(!stretch && autoSize)
-	// resizeImage();
-	// }
 
 	/**
 	 * Sets the amount of pixels, which are cropped from the bottom.
@@ -556,10 +616,18 @@ public final class ImageFigure extends Figure implements Introspectable {
 			staticImage.dispose();
 		}
 		staticImage = null;
-
-		loadImageFromFile();
-		if (animated) {
-			startAnimation();
+		if (filePath.getFileExtension() != null
+				&& "svg".compareToIgnoreCase(filePath.getFileExtension()) == 0) {
+			workingWithSVG = true;
+			transcoder = null;
+			failedToLoadDocument = false;
+			loadDocument();
+		} else {
+			workingWithSVG = false;
+			loadImageFromFile();
+			if (animated) {
+				startAnimation();
+			}
 		}
 	}
 
@@ -621,6 +689,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 			stopAnimation();
 			startAnimation();
 		}
+		if (workingWithSVG)
+			resizeSVG();
 		repaint();
 	}
 
@@ -769,11 +839,88 @@ public final class ImageFigure extends Figure implements Introspectable {
 				|| permutationMatrix == null || animated)
 			return;
 		dispose();
+		if (workingWithSVG)
+			resizeSVG();
 		repaint();
 	}
-	
+
 	public PermutationMatrix getPermutationMatrix() {
 		return permutationMatrix;
+	}
+
+	public void setAbsoluteScale(double newScale) {
+		if (this.scale == newScale)
+			return;
+		this.scale = newScale;
+		if (workingWithSVG) {
+			resizeSVG();
+			repaint();
+		}
+	}
+
+	// ************************************************************
+	// SVG specific methods
+	// ************************************************************
+
+	private void resizeSVG() {
+		if (staticImage != null && !staticImage.isDisposed()) {
+			staticImage.dispose();
+		}
+		staticImage = null;
+		staticImageData = null;
+	}
+
+	private void loadDocument() {
+		transcoder = null;
+		failedToLoadDocument = true;
+		if (filePath == null || filePath.isEmpty())
+			return;
+		String parser = XMLResourceDescriptor.getXMLParserClassName();
+		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
+		try {
+			String uri = "file://" + filePath.toString();
+			final InputStream inputStream = ResourceUtil
+					.pathToInputStream(filePath);
+			svgDocument = factory.createDocument(uri, inputStream);
+			transcoder = new SimpleImageTranscoder(svgDocument);
+			initRenderingHints();
+			BufferedImage awtImage = transcoder.getBufferedImage();
+			if (awtImage != null) {
+				originalStaticImageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
+				imgWidth = originalStaticImageData.width;
+				imgHeight = originalStaticImageData.height;
+			}
+			failedToLoadDocument = false;
+		} catch (Exception e) {
+			Activator.getLogger().log(Level.WARNING,
+					"Error loading SVG file " + filePath, e);
+		}
+	}
+
+	private final Document getDocument() {
+		if (failedToLoadDocument)
+			return null;
+		if (transcoder == null)
+			loadDocument();
+		return transcoder == null ? null : transcoder.getDocument();
+	}
+
+	private void initRenderingHints() {
+		transcoder.getRenderingHints().put(
+				RenderingHints.KEY_RENDERING,
+				RenderingHints.VALUE_RENDER_QUALITY);
+		transcoder.getRenderingHints().put(
+				RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+		transcoder.getRenderingHints().put(
+				RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		transcoder.getRenderingHints().put(
+				RenderingHints.KEY_FRACTIONALMETRICS,
+				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		transcoder.getRenderingHints().put(
+				RenderingHints.KEY_STROKE_CONTROL,
+				RenderingHints.VALUE_STROKE_PURE);
 	}
 
 }

@@ -1,11 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2010-2013 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.iter.pydev.configurator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.python.pydev.core.IInterpreterInfo;
+import org.python.pydev.debug.core.PydevDebugPlugin;
+import org.python.pydev.debug.newconsole.PydevConsoleConstants;
 import org.python.pydev.plugin.PydevPlugin;
 import org.python.pydev.ui.interpreters.JythonInterpreterManager;
 import org.python.pydev.ui.interpreters.PythonInterpreterManager;
@@ -27,11 +39,11 @@ public class InterpreterUtils {
 	 * @param monitor
 	 * @throws Exception
 	 */
-	public static void createPythonInterpreter(String name,
+	public static boolean createPythonInterpreter(String name,
 			IProgressMonitor monitor) throws Exception {
 		final String interpreterExePath = PythonUtils.getProbablePythonPath();
 		if (interpreterExePath == null) {
-			return;
+			return false;
 		}
 		File scanPluginDir = BundleUtils.getBundleLocation("org.csstudio.scan");
 		final File scanJythonLibDir = new File(scanPluginDir, "jython");
@@ -54,7 +66,7 @@ public class InterpreterUtils {
 				&& (scanJythonLibPath == null || info.libs
 						.contains(scanJythonLibPath))) {
 			// All paths are correct - Nothing to do
-			return;
+			return false;
 		}
 
 		// Create new interpreter
@@ -63,7 +75,7 @@ public class InterpreterUtils {
 		info = (InterpreterInfo) man.createInterpreterInfo(interpreterExePath,
 				monitor, false);
 		if (info == null) {
-			return;
+			return false;
 		}
 		info.setName(name);
 
@@ -84,6 +96,7 @@ public class InterpreterUtils {
 
 		man.clearCaches();
 
+		return true;
 	}
 
 	/**
@@ -92,7 +105,7 @@ public class InterpreterUtils {
 	 * 
 	 * @throws Exception
 	 */
-	public static void createJythonInterpreter(final String name,
+	public static boolean createJythonInterpreter(final String name,
 			final IProgressMonitor mon) throws Exception {
 
 		final JythonInterpreterManager man = (JythonInterpreterManager) PydevPlugin
@@ -111,7 +124,7 @@ public class InterpreterUtils {
 		if (info != null
 				&& exeFile.getAbsolutePath().equals(info.getExecutableOrJar())) {
 			// All paths are correct - Nothing to do
-			return;
+			return false;
 		}
 
 		// Create new interpreter
@@ -126,7 +139,7 @@ public class InterpreterUtils {
 		info = (InterpreterInfo) man.createInterpreterInfo(
 				exeFile.getAbsolutePath(), mon, false);
 		if (info == null) {
-			return;
+			return false;
 		}
 
 		// Add PyDev Libs dir
@@ -173,6 +186,25 @@ public class InterpreterUtils {
 				"PyDev workspace saved with interpreter: " + name);
 
 		man.clearCaches();
+		
+		updateInitialInterpreterCmds();
+		
+		return true;
+	}
+
+	private static void updateInitialInterpreterCmds() throws IOException {
+		File scanPluginDir = BundleUtils.getBundleLocation("org.csstudio.scan");
+		final File scanJythonLibDir = new File(scanPluginDir, "jython");
+		if (scanJythonLibDir.exists()) {
+			final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(
+					InstanceScope.INSTANCE, PydevDebugPlugin.getPluginID());
+			prefStore.setValue(
+					PydevConsoleConstants.INITIAL_INTERPRETER_CMDS,
+					PydevConsoleConstants.DEFAULT_INITIAL_INTERPRETER_CMDS
+							+ "sys.path.append('"
+							+ scanJythonLibDir.getAbsolutePath() + "')\n"
+							+ "from scan_client import *\n");
+		}
 	}
 
 }

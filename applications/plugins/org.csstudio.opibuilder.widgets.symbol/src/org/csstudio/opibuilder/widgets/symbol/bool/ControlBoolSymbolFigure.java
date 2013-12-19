@@ -232,7 +232,8 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 				this.onImagePath = onImagePath;
 			}
 		}
-		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
+		if (imagePath.getFileExtension() != null
+				&& "svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
 			workingWithSVG = true;
 		} else {
 			workingWithSVG = false;
@@ -530,6 +531,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 		getOffImage().setCurrentColor(offColor);
 		getCurrentImage().setBounds(bounds);
 		getCurrentImage().setBorder(getBorder());
+		getCurrentImage().setAbsoluteScale(gfx.getAbsoluteScale());
 		getCurrentImage().paintFigure(gfx);
 		if (!isEnabled()) {
 			gfx.setAlpha(DISABLED_ALPHA);

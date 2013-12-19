@@ -15,11 +15,11 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -93,26 +93,22 @@ public class ScriptCommand extends ScanCommand
     
     /** {@inheritDoc} */
     @Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
     {
-        writeIndent(out, level);
-        out.println("<script>");
-        writeIndent(out, level+1);
-        out.print("<path>");
-        out.print(script);
-        out.println("</path>");
-        writeIndent(out, level+1);
-        out.println("<arguments>");
+        Element element = dom.createElement("path");
+        element.appendChild(dom.createTextNode(script));
+        command_element.appendChild(element);
+
+        element = dom.createElement("arguments");
         for (String arg : args)
         {
-            writeIndent(out, level+2);
-            out.println("<argument>" + arg + "</argument>");
+            final Element arg_element = dom.createElement("argument");
+            arg_element.appendChild(dom.createTextNode(arg));
+            element.appendChild(arg_element);
         }
-        writeIndent(out, level+1);
-        out.println("</arguments>");
-        super.writeXML(out, level);
-        writeIndent(out, level);
-        out.println("</script>");
+        command_element.appendChild(element);
+        
+        super.addXMLElements(dom, command_element);
     }
 
     /** {@inheritDoc} */

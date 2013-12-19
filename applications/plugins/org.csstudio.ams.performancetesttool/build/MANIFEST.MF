@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: lib/activemq-all-5.4.2.jar lib/jcommander-1.13.jar
-Main-Class: org.csstudio.ams.performancetesttool.AMSPerformanceTest

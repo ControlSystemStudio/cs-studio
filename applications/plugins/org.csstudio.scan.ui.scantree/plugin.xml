@@ -103,13 +103,6 @@
          <toolbar
                id="org.csstudio.scan.ui.scantree.toolbar">
             <command
-                  commandId="org.csstudio.scan.ui.scantree.new"
-                  icon="icons/new_scantree.png"
-                  label="%ScanTree"
-                  style="push"
-                  tooltip="%NewScanTreeTT">
-            </command>
-            <command
                   commandId="org.csstudio.scan.ui.scantree.submit"
                   icon="icons/run.png"
                   label="%SubmitScan"

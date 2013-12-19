@@ -15,9 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Command that includes existing *.scn file with macros
@@ -79,17 +79,17 @@ public class IncludeCommand extends ScanCommand
     
     /** {@inheritDoc} */
     @Override
-    public void writeXML(final PrintStream out, final int level)
+    public void addXMLElements(final Document dom, final Element command_element)
     {
-        writeIndent(out, level);
-        out.println("<include>");
-        writeIndent(out, level+1);
-        out.println("<scan_file>" + getScanFile() + "</scan_file>");
-        writeIndent(out, level+1);
-        out.println("<macros>" + getMacros() + "</macros>");
-        super.writeXML(out, level);
-        writeIndent(out, level);
-        out.println("</include>");
+        Element element = dom.createElement("scan_file");
+        element.appendChild(dom.createTextNode(getScanFile()));
+        command_element.appendChild(element);
+
+        element = dom.createElement("macros");
+        element.appendChild(dom.createTextNode(getMacros()));
+        command_element.appendChild(element);
+        
+        super.addXMLElements(dom, command_element);
     }
 
     /** {@inheritDoc} */

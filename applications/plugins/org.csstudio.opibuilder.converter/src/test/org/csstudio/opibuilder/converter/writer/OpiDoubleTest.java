@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmDouble;
 import org.csstudio.opibuilder.converter.model.EdmException;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class OpiDoubleTest extends TestCase {
 
@@ -27,7 +27,7 @@ public class OpiDoubleTest extends TestCase {
 		String val = "12.3";
 		EdmDouble d = new EdmDouble(new EdmAttribute(val), true);
 		
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null, 0, 0);
 		OpiDouble o = new OpiDouble(context, name, d);
 		assertTrue(o instanceof OpiAttribute);
 		

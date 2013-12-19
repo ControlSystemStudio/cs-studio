@@ -38,7 +38,7 @@ public class Opi_activeGroupClassTest extends TestCase {
 		assertTrue(d.getSubEntity(0) instanceof Edm_activeGroupClass);
 		Edm_activeGroupClass g = (Edm_activeGroupClass)d.getSubEntity(0);
 
-		Context context = new Context(doc, root, 0, 0);
+		Context context = new Context(doc, root, d, 0, 0);
 		Opi_activeGroupClass o = new Opi_activeGroupClass(context, g);
 		//XMLFileHandler.writeXML(doc);
 

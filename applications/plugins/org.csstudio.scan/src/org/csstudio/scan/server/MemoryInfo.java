@@ -16,6 +16,7 @@
 package org.csstudio.scan.server;
 
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 
 /** Memory usage info
@@ -26,24 +27,28 @@ public class MemoryInfo
 {
 	final private static double MB = 1024*1024;
 
-    final private long used_mem, max_mem;
+    final private long used_mem, max_mem, non_heap;
 
     /** Initialize with memory usage of this JVM */
     public MemoryInfo()
     {
-		final MemoryUsage heap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+		final MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
+        final MemoryUsage heap = memory.getHeapMemoryUsage();
 		used_mem = heap.getUsed();
 	    max_mem = heap.getMax();
+	    non_heap = memory.getNonHeapMemoryUsage().getUsed();
     }
 
     /** Initialize 
      *  @param used_mem Used memory (kB)
      *  @param max_mem Maximum available memory (kB)
+     *  @param non_heap Used non-heap memory (kB)
      */
-    public MemoryInfo(final long used_mem, final long max_mem)
+    public MemoryInfo(final long used_mem, final long max_mem, final long non_heap)
     {
         this.used_mem = used_mem;
         this.max_mem = max_mem;
+        this.non_heap = non_heap;
     }
 
 	/** @return Used memory (kB) */
@@ -64,11 +69,17 @@ public class MemoryInfo
 		return used_mem * 100.0 / max_mem;
 	}
 
+    /** @return Used non-heap memory (kB) */
+    public long getNonHeapUsedMem()
+    {
+        return non_heap;
+    }
+	
 	/** @return Memory usage in percent of max */
     public String getMemoryInfo()
 	{
-		return String.format("%.1f MB / %.1f MB (%.1f %%)",
-				used_mem / MB, max_mem / MB, getMemoryPercentage());
+		return String.format("Heap: %.1f / %.1f MB (%.1f %%), Non-Heap: %.1f MB",
+				used_mem / MB, max_mem / MB, getMemoryPercentage(), non_heap / MB);
 	}
 
     /** {@inheritDoc} */

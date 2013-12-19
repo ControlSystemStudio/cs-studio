@@ -21,6 +21,10 @@ public enum TraceType
     ERROR_BARS(Messages.TraceType_ErrorBars),
     /** Single line, no min/max */ 
     SINGLE_LINE(Messages.TraceType_SingleLine),
+    /** Trace with area for min/max, using direct line */ 
+    AREA_DIRECT(Messages.TraceType_AreaDirect),
+    /** Single line, no min/max, using direct line */ 
+    SINGLE_LINE_DIRECT(Messages.TraceType_SingleLineDirect),
     /** Square Markers */ 
     SQUARES(Messages.TraceType_Squares),
     /** Circle Markers */ 

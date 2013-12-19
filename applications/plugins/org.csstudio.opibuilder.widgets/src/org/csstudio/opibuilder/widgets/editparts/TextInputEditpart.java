@@ -426,7 +426,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 
 	private double parseDouble(final String text, final boolean coerce)
 			throws ParseException {	
-		
+		if(text.contains("\n")&&!text.endsWith("\n"))
+			throw new ParseException(NLS.bind("{0} cannot be parsed to double", text),text.indexOf("\n"));
 		double value = DECIMAL_FORMAT.parse(text.replace('e', 'E')).doubleValue(); //$NON-NLS-1$ //$NON-NLS-2$
 		if (coerce) {
 			double min = getWidgetModel().getMinimum();

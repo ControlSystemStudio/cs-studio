@@ -35,8 +35,7 @@ public class EdmString extends EdmAttribute {
 		
 		if (genericAttribute == null || getValueCount() == 0) {
 			if (isRequired())
-				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-						"Trying to initialize a required attribute from null object.");
+				log.warn("Missing required property.");
 			else {
 				log.warn("Missing optional property.");
 				return;

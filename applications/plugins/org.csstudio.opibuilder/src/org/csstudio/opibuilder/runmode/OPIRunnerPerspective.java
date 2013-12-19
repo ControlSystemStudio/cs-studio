@@ -46,6 +46,8 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
 	
 	private static final String SECOND_ID = ":*"; //$NON-NLS-1$
 	
+	// Note that this used to be called "OPIRunner", just like the editor,
+	// but in Eclipse 4 that re-used of the same ID for an Editor and a perspective caused trouble
 	public final static String ID = "org.csstudio.opibuilder.OPIRuntime.perspective"; //$NON-NLS-1$
 	
 	private static final String ID_CONSOLE_VIEW =

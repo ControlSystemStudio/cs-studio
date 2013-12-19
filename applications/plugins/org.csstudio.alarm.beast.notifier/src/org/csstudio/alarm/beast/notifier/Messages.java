@@ -21,7 +21,10 @@ public class Messages extends NLS {
 	public static String Priority_MINOR;
 	public static String Priority_OK;
 	
-	public static String Status_OK;
+	public static String Status_PENDING;
+	public static String Status_NO_DELAY;
+	public static String Status_EXECUTED;
+	public static String Status_FORCED;
 	public static String Status_CANCELED;
 	public static String Status_FAILED;
 

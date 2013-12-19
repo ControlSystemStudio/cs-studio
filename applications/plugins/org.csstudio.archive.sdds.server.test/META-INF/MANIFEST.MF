@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Test
-Bundle-SymbolicName: org.csstudio.archive.sdds.server.test
-Bundle-Version: 1.0.0.qualifier
-Fragment-Host: org.csstudio.archive.sdds.server;bundle-version="0.9.12"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit;bundle-version="4.8.1",
- org.csstudio.domain.common;bundle-version="1.0.0"

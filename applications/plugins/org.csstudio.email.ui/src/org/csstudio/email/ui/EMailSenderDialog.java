@@ -235,9 +235,25 @@ public class EMailSenderDialog extends TitleAreaDialog
     {
         try
         {
+            final String from = txt_from.getText().trim();
+            final String to = txt_to.getText().trim();
+            
+            // Basic verification
+            if (from.isEmpty())
+            {
+                setErrorMessage(Messages.FromErrorMsg);
+                txt_from.setFocus();
+                return;
+            }
+            if (to.isEmpty())
+            {
+                setErrorMessage(Messages.ToErrorMsg);
+                txt_to.setFocus();
+                return;
+            }
             final EMailSender mailer = new EMailSender(host,
-                    txt_from.getText().trim(),
-                    txt_to.getText().trim(),
+                    from,
+                    to,
                     txt_subject.getText().trim());
             mailer.addText(txt_body.getText().trim());
             for (String image : image_tabfolder.getFilenames())

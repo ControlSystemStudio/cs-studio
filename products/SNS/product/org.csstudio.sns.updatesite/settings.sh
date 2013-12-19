@@ -5,37 +5,45 @@
 # Version to build
 export VERSION=4.0.0I
 
-# Must use Java 7
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_17.jdk/Contents/Home
+if [ `hostname` = 'ics-web4.sns.ornl.gov' ]
+then
+   # Must use Java 7
+   export JAVA_HOME=/usr/local/java/jdk1.7.0_45
 
-# Was required for 3.7.2 target and PDE build:
-#if [ ! -d $JAVA_HOME/Classes ]
-#then
-#   echo "On OS X, to make new Oracle JDK look like old Apple JDK"
-#   echo "that RCP headless build still expects, do this:"
-#   echo "ln -s $JAVA_HOME/jre/lib $JAVA_HOME/Classes"
-#   exit -1
-#fi
+   # Top of repository tree
+   export TOP=/usr/local/hudson/config/jobs/CSS/workspace
+
+   # Workspace that might have 'local' sources beyond repository
+   export WORKSPACE=/home/kasemir/Eclipse/LocalCSS
+
+   # Location of Eclipse and Delta pack, the 'target' platform
+   export ECLIPSE=/home/kasemir/Eclipse/3.7.2/rcp/
+   # Deltapack can list several sites: delta pack;PyDev;...
+   export DELTAPACK="/home/kasemir/Eclipse/3.7.2/delta:/home/kasemir/Eclipse/CSS_Additions/PyDev2.6.0"
+
+   # Output directory. Must NOT include symbolic link (like /tmp on Mac OS X)
+   export BUILDDIR=/tmp/css_build
+
+   export JRE_Win64=/home/kasemir/Eclipse/CSS_Additions/Win64/jre/
+else
+   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home
+   export TOP=/Users/ky9/git/cs-studio_3
+   export WORKSPACE=/Users/ky9/Eclipse/Workspace4.3_3.7_target
+   export ECLIPSE=/Users/ky9/Eclipse/3.7.2/rcp
+   export DELTAPACK="/Users/ky9/Eclipse/3.7.2/delta:/Users/ky9/Eclipse/CSS_Additions/PyDev2.6.0"
+   export BUILDDIR=/Kram/build
+   export JRE_Win64=/Users/ky9/Eclipse/CSS_Additions/Win64/jre
+
+   if [ ! -d $JAVA_HOME/Classes ]
+   then
+      echo "On OS X, to make new Oracle JDK look like old Apple JDK for Eclipse 3.x"
+      echo "that RCP headless build still expects, do this:"
+      echo "sudo ln -s $JAVA_HOME/jre/lib $JAVA_HOME/Classes"
+      exit -1
+   fi
+fi
 
 export PATH=$JAVA_HOME/bin:$PATH
-
-# Top of repository tree
-export TOP=/Users/ky9/git/cs-studio_4
-
-# Workspace that might have 'local' sources beyond repository
-export WORKSPACE=/Kram/Eclipse/Workspace_cs-studio_4.2
-
-# Location of Eclipse and Delta pack, the 'target' platform
-export ECLIPSE_BASE=/Kram/Eclipse/4_2_2
-# Deltapack can list several sites: delta pack;PyDev;...
-export DELTAPACK="/Kram/Eclipse/4_2_2/delta:/Kram/Eclipse/CSS_Additions/PyDev2.6.0"
-export ECLIPSE=$ECLIPSE_BASE/eclipse
-
-export JRE_Macosx64=/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home/jre
-export JRE_Win64=/Kram/Eclipse/CSS_Additions/Win64/jre
-
-# Output directory. Must NOT include symbolic link (like /tmp on Mac OS X)
-export BUILDDIR=/Kram/build
 
 # Use only the date as qualifier?
 # With default, the time is included and then the same plugin for

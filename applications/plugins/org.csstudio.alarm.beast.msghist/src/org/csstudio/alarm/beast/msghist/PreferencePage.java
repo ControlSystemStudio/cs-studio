@@ -49,10 +49,11 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         final Composite parent = getFieldEditorParent();
         addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Pref_URL, parent));
-        addField(new PasswordFieldEditor(Activator.ID, Preferences.RDB_USER, Messages.Pref_User, parent));
+        addField(new StringFieldEditor(Preferences.RDB_USER, Messages.Pref_User, parent));
         addField(new PasswordFieldEditor(Activator.ID, Preferences.RDB_PASSWORD, Messages.Pref_Password, parent));
         addField(new StringFieldEditor(Preferences.RDB_SCHEMA, Messages.Pref_Schema, parent));
         addField(new StringFieldEditor(Preferences.START, Messages.Pref_Starttime, parent));
+        addField(new StringFieldEditor(Preferences.AUTO_REFRESH_PERIOD, Messages.Pref_AutoRefreshPeriod, parent));
         final IntegerFieldEditor max_properties =
         	new IntegerFieldEditor(Preferences.MAX_PROPERTIES, Messages.Pref_MaxProperties, parent);
         max_properties.setValidRange(0, Integer.MAX_VALUE);

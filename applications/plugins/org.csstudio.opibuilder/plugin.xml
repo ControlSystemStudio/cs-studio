@@ -17,6 +17,11 @@
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
+         
+      <!-- Perspective used be have same ID as Editor (..OPIRunner),
+           but in Eclipse 4 that caused problems,
+           so perspective now has this somewhat odd name
+       -->
       <perspective
             class="org.csstudio.opibuilder.runmode.OPIRunnerPerspective"
             icon="icons/OPIBuilder.png"

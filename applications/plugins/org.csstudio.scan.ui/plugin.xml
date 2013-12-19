@@ -36,4 +36,22 @@
             name="%Scan">
       </page>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.csstudio.scan.ui.wizards"
+            name="Scan">
+      </category>
+      <wizard
+            canFinishEarly="false"
+            category="org.csstudio.scan.ui.wizards"
+            class="org.csstudio.scan.ui.wizards.NewScanFileWizard"
+            hasPages="true"
+            icon="icons/scan.gif"
+            id="org.csstudio.scan.ui.wizards.newScanFileWizard"
+            name="Scan File">
+      </wizard>
+   </extension> 
+   
 </plugin>
