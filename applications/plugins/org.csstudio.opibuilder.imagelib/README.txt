@@ -131,3 +131,15 @@ Version  Date       Change Description      Details 1               Details 2
                     FL_EF1501.svg           Filters                 Liquid Filter
                     FL_EF150204.svg         Filters                 Bag Filter-Cartridge Filter for Gases
                     FL_EF150106.svg         Filters                 Activated Carbon Filter
+
+Version  Date       Change Description      Details 1               Details 2
+4.2.3    19/12/2013 New Symbols  
+                    FL_EF0451.svg           Miscellaneous           Turbo-Expander
+                    FL_EF0442.svg           Miscellaneous           Orifice Plate
+                    FL_EF0323.svg           Heat_Exchangers         Exchanger Plate and Shell
+                    FL_EF150108.svg         Filters                 In Line Filter
+
+                    Updated Symbols
+                    FL_EF0413.svg           Fittings                Flow Nozzle
+                    FL_EF0414.svg           Fittings                Venturi
+                    OL_EE0310.svg           Converters              Thyristor Valve
