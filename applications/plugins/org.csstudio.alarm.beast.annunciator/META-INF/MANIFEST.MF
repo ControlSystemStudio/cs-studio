@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.alarm.beast.annunciator;singleton:=true
 Bundle-Version: 3.1.0.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
-Require-Bundle: org.junit4;bundle-version="4.3.1",
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.help;bundle-version="3.4.1",
  org.eclipse.ui;bundle-version="3.5.0",

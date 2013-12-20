@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.diag.epics.pvtree.Plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Display EPICS record link hierarchy
 Bundle-Localization: plugin
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.epics.util;bundle-version="0.1.0",

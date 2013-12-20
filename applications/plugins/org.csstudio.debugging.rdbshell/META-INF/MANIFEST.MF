@@ -4,7 +4,7 @@ Bundle-Name: RDB Shell
 Bundle-SymbolicName: org.csstudio.debugging.rdbshell;singleton:=true
 Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Require-Bundle: org.junit4;bundle-version="4.3.1",
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.ui;bundle-version="3.4.0",
  org.csstudio.platform.utility.rdb;bundle-version="1.0.0"

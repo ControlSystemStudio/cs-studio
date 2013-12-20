@@ -4,7 +4,7 @@ Bundle-Name: JMS Utility Plug-in
 Bundle-SymbolicName: org.csstudio.platform.utility.jms;singleton:=true
 Bundle-Version: 1.1.3.qualifier
 Bundle-Activator: org.csstudio.platform.utility.jms.Activator
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.platform.libs.jms;visibility:=reexport,
  org.eclipse.core.runtime
 Export-Package: org.csstudio.platform.utility.jms,

@@ -7,5 +7,5 @@ Bundle-Vendor: Xihui Chen<chenx1@ornl.gov>
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.csstudio.simplepv;bundle-version="1.0.0",
  org.eclipse.core.runtime,
- org.junit4
+ org.junit;bundle-version="4.8.2"
 Export-Package: org.csstudio.simplepv.test

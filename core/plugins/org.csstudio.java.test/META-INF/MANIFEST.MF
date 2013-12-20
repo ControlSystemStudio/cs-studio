@@ -6,4 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Fragment-Host: org.csstudio.java;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.junit4;bundle-version="4.8.1"
+Require-Bundle: org.junit;bundle-version="4.8.2"

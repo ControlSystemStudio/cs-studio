@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SNS PV Utility Plug-in
 Bundle-SymbolicName: org.csstudio.diag.pvutil;singleton:=true
 Bundle-Version: 3.0.0.qualifier
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.apputil.ui,
