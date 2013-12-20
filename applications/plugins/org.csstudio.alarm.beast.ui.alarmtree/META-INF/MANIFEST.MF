@@ -6,7 +6,7 @@ Bundle-Version: 3.0.1.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Description: BEAST Alarm Tree
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.jface;resolution:=optional,
  org.eclipse.rap.jface;resolution:=optional,
  org.eclipse.core.runtime,
