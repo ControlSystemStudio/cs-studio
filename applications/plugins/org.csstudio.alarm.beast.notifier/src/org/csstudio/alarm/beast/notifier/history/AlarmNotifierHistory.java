@@ -9,11 +9,9 @@ package org.csstudio.alarm.beast.notifier.history;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.notifier.ActionID;
-import org.csstudio.alarm.beast.notifier.Activator;
 import org.csstudio.alarm.beast.notifier.AlarmHandler;
 import org.csstudio.alarm.beast.notifier.PVSnapshot;
 
@@ -46,18 +44,12 @@ public class AlarmNotifierHistory {
 		// For optimization purpose, we do not store the snapshot if alarm severity is OK
 		if (s.getSeverity().equals(SeverityLevel.OK)) {
 			pvs.remove(s.getPath());
-			Activator.getLogger().log(Level.INFO,
-					s.getPath() + " => REMOVED");
 			return;
 		}
 		if (pvs.get(s.getPath()) != null) {
 			pvs.get(s.getPath()).update(s);
-			Activator.getLogger().log(Level.INFO,
-					s.getPath() + " => UPDATED: " + pvs.get(s.getPath()));
 		} else {
 			pvs.put(s.getPath(), PVHistoryEntry.fromSnapshot(s));
-			Activator.getLogger().log(Level.INFO,
-					s.getPath() + " => ADDED: " + pvs.get(s.getPath()));
 		}
 	}
 
@@ -76,7 +68,6 @@ public class AlarmNotifierHistory {
 
 	public void clear(PVSnapshot s) {
 		pvs.remove(s.getPath());
-		Activator.getLogger().log(Level.INFO, s.getPath() + " => REMOVED");
 	}
 
 	public void clearAll() {

@@ -26,6 +26,7 @@ public class PVAlarmHandler {
 
 	private List<PVSnapshot> snapshots;
 	private EActionStatus status = EActionStatus.PENDING;
+	private String reason = Messages.Empty;
 	private boolean acknowledged = false;
 
 	public PVAlarmHandler() {
@@ -41,7 +42,7 @@ public class PVAlarmHandler {
 		if (!acknowledged && snapshot.isAcknowledge())
 			this.acknowledged = true;
 		snapshots.add(snapshot);
-		validate2();
+		validate();
 	}
 
 	public PVSnapshot getCurrent() {
@@ -50,64 +51,7 @@ public class PVAlarmHandler {
 		return snapshots.get(snapshots.size() - 1);
 	}
 
-	@SuppressWarnings("unused")
 	private void validate() {
-		PVSnapshot current_snapshot = getCurrent();
-		PVHistoryEntry pv_history = AlarmNotifierHistory.getInstance().getPV(
-				current_snapshot.getPath());
-
-		if (pv_history == null) {
-			if (current_snapshot.getSeverity().equals(SeverityLevel.OK)) {
-				// Configuration update results in an alarm update with no changes => CANCEL
-				this.status = EActionStatus.CANCELED;
-				return;
-			}
-			// If no history entry exists, it is the first alarm update => WAIT
-			this.status = EActionStatus.PENDING;
-		} else {
-			if (current_snapshot.getSeverity().equals(pv_history.getSeverity())
-					&& current_snapshot.getCurrentSeverity().equals(pv_history.getCurrentSeverity())) {
-				// Configuration update results in an alarm update with no changes => CANCEL
-				this.status = EActionStatus.CANCELED;
-				return;
-			}
-			// If an history entry exists, PV was already under alarm
-			if (pv_history.isAcknowledged()) {
-				if (pv_history.getSeverity().name().startsWith(current_snapshot.getSeverity().name())
-						&& !current_snapshot.getSeverity().name().endsWith("ACK")) {
-					if (snapshots.size() == 1) {
-						// Un-acknowledged alarm state change after the delay of previous ACK => NO DELAY
-						this.status = EActionStatus.NO_DELAY;
-					} else {
-						// Un-acknowledged alarm state change within the delay of previous ACK => WAIT
-						this.status = EActionStatus.PENDING;
-					}
-					return;
-				}
-				// Acknowledged alarm state change with lower/higher or OK priority => CANCEL
-				this.status = EActionStatus.CANCELED;
-			} else {
-				if (snapshots.size() == 1) {
-					// Alarm acknowledged after delay of last action => NO DELAY
-					// Un-acknowledged alarm state change => NO DELAY
-					this.status = EActionStatus.NO_DELAY;
-				} else {
-					// Here, alarm has been raised and still not acknowledged within the delay
-					if (!current_snapshot.isUnderAlarm()
-							|| current_snapshot.isAcknowledge()) {
-						// Alarm raised & recovered within the delay => CANCEL
-						// Alarm raised & acknowledged within the delay => CANCEL
-						this.status = EActionStatus.CANCELED;
-						return;
-					}
-					// Default: we wait for the delay
-					this.status = EActionStatus.PENDING;
-				}
-			}
-		}
-	}
-
-	private void validate2() {
 		PVSnapshot current_snapshot = getCurrent();
 		PVHistoryEntry pv_history = AlarmNotifierHistory.getInstance().getPV(
 				current_snapshot.getPath());
@@ -117,15 +61,18 @@ public class PVAlarmHandler {
 				if (current_snapshot.getSeverity().equals(SeverityLevel.OK)) {
 					// Configuration update results in an alarm update with no changes => CANCEL
 					this.status = EActionStatus.CANCELED;
+					this.reason = Messages.Reason_NoAlarmRaised;
 					return;
 				}
 				// If no history entry exists, it is the first alarm update => WAIT
 				this.status = EActionStatus.PENDING;
+				this.reason = Messages.Empty;
 			} else {
 				if (current_snapshot.getSeverity().equals(pv_history.getSeverity())
 						&& current_snapshot.getCurrentSeverity().equals(pv_history.getCurrentSeverity())) {
 					// Configuration update results in an alarm update with no changes => CANCEL
 					this.status = EActionStatus.CANCELED;
+					this.reason = Messages.Reason_NoAlarmRaised;
 					return;
 				}
 				// If an history entry exists, PV was already under alarm
@@ -133,19 +80,23 @@ public class PVAlarmHandler {
 					if (unACK(pv_history.getSeverity(), current_snapshot.getSeverity())) {
 						// Un-acknowledged alarm state change after the delay of previous ACK => NO DELAY
 						this.status = EActionStatus.NO_DELAY;
+						this.reason = Messages.Reason_NoDelay;
 					} else {
 						// Acknowledged alarm state change with lower/higher or OK priority => CANCEL
 						this.status = EActionStatus.CANCELED;
+						this.reason = Messages.Reason_Acknowledged;
 					}
 				} else {
 					if (pv_history.hasRecovredWithinDelay()
 							&& current_snapshot.isAcknowledge()) {
 						// Acknowledge after alarm state change and recover within delay => CANCEL
 						this.status = EActionStatus.CANCELED;
+						this.reason = Messages.Reason_Recovered;
 					} else {
 						// Alarm acknowledged after delay of last action => NO DELAY
 						// Un-acknowledged alarm state change => NO DELAY
 						this.status = EActionStatus.NO_DELAY;
+						this.reason = Messages.Reason_NoDelay;
 					}
 				}
 			}
@@ -153,10 +104,12 @@ public class PVAlarmHandler {
 			if (!current_snapshot.isUnderAlarm()) {
 				// Alarm raised & recovered within the delay => CANCEL
 				this.status = EActionStatus.CANCELED;
+				this.reason = Messages.Reason_Recovered;
 			} else {
 				if (acknowledged) {
 					// Alarm raised & acknowledged within the delay => CANCEL
 					this.status = EActionStatus.CANCELED;
+					this.reason = Messages.Reason_Acknowledged;
 				} else {
 					PVSnapshot previous_snapshot = snapshots.get(snapshots.size() - 2);
 					if (pv_history != null
@@ -164,9 +117,11 @@ public class PVAlarmHandler {
 							&& !unACK(previous_snapshot.getSeverity(), current_snapshot.getSeverity())) {
 						// Acknowledged alarm state change with lower/higher or OK priority => CANCEL
 						this.status = EActionStatus.CANCELED;
+						this.reason = Messages.Reason_Acknowledged;
 					} else {
 						// Default: we wait for the delay
 						this.status = EActionStatus.PENDING;
+						this.reason = Messages.Empty;
 					}
 				}
 			}
@@ -189,6 +144,10 @@ public class PVAlarmHandler {
 
 	public EActionStatus getStatus() {
 		return status;
+	}
+
+	public String getReason() {
+		return reason;
 	}
 
 }

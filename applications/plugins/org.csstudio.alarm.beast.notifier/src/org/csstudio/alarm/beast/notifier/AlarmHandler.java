@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
@@ -38,6 +37,7 @@ public class AlarmHandler {
 	private final int delay;
 
 	private EActionStatus status = EActionStatus.PENDING;
+	private String reason = Messages.Empty;
 	private EActionPriority priority = EActionPriority.OK;
 
 	protected final IAutomatedAction scheduledAction;
@@ -52,7 +52,6 @@ public class AlarmHandler {
 		if (item.isImportant()) {
 			this.priority = EActionPriority.IMPORTANT;
 		}
-		Activator.getLogger().log(Level.FINE, "Triggered by {0}", item.getPath());
 	}
 
 	/**
@@ -85,6 +84,7 @@ public class AlarmHandler {
 			for (PVAlarmHandler ah : pvs.values()) {
 				if (ah.getStatus().equals(EActionStatus.NO_DELAY)) {
 					this.status = EActionStatus.NO_DELAY;
+					this.reason = Messages.Reason_NoDelay;
 				}
 			}
 			if (!this.status.equals(EActionStatus.NO_DELAY)) {
@@ -92,16 +92,20 @@ public class AlarmHandler {
 				for (PVAlarmHandler ah : pvs.values())
 					if (ah.getStatus().equals(EActionStatus.PENDING))
 						allCanceled = false;
-				if (allCanceled) this.status = EActionStatus.CANCELED;
-				else this.status = EActionStatus.PENDING;
+				if (allCanceled) {
+					this.status = EActionStatus.CANCELED;
+					if (item.isPV()) this.reason = alarmHandler.getReason();
+					else this.reason = Messages.Reason_SubActionsCanceled;
+				} else {
+					this.status = EActionStatus.PENDING;
+					this.reason = Messages.Empty;
+				}
 			}
 		}
-		Activator.getLogger().log(Level.INFO,
-				getInfos() + " => TASK UPDATED => status: " + this.status + ", priority: " + this.priority);
 	}
 
 	public String getInfos() {
-		return item.getName() + ": " + ID.getAaTitle();
+		return scheduledAction.getClass().getSimpleName() + " " + ID.getAaTitle();
 	}
 
 	public void setStatus(EActionStatus status) {
@@ -134,6 +138,10 @@ public class AlarmHandler {
 
 	public IAutomatedAction getScheduledAction() {
 		return scheduledAction;
+	}
+
+	public String getReason() {
+		return reason;
 	}
 
 	public List<PVSnapshot> getCurrentSnapshots() {
