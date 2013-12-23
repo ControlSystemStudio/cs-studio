@@ -11,4 +11,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0",
  org.csstudio.apputil;bundle-version="1.0.6",
  org.csstudio.platform.libs.jms;bundle-version="1.1.0",
  org.csstudio.platform.utility.jms;bundle-version="1.0.0",
- org.junit4
+ org.junit;bundle-version="4.8.2"
