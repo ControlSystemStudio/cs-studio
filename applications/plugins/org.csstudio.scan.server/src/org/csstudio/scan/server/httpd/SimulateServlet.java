@@ -9,6 +9,8 @@ package org.csstudio.scan.server.httpd;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -71,6 +73,7 @@ public class SimulateServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error simulating scan", ex);
             throw new ServletException("Error simulating scan", ex);
         }
     }

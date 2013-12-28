@@ -54,13 +54,13 @@ for the (network) console. Type "help" in the console to see ScanServer commands
 
 <p>If the ScanServer is run on a host that is different from the CSS client that
 later accesses it, make sure that its ports are accessible via the firewall.
-Defaults are in ScanServer.java.
-Use /etc/sysconfig/iptables to enable port 4810, 4811.
+By default, the scan server REST interface uses port 4810.
+Use /etc/sysconfig/iptables to enable that port for TCP access.
 </p>
 
 <p>To access such a remote ScanServer, run clients with 
 <pre>
-  -DScanServerHost=...
+  -DScanServerHost=... -DScanServerPort=4810
 </pre>
 </p>
 

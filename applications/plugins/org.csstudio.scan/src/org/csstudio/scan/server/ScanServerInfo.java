@@ -28,7 +28,7 @@ public class ScanServerInfo extends MemoryInfo
 {
     final private String version;
     final private Date start_time;
-    final private String beamline_config;
+    final private String scan_config;
     final private String simulation_config;
     final private String[] script_paths;
     final private String macros;
@@ -36,18 +36,18 @@ public class ScanServerInfo extends MemoryInfo
     /** Initialize
      *  @param version
      *  @param start_time
-     *  @param beamline_config
+     *  @param scan_config
      *  @param simulation_config
      */
     public ScanServerInfo(final String version, final Date start_time,
-    		final String beamline_config,
+    		final String scan_config,
     		final String simulation_config,
     		final String[] script_paths,
     		final String macros)
     {
 	    this.version = version;
 	    this.start_time = start_time;
-	    this.beamline_config = beamline_config;
+	    this.scan_config = scan_config;
 	    this.simulation_config = simulation_config;
 	    this.script_paths = script_paths;
 	    this.macros = macros;
@@ -56,7 +56,7 @@ public class ScanServerInfo extends MemoryInfo
     /** Initialize
      *  @param version
      *  @param start_time
-     *  @param beamline_config
+     *  @param scan_config
      *  @param simulation_config
      *  @param script_paths
      *  @param macros
@@ -65,7 +65,7 @@ public class ScanServerInfo extends MemoryInfo
      *  @param non_heap
      */
     public ScanServerInfo(final String version, final Date start_time,
-            final String beamline_config,
+            final String scan_config,
             final String simulation_config,
             final String[] script_paths,
             final String macros,
@@ -74,7 +74,7 @@ public class ScanServerInfo extends MemoryInfo
         super(used_mem, max_mem, non_heap);
         this.version = version;
         this.start_time = start_time;
-        this.beamline_config = beamline_config;
+        this.scan_config = scan_config;
         this.simulation_config = simulation_config;
         this.script_paths = script_paths;
         this.macros = macros;
@@ -92,13 +92,15 @@ public class ScanServerInfo extends MemoryInfo
     	return start_time;
     }
 
-	/** @return Beam line configuration path */
-	public String getBeamlineConfig()
+	/** @return Scan configuration path */
+	public String getScanConfig()
     {
-    	return beamline_config;
+    	return scan_config;
     }
 
-	/** @return Simulation configuration path */
+	/** @return Simulation configuration path (since originally that was a separate file)
+	 *  @see #getScanConfig()
+	 */
 	public String getSimulationConfig()
 	{
 		return simulation_config;
@@ -123,7 +125,7 @@ public class ScanServerInfo extends MemoryInfo
         final StringBuilder buf = new StringBuilder();
         buf.append("Version: ").append(version).append("\n");
         buf.append("Started: ").append(ScanSampleFormatter.format(start_time)).append("\n");
-        buf.append("Beamline Configuration: ").append(beamline_config).append("\n");
+        buf.append("Scan Configuration: ").append(scan_config).append("\n");
         buf.append("Simulation Configuration: ").append(simulation_config).append("\n");
         buf.append("Script paths: ").append(PathUtil.joinPaths(script_paths)).append("\n");
         buf.append("Macros: ").append(macros).append("\n");

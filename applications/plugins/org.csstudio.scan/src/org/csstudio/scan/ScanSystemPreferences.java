@@ -7,8 +7,12 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+
 import static org.csstudio.scan.PathUtil.splitPath;
 
 /** Scan system preferences
@@ -27,21 +31,49 @@ import static org.csstudio.scan.PathUtil.splitPath;
 @SuppressWarnings("nls")
 public class ScanSystemPreferences extends SystemSettings
 {
-    /** @return Path to the default beamline information file */
-	public static String getBeamlineConfigPath()
+    private static volatile boolean warned_about_beamline_config = false;
+    private static volatile boolean warned_about_simulation_config = false;
+    
+    /** @return Path to the scan configuration file */
+	public static String getScanConfigPath()
 	{
     	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getString(Activator.ID, "beamline_config", "platform:/plugin/org.csstudio.scan/examples/beamline.xml", null);
+        // Use legacy beamline_config, if provided, but prefer scan_config
+    	final String config = service.getString(Activator.ID, "beamline_config", "", null);
+    	if (! config.isEmpty())
+    	{
+    	    if (! warned_about_beamline_config)
+    	    {
+        	    Logger.getLogger(ScanSystemPreferences.class.getName())
+                   .log(Level.WARNING, Activator.ID + "/beamline_config is deprecated, use ../scan_config");
+        	    warned_about_beamline_config = true;
+    	    }
+    	    return config;
+    	}
+    	return service.getString(Activator.ID, "scan_config", "", null);
 	}
 
-	/** @return Path to the default simulation information file */
+	/** Simulation info should also be in same file as scan config,
+	 *  but for backwards compatibility the legacy simulation file is still supported
+	 *  @return Path to the simulation information file
+	 *  @see #getScanConfigPath()
+	 */
 	public static String getSimulationConfigPath()
 	{
     	final IPreferencesService service = Platform.getPreferencesService();
-    	final String config = service.getString(Activator.ID, "simulation_config", "platform:/plugin/org.csstudio.scan/examples/simulation.xml", null);
-    	if (config.isEmpty())
-    	    return getBeamlineConfigPath();
-    	return config;
+        // Use legacy simulation_config, if provided, but prefer scan_config
+    	final String config = service.getString(Activator.ID, "simulation_config", "", null);
+    	if (! config.isEmpty())
+    	{
+    	    if (! warned_about_simulation_config)
+    	    {
+        	    Logger.getLogger(ScanSystemPreferences.class.getName())
+        	        .log(Level.WARNING, Activator.ID + "/simulation_config is deprecated, use ../scan_config");
+        	    warned_about_simulation_config = true;
+    	    }
+    	    return config;
+    	}
+	    return getScanConfigPath();
 	}
 
 	/** @return Paths to pre-scan commands
