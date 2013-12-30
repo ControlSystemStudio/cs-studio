@@ -39,6 +39,7 @@ import org.csstudio.swt.widgets.figures.ThumbWheelFigure.WheelListener;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.Display;
 import org.epics.vtype.VType;
 
@@ -178,45 +179,26 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadLimitsListener();
-	}
-	
-	/**
-	 *
-	 */
-	private void registerLoadLimitsListener() {
+	protected void processValueEvent(PVReaderEvent<Object> event) {
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			final ThumbWheelModel model = getWidgetModel();
 			if (model.isLimitsFromPV()) {
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if (pv != null) {
-					if (pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								Display displayInfo = VTypeHelper.getDisplayInfo(value);
-								if (value != null && displayInfo != null) {
-									Display new_meta = displayInfo;
-									if (meta == null || !meta.equals(new_meta)) {
-										meta = new_meta;
-										model.setPropertyValue(ThumbWheelModel.PROP_MAX,
-												meta.getUpperDisplayLimit());
-										model.setPropertyValue(ThumbWheelModel.PROP_MIN,
-												meta.getLowerDisplayLimit());
-									}
-								}
-							}
-
-						
-						};
-					pv.addListener(pvLoadLimitsListener);
+				VType value = (VType) event.getPvReader().getValue();
+				Display displayInfo = VTypeHelper.getDisplayInfo(value);
+				if (value != null && displayInfo != null) {
+					Display new_meta = displayInfo;
+					if (meta == null || !meta.equals(new_meta)) {
+						meta = new_meta;
+						model.setPropertyValue(ThumbWheelModel.PROP_MAX,
+								meta.getUpperDisplayLimit());
+						model.setPropertyValue(ThumbWheelModel.PROP_MIN,
+								meta.getLowerDisplayLimit());
+					}
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -236,17 +218,6 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ThumbWheelModel.PROP_PVVALUE, pvhandler);
-
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				registerLoadLimitsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
-				pvNameHandler);
 		
 		// decimal wheels
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {

@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VType;
 
@@ -189,72 +190,40 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
 		}
 	}
-
+	
 	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadActionsListener();
-	}
+	protected void processValueEvent(PVReaderEvent<Object> event) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE && getWidgetModel().isActionsFromPV()) {
+			VType value = (VType) event.getPvReader().getValue();
+			if (value != null
+					&& value instanceof VEnum) {
+				List<String> new_meta = ((VEnum) value).getLabels();
+				if (meta == null || !meta.equals(new_meta)) {
+					meta = new_meta;
+					ActionsInput actionsInput = new ActionsInput();
+					for (String writeValue : meta) {
+						WritePVAction action = new WritePVAction();
+						action.setPropertyValue(
+								WritePVAction.PROP_PVNAME,
+								getWidgetModel()
+										.getPVName());
+						action.setPropertyValue(
+								WritePVAction.PROP_VALUE,
+								writeValue);
+						action.setPropertyValue(
+								WritePVAction.PROP_DESCRIPTION,
+								writeValue);
+						actionsInput.getActionsList().add(
+								action);
+					}
+					getWidgetModel()
+							.setPropertyValue(
+									AbstractWidgetModel.PROP_ACTIONS,
+									actionsInput);
 
-	/**
-	 *
-	 */
-	private void registerLoadActionsListener() {
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			if (getWidgetModel().isActionsFromPV()) {
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if (pv != null) {
-					if (loadActionsFromPVListener == null)
-						loadActionsFromPVListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null
-										&& value instanceof VEnum) {
-									List<String> new_meta = ((VEnum) value).getLabels();
-									if (meta == null || !meta.equals(new_meta)) {
-										meta = new_meta;
-										ActionsInput actionsInput = new ActionsInput();
-										for (String writeValue : meta) {
-											WritePVAction action = new WritePVAction();
-											action.setPropertyValue(
-													WritePVAction.PROP_PVNAME,
-													getWidgetModel()
-															.getPVName());
-											action.setPropertyValue(
-													WritePVAction.PROP_VALUE,
-													writeValue);
-											action.setPropertyValue(
-													WritePVAction.PROP_DESCRIPTION,
-													writeValue);
-											actionsInput.getActionsList().add(
-													action);
-										}
-										getWidgetModel()
-												.setPropertyValue(
-														AbstractWidgetModel.PROP_ACTIONS,
-														actionsInput);
-
-									}
-								}
-							}
-						
-						};
-					pv.addListener(loadActionsFromPVListener);
 				}
 			}
 		}
-	}
-
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if (getWidgetModel().isActionsFromPV()) {
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if (pv != null && loadActionsFromPVListener != null) {
-				pv.removeListener(loadActionsFromPVListener);
-			}
-		}
-
 	}
 
 	/**
@@ -262,16 +231,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				registerLoadActionsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
-				pvNameHandler);
 
 		// PV_Value
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {

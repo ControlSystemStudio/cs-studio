@@ -1,9 +1,15 @@
 package org.csstudio.opibuilder.editparts;
 
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.vtype.ExpressionLanguage.*;
+import static org.epics.pvmanager.formula.ExpressionLanguage.*;
+import static org.epics.util.time.TimeDuration.ofMillis;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,6 +34,7 @@ import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
@@ -39,6 +46,18 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
+import org.epics.pvmanager.PV;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVReaderConfiguration;
+import org.epics.pvmanager.PVReaderEvent;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriterEvent;
+import org.epics.pvmanager.PVWriterListener;
+import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
+import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
+import org.epics.pvmanager.expression.WriteExpression;
+import org.epics.util.time.TimeDuration;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
 
@@ -46,7 +65,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 //	private interface AlarmSeverity extends ISeverity{
 //		public void copy(ISeverity severity);
 //	}
-	private final class WidgetPVListener extends IPVListener.Stub{
+	private final class WidgetPVListener implements PVReaderListener<Object>, PVWriterListener<Object> {
 		private String pvPropID;
 		private boolean isControlPV;
 
@@ -55,40 +74,49 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 			isControlPV = pvPropID.equals(controlPVPropId);
 		}
 
-		@Override
-		public void connectionChanged(IPV pv) {
-			if(!pv.isConnected())
-				lastWriteAccess = null;
-		}
 
 		@Override
-		public void valueChanged(IPV pv) {
-
-			final AbstractWidgetModel widgetModel = editpart.getWidgetModel();
-
-			//write access
-//			if(isControlPV)
-//				updateWritable(widgetModel, pv);
-			
-			if (pv.getValue() != null) {
-				if (ignoreOldPVValue) {
-					widgetModel.getPVMap()
-							.get(widgetModel.getProperty(pvPropID))
-							.setPropertyValue_IgnoreOldValue(pv.getValue());
-				} else
-					widgetModel.getPVMap()
-							.get(widgetModel.getProperty(pvPropID))
-							.setPropertyValue(pv.getValue());
+		public void pvChanged(PVWriterEvent<Object> event) {
+			if (event.isConnectionChanged()) {
+				if(isControlPV)
+					updateWritable(editpart.getWidgetModel(), pvMap.get(pvPropID));
 			}
-			
 		}
 
 		@Override
-		public void writePermissionChanged(IPV pv) {
-			if(isControlPV)
-				updateWritable(editpart.getWidgetModel(), pvMap.get(pvPropID));
+		public void pvChanged(PVReaderEvent<Object> event) {
+			if (event.isConnectionChanged()) {
+				if (!event.getPvReader().isConnected()) {
+					lastWriteAccess = null;
+				}
+			}
+			if (event.isValueChanged()) {
+				final AbstractWidgetModel widgetModel = editpart.getWidgetModel();
+
+				if (event.getPvReader().getValue() != null) {
+					if (ignoreOldPVValue) {
+						widgetModel.getPVMap()
+								.get(widgetModel.getProperty(pvPropID))
+								.setPropertyValue_IgnoreOldValue(event.getPvReader().getValue());
+					} else
+						widgetModel.getPVMap()
+								.get(widgetModel.getProperty(pvPropID))
+								.setPropertyValue(event.getPvReader().getValue());
+				}
+				
+				processValueEvent(event);
+			}
 		}
 	}
+	
+	protected void processValueEvent(PVReaderEvent<Object> event) {
+		// Does nothing
+		// Can be overridden
+		if (editpart instanceof AbstractPVWidgetEditPart) {
+			((AbstractPVWidgetEditPart) editpart).processValueEvent(event);
+		}
+	}
+	
 	//invisible border for no_alarm state, this can prevent the widget from resizing
 	//when alarm turn back to no_alarm state/
 	private static final AbstractBorder BORDER_NO_ALARM = new AbstractBorder() {
@@ -116,12 +144,10 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 	private boolean isForeColorAlarmSensitive;
 	private AlarmSeverity alarmSeverity = AlarmSeverity.NONE;
 
-	private Map<String, IPVListener> pvListenerMap = new HashMap<String, IPVListener>();
-
-	private Map<String, IPV> pvMap = new HashMap<String, IPV>();
+	private Map<String, PV<Object, Object>> pvMap = new HashMap<>();
 	private PropertyChangeListener[] pvValueListeners;
 	private AbstractBaseEditPart editpart;
-	private volatile AtomicBoolean lastWriteAccess;
+	private Boolean lastWriteAccess;
 	private Cursor savedCursor;
 
 	private Color saveForeColor, saveBackColor;
@@ -165,13 +191,10 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 						continue;
 
 					try {
-						IPV pv = BOYPVFactory.createPV((String) sp.getPropertyValue(), 
-								isAllValuesBuffered);
+						PV pv = createPV((String) sp.getPropertyValue(), 
+								isAllValuesBuffered, sp.getPropertyID());
 						pvMap.put(sp.getPropertyID(), pv);
-						editpart.addToConnectionHandler((String) sp.getPropertyValue(), pv);
-						WidgetPVListener pvListener = new WidgetPVListener(sp.getPropertyID());
-						pv.addListener(pvListener);
-						pvListenerMap.put(sp.getPropertyID(), pvListener);
+						//editpart.addToConnectionHandler((String) sp.getPropertyValue(), pv);
 					} catch (Exception e) {
                         OPIBuilderPlugin.getLogger().log(Level.WARNING,
                                 "Unable to connect to PV:" + (String)sp.getPropertyValue(), e); //$NON-NLS-1$
@@ -179,36 +202,55 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 				}
 			}
 	}
+	
+	private PV<Object, Object> createPV(String name, boolean valueBuffered, String propertyId) {
+		String singleChannel = channelFromFormula(name); // null means formula
+		boolean isFormula = singleChannel == null;
+		if (isFormula) {
+			valueBuffered = false; // the value from a formula cannot be
+									// buffered.
+		} else {
+			name = singleChannel;
+		}
+		
+		DesiredRateExpression<?> readExpression = null;
+		WriteExpression<?> writeExpression = null;
+		if (valueBuffered) {
+			readExpression = newValuesOf(vType(name));
+			// TODO: if it's read-only this may not be created
+			writeExpression = vType(name);
+		} else {
+			DesiredRateReadWriteExpression<?, Object> formulaExpression = formula(name);
+			readExpression = formulaExpression;
+			writeExpression = formulaExpression;
+		}
+		
+		@SuppressWarnings("unchecked")
+		DesiredRateReadWriteExpression<Object, Object> finalExpression =
+				new DesiredRateReadWriteExpressionImpl<Object, Object>(
+						(DesiredRateExpression<Object>) readExpression, (WriteExpression<Object>) writeExpression); 
+		
+		WidgetPVListener pvListener = new WidgetPVListener(propertyId);
+		return PVManager.readAndWrite(finalExpression).notifyOn(SWTUtil.swtThread(editpart.getViewer().getControl().getDisplay()))
+				.readListener(pvListener)
+				.writeListener(pvListener)
+				.asynchWriteAndMaxReadRate(TimeDuration.ofHertz(50));
+	}
 
 	/**Start all PVs.
 	 * This should be called as the last step in editpart.activate().
 	 */
 	public void startPVs() {
-		//the pv should be started at the last minute
-		for(String pvPropId : pvMap.keySet()){
-			IPV pv = pvMap.get(pvPropId);
-			try {
-				pv.start();
-			} catch (Exception e) {
-		        OPIBuilderPlugin.getLogger().log(Level.WARNING,
-		                "Unable to connect to PV:" + pv.getName(), e); //$NON-NLS-1$
-			}
-		}
 	}
 	
 	public void doDeActivate() {
-			for(IPV pv : pvMap.values())
-				pv.stop();
-
-			for(String pvPropID : pvListenerMap.keySet()){
-				pvMap.get(pvPropID).removeListener(pvListenerMap.get(pvPropID));
-			}
+			for(PV pv : pvMap.values())
+				pv.close();
 
 			pvMap.clear();
-			pvListenerMap.clear();		
 	}
 	
-	public IPV getControlPV(){
+	public PV<Object, Object> getControlPV(){
 		if(controlPVPropId != null)
 			return pvMap.get(controlPVPropId);
 		return null;
@@ -220,7 +262,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 	 * @return the PV corresponding to the <code>PV Name</code> property. 
 	 * null if PV Name is not configured for this widget.
 	 */
-	public IPV getPV(){
+	public PV<Object, Object> getPV(){
 		return pvMap.get(IPVWidgetModel.PROP_PVNAME);
 	}
 
@@ -228,7 +270,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 	 * @param pvPropId the PV property id.
 	 * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
 	 */
-	public IPV getPV(String pvPropId){
+	public PV<Object, Object> getPV(String pvPropId){
 		return pvMap.get(pvPropId);
 	}
 
@@ -237,9 +279,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 	 * @return the {@link IValue} of the PV.
 	 */
 	public VType getPVValue(String pvPropId){
-		final IPV pv = pvMap.get(pvPropId);
+		final PV<Object, Object> pv = pvMap.get(pvPropId);
 		if(pv != null){
-			return pv.getValue();
+			return (VType) pv.getValue();
 		}
 		return null;
 	}
@@ -384,11 +426,10 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 			}
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				IPV oldPV = pvMap.get(pvNamePropID);
+				PV oldPV = pvMap.get(pvNamePropID);
 				editpart.removeFromConnectionHandler((String)oldValue);
 				if(oldPV != null){
-					oldPV.stop();
-					oldPV.removeListener(pvListenerMap.get(pvNamePropID));
+					oldPV.close();
 				}
 				pvMap.remove(pvNamePropID);
 				String newPVName = ((String)newValue).trim();	
@@ -396,14 +437,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 					return false;
 				try {
 					lastWriteAccess = null;
-					IPV newPV = BOYPVFactory.createPV(newPVName, isAllValuesBuffered);					
-					WidgetPVListener pvListener = new WidgetPVListener(pvNamePropID);
-					newPV.addListener(pvListener);					
-					pvMap.put(pvNamePropID, newPV);
-					editpart.addToConnectionHandler(newPVName, newPV);
-					pvListenerMap.put(pvNamePropID, pvListener);
-
-					newPV.start();
+					PV newPV = createPV(newPVName, isAllValuesBuffered, pvNamePropID);					
+//					editpart.addToConnectionHandler(newPVName, newPV);
 				}
 				catch (Exception e) {
 				    OPIBuilderPlugin.getLogger().log(Level.WARNING, "Unable to connect to PV:" + //$NON-NLS-1$
@@ -538,7 +573,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 	 */
 	public void setPVValue(String pvPropId, Object value){
 		fireSetPVValue(pvPropId, value);
-		final IPV pv = pvMap.get(pvPropId);
+		final PV pv = pvMap.get(pvPropId);
 		if(pv != null){
 			try {
 				if(pvPropId.equals(controlPVPropId) && controlPVValuePropId != null && getUpdateSuppressTime() >0){ //activate suppress timer
@@ -552,7 +587,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 					}
 
 				}
-				pv.setValue(value);
+				pv.write(value);
 			} catch (final Exception e) {
 				UIBundlingThread.getInstance().addRunnable(new Runnable(){
 					public void run() {
@@ -615,12 +650,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 		this.isAllValuesBuffered = isAllValuesBuffered;
 	}
 
-	private void updateWritable(final AbstractWidgetModel widgetModel, IPV pv) {
-		if(lastWriteAccess == null || lastWriteAccess.get() != pv.isWriteAllowed()){
+	private void updateWritable(final AbstractWidgetModel widgetModel, PV pv) {
+		if(lastWriteAccess == null || lastWriteAccess != pv.isWriteConnected()){
 			if(lastWriteAccess == null)
-				lastWriteAccess= new AtomicBoolean();
-			lastWriteAccess.set(pv.isWriteAllowed());
-			if(lastWriteAccess.get()){
+				lastWriteAccess= false;
+			lastWriteAccess = pv.isWriteConnected();
+			if(lastWriteAccess){
 				UIBundlingThread.getInstance().addRunnable(
 						editpart.getViewer().getControl().getDisplay(),new Runnable(){
 					public void run() {

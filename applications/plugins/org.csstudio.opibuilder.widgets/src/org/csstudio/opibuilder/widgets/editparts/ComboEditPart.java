@@ -28,6 +28,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VType;
 
@@ -93,49 +94,17 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 	public ComboModel getWidgetModel() {
 		return (ComboModel)getModel();
 	}
-
+	
 	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadItemsListener();
-	}
-
-	/**
-	 *
-	 */
-	private void registerLoadItemsListener() {
-		//load items from PV
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			if(getWidgetModel().isItemsFromPV()){
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){
-					if(loadItemsFromPVListener == null)
-						loadItemsFromPVListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null && value instanceof VEnum){
-									List<String> items = ((VEnum)value).getLabels();									
-										getWidgetModel().setPropertyValue(
-												ComboModel.PROP_ITEMS, items);
-									}								
-							}							
-						};
-					pv.addListener(loadItemsFromPVListener);
-				}
-			}
+	protected void processValueEvent(PVReaderEvent<Object> event) {
+		if(getExecutionMode() == ExecutionMode.RUN_MODE && getWidgetModel().isItemsFromPV()) {
+			VType value = (VType) event.getPvReader().getValue();
+			if (value != null && value instanceof VEnum){
+				List<String> items = ((VEnum)value).getLabels();									
+					getWidgetModel().setPropertyValue(
+							ComboModel.PROP_ITEMS, items);
+				}								
 		}
-	}
-
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if(getWidgetModel().isItemsFromPV()){
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && loadItemsFromPVListener !=null){
-				pv.removeListener(loadItemsFromPVListener);
-			}
-		}
-//		((ComboFigure)getFigure()).dispose();
 	}
 
 	/**
@@ -143,14 +112,6 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				registerLoadItemsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 
 
 		autoSizeWidget((ComboFigure) getFigure());

@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.widgets.Display;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VType;
@@ -111,19 +112,18 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 	}
 	
 	@Override
-	public void doActivate() {
-		super.doActivate();
-		registerLoadItemsListener();
-	}
-
-	@Override
-	public void deactivate() {
-		super.deactivate();
-		((CommonMultiSymbolFigure) getFigure()).disposeAll();
-		if (getWidgetModel().isItemsFromPV()) {
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if (pv != null && loadItemsFromPVListener != null) {
-				pv.removeListener(loadItemsFromPVListener);
+	protected void processValueEvent(PVReaderEvent<Object> event) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			if (getWidgetModel().isItemsFromPV()) {
+				VType value = (VType) event.getPvReader().getValue();
+				if (value != null && value instanceof VEnum) {
+					List<String> new_meta = ((VEnum)value).getLabels();
+					if (meta == null || !meta.equals(new_meta)) {
+						meta = new_meta;										
+						getWidgetModel()
+								.setPropertyValue(CommonMultiSymbolModel.PROP_ITEMS, meta);
+					}
+				}
 			}
 		}
 	}
@@ -132,42 +132,8 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 	// PV properties handlers
 	// -----------------------------------------------------------------
 	
-	private void registerLoadItemsListener() {
-		// load items from PV
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			if (getWidgetModel().isItemsFromPV()) {
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if (pv != null) {
-					if (loadItemsFromPVListener == null)
-						loadItemsFromPVListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null && value instanceof VEnum) {
-									List<String> new_meta = ((VEnum)value).getLabels();
-									if (meta == null || !meta.equals(new_meta)) {
-										meta = new_meta;										
-										getWidgetModel()
-												.setPropertyValue(CommonMultiSymbolModel.PROP_ITEMS, meta);
-									}
-								}
-							}
-						};
-					pv.addListener(loadItemsFromPVListener);
-				}
-			}
-		}
-	}
 
 	private void registerCommonPVChangeHandlers() {
-		// PV_Name
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				registerLoadItemsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 		
 		// PV_Value
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {

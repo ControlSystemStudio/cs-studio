@@ -12,6 +12,8 @@ import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.simplepv.IPV;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
+import org.epics.pvmanager.PV;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.VType;
 
 /**The abstract edit part for all PV armed widgets.
@@ -25,6 +27,11 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	
 	public AbstractPVWidgetEditPart() {
 		delegate = new PVWidgetEditpartDelegate(this);
+	}
+	
+	protected void processValueEvent(PVReaderEvent<Object> event) {
+		// Does nothing
+		// Can be overridden
 	}
 	
 	@Override
@@ -91,7 +98,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	/**
 	 * @return the control PV. null if no control PV on this widget.
 	 */
-	public IPV getControlPV(){
+	public PV<Object, Object> getControlPV(){
 		return delegate.getControlPV();
 	}
 
@@ -100,7 +107,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	 * @return the PV corresponding to the <code>PV Name</code> property. 
 	 * null if PV Name is not configured for this widget.
 	 */
-	public IPV getPV(){
+	public PV<Object, Object> getPV(){
 		return delegate.getPV();
 	}
 
@@ -108,7 +115,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	 * @param pvPropId the PV property id.
 	 * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
 	 */
-	public IPV getPV(String pvPropId){
+	public PV<Object, Object> getPV(String pvPropId){
 		return delegate.getPV(pvPropId);
 	}
 	

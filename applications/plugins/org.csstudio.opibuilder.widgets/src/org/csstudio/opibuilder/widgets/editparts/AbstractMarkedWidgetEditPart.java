@@ -19,6 +19,7 @@ import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.AbstractMarkedWidgetFigure;
 import org.eclipse.draw2d.IFigure;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.Display;
 import org.epics.vtype.VType;
 
@@ -69,61 +70,45 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	}
 
 	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadLimitsListener();
-	}
-
-	/**
-	 *
-	 */
-	private void registerLoadLimitsListener() {
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
+	protected void processValueEvent(PVReaderEvent<Object> event) {
+		super.processValueEvent(event);
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			final AbstractMarkedWidgetModel model = (AbstractMarkedWidgetModel)getModel();
-			if(model.isLimitsFromPV()){
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){
-					if(pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null && VTypeHelper.getDisplayInfo(value) != null){
-									Display new_meta = VTypeHelper.getDisplayInfo(value);
-									if(meta == null || !meta.equals(new_meta)){
-										meta = new_meta;
-										if(!Double.isNaN(meta.getUpperDisplayLimit()))
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getUpperDisplayLimit());
-										if(!Double.isNaN(meta.getLowerDisplayLimit()))
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getLowerDisplayLimit());
-										if(Double.isNaN(meta.getUpperWarningLimit()))
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
-										else{
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, true);
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,	meta.getUpperWarningLimit());
-										}
-										if(Double.isNaN(meta.getUpperAlarmLimit()))
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, false);
-										else{
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, true);
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getUpperAlarmLimit());
-										}
-										if(Double.isNaN(meta.getLowerWarningLimit()))
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, false);
-										else{
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, true);
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL,	meta.getLowerWarningLimit());
-										}
-										if(Double.isNaN(meta.getLowerAlarmLimit()))
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, false);
-										else{
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, true);
-											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL,	meta.getLowerAlarmLimit());
-										}
-									}
-								}
-							}
-						};
-					pv.addListener(pvLoadLimitsListener);
+			if (model.isLimitsFromPV()) {
+				VType value = (VType) event.getPvReader().getValue();
+				if (value != null && VTypeHelper.getDisplayInfo(value) != null){
+					Display new_meta = VTypeHelper.getDisplayInfo(value);
+					if(meta == null || !meta.equals(new_meta)){
+						meta = new_meta;
+						if(!Double.isNaN(meta.getUpperDisplayLimit()))
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getUpperDisplayLimit());
+						if(!Double.isNaN(meta.getLowerDisplayLimit()))
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getLowerDisplayLimit());
+						if(Double.isNaN(meta.getUpperWarningLimit()))
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
+						else{
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, true);
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,	meta.getUpperWarningLimit());
+						}
+						if(Double.isNaN(meta.getUpperAlarmLimit()))
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, false);
+						else{
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, true);
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getUpperAlarmLimit());
+						}
+						if(Double.isNaN(meta.getLowerWarningLimit()))
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, false);
+						else{
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, true);
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL,	meta.getLowerWarningLimit());
+						}
+						if(Double.isNaN(meta.getLowerAlarmLimit()))
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, false);
+						else{
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, true);
+							model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL,	meta.getLowerAlarmLimit());
+						}
+					}
 				}
 			}
 		}
@@ -133,17 +118,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	public AbstractMarkedWidgetModel getWidgetModel() {
 		return (AbstractMarkedWidgetModel) getModel();
 	}
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if(getWidgetModel().isLimitsFromPV()){
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && pvLoadLimitsListener !=null){
-				pv.removeListener(pvLoadLimitsListener);
-			}
-		}
 
-	}
 	/**
 	 * Registers property change handlers for the properties defined in
 	 * {@link AbstractScaledWidgetModel}. This method is provided for the convenience
@@ -152,15 +127,6 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	 */
 	protected void registerCommonPropertyChangeHandlers() {
 		super.registerCommonPropertyChangeHandlers();
-
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				registerLoadLimitsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 
 		//showMarkers
 		IWidgetPropertyChangeHandler showMarkersHandler = new IWidgetPropertyChangeHandler() {

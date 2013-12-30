@@ -18,6 +18,7 @@ import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.ScrollbarFigure;
 import org.eclipse.draw2d.IFigure;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.Display;
 import org.epics.vtype.VType;
 
@@ -39,43 +40,23 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 	}
 
 	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadLimitsListener();
-	}
-
-	/**
-	 *
-	 */
-	private void registerLoadLimitsListener() {
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
+	protected void processValueEvent(PVReaderEvent<Object> event) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			final ScrollBarModel model = getWidgetModel();
-			if(model.isLimitsFromPV()){
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){
-					if(pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								Display displayInfo = VTypeHelper.getDisplayInfo(value);
-								if (value != null && displayInfo!=null){
-									Display new_meta = displayInfo;
-									if(meta == null || !meta.equals(new_meta)){
-										meta = new_meta;
-										model.setPropertyValue(ScrollBarModel.PROP_MAX,	meta.getUpperDisplayLimit());
-										model.setPropertyValue(ScrollBarModel.PROP_MIN,	meta.getLowerDisplayLimit());
-									}
-								}
-							}
-						};
-					pv.addListener(pvLoadLimitsListener);
+			if (model.isLimitsFromPV()) {
+				VType value = (VType) event.getPvReader().getValue();
+				Display displayInfo = VTypeHelper.getDisplayInfo(value);
+				if (value != null && displayInfo!=null){
+					Display new_meta = displayInfo;
+					if(meta == null || !meta.equals(new_meta)){
+						meta = new_meta;
+						model.setPropertyValue(ScrollBarModel.PROP_MAX,	meta.getUpperDisplayLimit());
+						model.setPropertyValue(ScrollBarModel.PROP_MIN,	meta.getLowerDisplayLimit());
+					}
 				}
 			}
 		}
 	}
-
-
-
 
 
 	@Override
@@ -107,14 +88,6 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				registerLoadLimitsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 
 
 		((ScrollbarFigure)getFigure()).setEnabled(getWidgetModel().isEnabled() &&
@@ -235,18 +208,6 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ScrollBarModel.PROP_HORIZONTAL, horizontalHandler);
-
-	}
-
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if(getWidgetModel().isLimitsFromPV()){
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && pvLoadLimitsListener != null){
-				pv.removeListener(pvLoadLimitsListener);
-			}
-		}
 
 	}
 

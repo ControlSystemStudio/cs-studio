@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.editparts;
 
 import org.csstudio.simplepv.IPV;
 import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.epics.pvmanager.PV;
 
 /**
  * The connection handler for PV widget. It will set the enable state of the widget 
@@ -29,7 +30,7 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
 	@Override
 	protected void markWidgetAsDisconnected(IPV pv) {
 		super.markWidgetAsDisconnected(pv);
-		final IPV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
+		final PV<Object, Object> controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
 		if(controlPV != null && controlPV == pv){
 		UIBundlingThread.getInstance().addRunnable(
 				editPart.getRoot().getViewer().getControl().getDisplay(), 

@@ -25,6 +25,7 @@ import org.csstudio.swt.widgets.figures.AbstractChoiceFigure;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure.IChoiceButtonListener;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VType;
 
@@ -79,46 +80,16 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 	public AbstractChoiceModel getWidgetModel() {
 		return (AbstractChoiceModel)getModel();
 	}
-
+	
 	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadItemsListener();
-	}
-
-	/**
-	 *
-	 */
-	private void registerLoadItemsListener() {
-		//load items from PV
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			if(getWidgetModel().isItemsFromPV()){
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){
-					if(loadItemsFromPVListener == null)
-						loadItemsFromPVListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null && value instanceof VEnum){
-									List<String> new_meta = ((VEnum)value).getLabels();
-									getWidgetModel().setPropertyValue(
-												AbstractChoiceModel.PROP_ITEMS, new_meta);									
-								}
-							}
-						};
-					pv.addListener(loadItemsFromPVListener);
-				}
-			}
-		}
-	}
-
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if(getWidgetModel().isItemsFromPV()){
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && loadItemsFromPVListener != null){
-				pv.removeListener(loadItemsFromPVListener);
+	protected void processValueEvent(PVReaderEvent<Object> event) {
+		super.processValueEvent(event);
+		if (getExecutionMode() == ExecutionMode.RUN_MODE && getWidgetModel().isItemsFromPV()) {
+			VType value = (VType) event.getPvReader().getValue();
+			if (value != null && value instanceof VEnum){
+				List<String> new_meta = ((VEnum)value).getLabels();
+				getWidgetModel().setPropertyValue(
+							AbstractChoiceModel.PROP_ITEMS, new_meta);									
 			}
 		}
 	}
@@ -128,14 +99,6 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				registerLoadItemsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 		
 		// PV_Value
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {

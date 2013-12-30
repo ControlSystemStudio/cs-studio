@@ -35,6 +35,7 @@ import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
+import org.epics.pvmanager.PV;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.VType;
 
@@ -541,10 +542,12 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			break;
 		case XPV_VALUE:
 			if(newValue == null || !(newValue instanceof VType))
-				break;			
+				break;
 			if(dataProvider.isConcatenate_data()){
-				IPV pv = getPV(xPVPropID);
-				for(VType o:pv.getAllBufferedValues()){
+				PV<Object, Object> pv = getPV(xPVPropID);
+				@SuppressWarnings("unchecked")
+				List<VType> values = (List<VType>) pv.getValue();
+				for(VType o: values){
 					setXValue(dataProvider, o);
 				}
 			}else
@@ -554,8 +557,10 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			if(newValue == null || !(newValue instanceof VType))
 				break;
 			if(dataProvider.isConcatenate_data()){
-				IPV pv = getPV(yPVPropID);
-				for(VType o:pv.getAllBufferedValues()){
+				PV<Object, Object> pv = getPV(yPVPropID);
+				@SuppressWarnings("unchecked")
+				List<VType> values = (List<VType>) pv.getValue();
+				for(VType o:values){
 					setYValue(trace, dataProvider, o);
 				}
 			}else

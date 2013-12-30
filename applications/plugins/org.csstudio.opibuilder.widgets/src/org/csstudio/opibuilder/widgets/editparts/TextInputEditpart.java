@@ -37,6 +37,7 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.Array;
 import org.epics.vtype.Scalar;
 import org.epics.vtype.VEnum;
@@ -118,42 +119,25 @@ public class TextInputEditpart extends TextUpdateEditPart {
 				AbstractPVWidgetModel.PROP_PVVALUE);
 		super.activate();
 	}
-
+	
 	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadLimitsListener();
-	}
-
-	/**
-	 *
-	 */
-	private void registerLoadLimitsListener() {
+	protected void processValueEvent(PVReaderEvent<Object> event) {
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			final TextInputModel model = getWidgetModel();
 			if (model.isLimitsFromPV()) {
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if (pv != null) {
-					if (pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null
-										&& VTypeHelper.getDisplayInfo(value)!=null) {
-									org.epics.vtype.Display new_meta =VTypeHelper.getDisplayInfo(value);
-									if (meta == null || !meta.equals(new_meta)) {
-										meta = new_meta;
-										model.setPropertyValue(
-												TextInputModel.PROP_MAX,
-												meta.getUpperDisplayLimit());
-										model.setPropertyValue(
-												TextInputModel.PROP_MIN,
-												meta.getLowerDisplayLimit());
-									}
-								}
-							}							
-						};
-					pv.addListener(pvLoadLimitsListener);
+				VType value = (VType) event.getPvReader().getValue();
+				if (value != null
+						&& VTypeHelper.getDisplayInfo(value)!=null) {
+					org.epics.vtype.Display new_meta =VTypeHelper.getDisplayInfo(value);
+					if (meta == null || !meta.equals(new_meta)) {
+						meta = new_meta;
+						model.setPropertyValue(
+								TextInputModel.PROP_MAX,
+								meta.getUpperDisplayLimit());
+						model.setPropertyValue(
+								TextInputModel.PROP_MIN,
+								meta.getLowerDisplayLimit());
+					}
 				}
 			}
 		}
@@ -215,17 +199,6 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			};
 			setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
 		}
-
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				registerLoadLimitsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
-				pvNameHandler);
 	
 		PropertyChangeListener updatePropSheetListener = new PropertyChangeListener() {
 

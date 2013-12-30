@@ -57,6 +57,8 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.MouseEvent;
+import org.epics.pvmanager.PV;
+import org.epics.pvmanager.PVReaderEvent;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
@@ -108,7 +110,25 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	};
 
 	public ArrayEditPart() {
-		delegate = new PVWidgetEditpartDelegate(this);
+		delegate = new PVWidgetEditpartDelegate(this) {
+			@Override
+			protected void processValueEvent(PVReaderEvent<Object> event) {
+				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+					final ArrayModel model = ArrayEditPart.this.getWidgetModel();
+					VType value = (VType) event.getPvReader().getValue();
+					if (value != null) {
+						
+								model.setArrayLength(VTypeHelper.getSize(value));
+								BasicDataType dataType = VTypeHelper.getBasicDataType(value);
+								model.setPropertyValue(ArrayModel.PROP_DATA_TYPE, 
+										mapBasicDataTypeToArrayType(dataType));
+						
+						
+					}
+
+				}
+			}
+		};
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -139,7 +159,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 					}
 				}
 			}
-			registerLoadPVDataTypeListener();
 		}
 		
 	}
@@ -205,32 +224,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 			break;		
 		default:
 			break;
-		}
-	}
-
-	private void registerLoadPVDataTypeListener() {
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			final ArrayModel model = getWidgetModel();
-			IPV pv = getPV();
-			if (pv != null) {
-				if (pvDataTypeListener == null)
-					pvDataTypeListener = new IPVListener.Stub() {
-						public void valueChanged(IPV pv) {
-							VType value = pv.getValue();
-							if (value != null) {
-								
-										model.setArrayLength(VTypeHelper.getSize(value));
-										BasicDataType dataType = VTypeHelper.getBasicDataType(value);
-										model.setPropertyValue(ArrayModel.PROP_DATA_TYPE, 
-												mapBasicDataTypeToArrayType(dataType));
-								
-								
-							}
-						}
-					};
-				pv.addListener(pvDataTypeListener);
-			}
-
 		}
 	}
 
@@ -480,7 +473,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	/**
 	 * @return the control PV. null if no control PV on this widget.
 	 */
-	public IPV getControlPV() {
+	public PV<Object, Object> getControlPV() {
 		return delegate.getControlPV();
 	}
 
@@ -533,7 +526,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	 * @return the PV corresponding to the <code>PV Name</code> property. null
 	 *         if PV Name is not configured for this widget.
 	 */
-	public IPV getPV() {
+	public PV<Object, Object> getPV() {
 		return delegate.getPV();
 	}
 
@@ -545,7 +538,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	 * @return the corresponding pv for the pvPropId. null if the pv doesn't
 	 *         exist.
 	 */
-	public IPV getPV(String pvPropId) {
+	public PV<Object, Object> getPV(String pvPropId) {
 		return delegate.getPV(pvPropId);
 	}
 
@@ -657,16 +650,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 						updatePropSheet();
 					}
 				});
-		
-		handler = new IWidgetPropertyChangeHandler() {
-			
-			@Override
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				registerLoadPVDataTypeListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(ArrayModel.PROP_PVNAME, handler);
 
 		getWidgetModel().getProperty(ArrayModel.PROP_DATA_TYPE).addPropertyChangeListener(
 				new PropertyChangeListener() {
