@@ -8,3 +8,4 @@ Fragment-Host: org.csstudio.data;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: Unit tests for Control System Data Structures
 Require-Bundle: org.junit;bundle-version="4.8.2"
+
