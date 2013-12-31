@@ -205,9 +205,9 @@ public final class GUIRefreshThread implements Runnable {
 	 *            the ignorable UI task.
 	 */
 	public synchronized void addIgnorableTask(final WidgetIgnorableUITask task) {
-		tasksQueue.remove(task);
-		tasksQueue.add(task);
-
+//		tasksQueue.remove(task);
+//		tasksQueue.add(task);
+		task.getRunnableTask().run();
 	}
 
 
