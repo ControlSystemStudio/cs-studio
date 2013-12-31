@@ -387,14 +387,12 @@ public class DataBrowserEditor extends EditorPart
 					activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
 		}
         
-        if(is_rcp || !Preferences.hidePropertiesView()) {
         	open_properties = new OpenViewAction(
         			IPageLayout.ID_PROP_SHEET, 
         			Messages.OpenPropertiesView, 
         			activator.getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
         	mm.add(open_properties);
-        }
-        if(is_rcp || !Preferences.hideSearchView())
+
         	mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
 				activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
@@ -558,7 +556,7 @@ public class DataBrowserEditor extends EditorPart
         	// Write model
         	model.write(stream);
             setDirty(false);
-        }
+        } 
         finally
         {
             monitor.done();
@@ -571,7 +569,7 @@ public class DataBrowserEditor extends EditorPart
      * @param axis
      */
     private void setAxisConfig(AxisConfig conf , Axis axis){
-
+    	
     	 //Don't fire axis change event to avoid SWT Illegal Thread Access
     	 conf.setFireEvent(false);
 
