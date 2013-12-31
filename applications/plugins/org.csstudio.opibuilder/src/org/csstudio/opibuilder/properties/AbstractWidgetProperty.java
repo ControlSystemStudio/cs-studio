@@ -85,10 +85,15 @@ public abstract class AbstractWidgetProperty {
 	 */
 	public abstract Object checkValue(final Object value);
 	
+	private static final FirePropertyThreadStatistics.RateMeasure rateMeasure = new FirePropertyThreadStatistics.RateMeasure("fireProperty");
+	
 	public final void firePropertyChange(final Object oldValue, final Object newValue){
 		// Commenting out this will print out on what thread the notifications are going
 		// They should all be on the SWT thread, which is typically 'main'
 		// FirePropertyThreadStatistics.addFireEvent(prop_id);
+		
+		// This will measure the update rate and print it out
+		// rateMeasure.track();
 		if(pcsDelegate.hasListeners(prop_id))
 			pcsDelegate.firePropertyChange(prop_id, oldValue, newValue);
 	}
