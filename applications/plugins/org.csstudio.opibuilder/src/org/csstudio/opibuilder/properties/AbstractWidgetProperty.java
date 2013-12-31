@@ -12,6 +12,7 @@ import java.beans.PropertyChangeSupport;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.FirePropertyThreadStatistics;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -85,6 +86,9 @@ public abstract class AbstractWidgetProperty {
 	public abstract Object checkValue(final Object value);
 	
 	public final void firePropertyChange(final Object oldValue, final Object newValue){
+		// Commenting out this will print out on what thread the notifications are going
+		// They should all be on the SWT thread, which is typically 'main'
+		// FirePropertyThreadStatistics.addFireEvent(prop_id);
 		if(pcsDelegate.hasListeners(prop_id))
 			pcsDelegate.firePropertyChange(prop_id, oldValue, newValue);
 	}
