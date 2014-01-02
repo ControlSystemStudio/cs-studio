@@ -16,6 +16,7 @@ org.eclipse.platform
 --launcher.defaultAction
 openFile</programArgs>
       <vmArgs>-Xmx1024m
+-XX:MaxPermSize=256m
 -Dosgi.instance.area.default=@user.home/css-workspace</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
