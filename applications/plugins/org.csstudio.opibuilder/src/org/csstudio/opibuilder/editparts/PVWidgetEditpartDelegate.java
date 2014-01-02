@@ -94,14 +94,23 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 				final AbstractWidgetModel widgetModel = editpart.getWidgetModel();
 
 				if (event.getPvReader().getValue() != null) {
+					Object value = event.getPvReader().getValue();
+					if (value instanceof List) {
+						List<?> list = (List<?>) value;
+						if (!list.isEmpty()) {
+							value = list.get(list.size() - 1);
+						} else {
+							value = null;
+						}
+					}
 					if (ignoreOldPVValue) {
 						widgetModel.getPVMap()
 								.get(widgetModel.getProperty(pvPropID))
-								.setPropertyValue_IgnoreOldValue(event.getPvReader().getValue());
+								.setPropertyValue_IgnoreOldValue(value);
 					} else
 						widgetModel.getPVMap()
 								.get(widgetModel.getProperty(pvPropID))
-								.setPropertyValue(event.getPvReader().getValue());
+								.setPropertyValue(value);
 				}
 				
 				processValueEvent(event);
