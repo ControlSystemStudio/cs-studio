@@ -22,7 +22,7 @@ public class OpiStringTest extends TestCase {
 		Document doc = XMLFileHandler.createDomDocument();
 		
 		String name = "stringElement";
-		String val = "abcd���Њ��xyw~@{}2^�";
+		String val = "test";
 		EdmString s = new EdmString(new EdmAttribute(val), true);
 		
 		Element parent = doc.createElement("root");
