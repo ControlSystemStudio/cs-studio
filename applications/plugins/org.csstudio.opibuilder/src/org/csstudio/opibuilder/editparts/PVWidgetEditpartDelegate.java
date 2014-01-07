@@ -89,6 +89,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 				if (!event.getPvReader().isConnected()) {
 					lastWriteAccess = null;
 				}
+				if(isControlPV)
+					updateWritable(editpart.getWidgetModel(), pvMap.get(pvPropID));
 			}
 			if (event.isValueChanged()) {
 				final AbstractWidgetModel widgetModel = editpart.getWidgetModel();
