@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
@@ -245,7 +246,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 		return PVManager.readAndWrite(finalExpression).notifyOn(SWTUtil.swtThread(editpart.getViewer().getControl().getDisplay()))
 				.readListener(pvListener)
 				.writeListener(pvListener)
-				.asynchWriteAndMaxReadRate(TimeDuration.ofHertz(50));
+				.asynchWriteAndMaxReadRate(TimeDuration.ofMillis(PreferencesHelper.getGUIRefreshCycle()));
 	}
 
 	/**Start all PVs.
