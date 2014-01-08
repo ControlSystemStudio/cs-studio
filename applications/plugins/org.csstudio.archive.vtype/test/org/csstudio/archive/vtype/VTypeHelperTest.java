@@ -7,19 +7,20 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.csstudio.utility.test.HamcrestMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.csstudio.utility.test.HamcrestMatchers.*;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.epics.util.text.NumberFormats;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Display;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
-import org.epics.util.text.NumberFormats;
-import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of {@link VType}
