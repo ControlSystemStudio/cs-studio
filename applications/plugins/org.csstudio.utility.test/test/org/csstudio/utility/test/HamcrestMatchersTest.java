@@ -7,9 +7,14 @@
  ******************************************************************************/
 package org.csstudio.utility.test;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.csstudio.utility.test.HamcrestMatchers.*;
+import static org.csstudio.utility.test.HamcrestMatchers.closeTo;
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
+import static org.csstudio.utility.test.HamcrestMatchers.notANumber;
+import static org.csstudio.utility.test.HamcrestMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 

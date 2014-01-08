@@ -17,6 +17,15 @@ import org.hamcrest.Matcher;
 @SuppressWarnings("nls")
 public class HamcrestMatchers
 {
+	/** @param segment Segment to find within {@link String}
+	 *  @return {@link Matcher}
+	 */
+	public static Matcher<String> containsString(final String segment)
+	{	// With Eclipse 4.x, org.hamcrest.core offers containsString().
+		// Before, that was not the case, so HamcrestMatchers implemented it.
+		return org.hamcrest.CoreMatchers.containsString(segment);
+	}
+
 	/** @param goal Desired value
 	 *  @param tolerance Allowed tolerance
      *  @return {@link Matcher}
