@@ -12,8 +12,12 @@
 <h2>Version 3.2.13 - 2013-12-26</h2>
 <ul>
   <li>Scan server only requires devices actually used in scan, not all listed in beamline.xml.</li>
+  <li>Scan server V3 uses "scan_config.xml", which combines "beamline.xml" and "simulation.xml".
+      Backwards compatible with older server and client, but new format is preferred because
+      it contains only the scan information, and can be generated from for example
+      a beamline.xml that also contains details on IOCs etc.
+  </li>
 </ul>
-
 
 <h2>Version 3.2.13 - 2013-11-04</h2>
 <ul>

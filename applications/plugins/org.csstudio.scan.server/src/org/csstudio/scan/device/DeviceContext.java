@@ -41,9 +41,9 @@ public class DeviceContext
     /** @return {@link DeviceInfo}s for aliased devices, initialized from preferences */
     public static DeviceInfo[] getDeviceAliases() throws Exception
     {
-        final String path = ScanSystemPreferences.getBeamlineConfigPath();
+        final String path = ScanSystemPreferences.getScanConfigPath();
         final InputStream config_stream = PathStreamTool.openStream(path);
-        return BeamlineDeviceInfoReader.read(config_stream);
+        return new ScanConfig(config_stream).getDevices();
     }
     
     /** @return Default {@link DeviceContext}, initialized from preferences */

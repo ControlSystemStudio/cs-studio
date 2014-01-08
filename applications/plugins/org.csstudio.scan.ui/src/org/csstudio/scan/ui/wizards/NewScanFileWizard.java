@@ -71,7 +71,8 @@ public class NewScanFileWizard extends Wizard implements INewWizard {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	@Override
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.workbench = workbench;
 		this.selection = selection;
 	}
