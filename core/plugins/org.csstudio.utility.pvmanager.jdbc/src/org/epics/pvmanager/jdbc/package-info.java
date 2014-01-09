@@ -4,6 +4,6 @@
  */
 
 /**
- * Support for database services based on JDBC.
+ * Support for database services based on JDBC (<a href="doc-files/jdbc-xml-syntax.html">jdbc xml syntax</a>).
  */
 package org.epics.pvmanager.jdbc;
