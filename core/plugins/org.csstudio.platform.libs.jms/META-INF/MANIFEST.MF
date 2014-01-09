@@ -6,7 +6,7 @@ Bundle-Version: 5.4.2.qualifier
 Bundle-Activator: org.csstudio.platform.libs.jms.JmsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.junit4
+ org.junit;bundle-version="4.8.2"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  libs/activemq-all-5.4.2.jar,

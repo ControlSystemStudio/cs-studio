@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
-import org.csstudio.scan.server.SimulationInfo;
 import org.epics.util.time.TimeDuration;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
@@ -27,14 +26,14 @@ public class SimulatedDevice extends Device
 	public SimulatedDevice(final String name)
     {
 		super(new DeviceInfo(name, name));
-		slew_rate = SimulationInfo.DEFAULT_SLEW_RATE;
+		slew_rate = ScanConfig.DEFAULT_SLEW_RATE;
     }
 
 	/** Initialize
 	 *  @param name Name of the simulated device
 	 *  @param simulation_info Simulation info
 	 */
-	public SimulatedDevice(final String name, final SimulationInfo simulation_info)
+	public SimulatedDevice(final String name, final ScanConfig simulation_info)
     {
 		super(new DeviceInfo(name, name));
 		slew_rate = simulation_info.getSlewRate(name);

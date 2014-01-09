@@ -4,7 +4,7 @@ Bundle-Name: SNS Elog
 Bundle-SymbolicName: org.csstudio.logbook.sns;singleton:=true
 Bundle-Version: 3.2.1.qualifier
 Bundle-Activator: org.csstudio.logbook.sns.Activator
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.csstudio.logbook;bundle-version="3.1.0";visibility:=reexport,
  org.csstudio.platform.utility.rdb;bundle-version="1.6.0",

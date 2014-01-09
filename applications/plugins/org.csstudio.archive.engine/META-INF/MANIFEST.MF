@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.archive.engine.Activator
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Archive Sample Engine, writes data to RDB
 Require-Bundle: org.eclipse.core.runtime,
- org.junit4,
+ org.junit;bundle-version="4.8.2",
  javax.servlet,
  org.csstudio.logging;bundle-version="0.0.1",
  org.csstudio.security;bundle-version="1.0.0",

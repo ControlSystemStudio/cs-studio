@@ -188,7 +188,15 @@ public class ScanClient
             
             final String version = DOMHelper.getSubelementString(root_node, "version");
             final Date start_time = new Date(DOMHelper.getSubelementLong(root_node, "start_time", 0));
-            final String beamline_config = DOMHelper.getSubelementString(root_node, "beamline_config");
+            String scan_config;
+            try
+            {
+                scan_config = DOMHelper.getSubelementString(root_node, "scan_config");
+            }
+            catch (Exception ex)
+            {   // Support deprecated server that still uses beamline_config
+                scan_config = DOMHelper.getSubelementString(root_node, "beamline_config");
+            }
             final String simulation_config = DOMHelper.getSubelementString(root_node, "simulation_config", "");
             final long used_mem = DOMHelper.getSubelementLong(root_node, "used_mem", 0);
             final long max_mem = DOMHelper.getSubelementLong(root_node, "max_mem", 0);
@@ -196,7 +204,7 @@ public class ScanClient
             final String[] paths = PathUtil.splitPath(DOMHelper.getSubelementString(root_node, "script_paths", ""));
             final String macros = DOMHelper.getSubelementString(root_node, "macros", "");
             return new ScanServerInfo(version, start_time,
-                    beamline_config, simulation_config, paths, macros, used_mem, max_mem, non_heap);
+                    scan_config, simulation_config, paths, macros, used_mem, max_mem, non_heap);
         }
         finally
         {

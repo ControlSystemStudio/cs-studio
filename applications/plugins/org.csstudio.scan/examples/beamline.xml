@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <!-- "Beamline" Configuration
 
-  Control-system related tools that use this:
+  THIS FORMAT HAS BEEN DEPRECATED
+  
+  This format was originally used to configure the scan system,
+  plus other control-system related tools:
   
   * Soft IOC control
     Allows automated start/stop of the required IOCs
@@ -11,14 +14,10 @@
     Defines human-readable alias names for raw PV names.
     Allows GUIs to suggest device/PV names.
     
-  * Future Aggregator
+  * Aggregator
     Determines which PVs to monitor and merge into
-    the experiment data stream (nexus file).
+    the experiment data stream (Nexus file).
     
-  * More:
-    For example automatically generate summary of
-    "beam line devices are ready for experiment".
-
   Eventually, this type of information could 
   be stored in a relational database,
   with convenient web interfaces, iPhone apps,
@@ -34,6 +33,11 @@
   Still, for robustness' sake, there should probably always be
   a local XML "snapshot" instead of relying on an RDB connection
   to a server outside of the beamline subnet for basic IOC operation.
+  
+  
+  The scan system now prefers the scan_config.xml (schema scan_config.xsd).
+  The beamline.xml format is still read, but with warnings.
+  See beamline2scan_config.xsl for converting existing beamline.xml files.
   -->
 <beamline>
 

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.autocomplete.pvmanager.sim;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.autocomplete.pvmanager.sim.Activator
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager.sim,
  org.csstudio.autocomplete

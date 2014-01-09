@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.logging.jms2rdb;singleton:=true
 Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Tool that writes JMS messages (log, alarm, ...) to an RDB
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.csstudio.logging;bundle-version="0.0.1",
  org.csstudio.utility.httpd,

@@ -6,7 +6,7 @@ Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Description: BEAST User Interface library
 Bundle-Localization: plugin
-Require-Bundle: org.junit4;bundle-version="4.3.1",
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.5.0";resolution:=optional,
  org.eclipse.ui;resolution:=optional,

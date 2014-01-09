@@ -75,7 +75,7 @@ public class Application implements IApplication
             
             LogConfigurator.configureFromPreferences();
             
-	        log.info("Beamline config   : " + ScanSystemPreferences.getBeamlineConfigPath());
+	        log.info("Scan config       : " + ScanSystemPreferences.getScanConfigPath());
 	        log.info("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
 	        log.info("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
 	        log.info("Pre-scan commands : " + Arrays.toString(ScanSystemPreferences.getPreScanPaths()));
