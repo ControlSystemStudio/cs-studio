@@ -191,19 +191,25 @@ public class RunModeService {
 	            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 	            final IWorkbenchPage page = window.getActivePage();
 				try {
-					
-					
-					
 					IViewReference[] viewReferences = page.getViewReferences();
 					//If it is already opened.
 					for(IViewReference viewReference : viewReferences){
 						if(viewReference.getId().equals(OPIView.ID)){
-							if(runnerInput.equals(
-									((IOPIRuntime)viewReference.getView(true)).getOPIInput())){
-								page.showView(
-										OPIView.ID, viewReference.getSecondaryId(), IWorkbenchPage.VIEW_ACTIVATE);
-								return;								
-							}
+						    final IViewPart view = viewReference.getView(true);
+						    if (view instanceof IOPIRuntime)
+						    {
+						        final IOPIRuntime opi_view = (IOPIRuntime)view;
+    							if (runnerInput.equals(opi_view.getOPIInput()))
+    							{
+    								page.showView(OPIView.ID, viewReference.getSecondaryId(), IWorkbenchPage.VIEW_ACTIVATE);
+    								return;								
+    							}
+						    }
+						    else
+						    {
+					            OPIBuilderPlugin.getLogger().log(Level.WARNING,
+				                    "Found view " + view.getTitle() + " but its type is " + view.getClass().getName());
+						    }
 						}
 					}
 					
