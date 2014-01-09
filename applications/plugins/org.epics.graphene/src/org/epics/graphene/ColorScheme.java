@@ -6,8 +6,8 @@ package org.epics.graphene;
 
 /**
  *
- * @author carcassi
+ * @author sjdallst
  */
-public interface LabelColorScheme {
-    public int getColor(String label);
+public enum ColorScheme {
+    GRAY_SCALE, JET, HOT, COOL, SPRING, BONE, COPPER, PINK;
 }
