@@ -46,6 +46,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 		delegate.startPVs();
 	}
 	
+	public void pause() {
+		delegate.pause();
+	}
+	
+	public void resume() {
+		delegate.resume();
+	}
+	
 	@Override
 	public void addSetPVValueListener(ISetPVValueListener listener) {
 		delegate.addSetPVValueListener(listener);

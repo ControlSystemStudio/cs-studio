@@ -18,6 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IPartService;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
@@ -56,6 +59,52 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 						new NoResourceEditorInput(input) : input);
 		opiRuntimeDelegate.init(site, input instanceof NoResourceEditorInput ? 
 				((NoResourceEditorInput)input).getOriginEditorInput() : input);
+		((IPartService) getSite().getService(IPartService.class)).addPartListener(new IPartListener2() {
+			
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+				if (partRef.getPart(false) == OPIRunner.this && opiRuntimeDelegate != null) {
+					opiRuntimeDelegate.resume();
+				}
+			}
+			
+			@Override
+			public void partOpened(IWorkbenchPartReference partRef) {
+				// Do nothing
+			}
+			
+			@Override
+			public void partInputChanged(IWorkbenchPartReference partRef) {
+				// Do nothing
+			}
+			
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+				if (partRef.getPart(false) == OPIRunner.this && opiRuntimeDelegate != null) {
+					opiRuntimeDelegate.pause();
+				}
+			}
+			
+			@Override
+			public void partDeactivated(IWorkbenchPartReference partRef) {
+				// Do nothing
+			}
+			
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				// Do nothing
+			}
+			
+			@Override
+			public void partBroughtToTop(IWorkbenchPartReference partRef) {
+				// Do nothing
+			}
+			
+			@Override
+			public void partActivated(IWorkbenchPartReference partRef) {
+				// Do nothing
+			}
+		});
 	}
 	
 	public void setOPIInput(IEditorInput input) throws PartInitException {

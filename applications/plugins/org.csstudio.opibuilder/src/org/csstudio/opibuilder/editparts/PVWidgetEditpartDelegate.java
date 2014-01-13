@@ -262,6 +262,18 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 			pvMap.clear();
 	}
 	
+	public void pause() {
+		for (PV pv : pvMap.values()) {
+			pv.setPaused(true);
+		}
+	}
+	
+	public void resume() {
+		for (PV pv : pvMap.values()) {
+			pv.setPaused(false);
+		}
+	}
+	
 	public PV<Object, Object> getControlPV(){
 		if(controlPVPropId != null)
 			return pvMap.get(controlPVPropId);

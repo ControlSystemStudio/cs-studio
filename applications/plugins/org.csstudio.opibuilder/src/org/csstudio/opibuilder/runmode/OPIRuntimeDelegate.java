@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.RefreshOPIAction;
+import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -32,6 +33,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
@@ -176,6 +178,36 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		hideCloseButton(site);
 		
 		
+	}
+	
+	public void pause() {
+		pause(viewer.getContents());
+	}
+	
+	private void pause(EditPart part) {
+		if (part instanceof AbstractPVWidgetEditPart) {
+			((AbstractPVWidgetEditPart) part).pause();
+		}
+		for (Object child : part.getChildren()) {
+			if (child instanceof EditPart) {
+				pause((EditPart) child);
+			}
+		}
+	}
+	
+	public void resume() {
+		resume(viewer.getContents());
+	}
+	
+	private void resume(EditPart part) {
+		if (part instanceof AbstractPVWidgetEditPart) {
+			((AbstractPVWidgetEditPart) part).resume();
+		}
+		for (Object child : part.getChildren()) {
+			if (child instanceof EditPart) {
+				resume((EditPart) child);
+			}
+		}
 	}
 	
 	public void createGUI(Composite parent) {
