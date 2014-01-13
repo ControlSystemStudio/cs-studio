@@ -270,6 +270,10 @@ public class ContentHelperPopup extends PopupDialog {
 	public int open() {
 		if (!canOpen)
 			return 0;
+		if (control.isDisposed()) {
+			isOpened = false;
+			return Window.CANCEL;
+		}
 		String fieldContent = adapter.getControlContentAdapter()
 				.getControlContents(control);
 		content = dataHandler.generateTooltipContent(fieldContent);
