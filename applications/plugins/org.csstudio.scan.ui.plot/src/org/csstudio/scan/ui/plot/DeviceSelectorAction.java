@@ -48,7 +48,8 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
             @Override
             public void handleSelection(final String item)
             {
-                this.model.selectXDevice(item);
+				this.model.selectXDevice(item);
+				this.plot.setXDevice(item);
                 this.plot.setDataProviders(this.model.getPlotDataProviders());
             }
         };
