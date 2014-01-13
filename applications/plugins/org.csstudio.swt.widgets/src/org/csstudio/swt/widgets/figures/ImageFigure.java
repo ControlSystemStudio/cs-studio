@@ -40,6 +40,7 @@ import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IImageLoadedListener;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ImageUtils;
 import org.csstudio.swt.widgets.util.PermutationMatrix;
@@ -155,7 +156,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	private boolean startAnimationRequested = false;
 	
 	private volatile boolean loadingImage;
-	
+	private IImageLoadedListener imageLoadedListener;
+
 	private PermutationMatrix oldPermutationMatrix = null;
 	private PermutationMatrix permutationMatrix = PermutationMatrix
 			.generateIdentityMatrix();
@@ -265,6 +267,14 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	public boolean isLoadingImage() {
 		return loadingImage;
+	}
+
+	public void setImageLoadedListener(IImageLoadedListener listener) {
+		this.imageLoadedListener = listener;
+	}
+
+	private synchronized void fireImageLoadedListeners() {
+		imageLoadedListener.imageLoaded(this);
 	}
 	
 	private synchronized void loadImage(IPath path,
@@ -874,6 +884,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 				imgHeight = originalStaticImageData.height;
 			}
 			failedToLoadDocument = false;
+			resizeImage();
+			fireImageLoadedListeners();
 		} catch (Exception e) {
 			Activator.getLogger().log(Level.WARNING,
 					"Error loading SVG file " + filePath, e);
