@@ -27,6 +27,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.swt.widgets.figures.ImageFigure;
+import org.csstudio.swt.widgets.util.IImageLoadedListener;
 import org.csstudio.swt.widgets.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
@@ -62,6 +63,17 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 		ImageModel model = getWidgetModel();
 		// create AND initialize the view properly
 		final ImageFigure figure = new ImageFigure();		
+
+		// Resize when new image is loaded
+		figure.setImageLoadedListener(new IImageLoadedListener() {
+
+			@Override
+			public void imageLoaded(IFigure figure) {
+				ImageFigure imageFigure = (ImageFigure) figure;
+				autoSizeWidget(imageFigure);
+			}
+		});
+
 		figure.setFilePath(model.getFilename());		
 		figure.setStretch(model.getStretch());
 		figure.setAutoSize(model.isAutoSize());

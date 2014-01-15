@@ -1,5 +1,5 @@
 #/
-## Generated date: Fri Nov  8 15:35:27 UTC 2013
+## Generated date: Thu Dec 19 15:54:38 UTC 2013
 #/
 
 #/
@@ -546,12 +546,14 @@ org.csstudio.alarm.beast.annunciator/jms_url=failover:(tcp://localhost:61616)?ra
 #/ 
 # org.csstudio.alarm.beast.msghist/max_properties=100000
 #/ 
-# org.csstudio.alarm.beast.msghist/start=-1 day
+# org.csstudio.alarm.beast.msghist/start=-1 hour
 #/ 
-# org.csstudio.alarm.beast.msghist/auto_refresh_period=30
+#/ Auto refresh period to retrieve the message history @see Message History view
+#/ default value = 0 / unit = seconds
+# org.csstudio.alarm.beast.msghist/auto_refresh_period=0
 
-#<< org.csstudio.alarm.beast.msghist/auto_refresh_period=30
-org.csstudio.alarm.beast.msghist/auto_refresh_period=10
+#<< org.csstudio.alarm.beast.msghist/auto_refresh_period=0
+org.csstudio.alarm.beast.msghist/auto_refresh_period=30
 #<< org.csstudio.alarm.beast.msghist/max_properties=100000
 #<< org.csstudio.alarm.beast.msghist/prop_cols=SEQ,40,5|TIME,180,10|DELTA,60,1|TYPE,45,5|TEXT,50,400|NAME,50,100|STATUS,45,80|SEVERITY,50,80|CURRENT_SEVERITY,50,80|VALUE,35,50|CREATETIME,80,50|USER,45,10|HOST,50,40|APPLICATION-ID,40, 10|CLASS,50,10|FILENAME,50,10
 #<< org.csstudio.alarm.beast.msghist/rdb_password=$log
@@ -562,7 +564,7 @@ org.csstudio.alarm.beast.msghist/rdb_url=jdbc:postgresql://localhost/css_log_3_0
 #<< org.csstudio.alarm.beast.msghist/rdb_user=log
 org.csstudio.alarm.beast.msghist/rdb_user=log_ro
 #<< org.csstudio.alarm.beast.msghist/severity_colors=INVALID,50,50,50|FATAL,255,0,10|ERROR,255,0,0|MAJOR,255,0,0|MINOR,255,255,0|WARN,255,255,0|INFO,130,130,255|NO_ALARM,0,255,0
-#<< org.csstudio.alarm.beast.msghist/start=-1 day
+#<< org.csstudio.alarm.beast.msghist/start=-1 hour
 
 #/
 ## org.csstudio.alarm.beast.notifier 
@@ -571,12 +573,10 @@ org.csstudio.alarm.beast.msghist/rdb_user=log_ro
 #/ 
 #/ Threshold for ignoring flurry of automated actions. When more than this number
 #/ of messages queue up, all low-priority actions are cancelled & others are forced to execute.
+#/ This threshold represents a number of actions per minute per action type
+#/ (= per implementation of org.csstudio.alarm.beast.notifier.model.IAutomatedAction)
 # org.csstudio.alarm.beast.notifier/timer_threshold=100
-#/ 
-#/ Threshold for handling running thread overflow (currently exeting actions)
-# org.csstudio.alarm.beast.notifier/thread_threshold=100
 
-#<< org.csstudio.alarm.beast.notifier/thread_threshold=100
 #<< org.csstudio.alarm.beast.notifier/timer_threshold=100
 
 #/
@@ -1010,9 +1010,10 @@ org.csstudio.opibuilder/probe_opi=/opt/codac/opi/boy/resources/probe.opi
 ## org.csstudio.opibuilder.widgets.symbol 
 #/
 #/ Regular expression applied as filter for BOY Symbol Image browsing
-# org.csstudio.opibuilder.widgets.symbol/org.csstudio.boy.symbol.filter.regex=
+# org.csstudio.opibuilder.widgets.symbol/filter_regex=
 
-#<< org.csstudio.opibuilder.widgets.symbol/org.csstudio.boy.symbol.filter.regex=
+#<< org.csstudio.opibuilder.widgets.symbol/filter_regex=
+org.csstudio.opibuilder.widgets.symbol/filter_regex=\\:([A-Z]+)
 
 #/
 ## org.csstudio.scan 
@@ -1056,6 +1057,7 @@ org.csstudio.opibuilder/probe_opi=/opt/codac/opi/boy/resources/probe.opi
 # org.csstudio.scan/post_scan=platform:/plugin/org.csstudio.scan/examples/post_scan.scn
 #/ 
 #/ Path to simulation specification file.
+#/ If defined as empty, beamline_config will be used.
 # org.csstudio.scan/simulation_config=platform:/plugin/org.csstudio.scan/examples/simulation.xml
 #/ 
 #/ Search paths for scan scripts and 'included' scans.
@@ -1162,6 +1164,10 @@ org.csstudio.opibuilder/probe_opi=/opt/codac/opi/boy/resources/probe.opi
 #/ 
 #/ Kay Kasemir
 #/ 
+#/ Default auto scale value
+#/ Possible values are: true to enable the automatic calculation of the min/max Y-axis, or false to use min/max fixed values.
+# org.csstudio.trends.databrowser2/use_auto_scale=false
+#/ 
 #/ Default time span displayed in plot in seconds
 # org.csstudio.trends.databrowser2/time_span=3600
 #/ 
@@ -1222,6 +1228,10 @@ org.csstudio.opibuilder/probe_opi=/opt/codac/opi/boy/resources/probe.opi
 #/ Hide search view on webdatabrowser perspective
 # org.csstudio.trends.databrowser2/rap.hide_search_view=true
 #/ 
+#/ Hide properties view on webdatabrowser perspective
+#/ the default value is "false". "true" to hide this view
+# org.csstudio.trends.databrowser2/rap.hide_properties_view=false
+#/ 
 #/ SendEmailAction default sender
 # org.csstudio.trends.databrowser2/email_default_sender=DataBrowser@css
 
@@ -1236,6 +1246,7 @@ org.csstudio.trends.databrowser2/email_default_sender=CSS Data Browser <css-data
 #<< org.csstudio.trends.databrowser2/plot_bins=800
 #<< org.csstudio.trends.databrowser2/plt_repository=/opt/codac/opi/databrowser/
 #<< org.csstudio.trends.databrowser2/prompt_for_errors=false
+#<< org.csstudio.trends.databrowser2/rap.hide_properties_view=false
 #<< org.csstudio.trends.databrowser2/rap.hide_search_view=true
 #<< org.csstudio.trends.databrowser2/scan_period=0.0
 #<< org.csstudio.trends.databrowser2/secure_data_browser=false
@@ -1244,10 +1255,10 @@ org.csstudio.trends.databrowser2/email_default_sender=CSS Data Browser <css-data
 #<< org.csstudio.trends.databrowser2/update_period=3.0
 #<< org.csstudio.trends.databrowser2/urls=jdbc:mysql://localhost/archive|RDB*xnds://localhost/archive/cgi/ArchiveDataServer.cgi
 org.csstudio.trends.databrowser2/urls=jdbc:postgresql://localhost/css_archive_3_0_0|Archive RDB
+#<< org.csstudio.trends.databrowser2/use_auto_scale=false
+org.csstudio.trends.databrowser2/use_auto_scale=true
 #<< org.csstudio.trends.databrowser2/use_default_archives=false
 org.csstudio.trends.databrowser2/use_default_archives=true
-#>>
-org.csstudio.trends.databrowser2/use_auto_scale=true
 
 #/
 ## org.csstudio.utility.clock 
@@ -1377,8 +1388,6 @@ org.csstudio.utility.product/view_shortcut=org.csstudio.diag.pvmanager.probe:org
 #/
 
 #>>
-epics_dbd_base_path=/opt/codac/epics/base/dbd
-#>>
 org.eclipse.ui.browser/browser-choice=1
 #>>
 org.eclipse.core.resources/refresh.enabled=true
@@ -1404,7 +1413,5 @@ org.eclipse.ui.intro.universal/INTRO_DATA=product:intro_data.xml
 org.eclipse.help.base/help_home=/org.csstudio.iter.css.product/toc/iter_css.html
 #>>
 org.eclipse.equinox.p2.ui.sdk.scheduler/schedule=on-startup
-#>>
-org.csstudio.opibuilder.boy.symbol/org.csstudio.boy.symbol.filter.regex=\\:([A-Z]+)
 #>>
 org.eclipse.ui.intro/INTRO_THEME=org.eclipse.ui.intro.universal.slate

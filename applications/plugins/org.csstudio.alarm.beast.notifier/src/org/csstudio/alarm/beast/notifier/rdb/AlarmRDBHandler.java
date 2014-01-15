@@ -68,7 +68,7 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
 
 	@Override
 	public void serverTimeout(AlarmClientModel model) {
-		Activator.getLogger().log(Level.SEVERE, "Alarm Server Timeout");
+		Activator.getLogger().log(Level.SEVERE, "Alarm Server timeout");
 	}
 
 	@Override

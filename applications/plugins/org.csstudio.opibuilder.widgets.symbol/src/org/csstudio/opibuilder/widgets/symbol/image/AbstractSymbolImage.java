@@ -48,7 +48,6 @@ public abstract class AbstractSymbolImage extends Figure {
 	private ImageData imageData;
 	private ImageData originalImageData;
 	
-	private Color oldColor;
 	private Color currentColor;
 	
 	private Dimension imgDimension;
@@ -184,9 +183,8 @@ public abstract class AbstractSymbolImage extends Figure {
 	}
 
 	public void setCurrentColor(Color newColor) {
-		if (newColor == null || (oldColor != null && oldColor.equals(newColor)))
+		if (newColor == null || (currentColor != null && currentColor.equals(newColor)))
 			return;
-		this.oldColor = this.currentColor;
 		this.currentColor = newColor;
 		imageData = null;
 	}

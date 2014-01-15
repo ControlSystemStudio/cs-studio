@@ -62,7 +62,10 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure {
 	private volatile boolean loadingImage;
 
 	private ExecutionMode executionMode;
-	
+
+	private Color foregroundColor;
+	private boolean useForegroundColor = false;
+
 	private AbstractSymbolImage createSymbolImage(boolean runMode) {
 		MonitorSymbolImage csi = new MonitorSymbolImage(runMode);
 		if (symbolProperties != null) {
@@ -489,8 +492,10 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure {
 			}
 			return;
 		}
-		getOnImage().setCurrentColor(onColor);
-		getOffImage().setCurrentColor(offColor);
+		Color currentcolor = null;
+		if (useForegroundColor) currentcolor = getForegroundColor();
+		else currentcolor = booleanValue ? onColor : offColor;
+		getCurrentImage().setCurrentColor(currentcolor);
 		getCurrentImage().setBounds(bounds);
 		getCurrentImage().setBorder(getBorder());
 		getCurrentImage().setAbsoluteScale(gfx.getAbsoluteScale());
@@ -528,6 +533,22 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure {
 		} else {
 			this.offColor = offColor;
 		}
+		repaint();
+	}
+
+	public void setUseForegroundColor(boolean useForegroundColor) {
+		this.useForegroundColor = useForegroundColor;
+		repaint();
+	}
+
+	@Override
+	public Color getForegroundColor() {
+		return foregroundColor;
+	}
+
+	@Override
+	public void setForegroundColor(Color foregroundColor) {
+		this.foregroundColor = foregroundColor;
 		repaint();
 	}
 

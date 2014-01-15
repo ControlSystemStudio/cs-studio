@@ -7,10 +7,6 @@ Version  Date       Change Description      Details 1               Details 2
                     FL_EF010106D_CODAC.svg  Valves                  3-Positions 2 way-Valves Ball Construction
                     FL_EF010107D_CODAC.svg  Valves                  3-Positions 2 way-Valves Diaphragm Construction
                     FL_EF010109D_CODAC.svg  Valves                  3-Positions 2 way-Valves Butterfly Construction
-                    FL_EF010110.svg         Valves                  2 way-Valves On-Off Butterfly
-                    FL_EF010110C.svg        Valves                  2 way-Valves On-Off Butterfly
-                    FL_EF010110F.svg        Valves                  2 way-Valves On-Off Butterfly Closed with Flanges
-                    FL_EF010110CF.svg       Valves                  2 way-Valves On-Off Butterfly Flanged
                     FL_EF010120D_CODAC.svg  Valves                  3-Positions 2 way-Valves Angle
                     FL_EF010122D_CODAC.svg  Valves                  3-Positions 2 way-Valves Angle Globe
                     FL_EF0104C_CODAC.svg    Valves                  3 way-Valves On-Off
@@ -36,7 +32,6 @@ Version  Date       Change Description      Details 1               Details 2
                     FL_EF06061.svg          Actuators               Rotary Motor Fail Open
                     FL_EF06062.svg          Actuators               Rotary Motor Fail Close
                     FL_EF06063.svg          Actuators               Rotary Motor Fail in Position
-                    FL_EF0702.svg           Valves_with_Actuators   Self-contained Pressure Reduction Regulator 
                     FL_EF07A_CODAC.svg      Valves_with_Actuators   2 way-Valves On-Off Hand Valve
                     FL_EF07AC_CODAC.svg     Valves_with_Actuators   2 way-Valves On-Off Hand Valve
                     FL_EF07A_CODAC.svg      Valves_with_Actuators   3-Positions 2 way-Valves Hand Valve
@@ -80,7 +75,7 @@ Version  Date       Change Description      Details 1               Details 2
                     FL_EF110204.svg         Pumps                   Turbo molecular drag Vacuum Pump
                     FL_EF110204C_CODAC.svg  Pumps                   Turbo molecular drag Vacuum Pump
                     FL_EF1103C_CODAC.svg    Pumps                   Entrapment Vacuum Pump
-                    FL_EF130501.svg         Vessels                 Basin General - second representation
+                    FL_EF130501.svg         Vessels                 Basin General
                     FL_EF150101.svg         Filters                 Fixed-Bed Filter
                     FL_EF150102.svg         Filters                 Cartridge Filter
                     FL_EF150103.svg         Filters                 Ion Exchange Filter
@@ -92,3 +87,59 @@ Version  Date       Change Description      Details 1               Details 2
                     FL_EF150203.svg         Filters                 Packed Bed Filter For Gases
                     FL_EF150204.svg         Filters                 Bag Filter-Cartridge Filter for Gases
                     FL_EF150205.svg         Filters                 HEPA Filter with Sparkguard
+
+Version  Date       Change Description      Details 1               Details 2
+4.2.2    18/12/2013 New Symbols  
+                    FL_EF1305.svg           Vessels                 Basin General - second representation
+                    FL_EF010110.svg         Valves                  2 way-Valves On-Off Butterfly
+                    FL_EF010110C.svg        Valves                  2 way-Valves On-Off Butterfly
+                    FL_EF010110F.svg        Valves                  2 way-Valves On-Off Butterfly with Flanges
+                    FL_EF010110CF.svg       Valves                  2 way-Valves On-Off Butterfly with Flanges
+                    FL_EF060601.svg         Actuators               Rotary Motor Fail Open-Close
+                    FL_EF060602.svg         Actuators               Rotary Motor Fail Open-Close
+                    FL_EF060603.svg         Actuators               Rotary Motor Fail in Position
+                    FL_EF0702.svg           Valves_with_Actuators   Self-contained Pressure Reduction Regulator
+                    FL_EF0701.svg           Valves_with_Actuators   Single Acting Control
+
+                    Removed Symbols
+                    FL_EF0701.svg           Valves                  Single Acting Control
+
+                    Resized Symbols
+                    FL_EF07A_CODAC.svg      Valves_with_Actuators   2 way-Valves On-Off Hand Valve
+                    FL_EF07AC_CODAC.svg     Valves_with_Actuators   2 way-Valves On-Off Hand Valve
+                    FL_EF07A_CODAC.svg      Valves_with_Actuators   3-Positions 2 way-Valves Hand Valve
+                    FL_EF07AC_CODAC.svg     Valves_with_Actuators   3-Positions 2 way-Valves Hand Valve
+                    FL_EF07AD_CODAC.svg     Valves_with_Actuators   3-Positions 2 way-Valves Hand Valve
+                    FL_EF07B_CODAC.svg      Valves_with_Actuators   2 way-Valves On-Off Pneumatic Valve
+                    FL_EF07BC_CODAC.svg     Valves_with_Actuators   2 way-Valves On-Off Pneumatic Valve
+                    FL_EF07B_CODAC.svg      Valves_with_Actuators   3-Positions 2 way-Valves Pneumatic Valve
+                    FL_EF07BC_CODAC.svg     Valves_with_Actuators   3-Positions 2 way-Valves Pneumatic Valve
+                    FL_EF07BD_CODAC.svg     Valves_with_Actuators   3-Positions 2 way-Valves Pneumatic Valve
+                    FL_EF07C_CODAC.svg      Valves_with_Actuators   2 way-Valves On-Off Control Valve
+                    FL_EF07CC_CODAC.svg     Valves_with_Actuators   2 way-Valves On-Off Control Valve
+                    FL_EF07C_CODAC.svg      Valves_with_Actuators   3-Positions 2 way-Valves Control Valve
+                    FL_EF07CC_CODAC.svg     Valves_with_Actuators   3-Positions 2 way-Valves Control Valve
+                    FL_EF07CD_CODAC.svg     Valves_with_Actuators   3-Positions 2 way-Valves Control Valve
+                    FL_EF07D_CODAC.svg      Valves_with_Actuators   3 way-Valves On-Off Control Valve
+                    FL_EF07DC_CODAC.svg     Valves_with_Actuators   3 way-Valves On-Off Control Valve
+                    FL_EF0103.svg           Valves                  2 way-Valves Checking
+                    FL_EF110107.svg         Pumps                   Screw Vacuum Pump
+                    FL_EF110107.svg         Pumps                   Screw Vacuum Pump
+                    FL_EF110107C_CODAC.svg  Pumps                   Screw Vacuum Pump
+                    FL_EF0303.svg           Heat_Exchangers         Shell and Tube with fixed tube sheets
+                    FL_EF0313.svg           Heat_Exchangers         Double-pipe
+                    FL_EF1501.svg           Filters                 Liquid Filter
+                    FL_EF150204.svg         Filters                 Bag Filter-Cartridge Filter for Gases
+                    FL_EF150106.svg         Filters                 Activated Carbon Filter
+
+Version  Date       Change Description      Details 1               Details 2
+4.2.3    19/12/2013 New Symbols  
+                    FL_EF0451.svg           Miscellaneous           Turbo-Expander
+                    FL_EF0442.svg           Miscellaneous           Orifice Plate
+                    FL_EF0323.svg           Heat_Exchangers         Exchanger Plate and Shell
+                    FL_EF150108.svg         Filters                 In Line Filter
+
+                    Updated Symbols
+                    FL_EF0413.svg           Fittings                Flow Nozzle
+                    FL_EF0414.svg           Fittings                Venturi
+                    OL_EE0310.svg           Converters              Thyristor Valve
