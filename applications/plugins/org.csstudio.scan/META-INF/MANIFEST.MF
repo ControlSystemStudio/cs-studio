@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scan API
 Bundle-SymbolicName: org.csstudio.scan;singleton:=true
-Bundle-Version: 3.2.13.qualifier
+Bundle-Version: 3.2.14.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.scan,
