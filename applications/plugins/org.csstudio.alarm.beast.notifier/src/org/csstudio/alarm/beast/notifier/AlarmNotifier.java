@@ -162,8 +162,8 @@ public class AlarmNotifier {
 	 * set.
 	 */
 	public void handleNewAlarmConfiguration() {
-		Activator.getLogger().config("New Alarm Configuration");
 		workQueue.interruptAll();
+		Activator.getLogger().config("New alarm configuration loaded, pending actions interrupted");
 	}
 
 	/**
@@ -171,11 +171,13 @@ public class AlarmNotifier {
 	 * to <code>true</code>
 	 */
 	public void handleModeUpdate(boolean maintenance_mode) {
-		Activator.getLogger().config("Maintenance Mode: " + maintenance_mode);
 		this.maintenanceMode = maintenance_mode;
 		AlarmNotifierHistory.getInstance().clearAll();
 		if (maintenance_mode)
 			workQueue.interruptAll();
+		Activator.getLogger().config("Maintenance mode "
+						+ (maintenance_mode ? "activated, pending actions interrupted"
+								: "deactivated") + ", history cleaned");
 	}
 
 	/** Dump to stdout */

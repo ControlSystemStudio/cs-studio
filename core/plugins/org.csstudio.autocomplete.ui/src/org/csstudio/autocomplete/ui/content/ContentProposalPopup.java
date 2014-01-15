@@ -847,6 +847,8 @@ public class ContentProposalPopup extends PopupDialog {
 	protected void adjustBounds() {
 		adjustTableBounds();
 		// Now set up a listener to monitor any changes in size.
+		if (AutoCompleteUIPlugin.isRAP())
+			return;
 		getShell().addListener(SWT.Resize, new Listener() {
 			public void handleEvent(Event e) {
 				popupSize = getShell().getSize();
@@ -1118,6 +1120,8 @@ public class ContentProposalPopup extends PopupDialog {
 			if (index >= 0)
 				selectProposal(index);
 		}
+		if (AutoCompleteUIPlugin.isRAP())
+			adjustTableBounds();
 	}
 
 	/*

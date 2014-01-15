@@ -1,5 +1,5 @@
 #/
-## Generated date: Fri Nov  8 15:37:38 UTC 2013
+## Generated date: Thu Dec 19 15:57:35 UTC 2013
 #/
 
 #/
@@ -435,12 +435,10 @@ org.csstudio.alarm.beast/root_component=CODAC_AlarmHandler
 #/ 
 #/ Threshold for ignoring flurry of automated actions. When more than this number
 #/ of messages queue up, all low-priority actions are cancelled & others are forced to execute.
+#/ This threshold represents a number of actions per minute per action type
+#/ (= per implementation of org.csstudio.alarm.beast.notifier.model.IAutomatedAction)
 # org.csstudio.alarm.beast.notifier/timer_threshold=100
-#/ 
-#/ Threshold for handling running thread overflow (currently exeting actions)
-# org.csstudio.alarm.beast.notifier/thread_threshold=100
 
-#<< org.csstudio.alarm.beast.notifier/thread_threshold=100
 #<< org.csstudio.alarm.beast.notifier/timer_threshold=100
 
 #/
@@ -457,7 +455,7 @@ org.csstudio.alarm.beast/root_component=CODAC_AlarmHandler
 # org.csstudio.email/smtp_sender=
 
 #<< org.csstudio.email/smtp_host=
-org.csstudio.email/smtp_host=mail.codac.iter.org
+org.csstudio.email/smtp_host=mail2.codac.iter.org
 #<< org.csstudio.email/smtp_sender=
 org.csstudio.email/smtp_sender=CSS Alarm Notifier <css-alarm-notifier@codac.iter.org>
 

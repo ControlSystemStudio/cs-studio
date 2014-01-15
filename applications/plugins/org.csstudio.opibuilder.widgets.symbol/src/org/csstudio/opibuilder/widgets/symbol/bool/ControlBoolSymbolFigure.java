@@ -65,7 +65,10 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 
 	private ExecutionMode executionMode;
 	private Cursor cursor;
-
+	
+	private Color foregroundColor;
+	private boolean useForegroundColor = false;
+	
 	/* ************************* */
 	/* Specific code for control */
 	/* ************************* */
@@ -527,8 +530,10 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 			}
 			return;
 		}
-		getOnImage().setCurrentColor(onColor);
-		getOffImage().setCurrentColor(offColor);
+		Color currentcolor = null;
+		if (useForegroundColor) currentcolor = getForegroundColor();
+		else currentcolor = booleanValue ? onColor : offColor;
+		getCurrentImage().setCurrentColor(currentcolor);
 		getCurrentImage().setBounds(bounds);
 		getCurrentImage().setBorder(getBorder());
 		getCurrentImage().setAbsoluteScale(gfx.getAbsoluteScale());
@@ -571,6 +576,22 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 		} else {
 			this.offColor = offColor;
 		}
+		repaint();
+	}
+
+	public void setUseForegroundColor(boolean useForegroundColor) {
+		this.useForegroundColor = useForegroundColor;
+		repaint();
+	}
+
+	@Override
+	public Color getForegroundColor() {
+		return foregroundColor;
+	}
+
+	@Override
+	public void setForegroundColor(Color foregroundColor) {
+		this.foregroundColor = foregroundColor;
 		repaint();
 	}
 

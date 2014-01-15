@@ -15,7 +15,13 @@
       <plugin id="org.csstudio.archive.vtype"/>
       <plugin id="org.csstudio.autocomplete"/>
       <plugin id="org.csstudio.autocomplete.ui"/>
+      <plugin id="org.csstudio.autocomplete.ui.rap"/>
+      <plugin id="org.csstudio.autocomplete.archive"/>
+      <plugin id="org.csstudio.autocomplete.pvmanager.formula"/>
+      <plugin id="org.csstudio.autocomplete.pvmanager.loc"/>
+      <plugin id="org.csstudio.autocomplete.pvmanager.sim"/>
       <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.java"/>
@@ -34,6 +40,7 @@
       <plugin id="org.csstudio.swt.xygraph.rap" fragment="true"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.rap" fragment="true"/>
+      <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.pvmanager.epics"/>
       <plugin id="org.csstudio.utility.pvmanager.extra"/>
@@ -101,7 +108,13 @@
       <plugin id="org.csstudio.archive.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.autocomplete" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.autocomplete.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.ui.rap" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.archive" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.formula" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.loc" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.sim" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.data" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.java" autoStart="true" startLevel="0" />
@@ -117,6 +130,7 @@
       <plugin id="org.csstudio.swt.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.swt.xygraph" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.trends.databrowser2" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pv" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.epics" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.extra" autoStart="true" startLevel="0" />

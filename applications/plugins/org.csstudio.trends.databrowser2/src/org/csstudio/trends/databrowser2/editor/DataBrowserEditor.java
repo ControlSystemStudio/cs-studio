@@ -85,6 +85,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  files.
  *  @author Kay Kasemir
  *  @author Xihui Chen (Adjustment to make it work like a view in RAP)
+ *  @author Naceur Benhadj (add property to hide "Property" view)
  */
 public class DataBrowserEditor extends EditorPart
 {
@@ -385,11 +386,13 @@ public class DataBrowserEditor extends EditorPart
 			mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
 					activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
 		}
-        open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
-                Messages.OpenPropertiesView, activator
-                        .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
-        mm.add(open_properties);
-        if(is_rcp || !Preferences.hideSearchView())
+        
+        	open_properties = new OpenViewAction(
+        			IPageLayout.ID_PROP_SHEET, 
+        			Messages.OpenPropertiesView, 
+        			activator.getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
+        	mm.add(open_properties);
+
         	mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
 				activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
@@ -553,7 +556,7 @@ public class DataBrowserEditor extends EditorPart
         	// Write model
         	model.write(stream);
             setDirty(false);
-        }
+        } 
         finally
         {
             monitor.done();
@@ -566,7 +569,7 @@ public class DataBrowserEditor extends EditorPart
      * @param axis
      */
     private void setAxisConfig(AxisConfig conf , Axis axis){
-
+    	
     	 //Don't fire axis change event to avoid SWT Illegal Thread Access
     	 conf.setFireEvent(false);
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF010110.svg Page 1 -->
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2013 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.374331in"
+		height="0.374331in" viewBox="0 0 26.9518 26.9518" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		.st3 {fill:#ffffff}
+		.st4 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+	]]>
+	</style>
+	<defs id="Masters">
+		<symbol id="master8" v:mID="8" class="st2">
+			<title>FL_EF010110</title>
+			<g id="master-shape5-7" v:mID="5" v:groupContext="shape">
+				<title>Feuille.5</title>
+				<path d="M8.98 22.7 a0.472441 0.472441 -180 1 0 -0.944882 3.55271E-015 a0.472441 0.472441 -180 1 0 0.944882 -3.55271E-015
+							 Z M0 26.95 L17.01 26.95 L17.01 18.45 L0 18.45 L0 26.95 Z" class="st3"/>
+				<path d="M8.98 22.7 a0.472441 0.472441 -180 1 0 -0.944882 3.55271E-015 a0.472441 0.472441 -180 1 0 0.944882 -3.55271E-015"
+						class="st4"/>
+				<path d="M17.01 18.45 L0 26.95" class="st4"/>
+				<path d="M0 26.95 L17.01 26.95 L17.01 18.45 L0 18.45 L0 26.95" class="st4"/>
+			</g>
+		</symbol>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="group1-1" transform="translate(0.72,-0.72)" v:mID="1" v:groupContext="group">
+			<title>Feuille.1</title>
+			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(0,-25.4959)">
+				<title>Feuille.2</title>
+				<rect x="0" y="26.9359" width="0.0159449" height="0.0159449" class="st1"/>
+			</g>
+			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(25.4959,0)">
+				<title>Feuille.3</title>
+				<rect x="0" y="26.9359" width="0.0159449" height="0.0159449" class="st1"/>
+			</g>
+		</g>
+		<use id="shape27-6" v:mID="27" xlink:href="#master8" transform="translate(4.97197,-9.22394)">
+			<title>FL_EF010110</title>
+		</use>
+	</g>
+</svg>

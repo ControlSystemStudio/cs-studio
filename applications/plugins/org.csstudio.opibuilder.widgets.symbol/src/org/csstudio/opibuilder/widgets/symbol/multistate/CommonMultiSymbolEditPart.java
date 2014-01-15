@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.symbol.multistate;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
+import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -25,6 +26,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.widgets.Display;
+import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VType;
@@ -89,6 +91,9 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 			if (items != null)
 				figure.setStates(items);
 		}
+
+		if (model.getPVName() == null || model.getPVName().isEmpty())
+			figure.setUseForegroundColor(true);
 	}
 	
 	protected void registerCommonPropertyChangeHandlers() {
@@ -163,6 +168,9 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
+				if (newValue == null || ((String) newValue).isEmpty())
+					((CommonMultiSymbolFigure) figure).setUseForegroundColor(true);
+				else ((CommonMultiSymbolFigure) figure).setUseForegroundColor(false);
 				registerLoadItemsListener();
 				return false;
 			}
@@ -294,6 +302,23 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 			}
 		};
 		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_OFF_COLOR, handler);
+
+		// ForeColor Alarm Sensitive
+		getPVWidgetEditpartDelegate().addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(AlarmSeverity severity,
+					IFigure refreshableFigure) {
+				CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
+				if (!getWidgetModel().isForeColorAlarmSensitve()) {
+					figure.setUseForegroundColor(false);
+				} else {
+					if (severity.equals(AlarmSeverity.NONE))
+						figure.setUseForegroundColor(false);
+					else figure.setUseForegroundColor(true);
+				}
+				return true;
+			}
+		});
 	}
 
 	/**

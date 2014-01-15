@@ -40,6 +40,7 @@ import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IImageLoadedListener;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ImageUtils;
 import org.csstudio.swt.widgets.util.PermutationMatrix;
@@ -155,7 +156,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	private boolean startAnimationRequested = false;
 	
 	private volatile boolean loadingImage;
-	
+	private IImageLoadedListener imageLoadedListener;
+
 	private PermutationMatrix oldPermutationMatrix = null;
 	private PermutationMatrix permutationMatrix = PermutationMatrix
 			.generateIdentityMatrix();
@@ -265,6 +267,14 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	public boolean isLoadingImage() {
 		return loadingImage;
+	}
+
+	public void setImageLoadedListener(IImageLoadedListener listener) {
+		this.imageLoadedListener = listener;
+	}
+
+	private synchronized void fireImageLoadedListeners() {
+		imageLoadedListener.imageLoaded(this);
 	}
 	
 	private synchronized void loadImage(IPath path,
@@ -452,9 +462,9 @@ public final class ImageFigure extends Figure implements Introspectable {
 			double newScale = gfx.getAbsoluteScale();
 			if (newScale != scale) {
 				this.scale = newScale;
-				resizeSVG();
+				resizeImage();
 			}
-			if (staticImageData == null) {
+			if (staticImage == null) {
 				// Load document if do not exist
 				Document document = getDocument();
 				if (document == null)
@@ -480,14 +490,13 @@ public final class ImageFigure extends Figure implements Introspectable {
 				if (awtImage != null)
 					staticImageData = SVGUtils.toSWT(Display.getCurrent(),
 							awtImage);
+				if (staticImageData != null)
+					staticImage = new Image(Display.getDefault(),
+							staticImageData);
 			}
-			if (staticImage == null && staticImageData != null)
-				staticImage = new Image(Display.getDefault(), staticImageData);
-
+			// Calculate areas
 			imgWidth = staticImage.getBounds().width;
 			imgHeight = staticImage.getBounds().height;
-
-			// Calculate areas
 			cropedWidth = imgWidth - (int) Math.round(scale * (leftCrop + rightCrop));
 			cropedHeight = imgHeight - (int) Math.round(scale * (bottomCrop + topCrop));
 			Rectangle srcArea = new Rectangle(leftCrop, topCrop, cropedWidth, cropedHeight);
@@ -556,8 +565,6 @@ public final class ImageFigure extends Figure implements Introspectable {
 			stopAnimation();
 			startAnimation();
 		}
-		if (workingWithSVG)
-			resizeSVG();
 		repaint();
 	}
 
@@ -689,8 +696,6 @@ public final class ImageFigure extends Figure implements Introspectable {
 			stopAnimation();
 			startAnimation();
 		}
-		if (workingWithSVG)
-			resizeSVG();
 		repaint();
 	}
 
@@ -839,8 +844,6 @@ public final class ImageFigure extends Figure implements Introspectable {
 				|| permutationMatrix == null || animated)
 			return;
 		dispose();
-		if (workingWithSVG)
-			resizeSVG();
 		repaint();
 	}
 
@@ -852,23 +855,13 @@ public final class ImageFigure extends Figure implements Introspectable {
 		if (this.scale == newScale)
 			return;
 		this.scale = newScale;
-		if (workingWithSVG) {
-			resizeSVG();
+		if (workingWithSVG)
 			repaint();
-		}
 	}
 
 	// ************************************************************
 	// SVG specific methods
 	// ************************************************************
-
-	private void resizeSVG() {
-		if (staticImage != null && !staticImage.isDisposed()) {
-			staticImage.dispose();
-		}
-		staticImage = null;
-		staticImageData = null;
-	}
 
 	private void loadDocument() {
 		transcoder = null;
@@ -891,6 +884,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 				imgHeight = originalStaticImageData.height;
 			}
 			failedToLoadDocument = false;
+			resizeImage();
+			fireImageLoadedListeners();
 		} catch (Exception e) {
 			Activator.getLogger().log(Level.WARNING,
 					"Error loading SVG file " + filePath, e);
