@@ -100,6 +100,10 @@ public class ServletHelper
         server.appendChild(createXMLElement(doc, "version", info.getVersion()));
         server.appendChild(createXMLElement(doc, "start_time", info.getStartTime()));
         server.appendChild(createXMLElement(doc, "scan_config", info.getScanConfig()));
+        // For older clients, also report as "beamline_config"
+        server.appendChild(doc.createComment("beamline_config is deprecated, use scan_config"));
+        server.appendChild(createXMLElement(doc, "beamline_config", info.getScanConfig()));
+        
         server.appendChild(createXMLElement(doc, "simulation_config", info.getSimulationConfig()));
         
         server.appendChild(createXMLElement(doc, "script_paths", PathUtil.joinPaths(info.getScriptPaths())));
