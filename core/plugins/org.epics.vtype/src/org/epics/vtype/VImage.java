@@ -32,6 +32,8 @@ package org.epics.vtype;
  * ...
  * byte[] buffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
  * </pre>
+ * <p>
+ * TODO: should be extended to support different encodings.
  *
  * @author carcassi
  */

@@ -43,6 +43,18 @@ public class VTypeValueEquals {
                 Objects.equals(time1.getTimeUserTag(), time2.getTimeUserTag()) &&
                 time1.isTimeValid() == time2.isTimeValid();
     }
+
+    public static boolean typeEquals(Object obj1, Object obj2) {
+	if (obj1 == null && obj2 == null) {
+	    return true;
+	}
+
+	if (obj1 == null || obj2 == null) {
+	    return false;
+	}
+        
+        return Objects.equals(ValueUtil.typeOf(obj1), ValueUtil.typeOf(obj2));
+    }
     
     /**
      * Checks whether the two table have the same data: equal column names, number

@@ -5,6 +5,7 @@
 package org.epics.pvmanager.pva.adapters;
 
 
+import java.util.List;
 import org.epics.pvdata.pv.IntArrayData;
 import org.epics.pvdata.pv.PVIntArray;
 import org.epics.pvdata.pv.PVStructure;
@@ -13,6 +14,8 @@ import org.epics.vtype.VIntArray;
 import org.epics.vtype.VTypeToString;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListInt;
+import org.epics.vtype.ArrayDimensionDisplay;
+import org.epics.vtype.ValueUtil;
 
 /**
  * @author msekoranja
@@ -66,6 +69,11 @@ public class PVFieldToVIntArray extends AlarmTimeDisplayExtractor implements VIn
     @Override
     public String toString() {
         return VTypeToString.toString(this);
+    }
+
+    @Override
+    public List<ArrayDimensionDisplay> getDimensionDisplay() {
+        return ValueUtil.defaultArrayDisplay(this);
     }
 
 }

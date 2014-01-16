@@ -328,7 +328,7 @@ public class ExpressionLanguage {
      * @return a double array expression
      */
     public static DesiredRateExpression<VDoubleArray> vConst(double... values) {
-        return constant(newVDoubleArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
+        return constant(newVDoubleArray(new ArrayDouble(values), alarmNone(), newTime(Timestamp.now()), displayNone()));
     }
     
     /**
