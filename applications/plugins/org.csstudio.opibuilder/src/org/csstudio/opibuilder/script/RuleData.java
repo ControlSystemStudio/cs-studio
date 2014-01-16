@@ -19,6 +19,11 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.epics.pvmanager.PVReaderEvent;
+import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.ReadFunction;
+import org.epics.pvmanager.expression.DesiredRateExpression;
+import org.epics.vtype.VString;
 
 /**Data of a rule.
  * @author Xihui Chen
@@ -191,6 +196,27 @@ public class RuleData implements IAdaptable{
 				generatePropValueString(property, null)+");\n"); //$NON-NLS-1$
 		
 		return sb.toString();
+	}
+	
+	public DesiredRateExpression<Object> createPVReaderExpression() {
+		// TODO: create expression based on formula expression of the pvs and the RuleReadFuncion
+		return null;
+	}
+	
+	public PVReaderListener<Object> createPVReaderListener() {
+		return new PVReaderListener<Object>() {
+			
+			@Override
+			public void pvChanged(PVReaderEvent<Object> event) {
+				if (event.isValueChanged()) {
+					Object value = event.getPvReader().getValue();
+					if (value instanceof VString) {
+						value = ((VString) value).getValue();
+					}
+					widgetModel.setPropertyValue(propId, value);
+				}
+			}
+		};
 	}
 
 	public RuleData getCopy(){
