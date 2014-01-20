@@ -5,13 +5,16 @@
 package org.epics.util.stats;
 
 /**
- * The range for points or cells.
+ * The range of a series of values, either points or cells.
  * <p>
  * For the purpose of range calculation, NaNs should be skipped. That is,
  * they should not appear as minimum or maximum.
  * <p>
  * The appropriate Range instance for
  * an unknown range, or for a range of NaN values, is null.
+ * <p>
+ * The minimum and maximum are Numbers to allow to retain the type of
+ * values used.
  *
  * @author carcassi
  */

@@ -5,6 +5,7 @@
 package org.epics.util.stats;
 
 /**
+ * Utility classes to compute ranges.
  *
  * @author carcassi
  */
@@ -53,7 +54,15 @@ public class Ranges {
                 && range.getMaximum().doubleValue() >= subrange.getMaximum().doubleValue();
         
     }
-    
+
+    /**
+     * Determines the range that can contain both ranges. If one of the
+     * ranges in contained in the other, the bigger range is returned.
+     * 
+     * @param range1 a range
+     * @param range2 another range
+     * @return the bigger range
+     */
     public static Range sum(Range range1, Range range2) {
         if (range1.getMinimum().doubleValue() <= range2.getMinimum().doubleValue()) {
             if (range1.getMaximum().doubleValue() >= range2.getMaximum().doubleValue()) {
@@ -70,20 +79,42 @@ public class Ranges {
         }
         
     }
-    
+
+    /**
+     * Returns a String representation of the give range
+     * 
+     * @param range a range
+     * @return the string representation
+     */
     public static String toString(Range range) {
         return "[" + range.getMinimum() + " - " + range.getMaximum() + "]";
     }
     
+    /**
+     * Returns the value normalized within the range. It performs a linear
+     * transformation where the minimum value of the range becomes 0 while
+     * the maximum becomes 1.
+     * 
+     * @param range a range
+     * @param value a value
+     * @return the value transformed based on the range
+     */
     public static double normalize(Range range, double value) {
         return normalize(value, range.getMinimum().doubleValue(), range.getMaximum().doubleValue());
     }
     
-    public static double normalize(double value, double min, double max) {
+    private static double normalize(double value, double min, double max) {
         return (value - min) / (max - min);
     }
 
-    public static boolean contains(Range xRange, double value) {
-        return value >= xRange.getMinimum().doubleValue() && value <= xRange.getMaximum().doubleValue();
+    /**
+     * Determines whether the value is contained by the range or not.
+     * 
+     * @param range a range
+     * @param value a value
+     * @return true if the value is within the range
+     */
+    public static boolean contains(Range range, double value) {
+        return value >= range.getMinimum().doubleValue() && value <= range.getMaximum().doubleValue();
     }
 }
