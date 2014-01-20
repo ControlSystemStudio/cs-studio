@@ -1,8 +1,7 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
-
 /**
  * Support for Epics 3 data source (<a href="doc-files/jca-datasource.html">channel syntax</a>).
  * <p>
