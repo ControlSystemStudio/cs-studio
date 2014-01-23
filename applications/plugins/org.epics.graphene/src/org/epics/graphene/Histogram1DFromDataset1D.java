@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -32,9 +32,8 @@ class Histogram1DFromDataset1D implements Histogram1D {
     private int nBins = 100;
 
     private void setDataset(Point1DDataset dataset) {
-        // TODO handle better
         if (dataset.getStatistics() == null) {
-            return;
+            throw new NullPointerException("dataset is null");
         }
         
         IteratorNumber newValues = dataset.getValues().iterator();

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
@@ -42,6 +42,18 @@ public class VTypeValueEquals {
         return Objects.equals(time1.getTimestamp(), time2.getTimestamp()) &&
                 Objects.equals(time1.getTimeUserTag(), time2.getTimeUserTag()) &&
                 time1.isTimeValid() == time2.isTimeValid();
+    }
+
+    public static boolean typeEquals(Object obj1, Object obj2) {
+	if (obj1 == null && obj2 == null) {
+	    return true;
+	}
+
+	if (obj1 == null || obj2 == null) {
+	    return false;
+	}
+        
+        return Objects.equals(ValueUtil.typeOf(obj1), ValueUtil.typeOf(obj2));
     }
     
     /**
