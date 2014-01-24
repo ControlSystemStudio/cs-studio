@@ -110,7 +110,7 @@ public class AutoCompleteWidget {
 		// value is 8 so the line below catches the DEL key press
 		String delete = new String(new char[] { 8 });
 		String allChars = lowercaseLetters + uppercaseLetters + numbers
-				+ delete + "*?/<>(),.\"\'";
+				+ delete + "*?/<>(),.\"\': ";
 		return allChars.toCharArray();
 	}
 

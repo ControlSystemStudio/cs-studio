@@ -49,11 +49,13 @@ public class TooltipDataHandler {
 				int startLenght = sb.length();
 				sb.append(data.value);
 				sb.append("\n");
-				for (ProposalStyle style : data.styles) {
-					ProposalStyle ps = new ProposalStyle(style);
-					ps.from += offset;
-					ps.to += offset;
-					styleList.add(ps);
+				if (data.styles != null) {
+					for (ProposalStyle style : data.styles) {
+						ProposalStyle ps = new ProposalStyle(style);
+						ps.from += offset;
+						ps.to += offset;
+						styleList.add(ps);
+					}
 				}
 				offset += sb.length() - startLenght;
 				maxLineLenght = Math.max(maxLineLenght, sb.length() - startLenght);
