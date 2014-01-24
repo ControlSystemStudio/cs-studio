@@ -8,6 +8,39 @@
 
 <p>Version numbers in here refer to CODAC Core System.</p>
 
+<h2>Version 4.2.b4 - 2014-01-07</h2>
+<ul>
+	<li>CSS enhancements:
+	<ul>
+		<li>Updated Auto-Complete history management, the history is now managed by entry type instead of fields type and shared by all</li>
+	</ul></li>
+	<li>CSS bug fixes:
+	<ul>
+		<li>Tooltip is now properly closed when an auto-completed field is validated</li>
+	</ul></li>
+	<li>BOY - Operator Interface enhancements:
+	<ul>
+		<li>Fluid symbols updated for CRYO & CWS</li>
+		<li>Graphics Image Widget now handles SVG images</li>
+		<li>Symbol widgets now handle 'ForeColor Alarm Sensitive' property</li>
+		<li>Renamed preference for regular expression applied as symbol images filter in Symbol widgets</li>
+	</ul></li>
+	<li>BOY - Operator Interface bug fixes:
+	<ul>
+		<li>Fixed zoom issue on BOY Symbol boolean control & both multi-state widgets</li>
+		<li>Fixed NullPointer exceptions on file path for Graphics Image & Symbols widgets</li>
+	</ul></li>
+	<li>BEAUTY - Engineering Archiving enhancements:
+	<ul>
+		<li>In the PostGres table 'sample' data type of 'float_val' has been updated to 'double precision'</li>
+		<li>Data Browser Plot XYGraph Settings are now ALL saved within the configuration file</li>
+	</ul></li>
+	<li>BEAST - Alarm System enhancements:
+	<ul>
+		<li>Updated Alarm Notifier trace INFO messages to be more "user friendly"</li>
+	</ul></li>
+</ul>
+
 <h2>Version 4.2.b2 - 2013-11-07</h2>
 <ul>
 	<li>CSS enhancements:</li>
@@ -174,7 +207,7 @@
   <li>Support of waveform and setpoint via an Array Widget that allows to adjust the setpoint using sliders for example:</li>
     <img src="images/image023.jpg"/>
   <li>It is now possible to open OPI file directly from command line:</li>
-    <p>css <unit_name>/src/main/boy/myScreen.opi</p?
+    <p>css <unit_name>/src/main/boy/myScreen.opi</p>
   </ul>
 
 </ul>

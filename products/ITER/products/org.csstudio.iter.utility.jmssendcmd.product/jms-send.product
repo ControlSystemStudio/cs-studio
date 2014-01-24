@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="JMSSender" uid="org.csstudio.iter.product.utility.jmssendcmd.product" id="org.csstudio.iter.utility.jmssendcmd.product.product" application="org.csstudio.utility.jmssendcmd.main" version="3.2.10.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="JMSSender" uid="org.csstudio.iter.product.utility.jmssendcmd.product" id="org.csstudio.iter.utility.jmssendcmd.product.product" application="org.csstudio.utility.jmssendcmd.main" version="3.2.13.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -11,6 +11,8 @@
       <vmArgs>-Djava.awt.headless=true
 -Xms64m
 -Xmx256m
+-XX:PermSize=21m
+-XX:MaxPermSize=82m
 -Declipse.exitdata=</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -30,7 +32,7 @@
    <license>
         <url>https://portal.iter.org/departments/CHD/CODAC/dev/Pages/trunk.aspx</url>
         <text>
-   Copyright (c) : 2010-2013 ITER Organization,
+   Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France
