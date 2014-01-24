@@ -62,6 +62,21 @@ public class EMailCommandValidatorUnitTest {
 			Assert.fail(e.getMessage());
 		}
 
+		cmd.init("mailto:ich-support@iter.org&bcc= john.doe@iter.org");
+		try {
+			Assert.assertTrue(cmd.validate());
+			Assert.assertNotNull(cmd.getHandler());
+			Assert.assertEquals(1, cmd.getHandler().getTo().size());
+			Assert.assertEquals("ich-support@iter.org", cmd.getHandler().getTo().get(0));
+			Assert.assertEquals(1, cmd.getHandler().getCci().size());
+			Assert.assertEquals("john.doe@iter.org", cmd.getHandler().getCci().get(0));
+			Assert.assertTrue(cmd.getHandler().getSubject().isEmpty());
+			Assert.assertTrue(cmd.getHandler().getBody().isEmpty());
+			Assert.assertFalse(cmd.getHandler().isComplete());
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+
 		cmd.init("mailto:rf_support@iter.org;rf_operator%iter.org?cc=rf.ro@iter.org&subject=RF Source 1 in error&body=*{0} Alarm raised {1}");
 		try {
 			cmd.validate();

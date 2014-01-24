@@ -42,6 +42,7 @@ public class EMailCommandHandler extends AbstractCommandHandler {
 		case Cc:
 			cc = extractEmailAdresses(data.toLowerCase());
 			break;
+		case Bcc:
 		case Cci:
 			cci = extractEmailAdresses(data.toLowerCase());
 			break;
