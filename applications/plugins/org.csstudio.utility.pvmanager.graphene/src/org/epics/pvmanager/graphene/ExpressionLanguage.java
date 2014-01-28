@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.graphene;
 
@@ -37,7 +37,17 @@ public class ExpressionLanguage {
         BasicTypeSupport.install();
         TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Graph2DResult.class));
     }
-
+    
+    public static HistogramGraph2DExpression histogramGraphOf(
+	    DesiredRateExpression<?> arrayData) {
+	return new HistogramGraph2DExpression(arrayData);
+    }
+    
+    public static IntensityGraph2DExpression intensityGraphOf(
+	    DesiredRateExpression<?> arrayData) {
+	return new IntensityGraph2DExpression(arrayData);
+    }
+    
     public static AreaGraph2DExpression histogramOf(SourceRateExpression<? extends VNumber> vDoubles) {
         DesiredRateExpression<? extends List<? extends VNumber>> queue = newValuesOf(vDoubles);
         return new AreaGraph2DExpression(queue, new AreaGraph2DFunction(queue.getFunction()), "histogram");
@@ -106,6 +116,13 @@ public class ExpressionLanguage {
 	    DesiredRateExpression<?> yColumnName,
 	    DesiredRateExpression<?> tooltipColumnName) {
 	return new LineGraph2DExpression(tableData, xColumnName, yColumnName, tooltipColumnName);
+    }
+    
+    public static SparklineGraph2DExpression sparklineGraphOf(
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName) {
+	return new SparklineGraph2DExpression(tableData, xColumnName, yColumnName);
     }
     
     public static ScatterGraph2DExpression scatterGraphOf(

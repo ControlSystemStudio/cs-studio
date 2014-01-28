@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
@@ -21,53 +21,54 @@ import org.epics.vtype.ValueFactory;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class RescaleArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
-	return true;
+        return true;
     }
 
     @Override
     public boolean isVarArgs() {
-	return true;
+        return true;
     }
 
     @Override
     public String getName() {
-	return "rescale";
+        return "rescale";
     }
 
     @Override
     public String getDescription() {
-	return "Rescale an array using the factor and offset";
+        return "Rescale an array using the factor and offset";
     }
 
     @Override
     public List<Class<?>> getArgumentTypes() {
-	return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class,
-		VNumber.class);
+        return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class,
+                VNumber.class);
     }
 
     @Override
     public List<String> getArgumentNames() {
-	return Arrays.asList("array", "factor", "offset");
+        return Arrays.asList("array", "factor", "offset");
     }
 
     @Override
     public Class<?> getReturnType() {
-	return VNumberArray.class;
+        return VNumberArray.class;
     }
 
     @Override
     public Object calculate(final List<Object> args) {
-
-	return ValueFactory.newVNumberArray(ListMath.rescale(
-		((VNumberArray) args.get(0)).getData(), ((VNumber) args.get(1))
-			.getValue().doubleValue(), ((VNumber) args.get(2))
-			.getValue().doubleValue()), alarmNone(),
-		newTime(Timestamp.now()), displayNone());
+        return ValueFactory.newVNumberArray(
+                  ListMath.rescale(
+                     ((VNumberArray) args.get(0)).getData(),
+                     ((VNumber) args.get(1)).getValue().doubleValue(),
+                     ((VNumber) args.get(2)).getValue().doubleValue() ),
+                  alarmNone(), newTime(Timestamp.now()), displayNone()
+                );
     }
 }

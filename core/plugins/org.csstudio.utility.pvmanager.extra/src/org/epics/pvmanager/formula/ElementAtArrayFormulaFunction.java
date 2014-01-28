@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
@@ -17,67 +17,71 @@ import org.epics.vtype.VNumberArray;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ElementAtArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
-	return true;
+        return true;
     }
 
     @Override
     public boolean isVarArgs() {
-	return false;
+        return false;
     }
 
     @Override
     public String getName() {
-	return "elementAt";
+        return "elementAt";
     }
 
     @Override
     public String getDescription() {
-	return "Returns the element at the specified position in this Array.";
+        return "Result = array[index]";
     }
 
     @Override
     public List<Class<?>> getArgumentTypes() {
-	return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class);
+        return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#getArgumentNames()
      */
     @Override
     public List<String> getArgumentNames() {
-	return Arrays.asList("Array", "index");
+        return Arrays.asList("Array", "index");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#getReturnType()
      */
     @Override
     public Class<?> getReturnType() {
-	return VNumber.class;
+        return VNumber.class;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.epics.pvmanager.formula.FormulaFunction#calculate(java.util.List)
      */
     @Override
     public Object calculate(List<Object> args) {
-	VNumberArray numberArray = (VNumberArray) args.get(0);
-	int index = ((VNumber) args.get(1)).getValue().intValue();	
-	return newVNumber(numberArray.getData().getDouble(index),
-		alarmNone(), timeNow(), displayNone());
+        VNumberArray numberArray = (VNumberArray) args.get(0);
+        VNumber index = (VNumber) args.get(1);
+        if (numberArray == null || index == null) {
+            return null;
+        }
+        int i = index.getValue().intValue();
+        return newVNumber(numberArray.getData().getDouble(i),
+                numberArray, numberArray, displayNone());
     }
 
 }
