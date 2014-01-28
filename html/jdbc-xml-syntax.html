@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html><head>
+
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Database Services</title></head><body>
+<h1>Database Services</h1>
+
+<h2>Description</h2>
+<p>Database services allow to create pvmanager services based on database queries.
+Each service represents a database and each method represents a query. The query results are automatically mapped to VTable, based on the metadata coming from the database driver.<br>
+</p><h2>XML syntax</h2>
+
+<p>Here is an example of an XML file describing a jdbc service:</p>
+
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br>&lt;jdbcService ver="1" name="jdbcSample" description="A test service"&gt;<br>    &lt;jdbcUrl&gt;jdbc:mysql://localhost/test?user=username&amp;amp;password=mypwd&lt;/jdbcUrl&gt;<br>    &lt;methods&gt;<br>        &lt;method name="query" description="A test query"&gt;<br>            &lt;query&gt;SELECT * FROM Data&lt;/query&gt;<br>            &lt;result name="result" description="The query result"/&gt;<br>        &lt;/method&gt;<br>        &lt;method name="insert" description="A test insert query"&gt;<br>            &lt;query&gt;INSERT INTO `test`.`Data` (`Name`, `Index`, `Value`) VALUES (?, ?, ?)&lt;/query&gt;<br>            &lt;argument name="name" description="The name" type="VString"/&gt;<br>            &lt;argument name="index" description="The index" type="VNumber"/&gt;<br>            &lt;argument name="value" description="The value" type="VNumber"/&gt;<br>        &lt;/method&gt;<br>    &lt;/methods&gt;<br>&lt;/jdbcService&gt;<br></pre>
+
+<p>Each service method correspon to one command, with specific
+mappings. A
+service is a collection of different mehods.</p>
+
+<table border="1">
+
+  <tbody>
+    <tr>
+      <th>Syntax</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td><code>jdbcService</code></td>
+      <td>Version is required to be "1". Name and description of the
+service are required<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>jdbcUrl</code></td>
+      <td style="vertical-align: top;">Database url for the JDBC
+driver. The correct driver must have been initialized. The syntax is
+driver dependent. Consult JDBC documentation.<br>
+      </td>
+    </tr>
+<tr>
+      <td><code>methods</code></td>
+      <td>List of methods must be provided<br>
+      </td>
+    </tr>
+    <tr>
+      <td><code>method</code></td>
+      <td>Each method must have a name and a description<br>
+      </td>
+    </tr>
+    <tr>
+      <td><code>query</code></td>
+      <td>The query passed to the database driver. It can contain parameters marked as '?'. Parameters are distinguished by position.<br>
+      </td>
+    </tr>
+    <tr>
+      <td><code>argument</code></td>
+      <td>Arguments are optional, but they must match the number of '?' specified in the query. Each argument must have a name, a
+description and a type. Supported type include: VString, VNumber. </td>
+    </tr>
+    <tr>
+      <td><code>result</code></td>
+      <td>Result
+must include a name and a description. If the result is present, the
+query is executed expecting a result, and the result is mapped to a
+VTable.<br>
+ </td>
+    </tr>
+  </tbody>
+</table>
+
+</body></html>
