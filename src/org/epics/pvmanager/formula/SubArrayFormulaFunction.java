@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
@@ -18,95 +18,95 @@ import org.epics.vtype.VNumberArray;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class SubArrayFormulaFunction implements FormulaFunction {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#isPure()
      */
     @Override
     public boolean isPure() {
-	return true;
+        return true;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#isVarArgs()
      */
     @Override
     public boolean isVarArgs() {
-	return false;
+        return false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#getName()
      */
     @Override
     public String getName() {
-	return "subArray";
+        return "subArray";
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#getDescription()
      */
     @Override
     public String getDescription() {
-	return "Return a subarray of the given array, between the specified fromIndex (inclusive) and toIndex(exclusive)";
+        return "Result[] = [ array[fromIndex], ..., array[toIndex-1] ]";
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#getArgumentTypes()
      */
     @Override
     public List<Class<?>> getArgumentTypes() {
-	return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class,
-		VNumber.class);
+        return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class,
+                VNumber.class);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#getArgumentNames()
      */
     @Override
     public List<String> getArgumentNames() {
-	return Arrays.asList("Array", "fromIndex", "toIndex");
+        return Arrays.asList("array", "fromIndex", "toIndex");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.epics.pvmanager.formula.FormulaFunction#getReturnType()
      */
     @Override
     public Class<?> getReturnType() {
-	return VNumberArray.class;
+        return VNumberArray.class;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.epics.pvmanager.formula.FormulaFunction#calculate(java.util.List)
      */
     @Override
     public Object calculate(List<Object> args) {
-	VNumberArray numberArray = (VNumberArray) args.get(0);
-	int fromIndex = ((VNumber) args.get(1)).getValue().intValue();
-	int toIndex = ((VNumber) args.get(2)).getValue().intValue();
-	return newVNumberArray(
-		ListMath.limit(numberArray.getData(), fromIndex, toIndex),
-		alarmNone(), timeNow(), displayNone());
+        VNumberArray numberArray = (VNumberArray) args.get(0);
+        int fromIndex = ((VNumber) args.get(1)).getValue().intValue();
+        int toIndex = ((VNumber) args.get(2)).getValue().intValue();
+        return newVNumberArray(
+                ListMath.limit(numberArray.getData(), fromIndex, toIndex),
+                alarmNone(), timeNow(), displayNone());
     }
 
 }

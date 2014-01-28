@@ -20,55 +20,51 @@ import org.epics.vtype.VNumberArray;
 import org.epics.vtype.ValueFactory;
 
 /**
- * @author shroffk
- *
+ * @author Mark Davis
+ * 
  */
-public class RescaleArrayFormulaFunction implements FormulaFunction {
+public class DivArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
-        return true;
+	return true;
     }
 
     @Override
     public boolean isVarArgs() {
-        return true;
+	return false;
     }
 
     @Override
     public String getName() {
-        return "rescale";
+	return "arrayDiv";
     }
 
     @Override
     public String getDescription() {
-        return "Rescale an array using the factor and offset";
+	return "Result[x] = array1[x] / array2[x]";
     }
 
     @Override
     public List<Class<?>> getArgumentTypes() {
-        return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class,
-                VNumber.class);
+	return Arrays.<Class<?>> asList(VNumberArray.class, VNumberArray.class);
     }
 
     @Override
     public List<String> getArgumentNames() {
-        return Arrays.asList("array", "factor", "offset");
+	return Arrays.asList("array1", "array1");
     }
 
     @Override
     public Class<?> getReturnType() {
-        return VNumberArray.class;
+	return VNumberArray.class;
     }
 
     @Override
     public Object calculate(final List<Object> args) {
-        return ValueFactory.newVNumberArray(
-                  ListMath.rescale(
-                     ((VNumberArray) args.get(0)).getData(),
-                     ((VNumber) args.get(1)).getValue().doubleValue(),
-                     ((VNumber) args.get(2)).getValue().doubleValue() ),
-                  alarmNone(), newTime(Timestamp.now()), displayNone()
-                );
+	  return ValueFactory.newVNumberArray(
+			ListMath.div( ((VNumberArray) args.get(0)).getData(), 
+					       ((VNumberArray) args.get(1)).getData() ),
+			alarmNone(), newTime(Timestamp.now()), displayNone() );
     }
 }

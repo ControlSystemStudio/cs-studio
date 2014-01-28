@@ -4,17 +4,20 @@
  */
 package org.epics.pvmanager.formula;
 
+import static org.epics.vtype.ValueFactory.*;
+
 import java.util.Arrays;
 import java.util.List;
 
+import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
-import org.epics.vtype.ValueFactory;
+import org.epics.vtype.VStringArray;
 
 /**
- * @author shroffk
+ * @author carcassi
  * 
  */
-public class ConcatStringsFunction implements FormulaFunction {
+public class ElementAtStringArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
@@ -23,27 +26,27 @@ public class ConcatStringsFunction implements FormulaFunction {
 
     @Override
     public boolean isVarArgs() {
-	return true;
+	return false;
     }
 
     @Override
     public String getName() {
-	return "concat";
+	return "elementAt";
     }
 
     @Override
     public String getDescription() {
-	return "Concatenate the strings";
+	return "Returns the element at the specified position in the string array.";
     }
 
     @Override
     public List<Class<?>> getArgumentTypes() {
-	return Arrays.<Class<?>> asList(VString.class);
+	return Arrays.<Class<?>> asList(VStringArray.class, VNumber.class);
     }
 
     @Override
     public List<String> getArgumentNames() {
-	return Arrays.asList("string");
+	return Arrays.asList("array", "index");
     }
 
     @Override
@@ -53,20 +56,14 @@ public class ConcatStringsFunction implements FormulaFunction {
 
     @Override
     public Object calculate(List<Object> args) {
-
-	StringBuffer sb = new StringBuffer();
-
-	for (Object object : args) {
-	    VString str = (VString) object;
-	    // TODO should this raise an exception
-	    if (str == null) {
-		return null;
-	    }
-	    sb.append(str.getValue());
-	}
-	return ValueFactory.newVString(sb.toString(), ValueFactory.alarmNone(),
-		ValueFactory.timeNow());
-
+	VStringArray stringArray = (VStringArray) args.get(0);
+        VNumber index = (VNumber) args.get(1);
+        if (stringArray == null || index == null) {
+            return null;
+        }
+	int i = index.getValue().intValue();
+	return newVString(stringArray.getData().get(i),
+		stringArray, stringArray);
     }
 
 }
