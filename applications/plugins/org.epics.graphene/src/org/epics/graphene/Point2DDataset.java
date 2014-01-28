@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -55,7 +55,7 @@ public interface Point2DDataset {
     /**
      * The number of points in the dataset.
      * <p>
-     * This number matches the size of the list returned by {@link #getValues() }.
+     * This number matches the size of the list returned by {@link #getXValues() }.
      * 
      * @return the number of values in this dataset
      */
