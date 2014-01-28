@@ -4,7 +4,7 @@
  */
 
 /**
- * Contains basic for text manipulation and value formatting.
+ * Contains classes to handle statistical information.
  * 
  */
-package org.epics.util.text;
+package org.epics.util.stats;
