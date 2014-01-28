@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.trends.databrowser2.Messages;
 import org.eclipse.jface.action.Action;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -49,20 +50,27 @@ public class PrintAction extends Action
         this.shell = shell;
         this.graph = graph;
 
-        // Only enable if printing is supported
-        final PrinterData[] printers = Printer.getPrinterList();
-        final Logger logger = Logger.getLogger(getClass().getName());
-        if (printers != null)
+        // Skip printer check on GTK because of hangups:
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=153936,
+        // -Dorg.eclipse.swt.internal.gtk.disablePrinting if there are no printers,
+        // https://github.com/ControlSystemStudio/cs-studio/issues/83
+        if (! SWT.getPlatform().equals("gtk"))
         {
-        	logger.fine("Available printers:");
-        	for (PrinterData p : printers)
-        		logger.fine("Printer: " + p.name + " (" + p.driver + ")");
-        	setEnabled(printers.length > 0);
-        }
-        else
-        {
-        	logger.fine("No available printers");
-        	setEnabled(false);
+            // Only enable if printing is supported.
+            final PrinterData[] printers = Printer.getPrinterList();
+            final Logger logger = Logger.getLogger(getClass().getName());
+            if (printers != null)
+            {
+            	logger.fine("Available printers:");
+            	for (PrinterData p : printers)
+            		logger.fine("Printer: " + p.name + " (" + p.driver + ")");
+            	setEnabled(printers.length > 0);
+            }
+            else
+            {
+            	logger.fine("No available printers");
+            	setEnabled(false);
+            }
         }
     }
 
