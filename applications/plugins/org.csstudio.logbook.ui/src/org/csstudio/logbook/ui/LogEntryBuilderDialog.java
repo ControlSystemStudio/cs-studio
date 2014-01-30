@@ -37,8 +37,8 @@ public class LogEntryBuilderDialog extends Dialog {
     private final IPreferencesService service = Platform.getPreferencesService();
     private boolean authenticate = true;    
     private String defaultLogbook = "";
-	/** The default level. */
-	private String defaultLevel;
+    /** The default level. */
+    private String defaultLevel;
     private ErrorBar errorBar;
     
     /** The listeners. */

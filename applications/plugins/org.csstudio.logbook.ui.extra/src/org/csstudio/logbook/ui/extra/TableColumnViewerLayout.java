@@ -5,24 +5,22 @@ package org.csstudio.logbook.ui.extra;
 
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Point;
 
 /**
  * @author shroffk
  * 
  */
-public class ColumnViewerSimpleLayout extends ControlAdapter {
+public class TableColumnViewerLayout extends ControlAdapter {
 
     private final GridViewerColumn gridViewerColumn;
     private final GridTableViewer gridTableViewer;
     private final int weight;
     private int minWidth = 100;
 
-    public ColumnViewerSimpleLayout(GridTableViewer gridTableViewer,
+    public TableColumnViewerLayout(GridTableViewer gridTableViewer,
 	    GridViewerColumn gridViewerColumn, int weight, int minWidth) {
 
 	this.gridViewerColumn = gridViewerColumn;
