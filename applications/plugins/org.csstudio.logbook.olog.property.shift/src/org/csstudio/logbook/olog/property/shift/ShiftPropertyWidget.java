@@ -40,6 +40,8 @@ import org.eclipse.wb.swt.SWTResourceManager;
 /**
  * The widget associated with the shift property 
  *
+ * TODO The attach is called in the update since the editable is set after the widget is created.
+ * 
  * @author shroffk
  *
  */
@@ -69,6 +71,10 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     private Shift shift;
 
     private String defaultType ;
+
+    private Button btnRemove;
+
+    private static boolean autoAttach = true;
 
     public ShiftPropertyWidget(Composite parent, int style,
 	    LogEntryChangeset logEntryChangeset) {
@@ -128,10 +134,10 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 					    + selectedType
 					    + "/"
 					    + shift.getId().toString());
+		    attachProperty();
 		} else {
 		    widgetProperty = null;
 		}
-		updateUI();
 	    }
 	});
 	
@@ -164,6 +170,23 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 		public void widgetDefaultSelected(SelectionEvent arg0) {
 		}
 	});
+	
+	btnRemove = new Button(container, SWT.CHECK);
+	btnRemove.setSelection(autoAttach);
+	btnRemove.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		autoAttach = btnRemove.getSelection();
+		if(autoAttach){
+		    attachProperty();		    
+		}else{
+		    removeProperty();
+		}
+	    }
+	});
+	btnRemove.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
+	btnRemove.setText("Auto Attach");
+	
 	btnAttach = new Button(container, SWT.NONE);
 	btnAttach.addSelectionListener(new SelectionAdapter() {
 	    @Override
@@ -172,7 +195,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 		attachProperty();
 	    }
 	});
-	btnAttach.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 2, 1));
+	btnAttach.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 	btnAttach.setText("Attach");
 	init();
     }
@@ -230,6 +253,22 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	}
     }
     
+    private void removeProperty(){
+   	LogEntryBuilder logEntryBuilder;
+   	try {
+   		Property oldProperty = LogEntryUtil.getProperty(
+   			getLogEntryChangeset().getLogEntry(), propertyName);
+   		if (oldProperty != null) {
+   		    logEntryBuilder = LogEntryBuilder.logEntry(getLogEntryChangeset().getLogEntry());
+   		    logEntryBuilder.removeProperty(propertyName);
+   		    getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
+   		}
+   	} catch (IOException e1) {
+   	    // TODO Auto-generated catch block
+   	    e1.printStackTrace();
+   	}
+       }
+    
     @Override
     public void updateUI() {
 	this.lblAttached.setVisible(!isEditable());
@@ -242,10 +281,9 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	this.link.setVisible(!isEditable());	
 	GridData linkGridData = (GridData) this.link.getLayoutData();	    
 	linkGridData.exclude = isEditable();
-	this.link.setLayoutData(linkGridData);
-	
+	this.link.setLayoutData(linkGridData);	
 	this.btnAttach.setVisible(isEditable());
-	if(isEditable()){
+	if(isEditable() && autoAttach){
 	    attachProperty();
 	}
 	Property property = null;

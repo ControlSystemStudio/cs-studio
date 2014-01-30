@@ -14,6 +14,12 @@ import org.csstudio.logbook.Property;
 import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.security.SecuritySupport;
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -88,40 +94,79 @@ public class ReviewSignDialog extends Dialog {
 
     @Override
     protected void okPressed() {
-	Cursor originalCursor = getShell().getCursor();
-	try {
-	    // get logbook client
-	    LogbookClient logbookClient = LogbookClientManager
-		    .getLogbookClientFactory().getClient(username.getText(),
-			    password.getText());
-	    getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
-	    
-		String signature = SecuritySupport
-			.getSubjectName(SecuritySupport.getSubject());
-		PropertyBuilder SignOffProperty = property("SignOff")
-			.attribute("signature", signature);
+	final Cursor originalCursor = getShell().getCursor();
+	
+	getButton(IDialogConstants.OK_ID).setEnabled(false);
 
-		StringBuffer sb = new StringBuffer();
-		sb.append("signature:" + signature
-			+ System.getProperty("line.separator"));
+		try {
+			// get logbook client
+			final LogbookClient logbookClient = LogbookClientManager
+					.getLogbookClientFactory().getClient(username.getText(),
+							password.getText());
+			getShell().setCursor(
+					Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
 
-		Collection<LogEntry> logEntires = new ArrayList<LogEntry>();
-		for (LogEntryBuilder logEntryBuilder : data) {
-		    logEntryBuilder.addProperty(SignOffProperty);
-		    sb.append("logEntry: " + logEntryBuilder
-			    + System.getProperty("line.separator"));
-		    logEntires.add(logEntryBuilder.build());
+			String signature = SecuritySupport.getSubjectName(SecuritySupport
+					.getSubject());
+			PropertyBuilder SignOffProperty = property("SignOff").attribute(
+					"signature", signature);
+
+			StringBuffer sb = new StringBuffer();
+			sb.append("signature:" + signature
+					+ System.getProperty("line.separator"));
+
+			final Collection<LogEntry> logEntires = new ArrayList<LogEntry>();
+			for (LogEntryBuilder logEntryBuilder : data) {
+				logEntryBuilder.addProperty(SignOffProperty);
+				sb.append("logEntry: " + logEntryBuilder
+						+ System.getProperty("line.separator"));
+				logEntires.add(logEntryBuilder.build());
+			}
+			Job job = new Job("Review and Sign Log Entries") {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					try {
+						logbookClient.updateLogEntries(logEntires);
+						return Status.OK_STATUS;
+					} catch (final Exception e) {
+						getShell().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								getShell().setCursor(originalCursor);
+								getButton(IDialogConstants.OK_ID).setEnabled(true);
+								errorBar.setException(e);
+							}
+						});
+						return Status.CANCEL_STATUS;
+					}
+				}
+			};
+			job.addJobChangeListener(new JobChangeAdapter() {
+				public void done(IJobChangeEvent event) {
+					if (event.getResult().isOK()) {
+						getShell().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								getShell().setCursor(originalCursor);
+								getButton(IDialogConstants.OK_ID).setEnabled(true);
+								setReturnCode(OK);
+								close();
+							}
+						});
+
+					}
+				}
+			});
+			job.schedule();
+		} catch (Exception ex) {
+			getShell().setCursor(originalCursor);
+			getButton(IDialogConstants.OK_ID).setEnabled(true);
+			errorBar.setException(ex);
 		}
-		logbookClient.updateLogEntries(logEntires);
 
-		getShell().setCursor(originalCursor);
-		setReturnCode(OK);
-		close();    
-
-	} catch (Exception ex) {
-	    getShell().setCursor(originalCursor);
-	    errorBar.setException(ex);
 	}
-    }
 
 }
