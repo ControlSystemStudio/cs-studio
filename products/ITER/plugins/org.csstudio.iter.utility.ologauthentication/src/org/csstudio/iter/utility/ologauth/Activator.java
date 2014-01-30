@@ -20,7 +20,7 @@ public class Activator implements BundleActivator {
 	/**
 	 * This plugin's ID.
 	 */
-	public static final String PLUGIN_ID = "org.csstudio.iter.utility.ologauth";
+	public static final String PLUGIN_ID = "org.csstudio.iter.utility.ologauthentication";
 
 	// The shared instance
 	private static Activator plugin;
