@@ -6,6 +6,6 @@ Bundle-Version: 3.1.0.qualifier
 Bundle-Vendor: DESY <css-developer@desy.de>, Jan Hatje
 Fragment-Host: org.csstudio.remote;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.8.1",
- org.mockito;bundle-version="1.8.5"
+Require-Bundle: org.mockito;bundle-version="1.8.5",
+ org.junit
 Export-Package: org.csstudio.remote.management;version="1.0.0"
