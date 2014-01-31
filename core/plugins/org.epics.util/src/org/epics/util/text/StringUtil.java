@@ -123,7 +123,7 @@ public class StringUtil {
             } else {
                 throw new IllegalArgumentException("Can't parse line: expected token at " + currentPosition + " (" + line + ")");
             }
-            
+
             if (currentPosition < line.length()) {
                 if (!separatorMatcher.region(currentPosition, line.length()).useAnchoringBounds(true).find()) {
                     throw new IllegalArgumentException("Can't parse line: expected separator at " + currentPosition + " (" + line + ")");
