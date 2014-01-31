@@ -21,6 +21,13 @@ git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "org.ep
 echo Done epics-util
 
 rm -rf $HGDIR
+hg clone http://hg.code.sf.net/p/graphene/code $HGDIR
+echo Synching graphene
+sync_dir graphene $HGDIR/graphene/src/main/java/org/epics ../applications/plugins/org.epics.graphene/src/org/epics/
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "org.epics.graphene: update to current SNAPSHOT" ../applications/plugins/org.epics.graphene
+echo Done graphene
+
+rm -rf $HGDIR
 echo pvmanager repo
 hg clone http://hg.code.sf.net/p/pvmanager/pvmanager $HGDIR
 
@@ -99,3 +106,4 @@ sync_dir pvmanager $HGDIR/pvmanager-vtype/src/main/java/org/epics ../core/plugin
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.vtype: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.vtype
 echo Done pvmanager-vtype
 
+rn -rf $HGDIR
