@@ -3,8 +3,8 @@
  */
 package org.csstudio.sds.ui.internal.preferences;
 
-import org.csstudio.domain.desy.ui.FieldEditors.WorkspaceDirectoryFieldEditor;
-import org.csstudio.domain.desy.ui.FieldEditors.WorkspaceFileFieldEditor;
+import org.csstudio.domain.common.ui.WorkspaceDirectoryFieldEditor;
+import org.csstudio.domain.common.ui.WorkspaceFileFieldEditor;
 import org.csstudio.sds.cosyrules.color.MaintenanceRulePreference;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.preferences.InstanceScope;
