@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.desy.sds.feature"
-      label="SDS Feature"
+      id="org.csstudio.desy.lib.feature"
+      label="Desy external lib feature"
       version="1.0.0.qualifier"
-      provider-name="DESY, Jan Hatje &lt;css-developer@desy.de&gt;">
+      provider-name="Desy, Jan Hatje &lt;css-developer@desy.de">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -17,102 +17,135 @@
       [Enter License Description here.]
    </license>
 
-   <url>
-      <update label="Desy Update Site" url="http://eclipse.desy.de/css/update/"/>
-   </url>
+   <plugin
+         id="com.google.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds"
+         id="com.google.inject"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.inject.guice.v3"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.csstudio.sds.components"
+         id="com.google.protobuf"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.components.epics"
+         id="commons-beanutils.v1.8.0"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="javax.annotation"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.components.ui"
+         id="javax.mail"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.importer"
+         id="net.miginfocom.layout"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.importer.ui"
+         id="org.antlr.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.language.script"
+         id="org.apache.log4j"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.language.script.ui"
+         id="org.ehcache"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.hamcrest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.hibernate.v4.1.3.Final"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.hibernate.validator.v4.3.Final"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.joda.time"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.samples"
+         id="org.mockito"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.settings.desy"
+         id="org.slf4j"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.ui"
+         id="org.slf4j-log4j12"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.quickstart"
+         id="org.slf4j.bridge"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.intro"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.adlConverter"
+         id="com.mysql.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"

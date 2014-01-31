@@ -72,28 +72,28 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.jaasAuthentication"/>
       <plugin id="org.csstudio.platform.ldapAuthorization"/>
-      <plugin id="org.csstudio.platform.ldapauthorization.ui" fragment=""/>
+      <plugin id="org.csstudio.platform.ldapauthorization.ui"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.dal.tango"/>
       <plugin id="org.csstudio.platform.libs.dal.tine"/>
-      <plugin id="org.csstudio.platform.libs.dcf" fragment=""/>
-      <plugin id="org.csstudio.platform.libs.dcf.ui" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.dcf"/>
+      <plugin id="org.csstudio.platform.libs.dcf.ui"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.jms.ui" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.jms.ui"/>
       <plugin id="org.csstudio.platform.libs.tango"/>
       <plugin id="org.csstudio.platform.libs.tine"/>
-      <plugin id="org.csstudio.platform.libs.xmpp" fragment=""/>
-      <plugin id="org.csstudio.platform.libs.xmpp.ui" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.xmpp"/>
+      <plugin id="org.csstudio.platform.libs.xmpp.ui"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.jms.ui"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
-      <plugin id="org.csstudio.platform.workspace" fragment=""/>
+      <plugin id="org.csstudio.platform.workspace"/>
       <plugin id="org.csstudio.startuphelper"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -172,25 +172,19 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </plugins>
 
    <features>
-      <feature id="org.csstudio.desy.platform.eclipse.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.platform.eclipse.team.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.platform.base.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.platform.user.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.library.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.eclipse.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.lib.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.platform.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.snl.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.sds.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.dct.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.pv.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.alarm.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.desytools.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.ioconfigurator.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.development.feature" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
-      <plugin id="org.csstudio.sds.service.pvvalidation.mkk" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.common.service" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.common.service.mysqlimpl" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.sds.service.pvvalidation.mkk" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.ldap.service.impl" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
