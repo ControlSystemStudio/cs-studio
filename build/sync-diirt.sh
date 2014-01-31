@@ -21,10 +21,20 @@ git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "org.ep
 echo Done epics-util
 
 rm -rf $HGDIR
+echo pvmanager repo
 hg clone http://hg.code.sf.net/p/pvmanager/pvmanager $HGDIR
-echo Synching pvmanager-core ../core/plugins/org.csstudio.utility.pvmanager/src/org/epics/
+
+echo Synching epics-vtype
+sync_dir vtype $HGDIR/epics-vtype/src/main/java/org/epics ../core/plugins/org.epics.vtype/src/org/epics/
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "org.epics.vtype: update to current SNAPSHOT"
+echo Done epics-vtype
+
+echo Synching pvmanager-core
+sync_dir pvmanager $HGDIR/pvmanager-core/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager/src/org/epics/
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanager: update to current SNAPSHOT"
 echo Done pvmanager-core
+
+
 
 
 
