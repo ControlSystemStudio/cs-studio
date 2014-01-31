@@ -88,4 +88,15 @@ sync_dir . $HGDIR/pvmanager-sim/src/main/javadoc/org/epics/pvmanager/sim/doc-fil
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.sim: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.sim
 echo Done pvmanager-sim
 
+echo Synching pvmanager-sys
+sync_dir pvmanager $HGDIR/pvmanager-sys/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager.sys/src/org/epics/
+sync_dir . $HGDIR/pvmanager-sys/src/main/javadoc/org/epics/pvmanager/sys/doc-files ../core/plugins/org.csstudio.utility.pvmanager.sys/html
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.sys: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.sys
+echo Done pvmanager-sys
+
+echo Synching pvmanager-vtype
+sync_dir pvmanager $HGDIR/pvmanager-vtype/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager.vtype/src/org/epics/
+sync_dir . $HGDIR/pvmanager-vtype/src/main/javadoc/org/epics/pvmanager/vtype/doc-files ../core/plugins/org.csstudio.utility.pvmanager.vtype/html
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.vtype: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.vtype
+echo Done pvmanager-vtype
 
