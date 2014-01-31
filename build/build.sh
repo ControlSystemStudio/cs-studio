@@ -175,6 +175,11 @@ then
   copyIfNotExists "$confBuildDir/plugins.list" "../products/$ORGANIZATION/products" "$BUILD/plugins"
 fi
 
+if [[ "$ORGANIZATION" = "ASKAP" ]]
+then
+  copyIfNotExists "$confBuildDir/plugins.list" "../products/$ORGANIZATION/products" "$BUILD/plugins"
+fi
+
 copyIfNotExists "$confBuildDir/plugins.list" "../core/plugins" "$BUILD/plugins"
 copyIfNotExists "$confBuildDir/plugins.list" "../applications/plugins" "$BUILD/plugins"
 
@@ -217,9 +222,9 @@ cd ..
 ABSOLUTE_DIR=$PWD
 echo "Start build"
 echo $ABSOLUTE_DIR
-java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar \
+java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_*.jar \
 	-application org.eclipse.ant.core.antRunner \
-	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.7.*/scripts/productBuild/productBuild.xml \
+	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_*/scripts/productBuild/productBuild.xml \
 	-Dbuilder="$ABSOLUTE_DIR"/build \
 	-Dbuild.dir="$ABSOLUTE_DIR"
 

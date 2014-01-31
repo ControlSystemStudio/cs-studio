@@ -76,9 +76,6 @@
       <workbench
             class="org.csstudio.utility.product.Workbench">
       </workbench>
-      <login
-            class="org.csstudio.askap.product.ASKAPLogin">
-      </login>
    </extension>
    <extension
          point="org.eclipse.ui.intro">
