@@ -35,7 +35,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.InitialLdapContext;
 
-import org.csstudio.domain.desy.preferences.AbstractPreference;
+import org.csstudio.domain.common.preferences.AbstractPreference;
 import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.slf4j.Logger;

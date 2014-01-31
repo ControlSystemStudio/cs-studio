@@ -1,6 +1,0 @@
-<Root version="1.0.0" invokeid="4713">
-   <Command destination="CAN1" property1="sample" property2="sample">
-      <element1>sample</element1>
-      <element2 attrib1="sample" attrib2="sample">sample</element2>
-   </Command>
-</Root>

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.naming.ldap.SortControl;
 
-import org.csstudio.domain.desy.types.Tuple;
+import org.csstudio.domain.common.types.Tuple;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationCallback;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationCallback.ValidationResult;

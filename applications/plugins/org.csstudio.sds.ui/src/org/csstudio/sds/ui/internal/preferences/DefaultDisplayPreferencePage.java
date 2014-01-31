@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.ui.internal.preferences;
 
-import org.csstudio.domain.desy.ui.FieldEditors.WorkspaceFileFieldEditor;
+import org.csstudio.domain.common.ui.WorkspaceFileFieldEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
