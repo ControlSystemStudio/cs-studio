@@ -6,5 +6,5 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
 Fragment-Host: org.csstudio.servicelocator;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.8.1",
- org.mockito;bundle-version="1.8.5"
+Require-Bundle: org.mockito;bundle-version="1.8.5",
+ org.junit
