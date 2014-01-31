@@ -96,7 +96,6 @@ echo Done pvmanager-sys
 
 echo Synching pvmanager-vtype
 sync_dir pvmanager $HGDIR/pvmanager-vtype/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager.vtype/src/org/epics/
-sync_dir . $HGDIR/pvmanager-vtype/src/main/javadoc/org/epics/pvmanager/vtype/doc-files ../core/plugins/org.csstudio.utility.pvmanager.vtype/html
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.vtype: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.vtype
 echo Done pvmanager-vtype
 
