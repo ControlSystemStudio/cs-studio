@@ -34,6 +34,12 @@ sync_dir pvmanager $HGDIR/pvmanager-core/src/main/java/org/epics ../core/plugins
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanager: update to current SNAPSHOT"
 echo Done pvmanager-core
 
+echo Synching pvmanager-exec
+sync_dir pvmanager $HGDIR/pvmanager-exec/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager.exec/src/org/epics/
+sync_dir . $HGDIR/pvmanager-exec/src/main/javadoc/org/epics/pvmanager/exec/doc-files ../core/plugins/org.csstudio.utility.pvmanager.exec/html
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.execr: update to current SNAPSHOT"
+echo Done pvmanager-exec
+
 
 
 
