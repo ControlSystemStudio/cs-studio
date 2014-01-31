@@ -8,7 +8,6 @@ org.csstudio.sns.feature.core/**
 org.csstudio.sns.feature.eclipse/**
 org.csstudio.sns.feature.optional/**
 org.csstudio.sns.feature.optional.linux/**
-org.csstudio.sns.feature.optional.win32/**
 org.csstudio.sns.feature.pydev/**
 org.csstudio.sns.feature.repository/**
 org.csstudio.sns.feature.repository.cvs/**
