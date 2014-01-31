@@ -107,4 +107,4 @@ sync_dir pvmanager $HGDIR/pvmanager-vtype/src/main/java/org/epics ../core/plugin
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.vtype: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.vtype
 echo Done pvmanager-vtype
 
-rn -rf $HGDIR
+rm -rf $HGDIR
