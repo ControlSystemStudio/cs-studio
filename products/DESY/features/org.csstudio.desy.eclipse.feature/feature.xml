@@ -758,13 +758,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.pde.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.rcp"
          download-size="0"
          install-size="0"
@@ -1227,13 +1220,6 @@
 
    <plugin
          id="org.mortbay.jetty.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm"
          download-size="0"
          install-size="0"
          version="0.0.0"
