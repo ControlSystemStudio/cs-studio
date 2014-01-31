@@ -54,8 +54,8 @@ echo Done pvmanager-file
 #echo Done pvmanager-extra
 
 echo Synching pvmanager-graphene
-sync_dir pvmanager $HGDIR/pvmanager-graphene/src/main/java/org/epics ../applications/plugins/org.csstudio.utility.graphene/src/org/epics/
-git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanager.graphene: update to current SNAPSHOT" ../applications/plugins/org.csstudio.utility.graphene
+sync_dir pvmanager $HGDIR/pvmanager-graphene/src/main/java/org/epics ../applications/plugins/org.csstudio.utility.pvmanager.graphene/src/org/epics/
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanager.graphene: update to current SNAPSHOT" ../applications/plugins/org.csstudio.utility.pvmanager.graphene
 echo Done pvmanager-graphene
 
 echo Synching pvmanager-jca
