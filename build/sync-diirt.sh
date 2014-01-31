@@ -23,6 +23,7 @@ echo Done epics-util
 rm -rf $HGDIR
 hg clone http://hg.code.sf.net/p/graphene/code $HGDIR
 echo Synching graphene
+cp -R $HGDIR/graphene/src/main/resources/org $HGDIR/graphene/src/main/java
 sync_dir graphene $HGDIR/graphene/src/main/java/org/epics ../applications/plugins/org.epics.graphene/src/org/epics/
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "org.epics.graphene: update to current SNAPSHOT" ../applications/plugins/org.epics.graphene
 echo Done graphene
