@@ -38,11 +38,10 @@ function buildWebProduct {
 }
 
 buildProduct ASKAP org.csstudio.askap.product
-#buildProduct ASKAP org.csstudio.askap.alarm.beast.annunciator.product
 buildProduct ASKAP org.csstudio.askap.alarm.beast.configtool.product
-#buildProduct ITER org.csstudio.iter.alarm.beast.notifier.product
+buildProduct ASKAP org.csstudio.askap.alarm.beast.notifier.product
 buildProduct ASKAP org.csstudio.askap.alarm.beast.server.product
-#buildProduct ITER org.csstudio.iter.jms2rdb.product
+buildProduct ASKAP org.csstudio.askap.jms2rdb.product
 #buildProduct ITER org.csstudio.iter.utility.jmssendcmd.product
 
 #buildWebProduct ITER ../products/ITER/products/org.csstudio.iter.webopi/webopi.warproduct.path

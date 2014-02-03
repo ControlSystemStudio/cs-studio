@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.askap.jms2rdb.app.feature"
+      label="JMS2RDB feature"
+      version="3.2.11.qualifier">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.logging.jms2rdb" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.jms"/>
+      <import plugin="org.csstudio.apputil" version="1.1.4" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="javax.servlet"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.apputil"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.jms2rdb.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logging.jms2rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.httpd"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

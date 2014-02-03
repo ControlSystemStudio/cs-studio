@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.askap.alarm.beast.notifier.app.feature"
+      label="ASKAP Alarm Notifier feature"
+      version="3.2.11.qualifier">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="1.1.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.jms"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.email" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="javax.mail" version="1.4.4" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.alarm.beast"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.alarm.beast.notifier"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.alarm.beast.notifier.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.mail"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.email"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>
