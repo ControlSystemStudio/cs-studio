@@ -39,7 +39,7 @@ function buildWebProduct {
 
 buildProduct ASKAP org.csstudio.askap.product
 #buildProduct ASKAP org.csstudio.askap.alarm.beast.annunciator.product
-#buildProduct ITER org.csstudio.iter.alarm.beast.configtool.product
+buildProduct ASKAP org.csstudio.askap.alarm.beast.configtool.product
 #buildProduct ITER org.csstudio.iter.alarm.beast.notifier.product
 buildProduct ASKAP org.csstudio.askap.alarm.beast.server.product
 #buildProduct ITER org.csstudio.iter.jms2rdb.product
