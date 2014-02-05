@@ -214,8 +214,9 @@ public class ResourceUtil {
      * @throws Exception
      */
     public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
-        final AtomicReference<InputStream> stream = new AtomicReference<>();
         if (runInUIJob && URL_CACHE.getValue(url)== null) {
+            // Stream to be set in background job
+            final AtomicReference<InputStream> stream = new AtomicReference<>();
             IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
                 @Override
                 public void run(IProgressMonitor monitor)
@@ -236,21 +237,29 @@ public class ResourceUtil {
             };
             PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .run(true, false, openURLTask);
-        }else
-            return openURLStream(url);
-        return stream.get();
+            return stream.get();
+        }
+        // else return stream w/o UI job, maybe from cache
+        return openURLStream(url);
     }
 	
 	public static InputStream openURLStream(final URL url) throws IOException{
 		File tempFilePath = URL_CACHE.getValue(url);
 		if(tempFilePath != null){
+            OPIBuilderPlugin.getLogger().log(Level.FINE, "Found cached file for URL '" + url + "'");
 			return new FileInputStream(tempFilePath);
 		}else{
 			InputStream inputStream = openRawURLStream(url);			
 			if(inputStream !=null){
 				try {
 					IPath urlPath = new URLPath(url.toString());
-					final File file = File.createTempFile(urlPath.removeFileExtension().lastSegment(), "."+urlPath.getFileExtension()); //$NON-NLS-1$ //$NON-NLS-2$					
+					
+					// createTempFile(), at least with jdk1.7.0_45,
+					// requires at least 3 chars for the 'prefix', so add "opicache"
+					// to assert a minimum length
+					final String cache_file_prefix = "opicache" + urlPath.removeFileExtension().lastSegment();
+                    final String cache_file_suffix = "."+urlPath.getFileExtension();
+					final File file = File.createTempFile(cache_file_prefix, cache_file_suffix);			
 					file.deleteOnExit();	
 					if(!file.canWrite())
 						throw new Exception("Unable to write temporary file.");
@@ -273,7 +282,7 @@ public class ResourceUtil {
 					return new FileInputStream(file);
 				} catch (Exception e) {
 					OPIBuilderPlugin.getLogger().log(Level.WARNING,
-							"Error to cache file from URL: " + e.getMessage());
+							"Error to cache file from URL '" + url + "'", e);
 				}	            
 			}			
 			return inputStream;
