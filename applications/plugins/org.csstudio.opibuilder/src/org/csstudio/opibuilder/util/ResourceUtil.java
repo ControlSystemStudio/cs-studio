@@ -20,6 +20,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.net.ssl.HostnameVerifier;
@@ -205,45 +206,40 @@ public class ResourceUtil {
 //		return urlString.contains(":/");  //$NON-NLS-1$
 	}
 	
-	private static InputStream inputStream;
-	private static Object lock = new Boolean(true);
-	
-	/**Open URL stream in UI Job if runInUIJob is true.
-	 * @param url
-	 * @param runInUIJob true if this method should run as an UI Job. 
-	 * If it is true, this method must be called in UI thread.
-	 * @return
-	 * @throws Exception
-	 */
-	public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
-		inputStream = null;
-		if (runInUIJob && URL_CACHE.getValue(url)== null) {
-			synchronized (lock) {
-				IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
+    /**Open URL stream in UI Job if runInUIJob is true.
+     * @param url
+     * @param runInUIJob true if this method should run as an UI Job. 
+     * If it is true, this method must be called in UI thread.
+     * @return
+     * @throws Exception
+     */
+    public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
+        final AtomicReference<InputStream> stream = new AtomicReference<>();
+        if (runInUIJob && URL_CACHE.getValue(url)== null) {
+            IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
+                @Override
+                public void run(IProgressMonitor monitor)
+                        throws InvocationTargetException,
+                        InterruptedException {
+                    try {
+                        monitor.beginTask("Connecting to " + url,
+                                IProgressMonitor.UNKNOWN);
+                        stream.set(openURLStream(url));
+                    } catch (IOException e) {
+                        throw new InvocationTargetException(e,
+                                "Timeout while connecting to " + url);
+                    } finally {
+                        monitor.done();
+                    }
+                }
 
-					public void run(IProgressMonitor monitor)
-							throws InvocationTargetException,
-							InterruptedException {
-						try {
-							monitor.beginTask("Connecting to " + url,
-									IProgressMonitor.UNKNOWN);
-							inputStream = openURLStream(url);
-						} catch (IOException e) {
-							throw new InvocationTargetException(e,
-									"Timeout while connecting to " + url);
-						} finally {
-							monitor.done();
-						}
-					}
-
-				};
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-						.run(true, false, openURLTask);
-			}
-		}else
-			return openURLStream(url);
-		return inputStream;
-	}
+            };
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .run(true, false, openURLTask);
+        }else
+            return openURLStream(url);
+        return stream.get();
+    }
 	
 	public static InputStream openURLStream(final URL url) throws IOException{
 		File tempFilePath = URL_CACHE.getValue(url);
