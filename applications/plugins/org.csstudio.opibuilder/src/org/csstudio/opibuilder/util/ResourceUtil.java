@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.KeyManagementException;
@@ -38,16 +37,17 @@ import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.PlatformUI;
 
 /**Utility functions for resources.
  * @author Xihui Chen, Abadie Lana, Kay Kasemir
@@ -210,40 +210,47 @@ public class ResourceUtil {
      * @param url
      * @param runInUIJob true if this method should run as an UI Job. 
      * If it is true, this method must be called in UI thread.
-     * @return
-     * @throws Exception
+     * 
+     * TODO Unclear why the runInUIJob is actually used, because
+     *      it will in fact NOT run in the UI, but in a background job.
+     *      It will wait for the result in either case, so why a background job??
+     * @return Stream for the URL
+     * @throws Exception on error
      */
-    public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
-        if (runInUIJob && URL_CACHE.getValue(url)== null) {
-            // Stream to be set in background job
-            final AtomicReference<InputStream> stream = new AtomicReference<>();
-            IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
+    public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception
+    {
+        final AtomicReference<InputStream> stream = new AtomicReference<>();
+        if (runInUIJob)
+        {
+            final Job job = new Job("OPI URL Opener")
+            {
                 @Override
-                public void run(IProgressMonitor monitor)
-                        throws InvocationTargetException,
-                        InterruptedException {
-                    try {
-                        monitor.beginTask("Connecting to " + url,
-                                IProgressMonitor.UNKNOWN);
+                protected IStatus run(final IProgressMonitor monitor)
+                {
+                    monitor.beginTask("Connecting to " + url, IProgressMonitor.UNKNOWN);
+                    try
+                    {
                         stream.set(openURLStream(url));
-                    } catch (IOException e) {
-                        throw new InvocationTargetException(e,
-                                "Timeout while connecting to " + url);
-                    } finally {
-                        monitor.done();
                     }
+                    catch (IOException ex)
+                    {
+                        OPIBuilderPlugin.getLogger().log(Level.WARNING, "URL '" + url + "' failed to open", ex);
+                        monitor.setCanceled(true);
+                        return Status.CANCEL_STATUS;
+                    }
+                    monitor.done();
+                    return Status.OK_STATUS;
                 }
-
             };
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                    .run(true, false, openURLTask);
-            return stream.get();
+            job.schedule();
+            job.join();
         }
-        // else return stream w/o UI job, maybe from cache
-        return openURLStream(url);
+        else // Open stream w/o UI job
+            stream.set(openURLStream(url));
+        return stream.get();
     }
 	
-	public static InputStream openURLStream(final URL url) throws IOException{
+	private static InputStream openURLStream(final URL url) throws IOException{
 		File tempFilePath = URL_CACHE.getValue(url);
 		if(tempFilePath != null){
             OPIBuilderPlugin.getLogger().log(Level.FINE, "Found cached file for URL '" + url + "'");
@@ -295,7 +302,7 @@ public class ResourceUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStream openRawURLStream(final URL url) throws IOException{
+	private static InputStream openRawURLStream(final URL url) throws IOException{
 		if(url.getProtocol().equals("https")){			//$NON-NLS-1$
 			//The code to support https protocol is provided by Eric Berryman (eric.berryman@gmail.com) from Frib
 	        // Create a trust manager that does not validate certificate chains
