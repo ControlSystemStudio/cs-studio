@@ -333,6 +333,8 @@ public class ValueFactory {
 	    return newVDouble((Double) value, alarm, time, display);
 	}else if(value instanceof Integer){
 	    return newVInt((Integer)value, alarm, time, display);
+	}else if(value instanceof Float){
+	    return newVFloat((Float)value, alarm, time, display);
 	}	
 	throw new UnsupportedOperationException();
     }
@@ -394,6 +396,19 @@ public class ValueFactory {
      */
     public static VDouble newVDouble(Double value, Time time) {
         return newVDouble(value, alarmNone(), time, displayNone());
+    }
+
+    /**
+     * Creates a new VFloat.
+     * 
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VFloat newVFloat(final Float value, final Alarm alarm, final Time time, final Display display) {
+        return new IVFloat(value, alarm, time, display);
     }
 
     /**
