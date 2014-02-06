@@ -20,6 +20,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.net.ssl.HostnameVerifier;
@@ -205,56 +206,60 @@ public class ResourceUtil {
 //		return urlString.contains(":/");  //$NON-NLS-1$
 	}
 	
-	private static InputStream inputStream;
-	private static Object lock = new Boolean(true);
-	
-	/**Open URL stream in UI Job if runInUIJob is true.
-	 * @param url
-	 * @param runInUIJob true if this method should run as an UI Job. 
-	 * If it is true, this method must be called in UI thread.
-	 * @return
-	 * @throws Exception
-	 */
-	public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
-		inputStream = null;
-		if (runInUIJob && URL_CACHE.getValue(url)== null) {
-			synchronized (lock) {
-				IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
+    /**Open URL stream in UI Job if runInUIJob is true.
+     * @param url
+     * @param runInUIJob true if this method should run as an UI Job. 
+     * If it is true, this method must be called in UI thread.
+     * @return
+     * @throws Exception
+     */
+    public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
+        if (runInUIJob && URL_CACHE.getValue(url)== null) {
+            // Stream to be set in background job
+            final AtomicReference<InputStream> stream = new AtomicReference<>();
+            IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
+                @Override
+                public void run(IProgressMonitor monitor)
+                        throws InvocationTargetException,
+                        InterruptedException {
+                    try {
+                        monitor.beginTask("Connecting to " + url,
+                                IProgressMonitor.UNKNOWN);
+                        stream.set(openURLStream(url));
+                    } catch (IOException e) {
+                        throw new InvocationTargetException(e,
+                                "Timeout while connecting to " + url);
+                    } finally {
+                        monitor.done();
+                    }
+                }
 
-					public void run(IProgressMonitor monitor)
-							throws InvocationTargetException,
-							InterruptedException {
-						try {
-							monitor.beginTask("Connecting to " + url,
-									IProgressMonitor.UNKNOWN);
-							inputStream = openURLStream(url);
-						} catch (IOException e) {
-							throw new InvocationTargetException(e,
-									"Timeout while connecting to " + url);
-						} finally {
-							monitor.done();
-						}
-					}
-
-				};
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-						.run(true, false, openURLTask);
-			}
-		}else
-			return openURLStream(url);
-		return inputStream;
-	}
+            };
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .run(true, false, openURLTask);
+            return stream.get();
+        }
+        // else return stream w/o UI job, maybe from cache
+        return openURLStream(url);
+    }
 	
 	public static InputStream openURLStream(final URL url) throws IOException{
 		File tempFilePath = URL_CACHE.getValue(url);
 		if(tempFilePath != null){
+            OPIBuilderPlugin.getLogger().log(Level.FINE, "Found cached file for URL '" + url + "'");
 			return new FileInputStream(tempFilePath);
 		}else{
 			InputStream inputStream = openRawURLStream(url);			
 			if(inputStream !=null){
 				try {
 					IPath urlPath = new URLPath(url.toString());
-					final File file = File.createTempFile(urlPath.removeFileExtension().lastSegment(), "."+urlPath.getFileExtension()); //$NON-NLS-1$ //$NON-NLS-2$					
+					
+					// createTempFile(), at least with jdk1.7.0_45,
+					// requires at least 3 chars for the 'prefix', so add "opicache"
+					// to assert a minimum length
+					final String cache_file_prefix = "opicache" + urlPath.removeFileExtension().lastSegment();
+                    final String cache_file_suffix = "."+urlPath.getFileExtension();
+					final File file = File.createTempFile(cache_file_prefix, cache_file_suffix);			
 					file.deleteOnExit();	
 					if(!file.canWrite())
 						throw new Exception("Unable to write temporary file.");
@@ -277,7 +282,7 @@ public class ResourceUtil {
 					return new FileInputStream(file);
 				} catch (Exception e) {
 					OPIBuilderPlugin.getLogger().log(Level.WARNING,
-							"Error to cache file from URL: " + e.getMessage());
+							"Error to cache file from URL '" + url + "'", e);
 				}	            
 			}			
 			return inputStream;
