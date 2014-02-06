@@ -31,11 +31,15 @@ public class DataBrowserWidgetFigure extends Figure
      *  @param filename Configuration file name
      *  @param toolbar
      */
-    public DataBrowserWidgetFigure(final String filename, final boolean toolbar)
+    public DataBrowserWidgetFigure(final String filename, final boolean toolbar, 
+    		final String selectionValuePv, final boolean showAxisTrace, final boolean showValueLabels)
     {
         this.filename = filename;
 
         plot = Plot.forDraw2D();
+        plot.setShowAxisTrace(showAxisTrace);
+        plot.setShowValueLabels(showValueLabels);
+        plot.setSelectionValuePv(selectionValuePv);
         plot.setToolbarVisible(toolbar);
         add(plot.getFigure());
     }
@@ -102,4 +106,31 @@ public class DataBrowserWidgetFigure extends Figure
         graphics.fillRectangle(rect);
         graphics.drawString(text, rect.x, rect.y);
     }
+    
+	/**
+	 * Sets selection value PV.
+	 * 
+	 * @param selectionValuePv, selection value PV
+	 */
+	public void setSelectionValuePv(String selectionValuePv)  {
+		plot.setSelectionValuePv(selectionValuePv);
+	}
+
+	/**
+	 * Shows or hides the axis traces.
+	 * 
+	 * @param showAxisTrace true if the axis traces are visible or false otherwise
+	 */
+	public void setShowAxisTrace(boolean showAxisTrace) {
+		plot.setShowAxisTrace(showAxisTrace);
+	}
+	
+	/**
+	 * Shows or hides the hover value labels.
+	 * 
+	 * @param showValueLabels true if the values are visible or false otherwise
+	 */
+	public void setShowValueLabels(boolean showValueLabels) {
+		plot.setShowValueLabels(showValueLabels);
+	}
 }

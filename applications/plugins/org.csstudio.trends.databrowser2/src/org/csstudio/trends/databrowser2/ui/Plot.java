@@ -24,6 +24,7 @@ import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.swt.xygraph.pvmanager.SelectionValueExporter;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Messages;
@@ -91,6 +92,9 @@ public class Plot
 	private boolean plot_changes_graph = false;
 
 	private TimeConfigButton time_config_button;
+	
+	/** The value exporter, which generates a value from the mouse position and forwards it to the PV manager */
+	private SelectionValueExporter selectionValueExporter;
 
 	/**
 	 * Create a plot that is attached to an SWT canvas
@@ -212,6 +216,8 @@ public class Plot
 		});
 
 		xygraph.primaryYAxis.addListener(createValueAxisListener(0));
+		selectionValueExporter = new SelectionValueExporter(xygraph.getPlotArea());
+		selectionValueExporter.setUseTimeFormatX(true);
 	}
 
 	/**
@@ -880,5 +886,32 @@ public class Plot
 	{
 		XYGraphSettingsUtil.restoreXYGraphPropsFromSettings(plot.getXYGraph(),
 				settings);
+	}
+	
+	/**
+	 * Sets selection value PV.
+	 * 
+	 * @param selectionValuePv selection value PV
+	 */
+	public void setSelectionValuePv(String selectionValuePv) {
+		selectionValueExporter.setSelectionValuePv(selectionValuePv);
+	}
+
+	/**
+	 * Show or hide the axis trace.
+	 * 
+	 * @param show true to show the axis trace and false to hide
+	 */
+	public void setShowAxisTrace(boolean show) {
+		xygraph.setShowAxisTrace(show);
+	}
+	
+	/**
+	 * Show or hide the value labels.
+	 * 
+	 * @param show true to show the value labels and false to hide
+	 */
+	public void setShowValueLabels(boolean show) {
+		xygraph.setShowValueLabels(show);
 	}
 }
