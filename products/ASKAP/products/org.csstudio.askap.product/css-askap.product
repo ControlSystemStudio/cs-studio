@@ -33,8 +33,8 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
 
    <splash
       location="org.csstudio.askap.product"
-      startupProgressRect="20,220,340,15"
-      startupMessageRect="20,200,340,20"
+      startupProgressRect="105,135,350,15"
+      startupMessageRect="105,115,350,20"
       startupForegroundColor="FFFFFF" />
    <launcher name="css">
       <linux icon="/org.csstudio.askap.product/icons/css48.xpm"/>
