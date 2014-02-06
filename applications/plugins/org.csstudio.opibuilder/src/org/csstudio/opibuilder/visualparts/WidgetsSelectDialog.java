@@ -43,13 +43,20 @@ public class WidgetsSelectDialog extends Dialog {
 	private String selectedWidget;
 	private int widgetCount;
 	private String defaultSelectedWidgetID;
+	private boolean onlyPVWidgets;
 	
-	public WidgetsSelectDialog(Shell parentShell, int widgetCount) {
+	/**Constructor
+	 * @param parentShell the parent shell.
+	 * @param widgetCount Number of widgets that will be created (only for the warning dialog)
+	 * @param onlyPVWidgets true if only list PV widgets.
+	 */
+	public WidgetsSelectDialog(Shell parentShell, int widgetCount, boolean onlyPVWidgets) {
 		super(parentShell);		
 		this.widgetCount = widgetCount;
 		// Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
         defaultSelectedWidgetID = "org.csstudio.opibuilder.widgets.TextUpdate"; //$NON-NLS-1$
+        this.onlyPVWidgets = onlyPVWidgets;
 	}
 	
 	public String getOutput(){
@@ -77,12 +84,15 @@ public class WidgetsSelectDialog extends Dialog {
 		rightComposite.setLayoutData(gd);		
 		
 		widgetsViewer = createWidgetsViewer(rightComposite);
-		List<String> pvWidgetList = new ArrayList<String>();
+		List<String> widgetsList = new ArrayList<String>();
 		for(String typeID : WidgetsService.getInstance().getAllWidgetTypeIDs()){
-			if(WidgetsService.getInstance().getWidgetDescriptor(typeID).getWidgetModel().
-					getProperty(AbstractPVWidgetModel.PROP_PVNAME) != null)
-				pvWidgetList.add(typeID);
+			if(onlyPVWidgets && WidgetsService.getInstance().getWidgetDescriptor(typeID).getWidgetModel().
+					getProperty(AbstractPVWidgetModel.PROP_PVNAME) == null)
+				continue;
+			widgetsList.add(typeID);
 		}
+		
+		//sort widgets by name?
 //		String[] pvWidgets = pvWidgetList.toArray(new String[0]);
 //		Arrays.sort(pvWidgets, new Comparator<String>() {
 //
@@ -93,7 +103,7 @@ public class WidgetsSelectDialog extends Dialog {
 //			}
 //		});
 		
-		widgetsViewer.setInput(pvWidgetList);		
+		widgetsViewer.setInput(widgetsList);		
 		widgetsViewer.setSelection(
 				new StructuredSelection(defaultSelectedWidgetID)); 
 		

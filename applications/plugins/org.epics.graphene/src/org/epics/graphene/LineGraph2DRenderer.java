@@ -1,11 +1,12 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.Arrays;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.SortedListView;
@@ -53,14 +54,30 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
         return interpolation;
     }
     
+    /**
+     *Current state of highlightFocusValue.
+     * <ul>
+     *  <li>True - highlight and show the value the mouse is on.</li>
+     *  <li>False - Avoid calculation involved with finding the highlighted value/ do not highlight the value.</li>
+     * </ul>
+     * @return true or false
+     */
     public boolean isHighlightFocusValue() {
         return highlightFocusValue;
     }
     
+    /**
+     *Current index of the value that the mouse is focused on.
+     * @return focused index (in the dataset).
+     */
     public int getFocusValueIndex() {
         return focusValueIndex;
     }
     
+    /**
+     *Current x-position(pixel) of the value that the mouse is focused on.
+     * @return the x position that the mouse is focused on in the graph (pixel).
+     */
     public Integer getFocusPixelX() {
         return focusPixelX;
     }
@@ -92,7 +109,8 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
         this.g = g;
         
         calculateRanges(data.getXStatistics(), data.getYStatistics());
-        calculateGraphArea();
+        calculateLabels();
+        calculateGraphArea();        
         drawBackground();
         drawGraphArea();
         
@@ -110,7 +128,8 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
             if (highlightFocusValue) {
                 g.setColor(new Color(0, 0, 0, 128));
                 int x = (int) scaledX(xValues.getDouble(currentIndex));
-                g.drawLine(x, yAreaStart, x, yAreaEnd);
+                g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+                g.drawLine(x, yAreaCoordStart, x, yAreaCoordEnd - 1);
             }
         } else {
             focusValueIndex = -1;

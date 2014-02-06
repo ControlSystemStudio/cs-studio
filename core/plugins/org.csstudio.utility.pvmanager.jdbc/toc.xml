@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.csstudio.utility.pvmanager.ui/toc.xml#servicesyntax" label="Database Services">
+    <topic label="Database Services"  href="html/jdbc-xml-syntax.html"/>
+</toc>

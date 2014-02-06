@@ -177,17 +177,6 @@ public class SearchView extends ViewPart
 		});
 		AutoCompleteWidget acw = new AutoCompleteWidget(pattern, AutoCompleteTypes.PV);
 
-		// final ComboHistoryHelper pattern_history =
-		// new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
-		// TAG_CHANNELS, pattern)
-		// {
-		// @Override
-		// public void newSelection(final String entered_pattern)
-		// {
-		// searchForChannels();
-		// }
-		// };
-
         search = new Button(parent, SWT.PUSH);
         search.setText(Messages.Search);
         search.setToolTipText(Messages.SearchTT);
@@ -332,8 +321,6 @@ public class SearchView extends ViewPart
             {
                 if (pattern.isDisposed())
                     return;
-                pattern.setEnabled(false);
-                search.setEnabled(false);
                 MessageDialog.openError(pattern.getShell(),
                     Messages.Error,
                     NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage()));
