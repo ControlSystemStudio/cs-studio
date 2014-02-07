@@ -309,6 +309,7 @@ class RPCServiceMethod extends ServiceMethod {
     }
 
     //non standalone results
+    // TODO support VStatistics and other types ... affects other classess too
 
     String resultName = getResultDescriptions().keySet().toArray(new String[getResultDescriptions().size()])[0];
     String fieldName = this.rpcServiceMethodDescription.getFieldNames().get(resultName);

@@ -29,6 +29,7 @@ import org.epics.pvmanager.pva.adapters.PVFieldToVInt;
 import org.epics.pvmanager.pva.adapters.PVFieldToVIntArray;
 import org.epics.pvmanager.pva.adapters.PVFieldToVShort;
 import org.epics.pvmanager.pva.adapters.PVFieldToVShortArray;
+import org.epics.pvmanager.pva.adapters.PVFieldToVStatistics;
 import org.epics.pvmanager.pva.adapters.PVFieldToVString;
 import org.epics.pvmanager.pva.adapters.PVFieldToVStringArray;
 import org.epics.pvmanager.pva.adapters.PVFieldToVTable;
@@ -45,6 +46,7 @@ import org.epics.vtype.VInt;
 import org.epics.vtype.VIntArray;
 import org.epics.vtype.VShort;
 import org.epics.vtype.VShortArray;
+import org.epics.vtype.VStatistics;
 import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.VTable;
@@ -301,6 +303,17 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
             }
         };
 
+    //  -> VStatistics 
+    final static PVATypeAdapter ToVStatistics = new PVATypeAdapter(
+    		VStatistics.class,
+    		new String[] { "uri:ev4:nt/2012/pwd:NTAggregate" })
+    	{
+            @Override
+            public VStatistics createValue(final PVStructure message, Field valueType, boolean disconnected) {
+            	return new PVFieldToVStatistics(message, disconnected);
+            }
+        };
+
     private static final Set<PVATypeAdapter> converters;
     
     static {
@@ -329,6 +342,8 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
         newFactories.add(ToVTable);
         newFactories.add(ToVDoubleArrayAsMatrix);	// NTMatrix support
         newFactories.add(ToVTableAsNameValue);	// NTNameValue support
+
+        newFactories.add(ToVStatistics); // NTAggregate support
 
         converters = Collections.unmodifiableSet(newFactories);
     }

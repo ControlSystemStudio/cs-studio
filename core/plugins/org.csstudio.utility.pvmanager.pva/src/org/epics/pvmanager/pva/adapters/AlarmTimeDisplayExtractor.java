@@ -13,19 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.PVField;
-import org.epics.pvdata.pv.PVInt;
-import org.epics.pvdata.pv.PVLong;
 import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVString;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.util.text.NumberFormats;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Display;
-import org.epics.vtype.Time;
-import org.epics.util.time.Timestamp;
 
-public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
+public class AlarmTimeDisplayExtractor extends AlarmTimeExtractor implements Display {
 
     private static final Map<String, NumberFormat> formatterCache =
             new ConcurrentHashMap<String, NumberFormat>();
@@ -95,11 +89,6 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
     };
 	
 	
-	protected final AlarmSeverity alarmSeverity;
-	protected final String alarmStatus;
-	protected final Timestamp timeStamp;
-	protected final Integer timeUserTag;
-	protected final boolean isTimeValid;
 	protected final Double lowerDisplayLimit;
 	protected final Double lowerCtrlLimit;
 	protected final Double lowerAlarmLimit;
@@ -111,74 +100,12 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 	protected final Double upperCtrlLimit;
 	protected final Double upperDisplayLimit;
 	
-	private static final Timestamp noTimeStamp = org.epics.util.time.Timestamp.of(0,0);
-	private static final Integer noTimeUserTag = null;
 	private static final String noUnits = "";
 	private static final Double noLimit = 0.0;
 	
 	public AlarmTimeDisplayExtractor(PVStructure pvField, boolean disconnected)
 	{
-		// alarm_t
-		if (disconnected)
-		{
-			alarmSeverity = AlarmSeverity.UNDEFINED;
-			alarmStatus = "CLIENT";
-		}
-		else
-		{
-			PVStructure alarmStructure = pvField.getStructureField("alarm");
-			if (alarmStructure != null)
-			{
-				PVInt severityField = alarmStructure.getIntField("severity");
-				if (severityField == null)
-					alarmSeverity = AlarmSeverity.UNDEFINED;
-				else
-					alarmSeverity = alarmSeverityMapLUT[severityField.get()];
-				// no explicit out-of-bounds check
-				
-				
-				PVInt statusField = alarmStructure.getIntField("status");
-				if (statusField == null)
-					alarmStatus = "UNDEFINED";
-				else
-					alarmStatus = alarmStatusMapLUT[statusField.get()];
-				// no explicit out-of-bounds check
-				
-			}
-			else
-			{
-				alarmSeverity = AlarmSeverity.UNDEFINED;
-				alarmStatus = "UNDEFINED";
-			}
-		}
-		
-		// timeStamp_t
-		PVStructure timeStampStructure = pvField.getStructureField("timeStamp");
-		if (timeStampStructure != null)
-		{
-			PVLong secsField = timeStampStructure.getLongField("secondsPastEpoch");
-			PVInt nanosField = timeStampStructure.getIntField("nanoSeconds");
-			
-			if (secsField == null || nanosField == null)
-				timeStamp = noTimeStamp;
-			else
-				timeStamp = org.epics.util.time.Timestamp.of(secsField.get(), nanosField.get());
-			
-			PVInt userTagField = timeStampStructure.getIntField("userTag");
-			if (userTagField == null)
-				timeUserTag = noTimeUserTag;
-			else
-				timeUserTag = userTagField.get();
-			
-			isTimeValid = (timeStamp != null);
-		}
-		else
-		{
-			timeStamp = noTimeStamp;
-			timeUserTag = null;
-			isTimeValid = false;
-		}
-		
+		super(pvField, disconnected);
 		
 		// display_t
 		PVStructure displayStructure = pvField.getStructureField("display");
@@ -250,56 +177,6 @@ public class AlarmTimeDisplayExtractor implements Alarm, Time, Display {
 		}
 		else
 			return defaultValue;
-	}
-	
-	// org.epics.pvdata.property.AlarmSeverity to pvmanager.AlarmSeverity
-	protected static final AlarmSeverity alarmSeverityMapLUT[] =
-	{
-		AlarmSeverity.NONE,
-		AlarmSeverity.MINOR,
-		AlarmSeverity.MAJOR,
-		AlarmSeverity.INVALID,
-		AlarmSeverity.UNDEFINED
-	};
-	
-	// org.epics.pvdata.property.AlarmStatus to pvmanager.AlarmStatus
-	protected static final String alarmStatusMapLUT[] =
-	{
-		"NONE",
-		"DEVICE",
-		"DRIVER",
-		"RECORD",
-		"DB",
-		"CONF",
-		"UNDEFINED",
-		"CLIENT"
-	};
- 
-	@Override
-	public AlarmSeverity getAlarmSeverity() {
-		return alarmSeverity;
-	}
-
-    @Override
-    public String getAlarmName() {
-        return alarmStatus.toString();
-    }
-        
-        
-
-	@Override
-	public Timestamp getTimestamp() {
-		return timeStamp;
-	}
-
-	@Override
-	public Integer getTimeUserTag() {
-		return timeUserTag;
-	}
-
-	@Override
-	public boolean isTimeValid() {
-		return isTimeValid;
 	}
 
 	@Override
