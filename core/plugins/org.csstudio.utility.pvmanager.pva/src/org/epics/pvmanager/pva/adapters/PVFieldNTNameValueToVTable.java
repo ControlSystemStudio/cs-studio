@@ -4,16 +4,33 @@
  */
 package org.epics.pvmanager.pva.adapters;
 
-import org.epics.pvdata.factory.ConvertFactory;
-import org.epics.pvdata.pv.*;
-import org.epics.util.array.*;
-import org.epics.vtype.VTable;
-import org.epics.vtype.VTypeToString;
-import org.epics.vtype.ValueFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.epics.pvdata.factory.ConvertFactory;
+import org.epics.pvdata.pv.Convert;
+import org.epics.pvdata.pv.DoubleArrayData;
+import org.epics.pvdata.pv.FloatArrayData;
+import org.epics.pvdata.pv.IntArrayData;
+import org.epics.pvdata.pv.PVByteArray;
+import org.epics.pvdata.pv.PVDoubleArray;
+import org.epics.pvdata.pv.PVFloatArray;
+import org.epics.pvdata.pv.PVIntArray;
+import org.epics.pvdata.pv.PVLongArray;
+import org.epics.pvdata.pv.PVScalarArray;
+import org.epics.pvdata.pv.PVShortArray;
+import org.epics.pvdata.pv.PVStringArray;
+import org.epics.pvdata.pv.PVStructure;
+import org.epics.pvdata.pv.PVUByteArray;
+import org.epics.pvdata.pv.PVUIntArray;
+import org.epics.pvdata.pv.PVULongArray;
+import org.epics.pvdata.pv.PVUShortArray;
+import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvdata.pv.StringArrayData;
+import org.epics.vtype.VTable;
+import org.epics.vtype.VTypeToString;
+import org.epics.vtype.ValueFactory;
 
 /**
  * @author msekoranja

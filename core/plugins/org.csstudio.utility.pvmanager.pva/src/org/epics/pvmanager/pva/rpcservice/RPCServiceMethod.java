@@ -4,11 +4,27 @@
  */
 package org.epics.pvmanager.pva.rpcservice;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.epics.pvaccess.client.rpc.RPCClient;
 import org.epics.pvaccess.server.rpc.RPCRequestException;
 import org.epics.pvdata.factory.FieldFactory;
 import org.epics.pvdata.factory.PVDataFactory;
-import org.epics.pvdata.pv.*;
+import org.epics.pvdata.pv.Field;
+import org.epics.pvdata.pv.FieldCreate;
+import org.epics.pvdata.pv.PVBoolean;
+import org.epics.pvdata.pv.PVDouble;
+import org.epics.pvdata.pv.PVFloat;
+import org.epics.pvdata.pv.PVFloatArray;
+import org.epics.pvdata.pv.PVInt;
+import org.epics.pvdata.pv.PVString;
+import org.epics.pvdata.pv.PVStructure;
+import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvdata.pv.Structure;
 import org.epics.pvmanager.WriteFunction;
 import org.epics.pvmanager.pva.adapters.PVFieldNTNameValueToVTable;
 import org.epics.pvmanager.pva.adapters.PVFieldToVFloatArray;
@@ -16,10 +32,16 @@ import org.epics.pvmanager.pva.adapters.PVFieldToVImage;
 import org.epics.pvmanager.pva.adapters.PVFieldToVTable;
 import org.epics.pvmanager.pva.rpcservice.rpcclient.PooledRPCClientFactory;
 import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.vtype.*;
-
-import java.util.*;
-import java.util.concurrent.ExecutorService;
+import org.epics.vtype.VBoolean;
+import org.epics.vtype.VDouble;
+import org.epics.vtype.VFloat;
+import org.epics.vtype.VFloatArray;
+import org.epics.vtype.VImage;
+import org.epics.vtype.VInt;
+import org.epics.vtype.VString;
+import org.epics.vtype.VTable;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /**
  * The implementation of a pvAccess RPC rpcservice method.
@@ -93,7 +115,6 @@ class RPCServiceMethod extends ServiceMethod {
 
     //operation name type + parameter types
     List<Field> fieldList = new ArrayList<Field>(Arrays.asList(fieldCreate.createScalar(ScalarType.pvString)));
-    int i = 0;
     for (String parameterName : this.parameterNames.keySet()) {
       fieldList.add(convertToPvType(getArgumentTypes().get(parameterName)));
     }
@@ -125,11 +146,11 @@ class RPCServiceMethod extends ServiceMethod {
     throw new IllegalArgumentException("Argument class " + argType.getSimpleName() + " not supported in pvAccess RPC Service");
   }
 
-
+  /*
   private ExecutorService getExecutorService() {
     return this.rpcServiceMethodDescription.executorService;
   }
-
+  */
 
   private boolean isResultQuery() {
     return !getResultDescriptions().isEmpty();

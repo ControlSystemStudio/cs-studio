@@ -4,12 +4,12 @@
  */
 package org.epics.pvmanager.pva.rpcservice;
 
-import org.epics.pvmanager.pva.rpcservice.rpcclient.PooledRPCClientFactory;
-import org.epics.vtype.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,14 +18,20 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.epics.pvmanager.pva.rpcservice.rpcclient.PooledRPCClientFactory;
+import org.epics.vtype.VBoolean;
+import org.epics.vtype.VDouble;
+import org.epics.vtype.VFloat;
+import org.epics.vtype.VFloatArray;
+import org.epics.vtype.VImage;
+import org.epics.vtype.VInt;
+import org.epics.vtype.VString;
+import org.epics.vtype.VTable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Utility class to create pvAccess RPC Services.
@@ -125,7 +131,6 @@ public class RPCServices {
           pvAccessRPCMethodDescription.addRPCResult(resultName, resultFieldName, resultDescription, getClassFromString(resultType));
         }
 
-        Map<String, String> argumentAliases = new HashMap<>();
         NodeList arguments = (NodeList) xPath.evaluate("argument", method, XPathConstants.NODESET);
         for (int nArg = 0; nArg < arguments.getLength(); nArg++) {
           Node argument = arguments.item(nArg);
