@@ -29,7 +29,6 @@ DATE=`date +%y_%m_%d_%k_%M`
 FILE=""
 VERBOSE=""
 EXEC=""
-COMMAND=""
 
 #color
 COLOR_NORMAL='\e[0;30m'
@@ -41,16 +40,14 @@ COLOR_BLACK='\e[1;30m'
 COLOR_ORANGE='\e[0;33m'
 
 
-#TABLE
-TABLES="sample,smpl_eng,array_val,chan_grp,channel,retent"
-
 # help commamd
 showusage() {
-    	echo -e "css-archive-dbmanager allows you to save and restore an archive. Version $COLOR_BLACK $VERSION $COLOR_NORMAL"
+    echo -e "css-archive-dbmanager allows you to save and restore an archive. Version $COLOR_BLACK $VERSION $COLOR_NORMAL"
 	echo -e "	- Save database into a file";
 	echo -e "	- Restore database from a file";
 	echo -e " ";
-        echo -e "Usage:"
+    
+    	echo -e "Usage:"
  	echo -e "	css-archive-dbmanager -save | -restore -file <my backup file> [-rdb_user user] [-rdb_url url] ";
 	echo -e " ";
 	echo -e "Options: ";
@@ -63,31 +60,57 @@ showusage() {
 	echo -e " -rdb_url url  	             \t   Archive RDB URL (jdbc:postgresql://localhost/css_archive_3_0_0 by default)";
 	echo -e " -verbose                     \t   verbose mode";
 
-        echo -e " ";
+    	echo -e " ";
 }
 
 # save database
 save() {
        if [ -z "${FILE}" ]
 	    then
-		echo "option --file requires in argument." >&2
-		exit 1
-            fi
+			echo "option -file requires in argument." >&2
+			exit 1
+        fi
 
-    	/usr/bin/pg_dump --host=$HOST --username="$USERNAME" --role="archive" --format=custom --blobs --section=data $VERBOSE --file="$FILE" $DATABASE -t "sample" -t "smpl_eng" -t "array_val" -t "chan_grp" -t "channel" -t "retent"
+        # Read Password
+	echo -n "Enter password for user \"$USERNAME\"  :  "
+	read -s password
+	export PGPASSWORD="$password"
+	echo
+
+	# saving all database
+	/usr/bin/pg_dump --host=$HOST --username="$USERNAME" --role="archive" --blobs --format=custom --section=data $VERBOSE --file="$FILE" $DATABASE
+
+
 	if [ $? -ne 0 ]
 	then 
 		echo -e ${COLOR_BLUE}"[ backup ]"${COLOR_NORMAL}"\t\t "${COLOR_RED}"[failed]"${COLOR_NORMAL}
 	else
 		echo -e ${COLOR_BLUE}"[ backup ]"${COLOR_NORMAL}"\t\t "${COLOR_GREEN}"[succeeded]"${COLOR_NORMAL}
 	fi
-	reset
 }
 
 
 # restore database
 restore() {
+	echo -e "${COLOR_ORANGE} !!! The archive engine must be stopped during the restore !!! ${COLOR_NORMAL}"
+	
+	echo "Have you stopped the service archive engine before the restore (yes/no)?"
+	read stoparchive
+
+	if [ ! $stoparchive = "yes" ] 
+	then 
+		echo "Could you please stop the archive engine before the restore and then confirme (yes) to continue the process ?"
+		read confirmationstoparchive
+		if [ ! $confirmationstoparchive = "yes" ] 
+		then 
+			exit 0
+		fi
+	fi
+
+	echo
+
 	echo -e "${COLOR_ORANGE} !!! The archive database will be cleaned before the restore. It is recommended to save it first !!! ${COLOR_NORMAL}"
+	
 	echo "Do you want to continue (yes/no)?"
 	read response
 	if [ $response = "no" ] 
@@ -104,20 +127,31 @@ restore() {
 		fi
 	fi
 
+	echo
+	
+    	# Read Password
+	echo -n "Enter password for user \"$USERNAME\"  :  "
+	read -s password
+	export PGPASSWORD="$password"
+
+	echo
+
 	# data cleaning tables before restore
 	echo -e -n "${COLOR_BLUE}"[ restore ]"${COLOR_NORMAL} 1/2 data cleaning tables "
-	PGDB="-d $DATABASE -U $USERNAME"
+	PGDB="-d $DATABASE -U $USERNAME --host=$HOST"
+	TABLES="retent,severity,smpl_mode,sample,smpl_eng,array_val,chan_grp,archive_schema,channel,status,enum_metadata,num_metadata";
+
 	/usr/bin/psql $PGDB -q --command "TRUNCATE TABLE $TABLES"
 
 	if [ $? -ne 0 ]
 	then 
 		echo -e "\t\t ${COLOR_RED}[failed]${COLOR_NORMAL}"
+		exit 1;
 	else
 		echo -e "\t\t ${COLOR_GREEN}[succeeded]${COLOR_NORMAL}"
 	fi
 
 	echo -e -n "\n${COLOR_BLUE}"[ restore ]"${COLOR_NORMAL} 2/2 restoring database"
-
 
 	# restore data tables
     	/usr/bin/pg_restore --host $HOST --username "$USERNAME" --dbname "$DATABASE" --role "archive" $VERBOSE "$FILE"
@@ -128,26 +162,10 @@ restore() {
 	else
 		echo -e "\t\t\t\t ${COLOR_GREEN}[succeeded]${COLOR_NORMAL}"
 	fi
-	reset
+	
+	echo
+	
 }
- 
-# reinitialize
-reset() {
-	COMMAND=""
-}
-
-
-loadrestorefile() {
-	for i in `ls /tmp/ | grep backup`
-	do
-		echo "/tmp"$1/$i
-	done
-	echo ""
-	echo -e ${COLOR_BLACK}"Choose default file : "${COLOR_NORMAL}
-	echo ""
-	read FILE
-}
-
 
 
 # main function: check arguments
@@ -268,8 +286,5 @@ then
     fi
 	restore;      		    	
 fi
-
-
-
 
 
