@@ -113,7 +113,7 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	 */
 	@Override
 	public ValueIterator getRawValues(int key, String name, Timestamp start, Timestamp end) throws UnknownChannelException, Exception {
-		return new ApplianceValueIterator (this, name, start, end, false);
+		return new ApplianceRawValueIterator(this, name, start, end);
 	}
 
 	/* (non-Javadoc)
@@ -121,14 +121,11 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	 */
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
-		int interval = (int) ((end.getSec() - start.getSec()) / count);
-		StringBuilder mean = new StringBuilder();
-		mean.append("mean_");
-		mean.append(interval);
-		mean.append('(');
-		mean.append(name);
-		mean.append(')');
-		return new ApplianceValueIterator(this, mean.toString(), start, end, true);
+		try {
+			return new ApplianceOptimizedValueIterator(this, name, start, end, count, false);
+		} catch (ArchiverApplianceException e) {
+			return new ApplianceRawValueIterator(this, name, start, end);
+		}
 	}
 
 	/* (non-Javadoc)
