@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
+import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -51,6 +52,10 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     
     public static final IPath EMPTY_PATH = new Path(""); //$NON-NLS-1$
 
+    public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv";
+	public static final String PROP_SHOW_AXIS_TRACE = "show_axis_trace";
+	public static final String PROP_SHOW_VALUE_LABELS = "show_value_labels";
+    
     /** Initialize */
     public DataBrowserWidgedModel()
     {
@@ -98,6 +103,12 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
                 }));
         addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, Messages.ShowToolbar,
                 WidgetPropertyCategory.Display, false));
+        addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
+				"Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
+        addProperty(new BooleanProperty(PROP_SHOW_AXIS_TRACE,
+        		"Show Axis Trace", WidgetPropertyCategory.Display, false));
+        addProperty(new BooleanProperty(PROP_SHOW_VALUE_LABELS,
+        		"Show Value Labels", WidgetPropertyCategory.Display, false));
     }
 
     /** @return Path to data browser configuration file, including macros. Never <code>null</code>. */
@@ -160,4 +171,31 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     {
         return "DataBrowserWidgetModel: " + getPlainFilename().toString();
     }
+    
+    /**
+     * Returns selection PV value.
+     * 
+     * @return Selection PV value.
+     */
+	public String getSelectionValuePv() {
+		return getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
+	}
+	
+	/**
+	 * Returns true if the axis trace is shown or false otherwise.
+	 * 
+	 * @return is axis trace displayed
+	 */
+	public boolean isShowAxisTrace() {
+		return getCastedPropertyValue(PROP_SHOW_AXIS_TRACE);
+	}
+	
+	/**
+	 * Returns true if the value labels are displayed or false otherwise.
+	 * 
+	 * @return are value labels displayed
+	 */
+	public boolean isShowValueLabels() {
+		return getCastedPropertyValue(PROP_SHOW_VALUE_LABELS);
+	}
 }
