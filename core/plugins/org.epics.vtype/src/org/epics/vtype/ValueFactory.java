@@ -82,6 +82,32 @@ public class ValueFactory {
     }
     
     /**
+     * Creates a new VShort.
+     * 
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VShort newVShort(final Short value, final Alarm alarm, final Time time, final Display display) {
+        return new IVShort(value, alarm, time, display);
+    }
+    
+    /**
+     * Creates a new VByte.
+     * 
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VByte newVByte(final Byte value, final Alarm alarm, final Time time, final Display display) {
+        return new IVByte(value, alarm, time, display);
+    }
+    
+    /**
      * New alarm with the given severity and status.
      * 
      * @param alarmSeverity the alarm severity
@@ -333,6 +359,10 @@ public class ValueFactory {
 	    return newVDouble((Double) value, alarm, time, display);
 	}else if(value instanceof Integer){
 	    return newVInt((Integer)value, alarm, time, display);
+	}else if(value instanceof Short){
+	    return newVShort((Short)value, alarm, time, display);
+	}else if(value instanceof Byte){
+	    return newVByte((Byte)value, alarm, time, display);
 	}else if(value instanceof Float){
 	    return newVFloat((Float)value, alarm, time, display);
 	}	
