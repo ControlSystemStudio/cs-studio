@@ -348,7 +348,6 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
         converters = Collections.unmodifiableSet(newFactories);
     }
     
-// TODO support statistics
     // TODO
     /*
 VEnumArray - not explicitly a NT
@@ -356,6 +355,5 @@ VMultiDouble - missing Display
 VMultiEnum  - missing Display
 VMultiInt - missing Display
 VMultiString  - missing Display
-VStatistics - missing NTStatistics
     */
 }

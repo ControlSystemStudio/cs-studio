@@ -11,6 +11,7 @@ import org.epics.util.time.Timestamp;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Time;
+import org.epics.vtype.ValueFactory;
 
 public class AlarmTimeExtractor implements Alarm, Time {
 
@@ -19,6 +20,8 @@ public class AlarmTimeExtractor implements Alarm, Time {
 	protected final Timestamp timeStamp;
 	protected final Integer timeUserTag;
 	protected final boolean isTimeValid;
+	
+	private static final Alarm noAlarm = ValueFactory.alarmNone();
 	
 	private static final Timestamp noTimeStamp = org.epics.util.time.Timestamp.of(0,0);
 	private static final Integer noTimeUserTag = null;
@@ -29,7 +32,7 @@ public class AlarmTimeExtractor implements Alarm, Time {
 		if (disconnected)
 		{
 			alarmSeverity = AlarmSeverity.UNDEFINED;
-			alarmStatus = "CLIENT";
+			alarmStatus = "DISCONNECTED";
 		}
 		else
 		{
@@ -54,8 +57,8 @@ public class AlarmTimeExtractor implements Alarm, Time {
 			}
 			else
 			{
-				alarmSeverity = AlarmSeverity.UNDEFINED;
-				alarmStatus = "UNDEFINED";
+				alarmSeverity = noAlarm.getAlarmSeverity();
+				alarmStatus = noAlarm.getAlarmName();
 			}
 		}
 		
@@ -77,13 +80,13 @@ public class AlarmTimeExtractor implements Alarm, Time {
 			else
 				timeUserTag = userTagField.get();
 			
-			isTimeValid = (timeStamp != null);
+			isTimeValid = (timeStamp != noTimeStamp);
 		}
 		else
 		{
-			timeStamp = noTimeStamp;
+			timeStamp = org.epics.util.time.Timestamp.now();
 			timeUserTag = null;
-			isTimeValid = false;
+			isTimeValid = true;
 		}
 		
 	}
@@ -118,7 +121,7 @@ public class AlarmTimeExtractor implements Alarm, Time {
 
     @Override
     public String getAlarmName() {
-        return alarmStatus.toString();
+        return alarmStatus;
     }
         
         

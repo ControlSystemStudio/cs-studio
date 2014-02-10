@@ -55,10 +55,6 @@ public class PVFieldToVFloatArray extends AlarmTimeDisplayExtractor implements V
   }
 
 
-  /**
-	 * @param pvField
-	 * @param disconnected
-	 */
 	public PVFieldToVFloatArray(PVStructure pvField, boolean disconnected) {
 		this(pvField, "value", disconnected);
 	}

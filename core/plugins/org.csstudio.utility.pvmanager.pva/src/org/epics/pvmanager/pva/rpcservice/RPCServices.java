@@ -20,14 +20,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.epics.pvmanager.pva.rpcservice.rpcclient.PooledRPCClientFactory;
-import org.epics.vtype.VBoolean;
-import org.epics.vtype.VDouble;
-import org.epics.vtype.VFloat;
-import org.epics.vtype.VFloatArray;
-import org.epics.vtype.VImage;
-import org.epics.vtype.VInt;
-import org.epics.vtype.VString;
-import org.epics.vtype.VTable;
+import org.epics.vtype.VType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -156,36 +149,16 @@ public class RPCServices {
   }
 
 
+  private static final String rootPackagePrefix = VType.class.getPackage().getName() + ".";
+  
   private static Class<?> getClassFromString(String argType) {
-    Class<?> argClass = null;
-    switch (argType) {
-      case "VBoolean":
-        argClass = VBoolean.class;
-        break;
-      case "VInt":
-        argClass = VInt.class;
-        break;
-      case "VString":
-        argClass = VString.class;
-        break;
-      case "VDouble":
-        argClass = VDouble.class;
-        break;
-      case "VFloat":
-        argClass = VFloat.class;
-        break;
-      case "VFloatArray":
-        argClass = VFloatArray.class;
-        break;
-      case "VTable":
-        argClass = VTable.class;
-        break;
-      case "VImage":
-        argClass = VImage.class;
-        break;
-      default:
-        throw new IllegalArgumentException("Type " + argType + " not supported.");
-    }
-    return argClass;
+	
+	String fullClassName = rootPackagePrefix + argType;
+	try {
+      return Class.forName(fullClassName);
+	}
+	catch (Throwable th) {
+        throw new IllegalArgumentException("Type " + argType + " not supported, '" + fullClassName + "' does not exist.");
+	}
   }
 }

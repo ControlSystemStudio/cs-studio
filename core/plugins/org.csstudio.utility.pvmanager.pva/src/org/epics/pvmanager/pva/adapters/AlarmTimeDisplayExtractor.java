@@ -18,6 +18,7 @@ import org.epics.pvdata.pv.PVString;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.util.text.NumberFormats;
 import org.epics.vtype.Display;
+import org.epics.vtype.ValueFactory;
 
 public class AlarmTimeDisplayExtractor extends AlarmTimeExtractor implements Display {
 
@@ -100,8 +101,7 @@ public class AlarmTimeDisplayExtractor extends AlarmTimeExtractor implements Dis
 	protected final Double upperCtrlLimit;
 	protected final Double upperDisplayLimit;
 	
-	private static final String noUnits = "";
-	private static final Double noLimit = 0.0;
+	private final static Display noDisplay = ValueFactory.displayNone();
 	
 	public AlarmTimeDisplayExtractor(PVStructure pvField, boolean disconnected)
 	{
@@ -111,40 +111,40 @@ public class AlarmTimeDisplayExtractor extends AlarmTimeExtractor implements Dis
 		PVStructure displayStructure = pvField.getStructureField("display");
 		if (displayStructure != null)
 		{
-			lowerDisplayLimit = getDoubleValue(displayStructure, "limitLow", noLimit);
-			upperDisplayLimit = getDoubleValue(displayStructure, "limitHigh", noLimit);
+			lowerDisplayLimit = getDoubleValue(displayStructure, "limitLow", noDisplay.getLowerDisplayLimit());
+			upperDisplayLimit = getDoubleValue(displayStructure, "limitHigh", noDisplay.getUpperDisplayLimit());
 			
 			PVString formatField = displayStructure.getStringField("format");
 			if (formatField == null)
-				format = NumberFormats.toStringFormat();
+				format = noDisplay.getFormat();
 			else
 				format = createNumberFormat(formatField.get());
 
 			PVString unitsField = displayStructure.getStringField("units");
 			if (unitsField == null)
-				units = noUnits;
+				units = noDisplay.getUnits();
 			else
 				units = unitsField.get();
 		}
 		else
 		{
-			lowerDisplayLimit = null;	
-			upperDisplayLimit = null;
-			format = NumberFormats.toStringFormat();
-			units = noUnits;
+			lowerDisplayLimit = noDisplay.getLowerDisplayLimit();	
+			upperDisplayLimit = noDisplay.getUpperDisplayLimit();
+			format = noDisplay.getFormat();
+			units = noDisplay.getUnits();
 		}
 	
 		// control_t
 		PVStructure controlStructure = pvField.getStructureField("control");
 		if (controlStructure != null)
 		{
-			lowerCtrlLimit = getDoubleValue(controlStructure, "limitLow", noLimit);
-			upperCtrlLimit = getDoubleValue(controlStructure, "limitHigh", noLimit);
+			lowerCtrlLimit = getDoubleValue(controlStructure, "limitLow", noDisplay.getLowerCtrlLimit());
+			upperCtrlLimit = getDoubleValue(controlStructure, "limitHigh", noDisplay.getUpperCtrlLimit());
 		}
 		else
 		{
-			lowerCtrlLimit = null;
-			upperCtrlLimit = null;
+			lowerCtrlLimit = noDisplay.getLowerCtrlLimit();
+			upperCtrlLimit = noDisplay.getUpperCtrlLimit();
 		}
 		
 		
@@ -152,17 +152,17 @@ public class AlarmTimeDisplayExtractor extends AlarmTimeExtractor implements Dis
 		PVStructure valueAlarmStructure = pvField.getStructureField("valueAlarm");
 		if (valueAlarmStructure != null)
 		{
-			lowerAlarmLimit = getDoubleValue(valueAlarmStructure, "lowAlarmLimit", Double.NaN);
-			lowerWarningLimit = getDoubleValue(valueAlarmStructure, "lowWarningLimit", Double.NaN);
-			upperWarningLimit = getDoubleValue(valueAlarmStructure, "highWarningLimit", Double.NaN);
-			upperAlarmLimit = getDoubleValue(valueAlarmStructure, "highAlarmLimit", Double.NaN);
+			lowerAlarmLimit = getDoubleValue(valueAlarmStructure, "lowAlarmLimit", noDisplay.getLowerAlarmLimit());
+			lowerWarningLimit = getDoubleValue(valueAlarmStructure, "lowWarningLimit", noDisplay.getLowerWarningLimit());
+			upperWarningLimit = getDoubleValue(valueAlarmStructure, "highWarningLimit", noDisplay.getUpperWarningLimit());
+			upperAlarmLimit = getDoubleValue(valueAlarmStructure, "highAlarmLimit", noDisplay.getUpperAlarmLimit());
 		}
 		else
 		{
-			lowerAlarmLimit = Double.NaN;
-			lowerWarningLimit = Double.NaN;
-			upperWarningLimit = Double.NaN;
-			upperAlarmLimit = Double.NaN;
+			lowerAlarmLimit = noDisplay.getLowerAlarmLimit();
+			lowerWarningLimit = noDisplay.getLowerWarningLimit();
+			upperWarningLimit = noDisplay.getUpperWarningLimit();
+			upperAlarmLimit = noDisplay.getUpperAlarmLimit();
 		}
 	}
 	
