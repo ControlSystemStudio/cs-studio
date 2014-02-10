@@ -26,6 +26,9 @@ public class DataBrowserWidgetFigure extends Figure
 
     /** Data Browser plot */
     final private Plot plot;
+    
+	/** The value exporter, which generates a value from the mouse position and forwards it to the PV manager */
+	private SelectionValueExporter selectionValueExporter;
 
     /** Initialize
      *  @param filename Configuration file name
@@ -37,11 +40,13 @@ public class DataBrowserWidgetFigure extends Figure
         this.filename = filename;
 
         plot = Plot.forDraw2D();
-        plot.setShowAxisTrace(showAxisTrace);
-        plot.setShowValueLabels(showValueLabels);
-        plot.setSelectionValuePv(selectionValuePv);
+        plot.getXYGraph().setShowAxisTrace(showAxisTrace);
+        plot.getXYGraph().setShowValueLabels(showValueLabels);
         plot.setToolbarVisible(toolbar);
         add(plot.getFigure());
+        selectionValueExporter = new SelectionValueExporter(plot.getXYGraph().getPlotArea());
+		selectionValueExporter.setUseTimeFormatX(true);
+		setSelectionValuePv(selectionValuePv);
     }
 
     /** @return Data Browser Plot */
@@ -113,7 +118,7 @@ public class DataBrowserWidgetFigure extends Figure
 	 * @param selectionValuePv, selection value PV
 	 */
 	public void setSelectionValuePv(String selectionValuePv)  {
-		plot.setSelectionValuePv(selectionValuePv);
+		selectionValueExporter.setSelectionValuePv(selectionValuePv);
 	}
 
 	/**
@@ -122,7 +127,7 @@ public class DataBrowserWidgetFigure extends Figure
 	 * @param showAxisTrace true if the axis traces are visible or false otherwise
 	 */
 	public void setShowAxisTrace(boolean showAxisTrace) {
-		plot.setShowAxisTrace(showAxisTrace);
+		plot.getXYGraph().setShowAxisTrace(showAxisTrace);
 	}
 	
 	/**
@@ -131,6 +136,6 @@ public class DataBrowserWidgetFigure extends Figure
 	 * @param showValueLabels true if the values are visible or false otherwise
 	 */
 	public void setShowValueLabels(boolean showValueLabels) {
-		plot.setShowValueLabels(showValueLabels);
+		plot.getXYGraph().setShowValueLabels(showValueLabels);
 	}
 }

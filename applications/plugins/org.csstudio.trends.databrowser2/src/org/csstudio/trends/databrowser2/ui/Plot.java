@@ -92,9 +92,6 @@ public class Plot
 
 	private TimeConfigButton time_config_button;
 	
-	/** The value exporter, which generates a value from the mouse position and forwards it to the PV manager */
-	private SelectionValueExporter selectionValueExporter;
-
 	/**
 	 * Create a plot that is attached to an SWT canvas
 	 *
@@ -215,8 +212,6 @@ public class Plot
 		});
 
 		xygraph.primaryYAxis.addListener(createValueAxisListener(0));
-		selectionValueExporter = new SelectionValueExporter(xygraph.getPlotArea());
-		selectionValueExporter.setUseTimeFormatX(true);
 	}
 
 	/**
@@ -885,32 +880,5 @@ public class Plot
 	{
 		XYGraphSettingsUtil.restoreXYGraphPropsFromSettings(plot.getXYGraph(),
 				settings);
-	}
-	
-	/**
-	 * Sets selection value PV.
-	 * 
-	 * @param selectionValuePv selection value PV
-	 */
-	public void setSelectionValuePv(String selectionValuePv) {
-		selectionValueExporter.setSelectionValuePv(selectionValuePv);
-	}
-
-	/**
-	 * Show or hide the axis trace.
-	 * 
-	 * @param show true to show the axis trace and false to hide
-	 */
-	public void setShowAxisTrace(boolean show) {
-		xygraph.setShowAxisTrace(show);
-	}
-	
-	/**
-	 * Show or hide the value labels.
-	 * 
-	 * @param show true to show the value labels and false to hide
-	 */
-	public void setShowValueLabels(boolean show) {
-		xygraph.setShowValueLabels(show);
 	}
 }

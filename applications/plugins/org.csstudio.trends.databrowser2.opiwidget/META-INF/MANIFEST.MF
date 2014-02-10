@@ -15,7 +15,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.opibuilder;bundle-version="1.0.6",
  org.csstudio.opibuilder.widgets;bundle-version="1.0.5",
  org.csstudio.trends.databrowser2;bundle-version="3.1.1",
- org.csstudio.swt.xygraph;bundle-version="1.1.1"
+ org.csstudio.swt.xygraph;bundle-version="1.1.1",
+ org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
+ org.csstudio.utility.pvmanager;bundle-version="3.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Description: BOY widget that displays Data Browser plot

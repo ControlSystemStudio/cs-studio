@@ -1,4 +1,4 @@
-package org.csstudio.trends.databrowser2.ui;
+package org.csstudio.trends.databrowser.opiwidget;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
