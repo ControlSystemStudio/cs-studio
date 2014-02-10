@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.askap.optional.feature"
       label="Features"
-      version="3.2.11.qualifier">
+      version="3.2.14.qualifier">
 
    <description url="http://www.example.com/description">
       CSS BEAST for ASKAP

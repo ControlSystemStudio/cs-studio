@@ -17,7 +17,7 @@
          </property>
          <property
                name="aboutText"
-               value="Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN)&#x0A;- BNL (Brookhaven, NY)&#x0A;- KEK/J-PARC&#x0A;- CSIRO ASKAP (Australia)&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;http://sourceforge.net/apps/trac/cs-studio/wiki">
+               value="Control System Studio (CSS) for ASKAP&#x0A;Version 3.2.14&#x0A;&#x0A;Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN)&#x0A;- BNL (Brookhaven, NY)&#x0A;- KEK/J-PARC&#x0A;- CSIRO ASKAP (Australia)&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;http://sourceforge.net/apps/trac/cs-studio/wiki">
          </property>
          <property
                name="windowImages"

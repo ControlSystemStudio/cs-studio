@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.askap.core.feature"
       label="Core CSS Components"
-      version="3.2.11.qualifier">
+      version="3.2.14.qualifier">
 
    <description url="http://www.example.com/description">
       CSS core for ASKAP

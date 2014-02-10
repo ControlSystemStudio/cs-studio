@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="org.csstudio.askap.alarm.beast.notifier.product.product" uid="org.csstudio.askap.alarm.beast.notifier.product" id="org.csstudio.askap.alarm.beast.notifier.product.product" application="org.csstudio.alarm.beast.notifier.application" version="3.2.11.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="org.csstudio.askap.alarm.beast.notifier.product.product" uid="org.csstudio.askap.alarm.beast.notifier.product" id="org.csstudio.askap.alarm.beast.notifier.product.product" application="org.csstudio.alarm.beast.notifier.application" version="3.2.14.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -13,7 +13,6 @@
 -Declipse.exitdata=</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
-
 
    <launcher name="AlarmNotifier">
       <solaris/>
@@ -29,9 +28,9 @@
    </plugins>
 
    <features>
-      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.11.qualifier"/>
-      <feature id="org.csstudio.askap.core.feature" version="3.2.11.qualifier"/>
-      <feature id="org.csstudio.askap.alarm.beast.notifier.app.feature" version="3.2.11.qualifier"/>
+      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.core.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.alarm.beast.notifier.app.feature" version="3.2.14.qualifier"/>
    </features>
 
 

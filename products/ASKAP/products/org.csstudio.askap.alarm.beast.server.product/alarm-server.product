@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Alarm Server" uid="org.csstudio.askap.alarm.beast.server.product" id="org.csstudio.askap.alarm.beast.server.product.product" application="org.csstudio.alarm.beast.server.application" version="3.2.11.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Alarm Server" uid="org.csstudio.askap.alarm.beast.server.product" id="org.csstudio.askap.alarm.beast.server.product.product" application="org.csstudio.alarm.beast.server.application" version="3.2.14.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -71,9 +71,9 @@
    </plugins>
 
    <features>
-      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.11.qualifier"/>
-      <feature id="org.csstudio.askap.core.feature" version="3.2.11.qualifier"/>
-      <feature id="org.csstudio.askap.alarm.beast.server.app.feature" version="3.2.11.qualifier"/>
+      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.core.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.alarm.beast.server.app.feature" version="3.2.14.qualifier"/>
    </features>
 
 
