@@ -117,6 +117,7 @@
       <import plugin="com.google.common" version="10.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.100" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.product" version="1.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

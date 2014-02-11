@@ -43,7 +43,6 @@ org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pace
 org.csstudio.display.pvtable
 org.csstudio.display.rdbtable
-org.csstudio.dummyauthorization
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.examples
@@ -64,8 +63,6 @@ org.csstudio.opibuilder.widgets
 org.csstudio.opibuilder.widgets.extra
 org.csstudio.opibuilder.widgets.rcp
 org.csstudio.opibuilder.widgets.symbol
-org.csstudio.platform.jaasAuthentication
-org.csstudio.platform.jaasAuthentication.ui
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
 org.csstudio.platform.libs.jdbc

@@ -1,5 +1,4 @@
 org.csstudio.askap.alarm.beast.configtool.app.feature
-org.csstudio.askap.alarm.beast.server.app.feature
 org.csstudio.askap.core.feature
 org.csstudio.askap.eclipse.feature
 org.eclipse.equinox.p2.core.feature_1.0.1.v20110906-1605-8290FZ9FVKHVRKtmx3fpNuo02129
