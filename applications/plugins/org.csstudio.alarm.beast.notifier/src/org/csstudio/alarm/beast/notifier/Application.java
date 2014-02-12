@@ -30,11 +30,16 @@ public class Application implements IApplication {
     @Override
     public Object start(final IApplicationContext context) throws Exception
     {
+    	// Display configuration info
+        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String app_info = context.getBrandingName() + " " + version;
+        
     	// Create parser for arguments and run it.
         final String args[] = (String []) context.getArguments().get("application.args");
 
         final ArgParser parser = new ArgParser();
-        final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display Help");
+        final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+        final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
         final StringOption config_name = new StringOption(parser,
     		"-root", "Alarm Configuration root", Preferences.getAlarmTreeRoot());
 		parser.addEclipseParameters();
@@ -45,16 +50,16 @@ public class Application implements IApplication {
 			return IApplication.EXIT_OK;
 		}
 		if (help_opt.get()) {
-			System.out.println(parser.getHelp());
+			System.out.println(app_info + "\n\n" + parser.getHelp());
+			return IApplication.EXIT_OK;
+		}
+		if (version_opt.get()) {
+			System.out.println(app_info);
 			return IApplication.EXIT_OK;
 		}
 
         // Initialize logging
         LogConfigurator.configureFromPreferences();
-
-        // Display configuration info
-        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
-        final String app_info = context.getBrandingName() + " " + version;
         Activator.getLogger().info(app_info + " started for '" + config_name.get() + "' configuration");
         System.out.println(app_info);
         System.out.println("Configuration Root: " + config_name.get());
