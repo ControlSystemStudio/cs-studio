@@ -6,7 +6,7 @@ Bundle-Version: 3.1.1.qualifier
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/pvAccess-2.0.jar
+ lib/pvAccessJava-3.0.4.jar
 Export-Package: 
  org.epics.pvaccess,
  org.epics.pvaccess.client,

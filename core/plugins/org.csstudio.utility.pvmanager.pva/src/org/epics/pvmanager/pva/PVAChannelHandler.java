@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +60,7 @@ public class PVAChannelHandler extends
 	private volatile Channel channel = null;
 
 	private final AtomicBoolean monitorCreated = new AtomicBoolean(false);
+	private final AtomicLong monitorLossCounter = new AtomicLong(0);
 	//private volatile Monitor monitor = null;
 	
 	private volatile Field channelType = null;
@@ -217,6 +219,7 @@ public class PVAChannelHandler extends
                 //properties.put("Read access", channel.getReadAccess());
                 //properties.put("Write access", channel.getWriteAccess());
             }
+            properties.put("Monitor loss count", monitorLossCounter.get());
         }
         return properties;
     }
@@ -430,7 +433,6 @@ public class PVAChannelHandler extends
 				convert.fromInt((PVScalar)field, ((Integer)newValue).intValue());
 			else if (newValue instanceof String)
 				convert.fromString((PVScalar)field, (String)newValue);
-	        
 			else if (newValue instanceof Byte)
 				convert.fromByte((PVScalar)field, ((Byte)newValue).byteValue());
 			else if (newValue instanceof Short)
@@ -552,6 +554,9 @@ public class PVAChannelHandler extends
 		MonitorElement monitorElement;
 		while ((monitorElement = monitor.poll()) != null)
 		{
+			if (monitorElement.getOverrunBitSet().cardinality() > 0)
+				monitorLossCounter.incrementAndGet();
+			
 			// TODO combine bitSet, etc.... do we need to copy structure?
 			processMessage(monitorElement.getPVStructure());
 			monitor.release(monitorElement);

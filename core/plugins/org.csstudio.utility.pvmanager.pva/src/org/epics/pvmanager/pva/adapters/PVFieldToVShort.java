@@ -4,7 +4,8 @@
  */
 package org.epics.pvmanager.pva.adapters;
 
-import org.epics.pvdata.pv.PVShort;
+import org.epics.pvdata.pv.PVField;
+import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.vtype.VShort;
 import org.epics.vtype.VTypeToString;
@@ -24,12 +25,11 @@ public class PVFieldToVShort extends AlarmTimeDisplayExtractor implements VShort
   public PVFieldToVShort(PVStructure pvField, boolean disconnected) {
     super(pvField, disconnected);
 
-    PVShort shortField = pvField.getShortField("value");
-    if (shortField != null) {
-      value = shortField.get();
-    } else {
-      value = null;
-    }
+	PVField field = pvField.getSubField("value");
+	if (field instanceof PVScalar)
+		value = convert.toShort((PVScalar)field);
+    else
+    	value = null;
   }
 
 
