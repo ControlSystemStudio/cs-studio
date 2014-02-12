@@ -36,6 +36,8 @@ public class Messages extends NLS
     public static String Annotation_XAxisSnapTT;
     public static String Annotation_YAxis;
     public static String Annotation_YAxisSnapTT;
+    public static String AxisTrace;
+    public static String HoverLabels;
     public static String PointBar;
 	public static String PointCircle;
 	public static String PointCross;
@@ -56,7 +58,6 @@ public class Messages extends NLS
 	public static String TraceStepHoriz;
 	public static String TraceStepVert;
 	public static String Zoom_Horiz;
-	public static String Zoom_HoverLabels;
     public static String Zoom_In;
     public static String Zoom_InHoriz;
     public static String Zoom_InVert;

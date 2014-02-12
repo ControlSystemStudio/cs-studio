@@ -7,6 +7,10 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.toolbar;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.undo.AddAnnotationCommand;
@@ -126,7 +130,50 @@ public class XYGraphToolbar extends Figure {
             });
 		}
 		
+		final ToggleButton valueLabelsButton = new ToggleButton(new ImageFigure(XYGraphMediaFactory.getInstance().getImage("images/HoverLabels.png")));
+		valueLabelsButton.setBackgroundColor(ColorConstants.button);
+		valueLabelsButton.setOpaque(true);
+		final ToggleModel valueLabelsModel = new ToggleModel();
+		valueLabelsModel.addChangeListener(new ChangeListener(){
+			public void handleStateChanged(ChangeEvent event) {
+				if(event.getPropertyName().equals("selected")){
+					xyGraph.setShowValueLabels(valueLabelsButton.isSelected());
+				}				
+			}
+		});
+		xyGraph.addPropertyChangeListener("showValueLabels", new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				valueLabelsModel.setSelected(xyGraph.isShowValueLabels());
+			}
+		});
+		valueLabelsModel.setSelected(xyGraph.isShowValueLabels());
+		valueLabelsButton.setModel(valueLabelsModel);
+		valueLabelsButton.setToolTip(new Label(Messages.HoverLabels));
+		addButton(valueLabelsButton);
+		
+		final ToggleButton axisTraceButton = new ToggleButton(new ImageFigure(XYGraphMediaFactory.getInstance().getImage("images/AxisTrace.png")));
+		axisTraceButton.setBackgroundColor(ColorConstants.button);
+		axisTraceButton.setOpaque(true);
+		final ToggleModel axisTraceModel = new ToggleModel();
+		axisTraceModel.addChangeListener(new ChangeListener(){
+			public void handleStateChanged(ChangeEvent event) {
+				if(event.getPropertyName().equals("selected")){
+					xyGraph.setShowAxisTrace(axisTraceButton.isSelected());
+				}				
+			}
+		});
+		xyGraph.addPropertyChangeListener("showAxisTrace", new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				axisTraceModel.setSelected(xyGraph.isShowAxisTrace());
+			}
+		});
+		axisTraceModel.setSelected(xyGraph.isShowAxisTrace());
+		axisTraceButton.setModel(axisTraceModel);
+		axisTraceButton.setToolTip(new Label(Messages.AxisTrace));
+		addButton(axisTraceButton);
+		
 		//zoom buttons
+		addSeparator();
 		zoomGroup = new ButtonGroup();
 		createZoomButtons(flags);
 	

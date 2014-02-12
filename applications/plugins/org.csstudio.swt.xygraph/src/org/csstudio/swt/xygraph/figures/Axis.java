@@ -681,18 +681,23 @@ public class Axis extends LinearScale{
 		else
 			setCursor(ZoomType.NONE.getCursor());
 
-		switch (zoomType) {
-		case HOVER_LABELS:
-			mousePositionLabel.setVisible(true);
-			revalidate();
-			break;
-		default:
-			if(mousePositionLabel.isVisible()) {
-				mousePositionLabel.setVisible(false);
-				revalidate();
-			}
-			// NOP
-		}
+	}
+	
+	/**
+	 * Shows or hides the mouse position label.
+	 * 
+	 * @param show true to show, false to hide
+	 */
+	public void setShowMousePositionLabel(boolean show) {
+		mousePositionLabel.setVisible(show);
+		revalidate();
+	}
+	
+	/**
+	 * @return true if the mouse position label is shown or false otherwise
+	 */
+	public boolean isShowMousePositionLabel() {
+		return mousePositionLabel.isVisible();
 	}
 
 	/**
@@ -819,7 +824,6 @@ public class Axis extends LinearScale{
 
 	@Override
 	public void setLogScale(boolean enabled) throws IllegalStateException {
-		// TODO Auto-generated method stub
 		boolean old = isLogScaleEnabled();
 		super.setLogScale(enabled);
 		fireAxisLogScaleChanged(old, logScaleEnabled);

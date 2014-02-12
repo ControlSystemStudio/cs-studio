@@ -22,11 +22,6 @@ import org.eclipse.swt.widgets.Display;
  */
 @SuppressWarnings("nls")
 public enum ZoomType{
-		/** Hover labels */
-		HOVER_LABELS(Messages.Zoom_HoverLabels,
-			XYGraphMediaFactory.getInstance().getImage("images/HoverLabels.png"),
-			XYGraphMediaFactory.getTransparentImage(),
-            XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_CROSS),
         /** Interactive Rubberband zoom */
         RUBBERBAND_ZOOM(Messages.Zoom_Rubberband,
 		        XYGraphMediaFactory.getInstance().getImage("images/RubberbandZoom.png"),

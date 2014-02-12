@@ -8,8 +8,6 @@
 package org.csstudio.swt.xygraph.figures;
 
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,41 +43,10 @@ import org.eclipse.swt.widgets.Display;
  * @author Laurent PHILIPPE (property change support)
  */
 public class XYGraph extends Figure{
-	
-	/**
-	 * Add property change support to XYGraph
-	 * Use for inform listener of xyGraphMem property changed
-	 * @author L.PHILIPPE (GANIL)
-	 */
-	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-
-	
-	@Override
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		changeSupport.addPropertyChangeListener(listener);
-	}
-
-	@Override
-	public void addPropertyChangeListener(String property,
-			PropertyChangeListener listener) {
-		changeSupport.addPropertyChangeListener(property, listener);
-	}
-
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(listener);
-	}
-
-	@Override
-	public void removePropertyChangeListener(String property,
-			PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(property, listener);
-	}
-	
+		
 	public void fireConfigChanged() {
-		changeSupport.firePropertyChange("config", null, this);
+		firePropertyChange("config", null, this);
 	}
-
 
 	/**
 	 * Save the Graph settings
@@ -95,7 +62,7 @@ public class XYGraph extends Figure{
 	public void setXyGraphMem(XYGraphMemento xyGraphMem) {
 		XYGraphMemento old = this.xyGraphMem;
 		this.xyGraphMem = xyGraphMem;
-		changeSupport.firePropertyChange("xyGraphMem", old, this.xyGraphMem);
+		firePropertyChange("xyGraphMem", old, this.xyGraphMem);
 	
 		System.out.println("**** XYGraph.setXyGraphMem() ****");
 	}
@@ -128,6 +95,8 @@ public class XYGraph extends Figure{
 	private int traceNum = 0;
 	private boolean transparent = false;
 	private boolean showLegend = true;
+	private boolean showValueLabels = false;
+	private boolean showAxisTrace = false;
 
 	private Map<Axis, Legend> legendMap;
 
@@ -413,6 +382,7 @@ public class XYGraph extends Figure{
 		plotArea.addGrid(new Grid(axis));
 		add(axis);
 		axis.setXyGraph(this);
+		axis.setShowMousePositionLabel(showValueLabels);
 		revalidate();
 	}
 
@@ -538,6 +508,47 @@ public class XYGraph extends Figure{
 	 */
 	public boolean isTransparent() {
 		return transparent;
+	}
+	
+	/**
+	 * Shows or hides the hover value labels.
+	 * 
+	 * @param show true to show, false to hide
+	 */
+	public void setShowValueLabels(boolean show) {
+		boolean old = this.showValueLabels;
+		this.showValueLabels = show;
+		getPlotArea().setShowValueLabels(show);
+		for (Axis a : getYAxisList()) {
+			a.setShowMousePositionLabel(show);
+		}
+		firePropertyChange("showValueLabels", old, showValueLabels);
+	}
+	
+	/**
+	 * @return true if the hover value labels are shown or false otherwise
+	 */
+	public boolean isShowValueLabels() {
+		return showValueLabels;
+	}
+	
+	/**
+	 * Shows or hides the axis traces.
+	 * 
+	 * @param show true to show, false to hide
+	 */
+	public void setShowAxisTrace(boolean show) {
+		boolean old = this.showAxisTrace;
+		this.showAxisTrace = show;
+		getPlotArea().setShowAxisTrace(show);
+		firePropertyChange("showAxisTrace", old, showAxisTrace);
+	}
+	
+	/**
+	 * @return true if the axis traces are shown or false otherwise
+	 */
+	public boolean isShowAxisTrace() {
+		return showAxisTrace;
 	}
 
 
