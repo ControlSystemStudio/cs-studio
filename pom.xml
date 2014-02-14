@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2013 DESY.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+ 
+  Contributors:
+     Jan Hatje - created the pom to build the plug-ins
+-->
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.csstudio</groupId>
+  <artifactId>core</artifactId>
+  <version>BUILD-VERSION</version>
+  <packaging>pom</packaging>
+
+  <!--
+    USE MAVEN 3.0
+  --> 
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
+  <!-- 
+    PROPERTIES
+  -->
+  <properties>
+    <!-- VERSIONS -->
+    <tycho.version>0.19.0</tycho.version>
+  </properties>
+
+  <!--
+    P2 REPOSITORIES
+  -->
+  <repositories>
+    <repository>
+      <id>indigo</id>
+      <url>http://download.eclipse.org/releases/indigo</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>indigoupdate</id>
+      <url>http://download.eclipse.org/eclipse/updates/3.7</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>epp</id>
+      <url>http://download.eclipse.org/technology/epp/packages/indigo</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>eppupdate</id>
+      <url>http://download.eclipse.org/technology/epp/packages/indigo/SR2</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>nebula</id>
+      <url>http://download.eclipse.org/technology/nebula/snapshot</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>orbit</id>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>rap</id>
+      <url>http://download.eclipse.org/rt/rap/1.5/runtime</url>
+      <layout>p2</layout>
+    </repository>
+    <!--<repository>
+      <id>rap-tooling</id>
+      <url>http://download.eclipse.org/rt/rap/1.5/tooling</url>
+      <layout>p2</layout>
+    </repository>-->
+
+
+    <repository>
+      <id>jetty</id>
+      <url>http://www.eclipse.org/external/jetty/updates/jetty-bundles-8.x/8.1.3.v20120522</url>
+      <layout>p2</layout>
+    </repository>
+
+    <!--<repository>
+      <id>jetty</id>
+      <url>http://www.eclipse.org/external/jetty/updates/jetty-bundles-8.x/8.1.3.v20120522</url>
+      <layout>p2</layout>
+    </repository>-->
+    <!--<repository>
+      <id>gef</id>
+      <url>http://download.eclipse.org/tools/gef/updates/releases</url>
+      <layout>p2</layout>
+    </repository>
+
+  <repository>
+      <id>rap-gef</id>
+      <url>http://download.eclipse.org/rt/rap/incubator/nightly/gef</url>
+      <layout>p2</layout>
+    </repository>-->
+
+
+    <repository>
+      <!-- Content of core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.* directories.         -->
+      <!-- Would prefer to replace this with a public repository, but I can not find one with these versions. -->
+      <id>thirdparty</id>
+      <url>file:///home/maxwelld/Workspaces/eclipse-3.7/CS-Studio-TychoBuild/cs-studio/thirdparty</url>
+      <!--<url>file:/./thirdparty</url>-->
+      <layout>p2</layout>
+    </repository>
+
+  </repositories>
+  
+  <!--
+    PLUGIN REPOSITORIES
+  -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>tycho</id>
+      <url>https://oss.sonatype.org/content/groups/public</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+
+  <!--
+    CHILD MODULES
+  -->
+  <modules>
+    <module>core/plugins</module>
+    <module>core/features</module>
+    <module>applications/plugins</module>
+    <module>applications/features</module>
+    <module>products/CS-STUDIO/plugins</module>
+    <module>products/CS-STUDIO/features</module>
+    <module>repository</module>
+  </modules>
+
+
+  <!--
+    PLUGIN CONFIGURATION
+  -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <dependency-resolution>
+              <extraRequirements>
+                <requirement>
+                  <!-- 
+                      Needed to satisfy the import packages javax.servlet and
+                      javax.servlet.http required by the plugin org.csstudio.rap.core
+                  -->
+                  <type>eclipse-plugin</type>
+                  <id>javax.servlet</id>
+                  <versionRange>0.0.0</versionRange>
+                </requirement>
+                <requirement>
+                  <!--
+                    Needed to satisfy the import package org.eclipse.ui.parts 
+                    required by the plugin org.csstudio.logbook.olog
+                  -->
+                  <type>eclipse-plugin</type>
+                  <id>org.eclipse.ui.ide</id>
+                  <versionRange>0.0.0</versionRange>
+                </requirement>
+
+                <requirement>
+                  <!--
+                    Needed to satisfy the build requirement for cs-studio product.
+                  -->
+                  <type>eclipse-plugin</type>
+                  <id>javax.annotation</id>
+                  <versionRange>0.0.0</versionRange>
+                </requirement>
+              </extraRequirements>
+              <!-- Default behavior is to resolve ALL dependencies. -->
+              <!--<optionalDependencies>ignore</optionalDependencies>-->
+            </dependency-resolution>
+
+            <!--<target>
+              <artifact>
+                <groupId>org.csstudio</groupId>
+                <artifactId>eclipse-linux-gtk-x86_64-3.7.2</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+              </artifact>
+            </target>-->
+
+            <filters>
+              <!--<filter>
+                <type>eclipse-plugin</type>
+                <id>artifactId</id>
+                <removeAll />
+              </filter>-->
+            </filters>
+            <environments>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86</arch>
+              </environment>
+              <!--<environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86_64</arch>
+              </environment>-->
+              <!--<environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86_64</arch>
+              </environment>-->
+              <!--<environment>
+                <os>macosx</os>
+                <ws>cocoa</ws>
+                <arch>x86_64</arch>
+              </environment>-->
+          </environments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <!--
+            Without this argument I get an error in the plugin 'org.csstudio.rap.core'
+          -->
+          <compilerArgument>-err:-forbidden</compilerArgument>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

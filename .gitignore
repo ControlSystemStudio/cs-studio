@@ -51,3 +51,7 @@ syntax: regexp
 ^applications/plugins/org\.apache\.jackrabbit/\.settings$
 syntax: regexp
 ^applications/plugins/org\.csstudio\.utility\.olog\.ui/\.settings$
+
+# Ignore Tycho/Maven build directorys #
+target/
+
