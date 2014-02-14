@@ -6,6 +6,6 @@ Bundle-Version: 3.2.0.qualifier
 Fragment-Host: org.csstudio.platform.libs.epics;bundle-version="3.1.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: DESY/ORNL/SLAC
-Eclipse-PlatformFilter: (| (osgi.os=macosx))
+Eclipse-PlatformFilter: (& (osgi.os=macosx) (osgi.arch=x86))
 Bundle-NativeCode: 
- lib/macosx/x86/libjca.jnilib; osname="mac os x"; processor=x86
+ lib/macosx/x86/libjca.jnilib; osname=macosx; processor=x86
