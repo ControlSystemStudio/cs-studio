@@ -10,22 +10,35 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
+import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * @author shroffk
@@ -33,8 +46,12 @@ import org.eclipse.ui.PlatformUI;
  */
 public class IFileUtil {
 
+	private static final String TAG_PLUGIN = "IFileUtil"; //$NON-NLS-1$
+	private static final String TAG_PART = "part"; //$NON-NLS-1$
+	private static final String TAG_PATH = "path"; //$NON-NLS-1$
+	private static final String TAG_COUNT = "count"; //$NON-NLS-1$
     private final static IFileUtil instance = new IFileUtil();
-    private final static Map<IWorkbenchPart, IFile> fileMap = new HashMap<IWorkbenchPart, IFile>();
+    final ConcurrentMap<IFile, AtomicLong> map = new ConcurrentHashMap<IFile, AtomicLong>();
     private final SyncShutdown syncShutdown = new SyncShutdown();
 
     private class SyncShutdown {
@@ -49,94 +66,155 @@ public class IFileUtil {
     	}
     }
     
-    private IFileUtil() {
-    	
-    PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener(){
+	private IFileUtil() {
 
-		@Override
-		public boolean preShutdown(IWorkbench workbench, boolean forced) {
-			syncShutdown.shutdown();
-			return true;
-		}
+		PlatformUI.getWorkbench().addWindowListener(new IWindowListener(){
 
-		@Override
-		public void postShutdown(IWorkbench workbench) {
-			// TODO Auto-generated method stub
-			
-		}
-    		
-    });
-	PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-		.addPartListener(new IPartListener2() {
+			@Override
+			public void windowActivated(IWorkbenchWindow window) {
+				// TODO Auto-generated method stub
+				
+			}
 
-		    @Override
-		    public void partClosed(IWorkbenchPartReference partRef) {
-		    	if(!syncShutdown.status()){
-		    		if (fileMap.containsKey(partRef.getPart(false))) {
-		    			IFile iFile = fileMap.get(partRef.getPart(false));
-		    			fileMap.remove(partRef.getPart(false));
-		    			if(!fileMap.containsValue(iFile)){
-		    				try {
-		    					iFile.delete(
-		    							true, null);
-		    				} catch (CoreException e) {
-		    					e.printStackTrace();
-		    				}
-		    			}
-		    		}
-		    	}
-		    }
+			@Override
+			public void windowDeactivated(IWorkbenchWindow window) {
+				// TODO Auto-generated method stub
+				
+			}
 
-		    @Override
-		    public void partActivated(IWorkbenchPartReference partRef) {
-			// TODO Auto-generated method stub
+			@Override
+			public void windowClosed(IWorkbenchWindow window) {
+				// TODO Auto-generated method stub
+				
+			}
 
-		    }
+			@Override
+			public void windowOpened(IWorkbenchWindow window) {
+				for(IWorkbenchPage page: window.getPages()){
+	        		page.addPartListener(new IPartListener2() {
 
-		    @Override
-		    public void partBroughtToTop(IWorkbenchPartReference partRef) {
-			// TODO Auto-generated method stub
+	        		    @Override
+	        		    public void partClosed(IWorkbenchPartReference partRef) {
+	        		    	IFile iFile = null;
+	        		    	if(!syncShutdown.status()){
+	        		    		IWorkbenchPart part = partRef.getPart(false);
+								if (partRef instanceof IEditorReference) {
+									IEditorInput input = ((IEditorPart)part) == null ? null : ((IEditorPart)part).getEditorInput();
+									if (input instanceof NoResourceEditorInput)
+										input = ((NoResourceEditorInput)input).getOriginEditorInput();
+									iFile = input instanceof FileEditorInput ? ((FileEditorInput)input).getFile(): null;
+									
+								} else {
+									try {
+										Field f = part.getClass().getDeclaredField("input");
+										f.setAccessible(true);
+										IEditorInput element = (IEditorInput) f.get(part);
+										Field f2 = element.getClass().getDeclaredField("path");
+										f2.setAccessible(true);
+										Path fileName = (Path) f2.get(element);
+										iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileName);
 
-		    }
+									} catch (NoSuchFieldException
+											| SecurityException
+											| IllegalArgumentException
+											| IllegalAccessException e1) {
+										// I don't care if these fail, best
+										// attempt to read boy view files								
+										iFile = null;
+										// e1.printStackTrace();
+									}
+								}
+								if (iFile !=null && !map.isEmpty()){
+									if(map.get(iFile).decrementAndGet() <= 0){
+		        		    			map.remove(iFile);
+		        		    			try {
+											iFile.delete(true, null);
+										} catch (CoreException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+		        		    		}
+								}
+	        		    	}
+	        		    }
 
-		    @Override
-		    public void partDeactivated(IWorkbenchPartReference partRef) {
-			// TODO Auto-generated method stub
+	        		    @Override
+	        		    public void partActivated(IWorkbenchPartReference partRef) {
+	        			// TODO Auto-generated method stub
 
-		    }
+	        		    }
 
-		    @Override
-		    public void partOpened(IWorkbenchPartReference partRef) {    
-			// TODO Auto-generated method stub
+	        		    @Override
+	        		    public void partBroughtToTop(IWorkbenchPartReference partRef) {
+	        			// TODO Auto-generated method stub
 
-		    }
+	        		    }
 
-		    @Override
-		    public void partHidden(IWorkbenchPartReference partRef) {
-			// TODO Auto-generated method stub
+	        		    @Override
+	        		    public void partDeactivated(IWorkbenchPartReference partRef) {
+	        			// TODO Auto-generated method stub
 
-		    }
+	        		    }
 
-		    @Override
-		    public void partVisible(IWorkbenchPartReference partRef) {
-			// TODO Auto-generated method stub
+	        		    @Override
+	        		    public void partOpened(IWorkbenchPartReference partRef) {    
+	        			// TODO Auto-generated method stub
 
-		    }
+	        		    }
 
-		    @Override
-		    public void partInputChanged(IWorkbenchPartReference partRef) {
-			// TODO Auto-generated method stub
+	        		    @Override
+	        		    public void partHidden(IWorkbenchPartReference partRef) {
+	        			// TODO Auto-generated method stub
 
-		    }
-		});
+	        		    }
 
-    }
+	        		    @Override
+	        		    public void partVisible(IWorkbenchPartReference partRef) {
+	        			// TODO Auto-generated method stub
+
+	        		    }
+
+	        		    @Override
+	        		    public void partInputChanged(IWorkbenchPartReference partRef) {
+	        			// TODO Auto-generated method stub
+
+	        		    }
+	        		});
+
+	        	}
+				
+			}} );
+		
+		attachShutdownListener();
+	}
+
     
 
     public static IFileUtil getInstance() {
 	return instance;
     }
 
+    private void attachShutdownListener(){
+    	PlatformUI.getWorkbench().addWorkbenchListener(
+				new IWorkbenchListener() {
+
+					@Override
+					public boolean preShutdown(IWorkbench workbench,
+							boolean forced) {
+						syncShutdown.shutdown();
+						return true;
+					}
+
+					@Override
+					public void postShutdown(IWorkbench workbench) {
+						// TODO Auto-generated method stub
+
+					}
+
+				});
+    	
+    }
+    
     public IFile createFileResource(String fileName, InputStream inputStream)
 	    throws IOException {
 	if (fileName != null && !fileName.isEmpty()) {
@@ -170,6 +248,8 @@ public class IFileUtil {
 	    project.setHidden(true);
 	    if (!ifile.exists())
 		ifile.create(new FileInputStream(file), IResource.NONE, null);
+	    map.putIfAbsent(ifile, new AtomicLong(0));
+	    map.get(ifile).incrementAndGet();
 	    return ifile;
 	} catch (CoreException e) {
 	    e.printStackTrace();
@@ -206,8 +286,41 @@ public class IFileUtil {
      * @param part
      * @param file
      */
+    @Deprecated
     public void registerPart(IWorkbenchPart part, IFile file) {
-	fileMap.put(part, file);
+    	//fileMap.put("F"+String.valueOf(part.hashCode()), file);
     }
+
+
+
+
+	public void saveState(IMemento memento) {
+		IMemento path = memento.createChild(TAG_PLUGIN);
+		for(Map.Entry<IFile, AtomicLong> entry: map.entrySet()){
+			AtomicLong count = entry.getValue();
+			String filePath = entry.getKey().getFullPath().toString();
+			IMemento part = path.createChild(TAG_PART);
+			part.putString(TAG_PATH, filePath);
+			part.putInteger(TAG_COUNT, count.intValue());
+		}
+		
+	}
+
+
+	public void restoreState(IMemento memento) {
+		for (IMemento child : memento.getChildren(TAG_PLUGIN)) {
+			for (IMemento part : child.getChildren(TAG_PART)) {
+				Integer count = part.getInteger(TAG_COUNT);
+				String fileName = part.getString(TAG_PATH);
+				if (count != null) {
+					IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
+					if (iFile != null) {
+						map.put(iFile, new AtomicLong(count));
+					}
+				}
+			}
+			
+		}
+	}
 
 }
