@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.trends.databrowser2.persistence.XYGraphSettings;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -336,7 +337,9 @@ public class AxisConfig
 	 *
 	 * @param writer
 	 *            PrintWriter
+	 * @deprecated axis data is stored in the {@link XYGraphSettings}
 	 */
+	@Deprecated
 	public void write(final PrintWriter writer)
 	{
 		XMLWriter.start(writer, 2, Model.TAG_AXIS);
@@ -412,7 +415,7 @@ public class AxisConfig
 		FontData fontData = null;
 		if (fontInfo != null && !fontInfo.trim().isEmpty())
 		{
-			fontData = new FontData(FontDataUtil.fixFontInfo(fontInfo));
+			fontData = FontDataUtil.getFontData(fontInfo);
 		}
 
 		fontInfo = DOMHelper.getSubelementString(node, Model.TAG_SCALE_FONT);
@@ -420,7 +423,7 @@ public class AxisConfig
 		FontData scaleFontData = null;
 		if (fontInfo != null && !fontInfo.trim().isEmpty())
 		{
-			scaleFontData = new FontData(FontDataUtil.fixFontInfo(fontInfo));
+			scaleFontData = FontDataUtil.getFontData(fontInfo);
 		}
 
 		final double min = DOMHelper.getSubelementDouble(node, Model.TAG_MIN,

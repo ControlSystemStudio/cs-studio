@@ -725,13 +725,14 @@ public class Controller implements ArchiveFetchJobListener
 				continue;
 			final Axis axis = yaxes.get(axis_index);
         	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
-        	annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
-        			info.getValue());
-
         	//ADD Laurent PHILIPPE
 			annotation.setCursorLineStyle(info.getCursorLineStyle());
         	annotation.setShowName(info.isShowName());
         	annotation.setShowPosition(info.isShowPosition());
+        	annotation.setShowSampleInfo(info.isShowSampleInfo());
+        	
+        	annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
+        			info.getValue());
 
         	if(info.getColor() != null)
         		annotation.setAnnotationColor(XYGraphMediaFactory.getInstance().getColor(info.getColor()));
