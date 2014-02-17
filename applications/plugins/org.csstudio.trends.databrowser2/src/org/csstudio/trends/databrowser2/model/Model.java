@@ -27,9 +27,13 @@ import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.archive.vtype.TimestampHelper;
+import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
+import org.csstudio.trends.databrowser2.persistence.AnnotationSettings;
+import org.csstudio.trends.databrowser2.persistence.AxisSettings;
+import org.csstudio.trends.databrowser2.persistence.ColorSettings;
 import org.csstudio.trends.databrowser2.persistence.XYGraphSettings;
 import org.csstudio.trends.databrowser2.persistence.XYGraphSettingsXMLUtil;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
@@ -918,36 +922,35 @@ public class Model
         	XMLWriter.XML(writer, 1, TAG_END, end_spec);			
 		}
 
-        // Time axis config
-        if (timeAxis != null)
-        {
-            XMLWriter.start(writer, 1, TAG_TIME_AXIS);
-            writer.println();
-            timeAxis.write(writer);
-            XMLWriter.end(writer, 1, TAG_TIME_AXIS);
-            writer.println();
-        }
-
-        // Misc.
-        writeColor(writer, 1, TAG_BACKGROUND, background);
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
-
-        // Value axes
-        XMLWriter.start(writer, 1, TAG_AXES);
-        writer.println();
-        for (AxisConfig axis : axes)
-            axis.write(writer);
-        XMLWriter.end(writer, 1, TAG_AXES);
-        writer.println();
-
-        // Annotations
-        XMLWriter.start(writer, 1, TAG_ANNOTATIONS);
-        writer.println();
-        for (AnnotationInfo annotation : annotations)
-        	annotation.write(writer);
-        XMLWriter.end(writer, 1, TAG_ANNOTATIONS);
-        writer.println();
-
+        //all other settings are already included in the graphsettings
+//        // Time axis config
+//        if (timeAxis != null)
+//        {
+//            XMLWriter.start(writer, 1, TAG_TIME_AXIS);
+//            writer.println();
+//            timeAxis.write(writer);
+//            XMLWriter.end(writer, 1, TAG_TIME_AXIS);
+//            writer.println();
+//        }
+//        // Value axes
+//        XMLWriter.start(writer, 1, TAG_AXES);
+//        writer.println();
+//        for (AxisConfig axis : axes)
+//            axis.write(writer);
+//        XMLWriter.end(writer, 1, TAG_AXES);
+//        writer.println();
+//
+//        // Annotations
+//        XMLWriter.start(writer, 1, TAG_ANNOTATIONS);
+//        writer.println();
+//        for (AnnotationInfo annotation : annotations)
+//        	annotation.write(writer);
+//        XMLWriter.end(writer, 1, TAG_ANNOTATIONS);
+//        writer.println();
+//        // Misc.
+//        writeColor(writer, 1, TAG_BACKGROUND, background);
+        
         // PVs (Formulas)
         XMLWriter.start(writer, 1, TAG_PVLIST);
         writer.println();
@@ -1077,7 +1080,35 @@ public class Model
 			Activator.getLogger().log(Level.INFO,
 					"XML error in XYGraph settings", ex);
 		}
-
+		
+		for (AxisSettings s : graphSettings.getAxisSettingsList()) {
+			ColorSettings fc = s.getForegroundColor();
+			ColorSettings gc = s.getMajorGridColor();
+			AxisConfig config = new AxisConfig(true, s.getTitle(), 
+					FontDataUtil.getFontData(s.getTitleFont()), 
+					FontDataUtil.getFontData(s.getScaleFont()), 
+					new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()), 
+					s.getRange().getLower(), s.getRange().getUpper(),
+					s.isAutoScale(), s.isLogScale(), s.isShowMajorGrid(),
+					s.isDashGridLine(),new RGB(gc.getRed(),gc.getGreen(),gc.getBlue()),
+					s.isAutoFormat(), s.isDateEnabled(), s.getFormatPattern());
+			if (timeAxis == null) {
+				timeAxis = config;
+			} else {
+				addAxis(config);
+			}
+		}
+		ArrayList<AnnotationInfo> infos = new ArrayList<AnnotationInfo>();
+		for (AnnotationSettings s : graphSettings.getAnnotationSettingsList()) {
+			ColorSettings fc = s.getAnnotationColor();
+			RGB rgb = fc != null ? new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()) : null;
+			infos.add(new AnnotationInfo(
+					TimestampHelper.fromMillisecs((long)s.getXValue()), s.getYValue(), s.getxAxis(), 
+					s.getName(), CursorLineStyle.valueOf(s.getCursorLineStyle()), s.isShowName(), 
+					s.isShowPosition(), s.isShowSampleInfo(), FontDataUtil.getFontData(s.getFont()),rgb));
+		}
+		setAnnotations(infos.toArray(new AnnotationInfo[infos.size()]));
+		
 		// Backwards compatibility with previous data browser which
         // used global buffer size for all PVs
         final int buffer_size = DOMHelper.getSubelementInt(root_node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, -1);

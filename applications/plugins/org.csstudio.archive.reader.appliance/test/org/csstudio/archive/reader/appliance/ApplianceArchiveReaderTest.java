@@ -15,8 +15,8 @@ import org.junit.Test;
  */
 public class ApplianceArchiveReaderTest {
 
-	private static final String URL = "http://192.168.12.131:17665";
-	private static final String CHANNEL = "test_pv100";
+	private static final String URL = "http://127.0.0.1:17669/retrieval";
+	private static final String CHANNEL = "double-counter-100Hz";
 	private static final int KEY = 1;
 	
 	/**
@@ -42,7 +42,7 @@ public class ApplianceArchiveReaderTest {
 	@Test
 	public void testSearchByRegExp() throws Exception {
 		ApplianceArchiveReader reader = new ApplianceArchiveReader(URL);
-		String names[] = reader.getNamesByRegExp(KEY, "te.._pv[0-9]00");
+		String names[] = reader.getNamesByRegExp(KEY, "double-counter-[0-9]*Hz");
 		assertTrue(Arrays.asList(names).contains(CHANNEL));
 		assertTrue(names.length > 0);
 	}

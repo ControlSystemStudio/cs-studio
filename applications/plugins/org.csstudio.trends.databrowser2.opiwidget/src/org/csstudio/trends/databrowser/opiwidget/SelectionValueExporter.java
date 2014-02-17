@@ -11,10 +11,13 @@ import java.util.logging.Logger;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.figures.Axis;
-import org.csstudio.swt.xygraph.figures.PlotArea;
+import org.csstudio.swt.xygraph.figures.IAxisListener;
 import org.csstudio.swt.xygraph.figures.Trace;
+import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseMotionListener;
+import org.eclipse.swt.graphics.Color;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.PVWriterEvent;
@@ -33,7 +36,7 @@ import org.epics.vtype.ValueFactory;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SelectionValueExporter extends MouseMotionListener.Stub {
+public class SelectionValueExporter extends MouseMotionListener.Stub implements IAxisListener {
 
 	private static final String WRITER_FAILED_MSG = "Selection value writing failed.";
 	private static final List<String> VTABLE_NAMES = Arrays.asList("Trace", "X", "Y");
@@ -45,34 +48,42 @@ public class SelectionValueExporter extends MouseMotionListener.Stub {
 	private String selectionValuePv;
 	private PVWriter<Object> selectionValueWriter;
 	private boolean useTimeFormat = false;
+	private int cursorX;
 
-	private PlotArea plot;
+	private XYGraph graph;
 	
 	/**
 	 * Constructs a new SelectionValueExported that attaches itself to the provided plot.
 	 * 
 	 * @param plot the plot to attach this exporter to
 	 */
-	public SelectionValueExporter(PlotArea plot) {
-		setPlot(plot);
+	public SelectionValueExporter(XYGraph graph) {
+		setGraph(graph);
 	}
 	
 	/**
-	 * Sets the plot area, which is used as a source of data for this exporter.
+	 * Sets the graph, which is used as a source of data for this exporter.
 	 * The exporter will listen to the mouse motion events on the plot to get the
 	 * location of the mouse cursor. Based on the location it will extract the
-	 * values of all traces in the plot at that location and set the value to the 
+	 * values of all traces in the graph at that location and set the value to the 
 	 * selection PV.
 	 * 
-	 * @param plot the plot to attach to
+	 * @param graph the graph to attach to
 	 */
-	private void setPlot(PlotArea plot) {
-		if (this.plot != null) {
-			this.plot.removeMouseMotionListener(this);
+	private void setGraph(XYGraph graph) {
+		if (this.graph != null) {
+			this.graph.getPlotArea().removeMouseMotionListener(this);
+			for (Axis a : this.graph.getXAxisList()) {
+				a.removeListener(this);
+			}
+			
 		}
-		this.plot = plot;
-		if (this.plot != null) {
-			this.plot.addMouseMotionListener(this);
+		this.graph = graph;
+		if (this.graph != null) {
+			this.graph.getPlotArea().addMouseMotionListener(this);
+			for (Axis a : this.graph.getXAxisList()) {
+				a.addListener(this);
+			}
 		}
 	}
 		
@@ -82,12 +93,15 @@ public class SelectionValueExporter extends MouseMotionListener.Stub {
 	 */
 	@Override
 	public void mouseMoved(MouseEvent me) {
+		cursorX = me.getLocation().x;
+		calculate();
+	}
+	
+	private void calculate() {
+		// Loop over trace and sample to find the nearest (left) sample to the cross
 		if (selectionValuePv == null || selectionValuePv.trim().isEmpty())
 			return;
-		List<Trace> traceList = plot.getTraceList();
-		int cursorX = me.getLocation().x;
-		// Loop over trace and sample to find the nearest (left) sample to
-		// the cross
+		List<Trace> traceList = graph.getPlotArea().getTraceList();
 		double[] x = new double[traceList.size()];
 		double[] y = new double[x.length];
 		ArrayList<String> names = new ArrayList<String>(x.length);
@@ -202,5 +216,59 @@ public class SelectionValueExporter extends MouseMotionListener.Stub {
 	 */
 	public void setUseTimeFormatX(boolean useTimeFormat) {
 		this.useTimeFormat = useTimeFormat;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.csstudio.swt.xygraph.figures.IAxisListener#axisRangeChanged(org.csstudio.swt.xygraph.figures.Axis, org.csstudio.swt.xygraph.linearscale.Range, org.csstudio.swt.xygraph.linearscale.Range)
+	 */
+	@Override
+	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
+		calculate();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.csstudio.swt.xygraph.figures.IAxisListener#axisRevalidated(org.csstudio.swt.xygraph.figures.Axis)
+	 */
+	@Override
+	public void axisRevalidated(Axis axis) {
+		//ignore
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.csstudio.swt.xygraph.figures.IAxisListener#axisForegroundColorChanged(org.csstudio.swt.xygraph.figures.Axis, org.eclipse.swt.graphics.Color, org.eclipse.swt.graphics.Color)
+	 */
+	@Override
+	public void axisForegroundColorChanged(Axis axis, Color oldColor, Color newColor) {
+		//ignore		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.csstudio.swt.xygraph.figures.IAxisListener#axisTitleChanged(org.csstudio.swt.xygraph.figures.Axis, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void axisTitleChanged(Axis axis, String oldTitle, String newTitle) {
+		//ignore		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.csstudio.swt.xygraph.figures.IAxisListener#axisAutoScaleChanged(org.csstudio.swt.xygraph.figures.Axis, boolean, boolean)
+	 */
+	@Override
+	public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale, boolean newAutoScale) {
+		//ignore		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.csstudio.swt.xygraph.figures.IAxisListener#axisLogScaleChanged(org.csstudio.swt.xygraph.figures.Axis, boolean, boolean)
+	 */
+	@Override
+	public void axisLogScaleChanged(Axis axis, boolean old, boolean logScale) {
+		//ignore		
 	}
 }

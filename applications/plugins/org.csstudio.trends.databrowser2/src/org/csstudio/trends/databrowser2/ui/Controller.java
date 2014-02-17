@@ -21,8 +21,10 @@ import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Axis;
+import org.csstudio.swt.xygraph.figures.IAnnotationListener;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
@@ -718,20 +720,22 @@ public class Controller implements ArchiveFetchJobListener
 		final XYGraph graph = plot.getXYGraph();
     	final List<Axis> yaxes = graph.getYAxisList();
     	final AnnotationInfo[] annotations = model.getAnnotations();
-        for (AnnotationInfo info : annotations)
+        for (final AnnotationInfo info : annotations)
         {
 			final int axis_index = info.getAxis();
 			if (axis_index < 0  ||  axis_index >= yaxes.size())
 				continue;
 			final Axis axis = yaxes.get(axis_index);
         	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
-        	annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
-        			info.getValue());
-
         	//ADD Laurent PHILIPPE
 			annotation.setCursorLineStyle(info.getCursorLineStyle());
         	annotation.setShowName(info.isShowName());
         	annotation.setShowPosition(info.isShowPosition());
+        	annotation.setShowSampleInfo(info.isShowSampleInfo());        	
+        	annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
+        			info.getValue());
+        	
+        	snapAnnotation(annotation, info);
 
         	if(info.getColor() != null)
         		annotation.setAnnotationColor(XYGraphMediaFactory.getInstance().getColor(info.getColor()));
@@ -741,6 +745,50 @@ public class Controller implements ArchiveFetchJobListener
 
         	graph.addAnnotation(annotation);
         }
+    }
+    
+	//a workaround to snap the annotation in place
+    private void snapAnnotation(final Annotation annotation, final AnnotationInfo info) {
+    	annotation.addAnnotationListener(new IAnnotationListener() {
+			@Override
+			public void annotationMoved(double oldX, double oldY, double newX, double newY) {
+				//wait for the first annotation update after the trace is plotted and resnap
+				//the annotation to the correct position
+				if (annotation.getTrace() != null) {
+					if (annotation.getTrace().getHotSampleList().size() > 0) {
+						annotation.removeAnnotationListener(this);
+						double xValue = TimestampHelper.toMillisecs(info.getTimestamp());
+						List<ISample> samples = annotation.getTrace().getHotSampleList();
+						ISample sample = null;
+						if (samples.size() > 0) {
+							if (samples.get(0).getXValue() > xValue) {
+								sample = samples.get(0);
+							}
+						}
+						if (sample == null) {
+							for (int i = 1; i < samples.size(); i++) {
+								ISample first = samples.get(i-1);
+								ISample second = samples.get(i);
+								if (second.getXValue() > xValue && first.getXValue() <= xValue) {
+									sample = first;
+									break;
+								}
+							}
+						}
+						if (sample == null && samples.size() > 0) {
+							sample = samples.get(samples.size()-1);
+						}
+						if (sample != null) {
+							annotation.setCurrentSnappedSample(sample,false);
+						}
+						annotation.setValues(xValue,info.getValue());						
+					}
+				} else {
+					annotation.removeAnnotationListener(this);
+				}
+				
+			}
+		});
     }
 
 
@@ -827,6 +875,13 @@ public class Controller implements ArchiveFetchJobListener
             if (!archive_fetch_jobs.isEmpty())
                 return;
         }
+        display.asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+								
+			}
+		});
         // All completed. Do something to the plot?
         final ArchiveRescale rescale = model.getArchiveRescale();
         if (rescale == ArchiveRescale.NONE)
