@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Control System Studio (SNS)
 Bundle-SymbolicName: org.csstudio.sns.product;singleton:=true
-Bundle-Version: 3.2.11.qualifier
+Bundle-Version: 3.2.14.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.core.expressions,

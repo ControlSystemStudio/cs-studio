@@ -118,18 +118,4 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.csstudio.utility.displayBrowser.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.sds.service.pvvalidation.mkk"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
 </feature>

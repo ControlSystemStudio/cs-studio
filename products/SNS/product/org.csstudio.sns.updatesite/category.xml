@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.csstudio.sns.feature.optional_3.2.0.qualifier.jar" id="org.csstudio.sns.feature.optional" version="3.2.0.qualifier">
+   <feature url="features/org.csstudio.sns.feature.optional_3.2.14.qualifier.jar" id="org.csstudio.sns.feature.optional" version="3.2.14.qualifier">
       <category name="additions"/>
    </feature>
    <feature url="features/org.csstudio.scan.ui.feature_3.2.1.qualifier.jar" id="org.csstudio.scan.ui.feature" version="3.2.1.qualifier">

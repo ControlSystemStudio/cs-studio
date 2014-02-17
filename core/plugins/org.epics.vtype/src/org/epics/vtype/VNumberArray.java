@@ -1,9 +1,10 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
+import java.util.List;
 import org.epics.util.array.ListNumber;
 
 /**
@@ -17,4 +18,11 @@ import org.epics.util.array.ListNumber;
 public interface VNumberArray extends Array, Alarm, Time, Display, VType {
     @Override
     ListNumber getData();
+    
+    /**
+     * Returns the boundaries of each cell
+     * 
+     * @return 
+     */
+    List<ArrayDimensionDisplay> getDimensionDisplay();
 }

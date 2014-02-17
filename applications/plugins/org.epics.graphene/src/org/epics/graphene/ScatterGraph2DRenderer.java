@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -44,14 +44,16 @@ public class ScatterGraph2DRenderer extends Graph2DRenderer<ScatterGraph2DRender
         // Prepare the plot area
         calculateRanges(data.getXStatistics(), data.getYStatistics());
         this.g = g;
+        calculateLabels();
         calculateGraphArea();
+        drawBackground();
         drawGraphArea();
 
         // Draw the plot
         ListNumber xValues = data.getXValues();
         ListNumber yValues = data.getYValues();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
         setClip(g);
         g.setColor(Color.BLACK);
         for (int i = 0; i < xValues.size(); i++) {

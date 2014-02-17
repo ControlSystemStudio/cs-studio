@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
@@ -56,7 +56,7 @@ class ArrayOfNumberFormulaFunction implements FormulaFunction {
 
     @Override
     public Object calculate(final List<Object> args) {
-        
+
         ListDouble data = new ListDouble() {
 
             @Override
@@ -73,8 +73,8 @@ class ArrayOfNumberFormulaFunction implements FormulaFunction {
                 return args.size();
             }
         };
-        
+
         return ValueFactory.newVDoubleArray(data, alarmNone(), newTime(Timestamp.now()), displayNone());
     }
-    
+
 }

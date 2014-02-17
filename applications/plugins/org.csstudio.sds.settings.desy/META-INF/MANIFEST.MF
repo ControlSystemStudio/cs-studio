@@ -7,10 +7,10 @@ Bundle-Activator: org.csstudio.sds.settings.desy.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sds,
  org.eclipse.swt,
- org.junit4;bundle-version="4.8.1",
  org.eclipse.core.resources;bundle-version="3.6.0",
- org.csstudio.domain.desy;bundle-version="1.0.0",
- org.slf4j;bundle-version="1.6.1"
+ org.slf4j;bundle-version="1.6.1",
+ org.csstudio.domain.common;bundle-version="1.0.0",
+ org.junit
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.sds.cosyrules.color
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -1,8 +1,7 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
-
 /**
  * Support for services based on command-line execution (<a href="doc-files/exec-xml-syntax.html">exec xml syntax</a>).
  */

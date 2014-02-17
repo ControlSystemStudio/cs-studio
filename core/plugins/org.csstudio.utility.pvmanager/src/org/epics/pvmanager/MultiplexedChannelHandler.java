@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager;
 
@@ -51,6 +51,8 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     private ConnectionPayload connectionPayload;
     private Map<ChannelHandlerReadSubscription, MonitorHandler> monitors = new ConcurrentHashMap<>();
     private Map<WriteCache<?>, ChannelHandlerWriteSubscription> writeSubscriptions = new ConcurrentHashMap<>();
+    private boolean processMessageOnDisconnect = true;
+    private boolean processMessageOnReconnect = true;
     
     private class MonitorHandler {
 
@@ -165,7 +167,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
             monitor.findTypeAdapter();
         }
         
-        if (lastMessage != null) {
+        if (isConnected() && lastMessage != null && processMessageOnReconnect) {
+            processMessage(lastMessage);
+        }
+        if (!isConnected() && lastMessage != null && processMessageOnDisconnect) {
             processMessage(lastMessage);
         }
     }
@@ -272,6 +277,15 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         writeUsageCounter--;
         writeSubscriptions.remove(subscription.getWriteCache());
         guardedDisconnect();
+    }
+    
+    /**
+     * Resets the last message to null. This can be used to invalidate
+     * the last message without triggering a notification. It is useful
+     * when a reconnect should behave as the first connection.
+     */
+    protected synchronized final void resetMessage() {
+        lastMessage = null;
     }
 
     /**
@@ -397,4 +411,28 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         // TODO: push this in ChannleHandler?
         return writeConnected;
     }
+
+    /**
+     * Determines whether {@link #processConnection(java.lang.Object) should
+     * trigger {@link #processMessage(java.lang.Object) with the same (non-null)
+     * payload in case the channel has been disconnected. Default is true.
+     * 
+     * @param processMessageOnDisconnect whether to process the message on disconnect
+     */
+    protected synchronized final void setProcessMessageOnDisconnect(boolean processMessageOnDisconnect) {
+        this.processMessageOnDisconnect = processMessageOnDisconnect;
+    }
+
+    /**
+     * Determines whether {@link #processConnection(java.lang.Object) should
+     * trigger {@link #processMessage(java.lang.Object) with the same (non-null)
+     * payload in case the channel has reconnected. Default is true.
+     * 
+     * @param processMessageOnReconnect whether to process the message on disconnect
+     */
+    protected synchronized final void setProcessMessageOnReconnect(boolean processMessageOnReconnect) {
+        this.processMessageOnReconnect = processMessageOnReconnect;
+    }
+    
+    
 }

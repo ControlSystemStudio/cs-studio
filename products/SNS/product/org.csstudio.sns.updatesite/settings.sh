@@ -3,7 +3,7 @@
 # Kay Kasemir
 
 # Version to build
-export VERSION=3.2.11
+export VERSION=3.2.14
 
 if [ `hostname` = 'ics-web4.sns.ornl.gov' ]
 then
@@ -26,7 +26,7 @@ then
 
    export JRE_Win64=/home/kasemir/Eclipse/CSS_Additions/Win64/jre/
 else
-   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home
+   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home
    export TOP=/Users/ky9/git/cs-studio_3
    export WORKSPACE=/Users/ky9/Eclipse/Workspace4.3_3.7_target
    export ECLIPSE=/Users/ky9/Eclipse/3.7.2/rcp

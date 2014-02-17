@@ -1,12 +1,13 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.epics.util.array.ListNumber;
+import org.epics.util.array.ListNumbers;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
 
@@ -477,4 +479,18 @@ public class ValueUtil {
         throw new IllegalArgumentException("Column '" + columnName +"' was not found");
     }
     
+    /**
+     * Returns the default array dimension display by looking at the size
+     * of the n dimensional array and creating cell boundaries based on index.
+     * 
+     * @param array the array
+     * @return the array dimension display
+     */
+    public static List<ArrayDimensionDisplay> defaultArrayDisplay(VNumberArray array) {
+        List<ArrayDimensionDisplay> displays = new ArrayList<>();
+        for (int i = 0; i < array.getSizes().size(); i++) {
+            displays.add(ValueFactory.newDisplay(array.getSizes().getInt(i)));
+        }
+        return displays;
+    }
 }

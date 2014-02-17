@@ -29,6 +29,14 @@ import org.junit.Test;
 public class SNSPVListProviderUnitTest
 {
     @Test
+    public void showSettings()
+    {
+        System.out.println("URL: " + Preferences.getURL());
+        System.out.println("User: " + Preferences.getUser());
+        System.out.println("PW: " + Preferences.getPassword().length() + " chars");
+    }
+    
+    @Test
     public void locatePVName()
     {
         Logger logger = Logger.getLogger("");
