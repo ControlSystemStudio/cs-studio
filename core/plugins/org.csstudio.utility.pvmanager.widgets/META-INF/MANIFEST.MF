@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.csstudio.utility.pvmanager.ui;bundle-version="3.0.0",
  org.csstudio.ui.util;bundle-version="3.0.0";resolution:=optional,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
- org.csstudio.reap.ui.util;bundle-version="3.0.0";resolution:=optional,
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
  org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
  org.csstudio.csdata;bundle-version="3.2.0"

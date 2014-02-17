@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product uid="cs-studio" name="CS-Studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product uid="cs-studio" name="CS-Studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.3.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.product/icons/cs-studio-about.png"/>
@@ -52,8 +52,10 @@
    </plugins>
 
    <features>
+      <feature id="org.eclipse.jdt"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.objectteams.otdt.core.patch"/>
       <feature id="org.csstudio.libs.feature" version="3.2.0.qualifier"/>
       <feature id="org.csstudio.eclipse.feature" version="3.2.0.qualifier"/>
       <feature id="org.csstudio.core.feature" version="3.2.0.qualifier"/>

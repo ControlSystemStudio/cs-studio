@@ -26,3 +26,4 @@ Export-Package: org.csstudio.opibuilder.widgets.actions,
  org.csstudio.opibuilder.widgets.feedback,
  org.csstudio.opibuilder.widgets.figures,
  org.csstudio.opibuilder.widgets.model
+Import-Package: org.eclipse.gef

@@ -22,7 +22,7 @@
     <module>edu.msu.nscl.olog.api</module>
     <module>gov.bnl.channelfinder.api</module>
     <module>gov.bnl.unitconversion</module>
-    <module>javax.annotation</module>
+    <!--<module>javax.annotation</module>--><!-- use version from Orbit repository instead -->
     <module>javax.mail</module>
     <module>net.coobird.thumbnailator</module>
     <module>net.miginfocom.layout</module>
