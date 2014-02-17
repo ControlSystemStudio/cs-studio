@@ -64,7 +64,6 @@ cp $HGDIR/pvmanager-extra/target/generated-sources/antlr3/Formula.tokens ../core
 tail -n +2 $HGDIR/pvmanager-extra/target/generated-sources/antlr3/org/epics/pvmanager/formula/FormulaLexer.java > ../core/plugins/org.csstudio.utility.pvmanager.extra/src/org/epics/pvmanager/formula/FormulaLexer.java
 tail -n +2 $HGDIR/pvmanager-extra/target/generated-sources/antlr3/org/epics/pvmanager/formula/FormulaParser.java > ../core/plugins/org.csstudio.utility.pvmanager.extra/src/org/epics/pvmanager/formula/FormulaParser.java
 sync_dir . $HGDIR/pvmanager-extra/src/main/javadoc/org/epics/pvmanager/formula/doc-files ../core/plugins/org.csstudio.utility.pvmanager.extra/html
-exit 1
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.extra: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.extra
 echo Done pvmanager-extra
 
