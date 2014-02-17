@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+  <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
+<title>Archiver Appliance</title>
+</head>
+<body>
+
+<a name=top><h1>Archiver Appliance</h1></a>
+
+<span class="index">
+- <a href="#overview">Overview</a>
+- <a href="#started">Getting Started</a>
+- <a href="#started">Algorithms</a>
+</span>
+
+
+<h2><a name=overview>Overview</a></h2> 
+<p>
+Archiver Appliance integrates the <a href="http://epicsarchiverap.sourceforge.net/">EPICS Archiver appliance</a> 
+client into CSS. The plugin connects to the appliance and retrieve the data stored on the server as it is the
+most convenient for the DataBrowser.
+</p>
+
+<h2><a name=started>Getting Started</a></h2> 
+<p>
+To use the archiver appliance client you first need to set it up. This can be done via <i>Preferences</i> as for
+any other archive reader.
+</p>
+<p>
+The appliance protocol is called <i>pbraw</i>. If you have an appliance instance running on a specific IP and port
+you have to define the serverl url as <i>pbraw://[server_ip]:[server_port]/retrieval</i>. This is the default
+location of the archiver appliance. If your system is set up differently you may also need to change the </i>retrieval</i>
+path to something else. 
+</p>
+</p>
+<div class='figure'>
+   <img src="preferences.png"/>
+   <p>
+   Fig. 1: Archiver Appliance Setup
+   </p>
+</div>
+
+<h2><a name=started>Algorithms</a></h2> 
+<p>
+The plugin supports two different types of data loading: optimized and raw. The raw algorithm will return all the
+points that are available for the selected time period, while the optimized algorithm will use data reduction
+algorithm to avoid excessive data transfers. Data reduction used for numerical PVs is averaging. If selected
+via preferences, the plugin can also provide the statistical data (mean, std, min and max) when the optimized
+algorithm is used.   
+</p>
+
+</body>
+</html>

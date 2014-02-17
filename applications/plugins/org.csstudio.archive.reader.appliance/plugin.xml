@@ -9,4 +9,11 @@
             prefix="pbraw">
       </ArchiveReader>
    </extension>
+ <extension
+       point="org.eclipse.help.toc">
+    <toc
+          file="toc.xml"
+          primary="false">
+    </toc>
+ </extension>
 </plugin>
