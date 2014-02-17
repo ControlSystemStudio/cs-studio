@@ -54,7 +54,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 	private int canvasWidth = -1, canvasHeight = -1;
 	private Rectangle2D canvasAOI;
 	private RenderingHints renderingHints;
-	private Color oldColor, color;
+	private Color colorToChange, appliedColor, colorToApply;
 	private double[][] matrix;
 
 	public SimpleImageTranscoder(Document document) {
@@ -145,13 +145,13 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		if (document == null) {
 			return;
 		}
-		if (color != null) {
-			if (oldColor == null) {
-				// only black is changed
-				oldColor = new Color(Display.getCurrent(), (int) 0, (int) 0, (int) 0);
+		if (colorToApply != null) {
+			if (appliedColor == null) {
+				appliedColor = colorToChange != null ? colorToChange
+						: new Color(Display.getCurrent(), (int) 0, (int) 0, (int) 0);
 			}
-			changeColor(document, oldColor, color);
-			oldColor = color;
+			changeColor(document, appliedColor, colorToApply);
+			appliedColor = colorToApply;
 		}
 		try {
 			if (canvasWidth > 0) {
@@ -208,15 +208,20 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 	}
 	
 	public Color getColor() {
-		return color;
+		return colorToApply;
 	}
 
 	public void setColor(Color newColor) {
-		if (newColor == null || (this.color != null && newColor.equals(this.color)))
+		if (newColor == null || (this.colorToApply != null && newColor.equals(this.colorToApply)))
 			return;
-		this.oldColor = this.color;
-		this.color = newColor;
+		this.colorToApply = newColor;
 		contentChanged();
+	}
+	
+	public void setColorToChange(Color newColor) {
+		if (newColor == null || (this.colorToChange != null && newColor.equals(this.colorToChange)))
+			return;
+		this.colorToChange = newColor;
 	}
 	
 	public double[][] getTransformMatrix() {
@@ -229,7 +234,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		this.matrix = newMatrix;
 		this.document = applyMatrix(matrix);
 		// Transformed document is based on original => reset color
-		this.oldColor = null;
+		this.appliedColor = null;
 		contentChanged();
 	}
 	
@@ -260,8 +265,8 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		Matcher matcher = null;
 		String svgOldColor = toHexString(oldColor.getRed(), oldColor.getGreen(), oldColor.getBlue());
 		String svgNewColor = toHexString(newColor.getRed(), newColor.getGreen(), newColor.getBlue());
-		Pattern fillPattern = Pattern.compile(CSSConstants.CSS_FILL_PROPERTY + ":" + svgOldColor);
-		Pattern strokePattern = Pattern.compile(CSSConstants.CSS_STROKE_PROPERTY + ":" + svgOldColor);
+		Pattern fillPattern = Pattern.compile("(?i)" + CSSConstants.CSS_FILL_PROPERTY + ":" + svgOldColor);
+		Pattern strokePattern = Pattern.compile("(?i)" + CSSConstants.CSS_STROKE_PROPERTY + ":" + svgOldColor);
 		String fillReplace = CSSConstants.CSS_FILL_PROPERTY + ":" + svgNewColor;
 		String strokeReplace = CSSConstants.CSS_STROKE_PROPERTY + ":" + svgNewColor;
 		
