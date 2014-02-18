@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alarm Notification Application
 Bundle-SymbolicName: org.csstudio.alarm.beast.notifier;singleton:=true
-Bundle-Version: 3.2.2.qualifier
+Bundle-Version: 3.2.3.qualifier
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-Description: BEAST Alarm Notification
 Require-Bundle: org.junit;bundle-version="4.8.2",

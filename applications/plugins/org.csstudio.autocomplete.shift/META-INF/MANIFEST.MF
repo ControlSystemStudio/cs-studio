@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Shift autocomplete
+Bundle-SymbolicName: org.csstudio.autocomplete.shift
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.autocomplete.shift.Activator
+Require-Bundle: org.csstudio.autocomplete;bundle-version="1.0.0",
+ gov.bnl.shiftClient,
+ org.csstudio.shift,
+ com.google.common
+Service-Component: OSGI-INF/*.xml
+Bundle-ActivationPolicy: lazy
+Import-Package: com.google.common.base,
+ org.osgi.framework;version="1.3.0"

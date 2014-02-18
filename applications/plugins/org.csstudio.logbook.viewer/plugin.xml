@@ -10,6 +10,13 @@
             name="Log Table"
             restorable="true">
       </view>
+      <view
+            class="org.csstudio.logbook.ui.LogTreeView"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogTreeView"
+            name="Log Tree"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -38,6 +45,14 @@
                            type="org.csstudio.logbook.LogEntry">
                      </adapt>
                   </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
                </with>
             </visibleWhen>
          </command>
@@ -45,6 +60,16 @@
       <menuContribution
             allPopups="false"
             locationURI="toolbar:org.csstudio.logbook.ui.LogTableView">
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
+               label="Create New LogEntry"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.logbook.ui.LogTreeView">
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
                icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
@@ -77,7 +102,7 @@
       <command
             defaultHandler="org.csstudio.logbook.ui.OpenLogViewer"
             id="org.csstudio.logbook.viewer.OpenLogViewer"
-            name="Search Logbook">
+            name="View Details">
       </command>
    </extension>
    <extension

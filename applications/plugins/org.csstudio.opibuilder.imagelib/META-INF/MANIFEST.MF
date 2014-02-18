@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Symbol Image Library
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-SymbolicName: org.csstudio.opibuilder.imagelib;singleton:=true
-Bundle-Version: 4.1.2.qualifier
+Bundle-Version: 4.2.3.qualifier
 Bundle-Activator: org.csstudio.opibuilder.imagelib.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

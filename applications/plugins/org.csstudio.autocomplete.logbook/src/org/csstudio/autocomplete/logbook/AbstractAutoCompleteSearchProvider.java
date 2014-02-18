@@ -18,6 +18,7 @@ import org.csstudio.autocomplete.parser.ContentDescriptor;
 import org.csstudio.autocomplete.parser.ContentType;
 import org.csstudio.autocomplete.proposals.Proposal;
 import org.csstudio.autocomplete.proposals.ProposalStyle;
+import org.csstudio.autocomplete.tooltips.TooltipData;
 
 import com.google.common.base.Joiner;
 
@@ -95,29 +96,44 @@ public abstract class AbstractAutoCompleteSearchProvider implements
 		// use the last word of the String to check for keywords
 		fixedFirstPart = searchString.substring(0, searchString
 				.lastIndexOf(' ') > 0 ? searchString.lastIndexOf(' ') + 1 : 0);
+		String lastValue = searchString
+				.substring(searchString.lastIndexOf(":") + 1);
 		if (!fixedFirstPart.isEmpty()) {
 			String lastPart = searchString.substring(searchString
 					.lastIndexOf(' ') + 1);
-			for (String key : keyValueMap.keySet()) {
-				if (lastPart.length() > 0
-						&& key.startsWith(lastPart.substring(0,
-								lastPart.length()))) {
-					String entry = fixedFirstPart + key + ":";
-					Proposal proposal = new Proposal(entry, true);
-					proposal.addStyle(ProposalStyle.getDefault(
-							fixedFirstPart.length(), fixedFirstPart.length()
-									+ (lastPart.length() - 1)));
-					result.addProposal(proposal);
-					result.setCount(result.getCount() + 1);
+			if (!lastValue.isEmpty()
+					&& !lastValue.trim().equals(lastPart.trim())) {
+				for (String key : keyValueMap.keySet()) {
+					if (lastPart.length() > 0
+							&& key.startsWith(lastPart.substring(0,
+									lastPart.length()))) {
+						String entry = fixedFirstPart + key + ":";
+						Proposal proposal = new Proposal(entry, true);
+						proposal.addStyle(ProposalStyle.getDefault(
+								fixedFirstPart.length(), fixedFirstPart.length()
+										+ (lastPart.length() - 1)));
+						result.addProposal(proposal);
+						result.setCount(result.getCount() + 1);
+					}
 				}
 			}
 		}
-		for (String key : keyValueMap.keySet()) {
-			result.addProposal(new Proposal(searchString + ' ' + key + ":",
-					false));
-			result.setCount(result.getCount() + 1);
-
+		if (!lastValue.isEmpty()) {
+			for (String key : keyValueMap.keySet()) {
+				result.addProposal(new Proposal(searchString + ' ' + key + ":",
+						true));
+				result.setCount(result.getCount() + 1);
+			}
 		}
+		// handle tooltip
+		TooltipData td = new TooltipData();
+		td.value = "<text> [<keyword>: <value>[, <value>]]";
+		if (!Pattern.compile("^[^:]+(\\s\\w+:\\s*\\w+\\s*(,\\s*\\w+\\s*)*)*$")
+				.matcher(searchString).matches()) {
+			td.styles = new ProposalStyle[1];
+			td.styles[0] = ProposalStyle.getError(0, td.value.length() - 1);
+		}
+		result.addTooltipData(td);
 		return result;
 	}
 

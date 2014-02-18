@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Epicsarchiverap2
+Bundle-SymbolicName: org.csstudio.archive.reader.pbraw;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.trends.databrowser2.epicsarchiverap.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.csstudio.archive.reader;bundle-version="3.2.0",
+ org.csstudio.trends.databrowser2;bundle-version="3.2.1"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: .,
+ lib/pbrawclient-0.0.1.jar,
+ lib/protobuf-java-2.4.1.jar
+Import-Package: org.csstudio.data.values

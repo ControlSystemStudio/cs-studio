@@ -87,6 +87,32 @@ public class Application implements IApplication {
     /** {@inheritDoc} */
     public Object start(final IApplicationContext context) throws Exception
 	{
+		// Display configuration info
+		final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+		final String app_info = context.getBrandingName() + " " + version;
+
+		// Create parser for arguments and run it.
+		final String args[] = (String[]) context.getArguments().get("application.args");
+
+		int pos = 0;
+		while (pos < args.length) {
+			if (args[pos].equals("-help")) {
+				System.out
+						.println(app_info + "\n\nOptions:\n"
+								+ "  -help                         : Display help\n"
+								+ "  -version                      : Display version info\n"
+								+ "  -data /home/fred/Workspace    : Eclipse workspace location\n"
+								+ "  -pluginCustomization /path/to/my/settings.ini: Eclipse plugin defaults\n"
+								+ "  -share_link /absolute/system/path=relative/workspace/path[,another_link]*: Set shared links\n");
+				return IApplication.EXIT_OK;
+			}
+			if (args[pos].equals("-version")) {
+				System.out.println(app_info);
+				return IApplication.EXIT_OK;
+			}
+			pos++;
+		}
+    	
     	// Create the display
 	    final Display display = PlatformUI.createDisplay();
 

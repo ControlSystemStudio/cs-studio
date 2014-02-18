@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2013 ITER Organization.
+ * Copyright (c) 2010-2014 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ public class Activator implements BundleActivator {
 	/**
 	 * This plugin's ID.
 	 */
-	public static final String PLUGIN_ID = "org.csstudio.iter.utility.ologauth";
+	public static final String PLUGIN_ID = "org.csstudio.iter.utility.ologauthentication";
 
 	// The shared instance
 	private static Activator plugin;
