@@ -23,13 +23,17 @@ public class ByteHelper
     {
 	    final ListByte data = barray.getData();
 	    final byte[] bytes = new byte[data.size()];
-	    for (int i=0; i<bytes.length; ++i)
-	        bytes[i] = data.getByte(i);
-	    // Remove '\0' terminator, if bytes included one
-	    if (bytes.length > 0  &&  bytes[bytes.length-1] == 0)
-	        return new String(bytes, 0, bytes.length-1);
-	    else
-	        return new String(bytes);
+	    // Copy bytes until end or '\0'
+	    int len = 0;
+	    while (len<bytes.length)
+	    {
+	        final byte b = data.getByte(len);
+	        if (b == 0)
+	            break;
+	        else
+	            bytes[len++] = b;
+	    }
+        return new String(bytes, 0, len);
     }
 
     /** Convert String into byte array

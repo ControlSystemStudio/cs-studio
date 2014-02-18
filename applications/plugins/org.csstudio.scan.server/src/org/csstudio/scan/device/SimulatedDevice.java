@@ -48,7 +48,7 @@ public class SimulatedDevice extends Device
 	public double getChangeTimeEstimate(final double desired_value) throws Exception
     {
 		// Get previous value
-		final double original = readDouble();
+		final double original = VTypeHelper.toDouble(read());
 
 		// Estimate time for update
 		double time_estimate = Double.NaN;
@@ -66,12 +66,19 @@ public class SimulatedDevice extends Device
 	    return value;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void write(final Object value) throws Exception
+    {
+        if (value instanceof Number)
+            this.value = ValueFactory.newVDouble( ((Number) value).doubleValue() );
+        fireDeviceUpdate();
+    }
+	
 	/** {@inheritDoc} */
 	@Override
     public void write(final Object value, final TimeDuration timeout) throws Exception
     {
-		if (value instanceof Number)
-			this.value = ValueFactory.newVDouble( ((Number) value).doubleValue() );
-		fireDeviceUpdate();
+	    write(value);
     }
 }

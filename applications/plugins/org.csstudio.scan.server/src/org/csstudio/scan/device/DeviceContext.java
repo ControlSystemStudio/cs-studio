@@ -97,17 +97,6 @@ public class DeviceContext
             device = device_by_name.get(alias_or_name);
         if (device != null)
             return device;
-        
-        // Name could be 'alias {"putCallback":true}' where
-        // the basic alias is known, but without the annotation.
-        // Silently add that as a new device, since PVManager treats it as
-        // separate channel
-        if (alias_or_name.endsWith(PVDevice.PUT_CALLBACK_ANNOTATION))
-        {
-            device = device_by_alias.get(alias_or_name.substring(0, alias_or_name.length() - PVDevice.PUT_CALLBACK_ANNOTATION.length()));
-            if (device != null)
-                return addPVDevice(new DeviceInfo(device.getName() + PVDevice.PUT_CALLBACK_ANNOTATION, alias_or_name));
-        }
         // Not a known alias, nor magically added
         throw new Exception("Unknown device '" + alias_or_name + "'");
     }

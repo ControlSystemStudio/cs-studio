@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="3.2.14.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="3.3.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -43,11 +43,7 @@
       <plugin id="org.csstudio.scan.log.derby"/>
       <plugin id="org.csstudio.scan.server"/>
       <plugin id="org.csstudio.utility.httpd"/>
-      <plugin id="org.csstudio.utility.pvmanager"/>
-      <plugin id="org.csstudio.utility.pvmanager.epics"/>
-      <plugin id="org.csstudio.utility.pvmanager.loc"/>
-      <plugin id="org.csstudio.utility.pvmanager.sim"/>
-      <plugin id="org.csstudio.utility.pvmanager.vtype"/>
+      <plugin id="org.csstudio.vtype.pv"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
