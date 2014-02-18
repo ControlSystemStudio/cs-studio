@@ -52,6 +52,10 @@ syntax: regexp
 syntax: regexp
 ^applications/plugins/org\.csstudio\.utility\.olog\.ui/\.settings$
 
-# Ignore Tycho/Maven build directorys #
+# Ignore Tycho/Maven build directories #
 target/
+
+# This artifact gets produced outside '/target' directory. Why? #
+# The build fails when using the tycho-buildtimestamp-jgit plugin. #
+applications/plugins/org.csstudio.opibuilder.converter/converter.jar
 
