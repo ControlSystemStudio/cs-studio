@@ -12,6 +12,10 @@ public class Messages extends NLS {
     public static String to;
     public static String from;
 
+    public static String history;
+    public static String page;
+    public static String count;
+
     static {
 	// initialize resource bundle
 	NLS.initializeMessages(BUNDLE_NAME, Messages.class);

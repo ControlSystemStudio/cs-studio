@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.apache.batik.utils.SimpleImageTranscoder;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
+import org.csstudio.opibuilder.widgets.symbol.Preferences;
 import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
 import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
@@ -300,10 +301,9 @@ public abstract class AbstractSymbolImage extends Figure {
 		if (document == null) {
 			return;
 		}
-		if (isEditMode()) { // Color for edit mode is black
-			currentColor = new Color(null, new RGB(0, 0, 0));
-		}
-		transcoder.setColor(currentColor);
+		transcoder.setColorToChange(new Color(Display.getCurrent(), Preferences.getColorToChange()));
+		if (!isEditMode())
+			transcoder.setColor(currentColor);
 		transcoder.setTransformMatrix(permutationMatrix.getMatrix());
 		
 		// Scale image

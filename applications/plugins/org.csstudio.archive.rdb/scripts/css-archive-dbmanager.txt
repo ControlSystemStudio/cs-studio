@@ -1,0 +1,290 @@
+#!/bin/bash
+
+#*******************************************************************************
+# * Copyright (c) 2010-2014 ITER Organization.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# ******************************************************************************
+
+#set -xv
+
+optspec=":vfscr-:"
+
+# load file configuration
+. ${CODAC_ROOT}/main/sql/css-archive-dbmanager_customization.ini
+
+# init conf parameters
+PART=$(echo $rdb_url | awk -F'://' '{print $2}');
+HOST=$(echo $PART | awk -F'/' '{print $1}');
+DATABASE=$(echo $PART | awk -F'/' '{print $2}');
+USERNAME=$rdb_user
+BACKUP=/tmp
+VERSION="1.0.0"
+
+# day date
+DATE=`date +%y_%m_%d_%k_%M`
+
+FILE=""
+VERBOSE=""
+EXEC=""
+
+#color
+COLOR_NORMAL='\e[0;30m'
+COLOR_GREEN='\e[0;32m'
+COLOR_RED='\e[0;31m'
+COLOR_BLACK='\e[1;30m'
+COLOR_BLUE="\\033[2;34m"
+COLOR_BLACK='\e[1;30m'
+COLOR_ORANGE='\e[0;33m'
+
+
+# help commamd
+showusage() {
+    echo -e "css-archive-dbmanager allows you to save and restore an archive. Version $COLOR_BLACK $VERSION $COLOR_NORMAL"
+	echo -e "	- Save database into a file";
+	echo -e "	- Restore database from a file";
+	echo -e " ";
+    
+    	echo -e "Usage:"
+ 	echo -e "	css-archive-dbmanager -save | -restore -file <my backup file> [-rdb_user user] [-rdb_url url] ";
+	echo -e " ";
+	echo -e "Options: ";
+	echo -e " -help			       \t   show Help";								
+	echo -e " -version                     \t   show version";
+	echo -e " -save			       \t   save database (to be used with the option –file)";
+	echo -e " -restore                     \t   clean and restore database (to be used with the option –file)";
+	echo -e " -file my_backup_file         \t   Archive file";
+	echo -e " -rdb_user user               \t   Archive RDB username (archive by default)";
+	echo -e " -rdb_url url  	             \t   Archive RDB URL (jdbc:postgresql://localhost/css_archive_3_0_0 by default)";
+	echo -e " -verbose                     \t   verbose mode";
+
+    	echo -e " ";
+}
+
+# save database
+save() {
+       if [ -z "${FILE}" ]
+	    then
+			echo "option -file requires in argument." >&2
+			exit 1
+        fi
+
+        # Read Password
+	echo -n "Enter password for user \"$USERNAME\"  :  "
+	read -s password
+	export PGPASSWORD="$password"
+	echo
+
+	# saving all database
+	/usr/bin/pg_dump --host=$HOST --username="$USERNAME" --role="archive" --blobs --format=custom --section=data $VERBOSE --file="$FILE" $DATABASE
+
+
+	if [ $? -ne 0 ]
+	then 
+		echo -e ${COLOR_BLUE}"[ backup ]"${COLOR_NORMAL}"\t\t "${COLOR_RED}"[failed]"${COLOR_NORMAL}
+	else
+		echo -e ${COLOR_BLUE}"[ backup ]"${COLOR_NORMAL}"\t\t "${COLOR_GREEN}"[succeeded]"${COLOR_NORMAL}
+	fi
+}
+
+
+# restore database
+restore() {
+	echo -e "${COLOR_ORANGE} !!! The archive engine must be stopped during the restore !!! ${COLOR_NORMAL}"
+	
+	echo "Have you stopped the service archive engine before the restore (yes/no)?"
+	read stoparchive
+
+	if [ ! $stoparchive = "yes" ] 
+	then 
+		echo "Could you please stop the archive engine before the restore and then confirme (yes) to continue the process ?"
+		read confirmationstoparchive
+		if [ ! $confirmationstoparchive = "yes" ] 
+		then 
+			exit 0
+		fi
+	fi
+
+	echo
+
+	echo -e "${COLOR_ORANGE} !!! The archive database will be cleaned before the restore. It is recommended to save it first !!! ${COLOR_NORMAL}"
+	
+	echo "Do you want to continue (yes/no)?"
+	read response
+	if [ $response = "no" ] 
+	then 
+		exit 0
+	fi
+	if [ ! $response = "yes" ] 
+	then 
+		echo "Please, do you want to continue (yes/no)?"
+		read confirmation
+		if [ ! $confirmation = "yes" ] 
+		then 
+			exit 0
+		fi
+	fi
+
+	echo
+	
+    	# Read Password
+	echo -n "Enter password for user \"$USERNAME\"  :  "
+	read -s password
+	export PGPASSWORD="$password"
+
+	echo
+
+	# data cleaning tables before restore
+	echo -e -n "${COLOR_BLUE}"[ restore ]"${COLOR_NORMAL} 1/2 data cleaning tables "
+	PGDB="-d $DATABASE -U $USERNAME --host=$HOST"
+	TABLES="retent,severity,smpl_mode,sample,smpl_eng,array_val,chan_grp,archive_schema,channel,status,enum_metadata,num_metadata";
+
+	/usr/bin/psql $PGDB -q --command "TRUNCATE TABLE $TABLES"
+
+	if [ $? -ne 0 ]
+	then 
+		echo -e "\t\t ${COLOR_RED}[failed]${COLOR_NORMAL}"
+		exit 1;
+	else
+		echo -e "\t\t ${COLOR_GREEN}[succeeded]${COLOR_NORMAL}"
+	fi
+
+	echo -e -n "\n${COLOR_BLUE}"[ restore ]"${COLOR_NORMAL} 2/2 restoring database"
+
+	# restore data tables
+    	/usr/bin/pg_restore --host $HOST --username "$USERNAME" --dbname "$DATABASE" --role "archive" $VERBOSE "$FILE"
+	
+	if [ $? -ne 0 ]
+	then 
+		echo -e "\t\t\t\t ${COLOR_RED}[failed]${COLOR_NORMAL}"
+	else
+		echo -e "\t\t\t\t ${COLOR_GREEN}[succeeded]${COLOR_NORMAL}"
+	fi
+	
+	echo
+	
+}
+
+
+# main function: check arguments
+IFS=" ";
+ary=($@)
+
+for i in "$@"
+do
+    if [[ "$i" =~ "--" ]];
+    then 
+
+	echo "Invalid option $i " >&2
+	exit 1;
+    fi
+done
+
+# version
+if [[ "$@" =~ "-version" ]]; 
+then
+
+for i in "$@"
+do
+    if [[ "$i" = "-version" ]];
+    then 
+	echo -e ${COLOR_BLUE}" CSS archive database manager \n Version: $VERSION"${COLOR_NORMAL}
+	exit 0;
+    fi
+done
+exit 0;
+fi
+
+
+
+# help
+if [[ "$@" =~ "-help" ]]; 
+then
+
+# get arg value
+for i in "$@"
+do
+    if [[ "$i" = "-help" ]];
+    then 
+	showusage
+    fi
+done
+exit 0;
+fi
+
+# verbose
+if [[ "$@" =~ "-verbose" ]]; 
+then
+
+for i in "$@"
+do
+    if [[ "$i" = "-verbose" ]];
+    then 
+	VERBOSE="--verbose";
+    fi
+done
+fi
+
+# file=
+if [[ "$@" =~ "-file" ]]; 
+then
+	for key in "${!ary[@]}"; 
+	do 
+		if [[ "${ary[$key]}" =~ "-file" ]];
+		then 
+			key=$key+1;
+			FILE="${ary[$key]}";
+		fi
+
+	done
+fi
+
+# default values function	
+if [[ "$@" =~ "-rdb_user" ]]; 
+then
+	for key in "${!ary[@]}"; 
+	do 
+		if [[ "${ary[$key]}" =~ "-rdb_user" ]];
+		then 
+			key=$key+1;
+			USERNAME="${ary[$key]}";
+		fi
+
+	done
+fi
+
+if [[ "$@" =~ "-rdb_url " ]]; 
+then
+	for key in "${!ary[@]}"; 
+	do 
+		if [[ "${ary[$key]}" =~ "-rdb_url" ]];
+		then 
+			key=$key+1;
+			URL="${ary[$key]}";
+		        PART=$(echo $URL | awk -F'://' '{print $2}');
+			HOST=$(echo $PART | awk -F'/' '{print $1}');
+			DATABASE=$(echo $PART | awk -F'/' '{print $2}');
+		fi
+	done
+fi
+
+# save function	    
+if [[ "$@" =~ "-save" ]]; 
+then
+	save
+fi
+
+if [[ "$@" =~ "-restore" ]]
+then
+    if [ -z "${FILE}" ]
+    then
+	echo "option -file requires in argument." >&2
+	echo -e "${COLOR_BLACK}restore           \t\t ${COLOR_RED}[failed]${COLOR_NORMAL}"
+	exit 1
+    fi
+	restore;      		    	
+fi
+
+

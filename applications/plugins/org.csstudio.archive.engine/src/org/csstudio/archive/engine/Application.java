@@ -48,12 +48,16 @@ public class Application implements IApplication
      *  @return <code>true</code> if continue, <code>false</code> to end application
      */
     @SuppressWarnings("nls")
-    private boolean getSettings(final String args[])
+    private boolean getSettings(final String args[], final IApplicationContext context)
     {
+    	// Display configuration info
+        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String app_info = context.getBrandingName() + " " + version;
+    	
         // Create the parser and run it.
         final ArgParser parser = new ArgParser();
-        final BooleanOption help_opt = new BooleanOption(parser, "-help",
-                "Display Help");
+        final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+        final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
         final BooleanOption skip_last_opt = new BooleanOption(parser, "-skip_last",
                 "Skip reading last sample time from RDB on start-up");
         final IntegerOption port_opt = new IntegerOption(parser, "-port", "4812",
@@ -75,7 +79,12 @@ public class Application implements IApplication
         }
         if (help_opt.get())
         {   // Help requested
-            System.out.println(parser.getHelp());
+            System.out.println(app_info + "\n\n" + parser.getHelp());
+            return false;
+        }
+        if (version_opt.get())
+        {   // Version requested
+            System.out.println(app_info);
             return false;
         }
 
@@ -127,7 +136,7 @@ public class Application implements IApplication
     {
         final String args[] =
             (String []) context.getArguments().get("application.args");
-        if (!getSettings(args))
+        if (!getSettings(args, context))
             return Integer.valueOf(-2);
 
         // Initialize logging

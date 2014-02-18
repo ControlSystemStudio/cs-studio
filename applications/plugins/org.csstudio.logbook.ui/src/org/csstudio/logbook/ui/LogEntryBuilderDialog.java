@@ -11,7 +11,14 @@ import org.csstudio.logbook.LogbookBuilder;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -37,8 +44,8 @@ public class LogEntryBuilderDialog extends Dialog {
     private final IPreferencesService service = Platform.getPreferencesService();
     private boolean authenticate = true;    
     private String defaultLogbook = "";
-	/** The default level. */
-	private String defaultLevel;
+    /** The default level. */
+    private String defaultLevel;
     private ErrorBar errorBar;
     
     /** The listeners. */
@@ -107,38 +114,80 @@ public class LogEntryBuilderDialog extends Dialog {
 	protected void okPressed() {
 		// Create the logEntry
 		// Create logbook client
-		Cursor originalCursor = getShell().getCursor();
+		final Cursor originalCursor = getShell().getCursor();
+		// Disable Submmit
+		getButton(IDialogConstants.OK_ID).setEnabled(false);
 		try {
 			// get logbook client
-			LogbookClient logbookClient;
+			final LogbookClient logbookClient;
 			if (authenticate) {
 				logbookClient = LogbookClientManager.getLogbookClientFactory()
 						.getClient(userCredentialWidget.getUsername(),
 								userCredentialWidget.getPassword());
-
 				fireInitializeSave(userCredentialWidget.getUsername());
 			} else {
-				logbookClient = LogbookClientManager.getLogbookClientFactory()
-						.getClient();
+				logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
 				fireInitializeSave("");
 			}
 
-			getShell().setCursor(
-					Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
+			getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
 
 			// Start save process
 			fireStartSave();
 			// create log entry
-			logbookClient.createLogEntry(logEntryWidget.getLogEntry());
-
-			getShell().setCursor(originalCursor);
-			setReturnCode(OK);
 			
-			// Stop save process
-			fireStopSave();
-			close();
+			Job job = new Job("Create Log Entry") {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					try {
+						logbookClient.createLogEntry(logEntryWidget.getLogEntry());
+						return Status.OK_STATUS;
+					} catch (final Exception e) {
+						getShell().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								getShell().setCursor(originalCursor);
+								getButton(IDialogConstants.OK_ID).setEnabled(true);
+								errorBar.setException(e);
+							}
+						});
+						return Status.CANCEL_STATUS;
+					}
+				}
+			};
+			job.addJobChangeListener(new JobChangeAdapter() {
+				public void done(IJobChangeEvent event) {
+					if (event.getResult().isOK()) {
+						getShell().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								getShell().setCursor(originalCursor);
+								getButton(IDialogConstants.OK_ID).setEnabled(true);
+								setReturnCode(OK);
+
+								// Stop save process
+								try {
+									fireStopSave();
+									close();
+								} catch (Exception e) {
+									errorBar.setException(e);
+
+									// Cancel save process
+									fireCancelSave();
+								}
+							}
+						});
+
+					}
+				}
+			});
+			job.schedule();			
 		} catch (Exception ex) {
 			getShell().setCursor(originalCursor);
+			getButton(IDialogConstants.OK_ID).setEnabled(true);
 			errorBar.setException(ex);
 
 			// Cancel save process

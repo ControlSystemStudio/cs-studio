@@ -44,7 +44,7 @@ public class DataBrowserWidgetFigure extends Figure
         plot.getXYGraph().setShowValueLabels(showValueLabels);
         plot.setToolbarVisible(toolbar);
         add(plot.getFigure());
-        selectionValueExporter = new SelectionValueExporter(plot.getXYGraph().getPlotArea());
+        selectionValueExporter = new SelectionValueExporter(plot.getXYGraph());
 		selectionValueExporter.setUseTimeFormatX(true);
 		setSelectionValuePv(selectionValuePv);
     }
