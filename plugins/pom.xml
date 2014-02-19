@@ -4,11 +4,15 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>thirdparty-plugins</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>thirdparty</artifactId>
+    <version>BUILD-VERSION</version>
+    <!--<relativePath>../../pom.xml</relativePath>-->
   </parent>
   <groupId>org.csstudio</groupId>
-  <artifactId>org.antlr.runtime</artifactId>
-  <version>3.4.0</version>
-  <packaging>eclipse-plugin</packaging>
+  <artifactId>thirdparty-plugins</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>org.antlr.runtime</module>
+  </modules>
 </project>
