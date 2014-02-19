@@ -22,7 +22,7 @@
     <module>edu.msu.nscl.olog.api</module>
     <module>gov.bnl.channelfinder.api</module>
     <module>gov.bnl.unitconversion</module>
-    <!--<module>javax.annotation</module>--><!-- use version from Orbit repository instead -->
+    <module>javax.annotation</module>
     <module>javax.mail</module>
     <module>net.coobird.thumbnailator</module>
     <module>net.miginfocom.layout</module>
@@ -214,8 +214,8 @@
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
     <module>org.custommonkey.xmlunit</module>
-    <!--<module>org.eclipse.nebula.jface.gridviewer</module>--><!-- use plugin from Nebula repository instead -->
-    <!--<module>org.eclipse.nebula.widgets.grid</module>--><!-- use plugin from Nebula repository instead -->
+    <module>org.eclipse.nebula.jface.gridviewer</module>
+    <module>org.eclipse.nebula.widgets.grid</module>
     <module>org.ehcache</module>
     <module>org.epics.graphene</module>
     <module>org.hamcrest</module>
