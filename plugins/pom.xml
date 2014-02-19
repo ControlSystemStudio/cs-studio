@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <version>0.0.7-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -18,5 +18,6 @@
     <module>com.mysql.jdbc</module>
     <module>commons-beanutils.v1.8.0</module>
     <module>edu.msu.nscl.olog.api</module>
+    <module>net.coobird.thumbnailator</module>
   </modules>
 </project>
