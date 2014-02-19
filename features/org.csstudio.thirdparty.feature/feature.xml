@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.thirdparty.feature"
       label="CS-Studio External Library Dependencies"
-      version="0.0.3.qualifier"
+      version="0.0.4.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -38,6 +38,13 @@
 
    <plugin
          id="com.google.inject.guice.v3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="com.mysql.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"

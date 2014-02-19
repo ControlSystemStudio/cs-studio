@@ -15,5 +15,6 @@
     <module>org.antlr.runtime</module>
     <module>com.google.common</module>
     <module>com.google.inject.guice.v3</module>
+    <module>com.mysql.jdbc</module>
   </modules>
 </project>
