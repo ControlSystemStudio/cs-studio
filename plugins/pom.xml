@@ -14,5 +14,6 @@
   <modules>
     <module>org.antlr.runtime</module>
     <module>com.google.common</module>
+    <module>com.google.inject.guice.v3</module>
   </modules>
 </project>
