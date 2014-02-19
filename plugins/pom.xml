@@ -17,5 +17,6 @@
     <module>com.google.inject.guice.v3</module>
     <module>com.mysql.jdbc</module>
     <module>commons-beanutils.v1.8.0</module>
+    <module>edu.msu.nscl.olog.api</module>
   </modules>
 </project>
