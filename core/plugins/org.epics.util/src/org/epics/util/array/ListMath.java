@@ -5,6 +5,8 @@
 package org.epics.util.array;
 
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Math operations defined on lists of numbers.
@@ -306,4 +308,38 @@ public class ListMath {
         };
     }
 
+    /**
+     * XXX: This is just a prototype
+     */
+    public static List<ListNumber> dft(ListNumber x, ListNumber y) {
+        if (x.size() != y.size()) {
+            throw new IllegalArgumentException("Real and imaginary part must be of the same length");
+        }
+        
+        double cosarg,sinarg;
+        double[] resX = new double[x.size()];
+        double[] resY = new double[x.size()];
+        int direction = 1; // -1 would be inverse
+        double size = x.size();
+
+        for (int i = 0; i < x.size(); i++) {
+            double arg = - direction * 2.0 * Math.PI * (double) i / size;
+            for (int k = 0; k < x.size(); k++) {
+                cosarg = Math.cos(k * arg);
+                sinarg = Math.sin(k * arg);
+                resX[i] += (x.getDouble(k) * cosarg - y.getDouble(k) * sinarg);
+                resY[i] += (x.getDouble(k) * sinarg + y.getDouble(k) * cosarg);
+            }
+        }
+
+        if (direction == 1) {
+            for (int i = 0; i < x.size(); i++) {
+                resX[i] = resX[i] / size;
+                resY[i] = resY[i] / size;
+            }
+            return Arrays.<ListNumber>asList(new ArrayDouble(resX), new ArrayDouble(resY));
+        } else {
+            return Arrays.<ListNumber>asList(new ArrayDouble(resY), new ArrayDouble(resX));
+        }
+    }
 }
