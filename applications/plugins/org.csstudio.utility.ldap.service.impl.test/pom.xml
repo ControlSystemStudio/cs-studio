@@ -10,5 +10,5 @@
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.utility.ldap.service.impl.test</artifactId>
   <version>1.0.0.201107111400</version>
-  <packaging>eclipse-plugin</packaging>
+  <packaging>eclipse-test-plugin</packaging>
 </project>
