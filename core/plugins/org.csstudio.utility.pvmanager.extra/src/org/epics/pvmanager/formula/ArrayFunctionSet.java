@@ -109,6 +109,7 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
                                           return ListMath.rescale(array, (1 / num.doubleValue()), 0.0);
                                     }
                                 })
+                        .addFormulaFunction(new DftFormulaFunction())
 
                         );
     }
