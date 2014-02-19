@@ -90,7 +90,7 @@
       <!-- Would prefer to replace this with a public repository, but I can not find one with these versions. -->
       <id>thirdparty</id>
       <!-- Is there a better way to reference this repository in a system independent way? -->
-      <url>file:${user.dir}/thirdparty</url>
+      <url>http://controlsystemstudio-thirdparty.s3-website-us-east-1.amazonaws.com</url>
       <layout>p2</layout>
     </repository>
   </repositories>
