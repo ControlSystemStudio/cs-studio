@@ -59,9 +59,8 @@ public class PVDeviceUnitTest implements DeviceListener
         root.setLevel(Level.FINE);
         for (Handler handler : root.getHandlers())
             handler.setLevel(Level.FINE);
-        PVPool.addPVFactory(new JCA_PVFactory());
         PVPool.addPVFactory(new LocalPVFactory());
-        PVPool.setDefaultType(JCA_PVFactory.TYPE);
+        PVPool.addPVFactory(new JCA_PVFactory());
     }
 
     /** Read with listener */
