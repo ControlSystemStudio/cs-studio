@@ -29,7 +29,6 @@ public class VTypeForEnum extends DBRAlarmTimeWrapper<DBR_TIME_Enum> implements 
     {
         super(dbr);
         this.labels = labels;
-        System.out.println();
     }
 
     @Override
