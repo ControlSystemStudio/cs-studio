@@ -13,5 +13,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
+    <module>com.google.common</module>
   </modules>
 </project>
