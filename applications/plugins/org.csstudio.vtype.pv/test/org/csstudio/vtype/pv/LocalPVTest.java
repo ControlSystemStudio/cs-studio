@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.CountDownLatch;
@@ -15,10 +18,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.vtype.pv.PV;
-import org.csstudio.vtype.pv.PVFactory;
-import org.csstudio.vtype.pv.PVListener;
-import org.csstudio.vtype.pv.PVPool;
 import org.csstudio.vtype.pv.local.LocalPVFactory;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
@@ -42,9 +41,7 @@ public class LocalPVTest implements PVListener
         for (Handler handler : root.getHandlers())
             handler.setLevel(Level.FINE);
         
-        final PVFactory factory = new LocalPVFactory();
-        PVPool.addPVFactory(factory);
-        PVPool.setDefaultType(factory.getType());
+        PVPool.addPVFactory(new LocalPVFactory());
     }
     
     @After

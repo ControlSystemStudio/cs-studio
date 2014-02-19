@@ -44,6 +44,8 @@ public class Activator implements BundleActivator
             PVPool.addPVFactory(factory);
         }
 
+        // Set default type after adding factories
+        // (otherwise factory added last would be the default)
         final String default_type = Preferences.defaultType();
         logger.log(Level.CONFIG, "Default PV type {0}", default_type);
         PVPool.setDefaultType(default_type);

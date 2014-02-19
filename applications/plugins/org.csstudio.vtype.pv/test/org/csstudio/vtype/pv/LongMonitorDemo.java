@@ -12,10 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.csstudio.vtype.pv.PV;
-import org.csstudio.vtype.pv.PVFactory;
-import org.csstudio.vtype.pv.PVListener;
-import org.csstudio.vtype.pv.PVPool;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
 import org.epics.vtype.VType;
 import org.junit.Before;
@@ -41,9 +37,7 @@ public class LongMonitorDemo implements PVListener
             handler.setLevel(Level.FINE);
             handler.setFormatter(new SimpleFormatter());
         }
-        final PVFactory factory = new JCA_PVFactory();
-        PVPool.addPVFactory(factory);
-        PVPool.setDefaultType(factory.getType());
+        PVPool.addPVFactory(new JCA_PVFactory());
     }
     
     public void run() throws Exception

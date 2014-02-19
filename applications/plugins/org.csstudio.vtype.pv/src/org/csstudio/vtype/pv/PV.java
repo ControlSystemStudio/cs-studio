@@ -192,7 +192,9 @@ abstract public class PV
     /** Close the PV, releasing underlying resources.
      *  <p>
      *  Called by {@link PVPool}.
-     *  Users of this class should not call.
+     *  Users of this class should instead release PV from pool.
+     *  
+     *  @see PVPool#releasePV(PV)
      */
     protected void close()
     {

@@ -41,11 +41,11 @@ public class PVPool
 {
     /** Separator between PV type indicator and rest of PV name.
      *  <p>
-     *  This one is URL-ish, and works OK with EPICS PVs because
-     *  those are unlikely to contain "://" themself, while
+     *  This one is URL-like, and works OK with EPICS PVs because
+     *  those are unlikely to contain "://" themselves, while
      *  just ":" for example is likely to be inside the PV name
      */
-    final public static String SEPARATOR = "://";
+    final protected static String SEPARATOR = "://";
 
     /** Map of PV type prefixes to PV factories */
     final private static Map<String, PVFactory> factories = new HashMap<>();
@@ -64,16 +64,28 @@ public class PVPool
     {
     }
 
-    /** @param type Default PV name type prefix to use if none is provided in a PV name */
+    /** Set default PV name type prefix.
+     *  
+     *  <p>Should be called <u>after</u> adding all factories, because
+     *  factory added last will be the default.
+     *  
+     *  @param type Default PV name type prefix to use if none is provided in a PV name
+     */
     public static void setDefaultType(final String type)
     {
         default_type = type;
     }
 
-    /** @param factory {@link PVFactory} that the pool can use */
+    /** Add a PV Factory
+     * 
+     *  <p>As a side effect, also makes that last added factory the default
+     *  
+     *  @param factory {@link PVFactory} that the pool can use
+     */
     public static void addPVFactory(final PVFactory factory)
     {
         factories.put(factory.getType(), factory);
+        setDefaultType(factory.getType());
     }
     
     /** Obtain a PV

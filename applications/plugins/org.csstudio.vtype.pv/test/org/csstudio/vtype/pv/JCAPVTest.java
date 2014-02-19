@@ -52,7 +52,6 @@ public class JCAPVTest implements PVListener
         
         final PVFactory factory = new JCA_PVFactory();
         PVPool.addPVFactory(factory);
-        PVPool.setDefaultType(factory.getType());
     }
 
     @Test
