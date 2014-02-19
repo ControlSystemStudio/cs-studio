@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.9-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -20,5 +20,6 @@
     <module>edu.msu.nscl.olog.api</module>
     <module>net.coobird.thumbnailator</module>
     <module>org.csstudio.platform.libs.jersey</module>
+    <module>org.apache.jackrabbit</module>
   </modules>
 </project>
