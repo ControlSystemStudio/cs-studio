@@ -52,7 +52,6 @@ of the distribution package.
       <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.nebula.jface.gridviewer" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.nebula.widgets.grid" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
