@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.thirdparty.feature"
+      label="CS-Studio External Library Dependencies"
+      version="0.0.1.qualifier"
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
+
+   <description url="http://controlsystemstudio.github.io/">
+      Third Party libraries needed by CS-Studio. This feature is used to building the P2 repository.
+   </description>
+
+   <copyright url="http://controlsystemstudio.github.io/">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public license for the feature.
+       Each library uses its own license.
+   </license>
+
+   <requires>
+      <!--<import plugin="org.plugin.example" version="1.0.0" match="greaterOrEqual"/>-->
+   </requires>
+
+   <plugin
+         id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

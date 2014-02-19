@@ -8,10 +8,10 @@
     <version>BUILD-VERSION</version>
   </parent>
   <groupId>org.csstudio</groupId>
-  <artifactId>thirdparty-plugins</artifactId>
+  <artifactId>thirdparty-features</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>org.antlr.runtime</module>
+    <module>org.csstudio.thirdparty.feature</module>
   </modules>
 </project>
