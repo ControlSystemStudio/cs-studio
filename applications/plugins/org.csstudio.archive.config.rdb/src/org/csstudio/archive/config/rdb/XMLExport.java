@@ -68,7 +68,7 @@ public class XMLExport
     {
         out.println("  <group>");
         out.println("    <name>" + group.getName() + "</name>");
-        final ChannelConfig[] channels = config.getChannels(group, false);
+        final ChannelConfig[] channels = config.getChannels(group, true);
         for (ChannelConfig channel : channels)
             dumpChannel(out, channel, group.getEnablingChannel());
         out.println("  </group>");
