@@ -4,11 +4,9 @@
       <category name="CATEGORY"/>
    </feature>-->
 
-
-   <feature id="org.csstudio.thirdparty.feature">
+   <feature id="org.csstudio.thirdparty.feature" version="0.0.9.qualifier">
       <!--<category name="org.csstudio.category.core"/>-->
    </feature>
 
-   <!--<category-def name="org.csstudio.category.core" label="Core"/>
-   <category-def name="org.csstudio.category.applications" label="Applications"/>-->
+   <!--<category-def name="org.csstudio.category.example" label="Example"/>-->
 </site>
