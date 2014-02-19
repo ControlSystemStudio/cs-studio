@@ -74,7 +74,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <features>
       <feature id="org.csstudio.sns.feature.eclipse" version="3.2.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.core" version="3.2.11.qualifier"/>
+      <feature id="org.csstudio.sns.feature.core" version="3.3.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.basiccore" version="3.2.1.qualifier"/>
       <feature id="org.csstudio.sns.feature.applications" version="3.2.1.qualifier"/>
       <feature id="org.csstudio.sns.feature.repository" version="3.2.1.qualifier"/>
