@@ -4,6 +4,8 @@
 package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.graphene.BubbleGraph2DWidget;
+import org.csstudio.opibuilder.properties.StringProperty;
+import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
 
 /**
@@ -21,6 +23,15 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
 	@Override
 	public String getTypeID() {
 		return ID;
+	}
+
+	public static final String PROP_SIZE_FORMULA = "size_formula"; //$NON-NLS-1$
+	
+	@Override
+	protected void configureProperties() {
+		super.configureProperties();
+		addProperty(new StringProperty(PROP_SIZE_FORMULA,
+				"Size Column Expression (VString)", WidgetPropertyCategory.Basic, ""));
 	}
 
 }
