@@ -54,12 +54,18 @@ sync_dir . $HGDIR/pvmanager-file/src/main/javadoc/org/epics/pvmanager/file/doc-f
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.file: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.file
 echo Done pvmanager-file
 
-# NB: pvmanager-extra needs to be fixed to build the parser and copy everything
-#echo Synching pvmanager-extra
-#sync_dir pvmanager $HGDIR/pvmanager-extra/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager.extra/src/org/epics/
-#sync_dir . $HGDIR/pvmanager-extra/src/main/javadoc/org/epics/pvmanager/formula/doc-files ../core/plugins/org.csstudio.utility.pvmanager.extra/html
-#git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.extra: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.extra
-#echo Done pvmanager-extra
+echo Synching pvmanager-extra
+cd $HGDIR/pvmanager-extra
+mvn install
+cd ../..
+sync_dir pvmanager $HGDIR/pvmanager-extra/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager.extra/src/org/epics/
+# Copy generated antlr3 files (remove date)
+cp $HGDIR/pvmanager-extra/target/generated-sources/antlr3/Formula.tokens ../core/plugins/org.csstudio.utility.pvmanager.extra/src
+tail -n +2 $HGDIR/pvmanager-extra/target/generated-sources/antlr3/org/epics/pvmanager/formula/FormulaLexer.java > ../core/plugins/org.csstudio.utility.pvmanager.extra/src/org/epics/pvmanager/formula/FormulaLexer.java
+tail -n +2 $HGDIR/pvmanager-extra/target/generated-sources/antlr3/org/epics/pvmanager/formula/FormulaParser.java > ../core/plugins/org.csstudio.utility.pvmanager.extra/src/org/epics/pvmanager/formula/FormulaParser.java
+sync_dir . $HGDIR/pvmanager-extra/src/main/javadoc/org/epics/pvmanager/formula/doc-files ../core/plugins/org.csstudio.utility.pvmanager.extra/html
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanage.extra: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.extra
+echo Done pvmanager-extra
 
 echo Synching pvmanager-graphene
 sync_dir pvmanager $HGDIR/pvmanager-graphene/src/main/java/org/epics ../applications/plugins/org.csstudio.utility.pvmanager.graphene/src/org/epics/
