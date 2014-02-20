@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.jca;
 
+import gov.aps.jca.CAStatus;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBRType;
@@ -181,8 +182,9 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     public void monitorChanged(final MonitorEvent ev)
     {
         try
-        {
-            if (ev.getStatus().isSuccessful())
+        {   // May receive event with null status when 'disconnected'
+            final CAStatus status = ev.getStatus();
+            if (status != null  &&  status.isSuccessful())
             {
                 final VType value = DBRHelper.decodeValue(metadata, ev.getDBR());
                 logger.log(Level.FINE, "{0} = {1}", new Object[] { getName(), value });
@@ -192,6 +194,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         catch (Exception ex)
         {
             logger.log(Level.WARNING, getName() + " monitor error", ex);
+            ex.printStackTrace();
         }
     }
     
