@@ -23,5 +23,6 @@
     <module>org.apache.jackrabbit</module>
     <module>gov.bnl.channelfinder.api</module>
     <module>gov.bnl.unitconversion</module>
+    <module>javax.annotation</module>
   </modules>
 </project>
