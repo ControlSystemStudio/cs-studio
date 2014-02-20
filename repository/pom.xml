@@ -20,7 +20,31 @@
   <packaging>eclipse-repository</packaging>
 
   <build>
-    <plugins> 
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho.extras</groupId>
+        <artifactId>tycho-p2-extras-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+                <goal>mirror</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
+          <source>
+              <repository>
+                  <url>${cs-studio-thirdparty.url}</url>
+                  <layout>p2</layout>
+              </repository>
+          </source>
+          <compress>true</compress>
+          <mirrorMetadataOnly>true</mirrorMetadataOnly>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-repository-plugin</artifactId>
