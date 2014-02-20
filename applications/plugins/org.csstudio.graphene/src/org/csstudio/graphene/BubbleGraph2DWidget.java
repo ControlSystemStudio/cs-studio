@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IMemento;
 import org.epics.graphene.BubbleGraph2DRendererUpdate;
 import org.epics.pvmanager.graphene.BubbleGraph2DExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
@@ -31,12 +32,40 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 		BubbleGraph2DExpression graph = ExpressionLanguage.bubbleGraphOf(formula(getDataFormula()),
 				formulaArg(getXColumnFormula()),
 				formulaArg(getYColumnFormula()),
-				null,
+				formulaArg(getSizeColumnFormula()),
 				formulaArg(getTooltipColumnFormula()));
 		return graph;
 	}
 
+	private String sizeColumnFormula;
 	
+	private static final String MEMENTO_SIZE_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
+
+	public String getSizeColumnFormula() {
+		return this.sizeColumnFormula;
+	}
+
+	public void setSizeColumnFormula(String sizeColumnFormula) {
+		String oldValue = this.sizeColumnFormula;
+		this.sizeColumnFormula = sizeColumnFormula;
+		changeSupport.firePropertyChange("xColumnFormula", oldValue,
+				this.sizeColumnFormula);
+	}
+
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		if (getSizeColumnFormula() != null) {
+			memento.putString(MEMENTO_SIZE_COLUMN_FORMULA, getSizeColumnFormula());
+		}
+	}
+
+	public void loadState(IMemento memento) {
+		if (memento != null) {
+			if (memento.getString(MEMENTO_SIZE_COLUMN_FORMULA) != null) {
+				setSizeColumnFormula(memento.getString(MEMENTO_SIZE_COLUMN_FORMULA));
+			}
+		}
+	}
 
 	@Override
 	public ISelection getSelection() {
