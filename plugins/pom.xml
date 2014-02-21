@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.16-SNAPSHOT</version>
+  <version>0.0.17-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -28,5 +28,6 @@
     <module>org.apache.batik</module>
     <module>org.apache.tools.ant</module>
     <module>org.apache.tools.ant.junit</module>
+    <module>org.csstudio.platform.libs.easymock</module>
   </modules>
 </project>
