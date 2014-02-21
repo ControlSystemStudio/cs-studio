@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.thirdparty.feature"
       label="CS-Studio External Library Dependencies"
-      version="0.0.12.qualifier"
+      version="0.0.13.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -105,5 +105,13 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="net.miginfocom.layout"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 
 </feature>
