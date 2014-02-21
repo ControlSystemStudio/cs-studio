@@ -13,23 +13,23 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>com.google.common</module>
-    <module>com.google.inject</module>
-    <module>com.google.inject.guice.v3</module>
-    <module>com.google.protobuf</module>
-    <module>com.mysql.jdbc</module>
-    <module>commons-beanutils.v1.8.0</module>
-    <module>edu.msu.nscl.olog.api</module>
-    <module>gov.bnl.channelfinder.api</module>
-    <module>gov.bnl.unitconversion</module>
-    <module>javax.annotation</module>
+    <!--<module>com.google.common</module>--><!-- Moved to third party repository -->
+    <!--<module>com.google.inject</module>--><!-- Available in Orbit repository  -->
+    <!--<module>com.google.inject.guice.v3</module>--><!-- Moved to third party repository -->
+    <!--<module>com.google.protobuf</module>--><!-- Available in Orbit repository  -->
+    <!--<module>com.mysql.jdbc</module>--><!-- Moved to third party repository -->
+    <!--<module>commons-beanutils.v1.8.0</module>--><!-- Moved to third party repository -->
+    <!--<module>edu.msu.nscl.olog.api</module>--><!-- Moved to third party repository -->
+    <!--<module>gov.bnl.channelfinder.api</module>--><!-- Moved to third party repository -->
+    <!--<module>gov.bnl.unitconversion</module>--><!-- Moved to third party repository -->
+    <!--<module>javax.annotation</module>--><!-- Moved to third party repository -->
     <module>javax.mail</module>
-    <module>net.coobird.thumbnailator</module>
+    <!--<module>net.coobird.thumbnailator</module>--><!-- Moved to third party repository -->
     <module>net.miginfocom.layout</module>
     <module>org.apache.batik</module>
     <module>org.apache.commons.collections</module>
     <module>org.apache.commons.lang</module>
-    <module>org.apache.jackrabbit</module>
+    <!--<module>org.apache.jackrabbit</module>--><!-- Moved to third party repository -->
     <module>org.apache.log4j</module>
     <module>org.apache.tools.ant</module>
     <module>org.apache.tools.ant.junit</module>

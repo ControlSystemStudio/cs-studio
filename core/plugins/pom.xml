@@ -13,7 +13,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>org.antlr.runtime</module>
+    <!--<module>org.antlr.runtime</module>--><!-- Moved to third party repository  -->
     <module>org.csstudio.auth</module>
     <module>org.csstudio.auth.ui</module>
     <module>org.csstudio.autocomplete</module>
@@ -53,7 +53,7 @@
     <module>org.csstudio.platform.libs.hibernate</module>
     <module>org.csstudio.platform.libs.hibernate.ui</module>
     <module>org.csstudio.platform.libs.jdbc</module>
-    <module>org.csstudio.platform.libs.jersey</module>
+    <!--<module>org.csstudio.platform.libs.jersey</module>--><!-- Moved to third party repository  -->
     <module>org.csstudio.platform.libs.jfreechart</module>
     <module>org.csstudio.platform.libs.jmock</module>
     <module>org.csstudio.platform.libs.jms</module>
