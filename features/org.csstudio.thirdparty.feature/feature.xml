@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.thirdparty.feature"
       label="CS-Studio External Library Dependencies"
-      version="0.0.13.qualifier"
+      version="0.0.14.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -113,5 +113,11 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.apache.batik"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

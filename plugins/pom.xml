@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.13-SNAPSHOT</version>
+  <version>0.0.14-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -25,5 +25,6 @@
     <module>gov.bnl.unitconversion</module>
     <module>javax.annotation</module>
     <module>net.miginfocom.layout</module>
+    <module>org.apache.batik</module>
   </modules>
 </project>
