@@ -33,7 +33,7 @@
     <tycho.version>0.19.0</tycho.version>
     <tycho-extras.version>0.19.0</tycho-extras.version>
 
-    <cs-studio-thirdparty.url>http://controlsystemstudio-thirdparty.s3-website-us-east-1.amazonaws.com</cs-studio-thirdparty.url>
+    <cs-studio-thirdparty.url>http://controlsystemstudio.s3-website-us-east-1.amazonaws.com/thirdparty/3.3</cs-studio-thirdparty.url>
   </properties>
 
   <!--
