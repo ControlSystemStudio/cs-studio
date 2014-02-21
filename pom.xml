@@ -86,13 +86,10 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <!-- Content of core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.* directories.         -->
-      <!-- Would prefer to replace this with a public repository, but I can not find one with these versions. -->
       <id>thirdparty</id>
-      <!-- Is there a better way to reference this repository in a system independent way? -->
-      <url>http://controlsystemstudio-thirdparty.s3-website-us-east-1.amazonaws.com</url>
+      <url>http://controlsystemstudio.s3-website-us-east-1.amazonaws.com/thirdparty/3.3</url>
       <layout>p2</layout>
-    </repository>
+    </repository>  
   </repositories>
   
   <!--
