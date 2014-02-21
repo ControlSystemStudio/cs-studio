@@ -56,11 +56,11 @@
               <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
               <source>
                  <repository>
-                      <url>${project.parent.basedir}/extras</url>
+                      <url>${project.baseUri}/../extras</url>
                       <layout>p2</layout>
                   </repository>
                   <repository>
-                      <url>${project.build.directory}/repository</url>
+                      <url>${project.baseUri}/target/repository</url>
                       <layout>p2</layout>
                   </repository>
               </source>
