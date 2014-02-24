@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.thirdparty.feature"
       label="CS-Studio External Library Dependencies"
-      version="0.0.24.qualifier"
+      version="0.0.25.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -191,6 +191,13 @@
 
    <plugin
          id="org.csstudio.platform.libs.jdbc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.jfreechart"
          download-size="0"
          install-size="0"
          version="0.0.0"
