@@ -44,7 +44,7 @@
     <module>org.csstudio.platform.jaasAuthentication.ui</module>
     <module>org.csstudio.platform.ldapAuthorization</module>
     <module>org.csstudio.platform.ldapAuthorization.ui</module>
-    <module>org.csstudio.platform.libs.easymock</module>
+    <!--<module>org.csstudio.platform.libs.easymock</module>--><!-- Moved to third party repository  -->
     <module>org.csstudio.platform.libs.epics</module>
     <module>org.csstudio.platform.libs.epics.linux</module>
     <module>org.csstudio.platform.libs.epics.macosx</module>
