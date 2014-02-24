@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.23-SNAPSHOT</version>
+  <version>0.0.24-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -35,5 +35,6 @@
     <module>org.csstudio.platform.libs.epics.macosx</module>
     <module>org.csstudio.platform.libs.epics.win32</module>
     <module>org.csstudio.platform.libs.hibernate</module>
+    <module>org.csstudio.platform.libs.jdbc</module>
   </modules>
 </project>
