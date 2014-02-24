@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.18-SNAPSHOT</version>
+  <version>0.0.22-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -30,5 +30,9 @@
     <module>org.apache.tools.ant.junit</module>
     <module>org.csstudio.platform.libs.easymock</module>
     <module>org.apache.log4j</module>
+    <module>org.csstudio.platform.libs.epics</module>
+    <module>org.csstudio.platform.libs.epics.linux</module>
+    <module>org.csstudio.platform.libs.epics.macosx</module>
+    <module>org.csstudio.platform.libs.epics.win32</module>
   </modules>
 </project>

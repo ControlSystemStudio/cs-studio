@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.thirdparty.feature"
       label="CS-Studio External Library Dependencies"
-      version="0.0.18.qualifier"
+      version="0.0.22.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -147,5 +147,39 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics.linux"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"
+         fragment="true"
+         os="linux"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics.macosx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"
+         fragment="true"
+         os="macosx"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics.win32"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"
+         fragment="true"
+         os="win32"/>
 
 </feature>
