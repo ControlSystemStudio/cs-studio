@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.19-SNAPSHOT</version>
+  <version>0.0.20-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -31,5 +31,6 @@
     <module>org.csstudio.platform.libs.easymock</module>
     <module>org.csstudio.platform.libs.epics</module>
     <module>org.csstudio.platform.libs.epics.linux</module>
+    <module>org.csstudio.platform.libs.epics.macosx</module>
   </modules>
 </project>
