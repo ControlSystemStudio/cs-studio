@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.27-SNAPSHOT</version>
+  <version>0.0.28-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -39,5 +39,6 @@
     <module>org.csstudio.platform.libs.jfreechart</module>
     <module>org.csstudio.platform.libs.jmock</module>
     <module>org.csstudio.platform.libs.jms</module>
+    <module>org.csstudio.platform.libs.tine</module>
   </modules>
 </project>
