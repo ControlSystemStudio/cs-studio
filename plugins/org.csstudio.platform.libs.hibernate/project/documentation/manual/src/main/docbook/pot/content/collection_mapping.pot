@@ -1,0 +1,624 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-02-11T05:38:15\n"
+"PO-Revision-Date: 2010-02-11T05:38:15\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Collection mapping"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Persistent collections"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Hibernate requires that persistent collection-valued fields be declared as an interface type. For example:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The actual interface might be <literal>java.util.Set</literal>, <literal>java.util.Collection</literal>, <literal>java.util.List</literal>, <literal>java.util.Map</literal>, <literal>java.util.SortedSet</literal>, <literal>java.util.SortedMap</literal> or anything you like (\"anything you like\" means you will have to write an implementation of <literal>org.hibernate.usertype.UserCollectionType</literal>.)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Notice how the instance variable was initialized with an instance of <literal>HashSet</literal>. This is the best way to initialize collection valued properties of newly instantiated (non-persistent) instances. When you make the instance persistent, by calling <literal>persist()</literal> for example, Hibernate will actually replace the <literal>HashSet</literal> with an instance of Hibernate's own implementation of <literal>Set</literal>. Be aware of the following errors:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The persistent collections injected by Hibernate behave like <literal>HashMap</literal>, <literal>HashSet</literal>, <literal>TreeMap</literal>, <literal>TreeSet</literal> or <literal>ArrayList</literal>, depending on the interface type."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Collections instances have the usual behavior of value types. They are automatically persisted when referenced by a persistent object and are automatically deleted when unreferenced. If a collection is passed from one persistent object to another, its elements might be moved from one table to another. Two entities cannot share a reference to the same collection instance. Due to the underlying relational model, collection-valued properties do not support null value semantics. Hibernate does not distinguish between a null collection reference and an empty collection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Use persistent collections the same way you use ordinary Java collections. However, please ensure you understand the semantics of bidirectional associations (these are discussed later)."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Collection mappings"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "There are quite a range of mappings that can be generated for collections that cover many common relational models. We suggest you experiment with the schema generation tool so that you understand how various mapping declarations translate to database tables."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The Hibernate mapping element used for mapping a collection depends upon the type of interface. For example, a <literal>&lt;set&gt;</literal> element is used for mapping properties of type <literal>Set</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Apart from <literal>&lt;set&gt;</literal>, there is also <literal>&lt;list&gt;</literal>, <literal>&lt;map&gt;</literal>, <literal>&lt;bag&gt;</literal>, <literal>&lt;array&gt;</literal> and <literal>&lt;primitive-array&gt;</literal> mapping elements. The <literal>&lt;map&gt;</literal> element is representative:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>name</literal>: the collection property name"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>table</literal> (optional - defaults to property name): the name of the collection table. It is not used for one-to-many associations."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>schema</literal> (optional): the name of a table schema to override the schema declared on the root element"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>lazy</literal> (optional - defaults to <literal>true</literal>): disables lazy fetching and specifies that the association is always eagerly fetched. It can also be used to enable \"extra-lazy\" fetching where most operations do not initialize the collection. This is suitable for large collections."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>inverse</literal> (optional - defaults to <literal>false</literal>): marks this collection as the \"inverse\" end of a bidirectional association."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>cascade</literal> (optional - defaults to <literal>none</literal>): enables operations to cascade to child entities."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>sort</literal> (optional): specifies a sorted collection with <literal>natural</literal> sort order or a given comparator class."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>order-by</literal> (optional, JDK1.4 only): specifies a table column or columns that define the iteration order of the <literal>Map</literal>, <literal>Set</literal> or bag, together with an optional <literal>asc</literal> or <literal>desc</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>where</literal> (optional): specifies an arbitrary SQL <literal>WHERE</literal> condition that is used when retrieving or removing the collection. This is useful if the collection needs to contain only a subset of the available data."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>fetch</literal> (optional, defaults to <literal>select</literal>): chooses between outer-join fetching, fetching by sequential select, and fetching by sequential subselect."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>batch-size</literal> (optional, defaults to <literal>1</literal>): specifies a \"batch size\" for lazily fetching instances of this collection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>access</literal> (optional - defaults to <literal>property</literal>): the strategy Hibernate uses for accessing the collection property value."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>optimistic-lock</literal> (optional - defaults to <literal>true</literal>): specifies that changes to the state of the collection results in increments of the owning entity's version. For one-to-many associations you may want to disable this setting."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>mutable</literal> (optional - defaults to <literal>true</literal>): a value of <literal>false</literal> specifies that the elements of the collection never change. This allows for minor performance optimization in some cases."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Collection foreign keys"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Collection instances are distinguished in the database by the foreign key of the entity that owns the collection. This foreign key is referred to as the <emphasis>collection key column</emphasis>, or columns, of the collection table. The collection key column is mapped by the <literal>&lt;key&gt;</literal> element."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "There can be a nullability constraint on the foreign key column. For most collections, this is implied. For unidirectional one-to-many associations, the foreign key column is nullable by default, so you may need to specify <literal>not-null=\"true\"</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The foreign key constraint can use <literal>ON DELETE CASCADE</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "See the previous chapter for a full definition of the <literal>&lt;key&gt;</literal> element."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Collection elements"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Collections can contain almost any other Hibernate type, including: basic types, custom types, components and references to other entities. This is an important distinction. An object in a collection might be handled with \"value\" semantics (its life cycle fully depends on the collection owner), or it might be a reference to another entity with its own life cycle. In the latter case, only the \"link\" between the two objects is considered to be a state held by the collection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The contained type is referred to as the <emphasis>collection element type</emphasis>. Collection elements are mapped by <literal>&lt;element&gt;</literal> or <literal>&lt;composite-element&gt;</literal>, or in the case of entity references, with <literal>&lt;one-to-many&gt;</literal> or <literal>&lt;many-to-many&gt;</literal>. The first two map elements with value semantics, the next two are used to map entity associations."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Indexed collections"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "All collection mappings, except those with set and bag semantics, need an <emphasis>index column</emphasis> in the collection table. An index column is a column that maps to an array index, or <literal>List</literal> index, or <literal>Map</literal> key. The index of a <literal>Map</literal> may be of any basic type, mapped with <literal>&lt;map-key&gt;</literal>. It can be an entity reference mapped with <literal>&lt;map-key-many-to-many&gt;</literal>, or it can be a composite type mapped with <literal>&lt;composite-map-key&gt;</literal>. The index of an array or list is always of type <literal>integer</literal> and is mapped using the <literal>&lt;list-index&gt;</literal> element. The mapped column contains sequential integers that are numbered from zero by default."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>column_name</literal> (required): the name of the column holding the collection index values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>base</literal> (optional - defaults to <literal>0</literal>): the value of the index column that corresponds to the first element of the list or array."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>column</literal> (optional): the name of the column holding the collection index values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>formula</literal> (optional): a SQL formula used to evaluate the key of the map."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>type</literal> (required): the type of the map keys."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>column</literal> (optional): the name of the foreign key column for the collection index values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>formula</literal> (optional): a SQ formula used to evaluate the foreign key of the map key."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>class</literal> (required): the entity class used as the map key."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If your table does not have an index column, and you still wish to use <literal>List</literal> as the property type, you can map the property as a Hibernate <emphasis>&lt;bag&gt;</emphasis>. A bag does not retain its order when it is retrieved from the database, but it can be optionally sorted or ordered."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Collections of values and many-to-many associations"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Any collection of values or many-to-many associations requires a dedicated <emphasis>collection table</emphasis> with a foreign key column or columns, <emphasis>collection element column</emphasis> or columns, and possibly an index column or columns."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For a collection of values use the <literal>&lt;element&gt;</literal> tag. For example:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>column</literal> (optional): the name of the column holding the collection element values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>formula</literal> (optional): an SQL formula used to evaluate the element."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>type</literal> (required): the type of the collection element."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A <emphasis>many-to-many association</emphasis> is specified using the <literal>&lt;many-to-many&gt;</literal> element."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>column</literal> (optional): the name of the element foreign key column."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>formula</literal> (optional): an SQL formula used to evaluate the element foreign key value."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>class</literal> (required): the name of the associated class."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>fetch</literal> (optional - defaults to <literal>join</literal>): enables outer-join or sequential select fetching for this association. This is a special case; for full eager fetching in a single <literal>SELECT</literal> of an entity and its many-to-many relationships to other entities, you would enable <literal>join</literal> fetching,not only of the collection itself, but also with this attribute on the <literal>&lt;many-to-many&gt;</literal> nested element."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>unique</literal> (optional): enables the DDL generation of a unique constraint for the foreign-key column. This makes the association multiplicity effectively one-to-many."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>not-found</literal> (optional - defaults to <literal>exception</literal>): specifies how foreign keys that reference missing rows will be handled: <literal>ignore</literal> will treat a missing row as a null association."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>entity-name</literal> (optional): the entity name of the associated class, as an alternative to <literal>class</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>property-ref</literal> (optional): the name of a property of the associated class that is joined to this foreign key. If not specified, the primary key of the associated class is used."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Here are some examples."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A set of strings:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A bag containing integers with an iteration order determined by the <literal>order-by</literal> attribute:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "An array of entities, in this case, a many-to-many association:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A map from string indices to dates:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A list of components (this is discussed in the next chapter):"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "One-to-many associations"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A <emphasis>one-to-many association</emphasis> links the tables of two classes via a foreign key with no intervening collection table. This mapping loses certain semantics of normal Java collections:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "An instance of the contained entity class cannot belong to more than one instance of the collection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "An instance of the contained entity class cannot appear at more than one value of the collection index."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "An association from <literal>Product</literal> to <literal>Part</literal> requires the existence of a foreign key column and possibly an index column to the <literal>Part</literal> table. A <literal>&lt;one-to-many&gt;</literal> tag indicates that this is a one-to-many association."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>not-found</literal> (optional - defaults to <literal>exception</literal>): specifies how cached identifiers that reference missing rows will be handled. <literal>ignore</literal> will treat a missing row as a null association."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The <literal>&lt;one-to-many&gt;</literal> element does not need to declare any columns. Nor is it necessary to specify the <literal>table</literal> name anywhere."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If the foreign key column of a <literal>&lt;one-to-many&gt;</literal> association is declared <literal>NOT NULL</literal>, you must declare the <literal>&lt;key&gt;</literal> mapping <literal>not-null=\"true\"</literal> or <emphasis>use a bidirectional association</emphasis> with the collection mapping marked <literal>inverse=\"true\"</literal>. See the discussion of bidirectional associations later in this chapter for more information."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The following example shows a map of <literal>Part</literal> entities by name, where <literal>partName</literal> is a persistent property of <literal>Part</literal>. Notice the use of a formula-based index:"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Advanced collection mappings"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Sorted collections"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Hibernate supports collections implementing <literal>java.util.SortedMap</literal> and <literal>java.util.SortedSet</literal>. You must specify a comparator in the mapping file:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Allowed values of the <literal>sort</literal> attribute are <literal>unsorted</literal>, <literal>natural</literal> and the name of a class implementing <literal>java.util.Comparator</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Sorted collections actually behave like <literal>java.util.TreeSet</literal> or <literal>java.util.TreeMap</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If you want the database itself to order the collection elements, use the <literal>order-by</literal> attribute of <literal>set</literal>, <literal>bag</literal> or <literal>map</literal> mappings. This solution is only available under JDK 1.4 or higher and is implemented using <literal>LinkedHashSet</literal> or <literal>LinkedHashMap</literal>. This performs the ordering in the SQL query and not in the memory."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Note"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The value of the <literal>order-by</literal> attribute is an SQL ordering, not an HQL ordering."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Associations can even be sorted by arbitrary criteria at runtime using a collection <literal>filter()</literal>:"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Bidirectional associations"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A <emphasis>bidirectional association</emphasis> allows navigation from both \"ends\" of the association. Two kinds of bidirectional association are supported:"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "one-to-many"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "set or bag valued at one end and single-valued at the other"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "many-to-many"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "set or bag valued at both ends"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "You can specify a bidirectional many-to-many association by mapping two many-to-many associations to the same database table and declaring one end as <emphasis>inverse</emphasis>. You cannot select an indexed collection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Here is an example of a bidirectional many-to-many association that illustrates how each category can have many items and each item can be in many categories:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Changes made only to the inverse end of the association are <emphasis>not</emphasis> persisted. This means that Hibernate has two representations in memory for every bidirectional association: one link from A to B and another link from B to A. This is easier to understand if you think about the Java object model and how a many-to-many relationship in Javais created:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The non-inverse side is used to save the in-memory representation to the database."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "You can define a bidirectional one-to-many association by mapping a one-to-many association to the same table column(s) as a many-to-one association and declaring the many-valued end <literal>inverse=\"true\"</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Mapping one end of an association with <literal>inverse=\"true\"</literal> does not affect the operation of cascades as these are orthogonal concepts."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Bidirectional associations with indexed collections"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A bidirectional association where one end is represented as a <literal>&lt;list&gt;</literal> or <literal>&lt;map&gt;</literal>, requires special consideration. If there is a property of the child class that maps to the index column you can use <literal>inverse=\"true\"</literal> on the collection mapping:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If there is no such property on the child class, the association cannot be considered truly bidirectional. That is, there is information available at one end of the association that is not available at the other end. In this case, you cannot map the collection <literal>inverse=\"true\"</literal>. Instead, you could use the following mapping:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Note that in this mapping, the collection-valued end of the association is responsible for updates to the foreign key."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Ternary associations"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "There are three possible approaches to mapping a ternary association. One approach is to use a <literal>Map</literal> with an association as its index:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A second approach is to remodel the association as an entity class. This is the most common approach."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A final alternative is to use composite elements, which will be discussed later."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "<literal>Using an &lt;idbag&gt;</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The majority of the many-to-many associations and collections of values shown previously all map to tables with composite keys, even though it has been have suggested that entities should have synthetic identifiers (surrogate keys). A pure association table does not seem to benefit much from a surrogate key, although a collection of composite values <emphasis>might</emphasis>. It is for this reason that Hibernate provides a feature that allows you to map many-to-many associations and collections of values to a table with a surrogate key."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The <literal>&lt;idbag&gt;</literal> element lets you map a <literal>List</literal> (or <literal>Collection</literal>) with bag semantics. For example:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "An <literal>&lt;idbag&gt;</literal> has a synthetic id generator, just like an entity class. A different surrogate key is assigned to each collection row. Hibernate does not, however, provide any mechanism for discovering the surrogate key value of a particular row."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The update performance of an <literal>&lt;idbag&gt;</literal> supersedes a regular <literal>&lt;bag&gt;</literal>. Hibernate can locate individual rows efficiently and update or delete them individually, similar to a list, map or set."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In the current implementation, the <literal>native</literal> identifier generation strategy is not supported for <literal>&lt;idbag&gt;</literal> collection identifiers."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Collection examples"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This section covers collection examples."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The following class has a collection of <literal>Child</literal> instances:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If each child has, at most, one parent, the most natural mapping is a one-to-many association:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This maps to the following table definitions:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If the parent is <emphasis>required</emphasis>, use a bidirectional one-to-many association:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Notice the <literal>NOT NULL</literal> constraint:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Alternatively, if this association must be unidirectional you can declare the <literal>NOT NULL</literal> constraint on the <literal>&lt;key&gt;</literal> mapping:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "On the other hand, if a child has multiple parents, a many-to-many association is appropriate:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Table definitions:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For more examples and a complete explanation of a parent/child relationship mapping, see <xref linkend=\"example-parentchild\" /> for more information."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Even more complex association mappings are covered in the next chapter."
+msgstr ""
+
