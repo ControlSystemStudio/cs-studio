@@ -45,19 +45,19 @@
     <module>org.csstudio.platform.ldapAuthorization</module>
     <module>org.csstudio.platform.ldapAuthorization.ui</module>
     <!--<module>org.csstudio.platform.libs.easymock</module>--><!-- Moved to third party repository  -->
-    <module>org.csstudio.platform.libs.epics</module>
-    <module>org.csstudio.platform.libs.epics.linux</module>
-    <module>org.csstudio.platform.libs.epics.macosx</module>
+    <!--<module>org.csstudio.platform.libs.epics</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.epics.linux</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.epics.macosx</module>--><!-- Moved to third party repository  -->
     <module>org.csstudio.platform.libs.epics.ui</module>
-    <module>org.csstudio.platform.libs.epics.win32</module>
-    <module>org.csstudio.platform.libs.hibernate</module>
+    <!--<module>org.csstudio.platform.libs.epics.win32</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.hibernate</module>--><!-- Moved to third party repository  -->
     <module>org.csstudio.platform.libs.hibernate.ui</module>
-    <module>org.csstudio.platform.libs.jdbc</module>
+    <!--<module>org.csstudio.platform.libs.jdbc</module>--><!-- Moved to third party repository  -->
     <!--<module>org.csstudio.platform.libs.jersey</module>--><!-- Moved to third party repository  -->
-    <module>org.csstudio.platform.libs.jfreechart</module>
-    <module>org.csstudio.platform.libs.jmock</module>
-    <module>org.csstudio.platform.libs.jms</module>
-    <module>org.csstudio.platform.libs.tine</module>
+    <!--<module>org.csstudio.platform.libs.jfreechart</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.jmock</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.jms</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.tine</module>--><!-- Moved to third party repository  -->
     <!--<module>org.csstudio.platform.simpledal</module>-->
     <module>org.csstudio.platform.utility.jms</module>
     <module>org.csstudio.platform.utility.jms.ui</module>

@@ -213,7 +213,7 @@
     <!--<module>org.csstudio.utility.tine.ui</module>--><!-- depends on org.csstudio.utility.tine -->
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
-    <module>org.custommonkey.xmlunit</module>
+    <!--<module>org.custommonkey.xmlunit</module>--><!-- use plugin from Orbit repository -->
     <module>org.eclipse.nebula.jface.gridviewer</module>
     <module>org.eclipse.nebula.widgets.grid</module>
     <module>org.ehcache</module>
@@ -226,8 +226,8 @@
     <module>org.junit-dep</module>
     <module>org.mockito</module>
     <module>org.python</module>
-    <module>org.slf4j</module>
-    <module>org.slf4j-log4j12</module>
+    <!--<module>org.slf4j</module>--><!-- Moved to third party repository -->
+    <!--<module>org.slf4j-log4j12</module>--><!-- Moved to third party repository -->
     <module>org.slf4j.bridge</module>
   </modules>
 </project>
