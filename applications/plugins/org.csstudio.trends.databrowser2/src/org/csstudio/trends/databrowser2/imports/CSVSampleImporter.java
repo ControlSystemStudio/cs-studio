@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,13 +48,15 @@ public class CSVSampleImporter implements SampleImporter
                 //    YYYY-MM-DD HH:MM:SS.SSS   value  ignore
                 // or
                 //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value  ignore
-                "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.eE]+)\\s*.*");
+                "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.,eE]+)\\s*.*");
 
         final List<VType> values = new ArrayList<VType>();
 
         final BufferedReader reader =
                 new BufferedReader(new InputStreamReader(input));
         String line;
+        char groupingSeparator = DecimalFormatSymbols.getInstance().getGroupingSeparator();
+        char decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
         while ((line = reader.readLine()) != null)
         {
             line = line.trim();
@@ -74,7 +77,11 @@ public class CSVSampleImporter implements SampleImporter
             if (date_text.length() > 23)
                 date_text = date_text.substring(0, 23);
             final Date date = date_parser.parse(date_text);
-            final double number = Double.parseDouble(matcher.group(2));
+            //Double.parseDouble only parses numbers in format #.#... or #.#...#E0, meaning 
+            //that you cannot have any grouping separators, and the decimal separator must be '.'
+            //First remove all grouping separators, then replace the decimal separator with a '.'
+            final double number = Double.parseDouble(
+            		remove(matcher.group(2),groupingSeparator).replace(decimalSeparator, '.'));
             // Turn into IValue
             final Timestamp time = TimestampHelper.fromMillisecs(date.getTime());
             final VType value = new ArchiveVNumber(time, AlarmSeverity.NONE, "",
@@ -84,5 +91,24 @@ public class CSVSampleImporter implements SampleImporter
         reader.close();
 
         return values;
+    }
+        
+    /**
+     * Remove all occurrences of the character from the string.
+     * 
+     * @param source the string to remove the characters from
+     * @param charToRemove the character to remove
+     * @return the string without any occurrence of the given character
+     */
+    private static String remove(String source, char charToRemove) {
+    	if (source.indexOf(charToRemove) < 0) return source;
+    	char[] chars = source.toCharArray();
+        int pos = 0;
+        for (int j = 0; j < chars.length; j++) {
+            if (chars[j] != charToRemove) {
+                chars[pos++] = chars[j];
+            }
+        }
+        return new String(chars,0,pos);
     }
 }
