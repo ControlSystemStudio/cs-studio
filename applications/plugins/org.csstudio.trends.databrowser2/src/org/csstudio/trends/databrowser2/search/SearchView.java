@@ -12,6 +12,8 @@ import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.SearchJob;
@@ -166,29 +168,21 @@ public class SearchView extends ViewPart
         pattern.setToolTipText(Messages.SearchPatternTT);
         pattern.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         pattern.setEnabled(false);
-		pattern.addListener(SWT.DefaultSelection, new Listener() {
-			public void handleEvent(Event e) {
+		pattern.addListener(SWT.DefaultSelection, new Listener()
+		{
+			@Override
+            public void handleEvent(Event e) {
 				searchForChannels();
 			}
 		});
-		new AutoCompleteWidget(pattern, "PV");
-
-		// final ComboHistoryHelper pattern_history =
-		// new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
-		// TAG_CHANNELS, pattern)
-		// {
-		// @Override
-		// public void newSelection(final String entered_pattern)
-		// {
-		// searchForChannels();
-		// }
-		// };
+		AutoCompleteWidget acw = new AutoCompleteWidget(pattern, AutoCompleteTypes.PV);
 
         search = new Button(parent, SWT.PUSH);
         search.setText(Messages.Search);
         search.setToolTipText(Messages.SearchTT);
         search.setLayoutData(new GridData());
         search.setEnabled(false);
+		AutoCompleteUIHelper.handleSelectEvent(search, acw);
 
         // ( ) Add  (*) Replace   [ ] Reg.Exp.
         final Button result_append = new Button(parent, SWT.RADIO);
@@ -327,8 +321,6 @@ public class SearchView extends ViewPart
             {
                 if (pattern.isDisposed())
                     return;
-                pattern.setEnabled(false);
-                search.setEnabled(false);
                 MessageDialog.openError(pattern.getShell(),
                     Messages.Error,
                     NLS.bind(Messages.ArchiveServerErrorFmt, url, ex.getMessage()));

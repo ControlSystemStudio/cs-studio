@@ -10,6 +10,8 @@ package org.csstudio.trends.databrowser2.export;
 import org.csstudio.archive.vtype.Style;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
+import org.epics.vtype.VString;
+import org.epics.vtype.VStringArray;
 import org.epics.vtype.VType;
 
 /** Format an IValue to show the value as well as the severity/status
@@ -38,8 +40,10 @@ public class ValueWithInfoFormatter extends ValueFormatter
     @Override
     public String format(final VType value)
     {
-        if (Double.isNaN(VTypeHelper.toDouble(value)))
-            return super.format(null) +
+		if (value instanceof VString
+				|| value instanceof VStringArray
+				|| Double.isNaN(VTypeHelper.toDouble(value)))
+            return super.format(value) +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker;
         return super.format(value) + Messages.Export_Delimiter +

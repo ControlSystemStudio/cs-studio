@@ -13,8 +13,7 @@ public class CheckBoxTest extends AbstractLabelWidgetTest{
 
 	@Override
 	public Figure createTestWidget() {
-		CheckBoxFigure boolButton = new CheckBoxFigure();
-		boolButton.setRunMode(true);
+		CheckBoxFigure boolButton = new CheckBoxFigure(true);
 		return boolButton;
 	}
 	

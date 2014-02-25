@@ -1,12 +1,14 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.graphene;
 
 import org.epics.graphene.LineGraph2DRendererUpdate;
+import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
+import static org.epics.pvmanager.graphene.ExpressionLanguage.functionOf;
 
 /**
  *
@@ -14,8 +16,14 @@ import org.epics.pvmanager.expression.DesiredRateExpressionList;
  */
 public class LineGraph2DExpression extends DesiredRateExpressionImpl<Graph2DResult> implements Graph2DExpression<LineGraph2DRendererUpdate> {
 
-    LineGraph2DExpression(DesiredRateExpressionList<?> childExpressions, LineGraph2DFunction function, String defaultName) {
-        super(childExpressions, function, defaultName);
+    LineGraph2DExpression(DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName,
+	    DesiredRateExpression<?> tooltipColumnName) {
+        super(ExpressionLanguage.<Object>createList(tableData, xColumnName, yColumnName, tooltipColumnName),
+                new LineGraph2DFunction(functionOf(tableData),
+                functionOf(xColumnName), functionOf(yColumnName), functionOf(tooltipColumnName)),
+                "Scatter Graph");
     }
     
     @Override

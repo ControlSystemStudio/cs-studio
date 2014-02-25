@@ -1073,7 +1073,7 @@ public class Trace extends Figure implements IDataProviderListener,
 		if (xAxis == axis)
 			return;
 		if (xAxis != null) {
-			xAxis.removeListenr(this);
+			xAxis.removeListener(this);
 			xAxis.removeTrace(this);
 		}
 
@@ -1121,7 +1121,7 @@ public class Trace extends Figure implements IDataProviderListener,
 		}
 
 		if (yAxis != null) {
-			yAxis.removeListenr(this);
+			yAxis.removeListener(this);
 			yAxis.removeTrace(this);
 		}
 		/*

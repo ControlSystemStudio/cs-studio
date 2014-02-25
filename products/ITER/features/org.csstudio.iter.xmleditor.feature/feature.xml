@@ -2,11 +2,11 @@
 <feature
       id="org.csstudio.iter.xmleditor.feature"
       label="XML Editor Feature"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>
-      Copyright (c) : 2010-2013 ITER Organization,
+      Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France
@@ -75,28 +75,28 @@ of the distribution package.
    </requires>
 
    <plugin
-         id="org.eclipse.wst.xml.core"
+         id="org.eclipse.debug.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.wst.xml.ui"
+         id="org.eclipse.debug.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.wst.sse.core"
+         id="org.eclipse.emf.common"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.wst.sse.ui"
+         id="org.eclipse.emf.ecore"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -145,6 +145,20 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.wst.sse.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.wst.sse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.wst.validation"
          download-size="0"
          install-size="0"
@@ -152,28 +166,14 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.debug.core"
+         id="org.eclipse.wst.xml.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.debug.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.ecore"
+         id="org.eclipse.wst.xml.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

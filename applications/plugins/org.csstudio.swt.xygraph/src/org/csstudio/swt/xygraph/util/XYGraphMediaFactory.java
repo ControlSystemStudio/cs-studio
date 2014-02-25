@@ -37,6 +37,8 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -86,7 +88,7 @@ public final class XYGraphMediaFactory {
 		GRABBING;
 	}
 	
-	private volatile static Cursor CURSOR_GRABBING;	
+	private volatile static Cursor CURSOR_GRABBING;
 		
 	public void disposeResources(){
 		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
@@ -111,7 +113,7 @@ public final class XYGraphMediaFactory {
 						8,8, SWT.CURSOR_HAND);		
 			}
 			return CURSOR_GRABBING;
-
+			
 		default:
 			return Cursors.HAND;
 			
@@ -151,6 +153,13 @@ public final class XYGraphMediaFactory {
 		}
 
 		return _instance;
+	}
+	
+	public static Image getTransparentImage() {
+	    PaletteData palette = new PaletteData(0xFF000,0x00FF00, 0x0000FF);
+	    ImageData transparentImage = new ImageData(16, 16, 8, palette);
+	    transparentImage.transparentPixel = 0;
+	    return new Image(Display.getDefault(), transparentImage);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.jca;
 
@@ -126,6 +126,14 @@ public class JCADataSource extends DataSource {
             ctxt = JCADataSourceBuilder.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
         } else {
             ctxt = builder.jcaContext;
+        }
+
+        try {
+            if (ctxt instanceof CAJContext) {
+                ((CAJContext) ctxt).setDoNotShareChannels(true);
+            }
+        } catch (Throwable t) {
+            log.log(Level.WARNING, "Couldn't change CAJContext to doNotShareChannels: this may cause some rare notification problems.", t);
         }
         
         // Default type support are the VTypes

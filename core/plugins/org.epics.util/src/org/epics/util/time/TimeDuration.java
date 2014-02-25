@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 epics-util developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.util.time;
 
@@ -50,9 +50,9 @@ public class TimeDuration implements Comparable<TimeDuration> {
     }
     
     /**
-     * True if the duration is zero or positive.
+     * True if the duration is non-zero and negative.
      * 
-     * @return true if non negative
+     * @return true if negative
      */
     public boolean isNegative() {
         return getSec() < 0;
@@ -253,6 +253,9 @@ public class TimeDuration implements Comparable<TimeDuration> {
     /**
      * Returns the duration in nanoseconds. If the duration exceeds the
      * range of a long, an exception is thrown.
+     * <p>
+     * The maximum duration is years is 2^63 / 1,000,000,000 / 60 / 60 / 24 / 365
+     * = about 292 years. Which is safe for many many cases.
      * 
      * @return the duration in nanoseconds
      */

@@ -26,18 +26,27 @@ public class DataBrowserWidgetFigure extends Figure
 
     /** Data Browser plot */
     final private Plot plot;
+    
+	/** The value exporter, which generates a value from the mouse position and forwards it to the PV manager */
+	private SelectionValueExporter selectionValueExporter;
 
     /** Initialize
      *  @param filename Configuration file name
      *  @param toolbar
      */
-    public DataBrowserWidgetFigure(final String filename, final boolean toolbar)
+    public DataBrowserWidgetFigure(final String filename, final boolean toolbar, 
+    		final String selectionValuePv, final boolean showAxisTrace, final boolean showValueLabels)
     {
         this.filename = filename;
 
         plot = Plot.forDraw2D();
+        plot.getXYGraph().setShowAxisTrace(showAxisTrace);
+        plot.getXYGraph().setShowValueLabels(showValueLabels);
         plot.setToolbarVisible(toolbar);
         add(plot.getFigure());
+        selectionValueExporter = new SelectionValueExporter(plot.getXYGraph());
+		selectionValueExporter.setUseTimeFormatX(true);
+		setSelectionValuePv(selectionValuePv);
     }
 
     /** @return Data Browser Plot */
@@ -102,4 +111,31 @@ public class DataBrowserWidgetFigure extends Figure
         graphics.fillRectangle(rect);
         graphics.drawString(text, rect.x, rect.y);
     }
+    
+	/**
+	 * Sets selection value PV.
+	 * 
+	 * @param selectionValuePv, selection value PV
+	 */
+	public void setSelectionValuePv(String selectionValuePv)  {
+		selectionValueExporter.setSelectionValuePv(selectionValuePv);
+	}
+
+	/**
+	 * Shows or hides the axis traces.
+	 * 
+	 * @param showAxisTrace true if the axis traces are visible or false otherwise
+	 */
+	public void setShowAxisTrace(boolean showAxisTrace) {
+		plot.getXYGraph().setShowAxisTrace(showAxisTrace);
+	}
+	
+	/**
+	 * Shows or hides the hover value labels.
+	 * 
+	 * @param showValueLabels true if the values are visible or false otherwise
+	 */
+	public void setShowValueLabels(boolean showValueLabels) {
+		plot.getXYGraph().setShowValueLabels(showValueLabels);
+	}
 }

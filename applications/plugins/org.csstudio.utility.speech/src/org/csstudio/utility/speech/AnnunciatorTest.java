@@ -16,7 +16,9 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class AnnunciatorTest
 {
-    final private Translation translations[] = new Translation[]
+	private static String voice_name = "kevin";
+
+	final private static Translation translations[] = new Translation[]
    	{
    			new Translation("MEBT", ",mebbit"),
    			new Translation("HEBT", ",hebbit"),
@@ -36,30 +38,37 @@ public class AnnunciatorTest
    			new Translation(":"," "),
    	};
 
-	@Test
-	public void testFreeTTSAnnunciator() throws Exception
+    @Test
+	public static void testFreeTTSAnnunciator() throws Exception
 	{		
-        talk("Plain Free T T S", new FreeTTSAnnunciator("kevin16"));
+		talk("Plain Free T T S", new FreeTTSAnnunciator(voice_name));
 	}
 
 	@Test
-    public void testFreeTTS_JSAPI_Annunciator() throws Exception
+    public static void testFreeTTS_JSAPI_Annunciator() throws Exception
     {       
-        talk("Java Speech A P I", new FreeTTS_JSAPI_Annunciator());
+        talk("Java Speech A P I", new FreeTTS_JSAPI_Annunciator(voice_name));
     }
 
 	@Test
-    public void testExternalAnnunciator() throws Exception
+    public static void testExternalAnnunciator() throws Exception
     {       
         talk("External command", new ExternalAnnunciator());
     }
 
-    private void talk(final String name, final Annunciator talker) throws Exception
+    private static void talk(final String name, final Annunciator talker) throws Exception
     {
         talker.say(name);
         talker.say("SNS DTL MEBT Vac Diag RFQ Tgt Util Ctl PPS MPS Lin");
 		talker.setTranslations(translations);
 		talker.say("SNS DTL MEBT Vac Diag RFQ Tgt Util Ctl PPS MPS Lin");
 		talker.close();
+    }
+    
+    public static void main(final String[] args) throws Exception
+    {
+    	if (args.length == 1)
+    		voice_name = args[0];
+    	testFreeTTS_JSAPI_Annunciator();
     }
 }

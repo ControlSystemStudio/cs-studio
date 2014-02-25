@@ -44,13 +44,13 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PVItem to handle waveform index.
  */
-public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
+public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, Cloneable
 {
     /** Historic and 'live' samples for this PV */
-    final private PVSamples samples = new PVSamples();
+    private PVSamples samples = new PVSamples();
 
     /** Where to get archived data for this item. */
-    final private ArrayList<ArchiveDataSource> archives
+    private ArrayList<ArchiveDataSource> archives
         = new ArrayList<ArchiveDataSource>();
 
     /** Control system PV, set when running */
@@ -487,4 +487,17 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
 
         return item;
     }
+    
+	public PVItem clone() {
+		PVItem ret = (PVItem)super.clone();
+		ret.samples = samples;
+		ret.archives = archives;
+		ret.pv = pv;
+		ret.current_value = current_value;
+		ret.period = period;
+		ret.scan_timer = scan_timer;
+		ret.request_type = request_type;
+		ret.waveform_index = waveform_index;
+		return ret;
+	}
 }

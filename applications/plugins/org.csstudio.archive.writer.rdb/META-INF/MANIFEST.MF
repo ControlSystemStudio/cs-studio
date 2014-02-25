@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Archive Writer implementation for Relational Databases
 Bundle-Description: Archive Writer implementation for Relational Databases like Oracle or MySQL.
 Bundle-SymbolicName: org.csstudio.archive.writer.rdb;singleton:=true
-Bundle-Version: 3.2.0.qualifier
+Bundle-Version: 3.2.14.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",

@@ -54,9 +54,14 @@ public class AlarmColumnSortingSelector extends SelectionAdapter
             if (table.getSortDirection() == SWT.UP)
                 up = false;
         }
+        setSortDirection(up);
+    }
+    
+    public void setSortDirection(final boolean up)
+    {
+        final Table table = table_viewer.getTable();
         table.setSortDirection(up ? SWT.UP : SWT.DOWN);
         table.setSortColumn(column);
-        
         ((AlarmTableContentProvider)table_viewer.getContentProvider())
             .setComparator(AlarmComparator.getComparator(col_info, up));
     }

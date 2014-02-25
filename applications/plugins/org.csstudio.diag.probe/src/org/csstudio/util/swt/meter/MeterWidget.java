@@ -329,7 +329,11 @@ public class MeterWidget extends Canvas implements DisposeListener,
 
         // Labels should somehow fit around the outside of the scale
         final int tick_x_radius = real_client_rect.width/2 - text_width_idea;
-        final int tick_y_radius = real_client_rect.height - 2*text_height_idea;
+        int tick_y_radius = real_client_rect.height - 2*text_height_idea;
+        if(tick_y_radius==0) {
+        	// Avoid / by zero.
+        	tick_y_radius = 1;
+        }
         y_radius = tick_y_radius - text_height_idea;
         x_radius = tick_x_radius * y_radius/tick_y_radius;
         // Inner radius of scale.

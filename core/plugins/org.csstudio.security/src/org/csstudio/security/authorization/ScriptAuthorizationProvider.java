@@ -58,6 +58,7 @@ public class ScriptAuthorizationProvider implements AuthorizationProvider
         }
 
         /** @return Text read from stream */
+        @Override
         public String toString()
         {
             return text.toString();

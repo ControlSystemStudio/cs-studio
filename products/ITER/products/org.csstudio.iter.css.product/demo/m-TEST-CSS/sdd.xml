@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psic:IandCProject xmlns:psic="http://www.iter.org/CODAC/PlantSystemIandC/2011" xmlns:epics="http://www.iter.org/CODAC/EPICS/2011" xmlns:beast="http://www.iter.org/CODAC/BEAST/2012" xmlns:ps="http://www.iter.org/CODAC/PlantSystem/2011" xmlns:adm="http://www.iter.org/CODAC/Admin/2011" xmlns:linux="http://www.iter.org/CODAC/Linux/2011" xmlns:codac="http://www.iter.org/CODAC/CODACSystem/2011" xmlns:cbs="http://www.iter.org/CODAC/CBS/2011" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="ExIICSS" XMLFormatVersion="3.1.0" CODACVersion="3.1.0" version="1" createdAt="2012-07-03T09:25:42.751+02:00" modifiedAt="2012-07-03T09:25:43.253+02:00" createdBy="tomcat" modifiedBy="tomcat" xsi:schemaLocation="http://www.iter.org/CODAC/PlantSystemIandC/2011 ../xsd/PlantSystemIandC.xsd">
+    <psic:CBS version="20120703">
+        <psic:CBS1 PBS="26" ID="CWS" description="Water Cooling">
+            <psic:CBS2 PSIC="CWS-TCPH" ID="TCPH" description="">
+                <psic:CBS3 ID="Fxxx" description="Function">
+                    <psic:BEASTAttributes>
+                        <beast:pv name="Fxxx">
+                            <beast:automated_action>
+<beast:title>Send Summary Email</beast:title>
+<beast:details>mailto:ich-ro@iter.org?cc=ich-support@iter.org&amp;amp;bcc= john.doe@iter.org</beast:details>
+<beast:delay>86400</beast:delay>
+                            </beast:automated_action>
+                        </beast:pv>
+                    </psic:BEASTAttributes>
+                </psic:CBS3>
+            </psic:CBS2>
+        </psic:CBS1>
+    </psic:CBS>
+    <ps:plantSystems>
+        <ps:plantSystem ID="26" name="Cooling Water System" createdAt="2012-03-12T17:46:56.325+01:00" modifiedAt="2012-03-12T17:46:56.325+01:00">
+            <ps:parts>
+                <ps:part name="26PHDL-PSH-0001" TTT="PSH" createdAt="2012-03-12T17:46:35.468+01:00" modifiedAt="2012-03-12T17:46:35.468+01:00"/>
+            </ps:parts>
+            <ps:signals/>
+        </ps:plantSystem>
+    </ps:plantSystems>
+    <psic:plantSystemIandCs>
+        <psic:plantSystemIandC ID="CWS-TCPH" name="" createdAt="2012-03-12T17:43:28.865+01:00" modifiedAt="2012-03-12T17:43:44.493+01:00">
+            <psic:plantControlSystem/>
+            <psic:PSH index="0" name="26PHDL-PSH-0001" TTT="PSH" createdAt="2012-03-12T17:46:35.468+01:00" modifiedAt="2012-03-12T17:46:35.468+01:00">
+                <epics:IOC name="psh-idx-core"/>
+                <epics:IOC name="psh-idx-plc"/>
+                <epics:IOC name="psh-idx-sys"/>
+            </psic:PSH>
+            <psic:variables>
+                <psic:variable name="CWS-TCPH-Fxxx:ACQ-STATE" description="reflect the status of the acquisition" createdAt="2012-03-12T17:44:33.402+01:00" modifiedAt="2012-03-12T17:44:33.402+01:00">
+                    <psic:direction>state</psic:direction>
+                    <psic:kind>discrete two-state</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>true</psic:raisesAlarm>
+                    <psic:archivingInfo>
+                        <psic:samplingMode>monitor</psic:samplingMode>
+                        <psic:samplingFrequency>0.1</psic:samplingFrequency>
+                    </psic:archivingInfo>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>volatile</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:ACQ-STATE</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:ACQ-STATE" type="bi" createdAt="2012-03-12T17:44:33.402+01:00" modifiedAt="2012-03-12T17:44:33.402+01:00">
+                            <psic:EPICSField name="DESC" value="Sine Calculation Status"/>
+                            <psic:EPICSField name="ONAM" value="stopped"/>
+                            <psic:EPICSField name="OSV" value="MINOR"/>
+                            <psic:EPICSField name="SCAN" value=".1 second"/>
+                            <psic:EPICSField name="SIML" value="CWS-TCPH-Fxxx:SIMULATION"/>
+                            <psic:EPICSField name="SIOL" value="CWS-TCPH-Fxxx:START-ACQ"/>
+                            <psic:EPICSField name="ZNAM" value="started"/>
+                            <psic:EPICSField name="ZSV" value="NO_ALARM"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:AMPL" description="Signal Amplitude" createdAt="2012-04-10T09:26:57.946+02:00" modifiedAt="2012-04-10T09:26:57.946+02:00">
+                    <psic:direction>configuration</psic:direction>
+                    <psic:kind>continuous</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>persistent</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:AMPL</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:AMPL" type="ao" createdAt="2012-04-10T09:26:57.946+02:00" modifiedAt="2012-04-10T09:26:57.946+02:00">
+                            <psic:EPICSField name="ADEL" value="0.1"/>
+                            <psic:EPICSField name="DESC" value="Signal Amplitude"/>
+                            <psic:EPICSField name="DOL" value="10"/>
+                            <psic:EPICSField name="DRVH" value="+20"/>
+                            <psic:EPICSField name="DRVL" value="-20"/>
+                            <psic:EPICSField name="DTYP" value="Soft Channel"/>
+                            <psic:EPICSField name="EGU" value="-"/>
+                            <psic:EPICSField name="HOPR" value="+20"/>
+                            <psic:EPICSField name="LOPR" value="-20"/>
+                            <psic:EPICSField name="MDEL" value="-1"/>
+                            <psic:EPICSField name="OMSL" value="supervisory"/>
+                            <psic:EPICSField name="PINI" value="YES"/>
+                            <psic:EPICSField name="PREC" value="2"/>
+                            <psic:EPICSField name="SCAN" value="Passive"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:FREQ" description="Signal Frequency" createdAt="2012-04-10T09:26:57.967+02:00" modifiedAt="2012-04-10T09:26:57.967+02:00">
+                    <psic:direction>configuration</psic:direction>
+                    <psic:kind>continuous</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>persistent</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:FREQ</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:FREQ" type="ao" createdAt="2012-04-10T09:26:57.967+02:00" modifiedAt="2012-04-10T09:26:57.967+02:00">
+                            <psic:EPICSField name="ADEL" value="0.1"/>
+                            <psic:EPICSField name="DESC" value="Signal Frequency"/>
+                            <psic:EPICSField name="DOL" value=".1"/>
+                            <psic:EPICSField name="DRVH" value="2.0"/>
+                            <psic:EPICSField name="DRVL" value=".1"/>
+                            <psic:EPICSField name="DTYP" value="Soft Channel"/>
+                            <psic:EPICSField name="EGU" value="-"/>
+                            <psic:EPICSField name="HOPR" value="2.0"/>
+                            <psic:EPICSField name="LOPR" value=".1"/>
+                            <psic:EPICSField name="MDEL" value="-1"/>
+                            <psic:EPICSField name="OMSL" value="supervisory"/>
+                            <psic:EPICSField name="PINI" value="YES"/>
+                            <psic:EPICSField name="PREC" value="2"/>
+                            <psic:EPICSField name="SCAN" value="Passive"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:GENERATOR-STATE" description="Generator State" createdAt="2012-04-10T09:26:57.871+02:00" modifiedAt="2012-04-10T09:26:57.871+02:00">
+                    <psic:direction>state</psic:direction>
+                    <psic:kind>discrete multi-state</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>volatile</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:GENERATOR-STATE</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:GENERATOR-STATE" type="mbbi" createdAt="2012-04-10T09:26:57.871+02:00" modifiedAt="2012-04-10T09:26:57.871+02:00">
+                            <psic:EPICSField name="DESC" value="Generator State"/>
+                            <psic:EPICSField name="DTYP" value="Soft Channel"/>
+                            <psic:EPICSField name="INP" value="0"/>
+                            <psic:EPICSField name="ONST" value="Ready"/>
+                            <psic:EPICSField name="ONVL" value="1"/>
+                            <psic:EPICSField name="PINI" value="YES"/>
+                            <psic:EPICSField name="TWST" value="Generating"/>
+                            <psic:EPICSField name="TWVL" value="2"/>
+                            <psic:EPICSField name="ZRST" value="NotReady"/>
+                            <psic:EPICSField name="ZRVL" value="0"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:SIG-GENERATED" description="Generated Signal" createdAt="2012-04-10T09:26:57.985+02:00" modifiedAt="2012-04-10T09:26:57.985+02:00">
+                    <psic:direction>configuration</psic:direction>
+                    <psic:kind>continuous</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>persistent</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:SIG-GENERATED</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:SIG-GENERATED" type="ao" createdAt="2012-04-10T09:26:57.985+02:00" modifiedAt="2012-04-10T09:26:57.985+02:00">
+                            <psic:EPICSField name="DESC" value="Generated Signal"/>
+                            <psic:EPICSField name="EGU" value="C"/>
+                            <psic:EPICSField name="FLNK" value="CWS-TCPH-Fxxx:TEMP"/>
+                            <psic:EPICSField name="HHSV" value="MAJOR"/>
+                            <psic:EPICSField name="HIGH" value="8"/>
+                            <psic:EPICSField name="HIHI" value="9"/>
+                            <psic:EPICSField name="HOPR" value="10"/>
+                            <psic:EPICSField name="HSV" value="MINOR"/>
+                            <psic:EPICSField name="LLSV" value="MAJOR"/>
+                            <psic:EPICSField name="LOLO" value="-9"/>
+                            <psic:EPICSField name="LOPR" value="-10"/>
+                            <psic:EPICSField name="LOW" value="-8"/>
+                            <psic:EPICSField name="LSV" value="MINOR"/>
+                            <psic:EPICSField name="OUT" value="CWS-TCPH-Fxxx:TEMP"/>
+                            <psic:EPICSField name="PREC" value="2"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:SIG-STATE" description="Signal outside the limits" createdAt="2012-04-10T09:26:57.904+02:00" modifiedAt="2012-04-10T09:26:57.904+02:00">
+                    <psic:direction>state</psic:direction>
+                    <psic:kind>discrete two-state</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>volatile</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:SIG-STATE</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:SIG-STATE" type="bi" createdAt="2012-04-10T09:26:57.904+02:00" modifiedAt="2012-04-10T09:26:57.904+02:00">
+                            <psic:EPICSField name="DESC" value="Signal outside the limits"/>
+                            <psic:EPICSField name="ONAM" value="high"/>
+                            <psic:EPICSField name="ZNAM" value="low"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:SIMULATION" description="IOC Simulation Mode (ON/OFF)" createdAt="2012-03-19T20:58:33.278+01:00" modifiedAt="2012-03-19T20:58:33.278+01:00">
+                    <psic:direction>configuration</psic:direction>
+                    <psic:kind>discrete two-state</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>persistent</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:SIMULATION</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:SIMULATION" type="bo" createdAt="2012-03-19T20:58:33.278+01:00" modifiedAt="2012-03-19T20:58:33.278+01:00">
+                            <psic:EPICSField name="DESC" value="IOC Simulation Mode (ON/OFF)"/>
+                            <psic:EPICSField name="DOL" value="1"/>
+                            <psic:EPICSField name="DTYP" value="Soft Channel"/>
+                            <psic:EPICSField name="OMSL" value="supervisory"/>
+                            <psic:EPICSField name="ONAM" value="ON"/>
+                            <psic:EPICSField name="OSV" value="MINOR"/>
+                            <psic:EPICSField name="PINI" value="YES"/>
+                            <psic:EPICSField name="ZNAM" value="OFF"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:SINE-CALC" description="Simple Counter" createdAt="2012-03-12T17:45:27.107+01:00" modifiedAt="2012-03-12T17:45:27.107+01:00">
+                    <psic:direction>state</psic:direction>
+                    <psic:kind>continuous</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>volatile</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:SINE-CALC</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:SINE-CALC" type="calcout" createdAt="2012-03-12T17:45:27.107+01:00" modifiedAt="2012-03-12T17:45:27.107+01:00">
+                            <psic:EPICSField name="CALC" value="B*SIN(C*A)"/>
+                            <psic:EPICSField name="DESC" value="Sine calculation"/>
+                            <psic:EPICSField name="DISV" value="0"/>
+                            <psic:EPICSField name="FLNK" value="CWS-TCPH-Fxxx:SIG-GENERATED"/>
+                            <psic:EPICSField name="INPA" value="CWS-TCPH-Fxxx:TIME"/>
+                            <psic:EPICSField name="INPB" value="CWS-TCPH-Fxxx:AMPL"/>
+                            <psic:EPICSField name="INPC" value="CWS-TCPH-Fxxx:FREQ"/>
+                            <psic:EPICSField name="OUT" value="CWS-TCPH-Fxxx:SIG-GENERATED"/>
+                            <psic:EPICSField name="SDIS" value="CWS-TCPH-Fxxx:START-ACQ"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:START-ACQ" description="Start sine calculation" createdAt="2012-03-12T17:44:03.746+01:00" modifiedAt="2012-03-12T17:44:03.746+01:00">
+                    <psic:direction>configuration</psic:direction>
+                    <psic:kind>discrete two-state</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>persistent</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:START-ACQ</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:START-ACQ" type="bo" createdAt="2012-03-12T17:44:03.746+01:00" modifiedAt="2012-03-12T17:44:03.746+01:00">
+                            <psic:EPICSField name="DESC" value="Start sine calculation"/>
+                            <psic:EPICSField name="DOL" value="0"/>
+                            <psic:EPICSField name="OMSL" value="closed_loop"/>
+                            <psic:EPICSField name="ONAM" value="start"/>
+                            <psic:EPICSField name="OSV" value="NO_ALARM"/>
+                            <psic:EPICSField name="PINI" value="YES"/>
+                            <psic:EPICSField name="SIML" value="CWS-TCPH-Fxxx:SIMULATION"/>
+                            <psic:EPICSField name="ZNAM" value="stop"/>
+                            <psic:EPICSField name="ZSV" value="MINOR"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:TEMP" description="Temperature" createdAt="2012-03-12T17:44:52.903+01:00" modifiedAt="2012-05-16T13:05:22.953+02:00">
+                    <psic:direction>state</psic:direction>
+                    <psic:kind>continuous</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>true</psic:raisesAlarm>
+                    <psic:archivingInfo>
+                        <psic:samplingMode>monitor</psic:samplingMode>
+                        <psic:samplingFrequency>0.1</psic:samplingFrequency>
+                    </psic:archivingInfo>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>volatile</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:TEMP</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:TEMP" type="ai" createdAt="2012-03-12T17:44:52.903+01:00" modifiedAt="2012-05-16T13:05:22.953+02:00">
+                            <psic:EPICSField name="DESC" value="Temperature"/>
+                            <psic:EPICSField name="EGU" value="C"/>
+                            <psic:EPICSField name="HHSV" value="MAJOR"/>
+                            <psic:EPICSField name="HIGH" value="8"/>
+                            <psic:EPICSField name="HIHI" value="9"/>
+                            <psic:EPICSField name="HOPR" value="10"/>
+                            <psic:EPICSField name="HSV" value="MINOR"/>
+                            <psic:EPICSField name="LLSV" value="MAJOR"/>
+                            <psic:EPICSField name="LOLO" value="-9"/>
+                            <psic:EPICSField name="LOPR" value="-10"/>
+                            <psic:EPICSField name="LOW" value="-8"/>
+                            <psic:EPICSField name="LSV" value="MINOR"/>
+                            <psic:EPICSField name="PREC" value="2"/>
+                            <psic:EPICSField name="SCAN" value=".1 second"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                    <psic:BEASTAttributes>
+                        <beast:pv name="CWS-TCPH-Fxxx:TEMP">
+                            <beast:description>Temperature problem</beast:description>
+                            <beast:enabled>true</beast:enabled>
+                            <beast:latching>true</beast:latching>
+                            <beast:annunciating>false</beast:annunciating>
+                            <beast:delay>5</beast:delay>
+                            <beast:count>3</beast:count>
+                            <beast:guidance>
+<beast:title>Temperature problem</beast:title>
+<beast:details>Temperature outside the limits;
+Purpose of alarm: The controlled temperature is outside the limits;
+Alarm response action: Try to switch off the equipment;
+Failure consequence: If the alarm does not recover within 15 minutes, the system will be stopped;
+Operator response time available: 10 minutes;
+Alarm limits: HIHI=9 MAJOR, HIGH=8 MINOR, LOW=-8 MINOR, LOLO=-9 MAJOR;
+Engineer to contact: operator in duty;
+Alternate help: https://portal.iter.org/departments/CHD/CODAC/dev/Pages/trunk.aspx</beast:details>
+                            </beast:guidance>
+                            <beast:display>
+<beast:title>More Information</beast:title>
+<beast:details>https://portal.iter.org/departments/CHD/CODAC/dev/Pages/trunk.aspx&lt;/details&gt;</beast:details>
+                            </beast:display>
+                            <beast:command>
+<beast:title>Switch Off</beast:title>
+<beast:details>caput CWS-TCPH-F000:START_ACQ 0</beast:details>
+                            </beast:command>
+                            <beast:automated_action>
+<beast:title>Send automatically an email when raised</beast:title>
+<beast:details>mailto:rf_support@iter.org; rf_operator@iter.org?cc=rf.ro@iter.org&amp;amp;subject=RF Source 1 in error&amp;amp;body=Major Alarm raised</beast:details>
+<beast:delay>120</beast:delay>
+                            </beast:automated_action>
+                            <beast:automated_action>
+<beast:title>Send automatically a SMS after half an hour</beast:title>
+<beast:details>sms:+33442176421?body=Major Alarm raised</beast:details>
+<beast:delay>1800</beast:delay>
+                            </beast:automated_action>
+                            <beast:automated_action>
+<beast:title>Sending a complete email</beast:title>
+<beast:details>mailto:Email.address1@mailto.co.uk;?cc=EmailCc1.address@mailto.co.uk;&amp;bcc=EmailBCc1.address@mailto.co.uk;&amp;subject=This is the subject line&amp;body=This is the text line one. %0AThis is the text line two</beast:details>
+<beast:delay>12345</beast:delay>
+                            </beast:automated_action>
+                        </beast:pv>
+                    </psic:BEASTAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:TIME" description="Simple Counter to simulate time" createdAt="2012-04-10T09:26:57.922+02:00" modifiedAt="2012-04-10T09:26:57.922+02:00">
+                    <psic:direction>state</psic:direction>
+                    <psic:kind>continuous</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>volatile</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:TIME</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:TIME" type="calc" createdAt="2012-04-10T09:26:57.922+02:00" modifiedAt="2012-04-10T09:26:57.922+02:00">
+                            <psic:EPICSField name="CALC" value="A+1"/>
+                            <psic:EPICSField name="DESC" value="Simple Counter to simulate time"/>
+                            <psic:EPICSField name="FLNK" value="CWS-TCPH-Fxxx:SINE-CALC"/>
+                            <psic:EPICSField name="INPA" value="CWS-TCPH-Fxxx:TIME"/>
+                            <psic:EPICSField name="SCAN" value=".1 second"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:TRACEMSG" description="Trace Message from IOC" createdAt="2012-04-10T09:26:58.009+02:00" modifiedAt="2012-04-10T09:26:58.009+02:00">
+                    <psic:direction>configuration</psic:direction>
+                    <psic:kind>string</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:defaultValue>Trace mode ON</psic:defaultValue>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>persistent</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:TRACEMSG</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:TRACEMSG" type="stringout" createdAt="2012-04-10T09:26:58.009+02:00" modifiedAt="2012-04-10T09:26:58.009+02:00">
+                            <psic:EPICSField name="DESC" value="Trace Message from IOC"/>
+                            <psic:EPICSField name="DTYP" value="Soft Channel"/>
+                            <psic:EPICSField name="OMSL" value="supervisory"/>
+                            <psic:EPICSField name="VAL" value="Trace mode ON"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:VERSION" description="Version of the SoftIOC" createdAt="2012-04-10T09:26:58.026+02:00" modifiedAt="2012-04-10T09:26:58.026+02:00">
+                    <psic:direction>configuration</psic:direction>
+                    <psic:kind>string</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:defaultValue>CSS Exercise V1.0 on 15/02/2012</psic:defaultValue>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>persistent</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:VERSION</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:VERSION" type="stringout" createdAt="2012-04-10T09:26:58.026+02:00" modifiedAt="2012-04-10T09:26:58.026+02:00">
+                            <psic:EPICSField name="DESC" value="Version of the SoftIOC"/>
+                            <psic:EPICSField name="DTYP" value="Soft Channel"/>
+                            <psic:EPICSField name="OMSL" value="supervisory"/>
+                            <psic:EPICSField name="VAL" value="CSS Exercise V3.1 on 15/06/2012"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+                <psic:variable name="CWS-TCPH-Fxxx:WAVEFORM-TYPE" description="Type of Waveform" createdAt="2012-04-10T09:26:58.043+02:00" modifiedAt="2012-04-10T09:26:58.043+02:00">
+                    <psic:direction>configuration</psic:direction>
+                    <psic:kind>discrete multi-state</psic:kind>
+                    <psic:external>true</psic:external>
+                    <psic:implementsFunction>CWS-TCPH-Fxxx</psic:implementsFunction>
+                    <psic:raisesAlarm>false</psic:raisesAlarm>
+                    <psic:controlsArchivingGroup>false</psic:controlsArchivingGroup>
+                    <psic:storage>persistent</psic:storage>
+                    <psic:deployedOn>
+                        <psic:component type="PSH">26PHDL-PSH-0001</psic:component>
+                        <psic:EPICSBasedUnit>
+                            <psic:IOCName>psh-idx-core</psic:IOCName>
+                            <psic:recordName>CWS-TCPH-Fxxx:WAVEFORM-TYPE</psic:recordName>
+                        </psic:EPICSBasedUnit>
+                    </psic:deployedOn>
+                    <psic:presentOnScreens>true</psic:presentOnScreens>
+                    <psic:displayIndex>0</psic:displayIndex>
+                    <psic:EPICSAttributes>
+                        <psic:EPICSRecord name="CWS-TCPH-Fxxx:WAVEFORM-TYPE" type="mbbo" createdAt="2012-04-10T09:26:58.043+02:00" modifiedAt="2012-04-10T09:26:58.043+02:00">
+                            <psic:EPICSField name="DESC" value="Type of Waveform"/>
+                            <psic:EPICSField name="DOL" value="0"/>
+                            <psic:EPICSField name="DTYP" value="Soft Channel"/>
+                            <psic:EPICSField name="OMSL" value="supervisory"/>
+                            <psic:EPICSField name="ONST" value="Sine"/>
+                            <psic:EPICSField name="ONVL" value="0"/>
+                            <psic:EPICSField name="PINI" value="YES"/>
+                            <psic:EPICSField name="THST" value="Triangle"/>
+                            <psic:EPICSField name="THVL" value="2"/>
+                            <psic:EPICSField name="TWST" value="Square"/>
+                            <psic:EPICSField name="TWVL" value="1"/>
+                            <psic:EPICSField name="ZRST" value="None"/>
+                            <psic:EPICSField name="ZRVL" value="0"/>
+                        </psic:EPICSRecord>
+                    </psic:EPICSAttributes>
+                </psic:variable>
+            </psic:variables>
+        </psic:plantSystemIandC>
+    </psic:plantSystemIandCs>
+    <psic:templates/>
+</psic:IandCProject>

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.service;
 
@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 public class Service {
     static Pattern namePattern = Pattern.compile("[a-zA-Z_]\\w*");
     
-    private String name;
-    private String description;
-    private Map<String, ServiceMethod> serviceMethods;
+    private final String name;
+    private final String description;
+    private final Map<String, ServiceMethod> serviceMethods;
 
     public Service(ServiceDescription serviceDescription) {
         this.name = serviceDescription.name;

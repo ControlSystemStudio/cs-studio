@@ -4,7 +4,7 @@ Bundle-Name: Rack Plug-in
 Bundle-SymbolicName: org.csstudio.diag.rack;singleton:=true
 Bundle-Description: Display rack profiles, i.e. devices in rack layout
 Bundle-Version: 3.0.0.qualifier
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.views,

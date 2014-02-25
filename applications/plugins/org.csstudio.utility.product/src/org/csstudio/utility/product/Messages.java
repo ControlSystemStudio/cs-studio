@@ -13,12 +13,12 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.utility.product.messages"; //$NON-NLS-1$
 
-	public static String CreateLinkedResources;
+    public static String CreateLinkedResources;
 
-	public static String StartupAuthenticationHelper_Login;
-	public static String StartupAuthenticationHelper_LoginTip;
-	public static String Window_Title;
-
+    public static String StartupAuthenticationHelper_Login;
+    public static String StartupAuthenticationHelper_LoginTip;
+    public static String Window_Title;
+    
     static
     {
         // initialize resource bundle

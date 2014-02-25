@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2010-2014 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
+
 //+======================================================================
 // $HeadURL$
 // $Id$
@@ -8,17 +16,13 @@
 //
 // Author(s)     : Takashi Nakamoto, Cosylab
 //
-// Copyright (c) : 2010-2013 ITER Organization,
+// Copyright (c) : 2010-2014 ITER Organization,
 //                 CS 90 046
 //                 13067 St. Paul-lez-Durance Cedex
 //                 France
 //
-// This file is part of ITER CODAC software.
-// For the terms and conditions of redistribution or use of this software
-// refer to the file ITER-LICENSE.TXT located in the top level directory
-// of the distribution package.
-//
 //-======================================================================
+
 package org.csstudio.iter.css.product.activehelp;
 
 import org.eclipse.help.ILiveHelpAction;

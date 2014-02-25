@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 
 public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, ChannelQueryAdaptable {
 	
@@ -174,7 +176,7 @@ public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, C
 	}
 
 	@Override
-	public Collection<ProcessVariable> toProcesVariables() {
+	public Collection<ProcessVariable> toProcessVariables() {
 		return AdaptableUtilities.toProcessVariables(toChannels());
 	}
 

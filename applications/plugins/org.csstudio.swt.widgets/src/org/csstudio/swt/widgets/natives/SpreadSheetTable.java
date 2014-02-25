@@ -8,6 +8,8 @@
 
 package org.csstudio.swt.widgets.natives;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,13 +18,15 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -30,6 +34,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -37,6 +42,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -47,13 +53,19 @@ import org.eclipse.swt.widgets.TableItem;
  * @author Xihui Chen
  *
  */
-/**
- * @author Xihui Chen
- * 
- */
 public class SpreadSheetTable extends Composite {
 	
+	public enum CellEditorType{
+		TEXT,
+		CHECKBOX,
+		DROPDOWN,		
+		CUSTOMIZED		
+	}
+	
 	private static final String TEXT_EDITING_SUPPORT_KEY = "text_editing_support"; //$NON-NLS-1$
+	
+	private static final String[] DEFAULT_BOOLEA_TEXTS = new String[]{"No", "Yes"}; //$NON-NLS-1$ //$NON-NLS-2$
+
 
 	/**
 	 * Listener on table cell editing events.
@@ -95,12 +107,14 @@ public class SpreadSheetTable extends Composite {
 
 	private class TextEditingSupport extends EditingSupport {
 
-		private TextCellEditor textCellEditor;
-		
+		private CellEditor cellEditor;
+		private Object cellEditorData;
+		private int cellEditorStyle=SWT.NONE;
 		private String oldValue;
 		private ViewerCell viewerCell;
 		private boolean columnEditable = true;
-
+		private CellEditorType cellEditorType = CellEditorType.TEXT;
+		
 		public TextEditingSupport(ColumnViewer viewer) {
 			super(viewer);
 		}
@@ -124,15 +138,50 @@ public class SpreadSheetTable extends Composite {
 		
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			if (textCellEditor == null)
-				textCellEditor = new TextCellEditor(tableViewer.getTable());
-			return textCellEditor;
+			if (cellEditor == null){
+				switch (cellEditorType) {
+				case CHECKBOX:
+					if(cellEditorData==null)
+						cellEditorData = DEFAULT_BOOLEA_TEXTS; //$NON-NLS-1$ //$NON-NLS-2$
+					cellEditor = new CheckboxCellEditor(tableViewer.getTable()){
+						protected Object doGetValue() {
+							return ((Boolean) super.doGetValue())?((String[])cellEditorData)[1]:((String[])cellEditorData)[0];
+						};
+						@Override
+						protected void doSetValue(Object value) {
+							if(value.toString().toLowerCase().equals(((String[])cellEditorData)[1].toLowerCase()))
+								super.doSetValue(true);
+							else
+								super.doSetValue(false);
+						}
+					};
+					break;
+				case DROPDOWN:
+					cellEditor = new ComboBoxCellEditor(tableViewer.getTable(),
+							(String[])cellEditorData,cellEditorStyle){
+						@Override
+						protected Object doGetValue() {
+							return ((CCombo)getControl()).getText();
+						}
+						
+						@Override
+						protected void doSetValue(Object value) {
+							((CCombo)getControl()).setText(value.toString());
+						}
+					};
+					break;
+				default:
+					cellEditor = new TextCellEditor(tableViewer.getTable());
+					break;
+				}				
+			}
+			return cellEditor;
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
 		protected Object getValue(Object element) {
-			oldValue = ((List<String>) element).get(findColumnIndex());
+			oldValue = ((List<String>) element).get(findColumnIndex());			
 			return oldValue;
 		}
 
@@ -159,7 +208,19 @@ public class SpreadSheetTable extends Composite {
 				}
 				fireTableModified();
 			}
-			((TableItem)viewerCell.getItem()).setText(col, value.toString());
+			TableItem tableItem = (TableItem)viewerCell.getItem();
+			tableItem.setText(col, value.toString());	
+			Image image = ((TextTableLableProvider)tableViewer.getLabelProvider()).getColumnImage(element, col);
+			tableItem.setImage(col, image);			
+		}
+		
+		public CellEditorType getCellEditorType() {
+			return cellEditorType;
+		}
+		
+		public void setCellEditorType(CellEditorType cellEditorType) {
+			this.cellEditorType = cellEditorType;
+			cellEditor=null;
 		}
 
 		public boolean isColumnEditable() {
@@ -170,12 +231,43 @@ public class SpreadSheetTable extends Composite {
 			this.columnEditable = columnEditable;
 		}
 
+		public void setCellEditor(CellEditor cellEditor) {
+			cellEditorType = CellEditorType.CUSTOMIZED;
+			this.cellEditor = cellEditor;
+		}
+
+		public void setCellEditorData(Object data) {
+			this.cellEditorData=data;
+		}
+		
+		public void setCellEditorStyle(int cellEditorStyle) {
+			this.cellEditorStyle = cellEditorStyle;
+		}
+
 	}
 
-	private static class TextTableLableProvider extends LabelProvider implements
+	private class TextTableLableProvider extends BaseLabelProvider implements
 			ITableLabelProvider {
 
 		public Image getColumnImage(Object element, int columnIndex) {
+			CellEditorType cellEditorType = ((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
+					getData(TEXT_EDITING_SUPPORT_KEY))).getCellEditorType();
+			switch (cellEditorType) {
+			case CHECKBOX:
+				if(!isColumnEditable(columnIndex))
+					return null;
+				String[] booleanTexts = (String[]) ((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
+						getData(TEXT_EDITING_SUPPORT_KEY))).cellEditorData;
+				if(booleanTexts==null)
+					booleanTexts = DEFAULT_BOOLEA_TEXTS; //$NON-NLS-1$ //$NON-NLS-2$
+				if(getColumnText(element, columnIndex).trim().toLowerCase().equals(
+						booleanTexts[1].toLowerCase())) //$NON-NLS-1$
+					return getOnImage();
+				else
+					return getOffImage();
+			default:
+				break;
+			}
 			return null;
 		}
 
@@ -183,10 +275,11 @@ public class SpreadSheetTable extends Composite {
 		public String getColumnText(Object element, int columnIndex) {
 			return ((List<String>) element).get(columnIndex);
 		}
-
 	}
 
 	private static final int DEFAULT_COLUMN_WIDTH = 60;
+	
+	private static Image onImage, offImage;
 
 	private TableViewer tableViewer;
 
@@ -287,6 +380,8 @@ public class SpreadSheetTable extends Composite {
 	 *            index of the column.
 	 */
 	public void deleteColumn(int index) {
+		if(!isColumnEditable(index))
+			throw new IllegalStateException(NLS.bind("column {0} is not editable", index));
 		tableViewer.getTable().getColumn(index).dispose();
 		if(getColumnCount() == 0){
 			input.clear();
@@ -341,6 +436,18 @@ public class SpreadSheetTable extends Composite {
 	 */
 	public int getColumnCount() {
 		return tableViewer.getTable().getColumnCount();
+	}
+	
+	
+	/**Get column headers.
+	 * @return the column headers.
+	 */
+	public String[] getColumnHeaders(){
+		String[] r = new String[getColumnCount()];
+		for(int i=0; i<r.length; i++){
+			r[i] = tableViewer.getTable().getColumn(i).getText();
+		}
+		return r;
 	}
 
 	/**
@@ -562,6 +669,48 @@ public class SpreadSheetTable extends Composite {
 		fireTableModified();
 	}
 	
+	/**Set the cell editor type of a column
+	 * @param columnIndex index of the column.
+	 * @param cellEditorType the cell editor type.
+	 */
+	public void setColumnCellEditorType(int columnIndex, CellEditorType cellEditorType){
+		checkColumnIndex(columnIndex);
+		((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
+				getData(TEXT_EDITING_SUPPORT_KEY))).setCellEditorType(cellEditorType);
+	}
+	
+	/**Set the needed data for the cell editor. For example, a String[] for dropdown cell editor.
+	 * @param columnIndex index of the column.
+	 * @param data data for the cell editor.
+	 */
+	public void setColumnCellEditorData(int columnIndex, Object data){
+		checkColumnIndex(columnIndex);
+		((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
+				getData(TEXT_EDITING_SUPPORT_KEY))).setCellEditorData(data);
+	}
+	
+	/**Set the cell editor style. For example, {@link SWT#READ_ONLY} for dropdown cell editor.
+	 * @param columnIndex index of the column.
+	 * @param style the style
+	 */
+	public void setColumnCellEditorStyle(int columnIndex, int style){
+		checkColumnIndex(columnIndex);
+		((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
+				getData(TEXT_EDITING_SUPPORT_KEY))).setCellEditorStyle(style);
+	}
+	
+	
+	/**Set a customized cell editor for a column. The cell editor
+	 * must generate or accept String type value.
+	 * @param columnIndex index of the column.
+	 * @param cellEditor the cell editor.
+	 */
+	public void setColumnCellEditor(int columnIndex, CellEditor cellEditor){
+		checkColumnIndex(columnIndex);
+		((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
+				getData(TEXT_EDITING_SUPPORT_KEY))).setCellEditor(cellEditor);
+	}
+	
 	/**Set if a column is editable. 
 	 * @param columnIndex index of the column.
 	 * @param editable editable if true.
@@ -603,8 +752,6 @@ public class SpreadSheetTable extends Composite {
 			tableViewer.getTable().getColumn(i).setText(headers[i]);
 		}
 	}
-	
-	
 
 	/**
 	 * Show/hide table column headers.
@@ -762,6 +909,34 @@ public class SpreadSheetTable extends Composite {
 		checkRowIndex(row);	
 		tableViewer.getTable().getItem(row).setForeground(
 				CustomMediaFactory.getInstance().getColor(rgbColor));
+	}
+	
+	private synchronized static Image getOnImage() {
+		if (onImage == null) {
+			String path = "images/checked.gif"; //$NON-NLS-1$
+
+			InputStream stream = SpreadSheetTable.class.getResourceAsStream(path);
+			onImage = new Image(Display.getCurrent(), stream);
+			try {
+				stream.close();
+			} catch (IOException e) {
+			}
+		}
+		return onImage;
+	}
+	
+	private synchronized static Image getOffImage() {
+		if (offImage == null) {
+			String path = "images/unchecked.gif"; //$NON-NLS-1$
+
+			InputStream stream = SpreadSheetTable.class.getResourceAsStream(path);
+			offImage = new Image(Display.getCurrent(), stream);
+			try {
+				stream.close();
+			} catch (IOException e) {
+			}
+		}
+		return offImage;
 	}
 
 }

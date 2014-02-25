@@ -389,14 +389,14 @@ public class AlarmRDB
                             u.alarmMessage, u.value, u.timestamp);
                     count++;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     //this is about 4-times faster than StringBuilder
                     String s = "Error updating state: current severity=" + u.currentSeverity + 
                                 "; current message=" + u.currentMessage + "; severity=" + u.alarmSeverity +
                                 "; message=" + u.alarmMessage + "; value=" + u.value + "; timestamp=" + u.timestamp +
                                 "; pv=" + u.pv.getName() + '(' + u.pv.getID() + "). Message skipped.";
-                    Activator.getLogger().log(Level.SEVERE, s);
+                    Activator.getLogger().log(Level.SEVERE, s, ex);
                 }
                 if (count == batchSize)
                 {	// Periodically submit as batch
@@ -454,14 +454,14 @@ public class AlarmRDB
                     updateGlobalStatement.addBatch();
                     count++;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     //this is about 4-times faster than StringBuilder
                     String s = "Error updating global state: current severity=" + u.currentSeverity + 
                                 "; current message=" + u.currentMessage + "; severity=" + u.alarmSeverity +
                                 "; message=" + u.alarmMessage + "; value=" + u.value + "; timestamp=" + u.timestamp +
                                 "; pv=" + u.pv.getName() + '(' + u.pv.getID() + "). Message skipped.";
-                    Activator.getLogger().log(Level.SEVERE, s);
+                    Activator.getLogger().log(Level.SEVERE, s, ex);
                 }
                 if (count == batchSize)
                 {

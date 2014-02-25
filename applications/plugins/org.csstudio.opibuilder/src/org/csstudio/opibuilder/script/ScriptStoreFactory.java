@@ -9,8 +9,8 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.script.ScriptService.ScriptType;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.csstudio.simplepv.IPV;
 import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.csstudio.utility.pv.PV;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -78,7 +78,7 @@ public class ScriptStoreFactory {
 	 * @throws Exception
 	 */
 	public static AbstractScriptStore getScriptStore(
-			ScriptData scriptData, AbstractBaseEditPart editpart, PV[] pvArray) throws Exception{
+			ScriptData scriptData, AbstractBaseEditPart editpart, IPV[] pvArray) throws Exception{
 		boolean jsEngineInitialized = displayContextMap.containsKey(Display.getCurrent());
 		if(!scriptData.isEmbedded() && 
 				(scriptData.getPath() == null || scriptData.getPath().getFileExtension() == null)){

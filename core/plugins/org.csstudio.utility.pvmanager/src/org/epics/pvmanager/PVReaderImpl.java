@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager;
 
@@ -77,6 +77,8 @@ class PVReaderImpl<T> implements PVReader<T> {
     private boolean exceptionToNotify = false;
     private boolean connectionToNotify = false;
     private boolean valueToNotify = false;
+    private boolean sentFirstEvent = false;
+    private PVReaderDirector<T> director = null;
 
     void setReaderForNotification(PVReader<T> readerForNotification) {
         synchronized(lock) {
@@ -100,6 +102,7 @@ class PVReaderImpl<T> implements PVReader<T> {
             connectionToNotify = false;
             valueToNotify = false;
             exceptionToNotify = false;
+            sentFirstEvent = true;
             event = new PVReaderEvent<>(notificationMask, readerForNotification);
         }
         
@@ -217,6 +220,14 @@ class PVReaderImpl<T> implements PVReader<T> {
         firePvValueChanged();
     }
 
+    public void setDirector(PVReaderDirector<T> director) {
+        synchronized(this) {
+            this.director = director;
+        }
+    }
+    
+    
+
     /**
      * De-registers all listeners, stops all notifications and closes all
      * connections from the data sources needed by this. Once the PVReader
@@ -227,6 +238,7 @@ class PVReaderImpl<T> implements PVReader<T> {
     public void close() {
         pvReaderListeners.clear();
         synchronized(lock) {
+            director.close();
             closed = true;
         }
     }
@@ -323,6 +335,12 @@ class PVReaderImpl<T> implements PVReader<T> {
     public boolean isConnected() {
         synchronized(lock) {
             return connected;
+        }
+    }
+
+    public boolean isSentFirsEvent() {
+        synchronized(lock) {
+            return sentFirstEvent;
         }
     }
 }

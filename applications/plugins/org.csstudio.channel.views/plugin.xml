@@ -41,9 +41,9 @@
       </view>
       <view
             category="org.csstudio.channel.application.category"
-            class="org.csstudio.channel.views.Line2DPlotView"
+            class="org.csstudio.channel.views.ChannelLinePlotView"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/line2d-16.png"
-            id="org.csstudio.channel.views.Line2DPlotView"
+            id="org.csstudio.channel.views.ChannelLinePlotView"
             name="Channel Line Plot"
             restorable="true">
       </view>
@@ -112,7 +112,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.channel.views.Line2DPlotView">
+                  value="org.csstudio.channel.views.ChannelLinePlotView">
             </parameter>
          </command>
          <command
@@ -158,9 +158,9 @@
                style="push">
          </command>
          <command
-               commandId="org.csstudio.channel.views.OpenLine2D"
+               commandId="org.csstudio.channel.views.OpenChannelLinePlot"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/line2d-16.png"
-               label="Line2DPlot"
+               label="Channel Line Plot"
                style="push">
          </command>
          <command
@@ -199,9 +199,9 @@
             name="Channel Viewer">
       </command>
       <command
-            defaultHandler="org.csstudio.channel.views.OpenLine2DPlot"
-            id="org.csstudio.channel.views.OpenLine2D"
-            name="Line2DPlot">
+            defaultHandler="org.csstudio.channel.views.OpenChannelLinePlot"
+            id="org.csstudio.channel.views.OpenChannelLinePlot"
+            name="Channel Line Plot">
       </command>
       <command
             defaultHandler="org.csstudio.channel.views.OpenChannelOrchestrator"

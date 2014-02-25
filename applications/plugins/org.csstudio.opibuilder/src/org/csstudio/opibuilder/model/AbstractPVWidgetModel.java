@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.model;
 
+import org.osgi.framework.Version;
+
+
 
 /**The abstract widget model for all PV related widgets. 
  * @author Xihui Chen
@@ -30,6 +33,12 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel implemen
 	protected void configureBaseProperties() {
 		super.configureBaseProperties();		
 		getDelegate().configureBaseProperties();
+	}
+	
+	@Override
+	public void processVersionDifference(Version boyVersionOnFile) {
+		super.processVersionDifference(boyVersionOnFile);
+		delegate.processVersionDifference(boyVersionOnFile);		
 	}
 
 	public boolean isBorderAlarmSensitve(){

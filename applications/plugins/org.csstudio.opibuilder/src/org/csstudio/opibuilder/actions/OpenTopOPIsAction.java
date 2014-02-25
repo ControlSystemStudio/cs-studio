@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
@@ -23,16 +24,22 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
+import org.eclipse.ui.PlatformUI;
 
-/**Open top OPIs in run mode.
+/**
+ * Open top OPIs in run mode.
+ * 
  * @author Xihui Chen
  */
 public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
@@ -40,33 +47,56 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 	private static final String TOP_OPI_POSITION_KEY = "Position"; //$NON-NLS-1$
 	private static final String ALIAS_KEY = "Alias"; //$NON-NLS-1$
 	private Menu opiListMenu;
-	private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance().getImageFromPlugin(
-			OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
+	private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance()
+			.getImageFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
+
 	public Menu getMenu(Control parent) {
 		dispose();
-		final Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
-		if(topOPIs == null)
-			return null;
 		opiListMenu = new Menu(parent);
-			for(final IPath path : topOPIs.keySet()){
-				if(path != null){
-					MenuItem item = new MenuItem(opiListMenu, SWT.PUSH);
-					String alias = topOPIs.get(path).getMacrosMap()
-							.get(ALIAS_KEY);
-					if(alias != null)
-						item.setText(alias);
-					else
-						item.setText(path.lastSegment());
+		final Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
+		if (topOPIs == null)
+			return null;
+		
+		fillMenu(topOPIs, opiListMenu);
+		return opiListMenu;
+	}
+
+	public static void fillMenu(final Map<IPath, MacrosInput> topOPIs, Menu menu) {
+		for (final IPath path : topOPIs.keySet()) {
+			if (path != null) {
+				MenuItem item = new MenuItem(menu, SWT.PUSH);
+				String alias = topOPIs.get(path).getMacrosMap().get(ALIAS_KEY);
+				if (alias != null)
+					item.setText(alias);
+				else
+					item.setText(path.lastSegment());
+				if(path.getFileExtension().toLowerCase().equals("opi")) //$NON-NLS-1$
 					item.setImage(OPI_RUNTIME_IMAGE);
-					item.addSelectionListener(new SelectionAdapter() {
+				else{
+					final Image image = PlatformUI.getWorkbench().getEditorRegistry().
+							getImageDescriptor(path.toOSString()).createImage();
+					item.setImage(image);
+					item.addDisposeListener(new DisposeListener() {						
 						@Override
-						public void widgetSelected(SelectionEvent e) {
-							runOPI(topOPIs.get(path), path);
-						}						
+						public void widgetDisposed(DisposeEvent e) {
+							image.dispose();
+						}
 					});
 				}
+				item.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						if (path != null) {
+							if (path.getFileExtension().toLowerCase().equals("opi")) { //$NON-NLS-1$
+								runOPI(topOPIs.get(path), path);
+							} else {
+								runOther(path);
+							}
+						}
+					}
+				});
 			}
-		return opiListMenu;
+		}
 	}
 
 	public static void runOPI(final MacrosInput macrosInput, final IPath path) {
@@ -90,53 +120,69 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 		RunModeService.getInstance().runOPI(path, TargetWindow.SAME_WINDOW,
 				null, macrosInput);
 	}
+
+	public static void runOther(final IPath path) {
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		try {
+			SingleSourceHelper.openEditor(page, path);
+		} catch (Exception e) {
+			String message = NLS.bind("Failed to open the editor. \n {0}", e);
+			MessageDialog.openError(null, "Error in opening OPI", message);
+		}
+	}
+
 	/**
 	 * @return the top OPIs from preference settings
 	 */
-	private Map<IPath, MacrosInput> loadTopOPIs() {
+	public static Map<IPath, MacrosInput> loadTopOPIs() {
 		final Map<IPath, MacrosInput> topOPIs;
 		try {
 			topOPIs = PreferencesHelper.getTopOPIs();
-			if(topOPIs == null || topOPIs.keySet().size() == 0){
-				MessageDialog.openWarning(null, "Warning", "No top OPIs were set in preference settings.");
+			if (topOPIs == null || topOPIs.keySet().size() == 0) {
 				return null;
 			}
-
 		} catch (Exception e) {
-			String message = NLS.bind("Failed to load top OPIs from preference settings. \n {0}", e);
+			String message = NLS.bind(
+					"Failed to load top OPIs from preference settings. \n {0}", e);
 			MessageDialog.openError(null, "Error in loading top OPIs", message);
-            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
+			OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 			return null;
 		}
 		return topOPIs;
 	}
 
 	public void dispose() {
-		if(opiListMenu != null && !opiListMenu.isDisposed()){
-			for(MenuItem m : opiListMenu.getItems())
+		if (opiListMenu != null && !opiListMenu.isDisposed()) {
+			for (MenuItem m : opiListMenu.getItems())
 				m.dispose();
 			opiListMenu.dispose();
 			opiListMenu = null;
 		}
-
-
 	}
 
 	public void init(IWorkbenchWindow window) {
-        // NOP
+		// NOP
 	}
 
 	public void run(IAction action) {
 		Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
-		if(topOPIs != null && topOPIs.keySet().size() >= 1){
+		if (topOPIs == null || topOPIs.keySet().size() == 0) {
+			MessageDialog.openWarning(null, "Warning",
+					"No top OPIs were set in preference settings.");
+		} else {
 			IPath path = (IPath) topOPIs.keySet().toArray()[0];
-			if(path != null){
-				runOPI(topOPIs.get(path), path);
+			if (path != null) {
+				if (path.getFileExtension().toLowerCase().equals("opi")) {
+					runOPI(topOPIs.get(path), path);
+				} else {
+					runOther(path);
+				}
 			}
 		}
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-	    // NOP
+		// NOP
 	}
 }

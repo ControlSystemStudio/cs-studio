@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.csstudio.opibuilder.widgets.model.TabModel;
@@ -60,8 +59,8 @@ public class TabItem {
 			groupingContainerModel.setName((String)value);
 		}
 		if (tabProperty == TabProperty.ENABLED) {
-			for (AbstractWidgetModel model : groupingContainerModel.getAllDescendants())
-				model.setEnabled((Boolean) value);
+//			for (AbstractWidgetModel model : groupingContainerModel.getAllDescendants())
+//				model.setEnabled((Boolean) value);
 			groupingContainerModel.setEnabled((Boolean) value);
 		}
 		propertyMap.put(tabProperty, value);

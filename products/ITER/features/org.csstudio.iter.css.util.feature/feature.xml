@@ -2,11 +2,11 @@
 <feature
       id="org.csstudio.iter.css.util.feature"
       label="CSS Utils Component"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>
-      Copyright (c) : 2010-2013 ITER Organization,
+      Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France
@@ -36,7 +36,11 @@ of the distribution package.
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.iter.diag.probe.feature"
+         id="org.csstudio.iter.diag.pvmanager.probe.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.diag.pvfields.feature"
          version="0.0.0"/>
 
    <includes
@@ -45,6 +49,10 @@ of the distribution package.
 
    <includes
          id="org.csstudio.iter.display.pvtable.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.display.rdbtable.feature"
          version="0.0.0"/>
 
    <includes
@@ -73,10 +81,6 @@ of the distribution package.
 
    <includes
          id="org.csstudio.iter.utility.sysmon.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.iter.diag.pvfields.feature"
          version="0.0.0"/>
 
    <includes

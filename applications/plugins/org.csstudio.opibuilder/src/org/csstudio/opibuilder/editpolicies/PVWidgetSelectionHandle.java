@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.editpolicies;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
+import org.csstudio.opibuilder.visualparts.PVNameTextCellEditor;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
@@ -32,10 +33,9 @@ import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
@@ -169,9 +169,8 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
 		
 			
 			protected CellEditor createCellEditorOn(Composite composite) {
-				final TextCellEditor cellEditor = new TextCellEditor(
-				(Composite) getEditPart().getViewer().getControl(), SWT.SINGLE);
-				
+				final PVNameTextCellEditor cellEditor = new PVNameTextCellEditor(
+				(Composite) getEditPart().getViewer().getControl());
 				return cellEditor;
 			};
 			
@@ -213,8 +212,15 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
 								IPVWidgetModel.PROP_PVNAME,
 								newName));
 					}
-				} finally {
-					bringDown();
+				} finally {					
+					//work around to make sure autocomplete widget get notified before bringdown
+					Display.getCurrent().asyncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							bringDown();
+						}
+					});
 					committing = false;
 				}
 			}

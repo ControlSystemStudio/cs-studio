@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.List;
 
+import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 

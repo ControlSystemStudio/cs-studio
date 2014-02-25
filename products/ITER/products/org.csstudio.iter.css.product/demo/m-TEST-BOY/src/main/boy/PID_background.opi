@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
   <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.1.4.codac_core_4_0b4</boy_version>
+  <boy_version>3.2.10.codac_core_4_2b3</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1024</height>
@@ -32,7 +32,7 @@
   <actions hook="false" hook_all="false" />
   <y>0</y>
   <x>0</x>
-  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0.0">
     <crop_right>0</crop_right>
     <crop_left>0</crop_left>
     <visible>true</visible>
@@ -87,7 +87,7 @@
     <tooltip></tooltip>
     <x>0</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0.0">
     <level_lo>20.0</level_lo>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
@@ -97,6 +97,7 @@
     <color_hihi>
       <color name="Major" red="255" green="0" blue="0" />
     </color_hihi>
+    <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
     <show_lo>true</show_lo>
     <scripts />
     <height>311</height>
@@ -158,14 +159,7 @@
     <fill_color>
       <color name="IO PV ON" red="0" green="0" blue="225" />
     </fill_color>
-    <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name).SIMM</pv>
-      </rule>
-    </rules>
+    <rules />
     <value_label_format></value_label_format>
     <transparent_background>true</transparent_background>
     <limits_from_pv>true</limits_from_pv>

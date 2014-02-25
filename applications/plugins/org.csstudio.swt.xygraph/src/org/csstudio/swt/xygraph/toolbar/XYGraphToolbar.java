@@ -7,6 +7,10 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.toolbar;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.undo.AddAnnotationCommand;
@@ -31,7 +35,6 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.ToggleButton;
 import org.eclipse.draw2d.ToggleModel;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -127,7 +130,50 @@ public class XYGraphToolbar extends Figure {
             });
 		}
 		
+		final ToggleButton valueLabelsButton = new ToggleButton(new ImageFigure(XYGraphMediaFactory.getInstance().getImage("images/HoverLabels.png")));
+		valueLabelsButton.setBackgroundColor(ColorConstants.button);
+		valueLabelsButton.setOpaque(true);
+		final ToggleModel valueLabelsModel = new ToggleModel();
+		valueLabelsModel.addChangeListener(new ChangeListener(){
+			public void handleStateChanged(ChangeEvent event) {
+				if(event.getPropertyName().equals("selected")){
+					xyGraph.setShowValueLabels(valueLabelsButton.isSelected());
+				}				
+			}
+		});
+		xyGraph.addPropertyChangeListener("showValueLabels", new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				valueLabelsModel.setSelected(xyGraph.isShowValueLabels());
+			}
+		});
+		valueLabelsModel.setSelected(xyGraph.isShowValueLabels());
+		valueLabelsButton.setModel(valueLabelsModel);
+		valueLabelsButton.setToolTip(new Label(Messages.HoverLabels));
+		addButton(valueLabelsButton);
+		
+		final ToggleButton axisTraceButton = new ToggleButton(new ImageFigure(XYGraphMediaFactory.getInstance().getImage("images/AxisTrace.png")));
+		axisTraceButton.setBackgroundColor(ColorConstants.button);
+		axisTraceButton.setOpaque(true);
+		final ToggleModel axisTraceModel = new ToggleModel();
+		axisTraceModel.addChangeListener(new ChangeListener(){
+			public void handleStateChanged(ChangeEvent event) {
+				if(event.getPropertyName().equals("selected")){
+					xyGraph.setShowAxisTrace(axisTraceButton.isSelected());
+				}				
+			}
+		});
+		xyGraph.addPropertyChangeListener("showAxisTrace", new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				axisTraceModel.setSelected(xyGraph.isShowAxisTrace());
+			}
+		});
+		axisTraceModel.setSelected(xyGraph.isShowAxisTrace());
+		axisTraceButton.setModel(axisTraceModel);
+		axisTraceButton.setToolTip(new Label(Messages.AxisTrace));
+		addButton(axisTraceButton);
+		
 		//zoom buttons
+		addSeparator();
 		zoomGroup = new ButtonGroup();
 		createZoomButtons(flags);
 	
@@ -147,7 +193,7 @@ public class XYGraphToolbar extends Figure {
 	
 	
 	private void addSnapshotButton() {
-		Button snapShotButton = new Button(XYGraphMediaFactory.getInstance().getImage("images/camera.gif"));
+		Button snapShotButton = new Button(XYGraphMediaFactory.getInstance().getImage("images/camera.png"));
 		snapShotButton.setToolTip(new Label("Save Snapshot to PNG file"));
 		addButton(snapShotButton);
 		snapShotButton.addActionListener(new ActionListener(){
@@ -189,7 +235,7 @@ public class XYGraphToolbar extends Figure {
 					undoButton.setEnabled(true);
 					final String cmd_name = manager.getUndoCommands()[
 					           manager.getUndoCommandsSize() -1].toString();
-                    undoButton.setToolTip(new Label(NLS.bind("Undo {0}", cmd_name)));
+                    undoButton.setToolTip(new Label("Undo"+ cmd_name));
 				}else{
 					undoButton.setEnabled(false);
 					undoButton.setToolTip(new Label("Undo"));
@@ -215,7 +261,7 @@ public class XYGraphToolbar extends Figure {
 					redoButton.setEnabled(true);
 					final String cmd_name = manager.getRedoCommands()[
 					           manager.getRedoCommandsSize() -1].toString();
-                    redoButton.setToolTip(new Label(NLS.bind("Redo {0}", cmd_name)));
+                    redoButton.setToolTip(new Label("Redo" + cmd_name));
 				}else{
 					redoButton.setEnabled(false);
 					redoButton.setToolTip(new Label("Redo"));

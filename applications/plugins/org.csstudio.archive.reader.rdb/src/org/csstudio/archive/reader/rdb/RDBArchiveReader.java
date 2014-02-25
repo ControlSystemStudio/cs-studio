@@ -148,8 +148,10 @@ public class RDBArchiveReader implements ArchiveReader
     private HashMap<Integer, String> getStatusValues() throws Exception
     {
         final HashMap<Integer, String> stati = new HashMap<Integer, String>();
-        final Statement statement = rdb.getConnection().createStatement();
         try
+        (
+            final Statement statement = rdb.getConnection().createStatement();
+        )
         {
         	if (timeout > 0)
         		statement.setQueryTimeout(timeout);
@@ -159,10 +161,6 @@ public class RDBArchiveReader implements ArchiveReader
                 stati.put(result.getInt(1), result.getString(2));
             return stati;
         }
-        finally
-        {
-            statement.close();
-        }
     }
 
     /** @return Map of all severity ID/AlarmSeverity mappings
@@ -171,8 +169,10 @@ public class RDBArchiveReader implements ArchiveReader
     private HashMap<Integer, AlarmSeverity> getSeverityValues() throws Exception
     {
         final HashMap<Integer, AlarmSeverity> severities = new HashMap<Integer, AlarmSeverity>();
-        final Statement statement = rdb.getConnection().createStatement();
         try
+        (
+            final Statement statement = rdb.getConnection().createStatement();
+        )
         {
         	if (timeout > 0)
         		statement.setQueryTimeout(timeout);
@@ -198,7 +198,7 @@ public class RDBArchiveReader implements ArchiveReader
                 }
                 if (severity == null)
             	{
-                    Activator.getLogger().log(Level.WARNING,
+                    Activator.getLogger().log(Level.FINE,
                         "Undefined severity level {0}", text);
             		severities.put(id, AlarmSeverity.UNDEFINED);     
             	}
@@ -206,10 +206,6 @@ public class RDBArchiveReader implements ArchiveReader
                 	severities.put(id, severity);
             }
             return severities;
-        }
-        finally
-        {
-            statement.close();
         }
     }
 
@@ -381,10 +377,12 @@ public class RDBArchiveReader implements ArchiveReader
             return new StoredProcedureValueIterator(this, stored_procedure, channel_id, start, end, count);
 
         // Else: Determine how many samples there are
-        final PreparedStatement count_samples = rdb.getConnection().prepareStatement(
-        		sql.sample_count_by_id_start_end);
         final int counted;
         try
+        (
+            final PreparedStatement count_samples = rdb.getConnection().prepareStatement(
+                    sql.sample_count_by_id_start_end);
+        )
         {
 	        count_samples.setInt(1, channel_id);
 	        count_samples.setTimestamp(2, TimestampHelper.toSQLTimestamp(start));
@@ -393,10 +391,6 @@ public class RDBArchiveReader implements ArchiveReader
 	        if (! result.next())
 	        	throw new Exception("Cannot count samples");
 	        counted = result.getInt(1);
-        }
-        finally
-        {
-        	count_samples.close();
         }
         // Fetch raw data and perform averaging
         final ValueIterator raw_data = getRawValues(channel_id, start, end);
@@ -418,9 +412,11 @@ public class RDBArchiveReader implements ArchiveReader
     // Allow access from 'package' for tests
     int getChannelID(final String name) throws UnknownChannelException, Exception
     {
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.channel_sel_by_name);
         try
+        (
+            final PreparedStatement statement =
+                rdb.getConnection().prepareStatement(sql.channel_sel_by_name);
+        )
         {
         	if (timeout > 0)
         		statement.setQueryTimeout(timeout);
@@ -429,10 +425,6 @@ public class RDBArchiveReader implements ArchiveReader
             if (!result.next())
                 throw new UnknownChannelException(name);
             return result.getInt(1);
-        }
-        finally
-        {
-            statement.close();
         }
     }
 

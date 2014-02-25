@@ -3,9 +3,8 @@ package org.csstudio.utility.pvmanager.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.ui.util.composites.BeanComposite;
 import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.viewers.CellLabelProvider;
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -17,6 +16,11 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -24,21 +28,13 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.epics.vtype.VTable;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 
 /**
  * Basic ui component that can display a VTable on screen.
  * 
  * @author carcassi
  */
-public class VTableDisplay extends Composite implements ISelectionProvider {
+public class VTableDisplay extends BeanComposite implements ISelectionProvider {
 	TableViewer tableViewer;
 	private Table table;
 	private Composite tableContainer;
@@ -79,7 +75,7 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 					if (header)
 						row = -1;
 					int column = cell.getColumnIndex();
-					setSelection(new StructuredSelection(new VTableDisplayCell(row, column)));
+					setSelection(new StructuredSelection(new VTableDisplayCell(VTableDisplay.this, row, column)));
 				}
 			}
 		});
@@ -93,13 +89,20 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 				} else {
 					int row = ((VTableContentProvider.VTableRow) cell.getElement()).getRow();
 					int column = cell.getColumnIndex();
-					setSelection(new StructuredSelection(new VTableDisplayCell(row, column)));
+					setSelection(new StructuredSelection(new VTableDisplayCell(VTableDisplay.this, row, column)));
 				}
 			}
 		});
 		tableViewer.setContentProvider(new VTableContentProvider());
 		tableViewer.setLabelProvider(getCellLabelProvider());
         VTableToolTipSupport.enableFor(tableViewer,ToolTip.NO_RECREATE);
+	}
+	
+	@Override
+    public void setFont(final Font font)
+	{
+	    super.setFont(font);
+	    table.setFont(font);
 	}
 	
 	public void addSelectionListener(SelectionListener listener) {
@@ -119,11 +122,13 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 	 * @param vTable the new table
 	 */
 	public void setVTable(VTable vTable) {
+		VTable oldVTable = this.vTable;
 		if (!isDisposed()) {
 			this.vTable = vTable;
 			refreshColumns();
 			tableViewer.setInput(vTable);
 		}
+		changeSupport.firePropertyChange("vTable", oldVTable, vTable);
 	}
 	
 	public VTableCellLabelProvider getCellLabelProvider() {

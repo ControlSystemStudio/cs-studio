@@ -51,6 +51,7 @@ public class LoginDialog extends Dialog
             super(user.getText(), password.getText());
         }
 
+        @Override
         public void handleText(final TextOutputCallback text)
         {
             if (user.isDisposed())
@@ -70,7 +71,13 @@ public class LoginDialog extends Dialog
                         close();
                     }
                     else
+                    {   // Clear (possibly wrong) password.
+                        password.setText("");
                         displayError(text.getMessage());
+                        // Start over at user name
+                        user.setFocus();
+                        user.selectAll();
+                    }
                 }
             });
         }

@@ -51,7 +51,8 @@ public class DummyLoginModule implements LoginModule
 	private UserPrincipal principal = null;
 	private boolean debug;
 
-	public void initialize(final Subject subject, final CallbackHandler handler,
+	@Override
+    public void initialize(final Subject subject, final CallbackHandler handler,
 			final Map<String, ?> sharedState, final Map<String, ?> options)
 	{
 		this.subject = subject;
@@ -59,6 +60,7 @@ public class DummyLoginModule implements LoginModule
         debug = "true".equalsIgnoreCase((String)options.get("debug"));
 	}
 
+    @Override
 	public boolean login() throws LoginException
 	{
 		final String username = getUsernameFromCallbackHandler();
@@ -73,12 +75,14 @@ public class DummyLoginModule implements LoginModule
 		return true;		
 	}
 
+    @Override
 	public boolean abort() throws LoginException
 	{
 		// always successful, there is nothing to rollback
 		return true;
 	}
 
+    @Override
 	public boolean commit() throws LoginException
 	{
 		if (principal != null)
@@ -104,6 +108,7 @@ public class DummyLoginModule implements LoginModule
 		}
 	}
 	
+    @Override
 	public boolean logout() throws LoginException
 	{
 		subject.getPrincipals().remove(principal);

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010-2014 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.iter.css.product.util;
 
 import java.io.IOException;
@@ -5,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Filter;
+import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -24,32 +32,52 @@ import org.eclipse.ui.keys.IBindingService;
 
 public class WorkbenchUtil {
 
+	private static final String[] HIDE_MESSAGE_STARTS_WITH = new String[] {
+			"Keybinding conflicts occurred.  They may interfere with normal accelerator operation.",
+			"Invalid preference page path: XML Syntax",
+			"Job found still running after platform shutdown." };
+
 	public static final String[] IGNORE_PERSPECTIVES = new String[] {
-			"org.eclipse.debug.ui.DebugPerspective",
-			"org.eclipse.wst.xml.ui.perspective" };
+	// "org.eclipse.debug.ui.DebugPerspective", // Used by Pydev
+	"org.eclipse.wst.xml.ui.perspective" };
+
+	private static class HideUnWantedLogFilter implements Filter {
+
+		private Filter previousFilter;
+
+		public HideUnWantedLogFilter(Filter previousFilter) {
+			this.previousFilter = previousFilter;
+		}
+
+		@Override
+		public boolean isLoggable(LogRecord record) {
+			if (record.getMessage() != null) {
+				for (String hideMsgStartsWith : HIDE_MESSAGE_STARTS_WITH) {
+					if (record.getMessage().startsWith(hideMsgStartsWith)) {
+						return false;
+					}
+				}
+			}
+			if (previousFilter == null) {
+				return true;
+			}
+			return previousFilter.isLoggable(record);
+		}
+	};
+
+	public static void removeUnWantedLog() {
+		// Hide unwanted message from log
+		Logger rootLogger = Logger.getLogger("");
+		rootLogger.setFilter(new HideUnWantedLogFilter(rootLogger.getFilter()));
+		for (Handler handler : rootLogger.getHandlers()) {
+			handler.setFilter(new HideUnWantedLogFilter(handler.getFilter()));
+		}
+	}
 
 	/**
 	 * Removes the unwanted perspectives from your RCP application
 	 */
 	public static void removeUnWantedPerspectives() {
-
-		// Hide unwanted message from log
-		Logger pluginLogListenerHandler = Logger
-				.getLogger("org.eclipse.core.runtime");
-		final Filter oldFilter = pluginLogListenerHandler.getFilter();
-		pluginLogListenerHandler.setFilter(new Filter() {
-			@Override
-			public boolean isLoggable(LogRecord record) {
-				if ("Keybinding conflicts occurred.  They may interfere with normal accelerator operation."
-						.equals(record.getMessage())) {
-					return false;
-				}
-				if (oldFilter == null) {
-					return true;
-				}
-				return oldFilter.isLoggable(record);
-			}
-		});
 
 		IPerspectiveRegistry perspectiveRegistry = PlatformUI.getWorkbench()
 				.getPerspectiveRegistry();

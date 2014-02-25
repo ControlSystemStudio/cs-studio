@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional"
       label="Optional SNS Control Room Tools"
-      version="3.2.0.qualifier"
+      version="3.2.14.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
@@ -36,11 +36,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          os="linux"/>
 
    <includes
-         id="org.csstudio.sns.feature.optional.win32"
-         version="0.0.0"
-         os="win32"/>
-
-   <includes
          id="org.csstudio.alarm.beast.ui.feature"
          version="0.0.0"/>
 
@@ -53,8 +48,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.jms"/>
       <import plugin="org.csstudio.platform.utility.jms" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
@@ -73,6 +66,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

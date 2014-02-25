@@ -64,6 +64,8 @@ public class MachineModeMonitor
                     logger.log(Level.WARNING, "RTDL Reader Error", error);
                     mode = null;
                 }
+                else if (! event.getPvReader().isConnected())
+                    mode = null;
                 else
                     mode = getSelectedMode(rtdl_reader.getValue(), 1);
                 logger.log(Level.FINE, "RTDL Mode: {0}", mode);
@@ -88,6 +90,8 @@ public class MachineModeMonitor
                     logger.log(Level.WARNING, "Switch Reader Error", error);
                     mode = null;
                 }
+                else if (! event.getPvReader().isConnected())
+                    mode = null;
                 else
                     mode = getSelectedMode(switch_reader.getValue(), 0);
                 logger.log(Level.FINE, "Swtich Mode: {0}", mode);

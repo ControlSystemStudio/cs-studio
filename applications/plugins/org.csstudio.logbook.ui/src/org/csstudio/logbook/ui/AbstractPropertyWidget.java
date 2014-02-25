@@ -21,45 +21,47 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class AbstractPropertyWidget extends Composite {
 
-	private boolean editable;
-	private LogEntryChangeset logEntryChangeset;
+    private boolean editable;
+    private LogEntryChangeset logEntryChangeset;
 
-	// property that this widget is intended to be used with
+    // property that this widget is intended to be used with
 
-	/**
-	 * A constructor which creates the composite, registers the appropriate
-	 * listeners and initializes it with the logEntryChangeset
-	 * 
-	 * @param parent
-	 * @param style
-	 * @param logEntryChangeset
-	 */
-	public AbstractPropertyWidget(Composite parent, int style,
-			LogEntryChangeset logEntryChangeset) {
-		super(parent, style);
-		this.logEntryChangeset = logEntryChangeset;
-		this.logEntryChangeset
-				.addPropertyChangeListener(new PropertyChangeListener() {
+    /**
+     * A constructor which creates the composite, registers the appropriate
+     * listeners and initializes it with the logEntryChangeset
+     * 
+     * @param parent
+     * @param style
+     * @param logEntryChangeset
+     */
+    public AbstractPropertyWidget(Composite parent, int style,
+	    LogEntryChangeset logEntryChangeset) {
+	super(parent, style);
+	if (logEntryChangeset != null) {
+	    this.logEntryChangeset = logEntryChangeset;
+	    this.logEntryChangeset
+		    .addPropertyChangeListener(new PropertyChangeListener() {
 
-					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						updateUI();
-					}
-				});
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+			    updateUI();
+			}
+		    });
 	}
+    }
 
-	public boolean isEditable() {
-		return editable;
-	}
+    public boolean isEditable() {
+	return editable;
+    }
 
-	public void setEditable(boolean editable) {
-		this.editable = editable;
-		updateUI();
-	}
+    public void setEditable(boolean editable) {
+	this.editable = editable;
+	updateUI();
+    }
 
-	public LogEntryChangeset getLogEntryChangeset() {
-		return this.logEntryChangeset;
-	}
+    public LogEntryChangeset getLogEntryChangeset() {
+	return this.logEntryChangeset;
+    }
 
-	public abstract void updateUI();
+    public abstract void updateUI();
 }

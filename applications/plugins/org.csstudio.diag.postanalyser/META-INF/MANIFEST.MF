@@ -6,7 +6,7 @@ Bundle-Version: 3.2.0.qualifier
 Bundle-Activator: org.csstudio.diag.postanalyser.Activator
 Bundle-Description: Fitting and correlation for Data Browser
 Bundle-Localization: plugin
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.epics.vtype,

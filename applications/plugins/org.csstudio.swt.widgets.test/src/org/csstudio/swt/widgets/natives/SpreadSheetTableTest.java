@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType;
 import org.csstudio.swt.widgets.natives.SpreadSheetTable.ITableCellEditingListener;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.*;
@@ -40,9 +41,12 @@ public void testMain() {
 	final SpreadSheetTable table = new SpreadSheetTable(shell);
 //	table.setColumnHeaderVisible(false);
 	table.setColumnHeaders(new String[]{"a", "b", "c"});
+	table.setColumnCellEditorType(0, CellEditorType.CHECKBOX);
+	table.setColumnCellEditorData(0, new String[]{"Off", "On"});
+//	table.setColumnCellEditorStyle(2, SWT.READ_ONLY);
 //	table.setEnabled(false);
-	table.setEditable(false);
-	table.getTableViewer().getTable().setFont(new Font(Display.getCurrent(), "Verdana", 10, SWT.ITALIC));
+	table.setEditable(true);
+//	table.getTableViewer().getTable().setFont(new Font(Display.getCurrent(), "Verdana", 10, SWT.ITALIC));
 //	table.getTableViewer().getTable().setEnabled(false);
 	final List<List<String>> input = new ArrayList<List<String>>();
 	
@@ -101,7 +105,7 @@ public void testMain() {
 	button.pack();
 	button.addListener(SWT.Selection, new Listener() {
 		public void handleEvent(Event event) {
-			table.insertColumn(2);
+			table.insertColumn(0);
 			table.autoSizeColumns();
 		}
 	});

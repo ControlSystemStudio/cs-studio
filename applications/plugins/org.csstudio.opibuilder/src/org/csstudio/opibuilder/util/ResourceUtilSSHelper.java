@@ -59,6 +59,7 @@ public abstract class ResourceUtilSSHelper {
 
 	
 	/**Convert workspace path to OS system path.
+	 * If this resource is a project that does not exist in the workspace, or a file or folder below such a project, this method returns null.
 	 * @param path the workspace path
 	 * @return the corresponding system path. null if it is not exist.
 	 */

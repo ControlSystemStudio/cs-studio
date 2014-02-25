@@ -86,8 +86,8 @@ public class ModelReadWriteUnitTest
     private Model createModel() throws Exception
     {
         final Model model = new Model();
-        model.setTimespan(60*60 + 10);
         model.enableScrolling(true);
+        model.setTimerange("-130 sec", "now");
 
         model.addAxis(new AxisConfig(true, "Value", new RGB(0, 0, 255), 0, 10, false, false));
 

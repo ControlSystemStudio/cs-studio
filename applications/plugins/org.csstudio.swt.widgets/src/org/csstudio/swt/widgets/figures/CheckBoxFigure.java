@@ -10,12 +10,12 @@ package org.csstudio.swt.widgets.figures;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.AbstractBoolFigure.TotalBits;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.LabelWidgetIntrospector;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
@@ -43,8 +43,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigure{
 
-
-
+	private TotalBits totalBits = TotalBits.BITS_64;
+	
 	private static final int BOX_SIZE = 14;
 
 	private static final int GAP = 4;
@@ -231,12 +231,7 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
 		if(bit <0 )
 			boolValue = (this.value != 0);
 		else if(bit >=0) {
-			char[] binArray = Long.toBinaryString(this.value).toCharArray();
-			if(bit >= binArray.length)
-				boolValue = false;
-			else {
-				boolValue = (binArray[binArray.length - 1 - bit] == '1');
-			}
+			boolValue = ((value>>bit)&1L) >0;
 		}
 		repaint();
 	}
@@ -251,31 +246,22 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
 		if(bit < 0)
 			setValue(boolValue ? 1 : 0);
 		else if(bit >=0) {
-			char[] binArray = Long.toBinaryString(value).toCharArray();
 			if(bit >= 64 ) {
 			    // Log with exception to obtain call stack
 			    Activator.getLogger().log(Level.WARNING, "Bit " + bit + " exceeds 63.", new Exception());
             }
 			else {
-				char[] bin64Array = new char[64];
-				Arrays.fill(bin64Array, '0');
-				for(int i=0; i<binArray.length; i++){
-					bin64Array[64-binArray.length + i] = binArray[i];
-				}
-				bin64Array[63-bit] = boolValue? '1' : '0';
-				String binString = new String(bin64Array);
-
-				if( binString.indexOf('1') <= -1){
-					binArray = new char[]{'0'};
-				}else {
-					binArray = new char[64 - binString.indexOf('1')];
-					for(int i=0; i<binArray.length; i++){
-						binArray[i] = bin64Array[i+64-binArray.length];
-					}
-				}
-
-				binString = new String(binArray);
-				setValue(Long.parseLong(binString, 2));
+				switch (totalBits) {
+				case BITS_16:
+					setValue(boolValue? value | ((short)1<<bit) : value & ~((short)1<<bit));
+				break;				
+				case BITS_32:
+					setValue(boolValue? value | ((int)1<<bit) : value & ~((int)1<<bit));
+				break;
+				default:				
+					setValue(boolValue? value | (1L<<bit) : value & ~(1L<<bit));
+					break;
+				}				
 			}
 		}
 		repaint();
@@ -295,6 +281,18 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
 	}
 
 	
+	public TotalBits getTotalBits() {
+		return totalBits;
+	}
+
+	/**
+	 * @param totalBits number of total bits
+	 */
+	public void setTotalBits(TotalBits totalBits) {
+		this.totalBits = totalBits;
+	}
+
+
 	class BoxFigure extends Figure{
 		@Override
 		protected void paintClientArea(Graphics graphics) {

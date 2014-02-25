@@ -11,7 +11,7 @@ body {
 }
 
 /**list**/
-body > ul > li{
+body>ul>li{
 	padding-bottom: 10px;
 }
 

@@ -134,8 +134,13 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 						.format("Reason", new Object[] { message, status.getMessage() }); //$NON-NLS-1$
 		this.status = status;
 		this.displayMask = displayMask;
-		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
+
+	/** Allow resize */
+	@Override
+    protected boolean isResizable() {
+	    return true;
+    }
 
 	/*
 	 * (non-Javadoc) Method declared on Dialog. Handles the pressing of the Ok

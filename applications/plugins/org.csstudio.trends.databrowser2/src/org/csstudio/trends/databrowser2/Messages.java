@@ -35,6 +35,7 @@ public class Messages extends NLS
     public static String AddPVMsg;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
+    public static String ApplyChanges;
     public static String ArchiveAccessMessageFmt;
     public static String ArchiveDataSources;
     public static String ArchiveDescription;
@@ -73,6 +74,7 @@ public class Messages extends NLS
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
+    public static String EditItem;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
@@ -185,6 +187,8 @@ public class Messages extends NLS
     public static String PromptForErrors_Label;
     public static String PVName;
     public static String PVUsedInFormulaFmt;
+    public static String Refresh;
+
     public static String RegularExpression;
     public static String RegularExpressionTT;
     public static String RemoveEmptyAxes;
@@ -218,6 +222,7 @@ public class Messages extends NLS
     public static String SearchPatternTT;
     public static String SearchTT;
     public static String SendToElog;
+    public static String ServerAlias;
     public static String SeverityColumn;
     public static String SeverityStatusFmt;
     public static String StartEndDialogBtn;
@@ -235,14 +240,17 @@ public class Messages extends NLS
     public static String TraceLineWidthTT;
     public static String TraceType;
     public static String TraceType_Area;
+    public static String TraceType_AreaDirect;
     public static String TraceType_ErrorBars;
     public static String TraceType_Squares;
     public static String TraceType_SingleLine;
+    public static String TraceType_SingleLineDirect;
     public static String TraceType_Circles;
     public static String TraceType_Diamonds;
     public static String TraceType_Crosses;
     public static String TraceType_Triangles;
     public static String TraceTypeTT;
+    public static String TraceTypes_Label;    
     public static String TracesTab;
     public static String TraceVisibility;
     public static String TraceVisibilityTT;

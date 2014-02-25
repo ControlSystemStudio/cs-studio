@@ -1,3 +1,0 @@
-./res/data1/SDDS
-./res/data2/SDDS
-./res/data3/SDDS

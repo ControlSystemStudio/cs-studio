@@ -9,18 +9,17 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.logging.Level;
 
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
 import org.epics.vtype.VType;
 
-/** {@link PVReaderListener} that extracts text from value.
+/** {@link IPVListener} that extracts text from value.
  * 
  *  <p>Derived class determines how to handle the text.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class StringListener implements PVReaderListener<VType>
+abstract public class StringListener extends IPVListener.Stub
 {
 	/** @param error Error to handle */
     public void handleError(final Exception error)
@@ -31,27 +30,26 @@ abstract public class StringListener implements PVReaderListener<VType>
 	/** @param text Text to handle */
 	abstract public void handleText(final String text);
 
+    /** {@inheritDoc} */
+    @Override
+    public void exceptionOccurred(IPV pv, Exception exception)
+    {
+        Plugin.getLogger().log(Level.WARNING,
+                "PV Listener error for '" + pv.getName() + "': " + exception.getMessage(),
+                exception);
+        handleError(exception);
+    }
+	
 	/** {@inheritDoc} */
 	@Override
-    public void pvChanged(final PVReaderEvent<VType> event)
+	public void valueChanged(final IPV pv)
     {
-    	final PVReader<VType> pv = event.getPvReader();
-    	final Exception error = pv.lastException();
-    	if (error != null)
-    	{
-            Plugin.getLogger().log(Level.WARNING,
-            		"PV Listener error for '" + pv.getName() + "': " + error.getMessage(),
-            		error);
-            handleError(error);
-            return;
-    	}
         try
         {
             final VType value = pv.getValue();
             // Ignore possible initial null
-            if (value == null)
-            	return;
-            handleText(VTypeHelper.format(value));
+            if (value != null)
+	            handleText(VTypeHelper.format(value));
         }
         catch (Exception e)
         {

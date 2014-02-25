@@ -44,7 +44,7 @@ public class XMLFileHandler extends TestCase {
 
 		} catch (ParserConfigurationException e) {
 			throw new EdmException(EdmException.DOM_BUILDER_EXCEPTION, 
-					"Error instantiating DOM document.");
+					"Error instantiating DOM document.",e);
 		}
 	}
 

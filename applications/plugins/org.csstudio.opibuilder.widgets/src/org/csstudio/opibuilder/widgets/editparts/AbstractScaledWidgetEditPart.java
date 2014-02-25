@@ -6,7 +6,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -14,10 +13,11 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.AbstractScaledWidgetFigure;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.VType;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractScaledWidgetModel}.
@@ -68,7 +68,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 				if(newValue == null)
 					return false;
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setValue(ValueUtil.getDouble((IValue)newValue));
+				figure.setValue(VTypeHelper.getDouble((VType)newValue));
 				return false;
 			}
 		};

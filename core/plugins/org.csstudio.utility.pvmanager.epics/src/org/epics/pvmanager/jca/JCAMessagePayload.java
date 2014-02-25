@@ -1,10 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.jca;
 
@@ -62,6 +58,15 @@ public class JCAMessagePayload {
      */
     public DBR getMetadata() {
         return metadata;
+    }
+
+    @Override
+    public String toString() {
+        DBR value = null;
+        if (event != null) {
+            value = event.getDBR();
+        }
+        return "Metadata " + metadata + " value " + value;
     }
     
 }

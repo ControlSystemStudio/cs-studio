@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2013 ITER Organization.
+ * Copyright (c) 2010-2014 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,51 +9,161 @@ package org.csstudio.autocomplete;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
+import org.csstudio.autocomplete.impl.DataSourceProvider;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
+import org.csstudio.autocomplete.parser.ContentType;
+import org.csstudio.autocomplete.parser.IContentParser;
+import org.csstudio.autocomplete.preferences.Preferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Get PV List from providers (see {@link IAutoCompleteProvider} + extension point)
+ * Service which handles content parsing (see {@link IContentParser}) and
+ * requesting proposals from defined providers (see
+ * {@link IAutoCompleteProvider}.
  * 
- * @author Fred Arnaud (Sopra Group)
- * 
+ * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteService {
 
+	/**
+	 * Flag that controls the printing of debug info.
+	 */
+	public static final boolean DEBUG = false;
+
+	private class ProviderTask implements Runnable {
+
+		private final Long uniqueId;
+		private final Integer index;
+		private final ContentDescriptor desc;
+		private final ProviderSettings settings;
+		private final IAutoCompleteResultListener listener;
+		private boolean canceled = false;
+
+		public ProviderTask(final Long uniqueId, final Integer index,
+				final ContentDescriptor desc, final ProviderSettings settings,
+				final IAutoCompleteResultListener listener) {
+			this.index = index;
+			this.uniqueId = uniqueId;
+			this.desc = desc;
+			this.settings = settings;
+			this.listener = listener;
+		}
+
+		@Override
+		public void run() {
+			AutoCompleteResult result = settings.getProvider().listResult(desc, settings.getMaxResults());
+			if (result != null
+					&& !settings.getName().equals(DataSourceProvider.NAME))
+				// TODO: find a better solution to hide DataSourceProvider...
+				result.setProvider(settings.getName());
+			if (!canceled)
+				listener.handleResult(uniqueId, index, result);
+			synchronized (workQueue) {
+				workQueue.remove(this);
+			}
+		}
+
+		public void cancel() {
+			settings.getProvider().cancel();
+			canceled = true;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((index == null) ? 0 : index.hashCode());
+			result = prime * result
+					+ ((uniqueId == null) ? 0 : uniqueId.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ProviderTask other = (ProviderTask) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (index == null) {
+				if (other.index != null)
+					return false;
+			} else if (!index.equals(other.index))
+				return false;
+			if (uniqueId == null) {
+				if (other.uniqueId != null)
+					return false;
+			} else if (!uniqueId.equals(other.uniqueId))
+				return false;
+			return true;
+		}
+
+		private AutoCompleteService getOuterType() {
+			return AutoCompleteService.this;
+		}
+
+		@Override
+		public String toString() {
+			return "ProviderTask [uniqueId=" + uniqueId + ", index=" + index
+					+ ", desc=" + desc + ", settings=" + settings
+					+ ", canceled=" + canceled + "]";
+		}
+	}
+
+	private class ScheduledContent implements Comparable<ScheduledContent> {
+		public ProviderSettings settings;
+		public ContentDescriptor desc;
+
+		@Override
+		public String toString() {
+			return "ScheduledContent [settings=" + settings + ", desc=" + desc + "]";
+		}
+
+		@Override
+		public int compareTo(ScheduledContent sc) {
+			return this.settings.compareTo(sc.settings);
+		}
+	}
+
 	private static AutoCompleteService instance;
-	private Map<String, IAutoCompleteProvider> providers;
-	private Map<String, List<ProviderSettings>> providerSettings;
+	private Map<String, ProviderSettings> providerByName;
+	private Map<String, List<ProviderSettings>> providersByType;
 	private ProviderSettings defaultProvider;
+	private List<ProviderTask> workQueue;
+	private List<IContentParser> parsers;
 
 	private AutoCompleteService() {
 		try {
-			providers = getOSGIServices();
-			providerSettings = initProviders(Preferences.getProviders());
-			if (providers.get("History") != null) {
-				defaultProvider = new ProviderSettings("History",
-						providers.get("History"),
-						Preferences.getDefaultMaxResults());
-			}
+			providerByName = getOSGIProviders();
+			if (providerByName.get("History") != null)
+				defaultProvider = providerByName.get("History");
+			parsers = getOSGIParsers();
 		} catch (Exception e) {
-			providers = new HashMap<String, IAutoCompleteProvider>();
-			providerSettings = new HashMap<String, List<ProviderSettings>>();
+			if (providerByName == null)
+				providerByName = new TreeMap<String, ProviderSettings>();
+			if (parsers == null)
+				parsers = new ArrayList<IContentParser>();
 		}
+		providersByType = new TreeMap<String, List<ProviderSettings>>();
+		workQueue = new ArrayList<ProviderTask>();
 	}
 
 	public static AutoCompleteService getInstance() {
@@ -63,146 +173,206 @@ public class AutoCompleteService {
 		return instance;
 	}
 
-	public List<AutoCompleteResult> get(final String type, final String name) {
-		Activator.getLogger().log(Level.FINE,
-				">> ChannelNameService get: " + name + " for type: " + type + " <<");
-		
-		List<AutoCompleteResult> acList = new ArrayList<AutoCompleteResult>();
-		if (name == null || name.isEmpty())
-			return acList; // Empty list
-		
-		List<ProviderSettings> providerList = providerSettings.get(type);
-		if (providerList == null || providerList.isEmpty()) {
-			if (defaultProvider != null) {
-				providerList = new LinkedList<ProviderSettings>();
-				providerList.add(defaultProvider);
-			} else {
-				return acList; // Empty list
-			}
+	public int get(final Long uniqueId, final AutoCompleteType acType,
+			final String content, final IAutoCompleteResultListener listener) {
+		AutoCompletePlugin.getLogger().log(Level.FINE,
+				">> ChannelNameService get: " + content + " for type: " + acType.value() + " <<");
+
+		if (content == null || content.isEmpty())
+			return 0; // no result
+
+		// Useful to handle default data source
+		ContentDescriptor desc = new ContentDescriptor();
+		final IPreferenceStore store = new ScopedPreferenceStore(
+				InstanceScope.INSTANCE, "org.csstudio.utility.pv");
+		// Note: "default_type" is a common setting between pv, pv.ui, pvmanager and pvmanager.ui
+		// They need to be kept synchronized.
+		if (store != null)
+			desc.setDefaultDataSource(store.getString("default_type") + "://");
+		desc.setContentType(ContentType.Undefined);
+		desc.setAutoCompleteType(acType);
+		desc.setOriginalContent(content);
+		desc.setValue(content);
+
+		List<ContentDescriptor> descList = parseContent(desc);
+		if (DEBUG) {
+			System.out.println("=============================================");
+			System.out.println("--- ContentDescriptor list ---");
+			for (ContentDescriptor ct : descList)
+				System.out.println(ct);
 		}
 
+		int index = 0; // Useful to keep the order
+		List<ScheduledContent> providerList = retrieveProviders(acType,
+				descList);
+		if (DEBUG) {
+			System.out.println("--- Associated Content ---");
+		}
 		// Execute them in parallel
-		final ExecutorService executors = Executors.newFixedThreadPool(providerList.size());
-		final List<Future<AutoCompleteResult>> resultList = new ArrayList<Future<AutoCompleteResult>>();
-		for (final ProviderSettings settings : providerList) {
-			final Callable<AutoCompleteResult> callable = new Callable<AutoCompleteResult>() {
-				@Override
-				public AutoCompleteResult call() throws Exception {
-					AutoCompleteResult result = settings.getProvider()
-							.listResult(type, name + "*", settings.getMax_results());
-					result.setProvider(settings.getName());
-					return result;
-				}
-			};
-			resultList.add(executors.submit(callable));
-		}
-		for (Future<AutoCompleteResult> result : resultList) {
-			try {
-				final AutoCompleteResult info = result.get();
-				if (info != null)
-					acList.add(info);
-			} catch (Exception ex) {
-				if (!(ex instanceof InterruptedException)) {
-					Activator.getLogger().log(Level.WARNING,
-							"AutoCompleteProvider error", ex);
-				}
+		for (ScheduledContent sc : providerList) {
+			if (DEBUG) {
+				System.out.println(sc.settings + " => " + sc.desc);
 			}
+			final ProviderTask task = new ProviderTask(uniqueId, index,
+					sc.desc, sc.settings, listener);
+			synchronized (workQueue) {
+				workQueue.add(task);
+			}
+			new Thread(task).start();
+			index++;
 		}
-		executors.shutdown();
-		return acList;
+		return index;
 	}
 
 	public void cancel(final String type) {
-		Activator.getLogger().log(Level.FINE,
+		AutoCompletePlugin.getLogger().log(Level.FINE,
 				">> ChannelNameService canceled for type: " + type + " <<");
-		List<ProviderSettings> providerList = providerSettings.get(type);
-		if (providerList == null)
-			return;
-		for (ProviderSettings settings : providerList)
-			settings.getProvider().cancel();
+		synchronized (workQueue) {
+			for (ProviderTask task : workQueue)
+				task.cancel();
+		}
 	}
 
 	public boolean hasProviders(final String type) {
-		return !providerSettings.get(type).isEmpty();
+		return !providersByType.get(type).isEmpty();
 	}
 
-	/**
-	 * Read PV lists providers extension points from plugin.xml.
-	 * 
-	 * @return Map<String, IPVListProvider>, extension points referenced by their scheme.
-	 * @throws CoreException if implementations don't provide the correct IPVListProvider
-	 */
-	@SuppressWarnings("unused")
-	private Map<String, IAutoCompleteProvider> getProviders() throws CoreException {
-		final Map<String, IAutoCompleteProvider> map = new HashMap<String, IAutoCompleteProvider>();
-		final IExtensionRegistry reg = Platform.getExtensionRegistry();
-		final IConfigurationElement[] extensions = reg
-				.getConfigurationElementsFor(IAutoCompleteProvider.EXTENSION_POINT);
-		for (IConfigurationElement element : extensions) {
-			final String scheme = element.getAttribute("name");
-			final IAutoCompleteProvider provider = (IAutoCompleteProvider) element
-					.createExecutableExtension("class");
-			map.put(scheme, provider);
-		}
-		return map;
-	}
-	
-	private Map<String, IAutoCompleteProvider> getOSGIServices()
+	/* Get providers from OSGI services */
+	private Map<String, ProviderSettings> getOSGIProviders()
 			throws InvalidSyntaxException {
-		final Map<String, IAutoCompleteProvider> map = new HashMap<String, IAutoCompleteProvider>();
+		final Map<String, ProviderSettings> map = new TreeMap<String, ProviderSettings>();
 
-		BundleContext context = Activator.getBundleContext();
+		BundleContext context = AutoCompletePlugin.getBundleContext();
 		Collection<ServiceReference<IAutoCompleteProvider>> references = context
 				.getServiceReferences(IAutoCompleteProvider.class, null);
 
 		for (ServiceReference<IAutoCompleteProvider> ref : references) {
-			String name = (String) ref.getProperty("component.name");
 			IAutoCompleteProvider provider = (IAutoCompleteProvider) context.getService(ref);
-			map.put(name, provider);
+			String name = (String) ref.getProperty("component.name");
+			boolean highLevelProvider = false;
+			String prop = (String) ref.getProperty("highLevelProvider");
+			if (prop != null && !prop.isEmpty())
+				highLevelProvider = Boolean.valueOf(prop);
+			map.put(name, new ProviderSettings(name, provider, highLevelProvider));
 		}
 		return map;
 	}
 
-	private Map<String, List<ProviderSettings>> initProviders(String pref) {
-		Map<String, List<ProviderSettings>> providerMap = new HashMap<String, List<ProviderSettings>>();
-		if (pref == null || pref.isEmpty())
-			return providerMap;
+	/* Get providers from OSGI services */
+	private List<IContentParser> getOSGIParsers() throws InvalidSyntaxException {
+		final List<IContentParser> list = new ArrayList<IContentParser>();
 
-		// Parse types
-		StringTokenizer st_type = new StringTokenizer(pref, "|");
-		while (st_type.hasMoreTokens()) {
-			List<ProviderSettings> providerList = new LinkedList<ProviderSettings>();
-			String token_type = st_type.nextToken();
-			
-			String type = token_type.substring(0, token_type.indexOf(':')).trim();
-			String list = token_type.substring(token_type.indexOf(':') + 1,
-					token_type.length()).trim();
-			
-			// Parse provider list
-			StringTokenizer st_provider = new StringTokenizer(list, ";");
+		BundleContext context = AutoCompletePlugin.getBundleContext();
+		Collection<ServiceReference<IContentParser>> references = context
+				.getServiceReferences(IContentParser.class, null);
+
+		for (ServiceReference<IContentParser> ref : references) {
+			IContentParser parser = (IContentParser) context.getService(ref);
+			list.add(parser);
+		}
+		return list;
+	}
+
+	/* Read the list of providers from preference string */
+	private List<ProviderSettings> parseProviderList(String pref) {
+		List<ProviderSettings> providerList = new ArrayList<ProviderSettings>();
+
+		if (pref != null && !pref.isEmpty()) {
+			int index = -1;
+			StringTokenizer st_provider = new StringTokenizer(pref, ";");
 			while (st_provider.hasMoreTokens()) {
 				String token_provider = st_provider.nextToken();
-				
+
 				if (token_provider.contains(",")) {
-					String name = token_provider.substring(0,
-							token_provider.indexOf(',')).trim();
-					int max_results = Integer.parseInt(token_provider
-							.substring(token_provider.indexOf(',') + 1,
-									token_provider.length()).trim());
-					if (providers.get(name) != null)
-						providerList.add(new ProviderSettings(name, providers
-								.get(name), max_results));
+					String name = token_provider.substring(0, token_provider.indexOf(',')).trim();
+					int max_results = Integer.parseInt(token_provider.substring(token_provider.indexOf(',') + 1, token_provider.length()).trim());
+					if (providerByName.get(name) != null)
+						providerList.add(new ProviderSettings(providerByName.get(name), ++index, max_results));
 				} else {
 					String name = token_provider.trim();
-					if (providers.get(name) != null)
-						providerList
-								.add(new ProviderSettings(name, providers.get(name), 
-										Preferences.getDefaultMaxResults()));
+					if (providerByName.get(name) != null)
+						providerList.add(new ProviderSettings(providerByName.get(name), ++index));
 				}
 			}
-			providerMap.put(type, providerList);
 		}
-		return providerMap;
+
+		// add default provider
+		if (providerList.isEmpty() && defaultProvider != null)
+			providerList.add(defaultProvider);
+
+		// add high level providers
+		// TODO: all type have high level providers defined
+		// => need restrictions ?
+		for (ProviderSettings ps : providerByName.values())
+			if (ps.isHighLevelProvider() && !providerList.contains(ps))
+				providerList.add(new ProviderSettings(ps));
+
+		Collections.sort(providerList);
+		return providerList;
+	}
+
+	/* Associate 1 provider per descriptor */
+	private List<ScheduledContent> retrieveProviders(AutoCompleteType acType,
+			List<ContentDescriptor> tokens) {
+		// retrieve the list from preferences
+		String type = acType.value();
+		if (providersByType.get(type) == null)
+			providersByType.put(type, parseProviderList(Preferences.getProviders(type)));
+		List<ProviderSettings> definedProviderList = new ArrayList<ProviderSettings>(providersByType.get(type));
+
+		// associate descriptor to a provider
+		List<ScheduledContent> acceptedProviderList = new ArrayList<ScheduledContent>();
+		for (ContentDescriptor desc : tokens) {
+			Iterator<ProviderSettings> it = definedProviderList.iterator();
+			while (it.hasNext()) {
+				ProviderSettings settings = it.next();
+				if (settings.getProvider().accept(desc.getContentType())) {
+					ScheduledContent sc = new ScheduledContent();
+					sc.desc = desc;
+					sc.settings = settings;
+					acceptedProviderList.add(sc);
+					it.remove();
+				}
+			}
+		}
+		Collections.sort(acceptedProviderList);
+		return acceptedProviderList;
+	}
+
+	/* Handle recursive parsing of a content desc. */
+	private List<ContentDescriptor> parseContent(ContentDescriptor desc) {
+		List<ContentDescriptor> tokenList = new ArrayList<ContentDescriptor>();
+
+		ContentDescriptor newDesc = null;
+		// backup data
+		int startIndex = desc.getStartIndex();
+		int endIndex = desc.getEndIndex();
+		AutoCompleteType acType = desc.getAutoCompleteType();
+		String defaultDatasource = desc.getDefaultDataSource();
+		String originalContent = desc.getOriginalContent();
+		// cancel replay
+		desc.setReplay(false);
+
+		for (IContentParser parser : parsers) {
+			if (parser.accept(desc) && (newDesc = parser.parse(desc)) != null) {
+				newDesc.setAutoCompleteType(acType);
+				newDesc.setDefaultDataSource(defaultDatasource);
+				newDesc.setOriginalContent(originalContent);
+				// update indexes
+				newDesc.setStartIndex(newDesc.getStartIndex() + startIndex);
+				newDesc.setEndIndex(newDesc.getEndIndex() + endIndex);
+				if (newDesc.isReplay()) { // recursive
+					tokenList.addAll(parseContent(newDesc));
+				} else {
+					tokenList.add(newDesc);
+				}
+			}
+		}
+		if (tokenList.isEmpty()) {
+			desc.setContentType(ContentType.Undefined);
+			tokenList.add(desc);
+		}
+		return tokenList;
 	}
 
 }

@@ -1,0 +1,145 @@
+------------------------
+-- Provides:
+-- - get_array_nval funtion to get the number of value in array_val
+-- - decode_array_val to convert array_val to human readable string
+-- - human-readable sample_view
+------------------------
+
+DROP VIEW IF EXISTS sample_view;
+DROP FUNCTION IF EXISTS get_array_nval(bytea, character(1));
+DROP FUNCTION IF EXISTS decode_array_val(bytea, character(1));
+
+-- 
+-- Create get_array_nval funtion to get the number of value in array_val
+--
+CREATE FUNCTION get_array_nval(p_array bytea, p_datatype character(1))
+RETURNS TEXT AS $$
+DECLARE
+	len INT;
+	b0 BIGINT;
+	b1 BIGINT;
+	b2 BIGINT;
+	b3 BIGINT;
+BEGIN
+	IF (p_array is null) THEN
+		RETURN null;
+	ELSIF (p_datatype <> 'd') THEN
+		RETURN null;
+	END IF;
+	len := length(p_array);
+	IF (len < 4) THEN
+		RETURN null;
+	END IF;
+	b0 := get_byte(p_array, 0);
+	b1 := get_byte(p_array, 1);
+	b2 := get_byte(p_array, 2);
+	b3 := get_byte(p_array, 3);
+	RETURN (b0 << 24) + (b1 << 16) + (b2 << 8) + b3;
+END;
+$$
+LANGUAGE plpgsql
+;
+
+-- 
+-- Create decode_array_val to convert array_val to human readable string
+--
+CREATE FUNCTION decode_array_val(p_array bytea, p_datatype character(1))
+RETURNS TEXT AS $$
+DECLARE
+	len INT;
+	b0 BIGINT;
+	b1 BIGINT;
+	b2 BIGINT;
+	b3 BIGINT;
+	b4 BIGINT;
+	b5 BIGINT;
+	b6 BIGINT;
+	b7 BIGINT;
+	nbVal INT;
+	n INT;
+	i INT;
+	bits BIGINT;
+	s BIGINT;
+	e BIGINT;
+	m BIGINT;
+	val double precision;
+	str TEXT;
+BEGIN
+	IF (p_array is null) THEN
+		RETURN null;
+	ELSIF (p_datatype <> 'd') THEN
+		RETURN 'Sample BLOBs of type ' || p_datatype || ' are not decoded';
+	END IF;
+	len := length(p_array);
+	IF (len <= 4) THEN
+		RETURN null;
+	END IF;
+	b0 := get_byte(p_array, 0);
+	b1 := get_byte(p_array, 1);
+	b2 := get_byte(p_array, 2);
+	b3 := get_byte(p_array, 3);
+	nbVal := (b0 << 24) + (b1 << 16) + (b2 << 8) + b3;
+	n := 0;
+	str := '';
+	LOOP
+		i := 4 + n * 8;
+		IF (n > nbVal OR (i + 8) > len) THEN
+			EXIT;  -- exit loop
+		END IF;
+		IF (n > 0) THEN
+			str :=  str || ' ';
+		END IF;
+		BEGIN
+			b0 := get_byte(p_array, i);
+			b1 := get_byte(p_array, i+1);
+			b2 := get_byte(p_array, i+2);
+			b3 := get_byte(p_array, i+3);
+			b4 := get_byte(p_array, i+4);
+			b5 := get_byte(p_array, i+5);
+			b6 := get_byte(p_array, i+6);
+			b7 := get_byte(p_array, i+7);
+			bits := (b0 << 56) + (b1 << 48) + (b2 << 40) + (b3 << 32) + (b4 << 24) + (b5 << 16) + (b6 << 8) + (b7 << 0);
+			IF ((bits >> 63) = 0) THEN
+				s := 1;
+			ELSE
+				s := -1;
+			END IF;
+			e := ((bits >> 52) & x'7ff'::bigint);
+			IF (e = 0) THEN
+				m := (bits & x'fffffffffffff'::bigint) << 1;
+			ELSE
+				m := (bits & x'fffffffffffff'::bigint) | x'10000000000000'::bigint;
+			END IF;
+			val := (s*m*power(2,e-1075));
+		EXCEPTION WHEN others THEN
+			val := 0;
+		END;
+		str :=  str || val;
+		n := n+1;
+	END LOOP;
+	RETURN str;
+END;
+$$
+LANGUAGE plpgsql
+;
+
+-- 
+-- Create sample_view
+--
+CREATE VIEW sample_view AS
+  select
+    c.name as channel_name,
+    smpl_time,
+    nanosecs,
+    sv.name as severity,
+    st.name as status,
+    num_val,
+    float_val,
+    str_val,
+	get_array_nval(array_val, datatype) as array_nval,
+    decode_array_val(array_val, datatype) as array_val
+  from sample s, channel c, severity sv, status st
+  where s.channel_id = c.channel_id
+    and s.severity_id = sv.severity_id
+    and s.status_id = st.status_id;
+

@@ -1,0 +1,1 @@
+394 53 plugins/org.csstudio.nsls2.product/splash-template.bmp plugins/org.csstudio.nsls2.product/splash.bmp

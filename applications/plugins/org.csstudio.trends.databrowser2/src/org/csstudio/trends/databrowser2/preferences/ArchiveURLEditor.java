@@ -21,10 +21,11 @@ import org.eclipse.swt.widgets.Text;
 /** Dialog to edit an archive data server URL
  *  @author Xihui Chen - original org.csstudio.opibuilder.preferences.MacroEditDialog
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto - added archive server alias
  */
 public class ArchiveURLEditor extends RowEditDialog
 {
-    private Text url;
+    private Text alias, url;
 
     /** Initialize */
     public ArchiveURLEditor(final Shell shell)
@@ -61,6 +62,14 @@ public class ArchiveURLEditor extends RowEditDialog
         gd.widthHint = 500;
         url.setLayoutData(gd);
 
+        // Alias: __alias____
+        Label l = new Label(composite, 0);
+        l.setText(Messages.NameLbl);
+        l.setLayoutData(new GridData(0, 0, false, false));
+        alias = new Text(composite, SWT.BORDER);
+        alias.setText(rowData[1]);
+        alias.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        
         return parent_composite;
     }
 
@@ -70,6 +79,7 @@ public class ArchiveURLEditor extends RowEditDialog
     protected void okPressed()
     {
         rowData[0] = url == null ? "" : url.getText().trim();
+    	rowData[1] = alias == null ? "" : alias.getText().trim();
         super.okPressed();
     }
 }

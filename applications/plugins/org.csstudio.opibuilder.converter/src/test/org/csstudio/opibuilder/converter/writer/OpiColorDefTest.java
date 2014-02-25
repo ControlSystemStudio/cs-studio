@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import junit.framework.TestCase;
+
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
-import junit.framework.TestCase;
 
 public class OpiColorDefTest extends TestCase {
 

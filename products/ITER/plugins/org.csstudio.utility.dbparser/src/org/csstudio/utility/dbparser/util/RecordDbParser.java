@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -16,10 +16,10 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.Tree;
 import org.antlr.runtime.tree.TreeAdaptor;
-import org.csstudio.autocomplete.data.Field;
-import org.csstudio.autocomplete.data.Record;
-import org.csstudio.autocomplete.data.Template;
 import org.csstudio.utility.dbparser.antlr.DbRecordParser;
+import org.csstudio.utility.dbparser.data.Field;
+import org.csstudio.utility.dbparser.data.Record;
+import org.csstudio.utility.dbparser.data.Template;
 import org.csstudio.utility.dbparser.exception.DbParsingException;
 
 public class RecordDbParser {

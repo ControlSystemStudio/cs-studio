@@ -48,7 +48,7 @@ public class ErrorHandlerUtil {
 	 * @param exception the exception.
 	 */
 	public static void handleError(final String message, 
-			final Exception exception){
+			final Throwable exception){
 		handleError(message, exception, true, false);
 	}
 

@@ -27,6 +27,6 @@ public class OpiBoolean extends OpiAttribute {
 	 */
 	public OpiBoolean(Context con, String name, boolean b) {
 		super(con, name);
-		context.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(b)));
+		propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(b)));
 	}
 }

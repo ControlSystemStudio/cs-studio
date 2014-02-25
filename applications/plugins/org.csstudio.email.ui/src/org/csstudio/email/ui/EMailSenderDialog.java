@@ -14,6 +14,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -85,7 +88,8 @@ public class EMailSenderDialog extends TitleAreaDialog
      *  for a while but still need for example operator displays
      *  to remain responsive.
      */
-	protected void setShellStyle(final int style)
+	@Override
+    protected void setShellStyle(final int style)
 	{
 		super.setShellStyle(style & ~SWT.APPLICATION_MODAL);
 	}
@@ -176,6 +180,23 @@ public class EMailSenderDialog extends TitleAreaDialog
         if (image_filename != null)
             image_tabfolder.addImage(image_filename);
         sash.setWeights(new int[] { 80, 20 });
+        
+        // User needs to enter at least a 'to', replacing
+        // the default "<enter email here>".
+        // User is also likely to update the complete default
+        // subject and 'from', so select all on focus:
+        final FocusListener select_all = new FocusAdapter()
+        {
+            @Override
+            public void focusGained(final FocusEvent e)
+            {
+                final Text text = (Text) e.widget;
+                text.selectAll();
+            }
+        };
+        txt_from.addFocusListener(select_all);
+        txt_to.addFocusListener(select_all );
+        txt_subject.addFocusListener(select_all);
 
         txt_to.setFocus();
 
@@ -214,9 +235,25 @@ public class EMailSenderDialog extends TitleAreaDialog
     {
         try
         {
+            final String from = txt_from.getText().trim();
+            final String to = txt_to.getText().trim();
+            
+            // Basic verification
+            if (from.isEmpty())
+            {
+                setErrorMessage(Messages.FromErrorMsg);
+                txt_from.setFocus();
+                return;
+            }
+            if (to.isEmpty())
+            {
+                setErrorMessage(Messages.ToErrorMsg);
+                txt_to.setFocus();
+                return;
+            }
             final EMailSender mailer = new EMailSender(host,
-                    txt_from.getText().trim(),
-                    txt_to.getText().trim(),
+                    from,
+                    to,
                     txt_subject.getText().trim());
             mailer.addText(txt_body.getText().trim());
             for (String image : image_tabfolder.getFilenames())

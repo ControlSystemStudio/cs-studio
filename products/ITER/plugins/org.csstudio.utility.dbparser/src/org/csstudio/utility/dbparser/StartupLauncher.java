@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -7,13 +7,10 @@
 ******************************************************************************/
 package org.csstudio.utility.dbparser;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.antlr.runtime.RecognitionException;
-import org.csstudio.autocomplete.data.Record;
-import org.csstudio.utility.dbparser.exception.DbParsingException;
+import org.csstudio.utility.dbparser.data.Record;
 import org.csstudio.utility.dbparser.util.DbUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -63,26 +60,33 @@ public class StartupLauncher implements IStartup {
 		IResourceChangeListener listener = new IResourceChangeListener() {
 			public void resourceChanged(IResourceChangeEvent event) {
 				try {
-					if (event == null || event.getDelta() == null) return;
+					if (event == null || event.getDelta() == null)
+						return;
 					event.getDelta().accept(new IResourceDeltaVisitor() {
-						public boolean visit(IResourceDelta delta) 
-						{
+						public boolean visit(IResourceDelta delta) {
 							IResource resource = delta.getResource();
-							if (!(resource.getType() == IResource.FILE))
+							if (resource.getType() != IResource.FILE)
 								return true;
-							if (delta.getKind() == IResourceDelta.REMOVED) {
-								DBContextValueHolder.get().removeFile((IFile) resource);
-							} else {
-								if (resource.getName().endsWith(".db")) {
-									if (delta.getKind() == IResourceDelta.CHANGED
-											|| delta.getKind() == IResourceDelta.CONTENT)
-										DBContextValueHolder.get().removeFile((IFile) resource);
-									try {
-										parseDB((IFile) resource);
-									} catch (Exception e) {
-										Activator.getLogger().log(Level.WARNING,
-												"Failed to parse " + resource.getFullPath() + ": " + e.getMessage());
-									}
+							if (resource.getFileExtension() != null
+									&& resource.getFileExtension()
+											.toLowerCase().equals("db")) {
+								switch (delta.getKind()) {
+								case IResourceDelta.REMOVED:
+									DBContext.get().removeFile((IFile) resource);
+									break;
+
+								case IResourceDelta.CHANGED:
+								case IResourceDelta.CONTENT:
+									DBContext.get().removeFile((IFile) resource);
+									parseDB((IFile) resource);
+									break;
+									
+								case IResourceDelta.ADDED:
+									parseDB((IFile) resource);
+									break;
+
+								default:
+									break;
 								}
 							}
 							return true;
@@ -97,12 +101,16 @@ public class StartupLauncher implements IStartup {
 		workspace.addResourceChangeListener(listener);
 	}
 
-	private void parseDB(IFile file) throws IOException, CoreException,
-			RecognitionException, DbParsingException {
-		String dbContent = DbUtil.readFile(file);
-		List<Record> records = DbUtil.parseDb(dbContent);
-		for (Record r : records)
-			DBContextValueHolder.get().addRecord(file, r);
+	private void parseDB(IFile file) {
+		try {
+			String dbContent = DbUtil.readFile(file);
+			List<Record> records = DbUtil.parseDb(dbContent);
+			for (Record r : records)
+				DBContext.get().addRecord(file, r);
+		} catch (Exception e) {
+			Activator.getLogger().log(Level.WARNING,
+					"Failed to parse " + file.getFullPath() + ": " + e.getMessage());
+		}
 	}
 
 }

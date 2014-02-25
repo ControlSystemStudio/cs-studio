@@ -243,8 +243,11 @@ public class JMSLogWriter implements ExceptionListener
                 map.setString(JMSLogMessage.TEXT, message);
                 map.setString(JMSLogMessage.SEVERITY, record.getLevel().getName());
 
-                String time_text = date_format.format(new Date(record.getMillis()));
-                map.setString(JMSLogMessage.CREATETIME, time_text);
+                synchronized (date_format)
+                {
+                    String time_text = date_format.format(new Date(record.getMillis()));
+                    map.setString(JMSLogMessage.CREATETIME, time_text);
+                }
 
                 if (record.getSourceClassName() != null)
                     map.setString(JMSLogMessage.CLASS, record.getSourceClassName());

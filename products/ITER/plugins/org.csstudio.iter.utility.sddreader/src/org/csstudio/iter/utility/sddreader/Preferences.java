@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2013 ITER Organization.
+ * Copyright (c) 2010-2014 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,11 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 @SuppressWarnings("nls")
 public class Preferences {
+
 	final public static String RDB_URL = "rdb_url";
 	final public static String RDB_USER = "rdb_user";
 	final public static String RDB_PASSWORD = "rdb_password";
+	final public static String SEPARATORS = "separators";
 
 	/**
 	 * @param setting Preference identifier
@@ -62,6 +64,11 @@ public class Preferences {
 	/** @return RDB Password */
 	public static String getRDB_Password() {
 		return getSecureString(RDB_PASSWORD);
+	}
+	
+	/** @return Top result separators */
+	public static String getSeparators() {
+		return getString(SEPARATORS);
 	}
 
 }

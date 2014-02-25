@@ -4,7 +4,7 @@ Bundle-Name: SNS Rack Utility Data Supplier
 Bundle-SymbolicName: org.csstudio.diag.rack.sns;singleton:=true
 Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Dave Purcell <purcelljd@ornl.gov> - SNS
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.views,

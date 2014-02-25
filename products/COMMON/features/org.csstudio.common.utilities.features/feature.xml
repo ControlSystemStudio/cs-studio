@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.common.utilities.features"
+      label="CS-Studio utilties"
+      version="3.2.0.qualifier"
+      provider-name="CSS Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import feature="org.csstudio.common.core.feature" version="3.2.0.qualifier"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui"/>
+      <import plugin="org.csstudio.csdata" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.eclipse.ui.intro.universal"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.widgets" version="3.2.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.diag.pvmanager.probe"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -2,11 +2,11 @@
 <feature
       id="org.eclipse.iter.feature"
       label="CSS Eclipse Components"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>
-      Copyright (c) : 2010-2013 ITER Organization,
+      Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France
@@ -18,6 +18,10 @@ For the terms and conditions of redistribution or use of this software
 refer to the file ITER-LICENSE.TXT located in the top level directory
 of the distribution package.
    </license>
+
+   <includes
+         id="org.eclipse.rcp"
+         version="0.0.0"/>
 
    <requires>
       <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
@@ -33,7 +37,6 @@ of the distribution package.
       <import plugin="org.eclipse.equinox.preferences" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.core.contenttype" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.app" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.200" match="compatible"/>
       <import plugin="org.eclipse.swt" version="3.6.0" match="compatible"/>
@@ -67,7 +70,70 @@ of the distribution package.
       <import plugin="org.eclipse.ui.forms" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface" version="3.6.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.net" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.launcher" version="1.0.0"/>
    </requires>
+
+   <plugin
+         id="com.ibm.icu"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.servlet.jsp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.codec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.el"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.jasper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.core.commands"
@@ -112,6 +178,34 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.core.filesystem"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.jobs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.resources"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.core.runtime"
          download-size="0"
          install-size="0"
@@ -124,13 +218,6 @@ of the distribution package.
          install-size="0"
          version="0.0.0"
          fragment="true"/>
-
-   <plugin
-         id="org.eclipse.core.jobs"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.app"
@@ -154,6 +241,27 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.equinox.http.jetty"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.launcher"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.equinox.preferences"
          download-size="0"
          install-size="0"
@@ -162,6 +270,13 @@ of the distribution package.
 
    <plugin
          id="org.eclipse.equinox.registry"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.security"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -203,6 +318,12 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.platform"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
          id="org.eclipse.swt"
          download-size="0"
          install-size="0"
@@ -210,11 +331,38 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.swt.gtk.linux.x86_64"
+         id="org.eclipse.osgi.services"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.forms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.intro"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.workbench"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -237,48 +385,6 @@ of the distribution package.
          version="0.0.0"/>
 
    <plugin
-         id="com.ibm.icu"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.security"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.http.jetty"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.http.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.services"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.mortbay.jetty.server"
          download-size="0"
          install-size="0"
@@ -293,21 +399,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.httpclient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.xerces"
+         id="org.apache.xml.resolver"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -321,7 +413,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.apache.xml.resolver"
+         id="org.apache.xerces"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -329,82 +421,6 @@ of the distribution package.
 
    <plugin
          id="javax.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.platform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.core.resources"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.jasper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.filesystem"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.el"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.servlet.jsp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.workbench"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.intro"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.forms"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
          version="0.0.0"

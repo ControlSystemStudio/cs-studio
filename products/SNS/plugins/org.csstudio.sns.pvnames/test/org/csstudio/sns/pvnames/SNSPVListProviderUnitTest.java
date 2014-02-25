@@ -11,9 +11,16 @@ import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.csstudio.pvnames.IPVListProvider;
-import org.csstudio.pvnames.PVListResult;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.autocomplete.AutoCompleteResult;
+import org.csstudio.autocomplete.AutoCompleteType;
+import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
 import org.junit.Test;
+
 
 /** JUnit test of the {@link SNSPVListProvider}
  *  @author Kay Kasemir
@@ -22,13 +29,31 @@ import org.junit.Test;
 public class SNSPVListProviderUnitTest
 {
     @Test
+    public void showSettings()
+    {
+        System.out.println("URL: " + Preferences.getURL());
+        System.out.println("User: " + Preferences.getUser());
+        System.out.println("PW: " + Preferences.getPassword().length() + " chars");
+    }
+    
+    @Test
     public void locatePVName()
     {
-        final IPVListProvider provider = new SNSPVListProvider();
-        PVListResult pvs = provider.listPVs("DTL_LLRF:IOC1:L*", 10);
+        Logger logger = Logger.getLogger("");
+        Level level = Level.ALL;
+        logger.setLevel(level);
+        for (Handler handler : logger.getHandlers())
+            handler.setLevel(level);
+        Logger.getLogger("javax").setLevel(Level.WARNING);
+        
+        final IAutoCompleteProvider provider = new SNSPVListProvider();
+		ContentDescriptor cd = new ContentDescriptor();
+		cd.setAutoCompleteType(AutoCompleteType.PV);
+		cd.setValue("DTL_LLRF:IOC1:L*");
+		AutoCompleteResult pvs = provider.listResult(cd, 10);
         System.out.println("Matching PVs: " + pvs.getCount());
-        System.out.println(pvs.getPvs());
-        assertThat(pvs.getPvs().size(), greaterThan(1));
-        assertThat(pvs.getPvs().contains("DTL_LLRF:IOC1:Load"), equalTo(true));
+        System.out.println(pvs.getProposalsAsString());
+        assertThat(pvs.getCount(), greaterThan(1));
+        assertThat(pvs.getProposalsAsString().contains("DTL_LLRF:IOC1:Load"), equalTo(true));
     }
 }

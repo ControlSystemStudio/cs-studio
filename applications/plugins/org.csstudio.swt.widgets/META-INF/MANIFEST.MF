@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.gef;bundle-version="3.4.0";resolution:=optional,
  org.eclipse.rap.gef;bundle-version="1.5.0";resolution:=optional,
  org.eclipse.rap.draw2d;bundle-version="1.5.0";resolution:=optional,
- org.eclipse.rap.draw2d.compatibility;bundle-version="1.5.0";resolution:=optional
+ org.eclipse.rap.draw2d.compatibility;bundle-version="1.5.0";resolution:=optional,
+ org.apache.batik
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.swt.widgets.datadefinition,

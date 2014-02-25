@@ -5,11 +5,11 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.utility.jmssendcmd.main"
-            name="JMSSender">
+            application="org.csstudio.logging.jms2rdb.application"
+            name="JMS2RDB">
          <property
                name="appName"
-               value="JMSSender">
+               value="JMS2RDB">
          </property>
       </product>
    </extension>

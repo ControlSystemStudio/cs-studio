@@ -1,0 +1,28 @@
+<body>
+<h1>CSS Diagnostics: EPICS PV Tree</h1>
+
+The idea for this is based on the SNS "Alarm Annunciator",
+a Mac OS X application that monitors the alarm severity of EPICS PVs
+and provides a spoken message, implemented by Curtis Dunn and
+Tom Pelaia.
+<p>
+It also provides a record link hierarchy, because SNS alarm PVs
+are often based on calc records which summarize or conditionalize
+several input PVs.
+It is interesting to know which "original" PV caused an alarm,
+and the alarm annunciator offers a tree view that simply
+follows the calc record input links.
+<p>
+Thinking that this type of online link hierarchy browser might be
+of general use, this CSS plugin was created.
+<ul>
+<li>It only requires an EPICS record name, no additional configuration
+    or relational database, to display the current link hierarchy.
+<li>It is of course limited to EPICS PVs that refer to records,
+    it will not work with PVs provided by a portable ChannelAccess server
+    or other control systems.
+<li>Its link resolver is limited to build-in functionality,
+    it does not parse configuration files.
+</ul>
+
+</body>

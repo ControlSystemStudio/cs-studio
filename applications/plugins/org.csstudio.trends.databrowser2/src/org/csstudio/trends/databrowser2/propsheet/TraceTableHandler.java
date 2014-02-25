@@ -10,7 +10,6 @@ package org.csstudio.trends.databrowser2.propsheet;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;

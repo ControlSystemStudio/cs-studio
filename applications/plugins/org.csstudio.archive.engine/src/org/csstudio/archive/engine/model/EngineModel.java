@@ -387,9 +387,10 @@ public class EngineModel
      *  @param config {@link ArchiveConfig}
      *  @param name Name of engine in config
      *  @param port Current HTTPD port
+     *  @param skip_last Skip reading last sample time 
      */
     @SuppressWarnings("nls")
-    public void readConfig(final ArchiveConfig config, final String name, final int port) throws Exception
+    public void readConfig(final ArchiveConfig config, final String name, final int port, final boolean skip_last) throws Exception
     {
         this.name = name;
         final EngineConfig engine = config.findEngine(name);
@@ -407,7 +408,7 @@ public class EngineModel
         {
             final ArchiveGroup group = addGroup(group_config.getName());
             // Add channels to group
-            final ChannelConfig[] channel_configs = config.getChannels(group_config);
+            final ChannelConfig[] channel_configs = config.getChannels(group_config, skip_last);
             for (ChannelConfig channel_config : channel_configs)
             {
                 Enablement enablement = Enablement.Passive;

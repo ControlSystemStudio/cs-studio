@@ -14,12 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.IStringValue;
-import org.csstudio.data.values.IValue;
-import org.csstudio.opibuilder.datadefinition.DataType;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.editparts.ConnectionHandler;
@@ -32,12 +26,13 @@ import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.model.IWidgetInfoProvider;
 import org.csstudio.opibuilder.model.NonExistPropertyException;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.pvmanager.PMObjectValue;
-import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.widgets.model.ArrayModel;
 import org.csstudio.opibuilder.widgets.model.ArrayModel.ArrayDataType;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.BasicDataType;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.datadefinition.ByteArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.DoubleArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.FloatArrayWrapper;
@@ -49,8 +44,6 @@ import org.csstudio.swt.widgets.datadefinition.ShortArrayWrapper;
 import org.csstudio.swt.widgets.figures.ArrayFigure;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -64,11 +57,11 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.MouseEvent;
-import org.epics.util.array.CollectionNumbers;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
+import org.epics.vtype.VType;
 
 /**
  * Editpart for array widget.
@@ -90,7 +83,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	private Object valueArray;
 	private Object elementDefaultValue;
 
-	PVListener pvDataTypeListener;
+	IPVListener pvDataTypeListener;
 
 	private static List<String> NONE_SYNCABLE_PROPIDS = Arrays.asList(
 			AbstractWidgetModel.PROP_XPOS, AbstractWidgetModel.PROP_YPOS,
@@ -121,6 +114,9 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doActivate() {
+		delegate.markAsControlPV(IPVWidgetModel.PROP_PVNAME,
+				IPVWidgetModel.PROP_PVVALUE);
+		delegate.setUpdateSuppressTime(500);
 		super.doActivate();
 		delegate.doActivate();
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
@@ -141,11 +137,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 						unSyncablePropIDsFromChild
 								.addAll(NONE_SYNCABLE_PROPIDS);
 					}
-				}
-				if (getChildren().get(0) instanceof IPVWidgetEditpart
-						&& ((IPVWidgetEditpart) getChildren().get(0)).isPVControlWidget()) {
-					delegate.markAsControlPV(IPVWidgetModel.PROP_PVNAME, IPVWidgetModel.PROP_PVVALUE);
-					delegate.setUpdateSuppressTime(-1);
 				}
 			}
 			registerLoadPVDataTypeListener();
@@ -220,42 +211,21 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	private void registerLoadPVDataTypeListener() {
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			final ArrayModel model = getWidgetModel();
-			PV pv = getPV();
+			IPV pv = getPV();
 			if (pv != null) {
 				if (pvDataTypeListener == null)
-					pvDataTypeListener = new PVListener() {
-						public void pvValueUpdate(PV pv) {
-							IValue value = pv.getValue();
+					pvDataTypeListener = new IPVListener.Stub() {
+						public void valueChanged(IPV pv) {
+							VType value = pv.getValue();
 							if (value != null) {
-								if (value instanceof IDoubleValue) {
-									model.setArrayLength(((IDoubleValue) value).getValues().length);
-									model.setPropertyValue(ArrayModel.PROP_DATA_TYPE,
-											ArrayDataType.DOUBLE_ARRAY.ordinal());
-								} else if (value instanceof ILongValue) {
-									model.setArrayLength(((ILongValue) value).getValues().length);
-									model.setPropertyValue(ArrayModel.PROP_DATA_TYPE,
-											ArrayDataType.LONG_ARRAY.ordinal());
-								} else if (value instanceof IStringValue) {
-									model.setArrayLength(((IStringValue) value).getValues().length);
-									model.setPropertyValue(ArrayModel.PROP_DATA_TYPE,
-											ArrayDataType.STRING_ARRAY.ordinal());
-								} else if (value instanceof IEnumeratedValue) {
-									model.setArrayLength(((IEnumeratedValue) value).getValues().length);
-									model.setPropertyValue(ArrayModel.PROP_DATA_TYPE,
-											ArrayDataType.INT_ARRAY.ordinal());
-								} else if (value instanceof PMObjectValue){
-										model.setArrayLength(ValueUtil.getSize(value));
-										DataType dataType = PVManagerHelper.getDataType(
-												((PMObjectValue)value).getLatestValue());
+								
+										model.setArrayLength(VTypeHelper.getSize(value));
+										BasicDataType dataType = VTypeHelper.getBasicDataType(value);
 										model.setPropertyValue(ArrayModel.PROP_DATA_TYPE, 
 												mapBasicDataTypeToArrayType(dataType));
-								} else {
-									throw new RuntimeException("Unkown PV value type.");
-								}
+								
+								
 							}
-						}
-
-						public void pvDisconnected(PV pv) {
 						}
 					};
 				pv.addListener(pvDataTypeListener);
@@ -510,7 +480,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	/**
 	 * @return the control PV. null if no control PV on this widget.
 	 */
-	public PV getControlPV() {
+	public IPV getControlPV() {
 		return delegate.getControlPV();
 	}
 
@@ -563,7 +533,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	 * @return the PV corresponding to the <code>PV Name</code> property. null
 	 *         if PV Name is not configured for this widget.
 	 */
-	public PV getPV() {
+	public IPV getPV() {
 		return delegate.getPV();
 	}
 
@@ -575,7 +545,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	 * @return the corresponding pv for the pvPropId. null if the pv doesn't
 	 *         exist.
 	 */
-	public PV getPV(String pvPropId) {
+	public IPV getPV(String pvPropId) {
 		return delegate.getPV(pvPropId);
 	}
 
@@ -591,9 +561,9 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	 * 
 	 * @param pvPropId
 	 *            the property id of the PV. It is "pv_name" for the main PV.
-	 * @return the {@link IValue} of the PV.
+	 * @return the value of the PV.
 	 */
-	public IValue getPVValue(String pvPropId) {
+	public VType getPVValue(String pvPropId) {
 		return delegate.getPVValue(pvPropId);
 	}
 
@@ -652,31 +622,26 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 		handler = new IWidgetPropertyChangeHandler() {
 			@Override
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				IValue value = (IValue) newValue;
-				if (value instanceof IDoubleValue)
-					setValue(((IDoubleValue) value).getValues());
-				else if (value instanceof IEnumeratedValue) {
-					setValue(((IEnumeratedValue) value).getValues());
-				} else if (value instanceof ILongValue) {
-					setValue(((ILongValue)value).getValues());
-				} else if (value instanceof IStringValue) {
-					setValue(((IStringValue) value).getValues());
-				} else if (value instanceof PMObjectValue){
-						Object pmValue = ((PMObjectValue)value).getLatestValue();
-						if (pmValue instanceof VNumberArray)
-							setValue(CollectionNumbers.wrappedArray(((VNumberArray)pmValue).getData()));						
-						else{
-							if(pmValue instanceof VEnum)						
-								setValue(new String[]{((VEnum)pmValue).getValue()});
-							else if(pmValue instanceof VString)						
-								setValue(new String[]{((VString)pmValue).getValue()});
-							else if(pmValue instanceof VStringArray)
-								setValue(((VStringArray)pmValue).getData().toArray());
+				VType value = (VType) newValue;
+				
+						
+						if (value instanceof VNumberArray) {
+							Object wrappedArray = VTypeHelper.getWrappedArray(((VNumberArray)value));
+							if(wrappedArray!=null)
+								setValue(wrappedArray);
 							else
-								setValue(ValueUtil.getDoubleArray(value));
-						}
-				}else {
-					throw new RuntimeException("Unkown PV value type.");
+								setValue(VTypeHelper.getDoubleArray(value));
+						} else{
+							if(value instanceof VEnum)						
+								setValue(new String[]{((VEnum)value).getValue()});
+							else if(value instanceof VString)						
+								setValue(new String[]{((VString)value).getValue()});
+							else if(value instanceof VStringArray)
+								setValue(((VStringArray)value).getData().toArray());
+							else
+								setValue(VTypeHelper.getDoubleArray(value));
+						
+				
 				}
 				return false;
 			}
@@ -853,10 +818,10 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	@Override
 	public void setValue(Object value) {
 		if (value == null)
-			return;
-		if (value.getClass().isArray()) {
-			this.valueArray = value;
+			return;		
+		if (value.getClass().isArray()) {	
 			int index = getArrayFigure().getIndex();
+			this.valueArray = value;	
 			if (value instanceof String[]) {
 				String[] a = (String[])value;
 				setChildrenValue(index, Arrays.asList(a), ArrayDataType.STRING_ARRAY);
@@ -875,10 +840,9 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 				setChildrenValue(index,new ShortArrayWrapper((short[])value), ArrayDataType.SHORT_ARRAY);
 			} else if (value instanceof int[]) {
 				setChildrenValue(index, new IntArrayWrapper((int[])value), ArrayDataType.INT_ARRAY);
-			}
-			
+			}			
 			return;
-		}
+		}		
 		super.setValue(value);
 	}
 
@@ -928,8 +892,8 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 			return;
 		inSync = true;
 		if (!getUnSyncablePropIds().contains(propId)) {
-			for (AbstractWidgetModel child : getWidgetModel().getAllChildren()) {
-				child.setPropertyValue(propId, newValue);
+			for (Object child : getWidgetModel().getAllChildren().toArray()) {
+				((AbstractWidgetModel) child).setPropertyValue(propId, newValue);
 			}
 		}
 		if (propId.equals(AbstractWidgetModel.PROP_WIDTH)
@@ -956,7 +920,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 		return delegate.isPVControlWidget();
 	}
 
-	private int mapBasicDataTypeToArrayType(DataType dataType) {
+	private int mapBasicDataTypeToArrayType(BasicDataType dataType) {
 		int r;
 		switch (dataType) {
 		case DOUBLE:

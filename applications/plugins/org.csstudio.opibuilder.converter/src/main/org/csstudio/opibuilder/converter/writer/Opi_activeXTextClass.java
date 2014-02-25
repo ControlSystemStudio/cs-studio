@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2013 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeXTextClass;
 
 /**
  * XML conversion class for Edm_activeXTextClass.
- * @author Matevz
+ * @author Matevz, Xihui Chen
  */
 public class Opi_activeXTextClass extends OpiWidget {
 	
@@ -26,45 +26,49 @@ public class Opi_activeXTextClass extends OpiWidget {
 	 */
 	public Opi_activeXTextClass(Context con, Edm_activeXTextClass t) {
 		super(con,t);
-		if(t.getAttribute("alarmPv").isInitialized())
-			setTypeId("TextUpdate");
-		else 
-			setTypeId(typeId);
+		setTypeId(typeId);
 		
-		context.getElement().setAttribute("version", version);
+		setName(name);
+		setVersion(version);;
 		
-		new OpiString(context, "name", name);
-//		
-		new OpiFont(context, "font", t.getFont());
-		new OpiColor(context, "foreground_color", t.getFgColor());
-		new OpiColor(context, "background_color", t.getBgColor());
+		new OpiString(widgetContext, "text", t.getValue().get());
 		
-		new OpiString(context, "text", t.getValue().get());
-		
-		boolean autoSize = t.getAttribute("autoSize").isInitialized() && t.isAutoSize();
-		new OpiBoolean(context, "auto_size", autoSize);
+		boolean autoSize = t.getAttribute("autoSize").isExistInEDL() && t.isAutoSize();
+		new OpiBoolean(widgetContext, "auto_size", autoSize);
 		
 		// There is no border (border style == 0) when border attribute is not set. 
 		int borderStyle = 0;
-		if (t.getAttribute("border").isInitialized() && t.isBorder()) {
+		if (t.getAttribute("border").isExistInEDL() && t.isBorder()) {
 			// From EDM C code it looks like activeXText always uses solid style. 
 			borderStyle = 1;
 		}
-		new OpiInt(context, "border_style", borderStyle);
+		new OpiInt(widgetContext, "border_style", borderStyle);
 		
-		if (t.getAttribute("lineWidth").isInitialized()) {
-			new OpiInt(context, "border_width", t.getLineWidth());
+		if (t.getAttribute("lineWidth").isExistInEDL()) {
+			new OpiInt(widgetContext, "border_width", t.getLineWidth());
 		}
 		
-		new OpiColor(context, "border_color", t.getFgColor());
+		new OpiColor(widgetContext, "border_color", t.getFgColor(), t);
 				
-		boolean useDisplayBg = t.getAttribute("useDisplayBg").isInitialized() && t.isUseDisplayBg();  
-		new OpiBoolean(context, "transparent", useDisplayBg);
+		boolean useDisplayBg = t.getAttribute("useDisplayBg").isExistInEDL() && t.isUseDisplayBg();  
+		new OpiBoolean(widgetContext, "transparent", useDisplayBg);
 		
-		if(t.getAttribute("alarmPv").isInitialized()){
-			new OpiString(context, "pv_name", t.getAlarmPv());
-			new OpiBoolean(context, "backcolor_alarm_sensitive", t.isBgAlarm());
-			new OpiBoolean(context, "forecolor_alarm_sensitive", t.isFgAlarm());
+		int a=0;
+		if(t.getFontAlign()==null)
+			a=0;
+		else if(t.getFontAlign().equals("right"))
+			a=2;
+		else if(t.getFontAlign().equals("center"))
+			a=1;		
+		new OpiInt(widgetContext, "horizontal_alignment", a);
+		
+		if(t.getAlarmPv()!=null){
+			if(t.isBgAlarm())
+				createColorAlarmRule(t, convertPVName(t.getAlarmPv()),
+					"background_color", "backcolor_alarm", true);
+			if(t.isFgAlarm())
+				createColorAlarmRule(t, convertPVName(t.getAlarmPv()),
+					"foreground_color", "backcolor_alarm", true);
 		}
 		
 		

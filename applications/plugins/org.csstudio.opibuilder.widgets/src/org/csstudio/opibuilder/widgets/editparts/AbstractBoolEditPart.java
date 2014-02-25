@@ -10,18 +10,19 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure.BoolLabelPosition;
+import org.csstudio.swt.widgets.figures.AbstractBoolFigure.TotalBits;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.VType;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractBoolWidgetModel}.
@@ -77,10 +78,22 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				if(newValue == null)
+				if(newValue == null || !(newValue instanceof VType))
 					return false;
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
-				updateFromValue(newValue, figure);
+				
+				switch (VTypeHelper.getBasicDataType((VType) newValue)) {
+				case SHORT:
+					figure.setTotalBits(TotalBits.BITS_16);
+					break;
+				case INT:
+				case ENUM:
+					figure.setTotalBits(TotalBits.BITS_32);
+					break;
+				default:
+					break;
+				}
+				updateFromValue((VType) newValue, figure);
 				return true;
 			}
 
@@ -231,19 +244,11 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 	 * @param newValue
 	 * @param figure
 	 */
-	private void updateFromValue(final Object newValue,
+	private void updateFromValue(final VType newValue,
 			AbstractBoolFigure figure) {
-		if(newValue == null || !(newValue instanceof IValue))
+		if(newValue == null)
 			return;
-		if(getWidgetModel().getDataType() == 0)
-			figure.setValue(ValueUtil.getDouble((IValue)newValue));
-		else {
-			if(ValueUtil.getString((IValue)newValue).equals(
-					getWidgetModel().getOnState()))
-				figure.setValue(1);
-			else
-				figure.setValue(0);
-		}
+		figure.setValue(VTypeHelper.getDouble(newValue));
 	}
 
 	private void updatePropSheet(final int dataType) {

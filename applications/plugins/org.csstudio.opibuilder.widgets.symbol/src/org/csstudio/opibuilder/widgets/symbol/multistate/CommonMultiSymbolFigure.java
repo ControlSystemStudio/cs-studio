@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -84,6 +84,9 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	
 	private IImageLoadedListener imageLoadedListener;
 	
+	private Color foregroundColor;
+	private boolean useForegroundColor = false;
+
 	public CommonMultiSymbolFigure(boolean runMode) {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE
 				: ExecutionMode.EDIT_MODE;
@@ -108,7 +111,8 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	 * Return the current displayed image. If null, returns an empty image.
 	 */
 	public AbstractSymbolImage getSymbolImage() {
-		if (ExecutionMode.RUN_MODE.equals(executionMode)) {
+		if (ExecutionMode.RUN_MODE.equals(executionMode)
+				&& currentState != null) {
 			symbolImage = images.get(currentState);
 		}
 		if (symbolImage == null) { // create an empty image
@@ -298,7 +302,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 				loadImageFromFile(onImagePath, state);
 			}
 		} else { // Standard behavior
-			String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath, states);
+			String imageBasePath = ImageUtils.getMultistateBaseImagePath(symbolImagePath);
 			if (imageBasePath == null) { // Image do not match any state
 				// TODO: alert state image missing
 				for (int stateIndex = 0; stateIndex < states.size(); stateIndex++) {
@@ -355,8 +359,9 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	 * @param model
 	 * @param imagePath
 	 */
-	public synchronized void setSymbolImagePath(CommonMultiSymbolModel model, IPath imagePath) {
-		if (imagePath.isEmpty()) {
+	public synchronized void setSymbolImagePath(CommonMultiSymbolModel model,
+			IPath imagePath) {
+		if (imagePath == null || imagePath.isEmpty()) {
 			return;
 		}
 		if (!ImageUtils.isExtensionAllowed(imagePath)) {
@@ -372,7 +377,9 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		}
 		symbolImagePath = imagePath;
 		if (originalSymbolImagePath == null) originalSymbolImagePath = imagePath;
-		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) workingWithSVG = true;
+		if (imagePath.getFileExtension() != null
+				&& "svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0)
+			workingWithSVG = true;
 		else workingWithSVG = false;
 		if (ImageUtils.isOffImage(imagePath) || ImageUtils.isOnImage(imagePath)) workingWithBool = true;
 		else workingWithBool = false;
@@ -422,7 +429,7 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 								asi.updateData();
 								setImage(state, asi);
 							} else {
-								symbolImage = createSymbolImage(false);
+								symbolImage = createSymbolImage(!isEditMode());
 								symbolImage.setImagePath(imagePath);
 								if (!workingWithSVG) {
 									tempImage = new Image(Display.getDefault(), stream);
@@ -493,6 +500,22 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		this.onColor = onColor;
 		repaint();
 	}
+
+	public void setUseForegroundColor(boolean useForegroundColor) {
+		this.useForegroundColor = useForegroundColor;
+		repaint();
+	}
+
+	@Override
+	public Color getForegroundColor() {
+		return foregroundColor;
+	}
+
+	@Override
+	public void setForegroundColor(Color foregroundColor) {
+		this.foregroundColor = foregroundColor;
+		repaint();
+	}
 	
 	@Override
 	public synchronized void paintFigure(final Graphics gfx) {
@@ -531,7 +554,11 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 		getSymbolImage().setBounds(bounds);
 		getSymbolImage().setBorder(getBorder());
 		int stateIndex = statesStr.indexOf(currentState);
-		getSymbolImage().setCurrentColor(stateIndex == 0 ? offColor : onColor);
+		Color currentcolor = null;
+		if (useForegroundColor) currentcolor = getForegroundColor();
+		else currentcolor = stateIndex == 0 ? offColor : onColor;
+		getSymbolImage().setCurrentColor(currentcolor);
+		getSymbolImage().setAbsoluteScale(gfx.getAbsoluteScale());
 		getSymbolImage().paintFigure(gfx);
 	}
 	

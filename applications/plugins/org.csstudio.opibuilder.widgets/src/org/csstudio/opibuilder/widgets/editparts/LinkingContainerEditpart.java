@@ -8,8 +8,10 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -18,6 +20,7 @@ import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -34,10 +37,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -48,12 +54,29 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class LinkingContainerEditpart extends AbstractContainerEditpart{
+	
+	private static int linkingContainerID = 0;
 
+	private List<ConnectionModel> connectionList;
+	private Map<ConnectionModel, PointList> originalPoints;
 
 	@Override
 	protected IFigure doCreateFigure() {
 		LinkingContainerFigure f = new LinkingContainerFigure();
 		f.setZoomToFitAll(getWidgetModel().isAutoFit());		
+		f.getZoomManager().addZoomListener(new ZoomListener() {
+			
+			@Override
+			public void zoomChanged(double arg0) {
+				getViewer().getControl().getDisplay().timerExec(100,new Runnable() {
+					
+					@Override
+					public void run() {
+						updateConnectionList();
+					}
+				});
+			}
+		});
 		return f;
 	}
 
@@ -76,8 +99,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		
-		loadWidgets(getWidgetModel().getOPIFilePath(), false);
-
+		loadWidgets(getWidgetModel().getOPIFilePath(), false);		
 		
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -134,7 +156,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	/**
 	 * @param path the path of the OPI file
 	 */
-	private synchronized void loadWidgets(IPath path, boolean checkSelf) {
+	private synchronized void loadWidgets(final IPath path, final boolean checkSelf) {
 		getWidgetModel().removeAllChildren();
 		if(path ==null || path.isEmpty())
 			return;
@@ -177,6 +199,11 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 					loadTarget = (AbstractContainerModel) group;
 				}
 			}
+			// Load "LCID" macro whose value is unique to this instance of Linking Container.
+			if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+				linkingContainerID++;
+				loadTarget.getMacroMap().put("LCID", "LCID_" + linkingContainerID);
+			}
 			//Load system macro
 			if(loadTarget.getMacrosInput().isInclude_parent_macros()){				
 				loadTarget.getMacroMap().putAll(
@@ -188,6 +215,29 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			//which includes the macros from action and global macros if included
 			//It will replace the old one too.
 			loadTarget.getMacroMap().putAll(getWidgetModel().getMacroMap());
+//			if(connectionList == null)
+				//load it again to update connections, because it needs to refer current loaded widgets.				
+				
+			connectionList = tempDisplayModel.getConnectionList();
+			if(connectionList !=null && !connectionList.isEmpty()){
+				if(originalPoints != null)
+					originalPoints.clear();
+				else
+					originalPoints = new HashMap<ConnectionModel, PointList>();
+			}
+			
+			for (ConnectionModel conn : connectionList) {
+				if(conn.getPoints()!=null)
+					originalPoints.put(conn, conn.getPoints().getCopy());
+			}			
+			if (originalPoints != null && !originalPoints.isEmpty())
+				//update connections after the figure is repainted.
+				getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
+					@Override
+					public void run() {
+						updateConnectionList();				
+					}
+				});
 			
 			for(AbstractWidgetModel child : loadTarget.getChildren()){
 				getWidgetModel().addChild(child, false); //don't change model's parent.
@@ -232,6 +282,24 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	}
 
 
+	private void updateConnectionList() {
+		if(connectionList==null || originalPoints==null)
+			return;
+		for(ConnectionModel conn: connectionList){
+			if(conn.getPoints() != null && conn.getPoints().size()>0){
+				PointList points = originalPoints.get(conn).getCopy();
+				for(int i=0; i<points.size(); i++){
+					Point point = points.getPoint(i);
+					point.scale(((LinkingContainerFigure)getFigure()).getZoomManager().getZoom());
+					getContentPane().translateToAbsolute(point);
+					points.setPoint(point, i);
+				}
+				conn.setPoints(points);
+			}
+		}
+	}
+
+
 	/**
 	 * {@inheritDoc} Overidden, to set the selection behaviour of child
 	 * EditParts.
@@ -267,6 +335,20 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			}
 			layoutter.layout(modelChildren, getFigure().getClientArea());
 		}
+	}
+	
+	@Override
+	protected synchronized void doRefreshVisuals(IFigure refreshableFigure) {
+		super.doRefreshVisuals(refreshableFigure);
+		
+		//update connections after the figure is repainted.
+		getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
+			@Override
+			public void run() {
+				updateConnectionList();				
+			}
+		});
+		
 	}
 	
 	@Override

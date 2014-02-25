@@ -25,6 +25,7 @@ import org.csstudio.diag.pvfields.DataProvider;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVInfo;
 import org.csstudio.diag.pvfields.Preferences;
+import org.csstudio.utility.pvmanager.ConfigurationHelper;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
@@ -68,7 +69,7 @@ public class EPICSDataProvider implements DataProvider
             	if (name.indexOf("://") > 0)
             		full_name = name;
             	else
-            		full_name = "epics://" + name;
+					full_name = ConfigurationHelper.defaultDataSourceName() + "://" + name;
                 final Map<String, ChannelHandler> channels = PVManager.getDefaultDataSource().getChannels();
 				final ChannelHandler channel = channels.get(full_name);
                 if (channel == null)

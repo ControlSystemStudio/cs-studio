@@ -7,27 +7,19 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.data.values.IDoubleValue;
-import org.csstudio.data.values.IEnumeratedValue;
-import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.IValue.Format;
-import org.csstudio.data.values.ValueFactory;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.datadefinition.FormatEnum;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.pvmanager.PMObjectValue;
-import org.csstudio.opibuilder.pvmanager.PVManagerHelper;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.NativeTextFigure;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
+import org.csstudio.simplepv.FormatEnum;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
@@ -40,6 +32,8 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /**The editor for text indicator widget.
  * @author Xihui Chen
@@ -346,7 +340,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
 		if(getExecutionMode() != ExecutionMode.RUN_MODE)
 			return null;
-		IValue value = null;
+		VType value = null;
 
 
 		int tempPrecision = precision;
@@ -354,19 +348,15 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			tempPrecision = -1;
 
 		if(propId.equals(AbstractPVWidgetModel.PROP_PVVALUE))
-			value = (IValue)newValue;
+			value = (VType)newValue;
 		else
 			value = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 
-		String text;
-		if(value instanceof PMObjectValue)
-			text = PVManagerHelper.getInstance().formatValue(
-					format, ((PMObjectValue)value).getLatestValue(), tempPrecision);
-		else
-			text = formatUtilityPVValue(value, tempPrecision);
+		String text = VTypeHelper.formatValue(
+					format, value, tempPrecision);
 		
-		if(isShowUnits && value.getMetaData() instanceof INumericMetaData){
-			String units = ((INumericMetaData)value.getMetaData()).getUnits();
+		if(isShowUnits && VTypeHelper.getDisplayInfo(value) != null){
+			String units =VTypeHelper.getDisplayInfo(value).getUnits();
 			if(units != null && units.trim().length()>0)
 				text = text + " " + units; //$NON-NLS-1$
 		}
@@ -382,61 +372,6 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		return text;
 	}	
 
-	private String formatUtilityPVValue(IValue value, int tempPrecision) {
-		String text;
-		switch (format) {
-		case DECIMAL:
-			text = value.format(Format.Decimal, tempPrecision);
-			break;
-		case EXP:
-			text = value.format(Format.Exponential, tempPrecision);
-			break;
-		case HEX:
-			if(value instanceof IDoubleValue)
-				text = HEX_PREFIX + Integer.toHexString((int) ((IDoubleValue)value).getValue()).toUpperCase();
-			else if(value instanceof ILongValue)
-				text = HEX_PREFIX + Integer.toHexString((int) ((ILongValue)value).getValue()).toUpperCase();
-			else if(value instanceof IEnumeratedValue)
-				text = HEX_PREFIX + Integer.toHexString(((IEnumeratedValue)value).getValue()).toUpperCase();
-			else
-				text = value.format();
-			break;
-		case HEX64:
-			if(value instanceof IDoubleValue)
-				text = HEX_PREFIX + Long.toHexString((long) ((IDoubleValue)value).getValue()).toUpperCase();
-			else if(value instanceof ILongValue)
-				text = HEX_PREFIX + Long.toHexString((long) ((ILongValue)value).getValue()).toUpperCase();
-			else if(value instanceof IEnumeratedValue)
-				text = HEX_PREFIX + Long.toHexString(((IEnumeratedValue)value).getValue()).toUpperCase();
-			else
-				text = value.format();
-			break;
-		case COMPACT:
-			if (value instanceof IDoubleValue)
-			{
-				double dValue = ((IDoubleValue)value).getValue();
-				if ( ((dValue > 0.0001) && (dValue < 10000))||
-						((dValue < -0.0001) && (dValue > -10000)) ||
-						dValue == 0.0){
-					text = value.format(Format.Decimal, tempPrecision);
-				}
-				else{
-					text = value.format(Format.Exponential, tempPrecision);
-				}
-			}
-			else
-				text = value.format();
-			break;
-		case STRING:
-			text = value.format(Format.String, tempPrecision);
-			break;
-		case DEFAULT:
-		default:
-			text = value.format(Format.Default, tempPrecision);
-			break;
-		}		
-		return text;
-	}
 	
 
 
@@ -451,8 +386,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	public void setValue(Object value) {
 		String text;
 		if(value instanceof Number)
-			text = formatValue(ValueFactory.createDoubleValue(
-					null, ValueFactory.createOKSeverity(), null, null, null, new double[]{((Number)value).doubleValue()}), 
+			text = formatValue(ValueFactory.newVDouble(((Number)value).doubleValue()), 
 					AbstractPVWidgetModel.PROP_PVVALUE);
 		else 
 			text = value.toString();

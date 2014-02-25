@@ -7,5 +7,6 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jython.jar
 Export-Package: org.python,
+ org.python.antlr.base,
  org.python.core,
  org.python.util

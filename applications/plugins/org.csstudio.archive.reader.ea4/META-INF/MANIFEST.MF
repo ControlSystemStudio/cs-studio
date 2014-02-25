@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EA4 Data Reader
+Bundle-SymbolicName: org.csstudio.archive.reader.ea4;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.archive.reader.ea4.Activator
+Require-Bundle: org.csstudio.archive.reader;bundle-version="3.2.0",
+ org.csstudio.apputil;bundle-version="3.0.2",
+ org.junit4;bundle-version="4.8.1",
+ org.epics.pvaccess;bundle-version="3.1.1",
+ org.epics.pvdata;bundle-version="3.1.1"
+Bundle-Vendor: Nikolay Malitsky <malitsky@bnl.gov>

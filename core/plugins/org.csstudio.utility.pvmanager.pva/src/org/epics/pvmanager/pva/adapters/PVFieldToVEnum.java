@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.pva.adapters;
 
@@ -67,10 +67,10 @@ public class PVFieldToVEnum extends AlarmTimeDisplayExtractor implements VEnum {
 	 */
 	@Override
 	public String getValue() {
-		if (labels != null && index != -1)
+		if (labels != null && index >= 0 && index < labels.size())
 			return labels.get(index);
 		else
-			return null;
+			return Integer.toString(index);		// return integer as string as fallback
 	}
 
 	/* (non-Javadoc)

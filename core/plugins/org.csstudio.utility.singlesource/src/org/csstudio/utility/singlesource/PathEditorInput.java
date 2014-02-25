@@ -53,7 +53,7 @@ public class PathEditorInput implements IPathEditorInput, IPersistableElement
     {
         if (! (obj instanceof IPathEditorInput))
             return false;
-        final IPath other = ((PathEditorInput) obj).getPath();
+        final IPath other = ((IPathEditorInput) obj).getPath();
         // Try shortcut if it's the same PathEditorInput and thus path,
         // else compare portable representation
         return other == path  ||

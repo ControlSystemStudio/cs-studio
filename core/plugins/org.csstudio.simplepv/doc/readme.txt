@@ -1,0 +1,1 @@
+To open the class diagram, please install ObjectAid: http://www.objectaid.com/home

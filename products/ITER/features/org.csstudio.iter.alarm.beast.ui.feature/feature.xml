@@ -2,11 +2,11 @@
 <feature
       id="org.csstudio.iter.alarm.beast.ui.feature"
       label="CSS Alarm Handler Component"
-      version="4.1.1.qualifier"
+      version="3.2.0.qualifier"
       provider-name="ITER">
 
    <copyright>
-      Copyright (c) : 2010-2013 ITER Organization,
+      Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France
@@ -19,21 +19,38 @@ refer to the file ITER-LICENSE.TXT located in the top level directory
 of the distribution package.
    </license>
 
+   <includes
+         id="org.csstudio.iter.core.util.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.email.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.core.ui.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.email.ui.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.iter.logbook.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.csstudio.platform.utility.jms"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="org.eclipse.ui.workbench"/>
-      <import plugin="org.csstudio.logbook"/>
       <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.1.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.jms"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.logging" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
@@ -42,47 +59,31 @@ of the distribution package.
       <import plugin="org.csstudio.platform.utility.jms" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.speech" version="1.2.6" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.8" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.email" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.console" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook"/>
       <import plugin="org.csstudio.alarm.beast.notifier" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.email" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.email.ui" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="3.1.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui.alarmtree" version="3.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
    </requires>
-
-   <plugin
-         id="org.csstudio.utility.speech"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.csstudio.alarm.beast"
@@ -149,6 +150,13 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.alarm.beast.ui.globaltable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.speech"
          download-size="0"
          install-size="0"
          version="0.0.0"

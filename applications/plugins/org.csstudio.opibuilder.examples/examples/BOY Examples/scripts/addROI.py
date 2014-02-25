@@ -1,6 +1,6 @@
 from org.csstudio.opibuilder.scriptUtil import PVUtil
 from org.csstudio.swt.widgets.figures.IntensityGraphFigure import IROIListener, IROIInfoProvider
-from org.csstudio.utility.pv import PVListener
+from org.csstudio.simplepv import IPVListener
 from java.lang import Thread, Runnable
 from org.eclipse.swt.widgets import Display
 
@@ -34,9 +34,9 @@ class UpdateROIUITask(Runnable):
 		#this method must be called in UI thread
 		intensityGraph.setROIDataBounds(name, PVUtil.getLong(roiXPV), PVUtil.getLong(roiYPV), PVUtil.getLong(roiWPV),PVUtil.getLong(roiHPV))
 		
-class UpdateROIFromPVListener(PVListener):
+class UpdateROIFromPVListener(IPVListener):
 	'''Update the ROI while ROI PV value updated'''
-	def pvValueUpdate(self, pv):
+	def valueChanged(self, pv):
 		currentDisplay.asyncExec(UpdateROIUITask())
 
 intensityGraph.addROI(name, MyROIListener(), MyROIInfoProvider())

@@ -6,4 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.apputil;bundle-version="3.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
-Require-Bundle: org.junit4
+Require-Bundle: org.junit;bundle-version="4.8.2"

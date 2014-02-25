@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands>
+  <comment><address>0</address><text>Sub-include: $(macro), $(submacro)</text></comment>
+  <set>
+    <address>1</address>
+    <device>$(device)</device>
+    <value>2.0</value>
+    <readback>$(device)</readback>
+    <tolerance>0.1</tolerance>
+  </set>
+  <wait>
+    <address>2</address>
+    <device>$(device)</device>
+    <value>2.0</value>
+    <comparison>EQUALS</comparison>
+    <tolerance>0.1</tolerance>
+  </wait>
+  <loop>
+    <address>3</address>
+    <device>$(device)</device>
+    <start>0.0</start>
+    <end>10.0</end>
+    <step>1.0</step>
+    <tolerance>0.1</tolerance>
+    <body>
+      <log>
+        <address>4</address>
+        <devices>
+          <device>$(device)</device>
+        </devices>
+      </log>
+    </body>
+  </loop>
+</commands>

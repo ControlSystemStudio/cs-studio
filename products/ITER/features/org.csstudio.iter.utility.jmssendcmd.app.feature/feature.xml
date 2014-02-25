@@ -2,15 +2,11 @@
 <feature
       id="org.csstudio.iter.utility.jmssendcmd.app.feature"
       label="CSS Jmssendcmd Component"
-      version="4.1.1.qualifier"
-      provider-name="ITER"
-      os="linux"
-      ws="gtk"
-      nl="en"
-      arch="x86_64">
+      version="3.2.0.qualifier"
+      provider-name="ITER">
 
    <copyright>
-      Copyright (c) : 2010-2013 ITER Organization,
+      Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France
@@ -24,18 +20,11 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil" version="1.0.6" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jms" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.utility.jms" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="org.csstudio.iter.utility.jmssendcmd.product"
+         id="org.csstudio.apputil"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -49,7 +38,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.apputil"
+         id="org.csstudio.iter.utility.jmssendcmd.product"
          download-size="0"
          install-size="0"
          version="0.0.0"

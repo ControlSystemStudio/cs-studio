@@ -35,7 +35,7 @@ public class StartEndTimeAction
         if (dlg.open() != Window.OK)
             return;
         new ChangeTimerangeCommand(model, operations_manager,
-                dlg.isEndNow(), dlg.getStartCalendar(), dlg.getEndCalendar());
+                dlg.isEndNow(), dlg.getStartSpecification(), dlg.getEndSpecification());
     }
 
     /** Change start/end time
@@ -49,8 +49,9 @@ public class StartEndTimeAction
             final OperationsManager operations_manager,
             final String start_time, final String end_time) throws Exception
     {
+    	// Parsing somewhat redundant, but gives exception 'right away' for better error display
         final StartEndTimeParser parser =
             new StartEndTimeParser(start_time, end_time);
-        new ChangeTimerangeCommand(model, operations_manager, parser.isEndNow(), parser.getStart(), parser.getEnd());
+        new ChangeTimerangeCommand(model, operations_manager, parser.isEndNow(), start_time, end_time);
     }
 }

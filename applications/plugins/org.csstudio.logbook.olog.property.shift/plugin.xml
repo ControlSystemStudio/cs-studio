@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.logbook.ui.propertywidget">
+      <propertywidgetfactory
+            propertyName="Shift"
+            propertywidgetfactory="org.csstudio.logbook.olog.property.shift.ShiftPropertyWidgetFactory">
+      </propertywidgetfactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.logbook.olog.property.shift.OpenShiftLogViewer"
+            id="org.csstudio.logbook.olog.property.shift.searchlogs"
+            name="search shift logs">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.csstudio.logbook.olog.property.shift.searchlogs"
+               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-16.png"
+               label="search shift logs"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="gov.bnl.shiftClient.Shift">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>

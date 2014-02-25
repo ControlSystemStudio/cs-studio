@@ -240,7 +240,7 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 	 */
 	private Point getAbsolutePosition(AbstractWidgetModel widgetModel){
 		if(widgetModel instanceof DisplayModel)
-			return widgetModel.getLocation();
+			return new Point(0, 0);
 		
 		Point result = widgetModel.getLocation();
 		AbstractContainerModel parent = widgetModel.getParent();

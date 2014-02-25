@@ -173,8 +173,17 @@ public class LinearValueIterator implements ValueIterator
             else
                 interpol = (v0 + v1)/2; // Use average?
             
-            return new ArchiveVStatistics(end_of_bin, max_severity, max_status, (Display) base_value,
-                interpol, accumulator.getMin(), accumulator.getMax(), accumulator.getStdDev(), accumulator.getNSamples());
+            if (! (base_value instanceof Display))
+            {   // Cannot be packaged as ArchiveVStatistics since there's no Display info,
+                // so pass the base value with 'interpolated' time stamp.
+                // This typically coincides with interpol == NaN:
+                // base_value == String -> v1 == NaN -> interpol == NaN,
+                // and ArchiveVStatistics would be useless anyway.
+                return VTypeHelper.transformTimestamp(base_value, end_of_bin);
+            }
+            else
+                return new ArchiveVStatistics(end_of_bin, max_severity, max_status, (Display) base_value,
+                        interpol, accumulator.getMin(), accumulator.getMax(), accumulator.getStdDev(), accumulator.getNSamples());
         }
         
         // Have nothing in this bin

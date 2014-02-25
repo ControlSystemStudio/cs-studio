@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.graphene;
 
@@ -13,8 +13,10 @@ import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.vtype.VImage;
-import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
+
+import static org.epics.pvmanager.graphene.ArgumentExpressions.*;
 
 /**
  * @author shroffk
@@ -22,18 +24,24 @@ import org.epics.vtype.ValueUtil;
  */
 public class ScatterGraph2DFunction implements ReadFunction<Graph2DResult> {
 
-    private ReadFunction<? extends VNumberArray> yArray;
-    private ReadFunction<? extends VNumberArray> xArray;
+    private ReadFunction<? extends VTable> tableData;
+    private ReadFunctionArgument<String> xColumnName;
+    private ReadFunctionArgument<String> yColumnName;
+    private ReadFunctionArgument<String> tooltipColumnName;
     private ScatterGraph2DRenderer renderer = new ScatterGraph2DRenderer(300,
             200);
     private VImage previousImage;
     private final QueueCollector<ScatterGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(
             100);
 
-    public ScatterGraph2DFunction(ReadFunction<? extends VNumberArray> yArray,
-            ReadFunction<? extends VNumberArray> xArray) {
-        this.yArray = yArray;
-        this.xArray = xArray;
+    public ScatterGraph2DFunction(ReadFunction<?> tableData,
+	    ReadFunction<?> xColumnName,
+	    ReadFunction<?> yColumnName,
+	    ReadFunction<?> tooltipColumnName) {
+        this.tableData = new CheckedReadFunction<>(tableData, "Data", VTable.class);
+        this.xColumnName = stringArgument(xColumnName, "X Column");
+        this.yColumnName = stringArgument(yColumnName, "Y Column");
+        this.tooltipColumnName = stringArgument(tooltipColumnName, "Tooltip Column");
     }
 
     public QueueCollector<ScatterGraph2DRendererUpdate> getRendererUpdateQueue() {
@@ -42,20 +50,18 @@ public class ScatterGraph2DFunction implements ReadFunction<Graph2DResult> {
 
     @Override
     public Graph2DResult readValue() {
-        VNumberArray newYData = yArray.readValue();
-        VNumberArray newXData = xArray.readValue();
-
-        // both x and y array data should be avaliable
-        if (newYData == null || newYData.getData() == null) {
+        VTable vTable = tableData.readValue();
+        xColumnName.readNext();
+        yColumnName.readNext();
+        tooltipColumnName.readNext();
+        
+        // Table and columns must be available
+        if (vTable == null || xColumnName.isMissing() || yColumnName.isMissing()) {
             return null;
         }
-        if (newXData == null || newXData.getData() == null) {
-            return null;
-        }
 
-        Point2DDataset dataset = null;
-        dataset = org.epics.graphene.Point2DDatasets.lineData(
-                newXData.getData(), newYData.getData());
+        // Prepare new dataset
+        Point2DDataset dataset = DatasetConversions.point2DDatasetFromVTable(vTable, xColumnName.getValue(), yColumnName.getValue());
 
         List<ScatterGraph2DRendererUpdate> updates = rendererUpdateQueue
                 .readValue();
@@ -72,9 +78,10 @@ public class ScatterGraph2DFunction implements ReadFunction<Graph2DResult> {
         renderer.draw(image.createGraphics(), dataset);
 
         previousImage = ValueUtil.toVImage(image);
-        return new Graph2DResult(previousImage,
+        return new Graph2DResult(vTable, previousImage,
                 new GraphDataRange(renderer.getXPlotRange(), renderer.getXPlotRange(), renderer.getXAggregatedRange()), new GraphDataRange(
-                renderer.getYPlotRange(), renderer.getYPlotRange(), renderer.getYAggregatedRange()));
+                renderer.getYPlotRange(), renderer.getYPlotRange(), renderer.getYAggregatedRange()),
+                -1);
 
     }
 }

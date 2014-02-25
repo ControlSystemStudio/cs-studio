@@ -152,6 +152,10 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
 <li><img src="stagger.png" width=16 height=16/> Stagger Axes:
     Arranges the value axes such that the traces on different axes don't
     overlap.
+<li><img src="HoverLabels.png" width=16 height=16/> Hover Labels:
+    Display a value label for all the traces on previous real point.
+    For optimized data, the Min and Max value are also displayed.
+    If there are too much tooltips, the Min and Max values won't be displayed.
 <li><img src="RubberbandZoom.png" width=16 height=16/> Rubberband Zoom:
     Click into plot, hold mouse pointer to drag a 'rubberband' rectangle,
     release to zoom into that area.<br>
@@ -226,7 +230,7 @@ menu of the panel.
 <div class='figure'>
    <img src="prop_traces.png"/>
    <p>
-   Fig. 3: Properties panel, subseciton 'Traces'
+   Fig. 3: Properties panel, subsection 'Traces'
    </p>
 </div>
 
@@ -263,6 +267,8 @@ deleting selected items, or adding archive data sources to PVs.
     NaN which shows a marker on the bottom of the plot.
 </ul>
 </p>
+
+<h3>Optimized vs. Raw Data</h3>
 
 <div class='figure'>
    <img src="optimized.png"/>
@@ -304,6 +310,45 @@ look at raw data for a long time range your computer will eventually ran out
 of memory.
 The 'Raw Data' requests should therefore only be used when necessary because
 of shortcomings in the 'Optimized' algorithm.
+</p>
+
+
+<h3>Stair-Step vs. direct Lines</h3>
+
+<p>
+Ideally, control system data is only updated when it changes by a significant amount.
+EPICS records actually offer separate update thresholds for live and archived data,
+so that live displays can receive updates for small changes at the noise level of
+a signal, while historic data is only written for changes well above the noise level.
+</p>
+<p>
+When the Data Browser receives either live of historic samples, we assume that those
+represent significant changes in the value, but cannot know how the actual signal behaved
+between those updates.
+</p>
+
+<div class='figure'>
+   <table>
+   <tr> 
+      <td><img src="stair.png"/></td>
+      <td><img src="direct.png"/></td>
+   </tr>
+   </table>
+   <p>
+   Fig. 5: Stair-step (left) vs. direct lines (right) for similar samples.
+   </p>
+</div>
+
+
+<p>
+The "Area" and "Single Line" Trace Types use a stair-step type of line that holds the
+value of the last sample until a new sample arrives. This is meant to indicate our assumption
+that the signal has not changed until we receive a new sample.
+</p>
+<p>
+The alternate "Area (direct)" and "Single Line (direct)" Trace Types can be used to obtain
+a direct line between samples, suggesting a linear change of the process variable between
+known samples.
 </p>
 
 
@@ -652,7 +697,7 @@ It is mostly used for debugging.
 <p>
 For performance reasons, the table does <u>not</u> update with each received
 sample. Instead, a manual update via the "Refresh" button is required to
-show newly received "live" samples or to force an update of a table that
+show newly received 'live' samples or to force an update of a table that
 appears inconsitent.
 </p>
 

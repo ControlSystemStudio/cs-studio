@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager;
 
@@ -133,10 +133,9 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         }
         ReadFunction<T> aggregatedFunction = aggregatedPVExpression.getFunction();
         
-        // TODO: we are ignoring the exception handler for now
-        
         PVReaderDirector<T> director = new PVReaderDirector<T>(pv, aggregatedFunction, PVManager.getReadScannerExecutorService(),
                 notificationExecutor, dataSource, exceptionHandler);
+        pv.setDirector(director);
         if (timeout != null) {
             if (timeoutMessage == null)
                 timeoutMessage = "Read timeout";

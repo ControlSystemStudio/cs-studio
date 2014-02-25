@@ -74,38 +74,10 @@ public class EDMConverterPreferencePage extends FieldEditorPreferencePage implem
 		addField(opiColorFileEditor);
 		
 		
-		WorkspaceFileFieldEditor outputOPIsFolderEditor = 
-			new WorkspaceFileFieldEditor(PreferencesHelper.OUTPUT_OPIS_FOLDER, 
-					"Output OPIs Folder", new String[]{}, parent){//$NON-NLS-2$
-			@Override
-			protected boolean checkState() {
-				String pathString = getTextControl().getText();
-				if(pathString==null || pathString.trim().equals(""))
-					return true;
-				IPath path = Path.fromPortableString(pathString);
-				
-				IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
-				if(r != null &&  (r instanceof IProject || r instanceof IFolder)){
-					clearErrorMessage();
-					return true;
-				}else{
-					showErrorMessage("The folder doesn't exist!");
-					return false;
-				}
-			}
-		};
-		addField(outputOPIsFolderEditor);
-		
-		
 		
 		BooleanFieldEditor robustParsingEditor = 
 			new BooleanFieldEditor(PreferencesHelper.FAIL_FAST, "Stop parsing at exception", parent);
 		addField(robustParsingEditor);
-		
-//		BooleanFieldEditor openOPIsEditor =
-//			new BooleanFieldEditor(PreferencesHelper.OPEN_OPIS, "Open OPI files right after conversion finished." , parent);
-//		addField(openOPIsEditor);
-		
 		
 		
 	}

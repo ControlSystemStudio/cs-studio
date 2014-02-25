@@ -9,6 +9,8 @@ classes/
 build/build
 build/ext
 
+dist
+
 # ignore all log files ?
 logs/*.log
 log/*.log

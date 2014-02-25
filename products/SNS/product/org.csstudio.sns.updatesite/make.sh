@@ -9,7 +9,7 @@
 #
 # Kay Kasemir
 
-source settings.sh
+source ./settings.sh
 
 type javac
 java -version
@@ -20,8 +20,8 @@ $ANT clean
 echo Fetching sources
 $ANT get_sources
 
-PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_AlarmServer config_build_AlarmConfigTool config_build_ArchiveEngine config_build_ArchiveConfigTool config_build_JMS2RDB config_build_ScanServer"
-FEATS="config_build_optional config_build_scan config_build_beamline_image"
+PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_AlarmServer config_build_AlarmConfigTool config_build_AlarmNotifier config_build_ArchiveEngine config_build_ArchiveConfigTool config_build_JMS2RDB config_build_ScanServer"
+FEATS="config_build_optional config_build_pydev config_build_scan config_build_beamline_image"
 
 # Build products and features
 for PROD in $PRODS
@@ -33,7 +33,7 @@ do
 	  -Dbuilder=`pwd`/$PROD \
 	  -DbuildDirectory=$BUILDDIR \
 	  -Dversion=$VERSION \
-	  -Dbase=$ECLIPSE_BASE \
+	  -Dbase=$ECLIPSE \
 	  -Ddeltapack=$DELTAPACK \
 	  -Dqualifier=$QUALIFIER \
 	   > $BUILDDIR/$PROD.log 2>&1
@@ -50,7 +50,7 @@ do
 	  -Dbuilder=`pwd`/$FEAT \
 	  -DbuildDirectory=$BUILDDIR \
 	  -Dversion=$VERSION \
-	  -Dbase=$ECLIPSE_BASE \
+	  -Dbase=$ECLIPSE \
 	  -Ddeltapack=$DELTAPACK \
 	  -Dqualifier=$QUALIFIER \
 	   > $BUILDDIR/$FEAT.log 2>&1
@@ -94,6 +94,7 @@ then
     ## 'Simple' products (headless) that are not patched
     mv $BUILDDIR/I.alarm_server_$VERSION/alarm_server_$VERSION* $BUILDDIR/apps
     mv $BUILDDIR/I.alarm_config_$VERSION/alarm_config_$VERSION* $BUILDDIR/apps
+    mv $BUILDDIR/I.alarm_notifier_$VERSION/alarm_notifier_$VERSION* $BUILDDIR/apps
     mv $BUILDDIR/I.archive_engine_$VERSION/archive_engine_$VERSION* $BUILDDIR/apps
     mv $BUILDDIR/I.archive_config_$VERSION/archive_config_$VERSION* $BUILDDIR/apps
     mv $BUILDDIR/I.jms2rdb_$VERSION/jms2rdb_$VERSION* $BUILDDIR/apps
@@ -105,3 +106,10 @@ then
     $ANT zip_sources
 fi
 
+
+cd $TOP/applications/plugins/org.csstudio.scan.client
+$ANT clean all
+if [ -f scan.client.jar ]
+then
+   mv scan.client.jar $BUILDDIR/apps/scan_client_$VERSION.jar
+fi

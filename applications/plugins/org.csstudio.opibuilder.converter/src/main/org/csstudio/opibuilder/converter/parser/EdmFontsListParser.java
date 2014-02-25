@@ -62,7 +62,7 @@ public class EdmFontsListParser extends EdmParser {
 			}
 			catch (Exception e) {
 				throw new EdmException(EdmException.FONT_FORMAT_ERROR, "Invalid font format at line: "
-						+ m.group());
+						+ m.group(), e);
 			}
 		}
 	}

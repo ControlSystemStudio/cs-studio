@@ -26,10 +26,6 @@ public class Edm_activeGroupClass extends EdmWidget {
 //	@EdmAttributeAn private int w;
 //	@EdmAttributeAn private int h;
 
-	@EdmAttributeAn @EdmOptionalAn private String visPv;
-	@EdmAttributeAn @EdmOptionalAn private double visMax;
-	@EdmAttributeAn @EdmOptionalAn private double visMin;
-	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
 	
 	@EdmAttributeAn private Vector<EdmWidget> widgets;
 
@@ -48,24 +44,8 @@ public class Edm_activeGroupClass extends EdmWidget {
 //	public int getRelease() {
 //		return release;
 //	}
-
 	
 
-	public String getVisPv() {
-		return visPv;
-	}
-
-	public double getVisMax() {
-		return visMax;
-	}
-
-	public double getVisMin() {
-		return visMin;
-	}
-
-	public boolean isVisInvert() {
-		return visInvert;
-	}
 
 	public Vector<EdmWidget> getWidgets() {
 		return widgets;

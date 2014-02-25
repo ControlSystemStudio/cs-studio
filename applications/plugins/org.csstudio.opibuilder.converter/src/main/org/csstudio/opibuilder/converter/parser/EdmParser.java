@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
 
@@ -74,9 +75,15 @@ public class EdmParser {
 				if (!line.contains("#"))
 					sb.append(line + "\r");
 				else {
-					String appStr = line.substring(0, line.indexOf("#"));
-					if (appStr.trim().length() != 0)
-						sb.append(appStr + "\r");
+					if (!line.trim().startsWith("#")) {
+						String[] pieces = StringSplitter.splitIgnoreInQuotes(line, '#', false);
+						if (pieces.length > 0)
+							sb.append(pieces[0].trim() + "\r");
+					}
+					
+//					String appStr = line.substring(0, line.indexOf("#"));
+//					if (appStr.trim().length() != 0)
+//						sb.append(appStr + "\r");
 				}
 			}
 
@@ -84,7 +91,7 @@ public class EdmParser {
 		}
 		catch (Exception e) {
 			if (e instanceof FileNotFoundException)
-				throw new EdmException(EdmException.FILE_NOT_FOUND, fileName);
+				throw new EdmException(EdmException.FILE_NOT_FOUND, fileName, e);
 			else
 				e.printStackTrace();
 		}

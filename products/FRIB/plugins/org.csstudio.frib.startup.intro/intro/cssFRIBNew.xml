@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="org.csstudio.frib.whatsnew" style="css/sample.css" name="CSS WhatsNew" path="whatsnew/@">
+		<group style-id="content-group" id="org.csstudio.frib.whatsnew-group">
+       		<link label=" Whats New in CSS"
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.frib.startup.intro/html/changelog.html" 
+       		id="fribwhatsnew-Link" style-id="content-link">
+          		<text>
+				 Information on the newest additional to CSS including new application, additional features, etc
+                </text>
+       		</link>
+       	</group>
+  	</extensionContent>
+  	
+</introContent>

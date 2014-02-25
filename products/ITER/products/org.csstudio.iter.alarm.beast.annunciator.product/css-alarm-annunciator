@@ -16,7 +16,7 @@
 #
 # Author(s)     : Cosylab
 #
-# Copyright (c) : 2010-2013 ITER Organization,
+# Copyright (c) : 2010-2014 ITER Organization,
 #                 CS 90 046
 #                 13067 St. Paul-lez-Durance Cedex
 #                 France
@@ -28,14 +28,34 @@
 #
 #-======================================================================
 
+RED='\e[1;31m'
+GREEN='\e[0;32m'
+BLUE='\e[1;34m'
+YELLOW='\e[0;33m'
+NC='\e[0m' # No Color
+
 . codacenv
+. $CODAC_CONF/default/codac
 
 CONFIGURATION=()
 VARFILES=()
 
 unset REQUSER
-DAEMONS=(/usr/bin/alarm-annunciator)
 NAMES=("CSS Alarm Annunciator")
+
+function annunciator_start_hook {
+  echo '' | text2wave | aplay > /dev/null 2>&1
+  if [ "$?" -ne "0" ] ; then
+    echo -e "${RED}${NAME} failed to start: No sound card found!${NC}" 1>&2
+    mkdir -p $CODAC_VAR/css/alarm-annunciator
+    echo "$(date) - CSS Alarm Annunciator failed to start: No sound card found." >> $CODAC_VAR/css/alarm-annunciator/console.log
+    exit 1
+  fi
+}
+export -f annunciator_start_hook
+
+STARTHOOKS=("${STARTHOOKS[@]}" "annunciator_start_hook")
+DAEMONS=(/usr/bin/alarm-annunciator)
 ARGS=("$([ $# -gt 1 ] && printf "'%s' " "${@:2}")")
 
 . $CODAC_ROOT/bin/services/service-startup

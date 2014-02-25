@@ -40,7 +40,7 @@
             editpart_class="org.csstudio.channel.opiwidgets.Line2DPlotEditPart"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
             model_class="org.csstudio.channel.opiwidgets.Line2DPlotModel"
-            name="Line2d Plot"
+            name="Channel Line Plot"
             typeId="org.csstudio.channel.opiwidgets.Line2DPlot">
       </widget>
       <widget

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable;
 
-import static org.csstudio.utility.test.HamcrestMatchers.*;
+import static org.csstudio.utility.test.HamcrestMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 

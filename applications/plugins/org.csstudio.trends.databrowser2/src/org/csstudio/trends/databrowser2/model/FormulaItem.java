@@ -64,7 +64,7 @@ public class FormulaItem extends ModelItem
 
     /** Samples of the formula, computed from inputs.
      *  Access must synchronize on samples (done inside PlotSampleArray) */
-    final private PlotSampleArray samples = new PlotSampleArray();
+    private PlotSampleArray samples = new PlotSampleArray();
 
     /** Initialize formula
      *  @param name Name of the Formula item
@@ -340,4 +340,13 @@ public class FormulaItem extends ModelItem
         formula.configureFromDocument(model, node);
         return formula;
     }
+    
+	public FormulaItem clone() {
+		FormulaItem ret = (FormulaItem)super.clone();
+		ret.formula = formula;
+		ret.inputs = inputs;
+		ret.variables = variables;
+		ret.samples = samples;
+		return ret;
+	}
 }

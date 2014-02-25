@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
@@ -51,6 +51,12 @@ public final class SimulationDataSource extends DataSource {
     protected ChannelHandler createChannel(String channelName) {
         if (channelName.startsWith("const(")) {
             return new ConstantChannelHandler(channelName);
+        }
+        if (channelName.startsWith("delayedConnectionChannel(")) {
+            return new DelayedConnectionChannelHandler(channelName, exec);
+        }
+        if (channelName.startsWith("intermittentChannel(")) {
+            return new IntermittentChannelHandler(channelName, exec);
         }
         
         SimFunction<?> simFunction = (SimFunction<?>) NameParser.createFunction(channelName);

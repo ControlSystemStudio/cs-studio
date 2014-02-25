@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Desy Archive Engine Product
-Bundle-SymbolicName: org.csstudio.archive.common.engine.product
-Bundle-ClassPath: .
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6

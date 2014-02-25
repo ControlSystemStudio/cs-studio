@@ -1,1 +1,0 @@
-topics.alarm=ALARM,TINE_ALARM,KRYO-ALARME

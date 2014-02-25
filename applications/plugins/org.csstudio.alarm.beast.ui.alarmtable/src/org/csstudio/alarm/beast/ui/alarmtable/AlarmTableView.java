@@ -68,7 +68,7 @@ public class AlarmTableView extends ViewPart
         });
 
         // Add GUI to model
-        final GUI gui = new GUI(parent, model, getSite());
+        final GUI gui = new GUI(parent, model, getSite(), Activator.getDefault().getDialogSettings());
         if (model.isWriteAllowed())
         {
             // Add Toolbar buttons

@@ -12,6 +12,7 @@ import java.io.DataOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -217,6 +218,32 @@ public class RDBArchiveWriter implements ArchiveWriter
             channel.setMetaData(labels);
         }
     }
+    
+	/**
+	 * Create a new prepared statement. For PostgreSQL connections, this method
+	 * create a PGCopyPreparedStatement to improve insert speed using COPY
+	 * insetad of INSERT.
+	 * 
+	 * @param sqlQuery
+	 * @return
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	@SuppressWarnings("resource")
+	private PreparedStatement createInsertPrepareStatement(String sqlQuery)
+			throws SQLException, Exception {
+		PreparedStatement statement = null;
+		if (rdb.getDialect() == Dialect.PostgreSQL
+				&& Preferences.isUsePostgresCopy()) {
+			statement = new PGCopyPreparedStatement(rdb.getConnection(),
+					sqlQuery);
+		} else {
+			statement = rdb.getConnection().prepareStatement(sqlQuery);
+		}
+		if (SQL_TIMEOUT_SECS > 0)
+			statement.setQueryTimeout(SQL_TIMEOUT_SECS);
+		return statement;
+	}
 
     /** Perform 'batched' insert for sample.
      *  <p>Needs eventual flush()
@@ -279,10 +306,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         if (insert_double_sample == null)
         {
-            insert_double_sample =
-                rdb.getConnection().prepareStatement(sql.sample_insert_double_blob);
-            if (SQL_TIMEOUT_SECS > 0)
-                insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+        	insert_double_sample = createInsertPrepareStatement(sql.sample_insert_double_blob);
         }
         // Set scalar or 1st element of a waveform.
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
@@ -300,7 +324,6 @@ public class RDBArchiveWriter implements ArchiveWriter
             switch (rdb.getDialect())
             {
             case Oracle:
-                // TODO Oracle case not tested
                 insert_double_sample.setString(6, " ");
                 insert_double_sample.setNull(7, Types.BLOB);
                 break;
@@ -351,10 +374,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         if (insert_double_sample == null)
         {
-            insert_double_sample =
-                rdb.getConnection().prepareStatement(sql.sample_insert_double);
-            if (SQL_TIMEOUT_SECS > 0)
-                insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+        	insert_double_sample = createInsertPrepareStatement(sql.sample_insert_double);
         }
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
         if (Double.isNaN(dbl))
@@ -412,10 +432,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         if (insert_long_sample == null)
         {
-            insert_long_sample =
-               rdb.getConnection().prepareStatement(sql.sample_insert_int);
-            if (SQL_TIMEOUT_SECS > 0)
-                insert_long_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+        	insert_long_sample = createInsertPrepareStatement(sql.sample_insert_int);
         }
         insert_long_sample.setLong(5, num);
         completeAndBatchInsert(insert_long_sample, channel, stamp, severity, status);
@@ -429,10 +446,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         if (insert_txt_sample == null)
         {
-            insert_txt_sample =
-                rdb.getConnection().prepareStatement(sql.sample_insert_string);
-            if (SQL_TIMEOUT_SECS > 0)
-                insert_txt_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+        	insert_txt_sample = createInsertPrepareStatement(sql.sample_insert_string);
         }
         if (txt.length() > MAX_TEXT_SAMPLE_LENGTH)
         {
@@ -673,6 +687,39 @@ public class RDBArchiveWriter implements ArchiveWriter
             stati.dispose();
             stati = null;
         }
-        rdb.close();
+
+		if (insert_double_sample != null) {
+			try {
+				insert_double_sample.close();
+			} catch (SQLException e) {
+				Activator.getLogger().log(Level.WARNING, "close() error", e);
+			}
+			insert_double_sample = null;
+		}
+		if (insert_array_sample != null) {
+			try {
+				insert_array_sample.close();
+			} catch (SQLException e) {
+				Activator.getLogger().log(Level.WARNING, "close() error", e);
+			}
+			insert_array_sample = null;
+		}
+		if (insert_long_sample != null) {
+			try {
+				insert_long_sample.close();
+			} catch (SQLException e) {
+				Activator.getLogger().log(Level.WARNING, "close() error", e);
+			}
+			insert_long_sample = null;
+		}
+		if (insert_txt_sample != null) {
+			try {
+				insert_txt_sample.close();
+			} catch (SQLException e) {
+				Activator.getLogger().log(Level.WARNING, "close() error", e);
+			}
+			insert_txt_sample = null;
+		}
+		rdb.close();
     }
 }

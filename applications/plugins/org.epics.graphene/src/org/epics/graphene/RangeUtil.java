@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -18,8 +18,8 @@ public class RangeUtil {
      * @return the range
      */
     public static Range range(final double minValue, final double maxValue) {
-        if (minValue >= maxValue) {
-            throw new IllegalArgumentException("minValue should be less then maxValue (" + minValue+ ", " + maxValue + ")");
+        if (minValue > maxValue) {
+            throw new IllegalArgumentException("minValue should be less then or equal to maxValue (" + minValue+ ", " + maxValue + ")");
         }
         return new Range() {
 

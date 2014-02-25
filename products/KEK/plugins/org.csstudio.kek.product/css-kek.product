@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="3.1.1.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="3.2.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.utility.product/icons/aboutSide.png"/>
@@ -17,7 +17,7 @@ It provides a collection of control system
 tools in a common environment, based
 on Eclipse.
 
-http://sourceforge.net/apps/trac/cs-studio/wiki
+https://github.com/ControlSystemStudio/cs-studio/wiki
 http://www-linac.kek.jp/cont/css/
       </text>
    </aboutInfo>
@@ -31,7 +31,8 @@ http://www-linac.kek.jp/cont/css/
 -XX:MaxPermSize=128M
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
--Dpython.cachedir.skip=true</vmArgs>
+-Dpython.cachedir.skip=true
+-Dfile.encoding=UTF-8</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -52,7 +53,6 @@ http://www-linac.kek.jp/cont/css/
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -60,9 +60,10 @@ http://www-linac.kek.jp/cont/css/
    </plugins>
 
    <features>
-      <feature id="org.csstudio.kek.eclipse.feature" version="3.1.1.qualifier"/>
-      <feature id="org.csstudio.kek.core.feature" version="3.1.1.qualifier"/>
-      <feature id="org.csstudio.kek.applications.feature" version="3.1.1.qualifier"/>
+      <feature id="org.csstudio.kek.eclipse.feature" version="3.2.1.qualifier"/>
+      <feature id="org.csstudio.kek.core.feature" version="3.2.1.qualifier"/>
+      <feature id="org.csstudio.kek.applications.feature" version="3.2.1.qualifier"/>
+      <feature id="org.csstudio.kek.optional.feature" version="3.2.1.qualifier"/>
    </features>
 
 

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.pvfields.PVField;
@@ -127,7 +128,7 @@ public class GUI implements PVModelListener
 				setPVName(combo.getText());
 			}
 		});
-		new AutoCompleteWidget(combo, "PV");
+		new AutoCompleteWidget(combo, AutoCompleteTypes.PV);
 		
 		export = new Button(parent, SWT.PUSH);
 		export.setText("Export");

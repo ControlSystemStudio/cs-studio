@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.frib.product.feature"
+      label="CSS-FRIB Product Feature"
+      version="3.2.1.qualifier"
+      provider-name="Eric Berryman">
+
+   <description url="http://www.example.com/description">
+      The FRIB product feature.
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <url>
+      <update label="CSS dev update site" url="https://controls.frib.msu.edu/css/dev-updates"/>
+   </url>
+
+   <plugin
+         id="org.csstudio.frib.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

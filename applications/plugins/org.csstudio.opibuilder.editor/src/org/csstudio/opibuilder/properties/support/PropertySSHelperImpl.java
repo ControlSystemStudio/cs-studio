@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.properties.support;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.StringTableProperty.TitlesProvider;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor.CellEditorType;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -107,9 +108,17 @@ public class PropertySSHelperImpl extends PropertySSHelper {
 	}
 
 	@Override
+	public PropertyDescriptor getPVNamePropertyDescriptor(String prop_id,
+			String description, String detaileDescription) {
+		return new PVNamePropertyDescriptor(prop_id, description, detaileDescription);
+	}
+
+	
+	@Override
 	public PropertyDescriptor getStringTablePropertyDescriptor(String prop_id,
-			String description, TitlesProvider tilesProvider) {
-		return new StringTablePropertyDescriptor(prop_id, description, tilesProvider);
+			String description, TitlesProvider tilesProvider,
+			CellEditorType[] cellEditorTypes,  Object[] cellEditorDatas) {
+		return new StringTablePropertyDescriptor(prop_id, description, tilesProvider, cellEditorTypes, cellEditorDatas);
 	}
 
 	@Override
@@ -127,7 +136,6 @@ public class PropertySSHelperImpl extends PropertySSHelper {
 	@Override
 	public PropertyDescriptor getMatrixPropertyDescriptor(String prop_id,
 			String description) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
