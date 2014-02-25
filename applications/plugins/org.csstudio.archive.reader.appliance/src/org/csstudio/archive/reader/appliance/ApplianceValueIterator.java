@@ -15,6 +15,7 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
+import org.epics.util.array.ArrayByte;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
@@ -22,6 +23,7 @@ import org.epics.vtype.Display;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.FieldValue;
@@ -131,26 +133,15 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 					String.valueOf(result.getStatus()), 
 					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
 					val);
-        } else if (type == PayloadType.WAVEFORM_BYTE 
-        		|| type == PayloadType.WAVEFORM_SHORT 
-        		|| type == PayloadType.WAVEFORM_INT) {
+        } else if (type == PayloadType.WAVEFORM_INT
+        		|| type == PayloadType.WAVEFORM_SHORT) {
         	if (valDescriptor == null) {
         		valDescriptor = getValDescriptor(result);
         	}
         	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
         	int[] val = new int[o.size()];
-        	if (type == PayloadType.WAVEFORM_INT) {
-	        	for (int i = 0; i < val.length; i++) {
-	        		val[i] = (Integer)o.get(i);
-	        	}
-        	} else if (type == PayloadType.WAVEFORM_SHORT) {
-        		for (int i = 0; i < val.length; i++) {
-            		val[i] = (Short)o.get(i);
-            	}
-        	} else {
-        		for (int i = 0; i < val.length; i++) {
-            		val[i] = (Byte)o.get(i);
-            	}
+        	for (int i = 0; i < val.length; i++) {
+        		val[i] = (Integer)o.get(i);
         	}
         	return new ArchiveVNumberArray(
         			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
@@ -158,7 +149,17 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 					String.valueOf(result.getStatus()), 
 					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
 					val);
-        }
+        } else if (type == PayloadType.WAVEFORM_BYTE) {
+        	if (valDescriptor == null) {
+        		valDescriptor = getValDescriptor(result);
+        	}
+        	return new ArchiveVNumberArray(
+        			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
+					getSeverity(result.getSeverity()), 
+					String.valueOf(result.getStatus()), 
+					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
+					new ArrayByte(((ByteString)result.getMessage().getField(valDescriptor)).toByteArray()));
+        }         
         throw new UnsupportedOperationException("PV type " + type + " is not supported.");
 	}
 	

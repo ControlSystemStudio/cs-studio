@@ -26,17 +26,21 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	
 	private final String httpURL;
 	private final String pbrawURL;
+	private final boolean useStatistics;
 		
 	/**
 	 * Constructor that sets appliance archiver reader url.
 	 * 
-	 * @param url, appliance archiver reader url (with specific prefix)
+	 * @param url appliance archiver reader url (with specific prefix)
+	 * @param useStatistics true if statistics type data should be returned	
+	 * 			when optimized data is requested
 	 */
-	public ApplianceArchiveReader(String url) {
+	public ApplianceArchiveReader(String url, boolean useStatistics) {
 		//if the url ends with /, strip the url of the last character
 		if (url.charAt(url.length()-1) == '/') {
 			url = url.substring(0,url.length()-1);
 		}
+		this.useStatistics = useStatistics;
 		this.pbrawURL = url;
 		this.httpURL = pbrawURL.replace("pbraw://", "http://");
 	}
@@ -126,7 +130,7 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
 		try {
-			return new ApplianceOptimizedValueIterator(this, name, start, end, count, Activator.getDefault().isUseStatistics());
+			return new ApplianceOptimizedValueIterator(this, name, start, end, count, useStatistics);
 		} catch (ArchiverApplianceException e) {
 			try {
 				return new ApplianceRawValueIterator(this, name, start, end);

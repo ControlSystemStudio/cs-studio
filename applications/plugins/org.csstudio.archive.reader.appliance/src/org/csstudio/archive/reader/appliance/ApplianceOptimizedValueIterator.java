@@ -72,6 +72,7 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
 			java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 			DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
 			stdStream = dataRetrieval.getDataForPV(std, sqlStartTimestamp, sqlEndTimestamp);
+			//TODO Retrieve min, max and counts
 			if (stdStream != null) { 
 				stdIterator = stdStream.iterator();
 			} else {
@@ -101,9 +102,9 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
 						getSeverity(meanResult.getSeverity()), 
 						String.valueOf(meanResult.getStatus()), 
 						display, 
+						mean,
 						mean-std*1.5,
 						mean+std*1.5,
-						Double.NaN,
 						std,
 						100);
 	        } 
