@@ -206,6 +206,18 @@ public class PVSamples extends PlotSamples
             final List<VType> result)
     {
         history.mergeArchivedData(source, result);
+        //reset the window: if we loaded the samples, than we want to see them
+        history.setBorderTime(null);
+        if (live.getSize() > 0 && history.getSize() > 0) {
+    		//it could be that the history samples extend more into the future than live samples
+        	//in that case we can experience the "Einstein" bug, when the last samples in this 
+        	//data provider have smaller timestamps than some of the earlier samples resulting
+        	//in trend going back in time
+        	//This can happen with disconnected PVs or PVs that are updated slowly
+        	if (live.getSample(0).getTime().compareTo(history.getSample(history.getSize()-1).getTime()) < 0) {
+        		live.clear();
+        	}
+        }
     }
 
     /** Add another 'live' sample
