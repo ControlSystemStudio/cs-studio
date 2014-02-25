@@ -1,6 +1,8 @@
 package org.csstudio.opibuilder.tools.thumbnails;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.batik.utils.SVGUtils;
 import org.eclipse.core.resources.IStorage;
@@ -11,6 +13,12 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 
+/** Decorator for image files.
+ * 
+ *  <p>Displays a small version of image in its icon.
+ *
+ *  @author Xihui Chen (original check-in 2012-07-10)
+ */
 public class ImageIconDecorator implements ILabelDecorator {
 
 	private static final int MAX_ICON_WIDTH = 16;
@@ -27,21 +35,22 @@ public class ImageIconDecorator implements ILabelDecorator {
 
 	@Override
 	public Image decorateImage(Image image, Object element) {
+	    if (!(element instanceof IStorage))
+	        return null;
+	    
+	    final IStorage stor = (IStorage) element;
+	    final IPath path = stor.getFullPath();
 		try {
-			if (!(element instanceof IStorage))
-				return null;
-
-			IStorage stor = (IStorage) element;
-			IPath path = stor.getFullPath();
 			ImageData data = null;
 
-			if (GIF_EXT.equalsIgnoreCase(path.getFileExtension())
-					|| PNG_EXT.equalsIgnoreCase(path.getFileExtension())
-					|| ICO_EXT.equalsIgnoreCase(path.getFileExtension())) {
+			final String ext = path.getFileExtension();
+            if (GIF_EXT.equalsIgnoreCase(ext)
+					|| PNG_EXT.equalsIgnoreCase(ext)
+					|| ICO_EXT.equalsIgnoreCase(ext)) {
 				ImageData tmpData = new ImageData(stor.getContents());
 				data = tmpData.scaledTo(MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
-			} else if (SVG_EXT.equalsIgnoreCase(path.getFileExtension())) {
-				data = SVGUtils.loadSVG(stor.getFullPath(), stor.getContents(),
+			} else if (SVG_EXT.equalsIgnoreCase(ext)) {
+				data = SVGUtils.loadSVG(path, stor.getContents(),
 						MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 			}
 
@@ -52,7 +61,8 @@ public class ImageIconDecorator implements ILabelDecorator {
 				return img;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+		    Logger.getLogger(getClass().getName())
+		        .log(Level.WARNING, "Cannot create icon for " + path, e);
 		}
 		return null;
 	}
