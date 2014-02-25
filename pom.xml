@@ -98,8 +98,10 @@
   <modules>
     <module>core/plugins</module>
     <module>core/features</module>
+    <module>core/repository</module>
     <module>applications/plugins</module>
     <module>applications/features</module>
+    <module>applications/repository</module>
     <module>products/CS-STUDIO/plugins</module>
     <module>products/CS-STUDIO/features</module>
     <module>repository</module>
