@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
@@ -50,6 +51,13 @@ public class CSVSampleImporter implements SampleImporter
                 //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value  ignore
                 "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.,eE]+)\\s*.*");
 
+        final Pattern statisticsPattern = Pattern.compile(
+                //    YYYY-MM-DD HH:MM:SS.SSS   value	negativeError	positiveError	ignore
+                // or
+                //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value	negativeError	positiveError	ignore
+                "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.,eE]+)[ \\t,]+([-+0-9.,eE]+)[ \\t,]+([-+0-9.,eE]+)\\s*.*");
+
+        
         final List<VType> values = new ArrayList<VType>();
 
         final BufferedReader reader =
@@ -57,19 +65,30 @@ public class CSVSampleImporter implements SampleImporter
         String line;
         char groupingSeparator = DecimalFormatSymbols.getInstance().getGroupingSeparator();
         char decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+        boolean statistics = true;
         while ((line = reader.readLine()) != null)
         {
             line = line.trim();
             // Skip empty lines, comments
             if (line.length() <= 0  ||  line.startsWith("#"))
                 continue;
+            statistics = true;
             // Locate time and value
-            final Matcher matcher = pattern.matcher(line);
+            // Is statistical data?
+            Matcher matcher = statisticsPattern.matcher(line);
             if (! matcher.matches())
             {
-                logger.log(Level.INFO, "Ignored input: {0}", line);
-                continue;
+            	// Not statistical data, try normal
+                matcher = pattern.matcher(line);
+                if (! matcher.matches())
+                {
+                    logger.log(Level.INFO, "Ignored input: {0}", line);
+                    continue;
+                }
+                statistics = false;
             }
+            
+            
             // Parse
             // Date may use '-' or '/' as separator. Force '-'
             String date_text = matcher.group(1).replace('/', '-');
@@ -82,11 +101,16 @@ public class CSVSampleImporter implements SampleImporter
             //First remove all grouping separators, then replace the decimal separator with a '.'
             final double number = Double.parseDouble(
             		remove(matcher.group(2),groupingSeparator).replace(decimalSeparator, '.'));
-            // Turn into IValue
             final Timestamp time = TimestampHelper.fromMillisecs(date.getTime());
-            final VType value = new ArchiveVNumber(time, AlarmSeverity.NONE, "",
-                    meta_data, number);
-            values.add(value);
+            if (statistics) {
+            	final double min = Double.parseDouble(
+                		remove(matcher.group(3),groupingSeparator).replace(decimalSeparator, '.'));
+            	final double max = Double.parseDouble(
+                		remove(matcher.group(4),groupingSeparator).replace(decimalSeparator, '.'));
+            	values.add(new ArchiveVStatistics(time, AlarmSeverity.NONE, "", meta_data, number, number-min, number+max, 0, 1));
+            } else {
+	            values.add(new ArchiveVNumber(time, AlarmSeverity.NONE, "", meta_data, number));
+            }
         }
         reader.close();
 
