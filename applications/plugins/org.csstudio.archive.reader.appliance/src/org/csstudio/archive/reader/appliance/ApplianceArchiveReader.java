@@ -27,7 +27,7 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	private final String httpURL;
 	private final String pbrawURL;
 	private final boolean useStatistics;
-		
+			
 	/**
 	 * Constructor that sets appliance archiver reader url.
 	 * 
@@ -67,12 +67,8 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	@Override
 	public String getDescription() {
 		StringBuilder description = new StringBuilder();
-		description.append("Archiver appliance v ");
-		description.append(getVersion()); 
-		description.append('\n');
-		description.append("Server url: ");
-		description.append(pbrawURL);
-		description.append('\n');
+		description.append("Archiver appliance v ").append(getVersion()).append('\n');
+		description.append("Server url: ").append(pbrawURL).append('\n');
 		return description.toString();
 	}
 
@@ -121,7 +117,7 @@ public class ApplianceArchiveReader implements ArchiveReader {
 			return new ApplianceRawValueIterator(this, name, start, end);
 		} catch (ArchiverApplianceException ex) {
 			throw new UnknownChannelException(name);
-		}
+		} 
 	}
 
 	/* (non-Javadoc)
@@ -130,33 +126,41 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
 		try {
-			return new ApplianceOptimizedValueIterator(this, name, start, end, count, useStatistics);
+			if (useStatistics) {
+				return new ApplianceStatisticsValueIterator(this, name, start, end, count);
+			} else {
+				return new ApplianceMeanValueIterator(this, name, start, end, count);
+			}
 		} catch (ArchiverApplianceException e) {
 			try {
-				return new ApplianceRawValueIterator(this, name, start, end);
+				return getRawValues(key, name, start, end);
 			} catch (ArchiverApplianceException ex) {
 				throw new UnknownChannelException(name);
 			}
-		}
+		} 
 	}
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.archive.reader.ArchiveReader#cancel()
 	 */
 	@Override
-	public void cancel() {}
+	public void cancel() {
+		//there is no way to cancel the active iterators
+	}
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.archive.reader.ArchiveReader#close()
 	 */
 	@Override
-	public void close() {}
+	public void close() {
+		//ignore
+	}
 	
 	/**
 	 * Creates and returns DataRetrieval 
 	 * 
 	 * @param dataRetrievalURL
-	 * @return DataRetrieval instance
+	 * @return dataRetrieval instance
 	 */
 	public DataRetrieval createDataRetriveal(String dataRetrievalURL) {
 		return new RawDataRetrieval(dataRetrievalURL);
@@ -167,7 +171,7 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	 * http://domain:port/retrieval/data/getData.raw where /data/getData is
 	 * fixed and .raw identifies the MIME-type of the returned data.
 	 * 
-	 * @return Data retrieval URL.
+	 * @return data retrieval URL
 	 */
 	public String getDataRetrievalURL() {
 		return httpURL + ApplianceArchiveReaderConstants.RETRIEVAL_PATH;
@@ -176,8 +180,8 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	/**
 	 * Search for PV names that match to the specified regular expression.
 	 * 
-	 * @param reg, regular expression
-	 * @return Array with PV names that match to the given regular expression.
+	 * @param reg regular expression
+	 * @return array with PV names that match to the given regular expression.
 	 * @throws IOException 
 	 */
 	private String[] search(String reg) throws IOException {

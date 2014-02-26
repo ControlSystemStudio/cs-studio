@@ -45,23 +45,48 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     protected Iterator<EpicsMessage> mainIterator;
     private FieldDescriptor valDescriptor;
     	
+    protected final ApplianceArchiveReader reader;
+    protected final String name;
+    protected final Timestamp start;
+    protected final Timestamp end;
+    
+    /**
+     * Constructs a new ApplianceValueIterator.
+     * 
+     * @param reader the reader to use 
+     * @param name the name of the pv to load the data for
+     * @param start the start of the time window of the data
+     * @param end the end of the time window of the data
+     */
+    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end) {
+    	this.reader = reader;
+    	this.name = name;
+    	this.start = start;
+    	this.end = end;
+    }
+    
+    /**
+	 * Fetches data from appliance archiver reader using the parameters provided to the constructor.
+	 *  
+	 * @throws ArchiverApplianceException if the data for the pv could not be loaded
+	 */
+    public void fetchData() throws ArchiverApplianceException {
+    	fetchDataInternal(name);
+    }
     
 	/**
-	 * Fetches data from appliance archiver reader.
+	 * Fetches data from appliance archiver reader for the given pv name.
 	 * 
-	 * @param reader, instance of appliance archive reader
-	 * @param name, name of the PV as used in the request made to the server
-	 * @param start, start of the time period
-	 * @param end, end of the time period
+	 * @param pvName name of the PV as used in the request made to the server
 	 * 
 	 * @throws ArchiverApplianceException if the data for the pv could not be loaded
 	 */
-	protected void fetchData(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end) throws ArchiverApplianceException {				
+	protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {				
 		java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
 		java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 		
 		DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
-		mainStream = dataRetrieval.getDataForPV(name, sqlStartTimestamp, sqlEndTimestamp);
+		mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp);
 		if (mainStream != null) { 
 			mainIterator = mainStream.iterator();
 		} else {
@@ -116,6 +141,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         	if (valDescriptor == null) {
         		valDescriptor = getValDescriptor(result);
         	}
+        	//we could load the data directly using result.getNumberAt(index), but this is faster
         	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
         	double[] val = new double[o.size()];
         	if (type == PayloadType.WAVEFORM_DOUBLE) {
@@ -138,6 +164,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         	if (valDescriptor == null) {
         		valDescriptor = getValDescriptor(result);
         	}
+        	//we could load the data directly using result.getNumberAt(index), but this is faster
         	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
         	int[] val = new int[o.size()];
         	for (int i = 0; i < val.length; i++) {
@@ -153,6 +180,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         	if (valDescriptor == null) {
         		valDescriptor = getValDescriptor(result);
         	}
+        	//we could load the data directly using result.getNumberAt(index), but this is faster
         	return new ArchiveVNumberArray(
         			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
 					getSeverity(result.getSeverity()), 
@@ -236,8 +264,9 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 	/**
 	 * Determines alarm severity from the given numerical representation.
 	 * 
-	 * @param severity, numerical representation of alarm severity
-	 * @return Alarm severity.
+	 * @param severity numerical representation of alarm severity
+	 * 
+	 * @return alarm severity
 	 */
 	protected AlarmSeverity getSeverity(int severity) {
 	   if (severity == 0) {
