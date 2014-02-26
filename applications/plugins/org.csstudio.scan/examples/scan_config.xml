@@ -46,4 +46,5 @@
   <pv> <name>readback</name> <alias>readback</alias> </pv>
   <pv> <name>setpoint</name> <alias>setpoint</alias> </pv>
   <pv> <name>shutter</name> </pv>
+  <pv> <name>callback_test</name> </pv>
 </scan_config>

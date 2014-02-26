@@ -37,23 +37,27 @@ public class ScanCommandUtil
             final String device_name, final Object value,
             final double tolerance, final TimeDuration timeout) throws Exception
     {
-    	write(context, device_name, value, device_name, true, tolerance, timeout);
+    	write(context, device_name, value, false, true, device_name, tolerance, timeout);
     }
 	
-	/** Write to device with optional readback, logging if the context
-     *  was configured to auto-log
+	/** Write to device with optional completion and/or readback,
+	 *  logging if the context was configured to auto-log
      *
+     *  @param context Scan context
      *  @param device_name Name of device
      *  @param value Value to write to the device
-     *  @param readback Readback device
+     *  @param completion Await completion to the write?
      *  @param wait Wait for readback to match?
+     *  @param readback_name Readback device name (default will be main device_name)
      *  @param tolerance Numeric tolerance when checking value
-     *  @param timeout Timeout, <code>null</code> as "forever"
+     *  @param timeout Timeout for callback as well as readback; <code>null</code> as "forever"
      *  @throws Exception on error
      */
     public static void write(final ScanContext context,
-            final String device_name, final Object value, final String readback_name,
-            final boolean wait, final double tolerance, final TimeDuration timeout) throws Exception
+            final String device_name, final Object value,
+            final boolean completion,
+            final boolean wait,
+            final String readback_name, final double tolerance, final TimeDuration timeout) throws Exception
     {
         final Device device = context.getDevice(context.getMacros().resolveMacros(device_name));
 
@@ -84,7 +88,10 @@ public class ScanCommandUtil
             condition = null;
 
         // Perform write
-        device.write(value, timeout);
+        if (completion)
+            device.write(value, timeout);
+        else
+            device.write(value);
 
         // Wait?
         if (condition != null)

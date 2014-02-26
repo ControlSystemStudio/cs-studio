@@ -25,7 +25,6 @@ import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.NumericValueCondition;
 import org.csstudio.scan.device.Device;
-import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
@@ -83,24 +82,11 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         return iterations * body_units;
     }
 	
-    /** Return the device name that's really used.
-     *  Because of PVManager's way of supporting put-callback,
-     *  that might need to be an annotated name.
-     *  @return Device name which may still include macros but ends in proper annotation
-     */
-    private String getRealDeviceName()
-    {
-        final String name = command.getDeviceName();
-        if (command.getCompletion()  &&  !name.endsWith(PVDevice.PUT_CALLBACK_ANNOTATION))
-            return name + PVDevice.PUT_CALLBACK_ANNOTATION;
-        return name;
-    }
-
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
     {
-        final String device_name = getRealDeviceName();
+        final String device_name = command.getDeviceName();
         final Set<String> device_names = new HashSet<String>();
         device_names.add(macros.resolveMacros(device_name));
         if (command.getWait()  &&  command.getReadback().length() > 0)
@@ -158,7 +144,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             final SimulatedDevice device, final double value) throws Exception
     {
 		// Get previous value
-		final double original = device.readDouble();
+		final double original = VTypeHelper.toDouble(device.read());
 
 		// Estimate execution time
 		final double time_estimate = command.getWait()
@@ -187,7 +173,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         step_logger = Logger.getLogger(getClass().getName());
         try
         {
-    		final Device device = context.getDevice(context.getMacros().resolveMacros(getRealDeviceName()));
+    		final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
     
     	    // Separate read-back device, or use 'set' device?
             final Device readback;
@@ -237,7 +223,10 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         step_logger.log(Level.FINE, "Loop setting {0} = {1}{2}", new Object[] { device.getAlias(), value, (condition!=null ? " (waiting)" : "") });
         
         // Set device to value for current step of loop
-        device.write(value);
+        if (command.getCompletion())
+            device.write(value, TimeDuration.ofSeconds(command.getTimeout()));
+        else
+            device.write(value);            
 
         // .. wait for device to reach value
         if (condition != null)
