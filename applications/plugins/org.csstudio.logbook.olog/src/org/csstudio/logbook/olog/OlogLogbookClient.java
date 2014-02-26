@@ -41,6 +41,8 @@ import edu.msu.nscl.olog.api.LogBuilder;
 import edu.msu.nscl.olog.api.OlogClient;
 import edu.msu.nscl.olog.api.PropertyBuilder;
 
+import static org.csstudio.logbook.util.LogEntrySearchUtil.*;
+
 public class OlogLogbookClient implements LogbookClient {
 
     private final OlogClient reader;
@@ -148,34 +150,28 @@ public class OlogLogbookClient implements LogbookClient {
 	Map<String, String> searchParameters = LogEntrySearchUtil
 		.parseSearchString(search);
 	// append text search with a leading and trailing *
-	if (searchParameters
-		.containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT)) {
-	    String textSearch = "*"
-		    + searchParameters
-			    .get(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT) + "*";
-	    searchParameters.put(LogEntrySearchUtil.SEARCH_KEYWORD_TEXT,
-		    textSearch);
+	if (searchParameters.containsKey(SEARCH_KEYWORD_TEXT)) {
+	    String textSearch = "*" + searchParameters.get(SEARCH_KEYWORD_TEXT) + "*";
+	    searchParameters.put(SEARCH_KEYWORD_TEXT, textSearch);
 	}
-	if (searchParameters
-		.containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_START)) {
+	if (searchParameters.containsKey(SEARCH_KEYWORD_START)) {
 	    TimeInterval timeInterval;
 	    // Check if both start and end are specified.
-	    if (searchParameters
-		    .containsKey(LogEntrySearchUtil.SEARCH_KEYWORD_END)) {
-		timeInterval = TimeParser.getTimeInterval(searchParameters
-			.get(LogEntrySearchUtil.SEARCH_KEYWORD_START),
-			searchParameters
-				.get(LogEntrySearchUtil.SEARCH_KEYWORD_END));
-		searchParameters.remove(LogEntrySearchUtil.SEARCH_KEYWORD_END);
+	    if (searchParameters.containsKey(SEARCH_KEYWORD_END)) {
+		timeInterval = TimeParser.getTimeInterval(
+			searchParameters.get(SEARCH_KEYWORD_START),
+			searchParameters.get(SEARCH_KEYWORD_END));
+		searchParameters.remove(SEARCH_KEYWORD_END);
 	    } else {
-		timeInterval = TimeParser.getTimeInterval(searchParameters
-			.get(LogEntrySearchUtil.SEARCH_KEYWORD_START), "now");
+		timeInterval = TimeParser.getTimeInterval(
+			searchParameters.get(SEARCH_KEYWORD_START), "now");
 	    }
-	    searchParameters.remove(LogEntrySearchUtil.SEARCH_KEYWORD_START);
-	    searchParameters.put("start",
-		    String.valueOf(timeInterval.getStart().getSec()));
-	    searchParameters.put("end",
-		    String.valueOf(timeInterval.getEnd().getSec()));
+	    searchParameters.remove(SEARCH_KEYWORD_START);
+	    if (timeInterval != null && timeInterval.getStart() != null
+				&& timeInterval.getEnd() != null) {
+	    	searchParameters.put("start", String.valueOf(timeInterval.getStart().getSec()));
+	    	searchParameters.put("end", String.valueOf(timeInterval.getEnd().getSec()));
+	    }
 	}
 	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();
 	Collection<Log> logs = reader.findLogs(searchParameters);
@@ -202,7 +198,22 @@ public class OlogLogbookClient implements LogbookClient {
 
     @Override
     public LogEntry updateLogEntry(LogEntry logEntry) throws Exception {
-	return new OlogEntry(writer.update(LogBuilder(logEntry)));
+	OlogEntry ologEntry = new OlogEntry(writer.update(LogBuilder(logEntry)));
+	// creates the log entry and then adds all the attachments
+	// TODO (shroffk) multiple network calls, one for each attachment, need
+	// to improve
+	Collection<String> existingFiles = new ArrayList<String>();
+	for (edu.msu.nscl.olog.api.Attachment attachment : reader.getLog((Long) ologEntry.getId()).getAttachments()) {
+	    existingFiles.add(attachment.getFileName());
+	}
+	for (Attachment attachment : logEntry.getAttachment()) {
+	    //Check the attachment doe snot already exist.
+	    if (!existingFiles.contains(attachment.getFileName()) && attachment.getInputStream() != null) {
+		addAttachment(ologEntry.getId(), attachment.getInputStream(),
+			attachment.getFileName());
+	    }
+	}
+	return ologEntry;
     }
 
     @Override
@@ -251,7 +262,7 @@ public class OlogLogbookClient implements LogbookClient {
      * @return
      */
     private LogBuilder LogBuilder(LogEntry logEntry) {
-	LogBuilder logBuilder = log().description(logEntry.getText()).level(logEntry.getLevel());
+	LogBuilder logBuilder = log().description(logEntry.getText()).level(logEntry.getLevel()).id((Long) logEntry.getId());
 	for (Tag tag : logEntry.getTags())
 	    logBuilder.appendTag(tag(tag.getName(), tag.getState()));
 	for (Logbook logbook : logEntry.getLogbooks())

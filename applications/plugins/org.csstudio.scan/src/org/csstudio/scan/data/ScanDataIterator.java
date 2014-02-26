@@ -118,12 +118,9 @@ public class ScanDataIterator
 			if (sample == null)
 				continue;
 			if (sample.getSerial() < oldest)
-			{
 				oldest = sample.getSerial();
-				timestamp = sample.getTimestamp();
-			}
 		}
-		if (timestamp == null)
+		if (oldest == Long.MAX_VALUE)
 			return false;
 
         // 'oldest' now defines the current spreadsheet line.
@@ -147,6 +144,10 @@ public class ScanDataIterator
 			}
 			// else: sample[i] already points to a sample
 			// _after_ the current line, so leave value[i] as is
+			
+			// For time stamp, use the newest stamp on current line
+			if (timestamp == null  ||  timestamp.before(sample.getTimestamp()))
+			    timestamp = sample.getTimestamp();
 		}
 
 		return true;

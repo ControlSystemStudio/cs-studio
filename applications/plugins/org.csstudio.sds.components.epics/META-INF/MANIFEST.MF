@@ -13,6 +13,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sds.ui;bundle-version="1.0.8",
  org.junit,
  org.mockito;bundle-version="1.8.5",
- org.csstudio.domain.desy;bundle-version="1.0.0"
+ org.csstudio.domain.common;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.sds.components.epics

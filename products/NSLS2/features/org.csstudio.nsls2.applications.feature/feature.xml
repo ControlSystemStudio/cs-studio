@@ -45,13 +45,25 @@
    <includes
          id="org.csstudio.boy.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.csstudio.trends.databrowser2.opiwidget.feature"
-         version="0.0.0"/>   
+         version="0.0.0"/>
 
    <includes
          id="org.csstudio.channel.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.shift.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.archive.reader.ea4.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.archive.reader.pbraw.feature"
          version="0.0.0"/>
 
    <plugin

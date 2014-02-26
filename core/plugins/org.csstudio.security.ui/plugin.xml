@@ -91,6 +91,10 @@
                name="org.csstudio.security.ui.current_user"
                priorityLevel="workbench">
          </variable>
+         <variable
+               name="org.csstudio.security.ui.current_authorization"
+               priorityLevel="workbench">
+         </variable>
       </sourceProvider>
    </extension>
    <extension

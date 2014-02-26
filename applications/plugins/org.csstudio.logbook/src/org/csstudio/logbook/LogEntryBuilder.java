@@ -111,6 +111,11 @@ public class LogEntryBuilder {
 	this.tags.remove(tagName);
 	return this;
     }
+    
+
+    public void removeProperty(String propertyname) {
+	this.properties.remove(propertyname);
+    }
 
     /**
      * Set the list of tags to _tags_

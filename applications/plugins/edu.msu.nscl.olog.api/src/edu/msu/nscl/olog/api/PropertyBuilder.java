@@ -52,7 +52,7 @@ public class PropertyBuilder {
 		return new XmlProperty(name, attributes);
 	}
 
-	public Property build() {
+	Property build() {
 		return new Property(this.toXml());
 	}
 

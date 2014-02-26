@@ -20,6 +20,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.apputil.args.ArgParser;
+import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.httpd.ScanWebServer;
@@ -60,18 +62,42 @@ public class Application implements IApplication
     @Override
     public Object start(final IApplicationContext context) throws Exception
     {
+		// Display configuration info
+		synchronized (Application.class) 
+		{
+			final String version = (String) context.getBrandingBundle()
+					.getHeaders().get("Bundle-Version");
+			bundle_version = context.getBrandingName() + " " + version;
+		}
+        
+    	// Create parser for arguments and run it.
+        final String args[] = (String []) context.getArguments().get("application.args");
+
+		final ArgParser parser = new ArgParser();
+		final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+		final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
+		parser.addEclipseParameters();
+		try {
+			parser.parse(args);
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage() + "\n" + parser.getHelp());
+			return IApplication.EXIT_OK;
+		}
+		if (help_opt.get()) {
+			System.out.println(bundle_version + "\n\n" + parser.getHelp());
+			return IApplication.EXIT_OK;
+		}
+		if (version_opt.get()) {
+			System.out.println(bundle_version);
+			return IApplication.EXIT_OK;
+		}
+    	
     	final Logger log = Logger.getLogger(getClass().getName());
     	try
     	{
 	        // Display config info
 	        final Bundle bundle = context.getBrandingBundle();
-            synchronized (Application.class)
-	        {
-	            final String version = (String)
-	                    bundle.getHeaders().get("Bundle-Version");
-	            bundle_version = context.getBrandingName() + " " + version;
-	            log.info(bundle_version);
-	        }
+	        log.info(bundle_version);
             
             LogConfigurator.configureFromPreferences();
             

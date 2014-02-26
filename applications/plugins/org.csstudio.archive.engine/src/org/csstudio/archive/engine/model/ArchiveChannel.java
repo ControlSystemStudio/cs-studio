@@ -54,7 +54,9 @@ abstract public class ArchiveChannel
      */
     final private String name;
 
-    /** Control system PV */
+    /** Control system PV
+     *  SYNC on access
+     */
     private PVReader<List<VType>> pv = null;
 
     /** Is this channel currently running?
@@ -182,13 +184,13 @@ abstract public class ArchiveChannel
     }
 
     /** @return <code>true</code> if connected */
-    final public boolean isConnected()
+    final public synchronized boolean isConnected()
     {
-        return pv.isConnected();
+        return pv != null  &&  pv.isConnected();
     }
 
     /** @return Human-readable info on internal state of PV */
-    public String getInternalState()
+    public synchronized String getInternalState()
     {
     	if (pv == null)
     		return "Not initialized";
@@ -205,7 +207,7 @@ abstract public class ArchiveChannel
 		{
 			@Override
 			public void pvChanged(final PVReaderEvent<List<VType>> event)
-			{
+			{   // Not sync-ing for consistency check of 'pv'
 				if (event.getPvReader() != pv)
 					throw new Error("Invalid PV");
 				if (!is_running)
@@ -228,7 +230,12 @@ abstract public class ArchiveChannel
 				}
 			}
 		};
-		pv = PVManager.read(newValuesOf(vType(name))).timeout(ofSeconds(30)).readListener(listener).maxRate(ofSeconds(1));
+		final PVReader<List<VType>> pv = PVManager.read(newValuesOf(vType(name))).timeout(ofSeconds(30)).readListener(listener).maxRate(ofSeconds(1));
+		synchronized (this)
+        {
+		    this.pv = pv;
+            
+        }
     }
 
     /** Check a received value for basic problems before
@@ -270,8 +277,13 @@ abstract public class ArchiveChannel
     	if (!is_running)
     		return;
         is_running = false;
-        pv.close();
-        pv = null;
+        final PVReader<List<VType>> safe_pv;
+        synchronized (this)
+        {
+            safe_pv = pv;
+            pv = null;
+        }
+        safe_pv.close();
         addInfoToBuffer(ValueButcher.createOff());
     }
 

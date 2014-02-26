@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
-<!-- IMPORTANT: label must not be empty! -->
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#diag" label="JMS Sender">
-   <topic label="JMS Sender" href="html/jmsSender.html">
-   </topic>
-</toc>

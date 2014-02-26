@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Request Type Test Fragment
-Bundle-SymbolicName: org.csstudio.archive.common.requesttype.test
-Bundle-Version: 1.0.0.qualifier
-Fragment-Host: org.csstudio.archive.common.requesttype;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: Desy <css-developer@desy.de>, Markus Moeller, Bastian Knerr
-Require-Bundle: org.junit;bundle-version="4.8.1"
