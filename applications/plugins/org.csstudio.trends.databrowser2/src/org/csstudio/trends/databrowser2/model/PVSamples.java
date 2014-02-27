@@ -14,6 +14,7 @@ import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.trends.databrowser2.Messages;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueUtil;
@@ -129,7 +130,11 @@ public class PVSamples extends PlotSamples
             return getRawSample(index);
         // Last sample is valid, so it should still apply 'now'
         final PlotSample sample = getRawSample(raw_count-1);
-        return new PlotSample(sample.getSource(), VTypeHelper.transformTimestampToNow(sample.getValue()));
+        if (Timestamp.now().compareTo(sample.getTime()) < 0) {
+        	return sample;
+        } else {
+        	return new PlotSample(sample.getSource(), VTypeHelper.transformTimestampToNow(sample.getValue()));
+        }
     }
 
     /** Get 'raw' sample, no continuation until 'now'
@@ -206,18 +211,6 @@ public class PVSamples extends PlotSamples
             final List<VType> result)
     {
         history.mergeArchivedData(source, result);
-        //reset the window: if we loaded the samples, than we want to see them
-        history.setBorderTime(null);
-        if (live.getSize() > 0 && history.getSize() > 0) {
-    		//it could be that the history samples extend more into the future than live samples
-        	//in that case we can experience the "Einstein" bug, when the last samples in this 
-        	//data provider have smaller timestamps than some of the earlier samples resulting
-        	//in trend going back in time
-        	//This can happen with disconnected PVs or PVs that are updated slowly
-        	if (live.getSample(0).getTime().compareTo(history.getSample(history.getSize()-1).getTime()) < 0) {
-        		live.clear();
-        	}
-        }
     }
 
     /** Add another 'live' sample
