@@ -57,7 +57,7 @@ public class VTypeToString {
         return timeFormat.format(time.getTimestamp()) + "(" + time.getTimeUserTag()+ ")";
     }
     
-    private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd hh:mm:ss.SSS");
+    private static final TimestampFormat timeFormat = new TimestampFormat("yyyy-MM-dd HH:mm:ss.SSS");
     
     private static void appendTime(StringBuilder builder, Time time) {
         builder.append(", ").append(timeFormat.format(time.getTimestamp()));
