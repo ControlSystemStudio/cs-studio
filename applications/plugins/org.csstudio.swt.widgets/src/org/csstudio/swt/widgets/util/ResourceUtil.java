@@ -105,6 +105,7 @@ public class ResourceUtil {
 
         // Must be a URL
         // Allow URLs with spaces. Ideally, the URL class would handle this?
+        urlString = urlString.replaceAll(" ", "%20");
         URI uri = new URI(urlString);
         final URL url = uri.toURL();
         return  openURLStream(url);
