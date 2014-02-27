@@ -104,11 +104,10 @@ public class ResourceUtil {
         }
 
         // Must be a URL
+        // Allow URLs with spaces. Ideally, the URL class would handle this?
+        urlString = urlString.replaceAll(" ", "%20");
         final URL url = new URL(urlString);
         return  openURLStream(url);
-       
-		       
-
 	}
 	
 	private static InputStream openURLStream(final URL url) throws IOException {
