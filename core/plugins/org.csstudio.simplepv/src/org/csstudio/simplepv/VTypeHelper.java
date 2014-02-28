@@ -484,7 +484,7 @@ public class VTypeHelper {
 					NumberFormat numberFormat = formatCacheMap.get(precision);
 					if (numberFormat == null) {
 						numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
-						numberFormat.setMinimumFractionDigits(0);
+						numberFormat.setMinimumFractionDigits(precision);
 						numberFormat.setMaximumFractionDigits(precision);
 						formatCacheMap.put(precision, numberFormat);
 					}
