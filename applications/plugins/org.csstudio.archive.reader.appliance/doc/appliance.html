@@ -48,7 +48,8 @@ The plugin supports two different types of data loading: optimized and raw. The 
 points that are available for the selected time period, while the optimized algorithm will use data reduction
 algorithm to avoid excessive data transfers. Data reduction used for numerical PVs is averaging. If selected
 via preferences, the plugin can also provide the statistical data (mean, std, min and max) when the optimized
-algorithm is used.   
+algorithm is used. To enable statistical data the property <code>org.csstudio.archive.reader.appliance/useStatisticsForOptimizedData</code>
+must be set to <code>true</code> (default setting); to disable this feature, set the property value to <code>false</code>.
 </p>
 
 </body>

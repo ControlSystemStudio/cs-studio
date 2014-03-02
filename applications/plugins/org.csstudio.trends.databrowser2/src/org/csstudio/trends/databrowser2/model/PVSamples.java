@@ -14,6 +14,7 @@ import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.trends.databrowser2.Messages;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueUtil;
@@ -129,7 +130,11 @@ public class PVSamples extends PlotSamples
             return getRawSample(index);
         // Last sample is valid, so it should still apply 'now'
         final PlotSample sample = getRawSample(raw_count-1);
-        return new PlotSample(sample.getSource(), VTypeHelper.transformTimestampToNow(sample.getValue()));
+        if (Timestamp.now().compareTo(sample.getTime()) < 0) {
+        	return sample;
+        } else {
+        	return new PlotSample(sample.getSource(), VTypeHelper.transformTimestampToNow(sample.getValue()));
+        }
     }
 
     /** Get 'raw' sample, no continuation until 'now'
