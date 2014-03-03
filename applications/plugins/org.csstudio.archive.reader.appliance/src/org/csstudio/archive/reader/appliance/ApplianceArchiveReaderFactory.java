@@ -15,6 +15,6 @@ public class ApplianceArchiveReaderFactory implements ArchiveReaderFactory{
 	 */
 	@Override
 	public ArchiveReader getArchiveReader(String url) throws Exception {
-		return new ApplianceArchiveReader(url);
+		return new ApplianceArchiveReader(url, Activator.getDefault().isUseStatistics());
 	}
 }

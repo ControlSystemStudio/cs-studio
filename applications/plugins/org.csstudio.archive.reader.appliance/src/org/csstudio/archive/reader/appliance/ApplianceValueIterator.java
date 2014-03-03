@@ -15,6 +15,7 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
+import org.epics.util.array.ArrayByte;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
@@ -22,6 +23,7 @@ import org.epics.vtype.Display;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.FieldValue;
@@ -43,23 +45,48 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     protected Iterator<EpicsMessage> mainIterator;
     private FieldDescriptor valDescriptor;
     	
+    protected final ApplianceArchiveReader reader;
+    protected final String name;
+    protected final Timestamp start;
+    protected final Timestamp end;
+    
+    /**
+     * Constructs a new ApplianceValueIterator.
+     * 
+     * @param reader the reader to use 
+     * @param name the name of the pv to load the data for
+     * @param start the start of the time window of the data
+     * @param end the end of the time window of the data
+     */
+    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end) {
+    	this.reader = reader;
+    	this.name = name;
+    	this.start = start;
+    	this.end = end;
+    }
+    
+    /**
+	 * Fetches data from appliance archiver reader using the parameters provided to the constructor.
+	 *  
+	 * @throws ArchiverApplianceException if the data for the pv could not be loaded
+	 */
+    public void fetchData() throws ArchiverApplianceException {
+    	fetchDataInternal(name);
+    }
     
 	/**
-	 * Fetches data from appliance archiver reader.
+	 * Fetches data from appliance archiver reader for the given pv name.
 	 * 
-	 * @param reader, instance of appliance archive reader
-	 * @param name, name of the PV as used in the request made to the server
-	 * @param start, start of the time period
-	 * @param end, end of the time period
+	 * @param pvName name of the PV as used in the request made to the server
 	 * 
 	 * @throws ArchiverApplianceException if the data for the pv could not be loaded
 	 */
-	protected void fetchData(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end) throws ArchiverApplianceException {				
+	protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {				
 		java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
 		java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 		
 		DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
-		mainStream = dataRetrieval.getDataForPV(name, sqlStartTimestamp, sqlEndTimestamp);
+		mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp);
 		if (mainStream != null) { 
 			mainIterator = mainStream.iterator();
 		} else {
@@ -114,6 +141,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         	if (valDescriptor == null) {
         		valDescriptor = getValDescriptor(result);
         	}
+        	//we could load the data directly using result.getNumberAt(index), but this is faster
         	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
         	double[] val = new double[o.size()];
         	if (type == PayloadType.WAVEFORM_DOUBLE) {
@@ -131,26 +159,16 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 					String.valueOf(result.getStatus()), 
 					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
 					val);
-        } else if (type == PayloadType.WAVEFORM_BYTE 
-        		|| type == PayloadType.WAVEFORM_SHORT 
-        		|| type == PayloadType.WAVEFORM_INT) {
+        } else if (type == PayloadType.WAVEFORM_INT
+        		|| type == PayloadType.WAVEFORM_SHORT) {
         	if (valDescriptor == null) {
         		valDescriptor = getValDescriptor(result);
         	}
+        	//we could load the data directly using result.getNumberAt(index), but this is faster
         	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
         	int[] val = new int[o.size()];
-        	if (type == PayloadType.WAVEFORM_INT) {
-	        	for (int i = 0; i < val.length; i++) {
-	        		val[i] = (Integer)o.get(i);
-	        	}
-        	} else if (type == PayloadType.WAVEFORM_SHORT) {
-        		for (int i = 0; i < val.length; i++) {
-            		val[i] = (Short)o.get(i);
-            	}
-        	} else {
-        		for (int i = 0; i < val.length; i++) {
-            		val[i] = (Byte)o.get(i);
-            	}
+        	for (int i = 0; i < val.length; i++) {
+        		val[i] = (Integer)o.get(i);
         	}
         	return new ArchiveVNumberArray(
         			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
@@ -158,7 +176,18 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 					String.valueOf(result.getStatus()), 
 					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
 					val);
-        }
+        } else if (type == PayloadType.WAVEFORM_BYTE) {
+        	if (valDescriptor == null) {
+        		valDescriptor = getValDescriptor(result);
+        	}
+        	//we could load the data directly using result.getNumberAt(index), but this is faster
+        	return new ArchiveVNumberArray(
+        			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
+					getSeverity(result.getSeverity()), 
+					String.valueOf(result.getStatus()), 
+					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
+					new ArrayByte(((ByteString)result.getMessage().getField(valDescriptor)).toByteArray()));
+        }         
         throw new UnsupportedOperationException("PV type " + type + " is not supported.");
 	}
 	
@@ -235,8 +264,9 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 	/**
 	 * Determines alarm severity from the given numerical representation.
 	 * 
-	 * @param severity, numerical representation of alarm severity
-	 * @return Alarm severity.
+	 * @param severity numerical representation of alarm severity
+	 * 
+	 * @return alarm severity
 	 */
 	protected AlarmSeverity getSeverity(int severity) {
 	   if (severity == 0) {

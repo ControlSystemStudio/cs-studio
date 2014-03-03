@@ -17,21 +17,21 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
  * @author Miha Novak <miha.novak@cosylab.com>
  */
 public class TestEpicsMessage extends EpicsMessage{
-	
-	private final int index;
-	public static final long[] TIME = new long[]{
-		0,1,2,3,4,5,6,7,8,9};
-	public static final double[] VALUES = new double[]{
-		1,2,3,4,5,6,7,8,9,10};
-	public static final int[] SEVERITIES = new int[]{
-		3,2,2,1,0,0,0,1,2,4};
+		
+	private final long time;
+	private final Number value;
+	private final int severity;
+	private final int status;
 	
 	/**
 	 * Constructor.
 	 */
-	public TestEpicsMessage(int index, GeneratedMessage message, PayloadInfo info) {
+	public TestEpicsMessage(long time, Number value, int severity, int status, GeneratedMessage message, PayloadInfo info) {
 		super(message, info);
-		this.index = index;
+		this.time = time;
+		this.value = value;
+		this.severity = severity;
+		this.status = status;
 	}
 	
 	/* (non-Javadoc)
@@ -64,7 +64,7 @@ public class TestEpicsMessage extends EpicsMessage{
 	 */
 	@Override
 	public Number getNumberAt(int index) throws IOException {
-		return 4000;
+		return value;
 	}
 	
 	/* (non-Javadoc)
@@ -72,7 +72,7 @@ public class TestEpicsMessage extends EpicsMessage{
 	 */
 	@Override
 	public Number getNumberValue() throws IOException {
-		return VALUES[index];
+		return value;
 	}
 	
 	/* (non-Javadoc)
@@ -80,7 +80,7 @@ public class TestEpicsMessage extends EpicsMessage{
 	 */
 	@Override
 	public int getSeverity() {
-		return SEVERITIES[index];
+		return severity;
 	}
 	
 	/* (non-Javadoc)
@@ -88,7 +88,7 @@ public class TestEpicsMessage extends EpicsMessage{
 	 */
 	@Override
 	public int getStatus() {
-		return 3904;
+		return status;
 	}
 	
 	/* (non-Javadoc)
@@ -96,7 +96,7 @@ public class TestEpicsMessage extends EpicsMessage{
 	 */
 	@Override
 	public Timestamp getTimestamp() {
-		return new Timestamp(TIME[index]);
+		return new Timestamp(time);
 	}
 	
 	/* (non-Javadoc)
