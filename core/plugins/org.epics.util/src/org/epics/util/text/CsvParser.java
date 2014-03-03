@@ -51,6 +51,14 @@ public class CsvParser {
     public enum Header {
         /**
          * Auto detects whether the first line is a header.
+         * <p>
+         * The first line is interpreted as data only if it can be safely
+         * distinguished. If all columns contain strings, then the first
+         * line is always interpreted as a header. If the types in the
+         * first line do not match the column (e.g. first line string, rest are
+         * numbers) then it is interpreted as header. If the types match,
+         * and one of them is not a string (e.g. number) then the first
+         * line is interpreted as data.
          */
         AUTO, 
         
@@ -60,7 +68,10 @@ public class CsvParser {
         FIRST_LINE,
         
         /**
-         * There is no header
+         * The data contains no header, and the first line is data.
+         * <p>
+         * A header is automatically generated with the convention given by
+         * spreadsheets columns: A, B, ..., Y, Z, AA, AB, ..., AZ, BA, and so on.
          */
         NONE};
     
@@ -83,6 +94,10 @@ public class CsvParser {
     private static final Pattern pQuote = Pattern.compile("\"\"");
     private static final Pattern pDouble = Pattern.compile(DOUBLE_REGEX_WITH_NAN);
     
+    /**
+     * Automatic parser: auto-detects whether the first line is a header or not
+     * and tries the most common separators (i.e. ',' ';' 'TAB' 'SPACE').
+     */
     public static final CsvParser AUTOMATIC = new CsvParser(",;\t ", Header.AUTO);
 
     private CsvParser(String separators, Header header) {
@@ -100,7 +115,10 @@ public class CsvParser {
     }
 
     /**
-     * Creates a new parser that uses the given separators
+     * Creates a new parser that uses the given separators.
+     * <p>
+     * Each character of the string is tried until the parsing is
+     * successful.
      * 
      * @param separators the new list of separators
      * @return a new parser
@@ -301,6 +319,13 @@ public class CsvParser {
         }
     }
     
+    /**
+     * Determines whether the string contains an even number of double quote
+     * characters.
+     * 
+     * @param string the given string
+     * @return true if contains even number of '"'
+     */
     static boolean isEvenQuotes(String string) {
         // In principle, we could use the regex given by:
         // Pattern pEvenQuotes = Pattern.compile("([^\"]*\\\"[^\"]*\\\")*[^\"]*");
