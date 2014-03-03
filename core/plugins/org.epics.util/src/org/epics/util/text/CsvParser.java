@@ -15,7 +15,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
-import org.epics.util.array.ListNumber;
 import static org.epics.util.text.StringUtil.DOUBLE_REGEX_WITH_NAN;
 
 /**
@@ -266,19 +265,55 @@ public class CsvParser {
      * @return the lines
      */
     static List<String> csvLines(Reader reader) {
-        // FIXME: this does not handle quoted text that spans multiple lines!!!
+        // This needs to handle quoted text that spans multiple lines,
+        // so we divide the full text into chunks that correspond to
+        // a single csv line
         try {
-            // Just take each line and put it in the list
             BufferedReader br = new BufferedReader(reader);
-            String line;
             List<String> lines = new ArrayList<>();
+            // The current line read from the Reader
+            String line;
+            // The full csv line that may span multiple lines
+            String longLine = null;
             while ((line = br.readLine()) != null) {
-                lines.add(line);
+                // If we have a line from the previous iteration,
+                // we concatenate it
+                if (longLine == null) {
+                    longLine = line;
+                } else {
+                    longLine = longLine.concat("\n").concat(line);
+                }
+                // Count the number of quotes: if it's even, the csv line
+                // must end here. If not, it will continue to the next
+                if (isEvenQuotes(longLine)) {
+                    lines.add(longLine);
+                    longLine = null;
+                }
+            }
+            // If there is text leftover, the line was not closed propertly.
+            // XXX: we need to figure out how to handle errors like this
+            if (longLine != null) {
+                lines.add(longLine);
             }
             return lines;
         } catch(IOException ex) {
             throw new RuntimeException("Couldn't process data", ex);
         }
+    }
+    
+    static boolean isEvenQuotes(String string) {
+        // In principle, we could use the regex given by:
+        // Pattern pEvenQuotes = Pattern.compile("([^\"]*\\\"[^\"]*\\\")*[^\"]*");
+        // We assume just counting the instances of double quotes is more efficient
+        // but we haven't really tested that assumption.
+
+        boolean even = true;
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == '\"') {
+                even = !even;
+            }
+        }
+        return even;
     }
 
     /**
@@ -459,40 +494,5 @@ public class CsvParser {
             values.add(value);
         }
         return values;
-    }
-    
-    /**
-     * Parses a line of text representing comma separated values and returns
-     * the tokens.
-     * 
-     * @param line the line to parse
-     * @param separatorChar the regular expression for the separator
-     * @return the list of values
-     */
-    static List<String> csvTokens(String line, String separatorChar) {
-        String regex = // puts a doublequoted field in group(1) and an unquoted field into group(2)
-                "\\G(?:^|" + separatorChar + ")" +
-                "(?:" +
-                "\"" +
-                "((?:[^\"]++|\"\")*+)" +
-                "\"" +
-                "|" +
-                "([^\"" + separatorChar + "]*)" +
-                ")";
-        Matcher mMain = Pattern.compile(regex).matcher("");
-        Matcher mQuote = Pattern.compile("\"\"").matcher("");
-        
-        List<String> tokens = new ArrayList<>();
-        mMain.reset(line);
-        while (mMain.find()) {
-            String field;
-            if (mMain.start(2) >= 0) {
-                field = mMain.group(2);
-            } else {
-                field = mQuote.reset(mMain.group(1)).replaceAll("\"");
-            }
-            tokens.add(field);
-        }
-        return tokens;
     }
 }
