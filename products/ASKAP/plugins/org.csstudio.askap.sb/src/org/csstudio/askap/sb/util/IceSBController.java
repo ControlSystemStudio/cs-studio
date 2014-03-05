@@ -64,9 +64,10 @@ public class IceSBController {
 		STATE_MAP.put(SBState.SCHEDULED, ObsState.SCHEDULED);
 		STATE_MAP.put(SBState.EXECUTING, ObsState.EXECUTING);
 		STATE_MAP.put(SBState.POSTPROCESSING, ObsState.POSTPROCESSING);
-		STATE_MAP.put(SBState.PENDINGTRANSFER, ObsState.PENDINGTRANSFER);
+		STATE_MAP.put(SBState.PENDINGTRANSFER, ObsState.PENDINGARCHIVE);
 		STATE_MAP.put(SBState.COMPLETED, ObsState.COMPLETED);
 		STATE_MAP.put(SBState.ERRORED, ObsState.ERRORED);		
+		STATE_MAP.put(SBState.RETIRED, ObsState.RETIRED);		
 	}
 		
 	/**
@@ -115,7 +116,7 @@ public class IceSBController {
 		if (sbTemplateProxy==null)
 			sbTemplateProxy = IceManager.getSBTemplateProxy(Preferences.getSBTemplateIceName());
 		
-		long id = sbTemplateProxy.create(schemaName, paramSet, pythonScript, SBTemplateStatus.PUBLIC);
+		long id = sbTemplateProxy.create(schemaName, paramSet, pythonScript, SBTemplateStatus.PUBLIC, "");
 		
 		return id;
 	}

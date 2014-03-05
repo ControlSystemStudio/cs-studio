@@ -55,7 +55,8 @@ public class SchedulingBlock {
 	    POSTPROCESSING,	    
 	    PENDINGTRANSFER,	    
 	    COMPLETED,	    
-	    ERRORED;
+	    ERRORED, 
+	    RETIRED;
 	}
 	
 	
