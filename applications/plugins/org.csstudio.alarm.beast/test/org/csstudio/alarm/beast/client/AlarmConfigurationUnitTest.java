@@ -114,20 +114,20 @@ public class AlarmConfigurationUnitTest
         config.removeAllItems();
 
         //add component and PV in RDB
-        final AlarmTreeItem fac = config.addComponent(root, "TestFac");
-        final AlarmTreeItem sys1 = config.addComponent(fac, "Sys1");
-        final AlarmTreeItem sys2 = config.addComponent(fac, "Sys2");
-        AlarmTreePV pv1 = config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV1");
-        config.configurePV(pv1, "XihuiTestPV1", true, true, true, 0, 0, "",
+        final AlarmTreeItem fac = config.addComponent(root, "TestFac", true);
+        final AlarmTreeItem sys1 = config.addComponent(fac, "Sys1", true);
+        final AlarmTreeItem sys2 = config.addComponent(fac, "Sys2", true);
+        AlarmTreePV pv1 = config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV1", true);
+        config.configurePV(pv1, "XihuiTestPV1", true, true, 0, 0, "",
         		new GDCDataStructure[]
                 {
                     new GDCDataStructure("call xihui", "Xihui's phone is 123456"),
                     new GDCDataStructure("call fred","Fred's Email is fred@ornl.gov \n !@#$%^&*()_+-=~`:\"|\\?/</details>,.;'")
                 },
         		null, null, null);
-        config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV2");
-        config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV1");
-        config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV2");
+        config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV2", true);
+        config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV1", true);
+        config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV2", false);
         //print TEST_ROOT AlarmTree to console
         root.dump(System.out);
         //close the connection with RDB.

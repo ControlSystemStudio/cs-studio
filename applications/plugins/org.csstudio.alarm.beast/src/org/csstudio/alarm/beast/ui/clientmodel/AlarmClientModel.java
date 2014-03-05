@@ -568,7 +568,7 @@ public class AlarmClientModel
      *  @throws Exception on error
      */
     public void addComponent(final AlarmTreeItem root_or_component,
-            final String name) throws Exception
+            final String name, final boolean isEnabled) throws Exception
     {
         if (! allow_write)
             return;
@@ -576,7 +576,7 @@ public class AlarmClientModel
         {
             if (config == null)
                 return;
-            config.addComponent(root_or_component, name);
+            config.addComponent(root_or_component, name, true);
         }
         synchronized (communicator_lock)
         {
@@ -599,7 +599,7 @@ public class AlarmClientModel
         {
             if (config == null)
                 return;
-            config.addPV(component, name);
+            config.addPV(component, name, component.isEnabled());
         }
         // Notify via JMS, then add to local model in response to notification.
         synchronized (communicator_lock)
@@ -660,7 +660,7 @@ public class AlarmClientModel
      *  @throws Exception on error
      */
     public void configurePV(final AlarmTreePV pv, final String description,
-        final boolean enabled, final boolean annunciate, final boolean latch,
+        final boolean annunciate, final boolean latch,
         final int delay, final int count, final String filter,
         final GDCDataStructure guidance[], final GDCDataStructure displays[],
         final GDCDataStructure commands[], final AADataStructure auto_actions[]) throws Exception
@@ -673,7 +673,7 @@ public class AlarmClientModel
                 return;
             try
             {
-	            config.configurePV(pv, description, enabled, annunciate,
+	            config.configurePV(pv, description, annunciate,
 	                    latch, delay, count, filter,
 	                    guidance, displays, commands, auto_actions);
             }
@@ -773,9 +773,9 @@ public class AlarmClientModel
 
             // Add new PV
             final AlarmTreePV new_pv =
-                config.addPV(new_parent, new_name);
+                config.addPV(new_parent, new_name, pv.isEnabled());
             // Update configuration of new PV to match duplicated PV
-            config.configurePV(new_pv, pv.getDescription(), pv.isEnabled(),
+            config.configurePV(new_pv, pv.getDescription(),
                     pv.isAnnunciating(), pv.isLatching(), pv.getDelay(),
                     pv.getCount(), pv.getFilter(), pv.getGuidance(),
                     pv.getDisplays(), pv.getCommands(), pv.getAutomatedActions());
@@ -810,6 +810,31 @@ public class AlarmClientModel
         }
     }
 
+
+    /** Diable/Enable item and all sub-items from alarm tree.
+     *  @param item Item to remove
+     *  @throws Exception on error
+     */
+    public void setEnabled(final AlarmTreeItem item, final boolean isEnabled) throws Exception
+    {
+        if (! allow_write)
+            return;
+        synchronized (this)
+        {
+            if (config == null)
+                return;
+            
+            config.setEnabled(item, isEnabled);
+        }
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.sendConfigUpdate(null);
+        }
+    }
+
+    
+    
     /** Update the configuration of a model item
      *  @param path Path name of the added/removed/changed item or null
      */

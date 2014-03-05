@@ -29,6 +29,8 @@ public class TreeItem
     /** Visible name of the item */
     final private String name;
 
+    private boolean enabled = true;
+    
     /** Parent node */
     private TreeItem parent;
 
@@ -255,6 +257,18 @@ public class TreeItem
                 throw new Exception("Hierarchy error from " + child + " to " + this);
             child.check();
         }
+    }
+
+	/** @param enable Enable the PV? */
+    public synchronized void setEnabled(final boolean enable)
+    {
+        enabled = enable;
+    }
+
+    /** @return <code>true</code> if alarms from PV are enabled */
+    public synchronized boolean isEnabled()
+    {
+        return enabled;
     }
 
     /** Compare by path name
