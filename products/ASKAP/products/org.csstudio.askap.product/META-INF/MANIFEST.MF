@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ASKAP Product
 Bundle-SymbolicName: org.csstudio.askap.product;singleton:=true
-Bundle-Version: 3.2.11.qualifier
+Bundle-Version: 3.2.14.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.7.101",
  org.eclipse.equinox.security;bundle-version="1.1.1",

@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.askap.alarm.beast.configtool.app.feature"
       label="ASKAP Alarm BEAST Config Tool"
-      version="3.2.11.qualifier"
+      version="3.2.14.qualifier"
       provider-name="CASS">
 
    <description url="http://www.example.com/description">

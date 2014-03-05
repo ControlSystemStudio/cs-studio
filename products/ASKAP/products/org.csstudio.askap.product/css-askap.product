@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CSS for ASKAP" uid="askap" id="org.csstudio.askap.product.product" application="org.csstudio.askap.product.application" version="3.2.11.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="CSS for ASKAP" uid="askap" id="org.csstudio.askap.product.product" application="org.csstudio.askap.product.application" version="3.2.14.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.askap.product/icons/aboutSide.png"/>
       <text>
-         Control System Studio (CSS) is a combined
+         Control System Studio (CSS) for ASKAP
+Version 3.2.14
+
+Control System Studio (CSS) is a combined
 effort of several parties, including
 - DESY (Hamburg, Germany)
 - SNS (Oak Ridge, TN)
@@ -154,10 +157,10 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
    </plugins>
 
    <features>
-      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.11.qualifier"/>
-      <feature id="org.csstudio.askap.core.feature" version="3.2.11.qualifier"/>
-      <feature id="org.csstudio.askap.applications.feature" version="3.2.11.qualifier"/>
-      <feature id="org.csstudio.askap.optional.feature" version="3.2.11.qualifier"/>
+      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.core.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.applications.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.optional.feature" version="3.2.14.qualifier"/>
    </features>
 
 

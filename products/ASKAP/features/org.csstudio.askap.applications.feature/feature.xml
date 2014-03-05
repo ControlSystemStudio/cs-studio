@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.askap.applications.feature"
       label="Feature"
-      version="3.2.11.qualifier">
+      version="3.2.14.qualifier">
 
    <description url="http://www.example.com/description">
       CSS applications for ASKAP
