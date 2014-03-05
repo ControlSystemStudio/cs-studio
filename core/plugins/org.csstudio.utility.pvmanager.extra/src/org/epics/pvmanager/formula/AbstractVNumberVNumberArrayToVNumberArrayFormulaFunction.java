@@ -8,6 +8,7 @@ import static org.epics.vtype.ValueFactory.displayNone;
 
 import java.util.Arrays;
 import java.util.List;
+import org.epics.pvmanager.util.NullUtils;
 
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.Alarm;
@@ -95,23 +96,17 @@ public abstract class AbstractVNumberVNumberArrayToVNumberArrayFormulaFunction i
 
     @Override
     public Object calculate(List<Object> args) {
-        VNumber arg1 = (VNumber) args.get(0);
-        VNumberArray arg2 = (VNumberArray) args.get(1);
-        // If one argument is null, return null
-        if (arg1 == null || arg2 == null) {
+        if (NullUtils.containsNull(args)) {
             return null;
         }
-        // Get highest alarm
-        Alarm alarm = ValueUtil.highestSeverityOf(args, false);
-        // Get latest time or now
-        Time time = ValueUtil.latestTimeOf(args);
-        if (time == null) {
-            time = ValueFactory.timeNow();
-        }
-	return newVNumberArray(
+
+        VNumber arg1 = (VNumber) args.get(0);
+        VNumberArray arg2 = (VNumberArray) args.get(1);
+
+        return newVNumberArray(
 		calculate(arg1.getValue(), arg2.getData()),
-                alarm,
-		time,
+                ValueUtil.highestSeverityOf(args, false),
+		ValueUtil.latestValidTimeOrNowOf(args),
                 displayNone());
     }
 
