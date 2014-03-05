@@ -50,7 +50,8 @@ public abstract class AbstractSymbolImage extends Figure {
 	private ImageData originalImageData;
 	
 	private Color currentColor;
-	
+	private Color colorToChange;
+
 	private Dimension imgDimension;
 	
 	private int topCrop = 0;
@@ -85,6 +86,8 @@ public abstract class AbstractSymbolImage extends Figure {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE
 				: ExecutionMode.EDIT_MODE;
 		imgDimension = new Dimension(0, 0);
+		colorToChange = new Color(Display.getCurrent(),
+				Preferences.getColorToChange());
 	}
 
 	public void setImagePath(IPath imagePath) {
@@ -301,7 +304,7 @@ public abstract class AbstractSymbolImage extends Figure {
 		if (document == null) {
 			return;
 		}
-		transcoder.setColorToChange(new Color(Display.getCurrent(), Preferences.getColorToChange()));
+		transcoder.setColorToChange(colorToChange);
 		if (!isEditMode())
 			transcoder.setColor(currentColor);
 		transcoder.setTransformMatrix(permutationMatrix.getMatrix());
