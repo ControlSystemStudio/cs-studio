@@ -23,7 +23,7 @@ import org.epics.vtype.ValueFactory;
  * @author shroffk
  *
  */
-public class RescaleArrayFormulaFunction implements FormulaFunction {
+class RescaleArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {

@@ -20,7 +20,7 @@ import org.epics.vtype.ValueFactory;
  * @author shroffk
  *
  */
-public class ArrayOfStringFormulaFunction implements FormulaFunction {
+class ArrayOfStringFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {

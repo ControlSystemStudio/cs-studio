@@ -14,7 +14,7 @@ import org.epics.vtype.ValueFactory;
  * @author shroffk
  * 
  */
-public class ConcatStringsFunction implements FormulaFunction {
+class ConcatStringsFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {

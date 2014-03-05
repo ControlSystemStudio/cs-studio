@@ -20,7 +20,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  *
  */
-public class SubArrayFormulaFunction implements FormulaFunction {
+class SubArrayFormulaFunction implements FormulaFunction {
 
     /*
      * (non-Javadoc)

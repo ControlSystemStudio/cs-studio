@@ -19,7 +19,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  *
  */
-public class ElementAtArrayFormulaFunction implements FormulaFunction {
+class ElementAtArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {

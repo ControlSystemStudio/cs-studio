@@ -25,7 +25,7 @@ import org.epics.vtype.table.VTableFactory;
 /**
  *
  */
-public class DftFormulaFunction implements FormulaFunction {
+class DftFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {

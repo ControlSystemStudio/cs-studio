@@ -17,7 +17,7 @@ import org.epics.vtype.VStringArray;
  * @author carcassi
  * 
  */
-public class ElementAtStringArrayFormulaFunction implements FormulaFunction {
+class ElementAtStringArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
