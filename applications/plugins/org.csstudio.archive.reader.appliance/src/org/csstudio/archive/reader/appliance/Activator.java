@@ -1,6 +1,8 @@
 package org.csstudio.archive.reader.appliance;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -13,6 +15,8 @@ public class Activator extends Plugin {
 
 	// The shared instance
 	private static Activator plugin;
+	
+	private Boolean useStatistics;
 	
 	/**
 	 * The constructor
@@ -47,5 +51,21 @@ public class Activator extends Plugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+	
+	/**
+	 * @return true if statistics type should be used for optimized data or false if normal type
+	 * 			should be used
+	 */
+	public boolean isUseStatistics() {
+		if (useStatistics == null) {
+			final IPreferencesService prefs = Platform.getPreferencesService();
+		    if (prefs == null) {
+		    	useStatistics = false;
+		    } else {
+		    	useStatistics = prefs.getBoolean(Activator.PLUGIN_ID, "useStatisticsForOptimizedData", false, null);
+		    }
+		}
+		return useStatistics;
 	}
 }

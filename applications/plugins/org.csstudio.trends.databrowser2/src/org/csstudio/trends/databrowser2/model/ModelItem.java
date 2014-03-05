@@ -274,15 +274,16 @@ abstract public class ModelItem implements Cloneable
      *  @param writer PrintWriter
      */
     protected void writeCommonConfig(final PrintWriter writer)
-    {
-        XMLWriter.XML(writer, 3, Model.TAG_NAME, getName());
-        XMLWriter.XML(writer, 3, Model.TAG_DISPLAYNAME, getDisplayName());
+    { 
+    	XMLWriter.XML(writer, 3, Model.TAG_NAME, getName());
         XMLWriter.XML(writer, 3, Model.TAG_VISIBLE, Boolean.toString(isVisible()));
         XMLWriter.XML(writer, 3, Model.TAG_AXIS, model.getAxisIndex(getAxis()));
-        XMLWriter.XML(writer, 3, Model.TAG_LINEWIDTH, getLineWidth());
-        Model.writeColor(writer, 3, Model.TAG_COLOR, getColor());
-        XMLWriter.XML(writer, 3, Model.TAG_TRACE_TYPE, getTraceType().name());
         XMLWriter.XML(writer, 3, Model.TAG_WAVEFORM_INDEX, getWaveformIndex());
+    	//other settings are included in the graph settings   
+//        XMLWriter.XML(writer, 3, Model.TAG_DISPLAYNAME, getDisplayName());
+//        XMLWriter.XML(writer, 3, Model.TAG_VISIBLE, Boolean.toString(isVisible()));
+//        XMLWriter.XML(writer, 3, Model.TAG_AXIS, model.getAxisIndex(getAxis()));
+//        XMLWriter.XML(writer, 3, Model.TAG_WAVEFORM_INDEX, getWaveformIndex());
     }
 
     /** Load common XML configuration elements into this item

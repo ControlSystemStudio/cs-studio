@@ -7,15 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.loc.LocalDataSource;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVPool;
+import org.csstudio.vtype.pv.local.LocalPVFactory;
 import org.junit.Test;
 
 /** JUnit test of the DeltaArchiveChannel
@@ -26,14 +24,14 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DeltaArchiveChannelUnitTest
 {
-    private static final String PV_NAME = "loc://demo";
+    private static final String PV_NAME = "loc://demo(0)";
 
     @Test(timeout=20000)
     public void testHandleNewValue() throws Exception
     {
-    	PVManager.setDefaultDataSource(new LocalDataSource());
+        PVPool.addPVFactory(new LocalPVFactory());
     	
-    	final PVWriter<Object> pv = PVManager.write(channel(PV_NAME)).sync();
+    	final PV pv = PVPool.getPV(PV_NAME);
 
         final DeltaArchiveChannel channel = new DeltaArchiveChannel(PV_NAME, Enablement.Passive, 100, null, 1.01, 0.1);
         final SampleBuffer samples = channel.getSampleBuffer();
@@ -65,6 +63,6 @@ public class DeltaArchiveChannelUnitTest
         assertEquals(1, TestHelper.dump(samples));
 
         channel.stop();
-        pv.close();
+        PVPool.releasePV(pv);
     }
 }

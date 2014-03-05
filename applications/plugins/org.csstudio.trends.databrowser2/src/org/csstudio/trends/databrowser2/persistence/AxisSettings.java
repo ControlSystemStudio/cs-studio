@@ -11,6 +11,7 @@ public class AxisSettings {
 
 	private String title;
 	private String titleFont;
+	private String scaleFont;
 	private ColorSettings foregroundColor;
 	private boolean onPrimarySide;
 	private boolean logScale;
@@ -23,7 +24,7 @@ public class AxisSettings {
 	private boolean showMajorGrid;
 	private boolean dashGridLine;
 	private ColorSettings majorGridColor;
-
+	
 	public String getTitle() {
 		return title;
 	}
@@ -38,6 +39,14 @@ public class AxisSettings {
 
 	public void setTitleFont(String titleFont) {
 		this.titleFont = titleFont;
+	}
+	
+	public String getScaleFont() {
+		return scaleFont;
+	}
+	
+	public void setScaleFont(String scaleFont) {
+		this.scaleFont = scaleFont;
 	}
 
 	public ColorSettings getForegroundColor() {

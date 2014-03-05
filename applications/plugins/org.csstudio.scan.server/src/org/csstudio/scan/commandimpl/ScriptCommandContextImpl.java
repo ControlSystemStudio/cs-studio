@@ -100,6 +100,6 @@ public class ScriptCommandContextImpl extends ScanScriptContext
 	public void write(final String device_name, final Object value, final String readback,
 	        final boolean wait, final double tolerance, final TimeDuration timeout) throws Exception
 	{
-	    ScanCommandUtil.write(context, device_name, value, readback, wait, tolerance, timeout);
+	    ScanCommandUtil.write(context, device_name, value, false, wait, readback, tolerance, timeout);
 	}
 }

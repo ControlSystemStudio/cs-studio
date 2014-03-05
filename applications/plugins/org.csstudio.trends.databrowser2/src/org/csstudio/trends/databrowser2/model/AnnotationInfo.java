@@ -15,6 +15,7 @@ import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
+import org.csstudio.trends.databrowser2.persistence.XYGraphSettings;
 import org.csstudio.trends.databrowser2.ui.Plot;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -47,23 +48,25 @@ public class AnnotationInfo
 	final private CursorLineStyle cursorLineStyle;
 	final private boolean showName;
 	final private boolean showPosition;
+	final private boolean showSampleInfo;
 	/**
 	 * Add because getTitleFont send a SWTERROR if the receiver is dispose.
 	 * It is the case when you save the plt file after ask to close CSS.
 	 */
 	final private FontData FontData;
+	final private RGB color;
+	
 	public FontData getFontData() {
 		return FontData;
 	}
 
 	public RGB getColor() {
-		return Color;
+		return color;
 	}
-
-	final private RGB Color;
-
-
-	//No need to save Sample Information and show sample information
+	
+	public boolean isShowSampleInfo() {
+		return showSampleInfo;
+	}
 
 	public boolean isShowName() {
 		return showName;
@@ -74,7 +77,8 @@ public class AnnotationInfo
 	}
 
 	public AnnotationInfo(final Timestamp timestamp, final double value, final int axis,
-			final String title, CursorLineStyle lineStyle, final boolean showName, final boolean showPosition, final FontData fontData, final RGB color)
+			final String title, CursorLineStyle lineStyle, final boolean showName, final boolean showPosition,
+			final boolean showSampleInfo, final FontData fontData, final RGB color)
     {
 
 		this.timestamp = timestamp;
@@ -83,16 +87,17 @@ public class AnnotationInfo
 		this.title = title;
 		this.cursorLineStyle = lineStyle;
 		this.showName = showName;
+		this.showSampleInfo = showSampleInfo;
 		this.showPosition = showPosition;
 		this.FontData = fontData;
-		this.Color = color;
+		this.color = color;
 
     }
 
 	public AnnotationInfo(final Timestamp timestamp, final double value, final int axis,
 			final String title)
     {
-		this(timestamp, value, axis, title, CursorLineStyle.NONE, false, false, null, null);
+		this(timestamp, value, axis, title, CursorLineStyle.NONE, false, false, false, null, null);
     }
 
 	/** @return Time stamp */
@@ -128,7 +133,10 @@ public class AnnotationInfo
 
     /** Write XML formatted annotation configuration
      *  @param writer PrintWriter
+     *  
+     *  @deprecated annotation data is stored in the {@link XYGraphSettings}
      */
+	@Deprecated
 	public void write(final PrintWriter writer)
     {
         XMLWriter.start(writer, 2, Model.TAG_ANNOTATION);
@@ -142,8 +150,8 @@ public class AnnotationInfo
         XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_SHOW_NAME, showName);
         XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_SHOW_POSITION, showPosition);
 
-        if(Color != null)
-	    	 Model.writeColor(writer, 3, Model.TAG_ANNOTATION_COLOR, Color);
+        if(color != null)
+	    	 Model.writeColor(writer, 3, Model.TAG_ANNOTATION_COLOR, color);
 
 
 	     if(FontData != null)
@@ -180,7 +188,7 @@ public class AnnotationInfo
 		if (fontInfo != null && !fontInfo.trim().isEmpty())
 			fontData = new FontData(fontInfo);
 
-        return new AnnotationInfo(timestamp, value, axis, title, CursorLineStyle.valueOf(lineStyle), showName, showPosition, fontData, Color);
+        return new AnnotationInfo(timestamp, value, axis, title, CursorLineStyle.valueOf(lineStyle), showName, showPosition, false, fontData, Color);
     }
 
 	public CursorLineStyle getCursorLineStyle() {

@@ -18,7 +18,15 @@ public class TestDataRetrieval implements DataRetrieval{
 	 */
 	@Override
 	public GenMsgIterator getDataForPV(String name, Timestamp start, Timestamp end) {
-		return new TestGenMsgIterator();
+		if (name.startsWith("mean_") || name.startsWith("std_")) {
+			return new TestGenMsgIteratorOptimized(name, start, end);
+		} else {
+			if (name.contains("wave")) {
+				return new TestGenMsgIteratorWaveform(name,start,end);
+			} else {
+				return new TestGenMsgIteratorRaw(name,start,end);
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -26,7 +34,7 @@ public class TestDataRetrieval implements DataRetrieval{
 	 */
 	@Override
 	public GenMsgIterator getDataForPV(String name, Timestamp start, Timestamp end, boolean arg3) {
-		return new TestGenMsgIterator();
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -34,6 +42,6 @@ public class TestDataRetrieval implements DataRetrieval{
 	 */
 	@Override
 	public GenMsgIterator getDataForPV(String name, Timestamp start, Timestamp end, boolean arg3, HashMap<String, String> arg4) {
-		return new TestGenMsgIterator();
+		throw new UnsupportedOperationException();
 	}
 }

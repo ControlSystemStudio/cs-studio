@@ -866,7 +866,7 @@ public class Plot
 
 			infos[i] = new AnnotationInfo(timestamp, value, y, title,
 					lineStyle, annotation.isShowName(),
-					annotation.isShowPosition(), data, rgb);
+					annotation.isShowPosition(),annotation.isShowSampleInfo(), data, rgb);
 		}
 		return infos;
 	}

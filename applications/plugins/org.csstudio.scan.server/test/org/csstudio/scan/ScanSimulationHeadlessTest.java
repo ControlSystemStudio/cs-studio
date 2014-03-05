@@ -65,6 +65,6 @@ public class ScanSimulationHeadlessTest
         System.out.println(context.getSimulationTime() + "   Total estimated execution time");
 
         assertTrue(log_text.length() > 0);
-        assertEquals(7*60+47, context.getSimulationSeconds(), 10);
+        assertEquals(9*60+47, context.getSimulationSeconds(), 10);
     }
 }
