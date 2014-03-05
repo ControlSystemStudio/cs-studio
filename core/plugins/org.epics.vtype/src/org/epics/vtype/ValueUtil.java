@@ -152,6 +152,31 @@ public class ValueUtil {
         
         return finalTime;
     }
+    
+    /**
+     * Returns the time with latest valid timestamp or now.
+     * 
+     * @param args a list of values
+     * @return the latest time; can't be null
+     */
+    public static Time latestValidTimeOrNowOf(final List<Object> args) {
+        Time finalTime = null;
+        for (Object object : args) {
+            Time newTime;
+            if (object != null)  {
+                newTime = ValueUtil.timeOf(object);
+                if (newTime != null && newTime.isTimeValid() && (finalTime == null || newTime.getTimestamp().compareTo(finalTime.getTimestamp()) > 0)) {
+                    finalTime = newTime;
+                }
+            }
+        }
+        
+        if (finalTime == null) {
+            finalTime = ValueFactory.timeNow();
+        }
+        
+        return finalTime;
+    }
 
     /**
      * Extracts the time information if present.
