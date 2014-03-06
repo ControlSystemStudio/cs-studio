@@ -392,4 +392,10 @@ public class WaveformView extends DataBrowserAwareView
 
 	@Override
 	public void changedXYGraphConfig() {}
+
+	@Override
+	public void itemRefreshRequested(PVItem item) {}
+
+	@Override
+	public void cursorDataChanged() {}
 }

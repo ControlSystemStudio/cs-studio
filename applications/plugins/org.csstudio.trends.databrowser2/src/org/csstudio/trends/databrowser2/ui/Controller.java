@@ -27,6 +27,7 @@ import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.IAnnotationListener;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
@@ -188,7 +189,8 @@ public class Controller implements ArchiveFetchJobListener
             	final String start_spec, end_spec;
                 if (model.isScrollEnabled())
                 {
-                    final long dist = Math.abs(end_ms - System.currentTimeMillis());
+                	final long time = System.currentTimeMillis();
+                    final long dist = Math.abs(end_ms - time);
                     final long range = end_ms - start_ms;
                     // Iffy range?
                     if (range <= 0)
@@ -197,8 +199,14 @@ public class Controller implements ArchiveFetchJobListener
                     // the GUI is close enough to 'now', scrolling remains 'on'
                     // and we'll continue to scroll with the new time range.
                     if (dist * 100 / range > 10)
-                    {   // Time range 10% away from 'now', disable scrolling
-                        model.enableScrolling(false);
+                    { // Time range 10% away from 'now', disable scrolling   
+                    	//but only if we are not using a future buffer
+                    	if (model.getFutureBufferInSeconds() > 0) {
+                    		if (end_ms < time)
+                    			model.enableScrolling(false);
+                    	} else {
+                    		model.enableScrolling(false);
+                    	}
                         // Use absolute start/end time
                         final Calendar cal = Calendar.getInstance();
                         cal.setTimeInMillis(start_ms);
@@ -541,6 +549,19 @@ public class Controller implements ArchiveFetchJobListener
 			{
 				// NOP
 			}
+			
+			@Override
+			public void itemRefreshRequested(PVItem item) {
+				final Timestamp start = model.getStartTime();
+                final Timestamp end = model.getEndTime();
+                getArchivedData(item, start, end);
+			}
+			
+			@Override
+			public void cursorDataChanged() 
+			{
+				//NOP
+			}
         };
         model.addListener(model_listener);
     }
@@ -593,7 +614,7 @@ public class Controller implements ArchiveFetchJobListener
         };
         update_timer.schedule(archive_fetch_delay_task, archive_fetch_delay);
     }
-
+    
     /** Start model items and initiate scrolling/updates
      *  @throws Exception on error: Already running, problem starting threads, ...
      *  @see #isRunning()
@@ -804,9 +825,22 @@ public class Controller implements ArchiveFetchJobListener
     {
         if (! model.isScrollEnabled())
             return;
-        final long end_ms = System.currentTimeMillis();
+        int buffer = model.getFutureBufferInSeconds();
+        long end_ms = System.currentTimeMillis();
         final long start_ms = end_ms - (long) (model.getTimespan()*1000);
-        plot.setTimeRange(start_ms, end_ms);
+        if (buffer > 0) {
+            Range range = plot.getXYGraph().primaryXAxis.getRange();
+            if (range.getUpper() < end_ms) {
+            	end_ms += (buffer*1000L);            	
+                plot.setTimeRange(start_ms, end_ms);
+            } else {
+            	//set the same values, which will refresh the graph
+            	plot.setTimeRange((long)range.getLower(),(long)range.getUpper());
+            }
+        } else {
+        	plot.setTimeRange(start_ms, end_ms);
+        }
+       
         if (scrolling_was_off)
         {   // Scrolling was just turned on.
             // Get new archived data since the new time scale
@@ -827,7 +861,7 @@ public class Controller implements ArchiveFetchJobListener
         for (int i=0; i<model.getItemCount(); ++i)
             getArchivedData(model.getItem(i), start, end);
     }
-
+    
     /** Initiate archive data retrieval for a specific model item
      *  @param item Model item. NOP for non-PVItem
      *  @param start Start time

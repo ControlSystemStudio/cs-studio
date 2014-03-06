@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
+import java.util.List;
+
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
@@ -37,6 +39,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
+import org.epics.util.array.ListNumber;
+import org.epics.vtype.VTable;
 
 /** Helper for a 'Trace' TableViewer that handles the Model's items.
  *  Each 'row' in the table is a ModelItem.
@@ -53,6 +57,7 @@ public class TraceTableHandler implements IStructuredContentProvider
     final private XYGraphMediaFactory color_registry = XYGraphMediaFactory.getInstance();
     private Model model;
     private TableViewer trace_table;
+    private boolean editing = false;
 
     final private ModelListener model_listener = new ModelListener()
     {
@@ -114,13 +119,21 @@ public class TraceTableHandler implements IStructuredContentProvider
 	
 		@Override
 		public void changedAnnotations() {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void changedXYGraphConfig() {
-			// TODO Auto-generated method stub
 			
+		}
+		@Override
+		public void itemRefreshRequested(PVItem item) {
+			//ignored
+		}
+		
+		@Override
+		public void cursorDataChanged() {
+			if (editing) return;
+			trace_table.refresh();
 		}
     };
 
@@ -171,6 +184,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
+            	editing = true;
                 return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
             }
 
@@ -194,11 +208,12 @@ public class TraceTableHandler implements IStructuredContentProvider
                     prompt_for_not_visible = false;
                 }
                 new ChangeVisibilityCommand(operations_manager, item, visible);
+                editing = false;
             }
         });
 
         // Trace PV/Formula Column ----------
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.ItemName, 100, 100);
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.ItemName, 70, 70);
         view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -229,6 +244,12 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return ((ModelItem) element).getName();
             }
+            
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+            	editing = true;
+            	return super.getCellEditor(element);
+            }
 
             @Override
             protected void setValue(final Object element, final Object value)
@@ -238,11 +259,12 @@ public class TraceTableHandler implements IStructuredContentProvider
                 if (new_name.equals(item.getName()))
                     return;
                 new ChangeNameCommand(shell, operations_manager, item, new_name);
+                editing = false;
             }
         });
 
         // Display Name Column ----------
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceDisplayName, 100, 100);
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceDisplayName, 70, 70);
         view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -273,6 +295,12 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return ((ModelItem) element).getDisplayName();
             }
+            
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+            	editing = true;
+            	return super.getCellEditor(element);
+            }
 
             @Override
             protected void setValue(final Object element, final Object value)
@@ -283,9 +311,10 @@ public class TraceTableHandler implements IStructuredContentProvider
                     return;
                 new ChangeDisplayNameCommand(operations_manager,
                         item, new_name);
+                editing = false;
             }
         });
-
+        
         // Color Column ----------
         view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.Color, 40, 10);
         view_col.setLabelProvider(new CellLabelProvider()
@@ -308,6 +337,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
+            	editing = true;
                 return new RGBCellEditor(table_viewer.getTable());
             }
 
@@ -322,9 +352,64 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 new ChangeColorCommand(operations_manager,
                         (ModelItem) element, (RGB)value);
+                editing = false;
             }
         });
 
+        //live value column
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.CursorValue, 40, 30);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                VTable table = model.getCursorData();
+                if (table == null) {
+                	cell.setText("N/A");
+                } else {
+	                for (int i = 0; i < table.getRowCount(); i++) {
+	                	if (((List<?>)table.getColumnData(0)).get(i).equals(item.getDisplayName())) {
+	                		cell.setText(String.valueOf(((ListNumber)table.getColumnData(2)).getDouble(i)));
+	                		return;
+	                	}
+	                }
+                }
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.CursorValueTT;
+            }
+        });
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.CursorTimestamp, 50, 30);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                VTable table = model.getCursorData();
+                if (table == null) {
+                	cell.setText("N/A");
+                } else {
+	                for (int i = 0; i < table.getRowCount(); i++) {
+	                	if (((List<?>)table.getColumnData(0)).get(i).equals(item.getDisplayName())) {
+	                		cell.setText(String.valueOf(((List<?>)table.getColumnData(1)).get(i)));
+	                		return;
+	                	}
+	                }
+                }
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.CursorTimestampTT;
+            }
+        });
+        
         // Scan Period Column (only applies to PVItems) ----------
         view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.ScanPeriod, 70, 10);
         view_col.setLabelProvider(new CellLabelProvider()
@@ -355,6 +440,12 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return element instanceof PVItem;
             }
+            
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+            	editing = true;
+            	return super.getCellEditor(element);
+            }
 
             @Override
             protected Object getValue(final Object element)
@@ -377,6 +468,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                     if (period != pv.getScanPeriod())
                         new ChangeSamplePeriodCommand(shell,
                                                 operations_manager, pv, period);
+                    editing = false;
                 }
                 catch (NumberFormatException ex)
                 {
@@ -425,6 +517,12 @@ public class TraceTableHandler implements IStructuredContentProvider
                 else
                     return Messages.NotApplicable;
             }
+            
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+            	editing = true;
+            	return super.getCellEditor(element);
+            }
 
             @Override
             protected void setValue(final Object element, final Object value)
@@ -437,6 +535,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                     final int size = Integer.parseInt(value.toString().trim());
                     if (size != pv.getLiveCapacity())
                         new ChangeLiveCapacityCommand(shell, operations_manager, pv, size);
+                    editing = false;
                 }
                 catch (NumberFormatException ex)
                 {
@@ -471,6 +570,12 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return Integer.toString(((ModelItem) element).getLineWidth());
             }
+            
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+            	editing = true;
+            	return super.getCellEditor(element);
+            }
 
             @Override
             protected void setValue(final Object element, final Object value)
@@ -487,6 +592,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                 final ModelItem item = (ModelItem)element;
                 if (width != item.getLineWidth())
                     new ChangeLineWidthCommand(operations_manager, item, width);
+                editing = false;
             }
         });
 
@@ -523,6 +629,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
+            	editing = true;
                 final String axis_names[] = new String[model.getAxisCount()];
                 for (int i=0; i<axis_names.length; ++i)
                     axis_names[i] = model.getAxis(i).getName();
@@ -544,6 +651,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                 final ModelItem item = (ModelItem)element;
                 if (axis != item.getAxis())
                     new ChangeAxisCommand(operations_manager, item, axis);
+                editing = false;
             }
         });
 
@@ -569,6 +677,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
+            	editing = true;
                 final ComboBoxCellEditor combo = new ComboBoxCellEditor(table_viewer.getTable(),
                         TraceType.getDisplayNames(), SWT.READ_ONLY);
                 combo.setValue(getValue(element));
@@ -587,6 +696,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                 final ModelItem item = (ModelItem)element;
                 if (trace_type != item.getTraceType())
                     new ChangeTraceTypeCommand(operations_manager, item, trace_type);
+                editing = false;
             }
         });
 
@@ -622,6 +732,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
+            	editing = true;
                 return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
             }
 
@@ -645,6 +756,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                     prompt_for_raw_data_request = false;
                 }
                 new ChangeRequestTypeCommand(operations_manager, item, request_type);
+                editing = false;
             }
         });
 
@@ -673,6 +785,12 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return Integer.toString(((ModelItem) element).getWaveformIndex());
             }
+            
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+            	editing = true;
+            	return super.getCellEditor(element);
+            }
 
             @Override
             protected void setValue(final Object element, final Object value)
@@ -683,15 +801,17 @@ public class TraceTableHandler implements IStructuredContentProvider
                     index = Integer.parseInt(value.toString().trim());
                     if (index < 0)
                     	return;
+                    final ModelItem item = (ModelItem)element;
+                    if (index != item.getWaveformIndex())
+                        new ChangeWaveformIndexCommand(operations_manager, item, index);
                 }
                 catch (NumberFormatException ex)
                 {
                     return;
+                } finally {
+                	editing = false;
                 }
                 
-                final ModelItem item = (ModelItem)element;
-                if (index != item.getWaveformIndex())
-                    new ChangeWaveformIndexCommand(operations_manager, item, index);
             }
         });
         

@@ -1,5 +1,7 @@
-package org.csstudio.trends.databrowser.opiwidget;
+package org.csstudio.trends.databrowser2.ui;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,8 +51,11 @@ public class SelectionValueExporter extends MouseMotionListener.Stub implements 
 	private PVWriter<Object> selectionValueWriter;
 	private boolean useTimeFormat = false;
 	private int cursorX;
+	private VTable vTable;
 
 	private XYGraph graph;
+	
+	private PropertyChangeSupport support = new PropertyChangeSupport(this);
 	
 	/**
 	 * Constructs a new SelectionValueExported that attaches itself to the provided plot.
@@ -94,13 +99,29 @@ public class SelectionValueExporter extends MouseMotionListener.Stub implements 
 	@Override
 	public void mouseMoved(MouseEvent me) {
 		cursorX = me.getLocation().x;
-		calculate();
+		createAndSendVTable();
 	}
 	
-	private void calculate() {
-		// Loop over trace and sample to find the nearest (left) sample to the cross
-		if (selectionValuePv == null || selectionValuePv.trim().isEmpty())
-			return;
+	private void createAndSendVTable() {
+		VTable oldValue = this.vTable;
+		vTable = calculateVTable();
+		writeSelectedValue(vTable);
+		support.firePropertyChange("vTable",oldValue,vTable);
+	}
+	
+	/**
+	 * @return the latest v table
+	 */
+	public VTable getVTable() {
+		return vTable;
+	}
+	
+	/**
+	 * Constructs and returns the VTable.
+	 * 
+	 * @return the VTable
+	 */
+	private VTable calculateVTable() {
 		List<Trace> traceList = graph.getPlotArea().getTraceList();
 		double[] x = new double[traceList.size()];
 		double[] y = new double[x.length];
@@ -150,38 +171,35 @@ public class SelectionValueExporter extends MouseMotionListener.Stub implements 
 			}
 			names.add(trace.getName());
 		}
-		writeSelectedValue(names, x, y);
-	}
-
-	/**
-	 * Converts sample values into VTable and writes them to the PV.
-	 * 
-	 * @param names the names of the traces
-	 * @param x horizontal values
-	 * @param y vertical values
-	 */
-	private void writeSelectedValue(List<String> names, double[] x, double[] y) {
-		if (selectionValueWriter != null) {
-			selectionValueWriter.close();
-			selectionValueWriter = null;
-		}
 		
-		VTable selection;
 		if (useTimeFormat) {
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS yyyy-MM-dd");
 			List<String> times = new ArrayList<String>();
 			for (double d : x) {
 				times.add(format.format(new Date((long)d)));
 			}
-			selection = ValueFactory.newVTable(
+			return ValueFactory.newVTable(
 					VTABLE_CLASSES_TIME,VTABLE_NAMES,	
 					Arrays.<Object>asList(names,times, new ArrayDouble(y)));
 		} else {
-			selection = ValueFactory.newVTable(
+			return ValueFactory.newVTable(
 					VTABLE_CLASSES_DOUBLE,VTABLE_NAMES,	
 					Arrays.<Object>asList(names,new ArrayDouble(x), new ArrayDouble(y)));
 		}		
-
+	}
+	
+	/**
+	 * Creates the selection value writer and writes the value
+	 * 
+	 * @param selection the value to write
+	 */
+	private void writeSelectedValue(VTable selection) {
+		if (selectionValuePv == null || selectionValuePv.trim().isEmpty())
+			return;
+		if (selectionValueWriter != null) {
+			selectionValueWriter.close();
+			selectionValueWriter = null;
+		}
 		selectionValueWriter = PVManager
 				.write(ExpressionLanguage.formula(selectionValuePv))
 				.writeListener(new PVWriterListener<Object>() {
@@ -218,13 +236,31 @@ public class SelectionValueExporter extends MouseMotionListener.Stub implements 
 		this.useTimeFormat = useTimeFormat;
 	}
 
+	/**
+	 * Adds a property change listener for the property vTable.
+	 * 
+	 * @param listener the listener which receives notifications when the vTable changes
+	 */
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		support.addPropertyChangeListener(listener);
+	}
+	
+	/**
+	 * Remove property change listener from this explorer.
+	 *  
+	 * @param listener the listener to remove
+	 */
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		support.removePropertyChangeListener(listener);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.csstudio.swt.xygraph.figures.IAxisListener#axisRangeChanged(org.csstudio.swt.xygraph.figures.Axis, org.csstudio.swt.xygraph.linearscale.Range, org.csstudio.swt.xygraph.linearscale.Range)
 	 */
 	@Override
 	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
-		calculate();
+		createAndSendVTable();
 	}
 
 	/*
