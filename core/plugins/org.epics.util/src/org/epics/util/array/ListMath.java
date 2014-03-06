@@ -4,7 +4,6 @@
  */
 package org.epics.util.array;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class ListMath {
      */
     public static ListDouble rescale(final ListNumber data, final double factor, final double offset) {
         if (factor == 1.0)
-            return sum(data, offset);
+            return add(data, offset);
         return new ListDouble() {
 
             @Override
@@ -123,7 +122,7 @@ public class ListMath {
      * @param offset The additive constant
      * @return result[x] = numerator / data[x] + offset
      */
-    public static ListDouble invrescale(final ListNumber data, final double numerator, final double offset) {
+    public static ListDouble inverseRescale(final ListNumber data, final double numerator, final double offset) {
         return new ListDouble() {
 
             @Override
@@ -145,7 +144,7 @@ public class ListMath {
      * @param expon The power to raise each number in the list to
      * @return result[x] = data[x] ** expon
      */
-    public static ListDouble listToPow(final ListNumber data, final double expon) {
+    public static ListDouble pow(final ListNumber data, final double expon) {
         return new ListDouble() {
 
             @Override
@@ -167,7 +166,7 @@ public class ListMath {
      * @param expons The list of exponents to raise the base value to
      * @return result[x] = base ** expons[x]
      */
-    public static ListDouble powList(final double base, final ListNumber expons) {
+    public static ListDouble pow(final double base, final ListNumber expons) {
         return new ListDouble() {
 
             @Override
@@ -189,7 +188,7 @@ public class ListMath {
      * @param offset the additive constant
      * @return result[x] = data[x] + offset
      */
-    public static ListDouble sum(final ListNumber data, final double offset) {
+    public static ListDouble add(final ListNumber data, final double offset) {
         return new ListDouble() {
 
             @Override
@@ -212,7 +211,7 @@ public class ListMath {
      * @param data2 another list of numbers
      * @return result[x] = data1[x] + data2[x]
      */
-    public static ListDouble sum(final ListNumber data1, final ListNumber data2) {
+    public static ListDouble add(final ListNumber data1, final ListNumber data2) {
         if (data1.size() != data2.size())
             throw new IllegalArgumentException("Can't sum ListNumbers of different size (" + data1.size() + " - " + data2.size() + ")");
         return new ListDouble() {
@@ -262,7 +261,7 @@ public class ListMath {
      * @param data2 another list of numbers
      * @return result[x] = data1[x] * data2[x]
      */
-    public static ListDouble mult(final ListNumber data1, final ListNumber data2) {
+    public static ListDouble multiply(final ListNumber data1, final ListNumber data2) {
         if (data1.size() != data2.size())
             throw new IllegalArgumentException(
                         "Can't do element-wise mult on ListNumbers of different size ("
@@ -289,7 +288,7 @@ public class ListMath {
      * @param data2 another list of numbers
      * @return result[x] = data1[x] / data2[x]
      */
-    public static ListDouble div(final ListNumber data1, final ListNumber data2) {
+    public static ListDouble divide(final ListNumber data1, final ListNumber data2) {
         if (data1.size() != data2.size())
             throw new IllegalArgumentException(
                         "Can't do element-wise mult on ListNumbers of different size ("
