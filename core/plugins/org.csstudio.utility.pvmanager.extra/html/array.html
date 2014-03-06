@@ -22,6 +22,13 @@
             </thead>
             <tbody>
                 <tr>
+                    <td><code>(VNumber num * VNumberArray array): VNumberArray</code></td>
+                    <td>Result[x] = num * array[x]</td>
+                    <td>Null if one of the arguments is null</td>
+                    <td>Highest alarm of the arguments</td>
+                    <td>Latest valid time of the arguments or now if no valid time is found</td>
+                </tr>
+                <tr>
                     <td><code>(VNumberArray array * VNumber num): VNumberArray</code></td>
                     <td>Result[x] = array[x] * num</td>
                     <td>Null if one of the arguments is null</td>
@@ -36,13 +43,6 @@
                     <td>Latest valid time of the arguments or now if no valid time is found</td>
                 </tr>
                 <tr>
-                    <td><code>(VNumberArray array + VNumber offset): VNumberArray</code></td>
-                    <td>Result[x] = array[x] + offset</td>
-                    <td>Null if one of the arguments is null</td>
-                    <td>Highest alarm of the arguments</td>
-                    <td>Latest valid time of the arguments or now if no valid time is found</td>
-                </tr>
-                <tr>
                     <td><code>(VNumberArray array1 - VNumberArray array2): VNumberArray</code></td>
                     <td>Result[x] = array1[x] - array2[x]</td>
                     <td>Null if one of the arguments is null</td>
@@ -50,28 +50,14 @@
                     <td>Latest valid time of the arguments or now if no valid time is found</td>
                 </tr>
                 <tr>
-                    <td><code>(VNumberArray array - VNumber offset): VNumberArray</code></td>
-                    <td>Result[x] = array[x] - offset</td>
+                    <td><code>arrayDiv(VNumber num, VNumberArray array): VNumberArray</code></td>
+                    <td>Result[x] = num / array[x]</td>
                     <td>Null if one of the arguments is null</td>
                     <td>Highest alarm of the arguments</td>
                     <td>Latest valid time of the arguments or now if no valid time is found</td>
                 </tr>
                 <tr>
-                    <td><code>(VNumber offset - VNumberArray array): VNumberArray</code></td>
-                    <td>Result[x] = offset - array[x]</td>
-                    <td>Null if one of the arguments is null</td>
-                    <td>Highest alarm of the arguments</td>
-                    <td>Latest valid time of the arguments or now if no valid time is found</td>
-                </tr>
-                <tr>
-                    <td><code>(VNumber numerator / VNumberArray array): VNumberArray</code></td>
-                    <td>Result[x] = numerator / array[x]</td>
-                    <td>Null if one of the arguments is null</td>
-                    <td>Highest alarm of the arguments</td>
-                    <td>Latest valid time of the arguments or now if no valid time is found</td>
-                </tr>
-                <tr>
-                    <td><code>(VNumberArray array / VNumber num): VNumberArray</code></td>
+                    <td><code>arrayDiv(VNumberArray array, VNumber num): VNumberArray</code></td>
                     <td>Result[x] = array[x] / num</td>
                     <td>Null if one of the arguments is null</td>
                     <td>Highest alarm of the arguments</td>
@@ -115,6 +101,34 @@
                 <tr>
                     <td><code>arrayPow(VNumberArray array, VNumber expon): VNumberArray</code></td>
                     <td>Result[x] = pow(array[x], expon)</td>
+                    <td>Null if one of the arguments is null</td>
+                    <td>Highest alarm of the arguments</td>
+                    <td>Latest valid time of the arguments or now if no valid time is found</td>
+                </tr>
+                <tr>
+                    <td><code>arraySub(VNumber offset, VNumberArray array): VNumberArray</code></td>
+                    <td>Result[x] = offset - array[x]</td>
+                    <td>Null if one of the arguments is null</td>
+                    <td>Highest alarm of the arguments</td>
+                    <td>Latest valid time of the arguments or now if no valid time is found</td>
+                </tr>
+                <tr>
+                    <td><code>arraySub(VNumberArray array, VNumber offset): VNumberArray</code></td>
+                    <td>Result[x] = array[x] - offset</td>
+                    <td>Null if one of the arguments is null</td>
+                    <td>Highest alarm of the arguments</td>
+                    <td>Latest valid time of the arguments or now if no valid time is found</td>
+                </tr>
+                <tr>
+                    <td><code>arraySum(VNumberArray array, VNumber offset): VNumberArray</code></td>
+                    <td>Result[x] = array[x] + offset</td>
+                    <td>Null if one of the arguments is null</td>
+                    <td>Highest alarm of the arguments</td>
+                    <td>Latest valid time of the arguments or now if no valid time is found</td>
+                </tr>
+                <tr>
+                    <td><code>arraySum(VNumber offset, VNumberArray array): VNumberArray</code></td>
+                    <td>Result[x] = offset + array[x]</td>
                     <td>Null if one of the arguments is null</td>
                     <td>Highest alarm of the arguments</td>
                     <td>Latest valid time of the arguments or now if no valid time is found</td>

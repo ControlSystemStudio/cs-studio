@@ -32,7 +32,7 @@ import org.epics.vtype.ValueUtil;
  * @author shroffk
  * 
  */
-public abstract class AbstractVNumberArrayVNumberToVNumberArrayFomulaFunction implements
+public abstract class AbstractVNumberArrayVNumberToVNumberArrayFormulaFunction implements
 	FormulaFunction {
 
     private static final List<Class<?>> argumentTypes = Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class);
@@ -49,7 +49,7 @@ public abstract class AbstractVNumberArrayVNumberToVNumberArrayFomulaFunction im
      * @param arg1Name first argument name
      * @param arg2Name second argument name
      */
-    public AbstractVNumberArrayVNumberToVNumberArrayFomulaFunction(String name, String description,
+    public AbstractVNumberArrayVNumberToVNumberArrayFormulaFunction(String name, String description,
 	    String arg1Name, String arg2Name) {
 	this.name = name;
 	this.description = description;
