@@ -825,13 +825,13 @@ public class Controller implements ArchiveFetchJobListener
     {
         if (! model.isScrollEnabled())
             return;
-        double buffer = model.getFutureBufferInSeconds();
+        int buffer = model.getFutureBufferInSeconds();
         long end_ms = System.currentTimeMillis();
         final long start_ms = end_ms - (long) (model.getTimespan()*1000);
         if (buffer > 0) {
             Range range = plot.getXYGraph().primaryXAxis.getRange();
             if (range.getUpper() < end_ms) {
-            	end_ms += (long)buffer*1000;            	
+            	end_ms += (buffer*1000L);            	
                 plot.setTimeRange(start_ms, end_ms);
             } else {
             	//set the same values, which will refresh the graph
