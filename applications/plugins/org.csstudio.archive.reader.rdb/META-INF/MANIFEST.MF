@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: RDB Archive Reader
 Bundle-Description: Support for reading archived data from Relational Database (Oracle, MySQL)
 Bundle-SymbolicName: org.csstudio.archive.reader.rdb;singleton:=true
-Bundle-Version: 3.2.11.qualifier
+Bundle-Version: 3.2.15.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",

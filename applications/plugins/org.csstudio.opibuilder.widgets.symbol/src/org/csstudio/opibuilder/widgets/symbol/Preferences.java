@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol;
 
+import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.swt.graphics.RGB;
@@ -45,17 +47,21 @@ public class Preferences {
 
 	/** @return threshold for automated actions */
 	public static RGB getColorToChange() {
-		final IPreferencesService service = Platform.getPreferencesService();
-		if (service == null)
-			return new RGB(0, 0, 0); // default
 		String colorStr = getString(COLOR_TO_CHANGE);
-		if (colorStr == null)
+		try {
+			String[] splited = colorStr.split(",");
+			RGB rgb = new RGB(Integer.valueOf(splited[0]),
+					Integer.valueOf(splited[1]), Integer.valueOf(splited[2]));
+			if (rgb.red < 0 || rgb.red > 255 || rgb.green < 0
+					|| rgb.green > 255 || rgb.blue < 0 || rgb.blue > 255)
+				throw new Exception("RGB must be between 0 and 255");
+			return rgb;
+		} catch (Exception e) {
+			Activator.getLogger().log(Level.WARNING,
+					"Error setting preference '" + COLOR_TO_CHANGE + "' with '"
+							+ colorStr + "': " + e.getMessage());
 			return new RGB(0, 0, 0); // default
-		String[] RGB = colorStr.split(",");
-		if (RGB == null | RGB.length < 3)
-			return new RGB(0, 0, 0); // default
-		return new RGB(Integer.valueOf(RGB[0]), Integer.valueOf(RGB[1]),
-				Integer.valueOf(RGB[2]));
+		}
 	}
 
 }

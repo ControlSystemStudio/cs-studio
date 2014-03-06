@@ -15,12 +15,14 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.device.VTypeHelper;
 import org.junit.Test;
+import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
 
 /** JUnit test of the {@link SimulatedDevice}s
  *  @author Kay Kasemir
@@ -37,9 +39,9 @@ public class SimulatedDeviceUnitTest implements DeviceListener
 		x.addListener(this);
 
 		x.write(3.14);
-		assertEquals(1, changes);
+		assertThat(changes, greaterThanOrEqualTo(1));
 
-		assertEquals(3.14, x.readDouble(), 0.01);
+		assertEquals(3.14, VTypeHelper.toDouble(x.read()), 0.01);
 	}
 
 	@Override

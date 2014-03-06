@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ArchiveConfigTool" uid="config_tool" id="org.csstudio.archive.config.rdb.product" application="org.csstudio.archive.config.rdb.app" version="3.2.1" useFeatures="false" includeLaunchers="true">
+<product name="ArchiveConfigTool" uid="config_tool" id="org.csstudio.archive.config.rdb.product" application="org.csstudio.archive.config.rdb.app" version="3.2.15" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

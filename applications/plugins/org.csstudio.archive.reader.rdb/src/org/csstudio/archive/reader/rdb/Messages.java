@@ -15,6 +15,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.archive.reader.rdb.messages"; //$NON-NLS-1$
+    
+    public static String FetchSize;
     public static String Password;
     public static String PreferenceTitle;
     public static String Schema;
