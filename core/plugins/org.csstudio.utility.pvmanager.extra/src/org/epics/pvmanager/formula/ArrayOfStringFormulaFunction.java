@@ -4,16 +4,10 @@
  */
 package org.epics.pvmanager.formula;
 
-import static org.epics.vtype.ValueFactory.alarmNone;
-import static org.epics.vtype.ValueFactory.newTime;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.Time;
 import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.ValueFactory;

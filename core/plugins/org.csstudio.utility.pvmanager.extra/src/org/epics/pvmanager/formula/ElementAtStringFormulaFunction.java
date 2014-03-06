@@ -8,6 +8,7 @@ import static org.epics.vtype.ValueFactory.*;
 
 import java.util.Arrays;
 import java.util.List;
+import org.epics.pvmanager.util.NullUtils;
 
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
@@ -17,7 +18,7 @@ import org.epics.vtype.VStringArray;
  * @author carcassi
  * 
  */
-class ElementAtStringArrayFormulaFunction implements FormulaFunction {
+class ElementAtStringFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
@@ -56,12 +57,14 @@ class ElementAtStringArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public Object calculate(List<Object> args) {
-	VStringArray stringArray = (VStringArray) args.get(0);
-        VNumber index = (VNumber) args.get(1);
-        if (stringArray == null || index == null) {
+        if (NullUtils.containsNull(args)) {
             return null;
         }
-	int i = index.getValue().intValue();
+        
+	VStringArray stringArray = (VStringArray) args.get(0);
+        VNumber index = (VNumber) args.get(1);
+        int i = index.getValue().intValue();
+        
 	return newVString(stringArray.getData().get(i),
 		stringArray, stringArray);
     }

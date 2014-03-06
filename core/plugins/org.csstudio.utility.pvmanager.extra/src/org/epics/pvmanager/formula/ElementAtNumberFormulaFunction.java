@@ -4,13 +4,12 @@
  */
 package org.epics.pvmanager.formula;
 
-import static org.epics.vtype.ValueFactory.alarmNone;
 import static org.epics.vtype.ValueFactory.displayNone;
 import static org.epics.vtype.ValueFactory.newVNumber;
-import static org.epics.vtype.ValueFactory.timeNow;
 
 import java.util.Arrays;
 import java.util.List;
+import org.epics.pvmanager.util.NullUtils;
 
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
@@ -19,7 +18,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  *
  */
-class ElementAtArrayFormulaFunction implements FormulaFunction {
+class ElementAtNumberFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
@@ -74,12 +73,14 @@ class ElementAtArrayFormulaFunction implements FormulaFunction {
      */
     @Override
     public Object calculate(List<Object> args) {
-        VNumberArray numberArray = (VNumberArray) args.get(0);
-        VNumber index = (VNumber) args.get(1);
-        if (numberArray == null || index == null) {
+        if (NullUtils.containsNull(args)) {
             return null;
         }
+        
+        VNumberArray numberArray = (VNumberArray) args.get(0);
+        VNumber index = (VNumber) args.get(1);
         int i = index.getValue().intValue();
+        
         return newVNumber(numberArray.getData().getDouble(i),
                 numberArray, numberArray, displayNone());
     }

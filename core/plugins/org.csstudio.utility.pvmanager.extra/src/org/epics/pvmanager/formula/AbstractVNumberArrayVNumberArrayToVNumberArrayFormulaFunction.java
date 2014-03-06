@@ -12,10 +12,7 @@ import java.util.List;
 import org.epics.pvmanager.util.NullUtils;
 
 import org.epics.util.array.ListNumber;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.Time;
 import org.epics.vtype.VNumberArray;
-import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 
 /**

@@ -7,6 +7,7 @@ package org.epics.pvmanager.formula;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.epics.pvmanager.util.NullUtils;
 import org.epics.vtype.ArrayDimensionDisplay;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.ValueFactory;
@@ -56,10 +57,11 @@ class ArrayWithBoundariesFormulaFunction implements FormulaFunction {
 
     @Override
     public Object calculate(final List<Object> args) {
-        VNumberArray array = (VNumberArray) args.get(0);
-        if (array == null) {
+        if (NullUtils.containsNull(args)) {
             return null;
         }
+        
+        VNumberArray array = (VNumberArray) args.get(0);
         if (array.getSizes().size() != args.size() - 1) {
             throw new IllegalArgumentException("Dimension of the array must match the number of ListNumberProvider");
         }
@@ -67,11 +69,7 @@ class ArrayWithBoundariesFormulaFunction implements FormulaFunction {
         List<ArrayDimensionDisplay> dimDisplay = new ArrayList<>();
         for (int i = 1; i < args.size(); i++) {
             ListNumberProvider numberGenerator = (ListNumberProvider) args.get(i);
-            if (numberGenerator == null) {
-                return null;
-            } else {
-                dimDisplay.add(ValueFactory.newDisplay(numberGenerator.createListNumber(array.getSizes().getInt(i-1) + 1), ""));
-            }
+            dimDisplay.add(ValueFactory.newDisplay(numberGenerator.createListNumber(array.getSizes().getInt(i-1) + 1), ""));
         }
         
         

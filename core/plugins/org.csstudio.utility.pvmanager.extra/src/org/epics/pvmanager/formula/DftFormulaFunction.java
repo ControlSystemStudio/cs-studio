@@ -4,10 +4,6 @@
  */
 package org.epics.pvmanager.formula;
 
-import static org.epics.vtype.ValueFactory.alarmNone;
-import static org.epics.vtype.ValueFactory.displayNone;
-import static org.epics.vtype.ValueFactory.newTime;
-
 import java.util.Arrays;
 import java.util.List;
 import org.epics.util.array.ArrayDouble;
@@ -15,12 +11,9 @@ import org.epics.util.array.ListDouble;
 
 import org.epics.util.array.ListMath;
 import org.epics.util.array.ListNumber;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
-import org.epics.vtype.table.VTableFactory;
 
 /**
  *

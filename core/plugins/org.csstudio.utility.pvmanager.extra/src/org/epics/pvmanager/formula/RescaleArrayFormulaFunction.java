@@ -9,13 +9,11 @@ import static org.epics.vtype.ValueFactory.newVNumberArray;
 
 import java.util.Arrays;
 import java.util.List;
+import org.epics.pvmanager.util.NullUtils;
 
 import org.epics.util.array.ListMath;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.Time;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
-import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 
 /**
@@ -62,25 +60,18 @@ class RescaleArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public Object calculate(final List<Object> args) {
+        if (NullUtils.containsNull(args)) {
+            return null;
+        }
+        
         VNumberArray arg1 = (VNumberArray) args.get(0);
         VNumber arg2 = (VNumber) args.get(1);
         VNumber arg3 = (VNumber) args.get(2);
-        // If one argument is null, return null
-        
-        if (arg1 == null || arg2 == null || arg3 == null) {
-            return null;
-        }
-        // Get highest alarm
-        Alarm alarm = ValueUtil.highestSeverityOf(args, false);
-        // Get latest time or now
-        Time time = ValueUtil.latestTimeOf(args);
-        if (time == null) {
-            time = ValueFactory.timeNow();
-        }
-	return newVNumberArray(
+
+        return newVNumberArray(
 		ListMath.rescale(arg1.getData(), arg2.getValue().doubleValue(), arg3.getValue().doubleValue()),
-                alarm,
-		time,
+                ValueUtil.highestSeverityOf(args, false),
+		ValueUtil.latestValidTimeOrNowOf(args),
                 displayNone());
     }
 }
