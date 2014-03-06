@@ -41,6 +41,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VTable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -197,6 +198,8 @@ public class Model
 
     /** End time of the data range */
     private Timestamp end_time = Timestamp.now();
+    
+    private int futureBufferInSeconds = Preferences.getFutureBuffer();
 
     /** Background color */
     private RGB background = new RGB(255, 255, 255);
@@ -207,6 +210,7 @@ public class Model
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
+    private VTable cursorData;
 
     /**
      *  Manage XYGraph Configuration Settings
@@ -234,6 +238,16 @@ public class Model
 
 		for (ModelListener listener : listeners)
 	            listener.changedXYGraphConfig();
+	}
+	
+	public void setCursorData(VTable table) {
+		this.cursorData = table;
+		for (ModelListener listener : listeners)
+            listener.cursorDataChanged();
+	}
+	
+	public VTable getCursorData() {
+		return cursorData;
 	}
 
     /** @param macros Macros to use in this model */
@@ -661,7 +675,12 @@ public class Model
      */
     synchronized public Timestamp getStartTime()
     {
-        return getEndTime().minus(TimeDuration.ofSeconds(time_span));
+    	if (scroll_enabled && futureBufferInSeconds > 0) {
+    		return getEndTime().minus(TimeDuration.ofSeconds(time_span+2*futureBufferInSeconds));
+    	} else {
+    		return getEndTime().minus(TimeDuration.ofSeconds(time_span));
+    	}
+        
     }
 
     /** @return End time of the data range
@@ -669,10 +688,28 @@ public class Model
      */
     synchronized public Timestamp getEndTime()
     {
-        if (scroll_enabled)
-            end_time = Timestamp.now();
+        if (scroll_enabled) {
+        	Timestamp t = Timestamp.now();
+        	if (futureBufferInSeconds > 0) {
+        		if (end_time.compareTo(t) < 0) 
+        			end_time = t;
+        		return end_time.plus(TimeDuration.ofSeconds(futureBufferInSeconds));
+        	} else {
+        		end_time = t;
+        	}
+        }
         return end_time;
     }
+    
+    /**
+     * Future buffer in seconds is the amount of time given in seconds from the current time to 
+     * the right border of the chart when auto scroll is enabled.
+     *  
+     * @return the future buffer in seconds
+     */
+    public int getFutureBufferInSeconds() {
+		return futureBufferInSeconds;
+	}
 
     /** @return String representation of start time. While scrolling, this is
      *          a relative time, otherwise an absolute date/time.
@@ -832,6 +869,11 @@ public class Model
     {
         for (ModelListener listener : listeners)
             listener.changedItemDataConfig(item);
+    }
+    
+    void fireItemRefreshRequested(final PVItem item) {
+    	for (ModelListener listener : listeners)
+            listener.itemRefreshRequested(item);
     }
 
     /** Find a formula that uses a model item as an input.

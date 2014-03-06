@@ -69,6 +69,10 @@ public class Messages extends NLS
     public static String Connecting;
     public static String ConfigFileErrorFmt;
     public static String ControllerStartErrorFmt;
+    public static String CursorValue;
+    public static String CursorValueTT;
+    public static String CursorTimestamp;
+    public static String CursorTimestampTT;
     public static String DeleteArchive;
     public static String DeleteAxis;
     public static String DeleteAxisWarningFmt;
@@ -175,7 +179,10 @@ public class Messages extends NLS
     public static String PosErrColumn;
     public static String PrefPage_ArchiveFetchDelay;
     public static String PrefPage_Archives;
+    public static String PrefPage_AutomaticHistoryRefresh;
     public static String PrefPage_DataServerURLs;
+    public static String PrefPage_FutureBuffer;
+    public static String PrefPage_FutureBufferTT;
     public static String PrefPage_LiveBufferSize;
     public static String PrefPage_PlotBins;
     public static String PrefPage_ScanPeriod;

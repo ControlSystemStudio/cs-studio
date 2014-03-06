@@ -15,6 +15,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -159,6 +161,17 @@ public class SnooperView extends ViewPart{
 		      }
 		});
 		canvas.setLayoutData(gridData);
+		
+		/**
+		 * Stop CA snooper on window closing
+		 */
+		canvas.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent arg0) {
+				dispose();
+				
+			}
+		});
 		
 		gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 	    gridData.horizontalSpan = 2;

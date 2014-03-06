@@ -319,7 +319,7 @@ abstract public class ModelItem implements Cloneable
         // which does nothing.
         setWaveformIndex(waveform_index);
     }
-    
+        
 	public ModelItem clone() {
 		try {
 			ModelItem ret = (ModelItem)super.clone();
