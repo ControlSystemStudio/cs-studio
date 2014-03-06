@@ -214,8 +214,8 @@
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
     <!--<module>org.custommonkey.xmlunit</module>--><!-- use plugin from Orbit repository -->
-    <module>org.eclipse.nebula.jface.gridviewer</module>
-    <module>org.eclipse.nebula.widgets.grid</module>
+    <!--<module>org.eclipse.nebula.jface.gridviewer</module>--><!-- Moved to third party repository -->
+    <!--<module>org.eclipse.nebula.widgets.grid</module>--><!-- Moved to third party repository -->
     <module>org.ehcache</module>
     <module>org.epics.graphene</module>
     <module>org.hamcrest</module>
