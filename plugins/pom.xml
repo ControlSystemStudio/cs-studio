@@ -40,6 +40,7 @@
     <module>org.csstudio.platform.libs.jmock</module>
     <module>org.csstudio.platform.libs.jms</module>
     <module>org.csstudio.platform.libs.tine</module>
+    <module>org.eclipse.nebula.jface.gridviewer</module>
     <module>org.slf4j</module>
     <module>org.slf4j-log4j12</module>
   </modules>
