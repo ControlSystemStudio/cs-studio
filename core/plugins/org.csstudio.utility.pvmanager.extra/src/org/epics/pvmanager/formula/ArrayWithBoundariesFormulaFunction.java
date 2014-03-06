@@ -47,7 +47,7 @@ class ArrayWithBoundariesFormulaFunction implements FormulaFunction {
 
     @Override
     public List<String> getArgumentNames() {
-        return Arrays.asList("dataArray", "numberGenerators");
+        return Arrays.asList("dataArray", "boundaries");
     }
 
     @Override
