@@ -519,7 +519,7 @@ public class XYGraph extends Figure{
 		boolean old = this.showValueLabels;
 		this.showValueLabels = show;
 		getPlotArea().setShowValueLabels(show);
-		for (Axis a : getYAxisList()) {
+		for (Axis a : getAxisList()) {
 			a.setShowMousePositionLabel(show);
 		}
 		firePropertyChange("showValueLabels", old, showValueLabels);
