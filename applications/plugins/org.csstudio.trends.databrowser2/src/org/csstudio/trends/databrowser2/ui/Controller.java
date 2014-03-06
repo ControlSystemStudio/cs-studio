@@ -868,7 +868,7 @@ public class Controller implements ArchiveFetchJobListener
      *  @param end End time
      */
     private void getArchivedData(final ModelItem item,
-            Timestamp start, final Timestamp end)
+            final Timestamp start, final Timestamp end)
     {
         // Only useful for PVItems with archive data source
         if (!(item instanceof PVItem))
