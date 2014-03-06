@@ -91,7 +91,7 @@ public class Plot
 	private boolean plot_changes_graph = false;
 
 	private TimeConfigButton time_config_button;
-	
+		
 	/**
 	 * Create a plot that is attached to an SWT canvas
 	 *

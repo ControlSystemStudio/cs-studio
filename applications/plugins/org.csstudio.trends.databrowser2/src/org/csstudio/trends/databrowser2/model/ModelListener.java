@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+
 /** Listener interface for the Model
  *  @author Kay Kasemir
  */
@@ -56,4 +57,12 @@ public interface ModelListener
 	void changedAnnotations();
 
 	void changedXYGraphConfig();
+	
+	/** The item requested to refresh its history.
+	 * @param item the item to refresh the history data for
+	 */
+	void itemRefreshRequested(PVItem item);
+	
+	void cursorDataChanged();
+	
 }

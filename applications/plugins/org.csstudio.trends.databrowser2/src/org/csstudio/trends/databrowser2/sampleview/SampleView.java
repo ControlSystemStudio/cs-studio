@@ -365,4 +365,10 @@ public class SampleView extends DataBrowserAwareView
 
 	@Override
 	public void changedXYGraphConfig() {}
+
+	@Override
+	public void itemRefreshRequested(PVItem item) {}
+
+	@Override
+	public void cursorDataChanged() {}
 }

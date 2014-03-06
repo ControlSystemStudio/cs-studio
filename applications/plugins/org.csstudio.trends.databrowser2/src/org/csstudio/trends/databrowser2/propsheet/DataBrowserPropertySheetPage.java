@@ -750,4 +750,16 @@ public class DataBrowserPropertySheetPage extends Page
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void itemRefreshRequested(PVItem item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cursorDataChanged() {
+		// TODO Auto-generated method stub
+		
+	}
 }
