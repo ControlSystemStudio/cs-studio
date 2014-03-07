@@ -431,6 +431,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
         writeCommonConfig(writer);
         XMLWriter.XML(writer, 3, Model.TAG_SCAN_PERIOD, getScanPeriod());
         XMLWriter.XML(writer, 3, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, getLiveCapacity());
+        XMLWriter.XML(writer, 3, Model.TAG_AUTOMATIC_HISTORY_REFRESH, automaticRefresh);
         XMLWriter.XML(writer, 3, Model.TAG_REQUEST, getRequestType().name());
         for (ArchiveDataSource archive : archives)
         {
@@ -460,6 +461,11 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
         final PVItem item = new PVItem(name, period);
         final int buffer_size = DOMHelper.getSubelementInt(node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, Preferences.getLiveSampleBufferSize());
         item.setLiveCapacity(buffer_size);
+        try {
+        	item.automaticRefresh = DOMHelper.getSubelementBoolean(node, Model.TAG_AUTOMATIC_HISTORY_REFRESH, Preferences.isAutomaticHistoryRefresh());
+        } catch (Throwable e) {
+        	//ignore, use default
+        }
 
         final String req_txt = DOMHelper.getSubelementString(node, Model.TAG_REQUEST, RequestType.OPTIMIZED.name());
         try

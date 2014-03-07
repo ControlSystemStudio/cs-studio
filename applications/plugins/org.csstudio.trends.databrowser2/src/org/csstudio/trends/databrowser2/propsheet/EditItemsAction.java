@@ -69,6 +69,6 @@ public class EditItemsAction extends Action {
         	return;
         
         // Edit PV via undo-able command.
-        new EditItemsCommand(shell, operations_manager, items, dialog.getResult());
+        new EditItemsCommand(operations_manager, items, dialog.getResult());
     }
 }
