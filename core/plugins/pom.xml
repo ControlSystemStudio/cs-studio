@@ -106,7 +106,7 @@
     <module>org.csstudio.workspace</module>
     <module>org.epics.pvaccess</module>
     <module>org.epics.pvdata</module>
-    <module>org.epics.util</module>
-    <module>org.epics.vtype</module>
+    <!--<module>org.epics.util</module>
+    <module>org.epics.vtype</module>--><!-- Moved to diirt repository  -->
   </modules>
 </project>

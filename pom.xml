@@ -89,7 +89,12 @@
       <id>thirdparty</id>
       <url>http://download.controlsystemstudio.org/thirdparty/3.3</url>
       <layout>p2</layout>
-    </repository>  
+    </repository>
+    <repository>
+      <id>diirt</id>
+      <url>http://download.controlsystemstudio.org/maven-osgi-bundles/3.3</url>
+      <layout>p2</layout>
+    </repository>   
   </repositories>
   
   <!--
