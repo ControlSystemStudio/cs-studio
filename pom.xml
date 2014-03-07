@@ -119,7 +119,7 @@
                                         <id>org.python:jython:2.5.3</id>
                                     </artifact>
                                     <artifact>
-                                        <id>org.slf4j:jul-to-slfj4:1.7.2</id>
+                                        <id>org.slf4j:jul-to-slf4j:1.7.2</id>
                                     </artifact>
                                 </artifacts>
                             </configuration>
