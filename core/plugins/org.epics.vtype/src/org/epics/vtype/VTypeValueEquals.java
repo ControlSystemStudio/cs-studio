@@ -98,6 +98,10 @@ public class VTypeValueEquals {
         return number1.getValue().equals(number2.getValue());
     }
 
+    public static boolean valueEquals(VBoolean number1, VBoolean number2) {
+        return number1.getValue().equals(number2.getValue());
+    }
+
     public static boolean valueEquals(VString str1, VString str2) {
         return str1.getValue().equals(str2.getValue());
     }
@@ -137,6 +141,14 @@ public class VTypeValueEquals {
 	
 	if((obj1 instanceof VNumber) && (obj2 instanceof VNumber)) {
 	    return valueEquals((VNumber) obj1, (VNumber) obj2);
+	}
+	
+	if((obj1 instanceof VBoolean) && (obj2 instanceof VBoolean)) {
+	    return valueEquals((VBoolean) obj1, (VBoolean) obj2);
+	}
+	
+	if((obj1 instanceof VTable) && (obj2 instanceof VTable)) {
+	    return valueEquals((VTable) obj1, (VTable) obj2);
 	}
 
 	return false;
