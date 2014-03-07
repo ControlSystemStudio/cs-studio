@@ -64,8 +64,9 @@ class ConcatStringArrayFunction implements FormulaFunction {
 	for (String str : stringArray.getData()) {
 	    sb.append(str);
 	}
-	return ValueFactory.newVString(sb.toString(), ValueFactory.alarmNone(),
-		ValueFactory.timeNow());
+	return ValueFactory.newVString(sb.toString(),
+                stringArray,
+		stringArray);
 
     }
 
