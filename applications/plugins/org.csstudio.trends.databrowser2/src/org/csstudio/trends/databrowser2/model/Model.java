@@ -1136,21 +1136,27 @@ public class Model
 		}
 		
 		if (graphSettings != null) {
-			for (AxisSettings s : graphSettings.getAxisSettingsList()) {
-				ColorSettings fc = s.getForegroundColor();
-				ColorSettings gc = s.getMajorGridColor();
-				AxisConfig config = new AxisConfig(true, s.getTitle(), 
-						FontDataUtil.getFontData(s.getTitleFont()), 
-						FontDataUtil.getFontData(s.getScaleFont()), 
-						new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()), 
-						s.getRange().getLower(), s.getRange().getUpper(),
-						s.isAutoScale(), s.isLogScale(), s.isShowMajorGrid(),
-						s.isDashGridLine(),new RGB(gc.getRed(),gc.getGreen(),gc.getBlue()),
-						s.isAutoFormat(), s.isDateEnabled(), s.getFormatPattern());
-				if (timeAxis == null) {
-					timeAxis = config;
-				} else {
-					addAxis(config);
+			//backward compatibility for those plts created with duplicated info (axis 
+			//tag and axis settings both describing the same axis)
+			if (graphSettings.getAxisSettingsList().size() == axes.size() + 1 || axes.size() == 0) {
+				timeAxis = null;
+				axes.clear();
+				for (AxisSettings s : graphSettings.getAxisSettingsList()) {
+					ColorSettings fc = s.getForegroundColor();
+					ColorSettings gc = s.getMajorGridColor();
+					AxisConfig config = new AxisConfig(true, s.getTitle(), 
+							FontDataUtil.getFontData(s.getTitleFont()), 
+							FontDataUtil.getFontData(s.getScaleFont()), 
+							new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()), 
+							s.getRange().getLower(), s.getRange().getUpper(),
+							s.isAutoScale(), s.isLogScale(), s.isShowMajorGrid(),
+							s.isDashGridLine(),new RGB(gc.getRed(),gc.getGreen(),gc.getBlue()),
+							s.isAutoFormat(), s.isDateEnabled(), s.getFormatPattern());
+					if (timeAxis == null) {
+						timeAxis = config;
+					} else {
+						addAxis(config);
+					}
 				}
 			}
 		
