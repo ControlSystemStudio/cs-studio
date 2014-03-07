@@ -224,7 +224,7 @@
     <!--<module>org.jdom</module>--><!-- Moved to third party maven repository -->
     <!--<module>org.joda.time</module>--><!-- Can't find anything that uses this -->
     <!--<module>org.junit-dep</module>--><!-- Moved to third party maven repository -->
-    <!--<module>org.mockito</module>--><!-- Moved to third party maven repository -->
+    <module>org.mockito</module><!-- having issues here -->
     <!--<module>org.python</module>--><!-- Moved to third party maven repository -->
     <!--<module>org.slf4j</module>--><!-- Moved to third party repository -->
     <!--<module>org.slf4j-log4j12</module>--><!-- Moved to third party repository -->
