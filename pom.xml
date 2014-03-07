@@ -110,9 +110,6 @@
                                         <id>org.jdom:jdom:1.1</id>
                                     </artifact>
                                     <artifact>
-                                        <id>org.joda:joda-time:1.6.2</id>
-                                    </artifact>
-                                    <artifact>
                                         <id>org.junit:junit-dep:4.10.0</id>
                                     </artifact>
                                     <artifact>
