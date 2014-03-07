@@ -193,7 +193,7 @@ public class XYGraphSettingsUtil {
 		}
 		String scaleFont = settings.getScaleFont();
 		if (scaleFont != null && !scaleFont.trim().isEmpty()) {
-			FontData fontData = FontDataUtil.getFontData(fontInfo);
+			FontData fontData = FontDataUtil.getFontData(scaleFont);
 			axis.setFont(new Font(Display.getCurrent(), fontData));
 		}
 		if (settings.getForegroundColor() != null)

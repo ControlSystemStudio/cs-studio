@@ -75,6 +75,7 @@ public class Model
     final public static String TAG_PVLIST = "pvlist";
     final public static String TAG_PV = "pv";
     final public static String TAG_NAME = "name";
+    final public static String TAG_AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh";
     final public static String TAG_DISPLAYNAME = "display_name";
     final public static String TAG_FORMULA = "formula";
     final public static String TAG_AXES = "axes";
@@ -100,6 +101,7 @@ public class Model
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
+    final public static String TAG_FUTURE_BUFFER = "future_buffer";
 
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_ANNOTATION = "annotation";
@@ -143,7 +145,7 @@ public class Model
         new RGB(242,  26,  26), // red
         new RGB( 33, 179,  33), // green
         new RGB(  0,   0,   0), // black
-        new RGB(128,   0, 255), // violett
+        new RGB(128,   0, 255), // violet
         new RGB(255, 170,   0), // (darkish) yellow
         new RGB(255,   0, 240), // pink
         new RGB(243, 132, 132), // peachy
@@ -216,7 +218,7 @@ public class Model
      *  Manage XYGraph Configuration Settings
      *  @author L.PHILIPPE GANIL
      */
-	private XYGraphSettings graphSettings = new XYGraphSettings();
+	private XYGraphSettings graphSettings = null;
 
 	public Model()
 	{
@@ -965,6 +967,10 @@ public class Model
 		}
 
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
+        
+        if (futureBufferInSeconds > 0) {
+        	XMLWriter.XML(writer, 1, TAG_FUTURE_BUFFER, futureBufferInSeconds);
+        }
         //all other settings are already included in the graphsettings
 //        // Time axis config
 //        if (timeAxis != null)
@@ -1060,6 +1066,12 @@ public class Model
         {
             archive_rescale = ArchiveRescale.STAGGER;
         }
+        
+        try {
+        	futureBufferInSeconds = DOMHelper.getSubelementInt(root_node, TAG_FUTURE_BUFFER);
+        } catch (Throwable e ) {
+        	//ignore, use default
+        }
 
         // Load Time Axis
         final Element timeAxisNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);
@@ -1123,33 +1135,36 @@ public class Model
 					"XML error in XYGraph settings", ex);
 		}
 		
-		for (AxisSettings s : graphSettings.getAxisSettingsList()) {
-			ColorSettings fc = s.getForegroundColor();
-			ColorSettings gc = s.getMajorGridColor();
-			AxisConfig config = new AxisConfig(true, s.getTitle(), 
-					FontDataUtil.getFontData(s.getTitleFont()), 
-					FontDataUtil.getFontData(s.getScaleFont()), 
-					new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()), 
-					s.getRange().getLower(), s.getRange().getUpper(),
-					s.isAutoScale(), s.isLogScale(), s.isShowMajorGrid(),
-					s.isDashGridLine(),new RGB(gc.getRed(),gc.getGreen(),gc.getBlue()),
-					s.isAutoFormat(), s.isDateEnabled(), s.getFormatPattern());
-			if (timeAxis == null) {
-				timeAxis = config;
-			} else {
-				addAxis(config);
+		if (graphSettings != null) {
+			for (AxisSettings s : graphSettings.getAxisSettingsList()) {
+				ColorSettings fc = s.getForegroundColor();
+				ColorSettings gc = s.getMajorGridColor();
+				AxisConfig config = new AxisConfig(true, s.getTitle(), 
+						FontDataUtil.getFontData(s.getTitleFont()), 
+						FontDataUtil.getFontData(s.getScaleFont()), 
+						new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()), 
+						s.getRange().getLower(), s.getRange().getUpper(),
+						s.isAutoScale(), s.isLogScale(), s.isShowMajorGrid(),
+						s.isDashGridLine(),new RGB(gc.getRed(),gc.getGreen(),gc.getBlue()),
+						s.isAutoFormat(), s.isDateEnabled(), s.getFormatPattern());
+				if (timeAxis == null) {
+					timeAxis = config;
+				} else {
+					addAxis(config);
+				}
 			}
+		
+			ArrayList<AnnotationInfo> infos = new ArrayList<AnnotationInfo>();
+			for (AnnotationSettings s : graphSettings.getAnnotationSettingsList()) {
+				ColorSettings fc = s.getAnnotationColor();
+				RGB rgb = fc != null ? new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()) : null;
+				infos.add(new AnnotationInfo(
+						TimestampHelper.fromMillisecs((long)s.getXValue()), s.getYValue(), s.getxAxis(), 
+						s.getName(), CursorLineStyle.valueOf(s.getCursorLineStyle()), s.isShowName(), 
+						s.isShowPosition(), s.isShowSampleInfo(), FontDataUtil.getFontData(s.getFont()),rgb));
+			}
+			setAnnotations(infos.toArray(new AnnotationInfo[infos.size()]));
 		}
-		ArrayList<AnnotationInfo> infos = new ArrayList<AnnotationInfo>();
-		for (AnnotationSettings s : graphSettings.getAnnotationSettingsList()) {
-			ColorSettings fc = s.getAnnotationColor();
-			RGB rgb = fc != null ? new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()) : null;
-			infos.add(new AnnotationInfo(
-					TimestampHelper.fromMillisecs((long)s.getXValue()), s.getYValue(), s.getxAxis(), 
-					s.getName(), CursorLineStyle.valueOf(s.getCursorLineStyle()), s.isShowName(), 
-					s.isShowPosition(), s.isShowSampleInfo(), FontDataUtil.getFontData(s.getFont()),rgb));
-		}
-		setAnnotations(infos.toArray(new AnnotationInfo[infos.size()]));
 		
 		// Backwards compatibility with previous data browser which
         // used global buffer size for all PVs
