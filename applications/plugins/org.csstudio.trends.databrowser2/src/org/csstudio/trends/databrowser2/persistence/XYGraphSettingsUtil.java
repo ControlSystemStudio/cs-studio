@@ -1,5 +1,7 @@
 package org.csstudio.trends.databrowser2.persistence;
 
+import java.util.List;
+
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.figures.Axis;
@@ -95,17 +97,27 @@ public class XYGraphSettingsUtil {
 		xyGraph.setTransparent(settings.isTransparent());
 
 		int i = 0;
-		for (AxisSettings axisSettings : settings.getAxisSettingsList())
-			restoreAxisPropsFromSettings(xyGraph.getAxisList().get(i++),
+		List<Axis> axisList = xyGraph.getAxisList();
+		for (AxisSettings axisSettings : settings.getAxisSettingsList()) {
+			if (axisList.size() > i) {
+				restoreAxisPropsFromSettings(axisList.get(i++),
 					axisSettings);
+			}
+		}
 		i = 0;
+		List<Trace> traceList = xyGraph.getPlotArea().getTraceList();
 		for (TraceSettings traceSettings : settings.getTraceSettingsList())
-			restoreTracePropsFromSettings(xyGraph, xyGraph.getPlotArea()
+			if (traceList.size() > i) {
+				restoreTracePropsFromSettings(xyGraph, xyGraph.getPlotArea()
 					.getTraceList().get(i++), traceSettings);
+			}
 		i = 0;
+		List<Annotation> annotationList = xyGraph.getPlotArea().getAnnotationList();
 		for (AnnotationSettings annotationSettings : settings.getAnnotationSettingsList())
-			restoreAnnotationPropsFromSettings(xyGraph, xyGraph.getPlotArea()
+			if (annotationList.size() > i) {
+				restoreAnnotationPropsFromSettings(xyGraph, xyGraph.getPlotArea()
 					.getAnnotationList().get(i++), annotationSettings);
+			}
 	}
 
 	private static void saveAnnotationPropsToSettings(XYGraph xyGraph,
