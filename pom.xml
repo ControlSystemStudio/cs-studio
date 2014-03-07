@@ -103,6 +103,27 @@
                                         <id>org.epics:epics-vtype:2.1</id>
                                         <source>true</source>
                                     </artifact>
+                                    <artifact>
+                                        <id>org.hamcrest:hamcrest-library:2.1</id>
+                                    </artifact>
+                                    <artifact>
+                                        <id>org.jdom:jdom:1.1</id>
+                                    </artifact>
+                                    <artifact>
+                                        <id>org.joda:joda-time:1.6.2</id>
+                                    </artifact>
+                                    <artifact>
+                                        <id>org.junit:junit-dep:4.10.0</id>
+                                    </artifact>
+                                    <artifact>
+                                        <id>org.mockito:mockito-core:1.9.5</id>
+                                    </artifact>
+                                    <artifact>
+                                        <id>org.python:jython:2.5.3</id>
+                                    </artifact>
+                                    <artifact>
+                                        <id>org.slf4j:jul-to-slfj4:1.7.2</id>
+                                    </artifact>
                                 </artifacts>
                             </configuration>
                         </execution>
