@@ -459,7 +459,7 @@ public class Controller implements ArchiveFetchJobListener
                 // Get matching archived data
                 scheduleArchiveRetrieval();
                 // Show new time range on plot?
-                if (model.isScrollEnabled())
+                if (model.isScrollEnabled() && model.getFutureBufferInSeconds() < 1)
                     return; // no, scrolling will handle that
                 // Yes, since the time axis is currently 'fixed'
                 final long start_ms = TimestampHelper.toMillisecs(model.getStartTime());

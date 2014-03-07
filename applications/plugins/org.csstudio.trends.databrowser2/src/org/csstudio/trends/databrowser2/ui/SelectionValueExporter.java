@@ -42,6 +42,7 @@ public class SelectionValueExporter extends MouseMotionListener.Stub implements 
 
 	private static final String WRITER_FAILED_MSG = "Selection value writing failed.";
 	private static final List<String> VTABLE_NAMES = Arrays.asList("Trace", "X", "Y");
+	private static final List<String> VTABLE_NAMES_TIME = Arrays.asList("Trace", "Timestamp", "Value");
 	private static final List<Class<?>> VTABLE_CLASSES_DOUBLE = Arrays.<Class<?>> asList(
 			String.class, double.class, double.class);
 	private static final List<Class<?>> VTABLE_CLASSES_TIME = Arrays.<Class<?>> asList(
@@ -179,7 +180,7 @@ public class SelectionValueExporter extends MouseMotionListener.Stub implements 
 				times.add(format.format(new Date((long)d)));
 			}
 			return ValueFactory.newVTable(
-					VTABLE_CLASSES_TIME,VTABLE_NAMES,	
+					VTABLE_CLASSES_TIME,VTABLE_NAMES_TIME,	
 					Arrays.<Object>asList(names,times, new ArrayDouble(y)));
 		} else {
 			return ValueFactory.newVTable(
