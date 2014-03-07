@@ -104,7 +104,7 @@
                                         <source>true</source>
                                     </artifact>
                                     <artifact>
-                                        <id>org.hamcrest:hamcrest-library:2.1</id>
+                                        <id>org.hamcrest:hamcrest-library:1.2</id>
                                     </artifact>
                                     <artifact>
                                         <id>org.jdom:jdom:1.1</id>
