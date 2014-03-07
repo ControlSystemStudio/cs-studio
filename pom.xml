@@ -96,11 +96,11 @@
                                         <source>true</source>
 				</artifact> -->
                                     <artifact>
-                                        <id>org.epics:epics-util:0.2.5</id>
+                                        <id>org.epics:epics-util:0.2.2</id>
                                         <source>true</source>
                                     </artifact>
                                     <artifact>
-                                        <id>org.epics:epics-vtype:2.4</id>
+                                        <id>org.epics:epics-vtype:2.1</id>
                                         <source>true</source>
                                     </artifact>
                                 </artifacts>
