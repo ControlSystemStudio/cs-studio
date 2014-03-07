@@ -107,6 +107,9 @@
                                         <id>org.hamcrest:hamcrest-library:1.2</id>
                                     </artifact>
                                     <artifact>
+                                        <id>org.hamcrest:hamcrest-library:1.3</id>
+                                    </artifact>
+                                    <artifact>
                                         <id>org.jdom:jdom:1.1</id>
                                     </artifact>
                                     <artifact>
