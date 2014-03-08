@@ -262,7 +262,9 @@ public class PVSamples extends PlotSamples
      * @param endTime the end time of the current visible window on the chart
      * @return true if the history data needs to be refreshed or false otherwise
      */
-   synchronized boolean isHistoryRefreshNeeded(Timestamp startTime, Timestamp endTime) {
+    synchronized boolean isHistoryRefreshNeeded(Timestamp startTime, Timestamp endTime) {
+    	//if already waiting for history to be loaded, wait on
+	   	if (emptyHistoryOnAdd) return false;
     	//if live data hasn't reached capacity, do not refresh anything
     	if (live.getSize() < live.getCapacity() || live.getSize() == 0) return false;
     	//if there is no history data, there is nothing to refresh anyway
