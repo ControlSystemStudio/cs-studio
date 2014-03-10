@@ -34,6 +34,12 @@ import static org.epics.util.text.StringUtil.DOUBLE_REGEX_WITH_NAN;
  * that it finds more than one column and that all the rows have the same
  * number of columns. If not, proceeds to the next separator.
  * <p>
+ * Typical use of the parser:
+ * <blockquote><pre>
+ * CsvParserResult result = CsvParser.AUTOMATIC
+ *   .withHeader(CsvParser.Header.NONE)
+ *   .parse(new FileReader("table.csv"));</pre></blockquote>
+ * <p>
  * The parsing of each line is based on code and insights found in
  * <a href="http://regex.info/book.html"> Mastering Regular Expressions</a>.
  *

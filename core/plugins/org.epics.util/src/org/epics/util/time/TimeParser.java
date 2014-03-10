@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * A helper class to parse user defined time strings to absolute or relative
- * time durations
+ * time durations.
  * 
  * The following return a TimeInterval - absolute
  * 
