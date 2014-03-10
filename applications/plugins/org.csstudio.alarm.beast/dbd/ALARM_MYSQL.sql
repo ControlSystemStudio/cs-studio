@@ -29,6 +29,7 @@ CREATE TABLE ALARM.ALARM_TREE(
     COMPONENT_ID       INT            NOT NULL COMMENT 'Component Identifier: The id for identification of each component.',
     PARENT_CMPNT_ID    INT                     COMMENT 'Parent Component Identifier:The parent id of the component in the configuration hierarchy, null for root of hierarchy.',
     NAME               VARCHAR(80)    NOT NULL COMMENT 'Name: Component name.',
+    ENABLED_IND        BOOL         DEFAULT FALSE NOT NULL COMMENT 'Enabled Indicator: Indicates if alarms are enabled for a given PV.',
     CONFIG_TIME        TIMESTAMP               COMMENT 'Configuration Time: Time of last configuration update.',
     PRIMARY KEY (COMPONENT_ID)
 )ENGINE=INNODB
@@ -99,7 +100,6 @@ COMMENT='Automated actions for the component.'
 CREATE TABLE ALARM.PV(
     COMPONENT_ID       INT              NOT NULL           COMMENT 'Component Identifier: The id for identification of each component.',
     DESCR              VARCHAR(100)                        COMMENT 'Description: Description that might be more meaningful than PV name.',
-    ENABLED_IND        BOOL         DEFAULT FALSE NOT NULL COMMENT 'Enabled Indicator: Indicates if alarms are enabled for a given PV.',
     ANNUNCIATE_IND     BOOL         DEFAULT FALSE NOT NULL COMMENT 'Annunciate Indicator:  Indicates if alarm should be annunciated.',
     LATCH_IND          BOOL         DEFAULT FALSE NOT NULL COMMENT 'Latch Indicator: Indicates that alarm should be latched for acknowledgement, even if PV recovers.',
     DELAY              INT                                 COMMENT 'Delay: Minimum time in seconds before raising the alarm.',
@@ -279,23 +279,24 @@ ALTER TABLE ALARM.PV ADD CONSTRAINT FK_PV_TO_STATUS
 
 -- This entry with PARENT_CMPNT_ID = NULL
 -- defines an alarm tree 'root'
-INSERT INTO ALARM.ALARM_TREE VALUES (1, NULL, 'Annunciator', now());
+INSERT INTO ALARM.ALARM_TREE VALUES (1, NULL, 'askap', true, now());
 
 -- Following entries are below that root
-INSERT INTO ALARM.ALARM_TREE VALUES (2, 1, 'Area', now());
-INSERT INTO ALARM.ALARM_TREE VALUES (3, 2, 'System', now());
-INSERT INTO ALARM.ALARM_TREE VALUES (4, 3, 'PV1', now());
-INSERT INTO ALARM.ALARM_TREE VALUES (5, 3, 'PV2', now());
+INSERT INTO ALARM.ALARM_TREE VALUES (2, 1, 'Area', true, now());
+INSERT INTO ALARM.ALARM_TREE VALUES (3, 2, 'System', true, now());
+INSERT INTO ALARM.ALARM_TREE VALUES (4, 3, 'PV1', true, now());
+INSERT INTO ALARM.ALARM_TREE VALUES (5, 3, 'PV2', true, now());
 
 -- ALARM_TREE entries 'PV1', 'PV2' become PVs because of associated data in PV table:
-INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (4, 'Demo 1', true, true, true, false);
-INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (5, 'Demo 2', true, true, true, false);
+INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (4, 'Demo 1', true, true, false);
+INSERT INTO ALARM.PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND, ACT_GLOBAL_ALARM_IND) VALUES (5, 'Demo 2', true, true, false);
 
 -- Guidance, commands, .. can be associated with Areas, systems, PVs
-INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (3, 1, 'System Info', 'This is info for the system and PVs below it'); 
-    
-INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 1, 'Info 1', 'Do something'); 
-INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 2, 'Info 2', 'Do something else'); 
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (3, 1, 'System Info', 'This is info for the system and PVs below it');
 
-INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (5, 1, 'Info 1', 'Do something'); 
-INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (5, 2, 'Info 2', 'Do something else'); 
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 1, 'Info 1', 'Do something');
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (4, 2, 'Info 2', 'Do something else');
+
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (5, 1, 'Info 1', 'Do something');
+INSERT INTO ALARM.GUIDANCE(COMPONENT_ID, GUIDANCE_ORDER, TITLE, DETAIL) VALUES (5, 2, 'Info 2', 'Do something else');
+

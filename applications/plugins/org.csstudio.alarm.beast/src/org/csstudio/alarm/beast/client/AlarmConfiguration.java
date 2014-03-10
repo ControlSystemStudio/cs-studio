@@ -712,10 +712,26 @@ public class AlarmConfiguration
      */
     public synchronized void setEnabled(final AlarmTreeItem item, final boolean isEnabled) throws Exception
     {
-        if (item instanceof AlarmTreePV)
-            setEnabledItem((AlarmTreePV) item, isEnabled);
-        else
-            setEnabledSubtree(item, isEnabled);
+        final Connection connection = rdb.getConnection();
+        connection.setAutoCommit(false);
+        
+        try{
+	        if (item instanceof AlarmTreePV)
+	            setEnabledItem((AlarmTreePV) item, isEnabled);
+	        else
+	            setEnabledSubtree(item, isEnabled);
+	        
+	        connection.commit();
+	        
+        } catch (SQLException ex) {
+        	
+	        connection.rollback();
+	        throw ex;
+	        
+	    } finally {
+	        connection.setAutoCommit(true);
+	    }
+
     }
 
     /** Change item's enabled
@@ -724,29 +740,15 @@ public class AlarmConfiguration
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    public void setEnabledItem(final AlarmTreeItem item, final boolean isEnabled) throws Exception
+    private void setEnabledItem(final AlarmTreeItem item, final boolean isEnabled) throws Exception
     {
         // Update item's config time after RDB commit succeeded
         final Connection connection = rdb.getConnection();
         PreparedStatement update_item_enablement = connection.prepareStatement(sql.update_pv_enablement);
-        try
-        {
-            connection.setAutoCommit(true);
-        	update_item_enablement.setBoolean(1, isEnabled);
-        	update_item_enablement.setInt(2, item.getID());
-        	update_item_enablement.executeUpdate();
-            item.setEnabled(isEnabled);
-        }
-        catch (SQLException ex)
-        {
-            connection.rollback();
-            throw ex;
-        }
-        finally
-        {
-        	update_item_enablement.close();
-            connection.setAutoCommit(true);
-        }
+    	update_item_enablement.setBoolean(1, isEnabled);
+    	update_item_enablement.setInt(2, item.getID());
+    	update_item_enablement.executeUpdate();
+        item.setEnabled(isEnabled);
     }
  
     
