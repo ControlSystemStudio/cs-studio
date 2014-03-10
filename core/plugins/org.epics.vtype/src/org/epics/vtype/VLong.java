@@ -5,16 +5,16 @@
 package org.epics.vtype;
 
 /**
- * Scalar byte with alarm, timestamp, display and control information.
+ * Scalar long with alarm, timestamp, display and control information.
  * Auto-unboxing makes the extra method for the primitive type
  * unnecessary.
  * 
  * @author carcassi
  */
-public interface VByte extends VNumber, VType {
+public interface VLong extends VNumber, VType {
     /**
      * {@inheritDoc }
      */
     @Override
-    Byte getValue();
+    Long getValue();
 }

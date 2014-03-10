@@ -15,6 +15,7 @@ import org.epics.util.array.ListByte;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
+import org.epics.util.array.ListLong;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
 import org.epics.util.array.ListShort;
@@ -70,6 +71,18 @@ public class ValueFactory {
         return new IVMultiDouble(values, alarm, time, display);
     }
 
+    /**
+     * Creates a new VLong.
+     * 
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VLong newVLong(final Long value, final Alarm alarm, final Time time, final Display display) {
+        return new IVLong(value, alarm, time, display);
+    }
 
     /**
      * Creates a new VInt.
@@ -351,24 +364,26 @@ public class ValueFactory {
     /**
      * Creates a new VNumber based on the type of the data
      * 
-     * @param value
-     * @param alarm
-     * @param time
-     * @param display
-     * @return
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new number
      */
     public static VNumber newVNumber(Number value, Alarm alarm, Time time, Display display){
-	if(value instanceof Double){
-	    return newVDouble((Double) value, alarm, time, display);
-	}else if(value instanceof Integer){
-	    return newVInt((Integer)value, alarm, time, display);
-	}else if(value instanceof Short){
-	    return newVShort((Short)value, alarm, time, display);
-	}else if(value instanceof Byte){
-	    return newVByte((Byte)value, alarm, time, display);
-	}else if(value instanceof Float){
-	    return newVFloat((Float)value, alarm, time, display);
-	}	
+        if (value instanceof Double) {
+            return newVDouble((Double) value, alarm, time, display);
+        } else if (value instanceof Float) {
+            return newVFloat((Float) value, alarm, time, display);
+        } else if (value instanceof Long) {
+            return newVLong((Long) value, alarm, time, display);
+        } else if (value instanceof Integer) {
+            return newVInt((Integer) value, alarm, time, display);
+        } else if (value instanceof Short) {
+            return newVShort((Short) value, alarm, time, display);
+        } else if (value instanceof Byte) {
+            return newVByte((Byte) value, alarm, time, display);
+        }
 	throw new UnsupportedOperationException();
     }
     
@@ -509,6 +524,8 @@ public class ValueFactory {
 	    return new IVDoubleArray((ListDouble) data, sizes, dimensionDisplay, alarm, time, display);
 	} else if (data instanceof ListFloat){
 	    return new IVFloatArray((ListFloat) data, sizes, dimensionDisplay, alarm, time, display);
+	} else if (data instanceof ListLong){
+	    return new IVLongArray((ListLong) data, sizes, dimensionDisplay, alarm, time, display);
 	} else if (data instanceof ListInt){
 	    return new IVIntArray((ListInt) data, sizes, dimensionDisplay, alarm, time, display);
 	} else if (data instanceof ListByte){
@@ -557,6 +574,20 @@ public class ValueFactory {
      */
     public static VImage newVImage(int height, int width, byte[] data) {
         return new IVImage(height, width, data);
+    }
+    
+    /**
+     * Creates a new VLongArray.
+     * 
+     * @param values array values
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VLongArray newVLongArray(final ListLong values, Alarm alarm, Time time, Display display) {
+        ListInt sizes = new ArrayInt(values.size());
+        return new IVLongArray(values, sizes, ValueUtil.defaultArrayDisplay(sizes), alarm, time, display);
     }
     
     /**
@@ -617,7 +648,7 @@ public class ValueFactory {
      * 
      * @param value the value to wrap
      * @return the wrapped value
-     * @deprecated use {@link #toVType() }
+     * @deprecated use {@link #toVType(java.lang.Object) }
      */
     @Deprecated
     public static VType wrapValue(Object value) {
@@ -672,7 +703,7 @@ public class ValueFactory {
     
     /**
      * Converts a standard java type to VTypes. Returns null if no conversion
-     * is possible. Calls {@link #toVType(java.lang.Object, org.epics.vtype.Alarm, org.epics.vtype.Time, org.epics.vtype.Display) 
+     * is possible. Calls {@link #toVType(java.lang.Object, org.epics.vtype.Alarm, org.epics.vtype.Time, org.epics.vtype.Display)} 
      * with no alarm, time now and no display.
      * 
      * @param javaObject the value to wrap

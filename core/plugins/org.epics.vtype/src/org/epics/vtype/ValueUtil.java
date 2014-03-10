@@ -38,7 +38,7 @@ public class ValueUtil {
 
     private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByte.class, VByteArray.class, VDouble.class,
             VDoubleArray.class, VEnum.class, VEnumArray.class, VFloat.class, VFloatArray.class,
-            VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
+            VLong.class, VLongArray.class, VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
             VMultiInt.class, VMultiString.class, VShort.class, VShortArray.class,
             VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VTable.class,
             VImage.class);
