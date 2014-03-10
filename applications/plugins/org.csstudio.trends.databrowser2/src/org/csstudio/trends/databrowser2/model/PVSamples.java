@@ -265,6 +265,9 @@ public class PVSamples extends PlotSamples
     synchronized boolean isHistoryRefreshNeeded(Timestamp startTime, Timestamp endTime) {
     	//if already waiting for history to be loaded, wait on
 	   	if (emptyHistoryOnAdd) return false;
+	   	//if the live samples have more than 15% of capacity left before old data is erased,
+	   	//refresh is not yet needed
+	   	if (samplesAddedSinceLastRefresh < live.getCapacity()*0.85) return false;
     	//if live data hasn't reached capacity, do not refresh anything
     	if (live.getSize() < live.getCapacity() || live.getSize() == 0) return false;
     	//if there is no history data, there is nothing to refresh anyway
