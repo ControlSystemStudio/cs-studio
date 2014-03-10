@@ -909,13 +909,6 @@ public class Controller implements ArchiveFetchJobListener
             if (!archive_fetch_jobs.isEmpty())
                 return;
         }
-        display.asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-								
-			}
-		});
         // All completed. Do something to the plot?
         final ArchiveRescale rescale = model.getArchiveRescale();
         if (rescale == ArchiveRescale.NONE)
