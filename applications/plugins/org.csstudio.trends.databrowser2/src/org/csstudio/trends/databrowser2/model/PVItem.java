@@ -418,6 +418,9 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
             final List<VType> new_samples)
     {
         samples.mergeArchivedData(server_name, new_samples);
+        if (automaticRefresh && samples.isHistoryRefreshNeeded(model.getStartTime(), model.getEndTime())) {
+        	model.fireItemRefreshRequested(this);
+        }
     }
 
     /** Write XML formatted PV configuration
