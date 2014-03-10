@@ -6,28 +6,29 @@ package org.epics.vtype;
 
 import java.util.List;
 import org.epics.util.array.ListInt;
+import org.epics.util.array.ListShort;
 
 /**
  *
  * @author carcassi
  */
-class IVIntArray extends IVNumberArray implements VIntArray {
+class IVShortArray extends IVNumberArray implements VShortArray {
 
-    private final ListInt data;
+    private final ListShort data;
 
-    public IVIntArray(ListInt data, ListInt sizes,
+    public IVShortArray(ListShort data, ListInt sizes,
             Alarm alarm, Time time, Display display) {
         this(data, sizes, null, alarm, time, display);
     }
 
-    public IVIntArray(ListInt data, ListInt sizes, List<ArrayDimensionDisplay> dimDisplay,
+    public IVShortArray(ListShort data, ListInt sizes, List<ArrayDimensionDisplay> dimDisplay,
             Alarm alarm, Time time, Display display) {
         super(sizes, dimDisplay, alarm, time, display);
         this.data = data;
     }
 
     @Override
-    public ListInt getData() {
+    public ListShort getData() {
         return data;
     }
 
