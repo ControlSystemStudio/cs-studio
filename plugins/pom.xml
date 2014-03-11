@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.31-SNAPSHOT</version>
+  <version>0.0.33-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -44,5 +44,6 @@
     <module>org.eclipse.nebula.widgets.grid</module>
     <module>org.slf4j</module>
     <module>org.slf4j-log4j12</module>
+    <module>org.hibernate.v4.1.3.Final</module>
   </modules>
 </project>
