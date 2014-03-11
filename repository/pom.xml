@@ -16,7 +16,7 @@
 
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-repository</artifactId>
-  <version>0.0.34-SNAPSHOT</version>
+  <version>0.0.35-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
 
   <build>
