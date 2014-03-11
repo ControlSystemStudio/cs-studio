@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="mockito-core-1.9.5-rc1.jar"/>
+	<classpathentry exported="true" kind="lib" path="com.springsource.org.objenesis-1.0.0.jar"/>
+</classpath>
