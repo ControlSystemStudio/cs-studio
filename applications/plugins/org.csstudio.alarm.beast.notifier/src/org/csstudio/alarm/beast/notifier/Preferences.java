@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class Preferences {
     final public static String TIMER_THRESHOLD = "timer_threshold";
     final public static String THREAD_THRESHOLD = "thread_threshold";
+    final public static String NOTIFY_ESCALATING_ALARMS_ONLY = "notify_escalating_alarms_only";
 
 	/**
 	 * @param setting Preference identifier
@@ -56,5 +57,14 @@ public class Preferences {
 		if (service == null)
 			return 100; // default
 		return service.getInt(Activator.ID, THREAD_THRESHOLD, 100, null);
+	}
+	
+	/** @return NOTIFY_ESCALATING_ALARMS_ONLY for automated actions */
+	public static boolean getNotifyEscalatingAlarmsOnly() {
+		final IPreferencesService service = Platform.getPreferencesService();
+		if (service == null)
+			return false; // default
+		
+		return service.getBoolean(Activator.ID, NOTIFY_ESCALATING_ALARMS_ONLY, false, null);
 	}
 }
