@@ -84,7 +84,7 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         try {
-            // If the string can be parse to a number, to it
+            // If the string can be parse to a number, do it
             if (newValue instanceof String) {
                 String value = (String) newValue;
                 try {
@@ -92,7 +92,10 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
                 } catch (NumberFormatException ex) {
                 }
             }
-            newValue = checkValue(ValueFactory.toVTypeChecked(newValue));
+            // If new value is not a VType, try to convert it
+            if (!(newValue instanceof VType)) {
+                newValue = checkValue(ValueFactory.toVTypeChecked(newValue));
+            }
             processMessage(newValue);
             callback.channelWritten(null);
         } catch (Exception ex) {
