@@ -15,6 +15,12 @@ import java.util.List;
  * @author carcassi
  */
 public class PrintFunctionSetTable {
+    
+    /**
+     * Entry point for the utility.
+     * 
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         FormulaFunctionSet set = new ArrayFunctionSet();
         List<FormulaFunction> functions = new ArrayList<>(set.getFunctions());

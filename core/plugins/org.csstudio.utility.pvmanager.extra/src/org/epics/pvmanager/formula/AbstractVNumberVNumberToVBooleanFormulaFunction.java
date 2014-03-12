@@ -14,7 +14,6 @@ import org.epics.vtype.ValueUtil;
 
 
 /**
-/**
  * Abstract class for formula functions that take two VNumber as arguments
  * and return a VBoolean.
  * <p>
@@ -29,7 +28,7 @@ import org.epics.vtype.ValueUtil;
  *
  * @author carcassi
  */
-abstract class AbstractVNumberVNumberToVBooleanFormulaFunction implements FormulaFunction {
+public abstract class AbstractVNumberVNumberToVBooleanFormulaFunction implements FormulaFunction {
 
     private final String name;
     private final String description;

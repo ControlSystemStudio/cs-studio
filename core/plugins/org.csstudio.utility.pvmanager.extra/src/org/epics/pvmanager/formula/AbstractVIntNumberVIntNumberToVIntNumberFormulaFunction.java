@@ -28,7 +28,7 @@ import org.epics.vtype.ValueUtil;
  * @author shroffk
  * 
  */
-abstract class AbstractVIntNumberVIntNumberToVIntNumberFormulaFunction implements FormulaFunction {
+public abstract class AbstractVIntNumberVIntNumberToVIntNumberFormulaFunction implements FormulaFunction {
 
     private final String name;
     private final String description;

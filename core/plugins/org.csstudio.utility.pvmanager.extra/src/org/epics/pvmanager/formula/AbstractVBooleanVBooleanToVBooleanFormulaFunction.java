@@ -7,9 +7,7 @@ package org.epics.pvmanager.formula;
 import java.util.Arrays;
 import java.util.List;
 import org.epics.pvmanager.util.NullUtils;
-import org.epics.util.time.Timestamp;
 import org.epics.vtype.VBoolean;
-import org.epics.vtype.VNumber;
 import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 
@@ -29,7 +27,7 @@ import org.epics.vtype.ValueUtil;
  * 
  * @author carcassi
  */
-abstract class AbstractVBooleanVBooleanToVBooleanFormulaFunction implements FormulaFunction {
+public abstract class AbstractVBooleanVBooleanToVBooleanFormulaFunction implements FormulaFunction {
 
     private final String name;
     private final String description;
