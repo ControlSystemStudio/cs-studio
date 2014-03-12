@@ -143,8 +143,8 @@
         <version>${tycho.version}</version>
         <executions>
           <execution>
-            <id>mirror-existing-central-repository</id>
-            <phase>prepare-package</phase>
+		  <id>mirror-existing-central-repository</id>
+		  <phase>verify</phase>
             <goals>
                 <goal>mirror</goal>
             </goals>
@@ -158,29 +158,25 @@
               </source>
               <append>false</append>
               <compress>true</compress>
-              <mirrorMetadataOnly>false</mirrorMetadataOnly>
+              <mirrorMetadataOnly>true</mirrorMetadataOnly>
               <destination>${project.build.directory}/centralrepository</destination>
             </configuration>
           </execution>
           <execution>
             <id>mirror-build-to-central-repository</id>
-            <phase>install</phase>
+            <phase>verify</phase>
             <goals>
                 <goal>mirror</goal>
             </goals>
             <configuration>
               <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
               <source>
-                 <repository>
-                      <url>${project.baseUri}/../extras</url>
-                      <layout>p2</layout>
-                  </repository>
                   <repository>
-                      <url>${project.baseUri}/target/repository</url>
+			  <url>${project.baseUri}/target/repository</url>
                       <layout>p2</layout>
                   </repository>
               </source>
-              <append>false</append>
+              <append>true</append>
               <compress>true</compress>
               <mirrorMetadataOnly>false</mirrorMetadataOnly>
               <destination>${project.build.directory}/centralrepository</destination>
