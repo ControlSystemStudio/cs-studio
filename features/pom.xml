@@ -9,9 +9,10 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-features</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.thirdparty.feature</module>
+    <module>org.csstudio.libs.feature</module>
   </modules>
 </project>

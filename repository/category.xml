@@ -8,5 +8,9 @@
       <!--<category name="org.csstudio.category.core"/>-->
    </feature>
 
+   <feature id="org.csstudio.libs.feature" version="3.2.0.qualifier">
+      <!--<category name="org.csstudio.category.core"/>-->
+   </feature>
+
    <!--<category-def name="org.csstudio.category.example" label="Example"/>-->
 </site>
