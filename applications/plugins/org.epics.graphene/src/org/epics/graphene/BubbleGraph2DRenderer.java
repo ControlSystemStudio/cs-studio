@@ -29,6 +29,7 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
 
     @Override
     public void update(BubbleGraph2DRendererUpdate update) {
+        super.update(update);
         if (update.getFocusPixelX()!= null) {
             focusPixelX = update.getFocusPixelX();
         }
