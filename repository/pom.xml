@@ -48,7 +48,7 @@
           </execution>
           <execution>
             <id>mirror-build-to-central-repository</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
                 <goal>mirror</goal>
             </goals>
