@@ -26,8 +26,8 @@ import org.eclipse.wb.swt.SWTResourceManager;
 class TicketPropertyWidget extends AbstractPropertyWidget {
     
     private static final String propertyName = "Ticket";
-    private static final String attrIdName = "Id";
-    private static final String attrURLName = "URL";
+    private static final String attrIdName = "TicketId";
+    private static final String attrURLName = "TicketURL";
     
     private static final Property widgetProperty = PropertyBuilder
 	    .property(propertyName).attribute(attrIdName).attribute(attrURLName)
