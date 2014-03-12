@@ -81,10 +81,14 @@ public class BubbleGraph2DFunction implements ReadFunction<Graph2DResult> {
         renderer.draw(image.createGraphics(), dataset);
 
         previousImage = ValueUtil.toVImage(image);
+        int focusValueIndex = -1;
+        if (renderer.getFocusValueIndex() != null) {
+            focusValueIndex = renderer.getFocusValueIndex();
+        }
         return new Graph2DResult(vTable, previousImage,
                 new GraphDataRange(renderer.getXPlotRange(), renderer.getXPlotRange(), renderer.getXAggregatedRange()), new GraphDataRange(
                 renderer.getYPlotRange(), renderer.getYPlotRange(), renderer.getYAggregatedRange()),
-                -1);
+                focusValueIndex);
 
     }
 }
