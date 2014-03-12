@@ -17,9 +17,27 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
     private Range zAggregatedRange;
     private AxisRange zAxisRange = AxisRanges.integrated();
     private Range zPlotRange;
+    private Integer focusPixelX;
+    private Integer focusPixelY;
+    private boolean highlightFocusValue = false;
+    
+    private Integer focusValueIndex;
 
     public BubbleGraph2DRenderer(int width, int height) {
         super(width, height);
+    }
+
+    @Override
+    public void update(BubbleGraph2DRendererUpdate update) {
+        if (update.getFocusPixelX()!= null) {
+            focusPixelX = update.getFocusPixelX();
+        }
+        if (update.getFocusPixelY()!= null) {
+            focusPixelY = update.getFocusPixelY();
+        }
+        if (update.getHighlightFocusValue()!= null) {
+            highlightFocusValue = update.getHighlightFocusValue();
+        }
     }
 
     protected void calculateRanges(Range xDataRange, Range yDataRange, Range zDataRange) {
@@ -54,20 +72,44 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
         // Order values by 
         ListInt indexes = org.epics.util.array.ListNumbers.sortedView(data.getZValues()).getIndexes();
         
+        // Reset current focused value
+        focusValueIndex = null;
+        final boolean isFocusValuePresent = focusPixelX != null && focusPixelY != null;
+        Shape focusShape = null;
+        
         // Make sure that the line does not go ouside the chart
         setClip(g);
         for (int j = indexes.size() - 1; j >= 0; j--) {
             int i = indexes.getInt(j);
-            double size = radiusScale(zPlotRange.getMinimum().doubleValue(), data.getZValues().getDouble(i), zPlotRange.getMaximum().doubleValue(),
+            double diameter = radiusScale(zPlotRange.getMinimum().doubleValue(), data.getZValues().getDouble(i), zPlotRange.getMaximum().doubleValue(),
                     3, 15);
             double x = scaledX(data.getXValues().getDouble(i));
             double y = scaledY(data.getYValues().getDouble(i));
-            Shape bubble = createShape(x, y, size);
-            newValue(x, y, size, i);
+            Shape bubble = createShape(x, y, diameter);
+            newValue(x, y, diameter, i);
             g.setColor(new Color(labelColor.getColor(data.getLabels().get(i))));
             g.fill(bubble);
             g.setColor(Color.BLACK);
             g.draw(bubble);
+            if (isFocusValuePresent) {
+                double deltaX = focusPixelX - x;
+                double deltaY = focusPixelY - y;
+                if (Math.sqrt(deltaX*deltaX + deltaY*deltaY) < diameter / 2) {
+                    focusValueIndex = i;
+                    focusShape = bubble;
+                }
+            }
+        }
+        
+        if (highlightFocusValue && focusShape != null) {
+            g.setColor(Color.WHITE);
+            g.fill(focusShape);
+            g.setColor(Color.BLACK);
+            g.draw(focusShape);
+//            g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+//            g.setColor(Color.CYAN);
+//            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+//            g.drawLine(focusPixelX, focusPixelY, focusPixelX, focusPixelY);
         }
 
     }
@@ -106,4 +148,14 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
     public BubbleGraph2DRendererUpdate newUpdate() {
         return new BubbleGraph2DRendererUpdate();
     }
+
+    /**
+     * Return the index of the focused value.
+     * 
+     * @return the index or null
+     */
+    public Integer getFocusValueIndex() {
+        return focusValueIndex;
+    }
+    
 }
