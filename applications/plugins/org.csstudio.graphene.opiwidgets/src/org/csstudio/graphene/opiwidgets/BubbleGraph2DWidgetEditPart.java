@@ -3,6 +3,7 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
+import org.csstudio.graphene.BubbleGraph2DWidget;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -16,6 +17,23 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 		BubbleGraph2DWidgetFigure figure = new BubbleGraph2DWidgetFigure(this);
 		configure(figure, getWidgetModel());
 		return figure;
+	}
+	
+	@Override
+	protected void configure(BubbleGraph2DWidgetFigure figure, BubbleGraph2DWidgetModel model) {
+		super.configure(figure, model);
+		BubbleGraph2DWidget widget = figure.getSWTWidget();
+		if (figure.isRunMode()) {
+			widget.setHighlightSelectionValue(model.isHighlightSelectionValue());
+			widget.setSelectionValuePv(model.getSelectionValuePv());
+		}
+	}
+
+	@Override
+	protected void registerPropertyChangeHandlers() {
+		super.registerPropertyChangeHandlers();
+		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
 	}
 
 }
