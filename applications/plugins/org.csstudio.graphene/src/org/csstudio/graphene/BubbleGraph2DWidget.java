@@ -202,7 +202,6 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 	
 	@Override
 	protected void processValue() {
-		System.out.println("New Value");
 		Graph2DResult result = getCurrentResult();
 		if (result == null || result.getData() == null) {
 			setSelectionValue(null);
