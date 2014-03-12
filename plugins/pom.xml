@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.38-SNAPSHOT</version>
+  <version>0.0.39-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -50,5 +50,6 @@
     <module>org.hamcrest</module>
     <module>org.mockito</module>
     <module>org.ehcache</module>
+    <module>org.python</module>
   </modules>
 </project>
