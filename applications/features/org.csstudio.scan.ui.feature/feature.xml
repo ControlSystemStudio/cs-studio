@@ -37,7 +37,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
-      <import plugin="org.python" version="2.5.2" match="greaterOrEqual"/>
+      <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.5.0" match="compatible"/>
       <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
@@ -104,7 +104,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.python"
+         id="org.python.jython"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

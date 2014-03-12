@@ -26,7 +26,7 @@ of the distribution package.
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.junit" version="4.0.0" match="greaterOrEqual"/>
-      <import plugin="org.python" version="2.5.2" match="greaterOrEqual"/>
+      <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
@@ -51,7 +51,7 @@ of the distribution package.
    </requires>
 
    <plugin
-         id="org.python"
+         id="org.python.jython"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.csstudio</groupId>
-  <artifactId>org.python</artifactId>
+  <artifactId>org.python.jython</artifactId>
   <version>2.5.2-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
