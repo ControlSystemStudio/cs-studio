@@ -27,7 +27,7 @@ public class BubbleGraph2DFunction implements ReadFunction<Graph2DResult> {
     private ReadFunctionArgument<String> xColumnName;
     private ReadFunctionArgument<String> yColumnName;
     private ReadFunctionArgument<String> sizeColumnName;
-    private ReadFunctionArgument<String> tooltipColumnName;
+    private ReadFunctionArgument<String> colorColumnName;
     private BubbleGraph2DRenderer renderer = new BubbleGraph2DRenderer(300,
             200);
     private VImage previousImage;
@@ -38,12 +38,12 @@ public class BubbleGraph2DFunction implements ReadFunction<Graph2DResult> {
 	    ReadFunction<?> xColumnName,
 	    ReadFunction<?> yColumnName,
 	    ReadFunction<?> sizeColumnName,
-	    ReadFunction<?> tooltipColumnName) {
+	    ReadFunction<?> colorColumnName) {
         this.tableData = new CheckedReadFunction<>(tableData, "Data", VTable.class);
         this.xColumnName = stringArgument(xColumnName, "X Column");
         this.yColumnName = stringArgument(yColumnName, "Y Column");
         this.sizeColumnName = stringArgument(sizeColumnName, "Size Column");
-        this.tooltipColumnName = stringArgument(tooltipColumnName, "Tooltip Column");
+        this.colorColumnName = stringArgument(colorColumnName, "Color Column");
     }
 
     public QueueCollector<BubbleGraph2DRendererUpdate> getRendererUpdateQueue() {
@@ -56,15 +56,15 @@ public class BubbleGraph2DFunction implements ReadFunction<Graph2DResult> {
         xColumnName.readNext();
         yColumnName.readNext();
         sizeColumnName.readNext();
-        tooltipColumnName.readNext();
+        colorColumnName.readNext();
         
         // Table and columns must be available
-        if (vTable == null || xColumnName.isMissing() || yColumnName.isMissing() || sizeColumnName.isMissing()) {
+        if (vTable == null || xColumnName.isMissing() || yColumnName.isMissing() || sizeColumnName.isMissing() || colorColumnName.isMissing()) {
             return null;
         }
 
         // Prepare new dataset
-        Point3DWithLabelDataset dataset = DatasetConversions.point3DDatasetFromVTable(vTable, xColumnName.getValue(), yColumnName.getValue(), sizeColumnName.getValue());
+        Point3DWithLabelDataset dataset = DatasetConversions.point3DDatasetFromVTable(vTable, xColumnName.getValue(), yColumnName.getValue(), sizeColumnName.getValue(), colorColumnName.getValue());
 
         List<BubbleGraph2DRendererUpdate> updates = rendererUpdateQueue
                 .readValue();
