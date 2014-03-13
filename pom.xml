@@ -144,7 +144,7 @@
         <executions>
           <execution>
 		  <id>mirror-existing-central-repository</id>
-		  <phase>verify</phase>
+		  <phase>prepare-package</phase>
             <goals>
                 <goal>mirror</goal>
             </goals>
@@ -158,13 +158,13 @@
               </source>
               <append>false</append>
               <compress>true</compress>
-              <mirrorMetadataOnly>true</mirrorMetadataOnly>
+              <mirrorMetadataOnly>false</mirrorMetadataOnly>
               <destination>${project.build.directory}/centralrepository</destination>
             </configuration>
           </execution>
           <execution>
             <id>mirror-build-to-central-repository</id>
-            <phase>verify</phase>
+            <phase>package</phase>
             <goals>
                 <goal>mirror</goal>
             </goals>
@@ -176,7 +176,7 @@
                       <layout>p2</layout>
                   </repository>
               </source>
-              <append>true</append>
+              <append>false</append>
               <compress>true</compress>
               <mirrorMetadataOnly>false</mirrorMetadataOnly>
               <destination>${project.build.directory}/centralrepository</destination>
