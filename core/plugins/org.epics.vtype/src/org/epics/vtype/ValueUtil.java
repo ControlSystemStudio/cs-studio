@@ -511,6 +511,35 @@ public class ValueUtil {
     }
     
     /**
+     * Extracts the values of a column, making sure it contains
+     * strings.
+     * 
+     * @param table a table
+     * @param columnName the name of the column to extract
+     * @return the values; null if the columnName is null or is not found
+     * @throws IllegalArgumentException if the column is found but does not contain string values
+     */
+    public static List<String> stringColumnOf(VTable table, String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+        
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            if (columnName.equals(table.getColumnName(i))) {
+                if (table.getColumnType(i).equals(String.class)) {
+                    @SuppressWarnings("unchecked")
+                    List<String> result = (List<String>) table.getColumnData(i);
+                    return result;
+                } else {
+                    throw new IllegalArgumentException("Column '" + columnName +"' is not string (contains " + table.getColumnType(i).getSimpleName() + ")");
+                }
+            }
+        }
+        
+        throw new IllegalArgumentException("Column '" + columnName +"' was not found");
+    }
+    
+    /**
      * Returns the default array dimension display by looking at the size
      * of the n dimensional array and creating cell boundaries based on index.
      * 

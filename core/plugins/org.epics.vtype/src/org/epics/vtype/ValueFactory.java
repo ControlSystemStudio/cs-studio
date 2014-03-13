@@ -637,6 +637,7 @@ public class ValueFactory {
      * @return the new value
      */
     public static VTable newVTable(List<Class<?>> types, List<String> names, List<Object> values) {
+        //TODO: should check the types
         return new IVTable(types, names, values);
     }
     
