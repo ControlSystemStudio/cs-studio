@@ -156,7 +156,7 @@
                       <layout>p2</layout>
                   </repository>
               </source>
-              <append>false</append>
+              <append>true</append>
               <compress>true</compress>
               <mirrorMetadataOnly>false</mirrorMetadataOnly>
               <destination>${project.build.directory}/centralrepository</destination>
@@ -176,7 +176,7 @@
                       <layout>p2</layout>
                   </repository>
               </source>
-              <append>false</append>
+              <append>true</append>
               <compress>true</compress>
               <mirrorMetadataOnly>false</mirrorMetadataOnly>
               <destination>${project.build.directory}/centralrepository</destination>
