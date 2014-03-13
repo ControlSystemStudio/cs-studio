@@ -28,7 +28,7 @@
                                 <artifacts>
                                     <!-- specify your depencies here -->
                                     <!-- groupId:artifactId:version -->
-				    <artifact>
+                                    <artifact>
                                         <id>org.epics:pvmanager-integration:${pvmanager.version}</id>
                                         <source>true</source>
                                     </artifact>
@@ -99,7 +99,7 @@
                                     <artifact>
                                         <id>org.epics:graphene-rrdtool:${graphene.version}</id>
                                         <source>true</source>
-				</artifact>
+                                    </artifact>
                                     <artifact>
                                         <id>org.epics:epics-util:0.2.2</id>
                                         <source>true</source>
@@ -137,53 +137,53 @@
                         </execution>
                     </executions>
                 </plugin>
-<plugin>
-        <groupId>org.eclipse.tycho.extras</groupId>
-        <artifactId>tycho-p2-extras-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <executions>
-          <execution>
-		  <id>mirror-existing-central-repository</id>
-		  <phase>prepare-package</phase>
-            <goals>
-                <goal>mirror</goal>
-            </goals>
-            <configuration>
-              <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
-              <source>
-                  <repository>
-                      <url>${cs-studio.url}</url>
-                      <layout>p2</layout>
-                  </repository>
-              </source>
-              <append>true</append>
-              <compress>true</compress>
-              <mirrorMetadataOnly>false</mirrorMetadataOnly>
-              <destination>${project.build.directory}/centralrepository</destination>
-            </configuration>
-          </execution>
-          <execution>
-            <id>mirror-build-to-central-repository</id>
-            <phase>package</phase>
-            <goals>
-                <goal>mirror</goal>
-            </goals>
-            <configuration>
-              <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
-              <source>
-                  <repository>
-			  <url>${project.baseUri}/target/repository</url>
-                      <layout>p2</layout>
-                  </repository>
-              </source>
-              <append>true</append>
-              <compress>true</compress>
-              <mirrorMetadataOnly>false</mirrorMetadataOnly>
-              <destination>${project.build.directory}/centralrepository</destination>
-            </configuration>
-          </execution>
-        </executions>
-</plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho.extras</groupId>
+                    <artifactId>tycho-p2-extras-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                    <executions>
+                      <execution>
+                      <id>mirror-existing-central-repository</id>
+                      <phase>prepare-package</phase>
+                        <goals>
+                            <goal>mirror</goal>
+                        </goals>
+                        <configuration>
+                          <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
+                          <source>
+                              <repository>
+                                  <url>${cs-studio.url}</url>
+                                  <layout>p2</layout>
+                              </repository>
+                          </source>
+                          <append>true</append>
+                          <compress>true</compress>
+                          <mirrorMetadataOnly>false</mirrorMetadataOnly>
+                          <destination>${project.build.directory}/centralrepository</destination>
+                        </configuration>
+                      </execution>
+                      <execution>
+                        <id>mirror-build-to-central-repository</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>mirror</goal>
+                        </goals>
+                        <configuration>
+                          <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
+                          <source>
+                              <repository>
+                          <url>${project.baseUri}/target/repository</url>
+                                  <layout>p2</layout>
+                              </repository>
+                          </source>
+                          <append>true</append>
+                          <compress>true</compress>
+                          <mirrorMetadataOnly>false</mirrorMetadataOnly>
+                          <destination>${project.build.directory}/centralrepository</destination>
+                        </configuration>
+                      </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.mortbay.jetty</groupId>
                     <artifactId>jetty-maven-plugin</artifactId>
@@ -196,7 +196,6 @@
                         </webApp>
                    </configuration>
                 </plugin>
-
             </plugins>
         </build>
 
