@@ -42,7 +42,7 @@
               </source>
               <append>true</append>
               <compress>true</compress>
-              <mirrorMetadataOnly>true</mirrorMetadataOnly>
+              <mirrorMetadataOnly>false</mirrorMetadataOnly>
               <destination>${project.build.directory}/centralrepository</destination>
             </configuration>
           </execution>
