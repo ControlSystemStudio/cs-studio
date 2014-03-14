@@ -48,5 +48,9 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
 	public boolean isHighlightSelectionValue() {
 		return (Boolean) getCastedPropertyValue(PROP_HIGHLIGHT_SELECTION_VALUE);
 	}
+	
+	public String getSizeColumnFormula() {
+		return (String) getCastedPropertyValue(PROP_SIZE_FORMULA);
+	}
 
 }

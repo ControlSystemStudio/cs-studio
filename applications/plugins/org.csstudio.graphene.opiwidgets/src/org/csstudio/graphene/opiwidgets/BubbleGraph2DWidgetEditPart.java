@@ -26,6 +26,7 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 		if (figure.isRunMode()) {
 			widget.setHighlightSelectionValue(model.isHighlightSelectionValue());
 			widget.setSelectionValuePv(model.getSelectionValuePv());
+			widget.setSizeColumnFormula(model.getSizeColumnFormula());
 		}
 	}
 
@@ -34,6 +35,7 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 		super.registerPropertyChangeHandlers();
 		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
 		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_SIZE_FORMULA, getReconfigureWidgetPropertyChangeHandler());
 	}
 
 }
