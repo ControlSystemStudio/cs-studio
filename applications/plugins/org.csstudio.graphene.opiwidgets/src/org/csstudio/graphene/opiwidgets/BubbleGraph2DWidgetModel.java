@@ -27,6 +27,7 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
 	}
 
 	public static final String PROP_SIZE_FORMULA = "size_formula"; //$NON-NLS-1$
+	public static final String PROP_COLOR_FORMULA = "color_formula"; //$NON-NLS-1$
 	public static final String PROP_HIGHLIGHT_SELECTION_VALUE = "highlight_selection_value"; //$NON-NLS-1$
 	public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv"; //$NON-NLS-1$
 	
@@ -35,6 +36,8 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
 		super.configureProperties();
 		addProperty(new StringProperty(PROP_SIZE_FORMULA,
 				"Size Column Expression (VString)", WidgetPropertyCategory.Basic, ""));
+		addProperty(new StringProperty(PROP_COLOR_FORMULA,
+				"Color Column Expression (VString)", WidgetPropertyCategory.Basic, ""));
 		addProperty(new BooleanProperty(PROP_HIGHLIGHT_SELECTION_VALUE,
 				"Highlight Selection Value", WidgetPropertyCategory.Basic, false));
 		addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
@@ -51,6 +54,10 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
 	
 	public String getSizeColumnFormula() {
 		return (String) getCastedPropertyValue(PROP_SIZE_FORMULA);
+	}
+	
+	public String getColorColumnFormula() {
+		return (String) getCastedPropertyValue(PROP_COLOR_FORMULA);
 	}
 
 }
