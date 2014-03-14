@@ -111,6 +111,17 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 				
 			}
 		});
+
+		addPropertyChangeListener(new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getPropertyName().equals("sizeColumnFormula")
+						|| event.getPropertyName().equals("colorColumnFormula")) {
+					reconnect();
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -119,13 +130,16 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 				formulaArg(getXColumnFormula()),
 				formulaArg(getYColumnFormula()),
 				formulaArg(getSizeColumnFormula()),
-				formulaArg(getTooltipColumnFormula()));
+				formulaArg(getColorColumnFormula()));
 		return graph;
 	}
 
 	private String sizeColumnFormula;
+	private String colorColumnFormula;
+	private boolean highlightSelectionValue = false;
 	
 	private static final String MEMENTO_SIZE_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
+	private static final String MEMENTO_COLOR_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
 	private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
 
 	public String getSizeColumnFormula() {
@@ -135,14 +149,38 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 	public void setSizeColumnFormula(String sizeColumnFormula) {
 		String oldValue = this.sizeColumnFormula;
 		this.sizeColumnFormula = sizeColumnFormula;
-		changeSupport.firePropertyChange("xColumnFormula", oldValue,
+		changeSupport.firePropertyChange("sizeColumnFormula", oldValue,
 				this.sizeColumnFormula);
+	}
+
+	public String getColorColumnFormula() {
+		return this.colorColumnFormula;
+	}
+
+	public void setColorColumnFormula(String colorColumnFormula) {
+		String oldValue = this.colorColumnFormula;
+		this.colorColumnFormula = colorColumnFormula;
+		changeSupport.firePropertyChange("colorColumnFormula", oldValue,
+				this.colorColumnFormula);
+	}
+	
+	public boolean isHighlightSelectionValue() {
+		return highlightSelectionValue;
+	}
+	
+	public void setHighlightSelectionValue(boolean highlightSelectionValue) {
+		boolean oldValue = this.highlightSelectionValue;
+		this.highlightSelectionValue = highlightSelectionValue;
+		changeSupport.firePropertyChange("highlightSelectionValue", oldValue, this.highlightSelectionValue);
 	}
 
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 		if (getSizeColumnFormula() != null) {
 			memento.putString(MEMENTO_SIZE_COLUMN_FORMULA, getSizeColumnFormula());
+		}
+		if (getColorColumnFormula() != null) {
+			memento.putString(MEMENTO_COLOR_COLUMN_FORMULA, getColorColumnFormula());
 		}
 		memento.putBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE, isHighlightSelectionValue());
 	}
@@ -153,13 +191,15 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 			if (memento.getString(MEMENTO_SIZE_COLUMN_FORMULA) != null) {
 				setSizeColumnFormula(memento.getString(MEMENTO_SIZE_COLUMN_FORMULA));
 			}
+			if (memento.getString(MEMENTO_COLOR_COLUMN_FORMULA) != null) {
+				setColorColumnFormula(memento.getString(MEMENTO_COLOR_COLUMN_FORMULA));
+			}
 			if (memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE) != null) {
 				setHighlightSelectionValue(memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE));
 			}
 		}
 	}
 	
-	private boolean highlightSelectionValue = false;
 	private VTable selectionValue;
 	private String selectionValuePv;
 	
@@ -171,16 +211,6 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 		String oldValue = this.selectionValuePv;
 		this.selectionValuePv = selectionValuePv;
 		changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
-	}
-	
-	public boolean isHighlightSelectionValue() {
-		return highlightSelectionValue;
-	}
-	
-	public void setHighlightSelectionValue(boolean highlightSelectionValue) {
-		boolean oldValue = this.highlightSelectionValue;
-		this.highlightSelectionValue = highlightSelectionValue;
-		changeSupport.firePropertyChange("highlightSelectionValue", oldValue, this.highlightSelectionValue);
 	}
 	
 	public VTable getSelectionValue() {
