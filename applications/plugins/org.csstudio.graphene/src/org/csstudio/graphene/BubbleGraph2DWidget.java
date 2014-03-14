@@ -131,6 +131,7 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 				formulaArg(getYColumnFormula()),
 				formulaArg(getSizeColumnFormula()),
 				formulaArg(getColorColumnFormula()));
+		graph.update(graph.newUpdate().highlightFocusValue(isHighlightSelectionValue()));
 		return graph;
 	}
 
