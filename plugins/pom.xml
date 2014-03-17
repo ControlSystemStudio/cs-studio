@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.46-SNAPSHOT</version>
+  <version>0.0.47-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -58,5 +58,6 @@
     <module>org.csstudio.utility.pvmanager.exec</module>
     <module>org.csstudio.utility.pvmanager.file</module>
     <module>org.csstudio.utility.pvmanager.jdbc</module>
+    <module>org.csstudio.utility.pvmanager.loc</module>
   </modules>
 </project>
