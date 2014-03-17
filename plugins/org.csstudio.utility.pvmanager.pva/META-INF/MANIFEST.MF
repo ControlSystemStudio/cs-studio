@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: pvAccess DataSource
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.pva;singleton:=true
+Bundle-Version: 3.2.0.qualifier
+Bundle-Activator: org.csstudio.utility.pvmanager.pva.Activator
+Bundle-Vendor: Matej Sekoranja <matej.sekoranja@cosylab.com> - Cosylab, Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Bundle-Description: Provides EPICS v4 pvAccess connectivity to pvManager
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.epics.pvdata;bundle-version="3.1.1",
+ org.epics.pvaccess;bundle-version="3.1.1",
+ org.epics.vtype;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Export-Package: org.epics.pvmanager.pva,
+ org.epics.pvmanager.pva.adapters
+Bundle-ClassPath: .
