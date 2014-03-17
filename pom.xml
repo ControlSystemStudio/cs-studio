@@ -53,6 +53,11 @@
   -->
   <repositories>
     <repository>
+      <id>csstudio</id>
+      <url>${cs-studio-thirdparty.url}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
       <id>indigo</id>
       <url>http://download.eclipse.org/releases/indigo</url>
       <layout>p2</layout>
