@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Local DataSource</title>
+    </head>
+
+    <body>
+        <h1>Local DataSource</h1>
+        
+        <h2>PV syntax</h2>
+        The standard prefix for the datasource is <code>loc://</code> which can be omitted if configured as the default datasource.
+        <p>
+        'Local' pvs are transient that exist in the current program instance. They
+        can be used to communicate between between different components
+        of the application. Their value is lost at disconnection.
+        <p>
+            The syntax to create a local pv is:
+        </p>
+        <pre>
+  loc://pvname
+  loc://pvname&lt;type&gt;
+  loc://pvname(initialValue)
+  loc://pvname&lt;type&gt;(initialValue)
+        </pre>
+        <p>
+            Both the type and the initial values are optional but, if specified, they have to match
+            previous type or initialValue if they were given. In other words: it is not possible to
+            open the same pv multiple times at the same time with a different type or initial value.
+        </p>
+        <p>
+            The initialValue will be trigger an update only the first time is used, and only
+            if the pv wasn't previously written to. That is: the initialValue will
+            never overwrite an already open pv that was written to. If no initial
+            value is ever given, the value of the pv is simply left to its default
+            null value, and no value notification is sent.
+            The possible initial values are:
+        </p>
+        <table border=1>
+            <tr><th>Syntax</th><th>Description</th></tr>
+            <tr><td><code>loc://pvname(number)</code></td><td>Creates a pv with an initial numeric value</td></tr>
+            <tr><td><code>loc://pvname("string")</code></td><td>Creates a pv with an initial text value</td></tr>
+            <tr><td><code>loc://pvname(number, number, number, ...)</code></td><td>Creates a pv with an initial numeric array value</td></tr>
+            <tr><td><code>loc://pvname("string", "string", "string", ...)</code></td><td>Creates a pv with an initial string array value</td></tr>
+        </table>
+        <p>
+            Once specified, the type will make sure that any update matches the type.
+            If it does not, and error is notified to the writer. The first type
+            specified is the one that counts. Subsequent use with a different type
+            will fail to open the pv. If both initialValue and type are specified,
+            they should match.
+            The type can be one of the following:
+        </p>
+        <table border=1>
+            <tr><th>Syntax</th><th>Description</th></tr>
+            <tr><td><code>loc://pvname&lt;VString&gt;</code></td><td>Creates a text pv</td></tr>
+            <tr><td><code>loc://pvname&lt;VStringArray&gt;</code></td><td>Creates a text array pv</td></tr>
+            <tr><td><code>loc://pvname&lt;VDouble&gt;</code></td><td>Creates a numeric pv</td></tr>
+            <tr><td><code>loc://pvname&lt;VDoubleArray&gt;</code></td><td>Creates a numeric array pv</td></tr>
+            <tr><td><code>loc://pvname&lt;VTable&gt;</code></td><td>Creates a table pv</td></tr>
+        </table>
+    </body>
+</html>
