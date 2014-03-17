@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.thirdparty.feature"
       label="CS-Studio External Library Dependencies"
-      version="0.0.47.qualifier"
+      version="0.0.48.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -352,6 +352,13 @@
 
    <plugin
          id="org.csstudio.utility.pvmanager.loc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.pva"
          download-size="0"
          install-size="0"
          version="0.0.0"
