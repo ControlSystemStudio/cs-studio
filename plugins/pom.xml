@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.40-SNAPSHOT</version>
+  <version>0.0.41-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -52,5 +52,6 @@
     <module>org.ehcache</module>
     <module>org.python</module>
     <module>javax.mail</module>
+    <module>org.csstudio.utility.pvmanager</module>
   </modules>
 </project>
