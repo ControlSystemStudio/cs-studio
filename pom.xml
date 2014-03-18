@@ -14,7 +14,16 @@
     <cs-studio.url>http://download.controlsystemstudio.org/updates/3.3</cs-studio.url>
      <pvmanager.version>2.4</pvmanager.version>
      <graphene.version>0.5</graphene.version>
+     <pvdata.version>3.0.2</pvdata.version>
+     <pvaccess.version>3.0.4</pvaccess.version>
   </properties>
+  <repositories>
+        <repository>
+            <id>epics</id>
+            <name>EPICS Repository</name>
+            <url>http://epics.sourceforge.net/maven2/</url>
+        </repository>
+    </repositories>
   <build>
             <plugins>
                 <plugin>
@@ -28,6 +37,14 @@
                                 <artifacts>
                                     <!-- specify your depencies here -->
                                     <!-- groupId:artifactId:version -->
+                                    <artifact>
+                                        <id>epics:pvDataJava:${pvdata.version}</id>
+                                        <source>true</source>
+                                    </artifact>
+                                    <artifact>
+                                        <id>epics:pvAccessJava:${pvaccess.version}</id>
+                                        <source>true</source>
+                                    </artifact>
                                     <artifact>
                                         <id>org.epics:pvmanager-integration:${pvmanager.version}</id>
                                         <source>true</source>
