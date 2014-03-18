@@ -10,13 +10,13 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/askap-interfaces.jar,
- lib/Ice-3.4.1.jar,
+ lib/Ice-3.5.0.jar,
+ lib/IceStorm.jar,
  .
-Export-Package: Glacier2,
- Ice,
- IceBox,
- IceGrid,
+Export-Package: Ice,
+ Ice.Instrumentation,
  IceInternal,
+ IceMX,
  IceSSL,
  IceStorm,
  IceUtil,

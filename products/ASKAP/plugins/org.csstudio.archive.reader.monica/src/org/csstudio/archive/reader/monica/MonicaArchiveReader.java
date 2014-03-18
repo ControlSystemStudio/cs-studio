@@ -2,7 +2,6 @@ package org.csstudio.archive.reader.monica;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -52,9 +51,7 @@ public class MonicaArchiveReader implements ArchiveReader {
 					pv = pv.replaceAll("\\$1", point.getSource());
 					String monicaName = point.getFullName();
 					
-					// put upper case of PV names into map for easier searching
-//					System.out.println(pv.toUpperCase() + " : " + monicaName);
-					pvToMonicaNameMap.put(pv.toUpperCase(), monicaName);
+					pvToMonicaNameMap.put(pv, monicaName);
 				}
 			}
 		} catch (Exception e) {
@@ -98,7 +95,7 @@ public class MonicaArchiveReader implements ArchiveReader {
 		ArrayList<String> matchingNames = new ArrayList<String>();
 		
 		for (String pointName : pvToMonicaNameMap.keySet()) {
-			if (pointName.contains(glob_pattern.toUpperCase())) {
+			if (pointName.toUpperCase().contains(glob_pattern.toUpperCase())) {
 				matchingNames.add(pointName);
 			}
 		}
@@ -122,8 +119,14 @@ public class MonicaArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getRawValues(int key, String name, Timestamp start,
 			Timestamp end) throws UnknownChannelException, Exception {
+
+		String monicaName = "";				
+		for (String pointName : pvToMonicaNameMap.keySet()) {
+			if (pointName.toUpperCase().equals(name.toUpperCase())) {
+				monicaName = pvToMonicaNameMap.get(pointName);				
+			}
+		}
 		
-		String monicaName = pvToMonicaNameMap.get(name.toUpperCase());
 		logger.log(Level.INFO, "Get Raw values for pv: " + name + " monicaName: " + monicaName 
 				+ " for time interval:" + AskapHelper.getFormatedData(start.toDate(), null) + " to " 
 				+ AskapHelper.getFormatedData(end.toDate(), null));

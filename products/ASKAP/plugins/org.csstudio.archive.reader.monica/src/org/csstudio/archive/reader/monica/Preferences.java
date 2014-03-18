@@ -1,8 +1,6 @@
 package org.csstudio.archive.reader.monica;
 
-import java.io.FileInputStream;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
