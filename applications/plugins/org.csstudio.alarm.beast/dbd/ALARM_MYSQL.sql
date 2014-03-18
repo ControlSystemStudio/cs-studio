@@ -29,7 +29,7 @@ CREATE TABLE ALARM.ALARM_TREE(
     COMPONENT_ID       INT            NOT NULL COMMENT 'Component Identifier: The id for identification of each component.',
     PARENT_CMPNT_ID    INT                     COMMENT 'Parent Component Identifier:The parent id of the component in the configuration hierarchy, null for root of hierarchy.',
     NAME               VARCHAR(80)    NOT NULL COMMENT 'Name: Component name.',
-    ENABLED_IND        BOOL         DEFAULT FALSE NOT NULL COMMENT 'Enabled Indicator: Indicates if alarms are enabled for a given PV.',
+    ENABLED_IND        BOOL         DEFAULT FALSE NOT NULL COMMENT 'Enabled Indicator: Indicates if alarms are enabled for a given component.',
     CONFIG_TIME        TIMESTAMP               COMMENT 'Configuration Time: Time of last configuration update.',
     PRIMARY KEY (COMPONENT_ID)
 )ENGINE=INNODB
