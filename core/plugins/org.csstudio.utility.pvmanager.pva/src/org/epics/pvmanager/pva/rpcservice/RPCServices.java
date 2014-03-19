@@ -78,8 +78,15 @@ public class RPCServices {
       String hostName = xPath.evaluate("/pvAccessRPCService/host/text()", document).trim();
       if (hostName.isEmpty()) {hostName = null;}
 
+      String methodFieldName = xPath.evaluate("/pvAccessRPCService/methodFieldName/text()", document).trim();
+      if (methodFieldName.isEmpty()) {methodFieldName = null;}
+
+      boolean useNTQuery = false;
+      String useNTQueryStr = xPath.evaluate("/pvAccessRPCService/useNTQuery/text()", document).trim();
+      if (!useNTQueryStr.isEmpty()) useNTQuery = Boolean.valueOf(useNTQueryStr);
+
       RPCServiceDescription service = new RPCServiceDescription(serviceName, serviceDescription, hostName,
-        channelName);
+        channelName, methodFieldName, useNTQuery);
 
       service.executorService(defaultExecutor);
 

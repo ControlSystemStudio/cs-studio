@@ -20,6 +20,8 @@ public class RPCServiceDescription {
   private final ServiceDescription serviceDescription;
   private final String hostName;
   private final String channelName;
+  private final String methodFieldName;
+  private final boolean useNTQuery;
   private ExecutorService executorService;
   private final Map<String, RPCServiceMethodDescription> rpcServiceMethodDescriptions = new HashMap<>();
 
@@ -30,10 +32,13 @@ public class RPCServiceDescription {
    * @param name        the name of the rpcservice
    * @param description a brief description
    */
-  public RPCServiceDescription(String name, String description, String hostName, String channelName) {
+  public RPCServiceDescription(String name, String description, String hostName, String channelName,
+		  String methodFieldName, boolean useNTQuery) {
     serviceDescription = new ServiceDescription(name, description);
     this.hostName = hostName;
     this.channelName = channelName;
+    this.methodFieldName = methodFieldName;
+    this.useNTQuery = useNTQuery;
   }
 
 
@@ -82,7 +87,7 @@ public class RPCServiceDescription {
     for (RPCServiceMethodDescription rpcServiceMethodDescription : rpcServiceMethodDescriptions.values()) {
       rpcServiceMethodDescription.executorService(executorService);
       serviceDescription.addServiceMethod(new RPCServiceMethod(rpcServiceMethodDescription,
-        this.hostName, this.channelName));
+        this.hostName, this.channelName, this.methodFieldName, this.useNTQuery));
     }
     return serviceDescription;
   }

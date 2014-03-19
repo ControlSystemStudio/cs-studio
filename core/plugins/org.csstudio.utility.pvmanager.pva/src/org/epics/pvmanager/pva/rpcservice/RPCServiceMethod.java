@@ -72,15 +72,14 @@ import org.epics.vtype.ValueFactory;
  */
 class RPCServiceMethod extends ServiceMethod {
 
-  //consts
-  private final static String FIELD_OPERATION_NAME = "op";
-
   private final static FieldCreate fieldCreate = FieldFactory.getFieldCreate();
   private final Structure requestStructure;
   private final Map<String, String> parameterNames;
   private final RPCServiceMethodDescription rpcServiceMethodDescription;
   private final String hostName;
   private final String channelName;
+  private final String methodFieldName;
+  private final boolean useNTQuery;
 
 
   /**
@@ -88,17 +87,37 @@ class RPCServiceMethod extends ServiceMethod {
    *
    * @param rpcServiceMethodDescription a method description
    */
-  RPCServiceMethod(RPCServiceMethodDescription rpcServiceMethodDescription, String hostName, String channelName) {
+  RPCServiceMethod(RPCServiceMethodDescription rpcServiceMethodDescription, String hostName, String channelName,
+		  String methodFieldName, boolean useNTQuery) {
     super(rpcServiceMethodDescription.serviceMethodDescription);
     this.rpcServiceMethodDescription = rpcServiceMethodDescription;
     this.parameterNames = rpcServiceMethodDescription.orderedParameterNames;
-    this.requestStructure = createRequestStructure(rpcServiceMethodDescription.structureId);
     this.hostName = hostName;
     this.channelName = channelName;
+    this.methodFieldName = methodFieldName;
+    this.useNTQuery = useNTQuery;
+
+    this.requestStructure = createRequestStructure(rpcServiceMethodDescription.structureId);
   }
 
-
   private Structure createRequestStructure(String structureId) {
+	  Structure paramStructure = createParametersRequestStructure(structureId);
+
+	  if (!useNTQuery)
+		  return paramStructure;
+	  else
+	  {
+		  return fieldCreate.createStructure("uri:ev4:nt/2012/pwd:NTURI", 
+						  new String[] { "scheme", "path", "query" },
+						  new Field[] { 
+						  	fieldCreate.createScalar(ScalarType.pvString),
+						  	fieldCreate.createScalar(ScalarType.pvString),
+						  	paramStructure,
+				  });
+	  }
+  }
+  
+  private Structure createParametersRequestStructure(String structureId) {
     if ((structureId == null) || (structureId.isEmpty())) {
       return fieldCreate.createStructure(createRequestFieldNames(), createRequestFieldTypes());
     } else
@@ -108,13 +127,15 @@ class RPCServiceMethod extends ServiceMethod {
 
   private String[] createRequestFieldNames() {
 
-    //only operation name
+    //only operation name, if specified
     if ((this.parameterNames == null) || (parameterNames.isEmpty())) {
-      return new String[]{FIELD_OPERATION_NAME};
+      return methodFieldName != null ? new String[]{ methodFieldName } : new String[0];
     }
 
-    //operation name + parameter names/fieldnames
-    List<String> fieldNames = new ArrayList<String>(Arrays.asList(FIELD_OPERATION_NAME));
+    //operation name (optional) + parameter names/fieldnames
+    List<String> fieldNames = new ArrayList<String>(this.parameterNames.size() + 1);
+    if (methodFieldName != null)
+    	fieldNames.add(methodFieldName);
     for (String parameterName : this.parameterNames.keySet()) {
       String fieldName = this.parameterNames.get(parameterName);
       if (fieldName.equals(RPCServiceMethodDescription.FIELD_NAME_EQUALS_NAME)) {
@@ -132,11 +153,13 @@ class RPCServiceMethod extends ServiceMethod {
 
     //only operation name type
     if ((this.parameterNames == null) || (parameterNames.isEmpty())) {
-      return new Field[]{fieldCreate.createScalar(ScalarType.pvString)};
+    	return methodFieldName != null ? new Field[]{fieldCreate.createScalar(ScalarType.pvString)} : new Field[0];
     }
 
     //operation name type + parameter types
-    List<Field> fieldList = new ArrayList<Field>(Arrays.asList(fieldCreate.createScalar(ScalarType.pvString)));
+    List<Field> fieldList = new ArrayList<Field>(this.parameterNames.size() + 1);
+    if (methodFieldName != null)
+    	fieldList.add(fieldCreate.createScalar(ScalarType.pvString));
     for (String parameterName : this.parameterNames.keySet()) {
       fieldList.add(convertToPvType(getArgumentTypes().get(parameterName)));
     }
@@ -215,7 +238,8 @@ class RPCServiceMethod extends ServiceMethod {
       String methodName = this.rpcServiceMethodDescription.getOperationName() != null ?
         this.rpcServiceMethodDescription.getOperationName() : this.rpcServiceMethodDescription.getName();
 
-      PVStructure pvResult = rpcClient.request(createPvRequest(parameters, methodName), 3.0);
+      PVStructure pvRequest = createPvRequest(parameters, methodName);
+      PVStructure pvResult = rpcClient.request(pvRequest, 3.0);
 
       VType vResult = createResult(pvResult);
       if (vResult != null) {
@@ -237,11 +261,19 @@ class RPCServiceMethod extends ServiceMethod {
   PVStructure createPvRequest(final Map<String, Object> parameters, String methodName) {
 
     PVStructure pvRequest = PVDataFactory.getPVDataCreate().createPVStructure(this.requestStructure);
+    PVStructure retVal = pvRequest;
+    if (useNTQuery)
+    {
+    	pvRequest.getStringField("scheme").put("pva");
+    	pvRequest.getStringField("path").put(channelName);
+    	pvRequest = pvRequest.getStructureField("query");
+    }
 
-    pvRequest.getStringField(FIELD_OPERATION_NAME).put(methodName);
+    if (methodFieldName != null)
+    	pvRequest.getStringField(methodFieldName).put(methodName);
 
     if ((parameters == null) || (parameters.isEmpty())) {
-      return pvRequest;
+      return retVal;
     }
 
     for (String parameterName : parameters.keySet()) {
@@ -419,7 +451,7 @@ class RPCServiceMethod extends ServiceMethod {
         throw new RuntimeException("pvAccess RPC Service mapping support for " + value.getClass().getSimpleName() + " not implemented");
       }
     }
-    return pvRequest;
+    return retVal;
   }
 
 
