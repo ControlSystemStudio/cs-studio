@@ -41,6 +41,12 @@
       <category name="org.csstudio.category.core"/>
    </feature>
 
-   <category-def name="org.csstudio.category.core" label="Core"/>
+   <category-def name="org.csstudio.category.core" label="CS-Studio Core"/>
+
+   <category-def name="all" label="CS-Studio Core All"/>
+   <iu>
+      <category name="all"/>
+      <query><expression type="match">providedCapabilities.exists(p | p.namespace == 'osgi.bundle')</expression>      </query>
+   </iu>
 
 </site>
