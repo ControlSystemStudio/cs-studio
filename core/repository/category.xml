@@ -4,9 +4,6 @@
       <category name="CATEGORY"/>
    </feature>-->
 
-   <feature id="org.csstudio.boy.feature">
-      <category name="org.csstudio.category.core"/>
-   </feature>
    <feature id="org.csstudio.core.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
