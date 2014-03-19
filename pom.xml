@@ -38,11 +38,19 @@
                                     <!-- specify your depencies here -->
                                     <!-- groupId:artifactId:version -->
                                     <artifact>
-                                        <id>epics:pvDataJava:${pvdata.version}</id>
+					<id>epics:pvDataJava:${pvdata.version}</id>
+					<instructions>
+						<Bundle-Name>org.epics.pvdata</Bundle-Name>
+						<Bundle-SymbolicName>org.epics.pvdata</Bundle-SymbolicName>
+					</instructions>    
                                         <source>true</source>
                                     </artifact>
                                     <artifact>
                                         <id>epics:pvAccessJava:${pvaccess.version}</id>
+					<instructions>
+						<Bundle-Name>org.epics.pvaccess</Bundle-Name>
+						<Bundle-SymbolicName>org.epics.pvaccess</Bundle-SymbolicName>
+					</instructions>    
                                         <source>true</source>
                                     </artifact>
                                     <artifact>
