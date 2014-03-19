@@ -27,8 +27,8 @@
         <version>1.7</version>
         <executions>
           <execution>
-            <id>download-files</id>
-            <phase>get-metadata-only-from-central-repository</phase>
+            <id>copy-metadata-only-to-central-repository</id>
+            <phase>prepare-package</phase>
             <goals>
                 <goal>run</goal>
             </goals>
@@ -38,10 +38,10 @@
                     <mkdir dir="${project.build.directory}/centralrepository"/>
                     <get src="${cs-studio-thirdparty.url}/artifacts.jar"
                          dest="${project.build.directory}/centralrepository"
-                         verbose="false" failOnError="false" usetimestamp="true"/>
+                         verbose="false" ignoreerrors="true" usetimestamp="true"/>
                     <get src="${cs-studio-thirdparty.url}/content.jar"
                          dest="${project.build.directory}/centralrepository"
-                         verbose="false" failOnError="false" usetimestamp="true"/>
+                         verbose="false" ignoreerrors="true" usetimestamp="true"/>
                  </target>
             </configuration>
           </execution>
