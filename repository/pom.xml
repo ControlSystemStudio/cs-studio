@@ -10,7 +10,7 @@
 
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>main</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
 
@@ -47,4 +47,4 @@
       </plugin>
     </plugins>
   </build>
-</project>  
+</project>

@@ -6,7 +6,6 @@
     <groupId>org.csstudio</groupId>
     <artifactId>core</artifactId>
     <version>BUILD-VERSION</version>
-    <relativePath>../../pom.xml</relativePath>
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>core-plugins</artifactId>

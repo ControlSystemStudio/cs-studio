@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
    <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>main</artifactId>
     <version>BUILD-VERSION</version>
     <relativePath>../../../pom.xml</relativePath>
   </parent>
