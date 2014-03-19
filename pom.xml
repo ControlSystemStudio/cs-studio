@@ -32,8 +32,8 @@
     <!-- VERSIONS -->
     <tycho.version>0.19.0</tycho.version>
     <tycho-extras.version>0.19.0</tycho-extras.version>
-
-    <cs-studio-thirdparty.url>http://download.controlsystemstudio.org/updates/3.3</cs-studio-thirdparty.url>
+    <cs-studio-updates.url>http://download.controlsystemstudio.org/updates/3.3</cs-studio-updates.url>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/thirdparty/3.3</cs-studio-central.url>
   </properties>
 
   <!--
@@ -53,8 +53,8 @@
   -->
   <repositories>
     <repository>
-      <id>csstudio</id>
-      <url>${cs-studio-thirdparty.url}</url>
+      <id>csstudio-maven-osgi-bundles</id>
+      <url>http://download.controlsystemstudio.org/maven-osgi-bundles/3.3</url>
       <layout>p2</layout>
     </repository>
     <repository>
@@ -135,7 +135,7 @@
           <configuration>
             <baselineRepositories>
               <repository>
-                <url>${cs-studio-thirdparty.url}</url>
+                <url>${cs-studio-central.url}</url>
               </repository>
             </baselineRepositories>
           </configuration>
