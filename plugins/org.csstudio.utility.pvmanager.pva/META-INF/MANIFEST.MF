@@ -9,8 +9,8 @@ Bundle-Description: Provides EPICS v4 pvAccess connectivity to pvManager
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager;bundle-version="2.0.0",
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- epics.pvDataJava;bundle-version="3.0.2",
- epics.pvAccessJava;bundle-version="3.0.4",
+ org.epics.pvdata;bundle-version="3.0.2",
+ org.epics.pvaccess;bundle-version="3.0.4",
  org.epics.vtype;bundle-version="2.0.0",
  org.epics.pvmanager-pva
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
