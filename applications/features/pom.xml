@@ -21,6 +21,7 @@
     <module>org.csstudio.logbook.viewer.feature</module>
     <module>org.csstudio.olog.feature</module>
     <module>org.csstudio.opibuilder.feature</module>
+    <module>org.csstudio.pvmanager.ca.feature</module>
     <module>org.csstudio.scan.ui.feature</module>
     <!--<module>org.csstudio.sds.feature</module>--><!-- depends on org.csstudio.sds -->
     <module>org.csstudio.trends.databrowser2.feature</module>
