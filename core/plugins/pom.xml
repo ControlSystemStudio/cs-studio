@@ -63,8 +63,6 @@
     <module>org.csstudio.platform.utility.rdb</module>
     <module>org.csstudio.rap.core</module>
     <module>org.csstudio.rap.ui.util</module>
-    <module>org.csstudio.remote</module>
-    <module>org.csstudio.remote.test</module>
     <module>org.csstudio.security</module>
     <module>org.csstudio.security.ui</module>
     <module>org.csstudio.simplepv</module>

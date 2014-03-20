@@ -122,6 +122,8 @@
     <module>org.csstudio.opibuilder.widgets.rap</module>
     <module>org.csstudio.opibuilder.widgets.rcp</module>
     <module>org.csstudio.opibuilder.widgets.symbol</module>
+    <module>org.csstudio.remote</module>
+    <module>org.csstudio.remote.test</module>
     <module>org.csstudio.scan</module>
     <module>org.csstudio.scan.client</module>
     <module>org.csstudio.scan.log</module>
