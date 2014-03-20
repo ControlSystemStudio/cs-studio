@@ -25,14 +25,7 @@
    <feature id="org.csstudio.pvmanager.pva.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
-  
 
    <category-def name="org.csstudio.category.core" label="CS-Studio Core"/>
-
-   <category-def name="all" label="CS-Studio Core All"/>
-   <iu>
-      <category name="all"/>
-      <query><expression type="match">id ~= /*csstudio*/</expression>      </query>
-   </iu>
 
 </site>
