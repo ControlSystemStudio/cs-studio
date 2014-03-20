@@ -32,7 +32,6 @@
     <!-- VERSIONS -->
     <tycho.version>0.19.0</tycho.version>
     <tycho-extras.version>0.19.0</tycho-extras.version>
-    <cs-studio-updates.url>http://download.controlsystemstudio.org/updates/3.3</cs-studio-updates.url>
   </properties>
 
   <!--
@@ -51,6 +50,11 @@
     P2 REPOSITORIES
   -->
   <repositories>
+    <repository>
+      <id>cs-studio-updates</id>
+      <url>http://download.controlsystemstudio.org/updates/3.3</url>
+      <layout>p2</layout>
+    </repository>
     <repository>
       <id>indigo</id>
       <url>http://download.eclipse.org/releases/indigo</url>
