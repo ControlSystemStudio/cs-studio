@@ -209,7 +209,6 @@
     <module>org.csstudio.utility.screenshot</module>
     <module>org.csstudio.utility.speech</module>
     <module>org.csstudio.utility.sysmon</module>
-    <module>org.csstudio.utility.test</module>
     <!--<module>org.csstudio.utility.tine</module>--><!-- depends on org.csstudio.platform.simpledal -->
     <!--<module>org.csstudio.utility.tine.ui</module>--><!-- depends on org.csstudio.utility.tine -->
     <module>org.csstudio.utility.treemodel</module>

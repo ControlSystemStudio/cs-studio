@@ -100,6 +100,7 @@
     <module>org.csstudio.utility.singlesource</module>
     <module>org.csstudio.utility.singlesource.rap</module>
     <module>org.csstudio.utility.singlesource.rcp</module>
+    <module>org.csstudio.utility.test</module>
     <module>org.csstudio.workspace</module>
     <!--<module>org.epics.pvaccess</module>--><!-- Moved to maven-osgi repo -->
     <!--<module>org.epics.pvdata</module>--><!-- Moved to maven-osgi repo -->
