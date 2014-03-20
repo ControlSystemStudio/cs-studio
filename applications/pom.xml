@@ -42,6 +42,17 @@
     <module>repository</module>
   </modules>
 
+ <!--
+    P2 REPOSITORIES
+  -->
+  <repositories>
+    <repository>
+      <id>csstudio-core</id>
+      <url>http://download.controlsystemstudio.org/core/3.3</url>
+      <layout>p2</layout>
+    </repository>
+  <repositories>
+
   <build>
     <!--
       PLUGIN MANAGEMENT
