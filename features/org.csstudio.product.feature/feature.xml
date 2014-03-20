@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.product.feature"
+      label="CS-Studio Product"
+      version="3.2.0.qualifier"
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;"
+      plugin="org.csstudio.product">
+
+   <description url="http://controlsystemstudio.github.io/">
+      CS-Studio Product.
+   </description>
+
+   <copyright url="http://controlsystemstudio.github.io/">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License.
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.intro" version="3.3.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup" version="1.1.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.workspace" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro.universal" version="3.2.300" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging.ui" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup.helper" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.startup.intro"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.startup.helper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.product.default"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+</feature>
