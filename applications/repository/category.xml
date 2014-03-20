@@ -4,6 +4,9 @@
       <category name="CATEGORY"/>
    </feature>-->
 
+   <feature id="org.csstudio.boy.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.csstudio.alarm.beast.ui.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

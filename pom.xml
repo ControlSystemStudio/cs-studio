@@ -14,7 +14,7 @@
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.csstudio</groupId>
-  <artifactId>core</artifactId>
+  <artifactId>main</artifactId>
   <version>BUILD-VERSION</version>
   <packaging>pom</packaging>
 
@@ -32,6 +32,7 @@
     <!-- VERSIONS -->
     <tycho.version>0.19.0</tycho.version>
     <tycho-extras.version>0.19.0</tycho-extras.version>
+    <cs-studio-updates.url>http://download.controlsystemstudio.org/updates/3.3</cs-studio-updates.url>
   </properties>
 
   <!--
@@ -50,6 +51,16 @@
     P2 REPOSITORIES
   -->
   <repositories>
+    <repository>
+      <id>csstudio-thirdparty</id>
+      <url>http://download.controlsystemstudio.org/thirdparty/3.3</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>csstudio-maven-osgi-bundles</id>
+      <url>http://download.controlsystemstudio.org/maven-osgi-bundles/3.3</url>
+      <layout>p2</layout>
+    </repository>
     <repository>
       <id>indigo</id>
       <url>http://download.eclipse.org/releases/indigo</url>
@@ -84,11 +95,6 @@
       <id>rap</id>
       <url>http://download.eclipse.org/rt/rap/1.5/runtime</url>
       <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>thirdparty</id>
-      <url>http://download.controlsystemstudio.org/updates/3.3</url>
-      <layout>p2</layout>
     </repository>  
   </repositories>
   
@@ -96,12 +102,8 @@
     CHILD MODULES
   -->
   <modules>
-    <module>core/plugins</module>
-    <module>core/features</module>
-    <module>core/repository</module>
-    <module>applications/plugins</module>
-    <module>applications/features</module>
-    <module>applications/repository</module>
+    <module>core</module>
+    <module>applications</module>
     <module>products/CS-STUDIO/plugins</module>
     <module>products/CS-STUDIO/features</module>
     <module>repository</module>
@@ -132,18 +134,6 @@
             </jgit.ignore>
           </configuration>
         </plugin>
-        <!--<plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-p2-plugin</artifactId>
-          <version>${tycho.version}</version>
-          <configuration>
-            <baselineRepositories>
-              <repository>
-                <url>[CSS central repo here when available]</url>
-              </repository>
-            </baselineRepositories>
-          </configuration>
-        </plugin>-->
       </plugins> 
     </pluginManagement>
 
