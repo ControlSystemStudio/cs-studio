@@ -43,7 +43,7 @@
    <category-def name="all" label="CS-Studio Core All"/>
    <iu>
       <category name="all"/>
-      <query><expression type="match">providedCapabilities.exists(p | p.namespace == 'osgi.bundle')</expression>      </query>
+      <query><expression type="match">id ~= /*csstudio*/</expression>      </query>
    </iu>
 
 </site>
