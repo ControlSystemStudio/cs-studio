@@ -169,6 +169,7 @@
     <module>org.csstudio.systemopen.linux</module>
     <module>org.csstudio.systemopen.mac</module>
     <module>org.csstudio.systemopen.win</module>
+    <module>org.csstudio.testsuite</module>
     <module>org.csstudio.trends.databrowser2</module>
     <module>org.csstudio.trends.databrowser2.opiwidget</module>
     <module>org.csstudio.trends.databrowser2.rap</module>

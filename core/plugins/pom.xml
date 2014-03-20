@@ -71,7 +71,6 @@
     <module>org.csstudio.simplepv.test</module>
     <module>org.csstudio.startup</module>
     <module>org.csstudio.startup.helper</module>
-    <module>org.csstudio.testsuite</module>
     <module>org.csstudio.ui.help</module>
     <module>org.csstudio.ui.menu</module>
     <module>org.csstudio.ui.menu.test</module>
