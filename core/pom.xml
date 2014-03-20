@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2013 DESY.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+ 
+  Contributors:
+     Jan Hatje - created the pom to build the plug-ins
+-->
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>main</artifactId>
+    <version>BUILD-VERSION</version>
+  </parent>
+
+  <groupId>org.csstudio</groupId>
+  <artifactId>core</artifactId>
+  <version>BUILD-VERSION</version>
+  <packaging>pom</packaging>
+
+  <!-- 
+    PROPERTIES
+  -->
+  <properties>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/core/3.3</cs-studio-central.url>
+  </properties>
+
+ <!--
+    CHILD MODULES
+  -->
+  <modules>
+    <module>plugins</module>
+    <module>features</module>
+    <module>repository</module>
+  </modules>
+
+  <build>
+    <!--
+      PLUGIN MANAGEMENT
+    -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <baselineRepositories>
+              <repository>
+                <url>${cs-studio-central.url}</url>
+              </repository>
+            </baselineRepositories>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
