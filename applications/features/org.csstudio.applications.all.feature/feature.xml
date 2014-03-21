@@ -837,21 +837,24 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"
+         os="linux"/>
 
    <plugin
          id="org.csstudio.systemopen.mac"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"
+         os="macosx"/>
 
    <plugin
          id="org.csstudio.systemopen.win"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"
+         os="win32"/>
 
    <plugin
          id="org.csstudio.testsuite"
