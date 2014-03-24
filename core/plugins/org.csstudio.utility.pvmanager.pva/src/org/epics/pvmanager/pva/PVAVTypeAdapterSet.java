@@ -12,8 +12,13 @@ import org.epics.pvdata.factory.FieldFactory;
 import org.epics.pvdata.factory.StandardFieldFactory;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.FieldCreate;
+import org.epics.pvdata.pv.PVField;
+import org.epics.pvdata.pv.PVScalarArray;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvmanager.pva.adapters.PVFieldNTHistogramToVIntArray;
+import org.epics.pvmanager.pva.adapters.PVFieldNTHistogramToVLongArray;
+import org.epics.pvmanager.pva.adapters.PVFieldNTHistogramToVShortArray;
 import org.epics.pvmanager.pva.adapters.PVFieldNTMatrixToVDoubleArray;
 import org.epics.pvmanager.pva.adapters.PVFieldNTNameValueToVTable;
 import org.epics.pvmanager.pva.adapters.PVFieldToVBoolean;
@@ -48,6 +53,7 @@ import org.epics.vtype.VInt;
 import org.epics.vtype.VIntArray;
 import org.epics.vtype.VLong;
 import org.epics.vtype.VLongArray;
+import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VShort;
 import org.epics.vtype.VShortArray;
 import org.epics.vtype.VStatistics;
@@ -344,6 +350,31 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
             }
         };
 
+    //  -> VNumberArray (NTHistogram support) 
+    final static PVATypeAdapter ToVNumberArrayAsHistogram = new PVATypeAdapter(
+    		VNumberArray.class,
+    		new String[] { "uri:ev4:nt/2012/pwd:NTHistogram" })
+    	{
+            @Override
+            public VNumberArray createValue(final PVStructure message, Field valueType, boolean disconnected) {
+            	PVField valueField = message.getSubField("value");
+            	if (valueField instanceof PVScalarArray)
+            	{
+            		switch (((PVScalarArray)valueField).getScalarArray().getElementType())
+            		{
+            			case pvShort: return new PVFieldNTHistogramToVShortArray(message, disconnected);
+            			case pvInt  : return new PVFieldNTHistogramToVIntArray(message, disconnected);
+            			case pvLong : return new PVFieldNTHistogramToVLongArray(message, disconnected);
+            			default:
+                    		throw new RuntimeException("NTHistogram 'value' scalar array must be { short[] | int[] | long[] }.");
+            		}
+            		
+            	}
+            	else
+            		throw new RuntimeException("NTHistogram does not have a scalar array 'value' field.");
+            }
+        };
+
     private static final Set<PVATypeAdapter> converters;
     
     static {
@@ -377,6 +408,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
         newFactories.add(ToVTableAsNameValue);	// NTNameValue support
 
         newFactories.add(ToVStatistics); // NTAggregate support
+        newFactories.add(ToVNumberArrayAsHistogram); // NTHistogram support
 
         converters = Collections.unmodifiableSet(newFactories);
     }
