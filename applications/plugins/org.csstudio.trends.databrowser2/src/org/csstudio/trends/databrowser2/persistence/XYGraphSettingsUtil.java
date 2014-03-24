@@ -217,8 +217,9 @@ public class XYGraphSettingsUtil {
 		if (settings.getRange() != null)
 			axis.setRange(settings.getRange().toSWT());
 		axis.setDateEnabled(settings.isDateEnabled());
-		axis.setAutoFormat(settings.isAutoFormat());
+		//Setting the format clears the auto format, so first set the format and then set the auto format
 		axis.setFormatPattern(settings.getFormatPattern());
+		axis.setAutoFormat(settings.isAutoFormat());
 		axis.setShowMajorGrid(settings.isShowMajorGrid());
 		axis.setDashGridLine(settings.isDashGridLine());
 		if (settings.getMajorGridColor() != null)
