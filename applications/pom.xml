@@ -138,7 +138,7 @@
             </jgit.ignore>
           </configuration>
         </plugin>
-        <plugin>
+        <!--<plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-plugin</artifactId>
           <version>${tycho.version}</version>
@@ -149,7 +149,7 @@
               </repository>
             </baselineRepositories>
           </configuration>
-        </plugin>
+        </plugin>-->
       </plugins> 
     </pluginManagement>
 
