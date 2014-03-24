@@ -29,6 +29,7 @@ import org.epics.pvdata.monitor.MonitorRequester;
 import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.MessageType;
+import org.epics.pvdata.pv.PVBoolean;
 import org.epics.pvdata.pv.PVField;
 import org.epics.pvdata.pv.PVInt;
 import org.epics.pvdata.pv.PVScalar;
@@ -441,6 +442,10 @@ public class PVAChannelHandler extends
 				convert.fromLong((PVScalar)field, ((Long)newValue).longValue());
 			else if (newValue instanceof Float)
 				convert.fromFloat((PVScalar)field, ((Float)newValue).floatValue());
+			else if (newValue instanceof Boolean)
+				//  TODO no convert.fromBoolean
+				//convert.fromBoolean((PVScalar)field, ((Boolean)newValue).booleanValue());
+				((PVBoolean)field).put(((Boolean)newValue).booleanValue());
     		else
     			throw new RuntimeException("Unsupported write, cannot put '" + newValue.getClass() + "' into scalar '" + channelPutValueField.getField() + "'");
         }

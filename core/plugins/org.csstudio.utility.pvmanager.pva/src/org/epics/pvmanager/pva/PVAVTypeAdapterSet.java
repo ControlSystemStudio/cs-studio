@@ -27,6 +27,8 @@ import org.epics.pvmanager.pva.adapters.PVFieldToVFloatArray;
 import org.epics.pvmanager.pva.adapters.PVFieldToVImage;
 import org.epics.pvmanager.pva.adapters.PVFieldToVInt;
 import org.epics.pvmanager.pva.adapters.PVFieldToVIntArray;
+import org.epics.pvmanager.pva.adapters.PVFieldToVLong;
+import org.epics.pvmanager.pva.adapters.PVFieldToVLongArray;
 import org.epics.pvmanager.pva.adapters.PVFieldToVShort;
 import org.epics.pvmanager.pva.adapters.PVFieldToVShortArray;
 import org.epics.pvmanager.pva.adapters.PVFieldToVStatistics;
@@ -44,6 +46,8 @@ import org.epics.vtype.VFloatArray;
 import org.epics.vtype.VImage;
 import org.epics.vtype.VInt;
 import org.epics.vtype.VIntArray;
+import org.epics.vtype.VLong;
+import org.epics.vtype.VLongArray;
 import org.epics.vtype.VShort;
 import org.epics.vtype.VShortArray;
 import org.epics.vtype.VStatistics;
@@ -134,9 +138,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
     		new Field[]
     				{
     					fieldCreate.createScalar(ScalarType.pvInt),
-    					fieldCreate.createScalar(ScalarType.pvUInt),
-    					fieldCreate.createScalar(ScalarType.pvLong),
-    					fieldCreate.createScalar(ScalarType.pvULong),
+    					fieldCreate.createScalar(ScalarType.pvUInt)
     				})
     	{
 
@@ -146,6 +148,22 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
             }
         };
         
+    //  -> VLong
+    final static PVATypeAdapter ToVLong = new PVATypeAdapter(
+    		VLong.class,
+    		new String[] { "uri:ev4:nt/2012/pwd:NTScalar", "scalar_t" },
+    		new Field[]
+    				{
+    					fieldCreate.createScalar(ScalarType.pvLong),
+    					fieldCreate.createScalar(ScalarType.pvULong),
+    				})
+    	{
+
+            @Override
+            public VLong createValue(final PVStructure message, Field valueType, boolean disconnected) {
+            	return new PVFieldToVLong(message, disconnected);
+            }
+        };
         
     //  -> VBoolean
     final static PVATypeAdapter ToVBoolean = new PVATypeAdapter(
@@ -223,6 +241,18 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
             }
         };
 
+    //  -> VArrayLong
+    final static PVATypeAdapter ToVArrayLong = new PVATypeAdapter(
+    		VLongArray.class,
+    		new String[] { "uri:ev4:nt/2012/pwd:NTScalarArray", "scalar_t[]" },
+    		fieldCreate.createScalarArray(ScalarType.pvLong))
+    	{
+            @Override
+            public VLongArray createValue(final PVStructure message, Field valueType, boolean disconnected) {
+            	return new PVFieldToVLongArray(message, disconnected);
+            }
+        };
+        
     //  -> VArrayShort
     final static PVATypeAdapter ToVArrayShort = new PVATypeAdapter(
     		VShortArray.class,
@@ -325,6 +355,7 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
         newFactories.add(ToVByte);
         newFactories.add(ToVShort);
         newFactories.add(ToVInt);
+        newFactories.add(ToVLong);
         newFactories.add(ToVString);
         newFactories.add(ToVEnum);
         newFactories.add(ToVBoolean);
@@ -335,8 +366,10 @@ public class PVAVTypeAdapterSet implements PVATypeAdapterSet {
         newFactories.add(ToVArrayByte);
         newFactories.add(ToVArrayShort);
         newFactories.add(ToVArrayInt);
+        newFactories.add(ToVArrayLong);
         newFactories.add(ToVArrayString);
         //newFactories.add(ToVArrayEnum);
+        // no VBooleanArray
         
         newFactories.add(ToVImage);
         newFactories.add(ToVTable);
