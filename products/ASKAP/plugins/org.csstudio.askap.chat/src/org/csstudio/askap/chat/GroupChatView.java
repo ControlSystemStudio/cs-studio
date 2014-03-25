@@ -3,8 +3,11 @@ package org.csstudio.askap.chat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
+import javax.security.auth.Subject;
+
+import org.csstudio.security.SecurityListener;
+import org.csstudio.security.SecuritySupport;
+import org.csstudio.security.authorization.Authorizations;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -27,7 +30,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 
-public class GroupChatView extends ViewPart implements ChatListener {
+public class GroupChatView extends ViewPart implements ChatListener, SecurityListener {
 	
 	private static Logger logger = Logger.getLogger(GroupChatView.class.getName());
 	public static final String ID = "org.csstudio.askap.chat.group";
@@ -41,30 +44,12 @@ public class GroupChatView extends ViewPart implements ChatListener {
 
 
 	public GroupChatView() throws Exception {
-		User user = SecurityFacade.getInstance().getCurrentUser();
 		
-		if (user==null) {
-			logger.log(Level.INFO, "User not logged in");
-
-			SecurityFacade.getInstance().authenticateApplicationUser();
-			user = SecurityFacade.getInstance().getCurrentUser();
-			
-			if (user==null) {
-				// user cancelled login, then popup to let user know has to login to chat
-				MessageDialog.openWarning(null, "User not logged in", "Can't access chat because you are not logged in");
-				throw new Exception("Can't access chat because user not logged in");
-			}			
-		}
+		changedSecurity(SecuritySupport.getSubject(), SecuritySupport.isCurrentUser(), SecuritySupport.getAuthorizations());
 		
-		userName = user.getUsername();
-		
-		// extract username from ldap name
-		if (userName.startsWith("CN="))  {
-			userName = userName.substring(3, userName.indexOf(","));
-		}
-		
+        // Update when security info changes
+        SecuritySupport.addListener(this);		
 	}
-	
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -83,14 +68,13 @@ public class GroupChatView extends ViewPart implements ChatListener {
 
     	form.setWeights(new int[] {20, 80});
     	
-    	messageHandler = new JMSChatMessageHandler(userName, this);
-    	
         parent.addDisposeListener(new DisposeListener()
 		{
 			@Override
 			public void widgetDisposed(DisposeEvent e){
 				try {
-					messageHandler.stopChat();
+					if (messageHandler!=null)
+						messageHandler.stopChat();
 				} catch (Exception ex) {
 					logger.log(Level.INFO, "could not stop chat", ex);
 				}
@@ -116,13 +100,7 @@ public class GroupChatView extends ViewPart implements ChatListener {
             }
 		});
 
-		try {
-			messageHandler.startChat();
-		} catch (Exception ex) {
-			MessageDialog.openError(sendMessage.getShell(),
-					"Open Error",
-					"Could not connect to chat server: " + ex.getMessage());
-		}
+		startChat();
 	}
 	@Override
 	public void setFocus() {
@@ -242,4 +220,44 @@ public class GroupChatView extends ViewPart implements ChatListener {
 		});
 	}
 
+
+	@Override
+	public void changedSecurity(Subject subject, boolean is_current_user,
+			Authorizations authorizations) {
+		
+		if (subject==null) {
+			userName = null;
+		} else {
+			userName = SecuritySupport.getSubjectName(subject);
+		}
+		
+		startChat();
+	}
+
+	private void startChat() {
+		if (messageHandler!=null) {
+			try {
+				messageHandler.stopChat();
+			} catch (Exception ex) {
+				messageHandler = null;
+				logger.log(Level.INFO, "could not stop chat", ex);
+			}
+		}
+		
+		if (userName==null || userName.trim().length()==0) {
+			messageHandler = null;
+			return;
+		}
+		
+    	messageHandler = new JMSChatMessageHandler(userName, this);
+    	
+		try {
+			messageHandler.startChat();
+		} catch (Exception ex) {
+			MessageDialog.openError(sendMessage.getShell(),
+					"Open Error",
+					"Could not connect to chat server: " + ex.getMessage());
+		}
+	}
+	
 }

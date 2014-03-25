@@ -25,16 +25,17 @@
       <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.examples" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth.ui" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.jms" version="5.4.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.jms" version="1.1.3" match="greaterOrEqual"/>
       <import plugin="org.csstudio.askap.utility" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
