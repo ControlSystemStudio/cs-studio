@@ -54,25 +54,25 @@
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.askap.utility.icemanager" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.askap.utility" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro" version="3.4.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro.universal" version="3.2.500" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.2.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging.ui" version="3.2.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startup" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup.helper" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.product" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.workspace" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth.ui" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pv" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.rap.ui.util"/>
-      <import plugin="org.jdom"/>
-      <import plugin="org.eclipse.jface.text" version="3.7.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.askap.utility" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.widgets" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder.widgets" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder" version="3.2.0" match="greaterOrEqual"/>
@@ -101,14 +101,24 @@
       <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logging" version="3.2.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logging.ui" version="3.2.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.startup.helper" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.workspace" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil.ui" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder" version="3.2.10" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder.editor"/>
+      <import plugin="org.csstudio.rap.ui.util"/>
+      <import plugin="org.jdom"/>
+      <import plugin="org.csstudio.askap.utility.icemanager" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.reader" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.vtype" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.log4j" version="1.2.16" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.data" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv.epics" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.reader" version="2.0.2" match="greaterOrEqual"/>
+      <import plugin="org.junit4" version="4.8.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.reader" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.rdb" version="3.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -232,6 +242,62 @@
 
    <plugin
          id="org.csstudio.askap.logviewer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader.monica"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader.aapi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader.archiverecord"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader.channelarchiver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader.rdb"
          download-size="0"
          install-size="0"
          version="0.0.0"

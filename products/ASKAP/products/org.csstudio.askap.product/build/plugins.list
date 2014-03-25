@@ -17,6 +17,8 @@ org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.archive.rdb
 org.csstudio.archive.reader
+org.csstudio.archive.reader.aapi
+org.csstudio.archive.reader.archiverecord
 org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.monica
 org.csstudio.archive.reader.rdb

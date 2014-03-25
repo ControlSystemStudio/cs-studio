@@ -32,6 +32,7 @@
       <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast" version="2.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast.configtool" version="3.1.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin

@@ -6,14 +6,7 @@ org.csstudio.alarm.beast
 org.csstudio.alarm.beast.server
 org.csstudio.apputil
 org.csstudio.apputil.ui
-org.csstudio.archive.rdb
-org.csstudio.archive.reader
-org.csstudio.archive.reader.channelarchiver
-org.csstudio.archive.reader.monica
-org.csstudio.archive.reader.rdb
-org.csstudio.archive.vtype
 org.csstudio.askap.alarm.beast.server.product
-org.csstudio.askap.utility
 org.csstudio.auth
 org.csstudio.auth.ui
 org.csstudio.autocomplete

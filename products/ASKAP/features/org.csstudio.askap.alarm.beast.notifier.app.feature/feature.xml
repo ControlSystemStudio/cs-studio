@@ -31,6 +31,7 @@
       <import plugin="org.csstudio.alarm.beast" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.email" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java"/>
+      <import plugin="org.csstudio.alarm.beast.notifier" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="javax.mail" version="1.4.4" match="greaterOrEqual"/>
    </requires>
