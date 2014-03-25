@@ -1,0 +1,4 @@
+
+# Ignore Tycho/Maven build directory
+target/
+
