@@ -326,8 +326,14 @@ public class LogTreeView extends ViewPart {
 				logEntryTree.setLogs(logEntries);
 			    }
 			});
-		    } catch (Exception e1) {
-			e1.printStackTrace();
+		    } catch (final Exception e1) {
+			Display.getDefault().asyncExec(new Runnable() {
+
+			    @Override
+			    public void run() {
+				errorBar.setException(e1);
+			    }
+			});
 		    }
 		}
 		return Status.OK_STATUS;
