@@ -122,6 +122,8 @@
           </dependencies>
           <configuration>
             <timestampProvider>jgit</timestampProvider>
+            <!-- jgit.dirtyWorkingTree options: ignore, warning, error -->
+            <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
             <jgit.ignore>
               pom.xml
             </jgit.ignore>
@@ -132,7 +134,11 @@
           <artifactId>tycho-p2-plugin</artifactId>
           <version>${tycho.version}</version>
           <configuration>
-            <baselineRepositories>
+            <!-- baselineMode options: disable, warn, fail -->
+            <baselineMode>fail</baselineMode>
+            <!-- baselineReplace options: none, all -->
+            <baselineReplace>none</baselineReplace>
+            <baselineRepositories> 
               <repository>
                 <url>${cs-studio-central.url}</url>
               </repository>
