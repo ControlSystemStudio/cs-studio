@@ -4,13 +4,13 @@ Bundle-Name: Simpledal
 Bundle-SymbolicName: org.csstudio.platform.simpledal;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.8.1",
- org.csstudio.platform.libs.jmock,
+Require-Bundle: org.csstudio.platform.libs.jmock,
  org.apache.log4j;bundle-version="1.2.16",
  org.csstudio.dal;bundle-version="1.0.0",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.slf4j;bundle-version="1.6.1",
- org.csstudio.domain.common;bundle-version="1.0.0"
+ org.csstudio.domain.common;bundle-version="1.0.0",
+ org.junit
 Bundle-Activator: org.csstudio.platform.SimpleDalPluginActivator
 Export-Package: org.csstudio.platform,
  org.csstudio.platform.model.pvs,

@@ -2,7 +2,7 @@ package org.csstudio.sds.ui.internal.pvlistview;
 
 import java.util.HashMap;
 
-import org.csstudio.domain.desy.types.Tuple;
+import org.csstudio.domain.common.types.Tuple;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationCallback.ValidationResult;
 import org.csstudio.platform.simpledal.IProcessVariableAddressValidationService;

@@ -13,13 +13,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.net.ssl.HostnameVerifier;
@@ -37,16 +37,17 @@ import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.PlatformUI;
 
 /**Utility functions for resources.
  * @author Xihui Chen, Abadie Lana, Kay Kasemir
@@ -205,56 +206,67 @@ public class ResourceUtil {
 //		return urlString.contains(":/");  //$NON-NLS-1$
 	}
 	
-	private static InputStream inputStream;
-	private static Object lock = new Boolean(true);
+    /**Open URL stream in UI Job if runInUIJob is true.
+     * @param url
+     * @param runInUIJob true if this method should run as an UI Job. 
+     * If it is true, this method must be called in UI thread.
+     * 
+     * TODO Unclear why the runInUIJob is actually used, because
+     *      it will in fact NOT run in the UI, but in a background job.
+     *      It will wait for the result in either case, so why a background job??
+     * @return Stream for the URL
+     * @throws Exception on error
+     */
+    public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception
+    {
+        final AtomicReference<InputStream> stream = new AtomicReference<>();
+        if (runInUIJob)
+        {
+            final Job job = new Job("OPI URL Opener")
+            {
+                @Override
+                protected IStatus run(final IProgressMonitor monitor)
+                {
+                    monitor.beginTask("Connecting to " + url, IProgressMonitor.UNKNOWN);
+                    try
+                    {
+                        stream.set(openURLStream(url));
+                    }
+                    catch (IOException ex)
+                    {
+                        OPIBuilderPlugin.getLogger().log(Level.WARNING, "URL '" + url + "' failed to open", ex);
+                        monitor.setCanceled(true);
+                        return Status.CANCEL_STATUS;
+                    }
+                    monitor.done();
+                    return Status.OK_STATUS;
+                }
+            };
+            job.schedule();
+            job.join();
+        }
+        else // Open stream w/o UI job
+            stream.set(openURLStream(url));
+        return stream.get();
+    }
 	
-	/**Open URL stream in UI Job if runInUIJob is true.
-	 * @param url
-	 * @param runInUIJob true if this method should run as an UI Job. 
-	 * If it is true, this method must be called in UI thread.
-	 * @return
-	 * @throws Exception
-	 */
-	public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
-		inputStream = null;
-		if (runInUIJob && URL_CACHE.getValue(url)== null) {
-			synchronized (lock) {
-				IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
-
-					public void run(IProgressMonitor monitor)
-							throws InvocationTargetException,
-							InterruptedException {
-						try {
-							monitor.beginTask("Connecting to " + url,
-									IProgressMonitor.UNKNOWN);
-							inputStream = openURLStream(url);
-						} catch (IOException e) {
-							throw new InvocationTargetException(e,
-									"Timeout while connecting to " + url);
-						} finally {
-							monitor.done();
-						}
-					}
-
-				};
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-						.run(true, false, openURLTask);
-			}
-		}else
-			return openURLStream(url);
-		return inputStream;
-	}
-	
-	public static InputStream openURLStream(final URL url) throws IOException{
+	private static InputStream openURLStream(final URL url) throws IOException{
 		File tempFilePath = URL_CACHE.getValue(url);
 		if(tempFilePath != null){
+            OPIBuilderPlugin.getLogger().log(Level.FINE, "Found cached file for URL '" + url + "'");
 			return new FileInputStream(tempFilePath);
 		}else{
 			InputStream inputStream = openRawURLStream(url);			
 			if(inputStream !=null){
 				try {
 					IPath urlPath = new URLPath(url.toString());
-					final File file = File.createTempFile(urlPath.removeFileExtension().lastSegment(), "."+urlPath.getFileExtension()); //$NON-NLS-1$ //$NON-NLS-2$					
+					
+					// createTempFile(), at least with jdk1.7.0_45,
+					// requires at least 3 chars for the 'prefix', so add "opicache"
+					// to assert a minimum length
+					final String cache_file_prefix = "opicache" + urlPath.removeFileExtension().lastSegment();
+                    final String cache_file_suffix = "."+urlPath.getFileExtension();
+					final File file = File.createTempFile(cache_file_prefix, cache_file_suffix);			
 					file.deleteOnExit();	
 					if(!file.canWrite())
 						throw new Exception("Unable to write temporary file.");
@@ -277,7 +289,7 @@ public class ResourceUtil {
 					return new FileInputStream(file);
 				} catch (Exception e) {
 					OPIBuilderPlugin.getLogger().log(Level.WARNING,
-							"Error to cache file from URL: " + e.getMessage());
+							"Error to cache file from URL '" + url + "'", e);
 				}	            
 			}			
 			return inputStream;
@@ -290,7 +302,7 @@ public class ResourceUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStream openRawURLStream(final URL url) throws IOException{
+	private static InputStream openRawURLStream(final URL url) throws IOException{
 		if(url.getProtocol().equals("https")){			//$NON-NLS-1$
 			//The code to support https protocol is provided by Eric Berryman (eric.berryman@gmail.com) from Frib
 	        // Create a trust manager that does not validate certificate chains

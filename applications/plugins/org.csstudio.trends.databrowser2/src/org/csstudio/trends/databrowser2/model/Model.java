@@ -27,9 +27,13 @@ import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.archive.vtype.TimestampHelper;
+import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
+import org.csstudio.trends.databrowser2.persistence.AnnotationSettings;
+import org.csstudio.trends.databrowser2.persistence.AxisSettings;
+import org.csstudio.trends.databrowser2.persistence.ColorSettings;
 import org.csstudio.trends.databrowser2.persistence.XYGraphSettings;
 import org.csstudio.trends.databrowser2.persistence.XYGraphSettingsXMLUtil;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
@@ -37,6 +41,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.VTable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -70,6 +75,7 @@ public class Model
     final public static String TAG_PVLIST = "pvlist";
     final public static String TAG_PV = "pv";
     final public static String TAG_NAME = "name";
+    final public static String TAG_AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh";
     final public static String TAG_DISPLAYNAME = "display_name";
     final public static String TAG_FORMULA = "formula";
     final public static String TAG_AXES = "axes";
@@ -95,6 +101,7 @@ public class Model
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
+    final public static String TAG_FUTURE_BUFFER = "future_buffer";
 
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_ANNOTATION = "annotation";
@@ -138,7 +145,7 @@ public class Model
         new RGB(242,  26,  26), // red
         new RGB( 33, 179,  33), // green
         new RGB(  0,   0,   0), // black
-        new RGB(128,   0, 255), // violett
+        new RGB(128,   0, 255), // violet
         new RGB(255, 170,   0), // (darkish) yellow
         new RGB(255,   0, 240), // pink
         new RGB(243, 132, 132), // peachy
@@ -193,6 +200,8 @@ public class Model
 
     /** End time of the data range */
     private Timestamp end_time = Timestamp.now();
+    
+    private int futureBufferInSeconds = Preferences.getFutureBuffer();
 
     /** Background color */
     private RGB background = new RGB(255, 255, 255);
@@ -203,12 +212,13 @@ public class Model
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
+    private VTable cursorData;
 
     /**
      *  Manage XYGraph Configuration Settings
      *  @author L.PHILIPPE GANIL
      */
-	private XYGraphSettings graphSettings = new XYGraphSettings();
+	private XYGraphSettings graphSettings = null;
 
 	public Model()
 	{
@@ -230,6 +240,16 @@ public class Model
 
 		for (ModelListener listener : listeners)
 	            listener.changedXYGraphConfig();
+	}
+	
+	public void setCursorData(VTable table) {
+		this.cursorData = table;
+		for (ModelListener listener : listeners)
+            listener.cursorDataChanged();
+	}
+	
+	public VTable getCursorData() {
+		return cursorData;
 	}
 
     /** @param macros Macros to use in this model */
@@ -657,7 +677,12 @@ public class Model
      */
     synchronized public Timestamp getStartTime()
     {
-        return getEndTime().minus(TimeDuration.ofSeconds(time_span));
+    	if (scroll_enabled && futureBufferInSeconds > 0) {
+    		return getEndTime().minus(TimeDuration.ofSeconds(time_span+2*futureBufferInSeconds));
+    	} else {
+    		return getEndTime().minus(TimeDuration.ofSeconds(time_span));
+    	}
+        
     }
 
     /** @return End time of the data range
@@ -665,10 +690,28 @@ public class Model
      */
     synchronized public Timestamp getEndTime()
     {
-        if (scroll_enabled)
-            end_time = Timestamp.now();
+        if (scroll_enabled) {
+        	Timestamp t = Timestamp.now();
+        	if (futureBufferInSeconds > 0) {
+        		if (end_time.compareTo(t) < 0) 
+        			end_time = t;
+        		return end_time.plus(TimeDuration.ofSeconds(futureBufferInSeconds));
+        	} else {
+        		end_time = t;
+        	}
+        }
         return end_time;
     }
+    
+    /**
+     * Future buffer in seconds is the amount of time given in seconds from the current time to 
+     * the right border of the chart when auto scroll is enabled.
+     *  
+     * @return the future buffer in seconds
+     */
+    public int getFutureBufferInSeconds() {
+		return futureBufferInSeconds;
+	}
 
     /** @return String representation of start time. While scrolling, this is
      *          a relative time, otherwise an absolute date/time.
@@ -829,6 +872,11 @@ public class Model
         for (ModelListener listener : listeners)
             listener.changedItemDataConfig(item);
     }
+    
+    void fireItemRefreshRequested(final PVItem item) {
+    	for (ModelListener listener : listeners)
+            listener.itemRefreshRequested(item);
+    }
 
     /** Find a formula that uses a model item as an input.
      *  @param item Item that's potentially used in a formula
@@ -918,36 +966,39 @@ public class Model
         	XMLWriter.XML(writer, 1, TAG_END, end_spec);			
 		}
 
-        // Time axis config
-        if (timeAxis != null)
-        {
-            XMLWriter.start(writer, 1, TAG_TIME_AXIS);
-            writer.println();
-            timeAxis.write(writer);
-            XMLWriter.end(writer, 1, TAG_TIME_AXIS);
-            writer.println();
-        }
-
-        // Misc.
-        writeColor(writer, 1, TAG_BACKGROUND, background);
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
-
-        // Value axes
-        XMLWriter.start(writer, 1, TAG_AXES);
-        writer.println();
-        for (AxisConfig axis : axes)
-            axis.write(writer);
-        XMLWriter.end(writer, 1, TAG_AXES);
-        writer.println();
-
-        // Annotations
-        XMLWriter.start(writer, 1, TAG_ANNOTATIONS);
-        writer.println();
-        for (AnnotationInfo annotation : annotations)
-        	annotation.write(writer);
-        XMLWriter.end(writer, 1, TAG_ANNOTATIONS);
-        writer.println();
-
+        
+        if (futureBufferInSeconds > 0) {
+        	XMLWriter.XML(writer, 1, TAG_FUTURE_BUFFER, futureBufferInSeconds);
+        }
+        //all other settings are already included in the graphsettings
+//        // Time axis config
+//        if (timeAxis != null)
+//        {
+//            XMLWriter.start(writer, 1, TAG_TIME_AXIS);
+//            writer.println();
+//            timeAxis.write(writer);
+//            XMLWriter.end(writer, 1, TAG_TIME_AXIS);
+//            writer.println();
+//        }
+//        // Value axes
+//        XMLWriter.start(writer, 1, TAG_AXES);
+//        writer.println();
+//        for (AxisConfig axis : axes)
+//            axis.write(writer);
+//        XMLWriter.end(writer, 1, TAG_AXES);
+//        writer.println();
+//
+//        // Annotations
+//        XMLWriter.start(writer, 1, TAG_ANNOTATIONS);
+//        writer.println();
+//        for (AnnotationInfo annotation : annotations)
+//        	annotation.write(writer);
+//        XMLWriter.end(writer, 1, TAG_ANNOTATIONS);
+//        writer.println();
+//        // Misc.
+//        writeColor(writer, 1, TAG_BACKGROUND, background);
+        
         // PVs (Formulas)
         XMLWriter.start(writer, 1, TAG_PVLIST);
         writer.println();
@@ -1015,6 +1066,12 @@ public class Model
         {
             archive_rescale = ArchiveRescale.STAGGER;
         }
+        
+        try {
+        	futureBufferInSeconds = DOMHelper.getSubelementInt(root_node, TAG_FUTURE_BUFFER);
+        } catch (Throwable e ) {
+        	//ignore, use default
+        }
 
         // Load Time Axis
         final Element timeAxisNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);
@@ -1077,7 +1134,44 @@ public class Model
 			Activator.getLogger().log(Level.INFO,
 					"XML error in XYGraph settings", ex);
 		}
-
+		
+		if (graphSettings != null) {
+			//backward compatibility for those plts created with duplicated info (axis 
+			//tag and axis settings both describing the same axis)
+			if (graphSettings.getAxisSettingsList().size() == axes.size() + 1 || axes.size() == 0) {
+				timeAxis = null;
+				axes.clear();
+				for (AxisSettings s : graphSettings.getAxisSettingsList()) {
+					ColorSettings fc = s.getForegroundColor();
+					ColorSettings gc = s.getMajorGridColor();
+					AxisConfig config = new AxisConfig(true, s.getTitle(), 
+							FontDataUtil.getFontData(s.getTitleFont()), 
+							FontDataUtil.getFontData(s.getScaleFont()), 
+							new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()), 
+							s.getRange().getLower(), s.getRange().getUpper(),
+							s.isAutoScale(), s.isLogScale(), s.isShowMajorGrid(),
+							s.isDashGridLine(),new RGB(gc.getRed(),gc.getGreen(),gc.getBlue()),
+							s.isAutoFormat(), s.isDateEnabled(), s.getFormatPattern());
+					if (timeAxis == null) {
+						timeAxis = config;
+					} else {
+						addAxis(config);
+					}
+				}
+			}
+		
+			ArrayList<AnnotationInfo> infos = new ArrayList<AnnotationInfo>();
+			for (AnnotationSettings s : graphSettings.getAnnotationSettingsList()) {
+				ColorSettings fc = s.getAnnotationColor();
+				RGB rgb = fc != null ? new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()) : null;
+				infos.add(new AnnotationInfo(
+						TimestampHelper.fromMillisecs((long)s.getXValue()), s.getYValue(), s.getxAxis(), 
+						s.getName(), CursorLineStyle.valueOf(s.getCursorLineStyle()), s.isShowName(), 
+						s.isShowPosition(), s.isShowSampleInfo(), FontDataUtil.getFontData(s.getFont()),rgb));
+			}
+			setAnnotations(infos.toArray(new AnnotationInfo[infos.size()]));
+		}
+		
 		// Backwards compatibility with previous data browser which
         // used global buffer size for all PVs
         final int buffer_size = DOMHelper.getSubelementInt(root_node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, -1);

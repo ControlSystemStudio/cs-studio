@@ -41,7 +41,7 @@ public class DeviceValueConditionHeadlessTest
     
     private PVDevice getDemoDevice() throws Exception
     {
-    	final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv", "demo"));
+    	final PVDevice device = new PVDevice(new DeviceInfo("loc://my_pv(0)", "demo"));
         
         // Register listener that notifies device so test code can wait for a device update
         device.addListener(new DeviceListener()
@@ -125,66 +125,53 @@ public class DeviceValueConditionHeadlessTest
         final PVDevice device = getDemoDevice();
         device.start();
         device.write(1.0);
-        synchronized (device) { device.wait(500); }
 
         // EQUALS
         {
             final NumericValueCondition equals = new NumericValueCondition(device, Comparison.EQUALS, 2.0, 0.001, null);
             assertThat(equals.isConditionMet(), equalTo(false));
             device.write(2.0);
-            synchronized (device) { device.wait(500); }
             assertThat(equals.isConditionMet(), equalTo(true));
 
             equals.setDesiredValue(3.0);
             assertThat(equals.isConditionMet(), equalTo(false));
             device.write(3.0);
-            synchronized (device) { device.wait(500); }
             assertThat(equals.isConditionMet(), equalTo(true));
         }
 
         // AT_LEAST
         {
             device.write(0.0);
-            synchronized (device) { device.wait(500); }
             final NumericValueCondition above = new NumericValueCondition(device, Comparison.AT_LEAST, 2.0, 10.0, null);
             assertThat(above.isConditionMet(), equalTo(false));
             device.write(1.0);
-            synchronized (device) { device.wait(500); }
             assertThat(above.isConditionMet(), equalTo(false));
             device.write(2.0);
-            synchronized (device) { device.wait(500); }
             assertThat(above.isConditionMet(), equalTo(true)); // 2 >= 2
 
             above.setDesiredValue(3.0);
             assertThat(above.isConditionMet(), equalTo(false));
             device.write(3.0);
-            synchronized (device) { device.wait(500); }
             assertThat(above.isConditionMet(), equalTo(true));
             device.write(4.0);
-            synchronized (device) { device.wait(500); }
             assertThat(above.isConditionMet(), equalTo(true));
         }
 
         // BELOW
         {
             device.write(4.0);
-            synchronized (device) { device.wait(500); }
             final NumericValueCondition below = new NumericValueCondition(device, Comparison.BELOW, 2.0, 10.0, null);
             assertThat(below.isConditionMet(), equalTo(false));
             device.write(2.0);
-            synchronized (device) { device.wait(500); }
             assertThat(below.isConditionMet(), equalTo(false)); // ! (2.0 < 2.0)
             device.write(1.8);
-            synchronized (device) { device.wait(500); }
             assertThat(below.isConditionMet(), equalTo(true));
 
             below.setDesiredValue(1.5);
             assertThat(below.isConditionMet(), equalTo(false));
             device.write(1.0);
-            synchronized (device) { device.wait(500); }
             assertThat(below.isConditionMet(), equalTo(true));
             device.write(-4.0);
-            synchronized (device) { device.wait(500); }
             assertThat(below.isConditionMet(), equalTo(true));
         }
 
@@ -264,7 +251,7 @@ public class DeviceValueConditionHeadlessTest
         final NumericValueCondition condition =
                 new NumericValueCondition(device, Comparison.INCREASE_BY, 3.0, 0.0, null);
         assertThat(condition.isConditionMet(), equalTo(false));
-        System.out.println("Initial value: " + device.readDouble());
+        System.out.println("Initial value: " + VTypeHelper.toDouble(device.read()));
         condition.await();
         System.out.println("Value increased by 3!");
 
@@ -284,7 +271,7 @@ public class DeviceValueConditionHeadlessTest
         {
         	synchronized (device) { device.wait(100); }
         }
-        while (device.readDouble() != 1.0);
+        while (VTypeHelper.toDouble(device.read()) != 1.0);
 
         // Wait for 1 second, never happens
         NumericValueCondition condition =

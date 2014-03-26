@@ -7,9 +7,9 @@ Bundle-Activator: de.desy.language.snl.internal.SNLCoreActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  de.desy.language.editor.core,
- org.junit4,
  de.desy.language.libraries;bundle-version="1.3.0",
- org.csstudio.platform.libs.easymock;bundle-version="3.0.0"
+ org.csstudio.platform.libs.easymock;bundle-version="3.0.0",
+ org.junit
 Bundle-ActivationPolicy: lazy
 Export-Package: de.desy.language.snl,
  de.desy.language.snl.codeElements,

@@ -21,10 +21,13 @@ import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Axis;
+import org.csstudio.swt.xygraph.figures.IAnnotationListener;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
@@ -186,7 +189,8 @@ public class Controller implements ArchiveFetchJobListener
             	final String start_spec, end_spec;
                 if (model.isScrollEnabled())
                 {
-                    final long dist = Math.abs(end_ms - System.currentTimeMillis());
+                	final long time = System.currentTimeMillis();
+                    final long dist = Math.abs(end_ms - time);
                     final long range = end_ms - start_ms;
                     // Iffy range?
                     if (range <= 0)
@@ -195,8 +199,14 @@ public class Controller implements ArchiveFetchJobListener
                     // the GUI is close enough to 'now', scrolling remains 'on'
                     // and we'll continue to scroll with the new time range.
                     if (dist * 100 / range > 10)
-                    {   // Time range 10% away from 'now', disable scrolling
-                        model.enableScrolling(false);
+                    { // Time range 10% away from 'now', disable scrolling   
+                    	//but only if we are not using a future buffer
+                    	if (model.getFutureBufferInSeconds() > 0) {
+                    		if (end_ms < time)
+                    			model.enableScrolling(false);
+                    	} else {
+                    		model.enableScrolling(false);
+                    	}
                         // Use absolute start/end time
                         final Calendar cal = Calendar.getInstance();
                         cal.setTimeInMillis(start_ms);
@@ -449,7 +459,7 @@ public class Controller implements ArchiveFetchJobListener
                 // Get matching archived data
                 scheduleArchiveRetrieval();
                 // Show new time range on plot?
-                if (model.isScrollEnabled())
+                if (model.isScrollEnabled() && model.getFutureBufferInSeconds() < 1)
                     return; // no, scrolling will handle that
                 // Yes, since the time axis is currently 'fixed'
                 final long start_ms = TimestampHelper.toMillisecs(model.getStartTime());
@@ -539,6 +549,19 @@ public class Controller implements ArchiveFetchJobListener
 			{
 				// NOP
 			}
+			
+			@Override
+			public void itemRefreshRequested(PVItem item) {
+				final Timestamp start = model.getStartTime();
+                final Timestamp end = model.getEndTime();
+                getArchivedData(item, start, end);
+			}
+			
+			@Override
+			public void cursorDataChanged() 
+			{
+				//NOP
+			}
         };
         model.addListener(model_listener);
     }
@@ -591,7 +614,7 @@ public class Controller implements ArchiveFetchJobListener
         };
         update_timer.schedule(archive_fetch_delay_task, archive_fetch_delay);
     }
-
+    
     /** Start model items and initiate scrolling/updates
      *  @throws Exception on error: Already running, problem starting threads, ...
      *  @see #isRunning()
@@ -718,20 +741,22 @@ public class Controller implements ArchiveFetchJobListener
 		final XYGraph graph = plot.getXYGraph();
     	final List<Axis> yaxes = graph.getYAxisList();
     	final AnnotationInfo[] annotations = model.getAnnotations();
-        for (AnnotationInfo info : annotations)
+        for (final AnnotationInfo info : annotations)
         {
 			final int axis_index = info.getAxis();
 			if (axis_index < 0  ||  axis_index >= yaxes.size())
 				continue;
 			final Axis axis = yaxes.get(axis_index);
         	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
-        	annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
-        			info.getValue());
-
         	//ADD Laurent PHILIPPE
 			annotation.setCursorLineStyle(info.getCursorLineStyle());
         	annotation.setShowName(info.isShowName());
         	annotation.setShowPosition(info.isShowPosition());
+        	annotation.setShowSampleInfo(info.isShowSampleInfo());        	
+        	annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
+        			info.getValue());
+        	
+        	snapAnnotation(annotation, info);
 
         	if(info.getColor() != null)
         		annotation.setAnnotationColor(XYGraphMediaFactory.getInstance().getColor(info.getColor()));
@@ -741,6 +766,50 @@ public class Controller implements ArchiveFetchJobListener
 
         	graph.addAnnotation(annotation);
         }
+    }
+    
+	//a workaround to snap the annotation in place
+    private void snapAnnotation(final Annotation annotation, final AnnotationInfo info) {
+    	annotation.addAnnotationListener(new IAnnotationListener() {
+			@Override
+			public void annotationMoved(double oldX, double oldY, double newX, double newY) {
+				//wait for the first annotation update after the trace is plotted and resnap
+				//the annotation to the correct position
+				if (annotation.getTrace() != null) {
+					if (annotation.getTrace().getHotSampleList().size() > 0) {
+						annotation.removeAnnotationListener(this);
+						double xValue = TimestampHelper.toMillisecs(info.getTimestamp());
+						List<ISample> samples = annotation.getTrace().getHotSampleList();
+						ISample sample = null;
+						if (samples.size() > 0) {
+							if (samples.get(0).getXValue() > xValue) {
+								sample = samples.get(0);
+							}
+						}
+						if (sample == null) {
+							for (int i = 1; i < samples.size(); i++) {
+								ISample first = samples.get(i-1);
+								ISample second = samples.get(i);
+								if (second.getXValue() > xValue && first.getXValue() <= xValue) {
+									sample = first;
+									break;
+								}
+							}
+						}
+						if (sample == null && samples.size() > 0) {
+							sample = samples.get(samples.size()-1);
+						}
+						if (sample != null) {
+							annotation.setCurrentSnappedSample(sample,false);
+						}
+						annotation.setValues(xValue,info.getValue());						
+					}
+				} else {
+					annotation.removeAnnotationListener(this);
+				}
+				
+			}
+		});
     }
 
 
@@ -756,9 +825,22 @@ public class Controller implements ArchiveFetchJobListener
     {
         if (! model.isScrollEnabled())
             return;
-        final long end_ms = System.currentTimeMillis();
+        int buffer = model.getFutureBufferInSeconds();
+        long end_ms = System.currentTimeMillis();
         final long start_ms = end_ms - (long) (model.getTimespan()*1000);
-        plot.setTimeRange(start_ms, end_ms);
+        if (buffer > 0) {
+            Range range = plot.getXYGraph().primaryXAxis.getRange();
+            if (range.getUpper() < end_ms) {
+            	end_ms += (buffer*1000L);            	
+                plot.setTimeRange(start_ms, end_ms);
+            } else {
+            	//set the same values, which will refresh the graph
+            	plot.setTimeRange((long)range.getLower(),(long)range.getUpper());
+            }
+        } else {
+        	plot.setTimeRange(start_ms, end_ms);
+        }
+       
         if (scrolling_was_off)
         {   // Scrolling was just turned on.
             // Get new archived data since the new time scale
@@ -779,7 +861,7 @@ public class Controller implements ArchiveFetchJobListener
         for (int i=0; i<model.getItemCount(); ++i)
             getArchivedData(model.getItem(i), start, end);
     }
-
+    
     /** Initiate archive data retrieval for a specific model item
      *  @param item Model item. NOP for non-PVItem
      *  @param start Start time

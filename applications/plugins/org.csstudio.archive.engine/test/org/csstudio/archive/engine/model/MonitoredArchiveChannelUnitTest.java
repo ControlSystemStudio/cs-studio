@@ -8,12 +8,11 @@
 package org.csstudio.archive.engine.model;
 
 import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
-import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.junit.Assert.assertThat;
 
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.loc.LocalDataSource;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVPool;
+import org.csstudio.vtype.pv.local.LocalPVFactory;
 import org.junit.Test;
 
 /** JUnit test of the {@link MonitoredArchiveChannel}
@@ -24,14 +23,14 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class MonitoredArchiveChannelUnitTest
 {
-    private static final String PV_NAME = "loc://demo";
+    private static final String PV_NAME = "loc://demo(47)";
 
 	@Test
     public void testHandleNewValue() throws Exception
     {
-    	PVManager.setDefaultDataSource(new LocalDataSource());
+    	PVPool.addPVFactory(new LocalPVFactory());
     	
-    	final PVWriter<Object> pv = PVManager.write(channel(PV_NAME)).async();
+    	final PV pv = PVPool.getPV(PV_NAME);
         final MonitoredArchiveChannel channel = new MonitoredArchiveChannel(PV_NAME, Enablement.Passive, 100, null, 0.1);
         final SampleBuffer samples = channel.getSampleBuffer();
         channel.start();
@@ -47,6 +46,6 @@ public class MonitoredArchiveChannelUnitTest
         assertThat(TestHelper.dump(samples), greaterThanOrEqualTo(4));
 
         channel.stop();
-        pv.close();
+        PVPool.releasePV(pv);
     }
 }

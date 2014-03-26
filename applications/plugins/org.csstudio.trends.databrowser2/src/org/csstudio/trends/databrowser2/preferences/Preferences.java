@@ -57,14 +57,31 @@ public class Preferences
 			EMAIL_DEFAULT_SENDER = "email_default_sender",
 			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view",
 			RAP_HIDE_PROPERTIES_VIEW = "rap.hide_properties_view",		
-			SECURE_DATA_BROWSER = "secure_data_browser";
+			SECURE_DATA_BROWSER = "secure_data_browser",
+			AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh",
+			FUTURE_BUFFER = "future_buffer";
 
+	public static boolean isAutomaticHistoryRefresh() {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null) // Allow some JUnit tests without prefs
+            return Boolean.FALSE;
+        return prefs.getBoolean(Activator.PLUGIN_ID, AUTOMATIC_HISTORY_REFRESH, Boolean.FALSE, null);
+	}
+	
     public static double getTimeSpan()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null) // Allow some JUnit tests without prefs
             return 60.0;
         return prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null);
+    }
+    
+    public static int getFutureBuffer()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null) // Allow some JUnit tests without prefs
+            return 120;
+        return prefs.getInt(Activator.PLUGIN_ID, FUTURE_BUFFER, 120, null);
     }
 
     public static double getScanPeriod()

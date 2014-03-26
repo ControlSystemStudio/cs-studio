@@ -31,12 +31,7 @@ public class OpenLogViewer extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
 	final IWorkbench workbench = PlatformUI.getWorkbench();
 	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	ISelection selection;
-	if (HandlerUtil.getActiveMenuSelection(event) != null) {
-	    selection = HandlerUtil.getActiveMenuSelection(event);
-	} else {
-	    selection = window.getActivePage().getSelection(LogTableView.ID);
-	}
+	ISelection selection = HandlerUtil.getCurrentSelection(event);
 	if (selection instanceof IStructuredSelection) {
 	    IStructuredSelection strucSelection = (IStructuredSelection) selection;
 	    if (strucSelection.getFirstElement() instanceof LogEntry) {
@@ -50,7 +45,6 @@ public class OpenLogViewer extends AbstractHandler {
 	}
 	try {
 	    workbench.showPerspective(LogViewerPerspective.ID, window);
-	    window.getActivePage().showView(LogTableView.ID);
 	} catch (Exception ex) {
 	    ExceptionDetailsErrorDialog.openError(
 		    HandlerUtil.getActiveShell(event),

@@ -40,6 +40,7 @@ public class XYGraphSettingsXMLUtil {
 	 */
 	public static void write(final XYGraphSettings settings,
 			final PrintWriter writer) {
+		if (settings == null) return;
 		try {
 			JAXBContext jaxbCtx = JAXBContext
 					.newInstance(XYGraphSettings.class);

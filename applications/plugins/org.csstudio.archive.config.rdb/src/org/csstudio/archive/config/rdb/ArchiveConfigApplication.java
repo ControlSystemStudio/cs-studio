@@ -42,7 +42,9 @@ public class ArchiveConfigApplication implements IApplication
         final ArgParser parser = new ArgParser();
         final BooleanOption help = new BooleanOption(parser,
                 "-help", "show help");
-        final BooleanOption  list = new BooleanOption(parser,
+		final BooleanOption version = new BooleanOption(parser, 
+				"-version", "Display version info");
+		final BooleanOption list = new BooleanOption(parser,
                 "-list", "List engine names");
         final StringOption  engine_name = new StringOption(parser,
                 "-engine", "my_engine", "Engine Name", "");
@@ -74,8 +76,6 @@ public class ArchiveConfigApplication implements IApplication
                 "-rdb_schema", "schema", "RDB schema (table prefix), ending in '.'", RDBArchivePreferences.getSchema());
         final StringOption set_password = new StringOption(parser,
                 "-set_password", "plugin/key=value", "Set secure preferences", null);
-        final BooleanOption version = new BooleanOption(parser,
-                "-version", "show version info");
         parser.addEclipseParameters();
 
         try
@@ -88,16 +88,17 @@ public class ArchiveConfigApplication implements IApplication
             return Integer.valueOf(-2);
         }
 
-        if (help.get())
-        {
-            System.out.println(parser.getHelp());
-            return IApplication.EXIT_OK;
-        }
+		// Display configuration info
+		final String app_info = context.getBrandingName() + " "
+				+ context.getBrandingBundle().getHeaders().get("Bundle-Version");
+		if (help.get()) {
+			System.out.println(app_info + "\n\n" + parser.getHelp());
+			return IApplication.EXIT_OK;
+		}
 
         if (version.get())
         {
-            System.out.println(context.getBrandingName() + " " +
-                    context.getBrandingBundle().getHeaders().get("Bundle-Version"));
+            System.out.println(app_info);
             return IApplication.EXIT_OK;
         }
 

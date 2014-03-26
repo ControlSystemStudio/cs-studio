@@ -6,14 +6,12 @@ import org.csstudio.swt.xygraph.undo.IUndoableCommand;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PVItem;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * Undo-able command for edit item properties. 
  * @author Takashi Nakamoto
  */
 public class EditItemsCommand implements IUndoableCommand {
-    final private Shell shell;
     final private ModelItem[] items;
     final private ArrayList<ModelItem> oldItems;
     final private ArrayList<Integer> oldBufferSizes;
@@ -26,11 +24,10 @@ public class EditItemsCommand implements IUndoableCommand {
      * @param items Array of ModelItem instances subjected to editing.
      * @param result Result instance returned by EditItemsDialog.
      */
-    public EditItemsCommand(final Shell shell,
-            final OperationsManager operations_manager,
+    public EditItemsCommand(
+    		final OperationsManager operations_manager,
             final ModelItem[] items,
             final EditItemsDialog.Result result) {
-    	this.shell = shell;
     	this.items = items;
     	this.result = result;
 

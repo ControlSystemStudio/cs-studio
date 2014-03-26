@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Basic PV that provides VType data
+Bundle-SymbolicName: org.csstudio.vtype.pv;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>
+Require-Bundle: org.junit;bundle-version="4.8.2";resolution:=optional,
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.epics.vtype;bundle-version="2.1.0";visibility:=reexport,
+ org.csstudio.platform.libs.epics;bundle-version="3.2.0"
+Export-Package: org.csstudio.vtype.pv,
+ org.csstudio.vtype.pv.jca,
+ org.csstudio.vtype.pv.local
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.vtype.pv.internal.Activator

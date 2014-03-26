@@ -30,6 +30,7 @@ import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.internal.ExecutableScan;
@@ -55,7 +56,7 @@ public class LoopCommandHeadlessTest
     private static void waitForValue(final Device device, final double value) throws Exception
     {
     	int tens = 0;
-    	while (device.readDouble() != value)
+    	while (VTypeHelper.toDouble(device.read()) != value)
     	{
     		Thread.sleep(100);
     		++tens;
@@ -90,7 +91,7 @@ public class LoopCommandHeadlessTest
             // an individual command.
             final ExecutableScan scan = new ExecutableScan("test", devices);
             scan.execute(loop);
-            assertEquals(5.0, counter.readDouble(), 0.1);
+            assertEquals(5.0, VTypeHelper.toDouble(counter.read()), 0.1);
         }
         finally
         {
@@ -149,7 +150,7 @@ public class LoopCommandHeadlessTest
             System.out.println(loop);
             final ExecutableScan scan = new ExecutableScan("test", devices);
             scan.execute(loop);
-            assertEquals(1.0, counter.readDouble(), 0.1);
+            assertEquals(1.0, VTypeHelper.toDouble(counter.read()), 0.1);
 
             // Step 2: 1, 3, 5, 7, 9
             loop = new LoopCommandImpl(
@@ -157,7 +158,7 @@ public class LoopCommandHeadlessTest
                     new LogCommand("counter")));
             System.out.println(loop);
             scan.execute(loop);
-            assertEquals(9.0, counter.readDouble(), 0.1);
+            assertEquals(9.0, VTypeHelper.toDouble(counter.read()), 0.1);
 
             // Down 3: 8, 5, 2
             loop = new LoopCommandImpl(
@@ -165,7 +166,7 @@ public class LoopCommandHeadlessTest
                     new LogCommand("counter")));
             System.out.println(loop);
             scan.execute(loop);
-            assertEquals(2.0, counter.readDouble(), 0.1);
+            assertEquals(2.0, VTypeHelper.toDouble(counter.read()), 0.1);
         }
         finally
         {
@@ -191,18 +192,18 @@ public class LoopCommandHeadlessTest
             // Downward loop 5, 4, 3, 2, 1
             counter.write(4.0);
             waitForValue(counter, 4.0);
-            assertEquals(4.0, counter.readDouble(), 0.1);
+            assertEquals(4.0, VTypeHelper.toDouble(counter.read()), 0.1);
             final ExecutableScan scan = new ExecutableScan("test", devices, loop);
             scan.execute(loop);
-            assertEquals(1.0, counter.readDouble(), 0.1);
+            assertEquals(1.0, VTypeHelper.toDouble(counter.read()), 0.1);
 
             // On the next iteration, the loop toggles to an upward 1...5
             scan.execute(loop);
-            assertEquals(5.0, counter.readDouble(), 0.1);
+            assertEquals(5.0, VTypeHelper.toDouble(counter.read()), 0.1);
 
             // And then again down 5...1
             scan.execute(loop);
-            assertEquals(1.0, counter.readDouble(), 0.1);
+            assertEquals(1.0, VTypeHelper.toDouble(counter.read()), 0.1);
         }
         finally
         {

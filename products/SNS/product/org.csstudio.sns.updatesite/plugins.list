@@ -156,6 +156,7 @@ org.csstudio.utility.singlesource.rcp/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.utility.test/**
+org.csstudio.vtype.pv/**
 org.csstudio.workspace/**
 org.epics.pvaccess/**
 org.epics.pvdata/**

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.csstudio.shift.ui.ShiftTableView"
+            icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-16.png"
+            id="org.csstudio.shift.ui.ShiftTableView"
+            name="Shift Table"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.shift.viewer.OpenShiftViewer"
+               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-search.png"
+               label="Search Shift"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.csstudio.shift.viewer.OpenShiftViewer"
+               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-search.png"
+               label="View Details"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="gov.bnl.shiftClient.Shift">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.shift.ui.ShiftTableView">
+         <command
+               commandId="org.csstudio.shift.ui.OpenShiftBuilderDialog"
+               icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-start-16.png"
+               label="Start New Shift"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.shift.ui.ShiftViewerPerspective"
+            icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-16.png"
+            id="org.csstudio.shift.ui.ShiftViewerPerspective"
+            name="ShiftViewerPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.shift.ui.ShiftViewer"
+            default="false"
+            icon="platform:/plugin/org.csstudio.shift.ui/icons/shift-16.png"
+            id="org.csstudio.shift.ui.ShiftViewer"
+            name="ShiftViewer">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.shift.ui.OpenShiftViewer"
+            id="org.csstudio.shift.viewer.OpenShiftViewer"
+            name="Search Shift">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+
+</plugin>

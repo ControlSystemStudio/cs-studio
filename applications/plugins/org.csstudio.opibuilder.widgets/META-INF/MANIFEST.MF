@@ -3,12 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY Widgets Plug-in
 Bundle-Description: Widgets for BOY
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets;singleton:=true
-Bundle-Version: 3.2.9.qualifier
+Bundle-Version: 3.2.16.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.Activator
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
- org.csstudio.opibuilder,
+ org.csstudio.opibuilder;bundle-version="3.2.16",
  org.csstudio.swt.xygraph,
  org.eclipse.core.resources;resolution:=optional,
  org.eclipse.ui.browser;resolution:=optional,
