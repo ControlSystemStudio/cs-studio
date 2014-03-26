@@ -41,6 +41,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Collections2;
+
 /**
  * @author shroffk
  * 
@@ -58,7 +62,6 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	changeSupport.removePropertyChangeListener(listener);
     }
 
-    private final String eol = System.getProperty("line.separator");
     private AbstractSelectionProviderWrapper selectionProvider;
     private boolean expanded = false;   
 
@@ -205,7 +208,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 			((LogEntry) e2).getOwner());
 	    }
 	};
-
+	
 	// Forth column lists the logbooks
 	GridViewerColumn gridViewerColumnLogbooks = new GridViewerColumn(
 		gridTableViewer, SWT.MULTI | SWT.DOUBLE_BUFFERED);
@@ -214,15 +217,21 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    @Override
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntry) element);
-		StringBuilder logbooks = new StringBuilder();
-		for (Logbook logbook : item.getLogbooks()) {
-		    logbooks.append(logbook.getName() + eol);
+		if (item == null) {
+		    return "";
+		} else {
+		    Collection<String> logbookNames = Collections2.transform(item.getLogbooks(), new Function<Logbook, String>(){
+			@Override
+			public String apply(Logbook logbook) {
+			    return logbook.getName();
+			}			
+		    });		    
+		    return Joiner.on(System.getProperty("line.separator")).join(logbookNames);
 		}
-		return item == null ? "" : logbooks.toString();
 	    }
 	});
 	GridColumn tblclmnLogbooks = gridViewerColumnLogbooks.getColumn();
-	tblclmnLogbooks.setWordWrap(false);
+	tblclmnLogbooks.setWordWrap(true);
 	tblclmnLogbooks.setText("Logbooks");
 	new TableColumnViewerLayout(gridTableViewer,
 		gridViewerColumnLogbooks, 10, 75);
@@ -234,15 +243,21 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntry) element);
-		StringBuilder tags = new StringBuilder();
-		for (Tag tag : item.getTags()) {
-		    tags.append(tag.getName() + eol);
+		if (item == null) {
+		    return "";
+		} else {
+		    Collection<String> tagNames = Collections2.transform(item.getTags(), new Function<Tag, String>(){
+			@Override
+			public String apply(Tag tag) {
+			    return tag.getName();
+			}			
+		    });		    
+		    return Joiner.on(System.getProperty("line.separator")).join(tagNames);
 		}
-		return item == null ? "" : tags.toString();
 	    }
 	});
 	GridColumn tblclmnTags = gridViewerColumnTags.getColumn();
-	tblclmnTags.setWordWrap(false);
+	tblclmnTags.setWordWrap(true);
 	tblclmnTags.setText("Tags");
 	new TableColumnViewerLayout(gridTableViewer, gridViewerColumnTags,
 		10, 75);
