@@ -34,23 +34,7 @@ import java.util.regex.Pattern;
  * @author shroffk
  */
 public class TimeParser {
-    private static final String timeFormatt = "\"last min\", \"last hour\", \"last day\", \"last week\" " +
-    		"\"last 5 mins\", \"last 5 hours\", \"last 5 days\", \"last 5 weeks\" " +
-    		"\"5 mins ago\", \"5 hours ago\", \"5 days ago\", \"5 weeks ago\"";
-    
-    /**
-     * The following return a TimeInterval - absolute
-     * Time can be represented inthe following format
-     * 
-     * "last min", "last hour", "last day", "last week"
-     * 
-     * "last 5 mins", "last 5 hours", "last 5 days", "last 5 weeks"
-     * 
-     * "5 mins ago", "5 hours ago", "5 days ago", "5 weeks ago"
-     * 
-     * @param time
-     * @return
-     */
+
     public static TimeDuration getTimeDuration(String time) {
 	// TODO this regular expression needs to be reviewed and improved if
 	// possible
@@ -97,38 +81,10 @@ public class TimeParser {
 	return null;
     }
 
-    /**
-     * The following returns a TimeDuration - relative between the given time and now
-     * Time can be represented in the following format
-     * 
-     * "last min", "last hour", "last day", "last week"
-     * 
-     * "last 5 mins", "last 5 hours", "last 5 days", "last 5 weeks"
-     * 
-     * "5 mins ago", "5 hours ago", "5 days ago", "5 weeks ago"
-     * 
-     * @param start
-     * @param end
-     * @return
-     */
     public static TimeInterval getTimeInterval(String time) {
 	return getTimeInterval(time, "now");
     }
 
-    /**
-     * The following returns a TimeDuration - relative between the start and the end time
-     * The start and end time scan be defined in the following format
-     * 
-     * "last min", "last hour", "last day", "last week"
-     * 
-     * "last 5 mins", "last 5 hours", "last 5 days", "last 5 weeks"
-     * 
-     * "5 mins ago", "5 hours ago", "5 days ago", "5 weeks ago"
-     * 
-     * @param start
-     * @param end
-     * @return
-     */
     public static TimeInterval getTimeInterval(String start, String end) {
 	return TimeInterval.between(getTimeStamp(start), getTimeStamp(end));
     }
