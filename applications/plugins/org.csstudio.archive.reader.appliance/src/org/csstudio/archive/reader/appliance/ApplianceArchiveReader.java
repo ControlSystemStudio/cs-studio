@@ -7,13 +7,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.archiverappliance.retrieval.client.DataRetrieval;
+import org.epics.archiverappliance.retrieval.client.EpicsMessage;
+import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 import org.epics.archiverappliance.retrieval.client.RawDataRetrieval;
 import org.epics.util.time.Timestamp;
 
@@ -126,10 +130,14 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
 		try {
-			if (useStatistics) {
-				return new ApplianceStatisticsValueIterator(this, name, start, end, count);
+			if (useRaw(name, count, start, end)) {
+				return getRawValues(key, name, start, end);
 			} else {
-				return new ApplianceMeanValueIterator(this, name, start, end, count);
+				if (useStatistics) {
+					return new ApplianceStatisticsValueIterator(this, name, start, end, count);
+				} else {
+					return new ApplianceMeanValueIterator(this, name, start, end, count);
+				}
 			}
 		} catch (ArchiverApplianceException e) {
 			try {
@@ -206,5 +214,44 @@ public class ApplianceArchiveReader implements ArchiveReader {
 			connection.disconnect();
 		}
 		return names.toArray(new String[names.size()]);
+	}
+	
+	/**
+	 * Checks if data for the selected parameters should be loaded as raw data or as optimized data.
+	 * If there are more points in the archive than there are requested points, this method will return
+	 * false. If there are less or equal number of points in the archive as there are requested points,
+	 * the method will return true.
+	 * 
+	 * @param pvName the name of the PV
+	 * @param requestedPoints the number of points that are requested by the client
+	 * @param start the start time of the data window
+	 * @param end the end time of the data window
+	 * @return true if there are less (or equal) points in the archive as there are requested points or false
+	 * 			otherwise 
+	 * @throws IOException if there was an error loading the number of points
+	 */
+	private boolean useRaw(String pvName, int requestedPoints, Timestamp start, Timestamp end) throws IOException {
+		int interval = Math.max(1,(int)(end.getSec() - start.getSec()));
+		String countName = new StringBuilder().append("count_").append(interval).append('(').append(pvName).append(')').toString();
+		DataRetrieval dataRetrieval = createDataRetriveal(getDataRetrievalURL());
+		java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
+		java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
+		GenMsgIterator iterator = dataRetrieval.getDataForPV(countName, sqlStartTimestamp, sqlEndTimestamp);
+		
+		if (iterator != null) {
+			try {
+				Iterator<EpicsMessage> it = iterator.iterator();
+				int numberOfPoints = 0;
+				while(it.hasNext()) {
+					Number m = it.next().getNumberValue();
+					if (m == null) return true;
+					numberOfPoints += m.intValue();
+				}
+				return numberOfPoints < requestedPoints;
+			} finally {
+				iterator.close();
+			}
+		}
+		return true;
 	}
 }
