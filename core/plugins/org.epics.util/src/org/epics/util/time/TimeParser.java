@@ -96,7 +96,7 @@ public class TimeParser {
      * i.e.
      * 
      * @param time
-     * @return
+     * @return the parsed timestamp or null
      */
     public static Timestamp getTimeStamp(String time) {
 	if (time.equalsIgnoreCase("now")) {
