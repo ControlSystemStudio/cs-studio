@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -28,13 +28,22 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
         zPlotRange = zAxisRange.axisRange(zDataRange, zAggregatedRange);
     }
 
+    /**
+     *Draws a bubble graph on the given Graphics2D context using the given data.
+     * @param g Graphics2D context, can not be null.
+     * @param data consists of x, y, and z coordinates, as well as labels. x and y correspond to position on the graph. 
+     * z corresponds to the diameter of the circle, and the label corresponds to the color.
+     */
     public void draw(Graphics2D g, Point3DWithLabelDataset data) {
+        if(g == null)
+            throw new NullPointerException("g is null");
         this.g = g;
         
         calculateRanges(data.getXStatistics(), data.getYStatistics(), data.getZStatistics());
         
         drawBackground();
-        calculateGraphArea();
+        calculateLabels();
+        calculateGraphArea();        
         drawGraphArea();
         
 
@@ -76,6 +85,13 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
         return minRadius + NumberUtil.scale(Math.sqrt(value), Math.sqrt(minValue), Math.sqrt(maxValue), (maxRadius - minRadius));
     }
     
+    /**
+     *Does nothing.
+     * @param x
+     * @param y
+     * @param size
+     * @param index
+     */
     protected void newValue(double x, double y, double size, int index) {
         // Do nothing
     }

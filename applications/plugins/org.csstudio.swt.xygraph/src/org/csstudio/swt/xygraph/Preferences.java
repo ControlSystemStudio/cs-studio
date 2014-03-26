@@ -41,4 +41,12 @@ public class Preferences
     	}
         return false;
     }
+    
+    public static boolean isCombineLabelsAndTraces() {
+    	final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return false;
+        else
+            return prefs.getBoolean(Activator.PLUGIN_ID, "combine_labels_and_traces", false, null);
+    }
 }

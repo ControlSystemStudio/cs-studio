@@ -26,7 +26,7 @@ package org.csstudio.sds.ui.internal.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.domain.desy.ui.FieldEditors.AbstractTableFieldEditor;
+import org.csstudio.domain.common.ui.AbstractTableFieldEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;

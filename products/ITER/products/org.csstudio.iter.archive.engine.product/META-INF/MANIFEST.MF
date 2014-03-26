@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ITER Archive Engine
 Bundle-SymbolicName: org.csstudio.iter.archive.engine.product;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.2.13.qualifier
 Bundle-Activator: org.csstudio.iter.archive.engine.Activator
 Bundle-Vendor: ITER
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

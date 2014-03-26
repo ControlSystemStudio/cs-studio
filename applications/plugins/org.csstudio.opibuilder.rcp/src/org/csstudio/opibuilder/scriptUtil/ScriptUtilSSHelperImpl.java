@@ -109,6 +109,13 @@ public class ScriptUtilSSHelperImpl extends ScriptUtilSSHelper {
 
 		return null;
 	}
+    
+    @Override
+	public String openFileDialog(String startingFolder) {
+		FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
+		dialog.setFilterPath(startingFolder);
+		return dialog.open();
+	}
 	
 	@Override
 	public String saveFileDialog(boolean inWorkspace){
@@ -126,6 +133,13 @@ public class ScriptUtilSSHelperImpl extends ScriptUtilSSHelper {
 		}
 
 		return null;
+	}
+    
+    @Override
+	public String saveFileDialog(String startingFolder) {
+		FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+		dialog.setFilterPath(startingFolder);
+		return dialog.open();
 	}
 
 	@Override

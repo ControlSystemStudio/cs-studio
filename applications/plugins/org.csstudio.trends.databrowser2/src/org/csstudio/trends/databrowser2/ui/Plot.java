@@ -91,7 +91,7 @@ public class Plot
 	private boolean plot_changes_graph = false;
 
 	private TimeConfigButton time_config_button;
-
+		
 	/**
 	 * Create a plot that is attached to an SWT canvas
 	 *
@@ -866,7 +866,7 @@ public class Plot
 
 			infos[i] = new AnnotationInfo(timestamp, value, y, title,
 					lineStyle, annotation.isShowName(),
-					annotation.isShowPosition(), data, rgb);
+					annotation.isShowPosition(),annotation.isShowSampleInfo(), data, rgb);
 		}
 		return infos;
 	}

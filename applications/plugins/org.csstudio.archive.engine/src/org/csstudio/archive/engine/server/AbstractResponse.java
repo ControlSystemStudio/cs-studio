@@ -49,11 +49,9 @@ abstract class AbstractResponse extends HttpServlet
         }
         catch (Exception ex)
         {
+            Activator.getLogger().log(Level.WARNING, "HTTP Server exception", ex);
             if (resp.isCommitted())
-            {
-                Activator.getLogger().log(Level.WARNING, "HTTP Server exception", ex);
                 return;
-            }
             resp.sendError(400, "HTTP Server exception" + ex.getMessage());
         }
     }

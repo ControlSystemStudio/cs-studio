@@ -162,12 +162,15 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		yAxis.addListener(this);
 	}
 	
-	
-
 	public synchronized void addAnnotationListener(IAnnotationListener listener){
 		if(listeners == null)
 			listeners = new CopyOnWriteArrayList<IAnnotationListener>();
 		listeners.add(listener);
+	}
+	
+	public synchronized void removeAnnotationListener(IAnnotationListener listener){
+		if(listeners != null)
+			listeners.remove(listener);
 	}
 	
 	private void fireAnnotationMoved(double oldX, double oldY, double newX, double newY){

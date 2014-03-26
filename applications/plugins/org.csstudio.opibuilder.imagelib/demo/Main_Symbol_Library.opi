@@ -1,0 +1,1815 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <wuid>-14a921ec:134b2495e46:-7f53</wuid>
+  <boy_version>3.2.10.codac_core_4_2b5</boy_version>
+  <scripts />
+  <show_ruler>true</show_ruler>
+  <height>760</height>
+  <name></name>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>true</show_grid>
+  <background_color>
+    <color name="IO Background" red="255" green="255" blue="205" />
+  </background_color>
+  <foreground_color>
+    <color name="IO Grid" red="215" green="215" blue="215" />
+  </foreground_color>
+  <widget_type>Display</widget_type>
+  <show_close_button>true</show_close_button>
+  <width>1120</width>
+  <rules />
+  <show_edit_range>true</show_edit_range>
+  <grid_space>5</grid_space>
+  <auto_scale_widgets>
+    <auto_scale_widgets>true</auto_scale_widgets>
+    <min_width>400</min_width>
+    <min_height>290</min_height>
+  </auto_scale_widgets>
+  <actions hook="false" hook_all="false">
+    <action type="OPEN_OPI_IN_VIEW">
+      <path>Symbol_Library_Diagram.opi</path>
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <Position>0</Position>
+      <description></description>
+    </action>
+  </actions>
+  <y>0</y>
+  <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0.0">
+    <sash_style>2</sash_style>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <panel2_auto_scale_children>true</panel2_auto_scale_children>
+    <panel1_auto_scale_children>false</panel1_auto_scale_children>
+    <visible>true</visible>
+    <wuid>-4b6d721:143e263869a:-4f4e</wuid>
+    <scripts />
+    <height>760</height>
+    <name>Sash Container Template</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <sash_width>3</sash_width>
+    <background_color>
+      <color name="IO Background" red="255" green="255" blue="205" />
+    </background_color>
+    <foreground_color>
+      <color name="IO Foreground" red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Sash Container</widget_type>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+    </font>
+    <width>1120</width>
+    <sash_position>0.2198905109489051</sash_position>
+    <border_style>6</border_style>
+    <rules />
+    <border_width>2</border_width>
+    <horizontal>true</horizontal>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>0</y>
+    <tooltip></tooltip>
+    <x>0</x>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-4b6d721:143e263869a:-4f4d</wuid>
+      <scripts />
+      <height>756</height>
+      <name>Panel 1</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>true</show_scrollbar>
+      <foreground_color>
+        <color red="192" green="192" blue="192" />
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>244</width>
+      <border_style>0</border_style>
+      <rules />
+      <fc>false</fc>
+      <lock_children>false</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>0</y>
+      <actions hook="false" hook_all="false" />
+      <x>0</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <visible>true</visible>
+        <wuid>-4b6d721:143e263869a:-328a</wuid>
+        <scripts />
+        <height>755</height>
+        <name>Panel 2</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>true</transparent>
+        <show_scrollbar>true</show_scrollbar>
+        <foreground_color>
+          <color name="IO StatusBar Fg" red="255" green="255" blue="255" />
+        </foreground_color>
+        <background_color>
+          <color name="IO StatusBar Bg" red="0" green="75" blue="125" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
+        <font>
+          <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        </font>
+        <width>234</width>
+        <border_style>14</border_style>
+        <rules />
+        <fc>false</fc>
+        <lock_children>false</lock_children>
+        <border_width>0</border_width>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" hook_all="false" />
+        <x>0</x>
+        <tooltip>Industrial Symbol Library</tooltip>
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+          </macros>
+          <visible>true</visible>
+          <wuid>-4b6d721:143e263869a:-7e3a</wuid>
+          <scripts />
+          <height>533</height>
+          <name>Fluid</name>
+          <scale_options>
+            <width_scalable>true</width_scalable>
+            <height_scalable>true</height_scalable>
+            <keep_wh_ratio>false</keep_wh_ratio>
+          </scale_options>
+          <transparent>true</transparent>
+          <show_scrollbar>false</show_scrollbar>
+          <foreground_color>
+            <color name="IO StatusBar Fg" red="255" green="255" blue="255" />
+          </foreground_color>
+          <background_color>
+            <color name="IO StatusBar Bg" red="0" green="75" blue="125" />
+          </background_color>
+          <enabled>true</enabled>
+          <widget_type>Grouping Container</widget_type>
+          <font>
+            <opifont.name fontName="arial" height="14" style="1">IO Title</opifont.name>
+          </font>
+          <width>201</width>
+          <border_style>13</border_style>
+          <rules />
+          <fc>false</fc>
+          <lock_children>false</lock_children>
+          <border_width>1</border_width>
+          <border_color>
+            <color name="IO StatusBar Fg" red="255" green="255" blue="255" />
+          </border_color>
+          <y>0</y>
+          <actions hook="false" hook_all="false" />
+          <x>0</x>
+          <tooltip></tooltip>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7e1c</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Actuators</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>0</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Actuators_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Actuators_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7c2e</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Damper</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>31</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Damper_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Damper_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7beb</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Driers</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>62</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Driers_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Driers_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-77dc</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Fans</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>93</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Fans_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Fans_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-77a1</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Filters</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>124</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Filters_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Filters_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-772a</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Fittings</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>155</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Fittings_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Fittings_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7668</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Heat Exchangers</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>186</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Heat_Exchangers_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Heat_Exchangers_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-758b</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>HVAC Terminal Devices</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>217</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_HVAC_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_HVAC_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7553</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Joints Flanges</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>248</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Joints_Flanges_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Joints_Flanges_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7514</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Miscellaneous</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>279</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Miscellaneous_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Miscellaneous_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7479</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Proportioners Feeders</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>310</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Feeders_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Feeders_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7438</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Pumps</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>341</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Pumps_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Pumps_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-729a</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Separators</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>372</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Separators_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Separators_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-7219</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Valves</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>403</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Valves_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Valves_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5d1d</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Valves with Actuators</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>434</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Valves_Actuators_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Valves_Actuators_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5d0d</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Vessels</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>465</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Fluid_Vessels_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Fluid_Vessels_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+        </widget>
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+          </macros>
+          <visible>true</visible>
+          <wuid>-4b6d721:143e263869a:-5ab4</wuid>
+          <scripts />
+          <height>316</height>
+          <name>Electrical</name>
+          <scale_options>
+            <width_scalable>true</width_scalable>
+            <height_scalable>true</height_scalable>
+            <keep_wh_ratio>false</keep_wh_ratio>
+          </scale_options>
+          <transparent>true</transparent>
+          <show_scrollbar>false</show_scrollbar>
+          <foreground_color>
+            <color name="IO StatusBar Fg" red="255" green="255" blue="255" />
+          </foreground_color>
+          <background_color>
+            <color name="IO StatusBar Bg" red="0" green="75" blue="125" />
+          </background_color>
+          <enabled>true</enabled>
+          <widget_type>Grouping Container</widget_type>
+          <font>
+            <opifont.name fontName="arial" height="14" style="1">IO Title</opifont.name>
+          </font>
+          <width>201</width>
+          <border_style>13</border_style>
+          <rules />
+          <fc>false</fc>
+          <lock_children>false</lock_children>
+          <border_width>1</border_width>
+          <border_color>
+            <color name="IO StatusBar Fg" red="255" green="255" blue="255" />
+          </border_color>
+          <y>533</y>
+          <actions hook="false" hook_all="false" />
+          <x>0</x>
+          <tooltip></tooltip>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5ab3</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Accumulators</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>0</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Accumulators_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Accumulators_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5ab2</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Converters</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>31</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Converters_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Converters_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5ab1</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Enclosures</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>62</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Enclosures_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Enclosures_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5ab0</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Measuring I&amp;C</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>93</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Measuring_IandC_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Measuring_IandC_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5aaf</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Miscellaneous</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>124</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Miscellaneous_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Miscellaneous_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5aae</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Protections Cut/Shut On/Off</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>155</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Protections_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Protections_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5aad</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Rotating Machines</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>186</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Rotating_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Rotating_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5aac</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Starters</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>217</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Starters_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Starters_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+          <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+            <border_alarm_sensitive>false</border_alarm_sensitive>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-5aab</wuid>
+            <scripts />
+            <height>31</height>
+            <style>1</style>
+            <name>Open OPI</name>
+            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <pv_name>loc://$(DID)_OPIFile</pv_name>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <widget_type>Action Button</widget_type>
+            <enabled>true</enabled>
+            <text>Transformers</text>
+            <font>
+              <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+            </font>
+            <width>164</width>
+            <border_style>0</border_style>
+            <push_action_index>0</push_action_index>
+            <image></image>
+            <rules />
+            <pv_value />
+            <toggle_button>false</toggle_button>
+            <border_width>1</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>248</y>
+            <actions hook="false" hook_all="false">
+              <action type="WRITE_PV">
+                <pv_name>$(pv_name)</pv_name>
+                <value>Electrical_Transformers_Diagram.opi</value>
+                <timeout>10</timeout>
+                <confirm_message></confirm_message>
+                <description>Electrical_Transformers_Diagram.opi</description>
+              </action>
+            </actions>
+            <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+            <x>0</x>
+          </widget>
+        </widget>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <wuid>-4b6d721:143e263869a:-4f4c</wuid>
+      <scripts />
+      <height>756</height>
+      <name>Panel 2</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <transparent>true</transparent>
+      <show_scrollbar>true</show_scrollbar>
+      <foreground_color>
+        <color red="192" green="192" blue="192" />
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <font>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      </font>
+      <width>869</width>
+      <border_style>0</border_style>
+      <rules />
+      <fc>false</fc>
+      <lock_children>false</lock_children>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>0</y>
+      <actions hook="false" hook_all="false" />
+      <x>246</x>
+      <tooltip></tooltip>
+      <widget typeId="org.csstudio.opibuilder.widgets.sashContainer" version="1.0.0">
+        <sash_style>2</sash_style>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <panel2_auto_scale_children>false</panel2_auto_scale_children>
+        <panel1_auto_scale_children>true</panel1_auto_scale_children>
+        <visible>true</visible>
+        <wuid>-4b6d721:143e263869a:-31e1</wuid>
+        <scripts />
+        <height>755</height>
+        <name>Sash Container Template</name>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <transparent>false</transparent>
+        <sash_width>3</sash_width>
+        <background_color>
+          <color name="IO Background" red="255" green="255" blue="205" />
+        </background_color>
+        <foreground_color>
+          <color name="IO Foreground" red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Sash Container</widget_type>
+        <enabled>true</enabled>
+        <font>
+          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        </font>
+        <width>869</width>
+        <sash_position>0.13715046604527298</sash_position>
+        <border_style>6</border_style>
+        <rules />
+        <border_width>2</border_width>
+        <horizontal>false</horizontal>
+        <border_color>
+          <color name="IO Border" red="215" green="215" blue="215" />
+        </border_color>
+        <actions hook="false" hook_all="false" />
+        <y>0</y>
+        <tooltip></tooltip>
+        <x>0</x>
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+          </macros>
+          <visible>true</visible>
+          <wuid>-4b6d721:143e263869a:-31e0</wuid>
+          <scripts />
+          <height>102</height>
+          <name>Panel 1</name>
+          <scale_options>
+            <width_scalable>true</width_scalable>
+            <height_scalable>true</height_scalable>
+            <keep_wh_ratio>false</keep_wh_ratio>
+          </scale_options>
+          <transparent>true</transparent>
+          <show_scrollbar>true</show_scrollbar>
+          <foreground_color>
+            <color red="192" green="192" blue="192" />
+          </foreground_color>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
+          <enabled>true</enabled>
+          <widget_type>Grouping Container</widget_type>
+          <font>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          </font>
+          <width>865</width>
+          <border_style>0</border_style>
+          <rules />
+          <fc>false</fc>
+          <lock_children>false</lock_children>
+          <border_width>1</border_width>
+          <border_color>
+            <color red="0" green="128" blue="255" />
+          </border_color>
+          <y>0</y>
+          <actions hook="false" hook_all="false" />
+          <x>0</x>
+          <tooltip></tooltip>
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+            <macros>
+              <include_parent_macros>true</include_parent_macros>
+            </macros>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-31b5</wuid>
+            <scripts />
+            <height>100</height>
+            <name>Panel 2</name>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <transparent>true</transparent>
+            <show_scrollbar>false</show_scrollbar>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <background_color>
+              <color name="IO Background" red="255" green="255" blue="205" />
+            </background_color>
+            <enabled>true</enabled>
+            <widget_type>Grouping Container</widget_type>
+            <font>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            </font>
+            <width>865</width>
+            <border_style>14</border_style>
+            <rules />
+            <fc>false</fc>
+            <lock_children>false</lock_children>
+            <border_width>0</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>0</y>
+            <actions hook="false" hook_all="false" />
+            <x>0</x>
+            <tooltip></tooltip>
+            <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+              <visible>true</visible>
+              <vertical_alignment>1</vertical_alignment>
+              <wuid>-4b6d721:143e263869a:-9f6</wuid>
+              <auto_size>false</auto_size>
+              <scripts />
+              <height>96</height>
+              <name>Title</name>
+              <scale_options>
+                <width_scalable>true</width_scalable>
+                <height_scalable>true</height_scalable>
+                <keep_wh_ratio>false</keep_wh_ratio>
+              </scale_options>
+              <transparent>false</transparent>
+              <show_scrollbar>false</show_scrollbar>
+              <background_color>
+                <color name="IO Background" red="255" green="255" blue="205" />
+              </background_color>
+              <foreground_color>
+                <color name="IO Text Fg" red="0" green="32" blue="92" />
+              </foreground_color>
+              <widget_type>Label</widget_type>
+              <enabled>false</enabled>
+              <text>Industrial Symbol Library Browser</text>
+              <font>
+                <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
+              </font>
+              <width>861</width>
+              <border_style>0</border_style>
+              <rules />
+              <border_width>2</border_width>
+              <border_color>
+                <color name="IO Border" red="215" green="215" blue="215" />
+              </border_color>
+              <horizontal_alignment>1</horizontal_alignment>
+              <actions hook="false" hook_all="false" />
+              <y>0</y>
+              <wrap_words>true</wrap_words>
+              <tooltip></tooltip>
+              <x>0</x>
+            </widget>
+          </widget>
+        </widget>
+        <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+          </macros>
+          <visible>true</visible>
+          <wuid>-4b6d721:143e263869a:-31df</wuid>
+          <scripts />
+          <height>646</height>
+          <name>Panel 2</name>
+          <scale_options>
+            <width_scalable>true</width_scalable>
+            <height_scalable>true</height_scalable>
+            <keep_wh_ratio>false</keep_wh_ratio>
+          </scale_options>
+          <transparent>true</transparent>
+          <show_scrollbar>true</show_scrollbar>
+          <foreground_color>
+            <color red="192" green="192" blue="192" />
+          </foreground_color>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
+          <enabled>true</enabled>
+          <widget_type>Grouping Container</widget_type>
+          <font>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          </font>
+          <width>865</width>
+          <border_style>0</border_style>
+          <rules />
+          <fc>false</fc>
+          <lock_children>false</lock_children>
+          <border_width>1</border_width>
+          <border_color>
+            <color red="0" green="128" blue="255" />
+          </border_color>
+          <y>104</y>
+          <actions hook="false" hook_all="false" />
+          <x>0</x>
+          <tooltip></tooltip>
+          <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+            <macros>
+              <include_parent_macros>true</include_parent_macros>
+            </macros>
+            <visible>true</visible>
+            <wuid>-4b6d721:143e263869a:-31ca</wuid>
+            <scripts />
+            <height>643</height>
+            <name>Panel 2</name>
+            <scale_options>
+              <width_scalable>true</width_scalable>
+              <height_scalable>true</height_scalable>
+              <keep_wh_ratio>false</keep_wh_ratio>
+            </scale_options>
+            <transparent>true</transparent>
+            <show_scrollbar>true</show_scrollbar>
+            <foreground_color>
+              <color name="IO Foreground" red="0" green="0" blue="0" />
+            </foreground_color>
+            <background_color>
+              <color name="IO Background" red="255" green="255" blue="205" />
+            </background_color>
+            <enabled>true</enabled>
+            <widget_type>Grouping Container</widget_type>
+            <font>
+              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            </font>
+            <width>865</width>
+            <border_style>14</border_style>
+            <rules />
+            <fc>false</fc>
+            <lock_children>false</lock_children>
+            <border_width>0</border_width>
+            <border_color>
+              <color name="IO Border" red="215" green="215" blue="215" />
+            </border_color>
+            <y>0</y>
+            <actions hook="false" hook_all="false" />
+            <x>0</x>
+            <tooltip></tooltip>
+            <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0.0">
+              <macros>
+                <include_parent_macros>true</include_parent_macros>
+              </macros>
+              <visible>true</visible>
+              <wuid>-4b6d721:143e263869a:-2ef2</wuid>
+              <auto_size>false</auto_size>
+              <scripts />
+              <zoom_to_fit>false</zoom_to_fit>
+              <height>639</height>
+              <name>Linking Container Template</name>
+              <scale_options>
+                <width_scalable>true</width_scalable>
+                <height_scalable>true</height_scalable>
+                <keep_wh_ratio>false</keep_wh_ratio>
+              </scale_options>
+              <opi_file></opi_file>
+              <foreground_color>
+                <color name="IO Foreground" red="0" green="0" blue="0" />
+              </foreground_color>
+              <background_color>
+                <color name="IO Background" red="255" green="255" blue="205" />
+              </background_color>
+              <group_name></group_name>
+              <enabled>true</enabled>
+              <widget_type>Linking Container</widget_type>
+              <font>
+                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+              </font>
+              <width>861</width>
+              <border_style>0</border_style>
+              <rules>
+                <rule name="LoadOPIRule" prop_id="opi_file" out_exp="true">
+                  <exp bool_exp="true">
+                    <value>pvStr0</value>
+                  </exp>
+                  <pv trig="true">loc://$(DID)_OPIFile</pv>
+                </rule>
+              </rules>
+              <border_width>2</border_width>
+              <border_color>
+                <color name="IO Border" red="215" green="215" blue="215" />
+              </border_color>
+              <y>0</y>
+              <actions hook="false" hook_all="false" />
+              <x>0</x>
+              <tooltip></tooltip>
+            </widget>
+          </widget>
+        </widget>
+      </widget>
+    </widget>
+  </widget>
+</display>

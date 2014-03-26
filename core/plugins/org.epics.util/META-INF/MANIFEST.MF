@@ -7,5 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov> - BNL
 Export-Package: org.epics.util.array,
  org.epics.util.exceptions,
+ org.epics.util.stats,
  org.epics.util.text,
  org.epics.util.time

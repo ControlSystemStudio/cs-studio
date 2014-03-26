@@ -153,6 +153,13 @@ public class PreferencePage extends FieldEditorPreferencePage
                 Messages.PrefPage_PlotBins, parent);
         plotbins.setValidRange(10, 365*24*60*60);
         addField(plotbins);
+        
+        // Future Buffer: 10 ...
+        final IntegerFieldEditor futureBuffer = new IntegerFieldEditor(Preferences.FUTURE_BUFFER,
+                Messages.PrefPage_FutureBuffer, parent);
+        futureBuffer.setValidRange(0, 365*24*60*60);
+        ((Text)futureBuffer.getTextControl(parent)).setToolTipText(Messages.PrefPage_FutureBufferTT);
+        addField(futureBuffer);
 
         // Archive rescale options
         final ArchiveRescale values[] = ArchiveRescale.values();
@@ -195,5 +202,8 @@ public class PreferencePage extends FieldEditorPreferencePage
         
 		addField(new BooleanFieldEditor(Preferences.USE_AUTO_SCALE,
 				Messages.UseAutoScale_Label, parent));
+		
+		addField(new BooleanFieldEditor(Preferences.AUTOMATIC_HISTORY_REFRESH,
+				Messages.PrefPage_AutomaticHistoryRefresh, parent));
     }
 }

@@ -9,16 +9,17 @@ package org.csstudio.logging.jms2rdb;
 
 import java.util.logging.Level;
 
-import org.csstudio.logging.LogConfigurator;
-import org.csstudio.platform.httpd.HttpServiceHelper;
+import org.csstudio.apputil.args.ArgParser;
+import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.logging.JMSLogMessage;
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.logging.jms2rdb.httpd.MainServlet;
 import org.csstudio.logging.jms2rdb.httpd.StopServlet;
+import org.csstudio.platform.httpd.HttpServiceHelper;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.osgi.framework.Constants;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
@@ -73,6 +74,32 @@ public class Application implements IApplication
         //      pref_key=value
         // - If all fails, the 'default' argument to
         //   service.getXXX(.., .., default, ..) is used
+    	// Display configuration info
+        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String app_info = context.getBrandingName() + " " + version;
+    	
+    	// Create parser for arguments and run it.
+        final String args[] = (String []) context.getArguments().get("application.args");
+
+        final ArgParser parser = new ArgParser();
+        final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+        final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
+        parser.addEclipseParameters();
+		try {
+			parser.parse(args);
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage() + "\n" + parser.getHelp());
+			return IApplication.EXIT_OK;
+		}
+		if (help_opt.get()) {
+			System.out.println(app_info + "\n\n" + parser.getHelp());
+			return IApplication.EXIT_OK;
+		}
+		if (version_opt.get()) {
+			System.out.println(app_info);
+			return IApplication.EXIT_OK;
+		}
+    	
         final IPreferencesService service = Platform.getPreferencesService();
         httpd_port =
             service.getInt(Activator.ID, "httpd_port", httpd_port, null);
@@ -89,7 +116,6 @@ public class Application implements IApplication
 
         LogConfigurator.configureFromPreferences();
 
-        final String version = (String) context.getBrandingBundle().getHeaders().get(Constants.BUNDLE_VERSION);
         Activator.getLogger().log(Level.CONFIG, "Started JMS Log Tool {0}", version);
 
         // Start log handler and web interface

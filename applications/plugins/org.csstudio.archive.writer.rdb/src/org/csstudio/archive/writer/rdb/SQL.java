@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.writer.rdb;
 
+import java.util.logging.Logger;
+
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** SQL statements for writing archive data
@@ -81,17 +83,19 @@ public class SQL
 	    status_id_column = "status_id";
 	    
 		// 'sample' table
+	    final String sample = Preferences.getWriteSampleTable();
+	    Logger.getLogger(getClass().getName()).fine("Writing to table '" + sample + "'");
 	    switch (dialect)
 	    {
     	case Oracle:
     	    // Order of initial columns must match for all dialects
     	    // 6th parameter is 'nanosecs' for all but Oracle
     		sample_insert_double_blob =
-    		"INSERT INTO " + schema + "sample " +
+    		"INSERT INTO " + schema + sample + " " +
     				"(channel_id, smpl_time, severity_id, status_id, float_val, datatype, array_val)" +
     				" VALUES (?,?,?,?,?,?,?)";
             sample_insert_double =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 " (channel_id, smpl_time, severity_id, status_id, float_val)" +
                 " VALUES (?,?,?,?,?)";
             sample_insert_double_array_element =
@@ -99,22 +103,22 @@ public class SQL
                 " (channel_id, smpl_time, seq_nbr, float_val)" +
                 " VALUES (?,?,?,?)";
             sample_insert_int =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 " (channel_id, smpl_time, severity_id, status_id, num_val)" +
                 " VALUES (?,?,?,?,?)";
             sample_insert_string =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 " (channel_id, smpl_time, severity_id, status_id, str_val)" +
                 " VALUES (?,?,?,?,?)";
             break;
     	case PostgreSQL:
         	// Nanosecs are listed last to preserve the order of common columns
     		sample_insert_double_blob =
-    			"INSERT INTO " + schema + "sample " +
+    			"INSERT INTO " + schema + sample + " " +
 				"(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs, datatype, array_val)" +
 				" VALUES (?,?,?,?,?,?,?,?)";
             sample_insert_double =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
             sample_insert_double_array_element =
@@ -122,11 +126,11 @@ public class SQL
                 "(channel_id, smpl_time,  seq_nbr, float_val, nanosecs)" +
                 " VALUES (?,?,?,?,?)";
             sample_insert_int =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 "(channel_id, smpl_time, severity_id, status_id, num_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
             sample_insert_string =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
             break;
@@ -135,11 +139,11 @@ public class SQL
     		// Param 5 changes depending on the data type.
     		// Nanosecs must be param 6 to preserve the order of common columns.
             sample_insert_double_blob =
-	            "INSERT INTO " + schema + "sample " +
+	            "INSERT INTO " + schema + sample + " " +
 	            "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs, datatype, array_val)" +
 	            " VALUES (?,?,?,?,?,?,?,?)";
             sample_insert_double =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
             sample_insert_double_array_element =
@@ -147,11 +151,11 @@ public class SQL
                 "(channel_id, smpl_time, seq_nbr, float_val, nanosecs)" +
                 " VALUES (?,?,?,?,?)";
             sample_insert_int =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 "(channel_id, smpl_time, severity_id, status_id, num_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
             sample_insert_string =
-                "INSERT INTO " + schema + "sample " +
+                "INSERT INTO " + schema + sample + " " +
                 "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
             break;

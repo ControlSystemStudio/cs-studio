@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
@@ -14,6 +14,7 @@ import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
+import org.epics.util.array.ListNumbers;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -98,6 +99,11 @@ public class ValueFactory {
             @Override
             public String getAlarmName() {
                 return alarmName;
+            }
+
+            @Override
+            public String toString() {
+                return VTypeToString.alarmToString(this);
             }
             
         };
@@ -264,6 +270,33 @@ public class ValueFactory {
         };
     }
     
+    public static ArrayDimensionDisplay newDisplay(final ListNumber boundaries, final String unit) {
+        return new ArrayDimensionDisplay() {
+
+            @Override
+            public ListNumber getCellBoundaries() {
+                return boundaries;
+            }
+
+            @Override
+            public String getUnits() {
+                return unit;
+            }
+        };
+    }
+    
+    /**
+     * Returns an array display where the index is used to calculate the
+     * cell boundaries.
+     * 
+     * @param nCells the number of cells along the direction
+     * @return a new array display
+     */
+    public static ArrayDimensionDisplay newDisplay(int nCells) {
+        final ListNumber boundaries = ListNumbers.linearList(0, 1, nCells + 1);
+        return newDisplay(boundaries, "");
+    }
+    
     private static final Display displayNone = newDisplay(Double.NaN, Double.NaN, 
             Double.NaN, "", NumberFormats.toStringFormat(), Double.NaN, Double.NaN,
             Double.NaN, Double.NaN, Double.NaN);
@@ -406,6 +439,7 @@ public class ValueFactory {
      * @param display the display
      * @return the new value
      */
+    @Deprecated
     public static VDoubleArray newVDoubleArray(final double[] values, final ListInt sizes, Alarm alarm, Time time, Display display) {
         return new IVDoubleArray(new ArrayDouble(values), sizes, alarm, time, display);
     }
@@ -425,7 +459,26 @@ public class ValueFactory {
 	}else if(data instanceof ListInt){
 	    return newVIntArray((ListInt)data, alarm, time, display);
 	}	
-	throw new UnsupportedOperationException();
+	throw new UnsupportedOperationException("TODO: support types other than double and int");
+    }
+    
+    /**
+     * Creates a new VNumberArray based on the type of the data.
+     * 
+     * @param data
+     * @param alarm
+     * @param time
+     * @param display
+     * @return
+     */
+    public static VNumberArray newVNumberArray(final ListNumber data, final ListInt sizes, final List<ArrayDimensionDisplay> dimensionDisplay,
+            final Alarm alarm, final Time time, final Display display){
+	if (data instanceof ListDouble){
+	    return new IVDoubleArray((ListDouble) data, sizes, dimensionDisplay, alarm, time, display);
+	} else if(data instanceof ListInt){
+	    return new IVIntArray((ListInt)data, sizes, dimensionDisplay, alarm, time, display);
+	}	
+	throw new UnsupportedOperationException("TODO: support types other than double and int");
     }
     
     /**
@@ -437,6 +490,7 @@ public class ValueFactory {
      * @param display the display
      * @return the new value
      */
+    @Deprecated
     public static VDoubleArray newVDoubleArray(final double[] values, Alarm alarm, Time time, Display display) {
         return newVDoubleArray(values, new ArrayInt(values.length), alarm, time, display);
     }
@@ -476,6 +530,7 @@ public class ValueFactory {
      * @param display the display
      * @return the new value
      */
+    @Deprecated
     public static VDoubleArray newVDoubleArray(final double[] values, Display display) {
         return newVDoubleArray(values, new ArrayInt(values.length), alarmNone(), timeNow(), display);
     }

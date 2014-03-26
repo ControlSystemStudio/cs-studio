@@ -16,8 +16,8 @@
 package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -44,24 +44,11 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
         this(command, null);
     }
     
-    /** Return the device name that's really used.
-     *  Because of PVManager's way of supporting put-callback,
-     *  that might need to be an annotated name.
-     *  @return Device name which may still include macros but ends in proper annotation
-     */
-    private String getRealDeviceName()
-    {
-        final String name = command.getDeviceName();
-        if (command.getCompletion()  &&  !name.endsWith(PVDevice.PUT_CALLBACK_ANNOTATION))
-            return name + PVDevice.PUT_CALLBACK_ANNOTATION;
-        return name;
-    }
-    
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
     {
-        final String device_name = getRealDeviceName();
+        final String device_name = command.getDeviceName();
         final String readback = command.getReadback();
         if (command.getWait()  &&  readback.length() > 0)
             return new String[] { macros.resolveMacros(device_name), macros.resolveMacros(readback) };
@@ -75,7 +62,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 		final SimulatedDevice device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
 		// Get previous and desired values
-		final double original = device.readDouble();
+		final double original = VTypeHelper.toDouble(device.read());
 		final double desired;
 		if (command.getValue() instanceof Number)
 			desired = ((Number) command.getValue()).doubleValue();
@@ -104,8 +91,9 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     public void execute(final ScanContext context)  throws Exception
     {
 	    ScanCommandUtil.write(context,
-	            getRealDeviceName(), command.getValue(),
-				command.getReadback(), command.getWait(),
+	            command.getDeviceName(), command.getValue(),
+	            command.getCompletion(), command.getWait(),
+				command.getReadback(),
 				command.getTolerance(),
 				TimeDuration.ofSeconds(command.getTimeout()));
 		context.workPerformed(1);

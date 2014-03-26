@@ -2,27 +2,5 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         point="org.eclipse.ui.decorators">
-      <decorator
-            adaptable="true"
-            class="org.csstudio.opibuilder.tools.thumbnails.ImageIconDecorator"
-            id="ImageIcons.decorator"
-            label="Image Icon Decorator"
-            lightweight="false"
-            location="BOTTOM_RIGHT"
-            state="true">
-         <enablement>
-            <or>
-               <objectClass
-                     name="org.eclipse.core.resources.IFile">
-               </objectClass>
-               <objectClass
-                     name="org.eclipse.core.resources.IStorage">
-               </objectClass>
-            </or>
-         </enablement>
-      </decorator>
-   </extension>
 
 </plugin>

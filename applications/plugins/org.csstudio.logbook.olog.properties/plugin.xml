@@ -4,13 +4,74 @@
    <extension
          point="org.csstudio.logbook.ui.propertywidget">
       <propertywidgetfactory
-            propertyName="Context"
-            propertywidgetfactory="org.csstudio.logbook.olog.properties.ContextPropertyWidgetFactory">
-      </propertywidgetfactory>
-      <propertywidgetfactory
             propertyName="Ticket"
             propertywidgetfactory="org.csstudio.logbook.olog.properties.TicketPropertyWidgetFactory">
       </propertywidgetfactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.csstudio.logbook.olog.properties.reviewsign"
+            name="Review and Sign">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.csstudio.logbook.olog.properties.reviewsign"
+               icon="platform:/plugin/org.csstudio.logbook.olog.properties/icons/text_signature-16.png"
+               label="Review Sign"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <and>
+                     <iterate>
+                        <adapt
+                              type="org.csstudio.logbook.LogEntry">
+                        </adapt>
+                     </iterate>
+                     <with
+                           variable="org.csstudio.security.ui.current_authorization">
+                        <iterate
+                              operator="or">
+                           <equals
+                                 value="operation_supervisor">
+                           </equals>
+                        </iterate>
+                     </with>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="+">
+                        </count>
+                     </with></and>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.csstudio.logbook.olog.properties.ReviewSign"
+            commandId="org.csstudio.logbook.olog.properties.reviewsign">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.logbook.LogEntry"
+            class="org.csstudio.logbook.olog.properties.OlogAdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+         <adapter
+               type="[Lorg.csstudio.csdata.ProcessVariable;">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>

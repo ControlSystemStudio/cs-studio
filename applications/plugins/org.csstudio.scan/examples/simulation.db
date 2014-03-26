@@ -121,15 +121,27 @@ record(waveform, "text")
 }
 
 # record that takes ~4 seconds to process,
-# used for put-callback tests
+# used for put-callback tests.
+# In addition, writing values > 5 will result in the
+# record having that same value.
+# For values < 5, the record will end with value 0.
+# This can be used to test logic that performs
+# a put-callback and later checks for the expected result.
 record(seq, "callback_test")
 {
-  field(TPRO, "1")
-  field(SELM, "All")
-  field(DO1, "1")
-  field(DO2, "1")
-  field(DLY1, "2.0")
-  field(DLY2, "2.0")
-  field(LNK1, "motor_x PP")
-  field(LNK2, "motor_y PP")
+    field(TPRO, "1")
+    field(SELM, "All")
+    field(DO1, "1")
+    field(DO2, "1")
+    field(DLY1, "2.0")
+    field(DLY2, "2.0")
+    field(LNK1, "cb_reset PP")
+    field(LNK2, "motor_y PP")
+}
+
+record(calcout, "cb_reset")
+{
+    field(INPA, "callback_test")
+    field(CALC, "A>5?A:0")
+    field(OUT,  "callback_test.VAL")
 }

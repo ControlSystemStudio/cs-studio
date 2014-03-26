@@ -35,7 +35,7 @@ public class SearchStringParser {
     public static Map<String, String> searchParser(String string,
 	    String DefaultKey) {
 	Map<String, String> result = new HashMap<String, String>();
-	Pattern p = Pattern.compile("([\\S]*):[.]*");
+	Pattern p = Pattern.compile("([\\S]+):[.]*");
 	Matcher m = p.matcher(string);
 	int start = 0;
 	int end;
@@ -46,7 +46,9 @@ public class SearchStringParser {
 	    key = m.group(1);
 	    start = m.end(1) + 1;
 	}
-	result.put(key, string.substring(start, string.length()).trim());
+	String value = string.substring(start, string.length()).trim();
+	if (value != null && !value.isEmpty())
+		result.put(key, value);
 	return result;
     }
 }

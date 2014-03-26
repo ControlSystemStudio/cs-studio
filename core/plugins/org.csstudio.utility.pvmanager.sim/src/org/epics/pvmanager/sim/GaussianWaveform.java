@@ -1,10 +1,11 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
 import java.util.Random;
+import org.epics.util.array.ArrayDouble;
 import org.epics.vtype.VDoubleArray;
 import static org.epics.vtype.ValueFactory.*;
 import org.epics.util.time.Timestamp;
@@ -94,7 +95,7 @@ public class GaussianWaveform extends SimFunction<VDoubleArray> {
         }
         double t = lastTime.durationFrom(initialRefernce).toSeconds();
         double omega = 2 * Math.PI / periodInSeconds;
-        return newVDoubleArray(generateNewValue(omega, t), alarmNone(),
+        return newVDoubleArray(new ArrayDouble(generateNewValue(omega, t)), alarmNone(),
                 newTime(lastTime), newDisplay(-0.5, -0.35, -0.25, "x", Constants.DOUBLE_FORMAT,
                 1.0, 1.10, 1.25, -0.5, 1.25));
     }

@@ -20,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
+import org.csstudio.scan.device.VTypeHelper;
 import org.epics.util.time.TimeDuration;
 
 /** Condition that waits for a Device to reach a certain numeric value.
@@ -95,9 +96,9 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
     {
         final WaitWithTimeout timeout = new WaitWithTimeout(this.timeout);
 
-        // Set initial value (null if device is disconnected)
-        initial_value = device.readDouble();
-
+        // Fetch initial value with get-callback?
+        initial_value = VTypeHelper.toDouble(device.read(this.timeout));
+        
         device.addListener(this);
         try
         {
@@ -130,7 +131,7 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
      */
     public boolean isConditionMet() throws Exception
     {
-        final double value = device.readDouble();
+        final double value = VTypeHelper.toDouble(device.read());
         // Note that these need to fail "safe" if any of the values are NaN
         switch (comparison)
         {
@@ -164,7 +165,7 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
             try
             {
                 if (Double.isNaN(initial_value))
-                    initial_value = device.readDouble();
+                    initial_value = VTypeHelper.toDouble(device.read());
                 is_condition_met = isConditionMet();
             }
             catch (Exception ex)

@@ -19,6 +19,7 @@ import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.condition.NumericValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -58,7 +59,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 		final SimulatedDevice device = context.getDevice(command.getDeviceName());
 
 		// Estimate execution time
-		double original = device.readDouble();
+		double original = VTypeHelper.toDouble(device.read());
 		final double desired_value;
 		switch (command.getComparison())
 		{

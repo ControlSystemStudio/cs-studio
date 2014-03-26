@@ -6,9 +6,9 @@ Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.dal.tine.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.dal,
- org.junit4,
  org.csstudio.platform.libs.tine;bundle-version="1.0.6",
- org.apache.log4j;bundle-version="1.2.16"
+ org.apache.log4j;bundle-version="1.2.16",
+ org.junit
 Bundle-ActivationPolicy: lazy
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
 Bundle-ClassPath: .,

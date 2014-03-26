@@ -103,7 +103,7 @@ public class DeviceInfo
         	buf.append(" [").append(name).append("]");
         final String status = getStatus();
         if (! status.isEmpty())
-            buf.append(" - ").append(status);
+            buf.append(" (").append(status).append(")");
         return buf.toString();
 	}
 }
