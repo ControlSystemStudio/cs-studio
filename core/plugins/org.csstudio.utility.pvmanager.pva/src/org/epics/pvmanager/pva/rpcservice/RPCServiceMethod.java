@@ -92,7 +92,8 @@ class RPCServiceMethod extends ServiceMethod {
    */
   RPCServiceMethod(RPCServiceMethodDescription rpcServiceMethodDescription, String hostName, String channelName,
 		  String methodFieldName, boolean useNTQuery) {
-    super(rpcServiceMethodDescription.serviceMethodDescription);
+    super(rpcServiceMethodDescription.relaxedServiceMethodDescription);
+    //super(rpcServiceMethodDescription.serviceMethodDescription);
     this.rpcServiceMethodDescription = rpcServiceMethodDescription;
     this.parameterNames = rpcServiceMethodDescription.orderedParameterNames;
     this.hostName = hostName;
@@ -159,12 +160,24 @@ class RPCServiceMethod extends ServiceMethod {
     	return methodFieldName != null ? new Field[]{fieldCreate.createScalar(ScalarType.pvString)} : new Field[0];
     }
 
-    //operation name type + parameter types
+    //Map<String, Class<?>> argumentTypes = getArgumentTypes();
+    // create ServiceMethod to get access to argumentTypes of serviceMethodDescription (non-relaxed)
+    ServiceMethod sm = new ServiceMethod(rpcServiceMethodDescription.serviceMethodDescription) {
+		@Override
+		public void executeMethod(Map<String, Object> parameters,
+				WriteFunction<Map<String, Object>> callback,
+				WriteFunction<Exception> errorCallback) {
+			// noop
+		}
+    };
+    Map<String, Class<?>> argumentTypes = sm.getArgumentTypes();
+    
+    // operation name type + parameter types
     List<Field> fieldList = new ArrayList<Field>(this.parameterNames.size() + 1);
     if (methodFieldName != null)
     	fieldList.add(fieldCreate.createScalar(ScalarType.pvString));
     for (String parameterName : this.parameterNames.keySet()) {
-      fieldList.add(convertToPvType(getArgumentTypes().get(parameterName)));
+      fieldList.add(convertToPvType(argumentTypes.get(parameterName)));
     }
 
     return fieldList.toArray(new Field[fieldList.size()]);
@@ -189,6 +202,8 @@ class RPCServiceMethod extends ServiceMethod {
       return fieldCreate.createScalar(ScalarType.pvInt);
     } else if (argType.isAssignableFrom(VShort.class)) {
       return fieldCreate.createScalar(ScalarType.pvShort);
+    } else if (argType.isAssignableFrom(VLong.class)) {
+      return fieldCreate.createScalar(ScalarType.pvLong);
     } else if (argType.isAssignableFrom(VByte.class)) {
       return fieldCreate.createScalar(ScalarType.pvByte);
     } else if (argType.isAssignableFrom(VBoolean.class)) {
@@ -202,6 +217,8 @@ class RPCServiceMethod extends ServiceMethod {
       return fieldCreate.createScalarArray(ScalarType.pvString);
     } else if (argType.isAssignableFrom(VIntArray.class)) {
       return fieldCreate.createScalarArray(ScalarType.pvInt);
+    } else if (argType.isAssignableFrom(VLongArray.class)) {
+      return fieldCreate.createScalarArray(ScalarType.pvLong);
     } else if (argType.isAssignableFrom(VShortArray.class)) {
       return fieldCreate.createScalarArray(ScalarType.pvShort);
     } else if (argType.isAssignableFrom(VByteArray.class)) {
