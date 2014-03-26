@@ -27,7 +27,7 @@
         <version>1.7</version>
         <executions>
           <execution>
-            <id>copy-metadata-only-to-central-repository</id>
+            <id>copy-artifacts-content-data-to-central-repository</id>
             <phase>prepare-package</phase>
             <goals>
                 <goal>run</goal>
@@ -41,25 +41,6 @@
                          verbose="false" ignoreerrors="true" usetimestamp="true"/>
                     <get src="${cs-studio-central.url}/content.jar"
                          dest="${project.build.directory}/centralrepository"
-                         verbose="false" ignoreerrors="true" usetimestamp="true"/>
-                 </target>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-metadata-only-to-updates-repository</id>
-            <phase>prepare-package</phase>
-            <goals>
-                <goal>run</goal>
-            </goals>
-            <configuration>
-                <failOnError>true</failOnError>
-                <target>
-                    <mkdir dir="${project.build.directory}/updatesrepository"/>
-                    <get src="${cs-studio-updates.url}/artifacts.jar"
-                         dest="${project.build.directory}/updatesrepository"
-                         verbose="false" ignoreerrors="true" usetimestamp="true"/>
-                    <get src="${cs-studio-updates.url}/content.jar"
-                         dest="${project.build.directory}/updatesrepository"
                          verbose="false" ignoreerrors="true" usetimestamp="true"/>
                  </target>
             </configuration>
@@ -93,30 +74,6 @@
               <compress>true</compress>
               <mirrorMetadataOnly>false</mirrorMetadataOnly>
               <destination>${project.build.directory}/centralrepository</destination>
-            </configuration>
-          </execution>
-          <execution>
-            <id>mirror-build-to-updates-repository</id>
-            <phase>package</phase>
-            <goals>
-                <goal>mirror</goal>
-            </goals>
-            <configuration>
-              <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
-              <source>
-                 <repository>
-                      <url>${project.baseUri}/../extras</url>
-                      <layout>p2</layout>
-                  </repository>
-                  <repository>
-                      <url>${project.baseUri}/target/repository</url>
-                      <layout>p2</layout>
-                  </repository>
-              </source>
-              <append>true</append>
-              <compress>true</compress>
-              <mirrorMetadataOnly>false</mirrorMetadataOnly>
-              <destination>${project.build.directory}/updatesrepository</destination>
             </configuration>
           </execution>
         </executions>
