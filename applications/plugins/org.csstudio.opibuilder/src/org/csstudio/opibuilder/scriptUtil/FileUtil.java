@@ -202,7 +202,7 @@ public class FileUtil {
 	/**Open a file select dialog.
 	 * @param inWorkspace true if it is a workspace file dialog; Otherwise, it is a local
 	 * file system file dialog. 
-	 * @return the full file path. Or null if it is canceled.
+	 * @return the full file path. Or null if it is cancelled.
 	 */
 	public static String openFileDialog(boolean inWorkspace){
 		if(ScriptUtilSSHelper.getIMPL() != null)
@@ -210,15 +210,37 @@ public class FileUtil {
 		else
 			throw new RuntimeException("This method is not implemented!");
 	}
+	
+	/**Open a file select dialog.
+	 * @param startingFolder the folder where the file dialog starts.
+	 * @return the full file path. Or null if it is cancelled.
+	 */
+	public static String openFileDialog(String startingFolder){
+		if(ScriptUtilSSHelper.getIMPL() != null)
+			return ScriptUtilSSHelper.getIMPL().openFileDialog(startingFolder);
+		else
+			throw new RuntimeException("This method is not implemented!");
+	}
 		
 	/**Open a file save dialog.
 	 * @param inWorkspace true if it is a workspace file dialog; Otherwise, it is a local
 	 * file system file dialog. 
-	 * @return the full file path. Or null if it is canceled.
+	 * @return the full file path. Or null if it is cancelled.
 	 */
 	public static String saveFileDialog(boolean inWorkspace){
 		if(ScriptUtilSSHelper.getIMPL() != null)
 			return ScriptUtilSSHelper.getIMPL().saveFileDialog(inWorkspace);
+		else
+			throw new RuntimeException("This method is not implemented!");
+	}
+	
+	/**Open a file save dialog.
+	 * @param startingFolder the folder where the file dialog starts.
+	 * @return the full file path. Or null if it is cancelled.
+	 */
+	public static String saveFileDialog(String startingFolder){
+		if(ScriptUtilSSHelper.getIMPL() != null)
+			return ScriptUtilSSHelper.getIMPL().saveFileDialog(startingFolder);
 		else
 			throw new RuntimeException("This method is not implemented!");
 	}
