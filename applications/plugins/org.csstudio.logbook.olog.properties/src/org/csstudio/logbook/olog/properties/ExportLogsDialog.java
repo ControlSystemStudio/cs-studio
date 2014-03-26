@@ -16,6 +16,7 @@ import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.MultipleSelectionCombo;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -61,8 +62,11 @@ public class ExportLogsDialog extends Dialog {
 		gridLayout.marginWidth = 2;
 		gridLayout.marginHeight = 2;
 		errorBar = new ErrorBar(container, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		container.setLayout(new GridLayout(2, false));
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		container.setLayout(new GridLayout(3, false));
+		Label filePhLabel = new Label(container, SWT.NONE);
+		filePhLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		filePhLabel.setText("Save as: ");
 	    filePath =  new Text(container, SWT.BORDER);
 	    filePath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 	    btnAddPath = new Button(container, SWT.PUSH);
@@ -77,8 +81,11 @@ public class ExportLogsDialog extends Dialog {
 				}
 		    }
 		});
-		btnAddPath.setText("Select Destination");
+		btnAddPath.setText("...");
 	    btnAddPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false,1, 1));
+		Label fieldsLabel = new Label(container, SWT.NONE);
+		fieldsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		fieldsLabel.setText("Select Fields to Export: ");
 	    fieldsText = new MultipleSelectionCombo<String>(container, SWT.NONE);
 	    fieldsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		fieldsText.setItems(fields);
@@ -96,7 +103,7 @@ public class ExportLogsDialog extends Dialog {
 		});
 		
 		btnAddFields.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false,1, 1));
-		btnAddFields.setText("Select Fields to Export");
+		btnAddFields.setText("...");
 		return container;
     }
 	
