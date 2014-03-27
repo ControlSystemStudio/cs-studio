@@ -57,16 +57,16 @@ public class ExportLogsDialog extends Dialog {
     @Override
     protected Control createDialogArea(Composite parent) {
 		getShell().setText("Export Log Entries");
-		Composite container = (Composite) super.createDialogArea(parent);
+		final Composite container = (Composite) super.createDialogArea(parent);
 		GridLayout gridLayout = (GridLayout) container.getLayout();
 		gridLayout.marginWidth = 2;
 		gridLayout.marginHeight = 2;
 		errorBar = new ErrorBar(container, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		container.setLayout(new GridLayout(3, false));
-		Label filePhLabel = new Label(container, SWT.NONE);
-		filePhLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-		filePhLabel.setText("Save as: ");
+		final Label filePhLabel = new Label(container, SWT.NONE);
+		filePhLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		filePhLabel.setText("Save As:");
 	    filePath =  new Text(container, SWT.BORDER);
 	    filePath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 	    btnAddPath = new Button(container, SWT.PUSH);
@@ -83,9 +83,9 @@ public class ExportLogsDialog extends Dialog {
 		});
 		btnAddPath.setText("...");
 	    btnAddPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false,1, 1));
-		Label fieldsLabel = new Label(container, SWT.NONE);
-		fieldsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-		fieldsLabel.setText("Select Fields to Export: ");
+	    final Label fieldsLabel = new Label(container, SWT.NONE);
+		fieldsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		fieldsLabel.setText("Select Fields:");
 	    fieldsText = new MultipleSelectionCombo<String>(container, SWT.NONE);
 	    fieldsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		fieldsText.setItems(fields);
@@ -94,8 +94,7 @@ public class ExportLogsDialog extends Dialog {
 		    @Override
 		    public void widgetSelected(SelectionEvent e) {
 			// Open a dialog which allows users to select fields
-		    	StringListSelectionDialog dialog = new StringListSelectionDialog(
-						getShell(), fields, fieldsText.getSelection(), "Add Fields");
+		    	final StringListSelectionDialog dialog = new StringListSelectionDialog(getShell(), fields, fieldsText.getSelection(), "Add Fields");
 				if (dialog.open() == IDialogConstants.OK_ID) {
 			    	fieldsText.setSelection(Joiner.on(",").join(dialog.getSelectedValues()));
 				}
@@ -121,7 +120,7 @@ public class ExportLogsDialog extends Dialog {
 	        final BufferedWriter bw = new BufferedWriter(new FileWriter(new File(filePath.getText())));
 	        try {
 	        	bw.append(Joiner.on(separator).join(getHeader()));
-				for (LogEntryBuilder log : data) {
+				for (final LogEntryBuilder log : data) {
 					bw.newLine();
 					bw.append(Joiner.on(separator).join(getLine(log.build())));	
 				}
@@ -138,10 +137,9 @@ public class ExportLogsDialog extends Dialog {
     }  
     
     private String[] getHeader() {
-    	List<String> fields = fieldsText.getSelection();
     	int i = 0;
-    	List<String> header = new LinkedList<String>();
-    	for (String f : fields) {
+    	final List<String> header = new LinkedList<String>();
+    	for (String f : fieldsText.getSelection()) {
     		if (!fieldPositionMap.containsKey(f)) {
     				fieldPositionMap.put(f, i++);
     				header.add(f);
@@ -151,8 +149,8 @@ public class ExportLogsDialog extends Dialog {
     }
     
     private String[] getLine(final LogEntry log) {
-    	String[] line = new String[fieldPositionMap.size()];
-    	for (String field : fieldPositionMap.keySet()) {
+    	final String[] line = new String[fieldPositionMap.size()];
+    	for (final String field : fieldPositionMap.keySet()) {
     		switch (field) {
     			case "id" :
     				line[fieldPositionMap.get(field)] = String.valueOf(log.getId()); 
@@ -168,7 +166,7 @@ public class ExportLogsDialog extends Dialog {
     				 break;
     			case "logbooks":
     				StringBuilder logbooks = new StringBuilder();
-    				for (Logbook logbook : log.getLogbooks()) {
+    				for (final Logbook logbook : log.getLogbooks()) {
     				    logbooks.append(logbook.getName() + "/");
     				}
     				
@@ -176,7 +174,7 @@ public class ExportLogsDialog extends Dialog {
     				 break;
     			case "tags":
     				StringBuilder tags = new StringBuilder();
-    				for (Tag tag : log.getTags()) {
+    				for (final Tag tag : log.getTags()) {
     				    tags.append(tag.getName() + "/");
     				}
     				line[fieldPositionMap.get(field)] = tags.length() == 0 ? "" : tags.substring(0, tags.length() - 1);
