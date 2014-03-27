@@ -12,11 +12,11 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
-import org.csstudio.opibuilder.util.E4Utils;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.visualparts.TipDialog;
+import org.csstudio.ui.util.perspective.PerspectiveHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -229,7 +229,7 @@ public class RunModeService {
 								PreferencesHelper.setShowOpiRuntimePerspectiveDialog(false);
 						}
 						if(openCode==0 ||openCode==Window.OK)
-							E4Utils.showPerspective(OPIRunnerPerspective.ID, window.getActivePage());						
+							PerspectiveHelper.showPerspective(OPIRunnerPerspective.ID, window.getActivePage());						
 					}
 					
 					
