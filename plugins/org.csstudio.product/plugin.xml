@@ -16,10 +16,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.product.application"
-            name="Cs-studio">
+            name="CS-Studio">
          <property
                name="appName"
-               value="Cs-studio">
+               value="CS-Studio">
          </property>
          <property
                name="introTitle"

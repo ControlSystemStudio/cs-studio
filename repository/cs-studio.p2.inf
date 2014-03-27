@@ -1,11 +1,9 @@
-#instructions.configure=\
-#  addRepository(type:0,name:NSLS-II CSS dev update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates,enabled:false);\
-#  addRepository(type:1,name:NSLS-II CSS dev update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates,enabled:false);\
-#  addRepository(type:0,name:Hg update site,location:http${#58}//cbes.javaforge.com/update,enabled:false);\
-#  addRepository(type:1,name:Hg update site,location:http${#58}//cbes.javaforge.com/update,enabled:false);\
-#  addRepository(type:0,name:NSLS-II CSS update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);\
-#  addRepository(type:1,name:NSLS-II CSS update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);\
-#  mkdir(path:${installFolder}/logs)
+instructions.configure=\
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:0,name:CS-Studio update site,location:http${#58}//download.controlsystemstudio.org/updates/3.3,enabled:true);\
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:1,name:CS-Studio update site,location:http${#58}//download.controlsystemstudio.org/updates/3.3,enabled:true);\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/logs);\
+  org.eclipse.equinox.p2.touchpoint.natives.copy(source:plugin_customization.ini,target:\
+    ${installFolder}/configuration/plugin_customization.ini);
   
 #  setProgramProperty(propName:org.eclipse.equinox.p2.cache,propValue:@user.home/p2Cache);\
 #  setProgramProperty(propName:org.eclipse.equinox.p2.installFolder,propValue:@user.home/p2InstallFolder);

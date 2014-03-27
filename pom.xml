@@ -123,7 +123,14 @@
             <timestampProvider>jgit</timestampProvider>
             <jgit.ignore>
               pom.xml
+              plugins/org.csstudio.product/.settings/*
+              plugins/org.csstudio.startup.intro/.settings/*
+              features/org.csstudio.product.feature/.settings/*
+              repository/.settings/*
+              .gitignore
+              *.target
             </jgit.ignore>
+            <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
           </configuration>
         </plugin>
       </plugins> 

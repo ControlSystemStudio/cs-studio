@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product uid="cs-studio" name="CS-Studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.3.0" useFeatures="true" includeLaunchers="true">
+<product name="CS-Studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.3.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.product/icons/cs-studio-about.png"/>
@@ -14,10 +14,10 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-</programArgs>
+      <programArgs>-pluginCustomization configuration/plugin_customization.ini</programArgs>
       <vmArgs>-Xmx1024m
 -Xms128m
--XX:MaxPermSize=128M</vmArgs>
+-XX:MaxPermSize=256M</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -28,7 +28,6 @@
       startupProgressRect="5,222,470,15"
       startupMessageRect="7,200,466,20"
       startupForegroundColor="FFFFFF" />
-
    <launcher name="cs-studio">
       <solaris/>
       <win useIco="true">
@@ -38,16 +37,6 @@
    </launcher>
 
    <intro introId="org.eclipse.ui.intro.universal"/>
-
-
-   <configurations>
-      <!-- Required to get CSS to boot without error. -->
-      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
-      <!-- Required to get software updates to work. -->
-      <!-- See details: http://dev.eclipse.org/mhonarc/lists/tycho-user/msg03980.html --> 
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="4" />  
-   </configurations>
-
 
    <vm>
    </vm>
@@ -62,12 +51,7 @@
    <plugins>
    </plugins>
 
-   <!--
-      A bug in the Tycho build system requires that feature versions
-      be specified either completely (including qualifier) or not at all.
-      See bug report: https://bugs.eclipse.org/bugs/show_bug.cgi?id=392945
-   -->
-   <features>      
+   <features>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
       <feature id="org.csstudio.libs.feature"/>
@@ -81,5 +65,10 @@
       <feature id="org.csstudio.product.feature"/>
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
    </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="4" />
+   </configurations>
 
 </product>
