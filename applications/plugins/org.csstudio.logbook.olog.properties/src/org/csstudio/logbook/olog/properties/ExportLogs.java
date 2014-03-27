@@ -23,9 +23,8 @@ public class ExportLogs extends AbstractHandler {
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-		ISelection selection = HandlerUtil.getActiveMenuSelection(event);
-		final List<LogEntryBuilder> data = Arrays.asList(AdapterUtil.convert(
-			selection, LogEntryBuilder.class));
+		final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+		final List<LogEntryBuilder> data = Arrays.asList(AdapterUtil.convert(selection, LogEntryBuilder.class));
 		if (data == null || data.isEmpty()) {
 		    ErrorDialog.openError(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), "Error",
 			    "No log Entries selected to be export", new Status(IStatus.ERROR, ID, null));
@@ -34,29 +33,25 @@ public class ExportLogs extends AbstractHandler {
 			Runnable openSearchDialog = new Runnable() {
 			    @Override
 			    public void run() {
-				try {
-				    Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-						    ExportLogsDialog dialog = new ExportLogsDialog(
-						    		HandlerUtil.getActiveWorkbenchWindow(event).getShell(), data);
-						    dialog.setBlockOnOpen(true);
-						    if (dialog.open() == IDialogConstants.OK_ID) {
-		
-						    }
-						}
-				    });
-				} catch (Exception e) {
-				    e.printStackTrace();
-				}
+					try {
+					    Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+							    ExportLogsDialog dialog = new ExportLogsDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), data);
+							    dialog.setBlockOnOpen(true);
+							    if (dialog.open() == IDialogConstants.OK_ID) {	
+							    }
+							}
+					    });
+					} catch (Exception e) {
+					    e.printStackTrace();
+					}
 			    }
 			};
 			BusyIndicator.showWhile(Display.getDefault(), openSearchDialog);
 		    } catch (Exception e1) {
-			e1.printStackTrace();
+		    	e1.printStackTrace();
 		    }
-	
 		}
 		return event;
     }
-
 }
