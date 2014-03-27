@@ -10,7 +10,7 @@ package org.csstudio.alarm.beast.ui.actions;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.Perspective;
-import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
+import org.csstudio.ui.util.perspective.OpenPerspectiveAction;
 
 /** Action that opens the alarm perspective
  *  @author Kay Kasemir

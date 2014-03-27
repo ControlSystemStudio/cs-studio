@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 
-import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.email.EMailSender;
 import org.csstudio.swt.xygraph.figures.Axis;
@@ -42,6 +41,7 @@ import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
 import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.ui.util.perspective.OpenPerspectiveAction;
 import org.csstudio.utility.singlesource.PathEditorInput;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
