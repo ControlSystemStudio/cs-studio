@@ -18,7 +18,9 @@ public class TestDataRetrieval implements DataRetrieval{
 	 */
 	@Override
 	public GenMsgIterator getDataForPV(String name, Timestamp start, Timestamp end) {
-		if (name.startsWith("mean_") || name.startsWith("std_")) {
+		if (name.startsWith("mean_") || name.startsWith("std_") || 
+				name.startsWith("min_") || name.startsWith("max_") ||
+				name.startsWith("count_")) {
 			return new TestGenMsgIteratorOptimized(name, start, end);
 		} else {
 			if (name.contains("wave")) {
@@ -26,7 +28,7 @@ public class TestDataRetrieval implements DataRetrieval{
 			} else {
 				return new TestGenMsgIteratorRaw(name,start,end);
 			}
-		}
+		} 
 	}
 
 	/* (non-Javadoc)

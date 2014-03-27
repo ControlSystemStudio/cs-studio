@@ -34,6 +34,31 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
 	/**
 	 * Tests
 	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
+	 * method for a double type PV where the requested number of points is greater
+	 * than total number of points. 
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testDataRetrievalWhenThereAreNotManyPoints() throws Exception{
+		Timestamp end = Timestamp.now();
+		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+		ArchiveVNumber[] vals = getValuesNumber("test_pv_double",true,1800,start,end);
+		assertEquals("Number of values comparison", 10, vals.length);
+		
+		ArchiveVNumber val = null;
+		for (int i = 0; i < vals.length; i++) {
+			val = (ArchiveVNumber)vals[i];
+			assertEquals("Value comparison", Double.valueOf(TestGenMsgIteratorRaw.VALUES_DOUBLE[i%TestGenMsgIteratorRaw.VALUES_DOUBLE.length]),(Double)val.getValue(),0.0001);
+			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
+			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+		}
+	}
+	
+	/**
+	 * Tests
+	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
 	 * method for a double type PV.
 	 * 
 	 * @throws Exception

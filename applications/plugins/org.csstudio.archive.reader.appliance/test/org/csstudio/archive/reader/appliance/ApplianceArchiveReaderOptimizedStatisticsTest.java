@@ -7,6 +7,7 @@ import org.csstudio.archive.reader.appliance.testClasses.TestApplianceArchiveRea
 import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorOptimized;
 import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorRaw;
 import org.csstudio.archive.vtype.ArchiveVEnum;
+import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.ArchiveVType;
@@ -34,6 +35,31 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
 	/**
 	 * Tests
 	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
+	 * method for a double type PV where the requested number of points is greater
+	 * than total number of points. 
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testDataRetrievalWhenThereAreNotManyPoints() throws Exception{
+		Timestamp end = Timestamp.now();
+		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+		ArchiveVType[] vals = getValuesStatistics("test_pv_double",1800,start,end);
+		assertEquals("Number of values comparison", 10, vals.length);
+		
+		ArchiveVNumber val = null;
+		for (int i = 0; i < vals.length; i++) {
+			val = (ArchiveVNumber)vals[i];
+			assertEquals("Value comparison", Double.valueOf(TestGenMsgIteratorRaw.VALUES_DOUBLE[i%TestGenMsgIteratorRaw.VALUES_DOUBLE.length]),(Double)val.getValue(),0.0001);
+			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
+			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+		}
+	}
+	
+	/**
+	 * Tests
+	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp)}
 	 * method for a double type PV.
 	 * 
 	 * @throws Exception
@@ -52,12 +78,12 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
 		for (int i = 0; i < vals.length; i++) {
 			val = (ArchiveVStatistics) vals[i];
 			Double v = TestGenMsgIteratorOptimized.VALUES_DOUBLE[i%TestGenMsgIteratorOptimized.VALUES_DOUBLE.length];
+			Integer c = TestGenMsgIteratorOptimized.VALUES_COUNT[i%TestGenMsgIteratorOptimized.VALUES_COUNT.length];
 			assertEquals("Average value comparison", v,val.getAverage(),0.0001);
 			assertEquals("STD value comparison", v,val.getStdDev(),0.0001);
-			//FIXME When min and max are provided fix this test
-			assertEquals("Min value comparison", v-v*1.5,val.getMin(),0.0001);
-			assertEquals("Max value comparison", v+v*1.5,val.getMax(),0.0001);
-			assertEquals("Number of points comparison", Integer.valueOf(100), val.getNSamples());
+			assertEquals("Min value comparison", v,val.getMin(),0.0001);
+			assertEquals("Max value comparison", v,val.getMax(),0.0001);
+			assertEquals("Number of points comparison", c, val.getNSamples());
 			assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
@@ -86,12 +112,12 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
 		for (int i = 0; i < vals.length; i++) {
 			val = (ArchiveVStatistics) vals[i];
 			Double v = TestGenMsgIteratorOptimized.VALUES_DOUBLE[i%TestGenMsgIteratorOptimized.VALUES_DOUBLE.length];
+			Integer c = TestGenMsgIteratorOptimized.VALUES_COUNT[i%TestGenMsgIteratorOptimized.VALUES_COUNT.length];
 			assertEquals("Average value comparison", v,val.getAverage(),0.0001);
 			assertEquals("STD value comparison", v,val.getStdDev(),0.0001);
-			//FIXME When min and max are provided fix this test
-			assertEquals("Min value comparison", v-v*1.5,val.getMin(),0.0001);
-			assertEquals("Max value comparison", v+v*1.5,val.getMax(),0.0001);
-			assertEquals("Number of points comparison", Integer.valueOf(100), val.getNSamples());
+			assertEquals("Min value comparison", v,val.getMin(),0.0001);
+			assertEquals("Max value comparison", v,val.getMax(),0.0001);
+			assertEquals("Number of points comparison", c, val.getNSamples());
 			assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
@@ -120,12 +146,12 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
 		for (int i = 0; i < vals.length; i++) {
 			val = (ArchiveVStatistics) vals[i];
 			Double v = TestGenMsgIteratorOptimized.VALUES_DOUBLE[i%TestGenMsgIteratorOptimized.VALUES_DOUBLE.length];
+			Integer c = TestGenMsgIteratorOptimized.VALUES_COUNT[i%TestGenMsgIteratorOptimized.VALUES_COUNT.length];
 			assertEquals("Average value comparison", v,val.getAverage(),0.0001);
 			assertEquals("STD value comparison", v,val.getStdDev(),0.0001);
-			//FIXME When min and max are provided fix this test
-			assertEquals("Min value comparison", v-v*1.5,val.getMin(),0.0001);
-			assertEquals("Max value comparison", v+v*1.5,val.getMax(),0.0001);
-			assertEquals("Number of points comparison", Integer.valueOf(100), val.getNSamples());
+			assertEquals("Min value comparison", v,val.getMin(),0.0001);
+			assertEquals("Max value comparison", v,val.getMax(),0.0001);
+			assertEquals("Number of points comparison", c, val.getNSamples());
 			assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
@@ -154,12 +180,12 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
 		for (int i = 0; i < vals.length; i++) {
 			val = (ArchiveVStatistics) vals[i];
 			Double v = TestGenMsgIteratorOptimized.VALUES_DOUBLE[i%TestGenMsgIteratorOptimized.VALUES_DOUBLE.length];
+			Integer c = TestGenMsgIteratorOptimized.VALUES_COUNT[i%TestGenMsgIteratorOptimized.VALUES_COUNT.length];
 			assertEquals("Average value comparison", v,val.getAverage(),0.0001);
 			assertEquals("STD value comparison", v,val.getStdDev(),0.0001);
-			//FIXME When min and max are provided fix this test
-			assertEquals("Min value comparison", v-v*1.5,val.getMin(),0.0001);
-			assertEquals("Max value comparison", v+v*1.5,val.getMax(),0.0001);
-			assertEquals("Number of points comparison", Integer.valueOf(100), val.getNSamples());
+			assertEquals("Min value comparison", v,val.getMin(),0.0001);
+			assertEquals("Max value comparison", v,val.getMax(),0.0001);
+			assertEquals("Number of points comparison", c, val.getNSamples());
 			assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
@@ -188,12 +214,12 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
 		for (int i = 0; i < vals.length; i++) {
 			val = (ArchiveVStatistics) vals[i];
 			Double v = TestGenMsgIteratorOptimized.VALUES_DOUBLE[i%TestGenMsgIteratorOptimized.VALUES_DOUBLE.length];
+			Integer c = TestGenMsgIteratorOptimized.VALUES_COUNT[i%TestGenMsgIteratorOptimized.VALUES_COUNT.length];
 			assertEquals("Average value comparison", v,val.getAverage(),0.0001);
 			assertEquals("STD value comparison", v,val.getStdDev(),0.0001);
-			//FIXME When min and max are provided fix this test
-			assertEquals("Min value comparison", v-v*1.5,val.getMin(),0.0001);
-			assertEquals("Max value comparison", v+v*1.5,val.getMax(),0.0001);
-			assertEquals("Number of points comparison", Integer.valueOf(100), val.getNSamples());
+			assertEquals("Min value comparison", v,val.getMin(),0.0001);
+			assertEquals("Max value comparison", v,val.getMax(),0.0001);
+			assertEquals("Number of points comparison", c, val.getNSamples());
 			assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
