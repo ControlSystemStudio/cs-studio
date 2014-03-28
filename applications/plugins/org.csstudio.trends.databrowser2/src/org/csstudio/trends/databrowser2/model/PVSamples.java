@@ -254,7 +254,7 @@ public class PVSamples extends PlotSamples
      * Check if the current data matches the criteria to refresh the history data.
      * History data is refreshed when the live buffer is full and there exists a gap
      * between the last history data and the current live data. This method will
-     * also trigger purge of all currnetly cached history data of this sample.
+     * also trigger purge of all currently cached history data of this sample.
      * 
      * This method can only ever be called from the PVItem.
      * 
