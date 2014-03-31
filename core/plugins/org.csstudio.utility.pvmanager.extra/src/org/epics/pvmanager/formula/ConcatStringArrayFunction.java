@@ -15,7 +15,7 @@ import org.epics.vtype.ValueFactory;
  * @author shroffk
  * 
  */
-public class ConcatStringArrayFunction implements FormulaFunction {
+class ConcatStringArrayFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
@@ -64,8 +64,9 @@ public class ConcatStringArrayFunction implements FormulaFunction {
 	for (String str : stringArray.getData()) {
 	    sb.append(str);
 	}
-	return ValueFactory.newVString(sb.toString(), ValueFactory.alarmNone(),
-		ValueFactory.timeNow());
+	return ValueFactory.newVString(sb.toString(),
+                stringArray,
+		stringArray);
 
     }
 

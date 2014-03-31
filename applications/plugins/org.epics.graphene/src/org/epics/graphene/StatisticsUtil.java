@@ -104,6 +104,17 @@ public class StatisticsUtil {
         return new StatisticsImpl(count, min, max, average, stdDev);
     }
     
+    /**
+     *Returns the statistics of the data, which knows:
+     * <ul>
+     *      <li>Number of data points</li>
+     *      <li>Min and Max of data</li>
+     *      <li>Average value of the data</li>
+     *      <li>The standard deviation of the data</li>
+     * </ul>
+     * @param data
+     * @return Statistics
+     */
     public static Statistics statisticsOf(List<Statistics> data) {
         if (data.isEmpty())
             return null;

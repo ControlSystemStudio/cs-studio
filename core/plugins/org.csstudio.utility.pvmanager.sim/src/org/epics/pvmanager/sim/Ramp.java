@@ -49,7 +49,7 @@ public class Ramp extends SimFunction<VDouble> {
         }
         this.step = step;
         range = max - min;
-        lastValue = newVDouble(currentValue, alarmNone(), newTime(Timestamp.now()),
+        lastValue = newVDouble(currentValue, alarmNone(), timeNow(),
                 newDisplay(min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
                 min + range * 0.8, min + range * 0.9, max, min, max));
     }

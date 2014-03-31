@@ -13,6 +13,7 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOUR;
 import org.epics.util.array.ArrayDouble;
@@ -46,6 +47,7 @@ public abstract class TemporalGraph2DRenderer<T extends TemporalGraph2DRendererU
     protected int yAreaStart;
     protected int yAreaEnd;
     protected int xAreaEnd;
+    protected int xRow2LabelMargin = 3;
 
     /**
      * Creates a graph renderer.
@@ -291,7 +293,7 @@ public abstract class TemporalGraph2DRenderer<T extends TemporalGraph2DRendererU
         
         // Compute x axis spacing
         xLabelMaxHeight = labelFontMetrics.getHeight() - labelFontMetrics.getLeading();
-        int areaFromBottom = bottomMargin + xLabelMaxHeight + xLabelMargin;
+        int areaFromBottom = bottomMargin + xLabelMaxHeight*2 + xLabelMargin + 3;
         
         // Compute y axis spacing
         int[] yLabelWidths = new int[valueReferenceLabels.size()];
@@ -584,8 +586,13 @@ public abstract class TemporalGraph2DRenderer<T extends TemporalGraph2DRendererU
             // Draw first and last label
             int[] drawRange = new int[] {xAreaStart, xAreaEnd};
             int yTop = (int) (yAreaEnd + xLabelMargin + 1);
-            drawVerticalReferenceLabel(g, metrics, timeReferenceLabels.get(0), (int) Math.floor(xTicks.getDouble(0)),
+            String firstHalf = timeReferenceLabels.get(0).substring(0, timeReferenceLabels.get(0).indexOf(" "));
+            String secondHalf = timeReferenceLabels.get(0).substring(timeReferenceLabels.get(0).indexOf(" ") + 1);
+            drawVerticalReferenceLabel(g, metrics, secondHalf, (int) Math.floor(xTicks.getDouble(0)),
                 drawRange, yTop, true, false);
+            drawRange[MIN] = xAreaStart;
+            drawVerticalReferenceLabel(g, metrics, firstHalf, (int) Math.floor(xTicks.getDouble(0)),
+                drawRange, yTop + xLabelMaxHeight + xRow2LabelMargin, true, false);
             drawVerticalReferenceLabel(g, metrics, timeReferenceLabels.get(timeReferenceLabels.size() - 1), (int) Math.floor(xTicks.getDouble(timeReferenceLabels.size() - 1)),
                 drawRange, yTop, false, false);
             

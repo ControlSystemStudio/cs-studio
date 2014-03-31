@@ -149,6 +149,6 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
     
     private int currentIndex;
     private double currentScaledDiff;
-    
+
     
 }

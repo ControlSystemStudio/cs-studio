@@ -32,11 +32,11 @@ public class PVFieldToVShortArray extends AlarmTimeDisplayExtractor implements V
 	 * @param pvField
 	 * @param disconnected
 	 */
-	public PVFieldToVShortArray(PVStructure pvField, boolean disconnected) {
+	public PVFieldToVShortArray(PVStructure pvField, String fieldName, boolean disconnected) {
 		super(pvField, disconnected);
 		
 		PVShortArray valueField =
-			(PVShortArray)pvField.getScalarArrayField("value", ScalarType.pvShort);
+			(PVShortArray)pvField.getScalarArrayField(fieldName, ScalarType.pvShort);
 		if (valueField != null)
 		{
 			ShortArrayData data = new ShortArrayData();
@@ -52,6 +52,10 @@ public class PVFieldToVShortArray extends AlarmTimeDisplayExtractor implements V
 		}
 	}
 
+	public PVFieldToVShortArray(PVStructure pvField, boolean disconnected) {
+		this(pvField, "value", disconnected);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.epics.pvmanager.data.Array#getSizes()
 	 */

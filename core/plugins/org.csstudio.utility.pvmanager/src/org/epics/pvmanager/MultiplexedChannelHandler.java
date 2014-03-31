@@ -413,8 +413,8 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     }
 
     /**
-     * Determines whether {@link #processConnection(java.lang.Object) should
-     * trigger {@link #processMessage(java.lang.Object) with the same (non-null)
+     * Determines whether {@link #processConnection(java.lang.Object)} should
+     * trigger {@link #processMessage(java.lang.Object)} with the same (non-null)
      * payload in case the channel has been disconnected. Default is true.
      * 
      * @param processMessageOnDisconnect whether to process the message on disconnect
@@ -424,8 +424,8 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     }
 
     /**
-     * Determines whether {@link #processConnection(java.lang.Object) should
-     * trigger {@link #processMessage(java.lang.Object) with the same (non-null)
+     * Determines whether {@link #processConnection(java.lang.Object)} should
+     * trigger {@link #processMessage(java.lang.Object)} with the same (non-null)
      * payload in case the channel has reconnected. Default is true.
      * 
      * @param processMessageOnReconnect whether to process the message on disconnect

@@ -4,20 +4,15 @@
  */
 package org.epics.vtype.io;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.epics.util.array.CircularBufferDouble;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
-import org.epics.util.text.StringUtil;
+import org.epics.util.text.CsvParser;
+import org.epics.util.text.CsvParserResult;
 import org.epics.util.time.Timestamp;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.Alarm;
@@ -29,7 +24,6 @@ import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.VTable;
-import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 
@@ -140,77 +134,16 @@ public class CSVIO {
     }
     
     public VTable importVTable(Reader reader) {
-        try {
-            BufferedReader br = new BufferedReader(reader);
-            
-            // Parse column names
-            String titleLine = br.readLine();
-            List<String> columnNames = new ArrayList<>();
-            for (Object token : StringUtil.parseCSVLine(titleLine, "\\s*")) {
-                if (token instanceof String) {
-                    columnNames.add((String) token);
-                } else {
-                    throw new IllegalArgumentException("First line must be column names (quoted strings separated by spaces)");
-                }
-            }
-            
-            String line;
-            List<Object> columnData = new ArrayList<>(Collections.nCopies(columnNames.size(), null));
-            List<Class<?>> columnTypes = new ArrayList<>();
-            columnTypes.addAll(Collections.nCopies(columnNames.size(), (Class<Object>) null));
-            while ((line = br.readLine()) != null) {
-                List<Object> tokens = StringUtil.parseCSVLine(line, "\\s*");
-                if (tokens.size() != columnNames.size()) {
-                    throw new IllegalArgumentException("All rows need to have the same number of elements");
-                }
-                
-                for (int i = 0; i < tokens.size(); i++) {
-                    Object token = tokens.get(i);
-                    
-                    // Token is a String
-                    if (token instanceof String) {
-                        // Add list for the column
-                        if (columnData.get(i) == null) {
-                            columnData.set(i, new ArrayList<String>());
-                            columnTypes.set(i, String.class);
-                        }
-                        
-                        // If type does not match, end
-                        if (!(columnData.get(i) instanceof List)) {
-                            throw new IllegalArgumentException("Column " + i + " is not made of homogeneous elements (all strings or all numbers)");
-                        }
-                        
-                        // Add element
-                        @SuppressWarnings("unchecked")
-                        List<String> data = (List<String>) columnData.get(i);
-                        data.add((String) token);
-                    }
-                    
-                    // Token is a Double
-                    if (token instanceof Double) {
-                        // Add list for the column
-                        if (columnData.get(i) == null) {
-                            columnData.set(i, new CircularBufferDouble(1000000));
-                            columnTypes.set(i, double.class);
-                        }
-                        
-                        // If type does not match, end
-                        if (!(columnData.get(i) instanceof CircularBufferDouble)) {
-                            throw new IllegalArgumentException("Column " + i + " is not made of homogeneous elements (all strings or all numbers)");
-                        }
-                        
-                        // Add element
-                        @SuppressWarnings("unchecked")
-                        CircularBufferDouble data = (CircularBufferDouble) columnData.get(i);
-                        data.addDouble((Double) token);
-                    }
-                }
-            }
-            
-            return ValueFactory.newVTable(columnTypes, columnNames, columnData);
-        } catch (IOException ex) {
-            throw new RuntimeException("Couldn't process data", ex);
+        CsvParser parser = CsvParser.AUTOMATIC;
+        CsvParserResult result = parser.parse(reader);
+        if (!result.isParsingSuccessful()) {
+            throw new RuntimeException(result.getMessage());
         }
+        if (result.getRowCount() == 0) {
+            throw new RuntimeException("Malformed table: no lines");
+        }
+
+        return ValueFactory.newVTable(result.getColumnTypes(), result.getColumnNames(), result.getColumnValues());
     }
     
     private String toString(VTable table, int row, int column) {

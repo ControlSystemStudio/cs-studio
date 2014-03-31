@@ -5,6 +5,7 @@
 package org.epics.graphene;
 import java.util.ArrayList;
 import java.awt.Color;
+import java.util.List;
 import static org.epics.graphene.ColorScheme.BONE;
 import static org.epics.graphene.ColorScheme.COOL;
 import static org.epics.graphene.ColorScheme.COPPER;
@@ -244,7 +245,16 @@ public class ValueColorSchemes {
         }
         
         return new ValueColorScheme() {
+            
+            @Override
+            public int getColor(double value){
+                return 0;
+            }
 
+            @Override
+            public void setColors(){
+                
+            }
             @Override
             public int colorFor(double value) {
                 if (Double.isNaN(value)) {
@@ -272,7 +282,36 @@ public class ValueColorSchemes {
     public static ValueColorScheme RangeGradient(final Range range, final ArrayList<Color> colors, final ArrayList<Double> percentages){
         return new ValueColorScheme() {
             
-            private Color nanColor = colors.get(colors.size()-1); 
+            private Color nanColor = colors.get(colors.size()-1);
+            private List<Integer> colorInts = new ArrayList<Integer>();
+            private double min = 1, max = 0;
+            
+            @Override
+            public void setColors(){
+                if(range.getMinimum().doubleValue() != min || range.getMaximum().doubleValue() != max){
+                    colorInts = new ArrayList<Integer>();
+                    colorInts.add(nanColor.getRGB());
+                    min = range.getMinimum().doubleValue();
+                    max = range.getMaximum().doubleValue();
+                    double total = max-min;
+                    for(int i = 0; i < 1000; i++){
+                        //account for possible rounding errors on last entry.
+                        if(i == 999){
+                            colorInts.add(colorFor(max));
+                        }
+                        else{
+                            colorInts.add(colorFor(min + i*(total/999.0)));
+                        }
+                    }
+                }
+            }
+            
+            @Override
+            public int getColor(double value){
+                double total = max-min;
+                return colorInts.get((int)((value - min)/total * 999 + 1));
+            }
+            
             @Override
             public int colorFor(double value) {
                 if (Double.isNaN(value)) {

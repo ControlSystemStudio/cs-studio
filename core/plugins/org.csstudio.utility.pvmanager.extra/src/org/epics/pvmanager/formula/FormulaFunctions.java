@@ -30,6 +30,14 @@ public class FormulaFunctions {
         return matchArgumentTypes(arguments, function, false);
     }
     
+    /**
+     * Checks whether the function will accept the given arguments.
+     *
+     * @param arguments the arguments
+     * @param function a function
+     * @param allowNull whether the function should allow null arguments
+     * @return true if the function can accept the given arguments
+     */
     public static boolean matchArgumentTypes(List<Object> arguments, FormulaFunction function, boolean allowNull) {
         List<Class<?>> types = function.getArgumentTypes();
         
@@ -90,7 +98,7 @@ public class FormulaFunctions {
     /**
      * Finds the functions that match the given types as arguments.
      * 
-     * @param arguments the possible values
+     * @param argTypes the possible types
      * @param formulaFunctions a collection of functions
      * @return the first function that accepts the give arguments
      */
@@ -136,8 +144,8 @@ public class FormulaFunctions {
         return sb.toString();
     }
     
-    private static Pattern postfixTwoArg = Pattern.compile("\\+|-|\\*|/|%|\\^|\\*\\*|<=|>=|<|>|==|!=|\\|\\||&&|\\||&");
-    private static Pattern prefixOneArg = Pattern.compile("-|!");
+    private static final Pattern postfixTwoArg = Pattern.compile("\\+|-|\\*|/|%|\\^|\\*\\*|<=|>=|<|>|==|!=|\\|\\||&&|\\||&");
+    private static final Pattern prefixOneArg = Pattern.compile("-|!");
 
     /**
      * Given the function name and a string representation of the arguments,

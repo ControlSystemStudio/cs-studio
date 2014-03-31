@@ -12,11 +12,9 @@ import org.epics.util.array.ListInt;
  *
  * @author carcassi
  */
-class IVDoubleArray extends IVNumeric implements VDoubleArray {
+class IVDoubleArray extends IVNumberArray implements VDoubleArray {
 
     private final ListDouble data;
-    private final ListInt sizes;
-    private final List<ArrayDimensionDisplay> dimensionDisplay;
 
     public IVDoubleArray(ListDouble data, ListInt sizes,
             Alarm alarm, Time time, Display display) {
@@ -25,34 +23,13 @@ class IVDoubleArray extends IVNumeric implements VDoubleArray {
 
     public IVDoubleArray(ListDouble data, ListInt sizes, List<ArrayDimensionDisplay> dimDisplay,
             Alarm alarm, Time time, Display display) {
-        super(alarm, time, display);
-        this.sizes = sizes;
+        super(sizes, dimDisplay, alarm, time, display);
         this.data = data;
-        if (dimDisplay == null) {
-            this.dimensionDisplay = ValueUtil.defaultArrayDisplay(this);
-        } else {
-            this.dimensionDisplay = dimDisplay;
-        }
-    }
-
-    @Override
-    public ListInt getSizes() {
-        return sizes;
     }
 
     @Override
     public ListDouble getData() {
         return data;
-    }
-
-    @Override
-    public String toString() {
-        return VTypeToString.toString(this);
-    }
-
-    @Override
-    public List<ArrayDimensionDisplay> getDimensionDisplay() {
-        return dimensionDisplay;
     }
 
 }

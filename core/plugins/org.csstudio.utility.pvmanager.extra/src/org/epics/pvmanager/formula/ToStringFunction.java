@@ -18,7 +18,7 @@ import org.epics.vtype.ValueUtil;
  * @author shroffk
  * 
  */
-public class ToStringFunction implements FormulaFunction {
+class ToStringFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {

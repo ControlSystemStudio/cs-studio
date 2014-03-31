@@ -19,6 +19,9 @@ public class MultilineGraph2DRendererUpdate extends Graph2DRendererUpdate<Multil
     /**
      *Set this object's ColorScheme "valueColorScheme" to the given ColorScheme.
      * To be used in combination with the MultilineGraph2DRenderer class and update function.
+     * 
+     * TODO: Color scheme for the lines should be a LabelColorScheme
+     * 
      * @param scheme Possible schemes:GRAY_SCALE, JET, HOT, COOL, SPRING, BONE, COPPER, PINK
      * @return MultilineGraph2DRendererUpdate
      */
