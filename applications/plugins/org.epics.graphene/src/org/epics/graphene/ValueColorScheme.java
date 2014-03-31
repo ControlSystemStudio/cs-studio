@@ -20,4 +20,8 @@ public interface ValueColorScheme {
      * @return the RGB color
      */
     public int colorFor(double value);
+    
+    public void setColors();
+    
+    public int getColor(double value);
 }

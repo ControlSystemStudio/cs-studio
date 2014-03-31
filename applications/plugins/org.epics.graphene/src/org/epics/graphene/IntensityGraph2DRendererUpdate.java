@@ -25,10 +25,9 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
 
     private Integer zLabelMargin,
                     legendWidth,
-                    legendMarginToGraph,
                     legendMarginToEdge;
     
-      private Boolean drawLegend;
+      private Boolean drawLegend, addXSum, addYSum;
     
     private ColorScheme valueColorScheme;
     
@@ -40,6 +39,17 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
      */
     public IntensityGraph2DRendererUpdate drawLegend(boolean drawLegend) {
         this.drawLegend = drawLegend;
+        return self();
+    }
+    
+    // TODO: remove xsum and ysum - was not implemented
+    public IntensityGraph2DRendererUpdate addXSum(boolean addXSum) {
+        this.addXSum = addXSum;
+        return self();
+    }
+    
+    public IntensityGraph2DRendererUpdate addYSum(boolean addYSum) {
+        this.addYSum = addYSum;
         return self();
     }
 
@@ -73,15 +83,6 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
         return self();
     }
     
-    /**
-     * Sets this object's legendMarginToGraph to the given margin size.
-     * @param margin distance(pixels) from the intensity graph to the legend.
-     * @return this
-     */
-    public IntensityGraph2DRendererUpdate legendMarginToGraph(int margin) {
-        this.legendMarginToGraph = margin;
-        return self();
-    }
     
     /**
      * Sets this object's legendMarginToEdge to the given margin size.
@@ -128,17 +129,17 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     
     /**
      *
-     * @return Integer legendMarginToGraph, distance(pixels) from the intensity graph to the legend.
-     */
-    public Integer getLegendMarginToGraph(){
-        return legendMarginToGraph;
-    }
-    
-    /**
-     *
      * @return Integer legendMarginToEdge, distance(pixels) from the end of the legend(including labels and other margins) to the end of the graphics component.
      */
     public Integer getLegendMarginToEdge(){
         return legendMarginToEdge;
+    }
+    
+    public Boolean getAddXSum() {
+        return addXSum;
+    }
+    
+    public Boolean getAddYSum() {
+        return addYSum;
     }
 }
