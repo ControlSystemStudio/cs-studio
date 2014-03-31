@@ -191,7 +191,10 @@ public final class Messages extends NLS {
 
     public static String EmptyEditorInput_NotSaved;
     public static String EmptyEditorInput_NotSaved_TT;
-    
+
+	public static String OpenPerspectiveReset;
+	public static String OpenPerspectiveResetQuestion;
+
     static
     {
         // initialize resource bundle
