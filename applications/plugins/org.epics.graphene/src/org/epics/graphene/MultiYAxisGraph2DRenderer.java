@@ -44,11 +44,6 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
 
     private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOUR;
     private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;
-    // Pixel focus
-    private Integer focusPixelX;
-    
-    private boolean highlightFocusValue = false;
-
     private List<ListDouble> yReferenceCoords;
     private List<ListDouble> yReferenceValues;
     private List<List<String>> yReferenceLabels;
@@ -62,7 +57,6 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     private Range xPlotRange;
     private List<Range> yPlotRange;
     private HashMap<Integer, Range> indexToRangeMap = new HashMap<Integer,Range>();
-    private int focusValueIndex = -1;
     private int numGraphs;
     private int spaceForYAxes;
     private int minimumGraphWidth = 200;
@@ -94,34 +88,6 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         return interpolation;
     }
     
-    /**
-     *Current state of highlightFocusValue.
-     * <ul>
-     *  <li>True - highlight and show the value the mouse is on.</li>
-     *  <li>False - Avoid calculation involved with finding the highlighted value/ do not highlight the value.</li>
-     * </ul>
-     * @return true or false
-     */
-    public boolean isHighlightFocusValue() {
-        return highlightFocusValue;
-    }
-    
-    /**
-     *Current index of the value that the mouse is focused on.
-     * @return focused index (in the dataset).
-     */
-    public int getFocusValueIndex() {
-        return focusValueIndex;
-    }
-    
-    /**
-     *Current x-position(pixel) of the value that the mouse is focused on.
-     * @return the x position that the mouse is focused on in the graph (pixel).
-     */
-    public Integer getFocusPixelX() {
-        return focusPixelX;
-    }
-    
     @Override
     public void update(MultiYAxisGraph2DRendererUpdate update) {
         super.update(update);
@@ -130,12 +96,6 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         }
         if (update.getDataReduction() != null) {
             reduction = update.getDataReduction();
-        }
-        if (update.getFocusPixelX()!= null) {
-            focusPixelX = update.getFocusPixelX();
-        }
-        if (update.getHighlightFocusValue()!= null) {
-            highlightFocusValue = update.getHighlightFocusValue();
         }
         if (update.getMinimumGraphWidth() != null){
             minimumGraphWidth = update.getMinimumGraphWidth();
@@ -305,20 +265,6 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
             }
         }
     }
-
-    @Override
-    protected void processScaledValue(int index, double valueX, double valueY, double scaledX, double scaledY) {
-        if (focusPixelX != null) {
-            double scaledDiff = Math.abs(scaledX - focusPixelX);
-            if (scaledDiff < currentScaledDiff) {
-                currentIndex = index;
-                currentScaledDiff = scaledDiff;
-            }
-        }
-    }
-    
-    private int currentIndex;
-    private double currentScaledDiff;
 
     @Override
     protected void calculateGraphArea() {

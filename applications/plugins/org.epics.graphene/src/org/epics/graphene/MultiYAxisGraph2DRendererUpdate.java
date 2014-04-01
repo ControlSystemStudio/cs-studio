@@ -12,8 +12,6 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
 
     private InterpolationScheme interpolation;
     private ReductionScheme reduction;
-    private Integer focusPixelX;
-    private Boolean highlightFocusValue;
     
     private Integer minimumGraphWidth;
     
@@ -31,8 +29,7 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
         if (scheme == null) {
             throw new NullPointerException("Interpolation scheme can't be null");
         }
-        // TODO: supported list should be taken from MultiYAxis not LineGraph
-        if (!LineGraph2DRenderer.supportedInterpolationScheme.contains(scheme)) {
+        if (!MultiYAxisGraph2DRenderer.supportedInterpolationScheme.contains(scheme)) {
             throw new IllegalArgumentException("Interpolation " + scheme + " is not supported");
         }
         this.interpolation = scheme;
@@ -48,39 +45,10 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
         if (scheme == null) {
             throw new NullPointerException("Data reduction scheme can't be null");
         }
-        // TODO: supported list should be taken from MultiYAxis not LineGraph
-        if (!LineGraph2DRenderer.supportedReductionScheme.contains(scheme)) {
+        if (!MultiYAxisGraph2DRenderer.supportedReductionScheme.contains(scheme)) {
             throw new IllegalArgumentException("Data reduction " + scheme + " is not supported");
         }
         this.reduction = scheme;
-        return this;
-    }
-    
-    /**
-     *Sets the current value of the focused pixel to x.
-     * 
-     * TODO: focus pixel not implemented yes. Either remove relevant methods
-     * or set them to private
-     * 
-     * @param x value of focused pixel.
-     * @return this
-     */
-    public MultiYAxisGraph2DRendererUpdate focusPixel(int x) {
-        this.focusPixelX = x;
-        return this;
-    }
-    
-    /**
-     *Sets the state of highlightFocusValue.
-     * <ul>
-     *  <li>True - highlight and show the value the mouse is on.</li>
-     *  <li>False - Avoid calculation involved with finding the highlighted value/ do not highlight the value.</li>
-     * </ul>
-     * @param highlightFocusValue
-     * @return this
-     */
-    public MultiYAxisGraph2DRendererUpdate highlightFocusValue(boolean highlightFocusValue) {
-        this.highlightFocusValue = highlightFocusValue;
         return this;
     }
     
@@ -98,26 +66,6 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
      */
     public ReductionScheme getDataReduction() {
         return reduction;
-    }
-
-    /**
-     *Current x-value of the focused pixel
-     * @return the current x-value of the focused pixel.
-     */
-    public Integer getFocusPixelX() {
-        return focusPixelX;
-    }
-
-    /**
-     *Current state of highlightFocusValue.
-     * <ul>
-     *  <li>True - highlight and show the value the mouse is on.</li>
-     *  <li>False - Avoid calculation involved with finding the highlighted value/ do not highlight the value.</li>
-     * </ul>
-     * @return true or false
-     */
-    public Boolean getHighlightFocusValue() {
-        return highlightFocusValue;
     }
     
     public Integer getMinimumGraphWidth(){

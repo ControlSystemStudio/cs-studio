@@ -26,10 +26,19 @@ import org.epics.util.array.*;
  *
  * @author sjdallst
  */
-public class NLineGraphs2DRenderer extends Graph2DRenderer{
+public class NLineGraphs2DRenderer extends Graph2DRenderer<NLineGraphs2DRendererUpdate>{
+    
     public NLineGraphs2DRenderer(int imageWidth, int imageHeight){
         super(imageWidth,imageHeight);
     }
+    
+    @Override
+    public NLineGraphs2DRendererUpdate newUpdate() {
+        return new NLineGraphs2DRendererUpdate();
+    }
+    
+    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOUR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
+    public static java.util.List<ReductionScheme> supportedReductionScheme = Arrays.asList(ReductionScheme.FIRST_MAX_MIN_LAST, ReductionScheme.NONE);
     
     private AxisRange xAxisRange = AxisRanges.integrated();
     private AxisRange yAxisRange = AxisRanges.integrated();
@@ -105,6 +114,12 @@ public class NLineGraphs2DRenderer extends Graph2DRenderer{
         if(update.getMinimumGraphHeight() != null){
             minimumGraphHeight = update.getMinimumGraphHeight();
         }
+        if(update.getDataReduction() != null){
+            reduction = update.getDataReduction();
+        }
+        if(update.getInterpolation() != null){
+            interpolation = update.getInterpolation();
+        }
     }
     
     public void draw( Graphics2D g, List<Point2DDataset> data){
@@ -150,11 +165,6 @@ public class NLineGraphs2DRenderer extends Graph2DRenderer{
         for(int i = 0; i < numGraphs; i++){
             drawValueExplicitLine(xValues.get(i), yValues.get(i), interpolation, reduction,i);
         }
-    }
-    
-    @Override
-    public Graph2DRendererUpdate newUpdate() {
-        return new NLineGraphs2DRendererUpdate();
     }
     
     private void getNumGraphs(List<Point2DDataset> data){

@@ -27,7 +27,7 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
                     legendWidth,
                     legendMarginToEdge;
     
-      private Boolean drawLegend, addXSum, addYSum;
+      private Boolean drawLegend;
     
     private ColorScheme valueColorScheme;
     
@@ -41,18 +41,11 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
         this.drawLegend = drawLegend;
         return self();
     }
-    
-    // TODO: remove xsum and ysum - was not implemented
-    public IntensityGraph2DRendererUpdate addXSum(boolean addXSum) {
-        this.addXSum = addXSum;
-        return self();
-    }
-    
-    public IntensityGraph2DRendererUpdate addYSum(boolean addYSum) {
-        this.addYSum = addYSum;
-        return self();
-    }
 
+    // TODO: add keepAspectRatio
+    // If enables, the plot should stretch but keep the ratio of the image
+    // the same as the one given by the range of the x and y boundaries
+    
     /**
      * Sets this object's valueColorScheme to the given ColorScheme.
      * @param scheme supported schemes: any <code>ColorScheme</code> supported by the <code>ValueColorSchemes</code>
@@ -133,13 +126,5 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
      */
     public Integer getLegendMarginToEdge(){
         return legendMarginToEdge;
-    }
-    
-    public Boolean getAddXSum() {
-        return addXSum;
-    }
-    
-    public Boolean getAddYSum() {
-        return addYSum;
     }
 }

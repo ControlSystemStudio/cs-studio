@@ -13,16 +13,34 @@ public class NLineGraphs2DRendererUpdate extends Graph2DRendererUpdate<NLineGrap
     private HashMap<Integer, Range> IndexToRangeMap = new HashMap<Integer, Range>();
     private Integer marginBetweenGraphs,
             minimumGraphHeight;
+    private InterpolationScheme interpolation;
+    private ReductionScheme reduction;
     
-    // TODO: should take a Map<Integer, Range>
-    public NLineGraphs2DRendererUpdate setRanges(List<Integer> indices, List<Range> ranges){
-        if(indices.size() != ranges.size()){
-            throw new IllegalArgumentException("Index list is not as long as range list");
-        }
-        for(int i = 0; i < indices.size(); i++){
-            IndexToRangeMap.put(indices.get(i),ranges.get(i));
-        }
+    public NLineGraphs2DRendererUpdate setRanges(HashMap<Integer, Range> map){
+        IndexToRangeMap.putAll(map);
         return this.self();
+    }
+    
+    public NLineGraphs2DRendererUpdate interpolation(InterpolationScheme scheme) {
+        if (scheme == null) {
+            throw new NullPointerException("Interpolation scheme can't be null");
+        }
+        if (!NLineGraphs2DRenderer.supportedInterpolationScheme.contains(scheme)) {
+            throw new IllegalArgumentException("Interpolation " + scheme + " is not supported");
+        }
+        this.interpolation = scheme;
+        return this;
+    }
+    
+    public NLineGraphs2DRendererUpdate dataReduction(ReductionScheme scheme) {
+        if (scheme == null) {
+            throw new NullPointerException("Data reduction scheme can't be null");
+        }
+        if (!NLineGraphs2DRenderer.supportedReductionScheme.contains(scheme)) {
+            throw new IllegalArgumentException("Data reduction " + scheme + " is not supported");
+        }
+        this.reduction = scheme;
+        return this;
     }
     
     public NLineGraphs2DRendererUpdate marginBetweenGraphs(Integer margin){
@@ -45,5 +63,21 @@ public class NLineGraphs2DRendererUpdate extends Graph2DRendererUpdate<NLineGrap
     
     public Integer getMinimumGraphHeight(){
         return minimumGraphHeight;
+    }
+    
+    /**
+     *Current interpolation scheme
+     * @return the current interpolation scheme.
+     */
+    public InterpolationScheme getInterpolation() {
+        return interpolation;
+    }
+
+    /**
+     *Current reduction scheme
+     * @return the current reduction scheme.
+     */
+    public ReductionScheme getDataReduction() {
+        return reduction;
     }
 }
