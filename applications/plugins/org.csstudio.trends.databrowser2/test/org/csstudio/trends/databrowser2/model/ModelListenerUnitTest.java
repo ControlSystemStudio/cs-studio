@@ -116,6 +116,16 @@ public class ModelListenerUnitTest
 			// TODO Auto-generated method stub
 
 		}
+
+		@Override
+		public void itemRefreshRequested(PVItem item) {
+			//ignore
+		}
+		
+		@Override
+		public void cursorDataChanged() {
+			//ignore
+		}
     };
 
     /** Test if listener is invoked as expected */

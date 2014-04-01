@@ -25,7 +25,7 @@ import org.epics.vtype.VNumberArray;
  * @author shroffk
  * 
  */
-public class HistogramOfFormulaFunction implements FormulaFunction {
+class HistogramOfFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {

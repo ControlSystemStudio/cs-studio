@@ -7,11 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
-import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
-import static org.epics.util.time.TimeDuration.ofSeconds;
-
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,22 +14,21 @@ import java.util.logging.Logger;
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.ThrottledLogger;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListenerAdapter;
+import org.csstudio.vtype.pv.PVPool;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.Time;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VType;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
 
 /** Base for archived channels.
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class ArchiveChannel
+abstract public class ArchiveChannel extends PVListenerAdapter
 {
     /** Throttled log for NaN samples */
     private static ThrottledLogger trouble_sample_log =
@@ -57,7 +51,7 @@ abstract public class ArchiveChannel
     /** Control system PV
      *  SYNC on access
      */
-    private PVReader<List<VType>> pv = null;
+    private PV pv = null;
 
     /** Is this channel currently running?
      *  <p>
@@ -186,7 +180,7 @@ abstract public class ArchiveChannel
     /** @return <code>true</code> if connected */
     final public synchronized boolean isConnected()
     {
-        return pv != null  &&  pv.isConnected();
+        return pv != null  &&  pv.read() != null;
     }
 
     /** @return Human-readable info on internal state of PV */
@@ -194,7 +188,7 @@ abstract public class ArchiveChannel
     {
     	if (pv == null)
     		return "Not initialized";
-    	return pv.isConnected() ? "Connected" : "Disconnected";
+    	return pv.read() != null ? "Connected" : "Disconnected";
     }
 
     /** Start archiving this channel. */
@@ -203,39 +197,30 @@ abstract public class ArchiveChannel
         is_running = true;
         need_first_sample = true;
         
-		PVReaderListener<List<VType>> listener = new PVReaderListener<List<VType>>()
-		{
-			@Override
-			public void pvChanged(final PVReaderEvent<List<VType>> event)
-			{   // Not sync-ing for consistency check of 'pv'
-				if (event.getPvReader() != pv)
-					throw new Error("Invalid PV");
-				if (!is_running)
-					return;
-				
-				final Exception error = pv.lastException();
-				if (error != null)
-				{
-                    handleDisconnected();
-                    Activator.getLogger().log(Level.WARNING, "Channel '" + name + "'", error);
-				}
-				final List<VType> values = pv.getValue();
-				if (values == null)
-					return;
-				for (VType value : values)
-				{
-					if (enablement != Enablement.Passive)
-						handleEnablement(value);
-					handleNewValue(checkReceivedValue(value));
-				}
-			}
-		};
-		final PVReader<List<VType>> pv = PVManager.read(newValuesOf(vType(name))).timeout(ofSeconds(30)).readListener(listener).maxRate(ofSeconds(1));
+		final PV pv = PVPool.getPV(name);
+		pv.addListener(this);
 		synchronized (this)
         {
+		    if (this.pv != null)
+		        throw new Exception(name + " started twice");
 		    this.pv = pv;
-            
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void valueChanged(final PV pv, final VType value)
+    {
+        if (enablement != Enablement.Passive)
+            handleEnablement(value);
+        handleNewValue(checkReceivedValue(value));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void disconnected(final PV pv)
+    {
+        handleDisconnected();
     }
 
     /** Check a received value for basic problems before
@@ -277,13 +262,14 @@ abstract public class ArchiveChannel
     	if (!is_running)
     		return;
         is_running = false;
-        final PVReader<List<VType>> safe_pv;
+        final PV safe_pv;
         synchronized (this)
         {
             safe_pv = pv;
             pv = null;
         }
-        safe_pv.close();
+        safe_pv.removeListener(this);
+        PVPool.releasePV(safe_pv);
         addInfoToBuffer(ValueButcher.createOff());
     }
 

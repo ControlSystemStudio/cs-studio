@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Logbook
 Bundle-SymbolicName: org.csstudio.autocomplete.logbook
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: org.csstudio.autocomplete.logbook.Activator
 Import-Package: org.osgi.framework;version="1.3.0"
 Require-Bundle: org.csstudio.autocomplete;bundle-version="1.0.0",

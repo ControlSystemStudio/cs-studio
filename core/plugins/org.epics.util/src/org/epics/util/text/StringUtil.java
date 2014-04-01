@@ -40,6 +40,11 @@ public class StringUtil {
      */
     public static final String DOUBLE_REGEX = "([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)";
     
+    /**
+     * The pattern of a double value.
+     */
+    public static final String DOUBLE_REGEX_WITH_NAN = "([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|NaN";
+    
     static Pattern escapeSequence = Pattern.compile(STRING_ESCAPE_SEQUENCE_REGEX);
     
     /**
@@ -123,7 +128,7 @@ public class StringUtil {
             } else {
                 throw new IllegalArgumentException("Can't parse line: expected token at " + currentPosition + " (" + line + ")");
             }
-            
+
             if (currentPosition < line.length()) {
                 if (!separatorMatcher.region(currentPosition, line.length()).useAnchoringBounds(true).find()) {
                     throw new IllegalArgumentException("Can't parse line: expected separator at " + currentPosition + " (" + line + ")");

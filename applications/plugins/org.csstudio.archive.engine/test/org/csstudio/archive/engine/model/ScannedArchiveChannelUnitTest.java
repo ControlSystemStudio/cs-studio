@@ -7,14 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.loc.LocalDataSource;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVPool;
+import org.csstudio.vtype.pv.local.LocalPVFactory;
 import org.junit.Test;
 
 /** JUnit test of the {@link ScannedArchiveChannel}
@@ -23,17 +22,21 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScannedArchiveChannelUnitTest
 {
-    private static final String PV_NAME = "loc://demo";
+    private static final String PV_NAME = "loc://demo(42)";
 
 	@Test
     public void testHandleNewValue() throws Exception
     {
-    	PVManager.setDefaultDataSource(new LocalDataSource());
+	    PVPool.addPVFactory(new LocalPVFactory());
     	
-    	final PVWriter<Object> pv = PVManager.write(channel(PV_NAME)).sync();
+    	final PV pv = PVPool.getPV(PV_NAME);
         final ScannedArchiveChannel channel = new ScannedArchiveChannel(PV_NAME, Enablement.Passive, 5, null, 1.0, 2);
         final SampleBuffer samples = channel.getSampleBuffer();
         channel.start();
+        
+        // Might get initial sample from PV, dump it
+        SECONDS.sleep(2);
+        TestHelper.dump(samples);
 
         // Simulated received value
         System.out.println("Initial value 1.0");
@@ -66,6 +69,6 @@ public class ScannedArchiveChannelUnitTest
         assertThat(TestHelper.dump(samples), equalTo(2));
         
         channel.stop();
-        pv.close();
+        PVPool.releasePV(pv);
     }
 }

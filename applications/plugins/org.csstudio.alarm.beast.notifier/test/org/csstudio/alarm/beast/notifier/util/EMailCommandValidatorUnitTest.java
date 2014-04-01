@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2013 ITER Organization.
+ * Copyright (c) 2010-2014 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,21 @@ public class EMailCommandValidatorUnitTest {
 			Assert.assertEquals(2, cmd.getHandler().getTo().size());
 			Assert.assertNull(cmd.getHandler().getCc());
 			Assert.assertNull(cmd.getHandler().getCci());
+			Assert.assertTrue(cmd.getHandler().getSubject().isEmpty());
+			Assert.assertTrue(cmd.getHandler().getBody().isEmpty());
+			Assert.assertFalse(cmd.getHandler().isComplete());
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+
+		cmd.init("mailto:ich-support@iter.org&bcc= john.doe@iter.org");
+		try {
+			Assert.assertTrue(cmd.validate());
+			Assert.assertNotNull(cmd.getHandler());
+			Assert.assertEquals(1, cmd.getHandler().getTo().size());
+			Assert.assertEquals("ich-support@iter.org", cmd.getHandler().getTo().get(0));
+			Assert.assertEquals(1, cmd.getHandler().getCci().size());
+			Assert.assertEquals("john.doe@iter.org", cmd.getHandler().getCci().get(0));
 			Assert.assertTrue(cmd.getHandler().getSubject().isEmpty());
 			Assert.assertTrue(cmd.getHandler().getBody().isEmpty());
 			Assert.assertFalse(cmd.getHandler().isComplete());

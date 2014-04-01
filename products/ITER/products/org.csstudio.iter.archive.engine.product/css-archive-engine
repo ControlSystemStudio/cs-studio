@@ -7,8 +7,8 @@
 #
 
 #+======================================================================
-# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-css-archive/trunk/org.csstudio.archive.engine/css-archive-engine $
-# $Id: css-archive-engine 28074 2012-05-27 16:29:10Z zagara $
+# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-css/trunk/products/ITER/products/org.csstudio.iter.archive.engine.product/css-archive-engine $
+# $Id: css-archive-engine 45701 2014-03-19 22:27:37Z zagara $
 #
 # Project       : CODAC Core System
 #
@@ -16,7 +16,7 @@
 #
 # Author(s)     : Cosylab
 #
-# Copyright (c) : 2010-2013 ITER Organization,
+# Copyright (c) : 2010-2014 ITER Organization,
 #                 CS 90 046
 #                 13067 St. Paul-lez-Durance Cedex
 #                 France
@@ -36,6 +36,7 @@ VARFILES=()
 unset REQUSER
 DAEMONS=(/usr/bin/archive-engine)
 NAMES=("CSS Archive Engine")
-ARGS=("-engine CODAC $(printf "'%s' " "${@:2}")")
+ENGINE=$(sed -n 's/org.csstudio.archive\/engine=//p' "${CODAC_CONF}/default/css" 2> /dev/null)
+ARGS=("-engine ${ENGINE:-CODAC} $(printf "'%s' " "${@:2}")")
 
 . $CODAC_ROOT/bin/services/service-startup

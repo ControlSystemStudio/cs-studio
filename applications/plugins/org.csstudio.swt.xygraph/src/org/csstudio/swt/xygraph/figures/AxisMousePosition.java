@@ -139,6 +139,7 @@ public class AxisMousePosition extends Figure implements MouseMotionListener {
 
 	@Override
 	protected void paintClientArea(Graphics graphics) {
+		if (!isVisible()) return;
 		graphics.translate(bounds.x, bounds.y);
 
 		graphics.setAdvanced(use_advanced_graphics);

@@ -46,7 +46,7 @@ public final class Messages extends NLS {
 	public static String ExportPreferencesAction_ErrorMessage;
 	public static String ExportPreferencesAction_FileTypeDescription;
 	public static String ExportPreferencesAction_IncludeDefaultsQuestion;
-
+	
 	public static String WorkbenchActionBuilder_CSS_ALARM_MENU;
 	public static String WorkbenchActionBuilder_CSS_CONFIGURATION_MENU;
 	public static String WorkbenchActionBuilder_CSS_DEBUGGING_MENU;
@@ -192,6 +192,9 @@ public final class Messages extends NLS {
     public static String EmptyEditorInput_NotSaved;
     public static String EmptyEditorInput_NotSaved_TT;
     
+    public static String OpenPerspectiveReset;
+    public static String OpenPerspectiveResetQuestion;
+
     static
     {
         // initialize resource bundle

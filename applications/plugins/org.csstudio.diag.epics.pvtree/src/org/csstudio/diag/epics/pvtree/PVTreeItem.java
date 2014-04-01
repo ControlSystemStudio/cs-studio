@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.csstudio.simplepv.AbstractPVFactory;
-import org.csstudio.simplepv.IPV;
-import org.csstudio.simplepv.IPVListener;
-import org.csstudio.simplepv.SimplePVLayer;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListener;
+import org.csstudio.vtype.pv.PVListenerAdapter;
+import org.csstudio.vtype.pv.PVPool;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
 
@@ -50,7 +50,26 @@ class PVTreeItem
     private final String record_name;
 
     /** The PV used for getting the current value. */
-    private IPV pv;
+    private PV pv;
+    
+    final private PVListener value_listener = new PVListenerAdapter()
+    {
+        @Override
+        public void valueChanged(final PV pv, final VType pv_value)
+        {
+            value = VTypeHelper.format(pv_value);
+            severity = VTypeHelper.getSeverity(pv_value);
+            model.itemUpdated(PVTreeItem.this);
+        }
+
+        @Override
+        public void disconnected(final PV pv)
+        {
+            value = "Disconnected";
+            severity = AlarmSeverity.UNDEFINED;
+            model.itemUpdated(PVTreeItem.this);
+        }
+    };
 
     /** Most recent value. */
     private volatile String value = null;
@@ -59,7 +78,7 @@ class PVTreeItem
     private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
 
     /** The PV used for getting the record type. */
-    private IPV type_pv;
+    private PV type_pv;
     private String type;
 
     /** Array of fields to read for this record type.
@@ -69,7 +88,7 @@ class PVTreeItem
     final private ArrayList<String> links_to_read = new ArrayList<String>();
 
     /** Used to read the links of this pv. */
-    private IPV link_pv = null;
+    private PV link_pv = null;
     private String link_value;
 
     /** Tree item children, populated with info from the input links. */
@@ -120,24 +139,7 @@ class PVTreeItem
         // Try to read the pv
         try
         {
-        	final IPVListener listener = new IPVListener.Stub()
-    	    {
-    	        @Override
-                public void exceptionOccurred(final IPV pv, final Exception exception)
-                {
-                    Plugin.getLogger().log(Level.SEVERE, "PV Listener error" , exception);
-                }
-
-                @Override
-                public void valueChanged(final IPV pv)
-                {
-    	            final VType pv_value = pv.getValue();
-    	            value = VTypeHelper.format(pv_value);
-    	            severity = VTypeHelper.getSeverity(pv_value);
-    	            model.itemUpdated(PVTreeItem.this);
-    	        }
-    	    };
-        	pv = createPV(pv_name, listener);
+        	pv = createPV(pv_name, value_listener);
         }
         catch (Exception e)
         {
@@ -161,7 +163,7 @@ class PVTreeItem
         }
     	try
     	{
-            final IPVListener listener = new StringListener()
+            final PVListener listener = new StringListener()
     	    {
 				@Override
 				public void handleText(final String text)
@@ -174,6 +176,8 @@ class PVTreeItem
     	                type = text;
     	            else
     	                type = Messages.UnkownPVType;
+    	            // Only need one update
+    	            type_pv.removeListener(this);
     	            updateType();
 				}
     	    };
@@ -191,13 +195,10 @@ class PVTreeItem
      *  @return PV
      *  @throws Exception on error
      */
-    private IPV createPV(final String name, final IPVListener listener) throws Exception
+    private PV createPV(final String name, final PVListener listener) throws Exception
     {
-        final AbstractPVFactory factory = SimplePVLayer.getPVFactory();
-        final long period_ms = Math.round(Preferences.getUpdatePeriod() * 1000);
-        final IPV pv = factory.createPV(name, true, period_ms, false, AbstractPVFactory.getDefaultPVNotificationThread(), null); 
+        final PV pv = PVPool.getPV(name); 
         pv.addListener(listener);
-        pv.start();
         return pv;
     }
 
@@ -208,7 +209,8 @@ class PVTreeItem
             item.dispose();
         if (pv != null)
         {
-            pv.stop();
+            pv.removeListener(value_listener);
+            PVPool.releasePV(pv);
             pv = null;
         }
         disposeLinkPV();
@@ -216,9 +218,9 @@ class PVTreeItem
     }
 
     /** @return PV for the given name */
-    private IPV createLinkPV(final String name) throws Exception
+    private PV createLinkPV(final String name) throws Exception
     {
-    	final IPVListener listener = new StringListener()
+    	final PVListener listener = new StringListener()
         {
 			@Override
 			public void handleText(final String text)
@@ -235,6 +237,8 @@ class PVTreeItem
                     if (i > 0)
                         link_value = link_value.substring(0, i);
                 }
+                // Only one update
+                link_pv.removeListener(this);
                 updateLink();
 			}
 	    };
@@ -246,7 +250,7 @@ class PVTreeItem
     {
         if (type_pv != null)
         {
-            type_pv.stop();
+            PVPool.releasePV(type_pv);
             type_pv = null;
         }
     }
@@ -256,7 +260,7 @@ class PVTreeItem
     {
         if (link_pv != null)
         {
-            link_pv.stop();
+            PVPool.releasePV(link_pv);
             link_pv = null;
         }
     }

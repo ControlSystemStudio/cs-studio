@@ -1,0 +1,1 @@
+394 53 plugins/org.csstudio.frib.product/splash-template.bmp plugins/org.csstudio.frib.product/splash.bmp

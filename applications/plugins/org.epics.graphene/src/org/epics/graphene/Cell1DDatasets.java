@@ -63,7 +63,7 @@ public class Cell1DDatasets {
      * will not be changed in the future.
      * 
      * @param values the values for the dataset
-     * @param boundaries the cell boundaries
+     * @param xBoundaries the cell boundaries
      * @return the dataset from the values; never null
      */
     public static Cell1DDataset datasetFrom(final ListNumber values, final ListNumber xBoundaries) {

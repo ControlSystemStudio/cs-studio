@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+         point="org.csstudio.archive.reader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.archive.reader.appliance.ApplianceArchiveReaderFactory"
+            name="org.csstudio.archive.reader.appliance.appliancereader"
+            prefix="pbraw">
+      </ArchiveReader>
+   </extension>
+ <extension
+       point="org.eclipse.help.toc">
+    <toc
+          file="toc.xml"
+          primary="false">
+    </toc>
+ </extension>
+</plugin>

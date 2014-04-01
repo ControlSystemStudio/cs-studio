@@ -5,7 +5,7 @@
 package org.epics.vtype;
 
 /**
- * Scalar double with alarm, timestamp, display and control information.
+ * Scalar byte with alarm, timestamp, display and control information.
  * Auto-unboxing makes the extra method for the primitive type
  * unnecessary.
  * 

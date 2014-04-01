@@ -8,10 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 import org.epics.util.array.ListDouble;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.Time;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.ValueFactory;
 import static org.epics.vtype.ValueFactory.*;
+import org.epics.vtype.ValueUtil;
 
 /**
  *
@@ -56,9 +59,7 @@ class ArrayOfNumberFormulaFunction implements FormulaFunction {
 
     @Override
     public Object calculate(final List<Object> args) {
-
         ListDouble data = new ListDouble() {
-
             @Override
             public double getDouble(int index) {
                 VNumber number = (VNumber) args.get(index);
@@ -74,7 +75,10 @@ class ArrayOfNumberFormulaFunction implements FormulaFunction {
             }
         };
 
-        return ValueFactory.newVDoubleArray(data, alarmNone(), newTime(Timestamp.now()), displayNone());
+        return ValueFactory.newVNumberArray(data,
+                ValueUtil.highestSeverityOf(args, false),
+		ValueUtil.latestValidTimeOrNowOf(args),
+                displayNone());
     }
 
 }

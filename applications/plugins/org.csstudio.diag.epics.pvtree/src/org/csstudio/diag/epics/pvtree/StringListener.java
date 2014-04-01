@@ -9,8 +9,8 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.logging.Level;
 
-import org.csstudio.simplepv.IPV;
-import org.csstudio.simplepv.IPVListener;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.epics.vtype.VType;
 
 /** {@link IPVListener} that extracts text from value.
@@ -19,12 +19,12 @@ import org.epics.vtype.VType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class StringListener extends IPVListener.Stub
+abstract public class StringListener extends PVListenerAdapter
 {
 	/** @param error Error to handle */
-    public void handleError(final Exception error)
+    public void handleError(final String error)
 	{
-		handleText("Error: " + error.getMessage());
+		handleText("Error: " + error);
 	}
 
 	/** @param text Text to handle */
@@ -32,31 +32,25 @@ abstract public class StringListener extends IPVListener.Stub
 
     /** {@inheritDoc} */
     @Override
-    public void exceptionOccurred(IPV pv, Exception exception)
-    {
-        Plugin.getLogger().log(Level.WARNING,
-                "PV Listener error for '" + pv.getName() + "': " + exception.getMessage(),
-                exception);
-        handleError(exception);
-    }
-	
-	/** {@inheritDoc} */
-	@Override
-	public void valueChanged(final IPV pv)
+    public void valueChanged(final PV pv, final VType value)
     {
         try
         {
-            final VType value = pv.getValue();
-            // Ignore possible initial null
-            if (value != null)
-	            handleText(VTypeHelper.format(value));
+            handleText(VTypeHelper.format(value));
         }
         catch (Exception e)
         {
             Plugin.getLogger().log(Level.SEVERE,
-            		"PV Listener error for '" + pv.getName() + "': " + e.getMessage(),
-            		e);
+                    "PV Listener error for '" + pv.getName() + "': " + e.getMessage(),
+                    e);
         }
     }
+    
+    @Override
+    public void disconnected(final PV pv)
+    {
+        handleError(pv.getName() + " disconnected");
+    }
+	
 };
         

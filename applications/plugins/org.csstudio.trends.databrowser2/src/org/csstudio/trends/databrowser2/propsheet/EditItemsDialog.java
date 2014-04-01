@@ -1,7 +1,5 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
-import java.awt.Color;
-
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;

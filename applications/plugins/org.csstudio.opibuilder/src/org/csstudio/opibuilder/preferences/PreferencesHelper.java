@@ -62,6 +62,7 @@ public class PreferencesHelper {
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
 	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
 	public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
+    public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style";
 	//The widgets that are hidden from palette.
 	public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
 	
@@ -157,6 +158,11 @@ public class PreferencesHelper {
     	return getString(PV_CONNECTION_LAYER);
     }
 
+    public static boolean isDefaultStyleClassic() {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DEFAULT_TO_CLASSIC_STYLE, true, null);
+    }
+    
     public static boolean isAdvancedGraphicsDisabled(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DISABLE_ADVANCED_GRAPHICS, false, null);

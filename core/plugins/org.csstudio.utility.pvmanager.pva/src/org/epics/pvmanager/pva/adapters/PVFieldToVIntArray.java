@@ -30,11 +30,11 @@ public class PVFieldToVIntArray extends AlarmTimeDisplayExtractor implements VIn
 	 * @param pvField
 	 * @param disconnected
 	 */
-	public PVFieldToVIntArray(PVStructure pvField, boolean disconnected) {
+	public PVFieldToVIntArray(PVStructure pvField, String fieldName, boolean disconnected) {
 		super(pvField, disconnected);
 		
 		PVIntArray valueField =
-			(PVIntArray)pvField.getScalarArrayField("value", ScalarType.pvInt);
+			(PVIntArray)pvField.getScalarArrayField(fieldName, ScalarType.pvInt);
 		if (valueField != null)
 		{
 			IntArrayData data = new IntArrayData();
@@ -50,6 +50,10 @@ public class PVFieldToVIntArray extends AlarmTimeDisplayExtractor implements VIn
 		}
 	}
 
+	public PVFieldToVIntArray(PVStructure pvField, boolean disconnected) {
+		this(pvField, "value", disconnected);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.epics.pvmanager.data.Array#getSizes()
 	 */

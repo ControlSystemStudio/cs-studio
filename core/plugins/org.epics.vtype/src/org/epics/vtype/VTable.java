@@ -38,7 +38,7 @@ public interface VTable extends VType {
     /**
      * The type of the elements in the column. The column array will be
      * an array of the given type. For primitive types, this function will return
-     * the TYPE class (such as {@link Double#TYPE}, while {@link #getColumnArray(int)}
+     * the TYPE class (such as {@link Double#TYPE}, while {@link #getColumnData(int) }
      * will return a {@link ListNumber}.
      *
      * @param column the column index

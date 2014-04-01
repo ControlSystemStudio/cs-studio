@@ -404,7 +404,7 @@ public abstract class ValueFormat extends Format {
      * Parses the string and returns an array of indexes in the enum.
      * <p>
      * Default implementation expects a comma separated list, and parses
-     * each element with {@link #parseEnum(java.lang.String) }.
+     * each element with {@link #parseEnum(java.lang.String, java.util.List) }.
      * 
      * @param source the text to parse
      * @param labels the labels for the enum

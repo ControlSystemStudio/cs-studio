@@ -23,6 +23,7 @@ import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /**
  * Implementation for channels of a {@link LocalDataSource}.
@@ -79,47 +80,11 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
         }
         return value;
     }
-    
-    private Object wrapValue(Object value) {
-        if (value instanceof VType) {
-            return value;
-        } else if (value instanceof Number) {
-            // Special support for numbers
-            return newVDouble(((Number) value).doubleValue(), alarmNone(), timeNow(),
-                    displayNone());
-        } else if (value instanceof String) {
-            // Special support for strings
-            return newVString(((String) value),
-                    alarmNone(), timeNow());
-        } else if (value instanceof double[]) {
-            return newVDoubleArray(new ArrayDouble((double[]) value), alarmNone(), timeNow(), displayNone());
-        } else if (value instanceof ListDouble) {
-            return newVDoubleArray((ListDouble) value, alarmNone(), timeNow(), displayNone());
-        } else if (value instanceof List) {
-            boolean matches = true;
-            List list = (List) value;
-            for (Object object : list) {
-                if (!(object instanceof String)) {
-                    matches = false;
-                }
-            }
-            if (matches) {
-                @SuppressWarnings("unchecked")
-                List<String> newList = (List<String>) list;
-                return newVStringArray(Collections.unmodifiableList(newList), alarmNone(), timeNow());
-            } else {
-                throw new UnsupportedOperationException("Type " + value.getClass().getName() + " contains non Strings");
-            }
-        } else {
-            // TODO: need to implement all the other arrays
-            throw new UnsupportedOperationException("Type " + value.getClass().getName() + "  is not yet supported");
-        }
-    }
 
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         try {
-            // If the string can be parse to a number, to it
+            // If the string can be parse to a number, do it
             if (newValue instanceof String) {
                 String value = (String) newValue;
                 try {
@@ -127,7 +92,10 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
                 } catch (NumberFormatException ex) {
                 }
             }
-            newValue = checkValue(wrapValue(newValue));
+            // If new value is not a VType, try to convert it
+            if (!(newValue instanceof VType)) {
+                newValue = checkValue(ValueFactory.toVTypeChecked(newValue));
+            }
             processMessage(newValue);
             callback.channelWritten(null);
         } catch (Exception ex) {
@@ -151,7 +119,7 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
         }
         initialValue = value;
         if (getLastMessagePayload() == null) {
-            processMessage(checkValue(wrapValue(value)));
+            processMessage(checkValue(ValueFactory.toVTypeChecked(value)));
         }
     }
     

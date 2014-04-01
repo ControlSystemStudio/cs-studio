@@ -22,8 +22,8 @@
 
    <splash
       location="org.csstudio.nsls2.product"
-      startupProgressRect="5,250,461,15"
-      startupMessageRect="7,230,457,20"
+      startupProgressRect="5,200,461,15"
+      startupMessageRect="7,180,457,20"
       startupForegroundColor="FFFFFF" />
    <launcher name="css-nsls2">
       <solaris/>

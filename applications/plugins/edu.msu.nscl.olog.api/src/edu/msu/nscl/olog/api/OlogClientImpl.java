@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -375,7 +374,7 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public InputStream getAttachment(Long logId, String attachmentFileName) {
+	public InputStream getAttachment(final Long logId, String attachmentFileName) {
 		try {
 			ClientResponse response = service.path("attachments")
 					.path(logId.toString()).path(attachmentFileName)
@@ -613,7 +612,38 @@ public class OlogClientImpl implements OlogClient {
 	@Override
 	public Collection<Log> update(Collection<LogBuilder> logs)
 			throws OlogException {
-		return null;
+	    	return wrappedSubmit(new UpdateLogs(logs));
+	}
+	
+	private class UpdateLogs implements Callable<Collection<Log>> {
+		private final XmlLogs logs;
+
+		public UpdateLogs(Collection<LogBuilder> logs) {
+			this.logs = new XmlLogs();
+			Collection<XmlLog> xmlLogs = new ArrayList<XmlLog>();
+			for (LogBuilder log : logs){
+			    xmlLogs.add(log.toXml());
+			}
+			this.logs.setLogs(xmlLogs);
+		}
+
+		@Override
+		public Collection<Log> call() throws Exception {
+			ClientResponse clientResponse = service.path("logs")
+					.accept(MediaType.APPLICATION_XML)
+					.accept(MediaType.APPLICATION_JSON)
+					.post(ClientResponse.class, logs);
+			if (clientResponse.getStatus() < 300) {
+			    // return new Log(clientResponse.getEntity(XmlLog.class));
+			    Collection<Log> logs = new HashSet<Log>();
+			    for (XmlLog xmlLog : clientResponse.getEntity(XmlLogs.class).getLogs()) {
+				logs.add(new Log(xmlLog));
+			    };
+			    return Collections.unmodifiableCollection(logs);
+			} else {
+			    throw new UniformInterfaceException(clientResponse);
+			}			
+		}
 	}
 
 	@Override
@@ -870,7 +900,7 @@ public class OlogClientImpl implements OlogClient {
 
 		@Override
 		public Collection<Log> call() throws Exception {
-			Collection<Log> logs = new LinkedHashSet<Log>();
+			Collection<Log> logs = new HashSet<Log>();
 			XmlLogs xmlLogs = service.path("logs").queryParams(map)
 					.accept(MediaType.APPLICATION_XML)
 					.accept(MediaType.APPLICATION_JSON).get(XmlLogs.class);
@@ -1064,6 +1094,4 @@ public class OlogClientImpl implements OlogClient {
 			throw new RuntimeException(e);
 		}
 	}
-
-	
 }

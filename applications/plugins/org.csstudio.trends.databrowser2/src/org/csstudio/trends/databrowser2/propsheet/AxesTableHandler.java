@@ -93,6 +93,10 @@ public class AxesTableHandler implements ILazyContentProvider
 		public void changedAnnotations()                 { /* NOP */ }
 		@Override
 		public void changedXYGraphConfig()               { /* NOP */ }
+		@Override
+		public void itemRefreshRequested(PVItem item) 	 { /* NOP */ }
+		@Override
+		public void cursorDataChanged() 				 { /* NOP */ }
     };
 
     /** Initialize
