@@ -38,7 +38,7 @@ class DelayedConnectionChannelHandler extends MultiplexedChannelHandler<Object, 
             if (value == null) {
                 throw new IllegalArgumentException(errorMessage);
             }
-            initialValue = ValueFactory.wrapValue(value);
+            initialValue = ValueFactory.toVTypeChecked(value);
         }
         delayInSeconds = (Double) tokens.get(1);
         this.exec = exec;

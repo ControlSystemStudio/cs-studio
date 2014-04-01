@@ -5,7 +5,6 @@
 package org.epics.pvmanager.formula;
 
 import org.epics.pvmanager.ExpressionLanguage;
-import org.epics.util.time.Timestamp;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.ValueFactory;
@@ -22,7 +21,7 @@ abstract class OneArgNumericFunction implements ExpressionLanguage.OneArgFunctio
         if (arg == null) {
             return null;
         }
-        return ValueFactory.newVDouble(calculate(arg.getValue().doubleValue()), ValueFactory.newTime(Timestamp.now()));
+        return ValueFactory.newVDouble(calculate(arg.getValue().doubleValue()));
     }
     
     abstract double calculate(double arg);

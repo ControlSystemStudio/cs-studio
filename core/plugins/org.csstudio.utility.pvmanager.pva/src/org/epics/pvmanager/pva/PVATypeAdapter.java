@@ -114,7 +114,7 @@ public abstract class PVATypeAdapter implements DataSourceTypeAdapter<PVAChannel
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean updateCache(ValueCache cache, PVAChannelHandler channel, PVStructure message) {
+    public boolean updateCache(@SuppressWarnings("rawtypes") ValueCache cache, PVAChannelHandler channel, PVStructure message) {
         Object value = createValue(message, channel.getChannelType(), !channel.isConnected());
         cache.writeValue(value);
         return true;

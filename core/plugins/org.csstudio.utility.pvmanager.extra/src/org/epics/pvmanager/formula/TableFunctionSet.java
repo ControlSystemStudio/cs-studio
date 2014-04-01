@@ -18,6 +18,7 @@ public class TableFunctionSet extends FormulaFunctionSet {
         super(new FormulaFunctionSetDescription("table", "Function to aggregate and manipulate tables")
                 .addFormulaFunction(new ColumnOfVTableFunction())
                 .addFormulaFunction(new ColumnFromVNumberArrayFunction())
+                .addFormulaFunction(new ColumnFromVStringArrayFunction())
                 .addFormulaFunction(new TableOfFormulaFunction())
                 .addFormulaFunction(new RangeFormulaFunction())
                 .addFormulaFunction(new StepFormulaFunction())

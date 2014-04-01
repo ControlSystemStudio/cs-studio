@@ -42,6 +42,24 @@ public class RangeUtil {
     }
     
     /**
+     * Returns the range of the absolute values within the range.
+     * <p>
+     * If the range is all positive, it returns the same range.
+     * 
+     * @param range a range
+     * @return the range of the absolute values
+     */
+    public static Range absRange(Range range) {
+        if (range.getMinimum().doubleValue() >= 0 && range.getMaximum().doubleValue() >= 0) {
+            return range;
+        } else if (range.getMinimum().doubleValue() < 0 && range.getMaximum().doubleValue() < 0) {
+            return range(- range.getMaximum().doubleValue(), - range.getMinimum().doubleValue());
+        } else {
+            return range(0, Math.max(range.getMinimum().doubleValue(), range.getMaximum().doubleValue()));
+        }
+    }
+    
+    /**
      * Determines whether the subrange is contained in the range or not.
      * 
      * @param range a range

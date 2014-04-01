@@ -92,7 +92,7 @@ abstract class SimFunction<T> extends Simulation<T> {
         if (lastTime == null)
             lastTime = Timestamp.now();
         
-        return newVDouble(value, newTime(Timestamp.now()), oldValue);
+        return newVDouble(value, timeNow(), oldValue);
     }
 
     /**

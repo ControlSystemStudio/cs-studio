@@ -216,8 +216,12 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 		}
 
 		graph = createGraph();
-		graph.update(graph.newUpdate().imageHeight(imageDisplay.getSize().y)
-				.imageWidth(imageDisplay.getSize().x));
+		// For views, the reconnect may be triggered before the layout sets
+		// the sizes. We make sure no to send an update if the size is 0.
+		if (imageDisplay.getSize().x > 0 && imageDisplay.getSize().y > 0) {
+			graph.update(graph.newUpdate().imageHeight(imageDisplay.getSize().y)
+					.imageWidth(imageDisplay.getSize().x));
+		}
 		pv = PVManager.read(graph).notifyOn(SWTUtil.swtThread())
 				.readListener(new PVReaderListener<Graph2DResult>() {
 					@Override

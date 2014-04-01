@@ -15,7 +15,7 @@ import org.epics.pvdata.pv.StringArrayData;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VTypeToString;
 
-public class PVFieldToVEnum extends AlarmTimeDisplayExtractor implements VEnum {
+public class PVFieldToVEnum extends AlarmTimeExtractor implements VEnum {
 	
 	protected final int index;
 	protected final List<String> labels;

@@ -32,11 +32,11 @@ public class PVFieldToVDoubleArray extends AlarmTimeDisplayExtractor implements 
 	 * @param pvField
 	 * @param disconnected
 	 */
-	public PVFieldToVDoubleArray(PVStructure pvField, boolean disconnected) {
+	public PVFieldToVDoubleArray(PVStructure pvField, String fieldName, boolean disconnected) {
 		super(pvField, disconnected);
 		
 		PVDoubleArray valueField =
-			(PVDoubleArray)pvField.getScalarArrayField("value", ScalarType.pvDouble);
+			(PVDoubleArray)pvField.getScalarArrayField(fieldName, ScalarType.pvDouble);
 		if (valueField != null)
 		{
 			DoubleArrayData data = new DoubleArrayData();
@@ -50,6 +50,10 @@ public class PVFieldToVDoubleArray extends AlarmTimeDisplayExtractor implements 
 			size = null;
 			list = null;
 		}
+	}
+
+	public PVFieldToVDoubleArray(PVStructure pvField, boolean disconnected) {
+		this(pvField, "value", disconnected);
 	}
 
 	/* (non-Javadoc)

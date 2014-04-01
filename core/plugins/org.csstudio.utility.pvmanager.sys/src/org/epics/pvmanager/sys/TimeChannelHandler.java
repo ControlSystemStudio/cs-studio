@@ -14,7 +14,7 @@ import static org.epics.vtype.ValueFactory.*;
  */
 class TimeChannelHandler extends SystemChannelHandler {
 
-    private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd hh:mm:ss.SSS");    
+    private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd HH:mm:ss.SSS");    
 
     public TimeChannelHandler(String channelName) {
         super(channelName);

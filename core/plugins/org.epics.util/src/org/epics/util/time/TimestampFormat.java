@@ -6,6 +6,7 @@ package org.epics.util.time;
 
 import java.text.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -179,6 +180,17 @@ public class TimestampFormat extends Format {
             throw new ParseException("Unparseable date: \"" + source + "\"" ,
                 pos.getErrorIndex());
         return result;
+    }
+    
+    /**
+     * This method returns the default pattern modified to add millisecond
+     * after the seconds.
+     * 
+     * @param locale a locale
+     * @return a pattern string
+     */
+    static String defaultPattern(Locale locale) {
+        return ((SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale)).toPattern().replace("ss", "ss.SSS");
     }
 
 }

@@ -9,9 +9,9 @@
       </category>
       <view
             category="org.csstudio.graphene.category"
-            class="org.csstudio.graphene.HistogramView"
+            class="org.csstudio.graphene.HistogramGraph2DView"
             icon="icons/graphene-histogram-16.png"
-            id="org.csstudio.graphene.HistogramView"
+            id="org.csstudio.graphene.HistogramGraph2DView"
             name="Histogram (alpha)"
             restorable="true">
       </view>
@@ -52,7 +52,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.graphene.HistogramView">
+                  value="org.csstudio.graphene.HistogramGraph2DView">
             </parameter>
          </command>
          <command
