@@ -52,17 +52,17 @@ class IntensityGraph2DFunction implements ReadFunction<Graph2DResult> {
         // TODO: check array is one dimensional
 
         Cell2DDataset dataset = null;
-        try {
-            if (data.getSizes().size() == 1) {
-                dataset = Cell2DDatasets.datasetFrom(data.getData(), new ArrayDouble(0, 1),
-                        data.getDimensionDisplay().get(0).getCellBoundaries());
-            } else {
-                dataset = Cell2DDatasets.datasetFrom(data.getData(), data.getDimensionDisplay().get(1).getCellBoundaries(),
-                        data.getDimensionDisplay().get(0).getCellBoundaries());
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
+        
+        if (data.getSizes().size() == 1) {
+            dataset = Cell2DDatasets.datasetFrom(data.getData(), data.getDimensionDisplay().get(0).getCellBoundaries(),
+                    new ArrayDouble(0, 1));
+        } else if (data.getSizes().size() == 2) {
+            dataset = Cell2DDatasets.datasetFrom(data.getData(), data.getDimensionDisplay().get(1).getCellBoundaries(),
+                    data.getDimensionDisplay().get(0).getCellBoundaries());
+        } else {
+            throw new IllegalArgumentException("Array is 3D or more");
         }
+            
         // Process all renderer updates
         for (IntensityGraph2DRendererUpdate rendererUpdate : getUpdateQueue().readValue()) {
             renderer.update(rendererUpdate);
@@ -77,10 +77,9 @@ class IntensityGraph2DFunction implements ReadFunction<Graph2DResult> {
         renderer.draw(buffer, dataset);
         
         return new Graph2DResult(null, ValueUtil.toVImage(image),
-                null, null, -1);
-//                new GraphDataRange(renderer.getXPlotRange(), dataset.getXRange(), renderer.getXAggregatedRange()),
-//                new GraphDataRange(renderer.getYPlotRange(), dataset.getStatistics(), renderer.getYAggregatedRange()),
-//                -1);
+                new GraphDataRange(renderer.getXPlotRange(), dataset.getXRange(), renderer.getXAggregatedRange()),
+                new GraphDataRange(renderer.getYPlotRange(), dataset.getStatistics(), renderer.getYAggregatedRange()),
+                -1);
     }
     
 }
