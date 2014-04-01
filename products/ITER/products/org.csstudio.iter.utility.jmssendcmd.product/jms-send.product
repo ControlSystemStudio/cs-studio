@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="JMSSender" uid="org.csstudio.iter.product.utility.jmssendcmd.product" id="org.csstudio.iter.utility.jmssendcmd.product.product" application="org.csstudio.utility.jmssendcmd.main" version="3.2.13.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="JMSSender" uid="org.csstudio.iter.product.utility.jmssendcmd.product" id="org.csstudio.iter.utility.jmssendcmd.product.product" application="org.csstudio.utility.jmssendcmd.main" version="3.2.15.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
