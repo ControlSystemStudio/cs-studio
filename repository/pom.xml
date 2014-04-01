@@ -29,6 +29,13 @@
           <formats>
             <linux>tar.gz</linux>
           </formats>
+          <products>
+            <product>
+              <id>cs-studio</id>
+              <rootFolder>cs-studio</rootFolder>
+              <archiveFileName>cs-studio-${project.version}</archiveFileName>
+            </product>
+          </products>
         </configuration>
         <executions>
           <execution>
