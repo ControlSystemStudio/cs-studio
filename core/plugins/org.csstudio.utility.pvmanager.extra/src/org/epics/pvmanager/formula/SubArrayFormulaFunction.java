@@ -4,23 +4,23 @@
  */
 package org.epics.pvmanager.formula;
 
-import static org.epics.vtype.ValueFactory.alarmNone;
 import static org.epics.vtype.ValueFactory.displayNone;
 import static org.epics.vtype.ValueFactory.newVNumberArray;
-import static org.epics.vtype.ValueFactory.timeNow;
 
 import java.util.Arrays;
 import java.util.List;
+import org.epics.pvmanager.util.NullUtils;
 
 import org.epics.util.array.ListMath;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.ValueUtil;
 
 /**
  * @author shroffk
  *
  */
-public class SubArrayFormulaFunction implements FormulaFunction {
+class SubArrayFormulaFunction implements FormulaFunction {
 
     /*
      * (non-Javadoc)
@@ -101,12 +101,19 @@ public class SubArrayFormulaFunction implements FormulaFunction {
      */
     @Override
     public Object calculate(List<Object> args) {
+        if (NullUtils.containsNull(args)) {
+            return null;
+        }
+        
         VNumberArray numberArray = (VNumberArray) args.get(0);
         int fromIndex = ((VNumber) args.get(1)).getValue().intValue();
         int toIndex = ((VNumber) args.get(2)).getValue().intValue();
+        
         return newVNumberArray(
                 ListMath.limit(numberArray.getData(), fromIndex, toIndex),
-                alarmNone(), timeNow(), displayNone());
+                ValueUtil.highestSeverityOf(args, false),
+                ValueUtil.latestValidTimeOrNowOf(args),
+                displayNone());
     }
 
 }

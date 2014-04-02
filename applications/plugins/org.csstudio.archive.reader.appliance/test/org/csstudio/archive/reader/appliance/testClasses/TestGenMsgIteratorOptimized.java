@@ -39,7 +39,8 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
 		3,2,2,1,0,0,0,1,2,4};
 	public static final int[] STATUS = new int[]{
 		3,2,2,1,0,0,0,1,2,4};
-	
+	public static final int[] VALUES_COUNT = new int[]{
+		100,200,300,4,500,600,7,8,9,10};
 	
 	/**
 	 * Constructor
@@ -53,9 +54,13 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
 		if (name.startsWith("mean_")) {
 			int index = name.indexOf('(');
 			step = Integer.parseInt(name.substring(5,index));
-		} else if (name.startsWith("std_")) {
+		} else if (name.startsWith("std_") || name.startsWith("min_") ||
+				name.startsWith("max_")) {
 			int index = name.indexOf('(');
-			step = Integer.parseInt(name.substring(5,index));
+			step = Integer.parseInt(name.substring(4,index));
+		} else if (name.startsWith("count_")) {
+			int index = name.indexOf('(');
+			step = Integer.parseInt(name.substring(6,index));
 		}
 		
 		try {
@@ -84,7 +89,12 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
 		size = (int)(((end.getTime()-start.getTime())/1000)/step);
 		Number[] values = new Number[size];
 		
-		if (name.contains("double")) {
+		if (name.contains("count")) {
+			payloadType = PayloadType.SCALAR_INT;
+			for (int i = 0; i < size; i++) {
+				values[i] = VALUES_COUNT[i%VALUES_COUNT.length];
+			}
+		} else if (name.contains("double")) {
 			payloadType = PayloadType.SCALAR_DOUBLE;
 			for (int i = 0; i < size; i++) {
 				values[i] = VALUES_DOUBLE[i%VALUES_DOUBLE.length];

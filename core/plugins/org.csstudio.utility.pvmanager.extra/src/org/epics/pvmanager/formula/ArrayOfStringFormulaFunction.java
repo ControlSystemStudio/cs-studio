@@ -4,23 +4,20 @@
  */
 package org.epics.pvmanager.formula;
 
-import static org.epics.vtype.ValueFactory.alarmNone;
-import static org.epics.vtype.ValueFactory.newTime;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.util.time.Timestamp;
 import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.ValueFactory;
+import org.epics.vtype.ValueUtil;
 
 /**
  * @author shroffk
  *
  */
-public class ArrayOfStringFormulaFunction implements FormulaFunction {
+class ArrayOfStringFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
@@ -59,18 +56,19 @@ public class ArrayOfStringFormulaFunction implements FormulaFunction {
 
     @Override
     public Object calculate(List<Object> args) {
-
-        List<String> data = new ArrayList<String>();
+        
+        List<String> data = new ArrayList<>();
         for (Object arg : args) {
             VString str = (VString) arg;
             if (str == null || str.getValue() == null)
-                data.add("NaN");
+                data.add(null);
             else
                 data.add(str.getValue());
         }
 
-        return ValueFactory.newVStringArray(data, alarmNone(),
-                newTime(Timestamp.now()));
+        return ValueFactory.newVStringArray(data,
+                ValueUtil.highestSeverityOf(args, false),
+		ValueUtil.latestValidTimeOrNowOf(args));
     }
 
 }

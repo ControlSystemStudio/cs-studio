@@ -10,14 +10,19 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
+import static org.epics.vtype.ValueFactory.*;
 
 /**
  * Various utility methods for runtime handling of the types defined in
@@ -33,9 +38,10 @@ public class ValueUtil {
 
     private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByte.class, VByteArray.class, VDouble.class,
             VDoubleArray.class, VEnum.class, VEnumArray.class, VFloat.class, VFloatArray.class,
-            VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
+            VLong.class, VLongArray.class, VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
             VMultiInt.class, VMultiString.class, VShort.class, VShortArray.class,
-            VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VTable.class);
+            VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VTable.class,
+            VImage.class);
 
     /**
      * Returns the type of the object by returning the class object of one
@@ -147,6 +153,31 @@ public class ValueUtil {
                     finalTime = newTime;
                 }
             }
+        }
+        
+        return finalTime;
+    }
+    
+    /**
+     * Returns the time with latest valid timestamp or now.
+     * 
+     * @param args a list of values
+     * @return the latest time; can't be null
+     */
+    public static Time latestValidTimeOrNowOf(final List<Object> args) {
+        Time finalTime = null;
+        for (Object object : args) {
+            Time newTime;
+            if (object != null)  {
+                newTime = ValueUtil.timeOf(object);
+                if (newTime != null && newTime.isTimeValid() && (finalTime == null || newTime.getTimestamp().compareTo(finalTime.getTimestamp()) > 0)) {
+                    finalTime = newTime;
+                }
+            }
+        }
+        
+        if (finalTime == null) {
+            finalTime = ValueFactory.timeNow();
         }
         
         return finalTime;
@@ -480,6 +511,35 @@ public class ValueUtil {
     }
     
     /**
+     * Extracts the values of a column, making sure it contains
+     * strings.
+     * 
+     * @param table a table
+     * @param columnName the name of the column to extract
+     * @return the values; null if the columnName is null or is not found
+     * @throws IllegalArgumentException if the column is found but does not contain string values
+     */
+    public static List<String> stringColumnOf(VTable table, String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+        
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            if (columnName.equals(table.getColumnName(i))) {
+                if (table.getColumnType(i).equals(String.class)) {
+                    @SuppressWarnings("unchecked")
+                    List<String> result = (List<String>) table.getColumnData(i);
+                    return result;
+                } else {
+                    throw new IllegalArgumentException("Column '" + columnName +"' is not string (contains " + table.getColumnType(i).getSimpleName() + ")");
+                }
+            }
+        }
+        
+        throw new IllegalArgumentException("Column '" + columnName +"' was not found");
+    }
+    
+    /**
      * Returns the default array dimension display by looking at the size
      * of the n dimensional array and creating cell boundaries based on index.
      * 
@@ -487,9 +547,20 @@ public class ValueUtil {
      * @return the array dimension display
      */
     public static List<ArrayDimensionDisplay> defaultArrayDisplay(VNumberArray array) {
+        return defaultArrayDisplay(array.getSizes());
+    }
+    
+    /**
+     * Returns the default array dimension display given the size
+     * of the n dimensional array and creating cell boundaries based on index.
+     * 
+     * @param sizes the shape of the array
+     * @return the array dimension display
+     */
+    public static List<ArrayDimensionDisplay> defaultArrayDisplay(ListInt sizes) {
         List<ArrayDimensionDisplay> displays = new ArrayList<>();
-        for (int i = 0; i < array.getSizes().size(); i++) {
-            displays.add(ValueFactory.newDisplay(array.getSizes().getInt(i)));
+        for (int i = 0; i < sizes.size(); i++) {
+            displays.add(ValueFactory.newDisplay(sizes.getInt(i)));
         }
         return displays;
     }

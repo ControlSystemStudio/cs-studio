@@ -6,14 +6,9 @@ package org.epics.pvmanager.formula;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.antlr.runtime.*;
-import org.epics.vtype.VDouble;
-import org.epics.vtype.VNumber;
 import org.epics.pvmanager.expression.DesiredRateExpression;
-import static org.epics.pvmanager.ExpressionLanguage.*;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
@@ -23,13 +18,10 @@ import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
 import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.WriteExpression;
 import org.epics.util.text.StringUtil;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VString;
-import org.epics.vtype.VTable;
-import org.epics.vtype.VType;
 import org.epics.vtype.ValueUtil;
 
 /**
+ * Support for formula expressions.
  *
  * @author carcassi
  */
