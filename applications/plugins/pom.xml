@@ -214,6 +214,7 @@
     <!--<module>org.csstudio.utility.tine.ui</module>--><!-- depends on org.csstudio.utility.tine -->
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
+    <module>org.csstudio.vtype.pv</module>
     <!--<module>org.custommonkey.xmlunit</module>--><!-- use plugin from Orbit repository -->
     <!--<module>org.eclipse.nebula.jface.gridviewer</module>--><!-- Moved to third party repository -->
     <!--<module>org.eclipse.nebula.widgets.grid</module>--><!-- Moved to third party repository -->
