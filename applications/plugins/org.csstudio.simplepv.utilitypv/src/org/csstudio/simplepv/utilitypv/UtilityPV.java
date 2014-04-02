@@ -34,8 +34,9 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.osgi.util.NLS;
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ListDouble;
+import org.epics.util.array.ArrayLong;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
@@ -153,26 +154,14 @@ public class UtilityPV implements IPV {
 		if(iValue instanceof IDoubleValue){
 			double[] values = ((IDoubleValue)iValue).getValues();
 			if(values.length >1)
-				return ValueFactory.newVDoubleArray(values, alarm, time, display);
+				return ValueFactory.newVDoubleArray(new ArrayDouble(values), alarm, time, display);
 			return ValueFactory.newVDouble(
 					((IDoubleValue)iValue).getValue(), alarm, time, display);
 		}
 		if(iValue instanceof ILongValue){
 			final long[] values = ((ILongValue)iValue).getValues();
 			if(values.length > 1)
-				return ValueFactory.newVDoubleArray(new ListDouble(){
-
-					@Override
-					public double getDouble(int index) {
-						return values[index];
-					}
-
-					@Override
-					public int size() {
-						return values.length;
-					}
-					
-				}, alarm, time, display);
+				return ValueFactory.newVLongArray(new ArrayLong(values), alarm, time, display);
 			return ValueFactory.newVDouble(
 					(double) ((ILongValue)iValue).getValue(), alarm, time, display);
 		}
