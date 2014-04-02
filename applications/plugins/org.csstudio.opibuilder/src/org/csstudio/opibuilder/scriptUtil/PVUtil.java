@@ -33,7 +33,7 @@ import org.epics.vtype.AlarmSeverity;
  */
 public class PVUtil{
 	
-	private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd hh:mm:ss.SSS"); //$NON-NLS-1$
+	private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd HH:mm:ss.SSS"); //$NON-NLS-1$
 	
 	/**Create a PV and start it. PVListener can be added to the PV to monitor its
 	 * value change, but please note that the listener is executed in non-UI thread.

@@ -17,6 +17,13 @@ public class VTypeValueEquals {
         // Do not create
     }
 
+    /**
+     * Tests whether two alarms have the same name and severity.
+     * 
+     * @param alarm1 first alarm
+     * @param alarm2 second alarm
+     * @return true if equal or both null
+     */
     public static boolean alarmEquals(Alarm alarm1, Alarm alarm2) {
 	if (alarm1 == null && alarm2 == null) {
 	    return true;
@@ -30,6 +37,14 @@ public class VTypeValueEquals {
                 alarm1.getAlarmName().equals(alarm2.getAlarmName());
     }
 
+    /**
+     * Tests whether the two time have the same timestamp, user tag
+     * and if they are both valid.
+     * 
+     * @param time1 first time
+     * @param time2 second time
+     * @return  true if equal or both null
+     */
     public static boolean timeEquals(Time time1, Time time2) {
 	if (time1 == null && time2 == null) {
 	    return true;
@@ -44,6 +59,13 @@ public class VTypeValueEquals {
                 time1.isTimeValid() == time2.isTimeValid();
     }
 
+    /**
+     * Tests whether the two objects are of the same VType.
+     * 
+     * @param obj1 first object
+     * @param obj2 second object
+     * @return true if same type or both null
+     */
     public static boolean typeEquals(Object obj1, Object obj2) {
 	if (obj1 == null && obj2 == null) {
 	    return true;
@@ -90,12 +112,38 @@ public class VTypeValueEquals {
         return true;
     }
     
+    /**
+     * Checks whether the two array have the data: equal data and
+     * equal sizes.
+     * 
+     * @param array1 first array
+     * @param array2 second array
+     * @return true if equal data or both null
+     */
     public static boolean valueEquals(VNumberArray array1, VNumberArray array2) {
         return array1.getData().equals(array2.getData()) && array1.getSizes().equals(array2.getSizes());
     }
 
+    /**
+     * Checks whether the two number have the same value.
+     * 
+     * @param number1 the first number
+     * @param number2 the second number
+     * @return true if equal value or both null
+     */
     public static boolean valueEquals(VNumber number1, VNumber number2) {
         return number1.getValue().equals(number2.getValue());
+    }
+
+    /**
+     * Checks whether the two booleans have the same value.
+     * 
+     * @param bool1 the first boolean
+     * @param bool2 the second boolean
+     * @return true if equal value or both null
+     */
+    public static boolean valueEquals(VBoolean bool1, VBoolean bool2) {
+        return bool1.getValue().equals(bool2.getValue());
     }
 
     public static boolean valueEquals(VString str1, VString str2) {
@@ -137,6 +185,14 @@ public class VTypeValueEquals {
 	
 	if((obj1 instanceof VNumber) && (obj2 instanceof VNumber)) {
 	    return valueEquals((VNumber) obj1, (VNumber) obj2);
+	}
+	
+	if((obj1 instanceof VBoolean) && (obj2 instanceof VBoolean)) {
+	    return valueEquals((VBoolean) obj1, (VBoolean) obj2);
+	}
+	
+	if((obj1 instanceof VTable) && (obj2 instanceof VTable)) {
+	    return valueEquals((VTable) obj1, (VTable) obj2);
 	}
 
 	return false;

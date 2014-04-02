@@ -62,7 +62,7 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
 		java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
 		java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 		
-		String std = new StringBuilder().append("std_").append(interval).append('(').append(name).append(')').toString();
+		String std = new StringBuilder().append("std_").append(interval).append('(').append(pvName).append(')').toString();
 		DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
 		stdStream = dataRetrieval.getDataForPV(std, sqlStartTimestamp, sqlEndTimestamp);
 		if (stdStream != null) { 
@@ -71,7 +71,7 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
 			throw new ArchiverApplianceException("Could not fetch standard deviation data.");
 		}
 		
-		String min = new StringBuilder().append("min_").append(interval).append('(').append(name).append(')').toString();
+		String min = new StringBuilder().append("min_").append(interval).append('(').append(pvName).append(')').toString();
 		dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
 		minStream = dataRetrieval.getDataForPV(min, sqlStartTimestamp, sqlEndTimestamp);
 		if (minStream != null) { 
@@ -80,7 +80,7 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
 			throw new ArchiverApplianceException("Could not fetch minimum data.");
 		}
 		
-		String max = new StringBuilder().append("max_").append(interval).append('(').append(name).append(')').toString();
+		String max = new StringBuilder().append("max_").append(interval).append('(').append(pvName).append(')').toString();
 		dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
 		maxStream = dataRetrieval.getDataForPV(max, sqlStartTimestamp, sqlEndTimestamp);
 		if (maxStream != null) { 
@@ -89,7 +89,7 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
 			throw new ArchiverApplianceException("Could not fetch maximum data.");
 		}
 		
-		String count = new StringBuilder().append("count_").append(interval).append('(').append(name).append(')').toString();
+		String count = new StringBuilder().append("count_").append(interval).append('(').append(pvName).append(')').toString();
 		dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
 		countStream = dataRetrieval.getDataForPV(count, sqlStartTimestamp, sqlEndTimestamp);
 		if (countStream != null) { 

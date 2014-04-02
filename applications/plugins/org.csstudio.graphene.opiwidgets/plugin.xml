@@ -24,8 +24,16 @@
             editpart_class="org.csstudio.graphene.opiwidgets.BubbleGraph2DWidgetEditPart"
             icon="platform:/plugin/org.csstudio.graphene/icons/graphene-bubble-16.png"
             model_class="org.csstudio.graphene.opiwidgets.BubbleGraph2DWidgetModel"
-            name="Scatter Graph"
+            name="Bubble Graph"
             typeId="org.csstudio.graphene.opiwidgets.BubbleGraph2D">
+      </widget>
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.graphene.opiwidgets.HistogramGraph2DWidgetEditPart"
+            icon="platform:/plugin/org.csstudio.graphene/icons/graphene-histogram-16.png"
+            model_class="org.csstudio.graphene.opiwidgets.HistogramGraph2DWidgetModel"
+            name="Histogram Graph"
+            typeId="org.csstudio.graphene.opiwidgets.HistogramGraph2D">
       </widget>
    </extension>
 

@@ -51,7 +51,7 @@ public abstract class AbstractArchiverReaderTesting {
 	 * @throws Exception in case of an error
 	 */
 	protected ArchiveVType[] getValuesStatistics(String pvname, int count, Timestamp start, Timestamp end) throws Exception {
-		ValueIterator iterator = getIterator(pvname, true, 100,start,end);
+		ValueIterator iterator = getIterator(pvname, true, count,start,end);
 		ArrayList<ArchiveVType> vals = new ArrayList<ArchiveVType>();
 		while(iterator.hasNext()) {
 			vals.add((ArchiveVType)iterator.next());
