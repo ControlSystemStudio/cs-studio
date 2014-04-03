@@ -118,6 +118,27 @@ public class ExpressionLanguage {
 	return new LineGraph2DExpression(tableData, xColumnName, yColumnName, tooltipColumnName);
     }
     
+    public static MultilineGraph2DExpression multilineGraphOf(
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName) {
+	return new MultilineGraph2DExpression(tableData, xColumnName, yColumnName);
+    }
+    
+    public static NLineGraphs2DExpression multiAxisMultiLineMultiGraphOf(
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName) {
+	return new NLineGraphs2DExpression(tableData, xColumnName, yColumnName);
+    }
+    
+    public static MultiYAxisGraph2DExpression multiAxisMultiLineGraphOf(
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName) {
+	return new MultiYAxisGraph2DExpression(tableData, xColumnName, yColumnName);
+    }
+    
     public static SparklineGraph2DExpression sparklineGraphOf(
 	    DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
