@@ -1,4 +1,10 @@
 com.google.common
+com.python.pydev_2.8.1.2013072611
+com.python.pydev.analysis_2.8.1.2013072611
+com.python.pydev.codecompletion_2.8.1.2013072611
+com.python.pydev.debug_2.8.1.2013072611
+com.python.pydev.fastparser_2.8.1.2013072611
+com.python.pydev.refactoring_2.8.1.2013072611
 javax.mail
 org.antlr.runtime
 org.apache.batik
@@ -17,6 +23,8 @@ org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.archive.rdb
 org.csstudio.archive.reader
+org.csstudio.archive.reader.aapi
+org.csstudio.archive.reader.archiverecord
 org.csstudio.archive.reader.channelarchiver
 org.csstudio.archive.reader.monica
 org.csstudio.archive.reader.rdb
@@ -25,6 +33,7 @@ org.csstudio.askap.chat
 org.csstudio.askap.logviewer
 org.csstudio.askap.navigator
 org.csstudio.askap.product
+org.csstudio.askap.pydev.configurator
 org.csstudio.askap.utility
 org.csstudio.askap.utility.icemanager
 org.csstudio.auth
@@ -51,6 +60,8 @@ org.csstudio.logbook
 org.csstudio.logbook.ui
 org.csstudio.logging
 org.csstudio.logging.ui
+org.csstudio.ndarray
+org.csstudio.numjy
 org.csstudio.openfile
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
@@ -69,6 +80,13 @@ org.csstudio.platform.libs.jdbc
 org.csstudio.platform.libs.jms
 org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.rdb
+org.csstudio.scan
+org.csstudio.scan.client
+org.csstudio.scan.ui
+org.csstudio.scan.ui.plot
+org.csstudio.scan.ui.scandata
+org.csstudio.scan.ui.scanmonitor
+org.csstudio.scan.ui.scantree
 org.csstudio.security
 org.csstudio.security.ui
 org.csstudio.simplepv
@@ -127,6 +145,7 @@ org.eclipse.equinox.launcher.gtk.solaris.x86_1.1.100.v20110505
 org.eclipse.equinox.launcher.win32.win32.x86_1.1.100.v20110502
 org.eclipse.equinox.launcher.win32.win32.x86_64_1.1.100.v20110502
 org.eclipse.equinox.p2.publisher.eclipse_1.0.0.v20110815-1438
+org.eclipse.jdt.debug_3.7.1.v20111006_r372
 org.eclipse.ui.intro.universal_3.2.500.v20110510
 org.epics.util
 org.epics.vtype
@@ -134,3 +153,15 @@ org.jdom
 org.junit_4.8.2.v4_8_2_v20110321-1705
 org.junit4_4.8.1.v20100525
 org.python
+org.python.pydev_2.8.1.2013072611
+org.python.pydev.ast_2.8.1.2013072611
+org.python.pydev.core_2.8.1.2013072611
+org.python.pydev.customizations_2.8.1.2013072611
+org.python.pydev.debug_2.8.1.2013072611
+org.python.pydev.help_2.8.1.2013072611
+org.python.pydev.jython_2.8.1.2013072611
+org.python.pydev.parser_2.8.1.2013072611
+org.python.pydev.refactoring_2.8.1.2013072611
+org.python.pydev.shared_core_2.8.1.2013072611
+org.python.pydev.shared_interactive_console_2.8.1.2013072611
+org.python.pydev.shared_ui_2.8.1.2013072611

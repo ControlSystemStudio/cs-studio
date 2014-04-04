@@ -161,6 +161,7 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
       <feature id="org.csstudio.askap.core.feature" version="3.2.14.qualifier"/>
       <feature id="org.csstudio.askap.applications.feature" version="3.2.14.qualifier"/>
       <feature id="org.csstudio.askap.optional.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.pydev.feature" version="1.0.0.qualifier"/>
    </features>
 
 
