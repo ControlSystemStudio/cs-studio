@@ -29,7 +29,8 @@ class IntensityGraph2DFunction implements ReadFunction<Graph2DResult> {
     
     private IntensityGraph2DRenderer renderer = new IntensityGraph2DRenderer(300, 200);
     
-    private Graph2DResult previousImage;
+    private VNumberArray oldData;
+    private Graph2DResult previousResult;
     private final QueueCollector<IntensityGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
     public IntensityGraph2DFunction(ReadFunction<?> arrayData) {
@@ -48,6 +49,15 @@ class IntensityGraph2DFunction implements ReadFunction<Graph2DResult> {
         if (data == null) {
             return null;
         }
+
+        List<IntensityGraph2DRendererUpdate> updates = getUpdateQueue().readValue();
+        
+        // If data is old and no updates, return the previous result
+        if (data == oldData && updates.isEmpty()) {
+            return previousResult;
+        }
+        
+        oldData = data;
         
         // TODO: check array is one dimensional
 
@@ -64,7 +74,8 @@ class IntensityGraph2DFunction implements ReadFunction<Graph2DResult> {
         }
             
         // Process all renderer updates
-        for (IntensityGraph2DRendererUpdate rendererUpdate : getUpdateQueue().readValue()) {
+        for (IntensityGraph2DRendererUpdate rendererUpdate : updates) {
+            System.out.println("Apply update");
             renderer.update(rendererUpdate);
         }
         
