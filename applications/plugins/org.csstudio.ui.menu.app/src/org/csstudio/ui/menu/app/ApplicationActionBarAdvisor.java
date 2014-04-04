@@ -107,15 +107,21 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         final IMenuService menuService = (IMenuService) window.getService(IMenuService.class);
         menuService.populateContributionManager(coolbarPopupMenuManager, "popup:windowCoolbarContextMenu"); //$NON-NLS-1$
 
-        // 'File' and 'User' sections of the cool bar
+        // 'File' section of the cool bar
         final IToolBarManager file_bar = new ToolBarManager();
-        final IToolBarManager user_bar = new ToolBarManager();
-        coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
-        coolbar.add(new ToolBarContributionItem(user_bar, TOOLBAR_USER));
-
         // File 'new' and 'save' actions
         file_bar.add(ActionFactory.NEW.create(window));
         file_bar.add(save);
         file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
+        coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
+
+        // 'User' section of the cool bar
+        final IToolBarManager user_bar = new ToolBarManager();
+        coolbar.add(new ToolBarContributionItem(user_bar, TOOLBAR_USER));
+
+        // Explicitly add "additions" and "editor" to work around https://bugs.eclipse.org/bugs/show_bug.cgi?id=422651
+        // After a restart, merging of persisted model, PerspectiveSpacer, contributions resulted in re-arranged toolbar with E4.
+        coolbar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        coolbar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.GROUP_EDITOR));
     }
 }
