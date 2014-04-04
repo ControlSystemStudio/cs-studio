@@ -127,7 +127,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          id="org.epics.util"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.3.0"
          unpack="false"/>
 
    <plugin
