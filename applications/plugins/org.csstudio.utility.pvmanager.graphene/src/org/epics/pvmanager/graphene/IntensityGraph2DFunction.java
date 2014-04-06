@@ -75,7 +75,6 @@ class IntensityGraph2DFunction implements ReadFunction<Graph2DResult> {
             
         // Process all renderer updates
         for (IntensityGraph2DRendererUpdate rendererUpdate : updates) {
-            System.out.println("Apply update");
             renderer.update(rendererUpdate);
         }
         
