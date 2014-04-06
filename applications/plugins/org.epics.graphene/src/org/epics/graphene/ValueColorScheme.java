@@ -12,6 +12,8 @@ package org.epics.graphene;
  */
 public interface ValueColorScheme {
     
+    public ValueColorSchemeInstance createInstance(Range range);
+    
     /**
      * Calculate the color for the value according to the ranges and puts it
      * into the colors buffer.
@@ -19,9 +21,9 @@ public interface ValueColorScheme {
      * @param value the value to color
      * @return the RGB color
      */
-    public int colorFor(double value);
+    //public int colorFor(double value);
     
-    public void setColors();
+    //public void setColors();
     
-    public int getColor(double value);
+    //public int getColor(double value);
 }

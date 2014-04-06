@@ -396,7 +396,8 @@ public abstract class TemporalGraph2DRenderer<T extends TemporalGraph2DRendererU
         line.lineTo(scaledX[scaledX.length - 1], scaledY[scaledY.length - 1]);
         return line;
     }
-
+//What does previousValue do?
+//Should it do the same thing as linearInterpolation?
     private static Path2D.Double previousValue(double[] scaledX, double[] scaledY) {
         Path2D.Double line = new Path2D.Double();
         line.moveTo(scaledX[0], scaledY[0]);
@@ -412,56 +413,191 @@ public abstract class TemporalGraph2DRenderer<T extends TemporalGraph2DRendererU
 
     private static Path2D.Double linearInterpolation(double[] scaledX, double[] scaledY) {
         Path2D.Double line = new Path2D.Double();
-        line.moveTo(scaledX[0], scaledY[0]);
-        for (int i = 1; i < scaledY.length; i++) {
-            line.lineTo(scaledX[i], scaledY[i]);
+//        line.moveTo(scaledX[0], scaledY[0]);
+//        for (int i = 1; i < scaledY.length; i++) {
+//            line.lineTo(scaledX[i], scaledY[i]);
+//        }
+        
+         for (int i = 0; i < scaledX.length; i++) {
+            // Do I have a current value?
+            if (!java.lang.Double.isNaN(scaledY[i])) {
+                // Do I have a previous value?
+                if (i != 0 && !java.lang.Double.isNaN(scaledY[i - 1])) {
+                    // Here I have both the previous value and the current value
+                    line.lineTo(scaledX[i], scaledY[i]);
+                } else {
+                    // Don't have a previous value
+                    // Do I have a next value?
+                    if (i != scaledX.length - 1 && !java.lang.Double.isNaN(scaledY[i + 1])) {
+                        // There is no value before, but there is a value after
+                        line.moveTo(scaledX[i], scaledY[i]);
+                    } else {
+                        // There is no value either before or after
+                        line.moveTo(scaledX[i] - 1, scaledY[i]);
+                        line.lineTo(scaledX[i] + 1, scaledY[i]);
+                    }
+                }
+            }
         }
         return line;
     }
 
     private static Path2D.Double cubicInterpolation(double[] scaledX, double[] scaledY) {
         Path2D.Double path = new Path2D.Double();
-        path.moveTo(scaledX[0], scaledY[0]);
-        for (int i = 1; i < scaledY.length; i++) {
-            // Extract 4 points (take care of boundaries)
-            double y1 = scaledY[i - 1];
-            double y2 = scaledY[i];
-            double x1 = scaledX[i - 1];
-            double x2 = scaledX[i];
+        for (int i = 0; i < scaledX.length; i++) {
+            
+            double y1;
+            double y2;
+            double x1;
+            double x2;
             double y0;
             double x0;
-            if (i > 1) {
-                y0 = scaledY[i - 2];
-                x0 = scaledX[i - 2];
-            } else {
-                y0 = y1 - (y2 - y1) / 2;
-                x0 = x1 - (x2 - x1);
-            }
             double y3;
             double x3;
-            if (i < scaledY.length - 1) {
-                y3 = scaledY[i + 1];
-                x3 = scaledX[i + 1];
-            } else {
-                y3 = y2 + (y2 - y1) / 2;
-                x3 = x2 + (x2 - x1) / 2;
-            }
-
-            // Convert to Bezier
-            double bx0 = x1;
-            double by0 = y1;
-            double bx3 = x2;
-            double by3 = y2;
-            double bdy0 = (y2 - y0) / (x2 - x0);
-            double bdy3 = (y3 - y1) / (x3 - x1);
-            double bx1 = bx0 + (x2 - x0) / 6.0;
-            double by1 = (bx1 - bx0) * bdy0 + by0;
-            double bx2 = bx3 - (x3 - x1) / 6.0;
-            double by2 = (bx2 - bx3) * bdy3 + by3;
-
-            path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+            
+            double bx0;
+            double by0;
+            double bx3;
+            double by3;
+            double bdy0;
+            double bdy3;
+            double bx1;
+            double by1;
+            double bx2;
+            double by2;
+          
+            //Do I have current value?
+            if (!java.lang.Double.isNaN(scaledY[i])){
+                //Do I have previous value?
+                if (i > 0 && !java.lang.Double.isNaN(scaledY[i - 1])) {
+                    //Do I have value two before?
+                    if (i > 0 + 1 && !java.lang.Double.isNaN(scaledY[i - 2])) {
+                        //Do I have next value?
+                        if (i != scaledX.length - 1 && !java.lang.Double.isNaN(scaledY[i + 1])) {
+                            y2 = scaledY[i];
+                            x2 = scaledX[i];
+                            y0 = scaledY[i - 2];
+                            x0 = scaledX[i - 2];
+                            y3 = scaledY[i + 1];
+                            x3 = scaledX[i + 1];
+                            y1 = scaledY[i - 1];
+                            x1 = scaledX[i - 1];
+                            bx0 = x1;
+                            by0 = y1;
+                            bx3 = x2;
+                            by3 = y2;
+                            bdy0 = (y2 - y0) / (x2 - x0);
+                            bdy3 = (y3 - y1) / (x3 - x1);
+                            bx1 = bx0 + (x2 - x0) / 6.0;
+                            by1 = (bx1 - bx0) * bdy0 + by0;
+                            bx2 = bx3 - (x3 - x1) / 6.0;
+                            by2 = (bx2 - bx3) * bdy3 + by3;
+                            path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+                        } 
+                        else{//Have current, previous, two before, but not value after
+                            y2 = scaledY[i];
+                            x2 = scaledX[i];
+                            y1 = scaledY[i - 1];
+                            x1 = scaledX[i - 1];
+                            y0 = scaledY[i - 2];
+                            x0 = scaledX[i - 2];
+                            y3 = y2 + (y2 - y1) / 2;
+                            x3 = x2 + (x2 - x1) / 2;
+                            bx0 = x1;
+                            by0 = y1;
+                            bx3 = x2;
+                            by3 = y2;
+                            bdy0 = (y2 - y0) / (x2 - x0);
+                            bdy3 = (y3 - y1) / (x3 - x1);
+                            bx1 = bx0 + (x2 - x0) / 6.0;
+                            by1 = (bx1 - bx0) * bdy0 + by0;
+                            bx2 = bx3 - (x3 - x1) / 6.0;
+                            by2 = (bx2 - bx3) * bdy3 + by3;
+                            path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+                        } 
+                    } else if (i != scaledX.length- 1 && !java.lang.Double.isNaN(scaledY[i + 1])) {
+                        //Have current , previous, and next, but not two before
+                        path.moveTo(scaledX[i - 1], scaledY[i - 1]);
+                        y2 = scaledY[i];
+                        x2 = scaledX[i];
+                        y1 = scaledY[i - 1];
+                        x1 = scaledX[i - 1];
+                        y0 = y1 - (y2 - y1) / 2;
+                        x0 = x1 - (x2 - x1) / 2;
+                        y3 = scaledY[i + 1];
+                        x3 = scaledX[i + 1];
+                        bx0 = x1;
+                        by0 = y1;
+                        bx3 = x2;
+                        by3 = y2;
+                        bdy0 = (y2 - y0) / (x2 - x0);
+                        bdy3 = (y3 - y1) / (x3 - x1);
+                        bx1 = bx0 + (x2 - x0) / 6.0;
+                        by1 = (bx1 - bx0) * bdy0 + by0;
+                        bx2 = bx3 - (x3 - x1) / 6.0;
+                        by2 = (bx2 - bx3) * bdy3 + by3;
+                        path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+                    }else{//have current, previous, but not two before or next
+                        path.lineTo(scaledX[i], scaledY[i]);
+                    }
+                //have current, but not previous
+                }else{
+                    // No previous value
+                    if (i != scaledX.length - 1 && !java.lang.Double.isNaN(scaledY[i + 1])) {
+                        // If we have the next value, just move, we'll draw later
+                        path.moveTo(scaledX[i], scaledY[i]);
+                    } else {
+                        // If not, write a small horizontal line
+                        path.moveTo(scaledX[i] - 1, scaledY[i]);
+                        path.lineTo(scaledX[i] + 1, scaledY[i]);
+                    }
+                }
+            }else{ //do not have current
+               // Do nothing
+             }
         }
         return path;
+//        path.moveTo(scaledX[0], scaledY[0]);
+//        for (int i = 1; i < scaledY.length; i++) {
+//            // Extract 4 points (take care of boundaries)
+//            double y1 = scaledY[i - 1];
+//            double y2 = scaledY[i];
+//            double x1 = scaledX[i - 1];
+//            double x2 = scaledX[i];
+//            double y0;
+//            double x0;
+//            if (i > 1) {
+//                y0 = scaledY[i - 2];
+//                x0 = scaledX[i - 2];
+//            } else {
+//                y0 = y1 - (y2 - y1) / 2;
+//                x0 = x1 - (x2 - x1);
+//            }
+//            double y3;
+//            double x3;
+//            if (i < scaledY.length - 1) {
+//                y3 = scaledY[i + 1];
+//                x3 = scaledX[i + 1];
+//            } else {
+//                y3 = y2 + (y2 - y1) / 2;
+//                x3 = x2 + (x2 - x1) / 2;
+//            }
+//
+//            // Convert to Bezier
+//            double bx0 = x1;
+//            double by0 = y1;
+//            double bx3 = x2;
+//            double by3 = y2;
+//            double bdy0 = (y2 - y0) / (x2 - x0);
+//            double bdy3 = (y3 - y1) / (x3 - x1);
+//            double bx1 = bx0 + (x2 - x0) / 6.0;
+//            double by1 = (bx1 - bx0) * bdy0 + by0;
+//            double bx2 = bx3 - (x3 - x1) / 6.0;
+//            double by2 = (bx2 - bx3) * bdy3 + by3;
+//
+//            path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+//        }
+//        return path;
     }
     
     private static final int MIN = 0;

@@ -14,7 +14,7 @@ import java.util.List;
  * @author sjdallst
  */
 public class MultilineGraph2DRendererUpdate extends Graph2DRendererUpdate<MultilineGraph2DRendererUpdate>{
-    private ColorScheme valueColorScheme;
+    private ValueColorScheme valueColorScheme;
     private ReductionScheme reduction;
     private InterpolationScheme interpolation;
     
@@ -27,7 +27,7 @@ public class MultilineGraph2DRendererUpdate extends Graph2DRendererUpdate<Multil
      * @param scheme Possible schemes:GRAY_SCALE, JET, HOT, COOL, SPRING, BONE, COPPER, PINK
      * @return MultilineGraph2DRendererUpdate
      */
-    public MultilineGraph2DRendererUpdate valueColorScheme(ColorScheme scheme) {
+    public MultilineGraph2DRendererUpdate valueColorScheme(ValueColorScheme scheme) {
         this.valueColorScheme = scheme;
         return self();
     }
@@ -68,7 +68,7 @@ public class MultilineGraph2DRendererUpdate extends Graph2DRendererUpdate<Multil
      *The current value of this object's ColorScheme variable. Can be null. 
      * @return ColorScheme
      */
-    public ColorScheme getValueColorScheme() {
+    public ValueColorScheme getValueColorScheme() {
         return valueColorScheme;
     }
     

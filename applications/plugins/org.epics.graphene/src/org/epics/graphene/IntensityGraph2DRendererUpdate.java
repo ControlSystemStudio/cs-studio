@@ -29,7 +29,9 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     
       private Boolean drawLegend;
     
-    private ColorScheme valueColorScheme;
+    private ValueColorScheme valueColorScheme;
+    
+    private ValueColorSchemeInstanceOptimizer optimizer;
     
     /**
      * Sets this object's drawLegend to the given boolean value.
@@ -51,11 +53,15 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
      * @param scheme supported schemes: any <code>ColorScheme</code> supported by the <code>ValueColorSchemes</code>
      * @return this
      */
-    public IntensityGraph2DRendererUpdate valueColorScheme(ColorScheme scheme) {
+    public IntensityGraph2DRendererUpdate valueColorScheme(ValueColorScheme scheme) {
         this.valueColorScheme = scheme;
         return self();
     }
     
+    public IntensityGraph2DRendererUpdate optimizer(ValueColorSchemeInstanceOptimizer optimizer){
+        this.optimizer = optimizer;
+        return self();
+    }
     /**
      * Sets this object's zLabelMargin to the given margin size.
      * @param margin integer distance(pixels) from the beginning of the z labels to the legend. 
@@ -100,8 +106,12 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
      * @return ColorScheme valueColorScheme, used to determine which color scheme will be used when drawing an intensity graph. 
      * Possible values include: GRAY_SCALE, JET, HOT, COOL, SPRING, BONE, COPPER, PINK
      */
-    public ColorScheme getValueColorScheme() {
+    public ValueColorScheme getValueColorScheme() {
         return valueColorScheme;
+    }
+    
+    public ValueColorSchemeInstanceOptimizer getOptimizer(){
+        return optimizer;
     }
     
     /**

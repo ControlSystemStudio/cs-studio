@@ -62,8 +62,8 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     private int minimumGraphWidth = 200;
     private int yLabelMaxWidth = 0;
     private int xLabelMaxHeight;
-    private ColorScheme lineScheme = ColorScheme.JET;
-    private ValueColorScheme lineValueScheme;
+    private ValueColorScheme valueColorScheme = new ValueColorSchemeJet();
+    private ValueColorSchemeInstance valueColorSchemeInstance;
     
     private double xPlotValueStart;
     private List<Double> yPlotValueStart;
@@ -124,7 +124,7 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         //Find the number of graphs that can be drawn while still conforming to style standards.
         getNumGraphs(data);
         Range datasetRange = RangeUtil.range(0,numGraphs-1);
-        lineValueScheme = ValueColorSchemes.schemeFor(lineScheme, datasetRange);
+        valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
         calculateRanges(dataRangesX, dataRangesY, numGraphs);
         calculateLabels();
         calculateGraphArea();        
@@ -142,7 +142,7 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         }
         
         for(int i = 0; i < numGraphs; i++){
-            g.setColor(new Color(lineValueScheme.colorFor(i)));
+            g.setColor(new Color(valueColorSchemeInstance.colorFor(i)));
             drawValueExplicitLine(xValues.get(i), yValues.get(i), interpolation, reduction,i);
         }
 
@@ -368,14 +368,14 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         }
         int count = 0;
         for(int i = 0; i < numGraphs; i+=2){
-            g.setColor(new Color(lineValueScheme.colorFor(i)));
+            g.setColor(new Color(valueColorSchemeInstance.colorFor(i)));
             Shape line = new Line2D.Double((xAreaCoordStart - (count+1)*(yLabelMargin + 1) - count*(yLabelMaxWidth + yLabelMargin)), yAreaCoordStart, (xAreaCoordStart - (count+1)*(yLabelMargin + 1) - count*(yLabelMaxWidth + yLabelMargin)), yAreaCoordEnd - 1);
             g.draw(line);
             count++;
         }
         count = 0;
         for(int i = 1; i < numGraphs; i+=2){
-            g.setColor(new Color(lineValueScheme.colorFor(i)));
+            g.setColor(new Color(valueColorSchemeInstance.colorFor(i)));
             Shape line = new Line2D.Double((xAreaCoordEnd + (count+1)*(yLabelMargin + 1) + count*(yLabelMaxWidth + yLabelMargin)), yAreaCoordStart, (xAreaCoordEnd + (count+1)*(yLabelMargin + 1) + count*(yLabelMaxWidth + yLabelMargin)), yAreaCoordEnd - 1);
             g.draw(line);
             count++;

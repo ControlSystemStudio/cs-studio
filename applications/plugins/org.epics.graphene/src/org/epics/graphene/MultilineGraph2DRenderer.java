@@ -34,10 +34,11 @@ public class MultilineGraph2DRenderer extends Graph2DRenderer<MultilineGraph2DRe
         return new MultilineGraph2DRendererUpdate();
     }
     
-    private ValueColorScheme colorScheme;
-    private ColorScheme valueColorScheme = ColorScheme.GRAY_SCALE;  
+    private ValueColorScheme valueColorScheme = new ValueColorSchemeBlackAndWhite();
+    private ValueColorSchemeInstance valueColorSchemeInstance;  
     private InterpolationScheme interpolation = InterpolationScheme.LINEAR;
     private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;
+    private Range datasetRange;
     /**
      *Supported interpolation schemes. 
      * Possible values:
@@ -70,6 +71,7 @@ public class MultilineGraph2DRenderer extends Graph2DRenderer<MultilineGraph2DRe
         
         if(update.getValueColorScheme() != null){
             valueColorScheme = update.getValueColorScheme();
+            valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
         }
         if(update.getDataReduction() != null){
             reduction = update.getDataReduction();
@@ -96,17 +98,19 @@ public class MultilineGraph2DRenderer extends Graph2DRenderer<MultilineGraph2DRe
         drawBackground();
         drawGraphArea();
         
-        Range datasetRange = RangeUtil.range(0,data.size());
+        Range datasetRangeCheck = RangeUtil.range(0,data.size());
         
         //Set color scheme
-        colorScheme = ValueColorSchemes.schemeFor(valueColorScheme, datasetRange);
-        
+        if(valueColorSchemeInstance == null || datasetRange == null || datasetRange != datasetRangeCheck){
+            datasetRange = datasetRangeCheck;
+            valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
+        }
         //Draw a line for each set of data in the data array.
         for(int datasetNumber = 0; datasetNumber < data.size(); datasetNumber++){
             SortedListView xValues = org.epics.util.array.ListNumbers.sortedView(data.get(datasetNumber).getXValues());
             ListNumber yValues = org.epics.util.array.ListNumbers.sortedView(data.get(datasetNumber).getYValues(), xValues.getIndexes());        
             setClip(g);
-            g.setColor(new Color(colorScheme.colorFor((double)datasetNumber)));
+            g.setColor(new Color(valueColorSchemeInstance.colorFor((double)datasetNumber)));
             drawValueExplicitLine(xValues, yValues, interpolation, reduction);
         }
     }

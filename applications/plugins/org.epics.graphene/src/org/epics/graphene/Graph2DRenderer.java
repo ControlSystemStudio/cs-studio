@@ -667,32 +667,6 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         return line;
     }
    
-    /*private Path2D.Double convertToBezier(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3, Path2D.Double path){
-        double bx0;
-        double by0;
-        double bx3;
-        double by3;
-        double bdy0;
-        double bdy3;
-        double bx1;
-        double by1;
-        double bx2;
-        double by2;
-        
-        bx0 = x1;
-        by0 = y1;
-        bx3 = x2;
-        by3 = y2;
-        bdy0 = (y2 - y0) / (x2 - x0);
-        bdy3 = (y3 - y1) / (x3 - x1);
-        bx1 = bx0 + (x2 - x0) / 6.0;
-        by1 = (bx1 - bx0) * bdy0 + by0;
-        bx2 = bx3 - (x3 - x1) / 6.0;
-        by2 = (bx2 - bx3) * bdy3 + by3;
-        path.curveTo(bx1, by1, bx2, by2, bx3, by3);
-        
-        return path;
-        }*/
     private static Path2D.Double linearInterpolation(ScaledData scaledData){
         double[] scaledX = scaledData.scaledX;
         double[] scaledY = scaledData.scaledY;
@@ -751,11 +725,6 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             double by1;
             double bx2;
             double by2;
-            //1. start at i = start
-            //2. convert to bezier in the same place as you assign in the three normal cases
-            //3. if statements - start with most general to most specific in the middle
-            //4. can make function that converts to bezier and then you call it
-            //5 check location and if you have nan in most if's
             
             //Do I have current value?
             if (!java.lang.Double.isNaN(scaledY[i])){
