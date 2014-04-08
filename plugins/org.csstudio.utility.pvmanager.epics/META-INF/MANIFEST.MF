@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
  org.epics.util;bundle-version="0.2.0",
  org.epics.vtype;bundle-version="2.0.0",
- org.epics.pvmanager-epics
+ org.epics.pvmanager-jca
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.epics.pvmanager.jca
