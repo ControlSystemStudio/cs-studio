@@ -550,6 +550,7 @@ public class LinearScaleTickLabels extends Figure {
 		// set the tick label visibility
 		int previousPosition = 0;
 		String previousLabel = null;
+		Double previousValue = null;
 		for (int i = 0; i < tickLabelPositions.size(); i++) {
 			// check if it has space to draw
 			boolean hasSpaceToDraw = true;
@@ -559,9 +560,9 @@ public class LinearScaleTickLabels extends Figure {
 				hasSpaceToDraw = hasSpaceToDraw(previousPosition, currentPosition,
 						previousLabel, currentLabel);
 			}
-
+			Double currentValue = tickLabelValues.get(i);
 			// check if repeated			
-			boolean isRepeatSameTickAndNotEnd = currentLabel.equals(previousLabel)
+			boolean isRepeatSameTickAndNotEnd = currentValue.equals(previousValue)
 					&& (i != 0 && i != tickLabelPositions.size() - 1);
 
 			// check if it is major tick label
@@ -576,6 +577,7 @@ public class LinearScaleTickLabels extends Figure {
 			} else {
 				previousPosition = currentPosition;
 				previousLabel = currentLabel;
+				previousValue = currentValue;
 			}
 		}
 	}
