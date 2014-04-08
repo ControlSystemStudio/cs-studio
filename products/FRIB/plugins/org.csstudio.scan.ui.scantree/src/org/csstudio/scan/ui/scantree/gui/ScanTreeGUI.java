@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.LoopCommand;
@@ -39,6 +38,7 @@ import org.csstudio.scan.ui.scantree.operations.OpenPropertiesAction;
 import org.csstudio.scan.ui.scantree.operations.PropertyChangeOperation;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.SerializableItemTransfer;
+import org.csstudio.ui.util.perspective.OpenPerspectiveAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TreeColumnLayout;
