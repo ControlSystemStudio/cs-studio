@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.logbook.LogEntry;
@@ -18,7 +21,6 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
-import org.csstudio.logbook.ui.extra.LogEntryTree.LogEntryTreeModel;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -46,7 +48,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
@@ -61,8 +66,8 @@ public class LogTableView extends ViewPart {
     private Text text;
     private org.csstudio.logbook.ui.extra.LogEntryTable logEntryTable;
 
-    private final IPreferencesService service = Platform.getPreferencesService();
-    
+    private final IPreferencesService preferenceService = Platform.getPreferencesService();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.logbook.ui.LogTableView"; //$NON-NLS-1$
 
@@ -149,7 +154,7 @@ public class LogTableView extends ViewPart {
 	
 	btnNewButton = new Button(parent, SWT.NONE);	
 	try {
-	    resultSize = service.getInt("org.csstudio.logbook.ui","Result.size", 100, null);
+	    resultSize = preferenceService.getInt("org.csstudio.logbook.ui","Result.size", 100, null);
 	} catch (Exception ex) {
 	    errorBar.setException(ex);
 	}
@@ -260,6 +265,120 @@ public class LogTableView extends ViewPart {
 	nextPage.setText("<a>Next page</a>");
 	
 	PopupMenuUtil.installPopupForView(logEntryTable, getSite(), logEntryTable);
+
+	final IPartService partService = (IPartService) getSite().getService(IPartService.class);
+	partService.addPartListener(new IPartListener2() {
+	    
+	    @Override
+	    public void partVisible(IWorkbenchPartReference partRef) {
+		
+	    }
+	    
+	    @Override
+	    public void partOpened(IWorkbenchPartReference partRef) {
+		if (partRef.getId().equals(ID)) {
+		    int delay = preferenceService.getInt(
+			    "org.csstudio.logbook.viewer", "auto.refresh.rate",
+			    3, null);
+		    if (delay > 0) {
+			scheduler.scheduleWithFixedDelay(new Runnable() {
+
+			    @Override
+			    public void run() {
+				
+				if (partService.getActivePartReference().getId().equals(ID)) {	
+				    String text = getSearchString();
+				    final StringBuilder searchString = new StringBuilder(text==null?"*":text);
+				    if (initializeClient()) {
+					try {
+					    if (resultSize >= 0) {
+						searchString.append(" page:" + page);
+						searchString.append(" limit:" + resultSize);
+					    }
+					    final List<LogEntry> logEntries = new ArrayList<LogEntry>(
+						    logbookClient
+							    .findLogEntries(searchString
+								    .toString()));
+					    Display.getDefault().asyncExec(
+						    new Runnable() {
+							@Override
+							public void run() {
+							    if (!logEntries
+								    .isEmpty()
+								    && logEntries
+									    .size() >= resultSize) {
+								nextPage.setEnabled(true);
+							    } else {
+								nextPage.setEnabled(false);
+							    }
+							    Collections
+								    .sort(logEntries,
+									    new Comparator<LogEntry>() {
+
+										@Override
+										public int compare(
+											LogEntry o1,
+											LogEntry o2) {
+										    Date d1 = o1.getCreateDate();
+										    Date d2 = o2.getCreateDate();
+										    return d2.compareTo(d1);
+										}
+
+									    });
+							    logEntryTable.setLogs(logEntries);
+							}
+						    });
+
+					} catch (final Exception e1) {
+					    Display.getDefault().asyncExec(
+						    new Runnable() {
+
+							@Override
+							public void run() {
+							    errorBar.setException(e1);
+							}
+						    });
+					}
+				    }
+				}
+			    }
+			}, delay, delay, TimeUnit.MINUTES);
+		    }
+		}
+	    }
+
+	    @Override
+	    public void partInputChanged(IWorkbenchPartReference partRef) {
+
+	    }
+
+	    @Override
+	    public void partHidden(IWorkbenchPartReference partRef) {
+
+	    }
+
+	    @Override
+	    public void partDeactivated(IWorkbenchPartReference partRef) {
+
+	    }
+    
+	    @Override
+	    public void partActivated(IWorkbenchPartReference partRef) {
+		
+	    }
+
+	    @Override
+	    public void partBroughtToTop(IWorkbenchPartReference partRef) {
+		
+	    }
+
+	    @Override
+	    public void partClosed(IWorkbenchPartReference partRef) {
+		if (partRef.getId().equals(ID)){
+		    scheduler.shutdown();
+		}
+	    }
+	});
 	initializeClient();
     }
 
@@ -342,6 +461,10 @@ public class LogTableView extends ViewPart {
 	// setting the old value to null
 	this.searchString = searchString;
 	changeSupport.firePropertyChange("searchString", null, this.searchString);
+    }
+    
+    public String getSearchString(){
+	return this.searchString;
     }
     
     @Override

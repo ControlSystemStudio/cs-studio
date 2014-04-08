@@ -374,9 +374,7 @@ public class LogTreeView extends ViewPart {
 
 	    @Override
 	    public void partDeactivated(IWorkbenchPartReference partRef) {
-		if (partRef.getId().equals(ID)) {
-		    System.out.println("deactivate");
-		    }
+		
 	    }
     
 	    @Override
