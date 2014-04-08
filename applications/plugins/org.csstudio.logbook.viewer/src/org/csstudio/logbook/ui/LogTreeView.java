@@ -69,7 +69,7 @@ public class LogTreeView extends ViewPart {
 
     private final IPreferencesService preferenceService = Platform.getPreferencesService();
 	
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, org.csstudio.logbook.ui.Executors.namedPool("LogTree Search Pool"));
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.logbook.ui.LogTreeView"; //$NON-NLS-1$
     

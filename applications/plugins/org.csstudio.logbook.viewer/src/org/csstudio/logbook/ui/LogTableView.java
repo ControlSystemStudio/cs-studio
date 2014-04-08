@@ -67,7 +67,7 @@ public class LogTableView extends ViewPart {
     private org.csstudio.logbook.ui.extra.LogEntryTable logEntryTable;
 
     private final IPreferencesService preferenceService = Platform.getPreferencesService();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, org.csstudio.logbook.ui.Executors.namedPool("LogTable Search Pool"));
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.logbook.ui.LogTableView"; //$NON-NLS-1$
 
