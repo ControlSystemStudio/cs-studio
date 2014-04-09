@@ -5,16 +5,20 @@
 package org.epics.vtype;
 
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ListByte;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
+import org.epics.util.array.ListLong;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
+import org.epics.util.array.ListShort;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -67,6 +71,18 @@ public class ValueFactory {
         return new IVMultiDouble(values, alarm, time, display);
     }
 
+    /**
+     * Creates a new VLong.
+     * 
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VLong newVLong(final Long value, final Alarm alarm, final Time time, final Display display) {
+        return new IVLong(value, alarm, time, display);
+    }
 
     /**
      * Creates a new VInt.
@@ -79,6 +95,32 @@ public class ValueFactory {
      */
     public static VInt newVInt(final Integer value, final Alarm alarm, final Time time, final Display display) {
         return new IVInt(value, alarm, time, display);
+    }
+    
+    /**
+     * Creates a new VShort.
+     * 
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VShort newVShort(final Short value, final Alarm alarm, final Time time, final Display display) {
+        return new IVShort(value, alarm, time, display);
+    }
+    
+    /**
+     * Creates a new VByte.
+     * 
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VByte newVByte(final Byte value, final Alarm alarm, final Time time, final Display display) {
+        return new IVByte(value, alarm, time, display);
     }
     
     /**
@@ -322,18 +364,26 @@ public class ValueFactory {
     /**
      * Creates a new VNumber based on the type of the data
      * 
-     * @param value
-     * @param alarm
-     * @param time
-     * @param display
-     * @return
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new number
      */
     public static VNumber newVNumber(Number value, Alarm alarm, Time time, Display display){
-	if(value instanceof Double){
-	    return newVDouble((Double) value, alarm, time, display);
-	}else if(value instanceof Integer){
-	    return newVInt((Integer)value, alarm, time, display);
-	}	
+        if (value instanceof Double) {
+            return newVDouble((Double) value, alarm, time, display);
+        } else if (value instanceof Float) {
+            return newVFloat((Float) value, alarm, time, display);
+        } else if (value instanceof Long) {
+            return newVLong((Long) value, alarm, time, display);
+        } else if (value instanceof Integer) {
+            return newVInt((Integer) value, alarm, time, display);
+        } else if (value instanceof Short) {
+            return newVShort((Short) value, alarm, time, display);
+        } else if (value instanceof Byte) {
+            return newVByte((Byte) value, alarm, time, display);
+        }
 	throw new UnsupportedOperationException();
     }
     
@@ -397,6 +447,19 @@ public class ValueFactory {
     }
 
     /**
+     * Creates a new VFloat.
+     * 
+     * @param value the value
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VFloat newVFloat(final Float value, final Alarm alarm, final Time time, final Display display) {
+        return new IVFloat(value, alarm, time, display);
+    }
+
+    /**
      * Create a new VEnum.
      * 
      * @param index the index in the label array
@@ -430,69 +493,47 @@ public class ValueFactory {
     }
     
     /**
-     * Creates a new VDoubleArray.
+     * Creates a new VNumberArray based on the type of the data.
      * 
-     * @param values array values
-     * @param sizes sizes
+     * @param data the array data
      * @param alarm the alarm
      * @param time the time
      * @param display the display
-     * @return the new value
-     */
-    @Deprecated
-    public static VDoubleArray newVDoubleArray(final double[] values, final ListInt sizes, Alarm alarm, Time time, Display display) {
-        return new IVDoubleArray(new ArrayDouble(values), sizes, alarm, time, display);
-    }
-    
-    /**
-     * Creates a new VNumberArray based on the type of the data.
-     * 
-     * @param data
-     * @param alarm
-     * @param time
-     * @param display
-     * @return
+     * @return a new value
      */
     public static VNumberArray newVNumberArray(final ListNumber data, final Alarm alarm, final Time time, final Display display){
-	if(data instanceof ListDouble){
-	    return newVDoubleArray((ListDouble)data, alarm, time, display);
-	}else if(data instanceof ListInt){
-	    return newVIntArray((ListInt)data, alarm, time, display);
-	}	
-	throw new UnsupportedOperationException("TODO: support types other than double and int");
+        ListInt sizes = new ArrayInt(data.size());
+        List<ArrayDimensionDisplay> dimensionDisplay = ValueUtil.defaultArrayDisplay(sizes);
+        return newVNumberArray(data, sizes, dimensionDisplay, alarm, time, display);
     }
     
     /**
      * Creates a new VNumberArray based on the type of the data.
      * 
-     * @param data
-     * @param alarm
-     * @param time
-     * @param display
-     * @return
+     * @param data the array data
+     * @param sizes the array shape
+     * @param dimensionDisplay the array axis display information
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return a new value
      */
     public static VNumberArray newVNumberArray(final ListNumber data, final ListInt sizes, final List<ArrayDimensionDisplay> dimensionDisplay,
             final Alarm alarm, final Time time, final Display display){
 	if (data instanceof ListDouble){
 	    return new IVDoubleArray((ListDouble) data, sizes, dimensionDisplay, alarm, time, display);
-	} else if(data instanceof ListInt){
-	    return new IVIntArray((ListInt)data, sizes, dimensionDisplay, alarm, time, display);
-	}	
-	throw new UnsupportedOperationException("TODO: support types other than double and int");
-    }
-    
-    /**
-     * Creates a new VDoubleArray.
-     * 
-     * @param values array values
-     * @param alarm the alarm
-     * @param time the time
-     * @param display the display
-     * @return the new value
-     */
-    @Deprecated
-    public static VDoubleArray newVDoubleArray(final double[] values, Alarm alarm, Time time, Display display) {
-        return newVDoubleArray(values, new ArrayInt(values.length), alarm, time, display);
+	} else if (data instanceof ListFloat){
+	    return new IVFloatArray((ListFloat) data, sizes, dimensionDisplay, alarm, time, display);
+	} else if (data instanceof ListLong){
+	    return new IVLongArray((ListLong) data, sizes, dimensionDisplay, alarm, time, display);
+	} else if (data instanceof ListInt){
+	    return new IVIntArray((ListInt) data, sizes, dimensionDisplay, alarm, time, display);
+	} else if (data instanceof ListByte){
+	    return new IVByteArray((ListByte) data, sizes, dimensionDisplay, alarm, time, display);
+	} else if (data instanceof ListShort){
+	    return new IVShortArray((ListShort) data, sizes, dimensionDisplay, alarm, time, display);
+	}
+	throw new UnsupportedOperationException("Data is of an unsupported type (" + data.getClass() + ")");
     }
     
     /**
@@ -522,18 +563,6 @@ public class ValueFactory {
         return new IVFloatArray(data, new ArrayInt(data.size()), alarm,
                 time, display);
     }
-    
-    /**
-     * Creates a new VDoubleArray.
-     * 
-     * @param values array values
-     * @param display the display
-     * @return the new value
-     */
-    @Deprecated
-    public static VDoubleArray newVDoubleArray(final double[] values, Display display) {
-        return newVDoubleArray(values, new ArrayInt(values.length), alarmNone(), timeNow(), display);
-    }
 
     /**
      * Creates a new VImage given the data and the size.
@@ -545,6 +574,20 @@ public class ValueFactory {
      */
     public static VImage newVImage(int height, int width, byte[] data) {
         return new IVImage(height, width, data);
+    }
+    
+    /**
+     * Creates a new VLongArray.
+     * 
+     * @param values array values
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VLongArray newVLongArray(final ListLong values, Alarm alarm, Time time, Display display) {
+        ListInt sizes = new ArrayInt(values.size());
+        return new IVLongArray(values, sizes, ValueUtil.defaultArrayDisplay(sizes), alarm, time, display);
     }
     
     /**
@@ -594,6 +637,7 @@ public class ValueFactory {
      * @return the new value
      */
     public static VTable newVTable(List<Class<?>> types, List<String> names, List<Object> values) {
+        //TODO: should check the types
         return new IVTable(types, names, values);
     }
     
@@ -605,7 +649,9 @@ public class ValueFactory {
      * 
      * @param value the value to wrap
      * @return the wrapped value
+     * @deprecated use {@link #toVType(java.lang.Object) }
      */
+    @Deprecated
     public static VType wrapValue(Object value) {
         return wrapValue(value, alarmNone());
     }
@@ -619,7 +665,9 @@ public class ValueFactory {
      * @param value the value to wrap
      * @param alarm the alarm for the value
      * @return the wrapped value
+     * @deprecated use {@link #toVType(java.lang.Object, org.epics.vtype.Alarm, org.epics.vtype.Time, org.epics.vtype.Display) }
      */
+    @Deprecated
     public static VType wrapValue(Object value, Alarm alarm) {
         if (value instanceof Number) {
             // Special support for numbers
@@ -652,5 +700,108 @@ public class ValueFactory {
             // TODO: need to implement all the other arrays
             throw new UnsupportedOperationException("Type " + value.getClass().getName() + "  is not yet supported");
         }
+    }
+    
+    /**
+     * Converts a standard java type to VTypes. Returns null if no conversion
+     * is possible. Calls {@link #toVType(java.lang.Object, org.epics.vtype.Alarm, org.epics.vtype.Time, org.epics.vtype.Display)} 
+     * with no alarm, time now and no display.
+     * 
+     * @param javaObject the value to wrap
+     * @return the new VType value
+     */
+    public static VType toVType(Object javaObject) {
+        return toVType(javaObject, alarmNone(), timeNow(), displayNone());
+    }
+    
+    /**
+     * Converts a standard java type to VTypes. Returns null if no conversion
+     * is possible.
+     * <p>
+     * Types are converted as follow:
+     * <ul>
+     *   <li>Boolean -> VBoolean</li>
+     *   <li>Number -> corresponding VNumber</li>
+     *   <li>String -> VString</li>
+     *   <li>number array -> corresponding VNumberArray</li>
+     *   <li>ListNumber -> corresponding VNumberArray</li>
+     *   <li>List-> if all elements are String, VStringArray</li>
+     * </ul>
+     * 
+     * @param javaObject the value to wrap
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new VType value
+     */
+    public static VType toVType(Object javaObject, Alarm alarm, Time time, Display display) {
+        if (javaObject instanceof Number) {
+            return ValueFactory.newVNumber((Number) javaObject, alarm, time, display);
+        } else if (javaObject instanceof String) {
+            return newVString((String) javaObject, alarm, time);
+        } else if (javaObject instanceof Boolean) {
+            return newVBoolean((Boolean) javaObject, alarm, time);
+        } else if (javaObject instanceof byte[]
+                || javaObject instanceof short[]
+                || javaObject instanceof int[]
+                || javaObject instanceof long[]
+                || javaObject instanceof float[]
+                || javaObject instanceof double[]) {
+            return newVNumberArray(ListNumbers.toListNumber(javaObject), alarm, time, display);
+        } else if (javaObject instanceof ListNumber) {
+            return newVNumberArray((ListNumber) javaObject, alarm, time, display);
+        } else if (javaObject instanceof String[]) {
+            return newVStringArray(Arrays.asList((String[]) javaObject), alarm, time);
+        } else if (javaObject instanceof List) {
+            boolean matches = true;
+            List list = (List) javaObject;
+            for (Object object : list) {
+                if (!(object instanceof String)) {
+                    matches = false;
+                }
+            }
+            if (matches) {
+                @SuppressWarnings("unchecked")
+                List<String> newList = (List<String>) list;
+                return newVStringArray(Collections.unmodifiableList(newList), alarm, time);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * As {@link #toVType(java.lang.Object)} but throws an exception
+     * if conversion not possible.
+     * 
+     * @param javaObject the value to wrap
+     * @return the new VType value
+     */
+    public static VType toVTypeChecked(Object javaObject) {
+        VType value = toVType(javaObject);
+        if (value == null) {
+            throw new RuntimeException("Value " + value + " cannot be converted to VType.");
+        }
+        return value;
+    }
+    
+    /**
+     * As {@link #toVType(java.lang.Object, org.epics.vtype.Alarm, org.epics.vtype.Time, org.epics.vtype.Display)} but throws an exception
+     * if conversion not possible.
+     * 
+     * @param javaObject the value to wrap
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new VType value
+     */
+    public static VType toVTypeChecked(Object javaObject, Alarm alarm, Time time, Display display) {
+        VType value = toVType(javaObject, alarm, time, display);
+        if (value == null) {
+            throw new RuntimeException("Value " + value + " cannot be converted to VType.");
+        }
+        return value;
     }
 }

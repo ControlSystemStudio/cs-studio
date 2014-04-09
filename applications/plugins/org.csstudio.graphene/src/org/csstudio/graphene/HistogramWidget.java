@@ -1,6 +1,8 @@
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.graphene.ExpressionLanguage.histogramOf;
+import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
+import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
+import static org.epics.pvmanager.graphene.ExpressionLanguage.histogramGraphOf;
 import static org.epics.pvmanager.vtype.ExpressionLanguage.vDouble;
 import static org.epics.util.time.TimeDuration.ofHertz;
 
@@ -29,13 +31,16 @@ import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.graphene.AreaGraph2DExpression;
+import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DExpression;
 import org.epics.pvmanager.graphene.Graph2DResult;
+import org.epics.pvmanager.graphene.HistogramGraph2DExpression;
+import org.epics.pvmanager.graphene.LineGraph2DExpression;
 
 public class HistogramWidget extends Composite {
 
     private VImageDisplay imageDisplay;
-    private AreaGraph2DExpression graph;
+    private HistogramGraph2DExpression graph;
     private ErrorBar errorBar;
     private boolean editable = true;
 
@@ -197,10 +202,12 @@ public class HistogramWidget extends Composite {
 	    return;
 	}
 
-	graph = histogramOf(vDouble(getProcessVariable().getName()));
-	graph.update(graph.newUpdate()
-		.imageHeight(imageDisplay.getSize().y)
-		.imageWidth(imageDisplay.getSize().x));
+	graph = histogramGraphOf(formula(getProcessVariable().getName()));
+	if (imageDisplay.getSize().x > 0 && imageDisplay.getSize().y > 0) {
+		graph.update(graph.newUpdate()
+			.imageHeight(imageDisplay.getSize().y)
+			.imageWidth(imageDisplay.getSize().x));
+	}
 	pv = PVManager.read(graph).notifyOn(SWTUtil.swtThread())
 		.readListener(new PVReaderListener<Graph2DResult>() {
 		    @Override
