@@ -21,7 +21,7 @@ import org.epics.util.time.Timestamp;
  * @author Fred Arnaud (Sopra Group)
  *
  */
-public class PVSnapshot {
+public class PVSnapshot implements Comparable<PVSnapshot> {
 
 	/** Parser for received time stamp */
     final protected static SimpleDateFormat date_format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
@@ -46,7 +46,7 @@ public class PVSnapshot {
 	{
 		final int id = pv.getID();
 		final String name = pv.getName();
-		final String path = pv.getPathName();
+		final String path = pv.getParent().getPathName();
 		final String description = pv.getDescription();
 		final boolean enabled = pv.isEnabled();
 		final boolean latching = pv.isLatching();
@@ -189,6 +189,11 @@ public class PVSnapshot {
 				+ ", current_message=" + current_message + ", message="
 				+ message + ", value=" + value + ", timestamp=" + timestamp
 				+ "]";
+	}
+
+	@Override
+	public int compareTo(PVSnapshot arg) {
+		return name.compareTo(arg.getName());
 	}
 
 }

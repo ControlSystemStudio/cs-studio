@@ -27,6 +27,7 @@
    </extension>
    
    <extension-point id="org.csstudio.alarm.beast.notifier" name="Automated Actions" schema="schema/actions.exsd"/>
+   <extension-point id="org.csstudio.alarm.beast.notifier.start" name="Application Listeners" schema="schema/listeners.exsd"/>
 
    <extension point="org.csstudio.alarm.beast.notifier">
       <action scheme="mailto" 
