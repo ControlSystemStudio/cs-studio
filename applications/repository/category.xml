@@ -10,6 +10,9 @@
    <feature id="org.csstudio.applications.all.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.archive.reader.appliance.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.csstudio.core.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
