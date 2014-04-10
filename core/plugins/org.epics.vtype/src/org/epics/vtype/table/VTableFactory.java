@@ -191,7 +191,8 @@ public class VTableFactory {
     
     private static Object createView(final Object columnData, final ListInt indexes) {
         if (columnData instanceof List) {
-            return createView((List) columnData, indexes);
+            List<?> data = (List<?>) columnData;
+            return createView(data, indexes);
         } else if (columnData instanceof ListNumber) {
             return createView((ListNumber) columnData, indexes);
         } else {

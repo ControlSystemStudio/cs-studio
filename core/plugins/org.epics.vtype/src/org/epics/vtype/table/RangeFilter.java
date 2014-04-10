@@ -50,6 +50,7 @@ class RangeFilter {
             double maxValue = ((VNumber) max).getValue().doubleValue();
             return columnValue >= minValue && columnValue < maxValue;
         } else if (min instanceof VString) {
+            @SuppressWarnings("unchecked")
             List<String> columnData = (List<String>) table.getColumnData(columnIndex);
             String columnValue = columnData.get(rowIndex);
             String minValue = ((VString) min).getValue();

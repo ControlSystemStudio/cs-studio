@@ -46,6 +46,7 @@ class ValueFilter {
             double columnValue = ((ListNumber) table.getColumnData(columnIndex)).getDouble(rowIndex);
             return columnValue == ((VNumber) value).getValue().doubleValue();
         } else if (value instanceof VString) {
+            @SuppressWarnings("unchecked")
             List<String> columnData = (List<String>) table.getColumnData(columnIndex);
             return Objects.equals(columnData.get(rowIndex), ((VString) value).getValue());
         }
