@@ -16,16 +16,22 @@ import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IMemento;
 import org.epics.graphene.AreaGraph2DRendererUpdate;
 import org.epics.graphene.Graph2DRendererUpdate;
 import org.epics.graphene.InterpolationScheme;
@@ -36,6 +42,7 @@ import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.graphene.AreaGraph2DExpression;
+import org.epics.pvmanager.graphene.BubbleGraph2DExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DExpression;
 import org.epics.pvmanager.graphene.Graph2DResult;
@@ -43,8 +50,13 @@ import org.epics.pvmanager.graphene.HistogramGraph2DExpression;
 import org.epics.pvmanager.graphene.LineGraph2DExpression;
 
 public class HistogramGraph2DWidget
-	extends
-	AbstractPointDatasetGraph2DWidget<AreaGraph2DRendererUpdate, HistogramGraph2DExpression> {
+		extends
+		AbstractGraph2DWidget<AreaGraph2DRendererUpdate, HistogramGraph2DExpression>
+		implements ISelectionProvider {
+	
+	private boolean highlightSelectionValue = false;
+	
+	private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
 
     /**
      * Creates a new widget.
@@ -56,40 +68,125 @@ public class HistogramGraph2DWidget
      */
     public HistogramGraph2DWidget(Composite parent, int style) {
     	super(parent, style);
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
+					getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
+				}
+				
+			}
+		});
+		getImageDisplay().addMouseMoveListener(new MouseMoveListener() {
+			
+			@Override
+			public void mouseMove(MouseEvent e) {
+				if (isHighlightSelectionValue() && getGraph() != null) {
+					getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+				}
+			}
+		});
     }
     
 	protected HistogramGraph2DExpression createGraph() {
-		return histogramGraphOf(formula(getDataFormula()));
+		HistogramGraph2DExpression graph = histogramGraphOf(formula(getDataFormula()));
+		graph.update(graph.newUpdate().highlightFocusValue(isHighlightSelectionValue()));
+		return graph;
+	}
+	
+	public boolean isHighlightSelectionValue() {
+		return highlightSelectionValue;
+	}
+	
+	public void setHighlightSelectionValue(boolean highlightSelectionValue) {
+		boolean oldValue = this.highlightSelectionValue;
+		this.highlightSelectionValue = highlightSelectionValue;
+		changeSupport.firePropertyChange("highlightSelectionValue", oldValue, this.highlightSelectionValue);
+	}
+
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		memento.putBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE, isHighlightSelectionValue());
+	}
+
+	public void loadState(IMemento memento) {
+		super.loadState(memento);
+		if (memento != null) {
+			if (memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE) != null) {
+				setHighlightSelectionValue(memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE));
+			}
+		}
+	}
+
+	
+	@Override
+	protected void processInit() {
+		super.processInit();
+		processValue();
+	}
+	
+	@Override
+	protected void processValue() {
+		Graph2DResult result = getCurrentResult();
 	}
 
 	@Override
+	public ISelection getSelection() {
+		if (getDataFormula() != null) {
+			return new StructuredSelection(new HistogramGraph2DSelection(this));
+		}
+		return null;
+	}
+
+	@Override
+	public void addSelectionChangedListener(
+			final ISelectionChangedListener listener) {
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+
+	private boolean configurable = true;
+
+	private HistogramGraph2DConfigurationDialog dialog;
+
+	@Override
 	public boolean isConfigurable() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.configurable;
 	}
 
 	@Override
 	public void setConfigurable(boolean configurable) {
-		// TODO Auto-generated method stub
-		
+		boolean oldValue = this.configurable;
+		this.configurable = configurable;
+		changeSupport.firePropertyChange("configurable", oldValue,
+				this.configurable);
 	}
 
 	@Override
 	public void openConfigurationDialog() {
-		// TODO Auto-generated method stub
-		
+		if (dialog != null)
+			return;
+		dialog = new HistogramGraph2DConfigurationDialog(this, "Configure Histogram");
+		dialog.open();
 	}
 
 	@Override
 	public boolean isConfigurationDialogOpen() {
-		// TODO Auto-generated method stub
-		return false;
+		return dialog != null;
 	}
 
 	@Override
 	public void configurationDialogClosed() {
-		// TODO Auto-generated method stub
-		
+		dialog = null;
 	}
 
 }
