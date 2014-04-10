@@ -3,7 +3,7 @@
       id="org.csstudio.archive.reader.appliance.feature"
       label="Appliance Archiver Reader"
       version="1.0.0.qualifier"
-      provider-name="Miha Novak <miha.novak@cosylab.com>">
+      provider-name="Miha Novak &lt;miha.novak@cosylab.com&gt;">
 
    <description url="http://www.example.com/description">
       Appliance Archiver Reader
