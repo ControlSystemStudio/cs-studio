@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<fragment>
+   <extension point="org.csstudio.alarm.beast.notifier.start">
+      <listener class="org.csstudio.iter.notifier.ologauthentication.StartupLauncher"/>
+   </extension>
+</fragment>
