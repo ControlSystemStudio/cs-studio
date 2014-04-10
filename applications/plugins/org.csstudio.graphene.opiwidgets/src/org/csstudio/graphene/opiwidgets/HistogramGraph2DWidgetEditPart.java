@@ -3,7 +3,8 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
-import org.csstudio.graphene.BubbleGraph2DWidget;
+import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
+
 import org.csstudio.graphene.HistogramGraph2DWidget;
 import org.eclipse.draw2d.IFigure;
 
@@ -38,8 +39,8 @@ public class HistogramGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpar
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		super.registerPropertyChangeHandlers();
-		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
-		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
 	}
 
 }

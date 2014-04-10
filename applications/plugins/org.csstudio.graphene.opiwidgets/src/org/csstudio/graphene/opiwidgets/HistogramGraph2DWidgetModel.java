@@ -8,6 +8,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
+import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 
 
@@ -15,7 +16,7 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
  * @author shroffk
  * 
  */
-public class HistogramGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetModel {
+public class HistogramGraph2DWidgetModel extends AbstractGraph2DWidgetModel {
 
 	public HistogramGraph2DWidgetModel() {
 		super(AbstractSelectionWidgetModelDescription.newModelFrom(HistogramGraph2DWidget.class));
@@ -27,9 +28,6 @@ public class HistogramGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidg
 	public String getTypeID() {
 		return ID;
 	}
-	
-	public static final String PROP_HIGHLIGHT_SELECTION_VALUE = "highlight_selection_value"; //$NON-NLS-1$
-	public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {

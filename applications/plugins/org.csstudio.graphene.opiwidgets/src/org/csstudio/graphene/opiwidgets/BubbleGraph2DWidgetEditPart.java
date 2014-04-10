@@ -5,6 +5,7 @@ package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.graphene.BubbleGraph2DWidget;
 import org.eclipse.draw2d.IFigure;
+import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 /**
  * @author shroffk
@@ -34,8 +35,8 @@ public class BubbleGraph2DWidgetEditPart extends AbstractPointDatasetGraph2DWidg
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		super.registerPropertyChangeHandlers();
-		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
-		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
 		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_SIZE_FORMULA, getReconfigureWidgetPropertyChangeHandler());
 		setPropertyChangeHandler(BubbleGraph2DWidgetModel.PROP_COLOR_FORMULA, getReconfigureWidgetPropertyChangeHandler());
 	}
