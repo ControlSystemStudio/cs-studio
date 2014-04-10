@@ -229,6 +229,24 @@ public class PVDevice extends Device
         return ValueFactory.newVString(DISCONNECTED.getAlarmName(), DISCONNECTED, ValueFactory.timeNow());
     }
 
+    /** Handle write conversions
+     *  @param value to write
+     *  @return Actual value to write
+     */
+    private Object wrapSentValue(Object value)
+    {
+        if (is_byte_array && TREAD_BYTES_AS_STRING)
+        {
+            // If value is a scalar, turn into string
+            if (value instanceof Number)
+                value = value.toString();
+            // String in general written as array of bytes
+            if (value instanceof String)
+                value = ByteHelper.toBytes((String) value);
+        }
+        return value;
+    }
+    
 	/** Write value to device, with special handling of EPICS BYTE[] as String 
      *  @param value Value to write (Double, String)
      *  @throws Exception on error: Cannot write, ...
@@ -236,11 +254,10 @@ public class PVDevice extends Device
     @Override
     public void write(Object value) throws Exception
     {
-        if (is_byte_array  &&  value instanceof String)
-            value = ByteHelper.toBytes((String) value);
-
         Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
                 new Object[] { getName(), value });
+        value = wrapSentValue(value);
+
         final PV pv; // Copy to access PV outside of lock
         synchronized (this)
         {
@@ -257,11 +274,9 @@ public class PVDevice extends Device
 	@Override
     public void write(Object value, final TimeDuration timeout) throws Exception
     {
-	    if (is_byte_array  &&  value instanceof String)
-	        value = ByteHelper.toBytes((String) value);
-
 	    Logger.getLogger(getClass().getName()).log(Level.FINE, "Writing with completion: PV {0} = {1}",
 	            new Object[] { getName(), value });
+	    value = wrapSentValue(value);
 
 	    final PV pv; // Copy to access PV outside of lock
 	    synchronized (this)
