@@ -61,6 +61,17 @@ public class VTypeHelper
 			return ((VNumber)value).getValue().doubleValue();
 		if (value instanceof VEnum)
 			return ((VEnum)value).getIndex();
+        if (value instanceof VString)
+        {
+    		try
+    		{
+    		    return Double.parseDouble(((VString) value).getValue());
+    		}
+    		catch (NumberFormatException ex)
+    		{
+    		    // Ignore
+    		}
+        }
 		return Double.NaN;
 	}
 
