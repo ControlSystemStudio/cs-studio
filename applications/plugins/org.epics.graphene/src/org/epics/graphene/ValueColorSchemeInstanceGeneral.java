@@ -12,19 +12,19 @@ import java.util.List;
  *
  * @author sjdallst
  */
-public abstract class ValueColorSchemeInstanceGeneral implements ValueColorSchemeInstance{
-    protected List<Color> colors = new ArrayList<Color>();
+class ValueColorSchemeInstanceGeneral implements ValueColorSchemeInstance{
+    protected Color[] colors;
     protected List<Double> percentages = new ArrayList<Double>();
     protected int nanColor;
     protected Range range;
     
     
-    /*public ValueColorSchemeInstanceGeneral(List<Color> colors, Range range, int nanColor){
+    public ValueColorSchemeInstanceGeneral(Color[] colors, Range range){
         this.range = range;
         this.colors = colors;
-        this.nanColor = nanColor;
-        percentages = percentageRange(colors.size());
-    }*/
+        this.nanColor = colors[colors.length-1].getRGB();
+        percentages = percentageRange(colors.length - 2);
+    }
     
     @Override
     public int colorFor(double value){
@@ -43,9 +43,9 @@ public abstract class ValueColorSchemeInstanceGeneral implements ValueColorSchem
                             normalValue = Math.min(normalValue, 1.0);
                             normalValue = Math.max(normalValue, 0.0);
                             alpha = 255;
-                            red = (int) (colors.get(i).getRed() + (colors.get(i+1).getRed() - colors.get(i).getRed()) * normalValue);
-                            green = (int) (colors.get(i).getGreen() + (colors.get(i+1).getGreen() - colors.get(i).getGreen()) * normalValue);
-                            blue = (int) (colors.get(i).getBlue() + (colors.get(i+1).getBlue() - colors.get(i).getBlue()) * normalValue);
+                            red = (int) (colors[i].getRed() + (colors[i+1].getRed() - colors[i].getRed()) * normalValue);
+                            green = (int) (colors[i].getGreen() + (colors[i+1].getGreen() - colors[i].getGreen()) * normalValue);
+                            blue = (int) (colors[i].getBlue() + (colors[i+1].getBlue() - colors[i].getBlue()) * normalValue);
                         }
                     }
                 }
@@ -56,11 +56,23 @@ public abstract class ValueColorSchemeInstanceGeneral implements ValueColorSchem
                             normalValue = Math.min(normalValue, 1.0);
                             normalValue = Math.max(normalValue, 0.0);
                             alpha = 255;
-                            red = (int) (colors.get(i).getRed() + (colors.get(i+1).getRed() - colors.get(i).getRed()) * normalValue);
-                            green = (int) (colors.get(i).getGreen() + (colors.get(i+1).getGreen() - colors.get(i).getGreen()) * normalValue);
-                            blue = (int) (colors.get(i).getBlue() + (colors.get(i+1).getBlue() - colors.get(i).getBlue()) * normalValue);
+                            red = (int) (colors[i].getRed() + (colors[i+1].getRed() - colors[i].getRed()) * normalValue);
+                            green = (int) (colors[i].getGreen() + (colors[i+1].getGreen() - colors[i].getGreen()) * normalValue);
+                            blue = (int) (colors[i].getBlue() + (colors[i+1].getBlue() - colors[i].getBlue()) * normalValue);
                         }
                     }
+                }
+                if(value > range.getMaximum().doubleValue()){
+                    alpha = 255;
+                    red = (colors[colors.length - 2].getRed());
+                    green = (colors[colors.length - 2].getGreen());
+                    blue = (colors[colors.length - 2].getBlue());
+                }
+                if(value < range.getMinimum().doubleValue()){
+                    alpha = 255;
+                    red = (colors[0].getRed());
+                    green = (colors[0].getGreen());
+                    blue = (colors[0].getBlue());
                 }
                 return (alpha << 24) | (red << 16) | (green << 8) | blue;
             }

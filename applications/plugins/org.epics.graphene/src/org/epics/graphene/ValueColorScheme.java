@@ -4,26 +4,21 @@
  */
 package org.epics.graphene;
 
+import java.awt.Color;
+
 /**
  * A scheme that will associate a RBG color to any data value.
  * This is a transformation from <b>value</b> to <b>color</b>.
  * 
  * @author carcassi
  */
-public interface ValueColorScheme {
+public class ValueColorScheme {
+    private Color[] colors;
+    public ValueColorScheme(Color[] colors){
+        this.colors = colors;
+    }
+    public ValueColorSchemeInstance createInstance(Range range){
+        return new ValueColorSchemeInstanceGeneral(colors, range);
+    }
     
-    public ValueColorSchemeInstance createInstance(Range range);
-    
-    /**
-     * Calculate the color for the value according to the ranges and puts it
-     * into the colors buffer.
-     *
-     * @param value the value to color
-     * @return the RGB color
-     */
-    //public int colorFor(double value);
-    
-    //public void setColors();
-    
-    //public int getColor(double value);
 }

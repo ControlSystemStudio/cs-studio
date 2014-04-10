@@ -34,7 +34,7 @@ public class MultilineGraph2DRenderer extends Graph2DRenderer<MultilineGraph2DRe
         return new MultilineGraph2DRendererUpdate();
     }
     
-    private ValueColorScheme valueColorScheme = new ValueColorSchemeBlackAndWhite();
+    private ValueColorScheme valueColorScheme = ValueColorSchemes.GRAY_SCALE;
     private ValueColorSchemeInstance valueColorSchemeInstance;  
     private InterpolationScheme interpolation = InterpolationScheme.LINEAR;
     private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;

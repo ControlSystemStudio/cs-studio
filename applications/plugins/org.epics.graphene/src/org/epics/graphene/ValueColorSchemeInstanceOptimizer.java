@@ -8,7 +8,7 @@ package org.epics.graphene;
  *
  * @author sjdallst
  */
-public class ValueColorSchemeInstanceOptimizer {
+class ValueColorSchemeInstanceOptimizer {
     public ValueColorSchemeInstance optimize(ValueColorSchemeInstance instance, Range range){
         return new ValueColorSchemeInstanceOptimized(instance, range);
     }

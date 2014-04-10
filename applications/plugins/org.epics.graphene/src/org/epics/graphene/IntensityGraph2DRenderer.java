@@ -28,8 +28,9 @@ import java.awt.image.DataBufferByte;
 public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpdate>{
     //Colors to be used when drawing the graph, gives a color based on a given value and the range of data.
     private ValueColorSchemeInstance valueColorSchemeInstance;
-    private ValueColorSchemeInstanceOptimizer optimizer;
+    private ValueColorSchemeInstanceOptimizer optimizer = new ValueColorSchemeInstanceOptimizer();
     private Range optimizedRange;
+    public boolean optimizeColorScheme = false;
     /**
      *Uses constructor specified in super class (Graph2DRenderer)
      * @param imageWidth should be equal to the width of the bufferedImage.
@@ -58,9 +59,6 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
         }
         if(update.getValueColorScheme() != null){
             valueColorScheme = update.getValueColorScheme();
-        }
-        if(update.getOptimizer() != null){
-            optimizer = update.getOptimizer();
         }
         if(update.getZLabelMargin() != null){
             zLabelMargin = update.getZLabelMargin();
@@ -111,7 +109,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
     }
     // ^ (Possibly) TO BE TAKEN OUT ONCE TESTING IS DONE ^
     
-    private ValueColorScheme valueColorScheme = new ValueColorSchemeBlackAndWhite();
+    private ValueColorScheme valueColorScheme = ValueColorSchemes.GRAY_SCALE;
     
     
     /**
@@ -166,7 +164,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
         
         
         //Set color scheme
-        if(optimizer == null){
+        if(!optimizeColorScheme){
             valueColorSchemeInstance = valueColorScheme.createInstance(zPlotRange);
         }
         else{
@@ -248,7 +246,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
         }
     }
     
-    public void drawTest(GraphBuffer graphBuffer, Cell2DDataset data) {
+    public void drawArray(GraphBuffer graphBuffer, Cell2DDataset data) {
         //Use super class to draw basics of graph.
         this.g = graphBuffer.getGraphicsContext();
         BufferedImage image = graphBuffer.getBufferedImage();
@@ -294,7 +292,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
         
         
         //Set color scheme
-        if(optimizer == null){
+        if(!optimizeColorScheme){
             valueColorSchemeInstance = valueColorScheme.createInstance(zPlotRange);
         }
         else{
@@ -321,7 +319,46 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
         double xWidthTotal = super.xPlotCoordWidth;
         double yHeightTotal = super.yPlotCoordHeight;
         
-        drawRectanglesSmallXAndYBoundariesArray(g, data, image);
+        double cellHeight = (yHeightTotal)/data.getYCount();
+        double cellWidth = (xWidthTotal)/data.getXCount();
+        
+        if(cellWidth >= 1 && cellHeight >= 1){
+            if(!linearBoundaries){
+                drawRectanglesSmallXAndYBoundariesArray(g, data, image);
+            }
+            else{
+                drawRectanglesArray(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal,cellHeight, cellWidth, image);
+            }
+        }
+        
+        //Draw graph when cell width or height is smaller than one pixel.
+        if(cellWidth < 1 || cellHeight < 1){
+            if(cellHeight > 1){
+                if(!linearBoundaries){
+                    drawRectanglesSmallXAndYBoundariesArray(g, data, image);
+                }
+                else{
+                    drawRectanglesSmallXArray(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal, cellHeight, cellWidth, image);
+                }
+                
+            }
+            if(cellWidth > 1){
+                if(!linearBoundaries){
+                    drawRectanglesSmallXAndYBoundariesArray(g, data, image);
+                }
+                else{
+                    drawRectanglesSmallYArray(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal, cellHeight, cellWidth, image);
+                }
+            }
+            if(cellWidth < 1 && cellHeight < 1){
+                if(!linearBoundaries){
+                    drawRectanglesSmallXAndYBoundariesArray(g, data, image);
+                }
+                else{
+                    drawRectanglesSmallXAndYArray(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal,cellHeight, cellWidth, image);
+                }
+            }
+        }
         
         if(drawLegend && legendWidth>0){
             /*dataList is made by splitting the aggregated range of the z(color) data into a list of the
@@ -378,17 +415,16 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
                 double xPosition = xStartGraph;
                 int xPositionInt = (int)xStartGraph;
                 while (countX < data.getXCount()){
+                    int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
                     for(int w = 0; w < (int)cellWidth + 1; w++){
                         for(int h = 0; h < (int)cellHeight + 1; h++){
                             if(hasAlphaChannel){
-                            int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
-                            pixels[yPositionInt*getImageWidth()*4 + 4*xPositionInt + 0] = (byte)(rgb >> 24 & 0xFF);
-                            pixels[yPositionInt*getImageWidth()*4 + 4*xPositionInt + 1] = (byte)(rgb & 0xFF);
-                            pixels[yPositionInt*getImageWidth()*4 + 4*xPositionInt + 2] = (byte)(rgb >> 8 & 0xFF);
-                            pixels[yPositionInt*getImageWidth()*4 + 4*xPositionInt + 3] = (byte)(rgb >> 16 & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 0] = (byte)(rgb >> 24 & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 1] = (byte)(rgb & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 2] = (byte)(rgb >> 8 & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 3] = (byte)(rgb >> 16 & 0xFF);
                             }
                             else{
-                            int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
                             pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 0] = (byte)(rgb & 0xFF);
                             pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 1] = (byte)((rgb >> 8 & 0xFF) );
                             pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 2] = (byte)((rgb >> 16 & 0xFF));
@@ -444,6 +480,51 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
             }
     }
     
+    private void drawRectanglesSmallXArray(Graphics2D g, Cell2DDataset data, double xStartGraph, double yEndGraph,
+            double xWidthTotal, double yHeightTotal, double cellHeight, double cellWidth, BufferedImage image){
+        byte pixels[] = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+        boolean hasAlphaChannel = image.getAlphaRaster() != null;
+        int countY = 0;
+        double countX;
+        /*DataPerBox is a measure of how many data points fit into each pixel.
+         Because of checks in the draw method, DataPerBox is guaranteed to be greater 
+         than 1. When drawing each box, xDataPerBox is the amount added to countX, which is then
+         rounded down to the nearest integer to be used as an index for a data point.
+         countX itself is never rounded.*/
+        double xDataPerBox = (data.getXCount()-1)/xWidthTotal;
+        //yPosition is never rounded, and keeps track of exactly where each box should start.
+        double yPosition = yEndGraph-yHeightTotal;
+        /*yPositionInt is used for the actual drawing of boxes, since every box needs to be drawn
+        starting from the top left of a pixel. It is based off of yPosition.*/ 
+        int yPositionInt = (int)(yEndGraph-yHeightTotal);
+        while (countY < data.getYCount()){
+                countX = 0;
+                int xPositionInt = (int)xStartGraph;
+                while (xPositionInt < (int)(xStartGraph+xWidthTotal)+1){
+                    int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
+                    for(int w = 0; w < (int)cellWidth + 1; w++){
+                        for(int h = 0; h < (int)cellHeight + 1; h++){
+                            if(hasAlphaChannel){
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 0] = (byte)(rgb >> 24 & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 1] = (byte)(rgb & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 2] = (byte)(rgb >> 8 & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 3] = (byte)(rgb >> 16 & 0xFF);
+                            }
+                            else{
+                            pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 0] = (byte)(rgb & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 1] = (byte)((rgb >> 8 & 0xFF) );
+                            pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 2] = (byte)((rgb >> 16 & 0xFF));
+                            }
+                        }
+                    }
+                    countX+=xDataPerBox;
+                    xPositionInt+=1;   
+                }
+                yPosition = yPosition + cellHeight;
+                yPositionInt = (int)(yPosition);
+                countY++;
+            }
+    }
 //Same logic as drawRectanglesSmallX, but for when there are more y values than pixels.
     private void drawRectanglesSmallY(Graphics2D g, Cell2DDataset data, double xStartGraph, double yEndGraph,
             double xWidthTotal, double yHeightTotal, double cellHeight, double cellWidth){
@@ -465,6 +546,46 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
                     else
                         rect = new Rectangle2D.Double(xPositionInt,yPositionInt,(int)cellWidth+2,1);
                     g.fill(rect);
+                    countY+=yDataPerBox;
+                    yPositionInt+=1;
+                }
+                xPosition = xPosition + cellWidth;
+                xPositionInt = (int)xPosition;
+                countX++;
+            }
+    }
+    
+    private void drawRectanglesSmallYArray(Graphics2D g, Cell2DDataset data, double xStartGraph, double yEndGraph,
+            double xWidthTotal, double yHeightTotal, double cellHeight, double cellWidth, BufferedImage image){
+        byte pixels[] = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+        boolean hasAlphaChannel = image.getAlphaRaster() != null;
+        //Exact y index of data value to be used.
+        double countY;
+        int countX = 0;
+        //Exact number of y data points per pixel. 
+        double yDataPerBox = (data.getYCount()-1)/yHeightTotal;
+        double xPosition = xStartGraph;
+        int xPositionInt = (int)xStartGraph;
+        while (countX < data.getXCount()){
+                countY = 0;
+                int yPositionInt = (int)(yEndGraph-yHeightTotal);
+                while (yPositionInt < (int)yEndGraph+1){
+                    int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
+                    for(int w = 0; w < (int)cellWidth + 1; w++){
+                        for(int h = 0; h < (int)cellHeight + 1; h++){
+                            if(hasAlphaChannel){
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 0] = (byte)(rgb >> 24 & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 1] = (byte)(rgb & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 2] = (byte)(rgb >> 8 & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*4 + 4*xPositionInt + 3] = (byte)(rgb >> 16 & 0xFF);
+                            }
+                            else{
+                            pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 0] = (byte)(rgb & 0xFF);
+                            pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 1] = (byte)((rgb >> 8 & 0xFF) );
+                            pixels[(yPositionInt+h)*getImageWidth()*3 + 3*(xPositionInt+w) + 2] = (byte)((rgb >> 16 & 0xFF));
+                            }
+                        }
+                    }
                     countY+=yDataPerBox;
                     yPositionInt+=1;
                 }
@@ -495,6 +616,43 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
                 Rectangle2D.Double rect;
                 rect = new Rectangle2D.Double(xPositionInt,yPositionInt,1,1);
                 g.fill(rect);
+                countX+=xDataPerBox;
+                xPositionInt+=1;
+            }
+            countY+=yDataPerBox;
+            yPositionInt+=1;
+        }
+    }
+    
+    private void drawRectanglesSmallXAndYArray(Graphics2D g, Cell2DDataset data, double xStartGraph, double yEndGraph,
+            double xWidthTotal, double yHeightTotal, double cellHeight, double cellWidth, BufferedImage image){
+        /*countY and countX are used in the same way as in drawRectanglesSmallX and drawRectanglesSmallY
+         each is used to calculate exactly what index of data value should be used to get the color
+         for the drawn square.*/
+        byte pixels[] = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+        boolean hasAlphaChannel = image.getAlphaRaster() != null;
+        double countY = 0;
+        double countX;
+        int yPositionInt = (int)(yEndGraph-yHeightTotal);
+        double yDataPerBox = (data.getYCount()-1)/yHeightTotal;
+        double xDataPerBox = (data.getXCount()-1)/xWidthTotal;
+        int xPositionInt;
+        while (yPositionInt < (int)yEndGraph+1){
+            countX = 0;
+            xPositionInt = (int) xStartGraph;
+            while (xPositionInt < (int)(xStartGraph+xWidthTotal)+1){
+                int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
+                if(hasAlphaChannel){
+                    pixels[(yPositionInt)*getImageWidth()*4 + 4*xPositionInt + 0] = (byte)(rgb >> 24 & 0xFF);
+                    pixels[(yPositionInt)*getImageWidth()*4 + 4*xPositionInt + 1] = (byte)(rgb & 0xFF);
+                    pixels[(yPositionInt)*getImageWidth()*4 + 4*xPositionInt + 2] = (byte)(rgb >> 8 & 0xFF);
+                    pixels[(yPositionInt)*getImageWidth()*4 + 4*xPositionInt + 3] = (byte)(rgb >> 16 & 0xFF);
+                }
+                else{
+                    pixels[(yPositionInt)*getImageWidth()*3 + 3*(xPositionInt) + 0] = (byte)(rgb & 0xFF);
+                    pixels[(yPositionInt)*getImageWidth()*3 + 3*(xPositionInt) + 1] = (byte)((rgb >> 8 & 0xFF) );
+                    pixels[(yPositionInt)*getImageWidth()*3 + 3*(xPositionInt) + 2] = (byte)((rgb >> 16 & 0xFF));
+                }
                 countX+=xDataPerBox;
                 xPositionInt+=1;
             }
@@ -671,17 +829,16 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
                 countX = 0;
                 while (countX < newBoundariesX.size()-1){
                     //make and fill the rectangle.
+                    int rgb = valueColorSchemeInstance.colorFor(data.getValue(valueIndicesX.get(countX), valueIndicesY.get(valueIndicesY.size()-2-countY)));
                     for(int w = 0; w < newBoundariesX.get(countX+1)-newBoundariesX.get(countX); w++){
                         for(int h = 0; h < newBoundariesY.get(newBoundariesY.size()-1-countY-1)-newBoundariesY.get(newBoundariesY.size()-1-countY); h++){
                             if(hasAlphaChannel){
-                            int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
-                            pixels[newBoundariesY.get(newBoundariesY.size()-1-countY)*getImageWidth()*4 + 4*newBoundariesX.get(countX) + 0] = (byte)(rgb >> 24 & 0xFF);
-                            pixels[newBoundariesY.get(newBoundariesY.size()-1-countY)*getImageWidth()*4 + 4*newBoundariesX.get(countX) + 1] = (byte)(rgb & 0xFF);
-                            pixels[newBoundariesY.get(newBoundariesY.size()-1-countY)*getImageWidth()*4 + 4*newBoundariesX.get(countX) + 2] = (byte)(rgb >> 8 & 0xFF);
-                            pixels[newBoundariesY.get(newBoundariesY.size()-1-countY)*getImageWidth()*4 + 4*newBoundariesX.get(countX) + 3] = (byte)(rgb >> 16 & 0xFF);
+                            pixels[(newBoundariesY.get(newBoundariesY.size()-1-countY)+h)*getImageWidth()*4 + 4*(newBoundariesX.get(countX)+w) + 0] = (byte)(rgb >> 24 & 0xFF);
+                            pixels[(newBoundariesY.get(newBoundariesY.size()-1-countY)+h)*getImageWidth()*4 + 4*(newBoundariesX.get(countX)+w) + 1] = (byte)(rgb & 0xFF);
+                            pixels[(newBoundariesY.get(newBoundariesY.size()-1-countY)+h)*getImageWidth()*4 + 4*(newBoundariesX.get(countX)+w) + 2] = (byte)(rgb >> 8 & 0xFF);
+                            pixels[(newBoundariesY.get(newBoundariesY.size()-1-countY)+h)*getImageWidth()*4 + 4*(newBoundariesX.get(countX)+w) + 3] = (byte)(rgb >> 16 & 0xFF);
                             }
                             else{
-                            int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
                             pixels[(newBoundariesY.get(newBoundariesY.size()-1-countY)+h)*getImageWidth()*3 + 3*(newBoundariesX.get(countX)+w) + 0] = (byte)(rgb & 0xFF);
                             pixels[(newBoundariesY.get(newBoundariesY.size()-1-countY)+h)*getImageWidth()*3 + 3*(newBoundariesX.get(countX)+w) + 1] = (byte)((rgb >> 8 & 0xFF) );
                             pixels[(newBoundariesY.get(newBoundariesY.size()-1-countY)+h)*getImageWidth()*3 + 3*(newBoundariesX.get(countX)+w) + 2] = (byte)((rgb >> 16 & 0xFF));

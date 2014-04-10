@@ -62,7 +62,7 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     private int minimumGraphWidth = 200;
     private int yLabelMaxWidth = 0;
     private int xLabelMaxHeight;
-    private ValueColorScheme valueColorScheme = new ValueColorSchemeJet();
+    private ValueColorScheme valueColorScheme = ValueColorSchemes.JET;
     private ValueColorSchemeInstance valueColorSchemeInstance;
     
     private double xPlotValueStart;
