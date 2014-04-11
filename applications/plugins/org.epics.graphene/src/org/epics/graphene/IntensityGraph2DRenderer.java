@@ -28,7 +28,6 @@ import java.awt.image.DataBufferByte;
 public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpdate>{
     //Colors to be used when drawing the graph, gives a color based on a given value and the range of data.
     private ValueColorSchemeInstance valueColorSchemeInstance;
-    private ValueColorSchemeInstanceOptimizer optimizer = new ValueColorSchemeInstanceOptimizer();
     private Range optimizedRange;
     public boolean optimizeColorScheme = false;
     /**
@@ -170,15 +169,15 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
         else{
             if(valueColorSchemeInstance == null && optimizedRange == null){
                 valueColorSchemeInstance = valueColorScheme.createInstance(zPlotRange);
-                valueColorSchemeInstance = optimizer.optimize(valueColorSchemeInstance, zPlotRange);
+                valueColorSchemeInstance = ValueColorSchemes.optimize(valueColorSchemeInstance, zPlotRange);
                 optimizedRange = zPlotRange;
             }
             else if(optimizedRange == null){
-                valueColorSchemeInstance = optimizer.optimize(valueColorSchemeInstance, zPlotRange);
+                valueColorSchemeInstance = ValueColorSchemes.optimize(valueColorSchemeInstance, zPlotRange);
                 optimizedRange = zPlotRange;
             }
             else{
-                valueColorSchemeInstance = optimizer.optimize(valueColorSchemeInstance, optimizedRange, zPlotRange);
+                valueColorSchemeInstance = ValueColorSchemes.optimize(valueColorSchemeInstance, optimizedRange, zPlotRange);
                 optimizedRange = zPlotRange;
             }
         }
@@ -298,15 +297,15 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
         else{
             if(valueColorSchemeInstance == null && optimizedRange == null){
                 valueColorSchemeInstance = valueColorScheme.createInstance(zPlotRange);
-                valueColorSchemeInstance = optimizer.optimize(valueColorSchemeInstance, zPlotRange);
+                valueColorSchemeInstance = ValueColorSchemes.optimize(valueColorSchemeInstance, zPlotRange);
                 optimizedRange = zPlotRange;
             }
             else if(optimizedRange == null){
-                valueColorSchemeInstance = optimizer.optimize(valueColorSchemeInstance, zPlotRange);
+                valueColorSchemeInstance = ValueColorSchemes.optimize(valueColorSchemeInstance, zPlotRange);
                 optimizedRange = zPlotRange;
             }
             else{
-                valueColorSchemeInstance = optimizer.optimize(valueColorSchemeInstance, optimizedRange, zPlotRange);
+                valueColorSchemeInstance = ValueColorSchemes.optimize(valueColorSchemeInstance, optimizedRange, zPlotRange);
                 optimizedRange = zPlotRange;
             }
         }

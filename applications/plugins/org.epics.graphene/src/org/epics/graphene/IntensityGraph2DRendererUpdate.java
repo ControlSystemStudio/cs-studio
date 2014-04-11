@@ -23,15 +23,16 @@ package org.epics.graphene;
  */
 public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<IntensityGraph2DRendererUpdate> {
 
-    private Integer zLabelMargin,
-                    legendWidth,
-                    legendMarginToEdge;
-    
-      private Boolean drawLegend;
-    
+    // TODO: if z refers to color, then all the zXxx should be renamed to colorXxx
+    private Integer zLabelMargin;
+    private Integer legendWidth;
+    private Integer legendMarginToEdge;
+
+    private Boolean drawLegend;
+
     private ValueColorScheme valueColorScheme;
     
-    private ValueColorSchemeInstanceOptimizer optimizer;
+    // TODO: review comments (they mostly just repeat the method name)
     
     /**
      * Sets this object's drawLegend to the given boolean value.
@@ -58,10 +59,6 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
         return self();
     }
     
-    public IntensityGraph2DRendererUpdate optimizer(ValueColorSchemeInstanceOptimizer optimizer){
-        this.optimizer = optimizer;
-        return self();
-    }
     /**
      * Sets this object's zLabelMargin to the given margin size.
      * @param margin integer distance(pixels) from the beginning of the z labels to the legend. 
@@ -81,7 +78,6 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
         this.legendWidth = width;
         return self();
     }
-    
     
     /**
      * Sets this object's legendMarginToEdge to the given margin size.
@@ -108,10 +104,6 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
      */
     public ValueColorScheme getValueColorScheme() {
         return valueColorScheme;
-    }
-    
-    public ValueColorSchemeInstanceOptimizer getOptimizer(){
-        return optimizer;
     }
     
     /**

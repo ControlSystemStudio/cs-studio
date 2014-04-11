@@ -94,7 +94,7 @@ public class RangeUtil {
     }
     
     public static double normalize(Range range, double value) {
-        return NumberUtil.normalize(value, range.getMinimum().doubleValue(), range.getMaximum().doubleValue());
+        return MathUtil.normalize(value, range.getMinimum().doubleValue(), range.getMaximum().doubleValue());
     }
     
     public static double[] createBins(double min, double max, int nBins) {

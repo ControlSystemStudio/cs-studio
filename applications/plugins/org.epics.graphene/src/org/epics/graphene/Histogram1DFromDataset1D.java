@@ -58,7 +58,7 @@ class Histogram1DFromDataset1D implements Histogram1D {
             return;
         }
         
-        int bin = (int) Math.floor(NumberUtil.scale(value, xRange.getMinimum().doubleValue(), xRange.getMaximum().doubleValue(), nBins));
+        int bin = (int) Math.floor(MathUtil.scale(value, xRange.getMinimum().doubleValue(), xRange.getMaximum().doubleValue(), nBins));
         if (bin == nBins) {
             bin--;
         }

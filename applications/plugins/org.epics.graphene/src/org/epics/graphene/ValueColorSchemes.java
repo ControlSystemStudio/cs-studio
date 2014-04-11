@@ -15,7 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author carcassi
  */
 public class ValueColorSchemes {
-    public static final ValueColorScheme JET = new ValueColorScheme(new Color[]{new Color(0,0,138), 
+    
+    // TODO: add more color schemes like the ones that can be found:
+    // http://www.mathworks.com/help/matlab/ref/colormap.html
+    
+    public static final ValueColorScheme JET = new ValueColorSchemeGradient(new Color[]{new Color(0,0,138), 
                                                                                 Color.BLUE,
                                                                                 Color.CYAN,
                                                                                 Color.YELLOW,
@@ -23,7 +27,7 @@ public class ValueColorSchemes {
                                                                                 new Color(138,0,0), 
                                                                                 Color.BLACK});
     
-    public static final ValueColorScheme GRAY_SCALE = new ValueColorScheme(new Color[]{Color.BLACK, 
+    public static final ValueColorScheme GRAY_SCALE = new ValueColorSchemeGradient(new Color[]{Color.BLACK, 
                                                                                        Color.WHITE,
                                                                                        Color.RED});
     private static final Map<String, ValueColorScheme> registeredColorSchemes
@@ -37,4 +41,13 @@ public class ValueColorSchemes {
     public static Map<String, ValueColorScheme> getRegisteredColorSchemes() {
         return Collections.unmodifiableMap(registeredColorSchemes);
     }
+    
+    public static ValueColorSchemeInstance optimize(ValueColorSchemeInstance instance, Range range){
+        return new ValueColorSchemeInstanceOptimized(instance, range);
+    }
+    
+    public static ValueColorSchemeInstance optimize(ValueColorSchemeInstance instance, Range oldRange, Range newRange){
+        return new ValueColorSchemeInstanceOptimized(instance, oldRange, newRange);
+    }
+    
 }
