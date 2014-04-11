@@ -217,7 +217,7 @@ public class NLineGraphs2DRenderer extends Graph2DRenderer<NLineGraphs2DRenderer
             xAggregatedRange = aggregateRange(xDataRange.get(i), xAggregatedRange);
             xPlotRange = xAxisRange.axisRange(xDataRange.get(i), xAggregatedRange);
         }  
-        if(yAggregatedRange == null || yDataRange.size() != yAggregatedRange.size()){
+        if(yAggregatedRange == null || yDataRange.size() != yAggregatedRange.size() || length != yPlotRange.size()){
             yAggregatedRange = new ArrayList<Range>();
             yPlotRange = new ArrayList<Range>();
             for(int i = 0; i < length; i++){

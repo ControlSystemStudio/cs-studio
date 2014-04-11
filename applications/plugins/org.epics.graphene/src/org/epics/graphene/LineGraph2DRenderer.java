@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Arrays;
+import java.util.List;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.SortedListView;
 
@@ -25,7 +26,10 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
     public LineGraph2DRendererUpdate newUpdate() {
         return new LineGraph2DRendererUpdate();
     }
-
+    
+    private ValueColorScheme valueColorScheme = ValueColorSchemes.GRAY_SCALE;
+    private ValueColorSchemeInstance valueColorSchemeInstance;
+    private Range datasetRange;
     private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOUR;
     private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;
     // Pixel focus
@@ -85,6 +89,10 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
     @Override
     public void update(LineGraph2DRendererUpdate update) {
         super.update(update);
+        if(update.getValueColorScheme() != null){
+            valueColorScheme = update.getValueColorScheme();
+            valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
+        }
         if (update.getInterpolation() != null) {
             interpolation = update.getInterpolation();
         }
@@ -133,6 +141,40 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
             }
         } else {
             focusValueIndex = -1;
+        }
+    }
+    
+    /**
+     *Draws a graph with multiple lines, each pertaining to a different set of data.
+     * @param g Graphics2D object used to perform drawing functions within draw.
+     * @param data can not be null
+     */
+    public void draw(Graphics2D g, List<Point2DDataset> data) {
+        this.g = g;
+        
+        //Calculate range, range will end up being from the lowest point to highest in all of the given data.
+        for(Point2DDataset dataPiece: data){
+          super.calculateRanges(dataPiece.getXStatistics(), dataPiece.getYStatistics());  
+        }
+        calculateLabels();
+        calculateGraphArea();
+        drawBackground();
+        drawGraphArea();
+        
+        Range datasetRangeCheck = RangeUtil.range(0,data.size());
+        
+        //Set color scheme
+        if(valueColorSchemeInstance == null || datasetRange == null || datasetRange != datasetRangeCheck){
+            datasetRange = datasetRangeCheck;
+            valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
+        }
+        //Draw a line for each set of data in the data array.
+        for(int datasetNumber = 0; datasetNumber < data.size(); datasetNumber++){
+            SortedListView xValues = org.epics.util.array.ListNumbers.sortedView(data.get(datasetNumber).getXValues());
+            ListNumber yValues = org.epics.util.array.ListNumbers.sortedView(data.get(datasetNumber).getYValues(), xValues.getIndexes());        
+            setClip(g);
+            g.setColor(new Color(valueColorSchemeInstance.colorFor((double)datasetNumber)));
+            drawValueExplicitLine(xValues, yValues, interpolation, reduction);
         }
     }
 

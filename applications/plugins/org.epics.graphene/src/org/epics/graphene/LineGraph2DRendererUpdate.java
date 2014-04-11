@@ -10,10 +10,17 @@ package org.epics.graphene;
  */
 public class LineGraph2DRendererUpdate extends Graph2DRendererUpdate<LineGraph2DRendererUpdate> {
 
+    private ValueColorScheme valueColorScheme;
     private InterpolationScheme interpolation;
     private ReductionScheme reduction;
     private Integer focusPixelX;
     private Boolean highlightFocusValue;
+    
+    
+    public LineGraph2DRendererUpdate valueColorScheme(ValueColorScheme scheme) {
+        this.valueColorScheme = scheme;
+        return self();
+    }
     
     /**
      *Sets this object's interpolation to the given scheme.
@@ -69,6 +76,10 @@ public class LineGraph2DRendererUpdate extends Graph2DRendererUpdate<LineGraph2D
     public LineGraph2DRendererUpdate highlightFocusValue(boolean highlightFocusValue) {
         this.highlightFocusValue = highlightFocusValue;
         return this;
+    }
+    
+    public ValueColorScheme getValueColorScheme() {
+        return valueColorScheme;
     }
     
     /**
