@@ -124,10 +124,11 @@ public class ScriptCommand extends ScanCommand
             node = DOMHelper.findFirstElementNode(node.getFirstChild(), "argument");
             while (node != null)
             {
-                Node text_node = node.getFirstChild();
-                if (text_node == null)
-                    throw new Exception("Missing argument");
-                arguments.add(text_node.getNodeValue());
+                final Node text_node = node.getFirstChild();
+                if (text_node == null) // Empty "<argument/>"?
+                    arguments.add("");
+                else
+                    arguments.add(text_node.getNodeValue());
                 node = DOMHelper.findNextElementNode(node, "argument");
             }
             setArguments(arguments.toArray(new String[arguments.size()]));
