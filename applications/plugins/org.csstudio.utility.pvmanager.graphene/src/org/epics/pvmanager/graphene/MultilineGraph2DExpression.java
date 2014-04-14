@@ -5,7 +5,7 @@
 package org.epics.pvmanager.graphene;
 
 import org.epics.graphene.LineGraph2DRendererUpdate;
-import org.epics.graphene.MultilineGraph2DRendererUpdate;
+import org.epics.graphene.LineGraph2DRendererUpdate;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
@@ -15,7 +15,7 @@ import static org.epics.pvmanager.graphene.ExpressionLanguage.functionOf;
  *
  * @author carcassi
  */
-public class MultilineGraph2DExpression extends DesiredRateExpressionImpl<Graph2DResult> implements Graph2DExpression<MultilineGraph2DRendererUpdate> {
+public class MultilineGraph2DExpression extends DesiredRateExpressionImpl<Graph2DResult> implements Graph2DExpression<LineGraph2DRendererUpdate> {
 
     MultilineGraph2DExpression(DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
@@ -27,12 +27,12 @@ public class MultilineGraph2DExpression extends DesiredRateExpressionImpl<Graph2
     }
     
     @Override
-    public void update(MultilineGraph2DRendererUpdate update) {
+    public void update(LineGraph2DRendererUpdate update) {
         ((MultilineGraph2DFunction) getFunction()).getRendererUpdateQueue().writeValue(update);
     }
 
     @Override
-    public MultilineGraph2DRendererUpdate newUpdate() {
-        return new MultilineGraph2DRendererUpdate();
+    public LineGraph2DRendererUpdate newUpdate() {
+        return new LineGraph2DRendererUpdate();
     }
 }

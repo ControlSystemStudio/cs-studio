@@ -28,10 +28,10 @@ class MultilineGraph2DFunction implements ReadFunction<Graph2DResult> {
     private ReadFunctionArgument<List<String>> xColumnNames;
     private ReadFunctionArgument<List<String>> yColumnNames;
     
-    private MultilineGraph2DRenderer renderer = new MultilineGraph2DRenderer(300, 200);
+    private LineGraph2DRenderer renderer = new LineGraph2DRenderer(300, 200);
     
     private VImage previousImage;
-    private final QueueCollector<MultilineGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
+    private final QueueCollector<LineGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
     MultilineGraph2DFunction(ReadFunction<?> tableData,
 	    ReadFunction<?> xColumnName,
@@ -41,7 +41,7 @@ class MultilineGraph2DFunction implements ReadFunction<Graph2DResult> {
         this.yColumnNames = stringArrayArgument(yColumnName, "Y Columns");
     }
 
-    public QueueCollector<MultilineGraph2DRendererUpdate> getRendererUpdateQueue() {
+    public QueueCollector<LineGraph2DRendererUpdate> getRendererUpdateQueue() {
         return rendererUpdateQueue;
     }
 
@@ -65,8 +65,8 @@ class MultilineGraph2DFunction implements ReadFunction<Graph2DResult> {
         }
         
         // Process all renderer updates
-        List<MultilineGraph2DRendererUpdate> updates = rendererUpdateQueue.readValue();
-        for (MultilineGraph2DRendererUpdate rendererUpdate : updates) {
+        List<LineGraph2DRendererUpdate> updates = rendererUpdateQueue.readValue();
+        for (LineGraph2DRendererUpdate rendererUpdate : updates) {
             renderer.update(rendererUpdate);
         }
         
