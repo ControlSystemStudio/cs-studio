@@ -108,7 +108,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<Graph2DRendererUpd
     }
     // ^ (Possibly) TO BE TAKEN OUT ONCE TESTING IS DONE ^
     
-    private ValueColorScheme valueColorScheme = ValueColorSchemes.GRAY_SCALE;
+    private ValueColorScheme valueColorScheme = ValueColorSchemes.JET;
     
     
     /**
@@ -958,9 +958,24 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
     protected final double scaledZ(double value) {
         return zValueScale.scaleValue(value, zPlotRange.getMinimum().doubleValue(), zPlotRange.getMaximum().doubleValue(), yPlotCoordEnd, yPlotCoordStart);
     }
-    
- 
-    /*protected final String formatSingleNumber(int number){
-        
-    }*/
+
+    /**
+     * Whether or not the legend for the value to color mapping should be drawn.
+     * Default is false.
+     * 
+     * @return if true legend is drawn
+     */
+    public boolean isDrawLegend() {
+        return drawLegend;
+    }
+
+    /**
+     * Return the color scheme used for the value. Default is JET.
+     * 
+     * @return the color schemed used for the value; can't be null
+     */
+    public ValueColorScheme getValueColorScheme() {
+        return valueColorScheme;
+    }
+
 }
