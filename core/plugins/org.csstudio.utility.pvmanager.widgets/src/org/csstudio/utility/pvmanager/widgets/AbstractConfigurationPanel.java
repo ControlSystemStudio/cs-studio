@@ -12,6 +12,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -110,9 +111,26 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
 		checkBox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				changeSupport.firePropertyChange("propertyName", !getCheckBoxValue(checkBox), getCheckBoxValue(checkBox));
+				changeSupport.firePropertyChange(propertyName, !getCheckBoxValue(checkBox), getCheckBoxValue(checkBox));
 			}
 		});
+	}
+	
+	protected void forwardComboEvents(final Combo combo, final String propertyName) {
+		combo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				changeSupport.firePropertyChange(propertyName, comboSelectedValue(combo), null);
+			}
+		});
+	}
+	
+	protected String comboSelectedValue(final Combo combo) {
+		if (combo.getSelectionIndex() != -1) {
+			return combo.getItem(combo.getSelectionIndex());
+		} else {
+			return null;
+		}
 	}
 	
 }
