@@ -9,6 +9,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -28,15 +30,21 @@ import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure.IProfileDataChangeLisenter;
+import org.csstudio.swt.widgets.figures.IntensityGraphFigure.PixelInfo;
+import org.csstudio.swt.widgets.figures.IntensityGraphFigure.IPixelInfoListener;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ArrayShort;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /**The widget editpart of intensity graph widget.
  * @author Xihui Chen
@@ -79,34 +87,53 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 					IntensityGraphModel.Y_AXIS_ID, axisProperty.propIDPre);
 			setAxisProperty(graph.getYAxis(), axisProperty, model.getPropertyValue(propID));
 		}
-		//add profile data listener
-		if(getExecutionMode() == ExecutionMode.RUN_MODE &&
-				(model.getHorizonProfileYPV().trim().length() >0 ||
-						model.getVerticalProfileYPV().trim().length() > 0)){
-			graph.addProfileDataListener(new IProfileDataChangeLisenter(){
-
-				public void profileDataChanged(double[] xProfileData,
-						double[] yProfileData, Range xAxisRange, Range yAxisRange) {
-					//horizontal
-					setPVValue(IntensityGraphModel.PROP_HORIZON_PROFILE_Y_PV_NAME, xProfileData);
-					double[] horizonXData = new double[xProfileData.length];
-					double d = (xAxisRange.getUpper() - xAxisRange.getLower())/(xProfileData.length-1);
-					for(int i=0; i<xProfileData.length; i++){
-						horizonXData[i] = xAxisRange.getLower() + d *i;
-					}
-					setPVValue(IntensityGraphModel.PROP_HORIZON_PROFILE_X_PV_NAME, horizonXData);
-					//vertical
-					setPVValue(IntensityGraphModel.PROP_VERTICAL_PROFILE_Y_PV_NAME, yProfileData);
-					double[] verticalXData = new double[yProfileData.length];
-					d = (yAxisRange.getUpper() - yAxisRange.getLower())/(yProfileData.length-1);
-					for(int i=0; i<yProfileData.length; i++){
-						verticalXData[i] = yAxisRange.getUpper() - d*i;
-					}
-					setPVValue(IntensityGraphModel.PROP_VERTICAL_PROFILE_X_PV_NAME, verticalXData);
-				}
-
-			});
-		}
+		if(getExecutionMode() == ExecutionMode.RUN_MODE) {
+		    //add profile data listener
+		    if (model.getHorizonProfileYPV().trim().length() > 0 ||
+				model.getVerticalProfileYPV().trim().length() > 0) {
+		        graph.addProfileDataListener(new IProfileDataChangeLisenter() {
+		            public void profileDataChanged(double[] xProfileData,
+					     	double[] yProfileData, Range xAxisRange, Range yAxisRange) {
+        					//horizontal
+    					setPVValue(IntensityGraphModel.PROP_HORIZON_PROFILE_Y_PV_NAME, xProfileData);
+    					double[] horizonXData = new double[xProfileData.length];
+    					double d = (xAxisRange.getUpper() - xAxisRange.getLower())/(xProfileData.length-1);
+    					for(int i=0; i<xProfileData.length; i++){
+    						horizonXData[i] = xAxisRange.getLower() + d *i;
+    					}
+    					setPVValue(IntensityGraphModel.PROP_HORIZON_PROFILE_X_PV_NAME, horizonXData);
+    					//vertical
+    					setPVValue(IntensityGraphModel.PROP_VERTICAL_PROFILE_Y_PV_NAME, yProfileData);
+    					double[] verticalXData = new double[yProfileData.length];
+    					d = (yAxisRange.getUpper() - yAxisRange.getLower())/(yProfileData.length-1);
+    					for(int i=0; i<yProfileData.length; i++){
+    						verticalXData[i] = yAxisRange.getUpper() - d*i;
+    					}
+    					setPVValue(IntensityGraphModel.PROP_VERTICAL_PROFILE_X_PV_NAME, verticalXData);
+				    }
+	            });
+		    }
+		    
+		    if (model.getPixelInfoPV().trim().length() > 0)
+		    {   // Listen to pixel info, forward to PV
+		        graph.addPixelInfoListener(new IPixelInfoListener()
+                {
+                    @Override
+                    public void pixelInfoChanged(final PixelInfo pixel_info, final boolean selected)
+                    {
+                        // TODO "Selected" column should be boolean, but there is no 'ArrayBoolean', and List<Boolean> also fails
+                        final List<Class<?>> types = Arrays.<Class<?>>asList(double.class, double.class, double.class, int.class);
+                        final List<String> names = Arrays.asList("X", "Y", "Value", "Selected");
+                        final List<Object> values = Arrays.<Object>asList(new ArrayDouble(pixel_info.xcoord),
+                                                                          new ArrayDouble(pixel_info.ycoord),
+                                                                          new ArrayDouble(pixel_info.value),
+                                                                          new ArrayInt(selected ? 1 : 0));
+                        final Object value = ValueFactory.newVTable(types, names, values);
+                        setPVValue(IntensityGraphModel.PROP_PIXEL_INFO_PV_NAME, value);
+                    }
+		        });
+		    }
+	    }
 		
 		updatePropSheet();
 
