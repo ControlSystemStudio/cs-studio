@@ -6,7 +6,7 @@
          <meta.schema plugin="org.csstudio.utility.product" id="org.csstudio.utility.product.module" name="org.csstudio.utility.product.module"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         Perform arbitrary actions during the life cycle of the WorkbenchWindowAdvisor.
       </documentation>
    </annotation>
 
@@ -67,7 +67,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         this extension point was added in version 1.2.0.
       </documentation>
    </annotation>
 
@@ -76,7 +76,7 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         See IWorkbenchWindowAdvisorExtPoint for usage.
       </documentation>
    </annotation>
 
@@ -85,7 +85,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         See IWorkbenchWindowAdvisorExtPoint for usage and expectations.
       </documentation>
    </annotation>
 
