@@ -7,6 +7,7 @@ import java.beans.PropertyChangeEvent;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.epics.graphene.ValueColorScheme;
 
 /**
  * @author shroffk
@@ -18,16 +19,20 @@ public class IntensityGraph2DConfigurationDialog
 
 	protected IntensityGraph2DConfigurationDialog(IntensityGraph2DWidget control, String title) {
 		super(control, title);
+		addInitialValues("colorMap", control.getColorMap());
 	}
 
 	@Override
 	protected void onPropertyChange(PropertyChangeEvent evt) {
 		super.onPropertyChange(evt);
+		getWidget().setColorMap(getConfigurationComposite().getColorMap());
 	}
 
 	@Override
 	protected void populateInitialValues() {
 		super.populateInitialValues();
+		getConfigurationComposite().setColorMap(
+				(ValueColorScheme) getInitialValues().get("colorMap"));
 	}
 
 	@Override

@@ -4,37 +4,24 @@
 package org.csstudio.graphene;
 
 import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.BubbleGraph2DRendererUpdate;
 import org.epics.graphene.IntensityGraph2DRendererUpdate;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.PVWriterEvent;
-import org.epics.pvmanager.PVWriterListener;
-import org.epics.pvmanager.graphene.BubbleGraph2DExpression;
+import org.epics.graphene.ValueColorScheme;
+import org.epics.graphene.ValueColorSchemes;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
 import org.epics.pvmanager.graphene.IntensityGraph2DExpression;
-import org.epics.util.array.ArrayDouble;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VTable;
-import org.epics.vtype.ValueFactory;
-import org.epics.vtype.table.VTableFactory;
 
 /**
  * @author shroffk
@@ -43,13 +30,34 @@ import org.epics.vtype.table.VTableFactory;
 public class IntensityGraph2DWidget extends AbstractGraph2DWidget<IntensityGraph2DRendererUpdate, IntensityGraph2DExpression>
 	implements ISelectionProvider {
 	
+	private ValueColorScheme colorMap = ValueColorSchemes.JET;
+	private boolean drawLegend = false;
+	
 	public IntensityGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
+		final List<String> updatePropertyNames = Arrays.asList("colorMap", "colorMap");
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (getGraph() != null && updatePropertyNames.contains(evt.getPropertyName())) {
+					updateGraph(getGraph());
+				}
+				
+			}
+		});
+	}
+	
+	private void updateGraph(IntensityGraph2DExpression graph) {
+		graph.update(graph.newUpdate()
+				.valueColorScheme(colorMap)
+				.drawLegend(drawLegend));
 	}
 	
 	@Override
 	protected IntensityGraph2DExpression createGraph() {
 		IntensityGraph2DExpression graph = ExpressionLanguage.intensityGraphOf(formula(getDataFormula()));
+		updateGraph(graph);
 		return graph;
 	}
 
@@ -71,6 +79,28 @@ public class IntensityGraph2DWidget extends AbstractGraph2DWidget<IntensityGraph
 	@Override
 	protected void processValue() {
 		Graph2DResult result = getCurrentResult();
+	}
+	
+	public boolean isDrawLegend() {
+		return drawLegend;
+	}
+	
+	public void setDrawLegend(boolean drawLegend) {
+		boolean oldValue = this.drawLegend;
+		this.drawLegend = drawLegend;
+		changeSupport.firePropertyChange("drawLegend", oldValue,
+				this.drawLegend);
+	}
+	
+	public ValueColorScheme getColorMap() {
+		return colorMap;
+	}
+	
+	public void setColorMap(ValueColorScheme colorMap) {
+		ValueColorScheme oldValue = this.colorMap;
+		this.colorMap = colorMap;
+		changeSupport.firePropertyChange("colorMap", oldValue,
+				this.colorMap);
 	}
 
 	@Override
