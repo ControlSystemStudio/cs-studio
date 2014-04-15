@@ -56,9 +56,11 @@
     <module>org.csstudio.archive.rdb</module>
     <module>org.csstudio.archive.reader</module>
     <module>org.csstudio.archive.reader.aapi</module>
+    <module>org.csstudio.archive.reader.appliance</module>
     <module>org.csstudio.archive.reader.archiverecord</module>
     <module>org.csstudio.archive.reader.channelarchiver</module>
     <module>org.csstudio.archive.reader.ea4</module>
+    <module>org.csstudio.archive.reader.pbraw</module>
     <module>org.csstudio.archive.reader.rdb</module>
     <module>org.csstudio.archive.reader.rdb.test</module>
     <module>org.csstudio.archive.vtype</module>
@@ -214,6 +216,7 @@
     <!--<module>org.csstudio.utility.tine.ui</module>--><!-- depends on org.csstudio.utility.tine -->
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
+    <module>org.csstudio.vtype.pv</module>
     <!--<module>org.custommonkey.xmlunit</module>--><!-- use plugin from Orbit repository -->
     <!--<module>org.eclipse.nebula.jface.gridviewer</module>--><!-- Moved to third party repository -->
     <!--<module>org.eclipse.nebula.widgets.grid</module>--><!-- Moved to third party repository -->

@@ -9,10 +9,13 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>applications-features</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.applications.all.feature</module>
+    <module>org.csstudio.archive.reader.ea4.feature</module>
+    <module>org.csstudio.archive.reader.pbraw.feature</module>
+    <module>org.csstudio.archive.reader.appliance.feature</module>
     <module>org.csstudio.core.feature</module>
     <module>org.csstudio.core.util.feature</module>
     <module>org.csstudio.boy.feature</module>

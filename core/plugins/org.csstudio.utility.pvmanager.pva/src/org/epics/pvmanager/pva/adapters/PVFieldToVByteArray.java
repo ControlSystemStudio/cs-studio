@@ -32,11 +32,11 @@ public class PVFieldToVByteArray extends AlarmTimeDisplayExtractor implements VB
 	 * @param pvField
 	 * @param disconnected
 	 */
-	public PVFieldToVByteArray(PVStructure pvField, boolean disconnected) {
+	public PVFieldToVByteArray(PVStructure pvField, String fieldName, boolean disconnected) {
 		super(pvField, disconnected);
 		
 		PVByteArray valueField =
-			(PVByteArray)pvField.getScalarArrayField("value", ScalarType.pvByte);
+			(PVByteArray)pvField.getScalarArrayField(fieldName, ScalarType.pvByte);
 		if (valueField != null)
 		{
 			ByteArrayData data = new ByteArrayData();
@@ -52,6 +52,10 @@ public class PVFieldToVByteArray extends AlarmTimeDisplayExtractor implements VB
 		}
 	}
 
+	public PVFieldToVByteArray(PVStructure pvField, boolean disconnected) {
+		this(pvField, "value", disconnected);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.epics.pvmanager.data.Array#getSizes()
 	 */

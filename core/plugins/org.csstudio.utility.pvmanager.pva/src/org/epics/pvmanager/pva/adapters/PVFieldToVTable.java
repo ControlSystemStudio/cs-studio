@@ -21,6 +21,9 @@ import org.epics.pvdata.pv.PVScalarArray;
 import org.epics.pvdata.pv.PVShortArray;
 import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
+import org.epics.pvdata.pv.PVUByteArray;
+import org.epics.pvdata.pv.PVUIntArray;
+import org.epics.pvdata.pv.PVUShortArray;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.ShortArrayData;
 import org.epics.pvdata.pv.StringArrayData;
@@ -31,7 +34,6 @@ import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ArrayShort;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VTypeToString;
-import org.epics.vtype.ValueUtil;
 
 /**
  * @author msekoranja
@@ -96,6 +98,14 @@ public class PVFieldToVTable implements VTable {
 		        	((PVIntArray)scalarArray).get(0, len, data);
 		        	values.add(new ArrayInt(data.data));
 	        	}
+	        	else if (scalarArray instanceof PVUIntArray)
+	        	{
+		        	types.add(int.class);
+		        	
+		        	IntArrayData data = new IntArrayData();
+		        	((PVUIntArray)scalarArray).get(0, len, data);
+		        	values.add(new ArrayInt(data.data));
+	        	}
 	        	else if (scalarArray instanceof PVStringArray)
 	        	{
 		        	types.add(String.class);
@@ -120,14 +130,31 @@ public class PVFieldToVTable implements VTable {
 		        	((PVByteArray)scalarArray).get(0, len, data);
 		        	values.add(new ArrayByte(data.data));
 	        	}
-	        	else if (scalarArray instanceof PVShortArray)
+	        	else if (scalarArray instanceof PVUByteArray)
 	        	{
 		        	types.add(byte.class);
+		        	
+		        	ByteArrayData data = new ByteArrayData();
+		        	((PVUByteArray)scalarArray).get(0, len, data);
+		        	values.add(new ArrayByte(data.data));
+	        	}
+	        	else if (scalarArray instanceof PVShortArray)
+	        	{
+		        	types.add(short.class);
 		        	
 		        	ShortArrayData data = new ShortArrayData();
 		        	((PVShortArray)scalarArray).get(0, len, data);
 		        	values.add(new ArrayShort(data.data));
 	        	}
+	        	else if (scalarArray instanceof PVUShortArray)
+	        	{
+		        	types.add(short.class);
+		        	
+		        	ShortArrayData data = new ShortArrayData();
+		        	((PVUShortArray)scalarArray).get(0, len, data);
+		        	values.add(new ArrayShort(data.data));
+	        	}
+	        	// TODO no long/ulong support
 	        	else
 	        		skipped = true;
 	        	

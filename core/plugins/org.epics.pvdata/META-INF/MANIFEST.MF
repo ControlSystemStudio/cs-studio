@@ -6,17 +6,17 @@ Bundle-Version: 3.1.1.qualifier
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/pvData-2.0.jar
+ lib/pvDataJava-3.0.3.jar
 Export-Package: 
  org.epics.pvdata.accessSecurity,
- org.epics.pvdata.factory,
- org.epics.pvdata.misc,
- org.epics.pvdata.monitor,
- org.epics.pvdata.property,
- org.epics.pvdata.pv,
+ org.epics.pvdata.factory;uses:="org.epics.pvdata.pv,org.epics.pvdata.misc",
+ org.epics.pvdata.misc;uses:="org.epics.pvdata.pv",
+ org.epics.pvdata.monitor;uses:="org.epics.pvdata.pv,org.epics.pvdata.misc",
+ org.epics.pvdata.property;uses:="org.epics.pvdata.pv",
+ org.epics.pvdata.pv;uses:="org.epics.pvdata.misc",
  org.epics.pvdata.util.namedValues,
- org.epics.pvdata.util.pvDataHelper
+ org.epics.pvdata.util.pvDataHelper;uses:="org.epics.pvdata.pv"
 Bundle-Vendor: BNL/CSL
 Bundle-Description: EPICS v4 pvData library
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

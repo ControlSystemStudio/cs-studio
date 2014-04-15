@@ -1,4 +1,3 @@
-// $ANTLR 3.4 org\\epics\\pvmanager\\formula\\Formula.g 2014-01-27 15:02:06
 
   package org.epics.pvmanager.formula;
   import org.epics.pvmanager.expression.*;
@@ -70,7 +69,7 @@ public class FormulaParser extends Parser {
     }
 
     public String[] getTokenNames() { return FormulaParser.tokenNames; }
-    public String getGrammarFileName() { return "org\\epics\\pvmanager\\formula\\Formula.g"; }
+    public String getGrammarFileName() { return "org/epics/pvmanager/formula/Formula.g"; }
 
 
       @Override
@@ -81,7 +80,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "singlePv"
-    // org\\epics\\pvmanager\\formula\\Formula.g:27:1: singlePv returns [DesiredRateExpression<?> result] : pv EOF ;
+    // org/epics/pvmanager/formula/Formula.g:27:1: singlePv returns [DesiredRateExpression<?> result] : pv EOF ;
     public final DesiredRateExpression<?> singlePv() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -90,8 +89,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:28:5: ( pv EOF )
-            // org\\epics\\pvmanager\\formula\\Formula.g:28:9: pv EOF
+            // org/epics/pvmanager/formula/Formula.g:28:5: ( pv EOF )
+            // org/epics/pvmanager/formula/Formula.g:28:9: pv EOF
             {
             pushFollow(FOLLOW_pv_in_singlePv57);
             pv1=pv();
@@ -121,7 +120,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "formula"
-    // org\\epics\\pvmanager\\formula\\Formula.g:31:1: formula returns [DesiredRateExpression<?> result] : expression EOF ;
+    // org/epics/pvmanager/formula/Formula.g:31:1: formula returns [DesiredRateExpression<?> result] : expression EOF ;
     public final DesiredRateExpression<?> formula() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -130,8 +129,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:32:5: ( expression EOF )
-            // org\\epics\\pvmanager\\formula\\Formula.g:32:9: expression EOF
+            // org/epics/pvmanager/formula/Formula.g:32:5: ( expression EOF )
+            // org/epics/pvmanager/formula/Formula.g:32:9: expression EOF
             {
             pushFollow(FOLLOW_expression_in_formula84);
             expression2=expression();
@@ -161,7 +160,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "expression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:35:1: expression returns [DesiredRateExpression<?> result] : conditionalExpression ;
+    // org/epics/pvmanager/formula/Formula.g:35:1: expression returns [DesiredRateExpression<?> result] : conditionalExpression ;
     public final DesiredRateExpression<?> expression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -170,8 +169,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:36:5: ( conditionalExpression )
-            // org\\epics\\pvmanager\\formula\\Formula.g:36:9: conditionalExpression
+            // org/epics/pvmanager/formula/Formula.g:36:5: ( conditionalExpression )
+            // org/epics/pvmanager/formula/Formula.g:36:9: conditionalExpression
             {
             pushFollow(FOLLOW_conditionalExpression_in_expression111);
             conditionalExpression3=conditionalExpression();
@@ -199,7 +198,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "conditionalExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:39:1: conditionalExpression returns [DesiredRateExpression<?> result] : op1= conditionalOrExpression ( '?' op2= expression ':' op3= conditionalExpression )? ;
+    // org/epics/pvmanager/formula/Formula.g:39:1: conditionalExpression returns [DesiredRateExpression<?> result] : op1= conditionalOrExpression ( '?' op2= expression ':' op3= conditionalExpression )? ;
     public final DesiredRateExpression<?> conditionalExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -212,8 +211,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:40:5: (op1= conditionalOrExpression ( '?' op2= expression ':' op3= conditionalExpression )? )
-            // org\\epics\\pvmanager\\formula\\Formula.g:40:9: op1= conditionalOrExpression ( '?' op2= expression ':' op3= conditionalExpression )?
+            // org/epics/pvmanager/formula/Formula.g:40:5: (op1= conditionalOrExpression ( '?' op2= expression ':' op3= conditionalExpression )? )
+            // org/epics/pvmanager/formula/Formula.g:40:9: op1= conditionalOrExpression ( '?' op2= expression ':' op3= conditionalExpression )?
             {
             pushFollow(FOLLOW_conditionalOrExpression_in_conditionalExpression138);
             op1=conditionalOrExpression();
@@ -223,7 +222,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:41:9: ( '?' op2= expression ':' op3= conditionalExpression )?
+            // org/epics/pvmanager/formula/Formula.g:41:9: ( '?' op2= expression ':' op3= conditionalExpression )?
             int alt1=2;
             switch ( input.LA(1) ) {
                 case 33:
@@ -235,7 +234,7 @@ public class FormulaParser extends Parser {
 
             switch (alt1) {
                 case 1 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:41:13: '?' op2= expression ':' op3= conditionalExpression
+                    // org/epics/pvmanager/formula/Formula.g:41:13: '?' op2= expression ':' op3= conditionalExpression
                     {
                     match(input,33,FOLLOW_33_in_conditionalExpression154); 
 
@@ -279,7 +278,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "conditionalOrExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:45:1: conditionalOrExpression returns [DesiredRateExpression<?> result] : op1= conditionalAndExpression ( '||' op2= conditionalAndExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:45:1: conditionalOrExpression returns [DesiredRateExpression<?> result] : op1= conditionalAndExpression ( '||' op2= conditionalAndExpression )* ;
     public final DesiredRateExpression<?> conditionalOrExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -290,8 +289,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:46:5: (op1= conditionalAndExpression ( '||' op2= conditionalAndExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:46:9: op1= conditionalAndExpression ( '||' op2= conditionalAndExpression )*
+            // org/epics/pvmanager/formula/Formula.g:46:5: (op1= conditionalAndExpression ( '||' op2= conditionalAndExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:46:9: op1= conditionalAndExpression ( '||' op2= conditionalAndExpression )*
             {
             pushFollow(FOLLOW_conditionalAndExpression_in_conditionalOrExpression202);
             op1=conditionalAndExpression();
@@ -301,7 +300,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:47:9: ( '||' op2= conditionalAndExpression )*
+            // org/epics/pvmanager/formula/Formula.g:47:9: ( '||' op2= conditionalAndExpression )*
             loop2:
             do {
                 int alt2=2;
@@ -316,7 +315,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt2) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:47:13: '||' op2= conditionalAndExpression
+            	    // org/epics/pvmanager/formula/Formula.g:47:13: '||' op2= conditionalAndExpression
             	    {
             	    match(input,36,FOLLOW_36_in_conditionalOrExpression218); 
 
@@ -355,7 +354,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "conditionalAndExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:51:1: conditionalAndExpression returns [DesiredRateExpression<?> result] : op1= inclusiveOrExpression ( '&&' op2= inclusiveOrExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:51:1: conditionalAndExpression returns [DesiredRateExpression<?> result] : op1= inclusiveOrExpression ( '&&' op2= inclusiveOrExpression )* ;
     public final DesiredRateExpression<?> conditionalAndExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -366,8 +365,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:52:5: (op1= inclusiveOrExpression ( '&&' op2= inclusiveOrExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:52:9: op1= inclusiveOrExpression ( '&&' op2= inclusiveOrExpression )*
+            // org/epics/pvmanager/formula/Formula.g:52:5: (op1= inclusiveOrExpression ( '&&' op2= inclusiveOrExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:52:9: op1= inclusiveOrExpression ( '&&' op2= inclusiveOrExpression )*
             {
             pushFollow(FOLLOW_inclusiveOrExpression_in_conditionalAndExpression260);
             op1=inclusiveOrExpression();
@@ -377,7 +376,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:53:9: ( '&&' op2= inclusiveOrExpression )*
+            // org/epics/pvmanager/formula/Formula.g:53:9: ( '&&' op2= inclusiveOrExpression )*
             loop3:
             do {
                 int alt3=2;
@@ -392,7 +391,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:53:13: '&&' op2= inclusiveOrExpression
+            	    // org/epics/pvmanager/formula/Formula.g:53:13: '&&' op2= inclusiveOrExpression
             	    {
             	    match(input,18,FOLLOW_18_in_conditionalAndExpression276); 
 
@@ -431,7 +430,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "inclusiveOrExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:57:1: inclusiveOrExpression returns [DesiredRateExpression<?> result] : op1= andExpression ( '|' op2= andExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:57:1: inclusiveOrExpression returns [DesiredRateExpression<?> result] : op1= andExpression ( '|' op2= andExpression )* ;
     public final DesiredRateExpression<?> inclusiveOrExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -442,8 +441,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:58:5: (op1= andExpression ( '|' op2= andExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:58:9: op1= andExpression ( '|' op2= andExpression )*
+            // org/epics/pvmanager/formula/Formula.g:58:5: (op1= andExpression ( '|' op2= andExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:58:9: op1= andExpression ( '|' op2= andExpression )*
             {
             pushFollow(FOLLOW_andExpression_in_inclusiveOrExpression318);
             op1=andExpression();
@@ -453,7 +452,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:59:9: ( '|' op2= andExpression )*
+            // org/epics/pvmanager/formula/Formula.g:59:9: ( '|' op2= andExpression )*
             loop4:
             do {
                 int alt4=2;
@@ -468,7 +467,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt4) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:59:13: '|' op2= andExpression
+            	    // org/epics/pvmanager/formula/Formula.g:59:13: '|' op2= andExpression
             	    {
             	    match(input,35,FOLLOW_35_in_inclusiveOrExpression334); 
 
@@ -507,7 +506,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "andExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:63:1: andExpression returns [DesiredRateExpression<?> result] : op1= equalityExpression ( '&' op2= equalityExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:63:1: andExpression returns [DesiredRateExpression<?> result] : op1= equalityExpression ( '&' op2= equalityExpression )* ;
     public final DesiredRateExpression<?> andExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -518,8 +517,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:64:5: (op1= equalityExpression ( '&' op2= equalityExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:64:9: op1= equalityExpression ( '&' op2= equalityExpression )*
+            // org/epics/pvmanager/formula/Formula.g:64:5: (op1= equalityExpression ( '&' op2= equalityExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:64:9: op1= equalityExpression ( '&' op2= equalityExpression )*
             {
             pushFollow(FOLLOW_equalityExpression_in_andExpression376);
             op1=equalityExpression();
@@ -529,7 +528,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:65:9: ( '&' op2= equalityExpression )*
+            // org/epics/pvmanager/formula/Formula.g:65:9: ( '&' op2= equalityExpression )*
             loop5:
             do {
                 int alt5=2;
@@ -544,7 +543,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt5) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:65:13: '&' op2= equalityExpression
+            	    // org/epics/pvmanager/formula/Formula.g:65:13: '&' op2= equalityExpression
             	    {
             	    match(input,19,FOLLOW_19_in_andExpression392); 
 
@@ -583,7 +582,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "equalityExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:69:1: equalityExpression returns [DesiredRateExpression<?> result] : op1= relationalExpression ( '==' op2= relationalExpression | '!=' op2= relationalExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:69:1: equalityExpression returns [DesiredRateExpression<?> result] : op1= relationalExpression ( '==' op2= relationalExpression | '!=' op2= relationalExpression )* ;
     public final DesiredRateExpression<?> equalityExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -594,8 +593,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:70:5: (op1= relationalExpression ( '==' op2= relationalExpression | '!=' op2= relationalExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:70:9: op1= relationalExpression ( '==' op2= relationalExpression | '!=' op2= relationalExpression )*
+            // org/epics/pvmanager/formula/Formula.g:70:5: (op1= relationalExpression ( '==' op2= relationalExpression | '!=' op2= relationalExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:70:9: op1= relationalExpression ( '==' op2= relationalExpression | '!=' op2= relationalExpression )*
             {
             pushFollow(FOLLOW_relationalExpression_in_equalityExpression434);
             op1=relationalExpression();
@@ -605,7 +604,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:71:9: ( '==' op2= relationalExpression | '!=' op2= relationalExpression )*
+            // org/epics/pvmanager/formula/Formula.g:71:9: ( '==' op2= relationalExpression | '!=' op2= relationalExpression )*
             loop6:
             do {
                 int alt6=3;
@@ -625,7 +624,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt6) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:71:13: '==' op2= relationalExpression
+            	    // org/epics/pvmanager/formula/Formula.g:71:13: '==' op2= relationalExpression
             	    {
             	    match(input,31,FOLLOW_31_in_equalityExpression450); 
 
@@ -640,7 +639,7 @@ public class FormulaParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:72:13: '!=' op2= relationalExpression
+            	    // org/epics/pvmanager/formula/Formula.g:72:13: '!=' op2= relationalExpression
             	    {
             	    match(input,16,FOLLOW_16_in_equalityExpression470); 
 
@@ -679,7 +678,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "relationalExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:76:1: relationalExpression returns [DesiredRateExpression<?> result] : op1= additiveExpression ( '<' '=' op2= additiveExpression | '>' '=' op2= additiveExpression | '<' op2= additiveExpression | '>' op2= additiveExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:76:1: relationalExpression returns [DesiredRateExpression<?> result] : op1= additiveExpression ( '<' '=' op2= additiveExpression | '>' '=' op2= additiveExpression | '<' op2= additiveExpression | '>' op2= additiveExpression )* ;
     public final DesiredRateExpression<?> relationalExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -690,8 +689,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:77:5: (op1= additiveExpression ( '<' '=' op2= additiveExpression | '>' '=' op2= additiveExpression | '<' op2= additiveExpression | '>' op2= additiveExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:77:9: op1= additiveExpression ( '<' '=' op2= additiveExpression | '>' '=' op2= additiveExpression | '<' op2= additiveExpression | '>' op2= additiveExpression )*
+            // org/epics/pvmanager/formula/Formula.g:77:5: (op1= additiveExpression ( '<' '=' op2= additiveExpression | '>' '=' op2= additiveExpression | '<' op2= additiveExpression | '>' op2= additiveExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:77:9: op1= additiveExpression ( '<' '=' op2= additiveExpression | '>' '=' op2= additiveExpression | '<' op2= additiveExpression | '>' op2= additiveExpression )*
             {
             pushFollow(FOLLOW_additiveExpression_in_relationalExpression512);
             op1=additiveExpression();
@@ -701,7 +700,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:78:9: ( '<' '=' op2= additiveExpression | '>' '=' op2= additiveExpression | '<' op2= additiveExpression | '>' op2= additiveExpression )*
+            // org/epics/pvmanager/formula/Formula.g:78:9: ( '<' '=' op2= additiveExpression | '>' '=' op2= additiveExpression | '<' op2= additiveExpression | '>' op2= additiveExpression )*
             loop7:
             do {
                 int alt7=5;
@@ -761,7 +760,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt7) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:78:13: '<' '=' op2= additiveExpression
+            	    // org/epics/pvmanager/formula/Formula.g:78:13: '<' '=' op2= additiveExpression
             	    {
             	    match(input,29,FOLLOW_29_in_relationalExpression528); 
 
@@ -778,7 +777,7 @@ public class FormulaParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:79:13: '>' '=' op2= additiveExpression
+            	    // org/epics/pvmanager/formula/Formula.g:79:13: '>' '=' op2= additiveExpression
             	    {
             	    match(input,32,FOLLOW_32_in_relationalExpression550); 
 
@@ -795,7 +794,7 @@ public class FormulaParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:80:13: '<' op2= additiveExpression
+            	    // org/epics/pvmanager/formula/Formula.g:80:13: '<' op2= additiveExpression
             	    {
             	    match(input,29,FOLLOW_29_in_relationalExpression572); 
 
@@ -810,7 +809,7 @@ public class FormulaParser extends Parser {
             	    }
             	    break;
             	case 4 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:81:13: '>' op2= additiveExpression
+            	    // org/epics/pvmanager/formula/Formula.g:81:13: '>' op2= additiveExpression
             	    {
             	    match(input,32,FOLLOW_32_in_relationalExpression592); 
 
@@ -849,7 +848,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "additiveExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:85:1: additiveExpression returns [DesiredRateExpression<?> result] : op1= multiplicativeExpression ( '+' op2= multiplicativeExpression | '-' op2= multiplicativeExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:85:1: additiveExpression returns [DesiredRateExpression<?> result] : op1= multiplicativeExpression ( '+' op2= multiplicativeExpression | '-' op2= multiplicativeExpression )* ;
     public final DesiredRateExpression<?> additiveExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -860,8 +859,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:86:5: (op1= multiplicativeExpression ( '+' op2= multiplicativeExpression | '-' op2= multiplicativeExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:86:9: op1= multiplicativeExpression ( '+' op2= multiplicativeExpression | '-' op2= multiplicativeExpression )*
+            // org/epics/pvmanager/formula/Formula.g:86:5: (op1= multiplicativeExpression ( '+' op2= multiplicativeExpression | '-' op2= multiplicativeExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:86:9: op1= multiplicativeExpression ( '+' op2= multiplicativeExpression | '-' op2= multiplicativeExpression )*
             {
             pushFollow(FOLLOW_multiplicativeExpression_in_additiveExpression634);
             op1=multiplicativeExpression();
@@ -871,7 +870,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:87:9: ( '+' op2= multiplicativeExpression | '-' op2= multiplicativeExpression )*
+            // org/epics/pvmanager/formula/Formula.g:87:9: ( '+' op2= multiplicativeExpression | '-' op2= multiplicativeExpression )*
             loop8:
             do {
                 int alt8=3;
@@ -891,7 +890,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt8) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:87:13: '+' op2= multiplicativeExpression
+            	    // org/epics/pvmanager/formula/Formula.g:87:13: '+' op2= multiplicativeExpression
             	    {
             	    match(input,24,FOLLOW_24_in_additiveExpression650); 
 
@@ -906,7 +905,7 @@ public class FormulaParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:88:13: '-' op2= multiplicativeExpression
+            	    // org/epics/pvmanager/formula/Formula.g:88:13: '-' op2= multiplicativeExpression
             	    {
             	    match(input,26,FOLLOW_26_in_additiveExpression670); 
 
@@ -945,7 +944,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "multiplicativeExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:92:1: multiplicativeExpression returns [DesiredRateExpression<?> result] : op1= exponentialExpression ( '*' op2= exponentialExpression | '/' op2= exponentialExpression | '%' op2= exponentialExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:92:1: multiplicativeExpression returns [DesiredRateExpression<?> result] : op1= exponentialExpression ( '*' op2= exponentialExpression | '/' op2= exponentialExpression | '%' op2= exponentialExpression )* ;
     public final DesiredRateExpression<?> multiplicativeExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -956,8 +955,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:93:5: (op1= exponentialExpression ( '*' op2= exponentialExpression | '/' op2= exponentialExpression | '%' op2= exponentialExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:93:9: op1= exponentialExpression ( '*' op2= exponentialExpression | '/' op2= exponentialExpression | '%' op2= exponentialExpression )*
+            // org/epics/pvmanager/formula/Formula.g:93:5: (op1= exponentialExpression ( '*' op2= exponentialExpression | '/' op2= exponentialExpression | '%' op2= exponentialExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:93:9: op1= exponentialExpression ( '*' op2= exponentialExpression | '/' op2= exponentialExpression | '%' op2= exponentialExpression )*
             {
             pushFollow(FOLLOW_exponentialExpression_in_multiplicativeExpression712);
             op1=exponentialExpression();
@@ -967,7 +966,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:94:9: ( '*' op2= exponentialExpression | '/' op2= exponentialExpression | '%' op2= exponentialExpression )*
+            // org/epics/pvmanager/formula/Formula.g:94:9: ( '*' op2= exponentialExpression | '/' op2= exponentialExpression | '%' op2= exponentialExpression )*
             loop9:
             do {
                 int alt9=4;
@@ -992,7 +991,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt9) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:94:13: '*' op2= exponentialExpression
+            	    // org/epics/pvmanager/formula/Formula.g:94:13: '*' op2= exponentialExpression
             	    {
             	    match(input,22,FOLLOW_22_in_multiplicativeExpression728); 
 
@@ -1007,7 +1006,7 @@ public class FormulaParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:95:13: '/' op2= exponentialExpression
+            	    // org/epics/pvmanager/formula/Formula.g:95:13: '/' op2= exponentialExpression
             	    {
             	    match(input,27,FOLLOW_27_in_multiplicativeExpression748); 
 
@@ -1022,7 +1021,7 @@ public class FormulaParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:96:13: '%' op2= exponentialExpression
+            	    // org/epics/pvmanager/formula/Formula.g:96:13: '%' op2= exponentialExpression
             	    {
             	    match(input,17,FOLLOW_17_in_multiplicativeExpression768); 
 
@@ -1061,7 +1060,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "exponentialExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:100:1: exponentialExpression returns [DesiredRateExpression<?> result] : op1= unaryExpression ( '^' op2= unaryExpression | '**' op2= unaryExpression )* ;
+    // org/epics/pvmanager/formula/Formula.g:100:1: exponentialExpression returns [DesiredRateExpression<?> result] : op1= unaryExpression ( '^' op2= unaryExpression | '**' op2= unaryExpression )* ;
     public final DesiredRateExpression<?> exponentialExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1072,8 +1071,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:101:5: (op1= unaryExpression ( '^' op2= unaryExpression | '**' op2= unaryExpression )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:101:9: op1= unaryExpression ( '^' op2= unaryExpression | '**' op2= unaryExpression )*
+            // org/epics/pvmanager/formula/Formula.g:101:5: (op1= unaryExpression ( '^' op2= unaryExpression | '**' op2= unaryExpression )* )
+            // org/epics/pvmanager/formula/Formula.g:101:9: op1= unaryExpression ( '^' op2= unaryExpression | '**' op2= unaryExpression )*
             {
             pushFollow(FOLLOW_unaryExpression_in_exponentialExpression810);
             op1=unaryExpression();
@@ -1083,7 +1082,7 @@ public class FormulaParser extends Parser {
 
             result = op1;
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:102:9: ( '^' op2= unaryExpression | '**' op2= unaryExpression )*
+            // org/epics/pvmanager/formula/Formula.g:102:9: ( '^' op2= unaryExpression | '**' op2= unaryExpression )*
             loop10:
             do {
                 int alt10=3;
@@ -1103,7 +1102,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt10) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:102:13: '^' op2= unaryExpression
+            	    // org/epics/pvmanager/formula/Formula.g:102:13: '^' op2= unaryExpression
             	    {
             	    match(input,34,FOLLOW_34_in_exponentialExpression826); 
 
@@ -1118,7 +1117,7 @@ public class FormulaParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:103:13: '**' op2= unaryExpression
+            	    // org/epics/pvmanager/formula/Formula.g:103:13: '**' op2= unaryExpression
             	    {
             	    match(input,23,FOLLOW_23_in_exponentialExpression846); 
 
@@ -1157,7 +1156,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "unaryExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:107:1: unaryExpression returns [DesiredRateExpression<?> result] : ( '-' op= unaryExpression |op= unaryExpressionNotPlusMinus );
+    // org/epics/pvmanager/formula/Formula.g:107:1: unaryExpression returns [DesiredRateExpression<?> result] : ( '-' op= unaryExpression |op= unaryExpressionNotPlusMinus );
     public final DesiredRateExpression<?> unaryExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1166,7 +1165,7 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:108:5: ( '-' op= unaryExpression |op= unaryExpressionNotPlusMinus )
+            // org/epics/pvmanager/formula/Formula.g:108:5: ( '-' op= unaryExpression |op= unaryExpressionNotPlusMinus )
             int alt11=2;
             switch ( input.LA(1) ) {
             case 26:
@@ -1195,7 +1194,7 @@ public class FormulaParser extends Parser {
 
             switch (alt11) {
                 case 1 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:108:9: '-' op= unaryExpression
+                    // org/epics/pvmanager/formula/Formula.g:108:9: '-' op= unaryExpression
                     {
                     match(input,26,FOLLOW_26_in_unaryExpression886); 
 
@@ -1210,7 +1209,7 @@ public class FormulaParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:109:9: op= unaryExpressionNotPlusMinus
+                    // org/epics/pvmanager/formula/Formula.g:109:9: op= unaryExpressionNotPlusMinus
                     {
                     pushFollow(FOLLOW_unaryExpressionNotPlusMinus_in_unaryExpression904);
                     op=unaryExpressionNotPlusMinus();
@@ -1240,7 +1239,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "unaryExpressionNotPlusMinus"
-    // org\\epics\\pvmanager\\formula\\Formula.g:112:1: unaryExpressionNotPlusMinus returns [DesiredRateExpression<?> result] : ( '!' op= unaryExpression |op= primary );
+    // org/epics/pvmanager/formula/Formula.g:112:1: unaryExpressionNotPlusMinus returns [DesiredRateExpression<?> result] : ( '!' op= unaryExpression |op= primary );
     public final DesiredRateExpression<?> unaryExpressionNotPlusMinus() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1249,7 +1248,7 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:113:5: ( '!' op= unaryExpression |op= primary )
+            // org/epics/pvmanager/formula/Formula.g:113:5: ( '!' op= unaryExpression |op= primary )
             int alt12=2;
             switch ( input.LA(1) ) {
             case 15:
@@ -1277,7 +1276,7 @@ public class FormulaParser extends Parser {
 
             switch (alt12) {
                 case 1 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:113:9: '!' op= unaryExpression
+                    // org/epics/pvmanager/formula/Formula.g:113:9: '!' op= unaryExpression
                     {
                     match(input,15,FOLLOW_15_in_unaryExpressionNotPlusMinus929); 
 
@@ -1292,7 +1291,7 @@ public class FormulaParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:114:9: op= primary
+                    // org/epics/pvmanager/formula/Formula.g:114:9: op= primary
                     {
                     pushFollow(FOLLOW_primary_in_unaryExpressionNotPlusMinus947);
                     op=primary();
@@ -1322,7 +1321,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "primary"
-    // org\\epics\\pvmanager\\formula\\Formula.g:117:1: primary returns [DesiredRateExpression<?> result] : ( functionExpression | parExpression | pv | numericLiteral | stringLiteral );
+    // org/epics/pvmanager/formula/Formula.g:117:1: primary returns [DesiredRateExpression<?> result] : ( functionExpression | parExpression | pv | numericLiteral | stringLiteral );
     public final DesiredRateExpression<?> primary() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1339,7 +1338,7 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:118:5: ( functionExpression | parExpression | pv | numericLiteral | stringLiteral )
+            // org/epics/pvmanager/formula/Formula.g:118:5: ( functionExpression | parExpression | pv | numericLiteral | stringLiteral )
             int alt13=5;
             switch ( input.LA(1) ) {
             case FUNCTION:
@@ -1378,7 +1377,7 @@ public class FormulaParser extends Parser {
 
             switch (alt13) {
                 case 1 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:118:9: functionExpression
+                    // org/epics/pvmanager/formula/Formula.g:118:9: functionExpression
                     {
                     pushFollow(FOLLOW_functionExpression_in_primary972);
                     functionExpression4=functionExpression();
@@ -1391,7 +1390,7 @@ public class FormulaParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:119:9: parExpression
+                    // org/epics/pvmanager/formula/Formula.g:119:9: parExpression
                     {
                     pushFollow(FOLLOW_parExpression_in_primary984);
                     parExpression5=parExpression();
@@ -1404,7 +1403,7 @@ public class FormulaParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:120:9: pv
+                    // org/epics/pvmanager/formula/Formula.g:120:9: pv
                     {
                     pushFollow(FOLLOW_pv_in_primary996);
                     pv6=pv();
@@ -1417,7 +1416,7 @@ public class FormulaParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:121:9: numericLiteral
+                    // org/epics/pvmanager/formula/Formula.g:121:9: numericLiteral
                     {
                     pushFollow(FOLLOW_numericLiteral_in_primary1008);
                     numericLiteral7=numericLiteral();
@@ -1430,7 +1429,7 @@ public class FormulaParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:122:9: stringLiteral
+                    // org/epics/pvmanager/formula/Formula.g:122:9: stringLiteral
                     {
                     pushFollow(FOLLOW_stringLiteral_in_primary1020);
                     stringLiteral8=stringLiteral();
@@ -1460,7 +1459,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "functionExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:125:1: functionExpression returns [DesiredRateExpression<?> result] : FUNCTION '(' op= expression ( ',' op2= expression )* ')' ;
+    // org/epics/pvmanager/formula/Formula.g:125:1: functionExpression returns [DesiredRateExpression<?> result] : FUNCTION '(' op= expression ( ',' op2= expression )* ')' ;
     public final DesiredRateExpression<?> functionExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1472,8 +1471,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:126:5: ( FUNCTION '(' op= expression ( ',' op2= expression )* ')' )
-            // org\\epics\\pvmanager\\formula\\Formula.g:126:9: FUNCTION '(' op= expression ( ',' op2= expression )* ')'
+            // org/epics/pvmanager/formula/Formula.g:126:5: ( FUNCTION '(' op= expression ( ',' op2= expression )* ')' )
+            // org/epics/pvmanager/formula/Formula.g:126:9: FUNCTION '(' op= expression ( ',' op2= expression )* ')'
             {
             FUNCTION9=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_functionExpression1045); 
 
@@ -1487,7 +1486,7 @@ public class FormulaParser extends Parser {
 
             String name = (FUNCTION9!=null?FUNCTION9.getText():null); DesiredRateExpressionList args = new DesiredRateExpressionListImpl().and(op);
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:127:9: ( ',' op2= expression )*
+            // org/epics/pvmanager/formula/Formula.g:127:9: ( ',' op2= expression )*
             loop14:
             do {
                 int alt14=2;
@@ -1502,7 +1501,7 @@ public class FormulaParser extends Parser {
 
                 switch (alt14) {
             	case 1 :
-            	    // org\\epics\\pvmanager\\formula\\Formula.g:127:13: ',' op2= expression
+            	    // org/epics/pvmanager/formula/Formula.g:127:13: ',' op2= expression
             	    {
             	    match(input,25,FOLLOW_25_in_functionExpression1067); 
 
@@ -1545,7 +1544,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "parExpression"
-    // org\\epics\\pvmanager\\formula\\Formula.g:131:1: parExpression returns [DesiredRateExpression<?> result] : '(' expression ')' ;
+    // org/epics/pvmanager/formula/Formula.g:131:1: parExpression returns [DesiredRateExpression<?> result] : '(' expression ')' ;
     public final DesiredRateExpression<?> parExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1554,8 +1553,8 @@ public class FormulaParser extends Parser {
 
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:132:5: ( '(' expression ')' )
-            // org\\epics\\pvmanager\\formula\\Formula.g:132:9: '(' expression ')'
+            // org/epics/pvmanager/formula/Formula.g:132:5: ( '(' expression ')' )
+            // org/epics/pvmanager/formula/Formula.g:132:9: '(' expression ')'
             {
             match(input,20,FOLLOW_20_in_parExpression1111); 
 
@@ -1587,7 +1586,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "pv"
-    // org\\epics\\pvmanager\\formula\\Formula.g:135:1: pv returns [DesiredRateExpression<?> result] : PV ;
+    // org/epics/pvmanager/formula/Formula.g:135:1: pv returns [DesiredRateExpression<?> result] : PV ;
     public final DesiredRateExpression<?> pv() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1595,8 +1594,8 @@ public class FormulaParser extends Parser {
         Token PV11=null;
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:136:5: ( PV )
-            // org\\epics\\pvmanager\\formula\\Formula.g:136:9: PV
+            // org/epics/pvmanager/formula/Formula.g:136:5: ( PV )
+            // org/epics/pvmanager/formula/Formula.g:136:9: PV
             {
             PV11=(Token)match(input,PV,FOLLOW_PV_in_pv1140); 
 
@@ -1620,7 +1619,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "numericLiteral"
-    // org\\epics\\pvmanager\\formula\\Formula.g:139:1: numericLiteral returns [DesiredRateExpression<?> result] : ( INT | FLOAT );
+    // org/epics/pvmanager/formula/Formula.g:139:1: numericLiteral returns [DesiredRateExpression<?> result] : ( INT | FLOAT );
     public final DesiredRateExpression<?> numericLiteral() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1629,7 +1628,7 @@ public class FormulaParser extends Parser {
         Token FLOAT13=null;
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:140:5: ( INT | FLOAT )
+            // org/epics/pvmanager/formula/Formula.g:140:5: ( INT | FLOAT )
             int alt15=2;
             switch ( input.LA(1) ) {
             case INT:
@@ -1652,7 +1651,7 @@ public class FormulaParser extends Parser {
 
             switch (alt15) {
                 case 1 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:140:9: INT
+                    // org/epics/pvmanager/formula/Formula.g:140:9: INT
                     {
                     INT12=(Token)match(input,INT,FOLLOW_INT_in_numericLiteral1165); 
 
@@ -1661,7 +1660,7 @@ public class FormulaParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // org\\epics\\pvmanager\\formula\\Formula.g:141:9: FLOAT
+                    // org/epics/pvmanager/formula/Formula.g:141:9: FLOAT
                     {
                     FLOAT13=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_numericLiteral1177); 
 
@@ -1687,7 +1686,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "stringLiteral"
-    // org\\epics\\pvmanager\\formula\\Formula.g:144:1: stringLiteral returns [DesiredRateExpression<?> result] : STRING ;
+    // org/epics/pvmanager/formula/Formula.g:144:1: stringLiteral returns [DesiredRateExpression<?> result] : STRING ;
     public final DesiredRateExpression<?> stringLiteral() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1695,8 +1694,8 @@ public class FormulaParser extends Parser {
         Token STRING14=null;
 
         try {
-            // org\\epics\\pvmanager\\formula\\Formula.g:145:5: ( STRING )
-            // org\\epics\\pvmanager\\formula\\Formula.g:145:7: STRING
+            // org/epics/pvmanager/formula/Formula.g:145:5: ( STRING )
+            // org/epics/pvmanager/formula/Formula.g:145:7: STRING
             {
             STRING14=(Token)match(input,STRING,FOLLOW_STRING_in_stringLiteral1200); 
 

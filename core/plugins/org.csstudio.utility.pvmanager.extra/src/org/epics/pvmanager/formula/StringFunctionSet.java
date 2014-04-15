@@ -5,11 +5,16 @@
 package org.epics.pvmanager.formula;
 
 /**
+ * A set of functions to work with Strings.
+ * 
  * @author shroffk
  * 
  */
 public class StringFunctionSet extends FormulaFunctionSet {
 
+    /**
+     * Creates a new set.
+     */
     public StringFunctionSet() {
 	super(new FormulaFunctionSetDescription("string",
 		"Function to aggregate and manipulate strings")

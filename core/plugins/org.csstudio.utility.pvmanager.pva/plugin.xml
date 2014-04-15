@@ -11,6 +11,14 @@
    </extension>
 
    <extension
+         point="org.csstudio.utility.pvmanager.servicefactory">
+      <servicefactory
+            name="PVARPCfactory"
+            servicefactory="org.csstudio.utility.pvmanager.pva.CsstudioPVARPCServiceFactory">
+      </servicefactory>
+   </extension>
+
+   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"

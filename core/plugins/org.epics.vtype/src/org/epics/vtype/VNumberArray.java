@@ -20,9 +20,9 @@ public interface VNumberArray extends Array, Alarm, Time, Display, VType {
     ListNumber getData();
     
     /**
-     * Returns the boundaries of each cell
+     * Returns the boundaries of each cell.
      * 
-     * @return 
+     * @return the dimension display; can't be null
      */
     List<ArrayDimensionDisplay> getDimensionDisplay();
 }

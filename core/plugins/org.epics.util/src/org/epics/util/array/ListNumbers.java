@@ -198,4 +198,30 @@ public class ListNumbers {
             }
         };
     }
+    
+    /**
+     * Converts an array of primitive numbers to the appropriate ListNumber
+     * implementation.
+     * 
+     * @param primitiveArray must be an array of primitive numbers (byte[],
+     *        short[], int[], long[], float[] or double[])
+     * @return the wrapped array
+     */
+    public static ListNumber toListNumber(Object primitiveArray) {
+        if (primitiveArray instanceof byte[]) {
+            return new ArrayByte((byte[]) primitiveArray);
+        } else if (primitiveArray instanceof short[]) {
+            return new ArrayShort((short[]) primitiveArray);
+        } else if (primitiveArray instanceof int[]) {
+            return new ArrayInt((int[]) primitiveArray);
+        } else if (primitiveArray instanceof long[]) {
+            return new ArrayLong((long[]) primitiveArray);
+        } else if (primitiveArray instanceof float[]) {
+            return new ArrayFloat((float[]) primitiveArray);
+        } else if (primitiveArray instanceof double[]) {
+            return new ArrayDouble((double[]) primitiveArray);
+        } else {
+            throw new IllegalArgumentException(primitiveArray + " is not a an array of primitive numbers");
+        }
+    }
 }

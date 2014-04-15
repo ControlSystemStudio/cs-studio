@@ -7,5 +7,4 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Export-Package: org.csstudio.logbook,
  org.csstudio.logbook.util
 Require-Bundle: org.eclipse.core.runtime,
- org.junit;resolution:=optional
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.junit;resolution:=optionalBundle-RequiredExecutionEnvironment: JavaSE-1.6

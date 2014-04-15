@@ -63,7 +63,7 @@ class VNumbersToVNumberArrayConverter implements ReadFunction<VNumberArray> {
             }
         };
         
-        return ValueFactory.newVDoubleArray(data, alarmNone(), newTime(Timestamp.now()), displayNone());
+        return ValueFactory.newVDoubleArray(data, alarmNone(), timeNow(), displayNone());
     }
     
 }
