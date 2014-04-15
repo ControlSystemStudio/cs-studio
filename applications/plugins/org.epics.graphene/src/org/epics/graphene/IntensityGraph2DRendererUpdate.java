@@ -30,7 +30,7 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
 
     private Boolean drawLegend;
 
-    private ValueColorScheme valueColorScheme;
+    private NumberColorMap colorMap;
     
     // TODO: review comments (they mostly just repeat the method name)
     
@@ -50,12 +50,12 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     // the same as the one given by the range of the x and y boundaries
     
     /**
-     * Sets this object's valueColorScheme to the given ColorScheme.
-     * @param scheme supported schemes: any <code>ColorScheme</code> supported by the <code>ValueColorSchemes</code>
+     * Sets this object's colorMap to the given ColorScheme.
+     * @param colorMap supported schemes: any <code>ColorScheme</code> supported by the <code>NumberColorMaps</code>
      * @return this
      */
-    public IntensityGraph2DRendererUpdate valueColorScheme(ValueColorScheme scheme) {
-        this.valueColorScheme = scheme;
+    public IntensityGraph2DRendererUpdate colorMap(NumberColorMap colorMap) {
+        this.colorMap = colorMap;
         return self();
     }
     
@@ -99,11 +99,11 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     
     /**
      *
-     * @return ColorScheme valueColorScheme, used to determine which color scheme will be used when drawing an intensity graph. 
-     * Possible values include: GRAY_SCALE, JET, HOT, COOL, SPRING, BONE, COPPER, PINK
+     * @return ColorScheme colorMap, used to determine which color scheme will be used when drawing an intensity graph. 
+ Possible values include: GRAY_SCALE, JET, HOT, COOL, SPRING, BONE, COPPER, PINK
      */
-    public ValueColorScheme getValueColorScheme() {
-        return valueColorScheme;
+    public NumberColorMap getColorMap() {
+        return colorMap;
     }
     
     /**

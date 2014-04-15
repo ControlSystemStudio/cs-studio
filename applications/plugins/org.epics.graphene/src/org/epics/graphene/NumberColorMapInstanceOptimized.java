@@ -5,10 +5,13 @@
 package org.epics.graphene;
 
 /**
- *
+ * An optimized instance of a color map, where colors are pre-calculated.
+ * <p>
+ * TODO: allow choice of number of colors
+ * 
  * @author sjdallst
  */
-class ValueColorSchemeInstanceOptimized implements ValueColorSchemeInstance {
+class NumberColorMapInstanceOptimized implements NumberColorMapInstance {
 
     private int arrayLength = 1000;
     private int[] colors = new int[arrayLength];
@@ -16,7 +19,7 @@ class ValueColorSchemeInstanceOptimized implements ValueColorSchemeInstance {
     private Range range;
     private double max, min, total;
 
-    ValueColorSchemeInstanceOptimized(ValueColorSchemeInstance instance, Range range) {
+    NumberColorMapInstanceOptimized(NumberColorMapInstance instance, Range range) {
         min = range.getMinimum().doubleValue();
         max = range.getMaximum().doubleValue();
         total = max - min;
@@ -31,7 +34,8 @@ class ValueColorSchemeInstanceOptimized implements ValueColorSchemeInstance {
         this.range = range;
     }
 
-    ValueColorSchemeInstanceOptimized(ValueColorSchemeInstance instance, Range oldRange, Range newRange) {
+    // TODO: what is this doing?
+    NumberColorMapInstanceOptimized(NumberColorMapInstance instance, Range oldRange, Range newRange) {
         double oldMin = oldRange.getMinimum().doubleValue();
         double oldMax = oldRange.getMaximum().doubleValue();
         double oldTotal = oldMax - oldMin;

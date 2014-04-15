@@ -9,23 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A numeric color map defined by interpolated colors (gradients).
  *
  * @author sjdallst
  */
-class ValueColorSchemeGradient implements ValueColorScheme {
+class NumberColorMapGradient implements NumberColorMap {
 
     private final Color[] colors;
 
-    public ValueColorSchemeGradient(Color[] colors) {
+    /**
+     * Creates a new color map.
+     * <p>
+     * TODO: use List, separate NaN color, allow for relative percentage offsets
+     * 
+     * @param colors 
+     */
+    public NumberColorMapGradient(Color[] colors) {
         this.colors = colors;
     }
 
     @Override
-    public ValueColorSchemeInstance createInstance(Range range) {
+    public NumberColorMapInstance createInstance(Range range) {
         return new ValueColorSchemeInstanceGradient(colors, range);
     }
 
-    class ValueColorSchemeInstanceGradient implements ValueColorSchemeInstance {
+    class ValueColorSchemeInstanceGradient implements NumberColorMapInstance {
 
         protected Color[] colors;
         protected List<Double> percentages = new ArrayList<>();

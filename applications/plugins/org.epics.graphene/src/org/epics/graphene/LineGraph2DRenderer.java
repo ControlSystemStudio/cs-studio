@@ -27,8 +27,8 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
         return new LineGraph2DRendererUpdate();
     }
     
-    private ValueColorScheme valueColorScheme = ValueColorSchemes.GRAY_SCALE;
-    private ValueColorSchemeInstance valueColorSchemeInstance;
+    private NumberColorMap valueColorScheme = NumberColorMaps.GRAY;
+    private NumberColorMapInstance valueColorSchemeInstance;
     private Range datasetRange;
     private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOUR;
     private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;
