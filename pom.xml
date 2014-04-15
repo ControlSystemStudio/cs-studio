@@ -142,7 +142,11 @@
                                         <id>org.jdom:jdom:1.1</id>
                                     </artifact>
                                     <artifact>
-                                        <id>junit:junit-dep:4.10</id>
+					<id>junit:junit-dep:4.10</id>
+					<instructions>
+                                            <Bundle-Name>org.junit-dep</Bundle-Name>
+                                            <Bundle-SymbolicName>org.junit-dep</Bundle-SymbolicName>
+                                        </instructions>
                                     </artifact>
                                     <artifact>
                                         <id>org.mockito:mockito-core:1.9.5</id>
