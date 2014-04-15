@@ -40,7 +40,6 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ArrayShort;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VType;
@@ -56,6 +55,13 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	private boolean innerTrig;
 	
 	private IntensityGraphFigure graph;
+
+	/** VTable columns used to publish values for the pixel info PV */
+    @SuppressWarnings("nls")
+    final private static List<String> pixel_info_table_columns = Arrays.asList("X", "Y", "Value", "Selected");
+
+    /** VTable column types used to publish values for the pixel info PV */
+    final private static List<Class<?>> pixel_info_table_types = Arrays.<Class<?>>asList(double.class, double.class, double.class, int.class);
 	
 	@Override
 	protected IFigure doCreateFigure() {
@@ -92,7 +98,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		    if (model.getHorizonProfileYPV().trim().length() > 0 ||
 				model.getVerticalProfileYPV().trim().length() > 0) {
 		        graph.addProfileDataListener(new IProfileDataChangeLisenter() {
-		            public void profileDataChanged(double[] xProfileData,
+		            @Override
+                    public void profileDataChanged(double[] xProfileData,
 					     	double[] yProfileData, Range xAxisRange, Range yAxisRange) {
         					//horizontal
     					setPVValue(IntensityGraphModel.PROP_HORIZON_PROFILE_Y_PV_NAME, xProfileData);
@@ -122,13 +129,11 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
                     public void pixelInfoChanged(final PixelInfo pixel_info, final boolean selected)
                     {
                         // TODO "Selected" column should be boolean, but there is no 'ArrayBoolean', and List<Boolean> also fails
-                        final List<Class<?>> types = Arrays.<Class<?>>asList(double.class, double.class, double.class, int.class);
-                        final List<String> names = Arrays.asList("X", "Y", "Value", "Selected");
                         final List<Object> values = Arrays.<Object>asList(new ArrayDouble(pixel_info.xcoord),
                                                                           new ArrayDouble(pixel_info.ycoord),
                                                                           new ArrayDouble(pixel_info.value),
                                                                           new ArrayInt(selected ? 1 : 0));
-                        final Object value = ValueFactory.newVTable(types, names, values);
+                        final Object value = ValueFactory.newVTable(pixel_info_table_types, pixel_info_table_columns, values);
                         setPVValue(IntensityGraphModel.PROP_PIXEL_INFO_PV_NAME, value);
                     }
 		        });
@@ -166,8 +171,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		registerROIPropertyChangeHandlers();
 		registerROIAmountChangeHandler();
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+			@Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				if(newValue == null)
 					return false;
 				VType value = (VType)newValue;
@@ -188,7 +193,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_MIN).addPropertyChangeListener(
 				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						((IntensityGraphFigure)figure).setMin((Double)evt.getNewValue());
 						figure.repaint();
 						innerUpdateGraphAreaSizeProperty();
@@ -197,7 +203,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_MAX).addPropertyChangeListener(
 				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						((IntensityGraphFigure)figure).setMax((Double)evt.getNewValue());
 						figure.repaint();
 						innerUpdateGraphAreaSizeProperty();
@@ -207,8 +214,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_BORDER_STYLE).removeAllPropertyChangeListeners();
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_BORDER_STYLE).addPropertyChangeListener(
 				new PropertyChangeListener() {
-
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						figure.setBorder(
 								BorderFactory.createBorder(BorderStyle.values()[(Integer)evt.getNewValue()],
 								getWidgetModel().getBorderWidth(), getWidgetModel().getBorderColor(),
@@ -220,8 +227,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_BORDER_WIDTH).removeAllPropertyChangeListeners();
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_BORDER_WIDTH).addPropertyChangeListener(
 				new PropertyChangeListener() {
-
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						figure.setBorder(
 								BorderFactory.createBorder(getWidgetModel().getBorderStyle(),
 								(Integer)evt.getNewValue(), getWidgetModel().getBorderColor(),
@@ -231,7 +238,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 				});
 
 		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
+			@Override
+            public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				((IntensityGraphFigure)figure).setDataWidth((Integer)newValue);
 				return true;
@@ -240,7 +248,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(IntensityGraphModel.PROP_DATA_WIDTH, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
+			@Override
+            public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				((IntensityGraphFigure)figure).setDataHeight((Integer)newValue);
 				return true;
@@ -249,7 +258,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(IntensityGraphModel.PROP_DATA_HEIGHT, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
+			@Override
+            public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				((IntensityGraphFigure)figure).setColorMap((ColorMap)newValue);
 				return true;
@@ -258,7 +268,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(IntensityGraphModel.PROP_COLOR_MAP, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
+			@Override
+            public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				((IntensityGraphFigure)figure).setCropLeft((Integer)newValue);
 				return true;
@@ -267,7 +278,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(IntensityGraphModel.PROP_CROP_LEFT, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
+			@Override
+            public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				((IntensityGraphFigure)figure).setCropRight((Integer)newValue);
 				return true;
@@ -276,7 +288,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(IntensityGraphModel.PROP_CROP_RIGHT, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
+			@Override
+            public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				((IntensityGraphFigure)figure).setCropTop((Integer)newValue);
 				return true;
@@ -285,7 +298,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(IntensityGraphModel.PROP_CROP_TOP, handler);
 
 		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
+			@Override
+            public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				((IntensityGraphFigure)figure).setCropBottom((Integer)newValue);
 				return true;
@@ -297,7 +311,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_SHOW_RAMP).addPropertyChangeListener(
 				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						((IntensityGraphFigure)getFigure()).setShowRamp((Boolean)evt.getNewValue());
 						Dimension d = ((IntensityGraphFigure)getFigure()).getGraphAreaInsets();
 						innerTrig = true;
@@ -309,7 +324,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_WIDTH).addPropertyChangeListener(
 				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						if(!innerTrig){ // if it is not triggered from inner
 							innerTrig = true;
 							Dimension d = ((IntensityGraphFigure)getFigure()).getGraphAreaInsets();
@@ -323,7 +339,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_GRAPH_AREA_WIDTH).addPropertyChangeListener(
 				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						if(!innerTrig){
 							innerTrig = true;
 							Dimension d = ((IntensityGraphFigure)getFigure()).getGraphAreaInsets();
@@ -338,7 +355,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_HEIGHT).addPropertyChangeListener(
 				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						if(!innerTrig){
 							innerTrig = true;
 							Dimension d = ((IntensityGraphFigure)getFigure()).getGraphAreaInsets();
@@ -352,7 +370,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_GRAPH_AREA_HEIGHT).addPropertyChangeListener(
 				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
+					@Override
+                    public void propertyChange(PropertyChangeEvent evt) {
 						if(!innerTrig){
 							innerTrig = true;
 							Dimension d = ((IntensityGraphFigure)getFigure()).getGraphAreaInsets();
@@ -559,11 +578,13 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 				getWidgetModel().getProperty(IntensityGraphModel.makeAxisPropID(
 						axisID, axisProperty.propIDPre)).
 							addPropertyChangeListener(new PropertyChangeListener() {
-								public void propertyChange(PropertyChangeEvent evt) {
+								@Override
+                                public void propertyChange(PropertyChangeEvent evt) {
 									handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
 									UIBundlingThread.getInstance().addRunnable(
 											getViewer().getControl().getDisplay(), new Runnable(){
-										public void run() {
+										@Override
+                                        public void run() {
 											getFigure().repaint();
 										}
 									});
@@ -674,7 +695,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 			this.axis = axis;
 			this.axisProperty = axisProperty;
 		}
-		public boolean handleChange(Object oldValue, Object newValue,
+		@Override
+        public boolean handleChange(Object oldValue, Object newValue,
 				IFigure refreshableFigure) {
 			setAxisProperty(axis, axisProperty, newValue);
 			innerTrig = true;
