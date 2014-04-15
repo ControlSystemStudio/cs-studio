@@ -107,7 +107,7 @@ public abstract class AbstractConfigurationPanel extends BeanComposite {
 		checkBox.setSelection(newSelection);
 	}
 	
-	protected void forwardCheckBodEvents(final Button checkBox, final String propertyName) {
+	protected void forwardCheckBoxEvents(final Button checkBox, final String propertyName) {
 		checkBox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
