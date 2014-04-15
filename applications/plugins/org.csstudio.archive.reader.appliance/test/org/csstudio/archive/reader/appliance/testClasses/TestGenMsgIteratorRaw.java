@@ -134,7 +134,7 @@ public class TestGenMsgIteratorRaw implements GenMsgIterator {
 
 			@Override
 			public boolean hasNext() {
-				return counter != MESSAGE_LIST_LENGTH - 1;
+				return counter != epicsMessageList.size() - 1;
 			}
 
 			@Override

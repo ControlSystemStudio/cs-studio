@@ -17,13 +17,13 @@ import org.junit.Test;
 
 /**
  * 
- * <code>ApplianceArchiverReaderRawWaveformTest</code> test retrieval of waveform type PVs
- * using non optimized algorithm.
+ * <code>ApplianceArchiveReaderOptimizedWaveformTest</code> test retrieval of waveform type PVs
+ * using optimized algorithm.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReaderTesting {
+public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchiverReaderTesting {
 	
 	@Override
 	protected ArchiveReader getReader() {
@@ -32,7 +32,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 	
 	/**
 	 * Tests
-	 * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
 	 * method for a double waveform type PV.
 	 * 
 	 * @throws Exception
@@ -41,8 +41,8 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 	public void testDataRetrievalDouble() throws Exception {
 		Timestamp end = Timestamp.now();
 		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
-		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_double",false,0, start, end);
-		assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
+		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_double",true,5, start, end);
+		assertEquals("Number of values comparison", 5, vals.length);
 		
 		ArchiveVNumberArray val = null;
 		for (int i = 0; i < vals.length; i++) {
@@ -51,16 +51,16 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getDouble(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_DOUBLE[i],array,0.000001);
-			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
-			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_DOUBLE[i*2],array,0.000001);
+			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i*2,TimestampHelper.toMillisecs(val.getTimestamp()));
+			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i*2]), val.getAlarmSeverity());
+			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
 		}
 	}
 	
 	/**
 	 * Tests
-	 * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
 	 * method for a float waveform type pv.
 	 * 
 	 * @throws Exception
@@ -69,8 +69,8 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 	public void testDataRetrievalFloat() throws Exception {
 		Timestamp end = Timestamp.now();
 		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
-		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_float",false,0, start, end);
-		assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
+		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_float",true,5, start, end);
+		assertEquals("Number of values comparison", 5, vals.length);
 		
 		ArchiveVNumberArray val = null;
 		for (int i = 0; i < vals.length; i++) {
@@ -79,16 +79,16 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getFloat(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_FLOAT[i],array,0.000001);
-			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
-			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_FLOAT[i*2],array,0.000001);
+			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i*2,TimestampHelper.toMillisecs(val.getTimestamp()));
+			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i*2]), val.getAlarmSeverity());
+			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
 		}
 	}
 	
 	/**
 	 * Tests
-	 * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
 	 * method for an int waveform type pv.
 	 * 
 	 * @throws Exception
@@ -97,8 +97,8 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 	public void testDataRetrievalInt() throws Exception {
 		Timestamp end = Timestamp.now();
 		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
-		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_int",false,0, start, end);
-		assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
+		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_int",true,5, start, end);
+		assertEquals("Number of values comparison", 5, vals.length);
 		
 		ArchiveVNumberArray val = null;
 		for (int i = 0; i < vals.length; i++) {
@@ -107,16 +107,16 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getInt(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_INT[i],array);
-			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
-			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_INT[i*2],array);
+			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i*2,TimestampHelper.toMillisecs(val.getTimestamp()));
+			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i*2]), val.getAlarmSeverity());
+			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
 		}
 	}
 	
 	/**
 	 * Tests
-	 * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
 	 * method for a short waveform type pv.
 	 * 
 	 * @throws Exception
@@ -125,8 +125,8 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 	public void testDataRetrievalShort() throws Exception {
 		Timestamp end = Timestamp.now();
 		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
-		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_short",false,0, start,end);
-		assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
+		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_short",true,5, start,end);
+		assertEquals("Number of values comparison", 5, vals.length);
 		
 		ArchiveVNumberArray val = null;
 		for (int i = 0; i < vals.length; i++) {
@@ -135,16 +135,16 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getShort(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_SHORT[i],array);
-			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
-			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_SHORT[i*2],array);
+			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i*2,TimestampHelper.toMillisecs(val.getTimestamp()));
+			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i*2]), val.getAlarmSeverity());
+			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
 		}
 	}
 	
 	/**
 	 * Tests
-	 * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
 	 * method for a byte waveform type pv.
 	 * 
 	 * @throws Exception
@@ -153,8 +153,8 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 	public void testDataRetrievalByte() throws Exception {
 		Timestamp end = Timestamp.now();
 		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
-		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_byte",false,0,start,end);
-		assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
+		ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_byte",true,5,start,end);
+		assertEquals("Number of values comparison", 5, vals.length);
 		
 		ArchiveVNumberArray val = null;
 		for (int i = 0; i < vals.length; i++) {
@@ -163,27 +163,26 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getByte(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_BYTE[i],array);
-			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
-			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_BYTE[i*2],array);
+			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i*2,TimestampHelper.toMillisecs(val.getTimestamp()));
+			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i*2]), val.getAlarmSeverity());
+			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i*2]), val.getAlarmName());
 		}
 	}
 	
 	/**
 	 * Tests
-	 * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+	 * {@code ApplianceArchiveReader#getOptimizedValues(int, String, Timestamp, Timestamp, int)
 	 * method for a string wavefdorm type pv.
 	 * 
 	 * @throws Exception
 	 */
 	@Test
 	public void testDataRetrievalString() throws Exception {
-		//this is not supported on the CSS core side
 		Timestamp end = Timestamp.now();
 		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
 		try {
-			getValuesStringArray("test_pv_wave_string",false,0,start,end);
+			getValuesStringArray("test_pv_wave_string",true,5,start,end);
 			fail();
 		} catch (UnsupportedOperationException e) {
 			assertNotNull(e);
@@ -203,7 +202,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 		Timestamp end = Timestamp.now();
 		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
 		try {
-			getValuesEnumArray("test_pv_wave_enum",false,0,start,end);
+			getValuesEnumArray("test_pv_wave_enum",true,5,start,end);
 			fail();
 		} catch (UnsupportedOperationException e) {
 			assertNotNull(e);
