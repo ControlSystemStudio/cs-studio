@@ -6,7 +6,7 @@
     <CBS1>CODAC</CBS1>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.2.9.codac_core_4_2b1</boy_version>
+  <boy_version>3.2.10.codac_core_4_3b1</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>900</height>
@@ -14,7 +14,7 @@
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>true</show_grid>
   <background_color>
-    <color name="IO Background" red="255" green="255" blue="205" />
+    <color name="IO Background" red="200" green="200" blue="200" />
   </background_color>
   <foreground_color>
     <color name="IO Grid" red="215" green="215" blue="215" />
@@ -53,7 +53,7 @@
     <transparent>false</transparent>
     <sash_width>3</sash_width>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color name="IO Background" red="200" green="200" blue="200" />
     </background_color>
     <foreground_color>
       <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -177,7 +177,7 @@
         <transparent>false</transparent>
         <sash_width>3</sash_width>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
           <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -346,7 +346,7 @@
                 <keep_wh_ratio>false</keep_wh_ratio>
               </scale_options>
               <background_color>
-                <color name="IO Background" red="255" green="255" blue="205" />
+                <color name="IO Background" red="200" green="200" blue="200" />
               </background_color>
               <foreground_color>
                 <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -401,10 +401,10 @@
               <transparent>true</transparent>
               <show_scrollbar>false</show_scrollbar>
               <background_color>
-                <color name="IO Background" red="255" green="255" blue="205" />
+                <color name="IO Background" red="200" green="200" blue="200" />
               </background_color>
               <foreground_color>
-                <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                <color name="IO StatusBar Fg" red="255" green="255" blue="255" />
               </foreground_color>
               <widget_type>Label</widget_type>
               <enabled>false</enabled>
@@ -486,11 +486,11 @@
                   <keep_wh_ratio>true</keep_wh_ratio>
                 </scale_options>
                 <off_color>
-                  <color name="Major" red="255" green="0" blue="0" />
+                  <color name="Major" red="250" green="12" blue="14" />
                 </off_color>
                 <pv_name>sim://flipflop(3)</pv_name>
                 <background_color>
-                  <color name="IO Background" red="255" green="255" blue="205" />
+                  <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
                   <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -538,11 +538,11 @@
                   <keep_wh_ratio>true</keep_wh_ratio>
                 </scale_options>
                 <off_color>
-                  <color name="Major" red="255" green="0" blue="0" />
+                  <color name="Major" red="250" green="12" blue="14" />
                 </off_color>
                 <pv_name>sim://flipflop(4)</pv_name>
                 <background_color>
-                  <color name="IO Background" red="255" green="255" blue="205" />
+                  <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
                   <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -590,11 +590,11 @@
                   <keep_wh_ratio>true</keep_wh_ratio>
                 </scale_options>
                 <off_color>
-                  <color name="Major" red="255" green="0" blue="0" />
+                  <color name="Major" red="250" green="12" blue="14" />
                 </off_color>
                 <pv_name>sim://flipflop(5)</pv_name>
                 <background_color>
-                  <color name="IO Background" red="255" green="255" blue="205" />
+                  <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
                   <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -687,7 +687,7 @@
                 </off_color>
                 <pv_name>loc://${DID}_LTM(0)</pv_name>
                 <background_color>
-                  <color name="IO Background" red="255" green="255" blue="205" />
+                  <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
                   <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -739,7 +739,7 @@
                 </off_color>
                 <pv_name>loc://${DID}_STM(0)</pv_name>
                 <background_color>
-                  <color name="IO Background" red="255" green="255" blue="205" />
+                  <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
                   <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -791,7 +791,7 @@
                 </off_color>
                 <pv_name>loc://${DID}_TCS(0)</pv_name>
                 <background_color>
-                  <color name="IO Background" red="255" green="255" blue="205" />
+                  <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
                   <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -843,7 +843,7 @@
                 </off_color>
                 <pv_name>loc://${DID}_POS(1)</pv_name>
                 <background_color>
-                  <color name="IO Background" red="255" green="255" blue="205" />
+                  <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
                   <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -959,13 +959,20 @@
                 <include_parent_macros>true</include_parent_macros>
               </macros>
               <tab_2_enabled>true</tab_2_enabled>
+              <tab_6_foreground_color>
+                <color name="IO Foreground" red="0" green="0" blue="0" />
+              </tab_6_foreground_color>
               <tab_3_background_color>
-                <color name="IO Background" red="255" green="255" blue="205" />
+                <color name="IO Background" red="200" green="200" blue="200" />
               </tab_3_background_color>
               <tab_4_background_color>
-                <color name="IO Background" red="255" green="255" blue="205" />
+                <color name="IO Background" red="200" green="200" blue="200" />
               </tab_4_background_color>
+              <tab_5_font>
+                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+              </tab_5_font>
               <minimum_tab_height>10</minimum_tab_height>
+              <tab_5_title>Alarm Levels</tab_5_title>
               <active_tab>0</active_tab>
               <tab_1_title>Monitors</tab_1_title>
               <border_style>6</border_style>
@@ -973,7 +980,9 @@
               <tab_4_font>
                 <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
               </tab_4_font>
+              <tab_5_icon_path></tab_5_icon_path>
               <wuid>-203b6f4:1411132e3c7:-7d08</wuid>
+              <tab_6_title>Colors</tab_6_title>
               <tab_1_icon_path></tab_1_icon_path>
               <tab_2_font>
                 <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
@@ -984,7 +993,7 @@
               </tab_4_foreground_color>
               <tab_3_enabled>true</tab_3_enabled>
               <tab_0_background_color>
-                <color name="IO Background" red="255" green="255" blue="205" />
+                <color name="IO Background" red="200" green="200" blue="200" />
               </tab_0_background_color>
               <tab_3_foreground_color>
                 <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -1002,12 +1011,20 @@
               </border_color>
               <actions hook="false" hook_all="false" />
               <y>0</y>
+              <tab_6_background_color>
+                <color name="IO Background" red="200" green="200" blue="200" />
+              </tab_6_background_color>
               <x>0</x>
               <visible>true</visible>
+              <tab_6_icon_path></tab_6_icon_path>
               <tab_4_icon_path></tab_4_icon_path>
               <scripts />
               <tab_1_enabled>true</tab_1_enabled>
+              <tab_6_font>
+                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+              </tab_6_font>
               <height>863</height>
+              <tab_5_enabled>true</tab_5_enabled>
               <horizontal_tabs>true</horizontal_tabs>
               <tab_1_font>
                 <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
@@ -1017,13 +1034,16 @@
               </tab_1_foreground_color>
               <tab_0_title>Graphics</tab_0_title>
               <background_color>
-                <color name="IO Background" red="255" green="255" blue="205" />
+                <color name="IO Background" red="200" green="200" blue="200" />
               </background_color>
               <widget_type>Tabbed Container</widget_type>
               <enabled>true</enabled>
               <width>1128</width>
+              <tab_5_foreground_color>
+                <color name="IO Foreground" red="0" green="0" blue="0" />
+              </tab_5_foreground_color>
               <tab_1_background_color>
-                <color name="IO Background" red="255" green="255" blue="205" />
+                <color name="IO Background" red="200" green="200" blue="200" />
               </tab_1_background_color>
               <border_width>2</border_width>
               <tab_4_title>Symbols</tab_4_title>
@@ -1035,13 +1055,17 @@
               </scale_options>
               <tab_3_title>Others</tab_3_title>
               <tab_0_icon_path></tab_0_icon_path>
+              <tab_5_background_color>
+                <color name="IO Background" red="200" green="200" blue="200" />
+              </tab_5_background_color>
               <tab_0_font>
                 <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
               </tab_0_font>
               <rules />
+              <tab_6_enabled>true</tab_6_enabled>
               <tab_2_title>Controls</tab_2_title>
               <tab_2_background_color>
-                <color name="IO Background" red="255" green="255" blue="205" />
+                <color name="IO Background" red="200" green="200" blue="200" />
               </tab_2_background_color>
               <tab_2_foreground_color>
                 <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -1049,13 +1073,13 @@
               <tab_3_font>
                 <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
               </tab_3_font>
-              <tab_count>5</tab_count>
+              <tab_count>7</tab_count>
               <tooltip></tooltip>
               <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
-                <visible>true</visible>
+                <visible>false</visible>
                 <wuid>-203b6f4:1411132e3c7:-7d07</wuid>
                 <scripts />
                 <height>832</height>
@@ -1122,7 +1146,7 @@
                   <transparent>false</transparent>
                   <pv_name></pv_name>
                   <background_color>
-                    <color name="IO Background" red="255" green="255" blue="205" />
+                    <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <foreground_color>
                     <color name="IO Link" red="0" green="32" blue="92" />
@@ -1165,10 +1189,10 @@
                   <transparent>true</transparent>
                   <show_scrollbar>false</show_scrollbar>
                   <background_color>
-                    <color name="IO Background" red="255" green="255" blue="205" />
+                    <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <foreground_color>
-                    <color name="IO Text Fg" red="0" green="32" blue="92" />
+                    <color name="IO Text Fg" red="0" green="0" blue="0" />
                   </foreground_color>
                   <widget_type>Label</widget_type>
                   <enabled>false</enabled>
@@ -1207,7 +1231,7 @@ to enter the Label Text</text>
                     <keep_wh_ratio>false</keep_wh_ratio>
                   </scale_options>
                   <background_color>
-                    <color name="IO Background" red="255" green="255" blue="205" />
+                    <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <foreground_color>
                     <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -1363,7 +1387,7 @@ to enter the Label Text</text>
                     <transparent>false</transparent>
                     <pv_name></pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO Shape Fill" red="188" green="188" blue="188" />
@@ -1415,7 +1439,7 @@ to enter the Label Text</text>
                     <transparent>false</transparent>
                     <pv_name></pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO Shape Fill" red="188" green="188" blue="188" />
@@ -1473,7 +1497,7 @@ to enter the Label Text</text>
                     <pv_name></pv_name>
                     <corner_width>16</corner_width>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO Shape Fill" red="188" green="188" blue="188" />
@@ -1529,7 +1553,7 @@ to enter the Label Text</text>
                     <transparent>false</transparent>
                     <pv_name></pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO Shape Fill" red="188" green="188" blue="188" />
@@ -1629,7 +1653,7 @@ to enter the Label Text</text>
                   </off_color>
                   <pv_name>sim://ramp(0,3,1,1)</pv_name>
                   <background_color>
-                    <color name="IO Background" red="255" green="255" blue="205" />
+                    <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <foreground_color>
                     <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -1695,7 +1719,7 @@ to enter the Label Text</text>
                   </off_color>
                   <pv_name>sim://ramp(0,65536,1,1)</pv_name>
                   <background_color>
-                    <color name="IO Background" red="255" green="255" blue="205" />
+                    <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <foreground_color>
                     <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -1837,7 +1861,7 @@ to enter the Label Text</text>
                     </off_color>
                     <pv_name>sim://flipflop(1)</pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -1885,7 +1909,7 @@ to enter the Label Text</text>
                     </scale_options>
                     <pv_name>sim://flipflop(3)</pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -1925,7 +1949,7 @@ to enter the Label Text</text>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <off_label>OFF</off_label>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Boolean Symbol Image Monitor</widget_type>
@@ -2031,7 +2055,7 @@ to enter the Label Text</text>
                     <border_alarm_sensitive>true</border_alarm_sensitive>
                     <visible>true</visible>
                     <color_hihi>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_hihi>
                     <show_lo>true</show_lo>
                     <scripts />
@@ -2085,7 +2109,7 @@ to enter the Label Text</text>
                     <level_hihi>90.0</level_hihi>
                     <ramp_gradient>true</ramp_gradient>
                     <color_lolo>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_lolo>
                     <rules />
                     <value_label_format></value_label_format>
@@ -2111,7 +2135,7 @@ to enter the Label Text</text>
                       <color name="IO PV OFF" red="77" green="77" blue="77" />
                     </color_fillbackground>
                     <color_hihi>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_hihi>
                     <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
                     <show_lo>true</show_lo>
@@ -2170,7 +2194,7 @@ to enter the Label Text</text>
                     <level_hihi>90.0</level_hihi>
                     <origin>0.0</origin>
                     <color_lolo>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_lolo>
                     <fill_color>
                       <color name="IO PV ON" red="0" green="0" blue="225" />
@@ -2194,7 +2218,7 @@ to enter the Label Text</text>
                     <border_alarm_sensitive>true</border_alarm_sensitive>
                     <visible>true</visible>
                     <color_hihi>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_hihi>
                     <show_lo>true</show_lo>
                     <scripts />
@@ -2249,7 +2273,7 @@ to enter the Label Text</text>
                     <level_hihi>90.0</level_hihi>
                     <ramp_gradient>true</ramp_gradient>
                     <color_lolo>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_lolo>
                     <rules />
                     <value_label_format></value_label_format>
@@ -2275,7 +2299,7 @@ to enter the Label Text</text>
                       <color name="IO PV OFF" red="77" green="77" blue="77" />
                     </color_fillbackground>
                     <color_hihi>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_hihi>
                     <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
                     <show_lo>true</show_lo>
@@ -2331,7 +2355,7 @@ to enter the Label Text</text>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <color_lolo>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_lolo>
                     <fill_color>
                       <color name="IO PV ON" red="0" green="0" blue="225" />
@@ -2358,7 +2382,7 @@ to enter the Label Text</text>
                       <color name="IO PV OFF" red="77" green="77" blue="77" />
                     </color_fillbackground>
                     <color_hihi>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_hihi>
                     <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
                     <show_lo>true</show_lo>
@@ -2413,7 +2437,7 @@ to enter the Label Text</text>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <color_lolo>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_lolo>
                     <fill_color>
                       <color name="IO PV ON" red="0" green="0" blue="225" />
@@ -2519,7 +2543,7 @@ to enter the Label Text</text>
                     </axis_1_scale_font>
                     <border_style>5</border_style>
                     <plot_area_background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </plot_area_background_color>
                     <title>Graph Title</title>
                     <pv_name></pv_name>
@@ -2655,7 +2679,7 @@ to enter the Label Text</text>
                     </off_color>
                     <pv_name>loc://$(DID)_bool(0)</pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -2700,7 +2724,7 @@ to enter the Label Text</text>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <off_label>OFF</off_label>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <released_action_index>0</released_action_index>
                     <enabled>true</enabled>
@@ -2845,7 +2869,7 @@ to enter the Label Text</text>
                     </scale_options>
                     <pv_name>loc://$(DID)_bool(0)</pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO InputPV Fg" red="0" green="32" blue="92" />
@@ -3030,10 +3054,10 @@ to enter the Label Text</text>
                     </scale_options>
                     <pv_name>loc://$(DID)_check(0)</pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Text Fg" red="0" green="32" blue="92" />
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Check Box</widget_type>
                     <enabled>true</enabled>
@@ -3074,10 +3098,10 @@ to enter the Label Text</text>
                     </scale_options>
                     <pv_name>loc://$(DID)_choice("Choice 2")</pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Text Fg" red="0" green="32" blue="92" />
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Radio Box</widget_type>
                     <enabled>true</enabled>
@@ -3238,7 +3262,7 @@ to enter the Label Text</text>
                     <show_boolean_label>true</show_boolean_label>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Multistate Symbol Image Control</widget_type>
@@ -3505,7 +3529,7 @@ to enter the Label Text</text>
                       <color name="IO PV OFF" red="77" green="77" blue="77" />
                     </color_fillbackground>
                     <color_hihi>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_hihi>
                     <show_lo>true</show_lo>
                     <scripts />
@@ -3565,7 +3589,7 @@ to enter the Label Text</text>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <color_lolo>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_lolo>
                     <fill_color>
                       <color name="IO PV ON" red="0" green="0" blue="225" />
@@ -3595,7 +3619,7 @@ to enter the Label Text</text>
                     <border_alarm_sensitive>true</border_alarm_sensitive>
                     <visible>true</visible>
                     <color_hihi>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_hihi>
                     <show_lo>true</show_lo>
                     <scripts />
@@ -3657,7 +3681,7 @@ to enter the Label Text</text>
                     <level_hihi>90.0</level_hihi>
                     <ramp_gradient>true</ramp_gradient>
                     <color_lolo>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_lolo>
                     <rules>
                       <rule name="BorderRule" prop_id="border_style" out_exp="false">
@@ -3805,7 +3829,7 @@ to enter the Label Text</text>
                     <color name="IO Foreground" red="0" green="0" blue="0" />
                   </foreground_color>
                   <background_color>
-                    <color name="IO Background" red="255" green="255" blue="205" />
+                    <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
@@ -3819,7 +3843,7 @@ to enter the Label Text</text>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Text Fg" red="0" green="32" blue="92" />
+                    <color name="IO Text Fg" red="0" green="0" blue="0" />
                   </border_color>
                   <y>15</y>
                   <actions hook="false" hook_all="false" />
@@ -3902,7 +3926,7 @@ to enter the Label Text</text>
                     <color name="IO Foreground" red="0" green="0" blue="0" />
                   </foreground_color>
                   <background_color>
-                    <color name="IO Background" red="255" green="255" blue="205" />
+                    <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
@@ -3916,7 +3940,7 @@ to enter the Label Text</text>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Text Fg" red="0" green="32" blue="92" />
+                    <color name="IO Text Fg" red="0" green="0" blue="0" />
                   </border_color>
                   <y>86</y>
                   <actions hook="false" hook_all="false" />
@@ -3942,7 +3966,7 @@ to enter the Label Text</text>
                     <pv_name>sim://sineWaveform(10,5,5,3)</pv_name>
                     <show_scrollbar>false</show_scrollbar>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -3976,7 +4000,7 @@ to enter the Label Text</text>
                         <color name="IO PV OFF" red="77" green="77" blue="77" />
                       </color_fillbackground>
                       <color_hihi>
-                        <color name="Major" red="255" green="0" blue="0" />
+                        <color name="Major" red="250" green="12" blue="14" />
                       </color_hihi>
                       <show_lo>true</show_lo>
                       <scripts />
@@ -4036,7 +4060,7 @@ to enter the Label Text</text>
                       </scale_font>
                       <level_hihi>90.0</level_hihi>
                       <color_lolo>
-                        <color name="Major" red="255" green="0" blue="0" />
+                        <color name="Major" red="250" green="12" blue="14" />
                       </color_lolo>
                       <fill_color>
                         <color name="IO PV ON" red="0" green="0" blue="225" />
@@ -4195,7 +4219,7 @@ $(pv_value)</tooltip>
                     </axis_1_scale_font>
                     <border_style>5</border_style>
                     <plot_area_background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </plot_area_background_color>
                     <title>Graph Title</title>
                     <pv_name></pv_name>
@@ -4244,7 +4268,7 @@ $(pv_value)</tooltip>
                     <pv_name>sim://sineWaveform(10,5,5,3)</pv_name>
                     <show_scrollbar>false</show_scrollbar>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -4357,7 +4381,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Text Fg" red="0" green="32" blue="92" />
+                    <color name="IO Text Fg" red="0" green="0" blue="0" />
                   </border_color>
                   <y>435</y>
                   <actions hook="false" hook_all="false" />
@@ -4388,7 +4412,7 @@ $(pv_value)</tooltip>
                     <transparent>false</transparent>
                     <pv_name></pv_name>
                     <background_color>
-                      <color name="IO Background" red="255" green="255" blue="205" />
+                      <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
                       <color name="IO Shape Fill" red="188" green="188" blue="188" />
@@ -4518,7 +4542,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Text Fg" red="0" green="32" blue="92" />
+                    <color name="IO Text Fg" red="0" green="0" blue="0" />
                   </border_color>
                   <y>423</y>
                   <actions hook="false" hook_all="false" />
@@ -4532,7 +4556,7 @@ $(pv_value)</tooltip>
                       <color name="IO PV OFF" red="77" green="77" blue="77" />
                     </color_fillbackground>
                     <color_hihi>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_hihi>
                     <fillcolor_alarm_sensitive>false</fillcolor_alarm_sensitive>
                     <show_lo>true</show_lo>
@@ -4587,7 +4611,7 @@ $(pv_value)</tooltip>
                     </scale_font>
                     <level_hihi>3.0</level_hihi>
                     <color_lolo>
-                      <color name="Major" red="255" green="0" blue="0" />
+                      <color name="Major" red="250" green="12" blue="14" />
                     </color_lolo>
                     <fill_color>
                       <color name="IO PV ON" red="0" green="0" blue="225" />
@@ -4596,7 +4620,7 @@ $(pv_value)</tooltip>
                       <rule name="BlinksWhenTooHigh" prop_id="background_color" out_exp="false">
                         <exp bool_exp="pv0&gt;0 &amp;&amp; pv1==1">
                           <value>
-                            <color name="Major" red="255" green="0" blue="0" />
+                            <color name="Major" red="250" green="12" blue="14" />
                           </value>
                         </exp>
                         <pv trig="true">$(pv_name)</pv>
@@ -4676,7 +4700,7 @@ $(pv_value)</tooltip>
                   <transparent>false</transparent>
                   <sash_width>3</sash_width>
                   <background_color>
-                    <color name="IO Background" red="255" green="255" blue="205" />
+                    <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <foreground_color>
                     <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -4759,7 +4783,7 @@ $(pv_value)</tooltip>
                         <color name="IO Foreground" red="0" green="0" blue="0" />
                       </foreground_color>
                       <background_color>
-                        <color name="IO Background" red="255" green="255" blue="205" />
+                        <color name="IO Background" red="200" green="200" blue="200" />
                       </background_color>
                       <enabled>true</enabled>
                       <widget_type>Grouping Container</widget_type>
@@ -5226,7 +5250,7 @@ $(pv_value)</tooltip>
                         <color name="IO Foreground" red="0" green="0" blue="0" />
                       </foreground_color>
                       <background_color>
-                        <color red="255" green="255" blue="205" />
+                        <color red="200" green="200" blue="200" />
                       </background_color>
                       <group_name></group_name>
                       <enabled>true</enabled>
@@ -5253,6 +5277,2328 @@ $(pv_value)</tooltip>
                       <x>0</x>
                       <tooltip></tooltip>
                     </widget>
+                  </widget>
+                </widget>
+              </widget>
+              <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                <macros>
+                  <include_parent_macros>true</include_parent_macros>
+                </macros>
+                <visible>false</visible>
+                <wuid>-1fbe5bc3:14565c6e1e0:-7f5d</wuid>
+                <scripts />
+                <height>832</height>
+                <name>Alarm Levels</name>
+                <scale_options>
+                  <width_scalable>true</width_scalable>
+                  <height_scalable>true</height_scalable>
+                  <keep_wh_ratio>false</keep_wh_ratio>
+                </scale_options>
+                <transparent>true</transparent>
+                <show_scrollbar>true</show_scrollbar>
+                <foreground_color>
+                  <color red="192" green="192" blue="192" />
+                </foreground_color>
+                <background_color>
+                  <color red="240" green="240" blue="240" />
+                </background_color>
+                <enabled>true</enabled>
+                <widget_type>Grouping Container</widget_type>
+                <font>
+                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                </font>
+                <width>1122</width>
+                <border_style>0</border_style>
+                <rules />
+                <fc>false</fc>
+                <lock_children>false</lock_children>
+                <border_width>1</border_width>
+                <border_color>
+                  <color red="0" green="128" blue="255" />
+                </border_color>
+                <y>1</y>
+                <actions hook="false" hook_all="false" />
+                <x>1</x>
+                <tooltip></tooltip>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>51ecfe95:14565d08379:-7f02</wuid>
+                  <scripts />
+                  <height>52</height>
+                  <name>EPICS MAJOR Alarm</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>316</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>30</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>90</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>-1fbe5bc3:14565c6e1e0:-7f21</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>52</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Red</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="Major" red="250" green="12" blue="14" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>51ecfe95:14565d08379:-7f1c</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Red</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>EPICS MAJOR Alarm - RED - 250, 12, 14</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>196</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>19</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>120</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>51ecfe95:14565d08379:-7efa</wuid>
+                  <scripts />
+                  <height>52</height>
+                  <name>High Level Alarm</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>294</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>111</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>90</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>-1fbe5bc3:14565c6e1e0:-7f1d</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>52</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Rectangle Template_1</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO High Level Alarm" red="250" green="12" blue="14" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>51ecfe95:14565d08379:-7f18</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Red</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>High Level Alarm - RED - 250, 12, 14</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>174</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>19</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>120</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>51ecfe95:14565d08379:-7eae</wuid>
+                  <scripts />
+                  <height>52</height>
+                  <name>EPICS MINOR Alarm</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>336</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>192</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>90</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>-1fbe5bc3:14565c6e1e0:-7f0f</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>52</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Yellow</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="Minor" red="255" green="255" blue="0" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>51ecfe95:14565d08379:-7ef2</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Yellow</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>EPICS MINOR Alarm - YELLOW - 255, 255, 0</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>216</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>19</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>120</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>51ecfe95:14565d08379:-7eac</wuid>
+                  <scripts />
+                  <height>52</height>
+                  <name>Medium Level Alarm</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>331</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>273</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>90</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>-1fbe5bc3:14565c6e1e0:-7f03</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>52</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Yellow</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Medium Level Alarm" red="255" green="255" blue="0" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>51ecfe95:14565d08379:-7eee</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Yellow</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Medium Level Alarm - YELLOW - 255, 255, 0</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>211</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>19</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>120</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>51ecfe95:14565d08379:-7eaa</wuid>
+                  <scripts />
+                  <height>52</height>
+                  <name>Normal State</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>258</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>355</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>90</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>-1fbe5bc3:14565c6e1e0:-7ef7</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>52</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Green</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Normal Level Alarm" red="0" green="176" blue="80" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>51ecfe95:14565d08379:-7eea</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Green</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Normal - GREEN - 0, 176, 80</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>138</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>19</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>120</x>
+                  </widget>
+                </widget>
+              </widget>
+              <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                <macros>
+                  <include_parent_macros>true</include_parent_macros>
+                </macros>
+                <visible>true</visible>
+                <wuid>66514f80:14565dcb6d6:-7f4d</wuid>
+                <scripts />
+                <height>832</height>
+                <name>Colors</name>
+                <scale_options>
+                  <width_scalable>true</width_scalable>
+                  <height_scalable>true</height_scalable>
+                  <keep_wh_ratio>false</keep_wh_ratio>
+                </scale_options>
+                <transparent>true</transparent>
+                <show_scrollbar>true</show_scrollbar>
+                <foreground_color>
+                  <color red="192" green="192" blue="192" />
+                </foreground_color>
+                <background_color>
+                  <color red="240" green="240" blue="240" />
+                </background_color>
+                <enabled>true</enabled>
+                <widget_type>Grouping Container</widget_type>
+                <font>
+                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                </font>
+                <width>1122</width>
+                <border_style>0</border_style>
+                <rules />
+                <fc>false</fc>
+                <lock_children>false</lock_children>
+                <border_width>1</border_width>
+                <border_color>
+                  <color red="0" green="128" blue="255" />
+                </border_color>
+                <y>1</y>
+                <actions hook="false" hook_all="false" />
+                <x>1</x>
+                <tooltip></tooltip>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>48f6d54e:14565e195d6:-7ee8</wuid>
+                  <scripts />
+                  <height>49</height>
+                  <name>Background colour</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>536</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>37</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>39</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>66514f80:14565dcb6d6:-7da2</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Background colour</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>87</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>66514f80:14565dcb6d6:-7d9e</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>49</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Rectangle Template</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                    <x>436</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7f47</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_1</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Light grey</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>46</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>147</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7f43</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_2</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>200, 200, 200</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>66</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>294</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>48f6d54e:14565e195d6:-7eaa</wuid>
+                  <scripts />
+                  <height>49</height>
+                  <name>Text colour</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>536</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>116</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>39</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7f34</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>26</height>
+                    <name>Label Template_3</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Text colour
+(on a light background)</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>107</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>48f6d54e:14565e195d6:-7f33</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>49</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Rectangle Template_1</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Black" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                    <x>436</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7f32</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_4</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Black</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>25</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>147</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7f31</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_5</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>0, 0, 0</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>30</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>294</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>48f6d54e:14565e195d6:-7e98</wuid>
+                  <scripts />
+                  <height>49</height>
+                  <name>Text colour</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>536</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>195</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>39</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e97</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>26</height>
+                    <name>Label Template_3</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Text colour
+(on a dark background)</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>108</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>48f6d54e:14565e195d6:-7e96</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>49</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Rectangle Template_1</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO White" red="255" green="255" blue="255" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                    <x>436</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e95</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_4</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>White</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>27</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>147</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e94</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_5</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>255, 255, 255</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>66</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>294</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>48f6d54e:14565e195d6:-7e50</wuid>
+                  <scripts />
+                  <height>49</height>
+                  <name>Text colour</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>536</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>274</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>39</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e4f</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>26</height>
+                    <name>Label Template_3</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Text colour
+(read only)</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>50</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>48f6d54e:14565e195d6:-7e4e</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>49</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Rectangle Template_1</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Grey" red="140" green="140" blue="140" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                    <x>436</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e4d</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_4</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Grey</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>22</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>147</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e4c</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_5</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>140, 140, 140</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>66</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>294</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>48f6d54e:14565e195d6:-7e08</wuid>
+                  <scripts />
+                  <height>49</height>
+                  <name>High Level Alarm</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>536</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>353</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>39</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e07</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_3</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>High Level Alarm</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>79</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>48f6d54e:14565e195d6:-7e06</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>49</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Rectangle Template_1</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO High Level Alarm" red="250" green="12" blue="14" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                    <x>436</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e05</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_4</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Red</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>20</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>147</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7e04</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_5</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>250, 12, 14</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>54</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>294</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>48f6d54e:14565e195d6:-7dc0</wuid>
+                  <scripts />
+                  <height>49</height>
+                  <name>Medium Level Alarm_1</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>536</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>432</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>39</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7dbf</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_3</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Medium Level Alarm</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>95</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>48f6d54e:14565e195d6:-7dbe</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>49</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Rectangle Template_1</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Medium Level Alarm" red="255" green="255" blue="0" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                    <x>436</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7dbd</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_4</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Yellow</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>30</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>147</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7dbc</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_5</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>255, 255, 0</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>54</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>294</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>48f6d54e:14565e195d6:-7da8</wuid>
+                  <scripts />
+                  <height>49</height>
+                  <name>Normal State</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>536</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>true</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>515</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>39</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7da7</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_3</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Normal State</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>62</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
+                    <border_alarm_sensitive>false</border_alarm_sensitive>
+                    <visible>true</visible>
+                    <fill_level>100.0</fill_level>
+                    <line_color>
+                      <color name="IO Line" red="0" green="32" blue="92" />
+                    </line_color>
+                    <wuid>48f6d54e:14565e195d6:-7da6</wuid>
+                    <bg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </bg_gradient_color>
+                    <scripts />
+                    <height>49</height>
+                    <anti_alias>true</anti_alias>
+                    <name>Rectangle Template_1</name>
+                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                    <alpha>255</alpha>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>false</transparent>
+                    <pv_name></pv_name>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Normal Level Alarm" red="0" green="176" blue="80" />
+                    </foreground_color>
+                    <widget_type>Rectangle</widget_type>
+                    <enabled>true</enabled>
+                    <fg_gradient_color>
+                      <color name="IO Foreground" red="0" green="0" blue="0" />
+                    </fg_gradient_color>
+                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>100</width>
+                    <line_style>0</line_style>
+                    <border_style>0</border_style>
+                    <rules />
+                    <pv_value />
+                    <border_width>2</border_width>
+                    <line_width>1</line_width>
+                    <horizontal_fill>true</horizontal_fill>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                    <x>436</x>
+                    <gradient>false</gradient>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7da5</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_4</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>Green</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>29</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>147</x>
+                  </widget>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>48f6d54e:14565e195d6:-7da4</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_5</name>
+                    <scale_options>
+                      <width_scalable>true</width_scalable>
+                      <height_scalable>true</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>0, 176, 80</text>
+                    <font>
+                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    </font>
+                    <width>48</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>18</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>294</x>
                   </widget>
                 </widget>
               </widget>

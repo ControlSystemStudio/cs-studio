@@ -1,12 +1,21 @@
 # Modified Date: 05/04/2013
 # Alarm colors
-Major = 255,0,0
+Major = 250,12,14
 Minor = 255,255,0
 Invalid = 200,100,200
 Disconnected = 200,100,200
 
+IO High Level Alarm = 250,12,14
+IO Medium Level Alarm = 255,255,0
+IO Normal Level Alarm = 0, 176, 80
+
+IO Light Grey = 200, 200, 200
+IO Black = 0, 0, 0
+IO White = 255, 255, 255
+IO Grey = 140, 140, 140
+
 # Display widget colors
-IO Background = 255,255,205
+IO Background = 200,200,200
 IO Foreground = 0, 0, 0
 IO Grid = 215,215,215
 
@@ -17,7 +26,7 @@ IO Line = 0, 32, 92
 IO Link = 0, 32, 92
 
 # Label & Text colors
-IO Text Fg = 0, 32, 92
+IO Text Fg = 0, 0, 0
 
 # Boolean Symbol colors
 IO PV ON = 0,0,225
