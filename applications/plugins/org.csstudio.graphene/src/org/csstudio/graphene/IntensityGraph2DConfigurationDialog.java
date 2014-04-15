@@ -20,12 +20,14 @@ public class IntensityGraph2DConfigurationDialog
 	protected IntensityGraph2DConfigurationDialog(IntensityGraph2DWidget control, String title) {
 		super(control, title);
 		addInitialValues("colorMap", control.getColorMap());
+		addInitialValues("drawLegend", control.isDrawLegend());
 	}
 
 	@Override
 	protected void onPropertyChange(PropertyChangeEvent evt) {
 		super.onPropertyChange(evt);
 		getWidget().setColorMap(getConfigurationComposite().getColorMap());
+		getWidget().setDrawLegend(getConfigurationComposite().isDrawLegend());
 	}
 
 	@Override
@@ -33,6 +35,8 @@ public class IntensityGraph2DConfigurationDialog
 		super.populateInitialValues();
 		getConfigurationComposite().setColorMap(
 				(NumberColorMap) getInitialValues().get("colorMap"));
+		getConfigurationComposite().setDrawLegend(
+				(Boolean) getInitialValues().get("drawLegend"));
 	}
 
 	@Override

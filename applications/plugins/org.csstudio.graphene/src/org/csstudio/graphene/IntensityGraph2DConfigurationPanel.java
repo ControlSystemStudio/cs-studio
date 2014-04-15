@@ -13,10 +13,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.epics.graphene.NumberColorMap;
 import org.epics.graphene.NumberColorMaps;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class IntensityGraph2DConfigurationPanel extends
 		AbstractGraph2DConfigurationPanel {
 	private Combo colorMapCombo;
+	private Button btnDrawLegend;
 
 	public IntensityGraph2DConfigurationPanel(Composite parent,
 			int style) {
@@ -32,6 +36,11 @@ public class IntensityGraph2DConfigurationPanel extends
 		Collections.sort(colorMapNames);
 		colorMapCombo.setItems(colorMapNames.toArray(new String[colorMapNames.size()]));
 		forwardComboEvents(colorMapCombo, "colorMap");
+		
+		btnDrawLegend = new Button(this, SWT.CHECK);
+		btnDrawLegend.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		btnDrawLegend.setText("Draw Legend");
+		forwardCheckBoxEvents(btnDrawLegend, "drawLegend");
 	}
 	
 	public NumberColorMap getColorMap() {
@@ -55,4 +64,11 @@ public class IntensityGraph2DConfigurationPanel extends
 		colorMapCombo.select(index);
 	}
 	
+	public boolean isDrawLegend() {
+		return btnDrawLegend.getSelection();
+	}
+	
+	public void setDrawLegend(boolean drawLegend) {
+		btnDrawLegend.setSelection(drawLegend);
+	}
 }
