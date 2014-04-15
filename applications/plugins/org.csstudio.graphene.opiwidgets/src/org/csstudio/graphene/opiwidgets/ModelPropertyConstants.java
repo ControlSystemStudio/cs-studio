@@ -7,5 +7,6 @@ public class ModelPropertyConstants {
 	public static final String PROP_Y_FORMULA = "y_formula"; //$NON-NLS-1$
 	public static final String PROP_HIGHLIGHT_SELECTION_VALUE = "highlight_selection_value"; //$NON-NLS-1$
 	public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv"; //$NON-NLS-1$
-
+	public static final String PROP_COLOR_MAP = "color_map"; //$NON-NLS-1$
+	public static final String PROP_DRAW_LEGEND = "draw_legend"; //$NON-NLS-1$
 }

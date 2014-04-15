@@ -3,6 +3,8 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
+import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
+
 import org.csstudio.graphene.IntensityGraph2DWidget;
 import org.eclipse.draw2d.IFigure;
 
@@ -23,6 +25,8 @@ public class IntensityGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpar
 	protected void configure(IntensityGraph2DWidgetFigure figure, IntensityGraph2DWidgetModel model) {
 		super.configure(figure, model);
 		IntensityGraph2DWidget widget = figure.getSWTWidget();
+		widget.setDrawLegend(model.isDrawLegend());
+		widget.setColorMap(model.getColorMap());
 		if (figure.isRunMode()) {
 		}
 	}
@@ -30,6 +34,8 @@ public class IntensityGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpar
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		super.registerPropertyChangeHandlers();
+		setPropertyChangeHandler(PROP_DRAW_LEGEND, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_COLOR_MAP, getReconfigureWidgetPropertyChangeHandler());
 	}
 
 }
