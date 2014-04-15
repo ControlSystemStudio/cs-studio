@@ -3,19 +3,16 @@ package org.csstudio.graphene;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.epics.graphene.ValueColorScheme;
-import org.epics.graphene.ValueColorSchemes;
+import org.epics.graphene.NumberColorMap;
+import org.epics.graphene.NumberColorMaps;
 
 public class IntensityGraph2DConfigurationPanel extends
 		AbstractGraph2DConfigurationPanel {
@@ -31,19 +28,19 @@ public class IntensityGraph2DConfigurationPanel extends
 		
 		colorMapCombo = new Combo(this, SWT.NONE);
 		colorMapCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		List<String> colorMapNames = new ArrayList<String>(ValueColorSchemes.getRegisteredColorSchemes().keySet());
+		List<String> colorMapNames = new ArrayList<String>(NumberColorMaps.getRegisteredColorSchemes().keySet());
 		Collections.sort(colorMapNames);
 		colorMapCombo.setItems(colorMapNames.toArray(new String[colorMapNames.size()]));
 		forwardComboEvents(colorMapCombo, "colorMap");
 	}
 	
-	public ValueColorScheme getColorMap() {
-		return ValueColorSchemes.getRegisteredColorSchemes().get(comboSelectedValue(colorMapCombo));
+	public NumberColorMap getColorMap() {
+		return NumberColorMaps.getRegisteredColorSchemes().get(comboSelectedValue(colorMapCombo));
 	}
 	
-	public void setColorMap(ValueColorScheme colorMap) {
+	public void setColorMap(NumberColorMap colorMap) {
 		String key = null;
-		for (Map.Entry<String, ValueColorScheme> entry : ValueColorSchemes.getRegisteredColorSchemes().entrySet()) { 
+		for (Map.Entry<String, NumberColorMap> entry : NumberColorMaps.getRegisteredColorSchemes().entrySet()) { 
 			if (entry.getValue().equals(colorMap)) {
 				key = entry.getKey();
 			}

@@ -7,7 +7,7 @@ import java.beans.PropertyChangeEvent;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.graphene.ValueColorScheme;
+import org.epics.graphene.NumberColorMap;
 
 /**
  * @author shroffk
@@ -32,7 +32,7 @@ public class IntensityGraph2DConfigurationDialog
 	protected void populateInitialValues() {
 		super.populateInitialValues();
 		getConfigurationComposite().setColorMap(
-				(ValueColorScheme) getInitialValues().get("colorMap"));
+				(NumberColorMap) getInitialValues().get("colorMap"));
 	}
 
 	@Override

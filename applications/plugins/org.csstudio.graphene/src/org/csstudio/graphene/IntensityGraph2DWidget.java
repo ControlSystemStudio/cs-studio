@@ -16,9 +16,9 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
+import org.epics.graphene.IntensityGraph2DRenderer;
 import org.epics.graphene.IntensityGraph2DRendererUpdate;
-import org.epics.graphene.ValueColorScheme;
-import org.epics.graphene.ValueColorSchemes;
+import org.epics.graphene.NumberColorMap;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
 import org.epics.pvmanager.graphene.IntensityGraph2DExpression;
@@ -30,8 +30,14 @@ import org.epics.pvmanager.graphene.IntensityGraph2DExpression;
 public class IntensityGraph2DWidget extends AbstractGraph2DWidget<IntensityGraph2DRendererUpdate, IntensityGraph2DExpression>
 	implements ISelectionProvider {
 	
-	private ValueColorScheme colorMap = ValueColorSchemes.JET;
-	private boolean drawLegend = false;
+	private NumberColorMap colorMap;
+	private boolean drawLegend;
+	
+	{
+		IntensityGraph2DRenderer renderer = new IntensityGraph2DRenderer();
+		colorMap = renderer.getColorMap();
+		drawLegend = renderer.isDrawLegend();
+	}
 	
 	public IntensityGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
@@ -50,7 +56,7 @@ public class IntensityGraph2DWidget extends AbstractGraph2DWidget<IntensityGraph
 	
 	private void updateGraph(IntensityGraph2DExpression graph) {
 		graph.update(graph.newUpdate()
-				.valueColorScheme(colorMap)
+				.colorMap(colorMap)
 				.drawLegend(drawLegend));
 	}
 	
@@ -92,12 +98,12 @@ public class IntensityGraph2DWidget extends AbstractGraph2DWidget<IntensityGraph
 				this.drawLegend);
 	}
 	
-	public ValueColorScheme getColorMap() {
+	public NumberColorMap getColorMap() {
 		return colorMap;
 	}
 	
-	public void setColorMap(ValueColorScheme colorMap) {
-		ValueColorScheme oldValue = this.colorMap;
+	public void setColorMap(NumberColorMap colorMap) {
+		NumberColorMap oldValue = this.colorMap;
 		this.colorMap = colorMap;
 		changeSupport.firePropertyChange("colorMap", oldValue,
 				this.colorMap);
