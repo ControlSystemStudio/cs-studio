@@ -42,7 +42,7 @@ public class NumberColorMaps {
     
     static {
         registeredColorSchemes.put("JET", JET);
-        registeredColorSchemes.put("GRAY_SCALE", GRAY);
+        registeredColorSchemes.put("GRAY", GRAY);
     }
     
     /**
