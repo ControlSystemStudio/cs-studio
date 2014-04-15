@@ -41,7 +41,7 @@ public class IntensityGraph2DWidget extends AbstractGraph2DWidget<IntensityGraph
 	
 	public IntensityGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
-		final List<String> updatePropertyNames = Arrays.asList("colorMap", "colorMap");
+		final List<String> updatePropertyNames = Arrays.asList("colorMap", "drawLegend");
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override

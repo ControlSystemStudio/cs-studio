@@ -18,7 +18,7 @@ public class HistogramGraph2DConfigurationPanel extends
 		btnHighlightFocusValue = new Button(this, SWT.CHECK);
 		btnHighlightFocusValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		btnHighlightFocusValue.setText("Highlilght Focus Value");
-		forwardCheckBodEvents(btnHighlightFocusValue, "highlightFocusValue");
+		forwardCheckBoxEvents(btnHighlightFocusValue, "highlightFocusValue");
 	}
 
 	public boolean isHighlightFocusValue() {
