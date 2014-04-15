@@ -7,8 +7,7 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.figures;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +30,6 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * The hover label layer in the plot area.
@@ -39,8 +37,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Davy Dequidt
  * 
  */
-public class HoverLabels extends Figure implements MouseMotionListener,
-		PropertyChangeListener {
+public class HoverLabels extends Figure implements MouseMotionListener {
 
 	private static final int TEXT_MARGIN = 3;
 	private static final int GAP_BEETWEEN_LABEL = 1;
@@ -53,8 +50,7 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 	/**
 	 * Use advanced graphics?
 	 */
-	private final boolean use_advanced_graphics = Preferences
-			.useAdvancedGraphics();
+	private final boolean use_advanced_graphics = Preferences.useAdvancedGraphics();
 
 	private final Font textFont;
 	private final int textHeight;
@@ -62,9 +58,7 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 	private final int arrowHeight;
 
 	private int cursor_x;
-	private int cursor_y;
 	private Color backColor;
-	private Color revertBackColor;
 
 	public HoverLabels(PlotArea plotArea) {
 		textFont = XYGraphMediaFactory.getInstance().getDefaultFont(SWT.NORMAL);
@@ -78,11 +72,6 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 		labelHeight = textHeight + TEXT_MARGIN * 2;
 		arrowHeight = (int) (labelHeight * ARROW_HEIGHT_RATIO) * 2 / 2;
 		backColor = plotArea.getBackgroundColor();
-		RGB backRGB = backColor.getRGB();
-		revertBackColor = XYGraphMediaFactory.getInstance().getColor(
-				255 - backRGB.red, 255 - backRGB.green, 255 - backRGB.blue);
-
-		plotArea.addPropertyChangeListener(this);
 	}
 
 	/**
@@ -155,24 +144,8 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 			graphics.setAntialias(SWT.ON);
 			graphics.setTextAntialias(SWT.ON);
 		}
-		drawMouseCross(graphics);
 		drawLabels(graphics);
 		graphics.popState();
-	}
-
-	/**
-	 * Draw cross (horizontal and vertical line) instead of cursor
-	 * 
-	 * @param graphics
-	 */
-	private void drawMouseCross(Graphics graphics) {
-		graphics.setForegroundColor(revertBackColor);
-		graphics.setLineStyle(SWTConstants.LINE_DOT);
-		graphics.setLineWidth(2);
-		graphics.drawLine(cursor_x, bounds.y, cursor_x, bounds.y
-				+ bounds.height);
-		graphics.setLineWidth(1);
-		graphics.drawLine(bounds.x, cursor_y, bounds.x + bounds.width, cursor_y);
 	}
 
 	private void drawLabels(Graphics graphics) {
@@ -279,7 +252,6 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 	public void mouseMoved(MouseEvent me) {
 		if (isVisible()) {
 			cursor_x = me.getLocation().x;
-			cursor_y = me.getLocation().y;
 			repaint();
 		}
 	}
@@ -399,14 +371,4 @@ public class HoverLabels extends Figure implements MouseMotionListener,
 	public boolean removeTrace(final Trace trace) {
 		return traceList.remove(trace);
 	}
-
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (PlotArea.BACKGROUND_COLOR.equals(evt.getPropertyName())) {
-			backColor = (Color) evt.getNewValue();
-			RGB backRGB = backColor.getRGB();
-			revertBackColor = XYGraphMediaFactory.getInstance().getColor(
-					255 - backRGB.red, 255 - backRGB.green, 255 - backRGB.blue);
-		}
-	}
-
 }

@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="Core CSS Components"
-      version="3.2.11.qualifier"
+      version="3.3.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS"
       plugin="org.csstudio.sns.product">
 
@@ -39,7 +39,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
-      <import plugin="org.junit4"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.jdbc" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
@@ -89,7 +89,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.help" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
-      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.2.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
@@ -112,6 +111,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.utility.product" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.epics.pvdata" version="3.1.1" match="greaterOrEqual"/>
       <import plugin="org.epics.pvaccess" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.epics" version="3.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -599,6 +599,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.utility.pvmanager.pva"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.vtype.pv"
          download-size="0"
          install-size="0"
          version="0.0.0"

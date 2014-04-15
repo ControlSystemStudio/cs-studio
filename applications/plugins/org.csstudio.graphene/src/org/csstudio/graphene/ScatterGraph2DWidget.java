@@ -32,9 +32,7 @@ public class ScatterGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Scat
 		ScatterGraph2DExpression graph = ExpressionLanguage.scatterGraphOf(formula(getDataFormula()),
 				formulaArg(getXColumnFormula()),
 				formulaArg(getYColumnFormula()),
-				formulaArg(getTooltipColumnFormula()));
-		graph.update(graph.newUpdate()
-				.interpolation(InterpolationScheme.LINEAR));
+				formulaArg(getTooltipColumnFormula()));		
 		return graph;
 	}
 

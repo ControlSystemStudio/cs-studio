@@ -19,6 +19,24 @@ public class AnnotationSettings {
 	private boolean showName;
 	private boolean showSampleInfo;
 	private boolean showPosition;
+	private double yValue;
+	private double xValue;
+	
+	public double getXValue() {
+		return xValue;
+	}
+	
+	public void setXValue(double xValue) {
+		this.xValue = xValue;
+	}
+	
+	public double getYValue() {
+		return yValue;
+	}
+	
+	public void setYValue(double yValue) {
+		this.yValue = yValue;
+	}
 
 	public String getName() {
 		return name;

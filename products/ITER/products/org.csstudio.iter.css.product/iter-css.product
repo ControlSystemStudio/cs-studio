@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css" uid="org.csstudio.iter.product.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="3.2.10.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css" uid="org.csstudio.iter.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="3.2.13.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="icons/about.gif"/>
+      <image path="/org.csstudio.iter.css.product/icons/about.png"/>
       <text>
-         Control System Studio (CSS) is a combined
-effort of several parties, including:
-- DESY (Hamburg, Germany)
-- SNS (Oak Ridge, TN)
-- ITER (Cadarache, France)
-- BNL (Brookhaven, NY)
+\n\n
 
-It provides a collection of control system
-tools in a common environment, based
-on Eclipse.
+Control System Studio is an Eclipse-based collection of tools\n\
+ 
+to monitor and operate large scale control systems,\n\
 
-See https://github.com/ControlSystemStudio/cs-studio/wiki
+such as the ones in the fusion community.\n\
+
+
+
+It's a product of the collaboration between different laboratories and universities.
+
       </text>
    </aboutInfo>
 
@@ -39,7 +39,7 @@ openFile</programArgs>
    <windowImages i16="/org.csstudio.iter.css.product/icons/css16.png" i32="/org.csstudio.iter.css.product/icons/css32.png" i48="/org.csstudio.iter.css.product/icons/css48.png" i64="/org.csstudio.iter.css.product/icons/css64.png" i128="/org.csstudio.iter.css.product/icons/css128.png"/>
 
    <splash
-      location="org.csstudio.iter.product.css"
+      location="org.csstudio.iter.css.product"
       startupProgressRect="5,210,445,15"
       startupMessageRect="7,190,445,20"
       startupForegroundColor="0064C6" />
@@ -59,7 +59,7 @@ openFile</programArgs>
    <license>
         <url>https://portal.iter.org/departments/CHD/CODAC/dev/Pages/trunk.aspx</url>
         <text>
-   Copyright (c) : 2010-2013 ITER Organization,
+   Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France

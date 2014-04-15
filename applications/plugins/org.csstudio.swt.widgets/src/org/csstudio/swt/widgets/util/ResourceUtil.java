@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -104,11 +105,11 @@ public class ResourceUtil {
         }
 
         // Must be a URL
-        final URL url = new URL(urlString);
+        // Allow URLs with spaces. Ideally, the URL class would handle this?
+        urlString = urlString.replaceAll(" ", "%20");
+        URI uri = new URI(urlString);
+        final URL url = uri.toURL();
         return  openURLStream(url);
-       
-		       
-
 	}
 	
 	private static InputStream openURLStream(final URL url) throws IOException {

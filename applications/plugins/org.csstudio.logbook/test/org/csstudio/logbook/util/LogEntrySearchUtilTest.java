@@ -33,16 +33,20 @@ public class LogEntrySearchUtilTest {
 	searchString = "Hello logbooks:Operation tags:LOTO";
 	Assert.assertEquals("Failed to parse search String: " + searchString,
 		expectedSearchMap, parseSearchString(searchString));
+	expectedSearchMap.put("shift.Id", "1234");
+	searchString = "Hello logbooks:Operation tags:LOTO shift.Id:1234";
+	Assert.assertEquals("Failed to parse search String: " + searchString,
+		expectedSearchMap, parseSearchString(searchString));
 	expectedSearchMap.put("from", "lastday");
-	searchString = "Hello logbooks:Operation tags:LOTO from:lastday";
+	searchString = "Hello logbooks:Operation tags:LOTO shift.Id:1234 from:lastday";
 	Assert.assertEquals("Failed to parse search String: " + searchString,
 		expectedSearchMap, parseSearchString(searchString));
 	expectedSearchMap.put("from", "last5days");
-	searchString = "Hello logbooks:Operation tags:LOTO from:last5days";
+	searchString = "Hello logbooks:Operation tags:LOTO shift.Id:1234 from:last5days";
 	Assert.assertEquals("Failed to parse search String: " + searchString,
 		expectedSearchMap, parseSearchString(searchString));
 	expectedSearchMap.put("to", "now");
-	searchString = "Hello logbooks:Operation tags:LOTO from:last5days to:now";
+	searchString = "Hello logbooks:Operation tags:LOTO shift.Id:1234 from:last5days to:now";
 	Assert.assertEquals("Failed to parse search String: " + searchString,
 		expectedSearchMap, parseSearchString(searchString));
 

@@ -45,11 +45,11 @@ public class Application implements IApplication
     private boolean delete;
 
     /** Parse arguments, set member variables */
-    private String checkArguments(String[] args)
+    private String checkArguments(String[] args, IApplicationContext context)
     {
         final ArgParser parser = new ArgParser();
-        final BooleanOption help_opt = new BooleanOption(parser, "-help",
-               "Display Help");
+        final BooleanOption help_opt = new BooleanOption(parser, "-help",  "Display help");
+        final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
         final StringOption url = new StringOption(parser, "-rdb_url",
                "Alarm config database URL", Preferences.getRDB_Url());
         final StringOption user = new StringOption(parser, "-rdb_user",
@@ -85,9 +85,15 @@ public class Application implements IApplication
         {
             return ex.getMessage() + "\n" + parser.getHelp();
         }
-        if (help_opt.get())
-            return parser.getHelp();
-
+		final String version = (String) context.getBrandingBundle()
+				.getHeaders().get("Bundle-Version");
+		final String app_info = context.getBrandingName() + " " + version;
+		if (help_opt.get())
+			return app_info + "\n\n" + parser.getHelp();
+		if (version_opt.get()) {
+			// Display configuration info
+			return app_info;
+		}
         final String option = set_password.get();
         if (option != null)
         {   // Split "plugin/key=value"
@@ -166,18 +172,19 @@ public class Application implements IApplication
     {
         final String version = (String)
                 context.getBrandingBundle().getHeaders().get("Bundle-Version");
-        System.out.println("Alarm Config Tool " + version);
+        
         // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
 
-        final String error = checkArguments(args);
+        final String error = checkArguments(args, context);
         if (error != null)
         {
             System.err.println(error);
             return Integer.valueOf(-2);
         }
 
+        System.out.println("Alarm Config Tool " + version);
         // Configure logging
         LogConfigurator.configureFromPreferences();
 
