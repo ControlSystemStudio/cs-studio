@@ -75,7 +75,6 @@ public class Model
     final public static String TAG_PVLIST = "pvlist";
     final public static String TAG_PV = "pv";
     final public static String TAG_NAME = "name";
-    final public static String TAG_AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh";
     final public static String TAG_DISPLAYNAME = "display_name";
     final public static String TAG_FORMULA = "formula";
     final public static String TAG_AXES = "axes";
@@ -101,7 +100,6 @@ public class Model
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
-    final public static String TAG_FUTURE_BUFFER = "future_buffer";
 
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_ANNOTATION = "annotation";
@@ -201,7 +199,9 @@ public class Model
     /** End time of the data range */
     private Timestamp end_time = Timestamp.now();
     
-    private int futureBufferInSeconds = Preferences.getFutureBuffer();
+    private final int futureBufferInSeconds = Preferences.getFutureBuffer();
+    
+    private final boolean automaticHistoryRefresh = Preferences.isAutomaticHistoryRefresh();
 
     /** Background color */
     private RGB background = new RGB(255, 255, 255);
@@ -712,6 +712,19 @@ public class Model
     public int getFutureBufferInSeconds() {
 		return futureBufferInSeconds;
 	}
+    
+    /**
+     * Returns true if the automatic history refresh is turned on for this model.
+     * The property is read from the preferences at the construction of the model.
+     * After the construction, the property is locked and all items that are added
+     * to this model have the same value as the model (which might be different
+     * to the current preferences).
+     * 
+     * @return true if automatic history refresh is on or false if it is off
+     */
+    public boolean isAutomaticHistoryRefresh() {
+		return automaticHistoryRefresh;
+	}
 
     /** @return String representation of start time. While scrolling, this is
      *          a relative time, otherwise an absolute date/time.
@@ -968,9 +981,6 @@ public class Model
 
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
         
-        if (futureBufferInSeconds > 0) {
-        	XMLWriter.XML(writer, 1, TAG_FUTURE_BUFFER, futureBufferInSeconds);
-        }
         //all other settings are already included in the graphsettings
 //        // Time axis config
 //        if (timeAxis != null)
@@ -1067,12 +1077,6 @@ public class Model
             archive_rescale = ArchiveRescale.STAGGER;
         }
         
-        try {
-        	futureBufferInSeconds = DOMHelper.getSubelementInt(root_node, TAG_FUTURE_BUFFER);
-        } catch (Throwable e ) {
-        	//ignore, use default
-        }
-
         // Load Time Axis
         final Element timeAxisNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);
         if (timeAxisNode != null)
