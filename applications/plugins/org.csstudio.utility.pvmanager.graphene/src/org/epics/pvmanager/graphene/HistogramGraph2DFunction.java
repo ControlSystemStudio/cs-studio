@@ -67,11 +67,15 @@ class HistogramGraph2DFunction implements ReadFunction<Graph2DResult> {
         
         BufferedImage image = new BufferedImage(renderer.getImageWidth(), renderer.getImageHeight(), BufferedImage.TYPE_3BYTE_BGR);
         renderer.draw(image.createGraphics(), dataset);
+        int index = -1;
+        if (renderer.getFocusValueIndex() != null) {
+            index = renderer.getFocusValueIndex();
+        }
         
-        return new Graph2DResult(null, ValueUtil.toVImage(image),
+        return new Graph2DResult(data, ValueUtil.toVImage(image),
                 new GraphDataRange(renderer.getXPlotRange(), dataset.getXRange(), renderer.getXAggregatedRange()),
                 new GraphDataRange(renderer.getYPlotRange(), dataset.getStatistics(), renderer.getYAggregatedRange()),
-                -1);
+                index);
     }
     
 }
