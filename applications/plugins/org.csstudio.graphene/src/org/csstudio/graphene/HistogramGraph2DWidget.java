@@ -11,6 +11,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -42,6 +44,9 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.pvmanager.PVWriter;
+import org.epics.pvmanager.PVWriterEvent;
+import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.graphene.BubbleGraph2DExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DExpression;
@@ -53,11 +58,14 @@ import org.epics.util.array.ArrayInt;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
+import org.epics.vtype.ValueUtil;
 
 public class HistogramGraph2DWidget
 		extends
 		AbstractGraph2DWidget<AreaGraph2DRendererUpdate, HistogramGraph2DExpression>
 		implements ISelectionProvider {
+
+	private PVWriter<Object> selectionValueWriter;
 	
 	private boolean highlightSelectionValue = false;
 	
@@ -90,6 +98,53 @@ public class HistogramGraph2DWidget
 				if (isHighlightSelectionValue() && getGraph() != null) {
 					getGraph().update(getGraph().newUpdate().focusPixel(e.x));
 				}
+			}
+		});
+		
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("selectionValuePv") && getGraph() != null) {
+					if (selectionValueWriter != null) {
+						selectionValueWriter.close();
+						selectionValueWriter = null;
+					}
+					
+					if (getSelectionValuePv() == null || getSelectionValuePv().trim().isEmpty()) {
+						return;
+					}
+					
+					selectionValueWriter = PVManager.write(formula(getSelectionValuePv()))
+							.writeListener(new PVWriterListener<Object>() {
+								@Override
+								public void pvChanged(
+										PVWriterEvent<Object> event) {
+									if (event.isWriteFailed()) {
+										Logger.getLogger(BubbleGraph2DWidget.class.getName())
+										.log(Level.WARNING, "Line graph selection notification failed", event.getPvWriter().lastWriteException());
+									}
+								}
+							})
+							.async();
+					if (getSelectionValue() != null) {
+						selectionValueWriter.write(getSelectionValue());
+					}
+							
+				}
+				
+			}
+		});
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("selectionValue") && selectionValueWriter != null) {
+					if (getSelectionValue() != null) {
+						selectionValueWriter.write(getSelectionValue());
+					}
+				}
+				
 			}
 		});
     }
@@ -144,7 +199,9 @@ public class HistogramGraph2DWidget
 	private void setSelectionValue(VNumberArray selectionValue) {
 		VNumberArray oldValue = this.selectionValue;
 		this.selectionValue = selectionValue;
-		changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
+		if (oldValue != this.selectionValue) {
+			changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
+		}
 	}
 	
 	@Override
@@ -165,7 +222,7 @@ public class HistogramGraph2DWidget
 			} else {
 				if (result.getData() instanceof VNumberArray) {
 					VNumberArray data = (VNumberArray) result.getData();
-					VNumberArray selection = null;
+					VNumberArray selection = ValueUtil.subArray(data, index);
 					setSelectionValue(selection);
 					return;
 				}
