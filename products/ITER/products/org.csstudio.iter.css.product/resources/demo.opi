@@ -61,7 +61,7 @@
     <widget_type>Sash Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
     </font>
     <width>1260</width>
     <sash_position>0.09713375796178345</sash_position>
@@ -185,7 +185,7 @@
         <widget_type>Sash Container</widget_type>
         <enabled>true</enabled>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <width>1132</width>
         <sash_position>0.030269058295964126</sash_position>
@@ -313,7 +313,7 @@
               <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
               <precision>0</precision>
               <font>
-                <opifont.name fontName="arial" height="12" style="1">IO SubTitle</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="18" style="0">IO SubTitle</opifont.name>
               </font>
               <width>141</width>
               <border_style>0</border_style>
@@ -354,7 +354,7 @@
               <widget_type>Image</widget_type>
               <enabled>true</enabled>
               <font>
-                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </font>
               <width>50</width>
               <no_animation>false</no_animation>
@@ -410,7 +410,7 @@
               <enabled>false</enabled>
               <text>${CBS1} - Graphical Widget Default Properties</text>
               <font>
-                <opifont.name fontName="arial" height="14" style="1">IO Title</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="18" style="1">IO Title</opifont.name>
               </font>
               <width>1128</width>
               <border_style>0</border_style>
@@ -500,7 +500,7 @@
                 <enabled>true</enabled>
                 <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                 <font>
-                  <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                  <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                 </font>
                 <width>23</width>
                 <border_style>0</border_style>
@@ -552,7 +552,7 @@
                 <enabled>true</enabled>
                 <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                 <font>
-                  <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                  <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                 </font>
                 <width>23</width>
                 <border_style>0</border_style>
@@ -604,7 +604,7 @@
                 <enabled>true</enabled>
                 <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                 <font>
-                  <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                  <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                 </font>
                 <width>23</width>
                 <border_style>0</border_style>
@@ -697,7 +697,7 @@
                 <enabled>true</enabled>
                 <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                 <font>
-                  <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                  <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                 </font>
                 <width>34</width>
                 <border_style>0</border_style>
@@ -749,7 +749,7 @@
                 <enabled>true</enabled>
                 <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                 <font>
-                  <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                  <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                 </font>
                 <width>34</width>
                 <border_style>0</border_style>
@@ -801,7 +801,7 @@
                 <enabled>true</enabled>
                 <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                 <font>
-                  <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                  <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                 </font>
                 <width>34</width>
                 <border_style>0</border_style>
@@ -853,7 +853,7 @@
                 <enabled>true</enabled>
                 <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                 <font>
-                  <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                  <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                 </font>
                 <width>34</width>
                 <border_style>0</border_style>
@@ -969,7 +969,7 @@
                 <color name="IO Background" red="200" green="200" blue="200" />
               </tab_4_background_color>
               <tab_5_font>
-                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </tab_5_font>
               <minimum_tab_height>10</minimum_tab_height>
               <tab_5_title>Alarm Levels</tab_5_title>
@@ -978,14 +978,14 @@
               <border_style>6</border_style>
               <tab_3_icon_path></tab_3_icon_path>
               <tab_4_font>
-                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </tab_4_font>
               <tab_5_icon_path></tab_5_icon_path>
               <wuid>-203b6f4:1411132e3c7:-7d08</wuid>
               <tab_6_title>Colors</tab_6_title>
               <tab_1_icon_path></tab_1_icon_path>
               <tab_2_font>
-                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </tab_2_font>
               <tab_4_enabled>true</tab_4_enabled>
               <tab_4_foreground_color>
@@ -995,11 +995,12 @@
               <tab_0_background_color>
                 <color name="IO Background" red="200" green="200" blue="200" />
               </tab_0_background_color>
+              <tab_7_icon_path></tab_7_icon_path>
               <tab_3_foreground_color>
                 <color name="IO Foreground" red="0" green="0" blue="0" />
               </tab_3_foreground_color>
               <foreground_color>
-                <color name="IO Foreground" red="0" green="0" blue="0" />
+                <color name="IO Text Fg" red="0" green="0" blue="0" />
               </foreground_color>
               <tab_2_icon_path></tab_2_icon_path>
               <tab_0_foreground_color>
@@ -1018,26 +1019,34 @@
               <visible>true</visible>
               <tab_6_icon_path></tab_6_icon_path>
               <tab_4_icon_path></tab_4_icon_path>
+              <tab_7_foreground_color>
+                <color name="IO Foreground" red="0" green="0" blue="0" />
+              </tab_7_foreground_color>
               <scripts />
               <tab_1_enabled>true</tab_1_enabled>
               <tab_6_font>
-                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </tab_6_font>
               <height>863</height>
               <tab_5_enabled>true</tab_5_enabled>
               <horizontal_tabs>true</horizontal_tabs>
               <tab_1_font>
-                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </tab_1_font>
               <tab_1_foreground_color>
                 <color name="IO Foreground" red="0" green="0" blue="0" />
               </tab_1_foreground_color>
               <tab_0_title>Graphics</tab_0_title>
+              <tab_7_title>Fonts</tab_7_title>
+              <tab_7_font>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
+              </tab_7_font>
               <background_color>
                 <color name="IO Background" red="200" green="200" blue="200" />
               </background_color>
               <widget_type>Tabbed Container</widget_type>
               <enabled>true</enabled>
+              <tab_7_enabled>true</tab_7_enabled>
               <width>1128</width>
               <tab_5_foreground_color>
                 <color name="IO Foreground" red="0" green="0" blue="0" />
@@ -1046,6 +1055,9 @@
                 <color name="IO Background" red="200" green="200" blue="200" />
               </tab_1_background_color>
               <border_width>2</border_width>
+              <tab_7_background_color>
+                <color name="IO Background" red="200" green="200" blue="200" />
+              </tab_7_background_color>
               <tab_4_title>Symbols</tab_4_title>
               <name>Tabbed Container Template</name>
               <scale_options>
@@ -1059,7 +1071,7 @@
                 <color name="IO Background" red="200" green="200" blue="200" />
               </tab_5_background_color>
               <tab_0_font>
-                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </tab_0_font>
               <rules />
               <tab_6_enabled>true</tab_6_enabled>
@@ -1071,9 +1083,9 @@
                 <color name="IO Foreground" red="0" green="0" blue="0" />
               </tab_2_foreground_color>
               <tab_3_font>
-                <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </tab_3_font>
-              <tab_count>7</tab_count>
+              <tab_count>8</tab_count>
               <tooltip></tooltip>
               <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
                 <macros>
@@ -1082,7 +1094,7 @@
                 <visible>false</visible>
                 <wuid>-203b6f4:1411132e3c7:-7d07</wuid>
                 <scripts />
-                <height>832</height>
+                <height>825</height>
                 <name>Graphics</name>
                 <scale_options>
                   <width_scalable>true</width_scalable>
@@ -1155,7 +1167,7 @@
                   <enabled>true</enabled>
                   <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                   <font>
-                    <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                   </font>
                   <width>99</width>
                   <line_style>0</line_style>
@@ -1179,7 +1191,7 @@
                   <wuid>-203b6f4:1411132e3c7:-7d05</wuid>
                   <auto_size>true</auto_size>
                   <scripts />
-                  <height>26</height>
+                  <height>40</height>
                   <name>Label Template</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -1199,9 +1211,9 @@
                   <text>double click
 to enter the Label Text</text>
                   <font>
-                    <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                   </font>
-                  <width>105</width>
+                  <width>189</width>
                   <border_style>0</border_style>
                   <rules />
                   <border_width>2</border_width>
@@ -1239,7 +1251,7 @@ to enter the Label Text</text>
                   <widget_type>Image</widget_type>
                   <enabled>true</enabled>
                   <font>
-                    <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                   </font>
                   <width>37</width>
                   <no_animation>false</no_animation>
@@ -1338,7 +1350,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -1396,7 +1408,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>104</width>
                     <line_style>0</line_style>
@@ -1451,7 +1463,7 @@ to enter the Label Text</text>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -1509,7 +1521,7 @@ to enter the Label Text</text>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -1565,7 +1577,7 @@ to enter the Label Text</text>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -1590,10 +1602,10 @@ to enter the Label Text</text>
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
-                <visible>false</visible>
+                <visible>true</visible>
                 <wuid>-203b6f4:1411132e3c7:-7cfd</wuid>
                 <scripts />
-                <height>832</height>
+                <height>825</height>
                 <name>Monitors</name>
                 <scale_options>
                   <width_scalable>true</width_scalable>
@@ -1638,7 +1650,7 @@ to enter the Label Text</text>
                   <on_color>
                     <color name="IO PV ON" red="0" green="0" blue="225" />
                   </on_color>
-                  <height>71</height>
+                  <height>75</height>
                   <name>Multistate Symbol Image Monitor Template</name>
                   <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                   <stretch_to_fit>false</stretch_to_fit>
@@ -1662,9 +1674,9 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                   <font>
-                    <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                   </font>
-                  <width>37</width>
+                  <width>41</width>
                   <flip_horizontal>false</flip_horizontal>
                   <permutation_matrix>
                     <row>
@@ -1729,7 +1741,7 @@ to enter the Label Text</text>
                   <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                   <numBits>16</numBits>
                   <font>
-                    <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                   </font>
                   <width>309</width>
                   <border_style>0</border_style>
@@ -1780,7 +1792,7 @@ to enter the Label Text</text>
                   <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                   <precision>0</precision>
                   <font>
-                    <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                   </font>
                   <width>140</width>
                   <border_style>5</border_style>
@@ -1804,7 +1816,7 @@ to enter the Label Text</text>
                   <visible>true</visible>
                   <wuid>-203b6f4:1411132e3c7:-7cf9</wuid>
                   <scripts />
-                  <height>75</height>
+                  <height>76</height>
                   <name>Boolean</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -1824,11 +1836,11 @@ to enter the Label Text</text>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>294</width>
+                  <width>295</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
-                  <lock_children>true</lock_children>
+                  <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
                     <color name="IO Border" red="215" green="215" blue="215" />
@@ -1871,7 +1883,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>40</width>
                     <border_style>0</border_style>
@@ -1919,7 +1931,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>40</width>
                     <border_style>0</border_style>
@@ -1954,7 +1966,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <widget_type>Boolean Symbol Image Monitor</widget_type>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <permutation_matrix>
                       <row>
@@ -2069,7 +2081,7 @@ to enter the Label Text</text>
                     <widget_type>Meter</widget_type>
                     <show_minor_ticks>true</show_minor_ticks>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>200</width>
                     <show_lolo>true</show_lolo>
@@ -2104,7 +2116,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
                     <scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <ramp_gradient>true</ramp_gradient>
@@ -2150,7 +2162,7 @@ to enter the Label Text</text>
                     <widget_type>Progress Bar</widget_type>
                     <show_minor_ticks>true</show_minor_ticks>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>200</width>
                     <show_lolo>true</show_lolo>
@@ -2189,7 +2201,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
                     <scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <origin>0.0</origin>
@@ -2232,7 +2244,7 @@ to enter the Label Text</text>
                     <widget_type>Gauge</widget_type>
                     <show_minor_ticks>true</show_minor_ticks>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>138</width>
                     <show_lolo>true</show_lolo>
@@ -2268,7 +2280,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
                     <scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <ramp_gradient>true</ramp_gradient>
@@ -2314,7 +2326,7 @@ to enter the Label Text</text>
                     <widget_type>Thermometer</widget_type>
                     <show_minor_ticks>true</show_minor_ticks>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>125</width>
                     <show_lolo>true</show_lolo>
@@ -2351,7 +2363,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
                     <scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <color_lolo>
@@ -2397,7 +2409,7 @@ to enter the Label Text</text>
                     <widget_type>Tank</widget_type>
                     <show_minor_ticks>true</show_minor_ticks>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>150</width>
                     <show_lolo>true</show_lolo>
@@ -2433,7 +2445,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
                     <scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <color_lolo>
@@ -2474,7 +2486,7 @@ to enter the Label Text</text>
                     <height>250</height>
                     <axis_1_maximum>100.0</axis_1_maximum>
                     <axis_1_title_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </axis_1_title_font>
                     <border_width>2</border_width>
                     <axis_0_axis_color>
@@ -2504,12 +2516,12 @@ to enter the Label Text</text>
                     <axis_1_axis_title>Primary Y Axis (1)</axis_1_axis_title>
                     <axis_0_maximum>100.0</axis_0_maximum>
                     <axis_0_scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </axis_0_scale_font>
                     <axis_0_time_format>2</axis_0_time_format>
                     <axis_1_log_scale>false</axis_1_log_scale>
                     <title_font>
-                      <opifont.name fontName="arial" height="14" style="1">IO Title</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="18" style="1">IO Title</opifont.name>
                     </title_font>
                     <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
                     <axis_0_visible>true</axis_0_visible>
@@ -2518,7 +2530,7 @@ to enter the Label Text</text>
                     <trace_0_x_pv></trace_0_x_pv>
                     <trace_0_y_pv>sim://noise</trace_0_y_pv>
                     <axis_0_title_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </axis_0_title_font>
                     <axis_1_auto_scale>true</axis_1_auto_scale>
                     <trace_0_concatenate_data>true</trace_0_concatenate_data>
@@ -2539,7 +2551,7 @@ to enter the Label Text</text>
                     <border_alarm_sensitive>true</border_alarm_sensitive>
                     <trace_0_y_axis_index>1</trace_0_y_axis_index>
                     <axis_1_scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </axis_1_scale_font>
                     <border_style>5</border_style>
                     <plot_area_background_color>
@@ -2581,7 +2593,7 @@ to enter the Label Text</text>
                 <visible>false</visible>
                 <wuid>-203b6f4:1411132e3c7:-7cee</wuid>
                 <scripts />
-                <height>832</height>
+                <height>825</height>
                 <name>Controls</name>
                 <scale_options>
                   <width_scalable>true</width_scalable>
@@ -2690,7 +2702,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>50</width>
                     <border_style>0</border_style>
@@ -2730,7 +2742,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <widget_type>Boolean Symbol Image Control</widget_type>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>40</width>
                     <permutation_matrix>
@@ -2825,7 +2837,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>0</border_style>
@@ -2880,7 +2892,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>40</width>
                     <border_style>0</border_style>
@@ -2968,7 +2980,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>6</border_style>
@@ -2998,7 +3010,7 @@ to enter the Label Text</text>
                     <visible>true</visible>
                     <wuid>-203b6f4:1411132e3c7:-7ce6</wuid>
                     <scripts />
-                    <height>27</height>
+                    <height>32</height>
                     <name>Combo</name>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <scale_options>
@@ -3017,7 +3029,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Output 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Output 1</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>6</border_style>
@@ -3063,7 +3075,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>60</width>
                     <border_style>6</border_style>
@@ -3107,7 +3119,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>6</border_style>
@@ -3158,7 +3170,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>6</border_style>
@@ -3218,7 +3230,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <text>Check/Uncheck</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>80</width>
                     <border_style>6</border_style>
@@ -3267,7 +3279,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <widget_type>Multistate Symbol Image Control</widget_type>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <permutation_matrix>
                       <row>
@@ -3402,7 +3414,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <precision>3</precision>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>85</width>
                     <border_style>6</border_style>
@@ -3451,7 +3463,7 @@ to enter the Label Text</text>
                     <step_increment>1.0</step_increment>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>150</width>
                     <border_style>6</border_style>
@@ -3500,7 +3512,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>150</width>
                     <border_style>6</border_style>
@@ -3547,7 +3559,7 @@ to enter the Label Text</text>
                     <widget_type>Scaled Slider</widget_type>
                     <show_minor_ticks>true</show_minor_ticks>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>140</width>
                     <show_lolo>true</show_lolo>
@@ -3585,7 +3597,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
                     <scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <color_lolo>
@@ -3640,7 +3652,7 @@ to enter the Label Text</text>
                     <increment>1.0</increment>
                     <show_minor_ticks>true</show_minor_ticks>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>173</width>
                     <show_lolo>true</show_lolo>
@@ -3676,7 +3688,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
                     <scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </scale_font>
                     <level_hihi>90.0</level_hihi>
                     <ramp_gradient>true</ramp_gradient>
@@ -3723,7 +3735,7 @@ to enter the Label Text</text>
                     <widget_type>Text Input</widget_type>
                     <text>######</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Output 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Output 1</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>6</border_style>
@@ -3776,7 +3788,7 @@ to enter the Label Text</text>
                 <visible>false</visible>
                 <wuid>-203b6f4:1411132e3c7:-7cd9</wuid>
                 <scripts />
-                <height>832</height>
+                <height>825</height>
                 <name>Others</name>
                 <scale_options>
                   <width_scalable>true</width_scalable>
@@ -3865,7 +3877,7 @@ to enter the Label Text</text>
                     <widget_type>Text Input</widget_type>
                     <text>######</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Output 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Output 1</opifont.name>
                     </font>
                     <width>141</width>
                     <border_style>6</border_style>
@@ -4018,7 +4030,7 @@ to enter the Label Text</text>
                       <widget_type>Scaled Slider</widget_type>
                       <show_minor_ticks>true</show_minor_ticks>
                       <font>
-                        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                       </font>
                       <width>70</width>
                       <show_lolo>true</show_lolo>
@@ -4056,7 +4068,7 @@ to enter the Label Text</text>
                       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                       <level_hi>80.0</level_hi>
                       <scale_font>
-                        <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                       </scale_font>
                       <level_hihi>90.0</level_hihi>
                       <color_lolo>
@@ -4113,7 +4125,7 @@ $(pv_value)</tooltip>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <precision>0</precision>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>356</width>
                     <border_style>5</border_style>
@@ -4150,7 +4162,7 @@ $(pv_value)</tooltip>
                     <height>250</height>
                     <axis_1_maximum>100.0</axis_1_maximum>
                     <axis_1_title_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </axis_1_title_font>
                     <border_width>2</border_width>
                     <axis_0_axis_color>
@@ -4180,12 +4192,12 @@ $(pv_value)</tooltip>
                     <axis_1_axis_title>Primary Y Axis (1)</axis_1_axis_title>
                     <axis_0_maximum>100.0</axis_0_maximum>
                     <axis_0_scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </axis_0_scale_font>
                     <axis_0_time_format>2</axis_0_time_format>
                     <axis_1_log_scale>false</axis_1_log_scale>
                     <title_font>
-                      <opifont.name fontName="arial" height="14" style="1">IO Title</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="18" style="1">IO Title</opifont.name>
                     </title_font>
                     <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
                     <axis_0_visible>true</axis_0_visible>
@@ -4194,7 +4206,7 @@ $(pv_value)</tooltip>
                     <trace_0_x_pv></trace_0_x_pv>
                     <trace_0_y_pv>sim://sineWaveform(10,5,5,3)</trace_0_y_pv>
                     <axis_0_title_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </axis_0_title_font>
                     <axis_1_auto_scale>true</axis_1_auto_scale>
                     <trace_0_concatenate_data>true</trace_0_concatenate_data>
@@ -4215,7 +4227,7 @@ $(pv_value)</tooltip>
                     <border_alarm_sensitive>true</border_alarm_sensitive>
                     <trace_0_y_axis_index>1</trace_0_y_axis_index>
                     <axis_1_scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </axis_1_scale_font>
                     <border_style>5</border_style>
                     <plot_area_background_color>
@@ -4327,7 +4339,7 @@ $(pv_value)</tooltip>
                       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                       <precision>0</precision>
                       <font>
-                        <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                        <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                       </font>
                       <width>160</width>
                       <border_style>5</border_style>
@@ -4424,7 +4436,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>185</width>
                     <line_style>0</line_style>
@@ -4490,7 +4502,7 @@ $(pv_value)</tooltip>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <precision>0</precision>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                     </font>
                     <width>185</width>
                     <border_style>5</border_style>
@@ -4571,7 +4583,7 @@ $(pv_value)</tooltip>
                     <widget_type>Tank</widget_type>
                     <show_minor_ticks>true</show_minor_ticks>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>150</width>
                     <show_lolo>true</show_lolo>
@@ -4607,7 +4619,7 @@ $(pv_value)</tooltip>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>4.0</level_hi>
                     <scale_font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </scale_font>
                     <level_hihi>3.0</level_hihi>
                     <color_lolo>
@@ -4647,7 +4659,7 @@ $(pv_value)</tooltip>
                 <visible>false</visible>
                 <wuid>-203b6f4:1411132e3c7:-7a8f</wuid>
                 <scripts />
-                <height>832</height>
+                <height>825</height>
                 <name>Symbols</name>
                 <scale_options>
                   <width_scalable>true</width_scalable>
@@ -4708,7 +4720,7 @@ $(pv_value)</tooltip>
                   <widget_type>Sash Container</widget_type>
                   <enabled>true</enabled>
                   <font>
-                    <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                   </font>
                   <width>1122</width>
                   <sash_position>0.0885509838998211</sash_position>
@@ -4825,7 +4837,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>IOSchema</text>
                         <font>
-                          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -4873,7 +4885,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Electrical</text>
                         <font>
-                          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -4921,7 +4933,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Electronic</text>
                         <font>
-                          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -4969,7 +4981,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Fluid</text>
                         <font>
-                          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5017,7 +5029,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>I and C</text>
                         <font>
-                          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5065,7 +5077,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Civil Engineering</text>
                         <font>
-                          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5113,7 +5125,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Electrical Use Case</text>
                         <font>
-                          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5161,7 +5173,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>PID Use Case</text>
                         <font>
-                          <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5256,7 +5268,7 @@ $(pv_value)</tooltip>
                       <enabled>true</enabled>
                       <widget_type>Linking Container</widget_type>
                       <font>
-                        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                       </font>
                       <width>1017</width>
                       <border_style>0</border_style>
@@ -5287,7 +5299,7 @@ $(pv_value)</tooltip>
                 <visible>false</visible>
                 <wuid>-1fbe5bc3:14565c6e1e0:-7f5d</wuid>
                 <scripts />
-                <height>832</height>
+                <height>825</height>
                 <name>Alarm Levels</name>
                 <scale_options>
                   <width_scalable>true</width_scalable>
@@ -5327,7 +5339,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>51ecfe95:14565d08379:-7f02</wuid>
                   <scripts />
-                  <height>52</height>
+                  <height>53</height>
                   <name>EPICS MAJOR Alarm</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -5347,7 +5359,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>316</width>
+                  <width>449</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -5397,7 +5409,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -5422,7 +5434,7 @@ $(pv_value)</tooltip>
                     <wuid>51ecfe95:14565d08379:-7f1c</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Red</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -5441,9 +5453,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>EPICS MAJOR Alarm - RED - 250, 12, 14</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>196</width>
+                    <width>328</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -5465,7 +5477,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>51ecfe95:14565d08379:-7efa</wuid>
                   <scripts />
-                  <height>52</height>
+                  <height>53</height>
                   <name>High Level Alarm</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -5485,7 +5497,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>294</width>
+                  <width>429</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -5535,7 +5547,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -5560,7 +5572,7 @@ $(pv_value)</tooltip>
                     <wuid>51ecfe95:14565d08379:-7f18</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Red</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -5579,9 +5591,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>High Level Alarm - RED - 250, 12, 14</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>174</width>
+                    <width>308</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -5603,7 +5615,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>51ecfe95:14565d08379:-7eae</wuid>
                   <scripts />
-                  <height>52</height>
+                  <height>53</height>
                   <name>EPICS MINOR Alarm</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -5623,7 +5635,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>336</width>
+                  <width>481</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -5673,7 +5685,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -5698,7 +5710,7 @@ $(pv_value)</tooltip>
                     <wuid>51ecfe95:14565d08379:-7ef2</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Yellow</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -5717,9 +5729,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>EPICS MINOR Alarm - YELLOW - 255, 255, 0</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>216</width>
+                    <width>360</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -5741,7 +5753,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>51ecfe95:14565d08379:-7eac</wuid>
                   <scripts />
-                  <height>52</height>
+                  <height>53</height>
                   <name>Medium Level Alarm</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -5761,7 +5773,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>331</width>
+                  <width>487</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -5811,7 +5823,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -5836,7 +5848,7 @@ $(pv_value)</tooltip>
                     <wuid>51ecfe95:14565d08379:-7eee</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Yellow</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -5855,9 +5867,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Medium Level Alarm - YELLOW - 255, 255, 0</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>211</width>
+                    <width>366</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -5879,7 +5891,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>51ecfe95:14565d08379:-7eaa</wuid>
                   <scripts />
-                  <height>52</height>
+                  <height>53</height>
                   <name>Normal State</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -5899,7 +5911,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>258</width>
+                  <width>358</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -5949,7 +5961,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -5974,7 +5986,7 @@ $(pv_value)</tooltip>
                     <wuid>51ecfe95:14565d08379:-7eea</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Green</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -5993,9 +6005,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Normal - GREEN - 0, 176, 80</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>138</width>
+                    <width>237</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6015,10 +6027,10 @@ $(pv_value)</tooltip>
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
-                <visible>true</visible>
+                <visible>false</visible>
                 <wuid>66514f80:14565dcb6d6:-7f4d</wuid>
                 <scripts />
-                <height>832</height>
+                <height>825</height>
                 <name>Colors</name>
                 <scale_options>
                   <width_scalable>true</width_scalable>
@@ -6058,7 +6070,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>48f6d54e:14565e195d6:-7ee8</wuid>
                   <scripts />
-                  <height>49</height>
+                  <height>50</height>
                   <name>Background colour</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -6078,7 +6090,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>536</width>
+                  <width>537</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -6097,7 +6109,7 @@ $(pv_value)</tooltip>
                     <wuid>66514f80:14565dcb6d6:-7da2</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6116,9 +6128,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Background colour</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>87</width>
+                    <width>158</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6169,7 +6181,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -6195,7 +6207,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7f47</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_1</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6214,9 +6226,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Light grey</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>46</width>
+                    <width>86</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6228,7 +6240,7 @@ $(pv_value)</tooltip>
                     <y>18</y>
                     <wrap_words>true</wrap_words>
                     <tooltip></tooltip>
-                    <x>147</x>
+                    <x>195</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                     <visible>true</visible>
@@ -6236,7 +6248,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7f43</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_2</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6255,9 +6267,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>200, 200, 200</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>66</width>
+                    <width>119</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6279,7 +6291,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>48f6d54e:14565e195d6:-7eaa</wuid>
                   <scripts />
-                  <height>49</height>
+                  <height>59</height>
                   <name>Text colour</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -6299,7 +6311,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>536</width>
+                  <width>537</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -6318,7 +6330,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7f34</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>26</height>
+                    <height>40</height>
                     <name>Label Template_3</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6338,9 +6350,9 @@ $(pv_value)</tooltip>
                     <text>Text colour
 (on a light background)</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>107</width>
+                    <width>200</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6391,7 +6403,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -6417,7 +6429,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7f32</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_4</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6436,9 +6448,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Black</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>25</width>
+                    <width>45</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6450,7 +6462,7 @@ $(pv_value)</tooltip>
                     <y>18</y>
                     <wrap_words>true</wrap_words>
                     <tooltip></tooltip>
-                    <x>147</x>
+                    <x>195</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                     <visible>true</visible>
@@ -6458,7 +6470,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7f31</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_5</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6477,9 +6489,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>0, 0, 0</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>30</width>
+                    <width>53</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6501,7 +6513,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>48f6d54e:14565e195d6:-7e98</wuid>
                   <scripts />
-                  <height>49</height>
+                  <height>59</height>
                   <name>Text colour</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -6521,7 +6533,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>536</width>
+                  <width>537</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -6540,7 +6552,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e97</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>26</height>
+                    <height>40</height>
                     <name>Label Template_3</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6560,9 +6572,9 @@ $(pv_value)</tooltip>
                     <text>Text colour
 (on a dark background)</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>108</width>
+                    <width>199</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6613,7 +6625,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -6639,7 +6651,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e95</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_4</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6658,9 +6670,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>White</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>27</width>
+                    <width>49</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6672,7 +6684,7 @@ $(pv_value)</tooltip>
                     <y>18</y>
                     <wrap_words>true</wrap_words>
                     <tooltip></tooltip>
-                    <x>147</x>
+                    <x>195</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                     <visible>true</visible>
@@ -6680,7 +6692,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e94</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_5</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6699,9 +6711,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>255, 255, 255</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>66</width>
+                    <width>119</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6723,7 +6735,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>48f6d54e:14565e195d6:-7e50</wuid>
                   <scripts />
-                  <height>49</height>
+                  <height>59</height>
                   <name>Text colour</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -6743,7 +6755,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>536</width>
+                  <width>537</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -6762,7 +6774,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e4f</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>26</height>
+                    <height>40</height>
                     <name>Label Template_3</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6782,9 +6794,9 @@ $(pv_value)</tooltip>
                     <text>Text colour
 (read only)</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>50</width>
+                    <width>93</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6835,7 +6847,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -6861,7 +6873,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e4d</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_4</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6880,9 +6892,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Grey</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>22</width>
+                    <width>40</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6894,7 +6906,7 @@ $(pv_value)</tooltip>
                     <y>18</y>
                     <wrap_words>true</wrap_words>
                     <tooltip></tooltip>
-                    <x>147</x>
+                    <x>195</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                     <visible>true</visible>
@@ -6902,7 +6914,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e4c</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_5</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -6921,9 +6933,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>140, 140, 140</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>66</width>
+                    <width>119</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -6945,7 +6957,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>48f6d54e:14565e195d6:-7e08</wuid>
                   <scripts />
-                  <height>49</height>
+                  <height>50</height>
                   <name>High Level Alarm</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -6965,7 +6977,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>536</width>
+                  <width>537</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -6984,7 +6996,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e07</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_3</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7003,9 +7015,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>High Level Alarm</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>79</width>
+                    <width>143</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7056,7 +7068,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -7082,7 +7094,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e05</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_4</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7101,9 +7113,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Red</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>20</width>
+                    <width>32</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7115,7 +7127,7 @@ $(pv_value)</tooltip>
                     <y>18</y>
                     <wrap_words>true</wrap_words>
                     <tooltip></tooltip>
-                    <x>147</x>
+                    <x>195</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                     <visible>true</visible>
@@ -7123,7 +7135,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7e04</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_5</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7142,9 +7154,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>250, 12, 14</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>54</width>
+                    <width>97</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7166,7 +7178,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>48f6d54e:14565e195d6:-7dc0</wuid>
                   <scripts />
-                  <height>49</height>
+                  <height>50</height>
                   <name>Medium Level Alarm_1</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -7186,7 +7198,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>536</width>
+                  <width>537</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -7205,7 +7217,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7dbf</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_3</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7224,9 +7236,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Medium Level Alarm</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>95</width>
+                    <width>170</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7277,7 +7289,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -7303,7 +7315,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7dbd</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_4</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7322,9 +7334,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Yellow</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>30</width>
+                    <width>52</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7336,7 +7348,7 @@ $(pv_value)</tooltip>
                     <y>18</y>
                     <wrap_words>true</wrap_words>
                     <tooltip></tooltip>
-                    <x>147</x>
+                    <x>195</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                     <visible>true</visible>
@@ -7344,7 +7356,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7dbc</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_5</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7363,9 +7375,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>255, 255, 0</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>54</width>
+                    <width>97</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7387,7 +7399,7 @@ $(pv_value)</tooltip>
                   <visible>true</visible>
                   <wuid>48f6d54e:14565e195d6:-7da8</wuid>
                   <scripts />
-                  <height>49</height>
+                  <height>50</height>
                   <name>Normal State</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -7407,7 +7419,7 @@ $(pv_value)</tooltip>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>536</width>
+                  <width>537</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
@@ -7426,7 +7438,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7da7</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_3</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7445,9 +7457,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Normal State</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>62</width>
+                    <width>110</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7498,7 +7510,7 @@ $(pv_value)</tooltip>
                     </fg_gradient_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
                     <width>100</width>
                     <line_style>0</line_style>
@@ -7524,7 +7536,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7da5</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_4</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7543,9 +7555,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>Green</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>29</width>
+                    <width>51</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7557,7 +7569,7 @@ $(pv_value)</tooltip>
                     <y>18</y>
                     <wrap_words>true</wrap_words>
                     <tooltip></tooltip>
-                    <x>147</x>
+                    <x>195</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
                     <visible>true</visible>
@@ -7565,7 +7577,7 @@ $(pv_value)</tooltip>
                     <wuid>48f6d54e:14565e195d6:-7da4</wuid>
                     <auto_size>true</auto_size>
                     <scripts />
-                    <height>13</height>
+                    <height>20</height>
                     <name>Label Template_5</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -7584,9 +7596,9 @@ $(pv_value)</tooltip>
                     <enabled>false</enabled>
                     <text>0, 176, 80</text>
                     <font>
-                      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>48</width>
+                    <width>86</width>
                     <border_style>0</border_style>
                     <rules />
                     <border_width>2</border_width>
@@ -7599,6 +7611,867 @@ $(pv_value)</tooltip>
                     <wrap_words>true</wrap_words>
                     <tooltip></tooltip>
                     <x>294</x>
+                  </widget>
+                </widget>
+              </widget>
+              <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                <macros>
+                  <include_parent_macros>true</include_parent_macros>
+                </macros>
+                <visible>false</visible>
+                <wuid>-764f7483:14565ee1290:-7f29</wuid>
+                <scripts />
+                <height>825</height>
+                <name>Fonts</name>
+                <scale_options>
+                  <width_scalable>true</width_scalable>
+                  <height_scalable>true</height_scalable>
+                  <keep_wh_ratio>false</keep_wh_ratio>
+                </scale_options>
+                <transparent>true</transparent>
+                <show_scrollbar>true</show_scrollbar>
+                <foreground_color>
+                  <color red="192" green="192" blue="192" />
+                </foreground_color>
+                <background_color>
+                  <color red="240" green="240" blue="240" />
+                </background_color>
+                <enabled>true</enabled>
+                <widget_type>Grouping Container</widget_type>
+                <font>
+                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                </font>
+                <width>1122</width>
+                <border_style>0</border_style>
+                <rules />
+                <fc>false</fc>
+                <lock_children>false</lock_children>
+                <border_width>1</border_width>
+                <border_color>
+                  <color red="0" green="128" blue="255" />
+                </border_color>
+                <y>1</y>
+                <actions hook="false" hook_all="false" />
+                <x>1</x>
+                <tooltip></tooltip>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-7b17</wuid>
+                  <scripts />
+                  <height>13</height>
+                  <name>9 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>497</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>59</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-7e83</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>12</height>
+                    <name>Label Template_6</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 2.1mm 12 Pixels 9PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="9" style="0" />
+                    </font>
+                    <width>193</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-7959</wuid>
+                  <scripts />
+                  <height>14</height>
+                  <name>10 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>505</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>99</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-7e7f</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>13</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 2.4mm 13 Pixels 10PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="10" style="0" />
+                    </font>
+                    <width>212</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-7829</wuid>
+                  <scripts />
+                  <height>16</height>
+                  <name>12 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>512</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>180</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-7825</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>15</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 2.9mm 16 Pixels 12PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="12" style="0" />
+                    </font>
+                    <width>264</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-777d</wuid>
+                  <scripts />
+                  <height>18</height>
+                  <name>13 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>514</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>220</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-7779</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>17</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 3.0mm 17 Pixels 13PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="13" style="0" />
+                    </font>
+                    <width>279</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-743d</wuid>
+                  <scripts />
+                  <height>15</height>
+                  <name>11 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>508</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>140</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-7439</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>14</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 2.8mm 13 Pixels 11PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="11" style="0" />
+                    </font>
+                    <width>236</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-7377</wuid>
+                  <scripts />
+                  <height>19</height>
+                  <name>14 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>517</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>261</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-7373</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>18</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 3.2mm 18 Pixels 14PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="14" style="0" />
+                    </font>
+                    <width>303</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-736b</wuid>
+                  <scripts />
+                  <height>20</height>
+                  <name>15 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>520</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>301</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-7367</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>19</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 3.4mm 19 Pixels 15PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="15" style="0" />
+                    </font>
+                    <width>327</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-735f</wuid>
+                  <scripts />
+                  <height>21</height>
+                  <name>16 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>523</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>342</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-735b</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>20</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 4.0mm 20 Pixels 16PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="16" style="0" />
+                    </font>
+                    <width>347</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-7353</wuid>
+                  <scripts />
+                  <height>23</height>
+                  <name>17 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>526</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>382</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-734f</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>22</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 4.5mm 22 Pixels 17PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="17" style="0" />
+                    </font>
+                    <width>367</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
+                  </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                  <macros>
+                    <include_parent_macros>true</include_parent_macros>
+                  </macros>
+                  <visible>true</visible>
+                  <wuid>-764f7483:14565ee1290:-7347</wuid>
+                  <scripts />
+                  <height>24</height>
+                  <name>18 PT</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <foreground_color>
+                    <color red="192" green="192" blue="192" />
+                  </foreground_color>
+                  <background_color>
+                    <color red="240" green="240" blue="240" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Grouping Container</widget_type>
+                  <font>
+                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  </font>
+                  <width>528</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <fc>false</fc>
+                  <lock_children>false</lock_children>
+                  <border_width>1</border_width>
+                  <border_color>
+                    <color name="IO Border" red="215" green="215" blue="215" />
+                  </border_color>
+                  <y>430</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>95</x>
+                  <tooltip></tooltip>
+                  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                    <visible>true</visible>
+                    <vertical_alignment>1</vertical_alignment>
+                    <wuid>-764f7483:14565ee1290:-7343</wuid>
+                    <auto_size>true</auto_size>
+                    <scripts />
+                    <height>23</height>
+                    <name>Label Template_7</name>
+                    <scale_options>
+                      <width_scalable>false</width_scalable>
+                      <height_scalable>false</height_scalable>
+                      <keep_wh_ratio>false</keep_wh_ratio>
+                    </scale_options>
+                    <transparent>true</transparent>
+                    <show_scrollbar>false</show_scrollbar>
+                    <background_color>
+                      <color name="IO Background" red="200" green="200" blue="200" />
+                    </background_color>
+                    <foreground_color>
+                      <color name="IO Text Fg" red="0" green="0" blue="0" />
+                    </foreground_color>
+                    <widget_type>Label</widget_type>
+                    <enabled>false</enabled>
+                    <text>TTTIII DejaVu Sans 5.0mm 23 Pixels 18PT</text>
+                    <font>
+                      <fontdata fontName="DejaVu Sans" height="18" style="0" />
+                    </font>
+                    <width>387</width>
+                    <border_style>0</border_style>
+                    <rules />
+                    <border_width>2</border_width>
+                    <border_color>
+                      <color name="IO Border" red="215" green="215" blue="215" />
+                    </border_color>
+                    <horizontal_alignment>0</horizontal_alignment>
+                    <actions hook="false" hook_all="false" />
+                    <y>0</y>
+                    <wrap_words>true</wrap_words>
+                    <tooltip></tooltip>
+                    <x>0</x>
                   </widget>
                 </widget>
               </widget>
