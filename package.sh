@@ -15,5 +15,5 @@ cd ${WIN_BUILD_DIR}
 cp -R ../applicationIcons cs-studio/
 
 unset DISPLAY
-wine InnoSetup5/ISCC.exe css-windows-build/install_script_general.iss "\dCSSVersion=${VERSION}"
+wine InnoSetup5/ISCC.exe css-windows-build/install_script_general.iss "/dCSSVersion=${VERSION}"
 echo ::: DONE :::

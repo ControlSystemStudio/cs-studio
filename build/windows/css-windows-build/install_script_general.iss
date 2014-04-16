@@ -1,5 +1,5 @@
 ;InnoSetupVersion=5.5.0
-#define CSSVersion "3.2.12"
+#define CSSVersion "3.3.0"
 
 [Setup]
 AppName=cs-studio
@@ -35,14 +35,6 @@ Name: "{group}\cs-studio"; Filename: "{app}\cs-studio.exe"; MinVersion: 0.0,5.0;
 
 [Tasks]
 Name: "cssassociation"; Description: "Associate ""css"" extensions"; GroupDescription: "File extensions:"; MinVersion: 0.0,5.0; 
-
-[InstallDelete]
-Type: filesandordirs; Name: "{app}/configuration"; 
-Type: filesandordirs; Name: "{app}/p2"; 
-
-[UninstallDelete]
-Type: filesandordirs; Name: "{app}/configuration"; 
-Type: filesandordirs; Name: "{app}/p2"; 
 
 [CustomMessages]
 NameAndVersion=%1 version %2
