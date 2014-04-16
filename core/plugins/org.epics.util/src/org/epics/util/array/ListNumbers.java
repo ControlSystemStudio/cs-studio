@@ -152,21 +152,7 @@ public class ListNumbers {
         if (size <= 0) {
             throw new IllegalArgumentException("Size must be positive (was " + size + " )");
         }
-        return new ListDouble() {
-
-            @Override
-            public double getDouble(int index) {
-                if (index < 0 || index >= size) {
-                    throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-                }
-                return minValue + (index * (maxValue - minValue)) / (size - 1);
-            }
-
-            @Override
-            public int size() {
-                return size;
-            }
-        };
+        return new LinearListDoubleFromRange(size, minValue, maxValue);
     }
     
     /**
@@ -182,21 +168,33 @@ public class ListNumbers {
         if (size <= 0) {
             throw new IllegalArgumentException("Size must be positive (was " + size + " )");
         }
-        return new ListDouble() {
-
-            @Override
-            public double getDouble(int index) {
-                if (index < 0 || index >= size) {
-                    throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-                }
-                return initialValue + index * increment;
+        return new LinearListDouble(size, initialValue, increment);
+    }
+    
+    /**
+     * Tests whether the list contains a equally spaced numbers.
+     * <p>
+     * Always returns true if the list was created with {@link #linearList(double, double, int) }
+     * or {@link #linearListFromRange(double, double, int) }. For all other cases,
+     * takes the first and last value, creates a linearListFromRange, and checks
+     * whether the difference is greater than the precision allowed by double.
+     * Note that this method is really strict, and it may rule out cases
+     * that may be considered to be linear.
+     * 
+     * @param listNumber
+     * @return 
+     */
+    public static boolean isLinear(ListNumber listNumber) {
+        if (listNumber instanceof LinearListDouble || listNumber instanceof LinearListDoubleFromRange) {
+            return true;
+        }
+        ListDouble diff = ListMath.subtract(listNumber, linearListFromRange(listNumber.getDouble(0), listNumber.getDouble(listNumber.size() - 1), listNumber.size()));
+        for (int i = 0; i < diff.size(); i++) {
+            if (Math.abs(diff.getDouble(i)) > Math.ulp(listNumber.getDouble(i))) {
+                return false;
             }
-
-            @Override
-            public int size() {
-                return size;
-            }
-        };
+        }
+        return true;
     }
     
     /**
@@ -223,5 +221,57 @@ public class ListNumbers {
         } else {
             throw new IllegalArgumentException(primitiveArray + " is not a an array of primitive numbers");
         }
+    }
+
+    private static class LinearListDoubleFromRange extends ListDouble {
+
+        private final int size;
+        private final double minValue;
+        private final double maxValue;
+
+        public LinearListDoubleFromRange(int size, double minValue, double maxValue) {
+            this.size = size;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+        }
+
+        @Override
+        public double getDouble(int index) {
+            if (index < 0 || index >= size) {
+                throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+            }
+            return minValue + (index * (maxValue - minValue)) / (size - 1);
+        }
+
+        @Override
+        public int size() {
+            return size;
+        }
+    }
+
+    private static class LinearListDouble extends ListDouble {
+
+        private final int size;
+        private final double initialValue;
+        private final double increment;
+
+        public LinearListDouble(int size, double initialValue, double increment) {
+            this.size = size;
+            this.initialValue = initialValue;
+            this.increment = increment;
+        }
+
+        @Override
+        public double getDouble(int index) {
+            if (index < 0 || index >= size) {
+                throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+            }
+            return initialValue + index * increment;
+        }
+
+            @Override
+            public int size() {
+                return size;
+            }
     }
 }
