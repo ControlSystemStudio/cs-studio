@@ -17,11 +17,25 @@ import org.epics.util.array.*;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+
 /**
+ * A renderer for intensity graph (also known as heat graph), which visualizes
+ * the value of a 2D field using a color map.
  *
  * @author carcassi, sjdallst, asbarber, jkfeng
  */
-public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRendererUpdate>{
+public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRendererUpdate> {
+    
+    /**
+     * Default color map: JET.
+     */
+    public static NumberColorMap DEFAULT_COLOR_MAP = NumberColorMaps.JET;
+    
+    /**
+     * Default draw legend: false.
+     */
+    public static boolean DEFAULT_DRAW_LEGEND = false;
+    
     //Colors to be used when drawing the graph, gives a color based on a given value and the range of data.
     private NumberColorMapInstance valueColorSchemeInstance;
     private Range optimizedRange;
@@ -78,7 +92,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
                 legendMarginToGraph = 10,
                 legendMarginToEdge = 2;
     protected int zLabelMargin = 3;
-    private boolean drawLegend = false;
+    private boolean drawLegend = DEFAULT_DRAW_LEGEND;
     private Range zRange;
     private Range zAggregatedRange;
     private Range zPlotRange;
@@ -104,7 +118,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
     }
     // ^ (Possibly) TO BE TAKEN OUT ONCE TESTING IS DONE ^
     
-    private NumberColorMap colorMap = NumberColorMaps.JET;
+    private NumberColorMap colorMap = DEFAULT_COLOR_MAP;
     
     
     /**
@@ -957,7 +971,7 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
 
     /**
      * Whether or not the legend for the value to color mapping should be drawn.
-     * Default is false.
+     * Default is {@link #DEFAULT_DRAW_LEGEND}.
      * 
      * @return if true legend is drawn
      */
@@ -966,7 +980,7 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
     }
 
     /**
-     * Return the color scheme used for the value. Default is JET.
+     * Return the color scheme used for the value. Default is {@link #DEFAULT_COLOR_MAP}.
      * 
      * @return the color schemed used for the value; can't be null
      */
