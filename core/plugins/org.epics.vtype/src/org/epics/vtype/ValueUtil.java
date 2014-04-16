@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
@@ -563,5 +564,27 @@ public class ValueUtil {
             displays.add(ValueFactory.newDisplay(sizes.getInt(i)));
         }
         return displays;
+    }
+    
+    /**
+     * Filters an element of a one-dimensional array.
+     * 
+     * @param array a 1D array
+     * @param index a valid index
+     * @return the trimmed array to that one index
+     */
+    public static VNumberArray subArray(VNumberArray array, int index) {
+        if (array.getSizes().size() != 1) {
+            throw new IllegalArgumentException("Array was not one-dimensional");
+        }
+        if (index < 0 || array.getData().size() <= index) {
+            throw new IllegalArgumentException("Index not in the array range");
+        }
+        
+        ArrayDimensionDisplay display = array.getDimensionDisplay().get(0);
+        return ValueFactory.newVNumberArray(new ArrayDouble(array.getData().getDouble(index)),
+                new ArrayInt(1), Arrays.asList(ValueFactory.newDisplay(new ArrayDouble(display.getCellBoundaries().getDouble(index), display.getCellBoundaries().getDouble(index+1)), display.getUnits())),
+                array, array, array);
+
     }
 }
