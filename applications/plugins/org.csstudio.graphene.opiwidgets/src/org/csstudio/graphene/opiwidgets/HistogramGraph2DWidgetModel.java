@@ -35,7 +35,7 @@ public class HistogramGraph2DWidgetModel extends AbstractGraph2DWidgetModel {
 		addProperty(new BooleanProperty(PROP_HIGHLIGHT_SELECTION_VALUE,
 				"Highlight Selection Value", WidgetPropertyCategory.Basic, false));
 		addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
-				"Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
+				"Selection Value PV (VNumberArray)", WidgetPropertyCategory.Basic, ""));
 	}
 	
 	public String getSelectionValuePv() {

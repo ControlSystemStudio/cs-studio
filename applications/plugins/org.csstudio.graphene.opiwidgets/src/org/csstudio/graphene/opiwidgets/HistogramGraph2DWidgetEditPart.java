@@ -33,6 +33,7 @@ public class HistogramGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpar
 		HistogramGraph2DWidget widget = figure.getSWTWidget();
 		if (figure.isRunMode()) {
 			widget.setHighlightSelectionValue(model.isHighlightSelectionValue());
+			widget.setSelectionValuePv(model.getSelectionValuePv());
 		}
 	}
 
