@@ -9,6 +9,7 @@ import static org.epics.util.time.TimeDuration.ofHertz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.csdata.ProcessVariable;
@@ -47,6 +48,11 @@ import org.epics.pvmanager.graphene.Graph2DExpression;
 import org.epics.pvmanager.graphene.Graph2DResult;
 import org.epics.pvmanager.graphene.HistogramGraph2DExpression;
 import org.epics.pvmanager.graphene.LineGraph2DExpression;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ArrayInt;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VTable;
+import org.epics.vtype.ValueFactory;
 
 public class HistogramGraph2DWidget
 		extends
@@ -117,7 +123,29 @@ public class HistogramGraph2DWidget
 			}
 		}
 	}
-
+	
+	private VNumberArray selectionValue;
+	private String selectionValuePv;
+	
+	public String getSelectionValuePv() {
+		return selectionValuePv;
+	}
+	
+	public void setSelectionValuePv(String selectionValuePv) {
+		String oldValue = this.selectionValuePv;
+		this.selectionValuePv = selectionValuePv;
+		changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
+	}
+	
+	public VNumberArray getSelectionValue() {
+		return selectionValue;
+	}
+	
+	private void setSelectionValue(VNumberArray selectionValue) {
+		VNumberArray oldValue = this.selectionValue;
+		this.selectionValue = selectionValue;
+		changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
+	}
 	
 	@Override
 	protected void processInit() {
@@ -128,6 +156,22 @@ public class HistogramGraph2DWidget
 	@Override
 	protected void processValue() {
 		Graph2DResult result = getCurrentResult();
+		if (result == null || result.getData() == null) {
+			setSelectionValue(null);
+		} else {
+			int index = result.focusDataIndex();
+			if (index == -1) {
+				setSelectionValue(null);
+			} else {
+				if (result.getData() instanceof VNumberArray) {
+					VNumberArray data = (VNumberArray) result.getData();
+					VNumberArray selection = null;
+					setSelectionValue(selection);
+					return;
+				}
+				setSelectionValue(null);
+			}
+		}
 	}
 
 	@Override
