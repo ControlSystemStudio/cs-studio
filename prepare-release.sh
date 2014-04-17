@@ -18,7 +18,8 @@ echo ::: Change about dialog version :::
 echo 0=$VERSION > plugins/org.csstudio.product/about.mappings
 
 echo ::: Updating plugin versions ::
-mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION -Dartifacts=org.csstudio.product,org.csstudio.startup.intro,org.csstudio.product.feature
+mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION -Dartifacts=product,products-csstudio-plugins,org.csstudio.product,org.csstudio.startup.intro,products-csstudio-features,org.csstudio.product.feature,repository
+
 
 HTML="<h2>Version ${VERSION} - $(date +"%Y-%m-%d")</h2>
 <ul>

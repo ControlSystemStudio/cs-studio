@@ -4,7 +4,7 @@
       <category name="CATEGORY"/>
    </feature>-->
 
-   <feature id="org.csstudio.product.feature" version="3.2.0.qualifier">
+   <feature id="org.csstudio.product.feature">
       <!--<category name="org.csstudio.category.core"/>-->
    </feature>
 
