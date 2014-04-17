@@ -28,7 +28,24 @@ HTML="<h2>Version ${VERSION} - $(date +"%Y-%m-%d")</h2>
 <li><a href="${MILESTONE}" shape="rect">Closed Issues</a></li>
 </ul>"
 
-sed -i "{N; s/\(<\/p>\)/\1\n\n${HTML}/}" plugins/org.csstudio.startup.intro/html/changelog.html
+# escape all backslashes first
+HTML="${HTML//\\/\\\\}"
+# escape slashes
+HTML="${HTML//\//\\/}"
+# escape asterisks
+HTML="${HTML//\*/\\*}"
+# escape full stops
+HTML="${HTML//./\\.}"    
+# escape [ and ]
+HTML="${HTML//\[/\\[}"
+HTML="${HTML//\[/\\]}"
+# escape ^ and $
+HTML="${HTML//^/\\^}"
+HTML="${HTML//\$/\\\$}"
+# remove newlines
+HTML="${HTML//[$'\n']/}"
+
+sed -i '{N; s/\(<\/p>\)/\1\n\n'"${HTML}"'/}' plugins/org.csstudio.startup.intro/html/changelog.html
 
 echo ::: Committing and tagging version $VERSION :::
 git commit -a -m "Updating changelog, splash, manifests to version $VERSION"
