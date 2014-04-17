@@ -5,7 +5,6 @@
 package org.epics.pvmanager.graphene;
 
 import org.epics.graphene.MultiYAxisGraph2DRendererUpdate;
-import org.epics.graphene.NLineGraphs2DRendererUpdate;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import static org.epics.pvmanager.graphene.ExpressionLanguage.functionOf;

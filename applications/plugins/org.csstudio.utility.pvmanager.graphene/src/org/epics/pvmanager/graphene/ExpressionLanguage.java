@@ -116,13 +116,6 @@ public class ExpressionLanguage {
 	return new MultilineGraph2DExpression(tableData, xColumnName, yColumnName);
     }
     
-    public static NLineGraphs2DExpression multiAxisMultiLineMultiGraphOf(
-	    DesiredRateExpression<?> tableData,
-	    DesiredRateExpression<?> xColumnName,
-	    DesiredRateExpression<?> yColumnName) {
-	return new NLineGraphs2DExpression(tableData, xColumnName, yColumnName);
-    }
-    
     public static MultiYAxisGraph2DExpression multiAxisMultiLineGraphOf(
 	    DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
