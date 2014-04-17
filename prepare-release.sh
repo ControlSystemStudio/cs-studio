@@ -45,7 +45,7 @@ HTML="${HTML//\$/\\\$}"
 # remove newlines
 HTML="${HTML//[$'\n']/}"
 
-sed -i '{N; s/\(<\/p>\)/\1\n\n'"${HTML}"'/}' plugins/org.csstudio.startup.intro/html/changelog.html
+sed -i '/<\/p>/ a\ \n'"${HTML}" plugins/org.csstudio.startup.intro/html/changelog.html
 
 echo ::: Committing and tagging version $VERSION :::
 git commit -a -m "Updating changelog, splash, manifests to version $VERSION"
