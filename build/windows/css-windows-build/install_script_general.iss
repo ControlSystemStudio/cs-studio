@@ -1,5 +1,5 @@
 ;InnoSetupVersion=5.5.0
-#define CSSVersion "3.3.0"
+
 
 [Setup]
 AppName=cs-studio
