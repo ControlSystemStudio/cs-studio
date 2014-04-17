@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: CSS-NSLS-II Intro
+Bundle-Name: CS-Studio Intro
 Bundle-SymbolicName: org.csstudio.startup.intro; singleton:=true
 Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.startup.intro.Activator
@@ -10,5 +10,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.intro.universal,
  org.eclipse.help
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - BNL
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: CS-Studio Collaboration <cs-studio-core@lists.sourceforge.net>

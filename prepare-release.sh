@@ -29,6 +29,8 @@ HTML="<h2>Version ${VERSION} - $(date +"%Y-%m-%d")</h2>
 <li><a href=\"${MILESTONE}\" shape=\"rect\">Closed Issues</a></li>
 </ul>"
 
+# html encode &
+HTML=$(echo $HTML | sed 's/&/\&amp;/g;')
 # escape all backslashes first
 HTML="${HTML//\\/\\\\}"
 # escape slashes
