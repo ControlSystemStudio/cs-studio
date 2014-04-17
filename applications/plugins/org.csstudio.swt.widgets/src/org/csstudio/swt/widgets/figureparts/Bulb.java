@@ -91,6 +91,10 @@ public class Bulb extends Figure{
 		repaint();
 	}
 	
+	public Color getBulbColor() {
+		return bulbColor;
+	}
+	
 	private int getHeight() {
 		return bounds.height;
 	}
