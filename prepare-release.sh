@@ -31,5 +31,5 @@ HTML="<h2>Version ${VERSION} - $(date +"%Y-%m-%d")</h2>
 sed -i "{N; s/\(<\/p>\)/\1\n\n${HTML}/}" plugins/org.csstudio.startup.intro/html/changelog.html
 
 echo ::: Committing and tagging version $VERSION :::
-git commit -m "Updating changelog, splash, manifests to version $VERSION"
+git commit -a -m "Updating changelog, splash, manifests to version $VERSION"
 git tag CSS-$VERSION
