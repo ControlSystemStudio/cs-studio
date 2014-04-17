@@ -156,6 +156,7 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
                             }
                         })
                 .addFormulaFunction(new DftFormulaFunction())
+                .addFormulaFunction(new ArrayRangeOfFormulaFunction())
         );
     }
 }
