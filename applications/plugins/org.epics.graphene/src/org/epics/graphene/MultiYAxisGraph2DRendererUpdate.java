@@ -4,16 +4,24 @@
  */
 package org.epics.graphene;
 
+import java.util.HashMap;
+
 /**
  *
  * @author carcassi, sjdallst
  */
 public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<MultiYAxisGraph2DRendererUpdate> {
 
+    private HashMap<Integer, Range> IndexToRangeMap;
+    private Integer marginBetweenGraphs,
+            minimumGraphHeight;
+    
     private InterpolationScheme interpolation;
     private ReductionScheme reduction;
     
     private Integer minimumGraphWidth;
+    
+    private Boolean split;
     
     public MultiYAxisGraph2DRendererUpdate minimumGraphWidth(int minimumGraphWidth){
         this.minimumGraphWidth = minimumGraphWidth;
@@ -52,6 +60,38 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
         return this;
     }
     
+    public MultiYAxisGraph2DRendererUpdate marginBetweenGraphs(Integer margin){
+        marginBetweenGraphs = margin;
+        return this.self();
+    }
+    
+    public MultiYAxisGraph2DRendererUpdate minimumGraphHeight(Integer minimumGraphHeight){
+        this.minimumGraphHeight = minimumGraphHeight;
+        return this.self();
+    }
+    
+    public MultiYAxisGraph2DRendererUpdate setRanges(HashMap<Integer, Range> map){
+        IndexToRangeMap = map;
+        return this.self();
+    }
+    
+    public MultiYAxisGraph2DRendererUpdate split(boolean split){
+        this.split = split;
+        return this.self();
+    }
+    
+    public HashMap<Integer, Range> getIndexToRange(){
+        return IndexToRangeMap;
+    }
+    
+    public Integer getMarginBetweenGraphs(){
+        return marginBetweenGraphs;
+    }
+    
+    public Integer getMinimumGraphHeight(){
+        return minimumGraphHeight;
+    }
+    
     /**
      *Current interpolation scheme
      * @return the current interpolation scheme.
@@ -70,5 +110,9 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
     
     public Integer getMinimumGraphWidth(){
         return minimumGraphWidth;
+    }
+    
+    public Boolean isSplit(){
+        return split;
     }
 }

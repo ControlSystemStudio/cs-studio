@@ -57,7 +57,7 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     private Range xPlotRange;
     private List<Range> yPlotRange;
     private HashMap<Integer, Range> indexToRangeMap = new HashMap<Integer,Range>();
-    private int numGraphs;
+    private int numGraphs = 0;
     private int spaceForYAxes;
     private int minimumGraphWidth = 200;
     private int yLabelMaxWidth = 0;
@@ -69,6 +69,33 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     private List<Double> yPlotValueStart;
     private double xPlotValueEnd;
     private List<Double> yPlotValueEnd;
+    
+    private ArrayList<Double> graphBoundaries;
+    private ArrayList<Double> graphBoundaryRatios;
+    private int marginBetweenGraphs = 0;
+    private int totalYMargins = 0;
+    private int minimumGraphHeight = 100;
+    protected List<String> xReferenceLabels;
+
+    // The pixel coordinates for the area
+    private int xAreaCoordStart;
+    private List<Integer> yAreaCoordStart;
+    private List<Integer> yAreaCoordEnd;
+    private int xAreaCoordEnd;
+
+    // The pixel coordinates for the ranges
+    // These match the xPlotValueXxx
+    private double xPlotCoordStart;
+    private List<Double> yPlotCoordStart;
+    private List<Double> yPlotCoordEnd;
+    private double xPlotCoordEnd;
+
+    // The pixel size of the range (not of the plot area)
+    private List<Double> yPlotCoordHeight;
+    private double xPlotCoordWidth;
+    
+    private boolean stretch = false;
+    private boolean split = false;
     /**
      * Creates a new line graph renderer.
      * 
@@ -100,6 +127,31 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         if (update.getMinimumGraphWidth() != null){
             minimumGraphWidth = update.getMinimumGraphWidth();
         }
+        if(update.getImageHeight() != null){
+            if(stretch){
+                for(int i = 0; i < graphBoundaries.size(); i++){
+                    graphBoundaries.set(i, getImageHeight() * graphBoundaryRatios.get(i));
+                }
+            }
+            else if((double)getImageHeight()/numGraphs - totalYMargins >= (minimumGraphHeight*2)){
+                numGraphs+=1;
+            }
+            if((double)getImageHeight()/numGraphs - totalYMargins <= minimumGraphHeight){
+                numGraphs = 0;
+            }
+        }
+        if(update.getIndexToRange() != null){
+            indexToRangeMap = update.getIndexToRange();
+        }
+        if(update.getMarginBetweenGraphs() != null){
+            marginBetweenGraphs = update.getMarginBetweenGraphs();
+        }
+        if(update.getMinimumGraphHeight() != null){
+            minimumGraphHeight = update.getMinimumGraphHeight();
+        }
+        if(update.isSplit() != null){
+            split = update.isSplit();
+        }
     }
 
     /**
@@ -121,15 +173,32 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         for(int i = 0; i < data.size(); i++){
             dataRangesY.add(data.get(i).getYStatistics());
         }
-        //Find the number of graphs that can be drawn while still conforming to style standards.
-        getNumGraphs(data);
-        Range datasetRange = RangeUtil.range(0,numGraphs-1);
-        valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
-        calculateRanges(dataRangesX, dataRangesY, numGraphs);
-        calculateLabels();
-        calculateGraphArea();        
-        drawBackground();
-        drawGraphArea();
+
+        labelFontMetrics = g.getFontMetrics(labelFont);
+        
+        if(split){
+            xLabelMaxHeight = labelFontMetrics.getHeight() - labelFontMetrics.getLeading();
+            totalYMargins = xLabelMaxHeight + marginBetweenGraphs + topMargin + bottomMargin + topAreaMargin + bottomAreaMargin + xLabelMargin + 1;
+            getNumGraphsSplit(data);
+            Range datasetRange = RangeUtil.range(0,numGraphs-1);
+            valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
+            calculateRanges(dataRangesX, dataRangesY, numGraphs);
+            setGraphBoundaries(data);
+            calculateLabels();
+            calculateGraphAreaSplit();        
+            drawBackground();
+            drawGraphArea();
+        }else{
+            getNumGraphs(data);
+            Range datasetRange = RangeUtil.range(0,numGraphs-1);
+            valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
+            calculateRanges(dataRangesX, dataRangesY, numGraphs);
+            calculateLabels();
+            calculateGraphArea();        
+            drawBackground();
+            drawGraphArea();
+        }
+        
         
         List<SortedListView> xValues = new ArrayList<SortedListView>();
         for(int i = 0; i < numGraphs; i++){
@@ -140,16 +209,25 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         for(int i = 0; i < numGraphs; i++){
             yValues.add(org.epics.util.array.ListNumbers.sortedView(data.get(i).getYValues(), xValues.get(i).getIndexes()));
         }
-        
-        for(int i = 0; i < numGraphs; i++){
-            g.setColor(new Color(valueColorSchemeInstance.colorFor(i)));
-            drawValueExplicitLine(xValues.get(i), yValues.get(i), interpolation, reduction,i);
+        if(split){
+            g.setColor(Color.BLACK);
+            for(int i = 0; i < numGraphs; i++){
+                drawValueExplicitLine(xValues.get(i), yValues.get(i), interpolation, reduction,i);
+            }
+        }
+        else{
+            for(int i = 0; i < numGraphs; i++){
+                g.setColor(new Color(valueColorSchemeInstance.colorFor(i)));
+                drawValueExplicitLine(xValues.get(i), yValues.get(i), interpolation, reduction,i);
+            }
         }
 
     }
     
+    //method to get the number of graphs to draw when simply drawing mutiple y axes.
     private void getNumGraphs(List<Point2DDataset> data){
             numGraphs = data.size();
+            //if yLabelMaxWidth has not been calculated, guess that it will be 15
             if(yLabelMaxWidth == 0){
                 yLabelMaxWidth = 15;
             }
@@ -170,6 +248,52 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
                     spaceForYAxes += rightMargin;
                 }
             }
+    }
+    
+    //method to get number of graphs when the graphs are split
+    private void getNumGraphsSplit(List<Point2DDataset> data){
+        if(this.graphBoundaries == null || this.graphBoundaries.size() != numGraphs+1){
+            numGraphs = data.size();
+            while((double)getImageHeight()/numGraphs - totalYMargins < minimumGraphHeight){
+                numGraphs-=1;
+            }
+        }
+        
+        //if all the graphs are being drawn, they can be stretched along with the image.
+        stretch = numGraphs == data.size();
+    }
+    
+    private void setGraphBoundaries(List<Point2DDataset> data){
+        if(this.graphBoundaries == null || this.graphBoundaries.size() != numGraphs+1){
+            graphBoundaries = new ArrayList<Double>();
+            for(double i = 0; i <= numGraphs; i++){
+                if(stretch){
+                    if(i > 0){
+                        graphBoundaries.add(i/numGraphs*(getImageHeight()) + marginBetweenGraphs);
+                    }
+                    else{
+                        graphBoundaries.add(i/numGraphs*(getImageHeight()));
+                    }
+                }
+                else{
+                    if(i > 0){
+                        graphBoundaries.add(i* (minimumGraphHeight+totalYMargins));
+                    }
+                    else{
+                        graphBoundaries.add(i*minimumGraphHeight);
+                    }
+                }
+            }
+            graphBoundaryRatios = new ArrayList<Double>();
+            for(double i = 0; i <= numGraphs; i++){
+                if(stretch){
+                    graphBoundaryRatios.add(i/numGraphs);
+                }
+                else{
+                    graphBoundaryRatios.add((i*minimumGraphHeight)/getImageHeight());
+                }
+            }
+        } 
     }
     
     protected void calculateRanges(List<Range> xDataRange, List<Range> yDataRange, int length) {
@@ -227,7 +351,12 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
             yReferenceValues = new ArrayList<ListDouble>();
             for(int i = 0; i < yPlotRange.size(); i++){
                 if (!yPlotRange.get(i).getMinimum().equals(yPlotRange.get(i).getMaximum())) {
-                    ValueAxis yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, getImageHeight() / 60));
+                    ValueAxis yAxis;
+                    if(split){
+                        yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, (graphBoundaries.get(i+1).intValue() - graphBoundaries.get(i).intValue()) / 60));
+                    }else{
+                        yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, getImageHeight() / 60));
+                    }
                     yReferenceLabels.add(Arrays.asList(yAxis.getTickLabels()));
                     yReferenceValues.add(new ArrayDouble(yAxis.getTickValues()));            
                 } else {
@@ -240,7 +369,12 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         else{
             for(int i = 0; i < yPlotRange.size(); i++){
                 if (!yPlotRange.get(i).getMinimum().equals(yPlotRange.get(i).getMaximum())) {
-                    ValueAxis yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, getImageHeight() / 60));
+                    ValueAxis yAxis;
+                    if(split){
+                        yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, (graphBoundaries.get(i+1).intValue() - graphBoundaries.get(i).intValue()) / 60));
+                    }else{
+                        yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, getImageHeight() / 60));
+                    }
                     yReferenceLabels.set(i,Arrays.asList(yAxis.getTickLabels()));
                     yReferenceValues.set(i,new ArrayDouble(yAxis.getTickValues()));            
                 } else {
@@ -315,11 +449,11 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
             }
         }
         
-        yAreaCoordStart = topMargin;
-        yAreaCoordEnd = getImageHeight() - areaFromBottom;
-        yPlotCoordStart = yAreaCoordStart + topAreaMargin + yPointMargin;
-        yPlotCoordEnd = yAreaCoordEnd - bottomAreaMargin - yPointMargin;
-        yPlotCoordHeight = yPlotCoordEnd - yPlotCoordStart;
+        super.yAreaCoordStart = topMargin;
+        super.yAreaCoordEnd = getImageHeight() - areaFromBottom;
+        super.yPlotCoordStart = super.yAreaCoordStart + topAreaMargin + yPointMargin;
+        super.yPlotCoordEnd = super.yAreaCoordEnd - bottomAreaMargin - yPointMargin;
+        super.yPlotCoordHeight = super.yPlotCoordEnd - super.yPlotCoordStart;
         
         //Only calculates reference coordinates if calculateLabels() was called
         if (xReferenceValues != null) {
@@ -335,7 +469,122 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
             for(int a = 0; a < yReferenceValues.size(); a++){
                 double[] yRefCoords = new double[yReferenceValues.get(a).size()];
                 for (int b = 0; b < yRefCoords.length; b++) {
-                    yRefCoords[b] = scaledY(yReferenceValues.get(a).getDouble(b),a);
+                    if(split){
+                        yRefCoords[b] = scaledYSplit(yReferenceValues.get(a).getDouble(b),a);
+                    }else{
+                        yRefCoords[b] = scaledY(yReferenceValues.get(a).getDouble(b),a);
+                    }
+                }
+                yReferenceCoords.add(new ArrayDouble(yRefCoords));
+            }
+        }
+    }
+    
+    protected void calculateGraphAreaSplit() {
+        int areaFromBottom = bottomMargin + xLabelMaxHeight + xLabelMargin;
+        int areaFromLeft = leftMargin + yLabelMaxWidth + yLabelMargin;
+
+        xPlotValueStart = xPlotRange.getMinimum().doubleValue();
+        xPlotValueEnd = xPlotRange.getMaximum().doubleValue();
+        if (xPlotValueStart == xPlotValueEnd) {
+            // If range is zero, fake a range
+            xPlotValueStart -= 1.0;
+            xPlotValueEnd += 1.0;
+        }
+        xAreaCoordStart = areaFromLeft;
+        xAreaCoordEnd = getImageWidth() - rightMargin;
+        xPlotCoordStart = xAreaCoordStart + leftAreaMargin + xPointMargin;
+        xPlotCoordEnd = xAreaCoordEnd - rightAreaMargin - xPointMargin;
+        xPlotCoordWidth = xPlotCoordEnd - xPlotCoordStart;
+        
+        //set the start and end of each plot in terms of values.
+        if(yPlotValueStart == null || yPlotValueStart.size() != yPlotRange.size()){
+            yPlotValueStart = new ArrayList<Double>();
+            yPlotValueEnd = new ArrayList<Double>();
+            for(int i = 0; i < yPlotRange.size(); i++){
+                yPlotValueStart.add(yPlotRange.get(i).getMinimum().doubleValue());
+                yPlotValueEnd.add(yPlotRange.get(i).getMaximum().doubleValue());
+            }
+        }
+        else{
+            for(int i = 0; i < yPlotRange.size(); i++){
+                yPlotValueStart.set(i, yPlotRange.get(i).getMinimum().doubleValue());
+                yPlotValueEnd.set(i, yPlotRange.get(i).getMaximum().doubleValue());
+            }
+        }
+        
+        //range faking
+        for(int i = 0; i < yPlotRange.size(); i++){
+            if (yPlotValueStart.get(i).doubleValue() == yPlotValueEnd.get(i).doubleValue()) {
+                // If range is zero, fake a range
+                yPlotValueStart.set(i, yPlotValueStart.get(i)-1.0);
+                yPlotValueEnd.set(i, yPlotValueEnd.get(i)+1.0);
+            }
+        }
+       
+        if(yAreaCoordStart == null || yAreaCoordStart.size() != numGraphs){
+            yAreaCoordStart = new ArrayList<Integer>();
+            yAreaCoordEnd = new ArrayList<Integer>();
+            yPlotCoordStart = new ArrayList<Double>();
+            yPlotCoordEnd = new ArrayList<Double>();
+            yPlotCoordHeight = new ArrayList<Double>();
+
+            yAreaCoordStart.add(topMargin + graphBoundaries.get(0).intValue());
+            yAreaCoordEnd.add(graphBoundaries.get(1).intValue()-areaFromBottom - marginBetweenGraphs);
+            yPlotCoordStart.add(yAreaCoordStart.get(0) + topAreaMargin + yPointMargin);
+            yPlotCoordEnd.add(yAreaCoordEnd.get(0) - bottomAreaMargin - yPointMargin);
+            yPlotCoordHeight.add(yPlotCoordEnd.get(0)-yPlotCoordStart.get(0));
+            for(int i = 1; i < numGraphs-1; i++){
+                yAreaCoordStart.add(topMargin + graphBoundaries.get(i).intValue());
+                yAreaCoordEnd.add(graphBoundaries.get(i+1).intValue()-areaFromBottom - marginBetweenGraphs);
+                yPlotCoordStart.add(yAreaCoordStart.get(i) + topAreaMargin + yPointMargin);
+                yPlotCoordEnd.add(yAreaCoordEnd.get(i) - bottomAreaMargin - yPointMargin);
+                yPlotCoordHeight.add(yPlotCoordEnd.get(i)-yPlotCoordStart.get(i));
+            }
+            yAreaCoordStart.add(topMargin + graphBoundaries.get(numGraphs-1).intValue());
+            yAreaCoordEnd.add(graphBoundaries.get(numGraphs).intValue()-areaFromBottom - marginBetweenGraphs);
+            yPlotCoordStart.add(yAreaCoordStart.get(numGraphs-1) + topAreaMargin + yPointMargin);
+            yPlotCoordEnd.add(yAreaCoordEnd.get(numGraphs-1) - bottomAreaMargin - yPointMargin);
+            yPlotCoordHeight.add(yPlotCoordEnd.get(numGraphs-1)-yPlotCoordStart.get(numGraphs-1));
+        }
+        else{
+            yAreaCoordStart.set(0,topMargin + graphBoundaries.get(0).intValue());
+            yAreaCoordEnd.set(0,graphBoundaries.get(1).intValue()-areaFromBottom - marginBetweenGraphs);
+            yPlotCoordStart.set(0,yAreaCoordStart.get(0) + topAreaMargin + yPointMargin);
+            yPlotCoordEnd.set(0,yAreaCoordEnd.get(0) - bottomAreaMargin - yPointMargin);
+            yPlotCoordHeight.set(0,yPlotCoordEnd.get(0)-yPlotCoordStart.get(0));
+            for(int i = 1; i < numGraphs-1; i++){
+                yAreaCoordStart.set(i,topMargin + graphBoundaries.get(i).intValue() + marginBetweenGraphs);
+                yAreaCoordEnd.set(i,graphBoundaries.get(i+1).intValue()-areaFromBottom - marginBetweenGraphs);
+                yPlotCoordStart.set(i,yAreaCoordStart.get(i) + topAreaMargin + yPointMargin);
+                yPlotCoordEnd.set(i,yAreaCoordEnd.get(i) - bottomAreaMargin - yPointMargin);
+                yPlotCoordHeight.set(i,yPlotCoordEnd.get(i)-yPlotCoordStart.get(i));
+            }
+            yAreaCoordStart.set(numGraphs-1,topMargin + graphBoundaries.get(numGraphs-1).intValue());
+            yAreaCoordEnd.set(numGraphs-1,graphBoundaries.get(numGraphs).intValue()-areaFromBottom - marginBetweenGraphs);
+            yPlotCoordStart.set(numGraphs-1,yAreaCoordStart.get(numGraphs-1) + topAreaMargin + yPointMargin);
+            yPlotCoordEnd.set(numGraphs-1,yAreaCoordEnd.get(numGraphs-1) - bottomAreaMargin - yPointMargin);
+            yPlotCoordHeight.set(numGraphs-1,yPlotCoordEnd.get(numGraphs-1)-yPlotCoordStart.get(numGraphs-1));
+        }
+        
+        //Only calculates reference coordinates if calculateLabels() was called
+        if (xReferenceValues != null) {
+            double[] xRefCoords = new double[xReferenceValues.size()];
+            for (int i = 0; i < xRefCoords.length; i++) {
+                xRefCoords[i] = scaledX1(xReferenceValues.getDouble(i));
+            }
+            xReferenceCoords = new ArrayDouble(xRefCoords);
+        }
+        yReferenceCoords = new ArrayList<ListDouble>();
+        if (yReferenceValues != null) {
+            for(int a = 0; a < yReferenceValues.size(); a++){
+                double[] yRefCoords = new double[yReferenceValues.get(a).size()];
+                for (int b = 0; b < yRefCoords.length; b++) {
+                    if(split){
+                        yRefCoords[b] = scaledYSplit(yReferenceValues.get(a).getDouble(b),a);
+                    }else{
+                        yRefCoords[b] = scaledY(yReferenceValues.get(a).getDouble(b),a);
+                    }
                 }
                 yReferenceCoords.add(new ArrayDouble(yRefCoords));
             }
@@ -343,19 +592,32 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     }
     
     private final double scaledY(double value,  int index) {
-        return yValueScale.scaleValue(value, yPlotValueStart.get(index), yPlotValueEnd.get(index), yPlotCoordEnd, yPlotCoordStart);
+        return yValueScale.scaleValue(value, yPlotValueStart.get(index), yPlotValueEnd.get(index), super.yPlotCoordEnd, super.yPlotCoordStart);
+    }
+    
+    private final double scaledYSplit(double value,  int index) {
+        return yValueScale.scaleValue(value, yPlotValueStart.get(index), yPlotValueEnd.get(index), yPlotCoordEnd.get(index), yPlotCoordStart.get(index));
     }
     
     @Override
     protected void drawGraphArea() {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // When drawing the reference line, align them to the pixel
-        drawVerticalReferenceLines();
-        drawHorizontalReferenceLines();
+        if(split){
+            drawVerticalReferenceLinesSplit();
+            drawHorizontalReferenceLinesSplit();
         
-        drawYLabels();
-        drawXLabels();
+            drawYLabelsSplit();
+            drawXLabelsSplit();
+        }else{
+            drawVerticalReferenceLines();
+            drawHorizontalReferenceLines();
+        
+            drawYLabels();
+            drawXLabels();
+        }
     }
+    
     
     @Override
     protected void drawVerticalReferenceLines() {
@@ -363,20 +625,20 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
         ListNumber xTicks = xReferenceCoords;
         for (int i = 0; i < xTicks.size(); i++) {
-            Shape line = new Line2D.Double(xTicks.getDouble(i), yAreaCoordStart, xTicks.getDouble(i), yAreaCoordEnd - 1);
+            Shape line = new Line2D.Double(xTicks.getDouble(i), super.yAreaCoordStart, xTicks.getDouble(i), super.yAreaCoordEnd - 1);
             g.draw(line);
         }
         int count = 0;
         for(int i = 0; i < numGraphs; i+=2){
             g.setColor(new Color(valueColorSchemeInstance.colorFor(i)));
-            Shape line = new Line2D.Double((xAreaCoordStart - (count+1)*(yLabelMargin + 1) - count*(yLabelMaxWidth + yLabelMargin)), yAreaCoordStart, (xAreaCoordStart - (count+1)*(yLabelMargin + 1) - count*(yLabelMaxWidth + yLabelMargin)), yAreaCoordEnd - 1);
+            Shape line = new Line2D.Double((xAreaCoordStart - (count+1)*(yLabelMargin + 1) - count*(yLabelMaxWidth + yLabelMargin)), super.yAreaCoordStart, (xAreaCoordStart - (count+1)*(yLabelMargin + 1) - count*(yLabelMaxWidth + yLabelMargin)), super.yAreaCoordEnd - 1);
             g.draw(line);
             count++;
         }
         count = 0;
         for(int i = 1; i < numGraphs; i+=2){
             g.setColor(new Color(valueColorSchemeInstance.colorFor(i)));
-            Shape line = new Line2D.Double((xAreaCoordEnd + (count+1)*(yLabelMargin + 1) + count*(yLabelMaxWidth + yLabelMargin)), yAreaCoordStart, (xAreaCoordEnd + (count+1)*(yLabelMargin + 1) + count*(yLabelMaxWidth + yLabelMargin)), yAreaCoordEnd - 1);
+            Shape line = new Line2D.Double((xAreaCoordEnd + (count+1)*(yLabelMargin + 1) + count*(yLabelMaxWidth + yLabelMargin)), super.yAreaCoordStart, (xAreaCoordEnd + (count+1)*(yLabelMargin + 1) + count*(yLabelMaxWidth + yLabelMargin)), super.yAreaCoordEnd - 1);
             g.draw(line);
             count++;
         }
@@ -386,11 +648,35 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     protected void drawHorizontalReferenceLines() {
         g.setColor(referenceLineColor);
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-            ListNumber yTicks = yReferenceCoords.get(0);
+        ListNumber yTicks = yReferenceCoords.get(0);
+        for (int b = 0; b < yTicks.size(); b++) {
+            Shape line = new Line2D.Double(xAreaCoordStart, yTicks.getDouble(b), xAreaCoordEnd - 1, yTicks.getDouble(b));
+            g.draw(line);
+        }
+    }
+    
+    protected void drawVerticalReferenceLinesSplit() {
+        g.setColor(referenceLineColor);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+        ListNumber xTicks = xReferenceCoords;
+        for(int a = 0; a < numGraphs; a++){
+            for (int b = 0; b < xTicks.size(); b++) {
+                Shape line = new Line2D.Double(xTicks.getDouble(b), yAreaCoordStart.get(a), xTicks.getDouble(b), yAreaCoordEnd.get(a) - 1);
+                g.draw(line);
+            }
+        }
+    }
+    
+    protected void drawHorizontalReferenceLinesSplit() {
+        g.setColor(referenceLineColor);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+        for(int a = 0; a < numGraphs; a++){
+            ListNumber yTicks = yReferenceCoords.get(a);
             for (int b = 0; b < yTicks.size(); b++) {
                 Shape line = new Line2D.Double(xAreaCoordStart, yTicks.getDouble(b), xAreaCoordEnd - 1, yTicks.getDouble(b));
                 g.draw(line);
             }
+        }
     }
     
     @Override
@@ -408,7 +694,7 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
 
                 // Draw first and last label
                 int verticalLinePos;
-                int[] drawRange = new int[] {yAreaCoordStart, yAreaCoordEnd - 1};
+                int[] drawRange = new int[] {super.yAreaCoordStart, super.yAreaCoordEnd - 1};
                 int xRightLabel;
                 if(a % 2 == 0){
                     xRightLabel = (int) (xAreaCoordStart - (evenCount+1)*(yLabelMargin + 1)*2 - evenCount*(yLabelMaxWidth - 1));
@@ -429,6 +715,116 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
                     drawHorizontalReferencesLabel(g, metrics, yReferenceLabels.get(a).get(b), (int) Math.floor(yTicks.getDouble(b)),
                         drawRange, xRightLabel, true, false, verticalLinePos);
                 }
+            }
+        }
+    }
+    
+    protected void drawYLabelsSplit() {
+        // Draw Y labels
+        for(int a = 0; a < numGraphs; a++){
+            ListNumber yTicks = yReferenceCoords.get(a);
+            if (yReferenceLabels.get(a) != null && !yReferenceLabels.get(a).isEmpty()) {
+                //g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+                g.setColor(labelColor);
+                g.setFont(labelFont);
+                FontMetrics metrics = g.getFontMetrics();
+
+                // Draw first and last label
+                int[] drawRange = new int[] {yAreaCoordStart.get(a), yAreaCoordEnd.get(a) - 1};
+                int xRightLabel = (int) (xAreaCoordStart - yLabelMargin - 1);
+                drawHorizontalReferencesLabelSplit(g, metrics, yReferenceLabels.get(a).get(0), (int) Math.floor(yTicks.getDouble(0)),
+                    drawRange, xRightLabel, true, false);
+                drawHorizontalReferencesLabelSplit(g, metrics, yReferenceLabels.get(a).get(yReferenceLabels.get(a).size() - 1), (int) Math.floor(yTicks.getDouble(yReferenceLabels.get(a).size() - 1)),
+                    drawRange, xRightLabel, false, false);
+
+                for (int b = 1; b < yReferenceLabels.get(a).size() - 1; b++) {
+                    drawHorizontalReferencesLabelSplit(g, metrics, yReferenceLabels.get(a).get(b), (int) Math.floor(yTicks.getDouble(b)),
+                        drawRange, xRightLabel, true, false);
+                }
+            }
+        }
+    }
+    
+    @Override
+    protected void drawXLabels() {
+        // Draw X labels
+        ListNumber xTicks = xReferenceCoords;
+        if (xReferenceLabels != null && !xReferenceLabels.isEmpty()) {
+            //g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+            g.setColor(labelColor);
+            g.setFont(labelFont);
+            FontMetrics metrics = g.getFontMetrics();
+
+            // Draw first and last label
+            int[] drawRange = new int[] {xAreaCoordStart, xAreaCoordEnd - 1};
+            int yTop = (int) (super.yAreaCoordEnd + xLabelMargin);
+            drawVerticalReferenceLabel(g, metrics, xReferenceLabels.get(0), (int) Math.floor(xTicks.getDouble(0)),
+                drawRange, yTop, true, false);
+            drawVerticalReferenceLabel(g, metrics, xReferenceLabels.get(xReferenceLabels.size() - 1), (int) Math.floor(xTicks.getDouble(xReferenceLabels.size() - 1)),
+                drawRange, yTop, false, false);
+            
+            for (int i = 1; i < xReferenceLabels.size() - 1; i++) {
+                drawVerticalReferenceLabel(g, metrics, xReferenceLabels.get(i), (int) Math.floor(xTicks.getDouble(i)),
+                    drawRange, yTop, true, false);
+            }
+        }
+    }
+    
+    private static void drawVerticalReferenceLabel(Graphics2D graphics, FontMetrics metrics, String text, int xCenter, int[] drawRange, int yTop, boolean updateMin, boolean centeredOnly) {
+        // If the center is not in the range, don't draw anything
+        if (drawRange[MAX] < xCenter || drawRange[MIN] > xCenter)
+            return;
+        
+        // If there is no space, don't draw anything
+        if (drawRange[MAX] - drawRange[MIN] < metrics.getHeight())
+            return;
+        
+        Java2DStringUtilities.Alignment alignment = Java2DStringUtilities.Alignment.TOP;
+        int targetX = xCenter;
+        int halfWidth = metrics.stringWidth(text) / 2;
+        if (xCenter < drawRange[MIN] + halfWidth) {
+            // Can't be drawn in the center
+            if (centeredOnly)
+                return;
+            alignment = Java2DStringUtilities.Alignment.TOP_LEFT;
+            targetX = drawRange[MIN];
+        } else if (xCenter > drawRange[MAX] - halfWidth) {
+            // Can't be drawn in the center
+            if (centeredOnly)
+                return;
+            alignment = Java2DStringUtilities.Alignment.TOP_RIGHT;
+            targetX = drawRange[MAX];
+        }
+
+        Java2DStringUtilities.drawString(graphics, alignment, targetX, yTop, text);
+        
+        if (updateMin) {
+            drawRange[MIN] = targetX + metrics.getHeight();
+        } else {
+            drawRange[MAX] = targetX - metrics.getHeight();
+        }
+    }
+    
+    protected void drawXLabelsSplit() {
+        // Draw X labels
+        ListNumber xTicks = xReferenceCoords;
+        if (xReferenceLabels != null && !xReferenceLabels.isEmpty()) {
+            //g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+            g.setColor(labelColor);
+            g.setFont(labelFont);
+            FontMetrics metrics = g.getFontMetrics();
+
+            // Draw first and last label
+            int[] drawRange = new int[] {xAreaCoordStart, xAreaCoordEnd - 1};
+            int yTop = (int) (yAreaCoordEnd.get(numGraphs-1) + xLabelMargin);
+            drawVerticalReferenceLabelSplit(g, metrics, xReferenceLabels.get(0), (int) Math.floor(xTicks.getDouble(0)),
+                drawRange, yTop, true, false);
+            drawVerticalReferenceLabelSplit(g, metrics, xReferenceLabels.get(xReferenceLabels.size() - 1), (int) Math.floor(xTicks.getDouble(xReferenceLabels.size() - 1)),
+                drawRange, yTop, false, false);
+            
+            for (int i = 1; i < xReferenceLabels.size() - 1; i++) {
+                drawVerticalReferenceLabelSplit(g, metrics, xReferenceLabels.get(i), (int) Math.floor(xTicks.getDouble(i)),
+                    drawRange, yTop, true, false);
             }
         }
     }
@@ -467,6 +863,76 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
             drawRange[MAX] = targetY - metrics.getHeight();
         } else {
             drawRange[MIN] = targetY + metrics.getHeight();
+        }
+    }
+    
+    private static void drawHorizontalReferencesLabelSplit(Graphics2D graphics, FontMetrics metrics, String text, int yCenter, int[] drawRange, int xRight, boolean updateMin, boolean centeredOnly) {
+        // If the center is not in the range, don't draw anything
+        if (drawRange[MAX] < yCenter || drawRange[MIN] > yCenter)
+            return;
+        
+        // If there is no space, don't draw anything
+        if (drawRange[MAX] - drawRange[MIN] < metrics.getHeight())
+            return;
+        
+        Java2DStringUtilities.Alignment alignment = Java2DStringUtilities.Alignment.RIGHT;
+        int targetY = yCenter;
+        int halfHeight = metrics.getAscent() / 2;
+        if (yCenter < drawRange[MIN] + halfHeight) {
+            // Can't be drawn in the center
+            if (centeredOnly)
+                return;
+            alignment = Java2DStringUtilities.Alignment.TOP_RIGHT;
+            targetY = drawRange[MIN];
+        } else if (yCenter > drawRange[MAX] - halfHeight) {
+            // Can't be drawn in the center
+            if (centeredOnly)
+                return;
+            alignment = Java2DStringUtilities.Alignment.BOTTOM_RIGHT;
+            targetY = drawRange[MAX];
+        }
+
+        Java2DStringUtilities.drawString(graphics, alignment, xRight, targetY, text);
+        
+        if (updateMin) {
+            drawRange[MAX] = targetY - metrics.getHeight();
+        } else {
+            drawRange[MIN] = targetY + metrics.getHeight();
+        }
+    }
+    
+    private static void drawVerticalReferenceLabelSplit(Graphics2D graphics, FontMetrics metrics, String text, int xCenter, int[] drawRange, int yTop, boolean updateMin, boolean centeredOnly) {
+        // If the center is not in the range, don't draw anything
+        if (drawRange[MAX] < xCenter || drawRange[MIN] > xCenter)
+            return;
+        
+        // If there is no space, don't draw anything
+        if (drawRange[MAX] - drawRange[MIN] < metrics.getHeight())
+            return;
+        
+        Java2DStringUtilities.Alignment alignment = Java2DStringUtilities.Alignment.TOP;
+        int targetX = xCenter;
+        int halfWidth = metrics.stringWidth(text) / 2;
+        if (xCenter < drawRange[MIN] + halfWidth) {
+            // Can't be drawn in the center
+            if (centeredOnly)
+                return;
+            alignment = Java2DStringUtilities.Alignment.TOP_LEFT;
+            targetX = drawRange[MIN];
+        } else if (xCenter > drawRange[MAX] - halfWidth) {
+            // Can't be drawn in the center
+            if (centeredOnly)
+                return;
+            alignment = Java2DStringUtilities.Alignment.TOP_RIGHT;
+            targetX = drawRange[MAX];
+        }
+
+        Java2DStringUtilities.drawString(graphics, alignment, targetX, yTop, text);
+        
+        if (updateMin) {
+            drawRange[MIN] = targetX + metrics.getHeight();
+        } else {
+            drawRange[MAX] = targetX - metrics.getHeight();
         }
     }
     
@@ -531,7 +997,11 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         scaledData.scaledY = new double[dataCount];
         for (int i = 0; i < scaledData.scaledY.length; i++) {
             scaledData.scaledX[i] = scaledX1(xValues.getDouble(i));
-            scaledData.scaledY[i] = scaledY(yValues.getDouble(i), index);
+            if(split){
+                scaledData.scaledY[i] = scaledYSplit(yValues.getDouble(i), index);
+            }else{
+                scaledData.scaledY[i] = scaledY(yValues.getDouble(i), index);
+            }
             processScaledValue(dataStart + i, xValues.getDouble(i), yValues.getDouble(i), scaledData.scaledX[i], scaledData.scaledY[i]);
         }
         scaledData.end = dataCount;
@@ -551,7 +1021,12 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
         scaledData.scaledY = new double[((int) xPlotCoordWidth + 1)*4];
         int cursor = 0;
         int previousPixel = (int) scaledX1(xValues.getDouble(0));
-        double last = scaledY(yValues.getDouble(0),index);
+        double last;
+        if(split){
+            last = scaledYSplit(yValues.getDouble(0),index);
+        }else{
+            last = scaledY(yValues.getDouble(0),index);
+        }
         double min = last;
         double max = last;
         scaledData.scaledX[0] = previousPixel;
@@ -562,7 +1037,11 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
             double currentScaledX = scaledX1(xValues.getDouble(i));
             int currentPixel = (int) currentScaledX;
             if (currentPixel == previousPixel) {
-                last = scaledY(yValues.getDouble(i),index);
+                if(split){
+                    last = scaledYSplit(yValues.getDouble(i),index);
+                }else{
+                    last = scaledY(yValues.getDouble(i),index);
+                }
                 min = MathIgnoreNaN.min(min, last);
                 max = MathIgnoreNaN.max(max, last);
                 processScaledValue(dataStart + i, xValues.getDouble(i), yValues.getDouble(i), currentScaledX, last);
@@ -577,7 +1056,11 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
                 scaledData.scaledY[cursor] = last;
                 cursor++;
                 previousPixel = currentPixel;
-                last = scaledY(yValues.getDouble(i),index);
+                if(split){
+                    last = scaledYSplit(yValues.getDouble(i),index);
+                }else{
+                    last = scaledY(yValues.getDouble(i),index);
+                }
                 min = last;
                 max = last;
                 scaledData.scaledX[cursor] = currentPixel;
