@@ -24,8 +24,8 @@ HTML="<h2>Version ${VERSION} - $(date +"%Y-%m-%d")</h2>
 <ul>
 <li>See specific application changelogs</li>
 <li>${NOTES}</li>
-<li><a href="${COMPATLINK}" shape="rect">Compatibility Notes and Know Bugs</a></li>
-<li><a href="${MILESTONE}" shape="rect">Closed Issues</a></li>
+<li><a href=\"${COMPATLINK}\" shape=\"rect\">Compatibility Notes and Know Bugs</a></li>
+<li><a href=\"${MILESTONE}\" shape=\"rect\">Closed Issues</a></li>
 </ul>"
 
 # escape all backslashes first
