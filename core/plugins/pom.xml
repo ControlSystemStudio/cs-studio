@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>core</artifactId>
+    <version>BUILD-VERSION</version>
+  </parent>
+  <groupId>org.csstudio</groupId>
+  <artifactId>core-plugins</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <!--<module>org.antlr.runtime</module>--><!-- Moved to third party repository  -->
+    <module>org.csstudio.auth</module>
+    <module>org.csstudio.auth.ui</module>
+    <module>org.csstudio.autocomplete</module>
+    <module>org.csstudio.autocomplete.pvmanager.formula</module>
+    <module>org.csstudio.autocomplete.pvmanager.loc</module>
+    <module>org.csstudio.autocomplete.pvmanager.sim</module>
+    <module>org.csstudio.autocomplete.pvmanager.sys</module>
+    <module>org.csstudio.autocomplete.ui</module>
+    <module>org.csstudio.autocomplete.ui.rap</module>
+    <module>org.csstudio.autocomplete.ui.rcp</module>
+    <module>org.csstudio.csdata</module>
+    <module>org.csstudio.csdata.test</module>
+    <!--<module>org.csstudio.dal</module>-->
+    <!--<module>org.csstudio.dal.epics</module>-->
+    <!--<module>org.csstudio.dal.simulator</module>-->
+    <!--<module>org.csstudio.dal.test</module>-->
+    <!--<module>org.csstudio.dal.tine</module>-->
+    <!--<module>org.csstudio.dal.ui</module>-->
+    <module>org.csstudio.data</module>
+    <module>org.csstudio.data.test</module>
+    <module>org.csstudio.java</module>
+    <module>org.csstudio.java.test</module>
+    <module>org.csstudio.logging</module>
+    <module>org.csstudio.logging.test</module>
+    <module>org.csstudio.logging.ui</module>
+    <module>org.csstudio.openfile</module>
+    <module>org.csstudio.platform.jaasAuthentication</module>
+    <module>org.csstudio.platform.jaasAuthentication.ui</module>
+    <module>org.csstudio.platform.ldapAuthorization</module>
+    <module>org.csstudio.platform.ldapAuthorization.ui</module>
+    <!--<module>org.csstudio.platform.libs.easymock</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.epics</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.epics.linux</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.epics.macosx</module>--><!-- Moved to third party repository  -->
+    <module>org.csstudio.platform.libs.epics.ui</module>
+    <!--<module>org.csstudio.platform.libs.epics.win32</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.hibernate</module>--><!-- Moved to third party repository  -->
+    <module>org.csstudio.platform.libs.hibernate.ui</module>
+    <!--<module>org.csstudio.platform.libs.jdbc</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.jersey</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.jfreechart</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.jmock</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.jms</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.libs.tine</module>--><!-- Moved to third party repository  -->
+    <!--<module>org.csstudio.platform.simpledal</module>-->
+    <module>org.csstudio.platform.utility.jms</module>
+    <module>org.csstudio.platform.utility.jms.ui</module>
+    <module>org.csstudio.platform.utility.rdb</module>
+    <module>org.csstudio.rap.core</module>
+    <module>org.csstudio.rap.ui.util</module>
+    <module>org.csstudio.security</module>
+    <module>org.csstudio.security.ui</module>
+    <module>org.csstudio.simplepv</module>
+    <module>org.csstudio.simplepv.pvmanager</module>
+    <module>org.csstudio.simplepv.pvmanager.test</module>
+    <module>org.csstudio.simplepv.test</module>
+    <module>org.csstudio.startup</module>
+    <module>org.csstudio.startup.helper</module>
+    <module>org.csstudio.ui.help</module>
+    <module>org.csstudio.ui.menu</module>
+    <module>org.csstudio.ui.menu.test</module>
+    <module>org.csstudio.ui.preferences</module>
+    <module>org.csstudio.ui.util</module>
+    <module>org.csstudio.utility.pv</module>
+    <module>org.csstudio.utility.pv.epics</module>
+    <module>org.csstudio.utility.pv.epics.test</module>
+    <module>org.csstudio.utility.pv.simu</module>
+    <module>org.csstudio.utility.pv.simu.test</module>
+    <!--<module>org.csstudio.utility.pvmanager</module>
+    <module>org.csstudio.utility.pvmanager.epics</module>
+    <module>org.csstudio.utility.pvmanager.exec</module>
+    <module>org.csstudio.utility.pvmanager.extra</module>
+    <module>org.csstudio.utility.pvmanager.file</module>
+    <module>org.csstudio.utility.pvmanager.jdbc</module>
+    <module>org.csstudio.utility.pvmanager.loc</module>
+    <module>org.csstudio.utility.pvmanager.pva</module>
+    <module>org.csstudio.utility.pvmanager.sim</module>
+    <module>org.csstudio.utility.pvmanager.sys</module>--><!-- Moved to third party repo -->
+    <module>org.csstudio.utility.pvmanager.ui</module>
+    <module>org.csstudio.utility.pvmanager.ui.toolbox</module>
+    <!--<module>org.csstudio.utility.pvmanager.vtype</module>--><!-- Moved to third party repo -->
+    <module>org.csstudio.utility.pvmanager.widgets</module>
+    <module>org.csstudio.utility.pvmanager.widgets.test</module>
+    <module>org.csstudio.utility.singlesource</module>
+    <module>org.csstudio.utility.singlesource.rap</module>
+    <module>org.csstudio.utility.singlesource.rcp</module>
+    <module>org.csstudio.utility.test</module>
+    <module>org.csstudio.workspace</module>
+    <!--<module>org.epics.pvaccess</module>--><!-- Moved to maven-osgi repo -->
+    <!--<module>org.epics.pvdata</module>--><!-- Moved to maven-osgi repo -->
+    <!--<module>org.epics.util</module>--><!-- Moved to maven-osgi repo -->
+    <!--<module>org.epics.vtype</module>--><!-- Moved to maven-osgi repository  -->
+  </modules>
+</project>
