@@ -301,7 +301,7 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
             xAggregatedRange = aggregateRange(xDataRange.get(i), xAggregatedRange);
             xPlotRange = xAxisRange.axisRange(xDataRange.get(i), xAggregatedRange);
         }  
-        if(yAggregatedRange == null || yDataRange.size() != yAggregatedRange.size()){
+        if(yAggregatedRange == null || yDataRange.size() != yAggregatedRange.size() || yDataRange.size() != length){
             yAggregatedRange = new ArrayList<Range>();
             yPlotRange = new ArrayList<Range>();
             for(int i = 0; i < length; i++){
