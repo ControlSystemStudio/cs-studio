@@ -70,7 +70,7 @@
     <border_width>2</border_width>
     <horizontal>true</horizontal>
     <border_color>
-      <color name="IO Border" red="215" green="215" blue="215" />
+      <color name="IO Border" red="0" green="0" blue="0" />
     </border_color>
     <actions hook="false" hook_all="false" />
     <y>0</y>
@@ -194,7 +194,7 @@
         <border_width>2</border_width>
         <horizontal>false</horizontal>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <actions hook="false" hook_all="false" />
         <y>0</y>
@@ -274,7 +274,7 @@
             <lock_children>false</lock_children>
             <border_width>1</border_width>
             <border_color>
-              <color name="IO Border" red="215" green="215" blue="215" />
+              <color name="IO Border" red="0" green="0" blue="0" />
             </border_color>
             <y>0</y>
             <actions hook="false" hook_all="false" />
@@ -302,10 +302,10 @@
               <transparent>true</transparent>
               <pv_name>sys://time</pv_name>
               <background_color>
-                <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                <color name="IO InputPV Bg" red="200" green="200" blue="200" />
               </background_color>
               <foreground_color>
-                <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                <color name="IO StatusBar Fg" red="255" green="255" blue="255" />
               </foreground_color>
               <widget_type>Text Update</widget_type>
               <enabled>true</enabled>
@@ -321,7 +321,7 @@
               <pv_value />
               <border_width>0</border_width>
               <border_color>
-                <color name="IO Border" red="215" green="215" blue="215" />
+                <color name="IO Border" red="0" green="0" blue="0" />
               </border_color>
               <horizontal_alignment>1</horizontal_alignment>
               <actions hook="false" hook_all="false" />
@@ -378,7 +378,7 @@
               <border_width>2</border_width>
               <image_file>pictures/ITERLogo_50x24.png</image_file>
               <border_color>
-                <color name="IO Border" red="215" green="215" blue="215" />
+                <color name="IO Border" red="0" green="0" blue="0" />
               </border_color>
               <actions hook="false" hook_all="false" />
               <y>1</y>
@@ -417,7 +417,7 @@
               <rules />
               <border_width>2</border_width>
               <border_color>
-                <color name="IO Border" red="215" green="215" blue="215" />
+                <color name="IO Border" red="0" green="0" blue="0" />
               </border_color>
               <horizontal_alignment>1</horizontal_alignment>
               <actions hook="false" hook_all="false" />
@@ -493,7 +493,7 @@
                   <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
-                  <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                  <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                 </foreground_color>
                 <off_label>OFF</off_label>
                 <widget_type>LED</widget_type>
@@ -511,7 +511,7 @@
                 <border_width>2</border_width>
                 <on_label>ON</on_label>
                 <border_color>
-                  <color name="IO Border" red="215" green="215" blue="215" />
+                  <color name="IO Border" red="0" green="0" blue="0" />
                 </border_color>
                 <actions hook="false" hook_all="false" />
                 <y>0</y>
@@ -545,7 +545,7 @@
                   <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
-                  <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                  <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                 </foreground_color>
                 <off_label>OFF</off_label>
                 <widget_type>LED</widget_type>
@@ -563,7 +563,7 @@
                 <border_width>2</border_width>
                 <on_label>ON</on_label>
                 <border_color>
-                  <color name="IO Border" red="215" green="215" blue="215" />
+                  <color name="IO Border" red="0" green="0" blue="0" />
                 </border_color>
                 <actions hook="false" hook_all="false" />
                 <y>0</y>
@@ -597,7 +597,7 @@
                   <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
-                  <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                  <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                 </foreground_color>
                 <off_label>OFF</off_label>
                 <widget_type>LED</widget_type>
@@ -615,7 +615,7 @@
                 <border_width>2</border_width>
                 <on_label>ON</on_label>
                 <border_color>
-                  <color name="IO Border" red="215" green="215" blue="215" />
+                  <color name="IO Border" red="0" green="0" blue="0" />
                 </border_color>
                 <actions hook="false" hook_all="false" />
                 <y>0</y>
@@ -690,7 +690,7 @@
                   <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
-                  <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                  <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                 </foreground_color>
                 <off_label>LTM</off_label>
                 <widget_type>LED</widget_type>
@@ -708,7 +708,7 @@
                 <border_width>2</border_width>
                 <on_label>LTM</on_label>
                 <border_color>
-                  <color name="IO Border" red="215" green="215" blue="215" />
+                  <color name="IO Border" red="0" green="0" blue="0" />
                 </border_color>
                 <actions hook="false" hook_all="false" />
                 <y>0</y>
@@ -742,7 +742,7 @@
                   <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
-                  <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                  <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                 </foreground_color>
                 <off_label>STM</off_label>
                 <widget_type>LED</widget_type>
@@ -760,7 +760,7 @@
                 <border_width>2</border_width>
                 <on_label>STM</on_label>
                 <border_color>
-                  <color name="IO Border" red="215" green="215" blue="215" />
+                  <color name="IO Border" red="0" green="0" blue="0" />
                 </border_color>
                 <actions hook="false" hook_all="false" />
                 <y>0</y>
@@ -794,7 +794,7 @@
                   <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
-                  <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                  <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                 </foreground_color>
                 <off_label>TCS</off_label>
                 <widget_type>LED</widget_type>
@@ -812,7 +812,7 @@
                 <border_width>2</border_width>
                 <on_label>TCS</on_label>
                 <border_color>
-                  <color name="IO Border" red="215" green="215" blue="215" />
+                  <color name="IO Border" red="0" green="0" blue="0" />
                 </border_color>
                 <actions hook="false" hook_all="false" />
                 <y>0</y>
@@ -846,7 +846,7 @@
                   <color name="IO Background" red="200" green="200" blue="200" />
                 </background_color>
                 <foreground_color>
-                  <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                  <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                 </foreground_color>
                 <off_label>POS</off_label>
                 <widget_type>LED</widget_type>
@@ -864,7 +864,7 @@
                 <border_width>2</border_width>
                 <on_label>POS</on_label>
                 <border_color>
-                  <color name="IO Border" red="215" green="215" blue="215" />
+                  <color name="IO Border" red="0" green="0" blue="0" />
                 </border_color>
                 <actions hook="false" hook_all="false" />
                 <y>0</y>
@@ -948,7 +948,7 @@
             <lock_children>false</lock_children>
             <border_width>1</border_width>
             <border_color>
-              <color name="IO Border" red="215" green="215" blue="215" />
+              <color name="IO Border" red="0" green="0" blue="0" />
             </border_color>
             <y>0</y>
             <actions hook="false" hook_all="false" />
@@ -959,6 +959,9 @@
                 <include_parent_macros>true</include_parent_macros>
               </macros>
               <tab_2_enabled>true</tab_2_enabled>
+              <tab_8_foreground_color>
+                <color name="IO Foreground" red="0" green="0" blue="0" />
+              </tab_8_foreground_color>
               <tab_6_foreground_color>
                 <color name="IO Foreground" red="0" green="0" blue="0" />
               </tab_6_foreground_color>
@@ -1002,13 +1005,21 @@
               <foreground_color>
                 <color name="IO Text Fg" red="0" green="0" blue="0" />
               </foreground_color>
+              <tab_8_enabled>true</tab_8_enabled>
               <tab_2_icon_path></tab_2_icon_path>
+              <tab_8_title>W and RO fields</tab_8_title>
+              <tab_8_background_color>
+                <color name="IO Background" red="200" green="200" blue="200" />
+              </tab_8_background_color>
               <tab_0_foreground_color>
                 <color name="IO Foreground" red="0" green="0" blue="0" />
               </tab_0_foreground_color>
+              <tab_8_font>
+                <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
+              </tab_8_font>
               <tab_0_enabled>true</tab_0_enabled>
               <border_color>
-                <color name="IO Border" red="215" green="215" blue="215" />
+                <color name="IO Border" red="0" green="0" blue="0" />
               </border_color>
               <actions hook="false" hook_all="false" />
               <y>0</y>
@@ -1059,6 +1070,7 @@
                 <color name="IO Background" red="200" green="200" blue="200" />
               </tab_7_background_color>
               <tab_4_title>Symbols</tab_4_title>
+              <tab_8_icon_path></tab_8_icon_path>
               <name>Tabbed Container Template</name>
               <scale_options>
                 <width_scalable>true</width_scalable>
@@ -1085,7 +1097,7 @@
               <tab_3_font>
                 <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
               </tab_3_font>
-              <tab_count>8</tab_count>
+              <tab_count>9</tab_count>
               <tooltip></tooltip>
               <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
                 <macros>
@@ -1161,7 +1173,7 @@
                     <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <foreground_color>
-                    <color name="IO Link" red="0" green="32" blue="92" />
+                    <color name="IO Link" red="0" green="0" blue="0" />
                   </foreground_color>
                   <widget_type>Polyline</widget_type>
                   <enabled>true</enabled>
@@ -1178,7 +1190,7 @@
                   <line_width>2</line_width>
                   <horizontal_fill>true</horizontal_fill>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <actions hook="false" hook_all="false" />
                   <y>15</y>
@@ -1218,7 +1230,7 @@ to enter the Label Text</text>
                   <rules />
                   <border_width>2</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <horizontal_alignment>0</horizontal_alignment>
                   <actions hook="false" hook_all="false" />
@@ -1275,7 +1287,7 @@ to enter the Label Text</text>
                   <border_width>2</border_width>
                   <image_file>SymbolLibrary/PNG/Electrical/Miscellaneous/Earth.png</image_file>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <actions hook="false" hook_all="false" />
                   <y>380</y>
@@ -1316,7 +1328,7 @@ to enter the Label Text</text>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>150</y>
                   <actions hook="false" hook_all="false" />
@@ -1341,10 +1353,10 @@ to enter the Label Text</text>
                     </scale_options>
                     <pv_name></pv_name>
                     <background_color>
-                      <color name="IO Shape Fill" red="188" green="188" blue="188" />
+                      <color name="IO Shape Fill" red="255" green="255" blue="255" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Link" red="0" green="32" blue="92" />
+                      <color name="IO Link" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Arc</widget_type>
                     <enabled>true</enabled>
@@ -1361,7 +1373,7 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <line_width>1</line_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>10</y>
@@ -1373,7 +1385,7 @@ to enter the Label Text</text>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-203b6f4:1411132e3c7:-7d01</wuid>
                     <rotation_angle>0.0</rotation_angle>
@@ -1402,7 +1414,7 @@ to enter the Label Text</text>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Shape Fill" red="188" green="188" blue="188" />
+                      <color name="IO Shape Fill" red="255" green="255" blue="255" />
                     </foreground_color>
                     <widget_type>Polygon</widget_type>
                     <enabled>true</enabled>
@@ -1419,7 +1431,7 @@ to enter the Label Text</text>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -1431,7 +1443,7 @@ to enter the Label Text</text>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-203b6f4:1411132e3c7:-7d00</wuid>
                     <bg_gradient_color>
@@ -1454,7 +1466,7 @@ to enter the Label Text</text>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Shape Fill" red="188" green="188" blue="188" />
+                      <color name="IO Shape Fill" red="255" green="255" blue="255" />
                     </foreground_color>
                     <widget_type>Rectangle</widget_type>
                     <enabled>true</enabled>
@@ -1474,7 +1486,7 @@ to enter the Label Text</text>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>10</y>
@@ -1487,7 +1499,7 @@ to enter the Label Text</text>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-203b6f4:1411132e3c7:-7cff</wuid>
                     <bg_gradient_color>
@@ -1512,7 +1524,7 @@ to enter the Label Text</text>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Shape Fill" red="188" green="188" blue="188" />
+                      <color name="IO Shape Fill" red="255" green="255" blue="255" />
                     </foreground_color>
                     <widget_type>Rounded Rectangle</widget_type>
                     <enabled>true</enabled>
@@ -1532,7 +1544,7 @@ to enter the Label Text</text>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>10</y>
@@ -1545,7 +1557,7 @@ to enter the Label Text</text>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-203b6f4:1411132e3c7:-7cfe</wuid>
                     <bg_gradient_color>
@@ -1568,7 +1580,7 @@ to enter the Label Text</text>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Shape Fill" red="188" green="188" blue="188" />
+                      <color name="IO Shape Fill" red="255" green="255" blue="255" />
                     </foreground_color>
                     <widget_type>Ellipse</widget_type>
                     <enabled>true</enabled>
@@ -1588,7 +1600,7 @@ to enter the Label Text</text>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>10</y>
@@ -1602,7 +1614,7 @@ to enter the Label Text</text>
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
-                <visible>true</visible>
+                <visible>false</visible>
                 <wuid>-203b6f4:1411132e3c7:-7cfd</wuid>
                 <scripts />
                 <height>825</height>
@@ -1638,75 +1650,6 @@ to enter the Label Text</text>
                 <actions hook="false" hook_all="false" />
                 <x>1</x>
                 <tooltip></tooltip>
-                <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0.0">
-                  <border_alarm_sensitive>true</border_alarm_sensitive>
-                  <crop_right>0</crop_right>
-                  <crop_left>0</crop_left>
-                  <visible>true</visible>
-                  <wuid>-203b6f4:1411132e3c7:-7cfc</wuid>
-                  <auto_size>true</auto_size>
-                  <boolean_label_position>5</boolean_label_position>
-                  <scripts />
-                  <on_color>
-                    <color name="IO PV ON" red="0" green="0" blue="225" />
-                  </on_color>
-                  <height>75</height>
-                  <name>Multistate Symbol Image Monitor Template</name>
-                  <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-                  <stretch_to_fit>false</stretch_to_fit>
-                  <show_boolean_label>true</show_boolean_label>
-                  <scale_options>
-                    <width_scalable>true</width_scalable>
-                    <height_scalable>true</height_scalable>
-                    <keep_wh_ratio>false</keep_wh_ratio>
-                  </scale_options>
-                  <off_color>
-                    <color name="IO PV OFF" red="77" green="77" blue="77" />
-                  </off_color>
-                  <pv_name>sim://ramp(0,3,1,1)</pv_name>
-                  <background_color>
-                    <color name="IO Background" red="200" green="200" blue="200" />
-                  </background_color>
-                  <foreground_color>
-                    <color name="IO InputPV Fg" red="0" green="32" blue="92" />
-                  </foreground_color>
-                  <widget_type>Multistate Symbol Image Monitor</widget_type>
-                  <enabled>true</enabled>
-                  <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-                  <font>
-                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
-                  </font>
-                  <width>41</width>
-                  <flip_horizontal>false</flip_horizontal>
-                  <permutation_matrix>
-                    <row>
-                      <col>1.0</col>
-                      <col>0.0</col>
-                    </row>
-                    <row>
-                      <col>0.0</col>
-                      <col>1.0</col>
-                    </row>
-                  </permutation_matrix>
-                  <border_style>0</border_style>
-                  <crop_top>0</crop_top>
-                  <rules />
-                  <pv_value />
-                  <flip_vertical>false</flip_vertical>
-                  <crop_bottom>0</crop_bottom>
-                  <degree>0</degree>
-                  <items />
-                  <border_width>2</border_width>
-                  <image_file>SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 0.svg</image_file>
-                  <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
-                  </border_color>
-                  <items_from_pv>true</items_from_pv>
-                  <actions hook="false" hook_all="false" />
-                  <y>25</y>
-                  <tooltip>Monitors Widgets</tooltip>
-                  <x>397</x>
-                </widget>
                 <widget typeId="org.csstudio.opibuilder.widgets.bytemonitor" version="1.0.0">
                   <border_alarm_sensitive>true</border_alarm_sensitive>
                   <visible>true</visible>
@@ -1734,7 +1677,7 @@ to enter the Label Text</text>
                     <color name="IO Background" red="200" green="200" blue="200" />
                   </background_color>
                   <foreground_color>
-                    <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                    <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                   </foreground_color>
                   <widget_type>Byte Monitor</widget_type>
                   <enabled>true</enabled>
@@ -1752,62 +1695,12 @@ to enter the Label Text</text>
                   <border_width>2</border_width>
                   <horizontal>true</horizontal>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <actions hook="false" hook_all="false" />
                   <y>50</y>
                   <tooltip>Monitors Widgets</tooltip>
                   <x>540</x>
-                </widget>
-                <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-                  <border_alarm_sensitive>true</border_alarm_sensitive>
-                  <visible>true</visible>
-                  <vertical_alignment>0</vertical_alignment>
-                  <show_units>true</show_units>
-                  <wuid>-203b6f4:1411132e3c7:-7cfa</wuid>
-                  <auto_size>false</auto_size>
-                  <rotation_angle>0.0</rotation_angle>
-                  <scripts />
-                  <height>40</height>
-                  <name>Text Update Template</name>
-                  <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-                  <scale_options>
-                    <width_scalable>true</width_scalable>
-                    <height_scalable>true</height_scalable>
-                    <keep_wh_ratio>false</keep_wh_ratio>
-                  </scale_options>
-                  <format_type>0</format_type>
-                  <precision_from_pv>true</precision_from_pv>
-                  <transparent>false</transparent>
-                  <pv_name>sim://strings(4)</pv_name>
-                  <background_color>
-                    <color name="IO InputPV Bg" red="255" green="255" blue="255" />
-                  </background_color>
-                  <foreground_color>
-                    <color name="IO InputPV Fg" red="0" green="32" blue="92" />
-                  </foreground_color>
-                  <widget_type>Text Update</widget_type>
-                  <enabled>true</enabled>
-                  <text>######</text>
-                  <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-                  <precision>0</precision>
-                  <font>
-                    <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
-                  </font>
-                  <width>140</width>
-                  <border_style>5</border_style>
-                  <rules />
-                  <pv_value />
-                  <border_width>2</border_width>
-                  <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
-                  </border_color>
-                  <horizontal_alignment>0</horizontal_alignment>
-                  <actions hook="false" hook_all="false" />
-                  <y>164</y>
-                  <wrap_words>true</wrap_words>
-                  <tooltip>Monitors Widgets</tooltip>
-                  <x>270</x>
                 </widget>
                 <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
                   <macros>
@@ -1840,10 +1733,10 @@ to enter the Label Text</text>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
-                  <lock_children>false</lock_children>
+                  <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>25</y>
                   <actions hook="false" hook_all="false" />
@@ -1852,7 +1745,7 @@ to enter the Label Text</text>
                   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
                     <border_alarm_sensitive>true</border_alarm_sensitive>
                     <visible>true</visible>
-                    <wuid>-203b6f4:1411132e3c7:-7cf8</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7ed9</wuid>
                     <scripts />
                     <square_led>false</square_led>
                     <on_color>
@@ -1860,7 +1753,7 @@ to enter the Label Text</text>
                     </on_color>
                     <height>40</height>
                     <data_type>0</data_type>
-                    <name>LED Template</name>
+                    <name>LED Template_1</name>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <show_boolean_label>true</show_boolean_label>
                     <scale_options>
@@ -1876,7 +1769,7 @@ to enter the Label Text</text>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <off_label>OFF</off_label>
                     <widget_type>LED</widget_type>
@@ -1894,25 +1787,26 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <on_label>ON</on_label>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>18</y>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                     <x>0</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator" version="1.0.0">
                     <border_alarm_sensitive>true</border_alarm_sensitive>
                     <visible>true</visible>
-                    <wuid>-203b6f4:1411132e3c7:-7cf7</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7ed5</wuid>
                     <auto_size>true</auto_size>
                     <boolean_label_position>5</boolean_label_position>
                     <scripts />
                     <height>75</height>
                     <data_type>0</data_type>
-                    <name>Image Boolean Indicator Template</name>
+                    <name>Image Boolean Indicator Template_1</name>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-                    <show_boolean_label>true</show_boolean_label>
+                    <show_boolean_label>false</show_boolean_label>
                     <stretch_to_fit>false</stretch_to_fit>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -1924,7 +1818,7 @@ to enter the Label Text</text>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <off_label>OFF</off_label>
                     <widget_type>Image Boolean Indicator</widget_type>
@@ -1942,12 +1836,13 @@ to enter the Label Text</text>
                     <on_label>ON</on_label>
                     <off_image>SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/JA Withdrawable Circuit Breaker Off.png</off_image>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
                     <on_image>SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/JA Withdrawable Circuit Breaker On.png</on_image>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                     <x>127</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget" version="1.0.0">
@@ -1957,7 +1852,7 @@ to enter the Label Text</text>
                     <scripts />
                     <height>75</height>
                     <data_type>0</data_type>
-                    <show_boolean_label>true</show_boolean_label>
+                    <show_boolean_label>false</show_boolean_label>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <off_label>OFF</off_label>
                     <background_color>
@@ -1989,13 +1884,13 @@ to enter the Label Text</text>
                     <image_file>SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/JA Withdrawable Circuit Breaker On.svg</image_file>
                     <crop_right>0</crop_right>
                     <crop_left>0</crop_left>
-                    <wuid>-203b6f4:1411132e3c7:-7cf6</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7ed1</wuid>
                     <boolean_label_position>5</boolean_label_position>
                     <on_color>
                       <color name="IO PV ON" red="0" green="0" blue="225" />
                     </on_color>
                     <stretch_to_fit>false</stretch_to_fit>
-                    <name>Boolean Symbol Image Monitor Template</name>
+                    <name>Boolean Symbol Image Monitor Template_1</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
                       <height_scalable>true</height_scalable>
@@ -2006,7 +1901,7 @@ to enter the Label Text</text>
                     </off_color>
                     <pv_name>sim://flipflop(5)</pv_name>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <flip_horizontal>false</flip_horizontal>
@@ -2014,12 +1909,13 @@ to enter the Label Text</text>
                     <rules />
                     <degree>0</degree>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>0</y>
                     <actions hook="false" hook_all="false" />
                     <x>254</x>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                   </widget>
                 </widget>
                 <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
@@ -2053,10 +1949,10 @@ to enter the Label Text</text>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
-                  <lock_children>true</lock_children>
+                  <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>203</y>
                   <actions hook="false" hook_all="false" />
@@ -2075,7 +1971,7 @@ to enter the Label Text</text>
                     <major_tick_step_hint>50</major_tick_step_hint>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Meter</widget_type>
@@ -2085,7 +1981,7 @@ to enter the Label Text</text>
                     </font>
                     <width>200</width>
                     <show_lolo>true</show_lolo>
-                    <border_style>5</border_style>
+                    <border_style>0</border_style>
                     <pv_value />
                     <show_markers>true</show_markers>
                     <show_hi>true</show_hi>
@@ -2093,14 +1989,14 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <log_scale>false</log_scale>
                     <minimum>0.0</minimum>
-                    <wuid>-203b6f4:1411132e3c7:-7cf4</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7dd0</wuid>
                     <show_hihi>true</show_hihi>
                     <scale_format></scale_format>
                     <show_scale>true</show_scale>
                     <color_lo>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_lo>
-                    <name>Meter Template</name>
+                    <name>Meter Template_1</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
                       <height_scalable>true</height_scalable>
@@ -2111,7 +2007,7 @@ to enter the Label Text</text>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_hi>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
@@ -2127,17 +2023,18 @@ to enter the Label Text</text>
                     <value_label_format></value_label_format>
                     <show_value_label>true</show_value_label>
                     <needle_color>
-                      <color name="IO Stick" red="0" green="32" blue="92" />
+                      <color name="IO Stick" red="0" green="0" blue="0" />
                     </needle_color>
                     <limits_from_pv>true</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <level_lolo>10.0</level_lolo>
                     <y>57</y>
                     <actions hook="false" hook_all="false" />
                     <x>0</x>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0.0">
                     <level_lo>20.0</level_lo>
@@ -2156,7 +2053,7 @@ to enter the Label Text</text>
                     <major_tick_step_hint>50</major_tick_step_hint>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Progress Bar</widget_type>
@@ -2166,7 +2063,7 @@ to enter the Label Text</text>
                     </font>
                     <width>200</width>
                     <show_lolo>true</show_lolo>
-                    <border_style>5</border_style>
+                    <border_style>0</border_style>
                     <effect_3d>true</effect_3d>
                     <pv_value />
                     <show_markers>true</show_markers>
@@ -2176,14 +2073,14 @@ to enter the Label Text</text>
                     <horizontal>true</horizontal>
                     <log_scale>false</log_scale>
                     <minimum>0.0</minimum>
-                    <wuid>-203b6f4:1411132e3c7:-7cf3</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7ce0</wuid>
                     <show_hihi>true</show_hihi>
                     <scale_format></scale_format>
                     <show_scale>true</show_scale>
                     <color_lo>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_lo>
-                    <name>Progress Bar Template</name>
+                    <name>Progress Bar Template_1</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
                       <height_scalable>true</height_scalable>
@@ -2195,7 +2092,7 @@ to enter the Label Text</text>
                     </color_hi>
                     <origin_ignored>true</origin_ignored>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <show_label>true</show_label>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -2216,13 +2113,14 @@ to enter the Label Text</text>
                     <transparent_background>false</transparent_background>
                     <limits_from_pv>true</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <level_lolo>10.0</level_lolo>
                     <y>63</y>
                     <actions hook="false" hook_all="false" />
                     <x>233</x>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                     <indicator_mode>false</indicator_mode>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.gauge" version="1.0.0">
@@ -2238,7 +2136,7 @@ to enter the Label Text</text>
                     <major_tick_step_hint>50</major_tick_step_hint>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Gauge</widget_type>
@@ -2248,7 +2146,7 @@ to enter the Label Text</text>
                     </font>
                     <width>138</width>
                     <show_lolo>true</show_lolo>
-                    <border_style>5</border_style>
+                    <border_style>0</border_style>
                     <effect_3d>true</effect_3d>
                     <pv_value />
                     <show_markers>true</show_markers>
@@ -2257,14 +2155,14 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <log_scale>false</log_scale>
                     <minimum>0.0</minimum>
-                    <wuid>-203b6f4:1411132e3c7:-7cf2</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7beb</wuid>
                     <show_hihi>true</show_hihi>
                     <scale_format></scale_format>
                     <show_scale>true</show_scale>
                     <color_lo>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_lo>
-                    <name>Gauge Template</name>
+                    <name>Gauge Template_1</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
                       <height_scalable>true</height_scalable>
@@ -2275,7 +2173,7 @@ to enter the Label Text</text>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_hi>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
@@ -2291,17 +2189,18 @@ to enter the Label Text</text>
                     <value_label_format></value_label_format>
                     <transparent_background>false</transparent_background>
                     <needle_color>
-                      <color name="IO Stick" red="0" green="32" blue="92" />
+                      <color name="IO Stick" red="0" green="0" blue="0" />
                     </needle_color>
                     <limits_from_pv>true</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <level_lolo>10.0</level_lolo>
                     <y>34</y>
                     <actions hook="false" hook_all="false" />
                     <x>497</x>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.thermometer" version="1.0.0">
                     <level_lo>20.0</level_lo>
@@ -2320,7 +2219,7 @@ to enter the Label Text</text>
                     <major_tick_step_hint>50</major_tick_step_hint>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Thermometer</widget_type>
@@ -2330,7 +2229,7 @@ to enter the Label Text</text>
                     </font>
                     <width>125</width>
                     <show_lolo>true</show_lolo>
-                    <border_style>5</border_style>
+                    <border_style>0</border_style>
                     <effect_3d>true</effect_3d>
                     <show_bulb>true</show_bulb>
                     <pv_value />
@@ -2340,14 +2239,14 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <log_scale>false</log_scale>
                     <minimum>0.0</minimum>
-                    <wuid>-203b6f4:1411132e3c7:-7cf1</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7be7</wuid>
                     <show_hihi>true</show_hihi>
                     <scale_format></scale_format>
                     <show_scale>true</show_scale>
                     <color_lo>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_lo>
-                    <name>Thermometer Template</name>
+                    <name>Thermometer Template_1</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
                       <height_scalable>true</height_scalable>
@@ -2358,7 +2257,7 @@ to enter the Label Text</text>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_hi>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
@@ -2378,13 +2277,14 @@ to enter the Label Text</text>
                     <transparent_background>false</transparent_background>
                     <limits_from_pv>true</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <level_lolo>10.0</level_lolo>
                     <y>0</y>
                     <actions hook="false" hook_all="false" />
                     <x>737</x>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.tank" version="1.0.0">
                     <level_lo>20.0</level_lo>
@@ -2403,7 +2303,7 @@ to enter the Label Text</text>
                     <major_tick_step_hint>50</major_tick_step_hint>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Tank</widget_type>
@@ -2413,7 +2313,7 @@ to enter the Label Text</text>
                     </font>
                     <width>150</width>
                     <show_lolo>true</show_lolo>
-                    <border_style>5</border_style>
+                    <border_style>0</border_style>
                     <effect_3d>true</effect_3d>
                     <pv_value />
                     <show_markers>true</show_markers>
@@ -2422,14 +2322,14 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <log_scale>false</log_scale>
                     <minimum>0.0</minimum>
-                    <wuid>-203b6f4:1411132e3c7:-7cf0</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7be3</wuid>
                     <show_hihi>true</show_hihi>
                     <scale_format></scale_format>
                     <show_scale>true</show_scale>
                     <color_lo>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_lo>
-                    <name>Tank Template</name>
+                    <name>Tank Template_1</name>
                     <scale_options>
                       <width_scalable>true</width_scalable>
                       <height_scalable>true</height_scalable>
@@ -2440,7 +2340,7 @@ to enter the Label Text</text>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_hi>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
@@ -2458,13 +2358,14 @@ to enter the Label Text</text>
                     <transparent_background>false</transparent_background>
                     <limits_from_pv>true</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <level_lolo>10.0</level_lolo>
                     <y>13</y>
                     <actions hook="false" hook_all="false" />
                     <x>940</x>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0.0">
                     <trace_0_trace_color>
@@ -2478,8 +2379,8 @@ to enter the Label Text</text>
                     <axis_0_log_scale>false</axis_0_log_scale>
                     <trace_0_point_size>4</trace_0_point_size>
                     <show_legend>true</show_legend>
-                    <y>222</y>
-                    <x>164</x>
+                    <y>204</y>
+                    <x>145</x>
                     <visible>true</visible>
                     <trace_0_x_pv_value />
                     <axis_1_visible>true</axis_1_visible>
@@ -2490,10 +2391,10 @@ to enter the Label Text</text>
                     </axis_1_title_font>
                     <border_width>2</border_width>
                     <axis_0_axis_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </axis_0_axis_color>
                     <axis_1_scale_format></axis_1_scale_format>
-                    <name>XY Graph Template</name>
+                    <name>XY Graph Template_1</name>
                     <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
                     <trace_0_line_width>2</trace_0_line_width>
                     <show_toolbar>false</show_toolbar>
@@ -2504,16 +2405,16 @@ to enter the Label Text</text>
                     <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
                     <trace_0_name>$(trace_0_y_pv)</trace_0_name>
                     <trace_0_update_mode>0</trace_0_update_mode>
-                    <axis_0_axis_title>Primary X Axis (0)</axis_0_axis_title>
-                    <wuid>-203b6f4:1411132e3c7:-7cef</wuid>
+                    <axis_0_axis_title>X Axis</axis_0_axis_title>
+                    <wuid>-747f1adb:14574a982a9:-7bdf</wuid>
                     <axis_1_axis_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </axis_1_axis_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-                    <axis_1_axis_title>Primary Y Axis (1)</axis_1_axis_title>
+                    <axis_1_axis_title>Y Axis</axis_1_axis_title>
                     <axis_0_maximum>100.0</axis_0_maximum>
                     <axis_0_scale_font>
                       <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
@@ -2521,7 +2422,7 @@ to enter the Label Text</text>
                     <axis_0_time_format>2</axis_0_time_format>
                     <axis_1_log_scale>false</axis_1_log_scale>
                     <title_font>
-                      <opifont.name fontName="DejaVu Sans" height="18" style="1">IO Title</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="18" style="0">IO SubTitle</opifont.name>
                     </title_font>
                     <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
                     <axis_0_visible>true</axis_0_visible>
@@ -2547,13 +2448,14 @@ to enter the Label Text</text>
                     <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
                     <trace_0_x_axis_index>0</trace_0_x_axis_index>
                     <trace_0_point_style>1</trace_0_point_style>
-                    <tooltip>Monitors Widgets</tooltip>
+                    <tooltip>$(trace_0_y_pv)
+$(trace_0_y_pv_value)</tooltip>
                     <border_alarm_sensitive>true</border_alarm_sensitive>
                     <trace_0_y_axis_index>1</trace_0_y_axis_index>
                     <axis_1_scale_font>
                       <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Scale 1</opifont.name>
                     </axis_1_scale_font>
-                    <border_style>5</border_style>
+                    <border_style>0</border_style>
                     <plot_area_background_color>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </plot_area_background_color>
@@ -2563,12 +2465,12 @@ to enter the Label Text</text>
                     <trace_0_visible>true</trace_0_visible>
                     <axis_0_minimum>0.0</axis_0_minimum>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <scripts />
                     <trace_0_anti_alias>true</trace_0_anti_alias>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <pv_value />
                     <scale_options>
@@ -2584,6 +2486,127 @@ to enter the Label Text</text>
                     </axis_1_grid_color>
                     <trace_0_update_delay>100</trace_0_update_delay>
                   </widget>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget" version="1.0.0">
+                  <border_alarm_sensitive>true</border_alarm_sensitive>
+                  <crop_right>0</crop_right>
+                  <crop_left>0</crop_left>
+                  <visible>true</visible>
+                  <wuid>-747f1adb:14574a982a9:-7ec0</wuid>
+                  <auto_size>true</auto_size>
+                  <boolean_label_position>5</boolean_label_position>
+                  <scripts />
+                  <on_color>
+                    <color name="IO PV ON" red="0" green="0" blue="225" />
+                  </on_color>
+                  <height>75</height>
+                  <name>Multistate Symbol Image Monitor Template_1</name>
+                  <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                  <stretch_to_fit>false</stretch_to_fit>
+                  <show_boolean_label>false</show_boolean_label>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <off_color>
+                    <color name="IO PV OFF" red="77" green="77" blue="77" />
+                  </off_color>
+                  <pv_name>sim://ramp(0,3,1,1)</pv_name>
+                  <background_color>
+                    <color name="IO Background" red="200" green="200" blue="200" />
+                  </background_color>
+                  <foreground_color>
+                    <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+                  </foreground_color>
+                  <widget_type>Multistate Symbol Image Monitor</widget_type>
+                  <enabled>true</enabled>
+                  <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                  <font>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
+                  </font>
+                  <width>41</width>
+                  <flip_horizontal>false</flip_horizontal>
+                  <permutation_matrix>
+                    <row>
+                      <col>1.0</col>
+                      <col>0.0</col>
+                    </row>
+                    <row>
+                      <col>0.0</col>
+                      <col>1.0</col>
+                    </row>
+                  </permutation_matrix>
+                  <border_style>0</border_style>
+                  <crop_top>0</crop_top>
+                  <rules />
+                  <pv_value />
+                  <flip_vertical>false</flip_vertical>
+                  <crop_bottom>0</crop_bottom>
+                  <degree>0</degree>
+                  <items />
+                  <border_width>2</border_width>
+                  <image_file>SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 0.svg</image_file>
+                  <border_color>
+                    <color name="IO Border" red="0" green="0" blue="0" />
+                  </border_color>
+                  <items_from_pv>true</items_from_pv>
+                  <actions hook="false" hook_all="false" />
+                  <y>25</y>
+                  <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                  <x>397</x>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+                  <border_alarm_sensitive>true</border_alarm_sensitive>
+                  <visible>true</visible>
+                  <vertical_alignment>0</vertical_alignment>
+                  <show_units>true</show_units>
+                  <wuid>-747f1adb:14574a982a9:-7cdc</wuid>
+                  <auto_size>false</auto_size>
+                  <rotation_angle>0.0</rotation_angle>
+                  <scripts />
+                  <height>25</height>
+                  <name>Text Update Template_1</name>
+                  <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <format_type>0</format_type>
+                  <precision_from_pv>true</precision_from_pv>
+                  <transparent>true</transparent>
+                  <pv_name>sim://strings(4)</pv_name>
+                  <background_color>
+                    <color name="IO InputPV Bg" red="200" green="200" blue="200" />
+                  </background_color>
+                  <foreground_color>
+                    <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+                  </foreground_color>
+                  <widget_type>Text Update</widget_type>
+                  <enabled>true</enabled>
+                  <text>######</text>
+                  <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                  <precision>0</precision>
+                  <font>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
+                  </font>
+                  <width>100</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <pv_value />
+                  <border_width>2</border_width>
+                  <border_color>
+                    <color name="IO Border" red="0" green="0" blue="0" />
+                  </border_color>
+                  <horizontal_alignment>0</horizontal_alignment>
+                  <actions hook="false" hook_all="false" />
+                  <y>164</y>
+                  <wrap_words>false</wrap_words>
+                  <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                  <x>270</x>
                 </widget>
               </widget>
               <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
@@ -2633,7 +2656,7 @@ to enter the Label Text</text>
                   <visible>true</visible>
                   <wuid>-203b6f4:1411132e3c7:-7ced</wuid>
                   <scripts />
-                  <height>100</height>
+                  <height>101</height>
                   <name>Boolean</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -2653,14 +2676,14 @@ to enter the Label Text</text>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>405</width>
+                  <width>406</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>15</y>
                   <actions hook="false" hook_all="false" />
@@ -2680,7 +2703,7 @@ to enter the Label Text</text>
                     <data_type>0</data_type>
                     <name>Boolean Switch Template_1</name>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-                    <show_boolean_label>true</show_boolean_label>
+                    <show_boolean_label>false</show_boolean_label>
                     <scale_options>
                       <width_scalable>true</width_scalable>
                       <height_scalable>true</height_scalable>
@@ -2694,7 +2717,7 @@ to enter the Label Text</text>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <off_label>OFF</off_label>
                     <released_action_index>0</released_action_index>
@@ -2717,7 +2740,7 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <on_label>ON</on_label>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>0</y>
                     <actions hook="false" hook_all="false" />
@@ -2732,7 +2755,7 @@ to enter the Label Text</text>
                     <scripts />
                     <height>75</height>
                     <data_type>0</data_type>
-                    <show_boolean_label>true</show_boolean_label>
+                    <show_boolean_label>false</show_boolean_label>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <off_label>OFF</off_label>
                     <background_color>
@@ -2783,7 +2806,7 @@ to enter the Label Text</text>
                     </off_color>
                     <pv_name>loc://$(DID)_bool(0)</pv_name>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <flip_horizontal>false</flip_horizontal>
@@ -2794,7 +2817,7 @@ to enter the Label Text</text>
                     <toggle_button>true</toggle_button>
                     <degree>0</degree>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>12</y>
                     <actions hook="false" hook_all="false" />
@@ -2829,7 +2852,7 @@ to enter the Label Text</text>
                       <color name="IO Button" red="178" green="178" blue="178" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <off_label>OFF</off_label>
                     <released_action_index>0</released_action_index>
@@ -2853,7 +2876,7 @@ to enter the Label Text</text>
                     <on_label>ON</on_label>
                     <square_button>false</square_button>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>25</y>
                     <actions hook="false" hook_all="false" />
@@ -2872,7 +2895,7 @@ to enter the Label Text</text>
                     <data_type>0</data_type>
                     <name>Image Boolean Button Template_1</name>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-                    <show_boolean_label>true</show_boolean_label>
+                    <show_boolean_label>false</show_boolean_label>
                     <stretch_to_fit>false</stretch_to_fit>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -2884,7 +2907,7 @@ to enter the Label Text</text>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <off_label>OFF</off_label>
                     <released_action_index>0</released_action_index>
@@ -2907,7 +2930,7 @@ to enter the Label Text</text>
                     <on_label>ON</on_label>
                     <off_image>SymbolLibrary/PNG/Fluid/Valves/VG 2 way-Valves On-Off Angle Off.png</off_image>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>30</y>
                     <on_image>SymbolLibrary/PNG/Fluid/Valves/VG 2 way-Valves On-Off Angle On.png</on_image>
@@ -2923,7 +2946,7 @@ to enter the Label Text</text>
                   <visible>true</visible>
                   <wuid>-203b6f4:1411132e3c7:-7ce8</wuid>
                   <scripts />
-                  <height>100</height>
+                  <height>101</height>
                   <name>Choice</name>
                   <scale_options>
                     <width_scalable>true</width_scalable>
@@ -2943,14 +2966,14 @@ to enter the Label Text</text>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>1040</width>
+                  <width>1062</width>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
-                  <lock_children>true</lock_children>
+                  <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>152</y>
                   <actions hook="false" hook_all="false" />
@@ -2974,18 +2997,18 @@ to enter the Label Text</text>
                       <color name="IO Button" red="178" green="178" blue="178" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Choice Button</widget_type>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>6</border_style>
                     <selected_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </selected_color>
                     <rules />
                     <pv_value />
@@ -2997,7 +3020,7 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <horizontal>false</horizontal>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <items_from_pv>false</items_from_pv>
                     <actions hook="false" hook_all="false" />
@@ -3020,18 +3043,18 @@ to enter the Label Text</text>
                     </scale_options>
                     <pv_name>loc://$(DID)_choice("Choice 2")</pv_name>
                     <background_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Combo</widget_type>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Output 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Output 1</opifont.name>
                     </font>
-                    <width>100</width>
+                    <width>124</width>
                     <border_style>6</border_style>
                     <rules />
                     <pv_value />
@@ -3042,7 +3065,7 @@ to enter the Label Text</text>
                     </items>
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <items_from_pv>false</items_from_pv>
                     <actions hook="false" hook_all="false" />
@@ -3075,20 +3098,20 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
-                    <width>60</width>
+                    <width>81</width>
                     <border_style>6</border_style>
                     <selected_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </selected_color>
-                    <label>One</label>
+                    <label>Check</label>
                     <rules />
                     <pv_value />
                     <bit>0</bit>
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>38</y>
@@ -3119,12 +3142,12 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>6</border_style>
                     <selected_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </selected_color>
                     <rules />
                     <pv_value />
@@ -3136,7 +3159,7 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <horizontal>false</horizontal>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <items_from_pv>false</items_from_pv>
                     <actions hook="false" hook_all="false" />
@@ -3170,7 +3193,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
                     <width>100</width>
                     <border_style>6</border_style>
@@ -3179,7 +3202,7 @@ to enter the Label Text</text>
                     <pv_value />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>30</y>
                     <actions hook="false" hook_all="false">
@@ -3230,9 +3253,9 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <text>Check/Uncheck</text>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
-                    <width>80</width>
+                    <width>146</width>
                     <border_style>6</border_style>
                     <push_action_index>0</push_action_index>
                     <image></image>
@@ -3242,7 +3265,7 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <release_action_index>1</release_action_index>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>30</y>
                     <actions hook="false" hook_all="false">
@@ -3262,7 +3285,7 @@ to enter the Label Text</text>
                       </action>
                     </actions>
                     <tooltip>Control Widgets</tooltip>
-                    <x>820</x>
+                    <x>805</x>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget" version="1.0.0">
                     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -3271,7 +3294,7 @@ to enter the Label Text</text>
                     <auto_size>true</auto_size>
                     <scripts />
                     <height>75</height>
-                    <show_boolean_label>true</show_boolean_label>
+                    <show_boolean_label>false</show_boolean_label>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
                       <color name="IO Background" red="200" green="200" blue="200" />
@@ -3324,7 +3347,7 @@ to enter the Label Text</text>
                     </off_color>
                     <pv_name>loc://$(DID)_choice("Choice 2")</pv_name>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <flip_horizontal>false</flip_horizontal>
@@ -3334,7 +3357,7 @@ to enter the Label Text</text>
                     <show_confirm_dialog>false</show_confirm_dialog>
                     <degree>0</degree>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>13</y>
                     <actions hook="false" hook_all="false" />
@@ -3373,10 +3396,10 @@ to enter the Label Text</text>
                   <border_style>0</border_style>
                   <rules />
                   <fc>false</fc>
-                  <lock_children>true</lock_children>
+                  <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>331</y>
                   <actions hook="false" hook_all="false" />
@@ -3403,10 +3426,10 @@ to enter the Label Text</text>
                     <pv_name>loc://$(DID)_input1(28)</pv_name>
                     <buttons_on_left>false</buttons_on_left>
                     <background_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Spinner</widget_type>
                     <enabled>true</enabled>
@@ -3414,7 +3437,7 @@ to enter the Label Text</text>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <precision>3</precision>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
                     <width>85</width>
                     <border_style>6</border_style>
@@ -3426,7 +3449,7 @@ to enter the Label Text</text>
                     <maximum>100.0</maximum>
                     <limits_from_pv>false</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>1</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -3453,10 +3476,10 @@ to enter the Label Text</text>
                     <page_increment>10.0</page_increment>
                     <pv_name>loc://$(DID)_input1(28)</pv_name>
                     <background_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Stick" red="0" green="32" blue="92" />
+                      <color name="IO Stick" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Scrollbar</widget_type>
                     <enabled>true</enabled>
@@ -3474,7 +3497,7 @@ to enter the Label Text</text>
                     <horizontal>true</horizontal>
                     <limits_from_pv>false</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>88</y>
@@ -3503,16 +3526,16 @@ to enter the Label Text</text>
                     </internalFrameColor>
                     <pv_name>loc://$(DID)_input1(28)</pv_name>
                     <background_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Thumb Wheel</widget_type>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
                     <width>150</width>
                     <border_style>6</border_style>
@@ -3522,11 +3545,11 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <maximum>100.0</maximum>
                     <focusedFrameColor>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </focusedFrameColor>
                     <limits_from_pv>false</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>70</y>
@@ -3546,14 +3569,14 @@ to enter the Label Text</text>
                     <show_lo>true</show_lo>
                     <scripts />
                     <thumb_color>
-                      <color name="IO Stick" red="0" green="32" blue="92" />
+                      <color name="IO Stick" red="0" green="0" blue="0" />
                     </thumb_color>
                     <height>200</height>
                     <major_tick_step_hint>50</major_tick_step_hint>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <page_increment>10.0</page_increment>
                     <background_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Scaled Slider</widget_type>
@@ -3561,9 +3584,9 @@ to enter the Label Text</text>
                     <font>
                       <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                     </font>
-                    <width>140</width>
+                    <width>176</width>
                     <show_lolo>true</show_lolo>
-                    <border_style>6</border_style>
+                    <border_style>0</border_style>
                     <effect_3d>true</effect_3d>
                     <pv_value />
                     <show_markers>true</show_markers>
@@ -3591,7 +3614,7 @@ to enter the Label Text</text>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_hi>
                     <foreground_color>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <step_increment>1.0</step_increment>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -3615,15 +3638,15 @@ to enter the Label Text</text>
                       </rule>
                     </rules>
                     <value_label_format></value_label_format>
-                    <transparent_background>false</transparent_background>
+                    <transparent_background>true</transparent_background>
                     <limits_from_pv>false</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <level_lolo>10.0</level_lolo>
                     <y>0</y>
                     <actions hook="false" hook_all="false" />
-                    <x>685</x>
+                    <x>690</x>
                     <tooltip>Control Widgets</tooltip>
                   </widget>
                   <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0.0">
@@ -3639,13 +3662,13 @@ to enter the Label Text</text>
                       <color name="IO Button" red="178" green="178" blue="178" />
                     </knob_color>
                     <thumb_color>
-                      <color name="IO Stick" red="0" green="32" blue="92" />
+                      <color name="IO Stick" red="0" green="0" blue="0" />
                     </thumb_color>
                     <height>173</height>
                     <major_tick_step_hint>50</major_tick_step_hint>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Knob</widget_type>
@@ -3656,7 +3679,7 @@ to enter the Label Text</text>
                     </font>
                     <width>173</width>
                     <show_lolo>true</show_lolo>
-                    <border_style>6</border_style>
+                    <border_style>0</border_style>
                     <effect_3d>true</effect_3d>
                     <pv_value />
                     <show_markers>true</show_markers>
@@ -3683,7 +3706,7 @@ to enter the Label Text</text>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_hi>
                     <foreground_color>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>80.0</level_hi>
@@ -3704,11 +3727,11 @@ to enter the Label Text</text>
                       </rule>
                     </rules>
                     <value_label_format></value_label_format>
-                    <transparent_background>false</transparent_background>
+                    <transparent_background>true</transparent_background>
                     <show_value_label>true</show_value_label>
                     <limits_from_pv>false</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <level_lolo>10.0</level_lolo>
                     <y>14</y>
@@ -3721,33 +3744,31 @@ to enter the Label Text</text>
                     <read_only>false</read_only>
                     <visible>true</visible>
                     <multiline_input>false</multiline_input>
-                    <show_native_border>true</show_native_border>
+                    <show_native_border>false</show_native_border>
                     <auto_size>false</auto_size>
                     <scripts />
-                    <height>25</height>
+                    <height>35</height>
                     <password_input>false</password_input>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <precision_from_pv>true</precision_from_pv>
                     <background_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Text Input</widget_type>
                     <text>######</text>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Output 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Output 1</opifont.name>
                     </font>
                     <width>100</width>
-                    <border_style>6</border_style>
+                    <border_style>1</border_style>
                     <pv_value />
-                    <maximum>1.7976931348623157E308</maximum>
-                    <border_width>2</border_width>
-                    <minimum>-1.7976931348623157E308</minimum>
-                    <next_focus>0</next_focus>
+                    <border_width>1</border_width>
+                    <next_focus>2</next_focus>
                     <show_units>true</show_units>
-                    <wuid>-203b6f4:1411132e3c7:-7cda</wuid>
+                    <wuid>-747f1adb:14574a982a9:-7737</wuid>
                     <style>1</style>
-                    <name>Text Input Template</name>
+                    <name>Text Input Template_1</name>
                     <format_type>0</format_type>
                     <scale_options>
                       <width_scalable>true</width_scalable>
@@ -3756,28 +3777,22 @@ to enter the Label Text</text>
                     </scale_options>
                     <pv_name>loc://$(DID)_input1(28)</pv_name>
                     <foreground_color>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <precision>0</precision>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <confirm_message></confirm_message>
-                    <rules>
-                      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-                        <exp bool_exp="pv0==1">
-                          <value>9</value>
-                        </exp>
-                        <pv trig="true">$(pv_name).SIMM</pv>
-                      </rule>
-                    </rules>
-                    <limits_from_pv>false</limits_from_pv>
+                    <rules />
+                    <limits_from_pv>true</limits_from_pv>
                     <horizontal_alignment>0</horizontal_alignment>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
-                    <y>88</y>
+                    <y>83</y>
                     <actions hook="false" hook_all="false" />
-                    <x>0</x>
-                    <tooltip>Control Widgets</tooltip>
+                    <x>10</x>
+                    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
                   </widget>
                 </widget>
               </widget>
@@ -3848,11 +3863,11 @@ to enter the Label Text</text>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>168</width>
+                  <width>258</width>
                   <border_style>13</border_style>
                   <rules />
                   <fc>false</fc>
-                  <lock_children>true</lock_children>
+                  <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
                     <color name="IO Text Fg" red="0" green="0" blue="0" />
@@ -3871,15 +3886,15 @@ to enter the Label Text</text>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <precision_from_pv>false</precision_from_pv>
                     <background_color>
-                      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Text Input</widget_type>
-                    <text>######</text>
+                    <text>2014-01-01 00:00:00</text>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Output 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Output 1</opifont.name>
                     </font>
-                    <width>141</width>
+                    <width>231</width>
                     <border_style>6</border_style>
                     <pv_value />
                     <maximum>1.7976931348623157E308</maximum>
@@ -3901,7 +3916,7 @@ to enter the Label Text</text>
                     <transparent>false</transparent>
                     <pv_name>loc://$(DID)_date("01/01/2001")</pv_name>
                     <foreground_color>
-                      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                      <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <precision>0</precision>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -3910,7 +3925,7 @@ to enter the Label Text</text>
                     <limits_from_pv>false</limits_from_pv>
                     <horizontal_alignment>0</horizontal_alignment>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <y>0</y>
                     <actions hook="false" hook_all="false" />
@@ -3945,11 +3960,11 @@ to enter the Label Text</text>
                   <font>
                     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                   </font>
-                  <width>967</width>
+                  <width>1097</width>
                   <border_style>13</border_style>
                   <rules />
                   <fc>false</fc>
-                  <lock_children>true</lock_children>
+                  <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
                     <color name="IO Text Fg" red="0" green="0" blue="0" />
@@ -3989,7 +4004,7 @@ to enter the Label Text</text>
                     <font>
                       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
                     </font>
-                    <width>356</width>
+                    <width>571</width>
                     <border_style>6</border_style>
                     <rules />
                     <spinner_width>40</spinner_width>
@@ -3997,7 +4012,7 @@ to enter the Label Text</text>
                     <border_width>2</border_width>
                     <horizontal>true</horizontal>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>22</y>
@@ -4017,14 +4032,14 @@ to enter the Label Text</text>
                       <show_lo>true</show_lo>
                       <scripts />
                       <thumb_color>
-                        <color name="IO Stick" red="0" green="32" blue="92" />
+                        <color name="IO Stick" red="0" green="0" blue="0" />
                       </thumb_color>
                       <height>200</height>
                       <major_tick_step_hint>50</major_tick_step_hint>
                       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                       <page_increment>10.0</page_increment>
                       <background_color>
-                        <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+                        <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
                       </background_color>
                       <enabled>true</enabled>
                       <widget_type>Scaled Slider</widget_type>
@@ -4032,7 +4047,7 @@ to enter the Label Text</text>
                       <font>
                         <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
                       </font>
-                      <width>70</width>
+                      <width>113</width>
                       <show_lolo>true</show_lolo>
                       <border_style>6</border_style>
                       <effect_3d>true</effect_3d>
@@ -4062,7 +4077,7 @@ to enter the Label Text</text>
                         <color name="Minor" red="255" green="255" blue="0" />
                       </color_hi>
                       <foreground_color>
-                        <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+                        <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
                       </foreground_color>
                       <step_increment>1.0</step_increment>
                       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -4082,12 +4097,12 @@ to enter the Label Text</text>
                       <transparent_background>false</transparent_background>
                       <limits_from_pv>false</limits_from_pv>
                       <border_color>
-                        <color name="IO Border" red="215" green="215" blue="215" />
+                        <color name="IO Border" red="0" green="0" blue="0" />
                       </border_color>
                       <level_lolo>10.0</level_lolo>
-                      <y>65</y>
+                      <y>0</y>
                       <actions hook="false" hook_all="false" />
-                      <x>79</x>
+                      <x>0</x>
                       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
                     </widget>
@@ -4114,10 +4129,10 @@ $(pv_value)</tooltip>
                     <transparent>false</transparent>
                     <pv_name>sim://sineWaveform(10,5,5,3)</pv_name>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Text Update</widget_type>
                     <enabled>true</enabled>
@@ -4125,15 +4140,15 @@ $(pv_value)</tooltip>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <precision>0</precision>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
-                    <width>356</width>
-                    <border_style>5</border_style>
+                    <width>666</width>
+                    <border_style>0</border_style>
                     <rules />
                     <pv_value />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -4155,7 +4170,7 @@ $(pv_value)</tooltip>
                     <trace_0_point_size>4</trace_0_point_size>
                     <show_legend>true</show_legend>
                     <y>0</y>
-                    <x>540</x>
+                    <x>600</x>
                     <visible>true</visible>
                     <trace_0_x_pv_value />
                     <axis_1_visible>true</axis_1_visible>
@@ -4166,7 +4181,7 @@ $(pv_value)</tooltip>
                     </axis_1_title_font>
                     <border_width>2</border_width>
                     <axis_0_axis_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </axis_0_axis_color>
                     <axis_1_scale_format></axis_1_scale_format>
                     <name>XY Graph Template</name>
@@ -4183,10 +4198,10 @@ $(pv_value)</tooltip>
                     <axis_0_axis_title>Primary X Axis (0)</axis_0_axis_title>
                     <wuid>-40bc3e60:141300391a1:-41bb</wuid>
                     <axis_1_axis_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </axis_1_axis_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <axis_1_axis_title>Primary Y Axis (1)</axis_1_axis_title>
@@ -4215,7 +4230,7 @@ $(pv_value)</tooltip>
                     <show_plot_area_border>true</show_plot_area_border>
                     <widget_type>XY Graph</widget_type>
                     <enabled>true</enabled>
-                    <width>400</width>
+                    <width>470</width>
                     <trace_0_buffer_size>100</trace_0_buffer_size>
                     <trigger_pv></trigger_pv>
                     <axis_count>2</axis_count>
@@ -4239,12 +4254,12 @@ $(pv_value)</tooltip>
                     <trace_0_visible>true</trace_0_visible>
                     <axis_0_minimum>0.0</axis_0_minimum>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <scripts />
                     <trace_0_anti_alias>true</trace_0_anti_alias>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <pv_value />
                     <scale_options>
@@ -4259,104 +4274,6 @@ $(pv_value)</tooltip>
                       <color name="IO Grid" red="215" green="215" blue="215" />
                     </axis_1_grid_color>
                     <trace_0_update_delay>100</trace_0_update_delay>
-                  </widget>
-                  <widget typeId="org.csstudio.opibuilder.widgets.array" version="1.0.0">
-                    <border_alarm_sensitive>true</border_alarm_sensitive>
-                    <macros>
-                      <include_parent_macros>true</include_parent_macros>
-                    </macros>
-                    <visible>true</visible>
-                    <wuid>-40bc3e60:141300391a1:-3fc3</wuid>
-                    <scripts />
-                    <height>171</height>
-                    <show_spinner>false</show_spinner>
-                    <name>Array Template_1</name>
-                    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-                    <scale_options>
-                      <width_scalable>true</width_scalable>
-                      <height_scalable>true</height_scalable>
-                      <keep_wh_ratio>false</keep_wh_ratio>
-                    </scale_options>
-                    <pv_name>sim://sineWaveform(10,5,5,3)</pv_name>
-                    <show_scrollbar>false</show_scrollbar>
-                    <background_color>
-                      <color name="IO Background" red="200" green="200" blue="200" />
-                    </background_color>
-                    <foreground_color>
-                      <color name="IO Foreground" red="0" green="0" blue="0" />
-                    </foreground_color>
-                    <widget_type>Array</widget_type>
-                    <enabled>true</enabled>
-                    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-                    <font>
-                      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-                    </font>
-                    <width>166</width>
-                    <border_style>6</border_style>
-                    <rules />
-                    <spinner_width>40</spinner_width>
-                    <pv_value />
-                    <border_width>2</border_width>
-                    <horizontal>false</horizontal>
-                    <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
-                    </border_color>
-                    <actions hook="false" hook_all="false" />
-                    <y>39</y>
-                    <tooltip>Waveform &amp; Setpoint</tooltip>
-                    <x>365</x>
-                    <vec>5</vec>
-                    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-                      <border_alarm_sensitive>false</border_alarm_sensitive>
-                      <visible>true</visible>
-                      <vertical_alignment>0</vertical_alignment>
-                      <show_units>true</show_units>
-                      <wuid>-40bc3e60:141300391a1:-3f7f</wuid>
-                      <auto_size>false</auto_size>
-                      <rotation_angle>0.0</rotation_angle>
-                      <scripts />
-                      <height>33</height>
-                      <name>Text Update Template</name>
-                      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-                      <scale_options>
-                        <width_scalable>false</width_scalable>
-                        <height_scalable>false</height_scalable>
-                        <keep_wh_ratio>false</keep_wh_ratio>
-                      </scale_options>
-                      <format_type>0</format_type>
-                      <precision_from_pv>true</precision_from_pv>
-                      <transparent>false</transparent>
-                      <pv_name></pv_name>
-                      <background_color>
-                        <color name="IO InputPV Bg" red="255" green="255" blue="255" />
-                      </background_color>
-                      <foreground_color>
-                        <color name="IO InputPV Fg" red="0" green="32" blue="92" />
-                      </foreground_color>
-                      <widget_type>Text Update</widget_type>
-                      <enabled>true</enabled>
-                      <text>######</text>
-                      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-                      <precision>0</precision>
-                      <font>
-                        <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
-                      </font>
-                      <width>160</width>
-                      <border_style>5</border_style>
-                      <rules />
-                      <pv_value />
-                      <border_width>2</border_width>
-                      <border_color>
-                        <color name="IO Border" red="215" green="215" blue="215" />
-                      </border_color>
-                      <horizontal_alignment>0</horizontal_alignment>
-                      <actions hook="false" hook_all="false" />
-                      <y>2</y>
-                      <wrap_words>true</wrap_words>
-                      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-                      <x>2</x>
-                    </widget>
                   </widget>
                 </widget>
                 <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
@@ -4404,7 +4321,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-40bc3e60:141300391a1:-3c03</wuid>
                     <bg_gradient_color>
@@ -4427,7 +4344,7 @@ $(pv_value)</tooltip>
                       <color name="IO Background" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO Shape Fill" red="188" green="188" blue="188" />
+                      <color name="IO Shape Fill" red="255" green="255" blue="255" />
                     </foreground_color>
                     <widget_type>Ellipse</widget_type>
                     <enabled>true</enabled>
@@ -4461,7 +4378,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>10</y>
@@ -4491,10 +4408,10 @@ $(pv_value)</tooltip>
                     <transparent>false</transparent>
                     <pv_name>sim://sine</pv_name>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <widget_type>Text Update</widget_type>
                     <enabled>true</enabled>
@@ -4502,7 +4419,7 @@ $(pv_value)</tooltip>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <precision>0</precision>
                     <font>
-                      <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
                     </font>
                     <width>185</width>
                     <border_style>5</border_style>
@@ -4510,7 +4427,7 @@ $(pv_value)</tooltip>
                     <pv_value />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -4551,7 +4468,7 @@ $(pv_value)</tooltip>
                   <border_style>13</border_style>
                   <rules />
                   <fc>false</fc>
-                  <lock_children>true</lock_children>
+                  <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
                     <color name="IO Text Fg" red="0" green="0" blue="0" />
@@ -4577,7 +4494,7 @@ $(pv_value)</tooltip>
                     <major_tick_step_hint>50</major_tick_step_hint>
                     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
                     <background_color>
-                      <color name="IO InputPV Bg" red="255" green="255" blue="255" />
+                      <color name="IO InputPV Bg" red="200" green="200" blue="200" />
                     </background_color>
                     <enabled>true</enabled>
                     <widget_type>Tank</widget_type>
@@ -4609,12 +4526,12 @@ $(pv_value)</tooltip>
                       <height_scalable>true</height_scalable>
                       <keep_wh_ratio>false</keep_wh_ratio>
                     </scale_options>
-                    <pv_name>sim://noise</pv_name>
+                    <pv_name>sim://ramp(-5,5,2)</pv_name>
                     <color_hi>
                       <color name="Minor" red="255" green="255" blue="0" />
                     </color_hi>
                     <foreground_color>
-                      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+                      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
                     </foreground_color>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <level_hi>4.0</level_hi>
@@ -4642,7 +4559,7 @@ $(pv_value)</tooltip>
                     <transparent_background>false</transparent_background>
                     <limits_from_pv>false</limits_from_pv>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <level_lolo>-4.0</level_lolo>
                     <y>0</y>
@@ -4729,7 +4646,7 @@ $(pv_value)</tooltip>
                   <border_width>2</border_width>
                   <horizontal>true</horizontal>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <actions hook="false" hook_all="false" />
                   <y>0</y>
@@ -4806,10 +4723,10 @@ $(pv_value)</tooltip>
                       <border_style>0</border_style>
                       <rules />
                       <fc>false</fc>
-                      <lock_children>true</lock_children>
+                      <lock_children>false</lock_children>
                       <border_width>1</border_width>
                       <border_color>
-                        <color name="IO Border" red="215" green="215" blue="215" />
+                        <color name="IO Border" red="0" green="0" blue="0" />
                       </border_color>
                       <y>9</y>
                       <actions hook="false" hook_all="false" />
@@ -4837,7 +4754,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>IOSchema</text>
                         <font>
-                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="10" style="0">IO Label 3</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -4848,7 +4765,7 @@ $(pv_value)</tooltip>
                         <toggle_button>false</toggle_button>
                         <border_width>2</border_width>
                         <border_color>
-                          <color name="IO Border" red="215" green="215" blue="215" />
+                          <color name="IO Border" red="0" green="0" blue="0" />
                         </border_color>
                         <y>0</y>
                         <actions hook="false" hook_all="false">
@@ -4885,7 +4802,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Electrical</text>
                         <font>
-                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="10" style="0">IO Label 3</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -4896,7 +4813,7 @@ $(pv_value)</tooltip>
                         <toggle_button>false</toggle_button>
                         <border_width>2</border_width>
                         <border_color>
-                          <color name="IO Border" red="215" green="215" blue="215" />
+                          <color name="IO Border" red="0" green="0" blue="0" />
                         </border_color>
                         <y>67</y>
                         <actions hook="false" hook_all="false">
@@ -4933,7 +4850,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Electronic</text>
                         <font>
-                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="10" style="0">IO Label 3</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -4944,7 +4861,7 @@ $(pv_value)</tooltip>
                         <toggle_button>false</toggle_button>
                         <border_width>2</border_width>
                         <border_color>
-                          <color name="IO Border" red="215" green="215" blue="215" />
+                          <color name="IO Border" red="0" green="0" blue="0" />
                         </border_color>
                         <y>268</y>
                         <actions hook="false" hook_all="false">
@@ -4981,7 +4898,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Fluid</text>
                         <font>
-                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="10" style="0">IO Label 3</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -4992,7 +4909,7 @@ $(pv_value)</tooltip>
                         <toggle_button>false</toggle_button>
                         <border_width>2</border_width>
                         <border_color>
-                          <color name="IO Border" red="215" green="215" blue="215" />
+                          <color name="IO Border" red="0" green="0" blue="0" />
                         </border_color>
                         <y>134</y>
                         <actions hook="false" hook_all="false">
@@ -5029,7 +4946,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>I and C</text>
                         <font>
-                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="10" style="0">IO Label 3</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5040,7 +4957,7 @@ $(pv_value)</tooltip>
                         <toggle_button>false</toggle_button>
                         <border_width>2</border_width>
                         <border_color>
-                          <color name="IO Border" red="215" green="215" blue="215" />
+                          <color name="IO Border" red="0" green="0" blue="0" />
                         </border_color>
                         <y>335</y>
                         <actions hook="false" hook_all="false">
@@ -5077,7 +4994,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Civil Engineering</text>
                         <font>
-                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="10" style="0">IO Label 3</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5088,7 +5005,7 @@ $(pv_value)</tooltip>
                         <toggle_button>false</toggle_button>
                         <border_width>2</border_width>
                         <border_color>
-                          <color name="IO Border" red="215" green="215" blue="215" />
+                          <color name="IO Border" red="0" green="0" blue="0" />
                         </border_color>
                         <y>201</y>
                         <actions hook="false" hook_all="false">
@@ -5125,7 +5042,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>Electrical Use Case</text>
                         <font>
-                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="10" style="0">IO Label 3</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5136,7 +5053,7 @@ $(pv_value)</tooltip>
                         <toggle_button>false</toggle_button>
                         <border_width>2</border_width>
                         <border_color>
-                          <color name="IO Border" red="215" green="215" blue="215" />
+                          <color name="IO Border" red="0" green="0" blue="0" />
                         </border_color>
                         <y>402</y>
                         <actions hook="false" hook_all="false">
@@ -5173,7 +5090,7 @@ $(pv_value)</tooltip>
                         <enabled>true</enabled>
                         <text>PID Use Case</text>
                         <font>
-                          <opifont.name fontName="DejaVu Sans" height="16" style="1">IO Input 1</opifont.name>
+                          <opifont.name fontName="DejaVu Sans" height="10" style="0">IO Label 3</opifont.name>
                         </font>
                         <width>80</width>
                         <border_style>6</border_style>
@@ -5184,7 +5101,7 @@ $(pv_value)</tooltip>
                         <toggle_button>false</toggle_button>
                         <border_width>2</border_width>
                         <border_color>
-                          <color name="IO Border" red="215" green="215" blue="215" />
+                          <color name="IO Border" red="0" green="0" blue="0" />
                         </border_color>
                         <y>469</y>
                         <actions hook="false" hook_all="false">
@@ -5282,7 +5199,7 @@ $(pv_value)</tooltip>
                       </rules>
                       <border_width>2</border_width>
                       <border_color>
-                        <color name="IO Border" red="215" green="215" blue="215" />
+                        <color name="IO Border" red="0" green="0" blue="0" />
                       </border_color>
                       <y>0</y>
                       <actions hook="false" hook_all="false" />
@@ -5366,7 +5283,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>30</y>
                   <actions hook="false" hook_all="false" />
@@ -5377,7 +5294,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-1fbe5bc3:14565c6e1e0:-7f21</wuid>
                     <bg_gradient_color>
@@ -5420,7 +5337,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -5460,7 +5377,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -5504,7 +5421,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>111</y>
                   <actions hook="false" hook_all="false" />
@@ -5515,7 +5432,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-1fbe5bc3:14565c6e1e0:-7f1d</wuid>
                     <bg_gradient_color>
@@ -5558,7 +5475,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -5598,7 +5515,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -5642,7 +5559,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>192</y>
                   <actions hook="false" hook_all="false" />
@@ -5653,7 +5570,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-1fbe5bc3:14565c6e1e0:-7f0f</wuid>
                     <bg_gradient_color>
@@ -5696,7 +5613,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -5736,7 +5653,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -5780,7 +5697,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>273</y>
                   <actions hook="false" hook_all="false" />
@@ -5791,7 +5708,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-1fbe5bc3:14565c6e1e0:-7f03</wuid>
                     <bg_gradient_color>
@@ -5834,7 +5751,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -5874,7 +5791,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -5918,7 +5835,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>355</y>
                   <actions hook="false" hook_all="false" />
@@ -5929,7 +5846,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>-1fbe5bc3:14565c6e1e0:-7ef7</wuid>
                     <bg_gradient_color>
@@ -5972,7 +5889,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -6012,7 +5929,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6097,7 +6014,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>37</y>
                   <actions hook="false" hook_all="false" />
@@ -6135,7 +6052,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6149,7 +6066,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>66514f80:14565dcb6d6:-7d9e</wuid>
                     <bg_gradient_color>
@@ -6192,7 +6109,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -6233,7 +6150,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6274,7 +6191,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6318,7 +6235,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>116</y>
                   <actions hook="false" hook_all="false" />
@@ -6357,7 +6274,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6371,7 +6288,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>48f6d54e:14565e195d6:-7f33</wuid>
                     <bg_gradient_color>
@@ -6414,7 +6331,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -6455,7 +6372,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6496,7 +6413,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6540,7 +6457,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>195</y>
                   <actions hook="false" hook_all="false" />
@@ -6579,7 +6496,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6593,7 +6510,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>48f6d54e:14565e195d6:-7e96</wuid>
                     <bg_gradient_color>
@@ -6636,7 +6553,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -6677,7 +6594,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6718,7 +6635,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6762,7 +6679,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>274</y>
                   <actions hook="false" hook_all="false" />
@@ -6801,7 +6718,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6815,7 +6732,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>48f6d54e:14565e195d6:-7e4e</wuid>
                     <bg_gradient_color>
@@ -6858,7 +6775,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -6899,7 +6816,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6940,7 +6857,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -6984,7 +6901,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>353</y>
                   <actions hook="false" hook_all="false" />
@@ -7022,7 +6939,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7036,7 +6953,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>48f6d54e:14565e195d6:-7e06</wuid>
                     <bg_gradient_color>
@@ -7079,7 +6996,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -7120,7 +7037,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7161,7 +7078,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7205,7 +7122,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>432</y>
                   <actions hook="false" hook_all="false" />
@@ -7243,7 +7160,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7257,7 +7174,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>48f6d54e:14565e195d6:-7dbe</wuid>
                     <bg_gradient_color>
@@ -7300,7 +7217,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -7341,7 +7258,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7382,7 +7299,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7426,7 +7343,7 @@ $(pv_value)</tooltip>
                   <lock_children>true</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>515</y>
                   <actions hook="false" hook_all="false" />
@@ -7464,7 +7381,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7478,7 +7395,7 @@ $(pv_value)</tooltip>
                     <visible>true</visible>
                     <fill_level>100.0</fill_level>
                     <line_color>
-                      <color name="IO Line" red="0" green="32" blue="92" />
+                      <color name="IO Line" red="0" green="0" blue="0" />
                     </line_color>
                     <wuid>48f6d54e:14565e195d6:-7da6</wuid>
                     <bg_gradient_color>
@@ -7521,7 +7438,7 @@ $(pv_value)</tooltip>
                     <line_width>1</line_width>
                     <horizontal_fill>true</horizontal_fill>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <actions hook="false" hook_all="false" />
                     <y>0</y>
@@ -7562,7 +7479,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7603,7 +7520,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7688,7 +7605,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>59</y>
                   <actions hook="false" hook_all="false" />
@@ -7726,7 +7643,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7770,7 +7687,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>99</y>
                   <actions hook="false" hook_all="false" />
@@ -7808,7 +7725,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7852,7 +7769,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>180</y>
                   <actions hook="false" hook_all="false" />
@@ -7890,7 +7807,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -7934,7 +7851,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>220</y>
                   <actions hook="false" hook_all="false" />
@@ -7972,7 +7889,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -8016,7 +7933,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>140</y>
                   <actions hook="false" hook_all="false" />
@@ -8054,7 +7971,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -8098,7 +8015,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>261</y>
                   <actions hook="false" hook_all="false" />
@@ -8136,7 +8053,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -8180,7 +8097,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>301</y>
                   <actions hook="false" hook_all="false" />
@@ -8218,7 +8135,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -8262,7 +8179,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>342</y>
                   <actions hook="false" hook_all="false" />
@@ -8300,7 +8217,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -8344,7 +8261,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>382</y>
                   <actions hook="false" hook_all="false" />
@@ -8382,7 +8299,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -8426,7 +8343,7 @@ $(pv_value)</tooltip>
                   <lock_children>false</lock_children>
                   <border_width>1</border_width>
                   <border_color>
-                    <color name="IO Border" red="215" green="215" blue="215" />
+                    <color name="IO Border" red="0" green="0" blue="0" />
                   </border_color>
                   <y>430</y>
                   <actions hook="false" hook_all="false" />
@@ -8464,7 +8381,7 @@ $(pv_value)</tooltip>
                     <rules />
                     <border_width>2</border_width>
                     <border_color>
-                      <color name="IO Border" red="215" green="215" blue="215" />
+                      <color name="IO Border" red="0" green="0" blue="0" />
                     </border_color>
                     <horizontal_alignment>0</horizontal_alignment>
                     <actions hook="false" hook_all="false" />
@@ -8473,6 +8390,235 @@ $(pv_value)</tooltip>
                     <tooltip></tooltip>
                     <x>0</x>
                   </widget>
+                </widget>
+              </widget>
+              <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+                <macros>
+                  <include_parent_macros>true</include_parent_macros>
+                </macros>
+                <visible>true</visible>
+                <wuid>-747f1adb:14574a982a9:-60e0</wuid>
+                <scripts />
+                <height>825</height>
+                <name>W and RO fields</name>
+                <scale_options>
+                  <width_scalable>true</width_scalable>
+                  <height_scalable>true</height_scalable>
+                  <keep_wh_ratio>false</keep_wh_ratio>
+                </scale_options>
+                <transparent>true</transparent>
+                <show_scrollbar>true</show_scrollbar>
+                <foreground_color>
+                  <color red="192" green="192" blue="192" />
+                </foreground_color>
+                <background_color>
+                  <color red="240" green="240" blue="240" />
+                </background_color>
+                <enabled>true</enabled>
+                <widget_type>Grouping Container</widget_type>
+                <font>
+                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                </font>
+                <width>1122</width>
+                <border_style>0</border_style>
+                <rules />
+                <fc>false</fc>
+                <lock_children>false</lock_children>
+                <border_width>1</border_width>
+                <border_color>
+                  <color red="0" green="128" blue="255" />
+                </border_color>
+                <y>1</y>
+                <actions hook="false" hook_all="false" />
+                <x>1</x>
+                <tooltip></tooltip>
+                <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+                  <border_alarm_sensitive>true</border_alarm_sensitive>
+                  <visible>true</visible>
+                  <vertical_alignment>0</vertical_alignment>
+                  <show_units>true</show_units>
+                  <wuid>-747f1adb:14574a982a9:-60dd</wuid>
+                  <auto_size>false</auto_size>
+                  <rotation_angle>0.0</rotation_angle>
+                  <scripts />
+                  <height>25</height>
+                  <name>Text Update Template</name>
+                  <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <format_type>0</format_type>
+                  <precision_from_pv>true</precision_from_pv>
+                  <transparent>true</transparent>
+                  <pv_name>sim://sine</pv_name>
+                  <background_color>
+                    <color name="IO InputPV Bg" red="200" green="200" blue="200" />
+                  </background_color>
+                  <foreground_color>
+                    <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+                  </foreground_color>
+                  <widget_type>Text Update</widget_type>
+                  <enabled>true</enabled>
+                  <text>######</text>
+                  <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                  <precision>0</precision>
+                  <font>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Input 1</opifont.name>
+                  </font>
+                  <width>100</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <pv_value />
+                  <border_width>2</border_width>
+                  <border_color>
+                    <color name="IO Border" red="0" green="0" blue="0" />
+                  </border_color>
+                  <horizontal_alignment>0</horizontal_alignment>
+                  <actions hook="false" hook_all="false" />
+                  <y>55</y>
+                  <wrap_words>false</wrap_words>
+                  <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                  <x>560</x>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
+                  <border_alarm_sensitive>true</border_alarm_sensitive>
+                  <read_only>false</read_only>
+                  <visible>true</visible>
+                  <multiline_input>false</multiline_input>
+                  <show_native_border>false</show_native_border>
+                  <auto_size>false</auto_size>
+                  <scripts />
+                  <height>35</height>
+                  <password_input>false</password_input>
+                  <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+                  <precision_from_pv>true</precision_from_pv>
+                  <background_color>
+                    <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+                  </background_color>
+                  <enabled>true</enabled>
+                  <widget_type>Text Input</widget_type>
+                  <text>######</text>
+                  <font>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Output 1</opifont.name>
+                  </font>
+                  <width>100</width>
+                  <border_style>1</border_style>
+                  <pv_value />
+                  <border_width>1</border_width>
+                  <next_focus>2</next_focus>
+                  <show_units>true</show_units>
+                  <wuid>-747f1adb:14574a982a9:-60da</wuid>
+                  <style>1</style>
+                  <name>Text Input Template</name>
+                  <format_type>0</format_type>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <pv_name>loc://$(DID)_input1(28)</pv_name>
+                  <foreground_color>
+                    <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
+                  </foreground_color>
+                  <precision>0</precision>
+                  <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+                  <confirm_message></confirm_message>
+                  <rules />
+                  <limits_from_pv>true</limits_from_pv>
+                  <horizontal_alignment>0</horizontal_alignment>
+                  <border_color>
+                    <color name="IO Border" red="0" green="0" blue="0" />
+                  </border_color>
+                  <y>50</y>
+                  <actions hook="false" hook_all="false" />
+                  <x>135</x>
+                  <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                  <visible>true</visible>
+                  <vertical_alignment>1</vertical_alignment>
+                  <wuid>-747f1adb:14574a982a9:-60d6</wuid>
+                  <auto_size>true</auto_size>
+                  <scripts />
+                  <height>20</height>
+                  <name>Label Template</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <background_color>
+                    <color name="IO Background" red="200" green="200" blue="200" />
+                  </background_color>
+                  <foreground_color>
+                    <color name="IO Text Fg" red="0" green="0" blue="0" />
+                  </foreground_color>
+                  <widget_type>Label</widget_type>
+                  <enabled>false</enabled>
+                  <text>Entry field</text>
+                  <font>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
+                  </font>
+                  <width>88</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <border_width>2</border_width>
+                  <border_color>
+                    <color name="IO Border" red="0" green="0" blue="0" />
+                  </border_color>
+                  <horizontal_alignment>0</horizontal_alignment>
+                  <actions hook="false" hook_all="false" />
+                  <y>58</y>
+                  <wrap_words>true</wrap_words>
+                  <tooltip></tooltip>
+                  <x>15</x>
+                </widget>
+                <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+                  <visible>true</visible>
+                  <vertical_alignment>1</vertical_alignment>
+                  <wuid>-747f1adb:14574a982a9:-60d2</wuid>
+                  <auto_size>true</auto_size>
+                  <scripts />
+                  <height>20</height>
+                  <name>Label Template_1</name>
+                  <scale_options>
+                    <width_scalable>true</width_scalable>
+                    <height_scalable>true</height_scalable>
+                    <keep_wh_ratio>false</keep_wh_ratio>
+                  </scale_options>
+                  <transparent>true</transparent>
+                  <show_scrollbar>false</show_scrollbar>
+                  <background_color>
+                    <color name="IO Background" red="200" green="200" blue="200" />
+                  </background_color>
+                  <foreground_color>
+                    <color name="IO Text Fg" red="0" green="0" blue="0" />
+                  </foreground_color>
+                  <widget_type>Label</widget_type>
+                  <enabled>false</enabled>
+                  <text>Read-only field</text>
+                  <font>
+                    <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
+                  </font>
+                  <width>126</width>
+                  <border_style>0</border_style>
+                  <rules />
+                  <border_width>2</border_width>
+                  <border_color>
+                    <color name="IO Border" red="0" green="0" blue="0" />
+                  </border_color>
+                  <horizontal_alignment>0</horizontal_alignment>
+                  <actions hook="false" hook_all="false" />
+                  <y>58</y>
+                  <wrap_words>true</wrap_words>
+                  <tooltip></tooltip>
+                  <x>400</x>
                 </widget>
               </widget>
             </widget>

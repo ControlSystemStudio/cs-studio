@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.2.9.codac_core_4_2b1</boy_version>
+  <boy_version>3.2.10.codac_core_4_3b1</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1600</height>
@@ -13,7 +13,7 @@
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>true</show_grid>
   <background_color>
-    <color name="IO Background" red="255" green="255" blue="205" />
+    <color name="IO Background" red="200" green="200" blue="200" />
   </background_color>
   <foreground_color>
     <color name="IO Grid" red="215" green="215" blue="215" />
@@ -57,7 +57,7 @@
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
     </font>
     <width>281</width>
     <border_style>13</border_style>
@@ -66,7 +66,7 @@
     <lock_children>true</lock_children>
     <border_width>2</border_width>
     <border_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
     </border_color>
     <y>5</y>
     <actions hook="false" hook_all="false" />
@@ -92,21 +92,21 @@
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>138</width>
+      <width>201</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>8</y>
       <actions hook="false" hook_all="false" />
@@ -123,12 +123,12 @@
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -168,7 +168,7 @@
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -176,7 +176,7 @@
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -190,7 +190,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -200,23 +200,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Primary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>78</width>
+        <width>141</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -246,21 +246,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>127</width>
+      <width>179</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>49</y>
       <actions hook="false" hook_all="false" />
@@ -277,12 +277,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -322,7 +322,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -330,7 +330,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -344,7 +344,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -354,23 +354,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Field Mounted</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>67</width>
+        <width>119</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -400,21 +400,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>141</width>
+      <width>210</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>90</y>
       <actions hook="false" hook_all="false" />
@@ -431,12 +431,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -476,7 +476,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -484,7 +484,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -498,7 +498,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -508,23 +508,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Auxiliary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>81</width>
+        <width>150</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -560,7 +560,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
     </font>
     <width>281</width>
     <border_style>13</border_style>
@@ -569,7 +569,7 @@ $(pv_value)</tooltip>
     <lock_children>true</lock_children>
     <border_width>2</border_width>
     <border_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
     </border_color>
     <y>182</y>
     <actions hook="false" hook_all="false" />
@@ -595,21 +595,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>138</width>
+      <width>201</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>13</y>
       <actions hook="false" hook_all="false" />
@@ -626,12 +626,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -671,7 +671,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -679,7 +679,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -693,7 +693,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -703,23 +703,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Primary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>78</width>
+        <width>141</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -749,21 +749,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>127</width>
+      <width>179</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>54</y>
       <actions hook="false" hook_all="false" />
@@ -780,12 +780,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -825,7 +825,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -833,7 +833,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -847,7 +847,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -857,23 +857,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Field Mounted</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>67</width>
+        <width>119</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -903,21 +903,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>141</width>
+      <width>210</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>95</y>
       <actions hook="false" hook_all="false" />
@@ -934,12 +934,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -979,7 +979,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -987,7 +987,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -1001,7 +1001,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -1011,23 +1011,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Auxiliary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>81</width>
+        <width>150</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -1045,7 +1045,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <wuid>-646f10c9:13a2bb630f6:-7a50</wuid>
     <scripts />
-    <height>177</height>
+    <height>187</height>
     <name>Pilot Light</name>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1063,7 +1063,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
     </font>
     <width>281</width>
     <border_style>13</border_style>
@@ -1072,7 +1072,7 @@ $(pv_value)</tooltip>
     <lock_children>true</lock_children>
     <border_width>2</border_width>
     <border_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
     </border_color>
     <y>359</y>
     <actions hook="false" hook_all="false" />
@@ -1098,21 +1098,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>138</width>
+      <width>201</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>18</y>
       <actions hook="false" hook_all="false" />
@@ -1129,12 +1129,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -1174,7 +1174,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -1182,7 +1182,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -1196,7 +1196,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -1206,23 +1206,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Primary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>78</width>
+        <width>141</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -1252,21 +1252,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>127</width>
+      <width>179</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>60</y>
       <actions hook="false" hook_all="false" />
@@ -1283,12 +1283,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -1328,7 +1328,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -1336,7 +1336,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -1350,7 +1350,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -1360,23 +1360,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Field Mounted</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>67</width>
+        <width>119</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -1406,21 +1406,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>141</width>
+      <width>210</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>102</y>
       <actions hook="false" hook_all="false" />
@@ -1437,12 +1437,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -1482,7 +1482,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -1490,7 +1490,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -1504,7 +1504,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -1514,23 +1514,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Auxiliary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>81</width>
+        <width>150</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -1566,7 +1566,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
     </font>
     <width>281</width>
     <border_style>13</border_style>
@@ -1575,7 +1575,7 @@ $(pv_value)</tooltip>
     <lock_children>true</lock_children>
     <border_width>2</border_width>
     <border_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
     </border_color>
     <y>5</y>
     <actions hook="false" hook_all="false" />
@@ -1601,21 +1601,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>138</width>
+      <width>201</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>15</y>
       <actions hook="false" hook_all="false" />
@@ -1632,12 +1632,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -1677,7 +1677,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -1685,7 +1685,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -1699,7 +1699,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -1709,23 +1709,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Primary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>78</width>
+        <width>141</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -1755,21 +1755,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>127</width>
+      <width>179</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>85</y>
       <actions hook="false" hook_all="false" />
@@ -1786,12 +1786,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -1831,7 +1831,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -1839,7 +1839,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -1853,7 +1853,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -1863,23 +1863,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Field Mounted</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>67</width>
+        <width>119</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -1915,7 +1915,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+      <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
     </font>
     <width>281</width>
     <border_style>13</border_style>
@@ -1924,7 +1924,7 @@ $(pv_value)</tooltip>
     <lock_children>true</lock_children>
     <border_width>2</border_width>
     <border_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
     </border_color>
     <y>182</y>
     <actions hook="false" hook_all="false" />
@@ -1950,21 +1950,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>138</width>
+      <width>201</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>13</y>
       <actions hook="false" hook_all="false" />
@@ -1981,12 +1981,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -2026,7 +2026,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -2034,7 +2034,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -2048,7 +2048,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -2058,23 +2058,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Primary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>78</width>
+        <width>141</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -2104,21 +2104,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>127</width>
+      <width>179</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>54</y>
       <actions hook="false" hook_all="false" />
@@ -2135,12 +2135,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -2180,7 +2180,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -2188,7 +2188,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -2202,7 +2202,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -2212,23 +2212,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Field Mounted</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>67</width>
+        <width>119</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
@@ -2258,21 +2258,21 @@ $(pv_value)</tooltip>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <background_color>
-        <color name="IO Background" red="255" green="255" blue="205" />
+        <color name="IO Background" red="200" green="200" blue="200" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+        <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
       </font>
-      <width>141</width>
+      <width>210</width>
       <border_style>0</border_style>
       <rules />
       <fc>false</fc>
       <lock_children>true</lock_children>
       <border_width>1</border_width>
       <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
+        <color name="IO Border" red="0" green="0" blue="0" />
       </border_color>
       <y>95</y>
       <actions hook="false" hook_all="false" />
@@ -2289,12 +2289,12 @@ $(pv_value)</tooltip>
         <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <off_label>OFF</off_label>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <enabled>true</enabled>
         <widget_type>Boolean Symbol Image Monitor</widget_type>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
         <permutation_matrix>
           <row>
@@ -2334,7 +2334,7 @@ $(pv_value)</tooltip>
         </off_color>
         <pv_name>sim://flipflop(3)</pv_name>
         <foreground_color>
-          <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+          <color name="IO InputPV Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
         <flip_horizontal>false</flip_horizontal>
@@ -2342,7 +2342,7 @@ $(pv_value)</tooltip>
         <rules />
         <degree>0</degree>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -2356,7 +2356,7 @@ $(pv_value)</tooltip>
         <wuid>4982c4ba:136d02e386e:-7f9d</wuid>
         <auto_size>true</auto_size>
         <scripts />
-        <height>13</height>
+        <height>20</height>
         <name>Label Template_1</name>
         <scale_options>
           <width_scalable>true</width_scalable>
@@ -2366,23 +2366,23 @@ $(pv_value)</tooltip>
         <transparent>true</transparent>
         <show_scrollbar>false</show_scrollbar>
         <background_color>
-          <color name="IO Background" red="255" green="255" blue="205" />
+          <color name="IO Background" red="200" green="200" blue="200" />
         </background_color>
         <foreground_color>
-          <color name="IO Text Fg" red="0" green="32" blue="92" />
+          <color name="IO Text Fg" red="0" green="0" blue="0" />
         </foreground_color>
         <widget_type>Label</widget_type>
         <enabled>false</enabled>
         <text>Auxiliary Location</text>
         <font>
-          <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+          <opifont.name fontName="DejaVu Sans" height="16" style="0">IO Normal</opifont.name>
         </font>
-        <width>81</width>
+        <width>150</width>
         <border_style>0</border_style>
         <rules />
         <border_width>1</border_width>
         <border_color>
-          <color name="IO Border" red="215" green="215" blue="215" />
+          <color name="IO Border" red="0" green="0" blue="0" />
         </border_color>
         <horizontal_alignment>0</horizontal_alignment>
         <actions hook="false" hook_all="false" />
