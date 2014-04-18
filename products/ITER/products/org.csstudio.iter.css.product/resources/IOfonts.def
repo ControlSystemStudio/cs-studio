@@ -3,24 +3,23 @@ IO Title = DejaVu Sans-bold-18
 IO SubTitle = DejaVu Sans-regular-18
 
 IO Label 1 = DejaVu Sans-regular-16
-IO Label 2 = DejaVu Sans-regular-9
-IO Label 3 = DejaVu Sans-regular-8
+IO Label 2 = DejaVu Sans-regular-12
+IO Label 3 = DejaVu Sans-regular-10
 
 IO Input 1 = DejaVu Sans-regular-16
-IO Input 2 = DejaVu Sans-regular-14
+IO Input 2 = DejaVu Sans-regular-12
 IO Output 1 = DejaVu Sans-regular-16
-IO Output 2 = DejaVu Sans-regular-14
+IO Output 2 = DejaVu Sans-regular-12
 
 IO Scale 1 = DejaVu Sans-regular-16
-IO Scale 2 = DejaVu Sans-regular-14
-IO Scale 3 = DejaVu Sans-regular-12
+IO Scale 2 = DejaVu Sans-regular-12
+IO Scale 3 = DejaVu Sans-regular-10
 
 
 Header = DejaVu Sans-bold-18
 Header2 = DejaVu Sans-regular-18
 Header3 = DejaVu Sans-italic-18
 Text = DejaVu Sans-regular-16
-Msg = DejaVu Sans-regular-14
-Msg2 = DejaVu Sans-regular-12
+Msg = DejaVu Sans-regular-12
+Msg2 = DejaVu Sans-regular-10
 LinkText = DejaVu Sans-italic-16
-
