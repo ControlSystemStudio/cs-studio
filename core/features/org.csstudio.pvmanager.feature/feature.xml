@@ -17,19 +17,6 @@
       GPL 2 with Classpath Exception
    </license>
 
-   <requires>
-      <import plugin="org.epics.util" version="0.2.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.antlr.runtime"/>
-      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="com.google.common"/>
-      <import plugin="org.csstudio.utility.pvmanager.extra" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
-   </requires>
-
    <plugin
          id="org.epics.util"
          download-size="0"
