@@ -13,7 +13,7 @@ import org.epics.util.array.ListNumber;
  *
  * @author carcassi
  */
-class Histogram1DFromDataset1D implements Cell1DDataset {
+class Cell1DHistogramDataset implements Cell1DDataset {
     
     private Statistics statistics;
     private Range xRange;
@@ -30,7 +30,7 @@ class Histogram1DFromDataset1D implements Cell1DDataset {
     private boolean autoValueRange = true;
     private int nBins = 100;
 
-    public Histogram1DFromDataset1D(Point1DDataset dataset) {
+    public Cell1DHistogramDataset(Point1DDataset dataset) {
         calculateFrom(dataset);
     }
 
