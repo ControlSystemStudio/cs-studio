@@ -1,29 +1,36 @@
 <html>
-  <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
     <link rel="stylesheet" href="../default.css" type="text/css" />
     <title>
       Intensity Graph
     </title>
-  </head>
-  <body>
+</head>
+<body>
 
-    <h2>
-      Intensity Graph
-    </h2>
-
-    <p>
-      Intensity Graph has the capability to display 2D array in colors
-      based on its color map which is a map of value and color.
-      For example, it could be used to display video image, 
-      temperature pattern or terrain in an intuitive fashion. 
-	  The input data must be a 1D array of long or double value, 
-	  in which the data is arranged in row by row so it can be converted to a 2D array.
-	  For example, for a N rows by M columns 2D data, the input data should like this:
-	  </p> 
-	  <pre class="example_code">
+<h2>
+  Intensity Graph
+</h2>
+<p>
+The Intensity Graph displays a 2D array as an image.
+A color map assigns a color to the value of each array element.
+For example, it could be used to display a video image, 
+temperature pattern or terrain in an intuitive fashion. 
+The input data must be a numeric 1D array with elements typed byte, short, int, long or double,
+in which the data is arranged row by row so it can be converted to a 2D array.
+For example, for 2D data with N rows by M columns, the input data should like this:
+</p> 
+<pre class="example_code">
 InputData = P11, P12,...P1M, P21, P22, ... P2M, ... PN1, PN2, ...PNM</pre>      
-   	<p>The widget can also output profile data of the image to PVs.</p>
+<p>
+The resulting image will display the array elements as follows:
+</p>
+<pre class="example_code">
+P11, P12, ... P1M
+P21, P22, ... P2M
+     ...
+PN1, PN2, ... PNM</pre>      
+<p>The widget can also output profile data of the image to PVs.</p>
 
 <p>
 	<img src="img/IntensityGraph.gif" alt=""></p>
@@ -70,6 +77,18 @@ will return to unzoomed state.</p>
 	The output PV to which the horizontal profile data on Y axis will be written. 
 	</dd></dl></li>
 	
+    <li>Pixel Info PV (pixel_info_pv_name)<dl> <dd>
+    When the user moves the mouse across the graph or 'clicks' on the graph,
+    information about the pixel under the cursor is written to this PV.<br/>
+    The PV will receive a `VTable` with columns
+     <ul>
+     <li>"X" - Coordinate of pixel on X axis</li>
+     <li>"Y" - ... Y axis</li>
+     <li>"Value" - Value of image data array at this location</li>
+     <li>"Selected" - Did user press mouse button, or simply move the mouse across the image?</li>
+     </ul>
+    </dd></dl></li>
+
 	<li>Crop Left (crop_left)<dl> <dd>Cropped data on left.</dd></dl></li>
 	<li>Crop Right (crop_right)<dl> <dd>Cropped data on right.</dd></dl></li>
 	<li>Crop Bottom (crop_bottom)<dl> <dd>Cropped data on bottom.</dd></dl></li>

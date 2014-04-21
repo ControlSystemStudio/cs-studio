@@ -1,12 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/** JUnit test of the {@link UpgradeUtil}
+ *  @author Xihui Chen
+ *  @author Kay Kasemir
+ */
 public class UpgradeUtilTest {
-
-
 	
 	@Test
 	public void testConvertUtilityPVNameToPM() {
@@ -24,6 +33,7 @@ public class UpgradeUtilTest {
 				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV(12,34,2.3,4.56)"));
 		assertEquals("loc://myPV",
 				UpgradeUtil.convertUtilityPVNameToPM("loc://myPV"));
+
 		
 		//macro should not be converted
 		assertEquals("loc://my$(DID)PV(\"fred\")",
@@ -69,8 +79,14 @@ public class UpgradeUtilTest {
 		
 		//regular pv
 		assertEquals("fred:current",
-				UpgradeUtil.convertUtilityPVNameToPM("fred:current"));		
+				UpgradeUtil.convertUtilityPVNameToPM("fred:current"));
 		
+		// Macros:
+		// Unclear how to convert constants, because strings would require quotes,
+		// but content of macro is not known.
+		// Bug discussion https://github.com/ControlSystemStudio/cs-studio/issues/412
+		// decided on unquoted
+        assertEquals("=$(M)",
+                UpgradeUtil.convertUtilityPVNameToPM("const://x($(M))"));
 	}
-	
 }

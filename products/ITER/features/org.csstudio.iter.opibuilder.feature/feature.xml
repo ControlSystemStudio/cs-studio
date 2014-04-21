@@ -33,7 +33,7 @@ of the distribution package.
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.jdom" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.widgets" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.python" version="2.5.2" match="greaterOrEqual"/>
+      <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
@@ -181,7 +181,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.python"
+         id="org.python.jython"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
