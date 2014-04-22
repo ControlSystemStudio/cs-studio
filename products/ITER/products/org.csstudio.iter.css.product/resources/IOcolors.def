@@ -13,6 +13,10 @@ IO Light Grey = 200, 200, 200
 IO Black = 0, 0, 0
 IO White = 255, 255, 255
 IO Grey = 140, 140, 140
+IO Red = 250,12,14
+IO Yellow = 255,255,0
+IO Green = 0, 176, 80
+IO Blue = 20, 50, 202
 
 # Display widget colors
 IO Background = 200,200,200
