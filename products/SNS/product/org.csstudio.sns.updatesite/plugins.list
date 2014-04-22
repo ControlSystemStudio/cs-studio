@@ -83,8 +83,6 @@ org.csstudio.opibuilder.widgets/**
 org.csstudio.opibuilder.widgets.extra/**
 org.csstudio.opibuilder.widgets.rcp/**
 org.csstudio.opibuilder.widgets.symbol/**
-org.csstudio.platform.jaasAuthentication/**
-org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.libs.epics/**
 org.csstudio.platform.libs.epics.ui/**
 org.csstudio.platform.libs.jdbc/**
@@ -166,4 +164,4 @@ org.hamcrest/**
 org.jdom/**
 org.junit-dep/**
 org.mockito/**
-org.python/**
+org.python.jython/**
