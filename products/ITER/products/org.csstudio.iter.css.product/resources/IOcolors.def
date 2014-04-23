@@ -2,9 +2,10 @@
 # Alarm colors
 Major = 250,12,14
 Minor = 255,255,0
-Invalid = 200,100,200
-Disconnected = 200,100,200
+Invalid = 255, 255, 255
+Disconnected = 255, 255, 255
 
+IO Invalid Level Alarm = 255, 255, 255
 IO High Level Alarm = 250,12,14
 IO Medium Level Alarm = 255,255,0
 IO Normal Level Alarm = 0, 176, 80
