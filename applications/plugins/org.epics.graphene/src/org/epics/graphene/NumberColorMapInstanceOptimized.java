@@ -18,6 +18,7 @@ class NumberColorMapInstanceOptimized implements NumberColorMapInstance {
     private int nanColor;
     private Range range;
     private double max, min, total;
+    private final String name;
 
     NumberColorMapInstanceOptimized(NumberColorMapInstance instance, Range range) {
         min = range.getMinimum().doubleValue();
@@ -32,6 +33,7 @@ class NumberColorMapInstanceOptimized implements NumberColorMapInstance {
             }
         }
         this.range = range;
+        this.name = instance.toString() + " opt(" + arrayLength + ")";
     }
 
     // TODO: what is this doing?
@@ -51,6 +53,7 @@ class NumberColorMapInstanceOptimized implements NumberColorMapInstance {
         max = newRange.getMaximum().doubleValue();
         total = max - min;
         this.range = newRange;
+        this.name = instance.toString() + " opt2(" + arrayLength + ")";
     }
 
     @Override
@@ -58,4 +61,10 @@ class NumberColorMapInstanceOptimized implements NumberColorMapInstance {
         int index = (int) ((value - min) / total * (arrayLength - 1));
         return colors[index];
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+    
 }

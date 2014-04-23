@@ -110,4 +110,16 @@ public class RangeUtil {
     public static boolean contains(Range xRange, double value) {
         return value >= xRange.getMinimum().doubleValue() && value <= xRange.getMaximum().doubleValue();
     }
+    
+    public static boolean equals(Range r1, Range r2) {
+        // Check null cases
+        if (r1 == null && r2 == null) {
+            return true;
+        }
+        if (r1 == null || r2 == null) {
+            return false;
+        }
+        
+        return r1.getMinimum().equals(r2.getMinimum()) && r1.getMaximum().equals(r2.getMaximum());
+    }
 }

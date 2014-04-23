@@ -26,7 +26,7 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     // TODO: if z refers to color, then all the zXxx should be renamed to colorXxx
     private Integer zLabelMargin;
     private Integer legendWidth;
-    private Integer legendMarginToEdge;
+    private Integer graphAreaToLegendMargin;
 
     private Boolean drawLegend;
 
@@ -80,12 +80,12 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     }
     
     /**
-     * Sets this object's legendMarginToEdge to the given margin size.
+     * Sets this object's graphAreaToLegendMargin to the given margin size.
      * @param margin distance(pixels) from the end of the legend(including labels and other margins) to the end of the graphics component.
      * @return this
      */
-    public IntensityGraph2DRendererUpdate legendMarginToEdge(int margin) {
-        this.legendMarginToEdge = margin;
+    public IntensityGraph2DRendererUpdate graphAreaToLegendMargin(int margin) {
+        this.graphAreaToLegendMargin = margin;
         return self();
     }
     
@@ -124,9 +124,9 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     
     /**
      *
-     * @return Integer legendMarginToEdge, distance(pixels) from the end of the legend(including labels and other margins) to the end of the graphics component.
+     * @return Integer graphAreaToLegendMargin, distance(pixels) from the end of the legend(including labels and other margins) to the end of the graphics component.
      */
-    public Integer getLegendMarginToEdge(){
-        return legendMarginToEdge;
+    public Integer getGraphAreaToLegendMargin(){
+        return graphAreaToLegendMargin;
     }
 }

@@ -37,9 +37,9 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
     public static boolean DEFAULT_DRAW_LEGEND = false;
     
     //Colors to be used when drawing the graph, gives a color based on a given value and the range of data.
-    private NumberColorMapInstance valueColorSchemeInstance;
+    private NumberColorMapInstance colorMapInstance;
     private Range optimizedRange;
-    public boolean optimizeColorScheme = false;
+    public boolean optimizeColorScheme = true;
     /**
      *Uses constructor specified in super class (Graph2DRenderer)
      * @param imageWidth should be equal to the width of the bufferedImage.
@@ -68,6 +68,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         }
         if(update.getColorMap() != null){
             colorMap = update.getColorMap();
+            colorMapInstance = null;
         }
         if(update.getZLabelMargin() != null){
             zLabelMargin = update.getZLabelMargin();
@@ -75,22 +76,20 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         if(update.getLegendWidth() != null){
             legendWidth = update.getLegendWidth();
         }
-        if(update.getLegendMarginToEdge() != null){
-            legendMarginToEdge = update.getLegendMarginToEdge();
+        if(update.getGraphAreaToLegendMargin() != null){
+            graphAreaToLegendMargin = update.getGraphAreaToLegendMargin();
         }
         if(update.getRightMargin() != null){
-            rightMarginChanged = true;
-            rightMarginJustChanged = true;
-            rightMargin = update.getRightMargin();
+            originalRightMargin = update.getRightMargin();
         }
     }
     
-    /*legendWidth,legendMarginToGraph,legendMarginToEdge, and zLabelMargin are all lengths, in terms of pixels.
+    /*legendWidth,legendMarginToGraph,graphAreaToLegendMargin, and zLabelMargin are all lengths, in terms of pixels.
     legendMarginToGraph corresponds to the space between the original graph and the legend.
-    legendMarginToEdge -> the space between the legend labels and the edge of the picture.*/
+    graphAreaToLegendMargin -> the space between the legend labels and the edge of the picture.*/
     private int legendWidth = 10,
                 legendMarginToGraph = 10,
-                legendMarginToEdge = 2;
+                graphAreaToLegendMargin = 3;
     protected int zLabelMargin = 3;
     private boolean drawLegend = DEFAULT_DRAW_LEGEND;
     private Range zRange;
@@ -102,21 +101,8 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
     protected ListDouble zReferenceValues;
     protected List<String> zReferenceLabels;
     private int zLabelMaxWidth;
-    private boolean rightMarginChanged = false;
-    private boolean rightMarginJustChanged = false;
+    private int originalRightMargin = super.rightMargin;
     public boolean useColorArray = false; 
-    
-    // V (Possibly) TO BE TAKEN OUT ONCE TESTING IS DONE V
-    private boolean linearBoundaries = false;
-    
-    public void setLinearBoundaries(boolean drawBoundaries){
-        this.linearBoundaries = drawBoundaries;
-    }
-    
-    public boolean isLinearBoundaries(){
-        return linearBoundaries;
-    }
-    // ^ (Possibly) TO BE TAKEN OUT ONCE TESTING IS DONE ^
     
     private NumberColorMap colorMap = DEFAULT_COLOR_MAP;
     
@@ -129,130 +115,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
      * @param data can not be null
      */
     public void draw(GraphBuffer graphBuffer, Cell2DDataset data) {
-        //Use super class to draw basics of graph.
-        this.g = graphBuffer.getGraphicsContext();
-        calculateRanges(data.getXRange(), data.getYRange());
-        drawBackground();
-        calculateLabels();
-        zRange = RangeUtil.range(data.getStatistics().getMinimum().doubleValue(),data.getStatistics().getMaximum().doubleValue());
-        calculateZRange(zRange);
-        /*Calculate all margins necessary for drawing the legend. 
-        Only do calculations if user says to draw a legend.*/
-        if(drawLegend){
-            calculateZLabels();
-            if(!rightMarginChanged){
-                rightMargin = legendMarginToGraph+legendWidth+zLabelMargin+zLabelMaxWidth+legendMarginToEdge;
-            }
-            else if(rightMarginJustChanged){
-                rightMargin+= (legendWidth+zLabelMargin+zLabelMaxWidth+legendMarginToEdge);
-                rightMarginJustChanged = false;
-            }
-                
-        }
-        
-        calculateGraphArea();
-        
-        /*Wait to calculate the coordinates of the legend labels till after yPlotCoordRange is calculated.
-        Allows for the use of yPlotCoordEnd/start in calculations.*/
-        if(drawLegend){
-            if (zReferenceValues != null) {
-                double[] zRefCoords = new double[zReferenceValues.size()];
-                if(zRefCoords.length == 1){
-                    zRefCoords[0] = Math.max(2, getImageHeight() / 60);
-                }
-                else{
-                    for (int i = 0; i < zRefCoords.length; i++) {
-                        zRefCoords[i] = scaledZ(zReferenceValues.getDouble(i));
-                    }
-                }
-                zReferenceCoords = new ArrayDouble(zRefCoords);
-            }
-        }
-        drawGraphArea();
-        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-        
-        
-        //Set color scheme
-        if(!optimizeColorScheme){
-            valueColorSchemeInstance = colorMap.createInstance(zPlotRange);
-        }
-        else{
-            if(valueColorSchemeInstance == null && optimizedRange == null){
-                valueColorSchemeInstance = colorMap.createInstance(zPlotRange);
-                valueColorSchemeInstance = NumberColorMaps.optimize(valueColorSchemeInstance, zPlotRange);
-                optimizedRange = zPlotRange;
-            }
-            else if(optimizedRange == null){
-                valueColorSchemeInstance = NumberColorMaps.optimize(valueColorSchemeInstance, zPlotRange);
-                optimizedRange = zPlotRange;
-            }
-            else{
-                valueColorSchemeInstance = NumberColorMaps.optimize(valueColorSchemeInstance, optimizedRange, zPlotRange);
-                optimizedRange = zPlotRange;
-            }
-        }
-
-        double xStartGraph = super.xPlotCoordStart;
-        double yEndGraph = super.yPlotCoordEnd;
-
-        //Get graph width and height from super class.
-        double xWidthTotal = super.xPlotCoordWidth;
-        double yHeightTotal = super.yPlotCoordHeight;
-        
-        //Set width and height of cells to be colored in by finding the width and height for the first cell.
-        double cellHeight = (yHeightTotal)/data.getYCount();
-        double cellWidth = (xWidthTotal)/data.getXCount();
-        
-        
-        //Draw the cells of data by filling rectangles, if the width and height are greater than one pixel.
-        if(cellWidth >= 1 && cellHeight >= 1){
-            if(!linearBoundaries){
-                drawRectanglesSmallXAndYBoundaries(g, data);
-            }
-            else{
-                drawRectangles(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal,cellHeight, cellWidth);
-            }
-        }
-        
-        //Draw graph when cell width or height is smaller than one pixel.
-        if(cellWidth < 1 || cellHeight < 1){
-            if(cellHeight > 1){
-                if(!linearBoundaries){
-                    drawRectanglesSmallXAndYBoundaries(g, data);
-                }
-                else{
-                    drawRectanglesSmallX(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal, cellHeight, cellWidth);
-                }
-                
-            }
-            if(cellWidth > 1){
-                if(!linearBoundaries){
-                    drawRectanglesSmallXAndYBoundaries(g, data);
-                }
-                else{
-                    drawRectanglesSmallY(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal, cellHeight, cellWidth);
-                }
-            }
-            if(cellWidth < 1 && cellHeight < 1){
-                if(!linearBoundaries){
-                    drawRectanglesSmallXAndYBoundaries(g, data);
-                }
-                else{
-                    drawRectanglesSmallXAndY(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal,cellHeight, cellWidth);
-                }
-            }
-        }
-        /*Draw a legend, given the current data set. 
-        Don't draw if the user indicats that no legend should be drawn, or the legend width is invalid.*/
-        if(drawLegend && legendWidth>0){
-            /*dataList is made by splitting the aggregated range of the z(color) data into a list of the
-            same length as the the height of the graph in pixels.*/
-            ListNumber dataList = ListNumbers.linearListFromRange(zPlotRange.getMinimum().doubleValue(),zPlotRange.getMaximum().doubleValue(),(int)yHeightTotal);
-            //legendData is a Cell2DDataset representation of dataList.
-            Cell2DDataset legendData = Cell2DDatasets.linearRange(dataList, RangeUtil.range(0, 1), 1, RangeUtil.range(0, (int)yHeightTotal), (int)yHeightTotal);
-            drawRectangles(g,legendData,xStartGraph + xWidthTotal+(rightMargin - (legendWidth+zLabelMargin+zLabelMaxWidth+legendMarginToEdge))+1,yEndGraph,legendWidth,yHeightTotal,1, legendWidth);
-            drawZLabels();
-        }
+        drawArray(graphBuffer, data);
     }
     
     public void drawArray(GraphBuffer graphBuffer, Cell2DDataset data) {
@@ -264,18 +127,15 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         calculateLabels();
         zRange = RangeUtil.range(data.getStatistics().getMinimum().doubleValue(),data.getStatistics().getMaximum().doubleValue());
         calculateZRange(zRange);
-        /*Calculate all margins necessary for drawing the legend. 
-        Only do calculations if user says to draw a legend.*/
+        
+        // TODO: the calculation for leaving space for the legend is somewhat hacked
+        // Instead of actually having a nice calculation, we increase the margin
+        // to the right before using the standard calculateGraphArea
         if(drawLegend){
             calculateZLabels();
-            if(!rightMarginChanged){
-                rightMargin = legendMarginToGraph+legendWidth+zLabelMargin+zLabelMaxWidth+legendMarginToEdge;
-            }
-            else if(rightMarginJustChanged){
-                rightMargin+= (legendWidth+zLabelMargin+zLabelMaxWidth+legendMarginToEdge);
-                rightMarginJustChanged = false;
-            }
-                
+            rightMargin = graphAreaToLegendMargin + legendWidth + zLabelMargin + zLabelMaxWidth + originalRightMargin;
+        } else {
+            rightMargin = originalRightMargin;
         }
         
         calculateGraphArea();
@@ -301,21 +161,12 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         
         
         //Set color scheme
-        if(!optimizeColorScheme){
-            valueColorSchemeInstance = colorMap.createInstance(zPlotRange);
-        }
-        else{
-            if(valueColorSchemeInstance == null && optimizedRange == null){
-                valueColorSchemeInstance = colorMap.createInstance(zPlotRange);
-                valueColorSchemeInstance = NumberColorMaps.optimize(valueColorSchemeInstance, zPlotRange);
-                optimizedRange = zPlotRange;
-            }
-            else if(optimizedRange == null){
-                valueColorSchemeInstance = NumberColorMaps.optimize(valueColorSchemeInstance, zPlotRange);
-                optimizedRange = zPlotRange;
-            }
-            else{
-                valueColorSchemeInstance = NumberColorMaps.optimize(valueColorSchemeInstance, optimizedRange, zPlotRange);
+        if (!optimizeColorScheme){
+            colorMapInstance = colorMap.createInstance(zPlotRange);
+        } else {
+            if (colorMapInstance == null || !RangeUtil.equals(optimizedRange, zRange)) {
+                colorMapInstance = colorMap.createInstance(zPlotRange);
+                colorMapInstance = NumberColorMaps.optimize(colorMapInstance, zPlotRange);
                 optimizedRange = zPlotRange;
             }
         }
@@ -330,6 +181,8 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         
         double cellHeight = (yHeightTotal)/data.getYCount();
         double cellWidth = (xWidthTotal)/data.getXCount();
+        
+        boolean linearBoundaries = ListNumbers.isLinear(data.getXBoundaries()) && ListNumbers.isLinear(data.getYBoundaries());
         
         if(cellWidth >= 1 && cellHeight >= 1){
             if(!linearBoundaries){
@@ -375,7 +228,8 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
             ListNumber dataList = ListNumbers.linearListFromRange(zPlotRange.getMinimum().doubleValue(),zPlotRange.getMaximum().doubleValue(),(int)yHeightTotal);
             //legendData is a Cell2DDataset representation of dataList.
             Cell2DDataset legendData = Cell2DDatasets.linearRange(dataList, RangeUtil.range(0, 1), 1, RangeUtil.range(0, (int)yHeightTotal), (int)yHeightTotal);
-            drawRectanglesArray(g, legendData,xStartGraph + xWidthTotal+(rightMargin - (legendWidth+zLabelMargin+zLabelMaxWidth+legendMarginToEdge))+1,yEndGraph,legendWidth,yHeightTotal,1, legendWidth, image);
+            int xLegendStart = getImageWidth() - originalRightMargin - zLabelMaxWidth - zLabelMargin - legendWidth;
+            drawRectanglesArray(g, legendData, xLegendStart, yEndGraph, legendWidth, yHeightTotal, 1, legendWidth, image);
             drawZLabels();
         }
         
@@ -397,7 +251,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
                 double xPosition = xStartGraph;
                 int xPositionInt = (int)xStartGraph;
                 while (countX < data.getXCount()){
-                    g.setColor(new Color(valueColorSchemeInstance.colorFor(data.getValue(countX, data.getYCount()-1-countY))));
+                    g.setColor(new Color(colorMapInstance.colorFor(data.getValue(countX, data.getYCount()-1-countY))));
                     Rectangle2D.Double currentRectangle = new Rectangle2D.Double(xPositionInt, yPositionInt, (int)cellWidth+1, (int)cellHeight+1);
                     g.fill(currentRectangle);
                     xPosition = xPosition + cellWidth;
@@ -424,7 +278,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
                 double xPosition = xStartGraph;
                 int xPositionInt = (int)xStartGraph;
                 while (countX < data.getXCount()){
-                    int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
+                    int rgb = colorMapInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
                     for(int w = 0; w < (int)cellWidth + 1; w++){
                         for(int h = 0; h < (int)cellHeight + 1; h++){
                             if(hasAlphaChannel){
@@ -472,7 +326,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
                 countX = 0;
                 int xPositionInt = (int)xStartGraph;
                 while (xPositionInt < (int)(xStartGraph+xWidthTotal)+1){
-                    g.setColor(new Color(valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-countY))));
+                    g.setColor(new Color(colorMapInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-countY))));
                     Rectangle2D.Double rect;
                     //check to see how far the end of the drawn box is from the end of the actual data box (due to truncation)
                     if((yPositionInt+((int)cellHeight)+1)-(yPosition+cellHeight) < 1)
@@ -510,7 +364,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
                 countX = 0;
                 int xPositionInt = (int)xStartGraph;
                 while (xPositionInt < (int)(xStartGraph+xWidthTotal)+1){
-                    int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
+                    int rgb = colorMapInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
                     for(int w = 0; w < (int)cellWidth + 1; w++){
                         for(int h = 0; h < (int)cellHeight + 1; h++){
                             if(hasAlphaChannel){
@@ -548,7 +402,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
                 countY = 0;
                 int yPositionInt = (int)(yEndGraph-yHeightTotal);
                 while (yPositionInt < (int)yEndGraph+1){
-                    g.setColor(new Color(valueColorSchemeInstance.colorFor(data.getValue(countX, data.getYCount()-1-((int)countY)))));
+                    g.setColor(new Color(colorMapInstance.colorFor(data.getValue(countX, data.getYCount()-1-((int)countY)))));
                     Rectangle2D.Double rect;
                     if((xPositionInt+(int)cellWidth+1)-(xPosition+cellWidth) < 1)
                         rect = new Rectangle2D.Double(xPositionInt,yPositionInt,(int)cellWidth+1,1);
@@ -579,7 +433,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
                 countY = 0;
                 int yPositionInt = (int)(yEndGraph-yHeightTotal);
                 while (yPositionInt < (int)yEndGraph+1){
-                    int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
+                    int rgb = colorMapInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
                     for(int w = 0; w < (int)cellWidth + 1; w++){
                         for(int h = 0; h < (int)cellHeight + 1; h++){
                             if(hasAlphaChannel){
@@ -621,7 +475,7 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
             countX = 0;
             xPositionInt = (int) xStartGraph;
             while (xPositionInt < (int)(xStartGraph+xWidthTotal)+1){
-                g.setColor(new Color(valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY))));
+                g.setColor(new Color(colorMapInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY))));
                 Rectangle2D.Double rect;
                 rect = new Rectangle2D.Double(xPositionInt,yPositionInt,1,1);
                 g.fill(rect);
@@ -650,7 +504,7 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
             countX = 0;
             xPositionInt = (int) xStartGraph;
             while (xPositionInt < (int)(xStartGraph+xWidthTotal)+1){
-                int rgb = valueColorSchemeInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
+                int rgb = colorMapInstance.colorFor(data.getValue((int)countX, data.getYCount()-1-(int)countY));
                 if(hasAlphaChannel){
                     pixels[(yPositionInt)*getImageWidth()*4 + 4*xPositionInt + 0] = (byte)(rgb >> 24 & 0xFF);
                     pixels[(yPositionInt)*getImageWidth()*4 + 4*xPositionInt + 1] = (byte)(rgb & 0xFF);
@@ -746,7 +600,7 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
         while (countY < newBoundariesY.size()-1){
                 countX = 0;
                 while (countX < newBoundariesX.size()-1){
-                    g.setColor(new Color(valueColorSchemeInstance.colorFor(data.getValue(valueIndicesX.get(countX), valueIndicesY.get(valueIndicesY.size()-2-countY)))));
+                    g.setColor(new Color(colorMapInstance.colorFor(data.getValue(valueIndicesX.get(countX), valueIndicesY.get(valueIndicesY.size()-2-countY)))));
                     //make and fill the rectangle.
                     Rectangle2D.Double currentRectangle;
                     currentRectangle = new Rectangle2D.Double(newBoundariesX.get(countX), newBoundariesY.get(newBoundariesY.size()-1-countY)
@@ -838,7 +692,7 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
                 countX = 0;
                 while (countX < newBoundariesX.size()-1){
                     //make and fill the rectangle.
-                    int rgb = valueColorSchemeInstance.colorFor(data.getValue(valueIndicesX.get(countX), valueIndicesY.get(valueIndicesY.size()-2-countY)));
+                    int rgb = colorMapInstance.colorFor(data.getValue(valueIndicesX.get(countX), valueIndicesY.get(valueIndicesY.size()-2-countY)));
                     for(int w = 0; w < newBoundariesX.get(countX+1)-newBoundariesX.get(countX); w++){
                         for(int h = 0; h < newBoundariesY.get(newBoundariesY.size()-1-countY-1)-newBoundariesY.get(newBoundariesY.size()-1-countY); h++){
                             if(hasAlphaChannel){
@@ -912,7 +766,7 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
 
             // Draw first and last label
             int[] drawRange = new int[] {yAreaCoordStart, yAreaCoordEnd - 1};
-            int xRightLabel = (int) (getImageWidth() - legendMarginToEdge-1);
+            int xRightLabel = (int) (getImageWidth() - originalRightMargin - 1);
             drawHorizontalReferencesLabel(g, metrics, zReferenceLabels.get(0), (int) Math.floor(zTicks.getDouble(0)),
                 drawRange, xRightLabel, true, false);
             drawHorizontalReferencesLabel(g, metrics, zReferenceLabels.get(zReferenceLabels.size() - 1), (int) Math.floor(zTicks.getDouble(zReferenceLabels.size() - 1)),

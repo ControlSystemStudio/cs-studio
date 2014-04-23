@@ -30,19 +30,19 @@ public class NumberColorMaps {
                                                                                 Color.YELLOW,
                                                                                 Color.RED,
                                                                                 new Color(138,0,0), 
-                                                                                Color.BLACK});
+                                                                                Color.BLACK}, "JET");
     /**
      * GRAY ranges from black to white.
      */
     public static final NumberColorMap GRAY = new NumberColorMapGradient(new Color[]{Color.BLACK, 
                                                                                        Color.WHITE,
-                                                                                       Color.RED});
+                                                                                       Color.RED}, "GRAY");
     private static final Map<String, NumberColorMap> registeredColorSchemes
             = new ConcurrentHashMap<String, NumberColorMap>();
     
     static {
-        registeredColorSchemes.put("JET", JET);
-        registeredColorSchemes.put("GRAY", GRAY);
+        registeredColorSchemes.put(JET.toString(), JET);
+        registeredColorSchemes.put(GRAY.toString(), GRAY);
     }
     
     /**

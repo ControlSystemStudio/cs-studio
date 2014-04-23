@@ -16,6 +16,7 @@ import java.util.List;
 class NumberColorMapGradient implements NumberColorMap {
 
     private final Color[] colors;
+    private final String name;
 
     /**
      * Creates a new color map.
@@ -24,8 +25,9 @@ class NumberColorMapGradient implements NumberColorMap {
      * 
      * @param colors 
      */
-    public NumberColorMapGradient(Color[] colors) {
+    public NumberColorMapGradient(Color[] colors, String name) {
         this.colors = colors;
+        this.name = name;
     }
 
     @Override
@@ -97,6 +99,11 @@ class NumberColorMapGradient implements NumberColorMap {
             return (alpha << 24) | (red << 16) | (green << 8) | blue;
         }
 
+        @Override
+        public String toString() {
+            return name + " " + range;
+        }
+
     }
     
     private static ArrayList<Double> percentageRange(int size) {
@@ -110,4 +117,10 @@ class NumberColorMapGradient implements NumberColorMap {
 
         return percentages;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+    
 }
