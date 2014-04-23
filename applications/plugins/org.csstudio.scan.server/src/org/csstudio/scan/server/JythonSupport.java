@@ -75,8 +75,8 @@ public class JythonSupport
 	{
 	    if (!initialized)
 	    {
-	        // Add org.python/jython.jar/Lib to Python path
-	        String path = getPluginPath("org.python", "jython.jar");
+	        // Add org.python.jython/jython.jar/Lib to Python path
+	        String path = getPluginPath("org.python.jython", "jython.jar");
 	        if (path != null)
 	        {
 	            paths.add(path + "/Lib");
