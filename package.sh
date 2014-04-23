@@ -16,5 +16,6 @@ cd ${WIN_BUILD_DIR}
 cp -R ../applicationIcons cs-studio/
 
 unset DISPLAY
+sed -i 's/\"ShowDotFiles\"=\"\w\"/\"ShowDotFiles\"=\"1\"/' ~/.wine/user.reg
 wine InnoSetup5/ISCC.exe css-windows-build/install_script_general.iss "/dCSSVersion=${VERSION}"
 echo ::: DONE :::

@@ -4,16 +4,20 @@
 [Setup]
 AppName=cs-studio
 AppVersion={#CSSVersion}
+AppPublisher=Control System Studio Collaboration
+AppPublisherURL=http://controlsystemstudio.org
 DefaultDirName={pf}\cs-studio
 DefaultGroupName=cs-studio
 UninstallDisplayIcon={app}\cs-studio.exe
 OutputBaseFilename=cs-studio-{#CSSVersion}_setup_64
 Compression=lzma2
-ArchitecturesInstallIn64BitMode=x64 
+LZMAUseSeparateProcess=yes
+ArchitecturesInstallIn64BitMode=x64
+ChangesEnvironment=yes
+SolidCompression=yes 
 
 [Files]
 Source: "..\cs-studio\*"; DestDir: "{app}"; Check: "Is64BitInstallMode"; MinVersion: 0.0,5.0; Flags: recursesubdirs
- 
 
 [Registry]
 Root: HKCR; Subkey: ".opi"; ValueType: String; ValueData: "BOY"; Tasks: cssAssociation; MinVersion: 0.0,5.0; Flags: uninsdeletevalue 
