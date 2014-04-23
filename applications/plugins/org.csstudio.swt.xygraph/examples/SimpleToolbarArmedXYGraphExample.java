@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
@@ -29,15 +36,17 @@ public class SimpleToolbarArmedXYGraphExample {
 		xyGraph.setTitle("Simple Toolbar Armed XYGraph Example");
 		//set it as the content of LightwightSystem
 		lws.setContents(toolbarArmedXYGraph);
-		
+
 		xyGraph.primaryXAxis.setShowMajorGrid(true);
+		xyGraph.primaryXAxis.setAutoScale(true);
 		xyGraph.primaryYAxis.setShowMajorGrid(true);
+		xyGraph.primaryYAxis.setAutoScale(true);
 		
 		//create a trace data provider, which will provide the data to the trace.
 		CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(false);
 		traceDataProvider.setBufferSize(100);		
-		traceDataProvider.setCurrentXDataArray(new double[]{10, 23, 34, 45, 56, 78, 88, 99});
-		traceDataProvider.setCurrentYDataArray(new double[]{11, 44, 55, 45, 88, 98, 52, 23});	
+		traceDataProvider.setCurrentXDataArray(new double[]{-9, 10, 23, 34, 45, 56, 78, 88, 99});
+		traceDataProvider.setCurrentYDataArray(new double[]{-5, 11, 44, 55, 45, 88, 98, 52, 23});	
 		
 		//create the trace
 		Trace trace = new Trace("Trace1-XY Plot", 

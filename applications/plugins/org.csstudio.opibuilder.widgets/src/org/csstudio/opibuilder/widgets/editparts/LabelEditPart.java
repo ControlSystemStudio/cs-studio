@@ -7,8 +7,12 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
@@ -33,22 +37,29 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	
 	@Override
 	protected IFigure doCreateFigure() {
-		WrappableTextFigure labelFigure = new WrappableTextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
+		TextFigure labelFigure = createTextFigure();
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
 		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
 		labelFigure.setSelectable(determinSelectable());
 		labelFigure.setText(getWidgetModel().getText());		
-		labelFigure.setWrapWords(getWidgetModel().isWrapWords());
-		labelFigure.setShowScrollbar(getWidgetModel().isShowScrollbar());
+		if(labelFigure instanceof WrappableTextFigure)
+			((WrappableTextFigure) labelFigure).setShowScrollbar(getWidgetModel().isShowScrollbar());
+		updatePropertyVisibility();
 		return labelFigure;
+	}
+	
+	protected TextFigure createTextFigure(){
+		if(getWidgetModel().isWrapWords())
+			return new WrappableTextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);	
+		return new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 	}
 	
 	@Override
 	public void activate() {
 		super.activate();
 		if(getWidgetModel().isAutoSize()){
-			getWidgetModel().setSize(((WrappableTextFigure)figure).getAutoSizeDimension());
+			getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
 			figure.revalidate();
 		}
 	}
@@ -66,11 +77,11 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				((WrappableTextFigure)figure).setText((String)newValue);
+				((TextFigure)figure).setText((String)newValue);
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getWidgetModel().isAutoSize())
-							getWidgetModel().setSize(((WrappableTextFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
 					}
 				});
 				
@@ -82,7 +93,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler clickableHandler = new IWidgetPropertyChangeHandler() {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((WrappableTextFigure)figure).setSelectable(determinSelectable());
+				((TextFigure)figure).setSelectable(determinSelectable());
 				return false;
 			}
 		};
@@ -96,7 +107,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getWidgetModel().isAutoSize()){
-							getWidgetModel().setSize(((WrappableTextFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
 							figure.revalidate();
 						}
 					}
@@ -112,7 +123,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((WrappableTextFigure)figure).setOpaque(!(Boolean)newValue);
+				((TextFigure)figure).setOpaque(!(Boolean)newValue);
 				return true;
 			}
 		};
@@ -122,7 +133,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {				
 				if((Boolean)newValue){
-					getWidgetModel().setSize(((WrappableTextFigure)figure).getAutoSizeDimension());
+					getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
 					figure.revalidate();
 				}
 				return true;
@@ -133,7 +144,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((WrappableTextFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
+				((TextFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -142,7 +153,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((WrappableTextFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
+				((TextFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -151,25 +162,43 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((WrappableTextFigure)figure).setWrapWords((Boolean)newValue);
+				AbstractWidgetModel model = getWidgetModel();
+				AbstractContainerModel parent = model.getParent();
+				parent.removeChild(model);
+				parent.addChild(model);
+				parent.selectWidget(model, true);
 				return false;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_WRAP_WORDS, handler);
+		getWidgetModel().getProperty(LabelModel.PROP_WRAP_WORDS).addPropertyChangeListener(
+				new PropertyChangeListener() {
+
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						updatePropertyVisibility();
+					}
+				});
 	
 		handler = new IWidgetPropertyChangeHandler() {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((WrappableTextFigure)figure).setShowScrollbar((Boolean)newValue);
+				if(figure instanceof WrappableTextFigure)
+					((WrappableTextFigure)figure).setShowScrollbar((Boolean)newValue);
 				return false;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_SHOW_SCROLLBAR, handler);
 		
 	}
+	
+	private void updatePropertyVisibility(){		
+		getWidgetModel().setPropertyVisible(
+				LabelModel.PROP_SHOW_SCROLLBAR,getWidgetModel().isWrapWords());
+	}
 
 	private void performDirectEdit(){
-		new TextEditManager(this, new LabelCellEditorLocator((WrappableTextFigure)getFigure())).show();
+		new TextEditManager(this, new LabelCellEditorLocator((TextFigure)getFigure())).show();
 	}
 	
 	@Override

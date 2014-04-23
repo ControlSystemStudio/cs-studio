@@ -29,6 +29,8 @@ import java.io.InputStreamReader;
 
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.osgi.util.NLS;
 
 /** Helper for executing a (system) command.
@@ -106,6 +108,43 @@ public final class CommandExecutor
             return;
         }
         
+        //create a thread for listening on error output 
+        Thread errorThread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// .. with error; check error output
+		        BufferedReader br = null;
+		        try
+		        {
+		            final InputStream is = process.getErrorStream();
+		            final InputStreamReader isr = new InputStreamReader(is);
+		            br = new BufferedReader(isr);
+		            String line;
+		            while ((line = br.readLine()) != null){
+						ConsoleService.getInstance().writeString(
+								command + " error: ",
+								CustomMediaFactory.COLOR_PURPLE);
+						ConsoleService.getInstance()
+								.writeString(line + "\n", CustomMediaFactory.COLOR_RED);
+		            }
+		        }
+		        catch (IOException e)
+		        {
+		        	ErrorHandlerUtil.handleError("Command Executing error" , e);
+		            return;
+		        }finally{
+		        	if(br != null)
+						try {
+							br.close();
+						} catch (IOException e) {
+							ErrorHandlerUtil.handleError("Command Executing error" , e);				
+						}
+		        }
+			}
+		});
+        errorThread.start();
+        
         //write output to console
         try {
 			int c = 0;
@@ -115,7 +154,7 @@ public final class CommandExecutor
 					ConsoleService.getInstance().writeString(""+(char)c);
 			}
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			ErrorHandlerUtil.handleError("Command Executing error" , e1);
 		}
         
         
@@ -152,31 +191,7 @@ public final class CommandExecutor
         if (exit_code == 0)
             return;
         
-        // .. with error; check error output
-        final StringBuilder stderr = new StringBuilder();
-        BufferedReader br = null;
-        try
-        {
-            final InputStream is = process.getErrorStream();
-            final InputStreamReader isr = new InputStreamReader(is);
-            br = new BufferedReader(isr);
-            String line;
-            while ((line = br.readLine()) != null)
-                stderr.append(line + "\n");
-        }
-        catch (IOException e)
-        {
-            error(-1, e.getMessage());
-            return;
-        }finally{
-        	if(br != null)
-				try {
-					br.close();
-				} catch (IOException e) {
-					error(-1, e.getMessage());					
-				}
-        }
-        error(exit_code, stderr.toString());
+        
       
         
     }

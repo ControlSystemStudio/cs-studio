@@ -39,7 +39,6 @@ public class EdmBoolean extends EdmAttribute {
 		} else {
 			val = false;
 		}
-		
 		setInitialized(true);
 		log.debug("Parsed " + this.getClass().getName() + " = " + val);
 	}

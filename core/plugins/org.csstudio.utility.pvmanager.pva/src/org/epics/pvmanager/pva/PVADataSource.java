@@ -1,10 +1,10 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.pva;
 
-import org.epics.pvaccess.CAException;
+import org.epics.pvaccess.PVAException;
 import org.epics.pvaccess.client.ChannelProvider;
 import org.epics.pvaccess.client.impl.remote.ClientContextImpl;
 import org.epics.pvmanager.ChannelHandler;
@@ -46,7 +46,7 @@ public class PVADataSource extends DataSource {
         // force initialization now
         try {
 			pvaContext.initialize();
-		} catch (CAException e) {
+		} catch (PVAException e) {
 			throw new RuntimeException("Failed to intialize pvAccess context.", e);
 		}
     }

@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class Opi_activeRectangleClassTest extends TestCase {
 
@@ -34,7 +34,7 @@ public class Opi_activeRectangleClassTest extends TestCase {
 		assertTrue(d.getSubEntity(0) instanceof Edm_activeRectangleClass);
 		Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getSubEntity(0);
 
-		Context context = new Context(doc, root, 0, 0);
+		Context context = new Context(doc, root, d, 0, 0);
 		Opi_activeRectangleClass o = new Opi_activeRectangleClass(context, r);
 		assertTrue(o instanceof OpiWidget);
 

@@ -3,7 +3,7 @@
  */
 package org.csstudio.channel.opiwidgets;
 
-import org.csstudio.channel.widgets.Line2DPlotWidget;
+import org.csstudio.channel.widgets.ChannelLinePlotWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 
@@ -50,7 +50,7 @@ public class Line2DPlotEditPart extends
 		setPropertyChangeHandler(Line2DPlotModel.CONFIGURABLE, reconfigure);
 	}
 
-	private void configure(Line2DPlotWidget line2dPlotWidget,
+	private void configure(ChannelLinePlotWidget line2dPlotWidget,
 			Line2DPlotModel line2dPlotModel, boolean runMode) {
 		if (runMode) {
 			line2dPlotWidget.setChannelQuery(line2dPlotModel.getChannelQuery());

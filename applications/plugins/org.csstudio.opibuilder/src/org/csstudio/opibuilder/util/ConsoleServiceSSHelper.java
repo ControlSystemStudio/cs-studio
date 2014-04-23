@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
+import org.eclipse.swt.graphics.RGB;
+
 
 
 
@@ -23,6 +25,8 @@ public abstract class ConsoleServiceSSHelper{
 	public abstract void writeInfo(String message);
 
 	public abstract void writeString(String s);
+	
+	public abstract void writeString(String s, RGB color);
 
 	public abstract void turnOnSystemOutput();
 	

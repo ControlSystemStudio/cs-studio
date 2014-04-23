@@ -17,6 +17,7 @@ import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
 import org.csstudio.alarm.beast.annunciator.model.Severity;
 import org.csstudio.apputil.ringbuffer.RingBuffer;
+import org.csstudio.utility.speech.NoSoundCardAvailableException;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -46,6 +47,8 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
 
     /** Table of recent annunciations */
     private TableViewer message_table;
+    
+    private SilenceAction silenceAction;
 
     /** List of recent annunciations, shown in message_table.
      *  Synchronize on access
@@ -206,7 +209,8 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     /** @param toolbar Tool bar to which to add */
     private void addToolbarActions(final IToolBarManager toolbar)
     {
-        toolbar.add(new SilenceAction(this));
+    	silenceAction = new SilenceAction(this);
+        toolbar.add(silenceAction);
         toolbar.add(new ClearAction(this));
     }
 
@@ -259,6 +263,23 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     @Override
     public void annunciatorError(final Throwable ex)
     {
+    	if(NoSoundCardAvailableException.class.equals(ex.getClass())) {
+            // Update table in UI thread
+            final Control control = message_table.getControl();
+            if (control.isDisposed())
+                return;
+			control.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+	                if (control.isDisposed())
+	                    return;
+	                silenceAction.setEnabled(false);
+	                setAnnunciationsEnabled(false);
+				}
+			});
+	        logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
+    		return;
+    	}
         logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
         Activator.getLogger().log(Level.WARNING, "Annunciator Error", ex); //$NON-NLS-1$
     }

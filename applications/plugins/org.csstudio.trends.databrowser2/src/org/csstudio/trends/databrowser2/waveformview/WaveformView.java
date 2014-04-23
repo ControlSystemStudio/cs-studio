@@ -31,6 +31,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -46,6 +47,7 @@ import org.epics.vtype.VType;
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed WaveformView to handle multiple itesm with
  *                           the same name.
+ *  @author Xihui Chen (Added some work around to make it work for rap).
  */
 public class WaveformView extends DataBrowserAwareView
 	implements ModelListener
@@ -152,8 +154,16 @@ public class WaveformView extends DataBrowserAwareView
         // =====================
         // ======= Plot ========
         // =====================
-        final Canvas canvas = new Canvas(parent, 0);
-        canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        
+        //The canvas has to be wrapped in a composite so that the canvas has (0,0) coordinate.
+        //This is a work around for the inconsistency between figure.getBounds() and gc.getclipping(). 
+        Composite composite = new Composite(parent, SWT.NONE);
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        composite.setLayout(new FillLayout());
+        
+        //Double_BUFFERED is required to force RAP to use NativeGraphicsSource. 
+        //By default, it uses BufferedGraphicsSource which has problem to render it in web browser.
+        final Canvas canvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);        
         // Create plot with basic configuration
         final LightweightSystem lws = new LightweightSystem(canvas);
         final ToolbarArmedXYGraph plot =
@@ -382,4 +392,10 @@ public class WaveformView extends DataBrowserAwareView
 
 	@Override
 	public void changedXYGraphConfig() {}
+
+	@Override
+	public void itemRefreshRequested(PVItem item) {}
+
+	@Override
+	public void cursorDataChanged() {}
 }

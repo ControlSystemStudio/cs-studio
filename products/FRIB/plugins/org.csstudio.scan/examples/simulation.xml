@@ -1,0 +1,20 @@
+<!-- "Simulation" Configuration
+
+  Defines the simulation characteristics of
+  selected process variables.
+  
+  In the long run, the XML file can be auto-generated
+  from an RDB, and tools could also directly read from the RDB.
+  Still, for robustness' sake, there should probably always be
+  a local XML "snapshot" instead of relying on an RDB connection
+  to a server outside of the beamline subnet for basic scan system operation.
+  -->
+<beamline>
+    <!-- Information for specific devices and PVs
+         is organized in the same devices/device/pv/name
+         hierarchy as the beamline configuration file
+         so that in principle one file could contain
+         both the beamline and simulation information.
+     -->
+   
+</beamline>

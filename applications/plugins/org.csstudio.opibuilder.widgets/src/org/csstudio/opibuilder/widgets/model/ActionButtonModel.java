@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
@@ -52,6 +53,11 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 			return result;
 		}
 	}
+	
+	/**
+	 * Version less than this has no style property.
+	 */
+	private static final Version VERSION_BEFORE_STYLE = new Version(3, 1, 5);
 	
 	/**
 	 * Button Style
@@ -135,7 +141,7 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	protected void configureProperties() {
 		
 		addProperty(new ComboProperty(PROP_STYLE, "Style", WidgetPropertyCategory.Basic,
-				Style.stringValues(), Style.NATIVE.ordinal()));
+				Style.stringValues(), getDefaultStyle().ordinal()));
 		
 		addProperty(new StringProperty(PROP_TEXT, "Text",
 				WidgetPropertyCategory.Display, "$(actions)", true)); //$NON-NLS-1$
@@ -162,16 +168,17 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	
 	
 	@Override
-	public void processVersionDifference() {		
-		//There was no style property before 2.0.0
-		if(getVersionOnFile().getMajor() <2){			
+	public void processVersionDifference(Version boyVersionOnFile) {		
+		super.processVersionDifference(boyVersionOnFile);
+		//There was no style property before 3.1.5
+		if(boyVersionOnFile.compareTo(VERSION_BEFORE_STYLE)<0){			
 			// convert native button widget to native style		
 			if (getWidgetType().equals("Button")){ //$NON-NLS-N$
 				setStyle(Style.NATIVE);
 				setPropertyValue(PROP_WIDGET_TYPE, "Action Button");
 			}
 			else
-				setStyle(Style.CLASSIC);			
+				setStyle(getDefaultStyle());
 		}		
 	}
 	
@@ -226,6 +233,13 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
 	    return (Boolean)getProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
 	}
 	
+    /** @return Default for 'style' based on preferences */
+    private Style getDefaultStyle() {
+        return PreferencesHelper.isDefaultStyleClassic()
+               ? Style.CLASSIC
+               : Style.NATIVE;
+    }
+    
 	public Style getStyle(){
 		return Style.values()[(Integer)getProperty(PROP_STYLE).getPropertyValue()];
 	}

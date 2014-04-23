@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.csstudio.autocomplete.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.csstudio.autocomplete.ui" id="helpers" name="Auto-Complete UI Helpers"/>
+      </appinfo>
+      <documentation>
+         Provide Auto-Complete UI Helpers
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="helpers"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="helpers">
+      <annotation>
+         <documentation>
+            Extension that provides Auto-Complete UI helpers
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="ui" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Class that extends the UIHelper
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.csstudio.autocomplete.ui.util.UIHelper:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+</schema>

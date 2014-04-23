@@ -29,7 +29,13 @@
 		<link>
 			<name>resources/SymbolLibrary</name>
 			<type>2</type>
-			<location>/opt/codac/opi/boy/SymbolLibrary</location>
+			<locationURI>CODAC_OPI/boy/SymbolLibrary</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>CODAC_OPI</name>
+			<value>file:/opt/codac/opi</value>
+		</variable>
+	</variableList>
 </projectDescription>

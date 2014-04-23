@@ -305,12 +305,6 @@ animated on ON/OFF color</text>
         <border_style>0</border_style>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <flip_vertical>false</flip_vertical>
@@ -431,12 +425,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -592,12 +580,6 @@ animated in ON/OFF color</text>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -671,12 +653,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -1005,12 +981,6 @@ animated on ON/OFF color</text>
         <border_style>0</border_style>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <flip_vertical>false</flip_vertical>
@@ -1131,12 +1101,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -1210,12 +1174,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -1371,12 +1329,6 @@ animated in ON/OFF color</text>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -1450,12 +1402,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -1785,7 +1731,7 @@ animated on ON/OFF color</text>
         <off_color>
           <color red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://choice("1")</pv_name>
+        <pv_name>loc://choice("A0")</pv_name>
         <foreground_color>
           <color red="0" green="32" blue="92" />
         </foreground_color>
@@ -1794,12 +1740,6 @@ animated on ON/OFF color</text>
         <crop_top>0</crop_top>
         <confirm_message>Are your sure you want to do this?</confirm_message>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <show_confirm_dialog>false</show_confirm_dialog>
         <degree>0</degree>
@@ -1841,12 +1781,6 @@ $(pv_value)</tooltip>
         <width>120</width>
         <border_style>6</border_style>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <items>
@@ -2004,7 +1938,7 @@ animated in ON/OFF color</text>
         <off_color>
           <color red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://bool</pv_name>
+        <pv_name>loc://bool(1)</pv_name>
         <foreground_color>
           <color red="0" green="32" blue="92" />
         </foreground_color>
@@ -2013,12 +1947,6 @@ animated in ON/OFF color</text>
         <crop_top>0</crop_top>
         <confirm_message>Are your sure you want to do this?</confirm_message>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <show_confirm_dialog>1</show_confirm_dialog>
         <toggle_button>true</toggle_button>
@@ -2171,7 +2099,7 @@ animated in ON/OFF color</text>
         <off_color>
           <color red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://bool</pv_name>
+        <pv_name>loc://bool(1)</pv_name>
         <foreground_color>
           <color red="0" green="32" blue="92" />
         </foreground_color>
@@ -2180,12 +2108,6 @@ animated in ON/OFF color</text>
         <crop_top>0</crop_top>
         <confirm_message>Are your sure you want to do this?</confirm_message>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <show_confirm_dialog>1</show_confirm_dialog>
         <toggle_button>true</toggle_button>
@@ -2475,7 +2397,7 @@ animated on ON/OFF color</text>
         <off_color>
           <color red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://choice("1")</pv_name>
+        <pv_name>loc://choice("A0")</pv_name>
         <foreground_color>
           <color red="0" green="32" blue="92" />
         </foreground_color>
@@ -2484,12 +2406,6 @@ animated on ON/OFF color</text>
         <crop_top>0</crop_top>
         <confirm_message>Are your sure you want to do this?</confirm_message>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <show_confirm_dialog>false</show_confirm_dialog>
         <degree>0</degree>
@@ -2515,7 +2431,7 @@ $(pv_value)</tooltip>
           <height_scalable>false</height_scalable>
           <keep_wh_ratio>false</keep_wh_ratio>
         </scale_options>
-        <pv_name>loc://choice("C0")</pv_name>
+        <pv_name>loc://choice("A0")</pv_name>
         <background_color>
           <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
         </background_color>
@@ -2531,12 +2447,6 @@ $(pv_value)</tooltip>
         <width>120</width>
         <border_style>6</border_style>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <items>
@@ -2652,7 +2562,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://bool</pv_name>
+        <pv_name>loc://bool(1)</pv_name>
         <foreground_color>
           <color red="0" green="32" blue="92" />
         </foreground_color>
@@ -2661,12 +2571,6 @@ $(pv_value)</tooltip>
         <crop_top>0</crop_top>
         <confirm_message>Are your sure you want to do this?</confirm_message>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <show_confirm_dialog>1</show_confirm_dialog>
         <toggle_button>true</toggle_button>
@@ -2779,7 +2683,7 @@ animated in ON/OFF color</text>
         <off_color>
           <color red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://bool</pv_name>
+        <pv_name>loc://bool(1)</pv_name>
         <foreground_color>
           <color red="0" green="32" blue="92" />
         </foreground_color>
@@ -2788,12 +2692,6 @@ animated in ON/OFF color</text>
         <crop_top>0</crop_top>
         <confirm_message>Are your sure you want to do this?</confirm_message>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <show_confirm_dialog>1</show_confirm_dialog>
         <toggle_button>true</toggle_button>
@@ -2904,7 +2802,7 @@ $(pv_value)</tooltip>
         <off_color>
           <color red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://bool</pv_name>
+        <pv_name>loc://bool(1)</pv_name>
         <foreground_color>
           <color red="0" green="32" blue="92" />
         </foreground_color>
@@ -2913,12 +2811,6 @@ $(pv_value)</tooltip>
         <crop_top>0</crop_top>
         <confirm_message>Are your sure you want to do this?</confirm_message>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <show_confirm_dialog>1</show_confirm_dialog>
         <toggle_button>true</toggle_button>
@@ -3031,7 +2923,7 @@ animated in ON/OFF color</text>
         <off_color>
           <color red="77" green="77" blue="77" />
         </off_color>
-        <pv_name>loc://bool</pv_name>
+        <pv_name>loc://bool(1)</pv_name>
         <foreground_color>
           <color red="0" green="32" blue="92" />
         </foreground_color>
@@ -3040,12 +2932,6 @@ animated in ON/OFF color</text>
         <crop_top>0</crop_top>
         <confirm_message>Are your sure you want to do this?</confirm_message>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <show_confirm_dialog>1</show_confirm_dialog>
         <toggle_button>true</toggle_button>
@@ -3301,12 +3187,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -3434,12 +3314,6 @@ $(pv_value)</tooltip>
         <width>52</width>
         <border_style>0</border_style>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <bit>-1</bit>
@@ -3599,12 +3473,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -3732,12 +3600,6 @@ $(pv_value)</tooltip>
         <width>51</width>
         <border_style>0</border_style>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <bit>-1</bit>
@@ -3897,12 +3759,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -4030,12 +3886,6 @@ $(pv_value)</tooltip>
         <width>68</width>
         <border_style>0</border_style>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <bit>-1</bit>
@@ -4195,12 +4045,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -4328,12 +4172,6 @@ $(pv_value)</tooltip>
         <width>45</width>
         <border_style>0</border_style>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <bit>-1</bit>
@@ -4493,12 +4331,6 @@ $(pv_value)</tooltip>
         <flip_horizontal>false</flip_horizontal>
         <crop_top>0</crop_top>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <degree>0</degree>
         <border_color>
@@ -4626,12 +4458,6 @@ $(pv_value)</tooltip>
         <width>47</width>
         <border_style>0</border_style>
         <rules>
-          <rule name="BorderRule" prop_id="border_style" out_exp="false">
-            <exp bool_exp="pv0==1">
-              <value>9</value>
-            </exp>
-            <pv trig="true">$(pv_name).SIMM</pv>
-          </rule>
         </rules>
         <pv_value />
         <bit>-1</bit>

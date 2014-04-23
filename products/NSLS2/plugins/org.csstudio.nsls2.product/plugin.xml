@@ -12,15 +12,6 @@
       </application>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.nsls2.product.CSSPerspective"
-            icon="icons/css16.png"
-            id="org.csstudio.nsls2.product.CSSPerspective"
-            name="CSS perspective">
-      </perspective>
-   </extension>
-   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
@@ -78,18 +69,22 @@
                name="aboutImage"
                value="icons/about.png">
          </property>
+         <property
+               name="aboutText"
+               value="%aboutText">
+         </property>
       </product>
    </extension>
    <extension
          point="org.csstudio.startup.module">
       <startupParameters
-            class="org.csstudio.nsls2.product.startupmodule.StartupParameters">
+            class="org.csstudio.utility.product.StartupParameters">
       </startupParameters>
       <workspace
-            class="org.csstudio.nsls2.product.startupmodule.WorkspacePrompt">
+            class="org.csstudio.utility.product.WorkspacePrompt">
       </workspace>
       <workbench
-            class="org.csstudio.nsls2.product.startupmodule.Workbench">
+            class="org.csstudio.utility.product.Workbench">
       </workbench>
       <project
             class="org.csstudio.startup.module.defaults.DefaultProject">

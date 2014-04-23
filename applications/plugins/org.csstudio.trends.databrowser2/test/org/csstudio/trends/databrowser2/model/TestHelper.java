@@ -15,6 +15,7 @@ import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.loc.LocalDataSource;
 import org.epics.pvmanager.sim.SimulationDataSource;
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
@@ -57,7 +58,7 @@ public class TestHelper
      */
     public static VType makeWaveform(final int ts, final double array[])
     {
-        return ValueFactory.newVDoubleArray(array,
+        return ValueFactory.newVDoubleArray(new ArrayDouble(array),
                 ValueFactory.alarmNone(),
                 ValueFactory.timeNow(),
                 ValueFactory.displayNone());

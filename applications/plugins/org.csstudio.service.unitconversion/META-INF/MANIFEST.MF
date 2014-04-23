@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Pvmanager Unitconversion
+Bundle-SymbolicName: org.csstudio.service.unitconversion;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.service.unitconversion.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ gov.bnl.unitconversion;bundle-version="1.0.0",
+ org.csstudio.utility.pvmanager;bundle-version="3.2.0",
+ org.epics.vtype;bundle-version="2.1.0",
+ com.google.common;bundle-version="10.0.1"
+Bundle-ActivationPolicy: lazy
+Import-Package: javax.ws.rs
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

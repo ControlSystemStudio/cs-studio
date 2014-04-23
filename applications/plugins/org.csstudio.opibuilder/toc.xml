@@ -118,6 +118,7 @@
         </topic>
         <topic href="html/script/ScriptUtil/org/csstudio/opibuilder/scriptUtil/GUIUtil.html" label="GUIUtil">
         </topic>
+        <anchor id="thirdPartyScriptUtil"/>
      </topic>
   </topic>
   <topic href="html/Schema.html" label="Schema">
@@ -126,6 +127,8 @@
     </topic>
     
     <topic href="html/CreateWidgets.html" label="Creating Customized Widget">
+    </topic>
+    <topic href="html/Architecture.html" label="BOY Architecture">
     </topic>
 </topic>
 </toc>

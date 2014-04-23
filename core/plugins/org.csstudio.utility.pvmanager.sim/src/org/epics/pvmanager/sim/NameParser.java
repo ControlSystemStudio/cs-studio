@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
@@ -107,7 +107,7 @@ class NameParser {
             }
             return clazz.getConstructor(types).newInstance(constructorParams);
         } catch (ClassNotFoundException ex) {
-            throw new RuntimeException("Function " + parameters.get(0) + " is not defined");
+            throw new RuntimeException("Simulation channel " + parameters.get(0) + " is not defined");
         } catch (NoClassDefFoundError ex) {
             if (ex.getMessage().contains("wrong name") && ex.getMessage().lastIndexOf("/") != -1) {
                 String suggestedName = ex.getMessage().substring(ex.getMessage().lastIndexOf("/") + 1, ex.getMessage().length() - 1);

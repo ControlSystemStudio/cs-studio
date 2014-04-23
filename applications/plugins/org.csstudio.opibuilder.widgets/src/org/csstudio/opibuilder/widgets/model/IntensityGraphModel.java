@@ -15,11 +15,13 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.NameDefinedCategory;
+import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.UpgradeUtil;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
@@ -28,6 +30,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.osgi.framework.Version;
 
 /**The model for intensity graph.
  * @author Xihui Chen
@@ -38,6 +41,8 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	public static final String Y_AXIS_ID = "y_axis";
 
 	public static final String X_AXIS_ID = "x_axis";
+	
+	public static final int MAX_ROIS_AMOUNT = 5;
 
 	public enum AxisProperty{		
 		TITLE("axis_title", "Axis Title"), //$NON-NLS-1$
@@ -63,6 +68,32 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 			return description;
 		}
 	}	
+	
+	public enum ROIProperty{
+		TITLE("title", "Title"),//$NON-NLS-1$
+		VISIBLE("visible", "Visible"),//$NON-NLS-1$
+		XPV("x_pv", "X PV"),//$NON-NLS-1$
+		YPV("y_pv", "Y PV"),//$NON-NLS-1$
+		XPV_VALUE("x_pv_value", "X PV Value"),//$NON-NLS-1$
+		YPV_VALUE("y_pv_value", "Y PV Value"),//$NON-NLS-1$
+		WPV("width_pv", "Width PV"),//$NON-NLS-1$
+		HPV("height_pv", "Height PV"),//$NON-NLS-1$
+		WPV_VALUE("w_pv_value", "W PV Value"),//$NON-NLS-1$
+		HPV_VALUE("h_pv_value", "H PV Value");		//$NON-NLS-1$
+		
+		public String propIDPre;
+		public String description;
+		
+		private ROIProperty(String propertyIDPrefix, String description) {
+			this.propIDPre = propertyIDPrefix;
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+	}
 	
 	/**
 	 * The lower limit of the value in the input data array.
@@ -142,6 +173,10 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	public static final String PROP_VERTICAL_PROFILE_Y_PV_NAME = "vertical_profile_y_pv_name";//$NON-NLS-1$
 	public static final String PROP_VERTICAL_PROFILE_Y_PV_VALUE = "vertial_profile_y_pv_value"; //$NON-NLS-1$
 	
+	/** PV to which information about the pixel at the cursor location is written */
+	public static final String PROP_PIXEL_INFO_PV_NAME = "pixel_info_pv_name"; //$NON-NLS-1$
+    public static final String PROP_PIXEL_INFO_PV_VALUE = "pixel_info_pv_value"; //$NON-NLS-1$
+	
 	public static final String PROP_RGB_MODE = "rgb_mode"; //$NON-NLS-1$
 		
 	public static final String PROP_COLOR_DEPTH = "color_depth"; //$NON-NLS-1$
@@ -149,6 +184,8 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	public static final String PROP_SINGLE_LINE_PROFILING = "single_line_profiling"; //$NON-NLS-1$
 	
 	public static final String PROP_ROI_COLOR= "roi_color"; //$NON-NLS-1$
+	
+	public static final String PROP_ROI_COUNT= "roi_count"; //$NON-NLS-1$
 	
 	/** The default value of the minimum property. */	
 	private static final double DEFAULT_MIN = 0;
@@ -173,18 +210,20 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	@Override
 	protected void configureProperties() {
-		addPVProperty(new StringProperty(PROP_HORIZON_PROFILE_X_PV_NAME, "Horizon Profile X PV", 
+		addPVProperty(new PVNameProperty(PROP_HORIZON_PROFILE_X_PV_NAME, "Horizon Profile X PV", 
 				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_HORIZON_PROFILE_X_PV_VALUE, null));
 
-		addPVProperty(new StringProperty(PROP_VERTICAL_PROFILE_X_PV_NAME, "Vertical Profile X PV", 
+		addPVProperty(new PVNameProperty(PROP_VERTICAL_PROFILE_X_PV_NAME, "Vertical Profile X PV", 
 				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_VERTICAL_PROFILE_X_PV_VALUE, null));
 		
-		addPVProperty(new StringProperty(PROP_HORIZON_PROFILE_Y_PV_NAME, "Horizon Profile Y PV", 
+		addPVProperty(new PVNameProperty(PROP_HORIZON_PROFILE_Y_PV_NAME, "Horizon Profile Y PV", 
 				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_HORIZON_PROFILE_Y_PV_VALUE, null));
 
-		addPVProperty(new StringProperty(PROP_VERTICAL_PROFILE_Y_PV_NAME, "Vertical Profile Y PV", 
+		addPVProperty(new PVNameProperty(PROP_VERTICAL_PROFILE_Y_PV_NAME, "Vertical Profile Y PV", 
 				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_VERTICAL_PROFILE_Y_PV_VALUE, null));
-	
+
+		addPVProperty(new PVNameProperty(PROP_PIXEL_INFO_PV_NAME, "Pixel Info PV", 
+                WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_PIXEL_INFO_PV_VALUE, null));
 		
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum", 
 				WidgetPropertyCategory.Behavior, DEFAULT_MIN), true);
@@ -220,7 +259,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 0));
 		
 		addProperty(new BooleanProperty(PROP_RGB_MODE, "RGB Mode",
-				WidgetPropertyCategory.Behavior, false),true);
+				WidgetPropertyCategory.Behavior, false),false);
 		
 		addProperty(new ComboProperty(PROP_COLOR_DEPTH, "Color Depth", 
 				WidgetPropertyCategory.Behavior, ColorDepth.stringValues(), 0), true);
@@ -231,9 +270,76 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		addProperty(new ColorProperty(PROP_ROI_COLOR, "ROI Color", 
 				WidgetPropertyCategory.Display, CustomMediaFactory.COLOR_CYAN), true);
 		
+		addProperty(new IntegerProperty(PROP_ROI_COUNT, "ROI Count",
+				WidgetPropertyCategory.Behavior, 0, 0, MAX_ROIS_AMOUNT));	
+		
 		addAxisProperties();
+		addROIProperties();
+	}
+	
+	@Override
+	public void processVersionDifference(Version boyVersionOnFile) {
+		super.processVersionDifference(boyVersionOnFile);
+		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
+			setPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME)));
+			setPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME)));	
+			setPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME)));	
+			setPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME, 
+					UpgradeUtil.convertUtilityPVNameToPM(
+							(String) getPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME)));	
+		}
 	}
 
+	public static String makeROIPropID(String propIDPre, int index){
+		return "roi_" +index + "_" + propIDPre; //$NON-NLS-1$ //$NON-NLS-2$
+	}
+	
+	private void addROIProperties(){
+		for(int i=0; i<MAX_ROIS_AMOUNT; i++){
+			WidgetPropertyCategory category = new NameDefinedCategory("ROI " + i);
+			for(ROIProperty roiProperty : ROIProperty.values()){
+				addROIProperty(roiProperty, i, category);
+			}
+		}
+	}
+	
+	private void addROIProperty(ROIProperty roiProperty, int index, WidgetPropertyCategory category){
+		String propID = makeROIPropID(roiProperty.propIDPre, index);
+		switch (roiProperty) {
+		case TITLE:
+			addProperty(new StringProperty(propID, roiProperty.description, category, category.toString()));
+			break;
+		case VISIBLE:
+			addProperty(new BooleanProperty(propID, roiProperty.description, category, true));
+			break;
+		case XPV:
+			addPVProperty(new PVNameProperty(propID, roiProperty.description, category, ""), 
+					new PVValueProperty(makeROIPropID(ROIProperty.XPV_VALUE.propIDPre, index), null));
+			break;
+		case YPV:
+			addPVProperty(new PVNameProperty(propID, roiProperty.description, category, ""), 
+					new PVValueProperty(makeROIPropID(ROIProperty.YPV_VALUE.propIDPre, index), null));
+			break;
+		case WPV:
+			addPVProperty(new PVNameProperty(propID, roiProperty.description, category, ""), 
+					new PVValueProperty(makeROIPropID(ROIProperty.WPV_VALUE.propIDPre, index), null));
+			break;	
+		case HPV:
+			addPVProperty(new PVNameProperty(propID, roiProperty.description, category, ""), 
+					new PVValueProperty(makeROIPropID(ROIProperty.HPV_VALUE.propIDPre, index), null));
+			break;
+		default:
+			break;
+		}
+	}
+	
+	
 	public static String makeAxisPropID(String axisID, String propIDPre){
 		return axisID+ "_" + propIDPre; //$NON-NLS-1$
 	}
@@ -388,6 +494,9 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		return (String)getPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME);
 	}
 	
+    public String getPixelInfoPV(){
+        return (String)getPropertyValue(PROP_PIXEL_INFO_PV_NAME);
+    }
 	
 	public boolean isRGBMode(){
 		return (Boolean)getPropertyValue(PROP_RGB_MODE);

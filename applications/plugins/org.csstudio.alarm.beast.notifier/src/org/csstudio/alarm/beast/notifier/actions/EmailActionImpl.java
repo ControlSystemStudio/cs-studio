@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ public class EmailActionImpl extends AbstractMailActionImpl {
 	public void init(ItemInfo item, AAData auto_action, IActionHandler handler)
 			throws Exception {
 		this.item = item;
+		this.manuallyExecuted = auto_action.isManual();
 		mailSender = new JavaxMailSender();
 		EMailCommandHandler emailCmdHandler = (EMailCommandHandler) handler;
 		mailSender.setTo(emailCmdHandler.getTo());

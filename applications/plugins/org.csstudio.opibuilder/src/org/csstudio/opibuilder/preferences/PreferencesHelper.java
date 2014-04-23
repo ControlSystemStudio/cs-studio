@@ -62,6 +62,7 @@ public class PreferencesHelper {
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
 	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
 	public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
+    public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style";
 	//The widgets that are hidden from palette.
 	public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
 	
@@ -69,7 +70,8 @@ public class PreferencesHelper {
 	
 	public static final String OPI_REPOSITORY = "opi_repository"; //$NON-NLS-1$
 	public static final String SECURE_WHOLE_SITE = "secure_whole_site"; //$NON-NLS-1$	
-	public static final String SECURED_OPI_DIRECTORY = "secured_opi_directory"; //$NON-NLS-1$
+	public static final String UNSECURED_OPI_PATHS = "unsecured_opi_paths"; //$NON-NLS-1$
+	public static final String SECURED_OPI_PATHS = "secured_opi_paths"; //$NON-NLS-1$
 	
 	public static final String STARTUP_OPI = "startup_opi"; //$NON-NLS-1$
 	public static final String MOBILE_STARTUP_OPI = "mobile_startup_opi"; //$NON-NLS-1$
@@ -149,14 +151,18 @@ public class PreferencesHelper {
     	return ConsolePopupLevel.valueOf(popupLevelString);
     }
 
-    public static PVConnectionLayer getPVConnectionLayer(){
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	String preStr = service.getString(
-    			OPIBuilderPlugin.PLUGIN_ID, PV_CONNECTION_LAYER,
-    			PVConnectionLayer.PV_MANAGER.toString(), null);
-    	return PVConnectionLayer.valueOf(preStr);
+    /**
+     * @return the pv factory id of the pv connection layer.
+     */
+    public static String getPVConnectionLayer(){
+    	return getString(PV_CONNECTION_LAYER);
     }
 
+    public static boolean isDefaultStyleClassic() {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DEFAULT_TO_CLASSIC_STYLE, true, null);
+    }
+    
     public static boolean isAdvancedGraphicsDisabled(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DISABLE_ADVANCED_GRAPHICS, false, null);
@@ -406,12 +412,32 @@ public class PreferencesHelper {
 	
     /**
      * @return the opi directory that needs to be secured. null if not configured.
+     * @throws Exception 
      */
-    public static String getSecuredOpiDirectory(){
-    	String s = getString(SECURED_OPI_DIRECTORY);
+    public static String[] getSecuredOpiPaths() throws Exception{
+    	String s = getString(SECURED_OPI_PATHS);
     	if(s == null || s.trim().isEmpty())
     		return null;
-    	return getAbsolutePathOnRepo(s).toString();
+    	String[] rows = StringSplitter.splitIgnoreInQuotes(s, ROW_SEPARATOR, true);
+    	for(int i=0; i<rows.length; i++){
+    		rows[i] = getAbsolutePathOnRepo(rows[i]).toString();
+    	}
+    	return rows;
+    }
+    
+    /**
+     * @return the opi directory that don't need to be secured if whole site is secured. null if not configured.
+     * @throws Exception 
+     */
+    public static String[] getUnSecuredOpiPaths() throws Exception{
+    	String s = getString(UNSECURED_OPI_PATHS);
+    	if(s == null || s.trim().isEmpty())
+    		return null;
+    	String[] rows = StringSplitter.splitIgnoreInQuotes(s, ROW_SEPARATOR, true);
+    	for(int i=0; i<rows.length; i++){
+    		rows[i] = getAbsolutePathOnRepo(rows[i]).toString();
+    	}
+    	return rows;
     }
     
     /**

@@ -31,10 +31,10 @@ public class OpiPointsList extends OpiAttribute {
 		super(con, name);
 		
 		for(int i=0; i<Math.min(x.length, y.length); i++){
-			Element pointElement = context.getDocument().createElement("point");
-			pointElement.setAttribute("x", ""+(x[i]-context.getX()));
-			pointElement.setAttribute("y", ""+(y[i]-context.getY()));
-			context.getElement().appendChild(pointElement);			
+			Element pointElement = propertyContext.getDocument().createElement("point");
+			pointElement.setAttribute("x", ""+(x[i]-propertyContext.getX()));
+			pointElement.setAttribute("y", ""+(y[i]-propertyContext.getY()));
+			propertyContext.getElement().appendChild(pointElement);			
 		}
 	}
 }

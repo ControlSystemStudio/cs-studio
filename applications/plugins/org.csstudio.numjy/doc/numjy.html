@@ -83,10 +83,18 @@ array([
   [ 0.0, 0.0, 0.0 ], 
   [ 0.0, 0.0, 0.0 ]
 ])
->>> linspace(2, 10, 5) 
+>>> ones(( 3,2))
+array([ 
+  [ 1.0, 1.0 ], 
+  [ 1.0, 1.0 ], 
+  [ 1.0, 1.0 ]
+])
+>>> linspace(2, 10, 5)
 array([ 2.0, 4.0, 6.0, 8.0, 10.0 ])
 >>> arange(1, 5, 0.5)
 array([ 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5 ])
+>>> arange(5, 1, -2)  
+array([ 5.0, 3.0 ])
 </pre>
 
 <p>For details, refer to their help:</p>
@@ -501,6 +509,7 @@ returning an array with 'broadcast' shape:
 <tbody>
 <tr><td><code>any(a)</code></td><td>Return <code>True</code> if any element is non-zero</td></tr>
 <tr><td><code>all(a)</code></td><td>Return <code>True</code> if all elements are non-zero</td></tr>
+<tr><td><code>nonzero(a)</code></td><td>Return indices of array elements that are non-zero</td></tr>
 <tr><td><code>min(a)</code></td><td>Minimum element</td></tr>
 <tr><td><code>max(a)</code></td><td>Maximum element</td></tr>
 <tr><td><code>sum(a)</code></td><td>Sum over all elements</td></tr>

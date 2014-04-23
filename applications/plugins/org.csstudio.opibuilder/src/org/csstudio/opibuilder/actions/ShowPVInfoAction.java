@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.utility.pv.PV;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.VTypeHelper;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
@@ -27,6 +28,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.epics.vtype.Display;
 
 /**Show details information of widget's primary PV.
  * @author Xihui Chen
@@ -36,9 +38,9 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 	
 	private final class PVsInfoDialog extends MessageDialog {
 		
-		private Map<String, PV> pvMap;
+		private Map<String, IPV> pvMap;
 
-		public PVsInfoDialog(Shell parentShell, String dialogTitle, Map<String, PV> pvMap) {
+		public PVsInfoDialog(Shell parentShell, String dialogTitle, Map<String, IPV> pvMap) {
 			super(parentShell, dialogTitle, null, "PVs' details on this widget:",
 					MessageDialog.INFORMATION, new String[] { JFaceResources.getString("ok")}, 0); //$NON-NLS-1$
 			this.pvMap = pvMap;
@@ -50,7 +52,7 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 				return super.createCustomArea(parent);
 			parent.setLayout(new FillLayout());			
 			TabFolder tabFolder = new TabFolder(parent, SWT.None);			
-			for(Entry<String, PV> entry : pvMap.entrySet()){
+			for(Entry<String, IPV> entry : pvMap.entrySet()){
 				TabItem tabItem = new TabItem(tabFolder, SWT.None);
 				tabItem.setText(entry.getKey());
 				Text text = new Text(tabFolder, SWT.MULTI|SWT.READ_ONLY);
@@ -90,18 +92,52 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 		
 	}
 
-	private String getPVInfo(PV pv) {
+	private String getPVInfo(IPV pv) {
+		StringBuilder stateInfo = new StringBuilder();
+		if(!pv.isStarted())
+			stateInfo.append("Not started");
+		else if (pv.isConnected()) {
+			stateInfo.append("Connected");			
+			if (pv.isPaused())
+				stateInfo.append(" Paused");	
+			else 
+				stateInfo.append(" Running");
+		}else
+			stateInfo.append("Connecting");
+		
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("Name: " + pv.getName() + "\n"); //$NON-NLS-2$
-		sb.append("State: " + pv.getStateInfo()+ "\n"); //$NON-NLS-2$
-		sb.append("Connected: " + pv.isConnected()+ "\n"); //$NON-NLS-2$
-		sb.append("Running: " + pv.isRunning()+ "\n"); //$NON-NLS-2$
+		sb.append("State: " + stateInfo + "\n"); //$NON-NLS-2$
 		if(pv.getValue() != null){
 			sb.append((pv.isConnected()? "Value: " : "Last received value: ") + pv.getValue()+ "\n"); //$NON-NLS-2$
-			sb.append("Meta Data: " + pv.getValue().getMetaData());
+			sb.append("Display Info: ");
+			Display displayInfo = VTypeHelper.getDisplayInfo(pv.getValue());
+			if(displayInfo != null){
+				sb.append("\nUnits: ");
+				sb.append(displayInfo.getUnits());
+				sb.append("\nPrecision: ");
+				sb.append(displayInfo.getFormat().getMaximumFractionDigits());
+				sb.append("\nDisplay_Low: ");
+				sb.append(displayInfo.getLowerDisplayLimit());
+				sb.append("\nDisplay_High :");
+				sb.append(displayInfo.getUpperDisplayLimit());
+				sb.append("\nAlarm_Low: ");
+				sb.append(displayInfo.getLowerAlarmLimit());
+				sb.append("\nWarning_Low: ");
+				sb.append(displayInfo.getLowerWarningLimit());
+				sb.append("\nWarning_High: ");
+				sb.append(displayInfo.getUpperWarningLimit());
+				sb.append("\nAlarm_High: ");
+				sb.append(displayInfo.getUpperAlarmLimit());
+			}else
+				sb.append("null"); //$NON-NLS-1$
+		}else{
+			sb.append("Value: null");
 		}
 		return sb.toString();
 	}
+
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {

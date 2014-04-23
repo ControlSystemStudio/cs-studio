@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
@@ -63,7 +63,7 @@ public class Noise extends SimFunction<VDouble> {
         this.min = min;
         this.max = max;
         range = this.max - this.min;
-        lastValue = newVDouble(min, alarmNone(), newTime(Timestamp.now()),
+        lastValue = newVDouble(min, alarmNone(), timeNow(),
                 newDisplay(min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
                 min + range * 0.8, min + range * 0.9, max, min, max));
     }

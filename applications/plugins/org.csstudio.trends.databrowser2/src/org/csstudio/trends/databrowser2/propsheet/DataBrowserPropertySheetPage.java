@@ -355,6 +355,7 @@ public class DataBrowserPropertySheetPage extends Page
         final Shell shell = trace_table.getControl().getShell();
         final AddPVAction add_pv = new AddPVAction(operations_manager, shell, model, false);
         final AddPVAction add_formula = new AddPVAction(operations_manager, shell, model, true);
+        final EditItemsAction edit_pv = new EditItemsAction(operations_manager, shell, trace_table, model);
         final DeleteItemsAction delete_pv = new DeleteItemsAction(operations_manager, trace_table, model);
         menu.addMenuListener(new IMenuListener()
         {
@@ -363,6 +364,7 @@ public class DataBrowserPropertySheetPage extends Page
             {
                 menu.add(add_pv);
                 menu.add(add_formula);
+                menu.add(edit_pv);
                 menu.add(delete_pv);
                 menu.add(new RemoveUnusedAxesAction(operations_manager, model));
                 final PVItem pvs[] = getSelectedPVs();
@@ -747,5 +749,17 @@ public class DataBrowserPropertySheetPage extends Page
 	public void changedXYGraphConfig() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void itemRefreshRequested(PVItem item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cursorDataChanged() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
@@ -14,13 +16,11 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
-import org.csstudio.opibuilder.widgets.model.ActionButtonModel.Style;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
@@ -55,7 +55,7 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 			this.delegate = new Draw2DButtonEditPartDelegate(this);
 			break;
 		}
-		updatePropSheet(model.isToggleButton());	
+		updatePropSheet();	
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return delegate.doCreateFigure();
 	}
@@ -144,11 +144,10 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 
-		IWidgetPropertyChangeHandler styleHandler = new IWidgetPropertyChangeHandler() {
-
+		PropertyChangeListener styleListener = new PropertyChangeListener() {
+			
 			@Override
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
+			public void propertyChange(PropertyChangeEvent evt) {
 				AbstractWidgetModel model = getWidgetModel();
 				WidgetDescriptor descriptor = 
 						WidgetsService.getInstance().getWidgetDescriptor(model.getTypeID());
@@ -158,12 +157,12 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				AbstractContainerModel parent = model.getParent();
 				parent.removeChild(model);
 				parent.addChild(model);
-				parent.selectWidget(model, true);
-				return false;
+				parent.selectWidget(model, true);				
 			}
 		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_STYLE, styleHandler);
-		updatePropSheet(getWidgetModel().isToggleButton());	
+		getWidgetModel().getProperty(ActionButtonModel.PROP_STYLE).addPropertyChangeListener(
+				styleListener);
+		updatePropSheet();	
 
 		delegate.registerPropertyChangeHandlers();
 	}
@@ -171,12 +170,18 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	/**
 	 * @param newValue
 	 */
-	protected void updatePropSheet(final boolean newValue) {
+	protected void updatePropSheet() {
+		boolean isToggle = getWidgetModel().isToggleButton();
 		getWidgetModel().setPropertyVisible(
-				ActionButtonModel.PROP_RELEASED_ACTION_INDEX, newValue);
+				ActionButtonModel.PROP_RELEASED_ACTION_INDEX, isToggle);
 		getWidgetModel().setPropertyDescription(
 				ActionButtonModel.PROP_ACTION_INDEX,
-				newValue ? "Push Action Index" : "Click Action Index");
+				isToggle ? "Push Action Index" : "Click Action Index");
+		boolean isDraw2DButton = delegate instanceof Draw2DButtonEditPartDelegate;
+		getWidgetModel().setPropertyVisible(AbstractWidgetModel.PROP_COLOR_BACKGROUND, 
+				isDraw2DButton);
+		getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_BACKCOLOR_ALARMSENSITIVE, 
+				isDraw2DButton);
 	}
 
 	@Override

@@ -39,6 +39,7 @@ public class EdmException extends Exception {
 	private String type;
 	private String message;
 
+
 	/**
 	 * Constructs an EdmException instance.
 	 * Message is piped untouched, except when there is a File_NOT_FOUND exception,
@@ -47,13 +48,21 @@ public class EdmException extends Exception {
 	 * @param type EdmException type.
 	 * @param message EdmException message, error information.
 	 */
-	public EdmException(String type, String message) {
+	public EdmException(String type, String message, Throwable throwable) {
+		super(throwable);
+
 		this.type = type;
 		
 		if (type.equals(FILE_NOT_FOUND))
 			this.message = type + " exception: " + "File " + message + " does not exist.";
 		else
 			this.message = type + " exception: " + message;
+		
+		
+		
+		if(throwable !=null){
+			this.message = this.message + "\n"+throwable.getMessage();
+		}
 		
 		log.error(getMessage(), this);
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2013 ITER Organization.
+ * Copyright (c) 2010-2014 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,18 +7,31 @@
  ******************************************************************************/
 package org.csstudio.autocomplete;
 
+import org.csstudio.autocomplete.parser.ContentDescriptor;
+import org.csstudio.autocomplete.parser.ContentType;
+
 /**
- * Interface for providers extension point
+ * Interface for auto-complete providers. Each parser is provided via OSGI
+ * services. The listResult method is executed by {@link AutoCompleteService} in
+ * a dedicated thread.
  * 
- * @author Fred Arnaud (Sopra Group)
- * 
+ * @author Fred Arnaud (Sopra Group) - ITER
  */
 public interface IAutoCompleteProvider {
 
-	/** ID of the extension point, defined in plugin.xml */
-	final public static String EXTENSION_POINT = "org.csstudio.autocomplete";
+	/** @return <code>true</code> if provider handles this type of content */
+	public boolean accept(final ContentType type);
 
-	public AutoCompleteResult listResult(final String type, final String name, final int limit);
+	/**
+	 * @return {@link AutoCompleteResult} matching the provided
+	 *         {@link ContentDescriptor}
+	 */
+	public AutoCompleteResult listResult(final ContentDescriptor desc,
+			final int limit);
 
+	/**
+	 * Called by {@link AutoCompleteService} when the task is canceled.
+	 */
 	public void cancel();
+
 }

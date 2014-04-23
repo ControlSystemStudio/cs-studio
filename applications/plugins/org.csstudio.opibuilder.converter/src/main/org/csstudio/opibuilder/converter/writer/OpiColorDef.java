@@ -48,11 +48,11 @@ public class OpiColorDef {
 			out.close();
 			
 		} catch (FileNotFoundException e) {
-			throw new EdmException(EdmException.FILE_NOT_FOUND, colorDefFile.getName());
+			throw new EdmException(EdmException.FILE_NOT_FOUND, colorDefFile.getName(), e);
 		} catch (UnsupportedEncodingException e) {
-			throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Unsupported encoding.");
+			throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Unsupported encoding.",e);
 		} catch (IOException e) {
-			throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error when writing color.def file.");
+			throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error when writing color.def file.",e);
 		}
 	}
 	

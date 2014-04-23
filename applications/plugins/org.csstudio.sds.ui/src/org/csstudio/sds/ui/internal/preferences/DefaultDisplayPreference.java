@@ -23,7 +23,7 @@
  */
 package org.csstudio.sds.ui.internal.preferences;
 
-import org.csstudio.domain.desy.preferences.AbstractPreference;
+import org.csstudio.domain.common.preferences.AbstractPreference;
 import org.csstudio.sds.SdsPlugin;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -40,21 +40,21 @@ import org.eclipse.core.runtime.IPath;
 public class DefaultDisplayPreference<T> extends AbstractPreference<T> {
 
     public static final DefaultDisplayPreference<IPath> DEFAULT_DISPLAY_PATH =
-        new DefaultDisplayPreference<IPath>("PROP_DEFAULT_DISPLAY_FILE", ResourcesPlugin.getWorkspace().getRoot().getFullPath(), IPath.class);
+        new DefaultDisplayPreference<IPath>("PROP_DEFAULT_DISPLAY_FILE", ResourcesPlugin.getWorkspace().getRoot().getFullPath());
     
     public static final DefaultDisplayPreference<Boolean> OPEN_AS_SHELL =
-        new DefaultDisplayPreference<Boolean>("PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL", true, Boolean.class);
+        new DefaultDisplayPreference<Boolean>("PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL", true);
 
     public static final DefaultDisplayPreference<String> DEFAULT_DISPLAY_ALIAS =
-        new DefaultDisplayPreference<String>("PROP_DEFAULT_DISPLAY_ALIAS", "channel", String.class);
+        new DefaultDisplayPreference<String>("PROP_DEFAULT_DISPLAY_ALIAS", "channel");
     
     
     
     /**
      * Constructor.
      */
-    public DefaultDisplayPreference(final String keyAsString, final T defaultValue, Class<T> type) {
-        super(keyAsString, defaultValue, type);
+    public DefaultDisplayPreference(final String keyAsString, final T defaultValue) {
+        super(keyAsString, defaultValue);
     }
     
     /**

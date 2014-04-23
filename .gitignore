@@ -9,6 +9,8 @@ classes/
 build/build
 build/ext
 
+dist
+
 # ignore all log files ?
 logs/*.log
 log/*.log
@@ -49,3 +51,11 @@ syntax: regexp
 ^applications/plugins/org\.apache\.jackrabbit/\.settings$
 syntax: regexp
 ^applications/plugins/org\.csstudio\.utility\.olog\.ui/\.settings$
+
+# Ignore Tycho/Maven build directories #
+target/
+
+# This artifact gets produced outside '/target' directory. Why? #
+# The build fails when using the tycho-buildtimestamp-jgit plugin. #
+applications/plugins/org.csstudio.opibuilder.converter/converter.jar
+

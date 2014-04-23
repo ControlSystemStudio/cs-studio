@@ -4,11 +4,17 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            category="org.csstudio"
-            class="org.csstudio.logbook.viewer.LogViewer"
-            icon="icons/logbook-16.png"
-            id="org.csstudio.logbook.viewer.LogViewer"
-            name="Log Viewer"
+            class="org.csstudio.logbook.ui.LogTableView"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogTableView"
+            name="Log Table"
+            restorable="true">
+      </view>
+      <view
+            class="org.csstudio.logbook.ui.LogTreeView"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogTreeView"
+            name="Log Tree"
             restorable="true">
       </view>
    </extension>
@@ -18,16 +24,92 @@
             allPopups="false"
             locationURI="menu:utility">
          <command
-               commandId="org.eclipse.ui.views.showView"
-               icon="icons/logbook-16.png"
-               label="Log Viewer"
+               commandId="org.csstudio.logbook.viewer.OpenLogViewer"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+               label="Search Logbook"
                style="push">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.logbook.viewer.LogViewer">
-            </parameter>
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.csstudio.logbook.viewer.OpenLogViewer"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+               label="View Details"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="org.csstudio.logbook.LogEntry">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.logbook.ui.LogTableView">
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
+               label="Create New LogEntry"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.logbook.ui.LogTreeView">
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
+               label="Create New LogEntry"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.logbook.ui.LogViewerPerspective"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogViewerPerspective"
+            name="LogViewerPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.logbook.ui.LogViewer"
+            default="false"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ui.LogViewer"
+            name="LogViewer">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.logbook.ui.OpenLogViewer"
+            id="org.csstudio.logbook.viewer.OpenLogViewer"
+            name="View Details">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
    </extension>
 
 </plugin>

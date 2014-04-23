@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Gridviewer Plug-in
+Bundle-SymbolicName: org.eclipse.nebula.jface.gridviewer
+Bundle-Version: 1.0.0
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.nebula.widgets.grid,
+ org.eclipse.jface
+Export-Package: org.eclipse.nebula.jface.gridviewer

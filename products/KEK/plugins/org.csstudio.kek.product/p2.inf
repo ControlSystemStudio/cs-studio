@@ -9,8 +9,12 @@
 #
 # See http://www.ralfebert.de/blog/eclipsercp/p2_updates_tutorial/
 instructions.configure=\
-  addRepository(type:0,name: KEK/J-PARC Update Site,location:http${#58}//www-linac.kek.jp/cont/css/updates/);\
-  addRepository(type:1,name: KEK/J-PARC Update Site,location:http${#58}//www-linac.kek.jp/cont/css/updates/);\
+  addRepository(type:0,name: PyDev Update Site,location:http${#58}//pydev.org/updates);\
+  addRepository(type:1,name: PyDev Update Site,location:http${#58}//pydev.org/updates);\
+  addRepository(type:0,name: Eclipse Update Site,location:http${#58}//download.eclipse.org/eclipse/updates/3.7);\
+  addRepository(type:1,name: Eclipse Update Site,location:http${#58}//download.eclipse.org/eclipse/updates/3.7);\
+  addRepository(type:0,name: KEK/J-PARC Update Site,location:http${#58}//www-linac.kek.jp/cont/css/updates-3.2/);\
+  addRepository(type:1,name: KEK/J-PARC Update Site,location:http${#58}//www-linac.kek.jp/cont/css/updates-3.2/);\
   mkdir(path:${installFolder}/dropins);
 
 # Add to the config.ini to set the default workspace location to

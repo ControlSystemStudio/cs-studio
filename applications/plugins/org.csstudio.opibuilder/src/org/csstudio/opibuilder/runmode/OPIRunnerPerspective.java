@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
-import org.eclipse.swt.SWT;
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
@@ -50,6 +50,10 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
 	
 	private static final String ID_CONSOLE_VIEW =
 		"org.eclipse.ui.console.ConsoleView";//$NON-NLS-1$
+	
+	@SuppressWarnings("deprecation")
+	final static String ID_NAVIGATOR = IPageLayout.ID_RES_NAV;
+	
 	public void createInitialLayout(IPageLayout layout) {
 
 		final String editor = layout.getEditorArea();   
@@ -73,9 +77,11 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
         
         bottom.addPlaceholder(OPIView.ID + SECOND_ID + Position.BOTTOM.name());
         
-        if(!SWT.getPlatform().startsWith("rap")){ //$NON-NLS-1$
+        if(!OPIBuilderPlugin.isRAP()){ //$NON-NLS-1$
 	        bottom.addPlaceholder(ID_CONSOLE_VIEW);
 			layout.addShowViewShortcut(ID_CONSOLE_VIEW);
+			left.addPlaceholder(ID_NAVIGATOR);
+			layout.addShowViewShortcut(ID_NAVIGATOR);
         }
 	}
 	

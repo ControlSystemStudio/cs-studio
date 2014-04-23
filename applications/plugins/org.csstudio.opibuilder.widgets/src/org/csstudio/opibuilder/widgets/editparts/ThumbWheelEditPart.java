@@ -24,8 +24,6 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -33,14 +31,16 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.ThumbWheelModel;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.ThumbWheelFigure;
 import org.csstudio.swt.widgets.figures.ThumbWheelFigure.WheelListener;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
+import org.epics.vtype.Display;
+import org.epics.vtype.VType;
 
 /**
  * Controller for the ThumbWheel.
@@ -53,8 +53,8 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 	private ThumbWheelLogic logic;
 	private ThumbWheelModel model;
 	private ThumbWheelFigure figure;
-	private PVListener pvLoadLimitsListener;
-	private INumericMetaData meta = null;
+	private IPVListener pvLoadLimitsListener;
+	private Display meta = null;
 
 
 	/**
@@ -190,30 +190,26 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			final ThumbWheelModel model = getWidgetModel();
 			if (model.isLimitsFromPV()) {
-				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if (pv != null) {
 					if (pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new PVListener() {
-							public void pvValueUpdate(PV pv) {
-								IValue value = pv.getValue();
-								if (value != null
-										&& value.getMetaData() instanceof INumericMetaData) {
-									INumericMetaData new_meta = (INumericMetaData) value
-											.getMetaData();
+						pvLoadLimitsListener = new IPVListener.Stub() {
+							public void valueChanged(IPV pv) {
+								VType value = pv.getValue();
+								Display displayInfo = VTypeHelper.getDisplayInfo(value);
+								if (value != null && displayInfo != null) {
+									Display new_meta = displayInfo;
 									if (meta == null || !meta.equals(new_meta)) {
 										meta = new_meta;
-										model.setPropertyValue(
-												ThumbWheelModel.PROP_MAX,
-												meta.getDisplayHigh());
-										model.setPropertyValue(
-												ThumbWheelModel.PROP_MIN,
-												meta.getDisplayLow());
+										model.setPropertyValue(ThumbWheelModel.PROP_MAX,
+												meta.getUpperDisplayLimit());
+										model.setPropertyValue(ThumbWheelModel.PROP_MIN,
+												meta.getLowerDisplayLimit());
 									}
 								}
 							}
 
-							public void pvDisconnected(PV pv) {
-							}
+						
 						};
 					pv.addListener(pvLoadLimitsListener);
 				}
@@ -231,8 +227,8 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if(newValue != null && newValue instanceof IValue){
-					double doubleValue = ValueUtil.getDouble((IValue)newValue);
+				if(newValue != null){
+					double doubleValue = VTypeHelper.getDouble((VType)newValue);
 					logic.setValue(doubleValue);
 					updateWheelValues();
 				}

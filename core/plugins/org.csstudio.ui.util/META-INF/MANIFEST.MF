@@ -7,6 +7,7 @@ Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kay Kasemir <kasemirk@ornl.gov> - BNL, SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit,
+ org.csstudio.autocomplete.ui,
  org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.jface;bundle-version="3.6.0";resolution:=optional,
  org.eclipse.ui.workbench;bundle-version="3.6.0";resolution:=optional,
@@ -18,6 +19,7 @@ Export-Package: org.csstudio.ui.util,
  org.csstudio.ui.util.dialogs,
  org.csstudio.ui.util.dnd,
  org.csstudio.ui.util.helpers,
+ org.csstudio.ui.util.perspective,
  org.csstudio.ui.util.swt.stringtable,
  org.csstudio.ui.util.thread,
  org.csstudio.ui.util.widgets,

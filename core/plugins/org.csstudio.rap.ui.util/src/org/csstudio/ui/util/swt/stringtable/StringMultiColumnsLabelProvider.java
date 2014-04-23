@@ -48,7 +48,9 @@ class StringMultiColumnsLabelProvider extends CellLabelProvider {
 		{
 		    // For multi-line text, only show the first line
 			final int column = cell.getColumnIndex();
-            String text = items.get(index)[column];
+			String text = "";
+			if (column < items.get(index).length)
+				text = items.get(index)[column];
 			// Not sure whether to look for '\r' or '\n'. Try both
 			int nl = text.indexOf('\r');
 			if (nl < 0)

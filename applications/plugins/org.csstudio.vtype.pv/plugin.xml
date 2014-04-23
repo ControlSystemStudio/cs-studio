@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="pvfactory" name="PVFactory" schema="schema/pvfactory.exsd"/>
+   <extension point="org.csstudio.vtype.pv.pvfactory">
+      <PVFactory name="JCA" class="org.csstudio.vtype.pv.jca.JCA_PVFactory"/>
+      <PVFactory name="Local" class="org.csstudio.vtype.pv.local.LocalPVFactory"/>
+   </extension>
+</plugin>

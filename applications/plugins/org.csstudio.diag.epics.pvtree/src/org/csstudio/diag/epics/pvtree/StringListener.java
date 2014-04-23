@@ -9,56 +9,48 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.logging.Level;
 
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.epics.vtype.VType;
 
-/** {@link PVReaderListener} that extracts text from value.
+/** {@link IPVListener} that extracts text from value.
  * 
  *  <p>Derived class determines how to handle the text.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class StringListener implements PVReaderListener<VType>
+abstract public class StringListener extends PVListenerAdapter
 {
 	/** @param error Error to handle */
-    public void handleError(final Exception error)
+    public void handleError(final String error)
 	{
-		handleText("Error: " + error.getMessage());
+		handleText("Error: " + error);
 	}
 
 	/** @param text Text to handle */
 	abstract public void handleText(final String text);
 
-	/** {@inheritDoc} */
-	@Override
-    public void pvChanged(final PVReaderEvent<VType> event)
+    /** {@inheritDoc} */
+    @Override
+    public void valueChanged(final PV pv, final VType value)
     {
-    	final PVReader<VType> pv = event.getPvReader();
-    	final Exception error = pv.lastException();
-    	if (error != null)
-    	{
-            Plugin.getLogger().log(Level.WARNING,
-            		"PV Listener error for '" + pv.getName() + "': " + error.getMessage(),
-            		error);
-            handleError(error);
-            return;
-    	}
         try
         {
-            final VType value = pv.getValue();
-            // Ignore possible initial null
-            if (value == null)
-            	return;
             handleText(VTypeHelper.format(value));
         }
         catch (Exception e)
         {
             Plugin.getLogger().log(Level.SEVERE,
-            		"PV Listener error for '" + pv.getName() + "': " + e.getMessage(),
-            		e);
+                    "PV Listener error for '" + pv.getName() + "': " + e.getMessage(),
+                    e);
         }
     }
+    
+    @Override
+    public void disconnected(final PV pv)
+    {
+        handleError(pv.getName() + " disconnected");
+    }
+	
 };
         

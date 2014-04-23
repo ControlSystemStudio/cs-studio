@@ -1,15 +1,21 @@
-/**
- *
- */
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Tree;
 import org.epics.vtype.AlarmSeverity;
 
 /** The PV Tree Model
@@ -165,20 +171,39 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** Used by item to fresh the tree from the item on down. */
     public void itemUpdated(final PVTreeItem item)
     {
-        if (viewer.getTree().isDisposed())
+        final Tree tree = viewer.getTree();
+        if (tree.isDisposed())
             return;
-        viewer.update(item, null);
+        tree.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+               	if (! tree.isDisposed())
+	                viewer.update(item, null);
+            }
+        });
     }
 
     /** Used by item to refresh the tree from the item on down. */
     public void itemChanged(final PVTreeItem item)
     {
-        if (viewer.getTree().isDisposed())
+        final Tree tree = viewer.getTree();
+        if (tree.isDisposed())
             return;
-        if (item == root)
-            viewer.refresh();
-        else
-            viewer.refresh(item);
-        viewer.expandAll();
+        tree.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+            	if (tree.isDisposed())
+            	    return;
+                if (item == root)
+                    viewer.refresh();
+                else
+                    viewer.refresh(item);
+                viewer.expandAll();
+            }
+        });
     }
 }

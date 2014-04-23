@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 
 /**Implementation of {@link ScriptUtilSSHelper}
  * @author Xihui Chen
@@ -107,6 +108,38 @@ public class ScriptUtilSSHelperImpl extends ScriptUtilSSHelper {
 		}
 
 		return null;
+	}
+    
+    @Override
+	public String openFileDialog(String startingFolder) {
+		FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
+		dialog.setFilterPath(startingFolder);
+		return dialog.open();
+	}
+	
+	@Override
+	public String saveFileDialog(boolean inWorkspace){
+		if(inWorkspace){
+			SaveAsDialog rsd = new SaveAsDialog(
+					Display.getCurrent().getActiveShell()); //$NON-NLS-2$
+			if (rsd.open() == Window.OK) {
+				if (rsd.getResult() != null) {
+					return rsd.getResult().toOSString();
+				}
+			}
+		}else{
+			FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+			return dialog.open();
+		}
+
+		return null;
+	}
+    
+    @Override
+	public String saveFileDialog(String startingFolder) {
+		FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+		dialog.setFilterPath(startingFolder);
+		return dialog.open();
 	}
 
 	@Override

@@ -7,11 +7,12 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 
-import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.email.EMailSender;
 import org.csstudio.swt.xygraph.figures.Axis;
@@ -26,6 +27,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser2.propsheet.RemoveUnusedAxesAction;
 import org.csstudio.trends.databrowser2.sampleview.SampleView;
@@ -33,10 +35,13 @@ import org.csstudio.trends.databrowser2.search.SearchView;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.Plot;
+import org.csstudio.trends.databrowser2.ui.RefreshAction;
+import org.csstudio.trends.databrowser2.ui.SelectionValueExporter;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
 import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.ui.util.perspective.OpenPerspectiveAction;
 import org.csstudio.utility.singlesource.PathEditorInput;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
@@ -50,9 +55,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -62,6 +64,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -84,6 +87,8 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  plugin.xml registers this as an editor for data browser configuration
  *  files.
  *  @author Kay Kasemir
+ *  @author Xihui Chen (Adjustment to make it work like a view in RAP)
+ *  @author Naceur Benhadj (add property to hide "Property" view)
  */
 public class DataBrowserEditor extends EditorPart
 {
@@ -109,6 +114,9 @@ public class DataBrowserEditor extends EditorPart
 
     /** @see #isDirty() */
     private boolean is_dirty = false;
+    
+	/** The value exporter, which generates a value from the mouse position and forwards it to the PV manager */
+	private SelectionValueExporter selectionValueExporter;
 
 
     /** Create data browser editor
@@ -138,7 +146,23 @@ public class DataBrowserEditor extends EditorPart
      */
     public static DataBrowserEditor createInstance()
     {
-    	return createInstance(new EmptyEditorInput());
+    	if(SingleSourcePlugin.isRAP()){
+    		if(Preferences.isDataBrowserSecured() &&
+    				!SingleSourcePlugin.getUIHelper().rapIsLoggedIn(Display.getCurrent())){
+    			if(!SingleSourcePlugin.getUIHelper().rapAuthenticate(Display.getCurrent()))
+    				return null;
+    		}
+    			
+    	}
+    	
+    	return createInstance(new EmptyEditorInput(){
+    		@Override
+    		public String getName() {
+    			if(SingleSourcePlugin.isRAP())
+    				return "Data Browser";
+    			return super.getName();
+    		}
+    	});
     }
 
     /** @return Model displayed/edited by this EditorPart */
@@ -236,6 +260,14 @@ public class DataBrowserEditor extends EditorPart
 			@Override
 			public void changedXYGraphConfig()
 			{   setDirty(true);   }
+
+			@Override
+			public void itemRefreshRequested(PVItem item) {				
+			}
+			
+			@Override
+			public void cursorDataChanged() {
+			}
         };
         model.addListener(model_listener);
     }
@@ -265,6 +297,16 @@ public class DataBrowserEditor extends EditorPart
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         plot = Plot.forCanvas(plot_box);
+		selectionValueExporter = new SelectionValueExporter(plot.getXYGraph());
+		selectionValueExporter.setUseTimeFormatX(true);
+		selectionValueExporter.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				model.setCursorData(selectionValueExporter.getVTable());
+				
+			}
+		});
 
         // Create and start controller
         controller = new Controller(parent.getShell(), model, plot);
@@ -360,61 +402,51 @@ public class DataBrowserEditor extends EditorPart
 	        }
         }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
+        mm.add(new RefreshAction(controller));
         if (is_rcp)
 		{
-			mm.add(new Separator());
-			open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
-	                    Messages.OpenPropertiesView, activator
-	                            .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
-			mm.add(open_properties); 
-			mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
-					activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
+			mm.add(new Separator());			
+			 		
 			mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
 					activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
 		}
+        
+        	open_properties = new OpenViewAction(
+        			IPageLayout.ID_PROP_SHEET, 
+        			Messages.OpenPropertiesView, 
+        			activator.getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
+        	mm.add(open_properties);
+
+        	mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
+				activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
 				activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
+		
+		mm.add(new OpenPerspectiveAction(activator
+				.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
+				Messages.OpenDataBrowserPerspective, Perspective.ID));
+		mm.add(new OpenViewAction(WaveformView.ID,
+				Messages.OpenWaveformView, activator
+						.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$		
 		if (is_rcp)
-		{
-			mm.add(new OpenViewAction(WaveformView.ID,
-					Messages.OpenWaveformView, activator
-							.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$
-			mm.add(new OpenPerspectiveAction(activator
-					.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
-					Messages.OpenDataBrowserPerspective, Perspective.ID));
+		{					
 			mm.add(new Separator());
 			if (EMailSender.isEmailSupported())
 				mm.add(new SendEMailAction(shell, plot.getXYGraph()));
-		}
-		mm.add(new PrintAction(shell, plot.getXYGraph()));
+			mm.add(new PrintAction(shell, plot.getXYGraph()));
+		}		
 		
 		mm.add(new Separator());
 		mm.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		
         final Menu menu = mm.createContextMenu(parent);
         parent.setMenu(menu);
+        
+        if(is_rcp && SendToElogAction.isElogAvailable()) {
+        	mm.add(new SendToElogAction(shell, plot.getXYGraph()));
+        }
 
-		if (is_rcp) {
-			getSite().registerContextMenu(mm, new LogbookSelectionSupport(plot.getXYGraph()));
-		} else {
-			getSite().registerContextMenu(mm, new ISelectionProvider() {
-				// Null Selection Provider
-				@Override
-				public void setSelection(ISelection selection) {
-				}
-				@Override
-				public void removeSelectionChangedListener(
-						ISelectionChangedListener listener) {
-				}
-				@Override
-				public ISelection getSelection() {
-					return null;
-				}
-				@Override
-				public void addSelectionChangedListener(ISelectionChangedListener listener) {
-				}
-			});
-		}
+		getSite().registerContextMenu(mm, null);
     }
 
     /** {@inheritDoc} */
@@ -440,7 +472,9 @@ public class DataBrowserEditor extends EditorPart
     /** {@inheritDoc} */
     @Override
     public boolean isDirty()
-    {
+    {	
+    	if(SingleSourcePlugin.isRAP()) //always not savable in RAP
+    		return false;
         return is_dirty;
     }
 
@@ -546,7 +580,7 @@ public class DataBrowserEditor extends EditorPart
         	// Write model
         	model.write(stream);
             setDirty(false);
-        }
+        } 
         finally
         {
             monitor.done();
@@ -559,7 +593,7 @@ public class DataBrowserEditor extends EditorPart
      * @param axis
      */
     private void setAxisConfig(AxisConfig conf , Axis axis){
-
+    	
     	 //Don't fire axis change event to avoid SWT Illegal Thread Access
     	 conf.setFireEvent(false);
 

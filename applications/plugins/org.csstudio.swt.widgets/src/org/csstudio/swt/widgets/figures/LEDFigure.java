@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
+import java.util.Arrays;
+
 import org.csstudio.swt.widgets.figureparts.Bulb;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
@@ -35,8 +37,33 @@ public class LEDFigure extends AbstractBoolFigure {
 			CustomMediaFactory.COLOR_WHITE); 
 	private final static Color BLACK_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_BLACK); 
+
+	private static Color COLOR(int red, int green, int blue) { return CustomMediaFactory.getInstance().getColor(red, green, blue); }
+	
+	public final static int MAX_NSTATES = 16;
+	public final static String[] DEFAULT_STATE_LABELS =
+			new String[] { "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16" };
+	public final static Color[] DEFAULT_STATE_COLORS =
+			new Color[] { COLOR(0,100,0), COLOR(0,255,0), COLOR(255,0,0), COLOR(0,0,255), COLOR(100,100,100), COLOR(100,100,100), COLOR(100,100,100), COLOR(100,100,100),
+			COLOR(100,100,100), COLOR(100,100,100), COLOR(100,100,100), COLOR(100,100,100), COLOR(100,100,100), COLOR(100,100,100), COLOR(100,100,100), COLOR(100,100,100) };
+	public final static double[] DEFAULT_STATE_VALUES =
+			new double[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0 };
+	public final static String DEFAULT_STATE_FALLBACK_LABAL = "ERR";
+	public final static Color DEFAULT_STATE_FALLBACK_COLOR = COLOR(100,100,100);
+	
+	
 	private boolean effect3D = true;
 	private boolean squareLED = false;
+
+	private int nStates = 2;
+	private double stateValue = 0.0;
+	private Color[] stateColors = Arrays.copyOf(DEFAULT_STATE_COLORS, MAX_NSTATES);
+	private String[] stateLabels = Arrays.copyOf(DEFAULT_STATE_LABELS, MAX_NSTATES);
+	private double[] stateValues = Arrays.copyOf(DEFAULT_STATE_VALUES, MAX_NSTATES);
+	private Color stateFallbackColor = DEFAULT_STATE_FALLBACK_COLOR;
+	private String stateFallbackLabel = DEFAULT_STATE_FALLBACK_LABAL;
+	
+	
 	public LEDFigure() {
 		super();
 		bulb = new Bulb();		
@@ -132,7 +159,12 @@ public class LEDFigure extends AbstractBoolFigure {
 				
 				//draw light
 				clientArea.shrink(SQURE_BORDER_WIDTH, SQURE_BORDER_WIDTH);
-				Color fillColor = booleanValue?onColor:offColor;
+				Color fillColor;
+				if(nStates <= 2) {
+					fillColor = booleanValue?onColor:offColor;
+				} else {
+					fillColor = bulb.getBulbColor();
+				}
 		        graphics.setBackgroundColor(fillColor);
 		        graphics.fillRectangle(clientArea);
 				pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x,	clientArea.y,
@@ -149,7 +181,12 @@ public class LEDFigure extends AbstractBoolFigure {
 				graphics.drawRectangle(clientArea);
 				
 				clientArea.shrink(SQURE_BORDER_WIDTH/2, SQURE_BORDER_WIDTH/2);
-				Color fillColor = booleanValue?onColor:offColor;
+				Color fillColor;
+				if(nStates <= 2) {
+					fillColor = booleanValue?onColor:offColor;
+				} else {
+					fillColor = bulb.getBulbColor();
+				}
 		        graphics.setBackgroundColor(fillColor);
 		        graphics.fillRectangle(clientArea);
 			}
@@ -215,5 +252,130 @@ public class LEDFigure extends AbstractBoolFigure {
 		super.updateBoolValue();
 		bulb.setBulbColor(booleanValue ? onColor : offColor);
 		
+	}
+	
+	public int getNStates() {
+		return nStates;
+	}
+	
+	public void setNStates(int nStates) {
+		if(this.nStates != nStates) {
+			this.nStates = nStates;
+			if(nStates <= 2) {
+				updateBoolValue();
+			} else {
+				updateStateValue();
+			}
+		}
+	}
+	
+	public Color getStateFallbackColor() {
+		return stateFallbackColor;
+	}
+	
+	public void setStateFallbackColor(Color color) {
+		if(!stateFallbackColor.equals(color)) {
+			stateFallbackColor = color;
+			updateStateValue();
+		}
+	}
+	
+	public String getStateFallbackLabel() {
+		return stateFallbackLabel;
+	}
+	
+	public void setStateFallbackLabel(String label) {
+		if(!stateFallbackLabel.equals(label)) {
+			stateFallbackLabel = label;
+			updateStateValue();
+		}
+	}
+	
+	public Color getStateColor(int idx) {
+		return stateColors[idx];
+	}
+	
+	public void setStateColor(int idx, Color color) {
+		if(!stateColors[idx].equals(color)) {
+			stateColors[idx] = color;
+			updateStateValue();
+		}
+	}
+	
+	public String getStateLabel(int idx) {
+		return stateLabels[idx];
+	}
+	
+	public void setStateLabel(int idx, String label) {
+		if(!stateLabels[idx].equals(label)) {
+			stateLabels[idx] = label;
+			updateStateValue();
+		}
+	}
+	
+	public Double getStateValue(int idx) {
+		return stateValues[idx];
+	}
+	
+	public void setStateValue(int idx, double value) {
+		if(stateValues[idx] != value) {
+			stateValues[idx] = value;
+			updateStateValue();
+		}
+	}
+	
+	/**
+	 * @param value the value to set
+	 */
+	@Override
+	public void setValue(double value) {
+		if(nStates <= 2) {
+			super.setValue(value);
+		}
+		else if(this.stateValue != value) {
+			this.stateValue = value;
+			updateStateValue();
+		}
+	}
+
+	/**
+	 * @param value the value to set
+	 */
+	@Override
+	public void setValue(long value) {
+		if(nStates <= 2) {
+			super.setValue(value);
+		} else {
+			setValue((double)value);
+		}
+	}
+	
+	protected void updateStateValue() {
+		if(nStates > 2) {
+			boolean fallback = true;
+			for(int idx=0; idx<nStates; idx++) {
+				if(stateValue == stateValues[idx]) {
+					setBulbColorAndLabel(stateColors[idx], stateLabels[idx]);
+					fallback = false;
+					break;
+				}
+			}
+			if(fallback) {
+				setBulbColorAndLabel(stateFallbackColor, stateFallbackLabel);
+			}
+			revalidate();
+			repaint();
+		}
+	}
+	
+	protected void setBulbColorAndLabel(Color color, String label) {
+		// These brightness weightings and threshold determined experimentally.
+		if((color.getRed() * 299) + (color.getGreen() * 587) + (color.getBlue() * 114) > 105000) {
+			boolLabel.setForegroundColor(BLACK_COLOR);
+		} else {
+			boolLabel.setForegroundColor(WHITE_COLOR);
+		}
+		bulb.setBulbColor(color);
+		boolLabel.setText(label);
 	}
 }

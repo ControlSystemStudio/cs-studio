@@ -6,13 +6,22 @@
       <plugin id="com.ibm.icu.base"/>
       <plugin id="javax.mail"/>
       <plugin id="org.antlr.runtime"/>
+      <plugin id="org.apache.batik"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.archive.rdb"/>
       <plugin id="org.csstudio.archive.reader"/>
       <plugin id="org.csstudio.archive.reader.rdb"/>
       <plugin id="org.csstudio.archive.vtype"/>
+      <plugin id="org.csstudio.autocomplete"/>
+      <plugin id="org.csstudio.autocomplete.ui"/>
+      <plugin id="org.csstudio.autocomplete.ui.rap"/>
+      <plugin id="org.csstudio.autocomplete.archive"/>
+      <plugin id="org.csstudio.autocomplete.pvmanager.formula"/>
+      <plugin id="org.csstudio.autocomplete.pvmanager.loc"/>
+      <plugin id="org.csstudio.autocomplete.pvmanager.sim"/>
       <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.java"/>
@@ -22,8 +31,6 @@
       <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
-      <plugin id="org.csstudio.autocomplete"/>
-      <plugin id="org.csstudio.autocomplete.ui"/>
       <plugin id="org.csstudio.rap.core"/>
       <plugin id="org.csstudio.rap.ui.util"/>
       <plugin id="org.csstudio.security"/>
@@ -33,6 +40,7 @@
       <plugin id="org.csstudio.swt.xygraph.rap" fragment="true"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.rap" fragment="true"/>
+      <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.pvmanager.epics"/>
       <plugin id="org.csstudio.utility.pvmanager.extra"/>
@@ -40,6 +48,7 @@
       <plugin id="org.csstudio.utility.pvmanager.sim"/>
       <plugin id="org.csstudio.utility.pvmanager.vtype"/>
       <plugin id="org.csstudio.utility.singlesource"/>
+      <plugin id="org.csstudio.utility.singlesource.rap"/>
       <plugin id="org.csstudio.utility.test"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.commands"/>
@@ -97,7 +106,15 @@
       <plugin id="org.csstudio.archive.reader" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.reader.rdb" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.vtype" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.ui.rap" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.archive" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.formula" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.loc" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.sim" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.data" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.java" autoStart="true" startLevel="0" />
@@ -106,8 +123,6 @@
       <plugin id="org.csstudio.platform.libs.epics" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.jdbc" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.utility.rdb" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.autocomplete" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.autocomplete.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.rap.core" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.rap.ui.util" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.security" autoStart="true" startLevel="0" />
@@ -115,6 +130,7 @@
       <plugin id="org.csstudio.swt.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.swt.xygraph" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.trends.databrowser2" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pv" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.epics" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.extra" autoStart="true" startLevel="0" />
@@ -122,6 +138,7 @@
       <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.test" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
@@ -143,7 +160,6 @@
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.security" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.servletbridge" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.equinox.servletbridge.extensionbundle" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />

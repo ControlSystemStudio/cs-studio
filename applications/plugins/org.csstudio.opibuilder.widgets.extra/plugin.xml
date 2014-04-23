@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Controls"
+            editpart_class="org.csstudio.opibuilder.widgets.extra.ServicePanelEditPart"
+            icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/service-16.png"
+            model_class="org.csstudio.opibuilder.widgets.extra.ServicePanelModel"
+            name="Service panel"
+            typeId="org.csstudio.opibuilder.widgets.ServicePanel">
+      </widget>
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.opibuilder.widgets.extra.VTableDisplayEditPart"
+            icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/table-16.png"
+            model_class="org.csstudio.opibuilder.widgets.extra.VTableDisplayModel"
+            name="VTable Display"
+            typeId="org.csstudio.opibuilder.widgets.VTableDisplay">
+      </widget>
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.opibuilder.widgets.extra.VImageDisplayEditPart"
+            icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/image-16.png"
+            model_class="org.csstudio.opibuilder.widgets.extra.VImageDisplayModel"
+            name="VImage"
+            typeId="org.csstudio.opibuilder.widgets.VImageDisplay">
+      </widget>
+      <widget
+            category="Controls"
+            editpart_class="org.csstudio.opibuilder.widgets.extra.ServiceButtonEditPart"
+            icon="platform:/plugin/org.csstudio.utility.pvmanager.widgets/icons/service-16.png"
+            model_class="org.csstudio.opibuilder.widgets.extra.ServiceButtonModel"
+            name="Service button"
+            typeId="org.csstudio.opibuilder.widgets.ServiceButton">
+      </widget>
+   </extension>
+
+</plugin>

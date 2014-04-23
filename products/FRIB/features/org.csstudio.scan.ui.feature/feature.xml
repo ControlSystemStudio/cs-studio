@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.scan.ui.feature"
+      label="Scan UI Feature"
+      version="3.2.1.qualifier"
+      provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
+
+   <description>
+      Scan System User Interface: Scan editor, monitor, ...
+   </description>
+
+   <copyright>
+      Copyright (c) 2012 Oak Ridge National Laboratory, OAK RIDGE,
+TN, USA. All rights reserved.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      You must accept this license agreement in order to install and use this
+software.
+
+THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot;
+BASIS. 
+WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+
+For details, see http://www.eclipse.org/legal/epl-v10.html
+   </license>
+
+   <url>
+      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.resources" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="compatible"/>
+      <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.ui" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.console" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.help" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.debug.core" version="3.7.0" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.editors" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filebuffers" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.forms" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.ltk.core.refactoring" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ltk.ui.refactoring" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.intro" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.cheatsheets" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.text" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.core" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.100" match="compatible"/>
+      <import plugin="org.eclipse.text" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.debug.core" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.core" version="3.7.1" match="compatible"/>
+      <import plugin="org.eclipse.jdt.debug" version="3.7.1" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="compatible"/>
+      <import plugin="org.eclipse.osgi" version="3.7.1" match="compatible"/>
+      <import plugin="org.eclipse.jdt.debug" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.jface" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.variables" version="3.2.200" match="compatible"/>
+      <import plugin="org.eclipse.search" version="3.7.0" match="compatible"/>
+      <import plugin="org.eclipse.debug.ui" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.6.1" match="compatible"/>
+      <import plugin="org.eclipse.compare" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.team.ui" version="3.4.100" match="compatible"/>
+      <import plugin="org.eclipse.team.core" version="3.4.100" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.7.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.7.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.views" version="3.3.100" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.navigator" version="3.3.200" match="compatible"/>
+      <import plugin="org.eclipse.ui.navigator.resources" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.core.manipulation" version="1.4.0" match="compatible"/>
+      <import plugin="com.ibm.icu" version="3.4.4" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
+      <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan.client" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.swt.xygraph" version="1.1.3" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.help" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.draw2d"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.debug.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.debug.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.search"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.core.manipulation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.debug"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.jdt.launching"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.launching.macosx"
+         os="macosx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.launching.ui.macosx"
+         os="macosx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.scan"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.csstudio.scan.client"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.scan.ui.scanmonitor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.scan.ui.plot"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.scan.ui.scantree"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.scan.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.scan.ui.scandata"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.numjy"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ndarray"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.imagej"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

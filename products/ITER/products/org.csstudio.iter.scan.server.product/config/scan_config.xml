@@ -1,0 +1,12 @@
+<!-- Scan configuration
+
+  Lists PV names and possible alias.
+
+  Alias can be used in scans instead of the beam line name
+
+  All PVs (resp. alias if defined) listed in here are available
+  in the scan tree editor.
+  -->
+<scan_config> 
+
+</scan_config>

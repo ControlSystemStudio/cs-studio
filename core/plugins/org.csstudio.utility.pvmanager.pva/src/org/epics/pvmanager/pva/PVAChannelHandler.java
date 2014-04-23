@@ -1,13 +1,15 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.pva;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +19,7 @@ import org.epics.pvaccess.client.ChannelProvider;
 import org.epics.pvaccess.client.ChannelPut;
 import org.epics.pvaccess.client.ChannelPutRequester;
 import org.epics.pvaccess.client.ChannelRequester;
-import org.epics.pvaccess.client.CreateRequestFactory;
+import org.epics.pvaccess.client.CreateRequest;
 import org.epics.pvaccess.client.GetFieldRequester;
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.misc.BitSet;
@@ -27,16 +29,22 @@ import org.epics.pvdata.monitor.MonitorRequester;
 import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.MessageType;
+import org.epics.pvdata.pv.PVBoolean;
 import org.epics.pvdata.pv.PVField;
+import org.epics.pvdata.pv.PVInt;
 import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVScalarArray;
+import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Status;
+import org.epics.pvdata.pv.StringArrayData;
 import org.epics.pvdata.pv.Structure;
 import org.epics.pvmanager.ChannelHandlerReadSubscription;
 import org.epics.pvmanager.ChannelWriteCallback;
 import org.epics.pvmanager.MultiplexedChannelHandler;
 import org.epics.pvmanager.ValueCache;
+import org.epics.util.array.CollectionNumbers;
+import org.epics.util.array.ListNumber;
 
 /**
  * 
@@ -53,9 +61,11 @@ public class PVAChannelHandler extends
 	private volatile Channel channel = null;
 
 	private final AtomicBoolean monitorCreated = new AtomicBoolean(false);
+	private final AtomicLong monitorLossCounter = new AtomicLong(0);
 	//private volatile Monitor monitor = null;
 	
 	private volatile Field channelType = null;
+	private volatile boolean isChannelEnumType = false;
 	
 	private final AtomicBoolean channelPutCreated = new AtomicBoolean(false);
 	private volatile ChannelPut channelPut = null;
@@ -64,6 +74,11 @@ public class PVAChannelHandler extends
 
 	private static final Logger logger = Logger.getLogger(PVAChannelHandler.class.getName());
 
+	private static CreateRequest createRequest = CreateRequest.create();
+	private static PVStructure allPVRequest = createRequest.createRequest("field()");
+	private static PVStructure standardPutPVRequest = createRequest.createRequest("field(value)");
+	private static PVStructure enumPutPVRequest = createRequest.createRequest("field(value.index)");
+	
 	public PVAChannelHandler(String channelName,
 			ChannelProvider channelProvider, short priority,
 			PVATypeSupport typeSupport) {
@@ -165,7 +180,18 @@ public class PVAChannelHandler extends
 		reportStatus("Failed to instrospect channel '" + channel.getChannelName() + "'", status);
 		
 		if (status.isSuccess())
+		{
 			channelType = field;
+		
+			Field valueField = ((Structure)channelType).getField("value");
+			if (valueField != null && valueField.getID().equals("enum_t"))
+			{
+				isChannelEnumType = true;
+				// TODO could create a monitor just to get value.choices
+			}
+			else
+				isChannelEnumType = false;
+		}
 		
 		processConnection(this);
 	}
@@ -196,6 +222,7 @@ public class PVAChannelHandler extends
                 //properties.put("Read access", channel.getReadAccess());
                 //properties.put("Write access", channel.getWriteAccess());
             }
+            properties.put("Monitor loss count", monitorLossCounter.get());
         }
         return properties;
     }
@@ -252,7 +279,7 @@ public class PVAChannelHandler extends
 		
 		if (!channelPutCreated.getAndSet(true))
 		{
-			channel.createChannelPut(this, CreateRequestFactory.createRequest("field(value)", this));
+			channel.createChannelPut(this, isChannelEnumType ? enumPutPVRequest : standardPutPVRequest);
 		}
 		else if (wasEmpty)
 		{
@@ -294,9 +321,22 @@ public class PVAChannelHandler extends
 		if (status.isSuccess())
 		{
 			this.channelPut = channelPut;
-			this.channelPutValueField = pvStructure.getSubField("value");
+			
+			if (isChannelEnumType)
+			{
+				// handle inconsistent behavior
+				this.channelPutValueField = pvStructure.getSubField("value");
+				if (this.channelPutValueField instanceof PVStructure)
+					this.channelPutValueField = ((PVStructure)pvStructure).getSubField("index");
+			}
+			else
+			{
+				this.channelPutValueField = pvStructure.getSubField("value");
+			}
+
 			
 			// set BitSet
+			bitSet.clear();	// re-connect case
 			if (this.channelPutValueField != null)
 				bitSet.set(channelPutValueField.getFieldOffset());
 		}
@@ -343,43 +383,129 @@ public class PVAChannelHandler extends
 
 	private final static Convert convert = ConvertFactory.getConvert();
 	
-	private static final void fromObject(PVField field, Object newValue)
+	// TODO check if non-V types can ever be given as newValue
+	private final void fromObject(PVField field, Object newValue)
 	{
+		// enum support
+		if (isChannelEnumType)
+		{
+			// value.index int field expected
+			PVInt indexPutField = (PVInt)channelPutValueField;
+			
+			int index = -1;
+			if (newValue instanceof Number)
+			{
+				index = ((Number)newValue).intValue();
+			}
+			else if (newValue instanceof String)
+			{
+				String nv = (String)newValue; 
+				
+				PVStructure lastValue = getLastMessagePayload();
+				if (lastValue == null)
+					throw new IllegalArgumentException("no monitor on '" + getChannelName() +"' created to get list of valid enum choices");
+				
+				PVStringArray pvChoices = (PVStringArray)lastValue.getSubField("value.choices");
+				StringArrayData data = new StringArrayData();
+				pvChoices.get(0, pvChoices.getLength(), data);
+				final String[] choices = data.data;
+				
+				for (int i = 0; i < choices.length; i++)
+				{
+					if (nv.equals(choices[i]))
+					{
+						index = i;
+						break;
+					}
+				}
+				
+				if (index == -1)
+					throw new IllegalArgumentException("enumeration '" + nv +"' is not a valid choice");
+			}
+			
+			indexPutField.put(index);
+			
+			return;
+		}
 		
-		if (newValue instanceof Double)
-			convert.fromDouble((PVScalar)field, ((Double)newValue).doubleValue());
-		else if (newValue instanceof Integer)
-			convert.fromInt((PVScalar)field, ((Integer)newValue).intValue());
-		
-		else if (newValue instanceof double[])
-			convert.fromDoubleArray((PVScalarArray)field, 0, ((double[])newValue).length, (double[])newValue, 0);
-		else if (newValue instanceof int[])
-			convert.fromIntArray((PVScalarArray)field, 0, ((int[])newValue).length, (int[])newValue, 0);
-		
-		else if (newValue instanceof Byte)
-			convert.fromByte((PVScalar)field, ((Byte)newValue).byteValue());
-		else if (newValue instanceof Short)
-			convert.fromShort((PVScalar)field, ((Short)newValue).shortValue());
-		else if (newValue instanceof Long)
-			convert.fromLong((PVScalar)field, ((Long)newValue).longValue());
-		else if (newValue instanceof Float)
-			convert.fromFloat((PVScalar)field, ((Float)newValue).floatValue());
-		else if (newValue instanceof String)
-			convert.fromString((PVScalar)field, (String)newValue);
-		
-		else if (newValue instanceof byte[])
-			convert.fromByteArray((PVScalarArray)field, 0, ((byte[])newValue).length, (byte[])newValue, 0);
-		else if (newValue instanceof short[])
-			convert.fromShortArray((PVScalarArray)field, 0, ((short[])newValue).length, (short[])newValue, 0);
-		else if (newValue instanceof long[])
-			convert.fromLongArray((PVScalarArray)field, 0, ((long[])newValue).length, (long[])newValue, 0);
-		else if (newValue instanceof float[])
-			convert.fromFloatArray((PVScalarArray)field, 0, ((float[])newValue).length, (float[])newValue, 0);
-		else if (newValue instanceof String[])
-			convert.fromStringArray((PVScalarArray)field, 0, ((String[])newValue).length, (String[])newValue, 0);
-		
+        if (channelPutValueField instanceof PVScalar)
+        {
+	        if (newValue instanceof Double)
+				convert.fromDouble((PVScalar)field, ((Double)newValue).doubleValue());
+			else if (newValue instanceof Integer)
+				convert.fromInt((PVScalar)field, ((Integer)newValue).intValue());
+			else if (newValue instanceof String)
+				convert.fromString((PVScalar)field, (String)newValue);
+			else if (newValue instanceof Byte)
+				convert.fromByte((PVScalar)field, ((Byte)newValue).byteValue());
+			else if (newValue instanceof Short)
+				convert.fromShort((PVScalar)field, ((Short)newValue).shortValue());
+			else if (newValue instanceof Long)
+				convert.fromLong((PVScalar)field, ((Long)newValue).longValue());
+			else if (newValue instanceof Float)
+				convert.fromFloat((PVScalar)field, ((Float)newValue).floatValue());
+			else if (newValue instanceof Boolean)
+				//  TODO no convert.fromBoolean
+				//convert.fromBoolean((PVScalar)field, ((Boolean)newValue).booleanValue());
+				((PVBoolean)field).put(((Boolean)newValue).booleanValue());
+    		else
+    			throw new RuntimeException("Unsupported write, cannot put '" + newValue.getClass() + "' into scalar '" + channelPutValueField.getField() + "'");
+        }
+        else if (channelPutValueField instanceof PVScalarArray)
+        {
+            // if it's a ListNumber, extract the array
+            if (newValue instanceof ListNumber) {
+                ListNumber data = (ListNumber) newValue;
+                Object wrappedArray = CollectionNumbers.wrappedArray(data);
+                if (wrappedArray == null) {
+                    newValue = CollectionNumbers.doubleArrayCopyOf(data);
+                } else {
+                    newValue = wrappedArray;
+                }
+            }
+            else if (!newValue.getClass().isArray())
+            {
+            	// create an array
+            	Object newValueArray = Array.newInstance(newValue.getClass(), 1);
+            	Array.set(newValueArray, 0, newValue);
+            	newValue = newValueArray;
+            }
+            
+            if (newValue instanceof double[])
+    			convert.fromDoubleArray((PVScalarArray)field, 0, ((double[])newValue).length, (double[])newValue, 0);
+    		else if (newValue instanceof int[])
+    			convert.fromIntArray((PVScalarArray)field, 0, ((int[])newValue).length, (int[])newValue, 0);
+    		else if (newValue instanceof String[])
+    			convert.fromStringArray((PVScalarArray)field, 0, ((String[])newValue).length, (String[])newValue, 0);
+            // special case from string to array
+    		else if (newValue instanceof String)
+    		{
+    			String str = ((String)newValue).trim();
+    			
+    			// remove []
+    			if (str.charAt(0) == '[' && str.charAt(str.length()-1) == ']')
+    				str = str.substring(1, str.length()-1);
+    			
+    			// split on commas and whitespaces
+    			String[] splitValues = str.split("[,\\s]+");
+    			convert.fromStringArray((PVScalarArray)field, 0, splitValues.length, splitValues, 0);
+    		}
+    		
+    		else if (newValue instanceof byte[])
+    			convert.fromByteArray((PVScalarArray)field, 0, ((byte[])newValue).length, (byte[])newValue, 0);
+    		else if (newValue instanceof short[])
+    			convert.fromShortArray((PVScalarArray)field, 0, ((short[])newValue).length, (short[])newValue, 0);
+    		else if (newValue instanceof long[])
+    			convert.fromLongArray((PVScalarArray)field, 0, ((long[])newValue).length, (long[])newValue, 0);
+    		else if (newValue instanceof float[])
+    			convert.fromFloatArray((PVScalarArray)field, 0, ((float[])newValue).length, (float[])newValue, 0);
+    		else
+    			throw new RuntimeException("Unsupported write, cannot put '" + newValue.getClass() + "' into array'" + channelPutValueField.getField() + "'");
+        }
 		else
-			throw new RuntimeException("Unsupported value for pvAccess: " + newValue.getClass());
+			throw new RuntimeException("Unsupported write, cannot put '" + newValue.getClass() + "' into '" + channelPutValueField.getField() + "'");
+
+        
 	}
 	
 
@@ -409,7 +535,7 @@ public class PVAChannelHandler extends
 				} catch (InterruptedException e) { }
 			}
 			// TODO optimize fields
-			channel.createMonitor(this, CreateRequestFactory.createRequest("field()", this));
+			channel.createMonitor(this, allPVRequest);
 		}
 	}
 
@@ -435,6 +561,9 @@ public class PVAChannelHandler extends
 		MonitorElement monitorElement;
 		while ((monitorElement = monitor.poll()) != null)
 		{
+			if (monitorElement.getOverrunBitSet().cardinality() > 0)
+				monitorLossCounter.incrementAndGet();
+			
 			// TODO combine bitSet, etc.... do we need to copy structure?
 			processMessage(monitorElement.getPVStructure());
 			monitor.release(monitorElement);

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: A simple pv connection layer.
+Bundle-SymbolicName: org.csstudio.simplepv;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Xihui Chen <chenx1@ornl.gov>, Kay Kasemir <kasemirk@ornl.gov>
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.epics.vtype;bundle-version="2.1.0";visibility:=reexport,
+ org.epics.util,
+ org.eclipse.core.runtime
+Export-Package: org.csstudio.simplepv
+Bundle-Activator: org.csstudio.simplepv.SimplePVPlugin

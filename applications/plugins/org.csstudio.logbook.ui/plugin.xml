@@ -24,7 +24,7 @@
             locationURI="menu:utility">
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               icon="icons/logentry-add-16.png"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
                label="%MakeLogEntry"
                style="push">
          </command>
@@ -33,8 +33,33 @@
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               icon="icons/logentry-add-16.png"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
                label="%MakeLogEntry"
+               style="push"
+               tooltip="Duplicate the selected log entry">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="org.csstudio.logbook.LogEntryBuilder">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-edit-16.png"
+               label="%UpdateLogEntry"
                style="push">
             <visibleWhen>
                <with
@@ -44,9 +69,30 @@
                            type="org.csstudio.logbook.LogEntryBuilder">
                      </adapt>
                   </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
                </with>
             </visibleWhen>
          </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="org.csstudio.logbook.ui.toolbar">
+            <command
+                  commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+                  icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
+                  label="%MakeLogEntry"
+                  style="push">
+            </command>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension
@@ -61,6 +107,11 @@
             defaultHandler="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
             id="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
             name="%MakeLogEntry">
+      </command>
+      <command
+            defaultHandler="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+            id="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+            name="%UpdateLogEntry">
       </command>
    </extension>
    <extension

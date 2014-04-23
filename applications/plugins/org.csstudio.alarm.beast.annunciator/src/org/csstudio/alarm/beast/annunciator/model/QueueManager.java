@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.annunciator.model;
 import org.csstudio.alarm.beast.annunciator.Messages;
 import org.csstudio.utility.speech.Annunciator;
 import org.csstudio.utility.speech.AnnunciatorFactory;
+import org.csstudio.utility.speech.NoSoundCardAvailableException;
 import org.csstudio.utility.speech.Translation;
 import org.eclipse.osgi.util.NLS;
 
@@ -79,9 +80,17 @@ public class QueueManager implements Runnable
             try
             {
                 // Create annunciator
-                speech = AnnunciatorFactory.getAnnunciator();
-                if (translations != null)
-                    speech.setTranslations(translations);
+            	try {
+	                speech = AnnunciatorFactory.getAnnunciator();
+	                if (translations != null)
+	                    speech.setTranslations(translations);
+            	} catch (NoSoundCardAvailableException e) {
+            		if(enabled) {
+            			// If no sound card switched to silence mode
+            			enabled = false;
+            			listener.annunciatorError(e);
+            		}
+            	}
 
                 while (run) // Wait for anybody to add messages to the queue
                 {
@@ -94,7 +103,7 @@ public class QueueManager implements Runnable
                     if (!run)
                         return;
                     // Speak message off queue (may be silenced)
-                    if (enabled)
+                    if (enabled && speech != null)
                         speech.say(message);
                     // .. then notify listener
                     listener.performedAnnunciation(qc);
@@ -112,7 +121,8 @@ public class QueueManager implements Runnable
                             {
                                 // Speak message off queue, then notify listener
                                 message = qc.getMessage();
-                                speech.say(message);
+                                if(speech != null)
+                                	speech.say(message);
                                 listener.performedAnnunciation(qc);
                             }
                             else
@@ -121,7 +131,8 @@ public class QueueManager implements Runnable
                         if (flurry > 0)
                         {
                             final String more = NLS.bind(Messages.MoreMessagesFmt, flurry);
-                            speech.say(more);
+                            if(speech != null)
+                            	speech.say(more);
                             listener.performedAnnunciation(new AnnunciationMessage(Severity.forInfo(), more));
                         }
                     }

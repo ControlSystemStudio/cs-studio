@@ -105,6 +105,23 @@ public class HistoricSamples extends PlotSamples
     {
         return visible_size;
     }
+    
+    /**
+     * @return the number of samples, ignoring the border time
+     */
+    public synchronized int getRawSize() {
+    	return samples.length;
+    }
+    
+    /**
+     * Returns the sample at the specified index, ignoring the border time.
+     * 
+     * @param i the index of the requested sample
+     * @return the plot sample
+     */
+    public synchronized PlotSample getRawSample(int i) {
+    	return samples[i];
+    }
 
     /** Merge newly received archive data into historic samples
      *  @param source Info about data source

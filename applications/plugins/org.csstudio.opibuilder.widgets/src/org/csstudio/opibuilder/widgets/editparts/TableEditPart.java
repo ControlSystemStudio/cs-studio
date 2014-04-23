@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.SpreadSheetTableFigure;
 import org.csstudio.opibuilder.widgets.model.TableModel;
 import org.csstudio.swt.widgets.natives.SpreadSheetTable;
+import org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
@@ -35,26 +36,29 @@ public class TableEditPart extends AbstractBaseEditPart {
 	 */
 	private Point menuTriggeredCell;
 
+	private String[] allowedHeaders;
+
 	/* (non-Javadoc)
 	 * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#doCreateFigure()
 	 */
 	@Override
 	protected IFigure doCreateFigure() {		
 		SpreadSheetTableFigure figure = new SpreadSheetTableFigure(this);
-		spreadSheetTable = figure.getSWTWidget();		
-		spreadSheetTable.setContent(getWidgetModel().getDefaultContent());
+		spreadSheetTable = figure.getSWTWidget();	
 		spreadSheetTable.setEditable(getWidgetModel().isEditable());
 		spreadSheetTable.setColumnsCount(getWidgetModel().getColumnsCount());		
 		spreadSheetTable.setColumnHeaders(
 				getWidgetModel().getColumnHeaders());
 		spreadSheetTable.setColumnWidths(getWidgetModel().getColumnWidthes());
 		boolean editable[] = getWidgetModel().isColumnEditable();
+		CellEditorType[] columnCellEditorTypes = getWidgetModel().getColumnCellEditorTypes();
 		for(int i=0; i<Math.min(editable.length, spreadSheetTable.getColumnCount()); i++){
 			spreadSheetTable.setColumnEditable(i, editable[i]);
+			spreadSheetTable.setColumnCellEditorType(i, columnCellEditorTypes[i]);
 		}
-		
-		spreadSheetTable.setColumnHeaderVisible(getWidgetModel().isColumnHeaderVisible());
-				
+		spreadSheetTable.setContent(getWidgetModel().getDefaultContent());
+
+		spreadSheetTable.setColumnHeaderVisible(getWidgetModel().isColumnHeaderVisible());				
 		spreadSheetTable.getTableViewer().getTable().addMenuDetectListener(new MenuDetectListener() {
 			
 			@Override
@@ -95,9 +99,12 @@ public class TableEditPart extends AbstractBaseEditPart {
 				if (name.equals("allowInsert") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$						
 					return spreadSheetTable.isEditable() && 
 							(getMenuTriggeredCell() != null || spreadSheetTable.isEmpty());
-				if (name.equals("allowDelete") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$						
+				if (name.equals("allowDeleteRow") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$						
+					return spreadSheetTable.isEditable() && (getMenuTriggeredCell() != null);
+				if (name.equals("allowDeleteColumn") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$						
 					return spreadSheetTable.isEditable() && 
-							(getMenuTriggeredCell() != null);
+							(getMenuTriggeredCell() != null && 
+							spreadSheetTable.isColumnEditable(getMenuTriggeredCell().y));
 				return super.testAttribute(target, name, value);
 			}
 		};
@@ -186,6 +193,18 @@ public class TableEditPart extends AbstractBaseEditPart {
 	 */
 	public SpreadSheetTable getTable(){
 		return spreadSheetTable;
+	}
+	
+	/**Set allowed header titles. If this is set, the insert column dialog
+	 * will have a combo box instead of text for title input.
+	 * @param headers the allowed header titles.
+	 */
+	public void setAllowedHeaders(String[] headers){
+		this.allowedHeaders = headers;
+	}
+	
+	public String[] getAllowedHeaders() {
+		return allowedHeaders;
 	}
 
 }

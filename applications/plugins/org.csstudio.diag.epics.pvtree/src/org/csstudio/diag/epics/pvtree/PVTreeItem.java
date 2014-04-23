@@ -7,18 +7,14 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
-import static org.epics.util.time.TimeDuration.ofSeconds;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListener;
+import org.csstudio.vtype.pv.PVListenerAdapter;
+import org.csstudio.vtype.pv.PVPool;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
 
@@ -54,7 +50,26 @@ class PVTreeItem
     private final String record_name;
 
     /** The PV used for getting the current value. */
-    private PVReader<VType> pv;
+    private PV pv;
+    
+    final private PVListener value_listener = new PVListenerAdapter()
+    {
+        @Override
+        public void valueChanged(final PV pv, final VType pv_value)
+        {
+            value = VTypeHelper.format(pv_value);
+            severity = VTypeHelper.getSeverity(pv_value);
+            model.itemUpdated(PVTreeItem.this);
+        }
+
+        @Override
+        public void disconnected(final PV pv)
+        {
+            value = "Disconnected";
+            severity = AlarmSeverity.UNDEFINED;
+            model.itemUpdated(PVTreeItem.this);
+        }
+    };
 
     /** Most recent value. */
     private volatile String value = null;
@@ -63,7 +78,7 @@ class PVTreeItem
     private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
 
     /** The PV used for getting the record type. */
-    private PVReader<VType> type_pv;
+    private PV type_pv;
     private String type;
 
     /** Array of fields to read for this record type.
@@ -73,7 +88,7 @@ class PVTreeItem
     final private ArrayList<String> links_to_read = new ArrayList<String>();
 
     /** Used to read the links of this pv. */
-    private PVReader<VType> link_pv = null;
+    private PV link_pv = null;
     private String link_value;
 
     /** Tree item children, populated with info from the input links. */
@@ -115,7 +130,7 @@ class PVTreeItem
         // Is this a link to follow, or just a constant to display?
         // Hardware links "@vme..." or constant numbers "-12.3"
         // cause us to stop here:
-        if (pv_name.startsWith("@") || pv_name.matches("^-?[0-9]"))
+        if (! PVNameFilter.isPvName(pv_name))
         {
             pv = null;
             return;
@@ -124,22 +139,7 @@ class PVTreeItem
         // Try to read the pv
         try
         {
-        	final PVReaderListener<VType> listener = new PVReaderListener<VType>()
-    	    {
-    	        @Override
-    	        public void pvChanged(final PVReaderEvent<VType> event)
-    	        {
-    	        	final PVReader<VType> pv = event.getPvReader();
-    	            final Exception error = pv.lastException();
-    	            if (error != null)
-    	                Plugin.getLogger().log(Level.SEVERE, "PV Listener error" , error);
-    	            final VType pv_value = pv.getValue();
-    	            value = VTypeHelper.format(pv_value);
-    	            severity = VTypeHelper.getSeverity(pv_value);
-    	            model.itemUpdated(PVTreeItem.this);
-    	        }
-    	    };
-        	pv = PVManager.read(vType(pv_name)).readListener(listener).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
+        	pv = createPV(pv_name, value_listener);
         }
         catch (Exception e)
         {
@@ -163,7 +163,7 @@ class PVTreeItem
         }
     	try
     	{
-            final PVReaderListener<VType> listener = new StringListener()
+            final PVListener listener = new StringListener()
     	    {
 				@Override
 				public void handleText(final String text)
@@ -176,15 +176,30 @@ class PVTreeItem
     	                type = text;
     	            else
     	                type = Messages.UnkownPVType;
+    	            // Only need one update
+    	            type_pv.removeListener(this);
     	            updateType();
 				}
     	    };
-            type_pv = PVManager.read(vType(record_name + ".RTYP")).readListener(listener).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
+            type_pv = createPV(record_name + ".RTYP", listener);
         }
         catch (Exception e)
         {
             Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e);
         }
+    }
+
+    /** Create and start PV
+     *  @param name PV Name
+     *  @param listener Listener
+     *  @return PV
+     *  @throws Exception on error
+     */
+    private PV createPV(final String name, final PVListener listener) throws Exception
+    {
+        final PV pv = PVPool.getPV(name); 
+        pv.addListener(listener);
+        return pv;
     }
 
     /** Dispose this and all child entries. */
@@ -194,7 +209,8 @@ class PVTreeItem
             item.dispose();
         if (pv != null)
         {
-            pv.close();
+            pv.removeListener(value_listener);
+            PVPool.releasePV(pv);
             pv = null;
         }
         disposeLinkPV();
@@ -202,10 +218,10 @@ class PVTreeItem
     }
 
     /** @return PV for the given name */
-    private PVReader<VType> createLinkPV(final String name)
+    private PV createLinkPV(final String name) throws Exception
     {
-    	final PVReaderListener<VType> listener = new StringListener()
-	    {
+    	final PVListener listener = new StringListener()
+        {
 			@Override
 			public void handleText(final String text)
 			{
@@ -221,10 +237,12 @@ class PVTreeItem
                     if (i > 0)
                         link_value = link_value.substring(0, i);
                 }
+                // Only one update
+                link_pv.removeListener(this);
                 updateLink();
 			}
 	    };
-	    return PVManager.read(vType(name)).readListener(listener).notifyOn(swtThread()).maxRate(ofSeconds(Preferences.getUpdatePeriod()));
+	    return createPV(name, listener);
     }
 
     /** Delete the type_pv */
@@ -232,7 +250,7 @@ class PVTreeItem
     {
         if (type_pv != null)
         {
-            type_pv.close();
+            PVPool.releasePV(type_pv);
             type_pv = null;
         }
     }
@@ -242,7 +260,7 @@ class PVTreeItem
     {
         if (link_pv != null)
         {
-            link_pv.close();
+            PVPool.releasePV(link_pv);
             link_pv = null;
         }
     }
@@ -355,13 +373,16 @@ class PVTreeItem
     /** Thread-safe handling of the 'link_pv' update. */
     private void updateLink()
     {
-        Plugin.getLogger().log(Level.FINE,
-                "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
         if (link_pv == null)
         {
             Plugin.getLogger().log(Level.FINE,
                     "{0} already disposed", pv_name);
             return;
+        }
+        else
+        {
+        	Plugin.getLogger().log(Level.FINE,
+                    "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
         }
         disposeLinkPV();
 

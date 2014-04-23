@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
+import org.csstudio.trends.databrowser2.model.TraceType;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 /** Helper for reading preference settings
  *
  *  @author Kay Kasemir
+ *  @author Naceur Benhadj (add property to hide "Property" view)
  */
 @SuppressWarnings("nls")
 public class Preferences
@@ -45,6 +47,7 @@ public class Preferences
 	final public static String TIME_SPAN = "time_span",
 			SCAN_PERIOD = "scan_period", BUFFER_SIZE = "live_buffer_size",
 			UPDATE_PERIOD = "update_period", LINE_WIDTH = "line_width",
+			TRACE_TYPE = "trace_type",
 			ARCHIVE_FETCH_DELAY = "archive_fetch_delay",
 			PLOT_BINS = "plot_bins", URLS = "urls", ARCHIVES = "archives",
 			USE_DEFAULT_ARCHIVES = "use_default_archives",
@@ -52,14 +55,33 @@ public class Preferences
 			ARCHIVE_RESCALE = "archive_rescale",
 			USE_AUTO_SCALE = "use_auto_scale",
 			EMAIL_DEFAULT_SENDER = "email_default_sender",
-			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view";
+			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view",
+			RAP_HIDE_PROPERTIES_VIEW = "rap.hide_properties_view",		
+			SECURE_DATA_BROWSER = "secure_data_browser",
+			AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh",
+			FUTURE_BUFFER = "future_buffer";
 
+	public static boolean isAutomaticHistoryRefresh() {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null) // Allow some JUnit tests without prefs
+            return Boolean.FALSE;
+        return prefs.getBoolean(Activator.PLUGIN_ID, AUTOMATIC_HISTORY_REFRESH, Boolean.FALSE, null);
+	}
+	
     public static double getTimeSpan()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null) // Allow some JUnit tests without prefs
             return 60.0;
         return prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null);
+    }
+    
+    public static int getFutureBuffer()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null) // Allow some JUnit tests without prefs
+            return 120;
+        return prefs.getInt(Activator.PLUGIN_ID, FUTURE_BUFFER, 120, null);
     }
 
     public static double getScanPeriod()
@@ -92,6 +114,24 @@ public class Preferences
         return prefs.getInt(Activator.PLUGIN_ID, LINE_WIDTH, 2, null);
     }
 
+    public static TraceType getTraceType()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs != null)
+        {
+            final String type_name = prefs.getString(Activator.PLUGIN_ID, TRACE_TYPE, TraceType.AREA.name(), null);
+            try
+            {
+                return TraceType.valueOf(type_name);
+            }
+            catch (Exception ex)
+            {
+                Activator.getLogger().log(Level.WARNING, "Undefined trace type option '" + type_name + "'", ex);
+            }
+        }
+        return TraceType.AREA;
+    }
+
     public static long getArchiveFetchDelay()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
@@ -104,13 +144,23 @@ public class Preferences
         return prefs.getInt(Activator.PLUGIN_ID, PLOT_BINS, 800, null);
     }
 
-    public static String[] getArchiveServerURLs()
+    public static ArchiveServerURL[] getArchiveServerURLs()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String urls = prefs.getString(Activator.PLUGIN_ID, URLS, "", null).trim();
         if (urls.length() <= 0)
-            return new String[0];
-        return urls.split("\\*");
+            return new ArchiveServerURL[0];
+        
+        ArrayList<ArchiveServerURL> list = new ArrayList<ArchiveServerURL>(); 
+        for (String fragment : urls.split("\\*")) {
+        	String[] strs = fragment.split("\\|");
+        	if (strs.length == 1) {
+        		list.add(new ArchiveServerURL(strs[0], null));
+        	} else if (strs.length >= 2) {
+        		list.add(new ArchiveServerURL(strs[0], strs[1]));
+        	}
+        }
+        return list.toArray(new ArchiveServerURL[list.size()]);
     }
 
     public static ArchiveDataSource[] getArchives()
@@ -210,11 +260,35 @@ public class Preferences
     
     /** @return <code>true</code> to hide search view on rap version.
      */
-    static public boolean hideSearchView()
+    public static boolean hideSearchView()
     {
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs == null)
 			return false;
 		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_SEARCH_VIEW, false, null);
     }
+    
+    
+
+    /** @return <code>true</code> to hide properties view on rap version.
+     */
+    public static boolean hidePropertiesView()
+    {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return false;
+		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_PROPERTIES_VIEW, false, null);
+    }
+    
+    /** @return <code>true</code> to authentication is required to open data browser in rap.
+     */
+    public static boolean isDataBrowserSecured()
+    {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		if (prefs == null)
+			return false;
+		return prefs.getBoolean(Activator.PLUGIN_ID, SECURE_DATA_BROWSER, false, null);
+    }
+    
+    
 }

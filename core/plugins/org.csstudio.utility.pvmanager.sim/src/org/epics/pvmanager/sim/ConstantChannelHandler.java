@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
@@ -23,7 +23,7 @@ class ConstantChannelHandler extends MultiplexedChannelHandler<Object, Object> {
         super(channelName);
         List<Object> tokens = FunctionParser.parseFunctionWithScalarOrArrayArguments(channelName,
                 "Wrong syntax. Correct examples: const(3.14), const(\"Bob\"), const(1,2,3), const(\"ON\", \"OFF\"");
-        processMessage((Object) ValueFactory.wrapValue(tokens.get(1)));
+        processMessage((Object) ValueFactory.toVTypeChecked(tokens.get(1)));
     }
 
     @Override

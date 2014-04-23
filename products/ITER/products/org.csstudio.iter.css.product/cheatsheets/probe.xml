@@ -2,18 +2,14 @@
 <cheatsheet
       title="Probe Exercise">
    <intro>
-      <description>
-         The following steps show how to use a simple <b>Probe</b> tool to display a process variable.
-      </description>
+      <description>The following steps show how to use a simple <b>Probe</b> tool to display a process variable.</description>
    </intro>
    <item
          title="Start CSS Probe Tool">
-      <description>
-         Menu CSS -> Diagnostic Tools -> <b>Probe</b>
-      </description>
+      <description>Menu CSS -> Diagnostic Tools -> <b>Probe</b></description>
       <command
             required="false"
-            serialization="org.csstudio.diag.probe.OpenProbe"/>
+            serialization="org.csstudio.diag.pvmanager.probe.OpenProbe"/>
    </item>
    <item
          title="Enter a PV Name">
@@ -23,42 +19,32 @@
    </item>
    <item
          title="Close Probe">
-      <description>
-         Use the <b>cross</b> in the Probe tab to close the tool.
-      </description>
+      <description>Use the <b>cross</b> in the Probe tab to close the tool.</description>
    </item>
    <item
          title="Open Probe again">
-      <description>
-         Menu CSS -> Diagnostic Tools -> <b>Probe</b>
-      </description>
+      <description>Menu CSS -> Diagnostic Tools -> <b>Probe</b></description>
       <command
             required="false"
-            serialization="org.csstudio.diag.probe.OpenProbe"/>
+            serialization="org.csstudio.diag.pvmanager.probe.OpenProbe"/>
    </item>
    <item
-         title="Select the sine signal">
-      <description>
-         Select previously entered PV from drop-down.
-      </description>
+         title="Select the sine signal using autocomplete">
+      <description>Start typing &apos;s&apos; in PV field, the autocomplete should propose previously entered PV.<br/>
+Select it and type Enter.</description>
    </item>
    <item
          title="Move Probe around">
-      <description>
-         Move Probe to other view area. Resize the view.
-      </description>
+      <description>Move Probe to other view area. Resize the view.</description>
    </item>
    <item
          title="Close Probe">
-      <description>
-         Use the cross in the Probe tab to close the tool.</description>
+      <description>Use the cross in the Probe tab to close the tool.</description>
    </item>
    <item
          skip="true"
-         href="/org.csstudio.diag.probe/html/probe.html"
+         href="/org.csstudio.diag.pvmanager.probe/html/probe.html"
          title="For more information">
-      <description>
-         Click on the <b>Question Mark</b> on the right to open related help.
-      </description>
+      <description>Click on the <b>Question Mark</b> on the right to open related help.</description>
    </item>
  </cheatsheet>

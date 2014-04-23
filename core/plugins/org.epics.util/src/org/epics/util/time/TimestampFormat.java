@@ -1,11 +1,12 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 epics-util developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.util.time;
 
 import java.text.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -115,6 +116,10 @@ public class TimestampFormat extends Format {
 
     @Override
     public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+        if (obj == null) {
+            return new StringBuffer("null");
+        }
+        
         if (obj instanceof Timestamp) {
             Timestamp time = (Timestamp) obj;
             int begin = toAppendTo.length();
@@ -175,6 +180,17 @@ public class TimestampFormat extends Format {
             throw new ParseException("Unparseable date: \"" + source + "\"" ,
                 pos.getErrorIndex());
         return result;
+    }
+    
+    /**
+     * This method returns the default pattern modified to add millisecond
+     * after the seconds.
+     * 
+     * @param locale a locale
+     * @return a pattern string
+     */
+    static String defaultPattern(Locale locale) {
+        return ((SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale)).toPattern().replace("ss", "ss.SSS");
     }
 
 }

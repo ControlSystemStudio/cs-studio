@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.iter.scan.server.app.feature"
+      label="CSS Scan Server Component"
+      version="3.2.0.qualifier"
+      provider-name="ITER">
+
+   <copyright>
+      Copyright (c) : 2010-2014 ITER Organization,
+CS 90 046
+13067 St. Paul-lez-Durance Cedex
+France
+   </copyright>
+
+   <license url="">
+      This product is part of ITER CODAC software.
+For the terms and conditions of redistribution or use of this software
+refer to the file ITER-LICENSE.TXT located in the top level directory
+of the distribution package.
+   </license>
+
+   <includes
+         id="org.csstudio.iter.core.util.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.junit" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan.log" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.httpd" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.2.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.numjy" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan.log" version="3.2.2" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.pvaccess" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.epics.pvdata" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="javax.servlet"/>
+   </requires>
+
+   <plugin
+         id="org.python.jython"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="true"/>
+
+   <plugin
+         id="org.csstudio.iter.scan.server.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ndarray"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.numjy"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="true"/>
+
+   <plugin
+         id="org.csstudio.scan"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="true"/>
+
+   <plugin
+         id="org.csstudio.scan.log"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.scan.log.derby"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.scan.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.httpd"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.pvaccess"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.pvdata"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

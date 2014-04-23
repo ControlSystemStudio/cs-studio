@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.scriptUtil;
 
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.eclipse.swt.graphics.RGB;
 
 /**The Utility Class to help write information to CSS console.
  * @author Xihui Chen
@@ -35,6 +36,23 @@ public class ConsoleUtil {
 	public static void writeWarning(String message){
 		ConsoleService.getInstance().writeWarning(message);
 	}
+
+	/**Write pure string to CSS console without any extra headers in black color.
+	 * @param string the output string.
+	 */
+	public static void writeString(String string){
+		ConsoleService.getInstance().writeString(string);
+	}
 	
+	
+	/**Write pure string to CSS console in specified color.
+	 * @param string the output string.
+	 * @param red the red component of RGB
+	 * @param green the green component of RGB
+	 * @param blue the blue component of RGB  
+	 */
+	public static void writeString(String string, int red, int green, int blue){
+		ConsoleService.getInstance().writeString(string, new RGB(red, green, blue));
+	}
 	
 }

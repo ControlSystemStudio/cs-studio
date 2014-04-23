@@ -55,7 +55,7 @@ public class DetailsPanel extends Composite {
 		typeSection.setLayout(gl_typeSection);
 		
 		typeLabel = new Label(typeSection, SWT.NONE);
-		typeLabel.setText("Expression type:");
+		typeLabel.setText(Messages.Probe_infoExpressionType);
 		typeLabel.setBounds(0, 0, 45, 20);
 		
 		typeField = new Text(typeSection, SWT.BORDER);
@@ -72,7 +72,7 @@ public class DetailsPanel extends Composite {
 		expressionSection.setLayout(gl_expressionSection);
 		
 		expressionNameLabel = new Label(expressionSection, SWT.NONE);
-		expressionNameLabel.setText("Expression name:");
+		expressionNameLabel.setText(Messages.Probe_infoExpressionName);
 		
 		expressionNameField = new Text(expressionSection, SWT.BORDER);
 		expressionNameField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -87,21 +87,21 @@ public class DetailsPanel extends Composite {
 		channelSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label channelHandlerNameLabel = new Label(channelSection, SWT.NONE);
-		channelHandlerNameLabel.setText("Channel handler name:");
+		channelHandlerNameLabel.setText(Messages.Probe_infoChannelHandlerName);
 		
 		channelHandlerNameField = new Text(channelSection, SWT.BORDER);
 		channelHandlerNameField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		channelHandlerNameField.setEditable(false);
 		
 		Label usageCountLabel = new Label(channelSection, SWT.NONE);
-		usageCountLabel.setText("Usage count:");
+		usageCountLabel.setText(Messages.Probe_infoUsageCount);
 		
 		usageCountField = new Text(channelSection, SWT.BORDER);
 		usageCountField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		usageCountField.setEditable(false);
 		
 		Label connectionLabel = new Label(channelSection, SWT.NONE);
-		connectionLabel.setText("Connected (R-W):");
+		connectionLabel.setText(Messages.Probe_infoConnected);
 		
 		connectionField = new Text(channelSection, SWT.BORDER);
 		connectionField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -109,7 +109,7 @@ public class DetailsPanel extends Composite {
 		
 		channelPropertiesLabel = new Label(channelSection, SWT.NONE);
 		channelPropertiesLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		channelPropertiesLabel.setText("Channel properties:");
+		channelPropertiesLabel.setText(Messages.Probe_infoChannelProperties);
 		
 		channelPropertiesField = new Text(channelSection, SWT.BORDER | SWT.MULTI);
 		channelPropertiesField.setEditable(false);
@@ -143,12 +143,12 @@ public class DetailsPanel extends Composite {
 	private void setType(String formula) {
 		if (formula != null) {
 			if (isChannel(formula)) {
-				typeField.setText("Channel");
+				typeField.setText(Messages.Probe_infoChannel);
 			} else {
-				typeField.setText("Formula");
+				typeField.setText(Messages.Probe_infoFormula);
 			}
 		} else {
-			typeField.setText("");
+			typeField.setText(""); //$NON-NLS-1$
 		}
 	}
 	
@@ -205,7 +205,7 @@ public class DetailsPanel extends Composite {
 		future = null;
 	}
 	
-	
+	private int nRows = 0;
 	private void setChannelProperties(ChannelHandler handler) {
 		if (handler != null) {
 
@@ -215,21 +215,26 @@ public class DetailsPanel extends Composite {
 			for (Map.Entry<String, Object> entry : sortedProperties
 					.entrySet()) {
 				builder.append(entry.getKey())
-						.append(" = ").append(entry.getValue())
-						.append("\n");
+						.append(" = ").append(entry.getValue()) //$NON-NLS-1$
+						.append("\n"); //$NON-NLS-1$
 			}
 			channelHandlerNameField.setText(handler.getChannelName());
-			usageCountField.setText(handler.getUsageCounter() + " (" + handler.getReadUsageCounter() + "+" + handler.getWriteUsageCounter() + ")");
+			usageCountField.setText(handler.getUsageCounter() + " (" + handler.getReadUsageCounter() + "+" + handler.getWriteUsageCounter() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			boolean writeConnected = false;
 			if (handler instanceof MultiplexedChannelHandler) {
 				writeConnected = ((MultiplexedChannelHandler<?, ?>) handler).isWriteConnected();
 			}
-			connectionField.setText(handler.isConnected() + " - " + writeConnected);
+			connectionField.setText(handler.isConnected() + " - " + writeConnected); //$NON-NLS-1$
 			channelPropertiesField.setText(builder.toString());
 			showSection(channelSection);
+			if (nRows != sortedProperties.size()) {
+				this.getParent().layout();
+			}
+			nRows = sortedProperties.size();
 		} else {
 			channelPropertiesField.setText(""); //$NON-NLS-1$
 			hideSection(channelSection);
+			nRows = 0;
 		}
 	}
 	

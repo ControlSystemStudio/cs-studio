@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.3" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <class id="1" language="java" name="org.csstudio.opibuilder.properties.ColorProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/ColorProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="129" y="140"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="org.csstudio.opibuilder.properties.ActionsProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/ActionsProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="136" y="113"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="org.csstudio.opibuilder.properties.WidgetPropertyChangeListener" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/WidgetPropertyChangeListener.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="427" y="55"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="org.csstudio.opibuilder.properties.FilePathProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/FilePathProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="137" y="338"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="org.csstudio.opibuilder.properties.DoubleProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/DoubleProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="134" y="204"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="org.csstudio.opibuilder.properties.ComplexDataProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/ComplexDataProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="152" y="236"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="org.csstudio.opibuilder.properties.StringTableProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/StringTableProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="146" y="302"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <interface id="8" language="java" name="org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/IWidgetPropertyChangeHandler.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="169" y="55"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </interface>  
+  <class id="9" language="java" name="org.csstudio.opibuilder.properties.StringListProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/StringListProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="142" y="268"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="org.csstudio.opibuilder.properties.IntegerProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/IntegerProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="134" y="370"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="org.csstudio.opibuilder.properties.MatrixProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/MatrixProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="132" y="397"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="org.csstudio.opibuilder.properties.ComboProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/ComboProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="134" y="170"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="org.csstudio.opibuilder.properties.AbstractWidgetProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/AbstractWidgetProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="428" y="122"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="org.csstudio.opibuilder.properties.UnsavableListProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/UnsavableListProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="616" y="309"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="15" language="java" name="org.csstudio.opibuilder.properties.StringProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/StringProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="639" y="378"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="16" language="java" name="org.csstudio.opibuilder.properties.PointListProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/PointListProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="631" y="247"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="17" language="java" name="org.csstudio.opibuilder.properties.PVNameProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/PVNameProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="497" y="380"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="18" language="java" name="org.csstudio.opibuilder.properties.FontProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/FontProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="644" y="216"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="19" language="java" name="org.csstudio.opibuilder.properties.PVValueProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/PVValueProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="633" y="345"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="20" language="java" name="org.csstudio.opibuilder.properties.MacrosProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/MacrosProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="136" y="427"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="21" language="java" name="org.csstudio.opibuilder.properties.ScriptProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/ScriptProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="639" y="187"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="22" language="java" name="org.csstudio.opibuilder.properties.UnchangableStringProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/UnchangableStringProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="639" y="442"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="23" language="java" name="org.csstudio.opibuilder.properties.RulesProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/RulesProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="640" y="151"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <interface id="24" language="java" name="org.csstudio.opibuilder.properties.WidgetPropertyCategory" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/WidgetPropertyCategory.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="628" y="55"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </interface>  
+  <class id="25" language="java" name="org.csstudio.opibuilder.properties.BooleanProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/BooleanProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="633" y="277"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="26" language="java" name="org.csstudio.opibuilder.properties.VersionProperty" 
+    project="org.csstudio.opibuilder" 
+    file="/org.csstudio.opibuilder/src/org/csstudio/opibuilder/properties/VersionProperty.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="639" y="497"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="27" language="java" name="org.eclipse.ui.views.properties.PropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="C:/Users/5hz/work/java/Eclispe/eclipse-rcp-indigo-SR2/plugins/org.eclipse.ui.views_3.6.0.v20110928-1505.jar" 
+    binary="true" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="872" y="123"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="28" language="java" name="org.csstudio.opibuilder.properties.support.BooleanPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/BooleanPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1049" y="78"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="29" language="java" name="org.eclipse.ui.views.properties.ColorPropertyDescriptor" 
+    project="org.csstudio.diag.probe" 
+    file="C:/Users/5hz/work/java/Eclispe/eclipse-rcp-indigo-SR2/plugins/org.eclipse.ui.views_3.6.0.v20110928-1505.jar" 
+    binary="true" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1041" y="111"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="30" language="java" name="org.eclipse.ui.views.properties.TextPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="C:/Users/5hz/work/java/Eclispe/eclipse-rcp-indigo-SR2/plugins/org.eclipse.ui.views_3.6.0.v20110928-1505.jar" 
+    binary="true" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1038" y="190"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="31" language="java" name="org.csstudio.opibuilder.properties.support.DoublePropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/DoublePropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1197" y="488"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="32" language="java" name="org.csstudio.opibuilder.properties.support.ComplexDataPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/ComplexDataPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1181" y="254"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="33" language="java" name="org.csstudio.opibuilder.properties.support.FilePathPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/FilePathPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1194" y="453"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="34" language="java" name="org.csstudio.opibuilder.properties.support.ActionsPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/ActionsPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1198" y="289"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="35" language="java" name="org.csstudio.opibuilder.properties.support.MultiLineTextPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/MultiLineTextPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="923" y="422"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="36" language="java" name="org.csstudio.opibuilder.properties.support.PVNamePropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/PVNamePropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1195" y="315"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="37" language="java" name="org.csstudio.opibuilder.properties.support.MacrosPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/MacrosPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1198" y="356"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="38" language="java" name="org.csstudio.opibuilder.properties.support.OPIColorPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/OPIColorPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1051" y="150"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="39" language="java" name="org.csstudio.opibuilder.properties.support.IntegerPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/IntegerPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1199" y="383"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="40" language="java" name="org.csstudio.opibuilder.properties.support.StringListPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/StringListPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="913" y="466"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="41" language="java" name="org.csstudio.opibuilder.properties.support.ScriptPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/ScriptPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="902" y="302"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="42" language="java" name="org.csstudio.opibuilder.properties.support.PointlistPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/PointlistPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="908" y="378"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="43" language="java" name="org.csstudio.opibuilder.properties.support.StringTablePropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/StringTablePropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="917" y="273"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="44" language="java" name="org.csstudio.opibuilder.properties.support.RulesPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/RulesPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1200" y="415"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="45" language="java" name="org.csstudio.opibuilder.properties.support.OPIFontPropertyDescriptor" 
+    project="org.csstudio.opibuilder.editor" 
+    file="/org.csstudio.opibuilder.editor/src/org/csstudio/opibuilder/properties/support/OPIFontPropertyDescriptor.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="907" y="339"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <generalization id="46">    
+    <end type="SOURCE" refId="23"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="47">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="48">    
+    <end type="SOURCE" refId="19"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="49">    
+    <end type="SOURCE" refId="36"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="50">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="51">    
+    <end type="SOURCE" refId="34"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="52">    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="53">    
+    <end type="SOURCE" refId="16"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="54">    
+    <end type="SOURCE" refId="44"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <association id="55">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="56" name="handlers"/>      
+      <multiplicity id="57" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="58">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="59" name="category"/>      
+      <multiplicity id="60" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="24" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="61">    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="62">    
+    <end type="SOURCE" refId="29"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="63">    
+    <end type="SOURCE" refId="32"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="64">    
+    <end type="SOURCE" refId="22"/>    
+    <end type="TARGET" refId="15"/>  
+  </generalization>  
+  <generalization id="65">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="66">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="67">    
+    <end type="SOURCE" refId="40"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="68">    
+    <end type="SOURCE" refId="42"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="69">    
+    <end type="SOURCE" refId="35"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="70">    
+    <end type="SOURCE" refId="31"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="71">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="72">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="73">    
+    <end type="SOURCE" refId="21"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <association id="74">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="75" name="propertyDescriptor"/>      
+      <multiplicity id="76" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="27" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="77">    
+    <end type="SOURCE" refId="33"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="78">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="79">    
+    <end type="SOURCE" refId="26"/>    
+    <end type="TARGET" refId="22"/>  
+  </generalization>  
+  <generalization id="80">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <association id="81">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="82" name="widgetProperty"/>      
+      <multiplicity id="83" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="84">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="85">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="86">    
+    <end type="SOURCE" refId="30"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="87">    
+    <end type="SOURCE" refId="28"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="88">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="89">    
+    <end type="SOURCE" refId="37"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="90">    
+    <end type="SOURCE" refId="38"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="91">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="15"/>  
+  </generalization>  
+  <generalization id="92">    
+    <end type="SOURCE" refId="45"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="93">    
+    <end type="SOURCE" refId="20"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="94">    
+    <end type="SOURCE" refId="39"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <generalization id="95">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="96">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="13"/>  
+  </generalization>  
+  <generalization id="97">    
+    <end type="SOURCE" refId="41"/>    
+    <end type="TARGET" refId="30"/>  
+  </generalization>  
+  <classifier-display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false" static="false"/>    
+    <operations public="false" package="false" protected="false" private="false" static="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

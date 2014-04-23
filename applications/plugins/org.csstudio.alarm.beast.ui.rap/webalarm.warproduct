@@ -19,6 +19,8 @@
       <plugin id="org.csstudio.alarm.beast.ui.rap" fragment="true"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
+      <plugin id="org.csstudio.autocomplete"/>
+      <plugin id="org.csstudio.autocomplete.ui"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
@@ -35,6 +37,7 @@
       <plugin id="org.csstudio.security"/>
       <plugin id="org.csstudio.security.ui"/>
       <plugin id="org.csstudio.utility.singlesource"/>
+      <plugin id="org.csstudio.utility.singlesource.rap"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -97,6 +100,8 @@
       <plugin id="org.csstudio.alarm.beast.ui.globaltable" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.apputil" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.apputil.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.email.ui" autoStart="true" startLevel="0" />
@@ -113,6 +118,7 @@
       <plugin id="org.csstudio.security" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.security.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.contenttype" autoStart="true" startLevel="0" />
@@ -134,7 +140,6 @@
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.security" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.servletbridge" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.equinox.servletbridge.extensionbundle" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jdt.junit.runtime" autoStart="true" startLevel="0" />

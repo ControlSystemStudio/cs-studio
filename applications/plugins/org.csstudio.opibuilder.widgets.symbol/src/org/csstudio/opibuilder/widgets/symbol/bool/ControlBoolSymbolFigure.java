@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -65,7 +65,10 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 
 	private ExecutionMode executionMode;
 	private Cursor cursor;
-
+	
+	private Color foregroundColor;
+	private boolean useForegroundColor = false;
+	
 	/* ************************* */
 	/* Specific code for control */
 	/* ************************* */
@@ -232,7 +235,8 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 				this.onImagePath = onImagePath;
 			}
 		}
-		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
+		if (imagePath.getFileExtension() != null
+				&& "svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
 			workingWithSVG = true;
 		} else {
 			workingWithSVG = false;
@@ -526,11 +530,19 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 			}
 			return;
 		}
-		getOnImage().setCurrentColor(onColor);
-		getOffImage().setCurrentColor(offColor);
+		Color currentcolor = null;
+		if (useForegroundColor) currentcolor = getForegroundColor();
+		else currentcolor = booleanValue ? onColor : offColor;
+		getCurrentImage().setCurrentColor(currentcolor);
 		getCurrentImage().setBounds(bounds);
 		getCurrentImage().setBorder(getBorder());
+		getCurrentImage().setAbsoluteScale(gfx.getAbsoluteScale());
 		getCurrentImage().paintFigure(gfx);
+		if (!isEnabled()) {
+			gfx.setAlpha(DISABLED_ALPHA);
+			gfx.setBackgroundColor(DISABLE_COLOR);
+			gfx.fillRectangle(bounds);
+		}
 	}
 
 	/**
@@ -564,6 +576,22 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 		} else {
 			this.offColor = offColor;
 		}
+		repaint();
+	}
+
+	public void setUseForegroundColor(boolean useForegroundColor) {
+		this.useForegroundColor = useForegroundColor;
+		repaint();
+	}
+
+	@Override
+	public Color getForegroundColor() {
+		return foregroundColor;
+	}
+
+	@Override
+	public void setForegroundColor(Color foregroundColor) {
+		this.foregroundColor = foregroundColor;
 		repaint();
 	}
 

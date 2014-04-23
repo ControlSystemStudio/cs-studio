@@ -111,7 +111,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         // So default is bad. 100 or 1000 are good.
         // Bigger numbers don't help much in repeated tests, but
         // just to be on the safe side, use a bigger number.
-        sel_samples.setFetchSize(100000);
+        sel_samples.setFetchSize(Preferences.getFetchSize());
 
         reader.addForCancellation(sel_samples);
         sel_samples.setInt(1, channel_id);
@@ -120,7 +120,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         result_set = sel_samples.executeQuery();
         // Get first sample
         if (result_set.next())
-            value = decodeSampleTableValue(result_set);
+            value = decodeSampleTableValue(result_set, true);
         // else leave value null to indicate end of samples
     }
 
@@ -146,7 +146,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         try
         {
             if (result_set.next())
-                value = decodeSampleTableValue(result_set);
+                value = decodeSampleTableValue(result_set, true);
             else
                 close();
         }

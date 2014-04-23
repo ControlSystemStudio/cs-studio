@@ -42,10 +42,16 @@ public class Application implements IApplication
     @Override
     public Object start(IApplicationContext context) throws Exception
     {
+    	// Display configuration info
+        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String app_info = context.getBrandingName() + " " + version;
+    	
         // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
         final ArgParser parser = new ArgParser();
+        final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+        final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
         final StringOption url = new StringOption(parser,
                 "-url", "tcp:...", "JMS Server URL (default: " + DEFAULT_URL + ")", DEFAULT_URL);
         final StringOption jms_user = new StringOption(parser,
@@ -67,10 +73,7 @@ public class Application implements IApplication
          */
         final BooleanOption edm_mode = new BooleanOption(parser,
               "-edm_mode", "Parse EDM 'write' log formatted input");
-        final BooleanOption help = new BooleanOption(parser,
-                "-h", "Help");
 
-        final String app_info = context.getBrandingName() + " " + context.getBrandingBundle().getVersion().toString();
         try
         {
             parser.parse(args);
@@ -82,10 +85,14 @@ public class Application implements IApplication
             return IApplication.EXIT_OK;
         }
 
-        if (help.get())
+        if (help_opt.get())
+        {
+            System.out.println(app_info + "\n\n" + parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        if (version_opt.get())
         {
             System.out.println(app_info);
-            System.out.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
 

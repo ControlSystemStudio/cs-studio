@@ -9,9 +9,9 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.channel.widgets.AbstractChannelQueryResultWidget;
 import org.csstudio.channel.widgets.ChannelQueryInputBar;
-import org.csstudio.channel.widgets.ConfigurableWidget;
-import org.csstudio.channel.widgets.PopupMenuUtil;
+import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

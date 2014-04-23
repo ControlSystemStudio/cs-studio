@@ -25,14 +25,15 @@ public class AnnunciatorFactory
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null)
-            return new FreeTTS_JSAPI_Annunciator();
+            return new FreeTTS_JSAPI_Annunciator("kevin");
         
         final String type = prefs.getString(Plugin.ID, "annunciator", "JSAPI", null);
-        
+        final String voice = prefs.getString(Plugin.ID, "voice", "kevin", null);
+
         if ("JSAPI".equalsIgnoreCase(type))
-            return new FreeTTS_JSAPI_Annunciator();
+            return new FreeTTS_JSAPI_Annunciator(voice);
         if ("FreeTTS".equalsIgnoreCase(type))
-            return new FreeTTSAnnunciator();
+            return new FreeTTSAnnunciator(voice);
         if ("UDP".equalsIgnoreCase(type))
         {
         	final String host = prefs.getString(Plugin.ID, "host", "", null);

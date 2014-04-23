@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.CheckBoxModel;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.AbstractBoolFigure.TotalBits;
 import org.csstudio.swt.widgets.figures.CheckBoxFigure;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.IFigure;
@@ -23,6 +23,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.widgets.Display;
+import org.epics.vtype.VType;
 
 /**The editpart of a checkbox.
  * @author Xihui Chen
@@ -85,7 +86,20 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 				if(newValue == null)
 					return false;
 				CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
-				figure.setValue(ValueUtil.getDouble((IValue)newValue));
+
+				switch (VTypeHelper.getBasicDataType((VType) newValue)) {
+				case SHORT:
+					figure.setTotalBits(TotalBits.BITS_16);
+					break;
+				case INT:
+				case ENUM:
+					figure.setTotalBits(TotalBits.BITS_32);
+					break;
+				default:
+					break;
+				}				
+				
+				figure.setValue(VTypeHelper.getDouble((VType)newValue));
 				return true;
 			}
 		};

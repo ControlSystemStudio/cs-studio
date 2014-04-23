@@ -8,7 +8,9 @@
  <body>
 <h1>BOY Changelog</h1>
 <ul>
-<li><a href="#nextversion">Next Version</a></li>
+<li><a href="#3.3.0">Version 3.3.0</a></li>
+<li><a href="#3.2.10">Version 3.2.10</a></li>
+<li><a href="#3.2.9">Version 3.2.9</a></li>
 <li><a href="#3.1.4">Version 3.1.4</a></li>
 <li><a href="#3.1.3">Version 3.1.3</a></li>
 <li><a href="#3.1.2">Version 3.1.2</a></li>
@@ -19,26 +21,95 @@
 <li><a href="#1.0.6">Version 1.0.6</a></li>
 </ul>
 
-<A NAME="nextversion"></A>
-<h2>Next Version</h2>
+<A NAME="3.3.0"></A>
+<h2>Version 3.3.0</h2>
 <ul>
-    <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV connection layer.
+	<li>Graphics Image Widget now handles SVG images</li>
+	<li>Symbol widgets now handle 'ForeColor Alarm Sensitive' property</li>
+	<li>Symbol widgets have a new preference that specifies which is the color code to replace by the On/Off color</li>
+	<li><a href="../../org.csstudio.opibuilder.converter/html/Getting_Started.html">EDM2OPI converter </a>has been finished to be able to convert 95% of EDM features to BOY. 
+	(Some of the widgets conversion was contributed by <a href="http://english.ihep.cas.cn/">IHEP</a>)
+	<p>  <a href="../../org.csstudio.opibuilder.converter/html/img/EDM2BOYDemo.png"><img src ="img/edm2boy_small.png" alt="EDM2OPI converter example"> </a></p></li>
+	
+	<li>Add <code>$(opi.dir)</code> macros to "Execute Command" widget action.
+	<code>$(opi.dir)</code> points to the directory of the OPI file on the OS file system. 
+	</li>
+</ul>
+
+
+
+<A NAME="3.2.10"></A>
+<h2>Version 3.2.10</h2>
+<ul>
+	<li>Support checkbox, dropdown and customzied cell editor in table widget.
+	 <p>  <img src ="img/Table_CellEditor.png">  </p>
+	</li>
+</ul>
+
+<A NAME="3.2.9"></A>
+<h2>Version 3.2.9</h2>
+<ul>
+ <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV connection layer.
     It can be set from <code>Preferences->CSS Applications->Display->BOY->OPI Runtime->PV Connection Layer</code>.
-    PVManager has lots of advantages such as better performance on array type of PV, maximum updating rate throttling, formula support and so on.
-    With PVManager, there are few differences with Utility PV on local and simulation PV syntax:
+    PVManager has lots of advantages such as better performance on array type of PV, update rate throttling, formula support and so on.
+    With PVManager, there are some differences with Utility PV on local and simulated PV:
     <ul>
+    	<li>The default initial value of local pv such as <code>loc://fred</code> is null.
+    	 To give an initial value such as 0 to the local pv, the syntax is <code>loc://fred(0)</code>.
+    	<b><font color="red">Note: this difference may break your existing OPIs that used uninitialized local PV!!!</font></b>
+    	</li> 
+       <li>Constant PV such as <code>1</code> or <code>"fred"</code> must be prefixed with <code>=</code>. For example, <code>=1</code> and <code>="fred"</code>.</li>
        <li><code>const://...</code> is not supported, please use <code>sim://const(...)</code>instead</li>
        <li>Initial string value should be enclosed in quotes. For example: <code>loc://myPV("Hello, World!")</code> </li>
        <li>Noise simulation pv only accepts three parameters: <code>sim://noise(minValue, maxValue, timeStep)</code>.</li>
        <li>Arbitrary name noise simulation PV is not supported, for example: <code>sim://sfdsdf, sim://noise2</code> are not supported</li>       
     </ul> 
+    In most cases, BOY will automatically convert existing local PV names to new syntax for old OPIs except the PV names embedded in scripts. 
     For more syntax details, please see <code>CSS online help -> CSS Core -> Process Variables</code>.  
-    Because this is the first version of BOY that supports PVManager, the default PV connection layer is still Utility PV, but it
-    is highly encouraged to switch to PVManager to test all your existing OPIs. 
-    If your existing OPI doesn't work correctly with PVManager, you can switch back to use Utility PV and most importantly, 
-<a href="mailto:chenx1@ornl.gov">report the issue to me</a>. <code>BOY Examples</code> has been updated to meet the local pv syntax of PVManager,
-please reinstall it also. 
+   
     </li>
+    <li>
+    	Use <code>org.epics.vtype</code> value inside BOY instead of <code>org.csstudio.data.values.IValue</code>. 
+    	<b><font color="red">Note: this change may break your customized widgets if the widgets have code handling IValue!</font></b>
+    	See <a href=https://groups.google.com/d/msg/css-boy/ntuGAtbDCbE/qfjZvQURS-AJ>here</a> for more details.
+    	
+    </li>
+    <li>Cache files from remote URL on local disk for two minutes to speed up the repeat loading of same file.</li>
+    <li>Automatically scale font size to make text size fit the size of text widgets (Label, Text Update and Text Input).
+    Note that this function doesn't work for "wrap words" Label and native Text Input.
+    </li>
+    <li>Add <code>Top Files</code> sub menu to file menu to open top OPIs and other files.</li>    
+    <li>Add <code>OPI Editor Perspective</code> context menu entry to OPI editor to open/reset OPI Editor Perspective</li>
+    <li>Add <code>OPI Runtime Perspective</code> context menu entry to OPI Runtime to open/reset OPI Runtime Perspective</li>
+    <li>Add <code>Open Navigator</code> context menu entry to OPI Runtime to open Navigator View.</li>
+       
+    <li>Shows null value border if one of the PVs on the widget has null value.
+    If the null value PV is the main PV of the widget, the value displayed in the widget is meaningless.
+     <p>  <img src ="img/nullValueBorder.png">  </p>
+     </li>
+     <li>Spinner widget: up/down and page up/page down buttons increase/decrease the value for a set step/page in the text editor.</li>
+	<li>Spinner widget: option for horizontal arrow buttons layout added.
+	<p><img src="img/SpinnerHorizontalButtons.png"></p>
+	</li>
+	<li>XY Graph widget: added getXBuffer and getYBuffer functions that can be used in scripts to retrive current axis values from the buffer.</li> 
+	<li>Allows to use script from opi search path.</li>
+    <li>Shows index of PVs in Attach Script dialog for better scripting. The shown index corresponds to the index of "pvs" array in the script.
+    <p><img src="img/InputPVs_with_Index.png"></p>
+    </li>
+    <li>Tank, Progress Bar, Thermometer supports "FillColor Alarm Sensitive" property.</li>
+    <li>Spinner gains focus when the users click its text box so that users can change the value with up/down keys.</li>
+    <li>Byte Monitor supports "Labels" property to describe the meaning of each bit.
+    <p><img src="img/ByteMonitorLabels.png"></p>
+    </li>
+    <li>Rotated text in Text Update can be properly aligned inside the box.
+    <p><img src="img/ALignedRotatedText.png"></p>
+    </li>
+	<li>Support PV Name auto-complete. By default, it only supports history inputs, but a site may implement 
+	its own PV name provider. For more details, please see <code>CSS online help->CSS Core->Auto-Complete</code>  
+	(Primarily contributed by ITER).
+	<p><img src="img/autocomplete.png"></p>
+	
+	</li>    
     
     <li>Add authentication support to WebOPI so that you can protect the whole site or only OPIs in a particular directory with password.
     You can provide user name and password either from preference file, LDAP server or Kerberos. 
@@ -156,7 +227,7 @@ If the message is not empty, a confirm dialog will pop up before writing the new
 
 <h2>Version 3.1.1 (2012-07-18)</h2>
 <ul>
-<li>Add Native <a href="widgets/NativeButton.html">Button<a>, <a href="widgets/NativeText.html">Text</a> widgets. 
+<li>Add Native <a href="widgets/NativeButton.html">Button</a>, <a href="widgets/NativeText.html">Text</a> widgets. 
 Native widgets will have significantly better performance in WebOPI. 
 They also support Tab key traversing.
 The native text widget can be used as either label, text update or text input. 

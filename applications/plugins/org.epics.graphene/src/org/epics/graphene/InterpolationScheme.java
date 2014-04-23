@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -9,5 +9,5 @@ package org.epics.graphene;
  * @author carcassi
  */
 public enum InterpolationScheme {
-    NONE, NEAREST_NEIGHBOUR, LINEAR, CUBIC;
+    NONE, NEAREST_NEIGHBOUR, PREVIOUS_VALUE, LINEAR, CUBIC;
 }

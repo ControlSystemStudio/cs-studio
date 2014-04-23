@@ -158,7 +158,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 			
 			public void run() {
 //				final Control swtWidget = getSWTWidget();
-				if (swtWidget == null || swtWidget.isDisposed()) {
+				if (swtWidget == null || swtWidget.isDisposed() || !editpart.isActive()) {
 					return;
 //					throw new RuntimeException("getSWTWidget() is null or disposed!");
 				}
@@ -385,7 +385,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 				new WidgetIgnorableUITask(this, new Runnable() {
 
 					public void run() {
-						if(!getSWTWidget().isDisposed())
+						if(!getSWTWidget().isDisposed() && getParent() != null)
 							doRelocateWidget();
 					}
 				}, composite.getDisplay()));
@@ -509,11 +509,9 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 				}
 			};
 		}
-//		UIBundlingThread.getInstance().addRunnable(composite.getDisplay(), task);
-		if (composite.getDisplay().getThread() == Thread.currentThread()) {
-			task.run();
-		} else
-			composite.getDisplay().asyncExec(task);
+		//On windows, dispose the widget right away will cause a redraw which may redraw some widgets that
+		//have been deactivated, so this should be called in next UI event.
+		composite.getDisplay().asyncExec(task);
 	}
 
 }

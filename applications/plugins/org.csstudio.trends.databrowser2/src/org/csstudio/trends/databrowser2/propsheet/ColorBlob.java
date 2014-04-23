@@ -63,6 +63,10 @@ public class ColorBlob extends Canvas implements PaintListener, DisposeListener
 		color = new Color(getDisplay(), rgb);
 		redraw();
 	}
+	
+	public RGB getColor() {
+		return color.getRGB();
+	}
 
 	/** @see DisposeListener */
 	@Override

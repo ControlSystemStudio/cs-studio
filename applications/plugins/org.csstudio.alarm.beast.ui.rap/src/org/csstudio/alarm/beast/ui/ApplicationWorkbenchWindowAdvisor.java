@@ -1,5 +1,9 @@
 package org.csstudio.alarm.beast.ui;
 
+import java.util.logging.Level;
+
+import org.csstudio.alarm.beast.Preferences;
+import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -32,6 +36,19 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setTitle("Web Alarm");
 
 		configurer.setShellStyle(SWT.NO_TRIM);
+
+		String treeRoot = null;
+		try {
+			// Forec reload to handle new alarm tree
+			AlarmClientModel.getInstance().readConfig(null);
+			
+			// Force reload default tree root
+			treeRoot = Preferences.getAlarmTreeRoot();
+			AlarmClientModel.getInstance().setConfigurationName(treeRoot, null);
+		} catch (Exception e) {
+			Activator.getLogger().log(Level.SEVERE,
+					"Unable to reload alarm configuration : " + treeRoot, e);
+		}
 	}
 
 }

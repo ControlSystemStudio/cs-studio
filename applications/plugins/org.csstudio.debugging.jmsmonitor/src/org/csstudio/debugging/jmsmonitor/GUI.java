@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /** JMS monitor GUI
  *  @author Kay Kasemir
@@ -58,7 +59,7 @@ public class GUI implements ModelListener
      *  @param password JMS password or <code>null</code>
      *  @param parent Parent widget
      */
-    public GUI(final String url, final String user, final String password,
+    public GUI(IWorkbenchPartSite site, final String url, final String user, final String password,
                final Composite parent)
     {
         this.url = url;
@@ -95,6 +96,11 @@ public class GUI implements ModelListener
 					model.close();
 			}
         });
+
+        // Publish the current selection to the site
+        // (to allow context menu extensions based on the selection)
+        if (site != null)
+        	site.setSelectionProvider(table_viewer);
     }
 
     /** Create the GUI elements
@@ -267,6 +273,7 @@ public class GUI implements ModelListener
                     return;
                 server_name.setText(model.getServerName());
                 table_viewer.setInput(model.getMessages());
+                table_viewer.refresh();
             }
         });
     }

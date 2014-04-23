@@ -1,10 +1,9 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -16,29 +15,12 @@ import org.epics.util.array.IteratorNumber;
  * @author carcassi
  */
 public class Iterators {
-    public static IteratorDouble arrayIterator(final double[] data, final int startOffset, final int endOffset) {
-        return new IteratorDouble() {
-            
-            int index = startOffset;
-
-            @Override
-            public boolean hasNext() {
-                return index != endOffset;
-            }
-
-            @Override
-            public double nextDouble() {
-                if (!hasNext())
-                    throw new NoSuchElementException();
-                double value = data[index];
-                index++;
-                if (index == data.length)
-                    index = 0;
-                return value;
-            }
-        };
-    }
     
+    /**
+     *Creates a pointer for the given data at index 0.
+     * @param data double[]
+     * @return IteratorDouble, pointer to the data at index 0.
+     */
     public static IteratorDouble arrayIterator(final double[] data) {
         return new IteratorDouble() {
             
@@ -51,6 +33,8 @@ public class Iterators {
 
             @Override
             public double nextDouble() {
+                if (!hasNext())
+                    throw new NoSuchElementException();
                 double value = data[index];
                 index++;
                 return value;
@@ -58,6 +42,11 @@ public class Iterators {
         };
     }
     
+    /**
+     *Takes a list of IteratorDoubles and combines them into one IteratorDouble.
+     * @param iterators
+     * @return IteratorDouble
+     */
     public static IteratorDouble combine(final Collection<IteratorNumber> iterators) {
         return new IteratorDouble() {
             

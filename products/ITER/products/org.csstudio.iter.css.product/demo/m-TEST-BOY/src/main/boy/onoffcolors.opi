@@ -483,7 +483,7 @@ $(pv_value)</tooltip>
               <color name="Minor" red="255" green="255" blue="0" />
             </value>
           </exp>
-          <pv trig="true">loc://oncolor</pv>
+          <pv trig="true">loc://oncolor(0)</pv>
         </rule>
         <rule name="OffColor" prop_id="off_color" out_exp="false">
           <exp bool_exp="pvStr0==&quot;Grey&quot;">
@@ -501,7 +501,7 @@ $(pv_value)</tooltip>
               <color name="IO Trace 3" red="119" green="147" blue="60" />
             </value>
           </exp>
-          <pv trig="true">loc://offcolor</pv>
+          <pv trig="true">loc://offcolor(0)</pv>
         </rule>
       </rules>
       <degree>0</degree>
@@ -674,7 +674,7 @@ $(pv_value)</tooltip>
               <color name="Minor" red="255" green="255" blue="0" />
             </value>
           </exp>
-          <pv trig="true">loc://oncolor</pv>
+          <pv trig="true">loc://oncolor(0)</pv>
         </rule>
         <rule name="OffColor" prop_id="off_color" out_exp="false">
           <exp bool_exp="pvStr0==&quot;Grey&quot;">
@@ -692,7 +692,7 @@ $(pv_value)</tooltip>
               <color name="IO Trace 3" red="119" green="147" blue="60" />
             </value>
           </exp>
-          <pv trig="true">loc://offcolor</pv>
+          <pv trig="true">loc://offcolor(0)</pv>
         </rule>
       </rules>
       <degree>0</degree>
@@ -1025,7 +1025,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://bool(1)</pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -1050,7 +1050,7 @@ $(pv_value)</tooltip>
               <color name="Minor" red="255" green="255" blue="0" />
             </value>
           </exp>
-          <pv trig="true">loc://oncolor</pv>
+          <pv trig="true">loc://oncolor(0)</pv>
         </rule>
         <rule name="OffColor" prop_id="off_color" out_exp="false">
           <exp bool_exp="pvStr0==&quot;Grey&quot;">
@@ -1068,7 +1068,7 @@ $(pv_value)</tooltip>
               <color name="IO Trace 3" red="119" green="147" blue="60" />
             </value>
           </exp>
-          <pv trig="true">loc://offcolor</pv>
+          <pv trig="true">loc://offcolor(0)</pv>
         </rule>
       </rules>
       <show_confirm_dialog>1</show_confirm_dialog>
@@ -1140,7 +1140,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://bool</pv_name>
+      <pv_name>loc://bool(1)</pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -1165,7 +1165,7 @@ $(pv_value)</tooltip>
               <color name="Minor" red="255" green="255" blue="0" />
             </value>
           </exp>
-          <pv trig="true">loc://oncolor</pv>
+          <pv trig="true">loc://oncolor(0)</pv>
         </rule>
         <rule name="OffColor" prop_id="off_color" out_exp="false">
           <exp bool_exp="pvStr0==&quot;Grey&quot;">
@@ -1183,7 +1183,7 @@ $(pv_value)</tooltip>
               <color name="IO Trace 3" red="119" green="147" blue="60" />
             </value>
           </exp>
-          <pv trig="true">loc://offcolor</pv>
+          <pv trig="true">loc://offcolor(0)</pv>
         </rule>
       </rules>
       <show_confirm_dialog>1</show_confirm_dialog>
@@ -1499,7 +1499,7 @@ $(pv_value)</tooltip>
               <color name="Minor" red="255" green="255" blue="0" />
             </value>
           </exp>
-          <pv trig="true">loc://oncolor</pv>
+          <pv trig="true">loc://oncolor(0)</pv>
         </rule>
         <rule name="OffColor" prop_id="off_color" out_exp="false">
           <exp bool_exp="pvStr0==&quot;Grey&quot;">
@@ -1517,7 +1517,7 @@ $(pv_value)</tooltip>
               <color name="IO Trace 3" red="119" green="147" blue="60" />
             </value>
           </exp>
-          <pv trig="true">loc://offcolor</pv>
+          <pv trig="true">loc://offcolor(0)</pv>
         </rule>
       </rules>
       <show_confirm_dialog>false</show_confirm_dialog>
@@ -1610,7 +1610,7 @@ $(pv_value)</tooltip>
               <color name="Minor" red="255" green="255" blue="0" />
             </value>
           </exp>
-          <pv trig="true">loc://oncolor</pv>
+          <pv trig="true">loc://oncolor(0)</pv>
         </rule>
         <rule name="OffColor" prop_id="off_color" out_exp="false">
           <exp bool_exp="pvStr0==&quot;Grey&quot;">
@@ -1628,7 +1628,7 @@ $(pv_value)</tooltip>
               <color name="IO Trace 3" red="119" green="147" blue="60" />
             </value>
           </exp>
-          <pv trig="true">loc://offcolor</pv>
+          <pv trig="true">loc://offcolor(0)</pv>
         </rule>
       </rules>
       <show_confirm_dialog>false</show_confirm_dialog>
@@ -1858,7 +1858,7 @@ $(pv_value)</tooltip>
               <color name="Minor" red="255" green="255" blue="0" />
             </value>
           </exp>
-          <pv trig="true">loc://oncolor</pv>
+          <pv trig="true">loc://oncolor(0)</pv>
         </rule>
         <rule name="OffColor" prop_id="off_color" out_exp="false">
           <exp bool_exp="pvStr0==&quot;Grey&quot;">
@@ -1876,7 +1876,7 @@ $(pv_value)</tooltip>
               <color name="IO Trace 3" red="119" green="147" blue="60" />
             </value>
           </exp>
-          <pv trig="true">loc://offcolor</pv>
+          <pv trig="true">loc://offcolor(0)</pv>
         </rule>
       </rules>
       <pv_value />
@@ -2088,7 +2088,7 @@ $(pv_value)</tooltip>
               <color name="Minor" red="255" green="255" blue="0" />
             </value>
           </exp>
-          <pv trig="true">loc://oncolor</pv>
+          <pv trig="true">loc://oncolor(0)</pv>
         </rule>
         <rule name="OffColor" prop_id="off_color" out_exp="false">
           <exp bool_exp="pvStr0==&quot;Grey&quot;">
@@ -2106,7 +2106,7 @@ $(pv_value)</tooltip>
               <color name="IO Trace 3" red="119" green="147" blue="60" />
             </value>
           </exp>
-          <pv trig="true">loc://offcolor</pv>
+          <pv trig="true">loc://offcolor(0)</pv>
         </rule>
       </rules>
       <pv_value />
@@ -2268,7 +2268,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://offcolor</pv_name>
+      <pv_name>loc://offcolor(0)</pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2362,7 +2362,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://oncolor</pv_name>
+      <pv_name>loc://oncolor(0)</pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>

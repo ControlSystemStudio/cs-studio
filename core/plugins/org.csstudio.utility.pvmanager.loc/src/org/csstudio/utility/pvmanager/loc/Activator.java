@@ -1,5 +1,7 @@
 package org.csstudio.utility.pvmanager.loc;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -26,5 +28,11 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
 	}
+	
+	public static final boolean isZeroInitialization() {
+	    final IPreferencesService prefs = Platform.getPreferencesService();
+	    return prefs.getBoolean("org.csstudio.utility.pvmanager.loc", "zero_initialization", false, null);
+	}
+
 
 }

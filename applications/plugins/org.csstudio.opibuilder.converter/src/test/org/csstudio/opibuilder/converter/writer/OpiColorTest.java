@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmException;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class OpiColorTest extends TestCase {
 	
@@ -28,8 +28,8 @@ public class OpiColorTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
-		new OpiColor(context, "color", c);
+		Context context = new Context(doc, parent, null, 0, 0);
+		new OpiColor(context, "color", c, null);
 		//XMLFileHandler.writeXML(doc);		
 		
 		XMLFileHandler.isColorElementEqual("", 255, 2, 1, 0, 0, 0, "color", parent);
@@ -46,8 +46,8 @@ public class OpiColorTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
-		new OpiColor(context, "color", c);
+		Context context = new Context(doc, parent, null, 0, 0);
+		new OpiColor(context, "color", c, null);
 		//XMLFileHandler.writeXML(doc);		
 		
 		XMLFileHandler.isColorElementEqual("blinking purple", 255, 2, 1, 0, 0, 0, "color", parent);

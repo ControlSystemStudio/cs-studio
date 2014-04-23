@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
@@ -31,14 +31,19 @@ public interface Array {
      * <p>
      * If a numeric array is actually needed, refer to {@link CollectionNumbers}.
      * 
-     * @return 
+     * @return the array data
      */
     Object getData();
 
     /**
+     * The shape of the multidimensional array.
+     * <p>
+     * The size of the returned list will be the number of the dimension of the array.
+     * Each number represents the size of each dimension. The total number
+     * of elements in the array is therefore the product of all the
+     * numbers in the list returned.     * 
      * 
-     * 
-     * @return 
+     * @return the dimension sizes
      */
     ListInt getSizes();
 }

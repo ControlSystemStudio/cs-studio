@@ -25,7 +25,10 @@ import org.eclipse.swt.graphics.RGB;
 public class ProgressBarModel extends AbstractMarkedWidgetModel{	
 	
 	/** The ID of the fill color property. */
-	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$	
+	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$
+	
+	/** The ID of the fillcolor alarm sensitive property. */
+	public static final String PROP_FILLCOLOR_ALARM_SENSITIVE = "fillcolor_alarm_sensitive"; //$NON-NLS-1$	
 	
 	/** The ID of the effect 3D property. */
 	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
@@ -71,7 +74,10 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 		super.configureProperties();		
 	
 		addProperty(new ColorProperty(PROP_FILL_COLOR, "Fill Color",
-				WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));	
+				WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
+		
+		addProperty(new BooleanProperty(PROP_FILLCOLOR_ALARM_SENSITIVE, "FillColor Alarm Sensitive", 
+				WidgetPropertyCategory.Display, false));	
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
 				WidgetPropertyCategory.Display, true));	
@@ -88,7 +94,7 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 		addProperty(new DoubleProperty(PROP_ORIGIN, "Origin", WidgetPropertyCategory.Behavior,
 				0));
 			
-		addProperty(new BooleanProperty(PROP_ORIGIN_IGNORED, "Origine Ignored", 
+		addProperty(new BooleanProperty(PROP_ORIGIN_IGNORED, "Origin Ignored", 
 				WidgetPropertyCategory.Behavior , true));
 		
 		addProperty(new BooleanProperty(PROP_INDICATOR_MODE, "Indicator Mode", 
@@ -109,7 +115,14 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 	 */
 	public Color getFillColor() {
 		return getSWTColorFromColorProperty(PROP_FILL_COLOR);
-	}	
+	}
+	
+	/**
+	 * @return true if the fill color is sensitive to alarm
+	 */
+	public boolean isFillColorAlarmSensitive() {
+		return (Boolean) getProperty(PROP_FILLCOLOR_ALARM_SENSITIVE).getPropertyValue();
+	}
 	
 	/**
 	 * @return true if the widget would be painted with 3D effect, false otherwise

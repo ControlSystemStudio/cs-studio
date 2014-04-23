@@ -1,10 +1,13 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.service;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,6 +25,16 @@ public class ServiceRegistry {
     
     public void registerService(Service service) {
         services.put(service.getName(), service);
+    }
+    
+    public void registerServices(ServiceFactory serviceFactory) {
+        for (Service service : serviceFactory.createServices()) {
+            registerService(service);
+        }
+    }
+    
+    public Set<String> listServices() {
+        return Collections.unmodifiableSet(new HashSet<>(services.keySet()));
     }
     
     public Service findService(String name) {

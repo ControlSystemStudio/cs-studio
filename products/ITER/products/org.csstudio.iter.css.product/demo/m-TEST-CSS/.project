@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>m-TEST-CSS</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>src/main/boy/SymbolLibrary</name>
+			<type>2</type>
+			<locationURI>CODAC_OPI/boy/SymbolLibrary</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>CODAC_OPI</name>
+			<value>file:/opt/codac/opi</value>
+		</variable>
+	</variableList>
+</projectDescription>

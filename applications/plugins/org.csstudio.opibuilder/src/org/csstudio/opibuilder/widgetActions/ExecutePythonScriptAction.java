@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgetActions;
 
+import java.io.InputStream;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -15,6 +16,7 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.script.JythonScriptStore;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
+import org.csstudio.opibuilder.script.PythonInterpreter;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
@@ -29,7 +31,6 @@ import org.eclipse.swt.widgets.Display;
 import org.python.core.PyCode;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
-import org.python.util.PythonInterpreter;
 
 /**The action executing python script.
  * @author Xihui Chen
@@ -114,8 +115,9 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 				if(isEmbedded())
 					code = interpreter.compile(getScriptText());
 				else{
-					code = interpreter.compile(getReader()); //$NON-NLS-1$
-					closeReader();
+					InputStream inputStream = getInputStream();
+					code = interpreter.compile(inputStream);
+					inputStream.close();
 				}
 			}
 

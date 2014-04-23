@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.config.rdb;
 
-import java.net.URISyntaxException;
-
 import org.csstudio.archive.config.EngineConfig;
 
 /** RDB implementation of EngineConfig
@@ -24,9 +22,9 @@ public class RDBEngineConfig extends EngineConfig
 	 *  @param name
 	 *  @param description
 	 *  @param url
-	 *  @throws URISyntaxException 
+	 *  @throws Exception if url is not a valid URL
 	 */
-	public RDBEngineConfig(final int id, final String name, final String description, final String url) throws URISyntaxException
+	public RDBEngineConfig(final int id, final String name, final String description, final String url) throws Exception
     {
 		super(name, description, url);
 		this.id = id;

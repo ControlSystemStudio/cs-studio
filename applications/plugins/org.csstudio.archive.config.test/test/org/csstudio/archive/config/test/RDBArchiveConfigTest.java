@@ -70,7 +70,7 @@ public class RDBArchiveConfigTest
     	
     	for (GroupConfig group : groups)
     	{
-    		final ChannelConfig[] channels = config.getChannels(group);
+    		final ChannelConfig[] channels = config.getChannels(group, false);
     		for (ChannelConfig channel : channels)
     			System.out.println(group.getName() + " - " + channel.getName() + " " + channel.getSampleMode() +
     					", last sample time: " + channel.getLastSampleTime());

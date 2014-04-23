@@ -233,8 +233,8 @@
       </importer>
    </extension>
    <extension point="org.eclipse.core.contenttype.contentTypes">
-   		<content-type
-   			base-type="org.eclipse.core.runtime.xml"
+        <content-type
+            base-type="org.eclipse.core.runtime.xml"
             file-extensions="plt,css-plt"
             id="org.csstudio.trends.databrowser2.content.plt"
             name="DataBrowser Plot Files"

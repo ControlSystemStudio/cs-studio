@@ -6,7 +6,7 @@ Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Bundle-Description: SWT plotting library
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.jface,
  org.eclipse.core.runtime,
  org.eclipse.ui,

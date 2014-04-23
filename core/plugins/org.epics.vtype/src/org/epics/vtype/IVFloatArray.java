@@ -1,9 +1,10 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
+import java.util.List;
 import org.epics.util.array.ListFloat;
 import org.epics.util.array.ListInt;
 
@@ -11,33 +12,24 @@ import org.epics.util.array.ListInt;
  *
  * @author carcassi
  */
-class IVFloatArray extends IVNumeric implements VFloatArray {
+class IVFloatArray extends IVNumberArray implements VFloatArray {
 
-    private final float[] array;
     private final ListFloat data;
-    private final ListInt sizes;
-
+    
     public IVFloatArray(ListFloat data, ListInt sizes,
             Alarm alarm, Time time, Display display) {
-        super(alarm, time, display);
-        this.array = null;
-        this.sizes = sizes;
-        this.data = data;
+        this(data, sizes, null, alarm, time, display);
     }
 
-    @Override
-    public ListInt getSizes() {
-        return sizes;
+    public IVFloatArray(ListFloat data, ListInt sizes, List<ArrayDimensionDisplay> dimDisplay,
+            Alarm alarm, Time time, Display display) {
+        super(sizes, dimDisplay, alarm, time, display);
+        this.data = data;
     }
 
     @Override
     public ListFloat getData() {
         return data;
-    }
-
-    @Override
-    public String toString() {
-        return VTypeToString.toString(this);
     }
 
 }

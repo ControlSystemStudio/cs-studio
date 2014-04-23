@@ -127,7 +127,7 @@
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA0</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA0</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -199,7 +199,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA1</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA1</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -271,7 +271,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA2</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA2</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -343,7 +343,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA3</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA3</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -415,7 +415,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA4</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA4</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -487,7 +487,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA5</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA5</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -559,7 +559,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA6</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA6</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -631,7 +631,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA7</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA7</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -703,7 +703,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA8</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA8</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -775,7 +775,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA9</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA9</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -847,7 +847,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA10</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA10</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -919,7 +919,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA11</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA11</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -991,7 +991,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA12</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA12</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1063,7 +1063,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA13</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA13</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1135,7 +1135,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA14</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA14</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1207,7 +1207,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA15</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA15</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1279,7 +1279,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA16</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA16</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1351,7 +1351,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA17</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA17</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1423,7 +1423,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA18</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA18</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1495,7 +1495,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA19</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA19</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1567,7 +1567,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA20</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA20</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1639,7 +1639,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA21</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA21</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1711,7 +1711,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA22</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA22</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1783,7 +1783,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA23</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA23</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1855,7 +1855,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA24</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA24</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1927,7 +1927,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA25</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA25</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -1999,7 +1999,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA26</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA26</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2071,7 +2071,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA27</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA27</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2143,7 +2143,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA28</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA28</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2215,7 +2215,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA29</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA29</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2287,7 +2287,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA30</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA30</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2359,7 +2359,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA31</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA31</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2431,7 +2431,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA32</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA32</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2503,7 +2503,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA33</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA33</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2575,7 +2575,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA34</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA34</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2647,7 +2647,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA35</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA35</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2719,7 +2719,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA36</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA36</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2791,7 +2791,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA37</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA37</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2863,7 +2863,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA38</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA38</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -2935,7 +2935,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA39</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA39</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3007,7 +3007,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA40</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA40</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3079,7 +3079,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA41</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA41</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3151,7 +3151,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA42</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA42</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3223,7 +3223,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA43</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA43</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3295,7 +3295,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA44</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA44</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3367,7 +3367,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA45</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA45</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3439,7 +3439,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA46</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA46</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3511,7 +3511,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA47</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA47</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3583,7 +3583,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA48</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA48</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3655,7 +3655,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA49</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA49</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3727,7 +3727,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA50</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA50</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3799,7 +3799,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA51</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA51</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3871,7 +3871,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA52</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA52</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -3943,7 +3943,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA53</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA53</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4015,7 +4015,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA54</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA54</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4087,7 +4087,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA55</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA55</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4159,7 +4159,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA56</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA56</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4231,7 +4231,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA57</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA57</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4303,7 +4303,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA58</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA58</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4375,7 +4375,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA59</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA59</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4447,7 +4447,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA60</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA60</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4519,7 +4519,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA61</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA61</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4591,7 +4591,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA62</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA62</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4663,7 +4663,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA63</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA63</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4735,7 +4735,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA64</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA64</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4807,7 +4807,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA65</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA65</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4879,7 +4879,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA66</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA66</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -4951,7 +4951,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA67</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA67</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5023,7 +5023,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA68</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA68</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5095,7 +5095,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA69</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA69</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5167,7 +5167,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA70</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA70</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5239,7 +5239,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA71</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA71</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5311,7 +5311,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA72</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA72</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5383,7 +5383,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA73</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA73</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5455,7 +5455,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA74</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA74</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5527,7 +5527,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA75</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA75</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5599,7 +5599,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA76</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA76</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5671,7 +5671,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA77</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA77</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5743,7 +5743,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA78</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA78</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5815,7 +5815,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA79</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA79</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5887,7 +5887,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA80</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA80</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -5959,7 +5959,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA81</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA81</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6031,7 +6031,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA82</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA82</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6103,7 +6103,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA83</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA83</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6175,7 +6175,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA84</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA84</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6247,7 +6247,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA85</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA85</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6319,7 +6319,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA86</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA86</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6391,7 +6391,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA87</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA87</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6463,7 +6463,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA88</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA88</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6535,7 +6535,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA89</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA89</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6607,7 +6607,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA90</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA90</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6679,7 +6679,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA91</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA91</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6751,7 +6751,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA92</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA92</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6823,7 +6823,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA93</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA93</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6895,7 +6895,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA94</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA94</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -6967,7 +6967,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA95</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA95</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7039,7 +7039,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA96</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA96</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7111,7 +7111,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA97</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA97</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7183,7 +7183,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA98</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA98</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7255,7 +7255,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA99</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA99</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7327,7 +7327,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA100</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA100</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7399,7 +7399,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA101</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA101</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7471,7 +7471,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA102</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA102</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7543,7 +7543,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA103</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA103</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7615,7 +7615,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA104</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA104</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7687,7 +7687,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA105</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA105</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7759,7 +7759,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA106</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA106</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7831,7 +7831,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA107</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA107</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7903,7 +7903,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA108</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA108</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -7975,7 +7975,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA109</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA109</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8047,7 +8047,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA110</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA110</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8119,7 +8119,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA111</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA111</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8191,7 +8191,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA112</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA112</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8263,7 +8263,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA113</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA113</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8335,7 +8335,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA114</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA114</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8407,7 +8407,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA115</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA115</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8479,7 +8479,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA116</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA116</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8551,7 +8551,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA117</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA117</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8623,7 +8623,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA118</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA118</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8695,7 +8695,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA119</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA119</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8767,7 +8767,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA120</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA120</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8839,7 +8839,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA121</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA121</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8911,7 +8911,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA122</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA122</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -8983,7 +8983,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA123</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA123</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9055,7 +9055,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA124</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA124</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9127,7 +9127,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA125</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA125</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9199,7 +9199,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA126</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA126</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9271,7 +9271,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA127</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA127</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9343,7 +9343,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA128</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA128</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9415,7 +9415,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA129</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA129</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9487,7 +9487,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA130</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA130</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9559,7 +9559,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA131</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA131</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9631,7 +9631,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA132</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA132</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9703,7 +9703,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA133</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA133</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9775,7 +9775,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA134</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA134</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9847,7 +9847,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA135</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA135</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9919,7 +9919,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA136</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA136</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -9991,7 +9991,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA137</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA137</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10063,7 +10063,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA138</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA138</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10135,7 +10135,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA139</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA139</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10207,7 +10207,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA140</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA140</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10279,7 +10279,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA141</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA141</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10351,7 +10351,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA142</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA142</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10423,7 +10423,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA143</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA143</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10495,7 +10495,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA144</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA144</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10567,7 +10567,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA145</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA145</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10639,7 +10639,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA146</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA146</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10711,7 +10711,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA147</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA147</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10783,7 +10783,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA148</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA148</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10855,7 +10855,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA149</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA149</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10927,7 +10927,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA150</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA150</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -10999,7 +10999,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA151</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA151</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11071,7 +11071,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA152</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA152</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11143,7 +11143,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA153</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA153</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11215,7 +11215,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA154</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA154</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11287,7 +11287,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA155</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA155</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11359,7 +11359,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA156</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA156</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11431,7 +11431,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA157</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA157</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11503,7 +11503,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA158</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA158</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11575,7 +11575,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA159</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA159</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11647,7 +11647,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA160</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA160</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11719,7 +11719,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA161</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA161</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11791,7 +11791,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA162</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA162</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11863,7 +11863,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA163</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA163</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -11935,7 +11935,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA164</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA164</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12007,7 +12007,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA165</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA165</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12079,7 +12079,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA166</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA166</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12151,7 +12151,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA167</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA167</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12223,7 +12223,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA168</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA168</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12295,7 +12295,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA169</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA169</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12367,7 +12367,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA170</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA170</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12439,7 +12439,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA171</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA171</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12511,7 +12511,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA172</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA172</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12583,7 +12583,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA173</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA173</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12655,7 +12655,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA174</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA174</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12727,7 +12727,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA175</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA175</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12799,7 +12799,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA176</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA176</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12871,7 +12871,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA177</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA177</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -12943,7 +12943,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA178</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA178</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13015,7 +13015,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA179</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA179</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13087,7 +13087,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA180</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA180</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13159,7 +13159,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA181</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA181</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13231,7 +13231,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA182</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA182</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13303,7 +13303,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA183</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA183</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13375,7 +13375,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA184</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA184</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13447,7 +13447,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA185</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA185</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13519,7 +13519,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA186</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA186</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13591,7 +13591,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA187</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA187</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13663,7 +13663,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA188</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA188</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13735,7 +13735,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA189</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA189</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13807,7 +13807,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA190</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA190</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13879,7 +13879,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA191</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA191</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -13951,7 +13951,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA192</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA192</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -14023,7 +14023,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA193</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA193</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -14095,7 +14095,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA194</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA194</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -14167,7 +14167,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA195</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA195</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -14239,7 +14239,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA196</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA196</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -14311,7 +14311,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA197</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA197</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -14383,7 +14383,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA198</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA198</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>
@@ -14455,7 +14455,7 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="77" green="77" blue="77" />
     </off_color>
-    <pv_name>TEST-BOY1:BIxA199</pv_name>
+    <pv_name>TEST-BOY1:OnOffxA199</pv_name>
     <foreground_color>
       <color red="0" green="32" blue="92" />
     </foreground_color>

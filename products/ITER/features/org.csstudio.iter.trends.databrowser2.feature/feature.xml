@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.iter.trends.databrowser2.feature"
+      label="Data Browser"
+      version="3.2.0.qualifier"
+      provider-name="ITER">
+
+   <description>
+      Data Browser, &quot;Strip Chart&quot; and archive data viewer
+   </description>
+
+   <copyright>
+      Copyright (c) : 2010-2014 ITER Organization,
+CS 90 046
+13067 St. Paul-lez-Durance Cedex
+France
+   </copyright>
+
+   <license url="">
+      This product is part of ITER CODAC software.
+For the terms and conditions of redistribution or use of this software
+refer to the file ITER-LICENSE.TXT located in the top level directory
+of the distribution package.
+   </license>
+
+   <includes
+         id="org.csstudio.iter.logbook.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.vtype" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.csstudio.archive.reader" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.rdb" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.trends.databrowser2" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.csstudio.data" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook" version="1.0.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.swt.xygraph" version="1.0.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.reader" version="2.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete.ui"/>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.console" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.email.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.trends.databrowser2" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.archive.rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader.channelarchiver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader.rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.diag.postanalyser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.swt.chart"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.swt.xygraph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.trends.databrowser2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.trends.databrowser2.rcp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.autocomplete.archive"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -35,8 +35,7 @@ public class EdmInt extends EdmAttribute {
 
 		if (genericAttribute == null || getValueCount() == 0) {
 			if (isRequired()) {
-				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-						"Trying to initialize a required attribute from null object.");
+				log.warn("Missing required property.");
 			}
 			else {
 				log.warn("Missing optional property.");
@@ -45,14 +44,18 @@ public class EdmInt extends EdmAttribute {
 		}
 
 		try {
-			val = Integer.parseInt(getValue(0));
+			String stringInt = getValue(0).replace("\"", "");
+			if(stringInt.startsWith("0x")){
+				val = Integer.parseInt(stringInt.substring(2), 16);
+			}else
+				val = Integer.parseInt(stringInt);
 			setInitialized(true);
 			log.debug("Parsed " + this.getClass().getName() + 
 					" = " + val);
 		}
 		catch (Exception e) {
 			throw new EdmException(EdmException.INTEGER_FORMAT_ERROR,
-			"Invalid integer format.");
+			"Invalid integer format.", e);
 		}
 
 	}

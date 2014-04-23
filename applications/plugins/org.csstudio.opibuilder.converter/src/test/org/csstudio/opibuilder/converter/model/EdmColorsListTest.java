@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import org.csstudio.opibuilder.converter.parser.EdmColorsListParser;
 import junit.framework.TestCase;
+
+import org.csstudio.opibuilder.converter.parser.EdmColorsListParser;
 
 public class EdmColorsListTest extends TestCase {
 

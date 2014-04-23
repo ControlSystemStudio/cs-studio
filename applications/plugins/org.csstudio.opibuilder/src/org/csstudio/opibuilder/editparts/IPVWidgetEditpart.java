@@ -1,7 +1,8 @@
 package org.csstudio.opibuilder.editparts;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.utility.pv.PV;
+import org.csstudio.simplepv.IPV;
+import org.epics.vtype.VType;
+
 
 public interface IPVWidgetEditpart {
 	
@@ -23,12 +24,12 @@ public interface IPVWidgetEditpart {
 	/**
 	 * @return the control PV. null if no control PV on this widget.
 	 */
-	public PV getControlPV();
+	public IPV getControlPV();
 
 	/**
 	 * @return the major PV.
 	 */
-	public PV getPV();
+	public IPV getPV();
 	
 	/**
 	 * @return name of the major PV.
@@ -39,13 +40,13 @@ public interface IPVWidgetEditpart {
 	 * @param pvPropId the PV property id.
 	 * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
 	 */
-	public PV getPV(String pvPropId);
+	public IPV getPV(String pvPropId);
 
 	/**Get value from one of the attached PVs.
 	 * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
-	 * @return the {@link IValue} of the PV.
+	 * @return the value of the PV.
 	 */
-	public IValue getPVValue(String pvPropId);
+	public VType getPVValue(String pvPropId);
 	
 	/**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
 	 * @param pvPropId

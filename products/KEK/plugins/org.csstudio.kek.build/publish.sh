@@ -55,7 +55,7 @@ PREV_DIR=$(pwd)
 
 # Copy CSS binaries
 mkdir -p ${DEST}/apps
-ACCS="pfar pf linac superkekb cerl pfar_office pf_office linac_office superkekb_office cerl_office jparc jparc_office"
+ACCS="pfar pf linac superkekb cerl pf_office linac_office superkekb_office jparc jparc_office"
 
 for PLATFORM in ${PLATFORMS}; do
     echo "#####################################################"
@@ -167,15 +167,23 @@ echo "#####################################################"
 echo " Publishing the source"
 echo "#####################################################"
 echo "Copying css_kek_$VERSION-src.zip to ${DEST}/apps"
-cp ${CYGDRIVE}${BUILDDIR}/css_kek_$VERSION-src.zip ${DEST}/apps/css_kek_${VERSION}-src_${DATE}.zip
+
+ZIPBINARY=${DEST}/apps/css_kek_${VERSION}-src_${DATE}.zip
+cp ${CYGDRIVE}${BUILDDIR}/css_kek_$VERSION-src.zip ${ZIPBINARY}
+
+# Add README file to source tar ball.
+cd ${SCRIPTDIR}/source
+zip ${ZIPBINARY} README
+cd ${PREV_DIR}
+
 DOWNLOAD_LINKS="$DOWNLOAD_LINKS<li><a href=\"apps/css_kek_$VERSION-src_${DATE}.zip\">Source</a></li>\n"
 
 # Archive built plugins
 echo "#####################################################"
 echo " Publishing built plugins for online update"
 echo "#####################################################"
-echo "Copying built plugins to ${DEST}/updates/repo${VERSION}_${DATE}"
-mkdir -p ${DEST}/updates/repo${VERSION}_${DATE}
-cp -r ${CYGDRIVE}${BUILDDIR}/buildRepo/* ${DEST}/updates/repo${VERSION}_${DATE}
+echo "Copying built plugins to ${DEST}/updates-3.2/repo${VERSION}_${DATE}"
+mkdir -p ${DEST}/updates-3.2/repo${VERSION}_${DATE}
+cp -r ${CYGDRIVE}${BUILDDIR}/buildRepo/* ${DEST}/updates-3.2/repo${VERSION}_${DATE}
 
-sh ${SCRIPTDIR}/mirror.sh ${DEST}/updates/repo${VERSION}_${DATE} ${DEST}/updates
+sh ${SCRIPTDIR}/mirror.sh ${DEST}/updates-3.2/repo${VERSION}_${DATE} ${DEST}/updates-3.2

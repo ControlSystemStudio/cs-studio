@@ -1,10 +1,11 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
 import java.util.List;
+import org.epics.util.array.ListNumber;
 
 /**
  *
@@ -23,21 +24,19 @@ class IVTable implements VTable {
         this.values = values;
         int maxCount = 0;
         for (Object array : values) {
-            maxCount = Math.max(maxCount, getArraySize(array));
+            maxCount = Math.max(maxCount, getDataSize(array));
         }
         this.rowCount = maxCount;
     }
     
-    private static int getArraySize(Object array) {
-        if (array instanceof Object[]) {
-            return ((Object[]) array).length;
-        } else if (array instanceof int[]) {
-            return ((int[]) array).length;
-        } else if (array instanceof double[]) {
-            return ((double[]) array).length;
+    private static int getDataSize(Object data) {
+        if (data instanceof List) {
+            return ((List) data).size();
+        } else if (data instanceof ListNumber) {
+            return ((ListNumber) data).size();
         }
         
-        throw new IllegalArgumentException("Object " + array + " is not an array");
+        throw new IllegalArgumentException("Object " + data + " is not supported");
     }
 
     @Override
@@ -61,8 +60,13 @@ class IVTable implements VTable {
     }
 
     @Override
-    public Object getColumnArray(int column) {
+    public Object getColumnData(int column) {
         return values.get(column);
+    }
+
+    @Override
+    public String toString() {
+        return VTypeToString.toString(this);
     }
     
 }

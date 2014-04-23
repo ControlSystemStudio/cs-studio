@@ -1,0 +1,5 @@
+org.csstudio.scan.client
+org.csstudio.scan.command
+org.csstudio.scan.data
+org.csstudio.scan.device
+org.csstudio.scan.server

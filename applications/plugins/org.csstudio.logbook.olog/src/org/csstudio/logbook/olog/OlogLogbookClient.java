@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,6 +28,9 @@ import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
+import org.csstudio.logbook.util.LogEntrySearchUtil;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.TimeParser;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -36,10 +41,14 @@ import edu.msu.nscl.olog.api.LogBuilder;
 import edu.msu.nscl.olog.api.OlogClient;
 import edu.msu.nscl.olog.api.PropertyBuilder;
 
+import static org.csstudio.logbook.util.LogEntrySearchUtil.*;
+
 public class OlogLogbookClient implements LogbookClient {
 
     private final OlogClient reader;
     private final OlogClient writer;
+    
+    private final List<String> levels = Arrays.asList("Info", "Problem", "Request", "Suggestion", "Urgent");  
 
     public OlogLogbookClient(OlogClient ologClient) {
 	this.reader = ologClient;
@@ -64,6 +73,12 @@ public class OlogLogbookClient implements LogbookClient {
 		}));
     }
 
+
+    @Override
+    public List<String> listLevels() throws Exception {
+	return levels;
+    }
+    
     @Override
     public Collection<Tag> listTags() throws Exception {
 	return Collections.unmodifiableCollection(Collections2.transform(
@@ -132,8 +147,34 @@ public class OlogLogbookClient implements LogbookClient {
 
     @Override
     public Collection<LogEntry> findLogEntries(String search) throws Exception {
-	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();	
-	Collection<Log> logs = reader.findLogsBySearch(search);
+	Map<String, String> searchParameters = LogEntrySearchUtil
+		.parseSearchString(search);
+	// append text search with a leading and trailing *
+	if (searchParameters.containsKey(SEARCH_KEYWORD_TEXT)) {
+	    String textSearch = "*" + searchParameters.get(SEARCH_KEYWORD_TEXT) + "*";
+	    searchParameters.put(SEARCH_KEYWORD_TEXT, textSearch);
+	}
+	if (searchParameters.containsKey(SEARCH_KEYWORD_START)) {
+	    TimeInterval timeInterval;
+	    // Check if both start and end are specified.
+	    if (searchParameters.containsKey(SEARCH_KEYWORD_END)) {
+		timeInterval = TimeParser.getTimeInterval(
+			searchParameters.get(SEARCH_KEYWORD_START),
+			searchParameters.get(SEARCH_KEYWORD_END));
+		searchParameters.remove(SEARCH_KEYWORD_END);
+	    } else {
+		timeInterval = TimeParser.getTimeInterval(
+			searchParameters.get(SEARCH_KEYWORD_START), "now");
+	    }
+	    searchParameters.remove(SEARCH_KEYWORD_START);
+	    if (timeInterval != null && timeInterval.getStart() != null
+				&& timeInterval.getEnd() != null) {
+	    	searchParameters.put("start", String.valueOf(timeInterval.getStart().getSec()));
+	    	searchParameters.put("end", String.valueOf(timeInterval.getEnd().getSec()));
+	    }
+	}
+	Collection<LogEntry> logEntries = new ArrayList<LogEntry>();
+	Collection<Log> logs = reader.findLogs(searchParameters);
 	for (Log log : logs) {
 	    logEntries.add(new OlogEntry(log));
 	}
@@ -157,7 +198,22 @@ public class OlogLogbookClient implements LogbookClient {
 
     @Override
     public LogEntry updateLogEntry(LogEntry logEntry) throws Exception {
-	return new OlogEntry(writer.update(LogBuilder(logEntry)));
+	OlogEntry ologEntry = new OlogEntry(writer.update(LogBuilder(logEntry)));
+	// creates the log entry and then adds all the attachments
+	// TODO (shroffk) multiple network calls, one for each attachment, need
+	// to improve
+	Collection<String> existingFiles = new ArrayList<String>();
+	for (edu.msu.nscl.olog.api.Attachment attachment : reader.getLog((Long) ologEntry.getId()).getAttachments()) {
+	    existingFiles.add(attachment.getFileName());
+	}
+	for (Attachment attachment : logEntry.getAttachment()) {
+	    //Check the attachment doe snot already exist.
+	    if (!existingFiles.contains(attachment.getFileName()) && attachment.getInputStream() != null) {
+		addAttachment(ologEntry.getId(), attachment.getInputStream(),
+			attachment.getFileName());
+	    }
+	}
+	return ologEntry;
     }
 
     @Override
@@ -206,8 +262,7 @@ public class OlogLogbookClient implements LogbookClient {
      * @return
      */
     private LogBuilder LogBuilder(LogEntry logEntry) {
-	LogBuilder logBuilder = log().description(logEntry.getText()).level(
-		"Info");
+	LogBuilder logBuilder = log().description(logEntry.getText()).level(logEntry.getLevel()).id((Long) logEntry.getId());
 	for (Tag tag : logEntry.getTags())
 	    logBuilder.appendTag(tag(tag.getName(), tag.getState()));
 	for (Logbook logbook : logEntry.getLogbooks())
@@ -300,7 +355,7 @@ public class OlogLogbookClient implements LogbookClient {
     private class OlogAttachment implements Attachment {
 
 	private final edu.msu.nscl.olog.api.Attachment attachment;
-	private byte[] byteArray = new byte[]{};
+	private byte[] byteArray = new byte[] {};
 
 	public OlogAttachment(edu.msu.nscl.olog.api.Attachment attachment,
 		InputStream inputStream) throws IOException {
@@ -398,6 +453,12 @@ public class OlogLogbookClient implements LogbookClient {
 			    });
 	}
 
+
+	@Override
+	public String getLevel() {
+	    return log.getLevel();
+	}
+	
 	@Override
 	public String getText() {
 	    return log.getDescription();
@@ -444,5 +505,5 @@ public class OlogLogbookClient implements LogbookClient {
 	}
 
     }
-
+    
 }

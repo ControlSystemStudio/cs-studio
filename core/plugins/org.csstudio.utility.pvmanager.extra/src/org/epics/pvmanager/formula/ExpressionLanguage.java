@@ -1,31 +1,27 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.antlr.runtime.*;
-import org.epics.vtype.VDouble;
-import org.epics.vtype.VNumber;
 import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.formula.FormulaLexer;
-import org.epics.pvmanager.formula.FormulaParser;
-import static org.epics.pvmanager.ExpressionLanguage.*;
+import org.epics.pvmanager.ReadFunction;
+import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
+import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
 import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
+import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.WriteExpression;
-import org.epics.vtype.VType;
+import org.epics.util.text.StringUtil;
+import org.epics.vtype.ValueUtil;
 
 /**
+ * Support for formula expressions.
  *
  * @author carcassi
  */
@@ -41,7 +37,22 @@ public class ExpressionLanguage {
         return new FormulaParser(tokenStream);
     }
     
+    /**
+     * If the formula represents a single channels it returns the name,
+     * null otherwise.
+     * 
+     * @param formula the formula to parse
+     * @return the channel it represents or null
+     */
     public static String channelFromFormula(String formula) {
+        if (!formula.startsWith("=")) {
+            if (formula.trim().matches(StringUtil.SINGLEQUOTED_STRING_REGEX)) {
+                return StringUtil.unquote(formula);
+            }
+            return formula;
+        } else {
+            formula = formula.substring(1);
+        }
         try {
             FormulaParser parser = createParser(formula);
             DesiredRateExpression<?> exp = parser.singlePv();
@@ -59,28 +70,83 @@ public class ExpressionLanguage {
             return null;
         }
     }
-    
+
+    /**
+     * Returns the expression that will return the live value of the
+     * given formula.
+     * 
+     * @param formula the formula to parse
+     * @return an expression for the formula
+     */
     public static DesiredRateReadWriteExpression<?, Object> formula(String formula) {
+        DesiredRateExpression<?> exp = parseFormula(formula);
+            
+        if (exp instanceof LastOfChannelExpression) {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, org.epics.pvmanager.vtype.ExpressionLanguage.vType(exp.getName()));
+        } else if (exp instanceof ErrorDesiredRateExpression) {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Parsing error")); 
+        } else {
+            return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Read-only formula"));
+        }
+    }
+    
+    private static DesiredRateExpression<?> parseFormula(String formula) {
+        if (!formula.startsWith("=")) {
+            return cachedPv(channelFromFormula(formula));
+        } else {
+            formula = formula.substring(1);
+        }
+        
+        RuntimeException parsingError;
         try {
             DesiredRateExpression<?> exp = createParser(formula).formula();
             if (exp == null) {
                 throw new NullPointerException("Parsing failed");
             }
-            
-            if (exp instanceof LastOfChannelExpression) {
-                return new DesiredRateReadWriteExpressionImpl<>(exp, org.epics.pvmanager.vtype.ExpressionLanguage.vType(exp.getName()));
-            } else {
-                return new DesiredRateReadWriteExpressionImpl<>(exp, readOnlyWriteExpression("Read-only formula"));
-            }
+            return exp;
         } catch (RecognitionException ex) {
-            throw new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
+            parsingError = new IllegalArgumentException("Error parsing formula: " + ex.getMessage(), ex);
         } catch (Exception ex) {
-            throw new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
+            parsingError = new IllegalArgumentException("Malformed formula '" + formula + "'", ex);
         }
+        return errorDesiredRateExpression(parsingError); 
+    }
+    
+    /**
+     * An expression that returns the value of the formula and return null
+     * for empty or null formula.
+     * <p>
+     * Some expressions allow for null expression arguments to handle
+     * optional elements. In those cases, using this method makes
+     * undeclared arguments fall through.
+     * 
+     * @param formula the formula, can be null
+     * @return an expression of the given type; null if formula is null or empty
+     */
+    public static DesiredRateExpression<?> formulaArg(String formula) {
+        if (formula == null || formula.trim().isEmpty()) {
+            return null;
+        }
+        
+        return parseFormula(formula);
+    }
+    
+    /**
+     * An expression that returns the value of the formula making sure
+     * it's of the given type.
+     * 
+     * @param <T> the type to read
+     * @param formula the formula
+     * @param readType the type to read
+     * @return an expression of the given type
+     */
+    public static <T> DesiredRateExpression<T> formula(String formula, Class<T> readType) {
+        DesiredRateExpression<?> exp = parseFormula(formula);
+        return checkReturnType(readType, "Value", exp);
     }
     
     static DesiredRateExpression<?> cachedPv(String channelName) {
-        return new LastOfChannelExpression<Object>(channelName, Object.class);
+        return new LastOfChannelExpression<>(channelName, Object.class);
     }
     
     static <T> DesiredRateExpression<T> cast(Class<T> clazz, DesiredRateExpression<?> arg1) {
@@ -113,303 +179,60 @@ public class ExpressionLanguage {
         return fun + "(" + arg.getName()+ ")";
     }
     
-    static DesiredRateExpression<VDouble> add(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
+    static DesiredRateExpression<?> powCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function("^", new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
+    }
 
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 + arg2;
-            }
-        }, arg1, arg2, opName(" + ", arg1, arg2));
+    static DesiredRateExpression<?> threeArgOp(String opName, DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2, DesiredRateExpression<?> arg3) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2).and(arg3));
     }
-    
-    static DesiredRateExpression<VDouble> addCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return add(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> pow(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
 
-            @Override
-            double calculate(double arg1, double arg2) {
-                return Math.pow(arg1, arg2);
-            }
-        }, arg1, arg2, opName(" ^ ", arg1, arg2));
+    static DesiredRateExpression<?> twoArgOp(String opName, DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg1).and(arg2));
     }
-    
-    static DesiredRateExpression<VDouble> powCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return pow(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> subtract(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
 
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 - arg2;
-            }
-        }, arg1, arg2, opName(" - ", arg1, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> subtractCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return subtract(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> negate(DesiredRateExpression<? extends VNumber> arg) {
-        return resultOf(new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return - arg;
-            }
-        }, arg, opName("-", arg));
-    }
-    
-    static DesiredRateExpression<VDouble> negateCast(DesiredRateExpression<?> arg) {
-        return negate(cast(VNumber.class, arg));
-    }
-    
-    static DesiredRateExpression<VDouble> multiply(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
-
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 * arg2;
-            }
-        }, arg1, arg2, opName(" * ", arg1, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> multiplyCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return multiply(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> divide(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
-
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 / arg2;
-            }
-        }, arg1, arg2, opName(" / ", arg1, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> divideCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return divide(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
-    }
-    
-    static DesiredRateExpression<VDouble> reminder(DesiredRateExpression<? extends VNumber> arg1, DesiredRateExpression<? extends VNumber> arg2) {
-        return resultOf(new TwoArgNumericFunction() {
-
-            @Override
-            double calculate(double arg1, double arg2) {
-                return arg1 % arg2;
-            }
-        }, arg1, arg2);
-    }
-    
-    static DesiredRateExpression<VDouble> reminderCast(DesiredRateExpression<?> arg1, DesiredRateExpression<?> arg2) {
-        return reminder(cast(VNumber.class, arg1), cast(VNumber.class, arg2));
+    static DesiredRateExpression<?> oneArgOp(String opName, DesiredRateExpression<?> arg) {
+        return function(opName, new DesiredRateExpressionListImpl<Object>().and(arg));
     }
     
     static DesiredRateExpression<?> function(String function, DesiredRateExpressionList<?> args) {
-        if ("arrayOf".equals(function)) {
-            return org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArrayOf(cast(VNumber.class, args));
+        Collection<FormulaFunction> matchedFunctions = FormulaRegistry.getDefault().findFunctions(function, args.getDesiredRateExpressions().size());
+        if (matchedFunctions.size() > 0) {
+            FormulaReadFunction readFunction = new FormulaReadFunction(Expressions.functionsOf(args), matchedFunctions);
+            List<String> argNames = new ArrayList<>(args.getDesiredRateExpressions().size());
+            for (DesiredRateExpression<? extends Object> arg : args.getDesiredRateExpressions()) {
+                argNames.add(arg.getName());
+            }
+            return new FormulaFunctionReadExpression(args, readFunction, FormulaFunctions.format(function, argNames));
         }
-        if (args.getDesiredRateExpressions().size() == 1 && oneArgNumericFunction.containsKey(function)) {
-            return oneArgNumbericFunction(function, args);
-        }
+        
         throw new IllegalArgumentException("No function named '" + function + "' is defined");
-    }
-    
-    private static final Map<String, OneArgNumericFunction> oneArgNumericFunction;
-    
-    static {
-        Map<String, OneArgNumericFunction> map = new HashMap<>();
-        
-        map.put("abs", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.abs(arg);
-            }
-        });
-        
-        map.put("acos", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.acos(arg);
-            }
-        });
-        
-        map.put("asin", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.asin(arg);
-            }
-        });
-        
-        map.put("atan", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.atan(arg);
-            }
-        });
-        
-        map.put("cbrt", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.cbrt(arg);
-            }
-        });
-        
-        map.put("ceil", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.ceil(arg);
-            }
-        });
-        
-        map.put("cos", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.cos(arg);
-            }
-        });
-        
-        map.put("cosh", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.cosh(arg);
-            }
-        });
-        
-        map.put("exp", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.exp(arg);
-            }
-        });
-        
-        map.put("floor", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.floor(arg);
-            }
-        });
-        
-        map.put("log", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.log(arg);
-            }
-        });
-        
-        map.put("log10", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.log10(arg);
-            }
-        });
-        
-        map.put("signum", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.signum(arg);
-            }
-        });
-        
-        map.put("sin", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.sin(arg);
-            }
-        });
-        
-        map.put("sinh", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.sinh(arg);
-            }
-        });
-        
-        map.put("sqrt", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.sqrt(arg);
-            }
-        });
-        
-        map.put("tan", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.tan(arg);
-            }
-        });
-        
-        map.put("tanh", new OneArgNumericFunction() {
-
-            @Override
-            double calculate(double arg) {
-                return Math.tanh(arg);
-            }
-        });
-        
-        oneArgNumericFunction = map;
-    }
-    
-    static DesiredRateExpression<VDouble> oneArgNumbericFunction(String name, DesiredRateExpressionList<?> args) {
-        return function(name, oneArgNumericFunction.get(name), VNumber.class, args);
-    }
-    
-    static <R, A> DesiredRateExpression<R> function(String name, OneArgFunction<R, A> function, Class<A> argClazz, DesiredRateExpressionList<?> args) {
-        if (args.getDesiredRateExpressions().size() != 1) {
-            throw new IllegalArgumentException(name + " function accepts only one argument");
-        }
-        DesiredRateExpression<A> arg = cast(argClazz, args.getDesiredRateExpressions().get(0));
-        return resultOf(function, arg, funName(name, arg));
-    }
-    
-    static DesiredRateExpression<VDouble> abs(DesiredRateExpression<? extends VNumber> args) {
-        return oneArgNumbericFunction("abs", args);
-    }
-    
-    static DesiredRateExpression<VDouble> acos(DesiredRateExpression<? extends VNumber> args) {
-        return oneArgNumbericFunction("acos", args);
-    }
-    
-    static DesiredRateExpression<VDouble> asin(DesiredRateExpression<? extends VNumber> args) {
-        return oneArgNumbericFunction("asin", args);
-    }
-    
-    static DesiredRateExpression<VDouble> log(DesiredRateExpression<? extends VNumber> args) {
-        return oneArgNumbericFunction("log", args);
-    }
-    
-    static DesiredRateExpression<VDouble> sin(DesiredRateExpression<? extends VNumber> args) {
-        return oneArgNumbericFunction("sin", args);
-    }
-    
-    static DesiredRateExpression<VDouble> sqrt(DesiredRateExpression<? extends VNumber> args) {
-        return oneArgNumbericFunction("sqrt", args);
     }
     
     static <T> WriteExpression<T> readOnlyWriteExpression(String errorMessage) {
         return new ReadOnlyWriteExpression<>(errorMessage, "");
+    }
+    
+    static <T> DesiredRateExpression<T> errorDesiredRateExpression(RuntimeException error) {
+        return new ErrorDesiredRateExpression<>(error, "");
+    }
+    
+    static <T> DesiredRateExpression<T> checkReturnType(final Class<T> clazz, final String argName, final DesiredRateExpression<?> arg1) {
+        return new DesiredRateExpressionImpl<T>(arg1, new ReadFunction<T>() {
+
+            @Override
+            public T readValue() {
+                Object obj = arg1.getFunction().readValue();
+                if (obj == null) {
+                    return null;
+                }
+                
+                if (clazz.isInstance(obj)) {
+                    return clazz.cast(obj);
+                } else {
+                    throw new RuntimeException(argName + " must be a " + clazz.getSimpleName() + " (was " + ValueUtil.typeOf(obj).getSimpleName() + ")");
+                }
+            }
+        }, arg1.getName());
     }
 }

@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -181,7 +182,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 			}
 		};
 		TableColumn tblclmnChannelName = channelNameColumn.getColumn();
-		tblclmnChannelName.setText("Channel Name");
+		tblclmnChannelName.setText("Name");
 
 		TableViewerColumn channelOwnerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
@@ -221,6 +222,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 
 		selectionProvider = new AbstractSelectionProviderWrapper(tableViewer,
 				this) {
+			@SuppressWarnings("unchecked")
 			@Override
 			protected ISelection transform(IStructuredSelection selection) {
 				if (selection != null)

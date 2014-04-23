@@ -1,10 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.pva;
 
@@ -118,7 +114,7 @@ public abstract class PVATypeAdapter implements DataSourceTypeAdapter<PVAChannel
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean updateCache(ValueCache cache, PVAChannelHandler channel, PVStructure message) {
+    public boolean updateCache(@SuppressWarnings("rawtypes") ValueCache cache, PVAChannelHandler channel, PVStructure message) {
         Object value = createValue(message, channel.getChannelType(), !channel.isConnected());
         cache.writeValue(value);
         return true;

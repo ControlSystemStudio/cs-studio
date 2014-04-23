@@ -7,9 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import java.util.List;
+
 import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.ArrayDimensionDisplay;
 import org.epics.vtype.Display;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.ValueUtil;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ArrayLong;
@@ -91,6 +95,12 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
 	public ListNumber getData()
 	{
 		return data;
+	}
+	
+	@Override
+	public List<ArrayDimensionDisplay> getDimensionDisplay()
+	{
+		return ValueUtil.defaultArrayDisplay(this);
 	}
 	
 	@Override

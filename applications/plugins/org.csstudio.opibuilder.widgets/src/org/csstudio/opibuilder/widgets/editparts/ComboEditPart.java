@@ -9,12 +9,9 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -22,15 +19,17 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.ComboFigure;
 import org.csstudio.opibuilder.widgets.model.ComboModel;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVListener;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.IPVListener;
+import org.csstudio.simplepv.VTypeHelper;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VType;
 
 /**The editpart of a combo.
  *
@@ -39,9 +38,7 @@ import org.eclipse.swt.widgets.Combo;
  */
 public final class ComboEditPart extends AbstractPVWidgetEditPart {
 
-	private PVListener loadItemsFromPVListener;
-
-	private IEnumeratedMetaData meta = null;
+	private IPVListener loadItemsFromPVListener;
 
 	private Combo combo;
 	private SelectionListener comboSelectionListener;
@@ -110,26 +107,18 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 		//load items from PV
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			if(getWidgetModel().isItemsFromPV()){
-				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if(pv != null){
 					if(loadItemsFromPVListener == null)
-						loadItemsFromPVListener = new PVListener() {
-							public void pvValueUpdate(PV pv) {
-								IValue value = pv.getValue();
-								if (value != null && value.getMetaData() instanceof IEnumeratedMetaData){
-									IEnumeratedMetaData new_meta = (IEnumeratedMetaData)value.getMetaData();
-									if(meta  == null || !meta.equals(new_meta)){
-										meta = new_meta;
-										List<String> itemsFromPV = new ArrayList<String>();
-										for(String writeValue : meta.getStates()){
-											itemsFromPV.add(writeValue);
-										}
+						loadItemsFromPVListener = new IPVListener.Stub() {
+							public void valueChanged(IPV pv) {
+								VType value = pv.getValue();
+								if (value != null && value instanceof VEnum){
+									List<String> items = ((VEnum)value).getLabels();									
 										getWidgetModel().setPropertyValue(
-												ComboModel.PROP_ITEMS, itemsFromPV);
-									}
-								}
-							}
-							public void pvDisconnected(PV pv) {}
+												ComboModel.PROP_ITEMS, items);
+									}								
+							}							
 						};
 					pv.addListener(loadItemsFromPVListener);
 				}
@@ -141,7 +130,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 	protected void doDeActivate() {
 		super.doDeActivate();
 		if(getWidgetModel().isItemsFromPV()){
-			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 			if(pv != null && loadItemsFromPVListener !=null){
 				pv.removeListener(loadItemsFromPVListener);
 			}
@@ -169,8 +158,8 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if(newValue != null && newValue instanceof IValue){
-					String stringValue = ValueUtil.getString((IValue)newValue);
+				if(newValue != null){
+					String stringValue = VTypeHelper.getString((VType)newValue);
 					if(Arrays.asList(combo.getItems()).contains(stringValue))
 						combo.setText(stringValue);
 					else
@@ -193,7 +182,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 				if(newValue != null && newValue instanceof List){
 					updateCombo((List<String>)newValue);
 					if(getWidgetModel().isItemsFromPV())
-						combo.setText(ValueUtil.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
+						combo.setText(VTypeHelper.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
 				}
 				return true;
 			}

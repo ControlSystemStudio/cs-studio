@@ -24,6 +24,7 @@ import org.csstudio.channel.widgets.util.MementoUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.channel.CSSChannelUtils;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplayCell;
 import org.eclipse.jface.viewers.ISelection;

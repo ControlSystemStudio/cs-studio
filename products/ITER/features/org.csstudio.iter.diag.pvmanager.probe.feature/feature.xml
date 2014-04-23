@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.iter.diag.pvmanager.probe.feature"
+      label="CSS PV Manager Probe Component"
+      version="3.2.0.qualifier"
+      provider-name="ITER">
+
+   <copyright>
+      Copyright (c) : 2010-2014 ITER Organization,
+CS 90 046
+13067 St. Paul-lez-Durance Cedex
+France
+   </copyright>
+
+   <license url="">
+      This product is part of ITER CODAC software.
+For the terms and conditions of redistribution or use of this software
+refer to the file ITER-LICENSE.TXT located in the top level directory
+of the distribution package.
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui"/>
+      <import plugin="org.csstudio.csdata" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.eclipse.ui.intro.universal"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.widgets" version="3.2.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.diag.pvmanager.probe"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

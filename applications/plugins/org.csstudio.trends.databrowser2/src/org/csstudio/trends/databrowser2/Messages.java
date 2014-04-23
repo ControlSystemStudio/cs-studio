@@ -35,6 +35,7 @@ public class Messages extends NLS
     public static String AddPVMsg;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
+    public static String ApplyChanges;
     public static String ArchiveAccessMessageFmt;
     public static String ArchiveDataSources;
     public static String ArchiveDescription;
@@ -68,11 +69,16 @@ public class Messages extends NLS
     public static String Connecting;
     public static String ConfigFileErrorFmt;
     public static String ControllerStartErrorFmt;
+    public static String CursorValue;
+    public static String CursorValueTT;
+    public static String CursorTimestamp;
+    public static String CursorTimestampTT;
     public static String DeleteArchive;
     public static String DeleteAxis;
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
+    public static String EditItem;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
@@ -173,7 +179,10 @@ public class Messages extends NLS
     public static String PosErrColumn;
     public static String PrefPage_ArchiveFetchDelay;
     public static String PrefPage_Archives;
+    public static String PrefPage_AutomaticHistoryRefresh;
     public static String PrefPage_DataServerURLs;
+    public static String PrefPage_FutureBuffer;
+    public static String PrefPage_FutureBufferTT;
     public static String PrefPage_LiveBufferSize;
     public static String PrefPage_PlotBins;
     public static String PrefPage_ScanPeriod;
@@ -185,6 +194,8 @@ public class Messages extends NLS
     public static String PromptForErrors_Label;
     public static String PVName;
     public static String PVUsedInFormulaFmt;
+    public static String Refresh;
+
     public static String RegularExpression;
     public static String RegularExpressionTT;
     public static String RemoveEmptyAxes;
@@ -218,6 +229,7 @@ public class Messages extends NLS
     public static String SearchPatternTT;
     public static String SearchTT;
     public static String SendToElog;
+    public static String ServerAlias;
     public static String SeverityColumn;
     public static String SeverityStatusFmt;
     public static String StartEndDialogBtn;
@@ -235,14 +247,17 @@ public class Messages extends NLS
     public static String TraceLineWidthTT;
     public static String TraceType;
     public static String TraceType_Area;
+    public static String TraceType_AreaDirect;
     public static String TraceType_ErrorBars;
     public static String TraceType_Squares;
     public static String TraceType_SingleLine;
+    public static String TraceType_SingleLineDirect;
     public static String TraceType_Circles;
     public static String TraceType_Diamonds;
     public static String TraceType_Crosses;
     public static String TraceType_Triangles;
     public static String TraceTypeTT;
+    public static String TraceTypes_Label;    
     public static String TracesTab;
     public static String TraceVisibility;
     public static String TraceVisibilityTT;

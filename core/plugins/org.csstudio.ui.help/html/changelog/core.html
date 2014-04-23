@@ -1,11 +1,83 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/CSS Help.dwt" codeOutsideHTMLIsLocked="false" -->
-<head>
-	<title>Core Changelog</title>
-	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
-</head>
-<body>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><!-- InstanceBegin template="/Templates/CSS Help.dwt" codeOutsideHTMLIsLocked="false" --><title>Core Changelog</title>
+
+
+	
+	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css" /></head><body>
 <h1>Core Changelog</h1>
+<h2>Version 3.2.13 - 2013-12-31</h2>
+<ul>
+  <li>Auto-Complete improvements:
+  <ul>
+    <li>Updated Auto-Complete history management, the history is now managed by entry type instead of fields type and shared by all.</li>
+    <li>Tooltip is now properly closed when an auto-completed field is validated.</li>
+  </ul></li>
+</ul>
+<h2>Version 3.2.10 - 2013-09-28</h2>
+<ul>
+  <li>Auto-Complete improvements:</li>
+  <ul>
+    <li>Proposal management and interface refactoring.</li>
+    <li>Added helper management (tooltip).</li>
+    <li>Implemented common Data Source prefix parser + provider.</li>
+    <li>Implemented common PV parser (handles Channel Access Data Source).</li>
+    <li>Implemented formula functions, sim, sys and loc parsers + providers in dedicated plugins.</li>
+    <ul>
+      <li>New <i>Formula</i> auto-completion type added to BOY and Probe interfaced with PV Manager.</li>
+      <li>Sim, Sys and Loc parsers/providers are available for both <i>Formula</i> and already existing <i>PV</i> fields.</li>
+    </ul>
+    <li>Handles <i>Default Process Variable Type</i> defined in <i>CSS Core -&gt; Process Variables</i>.</li>
+    <li>Handles completion on cursor position.</li>
+    <li>Improved management of pop-up size to better fit the displayed proposals.</li>
+    <li>Provider name can no longer be selected.</li>
+    <li>Added preference page for history size configuration + clear button in <i>CSS Core -&gt; Auto-Complete</i>.</li>
+    <li>Added 1 line proposals description displayed close to the selected item.</li>
+  </ul>
+  <li>pvmanager:</li>
+  <ul>
+    <li>formula: basic numeric math function return highest alarm and latest time of arguments; also handle null better</li>
+    <li>exec: first draft for services that execute commands; if output is a CSV, it's parsed to a VTable</li>
+    <li>vtype: add alarm and time compare, toString and other utility functions</li>
+    <li>formula: significant refactoring in test code</li>
+  </ul>
+</ul>
+<h2>Version 3.2.9 - 2013-08-30</h2>
+
+<ul>
+  <li>pvmanager:<br />
+  </li>
+  <ul>
+    <li>vtype/file: adding temporary support for images in file; review VImage conversion routines</li>
+    <li>jdbc: adding support for Timestamp/numeric/boolean/bit null,
+temporary support for images in file; review VImage conversion routines</li>
+    <li>vtype: VTable can handle timestamps</li>
+    <li>jca: using the not sharing of channels to prevent concurrency issues</li>
+    <li>jdbc: ability to create database services from XML descriptions</li>
+  </ul>
+</ul>
+<h2>Version 3.2.8 - 2013-07-26</h2>
+<ul>
+  <li>pvmanager:<br />
+  </li>
+  <ul>
+    <li>vtype: VBoolean support</li>
+    <li>vtype: added color definitions for Alarm</li>
+    <li>formula: highestSeverity</li>
+    <li>formula: added comparative operators, bitwise operator, logical operator</li>
+    <li>formula: added a few operators for arrays</li>
+    <li>formula: added toString/toRadians/toDegrees</li>
+    <li>formula: added dynamic pv and pvs functions (pointer like function)</li>
+    <li>formula: added concat function for string concatenation</li>
+    <li>formula: support for stateful and dynamic functions<br />
+    </li>
+  </ul>
+
+</ul>
+
+<h2>Version 3.2.6 - 2013-05-31</h2>
+<ul>
+  <li>libs.epics - Upgrading CAJ to 1.1.12</li>
+</ul>
 <h2>Version 3.2.4 - 2013-03-25</h2>
 <ul>
   <li>libs.epics - More parameters added for ca connection, most of which work only with pvmanager</li>
@@ -38,7 +110,7 @@
 <h2>Version 3.0.1 - 2011-06-17</h2>
 <ul>
   <li>ui.help - help content moved out to relevant plug-ins (Xihui)</li>
-  <li>ui.menu - adding &quot;css&quot; separator for pop-up menu (Gabriele)</li>
+  <li>ui.menu - adding "css" separator for pop-up menu (Gabriele)</li>
 </ul>
 <h2>Version 3.0.0 - 2011-05-31</h2>
 <ul>
@@ -49,5 +121,4 @@
   <li>ui.util - common DnD support based on adapters (Kay/Gabriele)</li>
   <li>ui.menu - define menu and pop-up menu using extensions (Gabriele)</li>
 </ul>
-</body>
-</html>
+</body></html>

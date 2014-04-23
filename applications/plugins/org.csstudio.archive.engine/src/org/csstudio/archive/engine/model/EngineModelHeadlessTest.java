@@ -36,7 +36,7 @@ public class EngineModelHeadlessTest
     	final ArchiveConfig config = ArchiveConfigFactory.getArchiveConfig();
     	final BenchmarkTimer timer = new BenchmarkTimer();
         final EngineModel model = new EngineModel();
-        model.readConfig(config, config_name, port);
+        model.readConfig(config, config_name, port, false);
         timer.stop();
         config.close();
         

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.widgets.util;
 
 import java.io.InputStream;
@@ -11,6 +18,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -21,6 +29,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
 public class SingleSourceHelperImpl extends SingleSourceHelper{
+
+	private static final String SEPARATOR = "|"; //$NON-NLS-1$
+
 
 	@Override
 	protected InputStream internalWorkspaceFileToInputStream(IPath path) throws Exception {
@@ -129,36 +140,59 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 			}
 			break;
 		case LOCAL:
-			String fileString;
+			IPath paths[] = null;
 			if(textInput.getFileReturnPart() == FileReturnPart.DIRECTORY){
 				 DirectoryDialog directoryDialog = new DirectoryDialog(
 						Display.getCurrent().getActiveShell());
 				 directoryDialog.setFilterPath(currentPath);
-				 fileString = directoryDialog.open();
+				 String directory = directoryDialog.open();
+				 if(directory!=null)
+					 paths = new Path[]{new Path(directory)};
 				
 			}else {
 				FileDialog fileDialog = new FileDialog(Display.getCurrent()
-						.getActiveShell());
+						.getActiveShell(), SWT.MULTI);
 				if (currentPath != null)
 					((FileDialog) fileDialog).setFileName(currentPath);
-				fileString = fileDialog.open();
+				String firstPath = fileDialog.open();
+				if(firstPath != null){
+					paths = new Path[fileDialog.getFileNames().length];
+					paths[0] = new Path(firstPath);
+					for (int i = 1; i < paths.length; i++) {
+						paths[i] = paths[0].removeLastSegments(1).append(
+								fileDialog.getFileNames()[i]);
+					}
+				}
 			}				
-			if (fileString != null) {
-				currentPath = fileString;
+			if (paths != null) {
+				currentPath = paths[0].toOSString();
+				StringBuilder result=new StringBuilder();
 				switch (textInput.getFileReturnPart()) {
 				case NAME_ONLY:
-					IPath path = new Path(fileString).removeFileExtension();
-					fileString = path.lastSegment();
+					for(int i=0; i<paths.length;i++){
+						if(i>0)
+							result.append(SEPARATOR);
+						result.append(paths[i].removeFileExtension().lastSegment());
+					}					
 					break;
 				case NAME_EXT:
-					fileString = new Path(fileString).lastSegment();
+					for(int i=0; i<paths.length;i++){
+						if(i>0)
+							result.append(SEPARATOR);
+						result.append(paths[i].lastSegment());
+					}
 					break;
 				case FULL_PATH:
 				case DIRECTORY:
 				default:
+					for(int i=0; i<paths.length;i++){
+						if(i>0)
+							result.append(SEPARATOR);
+						result.append(paths[i].toOSString());
+					}
 					break;
 				}
-				textInput.setText(fileString);
+				textInput.setText(result.toString());
 				textInput.setCurrentPath(currentPath);
 				textInput.fireManualValueChange(textInput.getText());
 			}

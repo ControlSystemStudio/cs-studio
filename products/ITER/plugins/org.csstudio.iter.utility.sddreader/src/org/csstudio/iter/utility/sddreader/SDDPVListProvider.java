@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2013 ITER Organization.
+ * Copyright (c) 2010-2014 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,16 @@ package org.csstudio.iter.utility.sddreader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.autocomplete.AutoCompleteHelper;
 import org.csstudio.autocomplete.AutoCompleteResult;
 import org.csstudio.autocomplete.IAutoCompleteProvider;
+import org.csstudio.autocomplete.parser.ContentDescriptor;
+import org.csstudio.autocomplete.parser.ContentType;
+import org.csstudio.autocomplete.proposals.Proposal;
+import org.csstudio.autocomplete.proposals.TopProposalFinder;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 public class SDDPVListProvider implements IAutoCompleteProvider {
@@ -32,24 +37,29 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 	public SDDPVListProvider() {
 		try {
 			rdb = RDBUtil.connect(Preferences.getRDB_Url(),
-					Preferences.getRDB_User(), Preferences.getRDB_Password(),
-					true);
-			Activator.getLogger().log(
-					Level.INFO,
-					"SDDPVListProvider connected to DB: "
-							+ Preferences.getRDB_Url());
+					Preferences.getRDB_User(), Preferences.getRDB_Password(), true);
+			Activator.getLogger().log(Level.INFO,
+					"SDDPVListProvider connected to DB: " + Preferences.getRDB_Url());
 		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE, e.getMessage());
+			Activator.getLogger().log(Level.WARNING, e.getMessage());
 		}
 	}
 
 	@Override
-	public AutoCompleteResult listResult(final String type, final String name,
+	public boolean accept(final ContentType type) {
+		if (type.equals(ContentType.PV))
+			return true;
+		return false;
+	}
+
+	public AutoCompleteResult listResult(final ContentDescriptor desc,
 			final int limit) {
+		if (rdb == null)
+			return null;
 		AutoCompleteResult result = new AutoCompleteResult();
 
 		try {
-			String sqlPattern = AutoCompleteHelper.convertToSQL(name);
+			String sqlPattern = AutoCompleteHelper.convertToSQL(desc.getValue());
 			statement_count = rdb.getConnection().prepareStatement(pv_count);
 			statement_count.setString(1, sqlPattern);
 
@@ -63,7 +73,10 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 
 			final ResultSet result_get = statement_get.executeQuery();
 			while (result_get.next()) {
-				result.add(result_get.getString(1));
+				String value = result_get.getString(1);
+				if (value != null && !value.isEmpty()) {
+					result.addProposal(new Proposal(value, false));
+				}
 			}
 		} catch (Exception e) {
 			if ("!ERROR: canceling statement due to user request".equals(e
@@ -80,6 +93,12 @@ public class SDDPVListProvider implements IAutoCompleteProvider {
 				Activator.getLogger().log(Level.WARNING, e.getMessage());
 			}
 		}
+		
+		TopProposalFinder trf = new TopProposalFinder(Preferences.getSeparators());
+		List<Proposal> topProposals = trf.getTopProposals(desc.getValue(), result.getProposalsAsString());
+		for (Proposal p : topProposals)
+			result.addTopProposal(p);
+		
 		return result;
 	}
 

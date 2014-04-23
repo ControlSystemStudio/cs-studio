@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
@@ -404,7 +404,7 @@ public abstract class ValueFormat extends Format {
      * Parses the string and returns an array of indexes in the enum.
      * <p>
      * Default implementation expects a comma separated list, and parses
-     * each element with {@link #parseEnum(java.lang.String) }.
+     * each element with {@link #parseEnum(java.lang.String, java.util.List) }.
      * 
      * @param source the text to parse
      * @param labels the labels for the enum

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
@@ -25,7 +27,7 @@ public class WaterfallSelection implements ChannelQueryAdaptable, ConfigurableWi
 	}
 
 	@Override
-	public Collection<ProcessVariable> toProcesVariables() {
+	public Collection<ProcessVariable> toProcessVariables() {
 		return AdaptableUtilities.toProcessVariables(toChannels());
 	}
 

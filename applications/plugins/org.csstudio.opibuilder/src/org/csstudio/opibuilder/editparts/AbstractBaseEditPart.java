@@ -40,12 +40,12 @@ import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
-import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
+import org.csstudio.opibuilder.util.BOYPVFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.csstudio.opibuilder.util.OPIColor;
@@ -56,9 +56,9 @@ import org.csstudio.opibuilder.visualparts.TooltipLabel;
 import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.simplepv.IPV;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.csstudio.utility.pv.PV;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -122,7 +122,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	
 	private Runnable displayDisposeListener;
 
-	private Map<String, PV> pvMap = new HashMap<String, PV>();
+	private Map<String, IPV> pvMap = new HashMap<String, IPV>();
 
 	private ConnectionHandler connectionHandler;
 
@@ -178,7 +178,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 					scriptDataList.add(rd.convertToScriptData());
 				}
 				for (final ScriptData scriptData : scriptDataList) {
-					final PV[] pvArray = new PV[scriptData.getPVList().size()];
+					final IPV[] pvArray = new IPV[scriptData.getPVList().size()];
 					int i = 0;
 					for (PVTuple pvTuple : scriptData.getPVList()) {
 						String pvName = pvTuple.pvName;
@@ -186,7 +186,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 							pvArray[i] = pvMap.get(pvName);
 						} else {
 							try {
-								PV pv = BOYPVFactory.createPV(pvName, false, 2);
+								IPV pv = BOYPVFactory.createPV(pvName, false, 2);
 								pvMap.put(pvName, pv);
 								addToConnectionHandler(pvName, pv);
 								pvArray[i] = pv;
@@ -210,8 +210,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
 					UIBundlingThread.getInstance().addRunnable(new Runnable() {
 						public void run() {
-							for (PV pv : pvArray)
-								if (pv != null && !pv.isRunning())
+							for (IPV pv : pvArray)
+								if (pv != null && !pv.isStarted())
 									try {
 										pv.start();
 									} catch (Exception e) {
@@ -254,7 +254,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	protected void doDeActivate() {
 	}
 	
-	protected void addToConnectionHandler(String pvName, PV pv) {
+	protected void addToConnectionHandler(String pvName, IPV pv) {
 		if (connectionHandler == null)
 			connectionHandler = createConnectionHandler();
 		connectionHandler.addPV(pvName, pv);
@@ -302,7 +302,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 					ScriptService.getInstance().unRegisterScript(scriptData);
 				}
 				for (Object pv : pvMap.values().toArray()){
-					((PV) pv).stop();
+					((IPV) pv).stop();
 				}
 			}
 			propertyListenerMap.clear();
@@ -371,7 +371,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	 * It is not allowed to change the Map by client. null
 	 *   if no PV on this widget.
 	 */
-	public Map<String, PV> getAllPVs() {
+	public Map<String, IPV> getAllPVs() {
 		if (getConnectionHandler() != null)
 			return getConnectionHandler().getAllPVs();
 		return null;
@@ -381,7 +381,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	 * @param pvName name of the PV.
 	 * @return the PV. null if no such PV exists.
 	 */
-	public PV getPVByName(String pvName){
+	public IPV getPVByName(String pvName){
 		if (getConnectionHandler() != null)
 			return getConnectionHandler().getAllPVs().get(pvName);
 		return null;
@@ -784,11 +784,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	}
 	
 
-	/**Set border of the figure. It will consider the connection status.
+	/**Set border of the figure. If the border has been set for connection or null
+	 * value indication, the figure's border will not change.
 	 * @param border
 	 */
 	protected void setFigureBorder(Border border){
-		if(getConnectionHandler() != null && !getConnectionHandler().isConnected()){
+		if(getConnectionHandler() != null && (!getConnectionHandler().isConnected() ||
+				getConnectionHandler().isHasNullValue())){
 			return;
 		}
 		getFigure().setBorder(border);

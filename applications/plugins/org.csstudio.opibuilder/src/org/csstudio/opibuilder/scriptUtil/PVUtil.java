@@ -7,16 +7,24 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.scriptUtil;
 
-import org.csstudio.data.values.ISeverity;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.pvmanager.BOYPVFactory;
-import org.csstudio.opibuilder.widgetActions.WritePVAction;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.utility.pv.PV;
+import org.csstudio.opibuilder.util.BOYPVFactory;
+import org.csstudio.opibuilder.util.DisplayUtils;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.simplepv.IPV;
+import org.csstudio.simplepv.VTypeHelper;
+import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartListener;
+import org.eclipse.swt.widgets.Display;
+import org.epics.util.time.Timestamp;
+import org.epics.util.time.TimestampFormat;
+import org.epics.vtype.AlarmSeverity;
 
 /**The utility class to facilitate Javascript programming
  * for PV operation.
@@ -24,6 +32,8 @@ import org.eclipse.gef.EditPartListener;
  *
  */
 public class PVUtil{
+	
+	private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd HH:mm:ss.SSS"); //$NON-NLS-1$
 	
 	/**Create a PV and start it. PVListener can be added to the PV to monitor its
 	 * value change, but please note that the listener is executed in non-UI thread.
@@ -34,10 +44,10 @@ public class PVUtil{
 	 * 
 	 *  <pre>
 	from org.csstudio.opibuilder.scriptUtil import PVUtil
-	from org.csstudio.utility.pv import PVListener
+	from org.csstudio.simplepv import IPVListener
 		
-	class MyPVListener(PVListener):
-		def pvValueUpdate(self, pv):
+	class MyPVListener(IPVListener):
+		def valueChanged(self, pv):
 			widget.setPropertyValue("text", PVUtil.getString(pv))
 		
 	pv = PVUtil.createPV("sim://noise", widget)
@@ -50,9 +60,9 @@ public class PVUtil{
 	 * @return the PV.
 	 * @throws Exception the exception that might happen while creating the pv.
 	 */
-	public final static PV createPV(String name, AbstractBaseEditPart widget) throws Exception{
+	public final static IPV createPV(String name, AbstractBaseEditPart widget) throws Exception{
 		
-		final PV pv = BOYPVFactory.createPV(name, false, 2);
+		final IPV pv = BOYPVFactory.createPV(name, false, 20);
 		pv.start();
 		widget.addEditPartListener(new EditPartListener.Stub(){
 			
@@ -76,12 +86,12 @@ public class PVUtil{
      *          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
      *          indicates that there happens to be no useful value.
      */
-	public final static double getDouble(PV pv){
+	public final static double getDouble(IPV pv){
 		checkPVValue(pv);
-		return ValueUtil.getDouble(pv.getValue());
+		return VTypeHelper.getDouble(pv.getValue());
 	}
 
-	protected static void checkPVValue(PV pv) {
+	protected static void checkPVValue(IPV pv) {
 		if(pv.getValue() == null)
 			throw new RuntimeException("PV " + pv.getName() + " has no value.");
 	}
@@ -94,9 +104,9 @@ public class PVUtil{
      *  @param pv the PV.
      *  @return A long integer.
      */
-	public final static Long getLong(PV pv){
+	public final static Long getLong(IPV pv){
 		checkPVValue(pv);
-		return (long) ValueUtil.getDouble(pv.getValue());
+		return VTypeHelper.getNumber(pv.getValue()).longValue();
 	}
 
 	  /** Try to get a double-typed array element from the Value.
@@ -109,36 +119,39 @@ public class PVUtil{
      *          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
      *          indicates that there happens to be no useful value.
      */
-	public final static double getDouble(PV pv, int index){
+	public final static double getDouble(IPV pv, int index){
 		checkPVValue(pv);
-		return ValueUtil.getDouble(pv.getValue(), index);
+		return VTypeHelper.getDouble(pv.getValue(), index);
 	}
 
 
 	 /** Try to get a double-typed array from the pv.
      *  @param pv the pv.
-     *  @see #getSize(PV)
-     *  @see #getDouble(PV)
+     *  @see #getSize(IPV)
+     *  @see #getDouble(IPV)
      *  @return A double array, or an empty double array in case the value type
      *          does not decode into a number, or if the value's severity
      *          indicates that there happens to be no useful value.
      */
-	public final static double[] getDoubleArray(PV pv){
+	public final static double[] getDoubleArray(IPV pv){
 		checkPVValue(pv);
-		return ValueUtil.getDoubleArray(pv.getValue());
+		return VTypeHelper.getDoubleArray(pv.getValue());
 	}
 
 	 /** Try to get an integer-typed array from the pv.
      *  @param pv the pv.
-     *  @see #getSize(PV)
-     *  @see #getLong(PV)
+     *  @see #getSize(IPV)
+     *  @see #getLong(IPV)
      *  @return A long integer array, or an empty long integer array in case the value type
      *          does not decode into a number, or if the value's severity
      *          indicates that there happens to be no useful value.
      */
-	public final static long[] getLongArray(PV pv){
+	public final static long[] getLongArray(IPV pv){
 		checkPVValue(pv);
-		double[] dblArray = ValueUtil.getDoubleArray(pv.getValue());
+		Object wrappedArray = VTypeHelper.getWrappedArray(pv.getValue());
+		if(wrappedArray != null && wrappedArray instanceof long[])
+			return (long[]) wrappedArray;
+		double[] dblArray = VTypeHelper.getDoubleArray(pv.getValue());
 		long[] longArray = new long[dblArray.length];
 		int i=0;
 		for(double d : dblArray){
@@ -150,9 +163,9 @@ public class PVUtil{
     /**Get the size of the pv's value
      * @param pv the pv.
      * @return Array length of the pv value. <code>1</code> for scalars. */
-	public final static double getSize(PV pv){
+	public final static double getSize(IPV pv){
 		checkPVValue(pv);
-		return ValueUtil.getSize(pv.getValue());
+		return VTypeHelper.getSize(pv.getValue());
 	}
 
 
@@ -167,9 +180,9 @@ public class PVUtil{
 	 *            the pv.
 	 * @return a string representation of the value.
 	 */
-	public final static String getString(PV pv){
+	public final static String getString(IPV pv){
 		checkPVValue(pv);
-		return ValueUtil.getString(pv.getValue());
+		return VTypeHelper.getString(pv.getValue());
 	}
 
 	/**Get the full info from the pv in this format
@@ -177,7 +190,7 @@ public class PVUtil{
 	 * @param pv
 	 * @return the full info string
 	 */
-	public final static String getFullString(PV pv){
+	public final static String getFullString(IPV pv){
 		checkPVValue(pv);
 		return pv.getValue().toString();
 	}
@@ -187,9 +200,12 @@ public class PVUtil{
 	 * @param pv the pv
 	 * @return the timestamp in string.
 	 */
-	public final static String getTimeString(PV pv){
+	public final static String getTimeString(IPV pv){
 		checkPVValue(pv);
-		return pv.getValue().getTime().toString();
+		Timestamp time = VTypeHelper.getTimestamp(pv.getValue());
+		if(time != null)
+			return timeFormat.format(time);
+		return ""; //$NON-NLS-1$
 	}
 
 	 /** Get milliseconds since epoch, i.e. 1 January 1970 0:00 UTC.
@@ -201,49 +217,57 @@ public class PVUtil{
      *  @param pv the pv
      *  @return milliseconds since 1970.
      */
-	public final static double getTimeInMilliseconds(PV pv){
+	public final static double getTimeInMilliseconds(IPV pv){
 		checkPVValue(pv);
-		ITimestamp timestamp = pv.getValue().getTime();
-		double result = timestamp.seconds()*1000 + timestamp.nanoseconds()/1000000;
-		return result;
+		Timestamp time = VTypeHelper.getTimestamp(pv.getValue());
+		if(time != null)
+			return time.getSec()*1000 + time.getNanoSec()/1000000;
+		return 0;
 	}
 
 
 	/**Get severity of the pv as an integer value.
 	 * @param pv the PV.
-	 * @return 0:OK; -1: Invalid; 1: Major; 2:Minor.
+	 * @return 0:OK; -1: Invalid or Undefined; 1: Major; 2:Minor.
 	 */
-	public final static int getSeverity(PV pv){
+	public final static int getSeverity(IPV pv){
 		checkPVValue(pv);
-		ISeverity severity = pv.getValue().getSeverity();
-		if(severity.isInvalid())
+		AlarmSeverity severity = VTypeHelper.getAlarmSeverity(pv.getValue());
+		if(severity == null)
 			return -1;
-		if(severity.isMajor())
+		switch (severity) {		
+		case MAJOR:
 			return 1;
-		if(severity.isMinor())
+		case MINOR:
 			return 2;
-		if (severity.isOK()) {
+		case NONE:
 			return 0;
-		}
-		return -1;
+		case UNDEFINED:
+		case INVALID:
+		default:
+			return -1;
+		}		
 	}
 	
 	/**Get severity of the PV as a string.
 	 * @param pv the PV.
 	 * @return The string representation of the severity.
 	 */
-	public final static String getSeverityString(PV pv){
+	public final static String getSeverityString(IPV pv){
 		checkPVValue(pv);
-		return pv.getValue().getSeverity().toString();
+		AlarmSeverity severity = VTypeHelper.getAlarmSeverity(pv.getValue());
+		if(severity == null)
+			return "No Severity Info.";
+		return severity.toString();
 	}
 	
 	/**Get the status text that might describe the severity.
 	 * @param pv the PV.
 	 * @return the status string.
 	 */
-	public final static String getStatus(PV pv){
+	public final static String getStatus(IPV pv){
 		checkPVValue(pv);
-		return pv.getValue().getStatus();
+		return VTypeHelper.getAlarmName(pv.getValue());
 	}
 
     /**Write a PV in a background job. It will first creates and connects to the PV. After
@@ -252,16 +276,36 @@ public class PVUtil{
      * @param pvName name of the PV.
      * @param value value to write.
      * @param timeout maximum time to try connection.
-     * @param confirmMessage if this is not empty, a confirm dialog will popup before writing.
      */
-    public final static void writePV(String pvName, Object value,
-    		int timeout, String confirmMessage){
-    	WritePVAction action = new WritePVAction();
-    	action.setPropertyValue(WritePVAction.PROP_PVNAME, pvName);
-    	action.setPropertyValue(WritePVAction.PROP_VALUE, value.toString());
-    	action.setPropertyValue(WritePVAction.PROP_TIMEOUT, timeout);
-    	action.setPropertyValue(WritePVAction.PROP_CONFIRM_MESSAGE, confirmMessage);
-    	action.run();
+    public final static void writePV(final String pvName, final Object value,
+    		final int timeout){
+    	final Display display = DisplayUtils.getDisplay();
+		Job job = new Job("Writing PV: " + pvName) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {			
+					
+				try {
+					IPV pv = BOYPVFactory.createPV(pvName);
+					if(!pv.setValue(value, timeout*1000))
+						throw new Exception("Write Failed!");
+				} catch (final Exception e) {
+					UIBundlingThread.getInstance().addRunnable(
+							display, new Runnable() {
+								public void run() {
+									String message = "Failed to write PV:" + pvName
+											+ "\n" + 
+											(e.getCause() != null? e.getCause().getMessage():e.getMessage());
+									ErrorHandlerUtil.handleError(message, e, true, true);
+								}
+							});
+					return Status.CANCEL_STATUS;
+				}		
+				return Status.OK_STATUS;				
+			}
+
+		};
+
+		job.schedule();
     }
 
     /**Write a PV in a background job. It will first creates and connects to the PV. After
@@ -271,10 +315,7 @@ public class PVUtil{
      * @param value value to write.  
      */
     public final static void writePV(String pvName, Object value){
-    	WritePVAction action = new WritePVAction();
-    	action.setPropertyValue(WritePVAction.PROP_PVNAME, pvName);
-    	action.setPropertyValue(WritePVAction.PROP_VALUE, value.toString());
-    	action.run();
+    	writePV(pvName, value, 10);
     }
 
 }

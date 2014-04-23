@@ -5,7 +5,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.converter.objectContribution1"
+            id="org.csstudio.opibuilder.converter.edlfile2opi"
             nameFilter="*.edl"
             objectClass="org.eclipse.core.resources.IResource">
          <action
@@ -13,6 +13,18 @@
                enablesFor="*"
                id="org.csstudio.opibuilder.converter.convertedl"
                label="Convert to OPI file"
+               style="push">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.converter.edlfolder2opi"
+            objectClass="org.eclipse.core.resources.IFolder">
+         <action
+               class="org.csstudio.opibuilder.converter.ui.ConvertEDLFolderToOPIAction"
+               enablesFor="*"
+               id="org.csstudio.opibuilder.converter.edlfolder2opi"
+               label="Convert .edl files to OPI recursively"
                style="push">
          </action>
       </objectContribution>

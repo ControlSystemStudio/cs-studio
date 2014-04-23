@@ -1,0 +1,63 @@
+# EPICS Demo database
+#
+#   softIoc -s -d test.db
+
+record(calc, "sum")
+{
+    field(SCAN, "1 second")
+    field(INPA, "one_input PP MS")
+    field(INPB, "another_input PP MS")
+    field(CALC, "A+B")
+}
+
+record(calc, "one_input")
+{
+    field(CALC, "A<20 ? A+2 : 0")
+    field(INPA, "some_input PP")
+    field(LOLO, "2")
+    field(HSV, "INVALID")
+    field(LOW, "6")
+    field(HHSV, "MINOR")
+}
+
+record(calc, "some_input")
+{
+    field(CALC, "A<10 ? A+1 : 0")
+    field(INPA, "some_input")
+    field(HIGH, "7")
+    field(HSV, "MINOR")
+    field(HIHI, "9")
+    field(HHSV, "MAJOR")
+}
+
+record(calc, "another_input")
+{
+    field(CALC, "A<10 ? A+1 : 0")
+    field(INPA, "another_input")
+    field(HIGH, "7")
+    field(HSV, "MINOR")
+    field(HIHI, "9")
+    field(HHSV, "MAJOR")
+}
+
+record(calc, "ramp")
+{
+    field(CALC, "A<100 ? A+1:0")
+    field(INPA, "ramp")
+    field(SCAN, ".2 second")
+}
+
+record(calc, "sin")
+{
+    field(INPA, "ramp CP")
+    field(PREC, "3")
+    field(CALC, "sin(2*PI/100*A)")
+}
+
+record(calc, "cos")
+{
+    field(INPA, "ramp CP")
+    field(PREC, "3")
+    field(CALC, "cos(2*PI/100*A)")
+}
+

@@ -25,6 +25,14 @@ public abstract class ScriptUtilSSHelper {
 	
 	public abstract String openFileDialog(boolean inWorkspace);
 	
+	public abstract String openFileDialog(String startingFolder);
+	
+	public abstract String saveFileDialog(boolean inWorkspace);
+	
+	public abstract String saveFileDialog(String startingFolder);
+	
 	public abstract void makeElogEntry(final String text, final String filePath);
+
+	
 	
 }

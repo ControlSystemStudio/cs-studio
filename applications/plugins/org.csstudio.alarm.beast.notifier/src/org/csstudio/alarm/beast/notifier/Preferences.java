@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences {
     final public static String TIMER_THRESHOLD = "timer_threshold";
-    final public static String THREAD_THRESHOLD = "thread_threshold";
 
 	/**
 	 * @param setting Preference identifier
@@ -49,12 +48,5 @@ public class Preferences {
 			return 100; // default
 		return service.getInt(Activator.ID, TIMER_THRESHOLD, 100, null);
 	}
-	
-	/** @return threshold for automated actions */
-	public static int getThreadThreshold() {
-		final IPreferencesService service = Platform.getPreferencesService();
-		if (service == null)
-			return 100; // default
-		return service.getInt(Activator.ID, THREAD_THRESHOLD, 100, null);
-	}
+
 }

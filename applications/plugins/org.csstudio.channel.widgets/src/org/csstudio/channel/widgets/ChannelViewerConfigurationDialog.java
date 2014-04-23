@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
@@ -34,6 +35,7 @@ public class ChannelViewerConfigurationDialog
 		// getWidget().setShowChannelNames(getConfigurationComposite().isShowChannelNames());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void populateInitialValues() {
 		getConfigurationComposite().setPossibleProperties(

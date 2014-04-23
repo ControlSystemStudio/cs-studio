@@ -4,38 +4,133 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
   <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
-  <title>PV Auto-Complete</title>
+  <title>Auto-Complete Widget</title>
 </head>
 <body>
 
 <h1>Overview</h1>
 <p>
-The PV Auto-Complete tool helps user to find PV names
-displaying choices when the user starts typing.
+The Auto-Complete tool helps user to find data using defined providers and
+displays choices when the user starts typing.
 </p>
 <p>
-If there is no implementation for name lookup, the user interface simply remembers names that were entered before. 
+If there is no implementation for data lookup, the user interface simply remembers values that were entered before. 
 </p>
 <p>
-If there is a name lookup implementation available, whenever a PV name need to be entered, CSS offers assistance by listing possible values. 
-When typing "T" for instance, the 10 first PV names starting by T will be displayed with an indicator of xxx more...
+If there is a data lookup implementation available, whenever a value need to be entered, CSS offers assistance by listing possible choices. 
+When typing "T" in a PV auto-completed field for instance, the 10 first PV names starting by T will be displayed with an indicator of xxx matching items by provider.
 It allows wildcards * and ?.
 </p>
 
 <center>
-  <img src="pvnames.png"/>
+  <img src="ac1.png"/>
 </center>
+
+<p>
+Another behavior which has to be implement by site specific providers is the top proposals.
+The Auto-Complete tool displays on top a list of most reliable proposals.
+If this list contains only one result, the field will be automatically completed.
+</p>
+
+<center>
+  <img src="ac2.png"/>
+</center>
+
+<p>
+Auto-Complete also provides help for formula, sim, sys and loc data sources if the corresponding plug-ins are installed.
+<ul>
+  <li>Formula function provider requests the formula registry from <code>o.c.utility.pvmanager.extra</code> plug-in and uses the provided information (name, parameters, ...) to generate a tooltip.
+    <center>
+      <img src="ac_formula.png"/>
+    </center>
+  </li>
+  <li>Sim Data Source provider makes use of its own formula registry which is very similar to the one defined in <code>o.c.utility.pvmanager.extra</code> plug-in and generates tooltips the same way.
+    <center>
+      <img src="ac_sim.png"/>
+    </center>
+  </li>
+  <li>Sys Data Source provider has a static list of function taken from CSS help content and requests the OS for available properties when the user selects the <i>'system'</i> function.
+    <center>
+      <img src="ac_sys.png"/>
+    </center>
+  </li>
+  <li>Loc Data Source provider provides VTypes from a static list and generate specific tooltips.
+    <center>
+      <img src="ac_loc.png"/>
+    </center>
+  </li>
+</ul>
+</p>
+
+<p>
+Auto-Complete completion is done on cursor position which means that only the text before the cursor will be sent to the auto-complete service. 
+The text after the cursor remains unchanged.
+<center>
+  <img src="ac_cursor.png"/>
+</center>
+</p>
+
+<p>
+An assistance is displayed via a pop-up which content and styling are provided by providers.
+The provider can set a list of tooltip data in the <code>AutoCompleteResult</code>. 
+These ones are displayed as soon as the provider ends processing.
+Another way is to set this list in the Proposal itself. 
+This way, they are displayed when the Proposal is accepted.
+This feature allows providers which receive an already parsed content to assist the user with a styled text.
+<center>
+  <img src="ac_assist1.png"/>
+</center>
+<center>
+  <img src="ac_assist2.png"/>
+</center>
+<center>
+  <img src="ac_assist3.png"/>
+</center>
+</p>
 
 <h2>Usage</h2>
 <p>
 Start typing and the popup will appears automatically.
-You can force it using ctrl + space.
+You can force it using <strong>ctrl + space</strong>.
 Some special characters are allowed:
 </p>
 <ul>
   <li>* => replace 1 to n characters.</li>
   <li>? => replace only 1 character.</li>
 </ul>
+
+<h2>Preferences</h2>
+<p>
+Each auto-completed field comes with a type. 
+The type allows users to define a specific behavior for auto-completed fields.
+Each type handles an ordered provider list and a number of maximum displayed results per provider.
+If no provider is defined for a type, the history with a default maximum number of displayed results will be taken.
+If no maximum displayed results is defined for a provider, the one defined by the <code>default_max_results</code> preference will be used.
+</p>
+<p>
+Preferences must be defined using the following pattern:<br/>
+<code>
+providers.TYPE=provider_name[,max_results];provider_name[,max_results]...<br/>
+providers.ANOTHER_TYPE=provider_name[,max_results];provider_name[,max_results]...
+</code>
+</p>
+<p>
+Example:<br/>
+<code>
+default_max_results=10 <br/>
+providers.PV=History; DB Files; SDD Database <br/>
+providers.LogentrySearch=Logbook,10; History,10
+providers.ShiftSearch=Shift,10; History,10
+
+</code>
+</p>
+<p>
+Providers results will be displayed in the same order as specified in the preference.
+</p>
+<p>
+<strong>Tip</strong>: The auto-complete history can be cleared manually. All you have to do is to delete the following file:
+<code>[workspace_dir]/.metadata/.plugins/org.csstudio.autocomplete.ui/dialog_settings.xml</code>
+</p>
 
 </body>
 </html>

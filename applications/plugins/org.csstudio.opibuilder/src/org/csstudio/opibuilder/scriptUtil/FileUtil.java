@@ -202,7 +202,7 @@ public class FileUtil {
 	/**Open a file select dialog.
 	 * @param inWorkspace true if it is a workspace file dialog; Otherwise, it is a local
 	 * file system file dialog. 
-	 * @return the full file path. Or null if it is canceled.
+	 * @return the full file path. Or null if it is cancelled.
 	 */
 	public static String openFileDialog(boolean inWorkspace){
 		if(ScriptUtilSSHelper.getIMPL() != null)
@@ -210,7 +210,40 @@ public class FileUtil {
 		else
 			throw new RuntimeException("This method is not implemented!");
 	}
+	
+	/**Open a file select dialog.
+	 * @param startingFolder the folder where the file dialog starts.
+	 * @return the full file path. Or null if it is cancelled.
+	 */
+	public static String openFileDialog(String startingFolder){
+		if(ScriptUtilSSHelper.getIMPL() != null)
+			return ScriptUtilSSHelper.getIMPL().openFileDialog(startingFolder);
+		else
+			throw new RuntimeException("This method is not implemented!");
+	}
 		
+	/**Open a file save dialog.
+	 * @param inWorkspace true if it is a workspace file dialog; Otherwise, it is a local
+	 * file system file dialog. 
+	 * @return the full file path. Or null if it is cancelled.
+	 */
+	public static String saveFileDialog(boolean inWorkspace){
+		if(ScriptUtilSSHelper.getIMPL() != null)
+			return ScriptUtilSSHelper.getIMPL().saveFileDialog(inWorkspace);
+		else
+			throw new RuntimeException("This method is not implemented!");
+	}
+	
+	/**Open a file save dialog.
+	 * @param startingFolder the folder where the file dialog starts.
+	 * @return the full file path. Or null if it is cancelled.
+	 */
+	public static String saveFileDialog(String startingFolder){
+		if(ScriptUtilSSHelper.getIMPL() != null)
+			return ScriptUtilSSHelper.getIMPL().saveFileDialog(startingFolder);
+		else
+			throw new RuntimeException("This method is not implemented!");
+	}
 	
 	protected static IPath buildAbsolutePath(String filePath,
 			AbstractBaseEditPart widget) {
@@ -221,15 +254,15 @@ public class FileUtil {
 	}
 	
 
-	/**Convert an exist workspace path to system path.
+	/**Convert a workspace path to system path. 
+	 * If this resource is a project that does not exist in the workspace, or a file or folder below such a project, this method returns null.
 	 * @param workspacePath path in workspace.
-	 * @return the system path on OS.
-	 * @throws RuntimeException if the workspace path doesn't exist.
+	 * @return the system path on OS. Return an empty string if the path doesn't exist.
 	 */
 	public static String workspacePathToSysPath(String workspacePath) throws RuntimeException{
 		IPath path = ResourceUtil.workspacePathToSysPath(new Path(workspacePath));
 		if(path == null)
-			throw new RuntimeException(workspacePath + " doesn't exist!");				
+			return null; 				
 		return path.toOSString();
 	}
 	

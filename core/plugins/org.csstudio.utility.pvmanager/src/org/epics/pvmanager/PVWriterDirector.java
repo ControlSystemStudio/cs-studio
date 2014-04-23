@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager;
 
@@ -98,7 +98,7 @@ public class PVWriterDirector<T> {
     }
     
     /**
-     * Simulate a static connection in which the channel name as one exception
+     * Simulate a static connection in which the channel name has one exception
      * and the connection will never change.
      * <p>
      * This is a temporary method an will be subject to change in the future.

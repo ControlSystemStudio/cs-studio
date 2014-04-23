@@ -11,12 +11,26 @@
                   icon="icons/login.png"
                   style="push"
                   tooltip="%LoginTT">
+               <visibleWhen
+                     checkEnabled="false">
+                  <systemTest
+                        property="org.csstudio.runtime.platform"
+                        value="rcp">
+                  </systemTest>
+               </visibleWhen>
             </command>
             <command
                   commandId="org.csstudio.security.logout"
                   icon="icons/logout.png"
                   style="push"
                   tooltip="%LogoutTT">
+               <visibleWhen
+                     checkEnabled="false">
+                  <systemTest
+                        property="org.csstudio.runtime.platform"
+                        value="rcp">
+                  </systemTest>
+               </visibleWhen>
             </command>
          </toolbar>
       </menuContribution>
@@ -75,6 +89,10 @@
          </variable>
          <variable
                name="org.csstudio.security.ui.current_user"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="org.csstudio.security.ui.current_authorization"
                priorityLevel="workbench">
          </variable>
       </sourceProvider>

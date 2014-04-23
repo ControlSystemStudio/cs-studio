@@ -100,6 +100,36 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	
 	private static final int MAX_ARRAY_SIZE = 10000000;
 	
+	/** Information about one 'Pixel' in the graph */
+	public class PixelInfo
+	{
+	    /** Location as indices into the data array */
+	    public int xindex, yindex;
+	    
+	    /** Coordinate of a pixel within the graph,
+	     *  i.e. on the X respectively Y axis
+	     */
+	    public double xcoord, ycoord;
+	    
+	    /** Value of the graph, i.e. the element
+	     *  of the data array at that location
+	     */
+	    public double value;
+	}
+	
+	/** Interface for notifications about a 'Pixel'
+	 *  @see IntensityGraphFigure#addPixelInfoListener
+	 */
+	public interface IPixelInfoListener
+	{
+	    /** Mouse was moved, or user selected (clicked) on a
+	     *  location in the graph
+	     *  @param pixel_info Information about a pixel
+	     *  @param selected Was mouse button clicked to select this location, or mouse simply moved?
+	     */
+	    public void pixelInfoChanged(PixelInfo pixel_info, boolean selected);
+	}
+	
 	/**
 	 * ROI listener which will be notified whenever ROI moved.
 	 * @author Xihui
@@ -469,35 +499,48 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 
 		}
 		
-		private synchronized void updateTextCursor(MouseEvent me) {
+		/** @param x Mouse location x 
+		 *  @param y Mouse location y
+		 *  @return PixelInfo for that mouse location
+		 */
+		synchronized PixelInfo getPixelInfoForMouseLocation(final int x, final int y) {
+            if(croppedDataArray == null)
+                return null;
+            final Point dataLocation = getDataLocation(x, y);       
+            if (dataLocation == null)
+                return null;
+            if ((dataLocation.y)*croppedDataWidth + dataLocation.x >= croppedDataArray.getSize())
+                return null;
+		    
+		    final PixelInfo pixel_info = new PixelInfo();
+            if (inRGBMode) {
+                final int index = (dataLocation.y) * croppedDataWidth * 3
+                        + dataLocation.x * 3;
+                pixel_info.value =
+                        (croppedDataArray.get(index) +
+                         croppedDataArray.get(index + 1) +
+                         croppedDataArray.get(index + 2)) / 3;
+            }
+            else
+                pixel_info.value = croppedDataArray.get((dataLocation.y)*croppedDataWidth + dataLocation.x);
+
+            pixel_info.xindex = dataLocation.x + cropLeft;
+            pixel_info.yindex = dataLocation.y + cropTop;
+            pixel_info.xcoord = xAxis.getPositionValue(x, false);
+            pixel_info.ycoord = yAxis.getPositionValue(y, false);
+            return pixel_info;
+		}
+		
+		private synchronized void updateTextCursor(final PixelInfo pixel_info) {
 			if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
 				return;
-					if(croppedDataArray == null)
-						return;
 					if(getCursor() != null)
 						getCursor().dispose();
-					double xCoordinate = xAxis.getPositionValue(me.x, false);
-					double yCoordinate = yAxis.getPositionValue(me.y, false);
 					
-					Point dataLocation = getDataLocation(me.x, me.y);		
-					if(dataLocation == null)
-						return;
-					if((dataLocation.y)*croppedDataWidth + dataLocation.x >= croppedDataArray.getSize())
-						return;
-					double valueUnderMouse;
-					if(inRGBMode){
-						int index = (dataLocation.y) * croppedDataWidth * 3
-								+ dataLocation.x * 3;
-						valueUnderMouse = (croppedDataArray.get(index)
-								+ croppedDataArray.get(index + 1) + croppedDataArray
-								.get(index + 2)) / 3;
-					}
-					else
-						valueUnderMouse = croppedDataArray.get((dataLocation.y)*croppedDataWidth + dataLocation.x);
-					String text = "(" + xAxis.format(xCoordinate) + ", " + yAxis.format(yCoordinate) + ", "+ 
-						yAxis.format(valueUnderMouse) + ")";
-					text = text + getPixelInfo(dataLocation.x + cropLeft, dataLocation.y + cropTop,
-							xCoordinate, yCoordinate, valueUnderMouse);							
+					String text = "(" + xAxis.format(pixel_info.xcoord) + ", " + yAxis.format(pixel_info.ycoord) + ", "+ 
+	                        yAxis.format(pixel_info.value) + ")";
+	                text = text + getPixelInfo(pixel_info.xindex, pixel_info.yindex,
+	                        pixel_info.xcoord, pixel_info.ycoord, pixel_info.value);							
 					Dimension size = FigureUtilities.getTextExtents(
 							text, Display.getDefault().getSystemFont());
 					Image image = new Image(Display.getDefault(),
@@ -548,7 +591,13 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			if(!armed)
 				return;
 			if(graphArea.getClientArea().contains(me.getLocation())){
-				graphArea.updateTextCursor(me);
+		        final PixelInfo pixel_info = graphArea.getPixelInfoForMouseLocation(me.x, me.y);
+		        if (pixel_info != null)
+		        {
+    				graphArea.updateTextCursor(pixel_info);
+    				for (IPixelInfoListener listener : pixelInfoListeners)
+    				    listener.pixelInfoChanged(pixel_info, false);
+		        }
 				end = me.getLocation();		
 				graphArea.repaint();
 			}
@@ -556,7 +605,13 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 
 		@Override
 		public void mouseMoved(MouseEvent me) {
-			graphArea.updateTextCursor(me);
+		    final PixelInfo pixel_info = graphArea.getPixelInfoForMouseLocation(me.x, me.y);
+		    if (pixel_info != null)
+		    {
+                graphArea.updateTextCursor(pixel_info);
+                for (IPixelInfoListener listener : pixelInfoListeners)
+                    listener.pixelInfoChanged(pixel_info, false);
+		    }
 		}
 
 		
@@ -565,7 +620,13 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		    // Only react to 'main' mouse button
 		    if (me.button != 1)
 				return;
-			armed = true;
+
+	        final PixelInfo pixel_info = graphArea.getPixelInfoForMouseLocation(me.x, me.y);
+	        if (pixel_info != null)
+    	        for (IPixelInfoListener listener : pixelInfoListeners)
+    	            listener.pixelInfoChanged(pixel_info, true);
+		    
+		    armed = true;
 			//get start position
 			start = me.getLocation();
 			end = null;
@@ -587,6 +648,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		void croppedDataSizeChanged(int croppedDataWidth, int croppedDataHeight);
 	}
 	
+	// TODO Fix type in "... Listener", or too late because it's in use?
 	public interface IProfileDataChangeLisenter{
 		/**Called whenever profile data changed. This is called in a non-UI thread.
 		 * @param xProfileData Profile data on x Axis.
@@ -639,6 +701,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	private ImageData bufferedImageData;
 	private Image bufferedImage; //the buffered image 
 	private List<IProfileDataChangeLisenter> profileListeners;
+	private List<IPixelInfoListener> pixelInfoListeners = new ArrayList<IPixelInfoListener>();
 	private List<IPixelInfoProvider> pixelInfoProviders;
 	private List<ICroppedDataSizeListener> croppedDataSizeListeners;
 	
@@ -703,6 +766,10 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			profileListeners.add(listener);
 	}
 
+	public void addPixelInfoListener(final IPixelInfoListener listener) {
+	    pixelInfoListeners.add(listener);
+	}
+	
 	public void addPixelInfoProvider(IPixelInfoProvider pixelInfoProvider){
 		if(pixelInfoProvider != null){
 			if(pixelInfoProviders == null)
@@ -1004,17 +1071,20 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		if(colorMapRamp.isVisible())
 			width += (colorMapRamp.getPreferredSize(
 				getClientArea().width, getClientArea().height).width + GAP);
-		if(yAxis.isVisible()){
+		//This is a temporary fix of cursor value problem when the axes are invisible
+		boolean yVisible = true;// yAxis.isVisible();
+		boolean xVisible = true;// xAxis.isVisible();
+		if(yVisible){
 			width += yAxis.getPreferredSize(getClientArea().width, getClientArea().height).width;
 			height += yAxis.getMargin();
-			if(!xAxis.isVisible())
+			if(!xVisible)
 				height += yAxis.getMargin();
 		}
-		if(xAxis.isVisible()){
+		if(xVisible){
 			height += xAxis.getPreferredSize(getClientArea().width, getClientArea().height).height;
 			if(!colorMapRamp.isVisible())
 				width += xAxis.getMargin();
-			if(!yAxis.isVisible())
+			if(!yVisible)
 				width += xAxis.getMargin();
 				
 		}
@@ -1077,24 +1147,27 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		Rectangle clientArea = getClientArea().getCopy();	
 
 		Rectangle yAxisBounds = null, xAxisBounds = null, rampBounds;
-		if(yAxis.isVisible()){
+		//This is a temporary fix of cursor value problem when the axes are invisible
+		boolean xVisible = true;// xAxis.isVisible();
+		boolean yVisible = true;//yAxis.isVisible();
+		if(yVisible){
 			Dimension yAxisSize = yAxis.getPreferredSize(clientArea.width, clientArea.height);			
 			yAxisBounds = new Rectangle(clientArea.x, clientArea.y, 
 					yAxisSize.width, yAxisSize.height); // the height is not correct for now
 			clientArea.x += yAxisSize.width;
 			clientArea.y += yAxis.getMargin();	
-			clientArea.height -= xAxis.isVisible()? yAxis.getMargin() : 2*yAxis.getMargin()-1;				
+			clientArea.height -= xVisible? yAxis.getMargin() : 2*yAxis.getMargin()-1;				
 			clientArea.width -= yAxisSize.width;			
 		}
-		if(xAxis.isVisible()){
+		if(xVisible){
 			Dimension xAxisSize = xAxis.getPreferredSize(clientArea.width, clientArea.height);			
 			
-			xAxisBounds = new Rectangle((yAxis.isVisible() ? yAxisBounds.x + yAxisBounds.width - xAxis.getMargin()-1 : clientArea.x), 
+			xAxisBounds = new Rectangle((yVisible ? yAxisBounds.x + yAxisBounds.width - xAxis.getMargin()-1 : clientArea.x), 
 				clientArea.y + clientArea.height - xAxisSize.height,
 				xAxisSize.width, xAxisSize.height); // the width is not correct for now
 			clientArea.height -= xAxisSize.height;	
 			//re-adjust yAxis height					
-			if(yAxis.isVisible()){
+			if(yVisible){
 				yAxisBounds.height -= (xAxisSize.height - yAxis.getMargin()); 
 			}else{
 				clientArea.x +=xAxis.getMargin();
@@ -1109,26 +1182,26 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			colorMapRamp.setBounds(rampBounds);
 			clientArea.width -= (rampSize.width + GAP);
 			//re-adjust xAxis width
-			if(xAxis.isVisible())
-				if(yAxis.isVisible())
+			if(xVisible)
+				if(yVisible)
 					xAxisBounds.width -=(rampSize.width + GAP - 2*xAxis.getMargin());
 				else	
 					xAxisBounds.width -= (rampSize.width + GAP - xAxis.getMargin());
 		}else{
 			//re-adjust xAxis width
-			if(xAxis.isVisible()){
-				if(yAxis.isVisible())
+			if(xVisible){
+				if(yVisible)
 					xAxisBounds.width += xAxis.getMargin();
 				clientArea.width -= xAxis.getMargin();
 			}
 				
 		}
 		
-		if(yAxis.isVisible()){
+		if(yVisible){
 			yAxis.setBounds(yAxisBounds);
 		}
 		
-		if(xAxis.isVisible()){
+		if(xVisible){
 			xAxis.setBounds(xAxisBounds);
 		}
 			
@@ -1420,6 +1493,10 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			throw new IllegalArgumentException(name + " is not an existing ROI");
 	}
 	
+	public ROIFigure getROI(String name){
+		return roiMap.get(name);
+	}
+	
 	/**
 	 * @param runMode the runMode to set
 	 */
@@ -1485,7 +1562,8 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	public ColorDepth getColorDepth() {
 		return colorDepth;
 	}
-	/**Set Color depth of the image.
+	/**Set Color depth of the image. 
+	 * See http://en.wikipedia.org/wiki/Color_depth
 	 * @param colorDepth the colorDepth to set
 	 */
 	public void setColorDepth(ColorDepth colorDepth) {

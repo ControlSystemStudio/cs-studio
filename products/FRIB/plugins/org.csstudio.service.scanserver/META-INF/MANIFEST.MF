@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scanserver Client Service
+Bundle-SymbolicName: org.csstudio.service.scanserver;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.service.scanserver.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager,
+ edu.msu.frib.scanserver.api,
+ org.csstudio.utility.pvmanager.ui,
+ org.epics.vtype
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

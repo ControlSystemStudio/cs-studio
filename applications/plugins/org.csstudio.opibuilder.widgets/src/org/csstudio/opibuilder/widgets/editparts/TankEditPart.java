@@ -7,21 +7,22 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.TankModel;
 import org.csstudio.swt.widgets.figures.TankFigure;
 import org.eclipse.draw2d.IFigure;
+import org.epics.vtype.AlarmSeverity;
 
 /**
  * EditPart controller for the tank widget. The controller mediates between
  * {@link TankModel} and {@link TankFigure}.
  * 
  * @author Xihui Chen
- * 
+ * @author Takashi Nakamoto - support for "FillColor Alarm Sensitive" property
  */
 public final class TankEditPart extends AbstractMarkedWidgetEditPart {
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,9 +87,33 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(TankModel.PROP_EFFECT3D, effect3DHandler);	
-		
-		
-		
-	}
 
+		// Change fill color when "FillColor Alarm Sensitive" property changes.
+		IWidgetPropertyChangeHandler fillColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
+				TankFigure figure = (TankFigure) refreshableFigure;
+				boolean sensitive = (Boolean)newValue;
+				figure.setFillColor(
+						delegate.calculateAlarmColor(sensitive,
+													 getWidgetModel().getFillColor()));
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TankModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
+		
+		// Change fill color when alarm severity changes.
+		delegate.addAlarmSeverityListener(new AlarmSeverityListener() {			
+
+			@Override
+			public boolean severityChanged(AlarmSeverity severity, IFigure figure) {
+				if (!getWidgetModel().isFillColorAlarmSensitive())
+					return false;
+				TankFigure tank = (TankFigure) figure;
+				tank.setFillColor(
+						delegate.calculateAlarmColor(getWidgetModel().isFillColorAlarmSensitive(),
+													 getWidgetModel().getFillColor()));
+				return true;
+			}
+		});
+	}
 }

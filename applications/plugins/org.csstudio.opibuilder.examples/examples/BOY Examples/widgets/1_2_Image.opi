@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>22a37a1d:1387c6b6909:-7c2c</wuid>
-  <boy_version>3.2.0.qualifier</boy_version>
+  <boy_version>3.2.10.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -513,7 +513,7 @@ $(pv_value)</tooltip>
           <value>platform:/plugin/org.csstudio.opibuilder/html/img/Widgets.png</value>
         </exp>
         <exp bool_exp="pv0==3">
-          <value>http://neutrons.ornl.gov/images/ChestnutRidgeLayout.jpg</value>
+          <value>https://www.google.com/images/srpr/logo11w.png</value>
         </exp>
         <pv trig="true">sim://ramp(0,3,1,1)</pv>
       </rule>
@@ -522,7 +522,7 @@ $(pv_value)</tooltip>
     <crop_bottom>0</crop_bottom>
     <degree>0</degree>
     <border_width>1</border_width>
-    <image_file>http://neutrons.ornl.gov/images/ChestnutRidgeLayout.jpg</image_file>
+    <image_file></image_file>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -670,26 +670,26 @@ $(pv_value)</tooltip>
     </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <enabled>true</enabled>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
     <widget_type>Grouping Container</widget_type>
+    <enabled>true</enabled>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>185</width>
     <border_style>0</border_style>
     <rules />
+    <fc>false</fc>
     <lock_children>true</lock_children>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>554</y>
     <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/openHelp.js</path>
@@ -699,8 +699,9 @@ $(pv_value)</tooltip>
         <description>Open Help</description>
       </action>
     </actions>
-    <x>613</x>
+    <y>554</y>
     <tooltip></tooltip>
+    <x>613</x>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
@@ -868,16 +869,12 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <pv_name></pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>

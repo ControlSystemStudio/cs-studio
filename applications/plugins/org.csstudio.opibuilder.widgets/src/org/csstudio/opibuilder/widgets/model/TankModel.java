@@ -17,11 +17,15 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * This class defines a tank widget model.
  * @author Xihui Chen
+ * @author Takashi Nakamoto - added "FillColor Alarm Sensitive" property
  */
 public class TankModel extends AbstractMarkedWidgetModel{	
 	
 	/** The ID of the fill color property. */
 	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$	
+	
+	/** The ID of the fillcolor alarm sensitive property. */
+	public static final String PROP_FILLCOLOR_ALARM_SENSITIVE = "fillcolor_alarm_sensitive"; //$NON-NLS-1$	
 	
 	/** The ID of the show minor ticks property. */
 	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
@@ -60,7 +64,9 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	protected void configureProperties() {
 		super.configureProperties();		
 		addProperty(new ColorProperty(PROP_FILL_COLOR, "Fill Color",
-				WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR));	
+				WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR));
+		addProperty(new BooleanProperty(PROP_FILLCOLOR_ALARM_SENSITIVE, "FillColor Alarm Sensitive", 
+				WidgetPropertyCategory.Display, false));	
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
 				WidgetPropertyCategory.Display, true));	
@@ -86,7 +92,14 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	 */
 	public Color getFillColor() {
 		return getSWTColorFromColorProperty(PROP_FILL_COLOR);
-	}	
+	}
+	
+	/**
+	 * @return true if the fill color is sensitive to alarm
+	 */
+	public boolean isFillColorAlarmSensitive() {
+		return (Boolean) getProperty(PROP_FILLCOLOR_ALARM_SENSITIVE).getPropertyValue();
+	}
 	
 	/**
 	 * @return true if the bulb should be shown, false otherwise

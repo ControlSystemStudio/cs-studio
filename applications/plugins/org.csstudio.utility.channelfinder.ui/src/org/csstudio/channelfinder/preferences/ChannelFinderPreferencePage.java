@@ -1,6 +1,6 @@
 package org.csstudio.channelfinder.preferences;
 
-import org.csstudio.auth.ui.security.PasswordFieldEditor;
+import org.csstudio.security.ui.PasswordFieldEditor;
 import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -25,58 +25,59 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  */
 
 public class ChannelFinderPreferencePage extends FieldEditorPreferencePage
-		implements IWorkbenchPreferencePage {
+	implements IWorkbenchPreferencePage {
 
-	StringFieldEditor urlField;
-	FileFieldEditor truststoreField;
+    StringFieldEditor urlField;
+    FileFieldEditor truststoreField;
 
-	public ChannelFinderPreferencePage() {
-		super(GRID);
-		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
-				Activator.PLUGIN_ID));
-		setMessage("ChannelFinderAPI Client Preferences");
-		setDescription("ChannelFinder preference page");
-	}
+    public ChannelFinderPreferencePage() {
+	super(GRID);
+	setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+		Activator.PLUGIN_ID));
+	setMessage("ChannelFinderAPI Client Preferences");
+	setDescription("ChannelFinder preference page");
+    }
 
-	/**
-	 * Creates the field editors. Field editors are abstractions of the common
-	 * GUI blocks needed to manipulate various types of preferences. Each field
-	 * editor knows how to save and restore itself.
-	 */
-	public void createFieldEditors() {
-		urlField = new StringFieldEditor(PreferenceConstants.ChannelFinder_URL,
-				"ChannelFinder Service URL:", getFieldEditorParent());
-		// no need to override checkstate
-		// urlField.setEmptyStringAllowed(false);
-		addField(urlField);
-	
-		addField(new StringFieldEditor(PreferenceConstants.Username, 
-			    "username:", getFieldEditorParent()));
-		
-		addField(new PasswordFieldEditor(PreferenceConstants.Password,
-				"user password: ", getFieldEditorParent(), Activator.PLUGIN_ID));
-	}
+    /**
+     * Creates the field editors. Field editors are abstractions of the common
+     * GUI blocks needed to manipulate various types of preferences. Each field
+     * editor knows how to save and restore itself.
+     */
+    public void createFieldEditors() {
+	urlField = new StringFieldEditor(PreferenceConstants.ChannelFinder_URL,
+		"ChannelFinder Service URL:", getFieldEditorParent());
+	// no need to override checkstate
+	// urlField.setEmptyStringAllowed(false);
+	addField(urlField);
 
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		super.propertyChange(event);
-		if (event.getProperty().equals(FieldEditor.VALUE)) {
-			checkState();
-		}
-	}
+	addField(new StringFieldEditor(PreferenceConstants.Username,
+		"username:", getFieldEditorParent()));
 
-	@Override
-    public boolean performOk()
-    {
-		boolean ret = super.performOk();
-		return ret;
+	addField(new PasswordFieldEditor(Activator.PLUGIN_ID,
+		PreferenceConstants.Password, "user password: ",
+		getFieldEditorParent()));
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+	super.propertyChange(event);
+	if (event.getProperty().equals(FieldEditor.VALUE)) {
+	    checkState();
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	public void init(IWorkbench workbench) {
-	}
+    }
+
+    @Override
+    public boolean performOk() {
+	boolean ret = super.performOk();
+	return ret;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
+    public void init(IWorkbench workbench) {
+    }
 }

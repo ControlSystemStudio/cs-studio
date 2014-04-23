@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -14,8 +14,8 @@ public class TemporalGraph2DRendererUpdate<T extends TemporalGraph2DRendererUpda
     private Integer imageWidth;
     private AxisRange axisRange;
     private TimeAxisRange timeAxisRange;
-    private ValueScale xValueScale;
-    private ValueScale yValueScale;
+    private ValueScale valueScale;
+    private TimeScale timeScale;
     
     protected T self() {
         return (T) this;
@@ -41,13 +41,13 @@ public class TemporalGraph2DRendererUpdate<T extends TemporalGraph2DRendererUpda
         return self();
     }
     
-    public T xValueScale(ValueScale xValueScale) {
-        this.xValueScale = xValueScale;
+    public T valueScale(ValueScale valueScale) {
+        this.valueScale = valueScale;
         return self();
     }
     
-    public T yValueScale(ValueScale yValueScale) {
-        this.yValueScale = yValueScale;
+    public T timeScale(TimeScale timeScale) {
+        this.timeScale = timeScale;
         return self();
     }
     
@@ -67,12 +67,12 @@ public class TemporalGraph2DRendererUpdate<T extends TemporalGraph2DRendererUpda
         return timeAxisRange;
     }
 
-    public ValueScale getXValueScale() {
-        return xValueScale;
+    public ValueScale getValueScale() {
+        return valueScale;
     }
 
-    public ValueScale getYValueScale() {
-        return yValueScale;
+    public TimeScale getTimeScale() {
+        return timeScale;
     }
     
     

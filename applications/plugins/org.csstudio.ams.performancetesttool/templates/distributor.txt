@@ -1,8 +1,0 @@
-AMS-FILTERID=1641
-TYPE=event
-EVENTTIME={date:yyyy-MM-dd HH:mm:ss.SSS}
-HOST=krykpct
-USER=mmoeller
-SEVERITY=NO_ALARM
-STATUS=NO_ALARM
-NAME=Test

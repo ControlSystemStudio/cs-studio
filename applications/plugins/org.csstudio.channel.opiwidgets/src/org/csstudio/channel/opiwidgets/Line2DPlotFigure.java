@@ -3,7 +3,7 @@
  */
 package org.csstudio.channel.opiwidgets;
 
-import org.csstudio.channel.widgets.Line2DPlotWidget;
+import org.csstudio.channel.widgets.ChannelLinePlotWidget;
 import org.csstudio.channel.widgets.WaterfallWidget;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.eclipse.swt.SWT;
@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Control;
  * @author shroffk
  *
  */
-public class Line2DPlotFigure extends AbstractChannelWidgetFigure<Line2DPlotWidget> {
+public class Line2DPlotFigure extends AbstractChannelWidgetFigure<ChannelLinePlotWidget> {
 
 	public Line2DPlotFigure(AbstractBaseEditPart editPart) {
 		super(editPart);
@@ -24,8 +24,8 @@ public class Line2DPlotFigure extends AbstractChannelWidgetFigure<Line2DPlotWidg
 	 * @see org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure#createSWTWidget(org.eclipse.swt.widgets.Composite, int)
 	 */
 	@Override
-	protected Line2DPlotWidget createSWTWidget(Composite parent, int style) {
-		return new Line2DPlotWidget(parent, SWT.NONE);
+	protected ChannelLinePlotWidget createSWTWidget(Composite parent, int style) {
+		return new ChannelLinePlotWidget(parent, SWT.NONE);
 	}
 
 }

@@ -1,0 +1,17 @@
+# Group of users who may acknowledge alarms
+dn: cn=alarm_ack,ou=Groups,dc=css-demo,dc=org
+cn: alarm_ack
+gidNumber: 9876
+objectClass: posixGroup
+objectClass: top
+memberUid: fred
+memberUid: jane
+
+
+# Group of users who may configure alarms
+dn: cn=alarm_config,ou=Groups,dc=css-demo,dc=org
+cn: alarm_config
+gidNumber: 9875
+objectClass: posixGroup
+objectClass: top
+memberUid: fred

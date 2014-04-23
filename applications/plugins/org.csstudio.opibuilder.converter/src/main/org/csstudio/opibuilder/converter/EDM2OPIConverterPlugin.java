@@ -15,10 +15,10 @@ import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.ui.PreferencesHelper;
 import org.csstudio.opibuilder.converter.writer.OpiWriter;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
@@ -91,11 +91,20 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 	}
 
 
-	private void convertColorFile() throws CoreException, EdmException{
+	private void convertColorFile(){
 			if(opiColorFolder == null)
 				return;
-			OpiWriter.getInstance().writeColorDef(System.getProperty("edm2xml.colorsOutput"));
-			opiColorFolder.refreshLocal(IResource.DEPTH_ONE, null);
+			
+			String colorDef = System.getProperty("edm2xml.colorsOutput");
+			String colorsFile = System.getProperty("edm2xml.colorsFile");
+			if(colorsFile==null || colorsFile.isEmpty() || colorDef==null||colorDef.isEmpty())
+				return;
+			try {
+				OpiWriter.getInstance().writeColorDef(colorDef);
+				opiColorFolder.refreshLocal(IResource.DEPTH_ONE, null);
+			} catch (Exception e) {
+				ErrorHandlerUtil.handleError("Error in converting EDM color file", e);
+			}
 		
 	}
 
@@ -124,12 +133,16 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 	}
 
 
-	private void setEDMColorListFile() throws EdmException {
+	private void setEDMColorListFile(){
 		IFile colorsListfile = getIFileFromIPath(
 				PreferencesHelper.getEDMColorListFilePath());
 		if(colorsListfile != null)
 			System.setProperty("edm2xml.colorsFile", colorsListfile.getLocation().toOSString());
-		EdmModel.reloadEdmColorFile();
+		try {
+			EdmModel.reloadEdmColorFile();
+		} catch (EdmException e) {
+			ErrorHandlerUtil.handleError("Error in loading edm color list file", e);
+		}
 	}
 
 	/** @return Logger for plugin ID */

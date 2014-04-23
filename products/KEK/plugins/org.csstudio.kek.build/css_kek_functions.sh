@@ -22,12 +22,17 @@ function num_seq {
 #  1: URLs separated by a white space
 # =========================================================================
 function append_urls {
-    local URLS=$(echo "$1" | tr ' ' '*')
-    if [ -z "${ARCHIVE_URLS}" ]; then
-        ARCHIVE_URLS="${URLS}"
-    else
-        ARCHIVE_URLS="${ARCHIVE_URLS}*${URLS}"
-    fi
+    local URLS=($(echo "$1"))
+    local BASE_NAME="$2"
+    for i in $(seq 1 ${#URLS[@]}); do
+        URL=${URLS[$i-1]}
+        ALIAS=$(eval 'echo $'${BASE_NAME}${i})
+        if [ -z "${ARCHIVE_URLS}" ]; then
+            ARCHIVE_URLS="${URL}|${ALIAS}"
+        else
+            ARCHIVE_URLS="${ARCHIVE_URLS}*${URL}|${ALIAS}"
+        fi
+    done
 }
 
 # =========================================================================
@@ -38,12 +43,17 @@ function append_urls {
 #  1: URLs separated by a white space
 # =========================================================================
 function prepend_urls {
-    local URLS=$(echo "$1" | tr ' ' '*')
-    if [ -z "${ARCHIVE_URLS}" ]; then
-        ARCHIVE_URLS="${URLS}"
-    else
-        ARCHIVE_URLS="${URLS}*${ARCHIVE_URLS}"
-    fi
+    local URLS=($(echo "$1"))
+    local BASE_NAME="$2"
+    for i in $(seq 1 ${#URLS[@]}); do
+        URL=${URLS[$i-1]}
+        ALIAS=$(eval 'echo $'${BASE_NAME}${i})
+        if [ -z "${ARCHIVE_URLS}" ]; then
+            ARCHIVE_URLS="${URL}|${ALIAS}"
+        else
+            ARCHIVE_URLS="${URL}|${ALIAS}*${ARCHIVE_URLS}"
+        fi
+    done
 }
 
 # =========================================================================
@@ -53,10 +63,11 @@ function prepend_urls {
 #  ARCHIVE_URLS: URLs separated by '*'
 # =========================================================================
 function unique_urls {
-    local URLS=$(echo "${ARCHIVE_URLS}" | tr '*' ' ')
+    local OIFS=${IFS}
+    IFS="*"
     local UNIQUE_URLS=""
 
-    for URL1 in ${URLS}; do
+    for URL1 in ${ARCHIVE_URLS}; do
         DUPLICATED=0
 
         for URL2 in ${UNIQUE_URLS}; do
@@ -70,40 +81,53 @@ function unique_urls {
             if [ -z "${UNIQUE_URLS}" ]; then
                 UNIQUE_URLS="${URL1}"
             else
-                UNIQUE_URLS="${UNIQUE_URLS} ${URL1}"
+                UNIQUE_URLS="${UNIQUE_URLS}*${URL1}"
             fi
         fi
     done
 
-    ARCHIVE_URLS=$(echo "${UNIQUE_URLS}" | tr ' ' '*')
+    ARCHIVE_URLS=${UNIQUE_URLS}
+    IFS=${OIFS}
 }
 
 # =========================================================================
-# Append sub archive names with the given URL to SUB_ARCHIVES.
+# Append sub archive name with the given URL to SUB_ARCHIVES.
 # SUB_ARCHIVES will finally be a string in the following form:
-#  NAME1|1|URL*NAME2|2|URL*NAME3|3|URL*...
+#  NAME1|1|URL1*NAME2|1|URL2*NAME3|1|URL3*...
 # This string can be passed to org.csstudio.trends.databrowser2/archives
 # property of CSS.
 #
 # Parameters
 #  1: Archive URL
-#  2: Sub archive names separated by a white space
+#  2: Sub archive names separated by white spaces
 # =========================================================================
 function append_sub_archives {
     local URL=$1
     local NAMES=$2
     local i=1
     local SUB_ARCHIVE=
+    local TAIL=
+    local NAME=
+    local POS=
 
-    for NAME in ${NAMES}; do
-        SUB_ARCHIVE="${NAME}|$i|${URL}"
-
-        if [ -z "${SUB_ARCHIVES}" ]; then
-            SUB_ARCHIVES="${SUB_ARCHIVE}"
+    for S in ${NAMES}; do
+        TAIL=$(echo ${S} | cut -c ${#S})
+        if [ "${TAIL}" = "\\" ]; then
+            echo "OK!!!"
+            POS=$(expr ${#S} - 1)
+            NAME="${NAME}"$(echo ${S} | cut -c 1-${POS})" "
         else
-            SUB_ARCHIVES="${SUB_ARCHIVES}*${SUB_ARCHIVE}"
+            NAME="${NAME}${S}"
+            SUB_ARCHIVE="${NAME}|$i|${URL}"
+            if [ -z "${SUB_ARCHIVES}" ]; then
+                SUB_ARCHIVES="${SUB_ARCHIVE}"
+            else
+                SUB_ARCHIVES="${SUB_ARCHIVES}*${SUB_ARCHIVE}"
+            fi
+
+            NAME=""
+            i=$(expr $i + 1)
         fi
-        i=$(expr $i + 1)
     done
 }
 
@@ -127,12 +151,31 @@ function css_kek_settings {
             FONT_DEF=$(eval 'echo $'$a'_FONT_DEF')
 
 	    # Set -share_link parameters
-	    SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN')
-	    SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC')
-	    SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST')
+            SHARE_LINK=""
+            SHARE_LINK_WIN=""
+            for i in $(seq 3); do
+	        SHARE_LINK_SRC_WIN=$(eval 'echo $'$a'_SHARE_LINK_SRC_WIN_'$i)
+	        SHARE_LINK_SRC=$(eval 'echo $'$a'_SHARE_LINK_SRC_'$i)
+	        SHARE_LINK_DEST=$(eval 'echo $'$a'_SHARE_LINK_DEST_'$i)
+                if [ -n "${SHARE_LINK_SRC}" -a -n "${SHARE_LINK_DEST}" ]; then
+                    if [ -z "${SHARE_LINK}" ]; then
+                        SHARE_LINK="${SHARE_LINK_SRC}=${SHARE_LINK_DEST}"
+                    else
+                        SHARE_LINK="${SHARE_LINK},${SHARE_LINK_SRC}=${SHARE_LINK_DEST}"
+                    fi
+                fi
+
+                if [ -n "${SHARE_LINK_SRC_WIN}" -a -n "${SHARE_LINK_DEST}" ]; then
+                    if [ -z "${SHARE_LINK_WIN}" ]; then
+                        SHARE_LINK_WIN="${SHARE_LINK_SRC_WIN}=${SHARE_LINK_DEST}"
+                    else
+                        SHARE_LINK_WIN="${SHARE_LINK_WIN},${SHARE_LINK_SRC_WIN}=${SHARE_LINK_DEST}"
+                    fi
+                fi
+            done
             
         # Set archiver URLs
-            prepend_urls "${URLS}"
+            prepend_urls "${URLS}" "${a}_ARCHIVE_ALIAS_"
 
         # Set sub archive names for each archiver URL
             i=1
@@ -145,7 +188,7 @@ function css_kek_settings {
             valid=1
         else
         # Set archiver URLs
-            append_urls "${URLS}"
+            append_urls "${URLS}" "${a}_ARCHIVE_ALIAS_"
         fi
     done
 
