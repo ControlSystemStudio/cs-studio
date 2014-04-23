@@ -40,8 +40,8 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
@@ -83,6 +83,7 @@ of the distribution package.
       <import plugin="org.csstudio.alarm.beast.ui" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.alarm.beast.ui.alarmtree" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
+      <import plugin="edu.msu.nscl.olog.api"/>
    </requires>
 
    <plugin
@@ -157,6 +158,13 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.utility.speech"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.alarm.beast.notifier.olog"
          download-size="0"
          install-size="0"
          version="0.0.0"

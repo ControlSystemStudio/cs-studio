@@ -80,6 +80,30 @@
                </with>
             </visibleWhen>
          </command>
+         <command
+               commandId="org.csstudio.logbook.copyurltoclipboard"
+               icon="platform:/plugin/org.csstudio.csdata.clipboard/icons/clipboard.gif"
+               label="Copy URL to Clipboard"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <and>
+                     <iterate>
+                        <adapt
+                              type="java.net.URL">
+                        </adapt>
+                     </iterate>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="+">
+                        </count>
+                     </with>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -113,6 +137,10 @@
             id="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
             name="%UpdateLogEntry">
       </command>
+      <command
+            id="org.csstudio.logbook.copyurltoclipboard"
+            name="Copy URL to Clipboard">
+      </command>
    </extension>
    <extension
          point="org.eclipse.core.runtime.adapters">
@@ -123,5 +151,22 @@
                type="org.csstudio.logbook.LogEntryBuilder">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.csstudio.logbook.LogEntry"
+            class="org.csstudio.logbook.ui.util.AdapterFactory">
+         <adapter
+               type="java.net.URL">
+         </adapter>
+         <adapter
+               type="java.lang.String">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.csstudio.logbook.ui.util.CopyURLtoClipboard"
+            commandId="org.csstudio.logbook.copyurltoclipboard">
+      </handler>
    </extension>
 </plugin>

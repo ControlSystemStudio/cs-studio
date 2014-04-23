@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Olog authentication fragment of Alarm Notifier
+Bundle-SymbolicName: org.csstudio.iter.notifier.ologauthentication;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Fragment-Host: org.csstudio.alarm.beast.notifier.olog;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

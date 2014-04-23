@@ -27,7 +27,7 @@ public class SnooperSorter extends ViewerSorter{
 	public int compare(Viewer viewer, Object o1, Object o2){
 		ChannelStructure chan1 = (ChannelStructure) o1;
 		ChannelStructure chan2 = (ChannelStructure) o2;
-		System.out.println(sortIndex);
+//		System.out.println(sortIndex);
 		switch (sortIndex){
 		case 0:
 		case 3:			
