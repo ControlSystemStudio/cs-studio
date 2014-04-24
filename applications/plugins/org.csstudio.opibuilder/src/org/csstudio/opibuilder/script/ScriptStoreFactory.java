@@ -32,23 +32,26 @@ public class ScriptStoreFactory {
 	private static Map<Display, Context> displayContextMap = 
 			new HashMap<Display, Context>();
 	
-	public static void initPythonInterpreter() throws Exception{
+	@SuppressWarnings("nls")
+    public static void initPythonInterpreter() throws Exception{
 		if(pythonInterpreterInitialized)
 			return;
-		//add org.python/jython.jar/Lib to PYTHONPATH
-		Bundle bundle = Platform.getBundle("org.python"); //$NON-NLS-1$
+		//add org.python.jython/jython.jar/Lib to PYTHONPATH
+		final Bundle bundle = Platform.getBundle("org.python.jython");
+		if (bundle == null)
+		    throw new Exception("Cannot locate jython bundle");
 		URL fileURL = FileLocator.find(bundle, new Path("jython.jar"), null);
-		String pythonPath = FileLocator.resolve(fileURL).getPath() + "/Lib"; //$NON-NLS-1$
+		String pythonPath = FileLocator.resolve(fileURL).getPath() + "/Lib";
 		String prefPath = PreferencesHelper.getPythonPath();
 		if( prefPath!=null)
-			pythonPath = pythonPath + System.getProperty("path.separator") + //$NON-NLS-1$
+			pythonPath = pythonPath + System.getProperty("path.separator") +
 				prefPath;
     	Properties props = new Properties();
-    	props.setProperty("python.path", pythonPath); //$NON-NLS-1$
+    	props.setProperty("python.path", pythonPath);
     	//Disable cachedir so jython can start fast and no cachedir fold created.
     	//See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
     	//and http://wiki.python.org/jython/PackageScanning
-    	props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true"); //$NON-NLS-1$
+    	props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true");
         PythonInterpreter.initialize(System.getProperties(), props,
                  new String[] {""}); //$NON-NLS-1$
 		pythonInterpreterInitialized = true;

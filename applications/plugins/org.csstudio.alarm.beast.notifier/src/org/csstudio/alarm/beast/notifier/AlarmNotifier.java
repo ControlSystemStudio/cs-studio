@@ -13,12 +13,14 @@ import java.util.Date;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.Preferences;
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AADataStructure;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.notifier.actions.AutomatedActionFactory;
 import org.csstudio.alarm.beast.notifier.history.AlarmNotifierHistory;
+import org.csstudio.alarm.beast.notifier.history.PVHistoryEntry;
 import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 import org.csstudio.alarm.beast.notifier.rdb.IAlarmRDBHandler;
 import org.csstudio.alarm.beast.notifier.util.NotifierUtils;
@@ -97,6 +99,15 @@ public class AlarmNotifier {
 		}
 		// Avoid to send 'fake' alarms when the PV is re-enabled for example
 		if (snapshot.getValue() != null && snapshot.getValue().isEmpty())
+			return;
+		// Configuration update results in an alarm update with no changes
+		PVHistoryEntry pv_history = AlarmNotifierHistory.getInstance().getPV(snapshot.getPath());
+		if (pv_history == null
+				&& snapshot.getSeverity().equals(SeverityLevel.OK))
+			return;
+		if (pv_history != null
+				&& snapshot.getSeverity().equals(pv_history.getSeverity())
+				&& snapshot.getCurrentSeverity().equals(pv_history.getCurrentSeverity()))
 			return;
 		// Process PV automated actions
 		if (pvItem.getAutomatedActions() != null) {

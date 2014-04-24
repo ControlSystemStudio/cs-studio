@@ -41,9 +41,12 @@ import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 
 import com.google.common.base.Predicate;
@@ -69,7 +72,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
     private final String eol = System.getProperty("line.separator");
     private AbstractSelectionProviderWrapper selectionProvider;
     private int logEntryOrder = SWT.DOWN;
-    private boolean expanded = true;   
+    private boolean expanded = false;   
 
     private ErrorBar errorBar;
     private GridTreeViewer gridTreeViewer;
@@ -131,8 +134,9 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 	};
 
 	grid = gridTreeViewer.getGrid();
-	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-	grid.setItemHeight(25);
+	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));	
+	FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();	
+	grid.setItemHeight(fm.getHeight() * 4);
 	grid.setAutoHeight(expanded);
 	grid.setRowsResizeable(true);
 	grid.setHeaderVisible(true);

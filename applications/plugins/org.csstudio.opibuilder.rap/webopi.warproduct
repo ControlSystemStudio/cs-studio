@@ -99,7 +99,7 @@
       <plugin id="org.jdom"/>
       <plugin id="org.junit" version="4.8.2.v4_8_2_v20110321-1705"/>
       <plugin id="org.junit4"/>
-      <plugin id="org.python"/>
+      <plugin id="org.python.jython"/>
    </plugins>
 
    <configurations>
@@ -194,7 +194,7 @@
       <plugin id="org.jdom" autoStart="true" startLevel="0" />
       <plugin id="org.junit" autoStart="true" startLevel="0" />
       <plugin id="org.junit4" autoStart="true" startLevel="0" />
-      <plugin id="org.python" autoStart="true" startLevel="0" />
+      <plugin id="org.python.jython" autoStart="true" startLevel="0" />
    </configurations>
 
    <warConfiguration webXml="/org.csstudio.opibuilder.rap/WEB-INF/web.xml" launchIni="/org.csstudio.opibuilder.rap/WEB-INF/launch.ini">

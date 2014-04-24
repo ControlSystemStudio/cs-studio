@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.core.runtime,
  com.google.common;bundle-version="10.0.1"
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.ws.rs
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

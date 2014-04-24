@@ -163,4 +163,4 @@ org.hamcrest/**
 org.jdom/**
 org.junit-dep/**
 org.mockito/**
-org.python/**
+org.python.jython/**

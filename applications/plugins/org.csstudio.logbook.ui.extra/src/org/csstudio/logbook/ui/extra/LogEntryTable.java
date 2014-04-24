@@ -33,9 +33,12 @@ import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 
 /**
@@ -57,7 +60,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
     private final String eol = System.getProperty("line.separator");
     private AbstractSelectionProviderWrapper selectionProvider;
-    private boolean expanded = true;   
+    private boolean expanded = false;   
 
     private ErrorBar errorBar;
     private GridTableViewer gridTableViewer;
@@ -107,7 +110,9 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	grid = gridTableViewer.getGrid();
 	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-	grid.setAutoHeight(true);
+	FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();	
+	grid.setItemHeight(fm.getHeight() * 4);
+	grid.setAutoHeight(expanded);
 	grid.setRowsResizeable(true);
 	grid.setHeaderVisible(true);
 	gridTableViewer.getGrid().setLinesVisible(true);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Alarm Server" uid="org.csstudio.iter.product.alarm.beast.server.product" id="org.csstudio.iter.alarm.beast.server.product.product" application="org.csstudio.alarm.beast.server.application" version="3.2.13.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Alarm Server" uid="org.csstudio.iter.product.alarm.beast.server.product" id="org.csstudio.iter.alarm.beast.server.product.product" application="org.csstudio.alarm.beast.server.application" version="3.2.15.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
