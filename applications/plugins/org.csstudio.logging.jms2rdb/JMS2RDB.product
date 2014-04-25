@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="JMS-to-RDB" id="org.csstudio.logging.jms2rdb.product" application="org.csstudio.logging.jms2rdb.application" version="3.2.0" useFeatures="false" includeLaunchers="true">
+<product name="JMS-to-RDB" id="org.csstudio.logging.jms2rdb.product" application="org.csstudio.logging.jms2rdb.application" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -29,11 +29,11 @@
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.logging.jms2rdb"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
-      <plugin id="org.csstudio.logging.jms2rdb"/>
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
@@ -59,7 +59,6 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
-      <plugin id="org.junit4"/>
    </plugins>
 
 
