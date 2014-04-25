@@ -97,7 +97,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
     private Range zPlotRange;
     private AxisRange zAxisRange = AxisRanges.integrated();
     private ValueScale zValueScale = ValueScales.linearScale();
-    protected ListDouble zReferenceCoords;
+    protected ListInt zReferenceCoords;
     protected ListDouble zReferenceValues;
     protected List<String> zReferenceLabels;
     private int zLabelMaxWidth;
@@ -121,42 +121,48 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
     public void drawArray(GraphBuffer graphBuffer, Cell2DDataset data) {
         //Use super class to draw basics of graph.
         this.g = graphBuffer.getGraphicsContext();
-        BufferedImage image = graphBuffer.getBufferedImage();
+        GraphAreaData area = new GraphAreaData();
+        BufferedImage image = graphBuffer.getImage();
         calculateRanges(data.getXRange(), data.getYRange());
-        drawBackground();
-        calculateLabels();
+        area.setGraphBuffer(graphBuffer);
+        graphBuffer.drawBackground(backgroundColor);
         zRange = RangeUtil.range(data.getStatistics().getMinimum().doubleValue(),data.getStatistics().getMaximum().doubleValue());
         calculateZRange(zRange);
         
         // TODO: the calculation for leaving space for the legend is somewhat hacked
         // Instead of actually having a nice calculation, we increase the margin
         // to the right before using the standard calculateGraphArea
+        int areaRightPixel;
         if(drawLegend){
             calculateZLabels();
-            rightMargin = graphAreaToLegendMargin + legendWidth + zLabelMargin + zLabelMaxWidth + originalRightMargin;
+            areaRightPixel = getImageWidth() - 1 - (graphAreaToLegendMargin + legendWidth + zLabelMargin + zLabelMaxWidth + rightMargin);
         } else {
-            rightMargin = originalRightMargin;
+            areaRightPixel = getImageWidth() - 1 - rightMargin;
         }
-        
-        calculateGraphArea();
+        area.setGraphArea(leftMargin, getImageHeight() - 1 - bottomMargin, areaRightPixel, topMargin);
+        area.setGraphAreaMargins(leftAreaMargin, bottomAreaMargin, rightAreaMargin, topAreaMargin);
+        area.setLabelMargin(xLabelMargin, yLabelMargin);
+        area.setRanges(getXPlotRange(), xValueScale, getYPlotRange(), yValueScale);
+        area.prepareLabels(labelFont, labelColor);
+        area.prepareGraphArea(true, referenceLineColor);
+        area.drawGraphArea();
         
         /*Wait to calculate the coordinates of the legend labels till after yPlotCoordRange is calculated.
         Allows for the use of yPlotCoordEnd/start in calculations.*/
         if(drawLegend){
             if (zReferenceValues != null) {
-                double[] zRefCoords = new double[zReferenceValues.size()];
+                int[] zRefCoords = new int[zReferenceValues.size()];
                 if(zRefCoords.length == 1){
-                    zRefCoords[0] = Math.max(2, getImageHeight() / 60);
+                    zRefCoords[0] = area.yAreaTop;
                 }
                 else{
                     for (int i = 0; i < zRefCoords.length; i++) {
-                        zRefCoords[i] = scaledZ(zReferenceValues.getDouble(i));
+                        zRefCoords[i] = (int) scaledZ(zReferenceValues.getDouble(i), area.yGraphBottom, area.yGraphTop);
                     }
                 }
-                zReferenceCoords = new ArrayDouble(zRefCoords);
+                zReferenceCoords = new ArrayInt(zRefCoords);
             }
         }
-        drawGraphArea();
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
         
         
@@ -173,54 +179,17 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
 
 
         double xStartGraph = super.xPlotCoordStart;
-        double yEndGraph = super.yPlotCoordEnd;
+        double yEndGraph = area.yGraphBottom;
 
-        //Get graph width and height from super class.
-        double xWidthTotal = super.xPlotCoordWidth;
-        double yHeightTotal = super.yPlotCoordHeight;
+        double yHeightTotal = area.yGraphBottom - area.yGraphTop + 1;
         
-        double cellHeight = (yHeightTotal)/data.getYCount();
-        double cellWidth = (xWidthTotal)/data.getXCount();
-        
-        boolean linearBoundaries = ListNumbers.isLinear(data.getXBoundaries()) && ListNumbers.isLinear(data.getYBoundaries());
-        
-        if(cellWidth >= 1 && cellHeight >= 1){
-            if(!linearBoundaries){
-                drawRectanglesSmallXAndYBoundariesArray(g, data, image);
-            }
-            else{
-                drawRectanglesArray(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal,cellHeight, cellWidth, image);
-            }
-        }
-        
-        //Draw graph when cell width or height is smaller than one pixel.
-        if(cellWidth < 1 || cellHeight < 1){
-            if(cellHeight > 1){
-                if(!linearBoundaries){
-                    drawRectanglesSmallXAndYBoundariesArray(g, data, image);
-                }
-                else{
-                    drawRectanglesSmallXArray(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal, cellHeight, cellWidth, image);
-                }
-                
-            }
-            if(cellWidth > 1){
-                if(!linearBoundaries){
-                    drawRectanglesSmallXAndYBoundariesArray(g, data, image);
-                }
-                else{
-                    drawRectanglesSmallYArray(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal, cellHeight, cellWidth, image);
-                }
-            }
-            if(cellWidth < 1 && cellHeight < 1){
-                if(!linearBoundaries){
-                    drawRectanglesSmallXAndYBoundariesArray(g, data, image);
-                }
-                else{
-                    drawRectanglesSmallXAndYArray(g, data, xStartGraph, yEndGraph, xWidthTotal, yHeightTotal,cellHeight, cellWidth, image);
-                }
-            }
-        }
+        int startX = area.xGraphLeft;//(int) Math.floor(xPlotCoordStart);
+        int startY = area.yGraphTop;//(int) Math.floor(yPlotCoordStart);
+        int endX = area.xGraphRight;//(int) Math.ceil(xPlotCoordEnd);
+        int endY = area.yGraphBottom;//(int) Math.ceil(yPlotCoordEnd);
+        PointToDataMap xPointToDataMap = createXPointToDataMap(startX, endX, graphBuffer, data.getXBoundaries()); //createPointToDataMap(startX, endX+1, getXPlotRange(), data.getXBoundaries(), false);
+        PointToDataMap yPointToDataMap = createYPointToDataMap(startY, endY, graphBuffer, data.getYBoundaries());//getYPlotRange(), data.getYBoundaries(), true);
+        graphBuffer.drawDataImage(xPointToDataMap.startPoint, yPointToDataMap.startPoint, xPointToDataMap.pointToDataMap, yPointToDataMap.pointToDataMap, data, colorMapInstance);
         
         if(drawLegend && legendWidth>0){
             /*dataList is made by splitting the aggregated range of the z(color) data into a list of the
@@ -230,6 +199,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
             Cell2DDataset legendData = Cell2DDatasets.linearRange(dataList, RangeUtil.range(0, 1), 1, RangeUtil.range(0, (int)yHeightTotal), (int)yHeightTotal);
             int xLegendStart = getImageWidth() - originalRightMargin - zLabelMaxWidth - zLabelMargin - legendWidth;
             drawRectanglesArray(g, legendData, xLegendStart, yEndGraph, legendWidth, yHeightTotal, 1, legendWidth, image);
+            graphBuffer.drawLeftLabels(zReferenceLabels, zReferenceCoords, labelColor, labelFont, area.yAreaBottom, area.yAreaTop, getImageWidth() - originalRightMargin - 1);
             drawZLabels();
         }
         
@@ -262,6 +232,142 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
                 yPositionInt = (int)yPosition;
                 countY++;
             }
+    }
+    
+    private class PointToDataMap {
+        public int[] pointToDataMap;
+        public int startPoint;
+    }
+    
+    PointToDataMap createXPointToDataMap(int leftPixel, int rightPixel, GraphBuffer buffer, ListNumber xBoundaries) {
+        // Check any data in range
+        int minValuePixel = buffer.xValueToPixel(xBoundaries.getDouble(0));
+        int maxValuePixel = buffer.xValueToPixel(xBoundaries.getDouble(xBoundaries.size() - 1));
+        if ( minValuePixel > rightPixel ||
+                maxValuePixel < leftPixel) {
+            PointToDataMap result = new PointToDataMap();
+            result.pointToDataMap = new int[0];
+            result.startPoint = leftPixel;
+            return result;
+        }
+
+        // Find the subset that fits
+        int startPixel = Math.max(minValuePixel, leftPixel);
+        int endPixel = Math.min(maxValuePixel, rightPixel);
+        int nPoints = endPixel - startPixel + 1;
+        int[] pointToDataMap = new int[nPoints];
+        
+        int currentValueIndex = 0;
+        int currentLeftBoundaryPixel = minValuePixel;
+        int currentRightBoundaryPixel = buffer.xValueToPixel(xBoundaries.getDouble(1));
+        
+        for (int currentOffset = 0; currentOffset < pointToDataMap.length; currentOffset++) {
+            // Advance if the pixel is past the right boundary, or if it's the same
+            // but the left boundary is passed (to "encourage" the change of value
+            // from large cells)
+            int currentPixel = startPixel + currentOffset;
+            while ((currentRightBoundaryPixel < currentPixel || (currentRightBoundaryPixel == currentPixel && currentLeftBoundaryPixel != currentPixel))
+                    && currentValueIndex < xBoundaries.size() - 2) {
+                currentValueIndex++;
+                currentLeftBoundaryPixel = currentRightBoundaryPixel;
+                currentRightBoundaryPixel = buffer.xValueToPixel(xBoundaries.getDouble(currentValueIndex + 1));
+            }
+            
+            pointToDataMap[currentOffset] = currentValueIndex;
+        }
+        
+        PointToDataMap result = new PointToDataMap();
+        result.pointToDataMap = pointToDataMap;
+        result.startPoint = startPixel;
+        return result;
+    }
+    
+    PointToDataMap createYPointToDataMap(int topPixel, int bottomPixel, GraphBuffer buffer, ListNumber yBoundaries) {
+        // Check any data in range
+        int minValuePixel = buffer.yValueToPixel(yBoundaries.getDouble(0));
+        int maxValuePixel = buffer.yValueToPixel(yBoundaries.getDouble(yBoundaries.size() - 1));
+        if (minValuePixel < topPixel ||
+                maxValuePixel > bottomPixel) {
+            PointToDataMap result = new PointToDataMap();
+            result.pointToDataMap = new int[0];
+            result.startPoint = topPixel;
+            return result;
+        }
+
+        // Find the subset that fits
+        int startPixel = Math.max(maxValuePixel, topPixel);
+        int endPixel = Math.min(minValuePixel, bottomPixel);
+        int nPoints = endPixel - startPixel + 1;
+        int[] pointToDataMap = new int[nPoints];
+        
+        int currentValueIndex = 0;
+        int currentBottomBoundaryPixel = minValuePixel;
+        int currentTopBoundaryPixel = buffer.yValueToPixel(yBoundaries.getDouble(1));
+        
+        for (int currentOffset = 0; currentOffset < pointToDataMap.length; currentOffset++) {
+            // Advance if the pixel is past the top boundary, or if it's the same
+            // but the bottom boundary is passed (to "encourage" the change of value
+            // from large cells)
+            int currentPixel = endPixel - currentOffset;
+            while ((currentTopBoundaryPixel > currentPixel || (currentTopBoundaryPixel == currentPixel && currentBottomBoundaryPixel != currentPixel))
+                && currentValueIndex < yBoundaries.size() - 2) {
+                currentValueIndex++;
+                currentBottomBoundaryPixel = currentTopBoundaryPixel;
+                currentTopBoundaryPixel = buffer.yValueToPixel(yBoundaries.getDouble(currentValueIndex + 1));
+            }
+            
+            pointToDataMap[nPoints - currentOffset - 1] = currentValueIndex;
+        }
+        
+        PointToDataMap result = new PointToDataMap();
+        result.pointToDataMap = pointToDataMap;
+        result.startPoint = startPixel;
+        return result;
+    }
+    
+    PointToDataMap createPointToDataMap(int startPoint, int endPoint, Range xRange, ListNumber xBoundaries, boolean mirror) {
+        ListNumber pointBoundaries = ListNumbers.linearListFromRange(xRange.getMinimum().doubleValue(), xRange.getMaximum().doubleValue(), endPoint - startPoint + 1);
+        // Check any data in range
+        if (xBoundaries.getDouble(0) >= xRange.getMaximum().doubleValue() ||
+                xBoundaries.getDouble(xBoundaries.size() - 1) <= xRange.getMinimum().doubleValue()) {
+            PointToDataMap result = new PointToDataMap();
+            result.pointToDataMap = new int[0];
+            result.startPoint = startPoint;
+            return result;
+        }
+        
+        int startOffset = 0;
+        int endOffset = 0;
+        while (xBoundaries.getDouble(0) > pointBoundaries.getDouble(startOffset + 1)) {
+            startOffset++;
+        }
+        while (xBoundaries.getDouble(xBoundaries.size() - 1) < pointBoundaries.getDouble(pointBoundaries.size() - 1 - endOffset)) {
+            endOffset++;
+        }
+        int nPoints = endPoint - startPoint - endOffset - startOffset;
+        int[] pointToDataMap = new int[nPoints];
+        
+        int currentOffset = 0;
+        int dataPosition = 0;
+        while (currentOffset < nPoints) {
+            // Look for the first cell where the end value is after the 
+            // point start value
+            while (xBoundaries.getDouble(dataPosition + 1) <= pointBoundaries.getDouble(startOffset + currentOffset)) {
+                dataPosition++;
+            }
+
+            if (!mirror) {
+                pointToDataMap[currentOffset] = dataPosition;
+            } else {
+                pointToDataMap[nPoints - currentOffset - 1] = dataPosition;
+            }
+            currentOffset++;
+        }
+        
+        PointToDataMap result = new PointToDataMap();
+        result.pointToDataMap = pointToDataMap;
+        result.startPoint = startPoint + startOffset;
+        return result;
     }
     
     private void drawRectanglesArray(Graphics2D g, Cell2DDataset data, double xStartGraph, double yEndGraph,
@@ -731,7 +837,8 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
      *Sets private variables to account for the space required to draw in labels for the legend.
      * Only called if drawLegend is true.
      */
-    protected void calculateZLabels() {           
+    protected void calculateZLabels() {
+        labelFontMetrics = g.getFontMetrics(labelFont);
         // Calculate z axis references. If range is zero, use special logic
         if (!zPlotRange.getMinimum().equals(zPlotRange.getMaximum())) {
             ValueAxis zAxis = zValueScale.references(zPlotRange, 2, Math.max(2, getImageHeight() / 60));
@@ -819,8 +926,8 @@ Draws boxes only 1 pixel wide and 1 pixel tall.*/
      * @param value raw value
      * @return double(scaled value)
      */
-    protected final double scaledZ(double value) {
-        return zValueScale.scaleValue(value, zPlotRange.getMinimum().doubleValue(), zPlotRange.getMaximum().doubleValue(), yPlotCoordEnd, yPlotCoordStart);
+    protected final double scaledZ(double value, int bottomPixel, int topPixel) {
+        return Math.ceil(zValueScale.scaleValue(value, zPlotRange.getMinimum().doubleValue(), zPlotRange.getMaximum().doubleValue(), bottomPixel, topPixel));
     }
 
     /**

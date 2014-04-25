@@ -107,8 +107,8 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     private AxisRange xAxisRange = AxisRanges.integrated();
     private AxisRange yAxisRange = AxisRanges.integrated();
     // Strategy for generating labels and scaling value of the axis
-    private ValueScale xValueScale = ValueScales.linearScale();
-    private ValueScale yValueScale = ValueScales.linearScale();
+    protected ValueScale xValueScale = ValueScales.linearScale();
+    protected ValueScale yValueScale = ValueScales.linearScale();
     // Colors and fonts
     protected Color backgroundColor = Color.WHITE;
     protected Color labelColor = Color.BLACK;
