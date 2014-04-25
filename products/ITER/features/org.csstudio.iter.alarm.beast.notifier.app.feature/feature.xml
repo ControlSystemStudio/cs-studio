@@ -56,7 +56,7 @@ of the distribution package.
       <import plugin="com.google.common" version="10.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.100" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.2.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.alarm.beast.notifier.olog" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast.notifier.logbook" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -81,7 +81,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.alarm.beast.notifier.olog"
+         id="org.csstudio.alarm.beast.notifier.logbook"
          download-size="0"
          install-size="0"
          version="0.0.0"
