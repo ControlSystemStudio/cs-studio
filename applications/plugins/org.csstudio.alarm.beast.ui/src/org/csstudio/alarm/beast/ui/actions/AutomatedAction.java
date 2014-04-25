@@ -85,10 +85,10 @@ public class AutomatedAction extends Action
 			}
 			// Execute
 			action.execute(pvs);
-			Activator.getLogger().log(Level.INFO, getInfos() + " => EXECUTED");
+			Activator.getLogger().log(Level.INFO, getInfos() + " EXECUTED");
 		} catch (Exception ex) {
 			Activator.getLogger().log(Level.SEVERE,
-					"ERROR executing " + getInfos() + " => " + ex.getMessage());
+					"ERROR executing " + getInfos(), ex);
 			MessageDialog.openError(shell,
 					Messages.AutoActionError,
 					NLS.bind(Messages.AutoActionErrorFmt, new Object[] {

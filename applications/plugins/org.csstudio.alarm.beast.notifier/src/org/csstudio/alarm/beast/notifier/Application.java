@@ -104,8 +104,7 @@ public class Application implements IApplication {
 			alarm_notifer.stop();
 		} catch (Throwable ex) {
 			Activator.getLogger().log(Level.SEVERE,
-					"Exception during Alarm Notifier starting: {0}",
-					ex.getMessage());
+					"Exception during Alarm Notifier starting", ex);
 			return Integer.valueOf(-1);
 		}
 		return IApplication.EXIT_OK;
