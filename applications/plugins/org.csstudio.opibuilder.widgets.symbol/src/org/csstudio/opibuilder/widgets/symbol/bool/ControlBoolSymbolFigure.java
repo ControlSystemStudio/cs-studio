@@ -592,6 +592,8 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure {
 	@Override
 	public void setForegroundColor(Color foregroundColor) {
 		this.foregroundColor = foregroundColor;
+		if (foregroundColor != null)
+			this.boolLabel.setForegroundColor(foregroundColor);
 		repaint();
 	}
 
