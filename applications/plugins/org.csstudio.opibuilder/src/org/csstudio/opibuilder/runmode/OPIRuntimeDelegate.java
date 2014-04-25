@@ -1,8 +1,8 @@
 package org.csstudio.opibuilder.runmode;
 
 import java.io.InputStream;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -29,6 +29,7 @@ import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.UpdateListener;
 import org.eclipse.draw2d.UpdateManager;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
@@ -44,18 +45,13 @@ import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.internal.PartPane;
-import org.eclipse.ui.internal.PartSite;
-import org.eclipse.ui.internal.PartStack;
 
 /**
  * The delegate to run an OPI in an editor or view.
@@ -333,15 +329,27 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			Display.getCurrent().asyncExec(new Runnable() {
 
 				public void run() {
+					// TODO Port to E4
+					// This code will configure the model element.
+					// Issue 1:
+					// When opening the display for the first time,
+					// the 'x' in the tab is still displayed.
+					// Only on _restart_ of the app will the tab be displayed
+					// without the 'x' to close it.
+					// Issue 2:
+					// Part can still be closed via Ctrl-W (Command-W on OS X)
+					// or via menu File/close.
+					MPart part = (MPart) site.getService(MPart.class);
+					part.setCloseable(false);
 					
-					PartPane currentEditorPartPane = ((PartSite) site)
-							.getPane();
-					PartStack stack = currentEditorPartPane.getStack();
-					Control control = stack.getControl();
-					if (control instanceof CTabFolder) {
-						CTabFolder tabFolder = (CTabFolder) control;
-						tabFolder.getSelection().setShowClose(false);
-					}
+//					PartPane currentEditorPartPane = ((PartSite) site)
+//							.getPane();
+//					PartStack stack = currentEditorPartPane.getStack();
+//					Control control = stack.getControl();
+//					if (control instanceof CTabFolder) {
+//						CTabFolder tabFolder = (CTabFolder) control;
+//						tabFolder.getSelection().setShowClose(false);
+//					}
 				}
 			});
 		}

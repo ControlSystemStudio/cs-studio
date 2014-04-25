@@ -16,9 +16,13 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.visualparts.TipDialog;
+import org.csstudio.ui.util.perspective.PerspectiveHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.model.application.ui.basic.MPartSashContainerElement;
+import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -35,13 +39,11 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.internal.WorkbenchPage;
 
 /**The service for running of OPI.
  * @author Xihui Chen
  *
  */
-@SuppressWarnings("restriction")
 public class RunModeService {
 
 	public enum TargetWindow{
@@ -164,7 +166,7 @@ public class RunModeService {
 						if(shell.getMinimized())
 							shell.setMinimized(false);
 						targetWindow.getShell().forceActive();
-						targetWindow.getShell().forceFocus();						
+						targetWindow.getShell().forceFocus();	
 						targetWindow.getActivePage().openEditor(
 								runnerInput, OPIRunner.ID); //$NON-NLS-1$
 						if(!SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
@@ -226,14 +228,8 @@ public class RunModeService {
 							if(!dialog.isShowThisDialogAgain())
 								PreferencesHelper.setShowOpiRuntimePerspectiveDialog(false);
 						}
-						if(openCode==0 ||openCode==Window.OK)						
-							try {
-								workbench.showPerspective(OPIRunnerPerspective.ID, window);
-							} catch (WorkbenchException e) {
-								ErrorHandlerUtil.handleError(
-									"Faile to switch to OPI Runtime perspective", e, false, true);
-							}
-						
+						if(openCode==0 ||openCode==Window.OK)
+							PerspectiveHelper.showPerspective(OPIRunnerPerspective.ID, window.getActivePage());						
 					}
 					
 					
@@ -242,9 +238,18 @@ public class RunModeService {
 							OPIView.ID,secondID, IWorkbenchPage.VIEW_ACTIVATE);					
 					if(opiView instanceof OPIView){
 						((OPIView)opiView).setOPIInput(runnerInput);
+						
 						if(position == Position.DETACHED)
-							((WorkbenchPage)page).detachView(
-									page.findViewReference(OPIView.ID, secondID));
+						{	// Port to E4: 
+							//  ((WorkbenchPage)page).detachView(page.findViewReference(OPIView.ID, secondID));
+							// See http://tomsondev.bestsolution.at/2012/07/13/so-you-used-internal-api/
+							final EModelService model = (EModelService) opiView.getSite().getService(EModelService.class);
+							MPartSashContainerElement p = (MPart) opiView.getSite().getService(MPart.class);
+							// Part may be shared by several perspectives, get the shared instance
+							if (p.getCurSharedRef() != null)
+								p = p.getCurSharedRef();
+							model.detach(p, 100, 100, 600, 800);
+						}
 					}
 				} catch (PartInitException e) {
 					ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", path), e);
