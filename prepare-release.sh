@@ -56,7 +56,7 @@ echo ::: Committing and tagging version $VERSION :::
 git commit -a -m "Updating changelog, splash, manifests to version $VERSION"
 echo ::: Tagging version $VERSION :::
 git tag CSS-$VERSION
-if [ $PUSH ]
+if [ "$PUSH" ]
 then
   echo ::: Pushing changes :::
   git push origin
