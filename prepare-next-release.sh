@@ -2,12 +2,29 @@
 
 # Check parameters
 VERSION=$1
-COMPATLINK=$2
-MILESTONE=$3
-NOTES=$4
-PUSH=$5
+PUSH=$2
 BUILD_DIR="build"
-if [! $# == 4 ]
+
+increment_version ()
+{
+  declare -a part=( ${1//\./ } )
+  declare    new
+  declare -i carry=1
+
+  for (( CNTR=${#part[@]}-1; CNTR>=0; CNTR-=1 )); do
+    len=${#part[CNTR]}
+    new=$((part[CNTR]+carry))
+    [ ${#new} -gt $len ] && carry=1 || carry=0
+    [ $CNTR -gt 0 ] && part[CNTR]=${new: -len} || part[CNTR]=${new}
+  done
+  new="${part[*]}"
+  echo -e "${new// /.}"
+} 
+
+VERSIONP=$(increment_version ${VERSION})
+VERSION="${VERSIONP}-SNAPSHOT"
+
+if [! $# == 1 ]
 then 
   echo You must provide the product version, compat link, milestone, notes \(e.g. \"prepare_release.sh 3.3.0 \"https://github\" \"https://github\" \"Some notes\"\"\)
 exit -1
@@ -21,44 +38,12 @@ echo 0=$VERSION > plugins/org.csstudio.product/about.mappings
 echo ::: Updating plugin versions ::
 mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION -Dartifacts=product,products-csstudio-plugins,org.csstudio.product,org.csstudio.startup.intro,products-csstudio-features,org.csstudio.product.feature,repository
 # update product because set-version doesn't
-sed -i 's/\(\<product[^>]\+\? version=\"\)[^"]*\("[^>]\+\?>\)/\1'${VERSION}'\2/g'  repository/cs-studio.product
-
-HTML="<h2>Version ${VERSION} - $(date +"%Y-%m-%d")</h2>
-<ul>
-<li>See specific application changelogs</li>
-<li>${NOTES}</li>
-<li><a href=\"${COMPATLINK}\" shape=\"rect\">Compatibility Notes and Know Bugs</a></li>
-<li><a href=\"${MILESTONE}\" shape=\"rect\">Closed Issues</a></li>
-</ul>"
-
-# html encode &
-HTML=$(echo $HTML | sed 's/&/\&amp;/g;')
-# escape all backslashes first
-HTML="${HTML//\\/\\\\}"
-# escape slashes
-HTML="${HTML//\//\\/}"
-# escape asterisks
-HTML="${HTML//\*/\\*}"
-# escape full stops
-HTML="${HTML//./\\.}"    
-# escape [ and ]
-HTML="${HTML//\[/\\[}"
-HTML="${HTML//\[/\\]}"
-# escape ^ and $
-HTML="${HTML//^/\\^}"
-HTML="${HTML//\$/\\\$}"
-# remove newlines
-HTML="${HTML//[$'\n']/}"
-
-sed -i '/<\/p>/ a\ \n'"${HTML}" plugins/org.csstudio.startup.intro/html/changelog.html
+sed -i 's/\(\<product[^>]\+\? version=\"\)[^"]*\("[^>]\+\?>\)/\1'${VERSIONP}'\2/g'  repository/cs-studio.product
 
 echo ::: Committing and tagging version $VERSION :::
 git commit -a -m "Updating changelog, splash, manifests to version $VERSION"
 if [ "$PUSH" = "true" ]
 then
-  echo ::: Tagging version $VERSION :::
-  git tag CSS-$VERSION
   echo ::: Pushing changes :::
   git push origin
-  git push origin CSS-$VERSION
 fi
