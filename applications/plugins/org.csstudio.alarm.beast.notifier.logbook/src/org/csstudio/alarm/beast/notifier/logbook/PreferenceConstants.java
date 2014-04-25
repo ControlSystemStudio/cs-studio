@@ -5,20 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.notifier.olog;
+package org.csstudio.alarm.beast.notifier.logbook;
 
-import java.util.logging.Logger;
+/**
+ * Constant definitions for plug-in preferences
+ */
+public class PreferenceConstants {
 
-public class Activator {
-
-	/** Plugin ID defined in MANIFEST.MF */
-	final public static String PLUGIN_ID = "org.csstudio.alarm.beast.notifier.olog";
-
-	final private static Logger logger = Logger.getLogger(PLUGIN_ID);
-
-	/** @return Logger for plugin ID */
-	public static Logger getLogger() {
-		return logger;
-	}
+	public static final String Default_logbook = "Default.logbook";
+	public static final String Default_level = "Default.level";
 
 }
