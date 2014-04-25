@@ -82,11 +82,10 @@ class IntensityGraph2DFunction implements ReadFunction<Graph2DResult> {
         if (renderer.getImageHeight() == 0 && renderer.getImageWidth() == 0)
             return null;
         
-        BufferedImage image = new BufferedImage(renderer.getImageWidth(), renderer.getImageHeight(), BufferedImage.TYPE_3BYTE_BGR);
-        GraphBuffer buffer = new GraphBuffer(image);
+        GraphBuffer buffer = new GraphBuffer(renderer);
         renderer.draw(buffer, dataset);
         
-        return new Graph2DResult(null, ValueUtil.toVImage(image),
+        return new Graph2DResult(null, ValueUtil.toVImage(buffer.getImage()),
                 new GraphDataRange(renderer.getXPlotRange(), dataset.getXRange(), renderer.getXAggregatedRange()),
                 new GraphDataRange(renderer.getYPlotRange(), dataset.getStatistics(), renderer.getYAggregatedRange()),
                 -1);
