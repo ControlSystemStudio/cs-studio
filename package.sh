@@ -17,6 +17,6 @@ cp -R ../applicationIcons cs-studio/
 
 unset DISPLAY
 winecfg
-sed -i 's/\"ShowDotFiles\"=\"\w\"/\"ShowDotFiles\"=\"1\"/' ~/.wine/user.reg
+sed -i 's/\"ShowDotFiles\"=\"\w\"/\"ShowDotFiles\"=\"Y\"/' ~/.wine/user.reg
 wine InnoSetup5/ISCC.exe css-windows-build/install_script_general.iss "/dCSSVersion=${VERSION}"
 echo ::: DONE :::

@@ -5,6 +5,7 @@ VERSION=$1
 COMPATLINK=$2
 MILESTONE=$3
 NOTES=$4
+PUSH=$5
 BUILD_DIR="build"
 if [! $# == 4 ]
 then 
@@ -53,4 +54,11 @@ sed -i '/<\/p>/ a\ \n'"${HTML}" plugins/org.csstudio.startup.intro/html/changelo
 
 echo ::: Committing and tagging version $VERSION :::
 git commit -a -m "Updating changelog, splash, manifests to version $VERSION"
+echo ::: Tagging version $VERSION :::
 git tag CSS-$VERSION
+if [ $PUSH ]
+then
+  echo ::: Pushing changes :::
+  git push origin
+  git push origin CSS-$VERSION
+fi
