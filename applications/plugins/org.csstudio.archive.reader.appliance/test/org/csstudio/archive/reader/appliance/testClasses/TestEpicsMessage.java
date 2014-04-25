@@ -20,6 +20,7 @@ public class TestEpicsMessage extends EpicsMessage{
 		
 	private final long time;
 	private final Number value;
+	private final Number[] arrayValue;
 	private final int severity;
 	private final int status;
 	
@@ -32,6 +33,19 @@ public class TestEpicsMessage extends EpicsMessage{
 		this.value = value;
 		this.severity = severity;
 		this.status = status;
+		this.arrayValue = null;
+	}
+	
+	/**
+	 * Constructor.
+	 */
+	public TestEpicsMessage(long time, Number[] value, int severity, int status, GeneratedMessage message, PayloadInfo info) {
+		super(message, info);
+		this.time = time;
+		this.arrayValue = value;
+		this.severity = severity;
+		this.status = status;
+		this.value = null;
 	}
 	
 	/* (non-Javadoc)
@@ -64,6 +78,9 @@ public class TestEpicsMessage extends EpicsMessage{
 	 */
 	@Override
 	public Number getNumberAt(int index) throws IOException {
+		if (arrayValue != null) {
+			return arrayValue[index];
+		}
 		return value;
 	}
 	
@@ -72,6 +89,9 @@ public class TestEpicsMessage extends EpicsMessage{
 	 */
 	@Override
 	public Number getNumberValue() throws IOException {
+		if (arrayValue != null && arrayValue.length > 0) {
+			return arrayValue[0];
+		}
 		return value;
 	}
 	

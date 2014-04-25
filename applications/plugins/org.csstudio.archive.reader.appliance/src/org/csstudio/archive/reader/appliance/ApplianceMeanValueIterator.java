@@ -54,7 +54,7 @@ public class ApplianceMeanValueIterator extends ApplianceValueIterator {
 	@Override
 	protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {
 		int interval = Math.max(1,(int)((end.getSec() - start.getSec()) / requestedPoints));
-		String mean = new StringBuilder().append("mean_").append(interval).append('(').append(pvName).append(')').toString();
+		String mean = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_MEAN).append(interval).append('(').append(pvName).append(')').toString();
 		super.fetchDataInternal(mean);
 	}
 		

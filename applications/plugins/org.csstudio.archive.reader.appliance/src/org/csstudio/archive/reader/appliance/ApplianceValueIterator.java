@@ -202,7 +202,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 		FieldDescriptor fd;
 		while(it.hasNext()) {
 			fd = it.next();
-			if (fd.getName().equalsIgnoreCase("val")) {
+			if (fd.getName().equalsIgnoreCase(ApplianceArchiveReaderConstants.VAL)) {
 				return fd;
 			}
 		}

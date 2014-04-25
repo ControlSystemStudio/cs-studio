@@ -130,20 +130,28 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
 		try {
-			if (useRaw(name, count, start, end)) {
+			int points = getNumberOfPoints(name, start, end);
+			if (points <= count) {
 				return getRawValues(key, name, start, end);
 			} else {
-				if (useStatistics) {
-					return new ApplianceStatisticsValueIterator(this, name, start, end, count);
-				} else {
-					return new ApplianceMeanValueIterator(this, name, start, end, count);
+				try {
+					//try to bin the values using the mean and std etc. This will work for numeric scalar PVs
+					if (useStatistics) {
+						return new ApplianceStatisticsValueIterator(this, name, start, end, count);
+					} else {
+						return new ApplianceMeanValueIterator(this, name, start, end, count);
+					}
+				} catch (ArchiverApplianceException e) {
+					//if binning is not supported, try nth operator
+					return new ApplianceNonNumericOptimizedValueIterator(this, name, start, end, count, points);
 				}
 			}
 		} catch (ArchiverApplianceException e) {
+			//fallback for older archiver appliance, which didn't have the nth operator
 			try {
 				return getRawValues(key, name, start, end);
-			} catch (ArchiverApplianceException ex) {
-				throw new UnknownChannelException(name);
+			} catch (ArchiverApplianceException exc) {
+				throw new UnknownChannelException(name);	
 			}
 		} 
 	}
@@ -217,22 +225,16 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	}
 	
 	/**
-	 * Checks if data for the selected parameters should be loaded as raw data or as optimized data.
-	 * If there are more points in the archive than there are requested points, this method will return
-	 * false. If there are less or equal number of points in the archive as there are requested points,
-	 * the method will return true.
+	 * Counts the number of points in the given time window using the ncount operator.
 	 * 
 	 * @param pvName the name of the PV
-	 * @param requestedPoints the number of points that are requested by the client
 	 * @param start the start time of the data window
 	 * @param end the end time of the data window
-	 * @return true if there are less (or equal) points in the archive as there are requested points or false
-	 * 			otherwise 
+	 * @return the number of points in the requested time window
 	 * @throws IOException if there was an error loading the number of points
 	 */
-	private boolean useRaw(String pvName, int requestedPoints, Timestamp start, Timestamp end) throws IOException {
-		int interval = Math.max(1,(int)(end.getSec() - start.getSec()));
-		String countName = new StringBuilder().append("count_").append(interval).append('(').append(pvName).append(')').toString();
+	private int getNumberOfPoints(String pvName, Timestamp start, Timestamp end) throws IOException {
+		String countName = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_NCOUNT).append('(').append(pvName).append(')').toString();
 		DataRetrieval dataRetrieval = createDataRetriveal(getDataRetrievalURL());
 		java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
 		java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
@@ -244,14 +246,48 @@ public class ApplianceArchiveReader implements ArchiveReader {
 				int numberOfPoints = 0;
 				while(it.hasNext()) {
 					Number m = it.next().getNumberValue();
-					if (m == null) return true;
+					if (m == null) return numberOfPoints;
 					numberOfPoints += m.intValue();
 				}
-				return numberOfPoints < requestedPoints;
+				return numberOfPoints;
 			} finally {
 				iterator.close();
 			}
 		}
-		return true;
+		return getNumberOfPointsLegacy(pvName, start, end);
+	}
+	
+	/**
+	 * Counts the number of points in the given time window using the bin count operator.
+	 * 
+	 * @param pvName the name of the PV
+	 * @param start the start time of the data window
+	 * @param end the end time of the data window
+	 * @return the number of points
+	 * @throws IOException if there was an error loading the number of points
+	 */
+	private int getNumberOfPointsLegacy(String pvName, Timestamp start, Timestamp end) throws IOException {
+		int interval = Math.max(1,(int)(end.getSec() - start.getSec()));
+		String countName = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_COUNT).append(interval).append('(').append(pvName).append(')').toString();
+		DataRetrieval dataRetrieval = createDataRetriveal(getDataRetrievalURL());
+		java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
+		java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
+		GenMsgIterator iterator = dataRetrieval.getDataForPV(countName, sqlStartTimestamp, sqlEndTimestamp);
+		
+		if (iterator != null) {
+			try {
+				Iterator<EpicsMessage> it = iterator.iterator();
+				int numberOfPoints = 0;
+				while(it.hasNext()) {
+					Number m = it.next().getNumberValue();
+					if (m == null) return 0;
+					numberOfPoints += m.intValue();
+				}
+				return numberOfPoints;
+			} finally {
+				iterator.close();
+			}
+		}
+		return 0;
 	}
 }
