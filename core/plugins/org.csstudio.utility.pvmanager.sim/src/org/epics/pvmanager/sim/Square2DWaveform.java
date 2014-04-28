@@ -83,23 +83,30 @@ public class Square2DWaveform extends SimFunction<VDoubleArray> {
     }
 
     private ListDouble generateNewValue(final double omega, final double t, double k) {
-        double[] newArray = new double[xSamples*ySamples];
-        double kx = Math.cos(angle * Math.PI / 180.0) * k;
-        double ky = Math.sin(angle * Math.PI / 180.0) * k;
-        for (int y = 0; y < ySamples; y++) {
-            for (int x = 0; x < xSamples; x++) {
+        final double kx = Math.cos(angle * Math.PI / 180.0) * k;
+        final double ky = Math.sin(angle * Math.PI / 180.0) * k;
+        return new ListDouble() {
+
+            @Override
+            public double getDouble(int index) {
+                int x = index % xSamples;
+                int y = index / xSamples;
                 double length = (omega * t + kx* x + ky * y) / (2 * Math.PI);
                 double normalizedPositionInPeriod = length - (double) (long) length;
                 if (normalizedPositionInPeriod < 0.5) {
-                    newArray[y*xSamples + x] = 1.0;
+                    return 1.0;
                 } else if (normalizedPositionInPeriod < 1.0) {
-                    newArray[y*xSamples + x] = -1.0;
+                    return -1.0;
                 } else {
-                    newArray[y*xSamples + x] = 1.0;
+                    return 1.0;
                 }
             }
-        }
-        return new ArrayDouble(newArray);
+
+            @Override
+            public int size() {
+                return xSamples*ySamples;
+            }
+        };
     }
 
     @Override
