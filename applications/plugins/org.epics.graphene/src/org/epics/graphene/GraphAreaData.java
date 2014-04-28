@@ -37,29 +37,29 @@ class GraphAreaData {
     ListInt xReferencePixels;
     ListDouble xReferenceValues;
     List<String> xReferenceLabels;
-    int xLabelMargin;
+    int labelMarginBottom;
     int xLabelMaxHeight;
     
     ListInt yReferencePixels;
     ListDouble yReferenceValues;
     List<String> yReferenceLabels;
-    int yLabelMargin;
+    int labelMarginLeft;
     int yLabelMaxWidth;
     
-    int xGraphLeft;
-    int xGraphRight;
-    int yGraphBottom;
-    int yGraphTop;
+    int graphLeft;
+    int graphRight;
+    int graphBottom;
+    int graphTop;
     
-    int xAreaLeft;
-    int xAreaRight;
-    int yAreaBottom;
-    int yAreaTop;
+    int areaLeft;
+    int areaRight;
+    int areaBottom;
+    int areaTop;
     
-    int bottomAreaMargin = 0;
-    int topAreaMargin = 0;
-    int leftAreaMargin = 0;
-    int rightAreaMargin = 0;
+    int graphPaddingLeft = 0;
+    int graphPaddingRight = 0;
+    int graphPaddingBottom = 0;
+    int graphPaddingTop = 0;
 
     /**
      * Changes the buffer where the graph area is going to be rendered.
@@ -78,47 +78,47 @@ class GraphAreaData {
      * The coordinate system is that of a standard image, where (0,0) is the
      * top left corner.
      * 
-     * @param xAreaLeft the first pixel on the left (inclusive)
-     * @param yAreaBottom the first pixel on the bottom (inclusive)
-     * @param xAreaRight the last pixel on the right (inclusive)
-     * @param yAreaTop the last pixel on the top (inclusive)
+     * @param areaLeft the first pixel on the left (inclusive)
+     * @param areaBottom the first pixel on the bottom (inclusive)
+     * @param areaRight the last pixel on the right (inclusive)
+     * @param areaTop the last pixel on the top (inclusive)
      */
-    public void setGraphArea(int xAreaLeft, int yAreaBottom, int xAreaRight, int yAreaTop) {
-        this.xAreaLeft = xAreaLeft;
-        this.yAreaBottom = yAreaBottom;
-        this.xAreaRight = xAreaRight;
-        this.yAreaTop = yAreaTop;
+    public void setGraphArea(int areaLeft, int areaBottom, int areaRight, int areaTop) {
+        this.areaLeft = areaLeft;
+        this.areaBottom = areaBottom;
+        this.areaRight = areaRight;
+        this.areaTop = areaTop;
     }
 
     /**
-     * Changes the margin of the graph area, effectively moving the displayed
+     * Changes the padding of the graph area, effectively moving the displayed
      * value range further into the graph. This is useful if value points
      * are represented by a glyph, and one wants to leave space so that the
      * glyph is not cropped. The space is still on the graph area, so reference
      * lines and other points right outside the value range will be displayed.
      * 
-     * @param leftAreaMargin the number of pixels to be left to the left of the values
-     * @param bottomAreaMargin the number of pixels to be left to the bottom of the values
-     * @param rightAreaMargin the number of pixels to be left to the right of the values
-     * @param topAreaMargin the number of pixels to be left to the top of the values
+     * @param graphPaddingLeft the number of pixels to be left to the left of the values
+     * @param graphPaddingBottom the number of pixels to be left to the bottom of the values
+     * @param graphPaddingRight the number of pixels to be left to the right of the values
+     * @param graphPaddingTop the number of pixels to be left to the top of the values
      */
-    public void setGraphAreaMargins(int leftAreaMargin, int bottomAreaMargin, int rightAreaMargin, int topAreaMargin) {
-        this.leftAreaMargin = leftAreaMargin;
-        this.bottomAreaMargin = bottomAreaMargin;
-        this.rightAreaMargin = rightAreaMargin;
-        this.topAreaMargin = topAreaMargin;
+    public void setGraphPadding(int graphPaddingLeft, int graphPaddingBottom, int graphPaddingRight, int graphPaddingTop) {
+        this.graphPaddingLeft = graphPaddingLeft;
+        this.graphPaddingBottom = graphPaddingBottom;
+        this.graphPaddingRight = graphPaddingRight;
+        this.graphPaddingTop = graphPaddingTop;
     }
     
     /**
      * Changes the margin between the labels and the graph area. This are
      * is left blank, and is not part of the graph area.
      * 
-     * @param xLabelMargin margin in pixel between the bottom labels and the bottom part of the graph
-     * @param yLabelMargin margin in pixel between the left labels and the left part of the graph
+     * @param labelMarginBottom margin in pixel between the bottom labels and the bottom part of the graph
+     * @param labelMarginLeft margin in pixel between the left labels and the left part of the graph
      */
-    public void setLabelMargin(int xLabelMargin, int yLabelMargin) {
-        this.xLabelMargin = xLabelMargin;
-        this.yLabelMargin = yLabelMargin;
+    public void setLabelMargin(int labelMarginBottom, int labelMarginLeft) {
+        this.labelMarginBottom = labelMarginBottom;
+        this.labelMarginLeft = labelMarginLeft;
     }
     
     /**
@@ -151,7 +151,7 @@ class GraphAreaData {
         
         // Calculate horizontal axis references. If range is zero, use special logic
         if (!xValueRange.getMinimum().equals(xValueRange.getMaximum())) {
-            ValueAxis xAxis = xValueScale.references(xValueRange, 2, Math.max(2, (xAreaRight - xAreaLeft + 1) / 55));
+            ValueAxis xAxis = xValueScale.references(xValueRange, 2, Math.max(2, (areaRight - areaLeft + 1) / 55));
             xReferenceLabels = Arrays.asList(xAxis.getTickLabels());
             xReferenceValues = new ArrayDouble(xAxis.getTickValues());            
         } else {
@@ -162,7 +162,7 @@ class GraphAreaData {
         
         // Calculate vertical axis references. If range is zero, use special logic
         if (!yValueRange.getMinimum().equals(yValueRange.getMaximum())) {
-            ValueAxis yAxis = yValueScale.references(yValueRange, 2, Math.max(2, (yAreaBottom - yAreaTop + 1) / 55));
+            ValueAxis yAxis = yValueScale.references(yValueRange, 2, Math.max(2, (areaBottom - areaTop + 1) / 55));
             yReferenceLabels = Arrays.asList(yAxis.getTickLabels());
             yReferenceValues = new ArrayDouble(yAxis.getTickValues());
         } else {
@@ -208,21 +208,21 @@ class GraphAreaData {
         this.referenceLineColor = referenceLineColor;
         
         // Prepare x positions
-        xGraphLeft = xAreaLeft + yLabelMaxWidth + yLabelMargin;
-        xGraphRight = xAreaRight;
+        graphLeft = areaLeft + yLabelMaxWidth + labelMarginLeft;
+        graphRight = areaRight;
         if (asCell) {
-            graphBuffer.setXScaleAsCell(safeRange(xValueRange), xGraphLeft + leftAreaMargin, xGraphRight - rightAreaMargin, xValueScale);
+            graphBuffer.setXScaleAsCell(safeRange(xValueRange), graphLeft + graphPaddingLeft, graphRight - graphPaddingRight, xValueScale);
         } else {
-            graphBuffer.setXScaleAsPoint(safeRange(xValueRange), xGraphLeft + leftAreaMargin, xGraphRight - rightAreaMargin, xValueScale);
+            graphBuffer.setXScaleAsPoint(safeRange(xValueRange), graphLeft + graphPaddingLeft, graphRight - graphPaddingRight, xValueScale);
         }
         
         // Prepare y positions
-        yGraphTop = yAreaTop;
-        yGraphBottom = yAreaBottom - xLabelMaxHeight - xLabelMargin;
+        graphTop = areaTop;
+        graphBottom = areaBottom - xLabelMaxHeight - labelMarginBottom;
         if (asCell) {
-            graphBuffer.setYScaleAsCell(safeRange(yValueRange), yGraphBottom - bottomAreaMargin, yGraphTop + topAreaMargin, yValueScale);
+            graphBuffer.setYScaleAsCell(safeRange(yValueRange), graphBottom - graphPaddingBottom, graphTop + graphPaddingTop, yValueScale);
         } else {
-            graphBuffer.setYScaleAsPoint(safeRange(yValueRange), yGraphBottom - bottomAreaMargin, yGraphTop + topAreaMargin, yValueScale);
+            graphBuffer.setYScaleAsPoint(safeRange(yValueRange), graphBottom - graphPaddingBottom, graphTop + graphPaddingTop, yValueScale);
         }
         
         //Only calculates reference coordinates if calculateLabels() was called
@@ -231,7 +231,7 @@ class GraphAreaData {
             for (int i = 0; i < xRefCoords.length; i++) {
                 xRefCoords[i] = graphBuffer.xValueToPixel(xReferenceValues.getDouble(i));
             }
-            if (asCell && xRefCoords[xReferenceValues.size() - 1] == xGraphRight + 1) {
+            if (asCell && xRefCoords[xReferenceValues.size() - 1] == graphRight + 1) {
                 xRefCoords[xReferenceValues.size() - 1]--;
             }
             xReferencePixels = new ArrayInt(xRefCoords);
@@ -242,7 +242,7 @@ class GraphAreaData {
             for (int i = 0; i < yRefCoords.length; i++) {
                 yRefCoords[i] = graphBuffer.yValueToPixel(yReferenceValues.getDouble(i));
             }
-            if (asCell && yRefCoords[yReferenceValues.size() - 1] == yGraphTop - 1) {
+            if (asCell && yRefCoords[yReferenceValues.size() - 1] == graphTop - 1) {
                 yRefCoords[yReferenceValues.size() - 1]++;
             }
             yReferencePixels = new ArrayInt(yRefCoords);
@@ -252,11 +252,11 @@ class GraphAreaData {
     protected void drawGraphArea() {
         graphBuffer.getGraphicsContext().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        graphBuffer.drawVerticalReferenceLines(xReferencePixels, referenceLineColor, yGraphBottom, yGraphTop);
-        graphBuffer.drawHorizontalReferenceLines(yReferencePixels, referenceLineColor, xGraphLeft, xGraphRight);
+        graphBuffer.drawVerticalReferenceLines(xReferencePixels, referenceLineColor, graphBottom, graphTop);
+        graphBuffer.drawHorizontalReferenceLines(yReferencePixels, referenceLineColor, graphLeft, graphRight);
         
-        graphBuffer.drawBottomLabels(xReferenceLabels, xReferencePixels, labelColor, labelFont, xGraphLeft, xGraphRight, yGraphBottom + xLabelMargin + 1);
-        graphBuffer.drawLeftLabels(yReferenceLabels, yReferencePixels, labelColor, labelFont, yGraphBottom, yGraphTop, xGraphLeft - yLabelMargin - 1);
+        graphBuffer.drawBottomLabels(xReferenceLabels, xReferencePixels, labelColor, labelFont, graphLeft, graphRight, graphBottom + labelMarginBottom + 1);
+        graphBuffer.drawLeftLabels(yReferenceLabels, yReferencePixels, labelColor, labelFont, graphBottom, graphTop, graphLeft - labelMarginLeft - 1);
     }
     
 }
