@@ -514,6 +514,8 @@ public abstract class CommonMultiSymbolFigure extends Figure {
 	@Override
 	public void setForegroundColor(Color foregroundColor) {
 		this.foregroundColor = foregroundColor;
+		if (foregroundColor != null)
+			this.label.setForegroundColor(foregroundColor);
 		repaint();
 	}
 	

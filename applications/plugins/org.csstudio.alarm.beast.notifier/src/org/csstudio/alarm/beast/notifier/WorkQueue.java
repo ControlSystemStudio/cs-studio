@@ -17,11 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
-import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.alarm.beast.notifier.history.AlarmNotifierHistory;
 import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 import org.csstudio.alarm.beast.notifier.util.OverflowManager;
-import org.epics.util.time.Timestamp;
 
 /**
  * Automated actions work queue. Each action is scheduled in a timer and then
@@ -51,20 +49,18 @@ public class WorkQueue {
 			} else {
 				if (debug)
 					AlarmNotifierHistory.getInstance().addAction(alarmHandler);
-				String time = TimestampHelper.format(Timestamp.now());
 				Activator.getLogger().log(Level.INFO,
-						time + " CANCEL " + alarmHandler.getInfos() + " because " + alarmHandler.getReason());
+						"CANCEL " + alarmHandler.getInfos() + " because " + alarmHandler.getReason());
 			}
 			remove(this.alarmHandler);
 		}
 
 		@Override
 		public boolean cancel() {
-			String time = TimestampHelper.format(Timestamp.now());
 			String reason = alarmHandler.getReason().isEmpty() ? "the timer has been canceled"
 					: alarmHandler.getReason();
 			Activator.getLogger().log(Level.INFO,
-					time + " CANCEL " + alarmHandler.getInfos() + " because " + reason);
+					"CANCEL " + alarmHandler.getInfos() + " because " + reason);
 			alarmHandler.setStatus(EActionStatus.CANCELED);
 			return super.cancel();
 		}
@@ -93,12 +89,10 @@ public class WorkQueue {
 		public void run() {
 			incrementRunningThreads();
 			try {
-				String time = TimestampHelper.format(Timestamp.now());
-				Activator.getLogger().log(Level.INFO, time + " EXECUTION " + infos);
+				Activator.getLogger().log(Level.INFO, "EXECUTION " + infos);
 				action.execute(snapshots);
 			} catch (Exception e) {
-				Activator.getLogger().log(Level.SEVERE,
-						"ERROR executing " + infos + ": " + e.getMessage());
+				Activator.getLogger().log(Level.SEVERE, "ERROR executing " + infos, e);
 			}
 			decrementRunningThreads();
 		}
@@ -223,10 +217,9 @@ public class WorkQueue {
 				incrementPendingActions();
 			}
 			int delay = noDelay ? 0 : (alarmHandler.getDelay() * 1000);
-			String time = TimestampHelper.format(Timestamp.now());
 			timer.schedule(newTask, delay);
 			Activator.getLogger().log(Level.INFO,
-							time + " SUBMISSION " + alarmHandler.getInfos()
+							"SUBMISSION " + alarmHandler.getInfos()
 									+ " scheduled in " + (delay / 1000)
 									+ " seconds on " + alarmHandler.getItem().getName());
 		}

@@ -3,6 +3,6 @@
 <plugin>
    <extension point="org.csstudio.alarm.beast.notifier">
       <action scheme="log" 
-            action="org.csstudio.alarm.beast.notifier.olog.AutomatedLogAction"/>
+            action="org.csstudio.alarm.beast.notifier.logbook.AutomatedLogAction"/>
    </extension>
 </plugin>

@@ -73,7 +73,7 @@ public class CommandActionImpl implements IAutomatedAction {
 			dir = Preferences.getCommandDirectory();
 		} catch (Exception ex) {
 			Activator.getLogger().log(Level.SEVERE,
-					"Can not find command directory: {0}", ex.getMessage());
+					"Can not find command directory", ex);
 			return;
 		}
 		if (command.contains("*")) { // List PVs and their alarm severity
