@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="3.3.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -62,9 +62,6 @@
       <plugin id="org.epics.vtype"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
-      <plugin id="org.junit4"/>
-      <plugin id="org.mortbay.jetty.server"/>
-      <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.python.jython"/>
    </plugins>
 
