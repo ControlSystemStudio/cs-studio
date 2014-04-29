@@ -104,6 +104,25 @@
     </repository>  
   </repositories>
   
+  <!-- If a local repository is specified then enable the repository for build. -->
+  <profiles>
+    <profile>
+      <id>csstudio-local-repo-enable</id>
+      <activation>
+        <file>
+          <exists>${csstudio.local.repo}/artifacts.jar</exists>
+        </file>
+      </activation>
+      <repositories>
+        <repository>
+          <id>csstudio-local-repo</id>
+          <url>file:${csstudio.local.repo}</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
   <!--
     CHILD MODULES
   -->
