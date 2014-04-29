@@ -8,7 +8,7 @@ MILESTONE=$3
 NOTES=$4
 PUSH=$5
 BUILD_DIR="build"
-if [! $# == 5 ]
+if [ $# != 5 ]
 then 
   echo You must provide the product version, compat link, milestone, notes \(e.g. \"prepare_release.sh 3.3.0 \"https://github\" \"https://github\" \"Some notes\"\"\)
 exit -1
