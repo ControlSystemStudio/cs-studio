@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Edmsymbol
+Bundle-SymbolicName: org.csstudio.opibuilder.widgets.edmsymbol;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.opibuilder.widgets.edmsymbol.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.opibuilder,
+ org.csstudio.opibuilder.widgets,
+ org.csstudio.swt.widgets
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
