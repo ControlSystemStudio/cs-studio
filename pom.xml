@@ -11,7 +11,7 @@
     <!-- VERSIONS -->
     <tycho.version>0.20.0</tycho.version>
     <tycho-extras.version>0.20.0</tycho-extras.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/3.3</cs-studio-central.url>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.0</cs-studio-central.url>
     <pvmanager.version>2.5</pvmanager.version>
     <graphene.version>0.6</graphene.version>
     <pvdata.version>3.0.3</pvdata.version>
