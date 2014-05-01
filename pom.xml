@@ -33,6 +33,9 @@
                     <executions>
                         <execution>
                             <id>default-cli</id>
+                            <goals>
+                                <goal>site</goal>
+                            </goals>
                             <configuration>
                                 <artifacts>
                                     <!-- specify your depencies here -->
