@@ -37,10 +37,9 @@ public class StartupLauncher implements IApplicationListener {
 				PreferenceConstants.anonymous_olog_password, null, null);
 
 		if (username != null) {
-			String url = prefs.getString(
-							org.csstudio.alarm.beast.notifier.olog.Activator.PLUGIN_ID,
-							org.csstudio.alarm.beast.notifier.olog.PreferenceConstants.Olog_URL,
-							"http://localhost:8080/Olog/resources", null);
+			String url = prefs.getString(Activator.PLUGIN_ID,
+					PreferenceConstants.Olog_URL,
+					"http://localhost:8080/Olog/resources", null);
 			OlogClientBuilder ologClientBuilder = OlogClientBuilder.serviceURL(url);
 			ologClientBuilder.withHTTPAuthentication(true).username(username).password(password);
 			Activator.getLogger().log(Level.INFO,

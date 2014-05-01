@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Scan Server" uid="org.csstudio.iter.product.scan.server.product" id="org.csstudio.iter.scan.server.product.product" application="org.csstudio.scan.server.application" version="3.2.15.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Scan Server" uid="org.csstudio.iter.product.scan.server.product" id="org.csstudio.iter.scan.server.product.product" application="org.csstudio.scan.server.application" version="3.3.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
