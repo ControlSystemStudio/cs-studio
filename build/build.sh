@@ -106,7 +106,7 @@ else
   unzip -o eclipse-3.7.2-delta-pack.zip
   cd ..
 fi
-if [ "$ORGANIZATION" = "ITER" ]
+if [ "$ORGANIZATION" = "ASKAP" ]
 then
   cd ext
   if [[ ! -d eclipse/dropins/subclipse ]]
