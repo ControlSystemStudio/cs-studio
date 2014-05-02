@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.pvmanager.pva.feature"
       label="CS-Studio Epics v4 Support (PVAccess)"
-      version="3.2.0.qualifier"
+      version="3.2.1.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://pvmanager.sourceforge.net/">
