@@ -37,14 +37,14 @@ public class SchedulingBlock {
 	SBState state;
 	Map<String, String> parameterMap = null;
 	
-	Date lastExecutedDate = null;
+	String lastExecutedDate = null;
 	long lastExecutionDuration = 0;
 
 	int majorVersion;
 	String templateName = "";
 	String executedVersion = "";
 	
-	Date errorTimeStamp = null;
+	String errorTimeStamp = null;
 	String errorMessage = "";
 	
 	public enum SBState {
@@ -130,14 +130,14 @@ public class SchedulingBlock {
 	/**
 	 * @return the lastExecutedDate
 	 */
-	public Date getLastExecutedDate() {
+	public String getLastExecutedDate() {
 		return lastExecutedDate;
 	}
 
 	/**
 	 * @param lastExecutedDate the lastExecutedDate to set
 	 */
-	public void setLastExecutedDate(Date lastExecutedDate) {
+	public void setLastExecutedDate(String lastExecutedDate) {
 		this.lastExecutedDate = lastExecutedDate;
 	}
 
@@ -193,14 +193,14 @@ public class SchedulingBlock {
 	/**
 	 * @return the errorTimeStamp
 	 */
-	public Date getErrorTimeStamp() {
+	public String getErrorTimeStamp() {
 		return errorTimeStamp;
 	}
 
 	/**
 	 * @param errorTimeStamp the errorTimeStamp to set
 	 */
-	public void setErrorTimeStamp(Date errorTimeStamp) {
+	public void setErrorTimeStamp(String errorTimeStamp) {
 		this.errorTimeStamp = errorTimeStamp;
 	}
 

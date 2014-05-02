@@ -190,13 +190,13 @@ public class SBExecutionView extends EditorPart {
 				if (sb != null) {
 					String executeTime = "";
 					if (sb.getLastExecutedDate()!=null)
-						executeTime = AskapHelper.getFormatedData(sb.getLastExecutedDate(), null);
+						executeTime = sb.getLastExecutedDate();
 					
 					String duration = getStringDuration(sb.getLastExecutionDuration());
 					
 					String errorTime = "";
 					if (sb.getErrorTimeStamp()!=null)
-						errorTime = AskapHelper.getFormatedData(sb.getErrorTimeStamp(), null);
+						errorTime = sb.getErrorTimeStamp();
 						
 					item.setText(new String[]{sb.getState().toString(), sb.getAliasName(), sb.getTemplateName(), sb.getExecutedVersion(), 
 							executeTime, duration, errorTime, sb.getErrorMessage()});
@@ -423,7 +423,7 @@ public class SBExecutionView extends EditorPart {
 				});
 			}
 		});
-		
+/*		
 		dataCaptureModel.start(new DataChangeListener() {			
 			@Override
 			public void dataChanged(final DataChangeEvent e) {
@@ -453,6 +453,7 @@ public class SBExecutionView extends EditorPart {
 				
 			}
 		});
+*/
 	}
 
 	@Override
