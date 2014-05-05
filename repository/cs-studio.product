@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CS-Studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.3.0" useFeatures="true" includeLaunchers="true">
+<product name="Cs-studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.3.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.product/icons/cs-studio-about.png"/>
@@ -68,8 +68,12 @@
 
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="4" />
-      <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
    </configurations>
 
 </product>
