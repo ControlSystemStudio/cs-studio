@@ -30,9 +30,9 @@
   -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>0.19.0</tycho.version>
-    <tycho-extras.version>0.19.0</tycho-extras.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/core/3.3</cs-studio-central.url>
+    <tycho.version>0.20.0</tycho.version>
+    <tycho-extras.version>0.20.0</tycho-extras.version>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.0</cs-studio-central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
   </properties>
 
@@ -52,51 +52,31 @@
     P2 REPOSITORIES
   -->
   <repositories>
-    <repository>
+    <!--<repository>
       <id>csstudio-thirdparty</id>
-      <url>http://download.controlsystemstudio.org/thirdparty/3.3</url>
+      <url>http://download.controlsystemstudio.org/thirdparty/4.0</url>
       <layout>p2</layout>
-    </repository>
+    </repository>-->
     <repository>
       <id>csstudio-maven-osgi-bundles</id>
-      <url>http://download.controlsystemstudio.org/maven-osgi-bundles/3.3</url>
+      <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.0</url>
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>indigo</id>
-      <url>http://download.eclipse.org/releases/indigo</url>
+      <id>kepler</id>
+      <url>http://download.eclipse.org/releases/kepler</url>
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>indigoupdate</id>
-      <url>http://download.eclipse.org/eclipse/updates/3.7</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>epp</id>
-      <url>http://download.eclipse.org/technology/epp/packages/indigo</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>eppupdate</id>
-      <url>http://download.eclipse.org/technology/epp/packages/indigo/SR2</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>nebula</id>
-      <url>http://download.eclipse.org/technology/nebula/snapshot</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>orbit</id>
-      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository</url>
+      <id>kepler-updates</id>
+      <url>http://download.eclipse.org/eclipse/updates/4.3</url>
       <layout>p2</layout>
     </repository>
     <repository>
       <id>rap</id>
       <url>http://download.eclipse.org/rt/rap/1.5/runtime</url>
       <layout>p2</layout>
-    </repository>  
+    </repository>
   </repositories>
   
   <!-- If a local repository is specified then enable that repository -->
@@ -190,38 +170,22 @@
           <configuration>
             <dependency-resolution>
               <extraRequirements>
+                <!-- 
+                  Needed to satisfy the import packages javax.servlet and
+                  javax.servlet.http required by the plugin org.csstudio.rap.core
+                -->
                 <requirement>
-                  <!-- 
-                      Needed to satisfy the import packages javax.servlet and
-                      javax.servlet.http required by the plugin org.csstudio.rap.core
-                  -->
                   <type>eclipse-plugin</type>
                   <id>javax.servlet</id>
                   <versionRange>0.0.0</versionRange>
                 </requirement>
+                <!--
+                  Needed to satisfy the import package org.eclipse.ui.parts 
+                  required by the plugin org.csstudio.ui.util
+                -->
                 <requirement>
-                  <!--
-                    Needed to satisfy the import package org.eclipse.ui.parts 
-                    required by the plugin org.csstudio.logbook.olog
-                  -->
                   <type>eclipse-plugin</type>
                   <id>org.eclipse.ui.ide</id>
-                  <versionRange>0.0.0</versionRange>
-                </requirement>
-                <requirement>
-                  <!--
-                    Needed to generate CS-Studio P2 Repository.
-                  -->
-                  <type>eclipse-feature</type>
-                  <id>org.eclipse.objectteams.otdt.core.patch</id>
-                  <versionRange>0.0.0</versionRange>
-                </requirement>
-                <requirement>
-                  <!--
-                    Needed as a dependency for org.eclipse.objectteams.otdt.core.patch
-                  -->
-                  <type>eclipse-feature</type>
-                  <id>org.eclipse.jdt</id>
                   <versionRange>0.0.0</versionRange>
                 </requirement>
               </extraRequirements>
@@ -230,12 +194,20 @@
             </dependency-resolution>
 
             <filters>
-              <!-- This is how features/plugins can be ignored. -->
-              <!--<filter>
+              <!--
+                This is how features/plugins can be ignored in case of conflicts.
+                See details: https://wiki.eclipse.org/Tycho/Target_Platform#Filtering
+              -->
+              <!--
+                Need to select RAP v1.5 instead of the newer version include in Eclipse 4.
+              -->
+              <filter>
                 <type>eclipse-plugin</type>
-                <id>artifactId</id>
-                <removeAll />
-              </filter>-->
+                <id>org.eclipse.rap.ui</id>
+                <restrictTo>
+                  <versionRange>[1.5,2.0)</versionRange>
+                </restrictTo>
+              </filter>
             </filters>
 
             <environments>
