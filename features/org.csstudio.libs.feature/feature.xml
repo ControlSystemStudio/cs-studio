@@ -25,7 +25,7 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.hamcrest.core" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.junit4"/>
+      <import plugin="org.junit-dep"/>
       <import plugin="javax.annotation"/>
    </requires>
 
@@ -106,7 +106,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.junit4"
+         id="org.junit-dep"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
