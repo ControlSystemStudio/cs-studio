@@ -9,7 +9,7 @@ Require-Bundle: org.csstudio.platform.libs.jersey,
  org.apache.commons.httpclient,
  org.eclipse.core.runtime,
  com.google.common
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: edu.msu.nscl.olog.api
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Activator: org.csstudio.utility.olog.Activator
