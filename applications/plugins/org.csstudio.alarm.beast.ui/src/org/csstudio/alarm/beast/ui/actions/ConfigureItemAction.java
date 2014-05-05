@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that configures an alarm tree item
@@ -103,27 +104,7 @@ public class ConfigureItemAction extends Action
 	public static void performItemConfiguration(final Shell shell,
 	        final AlarmClientModel model, final AlarmTreeItem item)
 	{
-        final ItemConfigDialog dlg = new ItemConfigDialog(shell, item);
-        if (dlg.open() != Window.OK)
-            return;
-        try
-        {
-            if (item instanceof AlarmTreePV)
-                model.configurePV((AlarmTreePV) item, dlg.getDescription(),
-                        dlg.isEnabled(), dlg.isAnnunciate(), dlg.isLatch(),
-                        dlg.getDelay(), dlg.getCount(),
-                        dlg.getFilter(),
-                        dlg.getGuidance(), dlg.getDisplays(), dlg.getCommands(), dlg.getAutomatedActions());
-            else
-                model.configureItem(item, dlg.getGuidance(), dlg.getDisplays(),
-                        dlg.getCommands(), dlg.getAutomatedActions());
-
-        }
-        catch (Throwable ex)
-        {
-            MessageDialog.openError(shell, Messages.Error,
-                    NLS.bind(Messages.CannotUpdateConfigurationErrorFmt,
-                            item.getName(), ex.getMessage()));
-        }
+	    final ItemConfigDialog dlg = new ItemConfigDialog(shell, item, model, false);	
+	    dlg.open();
 	}
 }
