@@ -104,8 +104,8 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     private int imageWidth;
     private int imageHeight;
     // Strategy for calculating the axis range
-    private AxisRange xAxisRange = AxisRanges.integrated();
-    private AxisRange yAxisRange = AxisRanges.integrated();
+    private AxisRangeInstance xAxisRange = AxisRanges.integrated().createInstance();
+    private AxisRangeInstance yAxisRange = AxisRanges.integrated().createInstance();
     // Strategy for generating labels and scaling value of the axis
     protected ValueScale xValueScale = ValueScales.linearScale();
     protected ValueScale yValueScale = ValueScales.linearScale();
@@ -155,7 +155,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
      * @return the x axis range calculator
      */
     public AxisRange getXAxisRange() {
-        return xAxisRange;
+        return xAxisRange.getAxisRange();
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
      * @return the y axis range calculator
      */
     public AxisRange getYAxisRange() {
-        return yAxisRange;
+        return yAxisRange.getAxisRange();
     }
 
     /**
@@ -219,10 +219,10 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             imageWidth = update.getImageWidth();
         }
         if (update.getXAxisRange() != null) {
-            xAxisRange = update.getXAxisRange();
+            xAxisRange = update.getXAxisRange().createInstance();
         }
         if (update.getYAxisRange() != null) {
-            yAxisRange = update.getYAxisRange();
+            yAxisRange = update.getYAxisRange().createInstance();
         }
         if (update.getXValueScale()!= null) {
             xValueScale = update.getXValueScale();
@@ -299,8 +299,9 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     protected void calculateRanges(Range xDataRange, Range yDataRange) {
         xAggregatedRange = aggregateRange(xDataRange, xAggregatedRange);
         yAggregatedRange = aggregateRange(yDataRange, yAggregatedRange);
-        xPlotRange = xAxisRange.axisRange(xDataRange, xAggregatedRange);
-        yPlotRange = yAxisRange.axisRange(yDataRange, yAggregatedRange);
+        // TODO: should be update to use display range
+        xPlotRange = xAxisRange.axisRange(xDataRange, xDataRange);
+        yPlotRange = yAxisRange.axisRange(yDataRange, yDataRange);
     }
     
     /**

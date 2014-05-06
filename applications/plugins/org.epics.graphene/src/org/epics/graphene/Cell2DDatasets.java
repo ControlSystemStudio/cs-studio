@@ -55,6 +55,11 @@ public class Cell2DDatasets {
             }
 
             @Override
+            public Range getDisplayRange() {
+                return stats;
+            }
+
+            @Override
             public ListNumber getXBoundaries() {
                 return xBoundaries;
             }
@@ -136,6 +141,11 @@ public class Cell2DDatasets {
             }
 
             @Override
+            public Range getDisplayRange() {
+                return stats;
+            }
+
+            @Override
             public ListNumber getXBoundaries() {
                 return xBoundaries;
             }
@@ -202,6 +212,11 @@ public class Cell2DDatasets {
 
             @Override
             public Statistics getStatistics() {
+                return statistics;
+            }
+
+            @Override
+            public Range getDisplayRange() {
                 return statistics;
             }
 

@@ -122,4 +122,12 @@ public class RangeUtil {
         
         return r1.getMinimum().equals(r2.getMinimum()) && r1.getMaximum().equals(r2.getMaximum());
     }
+    
+    public static Range aggregateRange(Range dataRange, Range aggregatedRange) {
+        if (aggregatedRange == null) {
+            return dataRange;
+        } else {
+            return RangeUtil.sum(dataRange, aggregatedRange);
+        }
+    }
 }

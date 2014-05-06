@@ -48,8 +48,9 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     private List<ListDouble> yReferenceValues;
     private List<List<String>> yReferenceLabels;
     private Range emptyRange;
-    private AxisRange xAxisRange = AxisRanges.integrated();
-    private AxisRange yAxisRange = AxisRanges.integrated();
+    private AxisRangeInstance xAxisRange = AxisRanges.integrated().createInstance();
+    private AxisRangeInstance yAxisRange = AxisRanges.integrated().createInstance();
+    private List<AxisRangeInstance> yAxisRanges;
     private ValueScale xValueScale = ValueScales.linearScale();
     private ValueScale yValueScale = ValueScales.linearScale();
     private Range xAggregatedRange;
@@ -299,15 +300,20 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
     protected void calculateRanges(List<Range> xDataRange, List<Range> yDataRange, int length) {
         for(int i = 0; i < length; i++){
             xAggregatedRange = aggregateRange(xDataRange.get(i), xAggregatedRange);
-            xPlotRange = xAxisRange.axisRange(xDataRange.get(i), xAggregatedRange);
+            // TODO: should be update to use display range
+            xPlotRange = xAxisRange.axisRange(xDataRange.get(i), xDataRange.get(i));
         }  
         if(yAggregatedRange == null || yDataRange.size() != yAggregatedRange.size() || yDataRange.size() != length){
             yAggregatedRange = new ArrayList<Range>();
             yPlotRange = new ArrayList<Range>();
+            yAxisRanges = new ArrayList<>();
             for(int i = 0; i < length; i++){
                 if(indexToRangeMap.isEmpty() || !indexToRangeMap.containsKey(i)){
                     yAggregatedRange.add(aggregateRange(yDataRange.get(i), emptyRange));
-                    yPlotRange.add(yAxisRange.axisRange(yDataRange.get(i), yAggregatedRange.get(i)));
+                    AxisRangeInstance instance = yAxisRange.getAxisRange().createInstance();
+                    yAxisRanges.add(instance);
+                    // TODO: should be update to use display range
+                    yPlotRange.add(instance.axisRange(yDataRange.get(i), yDataRange.get(i)));
                 }
                 else{
                     if(indexToRangeMap.containsKey(i)){
@@ -321,7 +327,8 @@ public class MultiYAxisGraph2DRenderer extends Graph2DRenderer<MultiYAxisGraph2D
             for(int i = 0; i < length; i++){
                 if(indexToRangeMap.isEmpty() || !indexToRangeMap.containsKey(i)){
                     yAggregatedRange.set(i,aggregateRange(yDataRange.get(i), yAggregatedRange.get(i)));
-                    yPlotRange.set(i,yAxisRange.axisRange(yDataRange.get(i), yAggregatedRange.get(i)));
+                    // TODO: should be update to use display range
+                    yPlotRange.set(i,yAxisRanges.get(i).axisRange(yDataRange.get(i), yDataRange.get(i)));
                 }
                 else{
                     if(indexToRangeMap.containsKey(i)){

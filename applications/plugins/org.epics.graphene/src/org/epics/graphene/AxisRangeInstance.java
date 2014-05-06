@@ -8,6 +8,7 @@ package org.epics.graphene;
  *
  * @author carcassi
  */
-public interface AxisRange {
-    public AxisRangeInstance createInstance();
+public interface AxisRangeInstance {
+    public Range axisRange(Range dataRange, Range displayRange);
+    public AxisRange getAxisRange();
 }

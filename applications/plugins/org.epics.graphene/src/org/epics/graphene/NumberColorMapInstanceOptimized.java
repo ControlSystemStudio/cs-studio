@@ -59,6 +59,11 @@ class NumberColorMapInstanceOptimized implements NumberColorMapInstance {
     @Override
     public int colorFor(double value) {
         int index = (int) ((value - min) / total * (arrayLength - 1));
+        if (index < 0) {
+            index = 0;
+        } else if (index >= colors.length) {
+            index = colors.length - 1;
+        }
         return colors[index];
     }
 

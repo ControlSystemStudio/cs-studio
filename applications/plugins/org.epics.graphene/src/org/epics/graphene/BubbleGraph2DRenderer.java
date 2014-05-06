@@ -16,7 +16,7 @@ import org.epics.util.array.ListInt;
 public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRendererUpdate> {
     
     private Range zAggregatedRange;
-    private AxisRange zAxisRange = AxisRanges.integrated();
+    private AxisRangeInstance zAxisRange = AxisRanges.integrated().createInstance();
     private Range zPlotRange;
     private Integer focusPixelX;
     private Integer focusPixelY;
@@ -45,7 +45,8 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
     protected void calculateRanges(Range xDataRange, Range yDataRange, Range zDataRange) {
         super.calculateRanges(xDataRange, yDataRange);
         zAggregatedRange = aggregateRange(zDataRange, zAggregatedRange);
-        zPlotRange = zAxisRange.axisRange(zDataRange, zAggregatedRange);
+        // TODO: should be update to use display range
+        zPlotRange = zAxisRange.axisRange(zDataRange, zDataRange);
     }
 
     /**

@@ -4,17 +4,12 @@
  */
 package org.epics.graphene;
 
-import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.*;
 import java.util.Arrays;
 import java.util.List;
-import static org.epics.graphene.Graph2DRenderer.aggregateRange;
 import org.epics.util.array.ListNumbers;
 import org.epics.util.array.*;
-import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
@@ -92,7 +87,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
     private Range zRange;
     private Range zAggregatedRange;
     private Range zPlotRange;
-    private AxisRange zAxisRange = AxisRanges.integrated();
+    private AxisRangeInstance zAxisRange = AxisRanges.display().createInstance();
     private ValueScale zValueScale = ValueScales.linearScale();
     protected ListInt zReferenceCoords;
     protected ListDouble zReferenceValues;
@@ -119,8 +114,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         calculateRanges(data.getXRange(), data.getYRange());
         area.setGraphBuffer(graphBuffer);
         graphBuffer.drawBackground(backgroundColor);
-        zRange = RangeUtil.range(data.getStatistics().getMinimum().doubleValue(),data.getStatistics().getMaximum().doubleValue());
-        calculateZRange(zRange);
+        calculateZRange(data.getStatistics(), data.getDisplayRange());
         
         // TODO: the calculation for leaving space for the legend is somewhat hacked
         // Instead of actually having a nice calculation, we increase the margin
@@ -342,10 +336,8 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
      *be raised to match the current range.
      * @param zDataRange current data range.
      */
-    protected void calculateZRange(Range zDataRange) {
-       
-        zAggregatedRange = aggregateRange(zDataRange, zAggregatedRange);
-        zPlotRange = zAxisRange.axisRange(zDataRange, zAggregatedRange);
+    protected void calculateZRange(Range zDataRange, Range displayRange) {
+        zPlotRange = zAxisRange.axisRange(zDataRange, displayRange);
     }
     /**
      *Sets private variables to account for the space required to draw in labels for the legend.
