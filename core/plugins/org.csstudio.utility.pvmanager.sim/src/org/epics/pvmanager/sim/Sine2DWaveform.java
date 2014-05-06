@@ -102,8 +102,8 @@ public class Sine2DWaveform extends SimFunction<VDoubleArray> {
         double t = lastTime.durationFrom(initialReference).toSeconds();
         double omega = 2 * Math.PI / periodInSeconds;
         double k = 2 * Math.PI / wavelengthInSamples;
-        double min = 1.0;
-        double max = -1.0;
+        double min = -1.0;
+        double max = 1.0;
         double range = 0.0;
         return (VDoubleArray) ValueFactory.newVNumberArray(generateNewValue(omega, t, k), new ArrayInt(ySamples, xSamples),
                 ValueUtil.defaultArrayDisplay(new ArrayInt(ySamples, xSamples)), alarmNone(),
