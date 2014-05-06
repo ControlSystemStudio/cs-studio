@@ -32,7 +32,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.3.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.views" version="3.5.0" match="greaterOrEqual"/>
