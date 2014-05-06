@@ -35,6 +35,7 @@ public class HistogramGraph2DWidgetEditPart extends AbstractGraph2DWidgetEditpar
 			widget.setHighlightSelectionValue(model.isHighlightSelectionValue());
 			widget.setSelectionValuePv(model.getSelectionValuePv());
 		}
+		widget.setMouseSelectionMethod(model.getMouseSelectionMethod());
 	}
 
 	@Override

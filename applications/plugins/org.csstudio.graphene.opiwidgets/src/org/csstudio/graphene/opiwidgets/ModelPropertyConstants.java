@@ -9,4 +9,5 @@ public class ModelPropertyConstants {
 	public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv"; //$NON-NLS-1$
 	public static final String PROP_COLOR_MAP = "color_map"; //$NON-NLS-1$
 	public static final String PROP_DRAW_LEGEND = "draw_legend"; //$NON-NLS-1$
+	public static final String PROP_MOUSE_SELECTION_METHOD = "mouse_selection_method"; //$NON-NLS-1$
 }
