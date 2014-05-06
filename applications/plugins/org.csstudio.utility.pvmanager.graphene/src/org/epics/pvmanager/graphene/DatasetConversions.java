@@ -7,13 +7,17 @@ package org.epics.pvmanager.graphene;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.epics.graphene.Cell2DDataset;
+import org.epics.graphene.Cell2DDatasets;
 import org.epics.graphene.Point2DDataset;
 import org.epics.graphene.Point2DDatasets;
 import org.epics.graphene.Point3DWithLabelDataset;
 import org.epics.graphene.Point3DWithLabelDatasets;
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
+import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
 
@@ -181,5 +185,9 @@ public class DatasetConversions {
         }
         
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public static Cell2DDataset cell2DDatasetsFromVNumberArray(VNumberArray data) {
+        return new Cell2DDatasetFromVNumberArray(data);
     }
 }
