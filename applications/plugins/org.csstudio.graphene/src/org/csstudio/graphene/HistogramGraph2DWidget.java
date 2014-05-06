@@ -1,63 +1,32 @@
 package org.csstudio.graphene;
 
 import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 import static org.epics.pvmanager.graphene.ExpressionLanguage.histogramGraphOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vDouble;
-import static org.epics.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.ui.util.widgets.ErrorBar;
-import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
-import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
 import org.epics.graphene.AreaGraph2DRendererUpdate;
-import org.epics.graphene.Graph2DRendererUpdate;
-import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.LineGraph2DRendererUpdate;
-import org.epics.graphene.ScatterGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriter;
 import org.epics.pvmanager.PVWriterEvent;
 import org.epics.pvmanager.PVWriterListener;
-import org.epics.pvmanager.graphene.BubbleGraph2DExpression;
-import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.Graph2DExpression;
 import org.epics.pvmanager.graphene.Graph2DResult;
 import org.epics.pvmanager.graphene.HistogramGraph2DExpression;
-import org.epics.pvmanager.graphene.LineGraph2DExpression;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ArrayInt;
 import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VTable;
-import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 
 public class HistogramGraph2DWidget
@@ -71,6 +40,48 @@ public class HistogramGraph2DWidget
 	
 	private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
 
+	private MouseMoveListener hoverSelection = new MouseMoveListener() {
+		
+		@Override
+		public void mouseMove(MouseEvent e) {
+			if (isHighlightSelectionValue() && getGraph() != null) {
+				getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+			}
+		}
+	};
+
+	private ClickSelectionMethodListener clickSelection = new ClickSelectionMethodListener();
+	
+	private class ClickSelectionMethodListener implements MouseListener, MouseMoveListener {
+
+		@Override
+		public void mouseMove(MouseEvent e) {
+			if ((e.stateMask & SWT.BUTTON1) != 0) {
+				if (isHighlightSelectionValue() && getGraph() != null) {
+					getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+				}
+			}
+			
+		}
+
+		@Override
+		public void mouseDoubleClick(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseDown(MouseEvent e) {
+			if (isHighlightSelectionValue() && getGraph() != null && e.button == 1) {
+				getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+			}
+		}
+
+		@Override
+		public void mouseUp(MouseEvent e) {
+		}
+		
+	}
+	
+	
     /**
      * Creates a new widget.
      * 
@@ -91,15 +102,7 @@ public class HistogramGraph2DWidget
 				
 			}
 		});
-		getImageDisplay().addMouseMoveListener(new MouseMoveListener() {
-			
-			@Override
-			public void mouseMove(MouseEvent e) {
-				if (isHighlightSelectionValue() && getGraph() != null) {
-					getGraph().update(getGraph().newUpdate().focusPixel(e.x));
-				}
-			}
-		});
+		getImageDisplay().addMouseMoveListener(hoverSelection);
 		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
@@ -181,6 +184,7 @@ public class HistogramGraph2DWidget
 	
 	private VNumberArray selectionValue;
 	private String selectionValuePv;
+	private MouseSelectionMethod mouseSelectionMethod = MouseSelectionMethod.HOVER;
 	
 	public String getSelectionValuePv() {
 		return selectionValuePv;
@@ -201,6 +205,43 @@ public class HistogramGraph2DWidget
 		this.selectionValue = selectionValue;
 		if (oldValue != this.selectionValue) {
 			changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
+		}
+	}
+	
+	public MouseSelectionMethod getMouseSelectionMethod() {
+		return mouseSelectionMethod;
+	}
+	
+	public void setMouseSelectionMethod(
+			MouseSelectionMethod mouseSelectionMethod) {
+		MouseSelectionMethod oldValue = this.mouseSelectionMethod;
+		this.mouseSelectionMethod = mouseSelectionMethod;
+		if (oldValue != this.mouseSelectionMethod) {
+			// Remove old listener
+			switch(oldValue) {
+			case CLICK:
+				getImageDisplay().removeMouseListener(clickSelection);
+				getImageDisplay().removeMouseMoveListener(clickSelection);
+				break;
+			case HOVER:
+				getImageDisplay().removeMouseMoveListener(hoverSelection);
+				break;
+			default:
+				break;
+			}
+			// Add new listener
+			switch(mouseSelectionMethod) {
+			case CLICK:
+				getImageDisplay().addMouseListener(clickSelection);
+				getImageDisplay().addMouseMoveListener(clickSelection);
+				break;
+			case HOVER:
+				getImageDisplay().addMouseMoveListener(hoverSelection);
+				break;
+			default:
+				break;
+			}
+			changeSupport.firePropertyChange("mouseSelectionMethod", oldValue, this.mouseSelectionMethod);
 		}
 	}
 	
