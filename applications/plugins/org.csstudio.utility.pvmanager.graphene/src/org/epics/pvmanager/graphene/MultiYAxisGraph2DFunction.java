@@ -28,10 +28,10 @@ class MultiYAxisGraph2DFunction implements ReadFunction<Graph2DResult> {
     private ReadFunctionArgument<List<String>> xColumnNames;
     private ReadFunctionArgument<List<String>> yColumnNames;
     
-    private MultiYAxisGraph2DRenderer renderer = new MultiYAxisGraph2DRenderer(300, 200);
+    private MultiAxisLineGraph2DRenderer renderer = new MultiAxisLineGraph2DRenderer(300, 200);
     
     private VImage previousImage;
-    private final QueueCollector<MultiYAxisGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
+    private final QueueCollector<MultiAxisLineGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
     MultiYAxisGraph2DFunction(ReadFunction<?> tableData,
 	    ReadFunction<?> xColumnName,
@@ -41,7 +41,7 @@ class MultiYAxisGraph2DFunction implements ReadFunction<Graph2DResult> {
         this.yColumnNames = stringArrayArgument(yColumnName, "Y Columns");
     }
 
-    public QueueCollector<MultiYAxisGraph2DRendererUpdate> getRendererUpdateQueue() {
+    public QueueCollector<MultiAxisLineGraph2DRendererUpdate> getRendererUpdateQueue() {
         return rendererUpdateQueue;
     }
 
@@ -65,8 +65,8 @@ class MultiYAxisGraph2DFunction implements ReadFunction<Graph2DResult> {
         }
         
         // Process all renderer updates
-        List<MultiYAxisGraph2DRendererUpdate> updates = rendererUpdateQueue.readValue();
-        for (MultiYAxisGraph2DRendererUpdate rendererUpdate : updates) {
+        List<MultiAxisLineGraph2DRendererUpdate> updates = rendererUpdateQueue.readValue();
+        for (MultiAxisLineGraph2DRendererUpdate rendererUpdate : updates) {
             renderer.update(rendererUpdate);
         }
         

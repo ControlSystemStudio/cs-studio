@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.graphene;
 
-import org.epics.graphene.MultiYAxisGraph2DRendererUpdate;
+import org.epics.graphene.MultiAxisLineGraph2DRendererUpdate;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import static org.epics.pvmanager.graphene.ExpressionLanguage.functionOf;
@@ -13,7 +13,7 @@ import static org.epics.pvmanager.graphene.ExpressionLanguage.functionOf;
  *
  * @author carcassi
  */
-public class MultiYAxisGraph2DExpression extends DesiredRateExpressionImpl<Graph2DResult> implements Graph2DExpression<MultiYAxisGraph2DRendererUpdate> {
+public class MultiYAxisGraph2DExpression extends DesiredRateExpressionImpl<Graph2DResult> implements Graph2DExpression<MultiAxisLineGraph2DRendererUpdate> {
 
     MultiYAxisGraph2DExpression(DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
@@ -25,12 +25,12 @@ public class MultiYAxisGraph2DExpression extends DesiredRateExpressionImpl<Graph
     }
     
     @Override
-    public void update(MultiYAxisGraph2DRendererUpdate update) {
+    public void update(MultiAxisLineGraph2DRendererUpdate update) {
         ((MultiYAxisGraph2DFunction) getFunction()).getRendererUpdateQueue().writeValue(update);
     }
 
     @Override
-    public MultiYAxisGraph2DRendererUpdate newUpdate() {
-        return new MultiYAxisGraph2DRendererUpdate();
+    public MultiAxisLineGraph2DRendererUpdate newUpdate() {
+        return new MultiAxisLineGraph2DRendererUpdate();
     }
 }
