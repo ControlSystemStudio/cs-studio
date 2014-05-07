@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>thirdparty-plugins</artifactId>
-  <version>0.0.51-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.antlr.runtime</module>
@@ -50,7 +50,6 @@
     <module>org.hamcrest</module>
     <module>org.mockito</module>
     <module>org.ehcache</module>
-    <module>org.python</module>
     <module>javax.mail</module>
     <module>org.csstudio.utility.pvmanager</module>
     <module>org.csstudio.utility.pvmanager.epics</module>

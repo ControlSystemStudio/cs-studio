@@ -4,15 +4,15 @@
       <category name="CATEGORY"/>
    </feature>-->
 
-   <feature id="org.csstudio.thirdparty.feature.source" version="0.0.51.qualifier">
+   <feature id="org.csstudio.thirdparty.feature.source" version="1.0.0.qualifier">
       <!--<category name="org.csstudio.category.core"/>-->
    </feature>
 
-   <feature id="org.csstudio.thirdparty.feature" version="0.0.51.qualifier">
+   <feature id="org.csstudio.thirdparty.feature" version="1.0.0.qualifier">
       <!--<category name="org.csstudio.category.core"/>-->
    </feature>
 
-   <feature id="org.csstudio.libs.feature" version="3.2.0.qualifier">
+   <feature id="org.csstudio.libs.feature" version="3.2.1.qualifier">
       <!--<category name="org.csstudio.category.core"/>-->
    </feature>
 
