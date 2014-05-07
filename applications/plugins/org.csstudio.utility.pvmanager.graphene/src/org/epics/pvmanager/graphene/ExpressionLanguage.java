@@ -116,11 +116,11 @@ public class ExpressionLanguage {
 	return new MultilineGraph2DExpression(tableData, xColumnName, yColumnName);
     }
     
-    public static MultiYAxisGraph2DExpression multiAxisLineGraphOf(
+    public static MultiAxisLineGraph2DExpression multiAxisLineGraphOf(
 	    DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
 	    DesiredRateExpression<?> yColumnName) {
-	return new MultiYAxisGraph2DExpression(tableData, xColumnName, yColumnName);
+	return new MultiAxisLineGraph2DExpression(tableData, xColumnName, yColumnName);
     }
     
     public static SparklineGraph2DExpression sparklineGraphOf(

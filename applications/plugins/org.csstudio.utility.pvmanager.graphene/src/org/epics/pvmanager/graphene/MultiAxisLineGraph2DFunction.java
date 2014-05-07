@@ -22,7 +22,7 @@ import org.epics.vtype.VType;
  *
  * @author carcassi
  */
-class MultiYAxisGraph2DFunction implements ReadFunction<Graph2DResult> {
+class MultiAxisLineGraph2DFunction implements ReadFunction<Graph2DResult> {
     
     private ReadFunction<VType> tableData;
     private ReadFunctionArgument<List<String>> xColumnNames;
@@ -33,7 +33,7 @@ class MultiYAxisGraph2DFunction implements ReadFunction<Graph2DResult> {
     private VImage previousImage;
     private final QueueCollector<MultiAxisLineGraph2DRendererUpdate> rendererUpdateQueue = new QueueCollector<>(100);
 
-    MultiYAxisGraph2DFunction(ReadFunction<?> tableData,
+    MultiAxisLineGraph2DFunction(ReadFunction<?> tableData,
 	    ReadFunction<?> xColumnName,
 	    ReadFunction<?> yColumnName) {
         this.tableData = new CheckedReadFunction<VType>(tableData, "Data", VTable.class, VNumberArray.class);

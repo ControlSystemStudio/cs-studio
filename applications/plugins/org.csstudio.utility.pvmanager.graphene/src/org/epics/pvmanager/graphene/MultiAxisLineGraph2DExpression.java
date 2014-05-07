@@ -13,20 +13,20 @@ import static org.epics.pvmanager.graphene.ExpressionLanguage.functionOf;
  *
  * @author carcassi
  */
-public class MultiYAxisGraph2DExpression extends DesiredRateExpressionImpl<Graph2DResult> implements Graph2DExpression<MultiAxisLineGraph2DRendererUpdate> {
+public class MultiAxisLineGraph2DExpression extends DesiredRateExpressionImpl<Graph2DResult> implements Graph2DExpression<MultiAxisLineGraph2DRendererUpdate> {
 
-    MultiYAxisGraph2DExpression(DesiredRateExpression<?> tableData,
+    MultiAxisLineGraph2DExpression(DesiredRateExpression<?> tableData,
 	    DesiredRateExpression<?> xColumnName,
 	    DesiredRateExpression<?> yColumnName) {
         super(ExpressionLanguage.<Object>createList(tableData, xColumnName, yColumnName),
-                new MultiYAxisGraph2DFunction(functionOf(tableData),
+                new MultiAxisLineGraph2DFunction(functionOf(tableData),
                 functionOf(xColumnName), functionOf(yColumnName)),
                 "Multi-axis Line Graph");
     }
     
     @Override
     public void update(MultiAxisLineGraph2DRendererUpdate update) {
-        ((MultiYAxisGraph2DFunction) getFunction()).getRendererUpdateQueue().writeValue(update);
+        ((MultiAxisLineGraph2DFunction) getFunction()).getRendererUpdateQueue().writeValue(update);
     }
 
     @Override
