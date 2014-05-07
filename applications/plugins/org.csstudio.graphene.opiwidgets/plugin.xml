@@ -43,6 +43,14 @@
             name="Histogram Graph"
             typeId="org.csstudio.graphene.opiwidgets.HistogramGraph2D">
       </widget>
+      <widget
+            category="Monitors"
+            editpart_class="org.csstudio.graphene.opiwidgets.MultiAxisLineGraph2DWidgetEditpart"
+            icon="platform:/plugin/org.csstudio.graphene/icons/graphene-multiaxis-16.png"
+            model_class="org.csstudio.graphene.opiwidgets.MultiAxisLineGraph2DWidgetModel"
+            name="Multi-Axis Line Graph"
+            typeId="org.csstudio.graphene.opiwidgets.MultiAxisLineGraph2D">
+      </widget>
    </extension>
 
 </plugin>
