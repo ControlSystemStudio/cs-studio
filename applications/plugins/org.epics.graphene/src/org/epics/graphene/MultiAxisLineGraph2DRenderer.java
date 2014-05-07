@@ -113,7 +113,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
     private double xPlotCoordWidth;
     
     private boolean stretch = false;
-    private boolean split = false;
+    private boolean separateAreas = false;
     /**
      * Creates a new line graph renderer.
      * 
@@ -167,8 +167,8 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
         if(update.getMinimumGraphHeight() != null){
             minimumGraphHeight = update.getMinimumGraphHeight();
         }
-        if(update.isSplit() != null){
-            split = update.isSplit();
+        if(update.isSeparateAreas() != null){
+            separateAreas = update.isSeparateAreas();
         }
     }
 
@@ -194,7 +194,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
 
         labelFontMetrics = g.getFontMetrics(labelFont);
         
-        if(split){
+        if(separateAreas){
             xLabelMaxHeight = labelFontMetrics.getHeight() - labelFontMetrics.getLeading();
             totalYMargins = xLabelMaxHeight + marginBetweenGraphs + topMargin + bottomMargin + topAreaMargin + bottomAreaMargin + xLabelMargin + 1;
             getNumGraphsSplit(data);
@@ -227,7 +227,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
         for(int i = 0; i < numGraphs; i++){
             yValues.add(org.epics.util.array.ListNumbers.sortedView(data.get(i).getYValues(), xValues.get(i).getIndexes()));
         }
-        if(split){
+        if(separateAreas){
             g.setColor(Color.BLACK);
             for(int i = 0; i < numGraphs; i++){
                 drawValueExplicitLine(xValues.get(i), yValues.get(i), interpolation, reduction,i);
@@ -268,7 +268,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
             }
     }
     
-    //method to get number of graphs when the graphs are split
+    //method to get number of graphs when the graphs are separateAreas
     private void getNumGraphsSplit(List<Point2DDataset> data){
         if(this.graphBoundaries == null || this.graphBoundaries.size() != numGraphs+1){
             numGraphs = data.size();
@@ -376,7 +376,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
             for(int i = 0; i < yPlotRange.size(); i++){
                 if (!yPlotRange.get(i).getMinimum().equals(yPlotRange.get(i).getMaximum())) {
                     ValueAxis yAxis;
-                    if(split){
+                    if(separateAreas){
                         yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, (graphBoundaries.get(i+1).intValue() - graphBoundaries.get(i).intValue()) / 60));
                     }else{
                         yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, getImageHeight() / 60));
@@ -394,7 +394,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
             for(int i = 0; i < yPlotRange.size(); i++){
                 if (!yPlotRange.get(i).getMinimum().equals(yPlotRange.get(i).getMaximum())) {
                     ValueAxis yAxis;
-                    if(split){
+                    if(separateAreas){
                         yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, (graphBoundaries.get(i+1).intValue() - graphBoundaries.get(i).intValue()) / 60));
                     }else{
                         yAxis = yValueScale.references(yPlotRange.get(i), 2, Math.max(2, getImageHeight() / 60));
@@ -493,7 +493,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
             for(int a = 0; a < yReferenceValues.size(); a++){
                 double[] yRefCoords = new double[yReferenceValues.get(a).size()];
                 for (int b = 0; b < yRefCoords.length; b++) {
-                    if(split){
+                    if(separateAreas){
                         yRefCoords[b] = scaledYSplit(yReferenceValues.get(a).getDouble(b),a);
                     }else{
                         yRefCoords[b] = scaledY(yReferenceValues.get(a).getDouble(b),a);
@@ -604,7 +604,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
             for(int a = 0; a < yReferenceValues.size(); a++){
                 double[] yRefCoords = new double[yReferenceValues.get(a).size()];
                 for (int b = 0; b < yRefCoords.length; b++) {
-                    if(split){
+                    if(separateAreas){
                         yRefCoords[b] = scaledYSplit(yReferenceValues.get(a).getDouble(b),a);
                     }else{
                         yRefCoords[b] = scaledY(yReferenceValues.get(a).getDouble(b),a);
@@ -627,7 +627,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
     protected void drawGraphArea() {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // When drawing the reference line, align them to the pixel
-        if(split){
+        if(separateAreas){
             drawVerticalReferenceLinesSplit();
             drawHorizontalReferenceLinesSplit();
         
@@ -1021,7 +1021,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
         scaledData.scaledY = new double[dataCount];
         for (int i = 0; i < scaledData.scaledY.length; i++) {
             scaledData.scaledX[i] = scaledX1(xValues.getDouble(i));
-            if(split){
+            if(separateAreas){
                 scaledData.scaledY[i] = scaledYSplit(yValues.getDouble(i), index);
             }else{
                 scaledData.scaledY[i] = scaledY(yValues.getDouble(i), index);
@@ -1046,7 +1046,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
         int cursor = 0;
         int previousPixel = (int) scaledX1(xValues.getDouble(0));
         double last;
-        if(split){
+        if(separateAreas){
             last = scaledYSplit(yValues.getDouble(0),index);
         }else{
             last = scaledY(yValues.getDouble(0),index);
@@ -1061,7 +1061,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
             double currentScaledX = scaledX1(xValues.getDouble(i));
             int currentPixel = (int) currentScaledX;
             if (currentPixel == previousPixel) {
-                if(split){
+                if(separateAreas){
                     last = scaledYSplit(yValues.getDouble(i),index);
                 }else{
                     last = scaledY(yValues.getDouble(i),index);
@@ -1080,7 +1080,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
                 scaledData.scaledY[cursor] = last;
                 cursor++;
                 previousPixel = currentPixel;
-                if(split){
+                if(separateAreas){
                     last = scaledYSplit(yValues.getDouble(i),index);
                 }else{
                     last = scaledY(yValues.getDouble(i),index);

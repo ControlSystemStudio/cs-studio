@@ -21,7 +21,7 @@ public class MultiAxisLineGraph2DRendererUpdate extends Graph2DRendererUpdate<Mu
     
     private Integer minimumGraphWidth;
     
-    private Boolean split;
+    private Boolean separateAreas;
     
     public MultiAxisLineGraph2DRendererUpdate minimumGraphWidth(int minimumGraphWidth){
         this.minimumGraphWidth = minimumGraphWidth;
@@ -75,8 +75,8 @@ public class MultiAxisLineGraph2DRendererUpdate extends Graph2DRendererUpdate<Mu
         return this.self();
     }
     
-    public MultiAxisLineGraph2DRendererUpdate split(boolean split){
-        this.split = split;
+    public MultiAxisLineGraph2DRendererUpdate separateAreas(boolean separateAreas){
+        this.separateAreas = separateAreas;
         return this.self();
     }
     
@@ -112,7 +112,7 @@ public class MultiAxisLineGraph2DRendererUpdate extends Graph2DRendererUpdate<Mu
         return minimumGraphWidth;
     }
     
-    public Boolean isSplit(){
-        return split;
+    public Boolean isSeparateAreas(){
+        return separateAreas;
     }
 }
