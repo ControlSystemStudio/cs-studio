@@ -16,4 +16,5 @@ public class PropertyConstants {
 	public static final String PROP_DRAW_LEGEND = "draw_legend"; //$NON-NLS-1$
 	public static final String PROP_MOUSE_SELECTION_METHOD = "mouse_selection_method"; //$NON-NLS-1$
 	public static final String PROP_INTERPOLATION_SCHEME = "interpolation_scheme"; //$NON-NLS-1$
+	public static final String PROP_SEPARATE_AREAS = "separate_areas"; //$NON-NLS-1$
 }

@@ -20,6 +20,7 @@ public class MultiAxisLineGraph2DConfigurationDialog
 			String title) {
 		super(control, title);
 		addInitialValues("interpolation", getWidget().getInterpolation());
+		addInitialValues("separateAreas", getWidget().isSeparateAreas());
 	}
 
 	@Override
@@ -27,6 +28,8 @@ public class MultiAxisLineGraph2DConfigurationDialog
 		super.onPropertyChange(evt);
 		getWidget().setInterpolation(
 				getConfigurationComposite().getInterpolation());
+		getWidget().setSeparateAreas(
+				getConfigurationComposite().isSeparateAreas());
 	}
 
 	@Override
@@ -34,6 +37,8 @@ public class MultiAxisLineGraph2DConfigurationDialog
 		super.populateInitialValues();
 		getConfigurationComposite().setInterpolation(
 				(InterpolationScheme) getInitialValues().get("interpolation"));
+		getConfigurationComposite().setSeparateAreas(
+				(Boolean) getInitialValues().get("separateAreas"));
 	}
 
 	@Override

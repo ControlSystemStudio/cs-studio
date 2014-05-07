@@ -10,4 +10,13 @@ public class ComboDataUtil {
 		}
 		return result;
 	}
+	
+	public static int indexOf(String[] labels, String label) {
+		for (int i=0; i<labels.length; i++) {
+			if (labels[i].equals(label)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 }

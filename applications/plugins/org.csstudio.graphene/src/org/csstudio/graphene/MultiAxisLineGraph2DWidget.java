@@ -3,7 +3,7 @@
  */
 package org.csstudio.graphene;
 
-import static org.csstudio.graphene.PropertyConstants.PROP_INTERPOLATION_SCHEME;
+import static org.csstudio.graphene.PropertyConstants.*;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 
@@ -35,6 +35,7 @@ public class MultiAxisLineGraph2DWidget
 		implements ConfigurableWidget, ISelectionProvider {
 	
 	private InterpolationScheme interpolation = MultiAxisLineGraph2DRenderer.DEFAULT_INTERPOLATION_SCHEME;
+	private boolean separateAreas = false;
 
 	public MultiAxisLineGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
@@ -44,7 +45,8 @@ public class MultiAxisLineGraph2DWidget
 	@Override
 	protected MultiAxisLineGraph2DRendererUpdate createUpdate() {
 		return getGraph().newUpdate()
-				.interpolation(interpolation);
+				.interpolation(interpolation)
+				.separateAreas(separateAreas);
 	}
 
 	protected MultiAxisLineGraph2DExpression createGraph() {
@@ -60,6 +62,9 @@ public class MultiAxisLineGraph2DWidget
 		if (memento != null) {
 			if (memento.getString(PROP_INTERPOLATION_SCHEME) != null) {
 				setInterpolation(InterpolationScheme.valueOf(memento.getString(PROP_INTERPOLATION_SCHEME)));
+			}
+			if (memento.getBoolean(PROP_SEPARATE_AREAS) != null) {
+				setSeparateAreas(memento.getBoolean(PROP_INTERPOLATION_SCHEME));
 			}
 		}
 	}
@@ -77,10 +82,24 @@ public class MultiAxisLineGraph2DWidget
 		}
 	}
 	
+	public boolean isSeparateAreas() {
+		return separateAreas;
+	}
+	
+	public void setSeparateAreas(boolean separateAreas) {
+		boolean oldValue = this.separateAreas;
+		this.separateAreas = separateAreas;
+		if (!Objects.equals(oldValue, separateAreas)) {
+			getGraph().update(getGraph().newUpdate().separateAreas(separateAreas));
+			changeSupport.firePropertyChange("separateAreas", oldValue, separateAreas);
+		}
+	}
+	
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 		memento.putString(PROP_INTERPOLATION_SCHEME, getInterpolation().toString());
+		memento.putBoolean(PROP_SEPARATE_AREAS, isSeparateAreas());
 	}
 	
 	@Override
