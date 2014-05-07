@@ -47,6 +47,14 @@
             name="Intensity Graph"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.graphene.category"
+            class="org.csstudio.graphene.MultiAxisLineGraph2DView"
+            icon="icons/graphene-multiaxis-16.png"
+            id="org.csstudio.graphene.MultiAxisLineGraph2DView"
+            name="Multi-Axis Line Graph"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -101,6 +109,16 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.graphene.IntensityGraph2DView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/graphene-multiaxis-16.png"
+               label="Multi-Axis Line Graph"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.graphene.MultiAxisLineGraph2DView">
             </parameter>
          </command>
       </menuContribution>

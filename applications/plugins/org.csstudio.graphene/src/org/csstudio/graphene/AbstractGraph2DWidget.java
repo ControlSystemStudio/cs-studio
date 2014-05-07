@@ -185,6 +185,16 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 	public T getGraph() {
 		return graph;
 	}
+	
+	protected U createUpdate() {
+		return graph.newUpdate();
+	}
+	
+	protected void updateGraph() {
+		if (getGraph() != null) {
+			getGraph().update(createUpdate());
+		}
+	}
 
 	public boolean isResizableAxis() {
 		return resizableAxis;
@@ -216,6 +226,8 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 		}
 
 		graph = createGraph();
+		// Allow sub classes to change the parameters of their own graphs
+		updateGraph();
 		// For views, the reconnect may be triggered before the layout sets
 		// the sizes. We make sure no to send an update if the size is 0.
 		if (imageDisplay.getSize().x > 0 && imageDisplay.getSize().y > 0) {
@@ -252,9 +264,11 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 	private void setRange(StartEndRangeWidget control,
 			GraphDataRange plotDataRange) {
-		control.setRange(plotDataRange.getIntegratedRange().getMinimum()
-				.doubleValue(), plotDataRange.getIntegratedRange().getMaximum()
-				.doubleValue());
+		if (plotDataRange.getIntegratedRange() != null) {
+			control.setRange(plotDataRange.getIntegratedRange().getMinimum()
+					.doubleValue(), plotDataRange.getIntegratedRange().getMaximum()
+					.doubleValue());
+		}
 	}
 
 	private void resetRange(StartEndRangeWidget control) {
