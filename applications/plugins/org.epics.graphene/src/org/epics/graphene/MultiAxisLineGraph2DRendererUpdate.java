@@ -10,7 +10,7 @@ import java.util.HashMap;
  *
  * @author carcassi, sjdallst
  */
-public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<MultiYAxisGraph2DRendererUpdate> {
+public class MultiAxisLineGraph2DRendererUpdate extends Graph2DRendererUpdate<MultiAxisLineGraph2DRendererUpdate> {
 
     private HashMap<Integer, Range> IndexToRangeMap;
     private Integer marginBetweenGraphs,
@@ -23,7 +23,7 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
     
     private Boolean split;
     
-    public MultiYAxisGraph2DRendererUpdate minimumGraphWidth(int minimumGraphWidth){
+    public MultiAxisLineGraph2DRendererUpdate minimumGraphWidth(int minimumGraphWidth){
         this.minimumGraphWidth = minimumGraphWidth;
         return self();
     }
@@ -33,11 +33,11 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
      * @param scheme can not be null, must be a supported scheme. Supported schemes:NEAREST_NEIGHBOUR,LINEAR,CUBIC.
      * @return this
      */
-    public MultiYAxisGraph2DRendererUpdate interpolation(InterpolationScheme scheme) {
+    public MultiAxisLineGraph2DRendererUpdate interpolation(InterpolationScheme scheme) {
         if (scheme == null) {
             throw new NullPointerException("Interpolation scheme can't be null");
         }
-        if (!MultiYAxisGraph2DRenderer.supportedInterpolationScheme.contains(scheme)) {
+        if (!MultiAxisLineGraph2DRenderer.supportedInterpolationScheme.contains(scheme)) {
             throw new IllegalArgumentException("Interpolation " + scheme + " is not supported");
         }
         this.interpolation = scheme;
@@ -49,33 +49,33 @@ public class MultiYAxisGraph2DRendererUpdate extends Graph2DRendererUpdate<Multi
      * @param scheme can not be null, must be a supported scheme. Supported schemes:FIRST_MAX_MIN_LAST,NONE
      * @return this
      */
-    public MultiYAxisGraph2DRendererUpdate dataReduction(ReductionScheme scheme) {
+    public MultiAxisLineGraph2DRendererUpdate dataReduction(ReductionScheme scheme) {
         if (scheme == null) {
             throw new NullPointerException("Data reduction scheme can't be null");
         }
-        if (!MultiYAxisGraph2DRenderer.supportedReductionScheme.contains(scheme)) {
+        if (!MultiAxisLineGraph2DRenderer.supportedReductionScheme.contains(scheme)) {
             throw new IllegalArgumentException("Data reduction " + scheme + " is not supported");
         }
         this.reduction = scheme;
         return this;
     }
     
-    public MultiYAxisGraph2DRendererUpdate marginBetweenGraphs(Integer margin){
+    public MultiAxisLineGraph2DRendererUpdate marginBetweenGraphs(Integer margin){
         marginBetweenGraphs = margin;
         return this.self();
     }
     
-    public MultiYAxisGraph2DRendererUpdate minimumGraphHeight(Integer minimumGraphHeight){
+    public MultiAxisLineGraph2DRendererUpdate minimumGraphHeight(Integer minimumGraphHeight){
         this.minimumGraphHeight = minimumGraphHeight;
         return this.self();
     }
     
-    public MultiYAxisGraph2DRendererUpdate setRanges(HashMap<Integer, Range> map){
+    public MultiAxisLineGraph2DRendererUpdate setRanges(HashMap<Integer, Range> map){
         IndexToRangeMap = map;
         return this.self();
     }
     
-    public MultiYAxisGraph2DRendererUpdate split(boolean split){
+    public MultiAxisLineGraph2DRendererUpdate split(boolean split){
         this.split = split;
         return this.self();
     }
