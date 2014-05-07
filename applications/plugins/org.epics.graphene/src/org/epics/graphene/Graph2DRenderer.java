@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import static org.epics.graphene.InterpolationScheme.CUBIC;
 import static org.epics.graphene.InterpolationScheme.LINEAR;
-import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOUR;
+import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOR;
 import static org.epics.graphene.ReductionScheme.FIRST_MAX_MIN_LAST;
 import static org.epics.graphene.ReductionScheme.NONE;
 import org.epics.util.array.ArrayDouble;
@@ -580,7 +580,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         Path2D path;
         switch (interpolation) {
             default:
-            case NEAREST_NEIGHBOUR:
+            case NEAREST_NEIGHBOR:
                 path = nearestNeighbour(scaledData);
                 break;
             case LINEAR:
@@ -632,7 +632,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         Path2D path;
         switch (interpolation) {
             default:
-            case NEAREST_NEIGHBOUR:
+            case NEAREST_NEIGHBOR:
                 path = nearestNeighbour(scaledData);
                 break;
             case LINEAR:

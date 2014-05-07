@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import static org.epics.graphene.InterpolationScheme.CUBIC;
 import static org.epics.graphene.InterpolationScheme.LINEAR;
-import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOUR;
+import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOR;
 import static org.epics.graphene.ReductionScheme.FIRST_MAX_MIN_LAST;
 import static org.epics.graphene.ReductionScheme.NONE;
 import org.epics.util.array.ArrayDouble;
@@ -34,16 +34,33 @@ import org.epics.util.array.SortedListView;
  */
 public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineGraph2DRendererUpdate> {
 
-    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOUR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
+    /**
+     * List of supported interpolation schemes for this renderer.
+     */
+    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
+    
+    /**
+     * List of supported data reduction schemes for this renderer.
+     */
     public static java.util.List<ReductionScheme> supportedReductionScheme = Arrays.asList(ReductionScheme.FIRST_MAX_MIN_LAST, ReductionScheme.NONE);
+
+    /**
+     * Default interpolation scheme: nearest neighbor.
+     */
+    public static final InterpolationScheme DEFAULT_INTERPOLATION_SCHEME = InterpolationScheme.NEAREST_NEIGHBOR;
+    
+    /**
+     * Default interpolation scheme: nearest neighbor.
+     */
+    public static final ReductionScheme DEFAULT_REDUCTION_SCHEME = ReductionScheme.FIRST_MAX_MIN_LAST;
     
     @Override
     public MultiAxisLineGraph2DRendererUpdate newUpdate() {
         return new MultiAxisLineGraph2DRendererUpdate();
     }
 
-    private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOUR;
-    private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;
+    private InterpolationScheme interpolation = DEFAULT_INTERPOLATION_SCHEME;
+    private ReductionScheme reduction = DEFAULT_REDUCTION_SCHEME;
     private List<ListDouble> yReferenceCoords;
     private List<ListDouble> yReferenceValues;
     private List<List<String>> yReferenceLabels;
@@ -975,7 +992,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
         Path2D path;
         switch (interpolation) {
             default:
-            case NEAREST_NEIGHBOUR:
+            case NEAREST_NEIGHBOR:
                 path = nearestNeighbour(scaledData);
                 break;
             case LINEAR:

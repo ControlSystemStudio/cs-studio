@@ -15,7 +15,7 @@ import java.awt.geom.Path2D;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOUR;
+import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOR;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
@@ -364,7 +364,7 @@ public abstract class TemporalGraph2DRenderer<T extends TemporalGraph2DRendererU
         switch (interpolation) {
             default:
                 throw new IllegalArgumentException("Interpolation " + interpolation + " not supported");
-            case NEAREST_NEIGHBOUR:
+            case NEAREST_NEIGHBOR:
                 path = nearestNeighbour(scaledX, scaledY);
                 break;
             case PREVIOUS_VALUE:

@@ -19,7 +19,7 @@ import org.epics.util.array.SortedListView;
  */
 public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpdate> {
 
-    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOUR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
+    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
     public static java.util.List<ReductionScheme> supportedReductionScheme = Arrays.asList(ReductionScheme.FIRST_MAX_MIN_LAST, ReductionScheme.NONE);
     
     @Override
@@ -30,7 +30,7 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
     private NumberColorMap valueColorScheme = NumberColorMaps.GRAY;
     private NumberColorMapInstance valueColorSchemeInstance;
     private Range datasetRange;
-    private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOUR;
+    private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOR;
     private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;
     // Pixel focus
     private Integer focusPixelX;
