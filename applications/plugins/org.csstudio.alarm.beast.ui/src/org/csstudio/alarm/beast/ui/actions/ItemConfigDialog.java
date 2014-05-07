@@ -86,7 +86,8 @@ public class ItemConfigDialog extends TitleAreaDialog
      *  @param item Item who's configuration is initially displayed.
      *  @param model The AlarmClientModel to which the configuration maps
      *  @param blocking determines if the client should be blocking or not
-     *  Dialog will not change the PV, only read its current configuration.
+     *  
+     *  The Dialog will read the current configuration for a PV and save the changes when Ok is pressed.
      */
     public ItemConfigDialog(final Shell shell, final AlarmTreeItem item, final AlarmClientModel model, boolean blocking)
     {
