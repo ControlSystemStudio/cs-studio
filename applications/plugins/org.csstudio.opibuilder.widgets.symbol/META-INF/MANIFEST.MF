@@ -7,6 +7,7 @@ Bundle-Version: 4.3.4.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.symbol.Activator
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
+ org.eclipse.ui.views,
  org.csstudio.opibuilder,
  org.csstudio.opibuilder.widgets,
  org.csstudio.swt.widgets,

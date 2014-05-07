@@ -16,7 +16,7 @@
 
   <groupId>org.csstudio</groupId>
   <artifactId>applications-repository</artifactId>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
 
   <build>
