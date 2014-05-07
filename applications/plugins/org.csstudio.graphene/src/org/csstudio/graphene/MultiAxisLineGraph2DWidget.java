@@ -21,7 +21,7 @@ import org.epics.graphene.MultiAxisLineGraph2DRenderer;
 import org.epics.graphene.MultiAxisLineGraph2DRendererUpdate;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.MultiYAxisGraph2DExpression;
+import org.epics.pvmanager.graphene.MultiAxisLineGraph2DExpression;
 
 /**
  * A simple Line 2D plot which can handle both waveforms and a list of PVs
@@ -31,7 +31,7 @@ import org.epics.pvmanager.graphene.MultiYAxisGraph2DExpression;
  */
 public class MultiAxisLineGraph2DWidget
 		extends
-		AbstractPointDatasetGraph2DWidget<MultiAxisLineGraph2DRendererUpdate, MultiYAxisGraph2DExpression>
+		AbstractPointDatasetGraph2DWidget<MultiAxisLineGraph2DRendererUpdate, MultiAxisLineGraph2DExpression>
 		implements ConfigurableWidget, ISelectionProvider {
 	
 	private InterpolationScheme interpolation = MultiAxisLineGraph2DRenderer.DEFAULT_INTERPOLATION_SCHEME;
@@ -47,8 +47,8 @@ public class MultiAxisLineGraph2DWidget
 				.interpolation(interpolation);
 	}
 
-	protected MultiYAxisGraph2DExpression createGraph() {
-		MultiYAxisGraph2DExpression graph = ExpressionLanguage.multiAxisLineGraphOf(
+	protected MultiAxisLineGraph2DExpression createGraph() {
+		MultiAxisLineGraph2DExpression graph = ExpressionLanguage.multiAxisLineGraphOf(
 				formula(getDataFormula()), formulaArg(getXColumnFormula()),
 				formulaArg(getYColumnFormula()));
 		return graph;
