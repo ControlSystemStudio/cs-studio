@@ -4,11 +4,11 @@
       <category name="CATEGORY"/>
    </feature>-->
 
-   <feature id="org.csstudio.thirdparty.feature.source" version="1.0.0.qualifier">
+   <feature id="org.csstudio.thirdparty.all.feature.source" version="1.0.0.qualifier">
       <!--<category name="org.csstudio.category.core"/>-->
    </feature>
 
-   <feature id="org.csstudio.thirdparty.feature" version="1.0.0.qualifier">
+   <feature id="org.csstudio.thirdparty.all.feature" version="1.0.0.qualifier">
       <!--<category name="org.csstudio.category.core"/>-->
    </feature>
 
