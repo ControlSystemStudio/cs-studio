@@ -17,6 +17,7 @@
     <module>org.csstudio.libs.feature</module>
     <module>org.csstudio.pvmanager.autocomplete.feature</module>
     <module>org.csstudio.pvmanager.exec.feature</module>
+    <module>org.csstudio.pvmanager.extra.feature</module>
     <module>org.csstudio.pvmanager.feature</module>
     <module>org.csstudio.pvmanager.jdbc.feature</module>
     <module>org.csstudio.pvmanager.pva.feature</module>
