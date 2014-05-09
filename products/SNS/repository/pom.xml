@@ -27,6 +27,9 @@ then builds product from core, applications and SNS features
         <artifactId>tycho-p2-director-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
+          <!-- List products to build
+               Details are in each *.product file.
+            -->
           <products>
             <product>
               <!-- 'uid' in the *.product -->
@@ -34,67 +37,77 @@ then builds product from core, applications and SNS features
               <!-- Add version number to product top directory and zipped product -->
               <rootFolder>basic-epics-${project.version}</rootFolder>
               <archiveFileName>basic-epics-${project.version}</archiveFileName>
-              <!-- When listing more than one product, need 'attachId' ??
+              <!-- When creating ZIP archive for more than one product, need 'attachId'  -->
               <attachId>basic</attachId>
-              -->
             </product>
             <product>
               <id>sns-css</id>
               <rootFolder>sns-css-${project.version}</rootFolder>
               <archiveFileName>sns-css-${project.version}</archiveFileName>
+              <attachId>sns</attachId>
             </product>
             <product>
               <id>archive-engine</id>
               <rootFolder>archive-engine-${project.version}</rootFolder>
               <archiveFileName>archive-engine-${project.version}</archiveFileName>
+              <attachId>archive-engine</attachId>
             </product>
             <product>
               <id>archive-config</id>
               <rootFolder>archive-config-${project.version}</rootFolder>
               <archiveFileName>archive-config-${project.version}</archiveFileName>
+              <attachId>archive-config</attachId>
             </product>
             <product>
               <id>alarm-config</id>
               <rootFolder>alarm-config-${project.version}</rootFolder>
               <archiveFileName>alarm-config-${project.version}</archiveFileName>
+              <attachId>alarm-config</attachId>
             </product>
             <product>
               <id>alarm-server</id>
               <rootFolder>alarm-server-${project.version}</rootFolder>
               <archiveFileName>alarm-server-${project.version}</archiveFileName>
+              <attachId>alarm-server</attachId>
             </product>
             <product>
               <id>alarm-notifier</id>
               <rootFolder>alarm-notifier-${project.version}</rootFolder>
               <archiveFileName>alarm-notifier-${project.version}</archiveFileName>
+              <attachId>alarm-notifier</attachId>
             </product>
             <product>
               <id>jms2rdb</id>
               <rootFolder>jms2rdb-${project.version}</rootFolder>
               <archiveFileName>jms2rdb-${project.version}</archiveFileName>
+              <attachId>jms2rdb</attachId>
             </product>
             <product>
               <id>scan-server</id>
               <rootFolder>scan-server-${project.version}</rootFolder>
               <archiveFileName>scan-server-${project.version}</archiveFileName>
+              <attachId>scan-server</attachId>
             </product>
           </products>
         </configuration>
         <executions>
+          <!-- Create products listed above.
+               In addition, features listed in category.xml
+               turn into installable features.
+            -->
           <execution>
             <id>materialize-products</id>
             <goals>
               <goal>materialize-products</goal>
             </goals>
           </execution>
-          <!-- Don't zip the product files
+          <!-- Zip the products -->
           <execution>
             <id>archive-products</id>
             <goals>
               <goal>archive-products</goal>
             </goals>
           </execution>
-           -->
         </executions>
       </plugin>
     </plugins>
