@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CS-Studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="3.3.0" useFeatures="true" includeLaunchers="true">
+<product name="CS-Studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="4.0.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.product/icons/cs-studio-about.png"/>
@@ -55,7 +55,6 @@
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
       <feature id="org.csstudio.libs.feature"/>
-      <feature id="org.csstudio.eclipse.feature"/>
       <feature id="org.csstudio.core.feature"/>
       <feature id="org.csstudio.pvmanager.ca.feature"/>
       <feature id="org.csstudio.pvmanager.jdbc.feature"/>
