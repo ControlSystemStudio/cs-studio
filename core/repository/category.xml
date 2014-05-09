@@ -22,6 +22,9 @@
    <feature id="org.csstudio.pvmanager.exec.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
+   <feature id="org.csstudio.pvmanager.extra.feature">
+      <category name="org.csstudio.category.core"/>
+   </feature>
    <feature id="org.csstudio.pvmanager.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
