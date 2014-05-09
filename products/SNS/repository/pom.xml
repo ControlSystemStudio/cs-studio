@@ -53,6 +53,31 @@ then builds product from core, applications and SNS features
               <rootFolder>archive-config-${project.version}</rootFolder>
               <archiveFileName>archive-config-${project.version}</archiveFileName>
             </product>
+            <product>
+              <id>alarm-config</id>
+              <rootFolder>alarm-config-${project.version}</rootFolder>
+              <archiveFileName>alarm-config-${project.version}</archiveFileName>
+            </product>
+            <product>
+              <id>alarm-server</id>
+              <rootFolder>alarm-server-${project.version}</rootFolder>
+              <archiveFileName>alarm-server-${project.version}</archiveFileName>
+            </product>
+            <product>
+              <id>alarm-notifier</id>
+              <rootFolder>alarm-notifier-${project.version}</rootFolder>
+              <archiveFileName>alarm-notifier-${project.version}</archiveFileName>
+            </product>
+            <product>
+              <id>jms2rdb</id>
+              <rootFolder>jms2rdb-${project.version}</rootFolder>
+              <archiveFileName>jms2rdb-${project.version}</archiveFileName>
+            </product>
+            <product>
+              <id>scan-server</id>
+              <rootFolder>scan-server-${project.version}</rootFolder>
+              <archiveFileName>scan-server-${project.version}</archiveFileName>
+            </product>
           </products>
         </configuration>
         <executions>
