@@ -1,0 +1,23 @@
+instructions.configure=\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/logs);\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/configuration);\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/configuration/services);\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/configuration/services/jdbc);\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/configuration/services/pvarpc);\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/dropins);\
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:0,name: SNS update-site,location:http${#58}//ics-web.sns.ornl.gov/css/updates/);\
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:1,name: SNS update-site,location:http${#58}//ics-web.sns.ornl.gov/css/updates/);
+
+  
+# See https://bugs.eclipse.org/bugs/show_bug.cgi?id=231557dd to the config.ini to set the default workspace location to
+# $HOME/CSS-Workspaces/Default instead of somewhere inside the product.
+#
+# In the past, SNS CSS used a custom config.ini, but updating that
+# for each version change becomes a pain.
+# This way, an auto-created config.ini is extended by P2.
+#
+# See https://bugs.eclipse.org/bugs/show_bug.cgi?id=231557
+instructions.install = \
+  setProgramProperty(propName:eclipse.buildId,propValue:SNS_CSS);\
+  setProgramProperty(propName:osgi.instance.area.default,propValue:@user.home/CSS-Workspaces/Default);
+

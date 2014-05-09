@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Css" uid="basic-epics" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="3.2.16.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/org.csstudio.basic.epics.product/icons/aboutSide.png"/>
+      <text>
+         Control System Studio (CSS) is a combined
+effort of several parties, including
+- BNL (Brookhaven, NY)
+- DESY (Hamburg, Germany)
+- FRIB (Lansing, MI)
+- SNS (Oak Ridge, TN)
+
+It provides a collection of control system
+tools in a common environment, based
+on Eclipse.
+
+See http://ics-web.sns.ornl.gov/css
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>--launcher.defaultAction
+openFile</programArgs>
+      <vmArgs>-Xmx1024m
+-XX:MaxPermSize=128M
+-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+-Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
+   </launcherArgs>
+
+   <windowImages i16="/org.csstudio.basic.epics.product/icons/css16.png" i32="/org.csstudio.basic.epics.product/icons/css32.png" i48="/org.csstudio.basic.epics.product/icons/css48.png" i64="/org.csstudio.basic.epics.product/icons/css64.png" i128="/org.csstudio.basic.epics.product/icons/css128.png"/>
+
+   <splash
+      location="org.csstudio.basic.epics.product"
+      startupProgressRect="20,220,340,15"
+      startupMessageRect="20,200,340,20"
+      startupForegroundColor="FFFFFF" />
+   <launcher name="css">
+      <linux icon="/org.csstudio.basic.epics.product/icons/css48.xpm"/>
+      <macosx icon="/org.csstudio.basic.epics.product/icons/css.icns"/>
+      <solaris/>
+      <win useIco="true">
+         <ico path="/org.csstudio.basic.epics.product/icons/css.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+   <intro introId="org.eclipse.ui.intro.universal"/>
+
+   <vm>
+   </vm>
+
+   <license>
+        <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        <text>
+   You must accept this license agreement in order to install and
+use this
+software.
+THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot;
+BASIS. 
+WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+For details, see http://www.eclipse.org/legal/epl-v10.html
+         </text>
+   </license>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.csstudio.sns.feature.eclipse"/>
+      <feature id="org.csstudio.sns.feature.core"/>
+      <feature id="org.csstudio.sns.feature.basiccore"/>
+      <feature id="org.csstudio.sns.feature.applications"/>
+      <feature id="org.csstudio.sns.feature.repository"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
+      <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="4" />
+   </configurations>
+
+</product>
