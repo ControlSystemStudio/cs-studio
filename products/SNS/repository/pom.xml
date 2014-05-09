@@ -22,6 +22,42 @@ then builds product from core, applications and SNS features
 
   <build>
     <plugins>
+
+      <!-- Icons are in .../product/org.csstudio.basic.epics.product/icons,
+           but tycho wants them in .../repository/target/products/basic-epics/org.csstudio.basic.epics.product/icons
+           https://gist.github.com/briandealwis/907654 suggested an antrun copy
+       -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <configuration>
+              <failOnError>true</failOnError>
+              <target>
+                <echo message="Copying icons into tycho target directory ${project.build.directory}" />
+                <copy verbose="false"
+                  todir="${project.build.directory}/products/basic-epics">
+                  <fileset dir="${project.build.directory}/../../product">
+                    <include name="org.csstudio.basic.epics.product/icons/**" />
+                  </fileset>
+                </copy>
+                <copy
+                  todir="${project.build.directory}/products/sns-css">
+                  <fileset dir="${project.build.directory}/../../product">
+                    <include name="org.csstudio.sns.product/icons/**" />
+                  </fileset>
+                </copy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-director-plugin</artifactId>
@@ -101,13 +137,14 @@ then builds product from core, applications and SNS features
               <goal>materialize-products</goal>
             </goals>
           </execution>
-          <!-- Zip the products -->
+          <!-- Zip the products
           <execution>
             <id>archive-products</id>
             <goals>
               <goal>archive-products</goal>
             </goals>
           </execution>
+            -->
         </executions>
       </plugin>
     </plugins>
