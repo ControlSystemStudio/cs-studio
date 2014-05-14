@@ -36,6 +36,19 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+		
+		// This plugin depends on the PVManager plugin, and its Activator
+		// should configure the PVManager.
+		// After the actual PVManager code was extracted to third party bundles,
+		// org.csstudio.utility.pvmanager only re-exports those classes,
+		// and access to org.epics.pvmanager.* would no longer cause activation.
+		// By explicitly accessing a class in the org.csstudio.utility.pvmanager plugin,
+		// it gets activated:
+		org.csstudio.utility.pvmanager.Activator dummy = new org.csstudio.utility.pvmanager.Activator();
+		@SuppressWarnings("static-access")
+		final String pvm_id = dummy.ID;
+		if (! pvm_id.endsWith("pvmanager"))
+			throw new Exception("Cannot access PVManager plugin");
 	}
 
 	/*
