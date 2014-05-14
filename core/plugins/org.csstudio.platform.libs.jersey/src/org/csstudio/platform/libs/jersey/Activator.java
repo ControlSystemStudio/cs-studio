@@ -31,13 +31,13 @@ public class Activator extends AbstractUIPlugin {
 	    super.start(context);
 	    plugin = this;
 
-//	    Level logLevel = Preferences.getVerboseLogLevel();
-//	    for (String verbosePackage : PACKAGES) {
-//		Logger logger = Logger.getLogger(verbosePackage);
-//		logger.setLevel(logLevel);
-//		for (Handler handler : logger.getHandlers())
-//		    handler.setLevel(logLevel);
-//	    }
+	    Level logLevel = Preferences.getVerboseLogLevel();
+	    for (String verbosePackage : PACKAGES) {
+		Logger logger = Logger.getLogger(verbosePackage);
+		logger.setLevel(logLevel);
+		for (Handler handler : logger.getHandlers())
+		    handler.setLevel(logLevel);
+	    }
 	}
 
 	
