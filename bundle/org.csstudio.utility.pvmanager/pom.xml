@@ -16,6 +16,16 @@
       <artifactId>pvmanager-core</artifactId>
       <version>${pvmanager.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>3.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.epics</groupId>
+      <artifactId>epics-util</artifactId>
+      <version>0.2.2</version>
+    </dependency>
 </dependencies>
   
   <build>
@@ -28,7 +38,7 @@
 	<configuration>
 		<instructions>
 			<Bundle-Version>${pom.version}</Bundle-Version>
-			<Private-Package>org.csstudio.utility.pvmanager</Private-Package>
+			<Private-Package>org.csstudio.utility.*</Private-Package>
 			<Bundle-Activator>org.csstudio.utility.pvmanager.Activator</Bundle-Activator>
 			<Bundle-Name>pvManager CSS Integration</Bundle-Name>
 			<Bundle-SymbolicName>org.csstudio.utility.pvmanager;singleton:=true</Bundle-SymbolicName>
@@ -36,7 +46,7 @@
 			<Bundle-Description>pvManager integration with CSS</Bundle-Description>
 			<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 			<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-			<Export-Package>*</Export-Package>
+			<Export-Package>org.epics.pvmanager.*</Export-Package>
 			<Require-Bundle>org.eclipse.core.runtime,org.epics.util</Require-Bundle>
 		</instructions>
         </configuration>
