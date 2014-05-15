@@ -10,7 +10,9 @@ package org.csstudio.security.ui;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.security.SecurityPreferences;
 import org.csstudio.security.preferences.SecurePreferences;
+import org.csstudio.security.preferences.SecurePreferences.Type;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.SWT;
@@ -45,10 +47,13 @@ public class PasswordFieldEditor extends FieldEditor
 	// Based on Eclipse 3.7.2 StringFieldEditor
 	
 	private ISecurePreferences preferences;
+	private ISecurePreferences instance_prefs;
 
 	private Text textField;
 
 	private String oldValue;
+
+	private boolean readOnly = false;
 
 	/** Initialize
 	 *  @param plugin_id Plugin ID used to locate preferences
@@ -60,9 +65,12 @@ public class PasswordFieldEditor extends FieldEditor
 			final String label, final Composite parent)
 	{
 		super(key, label, parent);
+		readOnly = SecurityPreferences.isSecureReadOnly();
 		try
         {
-            preferences = SecurePreferences.getSecurePreferences().node(plugin_id);
+			preferences = SecurePreferences.getSecurePreferences().node(plugin_id);
+			if (readOnly)
+				instance_prefs = SecurePreferences.getSecurePreferences(Type.Instance).node(plugin_id);
         }
         catch (Exception ex)
         {
@@ -122,9 +130,14 @@ public class PasswordFieldEditor extends FieldEditor
 			return;
 		try
 		{
-			oldValue = preferences.get(getPreferenceName(), null);
-			if (oldValue == null)
-				oldValue = getPreferenceStore().getString(getPreferenceName());
+			if (readOnly) {
+				oldValue = instance_prefs.get(getPreferenceName(), null);
+				if (oldValue == null) oldValue = preferences.get(getPreferenceName(), null);
+				if (oldValue == null) oldValue = getPreferenceStore().getString(getPreferenceName());
+			} else {
+				oldValue = preferences.get(getPreferenceName(), null);
+				if (oldValue == null) oldValue = getPreferenceStore().getString(getPreferenceName());
+			}
 			if (oldValue == null)
 				oldValue = "";
 			textField.setText(oldValue);
@@ -143,6 +156,23 @@ public class PasswordFieldEditor extends FieldEditor
 	{
 		if (textField == null)
 			return;
+		if (readOnly) {
+			// Load default from secure preferences
+			// Clear instance secure preferences
+			try {
+				oldValue = preferences.get(getPreferenceName(), null);
+				if (oldValue == null)
+					oldValue = "";
+				textField.setText(oldValue);
+				instance_prefs.put(getPreferenceName(), null, false);
+				instance_prefs.flush();
+			} catch (Throwable ex) {
+				getPage().setErrorMessage("Cannot read " + getPreferenceName());
+				Logger.getLogger(getClass().getName()).log(Level.WARNING,
+						"Cannot read preferences", ex);
+			}
+			return;
+		}
 		// Load default from ordinary preferences
 		oldValue = getPreferenceStore().getDefaultString(getPreferenceName());
 		if (oldValue == null)
@@ -172,8 +202,13 @@ public class PasswordFieldEditor extends FieldEditor
 			return;
 		try
 		{
-			preferences.put(getPreferenceName(), textField.getText(), true);
-			preferences.flush();
+			if (readOnly) {
+				instance_prefs.put(getPreferenceName(), textField.getText(), true);
+				instance_prefs.flush();
+			} else {
+				preferences.put(getPreferenceName(), textField.getText(), true);
+				preferences.flush();
+			}
 		}
 		catch (Throwable ex)
 		{

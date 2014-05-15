@@ -31,8 +31,7 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
     
     
 	public AlarmRDBHandler(final String root) throws Exception {
-		model = AlarmClientModel.getInstance();
-		model.setConfigurationName(root, this);
+		model = AlarmClientModel.getInstance(root);
 		model.addListener(this);
 	}
 
