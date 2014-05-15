@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.equinox.security.secureStorage" id="iter_pp">
+      <provider class="org.csstudio.iter.passwordprovider.ITERPasswordProvider"
+            description="Password provider for ITER"
+            priority="5">
+      </provider>
+   </extension>
+</plugin>
