@@ -10,6 +10,7 @@
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.utility.pvmanager</artifactId>
   <packaging>bundle</packaging>
+  <version>3.2.0-SNAPSHOT</version>
 <dependencies>
     <dependency>
       <groupId>org.epics</groupId>
@@ -37,7 +38,6 @@
 	<extensions>true</extensions>
 	<configuration>
 		<instructions>
-			<Bundle-Version>${pom.version}</Bundle-Version>
 			<Private-Package>org.csstudio.utility.*</Private-Package>
 			<Bundle-Activator>org.csstudio.utility.pvmanager.Activator</Bundle-Activator>
 			<Bundle-Name>pvManager CSS Integration</Bundle-Name>
@@ -48,6 +48,10 @@
 			<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 			<Export-Package>org.epics.pvmanager.*</Export-Package>
 			<Require-Bundle>org.eclipse.core.runtime,org.epics.util</Require-Bundle>
+			<Include-Resource>schema=schema,schema/plugin.xml=plugin.xml</Include-Resource>
+			<_exportcontents>*</_exportcontents>
+			<_sources>true</_sources>
+			<_snapshot>${maven.build.timestamp}</_snapshot>
 		</instructions>
         </configuration>
       </plugin>

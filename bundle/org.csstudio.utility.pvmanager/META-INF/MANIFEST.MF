@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400184283551
+Bnd-LastModified: 1400253719106
 Build-Jdk: 1.7.0_45
 Built-By: berryman
 Bundle-ActivationPolicy: lazy
@@ -11,17 +11,21 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.csstudio.utility.pvmanager;singleton:=true
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroff kshroff@
  bnl.gov - BNL
-Bundle-Version: 0.0.1.SNAPSHOT
+Bundle-Version: 3.2.0.20140516-1121
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.epics.pvmanager;uses:="org.epics.util.time,org.epics
- .pvmanager.util,org.epics.pvmanager.expression";version="0.0.1.SNAPSHOT
- ",org.epics.pvmanager.service;uses:="org.epics.pvmanager";version="0.0.
- 1.SNAPSHOT",org.epics.pvmanager.util;uses:="javax.swing,org.epics.util.
- array,org.epics.util.text";version="0.0.1.SNAPSHOT",org.epics.pvmanager
- .expression;uses:="org.epics.pvmanager";version="0.0.1.SNAPSHOT"
+ .pvmanager.util,org.epics.pvmanager.expression";version="3.2.0.SNAPSHOT
+ ",org.epics.pvmanager.service;uses:="org.epics.pvmanager";version="3.2.
+ 0.SNAPSHOT",org.epics.pvmanager.util;uses:="javax.swing,org.epics.util.
+ array,org.epics.util.text";version="3.2.0.SNAPSHOT",org.epics.pvmanager
+ .expression;uses:="org.epics.pvmanager";version="3.2.0.SNAPSHOT",schema
+ ;version="3.2.0.SNAPSHOT",org.csstudio.utility.pvmanager;uses:="org.ecl
+ ipse.core.runtime,org.osgi.framework,org.epics.pvmanager.service,org.ep
+ ics.pvmanager,org.eclipse.core.runtime.preferences";version="3.2.0.SNAP
+ SHOT"
 Import-Package: javax.swing,org.eclipse.core.runtime;version="[3.4,4)",o
- rg.eclipse.core.runtime.preferences;version="[3.3,4)",org.epics.pvmanag
- er,org.epics.pvmanager.service,org.epics.util.array,org.epics.util.text
- ,org.epics.util.time,org.osgi.framework;version="[1.6,2)"
+ rg.eclipse.core.runtime.preferences;version="[3.3,4)",org.epics.util.ar
+ ray,org.epics.util.text,org.epics.util.time,org.osgi.framework;version=
+ "[1.6,2)"
 Require-Bundle: org.eclipse.core.runtime,org.epics.util
 Tool: Bnd-1.50.0
