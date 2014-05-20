@@ -54,6 +54,11 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
      */
     public static final ReductionScheme DEFAULT_REDUCTION_SCHEME = ReductionScheme.FIRST_MAX_MIN_LAST;
     
+    /**
+     * Default separate area flag: false (all lines overlap in one area).
+     */
+    public static final boolean DEFAULT_SEPARATE_AREAS = false;
+    
     @Override
     public MultiAxisLineGraph2DRendererUpdate newUpdate() {
         return new MultiAxisLineGraph2DRendererUpdate();
@@ -113,7 +118,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
     private double xPlotCoordWidth;
     
     private boolean stretch = false;
-    private boolean separateAreas = false;
+    private boolean separateAreas = DEFAULT_SEPARATE_AREAS;
     /**
      * Creates a new line graph renderer.
      * 
