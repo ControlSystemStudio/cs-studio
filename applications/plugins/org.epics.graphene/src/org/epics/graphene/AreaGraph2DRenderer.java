@@ -21,6 +21,21 @@ public class AreaGraph2DRenderer extends Graph2DRenderer<AreaGraph2DRendererUpda
         return new AreaGraph2DRendererUpdate();
     }
 
+    private Integer focusPixelX;
+    private Integer focusValueIndex;
+    private boolean highlightFocusValue = false;
+
+    @Override
+    public void update(AreaGraph2DRendererUpdate update) {
+        super.update(update);
+        if (update.getFocusPixelX()!= null) {
+            focusPixelX = update.getFocusPixelX();
+        }
+        if (update.getHighlightFocusValue()!= null) {
+            highlightFocusValue = update.getHighlightFocusValue();
+        }
+    }
+
     /**
      *Draws the area to be put behind a graph on the given Graphics2D context, given the Cell1DDataset.
      * @param graphics Graphics2D: can not be null.
@@ -44,9 +59,13 @@ public class AreaGraph2DRenderer extends Graph2DRenderer<AreaGraph2DRendererUpda
         int[] binLimitsPx = new int[dataset.getXCount() + 1];
         int[] binHeightsPx = new int[dataset.getXCount()];
         
+        focusValueIndex = null;
         for (int i = 0; i < dataset.getXCount(); i++) {
             binLimitsPx[i] = (int) scaledX(dataset.getXBoundaries().getDouble(i));
             binHeightsPx[i] = (int) scaledY(dataset.getValue(i));
+            if (focusPixelX != null && binLimitsPx[i] < focusPixelX) {
+                focusValueIndex = i;
+            }
         }
         binLimitsPx[dataset.getXCount()] = (int) scaledX(dataset.getXBoundaries().getDouble(dataset.getXCount()));
         
@@ -54,7 +73,10 @@ public class AreaGraph2DRenderer extends Graph2DRenderer<AreaGraph2DRendererUpda
         int plotStart = (int) scaledY(getYPlotRange().getMinimum().doubleValue());
         for (int i = 0; i < binHeightsPx.length; i++) {
             graphics.setColor(histogramColor);
-            graphics.fillRect(binLimitsPx[i], binHeightsPx[i], binLimitsPx[i+1] - binLimitsPx[i], plotStart - binHeightsPx[i]);
+            // If focused value, leave it white
+            if (!highlightFocusValue || focusValueIndex == null || i != focusValueIndex) {
+                graphics.fillRect(binLimitsPx[i], binHeightsPx[i], binLimitsPx[i+1] - binLimitsPx[i], plotStart - binHeightsPx[i]);
+            }
             graphics.setColor(dividerColor);
             // Draw the divider only if the vertical size is more than 0
             if ((plotStart - binHeightsPx[i]) > 0) {
@@ -79,4 +101,12 @@ public class AreaGraph2DRenderer extends Graph2DRenderer<AreaGraph2DRendererUpda
         
     }
 
+    public Integer getFocusPixelX() {
+        return focusPixelX;
+    }
+
+    public Integer getFocusValueIndex() {
+        return focusValueIndex;
+    }
+    
 }

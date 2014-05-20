@@ -3,6 +3,7 @@ package org.csstudio.utility.pvmanager.pva;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,12 +26,12 @@ public class CsstudioPVARPCServiceFactory extends PVARPCXMLServiceFactory {
 	
 	@Override
 	public Collection<Service> createServices() {
-		Collection<Service> rpcServices =  super.createServices();
-		return rpcServices;
+		if (getPVARPCServiceDirectory().exists()) {
+			return super.createServices();
+		} else {
+			return Collections.emptyList();
+		}
 	}
-	
-	
-	
 
 }
 

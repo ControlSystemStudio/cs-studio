@@ -24,6 +24,7 @@ import org.csstudio.opibuilder.preferences.PreferencesHelper;
 public class OPIBuilderMacroUtil {
 	public static final String DNAME = "DNAME"; //$NON-NLS-1$
 	public static final String DID = "DID"; //$NON-NLS-1$
+	public static final String DLOC = "DLOC"; //$NON-NLS-1$
 	/**Replace the macros in the input with the real value.  Simply calls the three argument version below
 	 * @param input the raw string which include the macros string $(macro)
 	 * @return the string in which the macros have been replaced with the real value.
@@ -85,6 +86,14 @@ class WidgetMacroTableProvider implements IMacroTableProvider{
 				widgetModel.getRootDisplayModel().getDisplayID();
 		else if (macroName.equals(OPIBuilderMacroUtil.DNAME))
 			return widgetModel.getRootDisplayModel().getName();		
+		else if (macroName.equals(OPIBuilderMacroUtil.DLOC)) {
+			String uri = ResourceUtil.workspacePathToSysPath(widgetModel.getRootDisplayModel().getOpiFilePath()).toFile().getParentFile().toURI().toString();
+			// Fix the file protocol: we need 'file:///' for absolute paths
+			if (uri.matches("file:/[^/].*")) {
+				uri = "file:///" + uri.substring(6);
+			}
+			return uri;
+		}
 		
 		return null;
 	}

@@ -7,7 +7,7 @@ package org.epics.graphene;
 import org.epics.util.array.ListNumber;
 
 /**
- * A dataset consisting on a set of 2D points.
+ * A dataset consisting of a set of 2D points.
  * <p>
  * It represents a list of ordered tuples of two values, and their statistical information.
  * The order may not be meaningful, but can be used to identify the points.
