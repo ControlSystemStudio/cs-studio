@@ -118,6 +118,17 @@ public class Ranges {
         return value >= range.getMinimum().doubleValue() && value <= range.getMaximum().doubleValue();
     }
     
+    /**
+     * Increases the given aggregated range with the new data range.
+     * <p>
+     * TODO: maybe this should be re-thought: it's the same as sum with 
+     * different null handling. Maybe a RangeAggregator utility class
+     * that also handles numbers?
+     * 
+     * @param dataRange the new data range; can't be null
+     * @param aggregatedRange the old aggregated range; can be null
+     * @return a range big enough to contain both ranges
+     */
     public static Range aggregateRange(Range dataRange, Range aggregatedRange) {
         if (aggregatedRange == null) {
             return dataRange;
