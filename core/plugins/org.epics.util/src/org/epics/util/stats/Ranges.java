@@ -117,4 +117,40 @@ public class Ranges {
     public static boolean contains(Range range, double value) {
         return value >= range.getMinimum().doubleValue() && value <= range.getMaximum().doubleValue();
     }
+    
+    /**
+     * Increases the given aggregated range with the new data range.
+     * <p>
+     * TODO: maybe this should be re-thought: it's the same as sum with 
+     * different null handling. Maybe a RangeAggregator utility class
+     * that also handles numbers?
+     * 
+     * @param dataRange the new data range; can't be null
+     * @param aggregatedRange the old aggregated range; can be null
+     * @return a range big enough to contain both ranges
+     */
+    public static Range aggregateRange(Range dataRange, Range aggregatedRange) {
+        if (aggregatedRange == null) {
+            return dataRange;
+        } else {
+            return Ranges.sum(dataRange, aggregatedRange);
+        }
+    }
+    
+    /**
+     * Percentage, from 0 to 1, of the first range that is contained by
+     * the second range.
+     * 
+     * @param range the range to be contained by the second
+     * @param otherRange the range that has to contain the first
+     * @return from 0 (if there is no intersection) to 1 (if the ranges are the same)
+     */
+    public static double overlap(Range range, Range otherRange) {
+        double minOverlap = Math.max(range.getMinimum().doubleValue(), otherRange.getMinimum().doubleValue());
+        double maxOverlap = Math.min(range.getMaximum().doubleValue(), otherRange.getMaximum().doubleValue());
+        double overlapWidth = maxOverlap - minOverlap;
+        double rangeWidth = range.getMaximum().doubleValue() - range.getMinimum().doubleValue();
+        double fraction = Math.max(0.0, overlapWidth / rangeWidth);
+        return fraction;
+    }
 }
