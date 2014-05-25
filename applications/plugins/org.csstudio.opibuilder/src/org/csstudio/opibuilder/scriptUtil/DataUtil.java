@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.scriptUtil;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.mozilla.javascript.NativeArray;
@@ -60,7 +61,15 @@ public class DataUtil {
 	        }
 	        return result;
 	    } else {
-	        return (int[]) array;
+	           Object[] objArray = ((List<?>) array).toArray();
+	            int[] result = new int[objArray.length];
+	            for (int i = 0; i < objArray.length; i++) {
+	                if(objArray[i] instanceof Number)
+	                    result[i]=((Number)objArray[i]).intValue();
+	                else
+	                    result[i] = 0;
+	            }
+	            return result;
 	    }
 	}
 	
@@ -78,11 +87,19 @@ public class DataUtil {
                 if(o instanceof Number)
                     result[i++]=((Number)o).doubleValue();
                 else
-                    result[i++] = 0;				
+                    result[i++] = 0;
             }
             return result;
 	    } else {
-	        return (double[]) array;
+	        Object[] objArray = ((List<?>) array).toArray();
+	        double[] result = new double[objArray.length];
+	        for (int i = 0; i < objArray.length; i++) {
+	            if(objArray[i] instanceof Number)
+                    result[i]=((Number)objArray[i]).doubleValue();
+                else
+                    result[i] = 0;
+	        }
+	        return result;
 	    }
 	}
 	
