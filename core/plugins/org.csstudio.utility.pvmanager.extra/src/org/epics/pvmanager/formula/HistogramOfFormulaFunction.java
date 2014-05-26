@@ -79,7 +79,7 @@ class HistogramOfFormulaFunction extends StatefulFormulaFunction {
         int nBins = 100;
         Range aggregatedRange = Ranges.aggregateRange(stats, previousXRange);
         Range xRange;
-        if (Ranges.overlap(stats, aggregatedRange) >= 0.75) {
+        if (Ranges.overlap(aggregatedRange, stats) >= 0.75) {
             xRange = aggregatedRange;
         } else {
             xRange = stats;
