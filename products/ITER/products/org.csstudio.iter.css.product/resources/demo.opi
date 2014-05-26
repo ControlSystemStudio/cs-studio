@@ -6,7 +6,7 @@
     <CBS1>CODAC</CBS1>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.2.9.codac_core_4_2b1</boy_version>
+  <boy_version>3.2.10.codac_core_4_3b1</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>900</height>
@@ -101,7 +101,7 @@
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>121</width>
       <border_style>0</border_style>
@@ -142,7 +142,7 @@
       <enabled>true</enabled>
       <widget_type>Grouping Container</widget_type>
       <font>
-        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+        <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>1132</width>
       <border_style>0</border_style>
@@ -225,7 +225,7 @@
           <enabled>true</enabled>
           <widget_type>Grouping Container</widget_type>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>1128</width>
           <border_style>0</border_style>
@@ -265,7 +265,7 @@
             <enabled>true</enabled>
             <widget_type>Grouping Container</widget_type>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
             </font>
             <width>1128</width>
             <border_style>0</border_style>
@@ -451,7 +451,7 @@
               <enabled>true</enabled>
               <widget_type>Grouping Container</widget_type>
               <font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
               </font>
               <width>82</width>
               <border_style>0</border_style>
@@ -648,7 +648,7 @@
               <enabled>true</enabled>
               <widget_type>Grouping Container</widget_type>
               <font>
-                <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
               </font>
               <width>140</width>
               <border_style>0</border_style>
@@ -899,7 +899,7 @@
           <enabled>true</enabled>
           <widget_type>Grouping Container</widget_type>
           <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+            <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
           </font>
           <width>1128</width>
           <border_style>0</border_style>
@@ -939,7 +939,7 @@
             <enabled>true</enabled>
             <widget_type>Grouping Container</widget_type>
             <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+              <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
             </font>
             <width>1128</width>
             <border_style>0</border_style>
@@ -1055,7 +1055,7 @@
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
-                <visible>true</visible>
+                <visible>false</visible>
                 <wuid>-203b6f4:1411132e3c7:-7d07</wuid>
                 <scripts />
                 <height>832</height>
@@ -1076,7 +1076,7 @@
                 <enabled>true</enabled>
                 <widget_type>Grouping Container</widget_type>
                 <font>
-                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                 </font>
                 <width>1122</width>
                 <border_style>0</border_style>
@@ -1271,7 +1271,7 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>987</width>
                   <border_style>0</border_style>
@@ -1587,7 +1587,7 @@ to enter the Label Text</text>
                 <enabled>true</enabled>
                 <widget_type>Grouping Container</widget_type>
                 <font>
-                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                 </font>
                 <width>1122</width>
                 <border_style>0</border_style>
@@ -1798,7 +1798,7 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>294</width>
                   <border_style>0</border_style>
@@ -2011,7 +2011,7 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>1091</width>
                   <border_style>0</border_style>
@@ -2575,7 +2575,7 @@ to enter the Label Text</text>
                 <enabled>true</enabled>
                 <widget_type>Grouping Container</widget_type>
                 <font>
-                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                 </font>
                 <width>1122</width>
                 <border_style>0</border_style>
@@ -2615,7 +2615,7 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>405</width>
                   <border_style>0</border_style>
@@ -2905,7 +2905,7 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>1040</width>
                   <border_style>0</border_style>
@@ -3331,7 +3331,7 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>1089</width>
                   <border_style>0</border_style>
@@ -3770,7 +3770,7 @@ to enter the Label Text</text>
                 <enabled>true</enabled>
                 <widget_type>Grouping Container</widget_type>
                 <font>
-                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                 </font>
                 <width>1122</width>
                 <border_style>0</border_style>
@@ -3810,7 +3810,7 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>168</width>
                   <border_style>13</border_style>
@@ -3907,7 +3907,7 @@ to enter the Label Text</text>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>967</width>
                   <border_style>13</border_style>
@@ -3951,7 +3951,7 @@ to enter the Label Text</text>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                      <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                     </font>
                     <width>356</width>
                     <border_style>6</border_style>
@@ -4253,7 +4253,7 @@ $(pv_value)</tooltip>
                     <enabled>true</enabled>
                     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
                     <font>
-                      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                      <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                     </font>
                     <width>166</width>
                     <border_style>6</border_style>
@@ -4348,7 +4348,7 @@ $(pv_value)</tooltip>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>236</width>
                   <border_style>13</border_style>
@@ -4509,7 +4509,7 @@ $(pv_value)</tooltip>
                   <enabled>true</enabled>
                   <widget_type>Grouping Container</widget_type>
                   <font>
-                    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                    <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                   </font>
                   <width>177</width>
                   <border_style>13</border_style>
@@ -4620,7 +4620,7 @@ $(pv_value)</tooltip>
                 <macros>
                   <include_parent_macros>true</include_parent_macros>
                 </macros>
-                <visible>false</visible>
+                <visible>true</visible>
                 <wuid>-203b6f4:1411132e3c7:-7a8f</wuid>
                 <scripts />
                 <height>832</height>
@@ -4641,7 +4641,7 @@ $(pv_value)</tooltip>
                 <enabled>true</enabled>
                 <widget_type>Grouping Container</widget_type>
                 <font>
-                  <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                  <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                 </font>
                 <width>1122</width>
                 <border_style>0</border_style>
@@ -4662,7 +4662,7 @@ $(pv_value)</tooltip>
                     <include_parent_macros>true</include_parent_macros>
                   </macros>
                   <panel2_auto_scale_children>true</panel2_auto_scale_children>
-                  <panel1_auto_scale_children>true</panel1_auto_scale_children>
+                  <panel1_auto_scale_children>false</panel1_auto_scale_children>
                   <visible>true</visible>
                   <wuid>-203b6f4:1411132e3c7:-7a8c</wuid>
                   <scripts />
@@ -4724,7 +4724,7 @@ $(pv_value)</tooltip>
                     <enabled>true</enabled>
                     <widget_type>Grouping Container</widget_type>
                     <font>
-                      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                      <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                     </font>
                     <width>98</width>
                     <border_style>0</border_style>
@@ -4764,13 +4764,13 @@ $(pv_value)</tooltip>
                       <enabled>true</enabled>
                       <widget_type>Grouping Container</widget_type>
                       <font>
-                        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                        <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                       </font>
                       <width>80</width>
                       <border_style>0</border_style>
                       <rules />
                       <fc>false</fc>
-                      <lock_children>true</lock_children>
+                      <lock_children>false</lock_children>
                       <border_width>1</border_width>
                       <border_color>
                         <color name="IO Border" red="215" green="215" blue="215" />
@@ -4866,7 +4866,7 @@ $(pv_value)</tooltip>
                         <actions hook="false" hook_all="false">
                           <action type="WRITE_PV">
                             <pv_name>$(pv_name)</pv_name>
-                            <value>One_Line_Diagram.opi</value>
+                            <value>Main_Symbol_Library.opi</value>
                             <timeout>10</timeout>
                             <confirm_message></confirm_message>
                             <description>One_Line_Diagram.opi</description>
@@ -4962,7 +4962,7 @@ $(pv_value)</tooltip>
                         <actions hook="false" hook_all="false">
                           <action type="WRITE_PV">
                             <pv_name>$(pv_name)</pv_name>
-                            <value>Fluid_Diagram.opi</value>
+                            <value>Main_Symbol_Library.opi</value>
                             <timeout>10</timeout>
                             <confirm_message></confirm_message>
                             <description>Fluid_Diagram.opi</description>
@@ -5190,7 +5190,7 @@ $(pv_value)</tooltip>
                     <enabled>true</enabled>
                     <widget_type>Grouping Container</widget_type>
                     <font>
-                      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+                      <opifont.name fontName="DejaVu LGC Sans" height="10" style="0">Default</opifont.name>
                     </font>
                     <width>1017</width>
                     <border_style>0</border_style>
