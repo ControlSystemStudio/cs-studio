@@ -44,7 +44,7 @@ At the time of writing this, the list was:
 <li>core/plugins/org.csstudio.platform.libs.jdbc</li>
 <li>core/plugins/org.csstudio.platform.utility.rdb</li>
 <li>core/plugins/org.csstudio.rap.core</li>
-<li>core/plugins/org.csstudio.rap.ui.util</li>
+<li>core/plugins/org.csstudio.rap.ui.util (and <u>not</u> org.csstudio.ui.util !)</li>
 <li>core/plugins/org.csstudio.security</li>
 <li>core/plugins/org.csstudio.security.ui</li>
 <li>core/plugins/org.csstudio.simplepv</li>
@@ -149,9 +149,13 @@ Change your web browser to look at
 If you still get errors to open the web page, try following steps:
 <ul>
 <li>Stop and refresh the webpage.</li>
-<li>Terminate WebOPI from Console view. Go to <code>
-Run Configuration->RAP Application->WebOPI->Bundles</code>. 
-Verify the bundles, try <code>Add Required Bundles</code> and then click <code>Validate Bundles</code>.</li>
+<li>Terminate WebOPI from Console view.
+    Go to <code>Run Configuration->RAP Application->WebOPI->Bundles</code>.
+    Check that no <code>*.rcp.*</code> bundles or fragments are included.
+    Check the output of <code>Validate Bundles</code>.
+    Beware of <code>Add Required Bundles</code>, which could add <code>*.rcp.*</code>
+    bundles or fragments that you happen to have in the workspace.
+</li>
 <li>Run again.</li>
 </ul>
 </p>
