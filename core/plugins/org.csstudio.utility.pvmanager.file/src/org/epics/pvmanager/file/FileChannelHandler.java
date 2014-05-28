@@ -30,11 +30,20 @@ import org.epics.vtype.io.CSVIO;
  */
 class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
     
-    private File file;
+    private final File file;
+    private final FileDataSource dataSource;
+    private final Runnable updateTask = new Runnable() {
 
-    FileChannelHandler(String channelName, File file) {
+        @Override
+        public void run() {
+            update();
+        }
+    };
+
+    FileChannelHandler(FileDataSource dataSource, String channelName, File file) {
         super(channelName);
         this.file = file;
+        this.dataSource = dataSource;
     }
     
     private CSVIO io = new CSVIO();
@@ -42,6 +51,11 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
     @Override
     public void connect() {
         processConnection(file);
+        update();
+        dataSource.getFileWatchService().addWatcher(file, updateTask);
+    }
+    
+    private void update() {
         try {
             Object value = readValueFromFile(file);
             processMessage(value);
@@ -58,6 +72,7 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
 
     @Override
     public void disconnect() {
+        dataSource.getFileWatchService().removeWatcher(file, updateTask);
         processConnection(null);
     }
 

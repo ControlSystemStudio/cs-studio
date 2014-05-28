@@ -33,8 +33,8 @@ import org.epics.vtype.io.CSVIO;
  */
 class ImageChannelHandler extends FileChannelHandler {
 
-    ImageChannelHandler(String channelName, File file) {
-        super(channelName, file);
+    ImageChannelHandler(FileDataSource dataSource, String channelName, File file) {
+        super(dataSource, channelName, file);
     }
     
     @Override
