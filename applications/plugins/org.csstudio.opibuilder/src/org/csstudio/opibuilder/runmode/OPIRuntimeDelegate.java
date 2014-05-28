@@ -328,7 +328,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		if (!displayModel.isShowCloseButton()) {
 			Display.getCurrent().asyncExec(new Runnable() {
 				public void run() {
-					SingleSourcePlugin.getUIHelper().enableClose(false);
+					SingleSourcePlugin.getUIHelper().enableClose(site, false);
 				}
 			});
 		}

@@ -7,13 +7,8 @@
  ******************************************************************************/
 package org.csstudio.utility.singlesource.rcp;
 
-
-
 import java.io.IOException;
 
-import org.csstudio.opibuilder.runmode.EModelService;
-import org.csstudio.opibuilder.runmode.MPart;
-import org.csstudio.opibuilder.runmode.MPartSashContainerElement;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper;
@@ -39,6 +34,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -202,7 +198,7 @@ public class RCPUIHelper extends UIHelper
 	}
 
     /** {@inheritDoc} */
-	public void enableClose(boolean enable_close) {
+	public void enableClose(IWorkbenchPartSite site, boolean enable_close) {
 		// TODO Improve implementation
 		
 		// Configure the E4 model element.
@@ -214,7 +210,7 @@ public class RCPUIHelper extends UIHelper
 		// Issue 2:
 		// Part can still be closed via Ctrl-W (Command-W on OS X)
 		// or via menu File/close.
-		MPart part = (MPart) site.getService(MPart.class);
+		final MPart part = (MPart) site.getService(MPart.class);
 		part.setCloseable(false);
 
 		// Original RCP code
@@ -230,11 +226,12 @@ public class RCPUIHelper extends UIHelper
 	
     /** {@inheritDoc} */
 	public void detachView(final IViewPart view) {
+		// TODO Use more generic IWorkbenchPart?, getPartSite()?
 		// Pre-E4 code:
 		//  ((WorkbenchPage)page).detachView(page.findViewReference(OPIView.ID, secondID));
 		// See http://tomsondev.bestsolution.at/2012/07/13/so-you-used-internal-api/
-		final EModelService model = (EModelService) opiView.getSite().getService(EModelService.class);
-		final MPartSashContainerElement p = (MPart) opiView.getSite().getService(MPart.class);
+		final EModelService model = (EModelService) view.getSite().getService(EModelService.class);
+		MPartSashContainerElement p = (MPart) view.getSite().getService(MPart.class);
 		// Part may be shared by several perspectives, get the shared instance
 		if (p.getCurSharedRef() != null)
 			p = p.getCurSharedRef();
