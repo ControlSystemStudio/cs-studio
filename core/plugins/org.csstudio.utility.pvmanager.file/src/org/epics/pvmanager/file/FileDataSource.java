@@ -38,7 +38,7 @@ public final class FileDataSource extends DataSource {
      * Creates a new data source.
      */
     public FileDataSource() {
-        super(false);
+        super(true);
     }
     
     private final FileWatcherService fileWatchService =
@@ -59,5 +59,5 @@ public final class FileDataSource extends DataSource {
         }
         return new FileChannelHandler(this, channelName, new File(URI.create("file://" + channelName)));
     }
-
+    
 }

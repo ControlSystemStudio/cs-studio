@@ -5,22 +5,10 @@
 package org.epics.pvmanager.file;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import org.epics.pvmanager.ChannelWriteCallback;
-import org.epics.pvmanager.ChannelHandlerReadSubscription;
 import org.epics.pvmanager.MultiplexedChannelHandler;
-import org.epics.pvmanager.ChannelHandlerWriteSubscription;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.epics.pvmanager.*;
-import static org.epics.vtype.ValueFactory.*;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ListDouble;
 import org.epics.vtype.VTable;
-import org.epics.vtype.VType;
 import org.epics.vtype.io.CSVIO;
 
 /**
@@ -67,6 +55,7 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
     protected Object readValueFromFile(File file) throws Exception {
         FileReader fileReader = new FileReader(file);
         VTable value = io.importVTable(fileReader);
+        fileReader.close();
         return value;
     }
 
