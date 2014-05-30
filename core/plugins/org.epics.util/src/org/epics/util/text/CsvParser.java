@@ -26,7 +26,7 @@ import static org.epics.util.text.StringUtil.DOUBLE_REGEX_WITH_NAN;
  * <p>
  * Since there is no CSV strict format, this parser honors as best it
  * can the suggestions found in <a href="http://tools.ietf.org/html/rfc4180">RFC4180</a>,
- * in the <a haref="http://en.wikipedia.org/wiki/Comma-separated_values">CSV wikipedia article</a>
+ * in the <a href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV wikipedia article</a>
  * and other sources.
  * <p>
  * The parser can try multiple separators, so that it can auto-detect the
