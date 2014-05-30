@@ -35,6 +35,13 @@ public interface Cell2DDataset {
     public Statistics getStatistics();
     
     /**
+     * Returns the suggested range to display the values.
+     * 
+     * @return the suggested display range
+     */
+    public Range getDisplayRange();
+    
+    /**
      * Returns the boundaries of the cells along x.
      * <p>
      * The number of elements matches {@link #getXCount()} + 1. If

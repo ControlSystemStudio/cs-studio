@@ -12,9 +12,17 @@ package org.epics.util.exceptions;
  */
 public class ConfigurationException extends RuntimeException {
 
+    /**
+     * Creates a new configuration exception.
+     */
     public ConfigurationException() {
     }
     
+    /**
+     * Creates a new configuration exception with the given message.
+     * 
+     * @param message a message
+     */
     public ConfigurationException(String message) {
         super(message);
     }

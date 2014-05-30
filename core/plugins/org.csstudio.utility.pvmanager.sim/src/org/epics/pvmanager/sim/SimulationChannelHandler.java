@@ -66,7 +66,6 @@ class SimulationChannelHandler<T> extends MultiplexedChannelHandler<Simulation<T
     public void disconnect() {
         taskFuture.cancel(false);
         taskFuture = null;
-        simulation.lastTime = null;
         processConnection(null);
     }
 

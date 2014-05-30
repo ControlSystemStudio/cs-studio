@@ -18,10 +18,16 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
 
     final TValue dbrValue;
     private final boolean disconnected;
+    private final Timestamp timestamp;
 
     VMetadata(TValue dbrValue, JCAConnectionPayload connPayload) {
         this.dbrValue = dbrValue;
         this.disconnected = !connPayload.isChannelConnected();
+        if (disconnected) {
+            timestamp = connPayload.getEventTime();
+        } else {
+            timestamp = DataUtils.timestampOf(dbrValue.getTimeStamp());
+        }
     }
 
     @Override
@@ -40,7 +46,7 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
 
     @Override
     public Timestamp getTimestamp() {
-        return DataUtils.timestampOf(dbrValue.getTimeStamp());
+        return timestamp;
     }
 
     @Override
