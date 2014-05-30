@@ -12,8 +12,8 @@
     <tycho.version>0.19.0</tycho.version>
     <tycho-extras.version>0.19.0</tycho-extras.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/3.3</cs-studio-central.url>
-    <pvmanager.version>2.5</pvmanager.version>
-    <graphene.version>0.6</graphene.version>
+    <pvmanager.version>2.6</pvmanager.version>
+    <graphene.version>0.7</graphene.version>
     <pvdata.version>3.0.3</pvdata.version>
     <pvaccess.version>3.0.5</pvaccess.version>
   </properties>
@@ -126,11 +126,11 @@
                                         <source>true</source>
                                     </artifact>
                                     <artifact>
-                                        <id>org.epics:epics-util:0.2.2</id>
+                                        <id>org.epics:epics-util:0.3.1</id>
                                         <source>true</source>
                                     </artifact>
                                     <artifact>
-                                        <id>org.epics:epics-vtype:2.1</id>
+                                        <id>org.epics:epics-vtype:2.5</id>
                                         <source>true</source>
                                     </artifact>
                                     <artifact>
