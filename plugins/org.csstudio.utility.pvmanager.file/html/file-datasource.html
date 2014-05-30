@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>File DataSource</title>
+    </head>
+
+    <body>
+        <h1>File DataSource</h1>
+
+        <h2>PV syntax</h2>
+        <p>
+            The standard prefix for the datasource is <code>file://</code> which can be omitted if configured as the default datasource.
+        </p>
+        <p>
+            This datasource allows to read files and treat the contents as a
+            source of data.
+        </p>
+        <ul>
+            <li>On Windows: <code>file:///C:/Users/carcassi/mydata.csv</code> will open the file located at <code>C:\Users\carcassi\mydata.csv</code></li>
+            <li>On Unix: <code>file:///home/foo/mydata.csv</code> will open the file located at <code>/home/foo/mydata.csv</code></li>
+        </ul>
+        <h2>Current limitations</h2>
+        <p>
+            It currently does not detect when the file content changes, and there is
+            no way to "refresh" except connecting and disconnecting.
+        </p>
+        <p>
+            The only supported format is CSV and the data is read as a table.
+            The first line represents the column names and the subsequent lines
+            represents rows of the table. Each element is separated by a space.
+            Strings must be quoted with a double quote.
+        </p>
+            
+            
+
+    </body>
+</html>
