@@ -128,11 +128,11 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 			protected void paintBorder(Graphics graphics) {
 				super.paintBorder(graphics);
 				if (ActionButtonFigure.this.hasFocus()) {
-					graphics.setForegroundColor(ColorConstants.black);
+					graphics.setForegroundColor(ColorConstants.lightBlue);
 					graphics.setBackgroundColor(ColorConstants.white);
 
 					Rectangle area = getClientArea();
-					graphics.drawFocus(area.x, area.y, area.width, area.height);
+					graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
 
 				}
 			}
@@ -604,7 +604,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	 */
 	ButtonScheme BUTTON = new ButtonScheme(
 			new Color[] {buttonLightest},
-			DARKEST_DARKER
+			new Color[] {buttonDarker}
 	);
 	/**
 	 * Constructs a ButtonBorder with a predefined button scheme set as its default.
