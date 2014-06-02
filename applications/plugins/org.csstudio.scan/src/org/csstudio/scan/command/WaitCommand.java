@@ -212,7 +212,11 @@ public class WaitCommand extends ScanCommand
 	public String toString()
 	{
 	    final StringBuilder buf = new StringBuilder();
-	    buf.append("Wait for '").append(device_name).append("' ").append(comparison).append(" ").append(desired_value);
+	    buf.append("Wait for '").append(device_name).append("' ").append(comparison).append(" ");
+	    if (desired_value instanceof String)
+	        buf.append('"').append(desired_value).append('"');
+	    else
+	    	buf.append(desired_value);
 	    if (comparison == Comparison.EQUALS)
 	        buf.append(" (+-").append(tolerance).append(")");
 	    if (timeout > 0)
