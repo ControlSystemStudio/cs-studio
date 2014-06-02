@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.properties;
 
+import org.csstudio.scan.util.StringOrDouble;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -24,9 +25,7 @@ public class StringOrDoublePropertyDescriptor extends TextPropertyDescriptor
 		@Override
 		public String getText(final Object element)
 		{
-			if (element instanceof String)
-				return '"' + element.toString() + '"';
-			return super.getText(element);
+			return StringOrDouble.quote(element);
 		}
 	}
 

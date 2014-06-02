@@ -17,6 +17,7 @@ package org.csstudio.scan.command;
 
 import java.util.List;
 
+import org.csstudio.scan.util.StringOrDouble;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -293,10 +294,7 @@ public class SetCommand extends ScanCommand
 	{
 	    final StringBuilder buf = new StringBuilder();
 	    buf.append("Set '").append(device_name).append("' = ");
-	    if (value instanceof String)
-	        buf.append('"').append(value).append('"');
-	    else
-	        buf.append(value);
+	    buf.append(StringOrDouble.quote(value));
 	    appendConditionDetail(buf);
 	    return buf.toString();
 	}

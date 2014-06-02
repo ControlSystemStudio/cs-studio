@@ -17,6 +17,7 @@ package org.csstudio.scan.command;
 
 import java.util.List;
 
+import org.csstudio.scan.util.StringOrDouble;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -213,10 +214,7 @@ public class WaitCommand extends ScanCommand
 	{
 	    final StringBuilder buf = new StringBuilder();
 	    buf.append("Wait for '").append(device_name).append("' ").append(comparison).append(" ");
-	    if (desired_value instanceof String)
-	        buf.append('"').append(desired_value).append('"');
-	    else
-	    	buf.append(desired_value);
+	    buf.append(StringOrDouble.quote(desired_value));
 	    if (comparison == Comparison.EQUALS)
 	        buf.append(" (+-").append(tolerance).append(")");
 	    if (timeout > 0)
