@@ -34,7 +34,11 @@ public class StringOrDoubleCellEditor extends DoubleCellEditor
     @Override
     protected void doSetValue(final Object value)
     {   // DoubleCellEditor can also handle String
-        super.doSetValue(value);
+    	// Quote actual strings, otherwise present the value as a string
+    	if (value instanceof String)
+    		super.doSetValue('"' + value.toString() + '"');
+    	else
+    		super.doSetValue(value.toString());
     }
 
     /** @return Current value of the cell editor, will be Double if possible, otherwise String */
@@ -44,6 +48,13 @@ public class StringOrDoubleCellEditor extends DoubleCellEditor
         final String text = getStringValue();
         if (text.isEmpty())
             return Double.valueOf(0);
+        if (text.startsWith("\""))
+        {	// Remove quotes, handle as text without further checks
+        	if (text.endsWith("\""))
+        		return text.substring(1, text.length()-1);
+        	return text.substring(1);
+        }
+        // Try to handle as number
         try
         {
             return Double.valueOf(text.trim());
