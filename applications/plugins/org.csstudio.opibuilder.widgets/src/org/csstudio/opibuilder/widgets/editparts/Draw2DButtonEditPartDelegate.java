@@ -131,7 +131,29 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 			}
 		};
 		editpart.setPropertyChangeHandler(ActionButtonModel.PROP_IMAGE, imageHandler);		
-	
+
+		// width
+		IWidgetPropertyChangeHandler widthHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
+				figure.calculateTextPosition((Integer) newValue, figure.getClientArea().height());
+				return true;
+			}
+		};
+		editpart.setPropertyChangeHandler(ActionButtonModel.PROP_WIDTH, widthHandler);			
+
+		// height
+		IWidgetPropertyChangeHandler heightHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
+				figure.calculateTextPosition(figure.getClientArea().width(), (Integer) newValue);
+				return true;
+			}
+		};
+		editpart.setPropertyChangeHandler(ActionButtonModel.PROP_HEIGHT, heightHandler);	
+		
 		// button style
 		final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

@@ -347,6 +347,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 							grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
 					label.setIcon(grayImage);
 				}
+				calculateTextPosition();
 			}
 		};
 		if(path != null && !path.isEmpty()){
@@ -371,6 +372,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 					grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
 			label.setIcon(grayImage);
 		}
+		calculateTextPosition();
 	}
 
 	protected void setMousePressed(boolean mousePressed) {
@@ -431,7 +433,33 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 			label.setTextAlignment(alignments[alignment]);
 		}
 	}
-
+	
+	public void calculateTextPosition() {		
+		calculateTextPosition(getClientArea().width(), getClientArea().height());
+	}
+	
+	public void calculateTextPosition(int width, int height) {		
+		if (image != null) {
+			Dimension textDimension = TextUtilities.INSTANCE.getTextExtents(getText(), baseFont);
+			// Calculate available space in height and width
+			double hratio = ((double) height - image.getBounds().height) / textDimension.height;
+			double wratio = ((double) width - image.getBounds().width) / textDimension.width;
+			// Put the label where we have the most space (highest ratio)
+			if (wratio > hratio) {				
+				// Space for text on the right of the icon
+				label.setTextPlacement(PositionConstants.EAST);
+				label.setTextAlignment(PositionConstants.LEFT);	
+			} else {
+				// Text goes under the icon
+				label.setTextPlacement(PositionConstants.SOUTH);
+				label.setTextAlignment(PositionConstants.CENTER);	
+			}
+		} else {
+			// Center text
+			label.setTextAlignment(PositionConstants.CENTER);
+		}
+	}
+	
 	public void setToggled(boolean toggled) {
 		this.toggled = toggled;
 		setSelected(toggled);
