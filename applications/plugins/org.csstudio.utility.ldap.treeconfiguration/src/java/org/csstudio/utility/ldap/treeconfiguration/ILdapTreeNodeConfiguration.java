@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.ldap.treeconfiguration;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
@@ -38,6 +37,5 @@ public interface ILdapTreeNodeConfiguration<T extends Enum<T>> extends ITreeNode
      * Returns the root value (e.g. 'EpicsAlarmcfg' or 'EpicsControls') for the root type (typically 'ou').
      * @return the root value.
      */
-    @Nonnull
     String getUnitTypeValue();
 }

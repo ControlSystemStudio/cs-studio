@@ -28,9 +28,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
@@ -78,9 +75,9 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * @param objectClassRoot the model type
      * @param nameParser 
      */
-    public LdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                   @Nonnull final ILdapSearchResult searchResult, 
-                                   @Nonnull final NameParser parser) {
+    public LdapContentModelBuilder(final T objectClassRoot,
+                                   final ILdapSearchResult searchResult, 
+                                   final NameParser parser) {
         _searchResult = searchResult;
         _objectClassRoot = objectClassRoot;
         _parser = parser;
@@ -91,15 +88,15 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * @param model the already filled model
      * @param nameParser 
      */
-    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model, 
-                                   @Nonnull final NameParser parser) {
+    public LdapContentModelBuilder(final ContentModel<T> model, 
+                                   final NameParser parser) {
         _objectClassRoot = model.getVirtualRoot().getType();
         setModel(model);
         _parser = parser;
     }
 
     @Override
-    public void setSearchResult(@Nonnull final ILdapSearchResult result) {
+    public void setSearchResult(final ILdapSearchResult result) {
         _searchResult = result;
     }
 
@@ -107,7 +104,6 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
     protected ContentModel<T> createContentModel() throws CreateContentModelException {
 
         // Generate new model only if there isn't any model set
@@ -126,10 +122,9 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * @param parser 
      * @return the enriched model
      */
-    @Nonnull
-    private ContentModel<T> addSearchResult(@Nonnull final ContentModel<T> model,
-                                            @Nullable final ILdapSearchResult searchResult, 
-                                            @Nonnull final NameParser parser) {
+    private ContentModel<T> addSearchResult(final ContentModel<T> model,
+                                            final ILdapSearchResult searchResult, 
+                                            final NameParser parser) {
 
         if (searchResult != null) {
             final ISubtreeNodeComponent<T> root = model.getVirtualRoot();
@@ -164,12 +159,11 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         return model;
     }
 
-    @Nonnull
-    private Comparator<SearchResult> createSearchResultComparator(@Nonnull final NameParser parser) {
+    private Comparator<SearchResult> createSearchResultComparator(final NameParser parser) {
         return new Comparator<SearchResult>() {
             @SuppressWarnings("synthetic-access")
             @Override
-            public int compare(@Nonnull final SearchResult sr1, @Nonnull final SearchResult sr2) {
+            public int compare(final SearchResult sr1, final SearchResult sr2) {
                 int result = 0;
                 try {
                     final LdapName parsedName1 = (LdapName) parser.parse(sr1.getNameInNamespace());
@@ -185,10 +179,10 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         };
     }
 
-    private void createLdapComponent(@Nonnull final ContentModel<T> model,
-                                     @Nonnull final Attributes attributes,
-                                     @Nonnull final LdapName fullName,
-                                     @Nonnull final ISubtreeNodeComponent<T> root) throws InvalidNameException {
+    private void createLdapComponent(final ContentModel<T> model,
+                                     final Attributes attributes,
+                                     final LdapName fullName,
+                                     final ISubtreeNodeComponent<T> root) throws InvalidNameException {
         ISubtreeNodeComponent<T> parent = root;
 
         final LdapName currentPartialName = new LdapName("");

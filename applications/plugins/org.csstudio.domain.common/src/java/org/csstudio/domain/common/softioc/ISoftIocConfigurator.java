@@ -24,7 +24,6 @@ package org.csstudio.domain.common.softioc;
 import java.io.File;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 
 /**
  * TODO (bknerr) :
@@ -34,16 +33,12 @@ import javax.annotation.Nonnull;
  */
 public interface ISoftIocConfigurator {
 
-    @Nonnull
     String getDemoExecutableFilePath();
 
-    @Nonnull
     File getSoftIocCmdFile();
 
-    @Nonnull
     Set<File> getDbFileSet();
 
-    @Nonnull
-    ISoftIocConfigurator with(@Nonnull File...dbFiles);
+    ISoftIocConfigurator with(File...dbFiles);
 
 }

@@ -28,8 +28,6 @@ import java.rmi.RemoteException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.annotation.Nonnull;
-
 import org.csstudio.servicelocator.ServiceLocator.IServiceProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -58,9 +56,8 @@ public final class ServiceLocatorFactory {
      * @param service the interface type of the service
      * @return the newly created service tracker
      */
-    @Nonnull
-    public static <T> ServiceTracker<T, Object> createServiceTracker(@Nonnull final BundleContext context,
-                                                                     @Nonnull final Class<T> service) {
+    public static <T> ServiceTracker<T, Object> createServiceTracker(final BundleContext context,
+                                                                     final Class<T> service) {
         ServiceTracker<T, Object> serviceTracker = new ServiceTracker<T, Object>(context,
                                                                                  service,
                                                                                  null);
@@ -79,10 +76,10 @@ public final class ServiceLocatorFactory {
      * @param service the service interface
      * @param impl the implementation
      */
-    public static <T, I extends T> void registerServiceWithTracker(@Nonnull final String description,
-                                                                   @Nonnull final BundleContext context,
-                                                                   @Nonnull final Class<T> service,
-                                                                   @Nonnull final I impl) {
+    public static <T, I extends T> void registerServiceWithTracker(final String description,
+                                                                   final BundleContext context,
+                                                                   final Class<T> service,
+                                                                   final I impl) {
         LOG.info("Registering OSGi service: " + description);
         
         final Dictionary<String, String> properties = new Hashtable<String, String>();
@@ -94,10 +91,10 @@ public final class ServiceLocatorFactory {
                 .createServiceTracker(context, service));
     }
     
-    public static <T, I extends T> void registerRemoteService(@Nonnull final String description,
-                                                              @Nonnull final String rmiServer,
+    public static <T, I extends T> void registerRemoteService(final String description,
+                                                              final String rmiServer,
                                                               final int rmiPort,
-                                                              @Nonnull final Class<T> service) throws RemoteException,
+                                                              final Class<T> service) throws RemoteException,
                                                                                               NotBoundException {
         LOG.info("Registering remote service: " + description);
         

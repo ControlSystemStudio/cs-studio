@@ -21,8 +21,6 @@
  */
 package org.csstudio.utility.treemodel.builder;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -42,7 +40,6 @@ public abstract class AbstractContentModelBuilder<T extends Enum<T> & ITreeNodeC
 
     private ContentModel<T> _model;
 
-    @CheckForNull
     protected abstract ContentModel<T> createContentModel() throws CreateContentModelException;
 
     /**
@@ -57,12 +54,11 @@ public abstract class AbstractContentModelBuilder<T extends Enum<T> & ITreeNodeC
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
     public ContentModel<T> getModel() {
         return _model;
     }
 
-    protected void setModel(@Nonnull final ContentModel<T> model) {
+    protected void setModel(final ContentModel<T> model) {
         _model = model;
     }
 }

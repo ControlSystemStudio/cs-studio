@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.common.service;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.domain.common.AbstractResult;
 
@@ -36,17 +35,15 @@ public final class RenameResult extends AbstractResult {
     /**
      * Constructor.
      */
-    private RenameResult(@Nonnull final Boolean result,
-                         @Nonnull final String message) {
+    private RenameResult(final Boolean result,
+                         final String message) {
         super(result, message);
     }
 
-    @Nonnull
-    public static RenameResult failed(@Nonnull final String msg) {
+    public static RenameResult failed(final String msg) {
         return new RenameResult(Boolean.FALSE, msg);
     }
-    @Nonnull
-    public static RenameResult succeeded(@Nonnull final String msg) {
+    public static RenameResult succeeded(final String msg) {
         return new RenameResult(Boolean.TRUE, msg);
     }
 }

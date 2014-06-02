@@ -26,9 +26,6 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttribute
 
 import java.util.List;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
@@ -62,8 +59,7 @@ public final class LdapNameUtils {
      *            the LDAP name.
      * @return the simple name.
      */
-    @CheckForNull
-    public static String simpleName(@Nonnull final String name) {
+    public static String simpleName(final String name) {
         LdapName ldapName;
         try {
             ldapName = new LdapName(name);
@@ -82,14 +78,12 @@ public final class LdapNameUtils {
      *            the LDAP name.
      * @return the simple name.
      */
-    @Nonnull
-    public static String simpleName(@Nonnull final LdapName name) {
+    public static String simpleName(final LdapName name) {
         return (String) name.getRdn(name.size() - 1).getValue();
     }
 
 
-    @CheckForNull
-    public static String getValueOfRdnType(@Nonnull final LdapName ldapName, @Nonnull final String rdnType) {
+    public static String getValueOfRdnType(final LdapName ldapName, final String rdnType) {
 
         for (final Rdn rdn : ldapName.getRdns()) {
             if (rdn.getType().endsWith(rdnType)) {
@@ -122,11 +116,9 @@ public final class LdapNameUtils {
      * @return a new name object, might be empty if the string could not be found
      * @throws InvalidNameException
      */
-    @Nonnull
-    @CheckReturnValue
-    public static LdapName removeRdns(@Nonnull final LdapName fullName,
-                                      @Nonnull final String fieldNamePrefix,
-                                      @Nonnull final Direction dir) throws InvalidNameException {
+    public static LdapName removeRdns(final LdapName fullName,
+                                      final String fieldNamePrefix,
+                                      final Direction dir) throws InvalidNameException {
         final LdapName name = new LdapName(fullName.getRdns());
         switch (dir) {
             case FORWARD :
@@ -155,10 +147,8 @@ public final class LdapNameUtils {
      * @return the newly created (shortened) name
      * @throws InvalidNameException
      */
-    @Nonnull
-    @CheckReturnValue
-    public static LdapName removeRdns(@Nonnull final LdapName name,
-                                      @Nonnull final List<Rdn> removeRdns) throws InvalidNameException {
+    public static LdapName removeRdns(final LdapName name,
+                                      final List<Rdn> removeRdns) throws InvalidNameException {
 
 
         final LdapName result = new LdapName("");
@@ -184,8 +174,7 @@ public final class LdapNameUtils {
      * @param iocLdapName
      * @return
      */
-    @Nonnull
-    public static LdapName baseName(@Nonnull final LdapName fullName) {
+    public static LdapName baseName(final LdapName fullName) {
         if (fullName.size() > 0) {
             return (LdapName) fullName.getPrefix(fullName.size()-1);
         }
@@ -198,7 +187,7 @@ public final class LdapNameUtils {
      * @param recordName the name to filter
      * @return true, if the forbidden substring is contained, false otherwise (even for empty and null strings)
      */
-    public static boolean filterName(@Nonnull final String recordName) {
+    public static boolean filterName(final String recordName) {
         if ("".equals(recordName)) {
             return false;
         }

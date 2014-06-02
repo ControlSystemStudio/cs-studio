@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.common.softioc;
 
-import javax.annotation.Nonnull;
 
 /**
  * TODO (hrickens) :
@@ -84,7 +83,6 @@ public enum DBR {
         _index = index;
     }
 
-    @Nonnull
     public String getAsOptionString() {
         if (_index>=0) {
             return "-d "+_index;

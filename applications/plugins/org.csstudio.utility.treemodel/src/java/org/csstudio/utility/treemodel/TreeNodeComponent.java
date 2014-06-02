@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
@@ -65,11 +63,11 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      * @param fullName
      * @throws InvalidNameException
      */
-    public TreeNodeComponent(@Nonnull final String name,
-                             @Nonnull final T type,
-                             @Nullable final ISubtreeNodeComponent<T> parent,
-                             @Nullable final Attributes attributes,
-                             @Nullable final LdapName fullName) throws InvalidNameException {
+    public TreeNodeComponent(final String name,
+                             final T type,
+                             final ISubtreeNodeComponent<T> parent,
+                             final Attributes attributes,
+                             final LdapName fullName) throws InvalidNameException {
         super(name, type, parent, attributes, fullName);
         _subComponentTypes = type.getNestedContainerTypes();
     }
@@ -78,7 +76,6 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public Set<T> getSubComponentTypes() {
         return _subComponentTypes;
     }
@@ -87,7 +84,7 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      * {@inheritDoc}
      */
     @Override
-    public void addChild(@Nonnull final INodeComponent<T> child) {
+    public void addChild(final INodeComponent<T> child) {
 
         if(!_subComponentTypes.contains(child.getType())) {
             throw new IllegalArgumentException("The child type " + child.getType() + " of node " +
@@ -106,7 +103,6 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public Collection<INodeComponent<T>> getDirectChildren() {
         return _children.values();
     }
@@ -115,8 +111,7 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public Map<String, INodeComponent<T>> getChildrenByType(@Nonnull final T type) {
+    public Map<String, INodeComponent<T>> getChildrenByType(final T type) {
         if (_children.isEmpty()) {
             return Collections.emptyMap();
         }
@@ -147,8 +142,7 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public INodeComponent<T> getChild(@Nonnull final String name) {
+    public INodeComponent<T> getChild(final String name) {
         return _children.get(name);
     }
 
@@ -156,7 +150,7 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      * {@inheritDoc}
      */
     @Override
-    public void removeChild(@Nonnull final String name) {
+    public void removeChild(final String name) {
         if (_children.containsKey(name)) {
             _children.remove(name);
         }

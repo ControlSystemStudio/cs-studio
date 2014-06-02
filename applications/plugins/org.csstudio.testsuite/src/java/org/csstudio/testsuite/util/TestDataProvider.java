@@ -32,8 +32,6 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import org.csstudio.domain.common.SiteId;
 import org.csstudio.domain.common.resource.CssResourceLocator;
@@ -93,11 +91,11 @@ public final class TestDataProvider {
     /**
      * Constructor.
      */
-    private TestDataProvider(@Nonnull final String pluginId) {
+    private TestDataProvider(final String pluginId) {
         _pluginId = pluginId;
     }
 
-    private static void loadProperties(@Nonnull final String pluginId)
+    private static void loadProperties(final String pluginId)
         throws IOException, BundleException {
 
         findAndLoadGeneralProperties(pluginId);
@@ -105,7 +103,7 @@ public final class TestDataProvider {
         findAndLoadHostSpecificProperties();
     }
 
-    private static void findAndLoadGeneralProperties(@Nonnull final String pluginId)
+    private static void findAndLoadGeneralProperties(final String pluginId)
                                                      throws IOException, BundleException {
         final String testConfigFileName = createSiteSpecificName();
         final URL resource = locateResource(pluginId, testConfigFileName);
@@ -114,7 +112,7 @@ public final class TestDataProvider {
         }
     }
 
-    private static void findAndLoadGeneralSecretProperties(@Nonnull final String pluginId)
+    private static void findAndLoadGeneralSecretProperties(final String pluginId)
                                                            throws IOException, BundleException {
         final String secretFile = findSensitiveDataFile();
         if (secretFile != null) {
@@ -136,7 +134,7 @@ public final class TestDataProvider {
         }
     }
 
-    private static void openStreamAndLoadProps(@Nonnull final URL resource) throws IOException {
+    private static void openStreamAndLoadProps(final URL resource) throws IOException {
         InputStream openStream = null;
         try {
             openStream =  resource.openStream();
@@ -148,7 +146,6 @@ public final class TestDataProvider {
         }
     }
 
-    @CheckForNull
     private static String findSensitiveDataFile() {
 
         if (PROPERTIES != null) {
@@ -160,9 +157,8 @@ public final class TestDataProvider {
         return null;
     }
 
-    @CheckForNull
-    private static URL locateResource(@Nonnull final String pluginId,
-                                      @Nonnull final String testConfigFileName) throws MalformedURLException,
+    private static URL locateResource(final String pluginId,
+                                      final String testConfigFileName) throws MalformedURLException,
                                                                                        BundleException {
         Bundle bundle = Platform.getBundle(pluginId);
         URL resource = null;
@@ -185,8 +181,7 @@ public final class TestDataProvider {
         return resource;
     }
 
-    @Nonnull
-    public static Bundle whenFragmentReturnHostBundle(@Nonnull final Bundle bundle) throws BundleException {
+    public static Bundle whenFragmentReturnHostBundle(final Bundle bundle) throws BundleException {
         String host =
             (String) bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST);
         if (!Strings.isNullOrEmpty(host)) {
@@ -212,8 +207,7 @@ public final class TestDataProvider {
      * @param key
      * @return the property object
      */
-    @CheckForNull
-    public Object get(@Nonnull final String key) {
+    public Object get(final String key) {
         return PROPERTIES.get(key);
     }
 
@@ -227,8 +221,7 @@ public final class TestDataProvider {
      * @return the property object the property under namespace + "/" + key
      * @throws UnknownHostException
      */
-    @CheckForNull
-    public Object getHostProperty(@Nonnull final String key) {
+    public Object getHostProperty(final String key) {
 
         InetAddress localHost;
         try {
@@ -253,8 +246,7 @@ public final class TestDataProvider {
      * @return the instance of the data provider
      * @throws TestProviderException
      */
-    @Nonnull
-    public static TestDataProvider getInstance(@Nonnull final String pluginId)
+    public static TestDataProvider getInstance(final String pluginId)
                                                throws TestProviderException {
         try {
             synchronized (TestDataProvider.class) {
@@ -275,7 +267,6 @@ public final class TestDataProvider {
         }
     }
 
-    @Nonnull
     private static String createSiteSpecificName() {
 
         final String siteProp = System.getProperty(SiteId.JVM_ARG_KEY);

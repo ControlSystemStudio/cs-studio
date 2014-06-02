@@ -23,7 +23,6 @@ package org.csstudio.domain.common.junit;
 
 import java.lang.reflect.Constructor;
 
-import javax.annotation.Nonnull;
 
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -44,14 +43,14 @@ public class ConditionalClassRunner extends BlockJUnit4ClassRunner {
     /**
      * Constructor.
      */
-    public ConditionalClassRunner(@Nonnull final Class<?> clazz) throws InitializationError {
+    public ConditionalClassRunner(final Class<?> clazz) throws InitializationError {
         super(clazz);
         _executeTestsForClass = conditionTrueForClass(clazz);
     }
 
     @Override
-    protected void runChild(@Nonnull final FrameworkMethod method,
-                            @Nonnull final RunNotifier notifier) {
+    protected void runChild(final FrameworkMethod method,
+                            final RunNotifier notifier) {
            if (_executeTestsForClass && conditionTrueForMethod(method)) {
                super.runChild(method, notifier);
            } else {
@@ -62,7 +61,7 @@ public class ConditionalClassRunner extends BlockJUnit4ClassRunner {
            }
     }
 
-    public boolean conditionTrueForMethod(@Nonnull final FrameworkMethod method) {
+    public boolean conditionTrueForMethod(final FrameworkMethod method) {
         final RunIf resource = method.getAnnotation(RunIf.class);
         if (resource == null) {
             return true;
@@ -76,7 +75,7 @@ public class ConditionalClassRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    public boolean conditionTrueForClass(@Nonnull final Class<?> testClass) {
+    public boolean conditionTrueForClass(final Class<?> testClass) {
         final RunIf resource = testClass.getAnnotation(RunIf.class);
         if (resource == null) {
             return true;
@@ -90,9 +89,8 @@ public class ConditionalClassRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    @Nonnull
-    private IRunCondition createConditionReflectively(@Nonnull final RunIf resource,
-                                                     @Nonnull final Class<? extends IRunCondition> condition) throws Exception {
+    private IRunCondition createConditionReflectively(final RunIf resource,
+                                                     final Class<? extends IRunCondition> condition) throws Exception {
         final String[] arguments = resource.arguments();
         IRunCondition checker;
         if (arguments == null || arguments.length == 0) {

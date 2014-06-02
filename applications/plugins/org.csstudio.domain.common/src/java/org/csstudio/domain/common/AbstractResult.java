@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.common;
 
-import javax.annotation.Nonnull;
 
 /**
  * Abstract result for service access methods.
@@ -37,21 +36,18 @@ public abstract class AbstractResult {
     /**
      * Constructor.
      */
-    public AbstractResult(@Nonnull final Boolean result,
-                                 @Nonnull final String message) {
+    public AbstractResult(final Boolean result,
+                                 final String message) {
         _result = result;
         _message = message;
     }
 
-    @Nonnull
     public Boolean succeeded() {
         return _result;
     }
-    @Nonnull
     public Boolean failed() {
         return !succeeded();
     }
-    @Nonnull
     public String getMessage() {
         return _message;
     }

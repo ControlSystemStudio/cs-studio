@@ -24,7 +24,6 @@ package org.csstudio.utility.ldap.ui.preference;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.utility.ldap.ui.Activator;
 
@@ -52,8 +51,7 @@ public final class Messages {
      * @param key the resource key
      * @return the resource string
      */
-    @Nonnull
-	public static String getString(@Nonnull final String key) {
+	public static String getString(final String key) {
 		try {
 			return RESOURCE_BUNDLE.getString(key);
 		} catch (final MissingResourceException e) {

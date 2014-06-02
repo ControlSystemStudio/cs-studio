@@ -24,8 +24,6 @@ package org.csstudio.utility.ldap.utils;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
@@ -54,8 +52,8 @@ public class LdapSearchResult implements ILdapSearchResult {
      * {@inheritDoc}
      */
     @Override
-    public void setResult(@Nonnull final ILdapSearchParams searchParams,
-                          @Nonnull final Set<SearchResult> answerSet) {
+    public void setResult(final ILdapSearchParams searchParams,
+                          final Set<SearchResult> answerSet) {
         _searchParams = searchParams;
         _answerSet = answerSet;
     }
@@ -64,7 +62,6 @@ public class LdapSearchResult implements ILdapSearchResult {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public Set<SearchResult> getAnswerSet() {
         return _answerSet;
     }
@@ -73,7 +70,6 @@ public class LdapSearchResult implements ILdapSearchResult {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
     public ILdapSearchParams getSearchParams() {
         return _searchParams;
     }

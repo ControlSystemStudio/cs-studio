@@ -24,8 +24,6 @@ package org.csstudio.utility.ldap.treeconfiguration;
 
 import java.net.URL;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
@@ -75,16 +73,15 @@ public enum EpicsAlarmcfgTreeNodeAttribute {
      * Constructor.
      * @param ldapAttribute the name as it is defined as attribute in LDAP
      */
-    private EpicsAlarmcfgTreeNodeAttribute(@Nonnull final String ldapAttribute,
-                                           @Nonnull final String description,
-                                           @Nonnull final Class<?> clazz) {
+    private EpicsAlarmcfgTreeNodeAttribute(final String ldapAttribute,
+                                           final String description,
+                                           final Class<?> clazz) {
         _ldapAttribute = ldapAttribute;
         _description = description;
         _propertyClass = clazz;
 
     }
 
-    @Nonnull
     public String getLdapAttribute() {
         return _ldapAttribute;
     }
@@ -93,8 +90,7 @@ public enum EpicsAlarmcfgTreeNodeAttribute {
      * Compares the given string for the LDAP attribute with the field of the enum objects.
      * @return returns the enum object with the first match of its attribute
      */
-    @CheckForNull
-    public static EpicsAlarmcfgTreeNodeAttribute getIdByLdapAttribute(@Nonnull final String attribute) {
+    public static EpicsAlarmcfgTreeNodeAttribute getIdByLdapAttribute(final String attribute) {
         for (final EpicsAlarmcfgTreeNodeAttribute id : values()) {
             if (id.getLdapAttribute().equals(attribute)) {
                 return id;
@@ -106,7 +102,6 @@ public enum EpicsAlarmcfgTreeNodeAttribute {
     /**
      * @return an immutable collection of the LDAP attributes of an alarm tree node
      */
-    @Nonnull
     public static ImmutableSet<String> getLdapAttributes() {
         return LDAP_ATTRIBUTES;
     }
@@ -115,7 +110,6 @@ public enum EpicsAlarmcfgTreeNodeAttribute {
      * A describing string for this property.
      * @return the description
      */
-    @Nonnull
     public String getDescription() {
         return _description;
     }
@@ -124,7 +118,6 @@ public enum EpicsAlarmcfgTreeNodeAttribute {
      * The class to which a property value of this type can be cast.
      * @return the class
      */
-    @Nonnull
     public Class<?> getPropertyClass() {
         return _propertyClass;
     }

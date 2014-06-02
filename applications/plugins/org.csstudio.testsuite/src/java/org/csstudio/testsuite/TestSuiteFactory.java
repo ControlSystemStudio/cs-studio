@@ -23,7 +23,6 @@ package org.csstudio.testsuite;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -63,7 +62,6 @@ public final class TestSuiteFactory {
         // Empty
     }
 
-    @Nonnull
     private static TestDataProvider createTestDataProvider() {
         try {
             return TestDataProvider.getInstance(TestSuiteActivator.PLUGIN_ID);
@@ -74,9 +72,8 @@ public final class TestSuiteFactory {
         return TestDataProvider.EMPTY_PROVIDER;
     }
 
-    @Nonnull
-    private static String getPropertyOrEmptyString(@Nonnull final String property,
-                                                   @Nonnull final TestDataProvider prov) {
+    private static String getPropertyOrEmptyString(final String property,
+                                                   final TestDataProvider prov) {
         final String result = (String) prov.get(property);
         return result == null ? "" : result;
     }
@@ -89,10 +86,9 @@ public final class TestSuiteFactory {
      * @param commonFilterSuffix the class name suffix common to all types of tests
      * @return the suite containing all tests that adhere to the given patterns
      */
-    @Nonnull
-    public static Test getSuite(@Nonnull final String suiteName,
-                                @Nonnull final String classFilter,
-                                @Nonnull final String commonFilterSuffix) {
+    public static Test getSuite(final String suiteName,
+                                final String classFilter,
+                                final String commonFilterSuffix) {
         final TestSuite suite = new TestSuite(suiteName);
 
         final BundleTestCollector testCollector = new BundleTestCollector();

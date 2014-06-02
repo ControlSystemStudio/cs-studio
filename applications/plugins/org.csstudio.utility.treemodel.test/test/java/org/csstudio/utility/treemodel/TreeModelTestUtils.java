@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 
@@ -53,17 +51,15 @@ public final class TreeModelTestUtils {
         // EMPTY
     }
 
-    @CheckForNull
-    public static URL findResource(@Nonnull final String path) {
+    public static URL findResource(final String path) {
         final Bundle bundle = Platform.getBundle(TreeModelActivator.PLUGIN_ID);
         return bundle.getResource(path);
     }
 
 
-    @CheckForNull
     public static <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        ContentModel<T> buildContentModel(@Nonnull final URL resource,
-                                          @Nonnull final T root) throws CreateContentModelException, IOException {
+        ContentModel<T> buildContentModel(final URL resource,
+                                          final T root) throws CreateContentModelException, IOException {
 
         InputStream stream = null;
         try {

@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 
-import javax.annotation.Nonnull;
 
 import com.google.common.io.Files;
 
@@ -56,7 +55,7 @@ public class SoftIoc {
     /**
      * Constructor.
      */
-    public SoftIoc(@Nonnull final ISoftIocConfigurator cfg) {
+    public SoftIoc(final ISoftIocConfigurator cfg) {
         final String os = System.getProperty("os.name");
         if (!os.startsWith("Windows")) {
             throw new IllegalArgumentException("Soft IOC can only be used on windows systems.");
@@ -75,8 +74,7 @@ public class SoftIoc {
         _process = builder.start();
     }
 
-    @Nonnull
-    private File createCmdFile(@Nonnull final ISoftIocConfigurator cfg) throws IOException {
+    private File createCmdFile(final ISoftIocConfigurator cfg) throws IOException {
 
         final File tmpCopy = createTmpCmdFileCopy(cfg);
         insertDbFilesAndInitCommands(cfg, tmpCopy);
@@ -84,8 +82,8 @@ public class SoftIoc {
         return tmpCopy;
     }
 
-    private void insertDbFilesAndInitCommands(@Nonnull final ISoftIocConfigurator cfg,
-                                              @Nonnull final File tmpCopy) throws IOException {
+    private void insertDbFilesAndInitCommands(final ISoftIocConfigurator cfg,
+                                              final File tmpCopy) throws IOException {
         final FileWriter writer = new FileWriter(tmpCopy, true);
         for (final File dbFile : cfg.getDbFileSet()) {
             writer.append("dbLoadRecords(\"").append(dbFile.getAbsolutePath()).append("\")\n");
@@ -122,8 +120,7 @@ public class SoftIoc {
     }
 
 
-    @Nonnull
-    private File createTmpCmdFileCopy(@Nonnull final ISoftIocConfigurator cfg) throws IOException {
+    private File createTmpCmdFileCopy(final ISoftIocConfigurator cfg) throws IOException {
         final File softIocCmdFile = cfg.getSoftIocCmdFile();
 
         final File tmpCopy = File.createTempFile(softIocCmdFile.getName(), null, softIocCmdFile.getParentFile());

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
 
 /**
  * Helper class to divide a collection into iterable chunks.
@@ -24,7 +23,7 @@ public class ChunkableCollection<E> implements Iterable<Collection<E>> {
     private final int _chunkCount;
     private int _currentChunk;
 
-    public ChunkableCollection(@Nonnull final Collection<E> collection, final int chunkSize) {
+    public ChunkableCollection(final Collection<E> collection, final int chunkSize) {
         assert chunkSize > 0 : "chunkSize must be > 0, but was " + chunkSize;
 
         _collection = collection;
@@ -35,7 +34,6 @@ public class ChunkableCollection<E> implements Iterable<Collection<E>> {
 
     @SuppressWarnings("synthetic-access")
     @Override
-    @Nonnull
     public final Iterator<Collection<E>> iterator() {
         return new MyIterator();
     }
@@ -82,14 +80,14 @@ public class ChunkableCollection<E> implements Iterable<Collection<E>> {
             return result;
         }
 
-        private void skipAlreadyProcessedChunks(@Nonnull final Iterator<E> iter) {
+        private void skipAlreadyProcessedChunks(final Iterator<E> iter) {
             int to = _currentChunk * _chunkSize;
             for (int i = 0; i < to; i++) {
                 iter.next();
             }
         }
 
-        private void copyOneChunk(@Nonnull final Iterator<E> iter, @Nonnull final Collection<E> result) {
+        private void copyOneChunk(final Iterator<E> iter, final Collection<E> result) {
             for (int i = 0; i < calcChunkSize(); i++) {
                 result.add(iter.next());
             }

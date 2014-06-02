@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.ldap.service;
 
-import javax.annotation.Nonnull;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -38,7 +37,7 @@ public class LdapServiceTracker extends ServiceTracker {
     /**
      * Constructor.
      */
-    public LdapServiceTracker(@Nonnull final BundleContext context) {
+    public LdapServiceTracker(final BundleContext context) {
         super(context, ILdapService.class.getName(), null);
     }
 }

@@ -24,7 +24,6 @@ package org.csstudio.utility.ldap;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
 import javax.naming.Context;
 
 import junit.framework.Assert;
@@ -52,7 +51,6 @@ public final class LdapTestHelper {
     // CHECKSTYLE:ON
 
 
-    @Nonnull
     private static TestDataProvider createTestDataProvider() {
         try {
             return TestDataProvider.getInstance(LdapServiceImplActivator.PLUGIN_ID);
@@ -66,7 +64,6 @@ public final class LdapTestHelper {
      * Tests the method {@link ILdapService#reInitializeLdapConnection(Map)}
      * @return
      */
-    @Nonnull
     private static ILdapService createLdapTestConnection() {
         try {
             final Map<String, String> map = createLdapTestServicePrefs();
@@ -82,7 +79,6 @@ public final class LdapTestHelper {
         return null; // Nonnull annotation is correct, due to assertion failure on service == null.
     }
 
-    @Nonnull
     private static Map<String, String> createLdapTestServicePrefs() {
         final String url = (String) PROV.get("ldap.url");
         final String dn = (String) PROV.get("ldap.userDn");

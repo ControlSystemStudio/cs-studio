@@ -30,9 +30,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.CompositeName;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
@@ -96,7 +93,7 @@ public final class LdapServiceImpl implements ILdapService {
 
         private DirContext _context;
 
-        @CheckForNull DirContext get() {
+        DirContext get() {
             if (_context == null) {
                 LDAPConnector ldapConnector = null;
                 try {
@@ -118,7 +115,7 @@ public final class LdapServiceImpl implements ILdapService {
         }
 
 
-        boolean reInit(@CheckForNull final Map<String, String> ldapPrefs) {
+        boolean reInit(final Map<String, String> ldapPrefs) {
             if (ldapPrefs == null) {
                 return get() != null; // just reinitializes the context with the default prefs
             }
@@ -142,7 +139,7 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    public boolean reInitializeLdapConnection(@CheckForNull final Map<String, String> ldapPrefs) {
+    public boolean reInitializeLdapConnection(final Map<String, String> ldapPrefs) {
         return DirContextHolder.INSTANCE.reInit(ldapPrefs);
     }
 
@@ -150,9 +147,8 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public ILdapReaderJob createLdapReaderJob(@Nonnull final ILdapSearchParams params,
-                                              @Nullable final ILdapReadCompletedCallback callBack) {
+    public ILdapReaderJob createLdapReaderJob(final ILdapSearchParams params,
+                                              final ILdapReadCompletedCallback callBack) {
 
         final LDAPReaderJob ldapr =
             new LDAPReaderJob.Builder(params.getSearchRoot(), params.getFilter()).
@@ -167,9 +163,8 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public LdapSearchResult retrieveSearchResultSynchronously(@Nonnull final LdapName searchRoot,
-                                                              @Nonnull final String filter,
+    public LdapSearchResult retrieveSearchResultSynchronously(final LdapName searchRoot,
+                                                              final String filter,
                                                               final int searchScope) {
 
         final DirContext context = DirContextHolder.INSTANCE.get();
@@ -213,8 +208,8 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    public boolean createComponent(@Nonnull final LdapName newComponentName,
-                                   @Nullable final Attributes attributes) {
+    public boolean createComponent(final LdapName newComponentName,
+                                   final Attributes attributes) {
         final DirContext context = DirContextHolder.INSTANCE.get();
         if(context == null) {
             LOG.error("LDAP context is null.");
@@ -235,7 +230,7 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}}
      */
     @Override
-    public boolean removeLeafComponent(@Nonnull final LdapName component) {
+    public boolean removeLeafComponent(final LdapName component) {
         final DirContext context = DirContextHolder.INSTANCE.get();
         if(context == null) {
             LOG.error("LDAP context is null.");
@@ -260,8 +255,8 @@ public final class LdapServiceImpl implements ILdapService {
      */
     @Override
     public <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        boolean removeComponent(@Nonnull final T configurationRoot,
-                                @Nonnull final LdapName component) throws InvalidNameException, CreateContentModelException, LdapServiceException {
+        boolean removeComponent(final T configurationRoot,
+                                final LdapName component) throws InvalidNameException, CreateContentModelException, LdapServiceException {
 
         LOG.debug("Remove entry incl. subtree:\n{}", component.toString());
 
@@ -303,8 +298,8 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    public void modifyAttributes(@Nonnull final LdapName name,
-                                 @Nonnull final ModificationItem[] mods) throws NamingException {
+    public void modifyAttributes(final LdapName name,
+                                 final ModificationItem[] mods) throws NamingException {
         final DirContext context = DirContextHolder.INSTANCE.get();
         if(context == null) {
             LOG.error("LDAP context is null.");
@@ -318,8 +313,8 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    public void rename(@Nonnull final LdapName oldLdapName,
-                       @Nonnull final LdapName newLdapName) throws NamingException {
+    public void rename(final LdapName oldLdapName,
+                       final LdapName newLdapName) throws NamingException {
         final DirContext context = DirContextHolder.INSTANCE.get();
         if(context == null) {
             LOG.error("LDAP context is null.");
@@ -340,8 +335,8 @@ public final class LdapServiceImpl implements ILdapService {
      * @throws InvalidNameException
      */
     private <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        void copyAndRemoveTreeComponent(@CheckForNull final LdapName ldapParentName,
-                                        @Nonnull final ISubtreeNodeComponent<T> treeParent,
+        void copyAndRemoveTreeComponent(final LdapName ldapParentName,
+                                        final ISubtreeNodeComponent<T> treeParent,
                                         final boolean copy) throws InvalidNameException {
 
         // process contents of model and build subtree below 'newLdapName'
@@ -369,8 +364,7 @@ public final class LdapServiceImpl implements ILdapService {
      * @throws NamingException
      */
     @Override
-    @CheckForNull
-    public Attributes getAttributes(@Nonnull final LdapName ldapName) throws NamingException {
+    public Attributes getAttributes(final LdapName ldapName) throws NamingException {
         final DirContext context = DirContextHolder.INSTANCE.get();
         if(context == null) {
             LOG.error("LDAP context is null.");
@@ -383,8 +377,7 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public Object lookup(@Nonnull final LdapName name) throws NamingException {
+    public Object lookup(final LdapName name) throws NamingException {
         final DirContext context = DirContextHolder.INSTANCE.get();
         if(context == null) {
             LOG.error("LDAP context is null.");
@@ -397,7 +390,6 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public NameParser getLdapNameParser() throws LdapServiceException {
         final DirContext context = DirContextHolder.INSTANCE.get();
         if(context == null) {
@@ -411,18 +403,16 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
     @Override
-    @Nonnull
     public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
-    ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                                           @Nonnull final ILdapSearchResult searchResult) throws LdapServiceException {
+    ILdapContentModelBuilder<T> getLdapContentModelBuilder(final T objectClassRoot,
+                                                           final ILdapSearchResult searchResult) throws LdapServiceException {
         
         return new LdapContentModelBuilder<T>(objectClassRoot, searchResult, getLdapNameParser());
     }
     
     @Override
-    @Nonnull
     public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
-    ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws LdapServiceException {
+    ILdapContentModelBuilder<T> getLdapContentModelBuilder(final ContentModel<T> model) throws LdapServiceException {
         return new LdapContentModelBuilder<T>(model, getLdapNameParser());
     }
 
@@ -430,10 +420,9 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
-    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot, 
-                                                       @Nonnull final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException {
+    ContentModel<T> getLdapContentModelForSearchResult(final T configurationRoot, 
+                                                       final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException {
         LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
         builder.build();
         return builder.getModel();
@@ -443,8 +432,7 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public LdapName parseSearchResult(@Nonnull final SearchResult row) throws LdapServiceException {
+    public LdapName parseSearchResult(final SearchResult row) throws LdapServiceException {
         final NameParser parser = getLdapNameParser();
         final String nameInNamespace = row.getNameInNamespace();
         try {

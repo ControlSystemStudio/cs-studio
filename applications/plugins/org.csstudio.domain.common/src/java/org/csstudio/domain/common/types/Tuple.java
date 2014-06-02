@@ -23,7 +23,6 @@ package org.csstudio.domain.common.types;
 
 import java.io.Serializable;
 
-import javax.annotation.Nonnull;
 
 /**
  * Abstract base class for any kind of immutable triple.
@@ -49,16 +48,14 @@ public class Tuple<A, B> implements Serializable {
     /**
      * Constructor.
      */
-    public Tuple(@Nonnull  final A first,
-                            @Nonnull final B second) {
+    public Tuple( final A first,
+                            final B second) {
         _first = first;
         _second = second;
     }
-    @Nonnull
     public A getFirst() {
         return _first;
     }
-    @Nonnull
     public B getSecond() {
         return _second;
     }
