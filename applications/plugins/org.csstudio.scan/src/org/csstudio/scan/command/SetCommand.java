@@ -15,16 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -309,35 +300,4 @@ public class SetCommand extends ScanCommand
 	    appendConditionDetail(buf);
 	    return buf.toString();
 	}
-
-    public String toXML() throws Exception
-    {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = dbf.newDocumentBuilder();
-        Document dom = builder.newDocument();
-        
-        Element set_element = dom.createElement("set");
-        dom.appendChild(set_element);
-
-        Element element = dom.createElement("device");
-        element.appendChild(dom.createTextNode("device_name"));
-        set_element.appendChild(element);
-        
-        // Write XML into string.
-        // Waste of memory, but simplifies patching
-        final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        final Transformer transformer = transformerFactory.newTransformer();
-        final DOMSource source = new DOMSource(dom);
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-
-        final ByteArrayOutputStream buf_stream = new ByteArrayOutputStream();
-        final StreamResult result = new StreamResult(buf_stream);
-        transformer.transform(source, result);
-        String buffer = buf_stream.toString();
-        
-        // Write patched XML to output
-        return new String(buffer.getBytes());
-    }
 }
