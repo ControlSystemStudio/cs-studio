@@ -473,6 +473,13 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 		  toggleStyle = style;
 
 	}
+	
+	// Need this as label has repaint bug so it doesn't always change colour when its parent does
+	public void setBackgroundColor(Color bg) {
+		label.setBackgroundColor(bg);
+		super.setBackgroundColor(bg);
+		repaint();
+	}
 
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new ActionButtonIntrospector().getBeanInfo(this.getClass());
@@ -759,7 +766,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 		
 		@Override
 		public void mouseEntered(MouseEvent me) {
-				Color backColor = label.getBackgroundColor();
+				Color backColor = getBackgroundColor();
 				RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
 						new RGB(255, 255, 255), 0.5);
 				label.setBackgroundColor(CustomMediaFactory.getInstance()
