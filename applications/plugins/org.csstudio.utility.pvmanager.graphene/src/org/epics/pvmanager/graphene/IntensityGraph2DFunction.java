@@ -77,7 +77,7 @@ class IntensityGraph2DFunction implements ReadFunction<Graph2DResult> {
         
         return new Graph2DResult(null, ValueUtil.toVImage(buffer.getImage()),
                 new GraphDataRange(renderer.getXPlotRange(), dataset.getXRange(), dataset.getXRange()),
-                new GraphDataRange(renderer.getYPlotRange(), dataset.getStatistics(), dataset.getStatistics()),
+                new GraphDataRange(renderer.getYPlotRange(), dataset.getYRange(), dataset.getYRange()),
                 -1);
     }
     
