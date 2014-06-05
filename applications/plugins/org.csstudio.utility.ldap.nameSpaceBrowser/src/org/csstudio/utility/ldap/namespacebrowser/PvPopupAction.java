@@ -21,8 +21,7 @@
 // */
 //package org.csstudio.utility.ldap.namespacebrowser;
 //
-//import javax.annotation.Nonnull;
-//
+////
 //import org.csstudio.platform.model.IProcessVariable;
 //import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 //import org.csstudio.utility.ldap.namespacebrowser.ui.MainView;
@@ -41,7 +40,7 @@
 //public class PvPopupAction extends ProcessVariablePopupAction {
 //    
 //    @Override
-//    public void handlePVs(@Nonnull IProcessVariable[] pvNames) {
+//    public void handlePVs(IProcessVariable[] pvNames) {
 //        if(pvNames.length < 1) {
 //            return;
 //        }

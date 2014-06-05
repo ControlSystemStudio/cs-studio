@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.ldap.service;
 
-import javax.annotation.Nonnull;
 
 /**
  * Reader job interface. 
@@ -30,7 +29,6 @@ import javax.annotation.Nonnull;
  * @since 18.05.2011
  */
 public interface ILdapReaderJob {
-    @Nonnull
     ILdapSearchResult getSearchResult();
     
     void schedule();

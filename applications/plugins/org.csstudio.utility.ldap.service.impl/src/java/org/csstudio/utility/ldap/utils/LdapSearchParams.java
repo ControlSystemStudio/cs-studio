@@ -21,8 +21,6 @@
  */
 package org.csstudio.utility.ldap.utils;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
@@ -52,8 +50,8 @@ public final class LdapSearchParams implements ILdapSearchParams {
      * @param searchRoot .
      * @param filter .
      */
-    public LdapSearchParams(@Nonnull final LdapName searchRoot,
-                            @Nonnull final String filter) {
+    public LdapSearchParams(final LdapName searchRoot,
+                            final String filter) {
         this(searchRoot, filter, SearchControls.SUBTREE_SCOPE);
     }
 
@@ -63,26 +61,23 @@ public final class LdapSearchParams implements ILdapSearchParams {
      * @param filter .
      * @param scope the search controls
      */
-    public LdapSearchParams(@Nonnull final LdapName searchRoot,
-                            @Nonnull final String filter,
-                            @Nonnull final int scope) {
+    public LdapSearchParams(final LdapName searchRoot,
+                            final String filter,
+                            final int scope) {
         _searchRoot = searchRoot;
         _filter = filter;
         _scope = scope;
     }
 
     @Override
-    @Nonnull
     public LdapName getSearchRoot() {
         return _searchRoot;
     }
     @Override
-    @Nonnull
     public String getFilter() {
         return _filter;
     }
     @Override
-    @Nonnull
     public int getScope() {
         return _scope;
     }
@@ -91,7 +86,6 @@ public final class LdapSearchParams implements ILdapSearchParams {
     }
 
     @Override
-    @CheckForNull
     public String toString() {
         return "Root: " +_searchRoot + ", filter: " + _filter + ", scope: " + _scope;
     }

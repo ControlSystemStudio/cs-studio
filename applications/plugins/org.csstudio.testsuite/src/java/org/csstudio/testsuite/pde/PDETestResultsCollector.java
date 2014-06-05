@@ -8,7 +8,6 @@
 package org.csstudio.testsuite.pde;
 
 
-import javax.annotation.Nonnull;
 
 import org.eclipse.jdt.internal.junit.model.ITestRunListener2;
 import org.eclipse.jdt.internal.junit.model.RemoteTestRunnerClient;
@@ -27,7 +26,7 @@ public final class PDETestResultsCollector {
 
     private final String _suiteName;
 
-    private PDETestResultsCollector(@Nonnull final String suite) {
+    private PDETestResultsCollector(final String suite) {
         _suiteName = suite;
     }
 
@@ -45,7 +44,7 @@ public final class PDETestResultsCollector {
     }
 
 
-    public static void main(@Nonnull final String[] args) {
+    public static void main(final String[] args) {
         if (args.length != 2) {
             System.out.println("usage: PDETestResultsCollector <test suite name> <port number>");
             System.exit(0);

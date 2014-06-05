@@ -26,7 +26,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.annotation.Nonnull;
 
 /**
  * Annotation that can be used on JUnit4 Test classes and methods to steer whether a test class
@@ -39,9 +38,7 @@ import javax.annotation.Nonnull;
 @Target(value = {ElementType.METHOD, ElementType.TYPE})
 public @interface RunIf {
 
-    @Nonnull
     Class<? extends IRunCondition> conditionClass();
 
-    @Nonnull
     String[] arguments() default {};
 }

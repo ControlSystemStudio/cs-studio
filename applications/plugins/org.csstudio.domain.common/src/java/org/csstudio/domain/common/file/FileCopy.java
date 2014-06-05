@@ -29,8 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 /**
  * File copy. <br/>
@@ -48,8 +46,8 @@ public final class FileCopy {
         // Don't instantiate
     }
 
-    public static void copy(@Nonnull final File source,
-                            @Nonnull final File destination) throws IOException {
+    public static void copy(final File source,
+                            final File destination) throws IOException {
         if (source.isDirectory()) {
             copyDirectory(source, destination);
         } else {
@@ -57,8 +55,8 @@ public final class FileCopy {
         }
     }
 
-    public static void copyDirectory(@Nonnull final File source,
-                                     @Nonnull final File destination) throws IOException {
+    public static void copyDirectory(final File source,
+                                     final File destination) throws IOException {
         copyDirectory(source, destination, null);
     }
 
@@ -71,9 +69,9 @@ public final class FileCopy {
      * @param filter
      * @throws IOException
      */
-    public static void copyDirectory(@Nonnull final File source,
-                                     @Nonnull final File destination,
-                                     @CheckForNull final FileFilter filter) throws IOException {
+    public static void copyDirectory(final File source,
+                                     final File destination,
+                                     final FileFilter filter) throws IOException {
         final File nextDirectory = new File(destination, source.getName());
         if (!nextDirectory.exists() && !nextDirectory.mkdirs()) {// create the directory if necessary...
             throw new IOException("Destination dir could not be created.");
@@ -89,8 +87,8 @@ public final class FileCopy {
         }
     }
 
-    public static void copyFile(@Nonnull final File source,
-                                @Nonnull final File destination) throws IOException {
+    public static void copyFile(final File source,
+                                final File destination) throws IOException {
         // what we really want to do is create a file with the same name in that dir
         File target = destination;
         if (destination.isDirectory()) {
@@ -100,8 +98,8 @@ public final class FileCopy {
         copyFile(input, target);
     }
 
-    public static void copyFile(@Nonnull final InputStream input,
-                                @Nonnull final File destination) throws IOException {
+    public static void copyFile(final InputStream input,
+                                final File destination) throws IOException {
         OutputStream output = null;
         try {
             output = new FileOutputStream(destination);

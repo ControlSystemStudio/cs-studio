@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.common.codec;
 
-import javax.annotation.Nonnull;
 
 /**
  * Static Util class providing access to simple codec functionality.
@@ -44,8 +43,7 @@ public final class BaseCodecUtil {
      * @param bytes
      * @return the hex representation of the byte array
      */
-    @Nonnull
-    public static String getHex(@Nonnull final byte[] bytes) {
+    public static String getHex(final byte[] bytes) {
         final StringBuilder hex = new StringBuilder(2 * bytes.length);
         for (final byte b : bytes) {
             hex.append(HEX_TABLE.charAt((b & 0xF0) >> 4)).append(HEX_TABLE.charAt((b & 0x0F)));

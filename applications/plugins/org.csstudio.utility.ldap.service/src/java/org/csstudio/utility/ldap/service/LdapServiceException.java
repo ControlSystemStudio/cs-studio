@@ -21,8 +21,6 @@
  */
 package org.csstudio.utility.ldap.service;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Dedicated service exception.
@@ -37,7 +35,7 @@ public class LdapServiceException extends Exception {
     /**
      * Constructor.
      */
-    public LdapServiceException(@Nonnull final String msg, @Nullable final Exception e) {
+    public LdapServiceException(final String msg, final Exception e) {
         super(msg, e);
     }
 }

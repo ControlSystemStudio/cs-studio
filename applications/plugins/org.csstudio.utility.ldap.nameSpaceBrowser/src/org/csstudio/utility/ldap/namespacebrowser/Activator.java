@@ -21,7 +21,6 @@
  */
  package org.csstudio.utility.ldap.namespacebrowser;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
@@ -58,7 +57,7 @@ public class Activator extends AbstractUIPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-    public void start(@Nonnull final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
 		super.start(context);
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();

@@ -28,8 +28,6 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -122,8 +120,8 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
      * @param description
      *            the description of this tree component.
      */
-    private LdapEpicsControlsConfiguration(@Nonnull final String nodeTypeName,
-                                           @Nonnull final String description) {
+    private LdapEpicsControlsConfiguration(final String nodeTypeName,
+                                           final String description) {
         _nodeTypeName = nodeTypeName;
         _description = description;
     }
@@ -132,7 +130,6 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public LdapEpicsControlsConfiguration getRoot() {
         return UNIT;
     }
@@ -141,7 +138,6 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getDescription() {
         return _description;
     }
@@ -150,7 +146,6 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getNodeTypeName() {
         return _nodeTypeName;
     }
@@ -159,7 +154,6 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public ImmutableSet<LdapEpicsControlsConfiguration> getNestedContainerTypes() {
         return Sets.immutableEnumSet(_nestedClasses);
     }
@@ -168,13 +162,11 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public LdapEpicsControlsConfiguration getNodeTypeByNodeTypeName(@Nonnull final String name) {
+    public LdapEpicsControlsConfiguration getNodeTypeByNodeTypeName(final String name) {
         return getNodeTypeByNodeNameStatic(name);
     }
 
-    @CheckForNull
-    private static LdapEpicsControlsConfiguration getNodeTypeByNodeNameStatic(@Nonnull final String name) {
+    private static LdapEpicsControlsConfiguration getNodeTypeByNodeNameStatic(final String name) {
         return CACHE_BY_NAME.get(name);
     }
 
@@ -182,7 +174,6 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getUnitTypeValue() {
         return "EpicsControls";
     }
@@ -191,12 +182,10 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public ImmutableSet<String> getAttributes() {
         return ImmutableSet.<String>builder().build(); // Empty for this tree configuration type
     }
     
-    @Nonnull
     public static String getDtdFilePath() throws IOException {
         return TreeConfigurationActivator.getResourceFromBundle("./res/dtd/epicsControls.dtd");
     }

@@ -27,8 +27,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 /**
  * Interface for the structural component for the content model tree.
@@ -45,7 +43,6 @@ public interface ISubtreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguratio
      * Retrieves the list of children of the current component (but without children subtrees).
      * @return a collection of direct children components
      */
-    @Nonnull
     Collection<INodeComponent<T>> getDirectChildren();
 
     /**
@@ -53,26 +50,23 @@ public interface ISubtreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguratio
      * @param name .
      * @return the child with the specified name
      */
-    @CheckForNull
-    INodeComponent<T> getChild(@Nonnull String nameKey);
+    INodeComponent<T> getChild(String nameKey);
 
     /**
      * Adds the given component as child.
      * @param child the new child
      */
-    void addChild(@Nonnull INodeComponent<T> child);
+    void addChild(INodeComponent<T> child);
 
     /**
      * Removes the child with the given name (and hence its complete subtree).
      * @param name .
      */
-    void removeChild(@Nonnull String name);
+    void removeChild(String name);
 
-    @Nonnull
     Set<T> getSubComponentTypes();
 
-    @Nonnull
-    Map<String, INodeComponent<T>> getChildrenByType(@Nonnull T type);
+    Map<String, INodeComponent<T>> getChildrenByType(T type);
 
     /**
      * Clears a subtree node of all its children.

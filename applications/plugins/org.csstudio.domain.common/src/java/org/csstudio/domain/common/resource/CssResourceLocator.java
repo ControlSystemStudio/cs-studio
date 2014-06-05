@@ -24,7 +24,6 @@ package org.csstudio.domain.common.resource;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.domain.common.SiteId;
 
@@ -57,12 +56,11 @@ public final class CssResourceLocator {
         /**
          * Constructor.
          */
-        private RepoDomain(@Nonnull final String path) {
+        private RepoDomain(final String path) {
             _path = path;
         }
 
-        @Nonnull
-        public String getPath() {
+            public String getPath() {
             return _path;
         }
 
@@ -70,8 +68,7 @@ public final class CssResourceLocator {
          * {@inheritDoc}
          */
         @Override
-        @Nonnull
-        public String toString() {
+            public String toString() {
             return getPath();
         }
     }
@@ -93,8 +90,7 @@ public final class CssResourceLocator {
      * @return the file found under the composed base path + site specific string + file name
      * @throws FileNotFoundException if file does not exist
      */
-    @Nonnull
-    public static File locateSiteSpecificResource(@Nonnull final String fileName)
+    public static File locateSiteSpecificResource(final String fileName)
                                                   throws FileNotFoundException {
         final String configRepoPath = System.getProperty(CONFIGURATION_REPO_PATH_KEY);
         if (configRepoPath != null) {
@@ -112,9 +108,8 @@ public final class CssResourceLocator {
      * @return the file found under the composed base path + site specific string + file name
      * @throws FileNotFoundException if file does not exist
      */
-    @Nonnull
-    public static File locateSiteSpecificResource(@Nonnull final String basePath,
-                                                  @Nonnull final String fileName) throws FileNotFoundException {
+    public static File locateSiteSpecificResource(final String basePath,
+                                                  final String fileName) throws FileNotFoundException {
         final String site = System.getProperty(SiteId.JVM_ARG_KEY);
         if (site == null) {
             throw new FileNotFoundException("Site specific path has not been set via jvm arg with key: " + SiteId.JVM_ARG_KEY);
@@ -140,10 +135,9 @@ public final class CssResourceLocator {
      * @return the file for which the path has been composed
      * @throws FileNotFoundException
      */
-    @Nonnull
-    public static File locateResourceFile(@Nonnull final RepoDomain domain,
-                                          @Nonnull final String pluginName,
-                                          @Nonnull final String pathUnderPluginWorkspace) throws FileNotFoundException {
+    public static File locateResourceFile(final RepoDomain domain,
+                                          final String pluginName,
+                                          final String pathUnderPluginWorkspace) throws FileNotFoundException {
         final File file = new File(composeResourceLocationString(domain, pluginName, pathUnderPluginWorkspace));
         if (!file.exists()) {
             throw new FileNotFoundException("File " + file.getAbsolutePath() + " does not exist.");
@@ -164,10 +158,9 @@ public final class CssResourceLocator {
      * @param pathUnderPluginWorkspace the file path to the resource under the plugin under test
      * @return the composed path: "./../../../$domain/plugins/$pluginName/$pathUnderPluginWorkspace"
      */
-    @Nonnull
-    public static String composeResourceLocationString(@Nonnull final RepoDomain domain,
-                                                       @Nonnull final String pluginWorkSpace,
-                                                       @Nonnull final String pathUnderPluginWorkspace) {
+    public static String composeResourceLocationString(final RepoDomain domain,
+                                                       final String pluginWorkSpace,
+                                                       final String pathUnderPluginWorkspace) {
 
         final File fromPluginToPluginPath = new File("./../../../" + domain.getPath() + "/plugins/" + pluginWorkSpace);
         return new File(fromPluginToPluginPath, pathUnderPluginWorkspace).getAbsolutePath();

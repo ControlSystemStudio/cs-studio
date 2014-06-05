@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.common.service;
 
-import javax.annotation.Nonnull;
 
 
 /**
@@ -39,7 +38,7 @@ public class ServiceUnavailableException extends Exception {
      * Constructor.
      * @param message the describing message
      */
-    public ServiceUnavailableException(@Nonnull final String message) {
+    public ServiceUnavailableException(final String message) {
         super(message);
     }
 }

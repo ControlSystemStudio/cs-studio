@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 
-import javax.annotation.Nonnull;
-
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -66,7 +64,6 @@ public class InitLogging  {
         LOG.info("Installed bridge from java.util.logging to sl4j");
     }
     
-    @Nonnull
     private static String getFilePath() throws IOException {
         // actually the log4j properties are found inside the org.apache.log4j fragment
         // take care that there is exactly one fragment with log4j properties defined in the launcher

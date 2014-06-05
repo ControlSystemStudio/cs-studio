@@ -29,7 +29,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -83,7 +82,7 @@ public class JmsMessageBuilder {
      * @param group value for the GROUP property
      * @return the builder
      */
-    public JmsMessageBuilder setGroup(@Nonnull final ClientGroup group) {
+    public JmsMessageBuilder setGroup(final ClientGroup group) {
         _propertyStore.put(GROUP, group.toString());
         return this;
     }
@@ -94,7 +93,7 @@ public class JmsMessageBuilder {
      * @param command this value is actually stored in the NAME property
      * @return the builder
      */
-    public JmsMessageBuilder setCommand(@Nonnull final String command) {
+    public JmsMessageBuilder setCommand(final String command) {
         _propertyStore.put(NAME, command);
         return this;
     }
@@ -107,7 +106,7 @@ public class JmsMessageBuilder {
      * @param value
      * @return the builder
      */
-    public JmsMessageBuilder setProperty(@Nonnull final String key, @Nonnull final String value) {
+    public JmsMessageBuilder setProperty(final String key, final String value) {
         _propertyStore.put(key, value);
         return this;
     }
@@ -119,7 +118,7 @@ public class JmsMessageBuilder {
      * @return the newly built message
      * @throws JMSException
      */
-    public Message build(@Nonnull final Session session) throws JMSException {
+    public Message build(final Session session) throws JMSException {
         MapMessage message = session.createMapMessage();
         for (String key : _propertyStore.keySet()) {
             message.setString(key, _propertyStore.get(key));

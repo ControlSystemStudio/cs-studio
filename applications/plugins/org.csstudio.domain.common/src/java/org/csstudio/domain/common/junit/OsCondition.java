@@ -23,7 +23,6 @@ package org.csstudio.domain.common.junit;
 
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -57,7 +56,7 @@ public class OsCondition implements IRunCondition {
     /**
      * Constructor.
      */
-    public OsCondition(@Nonnull final String... oss) {
+    public OsCondition(final String... oss) {
         final Set<OsGroup> set = Sets.newHashSet();
         for (final String os : oss) {
             set.add(OsGroup.valueOf(os));
@@ -68,7 +67,7 @@ public class OsCondition implements IRunCondition {
     /**
      * Constructor.
      */
-    public OsCondition(@Nonnull final String os) {
+    public OsCondition(final String os) {
         _oss = ImmutableSet.<OsGroup>builder().add(OsGroup.valueOf(os)).build();
     }
 

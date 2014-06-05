@@ -23,7 +23,6 @@
  */
 package org.csstudio.utility.treemodel;
 
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -43,7 +42,6 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
      * Returns the real root element of the tree node configuration.
      * @return
      */
-    @Nonnull
     T getRoot();
     
     /**
@@ -51,7 +49,6 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
      * @return returns the description
      *
      */
-    @Nonnull
     String getDescription();
 
     /**
@@ -59,13 +56,11 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
      * @return returns the name of the tree node (the e.g. last RDN in LdapName).
      *
      */
-    @Nonnull
     String getNodeTypeName();
 
     /**
      * The tree items a tree item can contain.
      */
-    @Nonnull
     ImmutableSet<T> getNestedContainerTypes();
 
     /**
@@ -75,13 +70,11 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
      *            the rdn
      * @return the object class
      */
-    @Nonnull
-    T getNodeTypeByNodeTypeName(@Nonnull String nodeTypeName);
+    T getNodeTypeByNodeTypeName(String nodeTypeName);
 
     /**
      * The set of permitted attribute types for a node type.
      * @return the immutable set of permitted attributes.
      */
-    @Nonnull
     ImmutableSet<String> getAttributes();
 }

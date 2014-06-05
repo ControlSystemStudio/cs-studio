@@ -30,8 +30,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
@@ -72,8 +70,8 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
     /**
      * Constructor.
      */
-    public XmlFileContentModelBuilder(@Nonnull final T virtualConfigurationRoot,
-                                      @Nonnull final InputStream stream) {
+    public XmlFileContentModelBuilder(final T virtualConfigurationRoot,
+                                      final InputStream stream) {
         _virtualConfRoot = virtualConfigurationRoot;
         _root = _virtualConfRoot.getNestedContainerTypes().iterator().next();
         _inStream = stream;
@@ -83,7 +81,6 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
     protected final ContentModel<T> createContentModel() throws CreateContentModelException {
         try {
             // Convert our input stream to a dataInputStream
@@ -108,10 +105,9 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
      * @param root
      * @throws CreateContentModelException if Rdn or LdapName could not be constructed
      */
-    @Nonnull
-    private ContentModel<T> createContentModelFromFile(@Nonnull final Document doc,
-                                                       @Nonnull final T virtualConfRoot,
-                                                       @Nonnull final T root)
+    private ContentModel<T> createContentModelFromFile(final Document doc,
+                                                       final T virtualConfRoot,
+                                                       final T root)
         throws CreateContentModelException {
 
         final Element xmlRootElement = doc.getRootElement();
@@ -137,8 +133,7 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
      * @return
      */
     @SuppressWarnings("unchecked")
-    @Nonnull
-    private List<Element> getChildrenElements(@Nonnull final Element element) {
+    private List<Element> getChildrenElements(final Element element) {
         final List<Element> children = element.getContent(new ElementFilter());
         return children;
     }
@@ -151,10 +146,10 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
      * @param iLdapTreeComponent
      * @throws CreateContentModelException if Rdn or LdapName could not be constructed
      */
-    private void processElement(@Nonnull final ContentModel<T> model,
-                                @Nonnull final Element element,
-                                @Nonnull final ISubtreeNodeComponent<T> ldapParent,
-                                @Nonnull final T virtualRoot) throws CreateContentModelException {
+    private void processElement(final ContentModel<T> model,
+                                final Element element,
+                                final ISubtreeNodeComponent<T> ldapParent,
+                                final T virtualRoot) throws CreateContentModelException {
 
 
         final String type = element.getName();
@@ -198,9 +193,8 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
     }
 
     @SuppressWarnings("unchecked")
-    @Nonnull
-    private Attributes extractAttributes(@Nonnull final Element element,
-                                         @Nonnull final ImmutableSet<String> attributes) {
+    private Attributes extractAttributes(final Element element,
+                                         final ImmutableSet<String> attributes) {
 
         final Attributes treeNodeAttributes = new BasicAttributes();
 

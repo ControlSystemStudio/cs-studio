@@ -24,7 +24,6 @@ package org.csstudio.domain.common.net;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
 
 /**
  * Immutable host address, checked vs regular expression.
@@ -43,7 +42,7 @@ public class HostAddress {
     /**
      * Constructor.
      */
-    public HostAddress(@Nonnull final String hostAddress) {
+    public HostAddress(final String hostAddress) {
         final Matcher m = Pattern.compile(HOSTNAME_REGEX).matcher(hostAddress);
         if (!m.matches()) {
             throw new IllegalArgumentException("Host address doesn't match pattern described by: " + HOSTNAME_REGEX);
@@ -51,7 +50,6 @@ public class HostAddress {
         _address = hostAddress;
     }
 
-    @Nonnull
     public String getHostAddress() {
         return _address;
     }

@@ -24,9 +24,6 @@
 package org.csstudio.domain.common.ui;
 
 //import org.eclipse.core.internal.resources.File;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -72,9 +69,9 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
      */
-    public WorkspaceFileFieldEditor(@Nonnull final String name,
-                                    @Nonnull final String labelText,
-                                    @Nonnull final Composite parent) {
+    public WorkspaceFileFieldEditor(final String name,
+                                    final String labelText,
+                                    final Composite parent) {
         _workspace = ResourcesPlugin.getWorkspace();
         init(name, labelText);
         setErrorMessage(JFaceResources
@@ -89,7 +86,6 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
      * Opens the directory chooser dialog and returns the selected directory.
      */
     @Override
-    @CheckForNull
     protected String changePressed() {
         IResource findMember = _workspace.getRoot().findMember(getTextControl().getText());
         if(!findMember.exists()) {
@@ -134,8 +130,7 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
      * @return File File or <code>null</code>.
      *
      */
-    @CheckForNull
-    private String getDirectory(@CheckForNull final IResource startingDirectory) {
+    private String getDirectory(final IResource startingDirectory) {
 
         final ElementTreeSelectionDialog fileDialog = new ElementTreeSelectionDialog(getShell(),
                                                                          new WorkbenchLabelProvider(),
@@ -161,7 +156,7 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
      * @param fileDialog
      *
      */
-    private void addFilter(@CheckForNull final ElementTreeSelectionDialog fileDialog) {
+    private void addFilter(final ElementTreeSelectionDialog fileDialog) {
         if(_filter != null) {
             fileDialog.addFilter(_filter);
         }
@@ -172,11 +167,11 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
      * @param path initial path for the Browse dialog
      * @since 3.6
      */
-    public void setFilterPath(@Nullable final IResource path) {
+    public void setFilterPath(final IResource path) {
         _filterPath = path;
     }
 
-    public void setFilter(@Nullable final ViewerFilter filter) {
+    public void setFilter(final ViewerFilter filter) {
         _filter = filter;
     }
 

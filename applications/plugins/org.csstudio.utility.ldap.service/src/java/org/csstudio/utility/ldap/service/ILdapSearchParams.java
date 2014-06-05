@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.ldap.service;
 
-import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
 /**
@@ -32,9 +31,9 @@ import javax.naming.ldap.LdapName;
  */
 public interface ILdapSearchParams {
 
-    @Nonnull LdapName getSearchRoot();
+    LdapName getSearchRoot();
 
-    @Nonnull String getFilter();
+    String getFilter();
 
-    @Nonnull int getScope();
+    int getScope();
 }

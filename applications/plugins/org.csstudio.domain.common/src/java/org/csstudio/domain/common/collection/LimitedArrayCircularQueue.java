@@ -28,9 +28,6 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
 /**
  * A non-blocking circular buffer queue with limited size and random access
  * to its elements.
@@ -128,7 +125,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      */
     public LimitedArrayCircularQueue(final int capacity,
                                      final boolean fair,
-                                     @Nonnull final Collection<? extends E> c) {
+                                     final Collection<? extends E> c) {
         this(capacity, fair);
         if (capacity < c.size()) {
             throw new IllegalArgumentException();
@@ -152,7 +149,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * element on tail, advances, and signals.
      * Call only when holding _lock.
      */
-    private void insert(@Nonnull final E x) {
+    private void insert(final E x) {
         if (_putIndex == _takeIndex) {
             if (_count == 0) {
                 ++_count; // the yet empty corner case
@@ -171,7 +168,6 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * Extracts element at current take position, advances, and signals.
      * Call only when holding _lock.
      */
-    @Nonnull
     private E extract() {
         final E[] items = _items;
         final E x = items[_takeIndex];
@@ -216,7 +212,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * @return <code>true</code> if adding succeeded
      */
     @Override
-    public boolean add(@Nonnull final E e) {
+    public boolean add(final E e) {
         return offer(e);
     }
 
@@ -228,7 +224,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * @return <code>true</code> if adding/offering succeeded
      */
     @Override
-    public boolean offer(@Nonnull final E e) {
+    public boolean offer(final E e) {
         _lock.lock();
         try {
             insert(e);
@@ -239,7 +235,6 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
     }
 
     @Override
-    @CheckForNull
     public E poll() {
         _lock.lock();
         try {
@@ -253,7 +248,6 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
     }
 
     @Override
-    @CheckForNull
     public E peek() {
         _lock.lock();
         try {
@@ -269,7 +263,6 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * @return the element on the position or <code>null</code> when i > size
      * @throws IllegalArgumentException on i smaller 0
      */
-    @CheckForNull
     public E get(final int i) {
         if (i < 0) {
             throw new IllegalArgumentException("Index is smaller than 0.");
@@ -305,7 +298,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * Guarantueed to throw an {@link UnsupportedOperationException}.
      */
     @Override
-    public boolean removeAll(@Nonnull final Collection<?> c) {
+    public boolean removeAll(final Collection<?> c) {
         throw new UnsupportedOperationException("Circular buffer mustn't remove arbitrary elements.");
     }
 
@@ -313,7 +306,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * Guarantueed to throw an {@link UnsupportedOperationException}.
      */
     @Override
-    public boolean remove(@Nonnull final Object o) {
+    public boolean remove(final Object o) {
         throw new UnsupportedOperationException("Circular buffer mustn't remove arbitrary elements.");
     }
 
@@ -321,7 +314,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * Guarantueed to throw an {@link UnsupportedOperationException}.
      */
     @Override
-    public boolean retainAll(@Nonnull final Collection<?> c) {
+    public boolean retainAll(final Collection<?> c) {
         throw new UnsupportedOperationException("Circular buffer mustn't remove arbitrary elements.");
     }
 
@@ -354,7 +347,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * @return <code>true</code> if this queue contains the specified element
      */
     @Override
-    public boolean contains(@Nonnull final Object o) {
+    public boolean contains(final Object o) {
 
         final E[] items = _items;
         _lock.lock();
@@ -390,7 +383,6 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * @return an array containing all of the elements in this queue
      */
     @Override
-    @Nonnull
     public Object[] toArray() {
         final E[] items = _items;
         _lock.lock();
@@ -445,8 +437,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      */
     @SuppressWarnings("unchecked")
     @Override
-    @Nonnull
-    public <T> T[] toArray(@Nonnull final T[] a) {
+    public <T> T[] toArray(final T[] a) {
         final E[] items = _items;
         _lock.lock();
         try {
@@ -472,7 +463,6 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
     }
 
     @Override
-    @Nonnull
     public String toString() {
         _lock.lock();
         try {
@@ -512,7 +502,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * @throws NullPointerException          {@inheritDoc}
      * @throws IllegalArgumentException      {@inheritDoc}
      */
-    public int drainTo(@Nonnull final Collection<? super E> c) {
+    public int drainTo(final Collection<? super E> c) {
         if (c == this) {
             throw new IllegalArgumentException();
         }
@@ -546,7 +536,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * @throws NullPointerException          {@inheritDoc}
      * @throws IllegalArgumentException      {@inheritDoc}
      */
-    public int drainTo(@Nonnull final Collection<? super E> c,
+    public int drainTo(final Collection<? super E> c,
                        final int maxElements) {
         if (c == this) {
             throw new IllegalArgumentException();
@@ -589,7 +579,6 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
      * @return an iterator over the elements in this queue in proper sequence
      */
     @Override
-    @Nonnull
     public Iterator<E> iterator() {
         _lock.lock();
         try {
@@ -658,8 +647,7 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
         }
 
         @Override
-        @Nonnull
-        public E next() {
+            public E next() {
             final ReentrantLock lock = LimitedArrayCircularQueue.this._lock;
             lock.lock();
             try {

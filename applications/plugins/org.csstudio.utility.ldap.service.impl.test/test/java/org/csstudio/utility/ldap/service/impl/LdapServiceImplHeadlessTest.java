@@ -32,7 +32,6 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsField
 import java.util.Map;
 import java.util.Random;
 
-import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -85,14 +84,13 @@ public class LdapServiceImplHeadlessTest {
          * Constructor.
          * @param val
          */
-        public Holder(@Nonnull final T val) {
+        public Holder(final T val) {
             _value = val;
         }
-        @Nonnull
-        public T getValue() {
+            public T getValue() {
             return _value;
         }
-        public void setValue(@Nonnull final T value) {
+        public void setValue(final T value) {
             _value = value;
         }
     }

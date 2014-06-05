@@ -26,9 +26,6 @@ package org.csstudio.domain.common.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.FieldEditor;
@@ -119,9 +116,9 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         // NOP
     }
 
-    public void init(@Nonnull final String name,
-                     @Nonnull final String labelText,
-                     @Nonnull final Composite parent) {
+    public void init(final String name,
+                     final String labelText,
+                     final Composite parent) {
         init(name, labelText);
         createSelectionListener();
         createControl(parent);
@@ -143,31 +140,31 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
     public void createSelectionListener() {
         _downButtonSelectionListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(@Nullable final SelectionEvent event) {
+            public void widgetSelected(final SelectionEvent event) {
                 downPressed();
             }
         };
         _upButtonSelectionListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(@Nullable final SelectionEvent event) {
+            public void widgetSelected(final SelectionEvent event) {
                 upPressed();
             }
         };
         _addButtonSelectionListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(@Nullable final SelectionEvent event) {
+            public void widgetSelected(final SelectionEvent event) {
                 addPressed();
             }
         };
         _removeButtonSelectionListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(@Nullable final SelectionEvent event) {
+            public void widgetSelected(final SelectionEvent event) {
                 removePressed();
             }
         };
         _tableSelectionChangeListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(@Nullable final SelectionEvent event) {
+            public void widgetSelected(final SelectionEvent event) {
                 selectionChanged();
             }
         };
@@ -181,8 +178,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      *            the parent control
      * @return the button box
      */
-    @Nonnull
-    public Composite getButtonBoxControl(@Nonnull final Composite parent) {
+    public Composite getButtonBoxControl(final Composite parent) {
         if (_buttonBox == null) {
             _buttonBox = new Composite(parent, SWT.NULL);
             final GridLayout layout = new GridLayout();
@@ -191,7 +187,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
             createButtons(_buttonBox);
             _buttonBox.addDisposeListener(new DisposeListener() {
                 @Override
-                public void widgetDisposed(@Nullable final DisposeEvent event) {
+                public void widgetDisposed(final DisposeEvent event) {
                     disposeButtonBox();
                 }
             });
@@ -210,7 +206,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      * @param box
      *            the box for the buttons
      */
-    private void createButtons(@Nonnull final Composite box) {
+    private void createButtons(final Composite box) {
         _addButton = createPushButton(box, "ListEditor.add", _addButtonSelectionListner);//$NON-NLS-1$
         _removeButton = createPushButton(box, "ListEditor.remove", _removeButtonSelectionListner);//$NON-NLS-1$
         _upButton = createPushButton(box, "ListEditor.up", _upButtonSelectionListner);//$NON-NLS-1$
@@ -226,10 +222,9 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      *            the resource name used to supply the button's label text
      * @return Button
      */
-    @Nonnull
-    private Button createPushButton(@Nonnull final Composite parent,
-                                    @Nonnull final String key,
-                                    @Nonnull final SelectionListener selectionListener) {
+    private Button createPushButton(final Composite parent,
+                                    final String key,
+                                    final SelectionListener selectionListener) {
         final Button button = new Button(parent, SWT.PUSH);
         button.setText(JFaceResources.getString(key));
         button.setFont(parent.getFont());
@@ -248,8 +243,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      *            the parent control
      * @return the list control
      */
-    @Nonnull
-    public TableViewer getTableControl(@Nonnull final Composite parent) {
+    public TableViewer getTableControl(final Composite parent) {
         if (!hasTableViewer()) {
             final int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION;
             final Table table = new Table(parent, style);
@@ -261,7 +255,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
             getTable().addSelectionListener(_tableSelectionChangeListner);
             getTable().addDisposeListener(new DisposeListener() {
                 @Override
-                public void widgetDisposed(@Nullable final DisposeEvent event) {
+                public void widgetDisposed(final DisposeEvent event) {
                     removeTableViewer();
                 }
             });
@@ -297,7 +291,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      * @see FieldEditor.setEnabled(boolean,Composite).
      */
     @Override
-    public void setEnabled(final boolean enabled, @Nullable final Composite parent) {
+    public void setEnabled(final boolean enabled, final Composite parent) {
         super.setEnabled(enabled, parent);
         getTableControl(parent).getTable().setEnabled(enabled);
         _addButton.setEnabled(enabled);
@@ -380,7 +374,6 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         }
     }
 
-    @Nonnull
     protected final TableViewer getTableViewer() {
         assert hasTableViewer() : "_tableViewer must not be null";
         return _tableViewer;
@@ -390,7 +383,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         return _tableViewer != null;
     }
 
-    protected final void setTableViewer(@Nonnull final TableViewer tableViewer) {
+    protected final void setTableViewer(final TableViewer tableViewer) {
         _tableViewer = tableViewer;
     }
 
@@ -411,8 +404,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      * @return the combined string
      * @see #parseString
      */
-    @Nonnull
-    protected String createList(@Nonnull final TableItem[] items) {
+    protected String createList(final TableItem[] items) {
         final int columnCount = getTable().getColumnCount();
         final StringBuilder preferenceString = new StringBuilder();
         if (columnCount > 0) {
@@ -429,7 +421,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
     }
 
     @Override
-    protected void doFillIntoGrid(@Nullable final Composite parent, final int numColumns) {
+    protected void doFillIntoGrid(final Composite parent, final int numColumns) {
         final Control control = getLabelControl(parent);
         GridData gd = new GridData();
         gd.horizontalSpan = numColumns;
@@ -463,7 +455,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
     /**
      * @param parseString
      */
-    public void setPreferenceStructure(@Nonnull final List<List<String>> parseString) {
+    public void setPreferenceStructure(final List<List<String>> parseString) {
         _parseString = parseString;
     }
 
@@ -471,8 +463,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      * @param s
      * @return
      */
-    @Nonnull
-    public static List<List<String>> parseString(@Nonnull final String s) {
+    public static List<List<String>> parseString(final String s) {
         final List<List<String>> rowsList = new ArrayList<List<String>>();
 
         final String[] rows = s.split(ROW_SEPARATOR);
@@ -521,11 +512,10 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      */
     public abstract void setTableSettingsToPreferenceString();
 
-    protected void setAddButton(@Nullable final Button addButton) {
+    protected void setAddButton(final Button addButton) {
         _addButton = addButton;
     }
 
-    @CheckForNull
     protected Button getAddButton() {
         return _addButton;
     }
@@ -534,7 +524,6 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      * @return
      * @return
      */
-    @CheckForNull
     public Table getTable() {
         final TableViewer tableViewer = getTableViewer();
         return tableViewer.getTable();

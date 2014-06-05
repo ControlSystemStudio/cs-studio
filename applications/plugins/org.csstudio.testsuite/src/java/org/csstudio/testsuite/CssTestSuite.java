@@ -25,7 +25,6 @@ package org.csstudio.testsuite;
 
 import static org.csstudio.testsuite.TestSuiteFactory.COMMON_TEST_SUFFIX;
 
-import javax.annotation.Nonnull;
 
 import junit.framework.Test;
 
@@ -67,7 +66,6 @@ public final class CssTestSuite {
         // Empty
     }
 
-    @Nonnull
     public static Test suite() {
 
         String filter = System.getProperty("testFilter");

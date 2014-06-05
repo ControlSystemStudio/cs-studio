@@ -18,7 +18,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.Sets;
 
@@ -37,8 +36,8 @@ public abstract class AbstractSoftIocConfigurator  implements ISoftIocConfigurat
     /**
      * Constructor.
      */
-    public AbstractSoftIocConfigurator(@Nonnull final File executable,
-                                       @Nonnull final File cmds) {
+    public AbstractSoftIocConfigurator(final File executable,
+                                       final File cmds) {
         _exeFilePath = executable;
         _cmdCfgFilePath = cmds;
         _dbFiles = Collections.emptySet();
@@ -48,7 +47,6 @@ public abstract class AbstractSoftIocConfigurator  implements ISoftIocConfigurat
      * @return
      */
     @Override
-    @Nonnull
     public String getDemoExecutableFilePath() {
         return _exeFilePath.toString();
     }
@@ -57,7 +55,6 @@ public abstract class AbstractSoftIocConfigurator  implements ISoftIocConfigurat
      * @return
      */
     @Override
-    @Nonnull
     public File getSoftIocCmdFile() {
         return _cmdCfgFilePath;
     }
@@ -66,7 +63,6 @@ public abstract class AbstractSoftIocConfigurator  implements ISoftIocConfigurat
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public Set<File> getDbFileSet() {
         return _dbFiles;
     }
@@ -75,8 +71,7 @@ public abstract class AbstractSoftIocConfigurator  implements ISoftIocConfigurat
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public ISoftIocConfigurator with(@Nonnull final File... dbFiles) {
+    public ISoftIocConfigurator with(final File... dbFiles) {
         _dbFiles = Sets.newHashSet(dbFiles);
         return this;
     }

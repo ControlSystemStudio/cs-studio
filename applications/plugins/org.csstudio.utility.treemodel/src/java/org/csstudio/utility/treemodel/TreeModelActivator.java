@@ -1,8 +1,5 @@
 package org.csstudio.utility.treemodel;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -43,7 +40,7 @@ public class TreeModelActivator implements BundleActivator {
      * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
      */
     @Override
-    public void start(@Nullable final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
         if (context != null) {
             _bundle = context.getBundle(); // for the test class
         }
@@ -54,7 +51,7 @@ public class TreeModelActivator implements BundleActivator {
      * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
     @Override
-    public void stop(@Nullable final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
         // EMPTY
     }
 
@@ -62,7 +59,6 @@ public class TreeModelActivator implements BundleActivator {
      * The plugin id.
      * @return the id.
      */
-    @Nonnull
     public String getPluginId() {
         return PLUGIN_ID;
     }
@@ -72,12 +68,10 @@ public class TreeModelActivator implements BundleActivator {
      *
      * @return the instance
      */
-    @Nonnull
     public static TreeModelActivator getDefault() {
         return INSTANCE;
     }
 
-    @CheckForNull
     public Bundle getBundle() {
         return _bundle;
     }

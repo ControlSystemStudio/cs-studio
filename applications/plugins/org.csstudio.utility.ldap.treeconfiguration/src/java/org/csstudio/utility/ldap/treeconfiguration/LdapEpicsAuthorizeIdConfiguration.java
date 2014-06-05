@@ -29,8 +29,6 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -118,9 +116,9 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
      * @param nodeTypeName the node type name
      * @param attributes the attribute names for this node type
      */
-    private LdapEpicsAuthorizeIdConfiguration(@Nonnull final String description,
-                                              @Nonnull final String nodeTypeName,
-                                              @Nonnull final ImmutableSet<String> attributes) {
+    private LdapEpicsAuthorizeIdConfiguration(final String description,
+                                              final String nodeTypeName,
+                                              final ImmutableSet<String> attributes) {
         _description = description;
         _nodeTypeName = nodeTypeName;
         _attributes = attributes;
@@ -130,7 +128,6 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public LdapEpicsAuthorizeIdConfiguration getRoot() {
         return UNIT;
     }
@@ -139,7 +136,6 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public ImmutableSet<String> getAttributes() {
         return _attributes;
     }
@@ -148,7 +144,6 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getDescription() {
         return _description;
     }
@@ -157,7 +152,6 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public ImmutableSet<LdapEpicsAuthorizeIdConfiguration> getNestedContainerTypes() {
         return Sets.immutableEnumSet(_nestedClasses);
     }
@@ -166,8 +160,7 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public LdapEpicsAuthorizeIdConfiguration getNodeTypeByNodeTypeName(@Nonnull final String nodeTypeName) {
+    public LdapEpicsAuthorizeIdConfiguration getNodeTypeByNodeTypeName(final String nodeTypeName) {
         return CACHE_BY_NAME.get(nodeTypeName);
     }
 
@@ -175,7 +168,6 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getNodeTypeName() {
         return _nodeTypeName;
     }
@@ -184,7 +176,6 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ILdapTreeNodeConfigurat
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getUnitTypeValue() {
         return "EpicsAuthorizeID";
     }

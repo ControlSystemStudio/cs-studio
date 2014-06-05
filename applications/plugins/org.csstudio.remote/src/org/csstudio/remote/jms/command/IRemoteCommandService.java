@@ -21,7 +21,6 @@
  */
 package org.csstudio.remote.jms.command;
 
-import javax.annotation.Nonnull;
 
 /**
  * Service for sending and receiving remote commands.
@@ -48,19 +47,19 @@ public interface IRemoteCommandService {
         // this is called, when the listener receives a command for the proper group.
         // the given command is the same as supplied by the sender.
         // the client then should carry out the appropriate action.
-        void receiveCommand(@Nonnull final String command);
+        void receiveCommand(final String command);
     }
     
     // register the given listener for the given client group.
     // if it is registered more than once, it will be called more than once.
-    void register(@Nonnull final ClientGroup group, @Nonnull final IListener listener) throws RemoteCommandException;
+    void register(final ClientGroup group, final IListener listener) throws RemoteCommandException;
     
     // deregister the given listener from the given client group.
     // if the listener has not been registered, nothing happens.
-    void deregister(@Nonnull final IListener listener);
+    void deregister(final IListener listener);
     
     // all listeners registered in the given client group will receive a call
     // the listeners are told the given command string
-    void sendCommand(@Nonnull final ClientGroup group, @Nonnull final String command) throws RemoteCommandException;
+    void sendCommand(final ClientGroup group, final String command) throws RemoteCommandException;
     
 }
