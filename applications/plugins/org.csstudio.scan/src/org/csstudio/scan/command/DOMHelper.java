@@ -18,6 +18,7 @@ package org.csstudio.scan.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.util.StringOrDouble;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -176,11 +177,9 @@ public class DOMHelper
         final String text = getSubelementString(element, element_name, "");
         if (text.length() < 1)
             throw new Exception("Missing value for '" + element_name + "'");
-        if (text.startsWith("\"")  &&  text.endsWith("\""))
-            return text.substring(1, text.length()-1);
         try
         {
-            return Double.parseDouble(text);
+        	return StringOrDouble.parse(text);
         }
         catch (NumberFormatException ex)
         {

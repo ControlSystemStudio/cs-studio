@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.properties;
 
+import org.csstudio.scan.util.StringOrDouble;
 import org.eclipse.swt.widgets.Composite;
 
 /** Cell editor for a field that's either a <code>String</code> or a <code>Double</code>
@@ -34,7 +35,7 @@ public class StringOrDoubleCellEditor extends DoubleCellEditor
     @Override
     protected void doSetValue(final Object value)
     {   // DoubleCellEditor can also handle String
-        super.doSetValue(value);
+		super.doSetValue(StringOrDouble.quote(value));
     }
 
     /** @return Current value of the cell editor, will be Double if possible, otherwise String */
@@ -46,7 +47,7 @@ public class StringOrDoubleCellEditor extends DoubleCellEditor
             return Double.valueOf(0);
         try
         {
-            return Double.valueOf(text.trim());
+            return StringOrDouble.parse(text);
         }
         catch (NumberFormatException ex)
         {   // Use String

@@ -17,6 +17,7 @@ package org.csstudio.scan.command;
 
 import java.util.List;
 
+import org.csstudio.scan.util.StringOrDouble;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,7 +29,7 @@ public class WaitCommand extends ScanCommand
 {
     private volatile String device_name;
     private volatile Comparison comparison;
-    private volatile double desired_value;
+    private volatile Object desired_value;
     private volatile double tolerance;
     private volatile double timeout;
 
@@ -43,7 +44,7 @@ public class WaitCommand extends ScanCommand
      *  @param desired_value Desired value of the device for equality comparison
      */
     public WaitCommand(final String device_name,
-            final double desired_value)
+            final Object desired_value)
     {
         this(device_name, Comparison.EQUALS, desired_value, 0.1, 0.0);
     }
@@ -54,7 +55,7 @@ public class WaitCommand extends ScanCommand
      *  @param desired_value Desired value of the device
      */
     public WaitCommand(final String device_name,
-            final Comparison comparison, final double desired_value)
+            final Comparison comparison, final Object desired_value)
     {
         this(device_name, comparison, desired_value, 0.1, 0.0);
     }
@@ -67,7 +68,7 @@ public class WaitCommand extends ScanCommand
      *  @param timeout Timeout in seconds, 0 as "forever"
      */
 	public WaitCommand(final String device_name,
-	        final Comparison comparison, final double desired_value,
+	        final Comparison comparison, final Object desired_value,
 	        final double tolerance, final double timeout)
     {
 	    if (device_name == null)
@@ -85,7 +86,7 @@ public class WaitCommand extends ScanCommand
     {
         properties.add(ScanCommandProperty.DEVICE_NAME);
         properties.add(new ScanCommandProperty("comparison", "Comparison", Comparison.class));
-        properties.add(new ScanCommandProperty("desired_value", "Desired Value", Double.class));
+        properties.add(new ScanCommandProperty("desired_value", "Desired Value", Object.class));
         properties.add(ScanCommandProperty.TOLERANCE);
         properties.add(ScanCommandProperty.TIMEOUT);
         super.configureProperties(properties);
@@ -106,13 +107,13 @@ public class WaitCommand extends ScanCommand
     }
 
 	/** @return Desired value */
-    public double getDesiredValue()
+    public Object getDesiredValue()
     {
         return desired_value;
     }
 
     /** @param desired_value Desired value */
-    public void setDesiredValue(final Double desired_value)
+    public void setDesiredValue(final Object desired_value)
     {
         this.desired_value = desired_value;
     }
@@ -162,7 +163,10 @@ public class WaitCommand extends ScanCommand
         command_element.appendChild(element);
 
         element = dom.createElement("value");
-        element.appendChild(dom.createTextNode(Double.toString(desired_value)));
+        if (desired_value instanceof String)
+            element.appendChild(dom.createTextNode('"' + (String)desired_value + '"'));
+        else
+            element.appendChild(dom.createTextNode(desired_value.toString()));
         command_element.appendChild(element);
 
         element = dom.createElement("comparison");
@@ -190,7 +194,7 @@ public class WaitCommand extends ScanCommand
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
         setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
-        setDesiredValue(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_VALUE));
+        setDesiredValue(DOMHelper.getSubelementStringOrDouble(element, ScanCommandProperty.TAG_VALUE));
         try
         {
             setComparison(Comparison.valueOf(DOMHelper.getSubelementString(element, "comparison")));
@@ -209,7 +213,8 @@ public class WaitCommand extends ScanCommand
 	public String toString()
 	{
 	    final StringBuilder buf = new StringBuilder();
-	    buf.append("Wait for '").append(device_name).append("' ").append(comparison).append(" ").append(desired_value);
+	    buf.append("Wait for '").append(device_name).append("' ").append(comparison).append(" ");
+	    buf.append(StringOrDouble.quote(desired_value));
 	    if (comparison == Comparison.EQUALS)
 	        buf.append(" (+-").append(tolerance).append(")");
 	    if (timeout > 0)
