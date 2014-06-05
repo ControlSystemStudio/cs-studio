@@ -92,8 +92,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
-
-      <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="4" />
    </configurations>
 
 </product>
