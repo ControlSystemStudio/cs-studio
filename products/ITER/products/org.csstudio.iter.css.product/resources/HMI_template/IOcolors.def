@@ -1,0 +1,105 @@
+# Modified Date: 05/04/2013
+# Alarm colors
+Major = 250,12,14
+Minor = 255,255,0
+Invalid = 255, 255, 255
+Disconnected = 255, 255, 255
+
+IO Invalid Level Alarm = 255, 255, 255
+IO High Level Alarm = 250,12,14
+IO Medium Level Alarm = 255,255,0
+IO Normal Level Alarm = 0, 176, 80
+
+IO Light Grey = 200, 200, 200
+IO Black = 0, 0, 0
+IO White = 255, 255, 255
+IO Grey = 140, 140, 140
+IO Red = 250,12,14
+IO Yellow = 255,255,0
+IO Green = 0, 176, 80
+IO Blue = 20, 50, 202
+
+# Display widget colors
+IO Background = 200,200,200
+IO Foreground = 0, 0, 0
+IO Grid = 215,215,215
+
+# Shape colors
+IO Border = 0, 0, 0
+IO Shape Fill= 255, 255, 255
+IO Line = 0, 0, 0
+IO Link = 0, 0, 0
+
+# Label & Text colors
+IO Text Fg = 0, 0, 0
+
+# Boolean Symbol colors
+IO PV ON = 0,0,225
+IO PV OFF = 77, 77, 77
+
+# PV colors
+IO InputPV Bg = 200, 200, 200 
+IO InputPV Fg = 0, 0, 0
+IO OutputPV Bg = 255, 255, 255
+IO OutputPV Fg = 0, 0, 0
+
+# Scaled widget colors
+IO Stick = 0, 0, 0
+
+# XY Graph Trace colors
+IO Trace 1 = 79,129,189 
+IO Trace 2 = 192,80,77
+IO Trace 3 = 119,147,60
+IO Trace 4 = 135,112,107
+
+# StatusBar color
+IO StatusBar Bg = 0,75,125
+IO StatusBar Fg = 255,255,255
+
+# Button colors
+IO Button = 178, 178, 178
+IO TextButton = 0, 0, 0
+IO TextInactiveButton = 166,166,166
+
+# Label color
+IO Label = 0, 0, 0
+
+# Fluid Pipe colors
+# IO Cooling Water Pipe = 0,176,80
+# IO Helium Pipe = 0,176,240
+# IO Nitrogen Pipe = 255,195,0
+# IO Oil Pipe = 255,255,0
+# IO Secondary Circuit Pipe = 0,76,240
+
+IO SHe supply from LHe plant and primary loop supply = 0,0,255
+IO Liquid Helium = 51,102,255
+IO 4.8K ≈ vapor return to LHe plant and primary loop return = 0,204,255
+IO 80K Helium Supply = 255,153,204
+IO 100K Helium Return = 213,48,255
+IO 50K GHe = 204,204,255
+IO 300K GHe = 0,0,0
+IO Quench line = 0,255,0
+IO Relief header = 51,153,102
+IO 6-100K line = 255,153,0
+IO LN2 lines = 255,153,204
+IO Cold GN2 lines = 213,48,0
+IO Warm GN2 lines = 0,0,0
+
+# Electrical bus colors
+IO Energised Busbar = 255,0,0
+IO De energised Busbar = 128,128,128
+ 
+# State colors
+IO OK = 0,255,0
+IO Default = 255,0,0
+IO onGoing = 255,255,0
+IO Disconnected = 200,100,200
+IO Unselected = 255,255,255
+IO POS Backgroung = 205, 216, 192
+IO POS State = 160, 180, 137
+IO TCS Backgroung = 182, 217, 228
+IO TCS State = 75, 172, 198
+IO STM Background = 227, 218, 179
+IO STM State = 197, 177, 137
+IO LTM Backgroung = 217, 193, 223
+IO LTM State = 171, 154, 192
