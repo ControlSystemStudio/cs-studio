@@ -36,6 +36,8 @@ public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTime
     @Override
     public Double getLowerDisplayLimit()
     {
+        if (metadata == null)
+            return Double.NaN;
         return metadata.getLowerDispLimit().doubleValue();
     }
 
@@ -50,18 +52,24 @@ public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTime
     @Override
     public Double getLowerAlarmLimit()
     {
+        if (metadata == null)
+            return Double.NaN;
         return metadata.getLowerAlarmLimit().doubleValue();
     }
 
     @Override
     public Double getLowerWarningLimit()
     {
+        if (metadata == null)
+            return Double.NaN;
         return metadata.getLowerWarningLimit().doubleValue();
     }
 
     @Override
     public String getUnits()
     {
+        if (metadata == null)
+            return "?";
         return metadata.getUnits();
     }
 
@@ -86,12 +94,16 @@ public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTime
     @Override
     public Double getUpperWarningLimit()
     {
+        if (metadata == null)
+            return Double.NaN;
         return metadata.getUpperWarningLimit().doubleValue();
     }
 
     @Override
     public Double getUpperAlarmLimit()
     {
+        if (metadata == null)
+            return Double.NaN;
         return metadata.getUpperAlarmLimit().doubleValue();
     }
 
@@ -106,6 +118,8 @@ public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTime
     @Override
     public Double getUpperDisplayLimit()
     {
+        if (metadata == null)
+            return Double.NaN;
         return metadata.getUpperDispLimit().doubleValue();
     }
 }
