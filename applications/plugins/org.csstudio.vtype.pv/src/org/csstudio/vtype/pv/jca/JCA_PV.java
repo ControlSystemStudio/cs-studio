@@ -54,14 +54,19 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         @Override
         public void getCompleted(final GetEvent ev)
         {
-            if (! ev.getStatus().isSuccessful())
-                JCA_PV.this.notifyListenersOfDisconnect();
-            else
+            // Channels from CAS, not based on records, may fail
+            // to provide meta data
+            if (ev.getStatus().isSuccessful())
             {
                 metadata = ev.getDBR();
-                logger.fine(getName() + " received meta data");
-                subscribe();
+                logger.log(Level.FINE, "{0} received meta data: {1}", new Object[] { getName(), metadata });
             }
+            else
+            {
+                metadata = null;
+                logger.log(Level.FINE, "{0} has no meta data: {1}", new Object[] { getName(), ev.getStatus() });
+            }
+            subscribe();
         }
     };
 
