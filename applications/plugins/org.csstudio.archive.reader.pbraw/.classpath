@@ -5,5 +5,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/pbrawclient-0.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/protobuf-java-2.4.1.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
