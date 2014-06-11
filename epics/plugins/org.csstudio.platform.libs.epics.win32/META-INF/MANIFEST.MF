@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JNI bindings for Windows 32 bit
+Bundle-SymbolicName: org.csstudio.platform.libs.epics.win32;singleton:=true
+Bundle-Version: 1.1.6.qualifier
+Fragment-Host: org.csstudio.platform.libs.epics;bundle-version="1.1.6"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-NativeCode: 
+ lib/win32/x86/ca.dll; lib/win32/x86/Com.dll; lib/win32/x86/jca.dll; osname=win32; processor=x86
+Comment1: lib/win32 has not been updated to match jca-2.3.3
+Eclipse-PlatformFilter: (osgi.os=win32)
+Bundle-Vendor: DESY/ORNL/SLAC
+Bundle-Description: JNI bindings for windows 32 bit
