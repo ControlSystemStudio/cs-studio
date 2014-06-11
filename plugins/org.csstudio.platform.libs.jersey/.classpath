@@ -16,5 +16,5 @@
 	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-xc-1.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-apache-client-1.17.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

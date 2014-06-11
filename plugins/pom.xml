@@ -30,7 +30,6 @@
     <module>org.apache.tools.ant.junit</module>
     <module>org.csstudio.platform.libs.easymock</module>
     <module>org.apache.log4j</module>
-    <module>org.csstudio.platform.libs.epics</module>
     <module>org.csstudio.platform.libs.epics.linux</module>
     <module>org.csstudio.platform.libs.epics.macosx</module>
     <module>org.csstudio.platform.libs.epics.win32</module>
@@ -52,16 +51,5 @@
     <module>org.ehcache</module>
     <module>org.python</module>
     <module>javax.mail</module>
-    <module>org.csstudio.utility.pvmanager</module>
-    <module>org.csstudio.utility.pvmanager.epics</module>
-    <module>org.csstudio.utility.pvmanager.vtype</module>
-    <module>org.csstudio.utility.pvmanager.exec</module>
-    <module>org.csstudio.utility.pvmanager.file</module>
-    <module>org.csstudio.utility.pvmanager.jdbc</module>
-    <module>org.csstudio.utility.pvmanager.loc</module>
-    <module>org.csstudio.utility.pvmanager.pva</module>
-    <module>org.csstudio.utility.pvmanager.sim</module>
-    <module>org.csstudio.utility.pvmanager.sys</module>
-    <module>org.csstudio.utility.pvmanager.extra</module>
   </modules>
 </project>

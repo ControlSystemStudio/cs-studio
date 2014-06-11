@@ -18,10 +18,6 @@
        Each library uses its own license.
    </license>
 
-   <requires>
-      <!--<import plugin="org.plugin.example" version="1.0.0" match="greaterOrEqual"/>-->
-   </requires>
-
    <plugin
          id="org.antlr.runtime"
          download-size="0"
@@ -149,38 +145,31 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.epics"
+         id="org.csstudio.platform.libs.epics.linux"
+         os="linux"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.epics.linux"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"
-         fragment="true"
-         os="linux"/>
-
-   <plugin
          id="org.csstudio.platform.libs.epics.macosx"
+         os="macosx"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"
          fragment="true"
-         os="macosx"/>
+         unpack="false"/>
 
    <plugin
          id="org.csstudio.platform.libs.epics.win32"
+         os="win32"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"
          fragment="true"
-         os="win32"/>
+         unpack="false"/>
 
    <plugin
          id="org.csstudio.platform.libs.hibernate"
@@ -222,21 +211,21 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-	 unpack="false"/>
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.nebula.jface.gridviewer"
          download-size="0"
          install-size="0"
          version="0.0.0"
-	 unpack="false"/>
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.nebula.widgets.grid"
          download-size="0"
          install-size="0"
          version="0.0.0"
-	 unpack="false"/>
+         unpack="false"/>
 
    <plugin
          id="org.slf4j"
@@ -303,83 +292,6 @@
 
    <plugin
          id="javax.mail"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.epics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.vtype"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.exec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.file"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.jdbc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.loc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.pva"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.sim"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.sys"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.extra"
          download-size="0"
          install-size="0"
          version="0.0.0"
