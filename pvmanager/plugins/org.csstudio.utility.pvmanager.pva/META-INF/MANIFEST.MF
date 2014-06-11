@@ -1,0 +1,39 @@
+Manifest-Version: 1.0
+Export-Package: org.epics.pvmanager.pva;uses:="org.epics.pvdata.pv,org
+ .epics.pvmanager,org.epics.pvdata.monitor,org.epics.pvdata.misc,org.e
+ pics.pvaccess.client,org.epics.util.array,org.epics.pvdata.factory,or
+ g.epics.pvaccess,org.epics.pvmanager.vtype,org.epics.pvaccess.client.
+ impl.remote,org.epics.pvmanager.pva.adapters,org.epics.vtype",org.epi
+ cs.pvmanager.pva.adapters;uses:="org.epics.vtype,org.epics.pvdata.pv,
+ org.epics.util.text,org.epics.pvdata.factory,org.epics.util.time,org.
+ epics.util.array",org.csstudio.utility.pvmanager.pva;uses:="org.eclip
+ se.core.runtime,org.osgi.framework,org.epics.pvmanager.pva.rpcservice
+ ,org.eclipse.osgi.service.datalocation,org.epics.pvmanager.service,or
+ g.epics.pvmanager.pva",html
+Bundle-ActivationPolicy: lazy
+Built-By: berryman
+Tool: Bnd-0.0.357
+Bundle-Name: PVManager EPICS PVAccess Support
+Created-By: Apache Maven Bundle Plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Matej Sekoranja matej.sekoranja@cosylab.com -Cosylab, G
+ abriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff@bnl.gov - BNL
+Build-Jdk: 1.7.0_45
+Bundle-Version: 3.2.0.SNAPSHOT
+Bnd-LastModified: 1402508875298
+Bundle-Activator: org.csstudio.utility.pvmanager.pva.Activator
+Bundle-ManifestVersion: 2
+Bundle-Description: Provides EPICS v4 pvAccess connectivity topvManage
+ r
+Import-Package: html,org.csstudio.utility.pvmanager.pva,org.eclipse.co
+ re.runtime;registry=split;version="3.4",org.eclipse.osgi.service.data
+ location;version="1.3",org.epics.pvaccess,org.epics.pvaccess.client,o
+ rg.epics.pvaccess.client.impl.remote,org.epics.pvdata.factory,org.epi
+ cs.pvdata.misc,org.epics.pvdata.monitor,org.epics.pvdata.pv,org.epics
+ .pvmanager,org.epics.pvmanager.pva,org.epics.pvmanager.pva.adapters,o
+ rg.epics.pvmanager.pva.rpcservice,org.epics.pvmanager.service,org.epi
+ cs.pvmanager.vtype,org.epics.util.array,org.epics.util.text,org.epics
+ .util.time,org.epics.vtype,org.osgi.framework;version="1.6"
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.pva;singleton:=tru
+ e
+

@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Export-Package: org.epics.pvmanager.exec;uses:="org.epics.pvmanager.se
+ rvice,org.epics.vtype,org.epics.pvmanager,javax.xml.xpath,javax.xml.p
+ arsers,org.epics.pvmanager.util,org.w3c.dom,javax.xml.namespace,org.x
+ ml.sax,org.epics.vtype.io",org.csstudio.utility.pvmanager.exec;uses:=
+ "org.epics.pvmanager.exec,org.eclipse.core.runtime,org.eclipse.osgi.s
+ ervice.datalocation,org.epics.pvmanager.service",html
+Bundle-ActivationPolicy: lazy
+Built-By: berryman
+Tool: Bnd-0.0.357
+Bundle-Name: PVManager Execute Support
+Created-By: Apache Maven Bundle Plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
+ @bnl.gov - BNL
+Build-Jdk: 1.7.0_45
+Bundle-Version: 3.2.0.SNAPSHOT
+Bnd-LastModified: 1402508873055
+Bundle-ManifestVersion: 2
+Bundle-Description: Exec extensions for pvmanager
+Import-Package: html,javax.xml.namespace,javax.xml.parsers,javax.xml.x
+ path,org.csstudio.utility.pvmanager.exec,org.eclipse.core.runtime;reg
+ istry=split;version="3.4",org.eclipse.osgi.service.datalocation;versi
+ on="1.3",org.epics.pvmanager,org.epics.pvmanager.exec,org.epics.pvman
+ ager.service,org.epics.pvmanager.util,org.epics.vtype,org.epics.vtype
+ .io,org.w3c.dom,org.xml.sax
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.exec;singleton:=tr
+ ue
+

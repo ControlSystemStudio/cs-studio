@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.csstudio</groupId>
+		<artifactId>pvmanager-plugins</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>org.csstudio.utility.pvmanager.pva</artifactId>
+	<packaging>bundle</packaging>
+	<version>${csstudio.version}</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.epics</groupId>
+			<artifactId>pvmanager-pva</artifactId>
+			<version>${pvmanager.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+			<version>3.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.epics</groupId>
+			<artifactId>epics-util</artifactId>
+			<version>${epics.util.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.epics</groupId>
+			<artifactId>epics-vtype</artifactId>
+			<version>${pvmanager.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.csstudio</groupId>
+			<artifactId>org.csstudio.platform.libs.epics</artifactId>
+			<version>${csstudio.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+			    <targetPath>html</targetPath>
+				<directory>html</directory>
+			</resource>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>plugin.xml</include>
+					<include>toc.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Private-Package>org.csstudio.utility.*</Private-Package>
+						<Bundle-Activator>org.csstudio.utility.pvmanager.pva.Activator</Bundle-Activator>
+						<Bundle-Name>PVManager EPICS PVAccess Support</Bundle-Name>
+						<Bundle-SymbolicName>org.csstudio.utility.pvmanager.pva;singleton:=true</Bundle-SymbolicName>
+						<Bundle-Vendor> Matej Sekoranja matej.sekoranja@cosylab.com -
+							Cosylab, Gabriele Carcassi carcassi@bnl.gov, Kunal Shroff
+							kshroff@bnl.gov - BNL</Bundle-Vendor>
+						<Bundle-Description>Provides EPICS v4 pvAccess connectivity to
+							pvManager</Bundle-Description>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<Export-Package>org.epics.pvmanager.pva,org.epics.pvmanager.pva.adapters</Export-Package>
+<!-- 						<Require-Bundle>org.eclipse.core.runtime, -->
+<!-- 							org.csstudio.utility.pvmanager;bundle-version="2.0.0", -->
+<!-- 							org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0", -->
+<!-- 							org.epics.pvdata;bundle-version="3.0.0", -->
+<!-- 							org.epics.pvaccess;bundle-version="3.0.0", -->
+<!-- 							org.epics.vtype;bundle-version="2.0.0"</Require-Bundle> -->
+						<!-- <Include-Resource>plugin.xml=plugin.xml</Include-Resource> -->
+						<_exportcontents>*</_exportcontents>
+						<!-- <_sources>true</_sources> -->
+						<_snapshot>${maven.build.timestamp}</_snapshot>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

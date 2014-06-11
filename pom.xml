@@ -1,62 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
 
-  <groupId>org.csstudio</groupId>
-  <artifactId>maven-osgi-bundles</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>maven-osgi-bundles</name>
+	<groupId>org.csstudio</groupId>
+	<artifactId>maven-osgi-bundles</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>maven-osgi-bundles</name>
 
-  <properties>
-    <tycho.version>0.20.0</tycho.version>
-    <manifest-location>META-INF</manifest-location>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/3.3</cs-studio-central.url>
-    <pvmanager.version>2.5</pvmanager.version>
-    <graphene.version>0.6</graphene.version>
-    <pvdata.version>3.0.3</pvdata.version>
-    <pvaccess.version>3.0.5</pvaccess.version>
-  </properties>
-  <repositories>
-        <repository>
-            <id>epics</id>
-            <name>EPICS Repository</name>
-            <url>http://epics.sourceforge.net/maven2/</url>
-        </repository>
-  </repositories>
+	<properties>
+		<tycho.version>0.20.0</tycho.version>
+		<manifest-location>META-INF</manifest-location>
+		<cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/3.3</cs-studio-central.url>
+		<pvmanager.version>2.6</pvmanager.version>
+		<epics.util.version>0.3.1</epics.util.version>
+		<epics.caj.version>1.1.14</epics.caj.version>
+		<epics.jca.version>2.3.6</epics.jca.version>
+		<graphene.version>0.7</graphene.version>
+		<pvdata.version>3.0.3</pvdata.version>
+		<pvaccess.version>3.0.5</pvaccess.version>
+		<csstudio.version>3.2.0-SNAPSHOT</csstudio.version>
+	</properties>
+	<repositories>
+		<repository>
+			<id>epics</id>
+			<name>EPICS Repository</name>
+			<url>http://epics.sourceforge.net/maven2/</url>
+		</repository>
+	</repositories>
 
-  <modules>
-    <module>bundle</module>
-    <module>thirdparty</module>
-  </modules>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.3.1</version>
-          <configuration>
-            <archive>
-              <manifestFile>${manifest-location}/MANIFEST.MF</manifestFile>
-            </archive>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.1.0</version>
-          <configuration>
-            <manifestLocation>${manifest-location}</manifestLocation>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+	<modules>
+		<module>epics</module>
+		<module>pvmanager</module>
+		<module>repository</module>
+	</modules>
 </project>
 
