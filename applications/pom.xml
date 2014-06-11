@@ -33,7 +33,9 @@
     <tycho.version>0.20.0</tycho.version>
     <tycho-extras.version>0.20.0</tycho-extras.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.0</cs-studio-central.url>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
+    <baselineMode>fail</baselineMode> 
   </properties>
 
   <!--
@@ -138,7 +140,7 @@
           <configuration>
             <timestampProvider>jgit</timestampProvider>
             <!-- jgit.dirtyWorkingTree options: ignore, warning, error -->
-            <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
+            <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
             <jgit.ignore>
               pom.xml
             </jgit.ignore>
@@ -150,7 +152,7 @@
           <version>${tycho.version}</version>
           <configuration>
             <!-- baselineMode options: disable, warn, fail -->
-            <baselineMode>fail</baselineMode>
+            <baselineMode>${baselineMode}</baselineMode>
             <!-- baselineReplace options: none, all -->
             <baselineReplace>none</baselineReplace>
             <baselineRepositories>
