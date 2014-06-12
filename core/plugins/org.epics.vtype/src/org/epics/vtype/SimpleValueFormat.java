@@ -7,6 +7,7 @@ package org.epics.vtype;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.util.List;
+import org.epics.util.array.ListBoolean;
 import org.epics.util.array.ListByte;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListLong;
@@ -134,6 +135,37 @@ public class SimpleValueFormat extends ValueFormat {
         return toAppendTo;
     }
 
+    /**
+     * Formats a boolean array. This method can be overridden to change
+     * the way string arrays are formatted.
+     * 
+     * @param data the data to format
+     * @param toAppendTo the buffer to append to
+     * @param pos the position of the field
+     * @return  the string buffer
+     */
+    protected StringBuffer format(ListBoolean data, StringBuffer toAppendTo, FieldPosition pos) {
+        toAppendTo.append("[");
+        boolean hasMore = false;
+        
+        if (data.size() > maxElements) {
+            hasMore = true;
+        }
+        
+        for (int i = 0; i < Math.min(data.size(), maxElements); i++) {
+            if (i != 0) {
+                toAppendTo.append(", ");
+            }
+            toAppendTo.append(data.getBoolean(i));
+        }
+        
+        if (hasMore) {
+            toAppendTo.append(", ...");
+        }
+        toAppendTo.append("]");
+        return toAppendTo;
+    }
+
     @Override
     protected StringBuffer format(Array array, StringBuffer toAppendTo, FieldPosition pos) {
         if (array instanceof VNumberArray) {
@@ -142,6 +174,10 @@ public class SimpleValueFormat extends ValueFormat {
         
         if (array instanceof VStringArray) {
             return format(((VStringArray) array).getData(), toAppendTo, pos);
+        }
+        
+        if (array instanceof VBooleanArray) {
+            return format(((VBooleanArray) array).getData(), toAppendTo, pos);
         }
         
         if (array instanceof VEnumArray) {
