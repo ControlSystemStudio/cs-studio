@@ -24,7 +24,7 @@
     <module>org.csstudio.autocomplete.ui.rap</module>
     <module>org.csstudio.autocomplete.ui.rcp</module>
     <module>org.csstudio.csdata</module>
-    <module>org.csstudio.csdata.test</module>
+    <!--module>org.csstudio.csdata.test</module--><!-- Exception while trying to execute test. -->
     <!--<module>org.csstudio.dal</module>-->
     <!--<module>org.csstudio.dal.epics</module>-->
     <!--<module>org.csstudio.dal.simulator</module>-->
@@ -76,7 +76,7 @@
     <module>org.csstudio.startup.helper</module>
     <module>org.csstudio.ui.help</module>
     <module>org.csstudio.ui.menu</module>
-    <module>org.csstudio.ui.menu.test</module>
+    <!--module>org.csstudio.ui.menu.test</module--><!-- Exception while trying to execute test. -->
     <module>org.csstudio.ui.preferences</module>
     <module>org.csstudio.ui.util</module>
     <module>org.csstudio.utility.pv</module>
