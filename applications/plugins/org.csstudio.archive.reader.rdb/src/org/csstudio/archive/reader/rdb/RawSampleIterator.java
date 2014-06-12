@@ -65,6 +65,12 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      */
     private void determineInitialSample(final Timestamp start, final Timestamp end) throws Exception
     {
+    	boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
+		// Disable auto-commit to determine sample with PostgreSQL
+		if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
+			reader.getRDB().getConnection().setAutoCommit(false);
+		}
+		
         java.sql.Timestamp start_stamp = TimestampHelper.toSQLTimestamp(start);
         final java.sql.Timestamp end_stamp = TimestampHelper.toSQLTimestamp(end);
 
@@ -122,6 +128,9 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         if (result_set.next())
             value = decodeSampleTableValue(result_set, true);
         // else leave value null to indicate end of samples
+        
+        // Restore auto-commit value as defined before execution of this method
+     	reader.getRDB().getConnection().setAutoCommit(autoCommit);
     }
 
     /** {@inheritDoc} */
