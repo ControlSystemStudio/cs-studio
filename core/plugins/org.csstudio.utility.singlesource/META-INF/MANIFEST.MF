@@ -14,4 +14,3 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Description: Abstraction to support both RCP and RAP
-Export-Package: org.csstudio.utility.singlesource

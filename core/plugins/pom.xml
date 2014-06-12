@@ -59,11 +59,14 @@
     <!--<module>org.csstudio.platform.libs.tine</module>--><!-- Moved to third party repository  -->
     <!--<module>org.csstudio.platform.simpledal</module>-->
     <module>org.csstudio.platform.utility.jms</module>
+	<module>org.csstudio.platform.utility.jms.test</module>
     <module>org.csstudio.platform.utility.jms.ui</module>
     <module>org.csstudio.platform.utility.rdb</module>
+	<module>org.csstudio.platform.utility.rdb.test</module>
     <module>org.csstudio.rap.core</module>
     <module>org.csstudio.rap.ui.util</module>
     <module>org.csstudio.security</module>
+	<module>org.csstudio.security.test</module>
     <module>org.csstudio.security.ui</module>
     <module>org.csstudio.simplepv</module>
     <module>org.csstudio.simplepv.pvmanager</module>
@@ -99,6 +102,7 @@
     <module>org.csstudio.utility.singlesource</module>
     <module>org.csstudio.utility.singlesource.rap</module>
     <module>org.csstudio.utility.singlesource.rcp</module>
+	<module>org.csstudio.utility.singlesource.test</module>
     <module>org.csstudio.utility.test</module>
     <module>org.csstudio.workspace</module>
     <!--<module>org.epics.pvaccess</module>--><!-- Moved to maven-osgi repo -->
