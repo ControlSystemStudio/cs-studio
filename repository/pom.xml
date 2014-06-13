@@ -91,6 +91,11 @@
 									<id>org.jdom:jdom:1.1</id>
 								</artifact>
 								<artifact>
+									<id>org.antlr:antlr-runtime:3.4</id>
+									<source>true</source>
+									<transitive>false</transitive>
+								</artifact>
+								<artifact>
 									<id>junit:junit-dep:4.10</id>
 									<instructions>
 										<Bundle-Name>org.junit-dep</Bundle-Name>
