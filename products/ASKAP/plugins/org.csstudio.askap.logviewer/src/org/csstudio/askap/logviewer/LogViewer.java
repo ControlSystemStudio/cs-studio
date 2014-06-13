@@ -27,14 +27,8 @@ public class LogViewer extends EditorPart {
 	private LogMessageTable messageTable;
 	private LogDataModel dataModel = null;
 
-
 	public LogViewer() {
 		messageTable = new LogMessageTable();
-		dataModel = new LogDataModel(Preferences.getLogMessageTopicName(), 
-				Preferences.getLogQueryAdaptorName(), 
-				Preferences.getLogQueryMessagesPerQuery(), 
-				Preferences.getMaxMessages(), 
-				Preferences.getLogSubscriberEndPointName());
 	}
 
 	@Override
@@ -53,8 +47,14 @@ public class LogViewer extends EditorPart {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
         setSite(site);
-        setPartName(input.getName());
+        setPartName(input.getToolTipText());
     	setInput(input);
+    	
+		dataModel = new LogDataModel(input.getName(), 
+				Preferences.getLogQueryAdaptorName() , 
+				Preferences.getLogQueryMessagesPerQuery(), 
+				Preferences.getMaxMessages(), 
+				Preferences.getLogSubscriberEndPointName() + "-" + input.getName());
 	}
 
 	@Override
@@ -86,7 +86,12 @@ public class LogViewer extends EditorPart {
         getSite().getPage().addPartListener(new IPartListener2() {
         	
             private boolean isThisEditor(final IWorkbenchPartReference part) {
-                return (part.getPart(false) instanceof LogViewer);
+                if (part.getPart(false) instanceof LogViewer){
+                	LogViewer viewer = (LogViewer) part.getPart(false);
+                	return (viewer.getPartName().equals(getPartName()));
+                }
+                
+                return false;
             }
 
 			
@@ -108,8 +113,9 @@ public class LogViewer extends EditorPart {
 
 			@Override
 			public void partHidden(IWorkbenchPartReference partRef) {
-				if (isThisEditor(partRef))
+				if (isThisEditor(partRef)) {
 					messageTable.haltUpdates();
+				}
 			}
 			
 
@@ -144,13 +150,16 @@ public class LogViewer extends EditorPart {
 	}
 	
 	
-	public static LogViewer openLogViewer() {
+	public static LogViewer openLogViewer(String topicName) {
         try {
         	final IWorkbench workbench = PlatformUI.getWorkbench();
         	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         	final IWorkbenchPage page = window.getActivePage();
         	
-            return (LogViewer) page.openEditor(new AskapEditorInput("Realtime Log Viewer"), ID);
+        	AskapEditorInput input = new AskapEditorInput(topicName);
+        	input.setTooltip("Realtime Logger - " + input.getName());
+        	
+            return (LogViewer) page.openEditor(input, ID);
 		} catch (Exception ex) {
 			logger.log(Level.SEVERE, "Cannot create LogViewer", ex);
 		}

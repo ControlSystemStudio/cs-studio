@@ -12,11 +12,16 @@ public class AskapEditorInput implements IEditorInput, IPersistableElement {
 
 	public static final String TITLE_KEY = "EditorInputTitle";
 	private String title;
+	private String tooltip;
 
 	public AskapEditorInput(String title) {
 		this.title = title;
 	}
 	
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
+	}
+
 	@Override
 	public Object getAdapter(Class adapter) {
 		return null;
@@ -44,7 +49,10 @@ public class AskapEditorInput implements IEditorInput, IPersistableElement {
 
 	@Override
 	public String getToolTipText() {
-		return title;
+		if (tooltip==null || tooltip.trim().length()==0)
+			return title;
+		
+		return tooltip;
 	}
 
 	@Override
