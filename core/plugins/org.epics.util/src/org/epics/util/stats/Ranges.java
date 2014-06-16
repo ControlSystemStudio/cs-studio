@@ -12,6 +12,24 @@ package org.epics.util.stats;
 public class Ranges {
     
     /**
+     * Returns the range of the absolute values within the range.
+     * <p>
+     * If the range is all positive, it returns the same range.
+     * 
+     * @param range a range
+     * @return the range of the absolute values
+     */
+    public static Range absRange(Range range) {
+        if (range.getMinimum().doubleValue() >= 0 && range.getMaximum().doubleValue() >= 0) {
+            return range;
+        } else if (range.getMinimum().doubleValue() < 0 && range.getMaximum().doubleValue() < 0) {
+            return range(- range.getMaximum().doubleValue(), - range.getMinimum().doubleValue());
+        } else {
+            return range(0, Math.max(range.getMinimum().doubleValue(), range.getMaximum().doubleValue()));
+        }
+    }
+    
+    /**
      * Range from given min and max.
      * 
      * @param minValue minimum value
@@ -167,5 +185,24 @@ public class Ranges {
         
         return min != max && !Double.isNaN(min) && !Double.isInfinite(min) &&
                 !Double.isNaN(max) && !Double.isInfinite(max);
+    }
+    
+    /**
+     * True if the tow ranges have the same min and max.
+     * 
+     * @param r1 a range
+     * @param r2 another range
+     * @return true if equal
+     */
+    public static boolean equals(Range r1, Range r2) {
+        // Check null cases
+        if (r1 == null && r2 == null) {
+            return true;
+        }
+        if (r1 == null || r2 == null) {
+            return false;
+        }
+        
+        return r1.getMinimum().equals(r2.getMinimum()) && r1.getMaximum().equals(r2.getMaximum());
     }
 }
