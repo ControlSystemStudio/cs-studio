@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Export-Package: org.epics.pvmanager;uses:="org.epics.util.time,org.epi
+ cs.pvmanager.util,org.epics.pvmanager.expression",org.epics.pvmanager
+ .service;uses:="org.epics.pvmanager",org.epics.pvmanager.util;uses:="
+ javax.swing,org.epics.util.array,org.epics.util.text",org.epics.pvman
+ ager.expression;uses:="org.epics.pvmanager",schema,org.csstudio.utili
+ ty.pvmanager;uses:="org.eclipse.core.runtime,org.osgi.framework,org.e
+ pics.pvmanager,org.epics.pvmanager.service,org.eclipse.core.runtime.p
+ references"
+Bundle-ActivationPolicy: lazy
+Built-By: berryman
+Tool: Bnd-0.0.357
+Bundle-Name: PVManager Core
+Created-By: Apache Maven Bundle Plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
+ @bnl.gov - BNL
+Build-Jdk: 1.7.0_45
+Bundle-Version: 3.2.0.SNAPSHOT
+Bnd-LastModified: 1402508871742
+Bundle-Activator: org.csstudio.utility.pvmanager.Activator
+Bundle-ManifestVersion: 2
+Bundle-Description: pvManager integration with CSS
+Import-Package: javax.swing,org.csstudio.utility.pvmanager,org.eclipse
+ .core.runtime;registry=split;version="3.4",org.eclipse.core.runtime.p
+ references;version="3.3",org.epics.pvmanager,org.epics.pvmanager.expr
+ ession,org.epics.pvmanager.service,org.epics.pvmanager.util,org.epics
+ .util.array,org.epics.util.text,org.epics.util.time,org.osgi.framewor
+ k;version="1.6",schema
+Bundle-SymbolicName: org.csstudio.utility.pvmanager;singleton:=true
+

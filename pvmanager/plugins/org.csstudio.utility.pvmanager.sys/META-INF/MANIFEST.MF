@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Export-Package: html,org.csstudio.utility.pvmanager.sys;uses:="org.osg
+ i.framework"
+Bundle-ActivationPolicy: lazy
+Built-By: berryman
+Tool: Bnd-0.0.357
+Bundle-Name: PVManager System PV Support
+Created-By: Apache Maven Bundle Plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
+ @bnl.gov - BNL
+Build-Jdk: 1.7.0_45
+Bundle-Version: 3.2.0.SNAPSHOT
+Bnd-LastModified: 1402508875918
+Bundle-Activator: org.csstudio.utility.pvmanager.sys.Activator
+Bundle-ManifestVersion: 2
+Bundle-Description: Provides system information to pvManager
+Import-Package: html,org.csstudio.utility.pvmanager.sys,org.osgi.frame
+ work;version="1.6"
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.sys;singleton:=tru
+ e
+
