@@ -1,0 +1,11 @@
+Bundle-Name: Test Fragment
+Bundle-SymbolicName: org.csstudio.alarm.beast.notifier.test
+Fragment-Host: org.csstudio.alarm.beast.notifier
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.8.2"
+Export-Package: org.csstudio.alarm.beast.notifier,
+ org.csstudio.alarm.beast.notifier.actions,
+ org.csstudio.alarm.beast.notifier.util

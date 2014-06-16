@@ -181,6 +181,7 @@
     <module>org.csstudio.ui.menu.web</module>
     <module>org.csstudio.unitconversion.ui</module>
     <!--<module>org.csstudio.utility.adlConverter</module>--><!-- depends on org.csstudio.sds.ui -->
+	<!--module>org.csstudio.utility.adlConverter.test</module--><!-- depends on org.csstudio.utility.adlConverter -->
     <module>org.csstudio.utility.adlParser</module>
     <module>org.csstudio.utility.caSnooperUi</module>
     <module>org.csstudio.utility.channel</module>
@@ -233,5 +234,33 @@
     <!--<module>org.slf4j</module>--><!-- Moved to third party repository -->
     <!--<module>org.slf4j-log4j12</module>--><!-- Moved to third party repository -->
     <!--<module>org.slf4j.bridge</module>--><!-- Moved to third party maven repository -->
+	
+	<module>org.csstudio.alarm.beast.test</module>
+	<module>org.csstudio.alarm.beast.annunciator.test</module>
+	<module>org.csstudio.alarm.beast.msghist.test</module>
+	<module>org.csstudio.alarm.beast.notifier.test</module>
+	<module>org.csstudio.alarm.beast.server.test</module>
+	<module>org.csstudio.alarm.beast.ui.test</module>
+	<module>org.csstudio.archive.engine.test</module>
+	<module>org.csstudio.archive.reader.test</module>
+	<module>org.csstudio.archive.reader.appliance.test</module>
+	<module>org.csstudio.archive.vtype.test</module>
+	<module>org.csstudio.diag.postanalyser.test</module>
+	<module>org.csstudio.diag.pvfields.test</module>
+	<module>org.csstudio.ndarray.test</module>
+	<module>org.csstudio.scan.test</module>
+	<module>org.csstudio.scan.server.test</module>
+	<module>org.csstudio.trends.databrowser2.test</module>
+	<module>org.csstudio.vtype.pv.test</module>
+	<module>org.csstudio.utility.channel.test</module>
+	<module>org.csstudio.display.pace.test</module>
+	<module>org.csstudio.alarm.beast.configtool.test</module>
+	<module>org.csstudio.apputil.ui.test</module>
+	<module>org.csstudio.archive.reader.aapi.test</module>
+	
+	
+	
+	
+	
   </modules>
 </project>

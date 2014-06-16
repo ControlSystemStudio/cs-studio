@@ -1,0 +1,9 @@
+Bundle-Name: Test Fragment
+Bundle-SymbolicName: org.csstudio.ndarray.test
+Fragment-Host: org.csstudio.ndarray
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.8.2"
+Export-Package: org.csstudio.ndarray
