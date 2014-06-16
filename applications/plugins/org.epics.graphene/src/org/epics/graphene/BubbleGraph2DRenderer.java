@@ -4,10 +4,12 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import org.epics.util.array.ListInt;
+import org.epics.util.stats.Ranges;
 
 /**
  *
@@ -83,7 +85,7 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
         // Make sure that the line does not go ouside the chart
         setClip(g);
         
-        Range absZPlotRange = RangeUtil.absRange(zPlotRange);
+        Range absZPlotRange = Ranges.absRange(zPlotRange);
         for (int j = indexes.size() - 1; j >= 0; j--) {
             int i = indexes.getInt(j);
             double zValue = data.getZValues().getDouble(i);

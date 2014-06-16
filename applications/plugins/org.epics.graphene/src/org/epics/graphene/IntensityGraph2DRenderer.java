@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import org.epics.util.array.ListNumbers;
 import org.epics.util.array.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import org.epics.util.stats.Ranges;
 
 /**
  * A renderer for intensity graph (also known as heat graph), which visualizes
@@ -163,7 +165,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         if (!optimizeColorScheme){
             colorMapInstance = colorMap.createInstance(zPlotRange);
         } else {
-            if (colorMapInstance == null || !RangeUtil.equals(optimizedRange, zRange)) {
+            if (colorMapInstance == null || !Ranges.equals(optimizedRange, zRange)) {
                 colorMapInstance = colorMap.createInstance(zPlotRange);
                 colorMapInstance = NumberColorMaps.optimize(colorMapInstance, zPlotRange);
                 optimizedRange = zPlotRange;
@@ -189,7 +191,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
             same length as the the height of the graph in pixels.*/
             ListNumber dataList = ListNumbers.linearListFromRange(zPlotRange.getMinimum().doubleValue(),zPlotRange.getMaximum().doubleValue(),(int)yHeightTotal);
             //legendData is a Cell2DDataset representation of dataList.
-            Cell2DDataset legendData = Cell2DDatasets.linearRange(dataList, RangeUtil.range(0, 1), 1, RangeUtil.range(0, (int)yHeightTotal), (int)yHeightTotal);
+            Cell2DDataset legendData = Cell2DDatasets.linearRange(dataList, Ranges.range(0, 1), 1, Ranges.range(0, (int)yHeightTotal), (int)yHeightTotal);
             int xLegendStart = getImageWidth() - originalRightMargin - zLabelMaxWidth - zLabelMargin - legendWidth;
             drawRectanglesArray(g, legendData, xLegendStart, yEndGraph, legendWidth, yHeightTotal, 1, legendWidth, image);
             graphBuffer.drawLeftLabels(zReferenceLabels, zReferenceCoords, labelColor, labelFont, area.areaBottom, area.areaTop, getImageWidth() - originalRightMargin - 1);
