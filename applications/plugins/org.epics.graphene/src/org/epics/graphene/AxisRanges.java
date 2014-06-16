@@ -46,7 +46,11 @@ public class AxisRanges {
                 }
             };
         }
-        
+
+        @Override
+        public String toString() {
+            return "absolute(" + absoluteRange.getMinimum() + ", " + absoluteRange.getMaximum() + ")";
+        }
     }
     
     public static AxisRange data() {
@@ -74,7 +78,11 @@ public class AxisRanges {
                 }
             };
         }
-        
+
+        @Override
+        public String toString() {
+            return "data";
+        }
     }
     
     public static AxisRange integrated() {
@@ -117,6 +125,11 @@ public class AxisRanges {
                 }
             };
         }
+
+        @Override
+        public String toString() {
+            return "integrated(" + (int) (minUsage * 100) + "%)";
+        }
     }
     
     public static AxisRange display() {
@@ -152,6 +165,11 @@ public class AxisRanges {
                     return axisRange;
                 }
             };
+        }
+
+        @Override
+        public String toString() {
+            return "display";
         }
     }
 }
