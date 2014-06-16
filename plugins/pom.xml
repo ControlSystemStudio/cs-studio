@@ -12,7 +12,6 @@
   <version>0.0.51-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>org.antlr.runtime</module>
     <module>com.google.common</module>
     <module>com.google.inject.guice.v3</module>
     <module>com.mysql.jdbc</module>
