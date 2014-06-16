@@ -153,4 +153,19 @@ public class Ranges {
         double fraction = Math.max(0.0, overlapWidth / rangeWidth);
         return fraction;
     }
+    
+    /**
+     * Checks whether the range is of non-zero size and the boundaries are
+     * neither NaN or Infinity.
+     * 
+     * @param range the range
+     * @return true if range is of finite, non-zero size
+     */
+    public static boolean isValid(Range range) {
+        double min = range.getMinimum().doubleValue();
+        double max = range.getMaximum().doubleValue();
+        
+        return min != max && !Double.isNaN(min) && !Double.isInfinite(min) &&
+                !Double.isNaN(max) && !Double.isInfinite(max);
+    }
 }
