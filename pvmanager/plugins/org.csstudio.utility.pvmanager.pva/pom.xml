@@ -71,7 +71,7 @@
 							pvManager</Bundle-Description>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-						<Export-Package>org.epics.pvmanager.pva,org.epics.pvmanager.pva.adapters</Export-Package>
+						<Export-Package>org.epics.pvmanager.pva,org.epics.pvmanager.pva.adapters,org.epics.pvmanager.pva.rpcservice.rpcclient,org.epics.pvmanager.pva.rpcservice</Export-Package>
 <!-- 						<Require-Bundle>org.eclipse.core.runtime, -->
 <!-- 							org.csstudio.utility.pvmanager;bundle-version="2.0.0", -->
 <!-- 							org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0", -->
