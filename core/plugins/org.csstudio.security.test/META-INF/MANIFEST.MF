@@ -1,0 +1,10 @@
+Bundle-Name: Test Fragment
+Bundle-SymbolicName: org.csstudio.security.test
+Fragment-Host: org.csstudio.security
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.security
+Require-Bundle: org.junit;bundle-version="4.8.2",
+  org.csstudio.utility.test

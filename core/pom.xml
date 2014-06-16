@@ -34,6 +34,20 @@
     <tycho-extras.version>0.20.0</tycho-extras.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.0</cs-studio-central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+	
+	<!-- SonarQube configuration -->
+ 	<sonar.language>java</sonar.language>
+ 	<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+ 	<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+	<sonar.junit.reportsPath>
+ 		../${project.artifactId}.test/target/surefire-reports/
+ 	</sonar.junit.reportsPath>
+	
+	<!--sonar.host.url>INSERT YOUR SONARQUBE URL</sonar.host.url-->
+	<!--sonar.jdbc.url>INSERT YOUR JDBC CONNECTION</sonar.jdbc.url-->
+	<!--sonar.jdbc.driver>INSERT YOUR JDBC DRIVER</sonar.jdbc.driver-->
+	<!--sonar.jdbc.username>username</sonar.jdbc.username!-->
+	<!--sonar.jdbc.password>password</sonar.jdbc.password-->
   </properties>
 
   <!--
@@ -52,11 +66,11 @@
     P2 REPOSITORIES
   -->
   <repositories>
-    <!--<repository>
+    <repository>
       <id>csstudio-thirdparty</id>
       <url>http://download.controlsystemstudio.org/thirdparty/4.0</url>
       <layout>p2</layout>
-    </repository>-->
+    </repository>
     <repository>
       <id>csstudio-maven-osgi-bundles</id>
       <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.0</url>
@@ -281,9 +295,28 @@
         <artifactId>tycho-surefire-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <skipTests>true</skipTests>
+			<skipTests>false</skipTests>
+			<testFailureIgnore>true</testFailureIgnore>
+			<failIfNoTests>false</failIfNoTests>
+			<skipTests>false</skipTests>
+			<!--Some tests fail right now-->
+			<testFailureIgnore>true</testFailureIgnore>
+			<failIfNoTests>false</failIfNoTests>
         </configuration>
       </plugin>
+	  <!-- Used for collecting tests results before sending them to Sonar. -->
+		<plugin>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>0.5.3.201107060350</version>
+			<configuration>
+				<includes>*</includes>
+				<destFile>${project.basedir}/../target/jacoco.exec</destFile>
+			</configuration>
+			<executions>
+				<execution><goals><goal>prepare-agent</goal></goals></execution>
+			</executions>
+		</plugin>
     </plugins>
   </build>
 

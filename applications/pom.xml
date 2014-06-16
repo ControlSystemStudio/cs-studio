@@ -56,12 +56,12 @@
       <id>csstudio-core</id>
       <url>http://download.controlsystemstudio.org/core/4.0</url>
       <layout>p2</layout>
-    </repository>
+    </repository>-->
     <repository>
       <id>csstudio-thirdparty</id>
       <url>http://download.controlsystemstudio.org/thirdparty/4.0</url>
       <layout>p2</layout>
-    </repository>-->
+    </repository>
     <repository>
       <id>csstudio-maven-osgi-bundles</id>
       <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.0</url>
