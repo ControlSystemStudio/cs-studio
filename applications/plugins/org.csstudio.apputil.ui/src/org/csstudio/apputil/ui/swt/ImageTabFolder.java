@@ -32,9 +32,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.ui.PlatformUI;
 
 /** TabFolder that keeps ImagePreview items for a list of image files,
  *  allowing addition, removal of images
@@ -187,37 +190,54 @@ public class ImageTabFolder
     @SuppressWarnings("nls")
     protected void addScreenshot(final boolean full)
     {
-    	// Hide the shell that displays the dialog
-    	// to keep the dialog itself out of the screenshot
-    	tab_folder.getShell().setVisible(false);
-    	
-    	// Take the screen shot
-		final Image image = full
-			? Screenshot.getFullScreenshot()
-			: Screenshot.getApplicationScreenshot();
-
-		// Show the dialog again
-		tab_folder.getShell().setVisible(true);
-
-        // Write to file
-        try
+        // Hide the shell that displays the dialog
+        // to keep the dialog itself out of the screenshot
+        final Shell shell = tab_folder.getShell();
+        shell.setVisible(false);
+        
+        // On Linux (X11, GTK), the dialog's shell may now be hidden, but the
+        // vacated area on the screen is blank, not redrawn.
+        // Force a redraw.
+        final Shell main_shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        main_shell.forceActive();
+        main_shell.redraw();
+        
+        // Delay screenshot in UI event queue to allow for the refresh
+        final Display display = shell.getDisplay();
+        display.timerExec(500, new Runnable()
         {
-        	final File screenshot_file = File.createTempFile("screenshot", ".png");
-        	screenshot_file.deleteOnExit();
-
-        	final ImageLoader loader = new ImageLoader();
-            loader.data = new ImageData[] { image.getImageData() };
-            image.dispose();
-    	    // Save
-    	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
-        	
-        	addImage(screenshot_file.getPath());
-        }
-        catch (Exception ex)
-        {
-        	MessageDialog.openError(tab_folder.getShell(),
-        			"Error", ex.getMessage());
-        }
+            @Override
+            public void run()
+            {
+                // Take the screen shot
+                final Image image = full
+                    ? Screenshot.getFullScreenshot()
+                    : Screenshot.getApplicationScreenshot();
+                    
+                // Show the dialog again
+                shell.setVisible(true);
+        
+                // Write to file
+                try
+                {
+                    final File screenshot_file = File.createTempFile("screenshot", ".png");
+                    screenshot_file.deleteOnExit();
+        
+                    final ImageLoader loader = new ImageLoader();
+                    loader.data = new ImageData[] { image.getImageData() };
+                    image.dispose();
+                    // Save
+                    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
+                    
+                    addImage(screenshot_file.getPath());
+                }
+                catch (Exception ex)
+                {
+                    MessageDialog.openError(tab_folder.getShell(),
+                            "Error", ex.getMessage());
+                }
+            }
+        });
     }
     
     /** Remove image from preview and list of images-to-add
