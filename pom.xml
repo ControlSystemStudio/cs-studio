@@ -24,7 +24,7 @@
 		<graphene.version>0.7</graphene.version>
 		<pvdata.version>3.0.3</pvdata.version>
 		<pvaccess.version>3.0.5</pvaccess.version>
-		<csstudio.version>3.2.0-SNAPSHOT</csstudio.version>
+		<csstudio.version>3.3.0-SNAPSHOT</csstudio.version>
 	</properties>
 	<repositories>
 		<repository>
