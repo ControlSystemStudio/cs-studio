@@ -12,7 +12,7 @@ import java.awt.*;
  */
 public class AreaGraph2DRenderer extends Graph2DRenderer<AreaGraph2DRendererUpdate> {
     
-    private static final AxisRange DEFAULT_X_RANGE = AxisRanges.relative();
+    private static final AxisRange DEFAULT_X_RANGE = AxisRanges.data();
     private static final AxisRange DEFAULT_Y_RANGE = AxisRanges.display();
 
     public AreaGraph2DRenderer(int imageWidth, int imageHeight) {

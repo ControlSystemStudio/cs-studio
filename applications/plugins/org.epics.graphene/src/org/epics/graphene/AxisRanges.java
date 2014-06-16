@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Ranges;
+
 /**
  * TODO: finalize names
  *
@@ -16,99 +18,139 @@ public class AxisRanges {
     
     public static AxisRange absolute(final double min, final double max) {
         final Range absoluteRange = RangeUtil.range(min, max);
-        return new AxisRange() {
-            
-            private final AxisRange axisRange = this;
-
-            @Override
-            public AxisRangeInstance createInstance() {
-                return new AxisRangeInstance() {
-
-                    @Override
-                    public Range axisRange(Range dataRange, Range displayRange) {
-                        return absoluteRange;
-                    }
-
-                    @Override
-                    public AxisRange getAxisRange() {
-                        return axisRange;
-                    }
-                    
-                };
-            }
-        };
+        return new Absolute(absoluteRange);
     }
     
-    public static AxisRange relative() {
-        return new AxisRange() {
-            
-            private final AxisRange axisRange = this;
+    private static class Absolute implements AxisRange {
+        
+        private final AxisRange axisRange = this;
+        private final Range absoluteRange;
 
-            @Override
-            public AxisRangeInstance createInstance() {
-                return new AxisRangeInstance() {
+        private Absolute(Range absoluteRange) {
+            this.absoluteRange = absoluteRange;
+        }
 
-                    @Override
-                    public Range axisRange(Range dataRange, Range displayRange) {
-                        return dataRange;
-                    }
+        @Override
+        public AxisRangeInstance createInstance() {
+            return new AxisRangeInstance() {
 
-                    @Override
-                    public AxisRange getAxisRange() {
-                        return axisRange;
-                    }
-                };
-            }
-        };
+                @Override
+                public Range axisRange(Range dataRange, Range displayRange) {
+                        return absoluteRange;
+                }
+
+                @Override
+                public AxisRange getAxisRange() {
+                    return axisRange;
+                }
+            };
+        }
+        
+    }
+    
+    public static AxisRange data() {
+        return DATA;
+    }
+    
+    private static Data DATA = new Data();
+    
+    private static class Data implements AxisRange {
+        
+        private final AxisRange axisRange = this;
+
+        @Override
+        public AxisRangeInstance createInstance() {
+            return new AxisRangeInstance() {
+
+                @Override
+                public Range axisRange(Range dataRange, Range displayRange) {
+                    return dataRange;
+                }
+
+                @Override
+                public AxisRange getAxisRange() {
+                    return axisRange;
+                }
+            };
+        }
+        
     }
     
     public static AxisRange integrated() {
-        return new AxisRange() {
-            
-            private final AxisRange axisRange = this;
+        return INTEGRATED;
+    }
+    
+    public static AxisRange integrated(double minUsage) {
+        return new Integrated(minUsage);
+    }
+    
+    private static final Integrated INTEGRATED = new Integrated(0.8);
+    
+    private static class Integrated implements AxisRange {
 
-            @Override
-            public AxisRangeInstance createInstance() {
-                return new AxisRangeInstance() {
-                    
-                    Range aggregatedRange;
+        private final AxisRange axisRange = this;
+        private final double minUsage;
 
-                    @Override
-                    public Range axisRange(Range dataRange, Range displayRange) {
-                        aggregatedRange = RangeUtil.aggregateRange(dataRange, aggregatedRange);
-                        return aggregatedRange;
+        public Integrated(double minUsage) {
+            this.minUsage = minUsage;
+        }
+
+        @Override
+        public AxisRangeInstance createInstance() {
+            return new AxisRangeInstance() {
+
+                private Range aggregatedRange;
+
+                @Override
+                public Range axisRange(Range dataRange, Range displayRange) {
+                    aggregatedRange = RangeUtil.aggregateRange(dataRange, aggregatedRange);
+                    if (Ranges.overlap(aggregatedRange, dataRange) < minUsage) {
+                        aggregatedRange = dataRange;
                     }
+                    return aggregatedRange;
+                }
 
-                    @Override
-                    public AxisRange getAxisRange() {
-                        return axisRange;
-                    }
-                };
-            }
-            
-        };
+                @Override
+                public AxisRange getAxisRange() {
+                    return axisRange;
+                }
+            };
+        }
     }
     
     public static AxisRange display() {
-        return new AxisRange() {
+        return DISPLAY;
+    }
+    
+    private static Display DISPLAY = new Display();
+    
+    private static class Display implements AxisRange {
             
-            private final AxisRange axisRange = this;
+        private final AxisRange axisRange = this;
 
-            @Override
-            public AxisRangeInstance createInstance() {
-                return new AxisRangeInstance() {
+        @Override
+        public AxisRangeInstance createInstance() {
+            return new AxisRangeInstance() {
+                
+                private Range previousDataRange;
 
-                    @Override
-                    public Range axisRange(Range dataRange, Range displayRange) {
+                @Override
+                public Range axisRange(Range dataRange, Range displayRange) {
+                    if (Ranges.isValid(displayRange)) {
                         return displayRange;
+                    } else if (previousDataRange == null) {
+                        previousDataRange = dataRange;
+                        return previousDataRange;
+                    } else {
+                        return previousDataRange;
                     }
+                }
 
-                    @Override
-                    public AxisRange getAxisRange() {
-                        return axisRange;
-                    }
-                };
-            }
-        };
+                @Override
+                public AxisRange getAxisRange() {
+                    return axisRange;
+                }
+            };
+        }
     }
 }

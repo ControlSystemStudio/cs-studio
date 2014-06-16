@@ -31,8 +31,8 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
      */
     public static boolean DEFAULT_DRAW_LEGEND = false;
     
-    private static final AxisRange DEFAULT_X_RANGE = AxisRanges.relative();
-    private static final AxisRange DEFAULT_Y_RANGE = AxisRanges.relative();
+    private static final AxisRange DEFAULT_X_RANGE = AxisRanges.data();
+    private static final AxisRange DEFAULT_Y_RANGE = AxisRanges.data();
     
     //Colors to be used when drawing the graph, gives a color based on a given value and the range of data.
     private NumberColorMapInstance colorMapInstance;

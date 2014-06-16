@@ -15,12 +15,13 @@ package org.epics.graphene;
  *
  * @author carcassi
  */
-public interface Range {
+public interface Range extends org.epics.util.stats.Range {
     /**
      * The minimum value.
      * 
      * @return a value; never null
      */
+    @Override
     public Number getMinimum();
     
     /**
@@ -28,5 +29,6 @@ public interface Range {
      * 
      * @return a value; never null
      */
+    @Override
     public Number getMaximum();
 }
