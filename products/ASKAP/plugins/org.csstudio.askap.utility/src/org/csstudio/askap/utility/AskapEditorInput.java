@@ -11,11 +11,17 @@ import org.eclipse.ui.IPersistableElement;
 public class AskapEditorInput implements IEditorInput, IPersistableElement {
 
 	public static final String TITLE_KEY = "EditorInputTitle";
+	public static final String TOOLTIP_KEY = "EditorInputTooltip";
 	private String title;
 	private String tooltip;
 
 	public AskapEditorInput(String title) {
 		this.title = title;
+	}
+	
+	public AskapEditorInput(String title, String tooltip) {
+		this.title = title;
+		this.tooltip = tooltip;
 	}
 	
 	public void setTooltip(String tooltip) {
@@ -68,6 +74,7 @@ public class AskapEditorInput implements IEditorInput, IPersistableElement {
 	@Override
 	public void saveState(IMemento memento) {
 		memento.putString(TITLE_KEY, title);
+		memento.putString(TOOLTIP_KEY, tooltip);
 	}
 
 	@Override

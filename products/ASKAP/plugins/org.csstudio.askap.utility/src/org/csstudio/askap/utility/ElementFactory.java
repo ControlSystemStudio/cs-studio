@@ -11,7 +11,8 @@ public class ElementFactory implements IElementFactory {
 	@Override
 	public IAdaptable createElement(IMemento memento) {
 		String title = memento.getString(AskapEditorInput.TITLE_KEY);
-		return new AskapEditorInput(title);
+		String tooltip = memento.getString(AskapEditorInput.TOOLTIP_KEY);
+		return new AskapEditorInput(title, tooltip);
 	}
 
 }

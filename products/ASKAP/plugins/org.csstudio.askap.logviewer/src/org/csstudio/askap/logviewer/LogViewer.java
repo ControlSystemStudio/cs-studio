@@ -156,8 +156,7 @@ public class LogViewer extends EditorPart {
         	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         	final IWorkbenchPage page = window.getActivePage();
         	
-        	AskapEditorInput input = new AskapEditorInput(topicName);
-        	input.setTooltip("Realtime Logger - " + input.getName());
+        	AskapEditorInput input = new AskapEditorInput(topicName, "Realtime Logger - " + topicName);
         	
             return (LogViewer) page.openEditor(input, ID);
 		} catch (Exception ex) {
