@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.csstudio</groupId>
+		<artifactId>pvmanager-plugins</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>org.csstudio.utility.pvmanager.graphene</artifactId>
+	<packaging>bundle</packaging>
+	<version>${csstudio.version}</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.epics</groupId>
+			<artifactId>pvmanager-graphene</artifactId>
+			<version>${pvmanager.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+			<version>3.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.epics</groupId>
+			<artifactId>epics-util</artifactId>
+			<version>${epics.util.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.epics</groupId>
+			<artifactId>epics-vtype</artifactId>
+			<version>${pvmanager.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Private-Package>org.csstudio.utility.*</Private-Package>
+						<Bundle-Name>Graphene</Bundle-Name>
+						<Bundle-SymbolicName>org.csstudio.utility.pvmanager.graphene</Bundle-SymbolicName>
+						<Bundle-Vendor>Gabriele Carcassi carcassi@bnl.gov</Bundle-Vendor>
+						<Bundle-Description>Graphene Graphics</Bundle-Description>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+						<Export-Package>org.epics.pvmanager.graphene</Export-Package>
+						<_exportcontents>*</_exportcontents>
+						<!-- <_sources>true</_sources> -->
+						<_snapshot>${maven.build.timestamp}</_snapshot>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
