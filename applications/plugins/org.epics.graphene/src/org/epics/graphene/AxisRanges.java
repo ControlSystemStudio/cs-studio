@@ -22,7 +22,7 @@ public class AxisRanges {
         return new Absolute(absoluteRange);
     }
     
-    private static class Absolute implements AxisRange {
+    public static class Absolute implements AxisRange {
         
         private final AxisRange axisRange = this;
         private final Range absoluteRange;
@@ -51,6 +51,11 @@ public class AxisRanges {
         public String toString() {
             return "absolute(" + absoluteRange.getMinimum() + ", " + absoluteRange.getMaximum() + ")";
         }
+
+        public Range getAbsoluteRange() {
+            return absoluteRange;
+        }
+        
     }
     
     public static AxisRange data() {
@@ -59,9 +64,12 @@ public class AxisRanges {
     
     private static Data DATA = new Data();
     
-    private static class Data implements AxisRange {
+    public static class Data implements AxisRange {
         
         private final AxisRange axisRange = this;
+
+        private Data() {
+        }
 
         @Override
         public AxisRangeInstance createInstance() {
@@ -95,12 +103,12 @@ public class AxisRanges {
     
     private static final Integrated INTEGRATED = new Integrated(0.8);
     
-    private static class Integrated implements AxisRange {
+    public static class Integrated implements AxisRange {
 
         private final AxisRange axisRange = this;
         private final double minUsage;
 
-        public Integrated(double minUsage) {
+        private Integrated(double minUsage) {
             this.minUsage = minUsage;
         }
 
@@ -130,17 +138,25 @@ public class AxisRanges {
         public String toString() {
             return "integrated(" + (int) (minUsage * 100) + "%)";
         }
+
+        public double getMinUsage() {
+            return minUsage;
+        }
+        
     }
     
     public static AxisRange display() {
         return DISPLAY;
     }
     
-    private static Display DISPLAY = new Display();
+    private static final Display DISPLAY = new Display();
     
-    private static class Display implements AxisRange {
+    public static class Display implements AxisRange {
             
         private final AxisRange axisRange = this;
+
+        private Display() {
+        }
 
         @Override
         public AxisRangeInstance createInstance() {
