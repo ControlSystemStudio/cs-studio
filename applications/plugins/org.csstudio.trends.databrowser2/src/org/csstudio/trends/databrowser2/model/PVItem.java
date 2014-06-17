@@ -158,9 +158,14 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     }
         
     @Override
-    void setModel(Model model) {
+    void setModel(final Model model)
+    {
     	super.setModel(model);
-    	this.automaticRefresh = model.isAutomaticHistoryRefresh();
+    	// Dis-associated from model? Then refresh is no longer required
+    	if (model == null)
+    		automaticRefresh = false;
+    	else // Otherwise use model's configuration
+    		automaticRefresh = model.isAutomaticHistoryRefresh();
     }
 
     /** @return Maximum number of live samples in ring buffer */
