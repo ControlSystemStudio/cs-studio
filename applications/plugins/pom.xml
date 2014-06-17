@@ -207,7 +207,7 @@
     <module>org.csstudio.utility.product</module>
     <module>org.csstudio.utility.product.default</module>
     <module>org.csstudio.utility.pv.ui</module>
-    <module>org.csstudio.utility.pvmanager.graphene</module>
+    <!--<module>org.csstudio.utility.pvmanager.graphene</module>--><!-- moved to maven-osgi -->
     <!--<module>org.csstudio.utility.quickstart</module>--><!-- depends on org.csstudio.sds.ui -->
     <module>org.csstudio.utility.screenshot</module>
     <module>org.csstudio.utility.speech</module>
