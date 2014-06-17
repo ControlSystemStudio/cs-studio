@@ -25,6 +25,7 @@
 		<pvdata.version>3.0.3</pvdata.version>
 		<pvaccess.version>3.0.5</pvaccess.version>
 		<csstudio.version>4.0.0-SNAPSHOT</csstudio.version>
+		<eclipse.runtime.version>3.9.100-v20131218-1515</eclipse.runtime.version>
 	</properties>
 	<repositories>
 		<repository>
