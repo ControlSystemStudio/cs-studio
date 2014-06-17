@@ -157,6 +157,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
 //        fireItemLookChanged();
     }
         
+    /** {@inheritDoc} */
     @Override
     void setModel(final Model model)
     {
