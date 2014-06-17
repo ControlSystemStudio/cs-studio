@@ -1,6 +1,16 @@
 package org.csstudio.graphene;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -14,10 +24,8 @@ import org.epics.graphene.AxisRanges.Absolute;
 import org.epics.graphene.AxisRanges.Data;
 import org.epics.graphene.AxisRanges.Display;
 import org.epics.graphene.AxisRanges.Integrated;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
-public class AxisRangeEditorComposite extends Composite {
+public class AxisRangeEditorComposite extends Composite implements ISelectionProvider {
 	private Button btnData;
 	private Button btnDisplay;
 	private Button btnAbsolute;
@@ -108,6 +116,7 @@ public class AxisRangeEditorComposite extends Composite {
 	public void setAxisRange(AxisRange range) {
 		this.axisRange = range;
 		update(range);
+		fireSelectionChanged();
 	}
 	
 	private void update(AxisRange range) 	{
@@ -143,9 +152,42 @@ public class AxisRangeEditorComposite extends Composite {
 		minUsedRange.setSelection(80);
 		minUsedRange.setEnabled(false);
 	}
+	
+	private List<ISelectionChangedListener> listeners = new CopyOnWriteArrayList<ISelectionChangedListener>();
 
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
+
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return new StructuredSelection(getAxisRange());
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		listeners.remove(listener);
+	}
+	
+	private void fireSelectionChanged() {
+		ISelection selection = getSelection();
+		SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
+		for (ISelectionChangedListener listener : listeners) {
+			listener.selectionChanged(event);
+		}
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+	
+	
 }
