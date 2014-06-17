@@ -173,6 +173,11 @@
 									<transitive>false</transitive>
 								</artifact>
 								<artifact>
+									<id>org.csstudio:org.csstudio.utility.pvmanager.graphene:${csstudio.version}</id>
+									<source>true</source>
+									<transitive>false</transitive>
+								</artifact>
+								<artifact>
 									<id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
 									<source>true</source>
 									<transitive>false</transitive>

@@ -22,6 +22,7 @@
     <module>org.csstudio.utility.pvmanager.sim</module>
     <module>org.csstudio.utility.pvmanager.sys</module>
     <module>org.csstudio.utility.pvmanager.extra</module>
+    <module>org.csstudio.utility.pvmanager.graphene</module>
   </modules>
   
    <build>
