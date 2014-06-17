@@ -5,14 +5,14 @@
 package org.epics.pvmanager.graphene;
 
 import org.epics.graphene.Cell2DDataset;
-import org.epics.graphene.Range;
-import org.epics.graphene.RangeUtil;
-import org.epics.graphene.Statistics;
-import org.epics.graphene.StatisticsUtil;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ListByte;
 import org.epics.util.array.ListNumber;
+import org.epics.util.stats.Range;
+import org.epics.util.stats.Ranges;
+import org.epics.util.stats.Statistics;
+import org.epics.util.stats.StatisticsUtil;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.ndarray.Array2DDouble;
 
@@ -50,8 +50,8 @@ class Cell2DDatasetFromVNumberArray implements Cell2DDataset {
             throw new IllegalArgumentException("Array is 3D or more");
         }
         
-        this.xRange = RangeUtil.range(xBoundaries.getDouble(0), xBoundaries.getDouble(xBoundaries.size() - 1));
-        this.yRange = RangeUtil.range(yBoundaries.getDouble(0), yBoundaries.getDouble(yBoundaries.size() - 1));
+        this.xRange = Ranges.range(xBoundaries.getDouble(0), xBoundaries.getDouble(xBoundaries.size() - 1));
+        this.yRange = Ranges.range(yBoundaries.getDouble(0), yBoundaries.getDouble(yBoundaries.size() - 1));
         this.xCount = xBoundaries.size() - 1;
         this.yCount = yBoundaries.size() - 1;
         // TODO: better way to handle if display limits are not set?
@@ -65,7 +65,7 @@ class Cell2DDatasetFromVNumberArray implements Cell2DDataset {
             low = Math.max(Byte.MIN_VALUE, low);
             high = Math.min(Byte.MAX_VALUE, high);
         }
-        this.displayRange = RangeUtil.range(low, high);
+        this.displayRange = Ranges.range(low, high);
     }
 
     @Override
