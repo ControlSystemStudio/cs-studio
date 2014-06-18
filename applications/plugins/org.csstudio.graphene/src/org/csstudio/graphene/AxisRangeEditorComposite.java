@@ -1,6 +1,7 @@
 package org.csstudio.graphene;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -114,6 +115,9 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 	}
 	
 	public void setAxisRange(AxisRange range) {
+		if (Objects.equals(this.axisRange, range)) {
+			return;
+		}
 		this.axisRange = range;
 		update(range);
 		fireSelectionChanged();
