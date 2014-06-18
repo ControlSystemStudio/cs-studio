@@ -74,7 +74,6 @@ public class AxisRangeEditorSample {
 				} else {
 					text += System.lineSeparator() + event.getSelection().toString();
 				}
-				System.out.println(text);
 				txtEvents.setText(text);
 			}
 		});
