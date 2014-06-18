@@ -89,7 +89,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 			@Override
 			public void rangeChanged() {
-				if (graph != null) {
+				if (graph != null && isResizableAxis()) {
 					double invert = yRangeControl.getMin()
 							+ yRangeControl.getMax();
 					graph.update(graph.newUpdate().yAxisRange(
@@ -138,7 +138,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 			@Override
 			public void rangeChanged() {
-				if (graph != null) {
+				if (graph != null && isResizableAxis()) {
 					graph.update(graph.newUpdate().xAxisRange(
 							AxisRanges.absolute(xRangeControl.getSelectedMin(),
 									xRangeControl.getSelectedMax())));
@@ -264,7 +264,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 	private void setRange(StartEndRangeWidget control,
 			GraphDataRange plotDataRange) {
-		if (plotDataRange.getIntegratedRange() != null) {
+		if (isResizableAxis() && plotDataRange.getIntegratedRange() != null) {
 			control.setRange(plotDataRange.getIntegratedRange().getMinimum()
 					.doubleValue(), plotDataRange.getIntegratedRange().getMaximum()
 					.doubleValue());
@@ -272,7 +272,9 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 	}
 
 	private void resetRange(StartEndRangeWidget control) {
-		control.setRanges(0, 0, 1, 1);
+		if (isResizableAxis()) {
+			control.setRanges(0, 0, 1, 1);
+		}
 	}
 
 	private String dataFormula;
