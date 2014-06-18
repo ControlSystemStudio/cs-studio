@@ -9,6 +9,7 @@ import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,11 +48,12 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 	
 	public BubbleGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
+		final List<String> properties = Arrays.asList("highlightSelectionValue", "xAxisRange", "yAxisRange");
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
+				if (properties.contains(evt.getPropertyName()) && getGraph() != null) {
 					updateGraph();
 				}
 				
