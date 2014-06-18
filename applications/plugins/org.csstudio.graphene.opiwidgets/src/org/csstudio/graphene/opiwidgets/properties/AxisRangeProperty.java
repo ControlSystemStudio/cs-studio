@@ -60,8 +60,7 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		// TODO
-		return null;
+		return new AxisRangePropertyDescriptor(prop_id, description);		
 	}
 
 	@Override
