@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.graphene.opiwidgets.properties;
 
-import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.visualparts.AbstractDialogCellEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
@@ -15,8 +14,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.epics.graphene.AxisRange;
 import org.epics.graphene.AxisRanges;
 
-/**The cell editor for OPIColor.
- * @author Xihui Chen
+/**
+ * Editor for AxisRange.
  *
  */
 public class AxisRangeCellEditor extends AbstractDialogCellEditor {
@@ -30,10 +29,10 @@ public class AxisRangeCellEditor extends AbstractDialogCellEditor {
 
 	@Override
 	protected void openDialog(Shell parentShell, String dialogTitle) {
-//		OPIColorDialog dialog = 
-//			new OPIColorDialog(parentShell, opiColor, dialogTitle);
-//		if(dialog.open() == Window.OK)
-//			opiColor = dialog.getOutput();
+		AxisRangePropertyDialog dialog = 
+			new AxisRangePropertyDialog(parentShell, axisRange, dialogTitle);
+		if(dialog.open() == Window.OK)
+			axisRange = dialog.getAxisRange();
 	}
 
 	@Override

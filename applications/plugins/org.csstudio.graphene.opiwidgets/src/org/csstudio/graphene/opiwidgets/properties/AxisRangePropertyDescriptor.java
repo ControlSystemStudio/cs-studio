@@ -11,9 +11,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-/**The property descriptor for OPI Color.
- * @author Xihui Chen
- *
+/**
+ * Description for AxisRange property.
  */
 public class AxisRangePropertyDescriptor extends PropertyDescriptor {
 
