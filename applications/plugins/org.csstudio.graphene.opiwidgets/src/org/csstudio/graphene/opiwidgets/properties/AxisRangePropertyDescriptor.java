@@ -7,11 +7,7 @@
  ******************************************************************************/
 package org.csstudio.graphene.opiwidgets.properties;
 
-import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.visualparts.OPIColorCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
@@ -27,12 +23,11 @@ public class AxisRangePropertyDescriptor extends PropertyDescriptor {
 
 	@Override
 	public CellEditor createPropertyEditor(Composite parent) {
-//		OPIColorCellEditor editor = new OPIColorCellEditor(parent, "Choose Color");
-//		if (getValidator() != null) {
-//			editor.setValidator(getValidator());
-//		}
-//		return editor;
-		return null;
+		AxisRangeCellEditor editor = new AxisRangeCellEditor(parent, "Choose range for axis...");
+		if (getValidator() != null) {
+			editor.setValidator(getValidator());
+		}
+		return editor;
 	}
 	
 	

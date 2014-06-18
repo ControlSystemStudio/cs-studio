@@ -2,10 +2,6 @@ package org.csstudio.graphene.opiwidgets.properties;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.properties.support.PropertySSHelper;
-import org.csstudio.opibuilder.util.MediaService;
-import org.csstudio.opibuilder.util.OPIColor;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.epics.graphene.AxisRange;
 import org.epics.graphene.AxisRanges;
@@ -13,7 +9,6 @@ import org.epics.graphene.AxisRanges.Absolute;
 import org.epics.graphene.AxisRanges.Data;
 import org.epics.graphene.AxisRanges.Display;
 import org.epics.graphene.AxisRanges.Integrated;
-import org.epics.util.stats.Ranges;
 import org.jdom.Element;
 
 /**
@@ -31,8 +26,6 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
 	public static final String XML_ATTRIBUTE_MINABSOLUTE = "min"; //$NON-NLS-1$
 	public static final String XML_ATTRIBUTE_MAXABSOLUTE = "max"; //$NON-NLS-1$
 	public static final String XML_ATTRIBUTE_MINUSAGE = "minUsage"; //$NON-NLS-1$
-
-	private static final String QUOTE = "\""; //$NON-NLS-1$
 	
 	/**
 	 * AxisRange Property Constructor. The property value type is {@link AxisRange}.
