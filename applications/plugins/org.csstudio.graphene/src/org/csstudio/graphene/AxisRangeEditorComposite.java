@@ -34,6 +34,8 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 	private Button btnAbsolute;
 	private Button btnIntegrated;
 	private Spinner minUsedRange;
+	
+	private boolean updating = false;
 
 	/**
 	 * Create the composite.
@@ -155,6 +157,7 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 	}
 	
 	private void update(AxisRange range) 	{
+		updating = true;
 		clear();
 		if (range instanceof Absolute) {
 			Absolute abs = (Absolute) range;
@@ -173,6 +176,7 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 			minUsedRange.setSelection((int) (integrated.getMinUsage() * 100));
 			minUsedRange.setEnabled(true);
 		}
+		updating = false;
 	}
 	
 	private void clear() {
@@ -189,10 +193,12 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 	}
 	
 	private void newValue() {
-		AxisRange newRange = createRange();
-		if (newRange != null && !newRange.equals(this.axisRange)) {
-			this.axisRange = newRange;
-			fireSelectionChanged();
+		if (!updating) {
+			AxisRange newRange = createRange();
+			if (newRange != null && !newRange.equals(this.axisRange)) {
+				this.axisRange = newRange;
+				fireSelectionChanged();
+			}
 		}
 	}
 	
