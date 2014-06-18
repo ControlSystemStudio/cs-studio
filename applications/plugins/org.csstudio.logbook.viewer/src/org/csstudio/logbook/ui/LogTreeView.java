@@ -352,7 +352,7 @@ public class LogTreeView extends ViewPart {
 		    query.append(" limit:" + resultSize);
 		}
 		if (showHistory) {
-		    query.append(" history:");
+		    query.append(" history:true");
 		}
 		int delay = preferenceService.getInt("org.csstudio.logbook.viewer", "auto.refresh.rate", 3, null);		
 		logQuery = new PeriodicLogQuery(query.toString(), logbookClient, delay>0?delay:1, TimeUnit.MINUTES);
@@ -377,7 +377,7 @@ public class LogTreeView extends ViewPart {
 		    searchString.append(" limit:" + resultSize);
 		}
 		if (showHistory) {
-		    searchString.append(" history:");
+		    searchString.append(" history:true");
 		}
 		logQuery.setQuery(searchString.toString());
 	    } catch (final Exception e1) {
