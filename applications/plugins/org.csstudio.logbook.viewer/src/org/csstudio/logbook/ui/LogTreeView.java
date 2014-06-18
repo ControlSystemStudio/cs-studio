@@ -70,8 +70,7 @@ public class LogTreeView extends ViewPart {
     private List<String> tags = Collections.emptyList();
     private ErrorBar errorBar;
 
-    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
-	    this);
+    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private String searchString;
 
     private int resultSize;
@@ -136,8 +135,7 @@ public class LogTreeView extends ViewPart {
 	parent.setLayout(gridLayout);
 
 	errorBar = new ErrorBar(parent, SWT.NONE);
-	errorBar.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true,
-		false, 4, 1));
+	errorBar.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 4, 1));
 	errorBar.setMarginBottom(5);
 
 	changeSupport.addPropertyChangeListener("searchString",
@@ -253,12 +251,16 @@ public class LogTreeView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 		    public void run() {
 			LogViewConfigurationDialog dialog = new LogViewConfigurationDialog(
-				parent.getShell(), logEntryTree.isExpanded(),
-				logEntryTree.getLogEntryOrder());
+										parent.getShell(),
+										logEntryTree.isExpanded(),
+										logEntryTree.getLogEntryOrder(), 
+										logEntryTree.getRowSize());
+			
 			dialog.setBlockOnOpen(true);
 			if (dialog.open() == IDialogConstants.OK_ID) {
 			    logEntryTree.setLogEntryOrder(dialog.getOrder());
 			    logEntryTree.setExpanded(dialog.isExpandable());
+			    logEntryTree.setRowSize(dialog.getRowSize());
 			}
 		    }
 		});
@@ -271,8 +273,11 @@ public class LogTreeView extends ViewPart {
 	label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
 	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 
-	logEntryTree = new org.csstudio.logbook.ui.extra.LogEntryTree(parent,
-		SWT.NONE | SWT.SINGLE);
+	logEntryTree = new org.csstudio.logbook.ui.extra.LogEntryTree(parent, SWT.NONE | SWT.SINGLE);
+	boolean expanded = preferenceService.getBoolean("org.csstudio.logbook.viewer", "expanded.view", false, null);
+	logEntryTree.setExpanded(expanded);
+	int rowSize = preferenceService.getInt("org.csstudio.logbook.viewer", "row.size", 1, null);
+	logEntryTree.setRowSize(rowSize);
 	logEntryTree.addMouseListener(new MouseAdapter() {
 	    @Override
 	    public void mouseDoubleClick(MouseEvent evt) {

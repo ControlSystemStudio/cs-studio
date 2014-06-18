@@ -45,6 +45,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * A view to search for logEntries and then display them in a table form
@@ -62,25 +63,27 @@ public class LogTableView extends ViewPart {
     public static final String ID = "org.csstudio.logbook.ui.LogTableView"; //$NON-NLS-1$
 
     private LogbookClient logbookClient;
-    private Label label;
 
     private List<String> logbooks = Collections.emptyList();
     private List<String> tags = Collections.emptyList();
+    
+    // GUI
+    private Label label;
     private ErrorBar errorBar;
     private Button btnNewButton;
-    
-    private int resultSize;
-    private int page = 1;
-    
-    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-    private String searchString;
     private Composite navigator;
     private Link previousPage;
     private Label labelPage;
     private Link nextPage;
+    private Button configureButton;    
+    
+    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     
     // Model
     private PeriodicLogQuery logQuery;
+    private int resultSize;
+    private int page = 1;
+    private String searchString;
 
     // Model listener
     private LogQueryListener listener = new LogQueryListener() {
@@ -175,7 +178,7 @@ public class LogTableView extends ViewPart {
 		}
 	    }
 	});
-	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));	
+	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));	
 	
 	btnNewButton = new Button(parent, SWT.NONE);	
 	try {
@@ -229,18 +232,44 @@ public class LogTableView extends ViewPart {
 	    }
 	});
 	btnNewButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-	btnNewButton.setText("Adv Search");
+	btnNewButton.setText("Adv Search");	
 
+	configureButton = new Button(parent, SWT.NONE);
+	configureButton.setImage(ResourceManager.getPluginImage(
+		"org.csstudio.channel.widgets", "icons/gear-16.png"));
+	configureButton.addSelectionListener(new SelectionAdapter() {
+	    @Override
+	    public void widgetSelected(SelectionEvent e) {
+		Display.getDefault().asyncExec(new Runnable() {
+		    public void run() {
+			LogViewConfigurationDialog dialog = new LogViewConfigurationDialog(
+										parent.getShell(),
+										logEntryTable.isExpanded(),
+										-1,
+										logEntryTable.getRowSize());
+			
+			dialog.setBlockOnOpen(true);
+			if (dialog.open() == IDialogConstants.OK_ID) {
+			    logEntryTable.setExpanded(dialog.isExpandable());
+			    logEntryTable.setRowSize(dialog.getRowSize());
+			}
+		    }
+		});
+	    }
+	});
 	
-
 	// Add AutoComplete support, use type logEntrySearch
 	new AutoCompleteWidget(text, "LogentrySearch");
 
 	label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
 	label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 
-	logEntryTable = new org.csstudio.logbook.ui.extra.LogEntryTable(parent,
-		SWT.NONE | SWT.SINGLE);
+	logEntryTable = new org.csstudio.logbook.ui.extra.LogEntryTable(parent, SWT.NONE | SWT.SINGLE);
+	boolean expanded = preferenceService.getBoolean("org.csstudio.logbook.viewer", "expanded.view", false, null);
+	logEntryTable.setExpanded(expanded);
+	int rowSize = preferenceService.getInt("org.csstudio.logbook.viewer", "row.size", 1, null);
+	logEntryTable.setRowSize(rowSize);
+	
 	logEntryTable.addMouseListener(new MouseAdapter() {
 	    @Override
 	    public void mouseDoubleClick(MouseEvent evt) {
