@@ -20,6 +20,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
+import org.epics.graphene.AxisRange;
+import org.epics.graphene.AxisRanges;
 import org.epics.graphene.BubbleGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
@@ -50,7 +52,7 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
-					getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
+					updateGraph();
 				}
 				
 			}
@@ -131,13 +133,25 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 				formulaArg(getYColumnFormula()),
 				formulaArg(getSizeColumnFormula()),
 				formulaArg(getColorColumnFormula()));
-		graph.update(graph.newUpdate().highlightFocusValue(isHighlightSelectionValue()));
 		return graph;
 	}
+	
+	@Override
+	protected BubbleGraph2DRendererUpdate createUpdate() {
+		return getGraph().newUpdate().highlightFocusValue(isHighlightSelectionValue())
+				.xAxisRange(getXAxisRange()).yAxisRange(getYAxisRange());
+	}
+	
+//	private void updateGraph() {
+//		getGraph().update(getGraph().newUpdate().highlightFocusValue(isHighlightSelectionValue())
+//				.xAxisRange(getXAxisRange()).yAxisRange(getYAxisRange()));
+//	}
 
 	private String sizeColumnFormula;
 	private String colorColumnFormula;
 	private boolean highlightSelectionValue = false;
+	private AxisRange xAxisRange = AxisRanges.display();
+	private AxisRange yAxisRange = AxisRanges.display();
 	
 	private static final String MEMENTO_SIZE_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
 	private static final String MEMENTO_COLOR_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
@@ -163,6 +177,28 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 		this.colorColumnFormula = colorColumnFormula;
 		changeSupport.firePropertyChange("colorColumnFormula", oldValue,
 				this.colorColumnFormula);
+	}
+	
+	public AxisRange getXAxisRange() {
+		return xAxisRange;
+	}
+	
+	public void setXAxisRange(AxisRange xAxisRange) {
+		AxisRange oldValue = this.xAxisRange;
+		this.xAxisRange = xAxisRange;
+		changeSupport.firePropertyChange("xAxisRange", oldValue,
+				this.xAxisRange);
+	}
+	
+	public AxisRange getYAxisRange() {
+		return yAxisRange;
+	}
+	
+	public void setYAxisRange(AxisRange yAxisRange) {
+		AxisRange oldValue = this.yAxisRange;
+		this.yAxisRange = yAxisRange;
+		changeSupport.firePropertyChange("yAxisRange", oldValue,
+				this.yAxisRange);
 	}
 	
 	public boolean isHighlightSelectionValue() {
