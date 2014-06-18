@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import java.util.Objects;
 import org.epics.util.stats.Range;
 import org.epics.util.stats.Ranges;
 
@@ -54,6 +55,22 @@ public class AxisRanges {
 
         public Range getAbsoluteRange() {
             return absoluteRange;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Absolute) {
+                return Ranges.equals(getAbsoluteRange(), ((Absolute) obj).getAbsoluteRange());
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 59 * hash + Objects.hashCode(this.absoluteRange);
+            return hash;
         }
         
     }
@@ -141,6 +158,22 @@ public class AxisRanges {
 
         public double getMinUsage() {
             return minUsage;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Integrated) {
+                return getMinUsage() == ((Integrated) obj).getMinUsage();
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 59 * hash + Objects.hashCode(this.getMinUsage());
+            return hash;
         }
         
     }
