@@ -72,6 +72,11 @@
 									<transitive>false</transitive>
 								</artifact>
 								<artifact>
+									<id>org.epics:graphene:${graphene.version}</id>
+									<source>true</source>
+									<transitive>false</transitive>
+								</artifact>
+								<artifact>
 									<id>org.epics:epics-vtype:${pvmanager.version}</id>
 									<source>true</source>
 									<transitive>false</transitive>
