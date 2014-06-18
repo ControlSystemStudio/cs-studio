@@ -8,29 +8,22 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
-import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Tag;
+import org.csstudio.logbook.ui.PeriodicLogQuery.LogResult;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.KeyAdapter;
@@ -48,16 +41,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * A view to search for logEntries and then display them in a tabluar form
+ * A view to search for logEntries and then display them in a table form
  * 
  * @author shroffk
  * 
@@ -67,7 +57,7 @@ public class LogTableView extends ViewPart {
     private org.csstudio.logbook.ui.extra.LogEntryTable logEntryTable;
 
     private final IPreferencesService preferenceService = Platform.getPreferencesService();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, org.csstudio.logbook.ui.Executors.namedPool("LogTable Search Pool"));
+
     /** View ID defined in plugin.xml */
     public static final String ID = "org.csstudio.logbook.ui.LogTableView"; //$NON-NLS-1$
 
@@ -88,6 +78,37 @@ public class LogTableView extends ViewPart {
     private Link previousPage;
     private Label labelPage;
     private Link nextPage;
+    
+    // Model
+    private PeriodicLogQuery logQuery;
+
+    // Model listener
+    private LogQueryListener listener = new LogQueryListener() {
+
+	@Override
+	public void queryExecuted(final LogResult result) {
+	    Display.getDefault().asyncExec(new Runnable() {
+
+		@Override
+		public void run() {		    
+		    ISelection selection = logEntryTable.getSelection();
+		    if (result.lastException != null) {
+			errorBar.setException(result.lastException);
+		    } else {
+			errorBar.setException(null);
+		    }
+		    if (result.logs.isEmpty() || result.logs.size() < resultSize) {
+			nextPage.setEnabled(false);
+		    } else {
+			nextPage.setEnabled(true);
+		    }
+		    logEntryTable.setLogs(result.logs);
+		    logEntryTable.setSelection(selection);
+		}
+	    });
+	}
+
+    };
     
     private IMemento memento;
     
@@ -120,22 +141,26 @@ public class LogTableView extends ViewPart {
 		    @Override
 		    public void propertyChange(PropertyChangeEvent arg0) {
 			text.setText(searchString);
-			setPage(1);
+			page = 1;
+			labelPage.setText(String.valueOf(page));
+			search();
 		    }
 		});
-	changeSupport.addPropertyChangeListener("page", new PropertyChangeListener() {
-	    
-	    @Override
-	    public void propertyChange(PropertyChangeEvent arg0) {
-		labelPage.setText(String.valueOf(page));
-		if(page > 1){
-		    previousPage.setEnabled(true);
-		} else {
-		    previousPage.setEnabled(false);
-		}
-		search();
-	    }
-	});
+
+	changeSupport.addPropertyChangeListener("page",
+		new PropertyChangeListener() {
+
+		    @Override
+		    public void propertyChange(PropertyChangeEvent arg0) {
+			labelPage.setText(String.valueOf(page));
+			if (page > 1) {
+			    previousPage.setEnabled(true);
+			} else {
+			    previousPage.setEnabled(false);
+			}
+			search();
+		    }
+		});
 
 	Label lblLogQuery = new Label(parent, SWT.NONE);
 	lblLogQuery.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
@@ -265,190 +290,64 @@ public class LogTableView extends ViewPart {
 	nextPage.setText("<a>Next page</a>");
 	
 	PopupMenuUtil.installPopupForView(logEntryTable, getSite(), logEntryTable);
-
-	final IPartService partService = (IPartService) getSite().getService(IPartService.class);
-	partService.addPartListener(new IPartListener2() {
-	    
-	    @Override
-	    public void partVisible(IWorkbenchPartReference partRef) {
-		
-	    }
-	    
-	    @Override
-	    public void partOpened(IWorkbenchPartReference partRef) {
-		if (partRef.getId().equals(ID)) {
-		    int delay = preferenceService.getInt(
-			    "org.csstudio.logbook.viewer", "auto.refresh.rate",
-			    3, null);
-		    if (delay > 0) {
-			scheduler.scheduleWithFixedDelay(new Runnable() {
-
-			    @Override
-			    public void run() {
-				
-				if (partService.getActivePartReference().getId().equals(ID)) {	
-				    String text = getSearchString();
-				    final StringBuilder searchString = new StringBuilder(text==null?"*":text);
-				    if (initializeClient()) {
-					try {
-					    if (resultSize >= 0) {
-						searchString.append(" page:" + page);
-						searchString.append(" limit:" + resultSize);
-					    }
-					    final List<LogEntry> logEntries = new ArrayList<LogEntry>(
-						    logbookClient
-							    .findLogEntries(searchString
-								    .toString()));
-					    Display.getDefault().asyncExec(
-						    new Runnable() {
-							@Override
-							public void run() {
-							    if (!logEntries
-								    .isEmpty()
-								    && logEntries
-									    .size() >= resultSize) {
-								nextPage.setEnabled(true);
-							    } else {
-								nextPage.setEnabled(false);
-							    }
-							    Collections
-								    .sort(logEntries,
-									    new Comparator<LogEntry>() {
-
-										@Override
-										public int compare(
-											LogEntry o1,
-											LogEntry o2) {
-										    Date d1 = o1.getCreateDate();
-										    Date d2 = o2.getCreateDate();
-										    return d2.compareTo(d1);
-										}
-
-									    });
-							    logEntryTable.setLogs(logEntries);
-							}
-						    });
-
-					} catch (final Exception e1) {
-					    Display.getDefault().asyncExec(
-						    new Runnable() {
-
-							@Override
-							public void run() {
-							    errorBar.setException(e1);
-							}
-						    });
-					}
-				    }
-				}
-			    }
-			}, delay, delay, TimeUnit.MINUTES);
-		    }
-		}
-	    }
-
-	    @Override
-	    public void partInputChanged(IWorkbenchPartReference partRef) {
-
-	    }
-
-	    @Override
-	    public void partHidden(IWorkbenchPartReference partRef) {
-
-	    }
-
-	    @Override
-	    public void partDeactivated(IWorkbenchPartReference partRef) {
-
-	    }
-    
-	    @Override
-	    public void partActivated(IWorkbenchPartReference partRef) {
-		
-	    }
-
-	    @Override
-	    public void partBroughtToTop(IWorkbenchPartReference partRef) {
-		
-	    }
-
-	    @Override
-	    public void partClosed(IWorkbenchPartReference partRef) {
-		if (partRef.getId().equals(ID)){
-		    scheduler.shutdown();
-		}
-	    }
-	});
 	initializeClient();
     }
 
+    @Override
+    public void dispose() {
+	if (logQuery != null) {
+	    logQuery.removeLogQueryListener(listener);
+	    logQuery.stop();
+	}
+    }
+    
     private boolean initializeClient() {
 	if (logbookClient == null) {
 	    try {
-		logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
-		if(memento != null && memento.getString("searchString") != null){
-		    setSearchString(memento.getString("searchString"));
+		logbookClient = LogbookClientManager.getLogbookClientFactory()
+			.getClient();
+		StringBuilder query = new StringBuilder();
+		if (memento != null
+			&& memento.getString("searchString") != null) {
+		    query.append(memento.getString("searchString"));
 		}
+		if (resultSize >= 0) {
+		    query.append(" page:" + page);
+		    query.append(" limit:" + resultSize);
+		}
+		int delay = preferenceService.getInt("org.csstudio.logbook.viewer", "auto.refresh.rate", 3, null);		
+		logQuery = new PeriodicLogQuery(query.toString(), logbookClient, delay>0?delay:1, TimeUnit.MINUTES);
+		logQuery.addLogQueryListener(listener);
+		logQuery.start();
 		return true;
-	    } catch (Exception e1) {
-		errorBar.setException(e1);
+	    } catch (Exception ex) {
+		errorBar.setException(ex);
 		return false;
 	    }
 	} else {
 	    return true;
 	}
     }
-
+    
     private void search() {
 	final StringBuilder searchString = new StringBuilder(text.getText());
-	Job search = new Job("Searching") {
-
-	    @Override
-	    protected IStatus run(IProgressMonitor monitor) {
-		if (initializeClient()) {
-		    try {
-			if(resultSize >= 0){
-			    searchString.append(" page:" + page);
-			    searchString.append(" limit:" + resultSize);
-			}
-			final List<LogEntry> logEntries = new ArrayList<LogEntry>(
-				logbookClient.findLogEntries(searchString.toString()));
-			Display.getDefault().asyncExec(new Runnable() {
-			    @Override
-			    public void run() {
-				if(!logEntries.isEmpty() && logEntries.size() >= resultSize){
-				    nextPage.setEnabled(true);
-				}else{
-				    nextPage.setEnabled(false);
-				}
-				Collections.sort(logEntries, new Comparator<LogEntry>(){
-
-				    @Override
-				    public int compare(LogEntry o1, LogEntry o2) {
-					Date d1 =  o1.getCreateDate();
-					Date d2 =  o2.getCreateDate();
-					return d2.compareTo(d1);
-				    }
-				    
-				});
-				logEntryTable.setLogs(logEntries);
-			    }
-			});
-			
-		    } catch (final Exception e1) {
-			Display.getDefault().asyncExec(new Runnable() {
-			    
-			    @Override
-			    public void run() {
-				errorBar.setException(e1);
-			    }
-			});
-		    }
+	if (initializeClient()) {
+	    try {
+		if (resultSize >= 0) {
+		    searchString.append(" page:" + page);
+		    searchString.append(" limit:" + resultSize);
 		}
-		return Status.OK_STATUS;
+		logQuery.setQuery(searchString.toString());
+	    } catch (final Exception e1) {
+		Display.getDefault().asyncExec(new Runnable() {
+
+		    @Override
+		    public void run() {
+			errorBar.setException(e1);
+		    }
+		});
 	    }
-	};
-	search.schedule();
+	}
     }
 
     private void setPage(int page){

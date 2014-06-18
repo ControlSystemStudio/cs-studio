@@ -108,6 +108,10 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    protected ISelection transform(IStructuredSelection selection) {
 		return selection;
 	    }
+	    
+	    protected ISelection reverseTransform(IStructuredSelection selection) {
+		return selection;
+	    }
 
 	};
 
