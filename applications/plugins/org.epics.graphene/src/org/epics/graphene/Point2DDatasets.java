@@ -70,6 +70,16 @@ public class Point2DDatasets {
             }
 
             @Override
+            public Range getXDisplayRange() {
+                return null;
+            }
+
+            @Override
+            public Range getYDisplayRange() {
+                return null;
+            }
+
+            @Override
             public int getCount() {
                 return x.size();
             }

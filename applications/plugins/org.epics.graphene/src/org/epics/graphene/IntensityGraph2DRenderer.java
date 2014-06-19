@@ -33,9 +33,6 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
      */
     public static boolean DEFAULT_DRAW_LEGEND = false;
     
-    private static final AxisRange DEFAULT_X_RANGE = AxisRanges.data();
-    private static final AxisRange DEFAULT_Y_RANGE = AxisRanges.data();
-    
     //Colors to be used when drawing the graph, gives a color based on a given value and the range of data.
     private NumberColorMapInstance colorMapInstance;
     private Range optimizedRange;
@@ -48,9 +45,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
      */
     public IntensityGraph2DRenderer(int imageWidth, int imageHeight) {
         super(imageWidth, imageHeight);
-        super.update(new IntensityGraph2DRendererUpdate()
-                .xAxisRange(DEFAULT_X_RANGE)
-                .yAxisRange(DEFAULT_Y_RANGE));
+        super.update(new IntensityGraph2DRendererUpdate());
     }
 
     /**
@@ -119,7 +114,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         this.g = graphBuffer.getGraphicsContext();
         GraphAreaData area = new GraphAreaData();
         BufferedImage image = graphBuffer.getImage();
-        calculateRanges(data.getXRange(), data.getYRange());
+        calculateRanges(data.getXRange(), data.getXRange(), data.getYRange(), data.getYRange());
         area.setGraphBuffer(graphBuffer);
         graphBuffer.drawBackground(backgroundColor);
         calculateZRange(data.getStatistics(), data.getDisplayRange());

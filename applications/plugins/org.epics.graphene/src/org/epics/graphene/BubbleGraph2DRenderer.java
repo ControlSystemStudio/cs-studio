@@ -18,7 +18,7 @@ import org.epics.util.stats.Ranges;
 public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRendererUpdate> {
     
     private Range zAggregatedRange;
-    private AxisRangeInstance zAxisRange = AxisRanges.integrated().createInstance();
+    private AxisRangeInstance zAxisRange = AxisRanges.display().createInstance();
     private Range zPlotRange;
     private Integer focusPixelX;
     private Integer focusPixelY;
@@ -44,11 +44,9 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
         }
     }
 
-    protected void calculateRanges(Range xDataRange, Range yDataRange, Range zDataRange) {
-        super.calculateRanges(xDataRange, yDataRange);
-        zAggregatedRange = aggregateRange(zDataRange, zAggregatedRange);
-        // TODO: should be update to use display range
-        zPlotRange = zAxisRange.axisRange(zDataRange, zDataRange);
+    protected void calculateRanges(Range xDataRange, Range xDisplayRange, Range yDataRange, Range yDisplayRange, Range zDataRange, Range zDisplayRange) {
+        super.calculateRanges(xDataRange, xDisplayRange, yDataRange, yDisplayRange);
+        zPlotRange = zAxisRange.axisRange(zDataRange, zDisplayRange);
     }
 
     /**
@@ -62,7 +60,9 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
             throw new NullPointerException("g is null");
         this.g = g;
         
-        calculateRanges(data.getXStatistics(), data.getYStatistics(), data.getZStatistics());
+        calculateRanges(data.getXStatistics(), data.getXDisplayRange(),
+                data.getYStatistics(), data.getYDisplayRange(),
+                data.getZStatistics(), data.getZDisplayRange());
         
         drawBackground();
         calculateLabels();
