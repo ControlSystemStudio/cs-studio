@@ -48,7 +48,7 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 	
 	public BubbleGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
-		final List<String> properties = Arrays.asList("highlightSelectionValue", "xAxisRange", "yAxisRange");
+		final List<String> properties = Arrays.asList("highlightSelectionValue");
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
@@ -140,20 +140,12 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 	
 	@Override
 	protected BubbleGraph2DRendererUpdate createUpdate() {
-		return getGraph().newUpdate().highlightFocusValue(isHighlightSelectionValue())
-				.xAxisRange(getXAxisRange()).yAxisRange(getYAxisRange());
+		return getGraph().newUpdate().highlightFocusValue(isHighlightSelectionValue());
 	}
 	
-//	private void updateGraph() {
-//		getGraph().update(getGraph().newUpdate().highlightFocusValue(isHighlightSelectionValue())
-//				.xAxisRange(getXAxisRange()).yAxisRange(getYAxisRange()));
-//	}
-
 	private String sizeColumnFormula;
 	private String colorColumnFormula;
 	private boolean highlightSelectionValue = false;
-	private AxisRange xAxisRange = AxisRanges.display();
-	private AxisRange yAxisRange = AxisRanges.display();
 	
 	private static final String MEMENTO_SIZE_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
 	private static final String MEMENTO_COLOR_COLUMN_FORMULA = "sizeColumnFormula"; //$NON-NLS-1$
@@ -179,28 +171,6 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 		this.colorColumnFormula = colorColumnFormula;
 		changeSupport.firePropertyChange("colorColumnFormula", oldValue,
 				this.colorColumnFormula);
-	}
-	
-	public AxisRange getXAxisRange() {
-		return xAxisRange;
-	}
-	
-	public void setXAxisRange(AxisRange xAxisRange) {
-		AxisRange oldValue = this.xAxisRange;
-		this.xAxisRange = xAxisRange;
-		changeSupport.firePropertyChange("xAxisRange", oldValue,
-				this.xAxisRange);
-	}
-	
-	public AxisRange getYAxisRange() {
-		return yAxisRange;
-	}
-	
-	public void setYAxisRange(AxisRange yAxisRange) {
-		AxisRange oldValue = this.yAxisRange;
-		this.yAxisRange = yAxisRange;
-		changeSupport.firePropertyChange("yAxisRange", oldValue,
-				this.yAxisRange);
 	}
 	
 	public boolean isHighlightSelectionValue() {
