@@ -51,11 +51,8 @@ class HistogramGraph2DFunction implements ReadFunction<Graph2DResult> {
         // TODO: check array is one dimensional
 
         Cell1DDataset dataset = null;
-        try {
-            dataset = Cell1DDatasets.datasetFrom(data.getData(), data.getDimensionDisplay().get(0).getCellBoundaries());
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        dataset = DatasetConversions.cell1DDatasetsFromVNumberArray(data);
+        
         // Process all renderer updates
         for (AreaGraph2DRendererUpdate rendererUpdate : getUpdateQueue().readValue()) {
             renderer.update(rendererUpdate);
