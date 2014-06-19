@@ -180,6 +180,10 @@ public class Ranges {
      * @return true if range is of finite, non-zero size
      */
     public static boolean isValid(Range range) {
+        if (range == null) {
+            return false;
+        }
+        
         double min = range.getMinimum().doubleValue();
         double max = range.getMaximum().doubleValue();
         
