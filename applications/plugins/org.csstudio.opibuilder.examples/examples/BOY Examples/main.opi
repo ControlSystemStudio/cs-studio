@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-693d</wuid>
-  <boy_version>3.3.0</boy_version>
+  <boy_version>3.2.18.qualifier</boy_version>
   <scripts>
     <path pathString="EmbeddedJs" checkConnect="true" sfe="false" seoe="false">
       <scriptName>checkVersion</scriptName>
