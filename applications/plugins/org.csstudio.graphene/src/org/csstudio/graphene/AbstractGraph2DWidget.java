@@ -273,7 +273,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 	private void resetRange(StartEndRangeWidget control) {
 		if (isResizableAxis()) {
-			control.setRanges(0, 0, 1, 1);
+			control.resetRange();
 		}
 	}
 
