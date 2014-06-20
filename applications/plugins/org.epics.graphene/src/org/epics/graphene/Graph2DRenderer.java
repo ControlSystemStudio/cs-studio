@@ -106,8 +106,8 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     private int imageWidth;
     private int imageHeight;
     // Strategy for calculating the axis range
-    private AxisRangeInstance xAxisRange = AxisRanges.integrated().createInstance();
-    private AxisRangeInstance yAxisRange = AxisRanges.integrated().createInstance();
+    private AxisRangeInstance xAxisRange = AxisRanges.display().createInstance();
+    private AxisRangeInstance yAxisRange = AxisRanges.display().createInstance();
     // Strategy for generating labels and scaling value of the axis
     protected ValueScale xValueScale = ValueScales.linearScale();
     protected ValueScale yValueScale = ValueScales.linearScale();
@@ -296,14 +296,13 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
      * ranges.
      * 
      * @param xDataRange the new data range for x
+     * @param xDisplayRange the new display range for x
      * @param yDataRange the new data range for y
+     * @param yDisplayRange the new display range for y
      */
-    protected void calculateRanges(Range xDataRange, Range yDataRange) {
-        xAggregatedRange = aggregateRange(xDataRange, xAggregatedRange);
-        yAggregatedRange = aggregateRange(yDataRange, yAggregatedRange);
-        // TODO: should be update to use display range
-        xPlotRange = xAxisRange.axisRange(xDataRange, xDataRange);
-        yPlotRange = yAxisRange.axisRange(yDataRange, yDataRange);
+    protected void calculateRanges(Range xDataRange, Range xDisplayRange, Range yDataRange, Range yDisplayRange) {
+        xPlotRange = xAxisRange.axisRange(xDataRange, xDisplayRange);
+        yPlotRange = yAxisRange.axisRange(yDataRange, yDisplayRange);
     }
     
     /**

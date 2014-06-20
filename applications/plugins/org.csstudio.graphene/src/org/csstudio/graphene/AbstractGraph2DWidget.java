@@ -7,6 +7,8 @@ import static org.epics.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
 
 import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -27,6 +29,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
+import org.epics.graphene.AxisRange;
 import org.epics.graphene.AxisRanges;
 import org.epics.graphene.Graph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
@@ -147,15 +150,16 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 		});
 		xRangeControl.setVisible(resizableAxis);
 
+		final List<String> reconnectionProperties = Arrays.asList("dataFormula", "xColumnFormula", "yColumnFormula", "tooltipFormula");
+		final List<String> updateProperties = Arrays.asList("xAxisRange", "yAxisRange");
 		addPropertyChangeListener(new PropertyChangeListener() {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getPropertyName().equals("dataFormula")
-						|| event.getPropertyName().equals("xColumnFormula")
-						|| event.getPropertyName().equals("yColumnFormula")
-						|| event.getPropertyName().equals("tooltipFormula")) {
+				if (reconnectionProperties.contains(event.getPropertyName())) {
 					reconnect();
+				} else if (updateProperties.contains(event.getPropertyName())) {
+					updateGraph();
 				} else if (event.getPropertyName().equals("resizableAxis")) {
 					xRangeControl.setVisible(resizableAxis);
 					yRangeControl.setVisible(resizableAxis);
@@ -192,7 +196,8 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 	
 	protected void updateGraph() {
 		if (getGraph() != null) {
-			getGraph().update(createUpdate());
+			getGraph().update(createUpdate().xAxisRange(getXAxisRange())
+					.yAxisRange(getYAxisRange()));
 		}
 	}
 
@@ -278,6 +283,8 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 	}
 
 	private String dataFormula;
+	private AxisRange xAxisRange = AxisRanges.display();
+	private AxisRange yAxisRange = AxisRanges.display();
 
 	private static final String MEMENTO_DATA_FORMULA = "dataFormula"; //$NON-NLS-1$
 
@@ -290,6 +297,28 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 		this.dataFormula = dataFormula;
 		changeSupport.firePropertyChange("dataFormula", oldValue,
 				this.dataFormula);
+	}
+	
+	public AxisRange getXAxisRange() {
+		return xAxisRange;
+	}
+	
+	public void setXAxisRange(AxisRange xAxisRange) {
+		AxisRange oldValue = this.xAxisRange;
+		this.xAxisRange = xAxisRange;
+		changeSupport.firePropertyChange("xAxisRange", oldValue,
+				this.xAxisRange);
+	}
+	
+	public AxisRange getYAxisRange() {
+		return yAxisRange;
+	}
+	
+	public void setYAxisRange(AxisRange yAxisRange) {
+		AxisRange oldValue = this.yAxisRange;
+		this.yAxisRange = yAxisRange;
+		changeSupport.firePropertyChange("yAxisRange", oldValue,
+				this.yAxisRange);
 	}
 
 	public void saveState(IMemento memento) {

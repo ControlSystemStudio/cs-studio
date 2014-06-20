@@ -83,6 +83,11 @@ class Cell1DHistogramDataset implements Cell1DDataset {
     }
 
     @Override
+    public Range getDisplayRange() {
+        return null;
+    }
+
+    @Override
     public ListNumber getXBoundaries() {
         return xBoundaries;
     }

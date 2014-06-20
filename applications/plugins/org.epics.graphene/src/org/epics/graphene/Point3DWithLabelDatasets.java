@@ -8,6 +8,7 @@ import org.epics.util.stats.StatisticsUtil;
 import org.epics.util.stats.Statistics;
 import java.util.List;
 import org.epics.util.array.*;
+import org.epics.util.stats.Range;
 
 /**
  *
@@ -59,6 +60,21 @@ public class Point3DWithLabelDatasets {
             @Override
             public Statistics getZStatistics() {
                 return zStatistics;
+            }
+
+            @Override
+            public Range getXDisplayRange() {
+                return null;
+            }
+
+            @Override
+            public Range getYDisplayRange() {
+                return null;
+            }
+
+            @Override
+            public Range getZDisplayRange() {
+                return null;
             }
 
             @Override
