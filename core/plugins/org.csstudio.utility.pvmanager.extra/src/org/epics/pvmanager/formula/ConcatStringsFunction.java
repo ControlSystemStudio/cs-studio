@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
@@ -9,12 +9,13 @@ import java.util.List;
 
 import org.epics.vtype.VString;
 import org.epics.vtype.ValueFactory;
+import org.epics.vtype.ValueUtil;
 
 /**
  * @author shroffk
  * 
  */
-public class ConcatStringsFunction implements FormulaFunction {
+class ConcatStringsFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
@@ -58,14 +59,15 @@ public class ConcatStringsFunction implements FormulaFunction {
 
 	for (Object object : args) {
 	    VString str = (VString) object;
-	    // TODO should this raise an exception
+	    // TODO how should we handle nulls?
 	    if (str == null) {
 		return null;
 	    }
 	    sb.append(str.getValue());
 	}
-	return ValueFactory.newVString(sb.toString(), ValueFactory.alarmNone(),
-		ValueFactory.timeNow());
+	return ValueFactory.newVString(sb.toString(),
+                ValueUtil.highestSeverityOf(args, false),
+		ValueUtil.latestValidTimeOrNowOf(args));
 
     }
 

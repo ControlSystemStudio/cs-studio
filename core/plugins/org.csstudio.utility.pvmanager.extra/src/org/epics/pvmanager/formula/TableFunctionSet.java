@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
@@ -18,11 +18,15 @@ public class TableFunctionSet extends FormulaFunctionSet {
         super(new FormulaFunctionSetDescription("table", "Function to aggregate and manipulate tables")
                 .addFormulaFunction(new ColumnOfVTableFunction())
                 .addFormulaFunction(new ColumnFromVNumberArrayFunction())
+                .addFormulaFunction(new ColumnFromVStringArrayFunction())
                 .addFormulaFunction(new TableOfFormulaFunction())
                 .addFormulaFunction(new RangeFormulaFunction())
                 .addFormulaFunction(new StepFormulaFunction())
                 .addFormulaFunction(new ColumnFromListNumberGeneratorFunction())
                 .addFormulaFunction(new NaturalJoinFunction())
+                .addFormulaFunction(new TableRangeFilterFunction())
+                .addFormulaFunction(new TableRangeArrayFilterFunction())
+                .addFormulaFunction(new TableValueFilterFunction())
                 );
     }
 

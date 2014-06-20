@@ -8,12 +8,15 @@
 package org.csstudio.opibuilder.converter.model;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 /**
  * Generic data container for Edm widget or group.
@@ -54,7 +57,7 @@ public class EdmEntity extends Object {
 		// Multiple specializations test.
 		if (!genericEntity.getClass().equals(EdmEntity.class)) {
 			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-			"Trying to initialize from an already specialized entity.");
+			"Trying to initialize from an already specialized entity.", null);
 		}
 
 		attributeMap = new HashMap<String, EdmAttribute>();
@@ -165,9 +168,9 @@ public class EdmEntity extends Object {
 			if (e instanceof EdmException)
 				throw (EdmException)e;
 			else {
-				e.printStackTrace();
 				throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-				"Error when parsing annotated field.");
+				"Error when parsing annotated field.", 
+				e instanceof InvocationTargetException? e.getCause():e);
 			}
 		}
 	}
@@ -190,7 +193,7 @@ public class EdmEntity extends Object {
 	public void addAttribute(String id, EdmAttribute a) throws EdmException {
 		if (attributeMap.containsKey(id))
 			throw new EdmException(EdmException.ATTRIBUTE_ALREADY_EXISTS,
-					"Attribute " + id + " already exists.");
+					"Attribute " + id + " already exists.", null);
 		else
 			attributeMap.put(id, a);
 	}
@@ -268,7 +271,7 @@ public class EdmEntity extends Object {
 	 */
 	private Vector<EdmEntity> parseWidgets()  {
 
-		boolean robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
+//		boolean robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
 
 		Vector<EdmEntity> w = new Vector<EdmEntity>();
 
@@ -281,7 +284,7 @@ public class EdmEntity extends Object {
 			String wType = "Edm_" + subE.getType();
 
 			log.debug("Parsing specific widget: " + wType);
-
+			wType = wType.replace(":", "_");
 			Object o;
 			try {
 				o = Class.forName(packageName + "." + wType).
@@ -292,12 +295,12 @@ public class EdmEntity extends Object {
 				} else {
 					log.warn("Class not declared: " + wType);
 				}
-			} catch (ClassNotFoundException e) {
-				log.warn("Class not declared: " + wType);
-			} catch (Exception e) {
-				if (!robust) {
-					e.printStackTrace();
-				}
+			}catch (Exception e) {					
+					if(e instanceof ClassNotFoundException){
+						ConsoleService.getInstance().writeWarning(wType + " is not convertible.");
+					}else
+						ErrorHandlerUtil.handleError("Parse widget error.",
+							e instanceof InvocationTargetException? e.getCause():e);				
 			}
 		}
 		return w;

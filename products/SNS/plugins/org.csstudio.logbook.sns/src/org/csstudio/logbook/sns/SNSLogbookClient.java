@@ -23,6 +23,7 @@ import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.sns.elog.ELog;
 import org.csstudio.logbook.sns.elog.ELogEntry;
+import org.csstudio.logbook.sns.elog.ELogPriority;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.epics.util.time.TimeInterval;
 import org.epics.util.time.TimeParser;
@@ -68,6 +69,13 @@ public class SNSLogbookClient implements LogbookClient
         {
             return Converter.convertLogbooks(elog.getLogbooks());
         }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public List<String> listLevels() throws Exception
+    {
+        return ELogPriority.getNames();
     }
 
     /** {@inheritDoc} */
@@ -183,7 +191,7 @@ public class SNSLogbookClient implements LogbookClient
             final ELog elog = new ELog(url, user, password);
         )
         {
-            id = elog.createEntry(logbook, title, text);
+            id = elog.createEntry(logbook, title, text, ELogPriority.forName(entry.getLevel()));
         
             // Attach to multiple logbooks?
             while (logbooks.hasNext())

@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.kek.applications.feature"
       label="KEK Applications Feature"
-      version="3.2.0.qualifier"
+      version="3.2.1.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS, Takashi Nakamoto &lt;takashi.nakamoto@cosylab.com&gt;">
 
    <description url="http://www.example.com/description">
@@ -191,6 +191,34 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.platform.libs.jersey"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.simplepv"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.simplepv.pvmanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.simplepv.utilitypv"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.ui.toolbox"
          download-size="0"
          install-size="0"
          version="0.0.0"

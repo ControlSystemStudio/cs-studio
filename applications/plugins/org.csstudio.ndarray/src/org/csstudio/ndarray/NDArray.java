@@ -361,7 +361,7 @@ public class NDArray
         return shape;
     }
 
-    /** @return Number of dimensions, e.g. 2 for an array of shape [2, 3] */
+    /** @return Number of dimensions, e.g. 2 for an array of shape [4, 3] */
     public int getRank()
     {
         return shape.getDimensions();

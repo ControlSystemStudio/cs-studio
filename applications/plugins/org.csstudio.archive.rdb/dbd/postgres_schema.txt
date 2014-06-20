@@ -200,7 +200,7 @@ CREATE TABLE sample
    severity_id BIGINT NOT NULL,
    status_id BIGINT  NOT NULL,
    num_val INT NULL,
-   float_val REAL NULL,
+   float_val double precision NULL,
    str_val VARCHAR(120) NULL,
    datatype CHAR(1) NULL DEFAULT ' ',
    array_val BYTEA  NULL,
@@ -235,7 +235,7 @@ CREATE TABLE  array_val
    smpl_time TIMESTAMP NOT NULL,
    nanosecs BIGINT  NOT NULL,
    seq_nbr BIGINT  NOT NULL,
-   float_val REAL NULL,
+   float_val double precision NULL,
    FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE
 );
 

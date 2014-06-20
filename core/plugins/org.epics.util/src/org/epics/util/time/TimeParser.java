@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 epics-util developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.util.time;
 
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * A helper class to parse user defined time strings to absolute or relative
- * time durations
+ * time durations.
  * 
  * The following return a TimeInterval - absolute
  * 
@@ -96,7 +96,7 @@ public class TimeParser {
      * i.e.
      * 
      * @param time
-     * @return
+     * @return the parsed timestamp or null
      */
     public static Timestamp getTimeStamp(String time) {
 	if (time.equalsIgnoreCase("now")) {

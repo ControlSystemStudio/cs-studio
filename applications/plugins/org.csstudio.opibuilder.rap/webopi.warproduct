@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="WebOPI" uid="org.csstudio.opibuilder.rap" version="1.0.0" useFeatures="false" includeLaunchers="false">
+<product name="WebOPI" uid="org.csstudio.opibuilder.rap" version="3.2.9" useFeatures="false" includeLaunchers="false">
    <plugins>
       <plugin id="com.ibm.icu.base"/>
       <plugin id="javax.mail"/>
@@ -28,9 +28,6 @@
       <plugin id="org.csstudio.opibuilder.widgets.rap" fragment="true"/>
       <plugin id="org.csstudio.opibuilder.widgets.symbol"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
-      <plugin id="org.csstudio.platform.libs.epics.macosx" fragment="true"/>
-      <plugin id="org.csstudio.platform.libs.epics.win32" fragment="true"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.rap.core"/>
@@ -45,7 +42,6 @@
       <plugin id="org.csstudio.swt.xygraph.rap" fragment="true"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.opiwidget"/>
-      <plugin id="org.csstudio.trends.databrowser2.rap" fragment="true"/>
       <plugin id="org.csstudio.ui.menu"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
@@ -55,6 +51,7 @@
       <plugin id="org.csstudio.utility.pvmanager.extra"/>
       <plugin id="org.csstudio.utility.pvmanager.loc"/>
       <plugin id="org.csstudio.utility.pvmanager.sim"/>
+      <plugin id="org.csstudio.utility.pvmanager.sys"/>
       <plugin id="org.csstudio.utility.pvmanager.ui"/>
       <plugin id="org.csstudio.utility.pvmanager.vtype"/>
       <plugin id="org.csstudio.utility.singlesource"/>
@@ -99,9 +96,9 @@
       <plugin id="org.epics.vtype"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
-      <plugin id="org.junit"/>
+      <plugin id="org.junit" version="4.8.2.v4_8_2_v20110321-1705"/>
       <plugin id="org.junit4"/>
-      <plugin id="org.python"/>
+      <plugin id="org.python.jython"/>
    </plugins>
 
    <configurations>
@@ -150,6 +147,7 @@
       <plugin id="org.csstudio.utility.pvmanager.extra" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.loc" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pvmanager.sys" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
@@ -195,7 +193,7 @@
       <plugin id="org.jdom" autoStart="true" startLevel="0" />
       <plugin id="org.junit" autoStart="true" startLevel="0" />
       <plugin id="org.junit4" autoStart="true" startLevel="0" />
-      <plugin id="org.python" autoStart="true" startLevel="0" />
+      <plugin id="org.python.jython" autoStart="true" startLevel="0" />
    </configurations>
 
    <warConfiguration webXml="/org.csstudio.opibuilder.rap/WEB-INF/web.xml" launchIni="/org.csstudio.opibuilder.rap/WEB-INF/launch.ini">

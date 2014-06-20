@@ -1,13 +1,13 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
 import org.epics.util.array.ListNumber;
 
 /**
- * A dataset consisting on a set of 2D cells.
+ * Dataset consisting of a value for each cell of a 1D grid.
  * <p>
  * It represents values distributed on a 2D grid and their statistical information.
  *
@@ -33,6 +33,13 @@ public interface Cell2DDataset {
      * @return statistical information; null if no actual value is defined on the grid
      */
     public Statistics getStatistics();
+    
+    /**
+     * Returns the suggested range to display the values.
+     * 
+     * @return the suggested display range
+     */
+    public Range getDisplayRange();
     
     /**
      * Returns the boundaries of the cells along x.

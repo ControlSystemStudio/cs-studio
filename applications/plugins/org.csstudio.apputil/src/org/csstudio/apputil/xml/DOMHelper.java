@@ -137,7 +137,7 @@ public class DOMHelper
         {
             Node text_node = n.getFirstChild();
             if (text_node == null)
-                return default_value;
+                return ""; // <name/>: Node is there, "" as value
             return text_node.getNodeValue();
         }
         return default_value;

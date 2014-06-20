@@ -23,7 +23,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author shroffk
  * 
  */
-public abstract class AbstractGraph2DView<Widget extends AbstractPointDatasetGraph2DWidget<?,?>>
+public abstract class AbstractGraph2DView<Widget extends AbstractGraph2DWidget<?,?>>
 		extends ViewPart {
 	public AbstractGraph2DView() {
 	}

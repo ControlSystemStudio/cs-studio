@@ -5,7 +5,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.jms2rdb.application"
+            application="org.csstudio.logging.jms2rdb.application"
             name="JMS2RDB">
          <property
                name="appName"

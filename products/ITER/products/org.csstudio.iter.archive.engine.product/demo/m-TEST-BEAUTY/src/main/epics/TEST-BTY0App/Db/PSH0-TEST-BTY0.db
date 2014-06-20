@@ -53,15 +53,34 @@ record (ai,"TEST-BTY0:AI3")
 	field(PREC, "2")
 	field(SCAN, ".1 second")
 }
-record (bi,"TEST-BTY0:ARCHIVE")
+record (bi,"TEST-BTY0:SIMULATION_MODE")
 {
-	field(DESC, "Archive Enabling ON/OFF")
+	field(DESC, "Simulation Mode ON/OFF")
+	field(ONAM, "ON")
+	field(PINI, "YES")
+	field(SCAN, "1 second")
+	field(ZNAM, "OFF")
+	field(INP, "1")
+}
+record (bi,"TEST-BTY0:ARCHIVE_R")
+{
+	field(DESC, "Archive Enabling Readback")
 	field(ONAM, "ON")
 	field(OSV, "NO_ALARM")
 	field(PINI, "YES")
 	field(SCAN, "1 second")
 	field(ZNAM, "OFF")
 	field(ZSV, "MAJOR")
+	field(SIML, "TEST-BTY0:SIMULATION_MODE")
+	field(SIOL, "TEST-BTY0:ARCHIVE")
+}
+record (bo,"TEST-BTY0:ARCHIVE")
+{
+	field(DESC, "Archive Enabling ON/OFF")
+	field(ONAM, "ON")
+	field(PINI, "YES")
+	field(SCAN, "1 second")
+	field(ZNAM, "OFF")
 }
 record (bi,"TEST-BTY0:BI")
 {
@@ -77,7 +96,7 @@ record (bi,"TEST-BTY0:BI")
 record (compress,"TEST-BTY0:COMPRESS")
 {
 	field(ALG, "Circular Buffer")
-	field(DESC, "New Variable - Created while retrofittin")
+	field(DESC, "Temporary Ring Buffer")
 	field(INP, "TEST-BTY0:RNDM-AI")
 	field(NSAM, "50")
 	field(SCAN, ".1 second")

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype.table;
 
@@ -189,6 +189,17 @@ public class VTableFactory {
         };
     }
     
+    private static Object createView(final Object columnData, final ListInt indexes) {
+        if (columnData instanceof List) {
+            List<?> data = (List<?>) columnData;
+            return createView(data, indexes);
+        } else if (columnData instanceof ListNumber) {
+            return createView((ListNumber) columnData, indexes);
+        } else {
+            throw new IllegalArgumentException("Unsupported column data " + columnData);
+        }
+    }
+    
     public static VTable select(final VTable table, final ListInt indexes) {
         List<String> names = columnNames(table);
         List<Class<?>> types = columnTypes(table);
@@ -315,24 +326,46 @@ public class VTableFactory {
     } 
 
     public static ListNumberProvider range(final double min, final double max) {
-        return new ListNumberProvider(double.class) {
-
-            @Override
-            public ListNumber createListNumber(final int size) {
-                return ListNumbers.linearListFromRange(min, max, size);
-            }
-        };
+        return new Range(min, max);
     }
     
-    public static ListNumberProvider step(final double initialValue, final double increment) {
-        return new ListNumberProvider(double.class) {
+    private static class Range extends ListNumberProvider {
+        
+        private final double min;
+        private final double max;
 
-            @Override
-            public ListNumber createListNumber(int size) {
-                return ListNumbers.linearList(initialValue, increment, size);
-            }
-        };
+        public Range(double min, double max) {
+            super(double.class);
+            this.min = min;
+            this.max = max;
+        }
+
+        @Override
+        public ListNumber createListNumber(int size) {
+            return ListNumbers.linearListFromRange(min, max, size);
+        }
+    };
+    
+    public static ListNumberProvider step(final double initialValue, final double increment) {
+        return new Step(initialValue, increment);
     }
+    
+    private static class Step extends ListNumberProvider {
+        
+        private final double initialValue;
+        private final double increment;
+
+        public Step(double initialValue, double increment) {
+            super(double.class);
+            this.initialValue = initialValue;
+            this.increment = increment;
+        }
+
+        @Override
+        public ListNumber createListNumber(int size) {
+            return ListNumbers.linearList(initialValue, increment, size);
+        }
+    };
     
     public static VTable extractRow(VTable vTable, int row) {
         if (vTable == null || row >= vTable.getRowCount() || row < 0) {
@@ -345,6 +378,21 @@ public class VTableFactory {
             columnNames.add(vTable.getColumnName(nCol));
             columnTypes.add(vTable.getColumnType(nCol));
             columnData.add(extractColumnData(vTable.getColumnData(nCol), row));
+        }
+        return ValueFactory.newVTable(columnTypes, columnNames, columnData);
+    }
+    
+    private static VTable extractRows(VTable vTable, ListInt indexes) {
+        if (vTable == null || indexes == null) {
+            return null;
+        }
+        List<String> columnNames = new ArrayList<>(vTable.getColumnCount());
+        List<Class<?>> columnTypes = new ArrayList<>(vTable.getColumnCount());
+        List<Object> columnData = new ArrayList<>(vTable.getColumnCount());
+        for (int nCol = 0; nCol < vTable.getColumnCount(); nCol++) {
+            columnNames.add(vTable.getColumnName(nCol));
+            columnTypes.add(vTable.getColumnType(nCol));
+            columnData.add(createView(vTable.getColumnData(nCol), indexes));
         }
         return ValueFactory.newVTable(columnTypes, columnNames, columnData);
     }
@@ -455,5 +503,29 @@ public class VTableFactory {
                     column("Severity", newVStringArray(severity, alarmNone(), timeNow())),
                     column("Status", newVStringArray(status, alarmNone(), timeNow())));
         }
+    }
+    
+    public static VTable tableValueFilter(VTable table, String columnName, Object value) {
+        ValueFilter valueFilter = new ValueFilter(table, columnName, value);
+        BufferInt indexes = new BufferInt();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (valueFilter.filterRow(i)) {
+                indexes.addInt(i);
+            }
+        }
+        
+        return extractRows(table, indexes);
+    }
+    
+    public static VTable tableRangeFilter(VTable table, String columnName, Object min, Object max) {
+        RangeFilter valueFilter = new RangeFilter(table, columnName, min, max);
+        BufferInt indexes = new BufferInt();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (valueFilter.filterRow(i)) {
+                indexes.addInt(i);
+            }
+        }
+        
+        return extractRows(table, indexes);
     }
 }

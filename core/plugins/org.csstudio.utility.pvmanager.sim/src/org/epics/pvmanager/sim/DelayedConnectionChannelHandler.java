@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
@@ -38,7 +38,7 @@ class DelayedConnectionChannelHandler extends MultiplexedChannelHandler<Object, 
             if (value == null) {
                 throw new IllegalArgumentException(errorMessage);
             }
-            initialValue = ValueFactory.wrapValue(value);
+            initialValue = ValueFactory.toVTypeChecked(value);
         }
         delayInSeconds = (Double) tokens.get(1);
         this.exec = exec;

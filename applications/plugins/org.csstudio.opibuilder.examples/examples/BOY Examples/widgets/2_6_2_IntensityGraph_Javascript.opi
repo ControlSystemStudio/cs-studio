@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-3c52</wuid>
-  <boy_version>3.2.0.qualifier</boy_version>
+  <boy_version>3.2.16.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -161,6 +161,46 @@ with Javascript</text>
     <y_axis_scale_font>
       <fontdata fontName="Segoe UI" height="9" style="0" />
     </y_axis_scale_font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <border_style>0</border_style>
+    <vertical_profile_y_pv_name>loc://vpy</vertical_profile_y_pv_name>
+    <x_axis_minimum>0.0</x_axis_minimum>
+    <crop_bottom>0</crop_bottom>
+    <x_axis_maximum>100.0</x_axis_maximum>
+    <horizon_profile_x_pv_value />
+    <crop_left>0</crop_left>
+    <minimum>-1.0</minimum>
+    <vertial_profile_x_pv_value />
+    <wuid>553ac269:135b01240d5:-3c4c</wuid>
+    <data_height>256</data_height>
+    <y_axis_major_tick_step_hint>50</y_axis_major_tick_step_hint>
+    <y_axis_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </y_axis_title_font>
+    <x_axis_scale_font>
+      <fontdata fontName="Segoe UI" height="9" style="0" />
+    </x_axis_scale_font>
+    <y_axis_axis_color>
+      <color red="0" green="0" blue="0" />
+    </y_axis_axis_color>
+    <data_width>256</data_width>
+    <y_axis_minimum>0.0</y_axis_minimum>
+    <pv_name></pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <horizon_profile_x_pv_name>loc://hpx</horizon_profile_x_pv_name>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <vertial_profile_y_pv_value />
+    <crop_top>0</crop_top>
+    <roi_count>0</roi_count>
+    <horizon_profile_y_pv_value />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>108</y>
+    <x>258</x>
     <visible>true</visible>
     <rgb_mode>false</rgb_mode>
     <x_axis_axis_title>X Axis</x_axis_axis_title>
@@ -171,17 +211,15 @@ with Javascript</text>
       </path>
     </scripts>
     <height>311</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <single_line_profiling>false</single_line_profiling>
     <y_axis_maximum>100.0</y_axis_maximum>
+    <single_line_profiling>false</single_line_profiling>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <color_depth>0</color_depth>
-    <enabled>true</enabled>
     <widget_type>Intensity Graph</widget_type>
+    <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="13" style="0">Default</opifont.name>
     </font>
     <width>371</width>
     <color_map>
@@ -189,38 +227,24 @@ with Javascript</text>
       <autoscale>true</autoscale>
       <map>2</map>
     </color_map>
-    <border_style>0</border_style>
-    <vertical_profile_y_pv_name>loc://vpy</vertical_profile_y_pv_name>
-    <x_axis_minimum>0.0</x_axis_minimum>
+    <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
     <roi_color>
       <color red="0" green="255" blue="255" />
     </roi_color>
-    <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
     <pv_value />
-    <crop_bottom>0</crop_bottom>
-    <maximum>1.0</maximum>
     <border_width>1</border_width>
+    <maximum>1.0</maximum>
     <x_axis_title_font>
       <fontdata fontName="Arial" height="9" style="1" />
     </x_axis_title_font>
-    <x_axis_maximum>100.0</x_axis_maximum>
     <crop_right>0</crop_right>
-    <horizon_profile_x_pv_value />
     <y_axis_visible>true</y_axis_visible>
-    <crop_left>0</crop_left>
-    <graph_area_width>264</graph_area_width>
-    <minimum>-1.0</minimum>
-    <vertial_profile_x_pv_value />
-    <data_height>256</data_height>
-    <wuid>553ac269:135b01240d5:-3c4c</wuid>
+    <graph_area_width>270</graph_area_width>
+    <pixel_info_pv_value />
     <y_axis_axis_title>Y Axis</y_axis_axis_title>
-    <y_axis_major_tick_step_hint>50</y_axis_major_tick_step_hint>
     <x_axis_axis_color>
       <color red="0" green="0" blue="0" />
     </x_axis_axis_color>
-    <y_axis_title_font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </y_axis_title_font>
     <x_axis_visible>true</x_axis_visible>
     <name>IntensityGraph</name>
     <scale_options>
@@ -228,26 +252,11 @@ with Javascript</text>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>true</keep_wh_ratio>
     </scale_options>
-    <x_axis_scale_font>
-      <fontdata fontName="Segoe UI" height="9" style="0" />
-    </x_axis_scale_font>
-    <y_axis_axis_color>
-      <color red="0" green="0" blue="0" />
-    </y_axis_axis_color>
-    <data_width>256</data_width>
-    <vertical_profile_x_pv_name>loc://vpx</vertical_profile_x_pv_name>
     <y_axis_show_minor_ticks>true</y_axis_show_minor_ticks>
-    <pv_name></pv_name>
-    <y_axis_minimum>0.0</y_axis_minimum>
+    <vertical_profile_x_pv_name>loc://vpx</vertical_profile_x_pv_name>
+    <pixel_info_pv_name>loc://pixel_info</pixel_info_pv_name>
     <horizon_profile_y_pv_name>loc://hpy</horizon_profile_y_pv_name>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <horizon_profile_x_pv_name>loc://hpx</horizon_profile_x_pv_name>
-    <vertial_profile_y_pv_value />
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <crop_top>0</crop_top>
-    <graph_area_height>266</graph_area_height>
+    <graph_area_height>276</graph_area_height>
     <rules>
       <rule name="SelectColorMap" prop_id="color_map" out_exp="true">
         <exp bool_exp="true">
@@ -258,13 +267,6 @@ with Javascript</text>
     </rules>
     <x_axis_major_tick_step_hint>50</x_axis_major_tick_step_hint>
     <show_ramp>true</show_ramp>
-    <horizon_profile_y_pv_value />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>108</y>
-    <actions hook="false" hook_all="false" />
-    <x>258</x>
     <tooltip>$(pv_name)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0.0">
@@ -272,7 +274,7 @@ with Javascript</text>
     <visible>true</visible>
     <wuid>553ac269:135b01240d5:-3c4b</wuid>
     <scripts />
-    <height>31</height>
+    <height>30</height>
     <name>ColorMapSelector</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -362,7 +364,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <wuid>553ac269:135b01240d5:-3c49</wuid>
     <scripts />
-    <height>31</height>
+    <height>30</height>
     <name>Combo Box_1</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -710,7 +712,7 @@ In Run Mode, dragging mouse on graph area will zoom in. &#xD;
 Double clicking will return to original states.&#xD;
 The text tip right below the cursor is (X, Y, Value)</text>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="13" style="0">Default</opifont.name>
     </font>
     <width>154</width>
     <border_style>1</border_style>
@@ -741,18 +743,14 @@ The text tip right below the cursor is (X, Y, Value)</text>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <pv_name></pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="13" style="0">Default</opifont.name>
     </font>
     <width>97</width>
     <border_style>0</border_style>
@@ -794,18 +792,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <pv_name></pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Back</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="13" style="0">Default</opifont.name>
     </font>
     <width>79</width>
     <border_style>0</border_style>
@@ -848,18 +842,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <pv_name></pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Next</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="13" style="0">Default</opifont.name>
     </font>
     <width>79</width>
     <border_style>0</border_style>
@@ -885,5 +875,43 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>Intensity Graph with Python script</tooltip>
     <x>703</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.VTableDisplay" version="1.0.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>65aa75b2:14561138bf3:-7f4e</wuid>
+    <scripts />
+    <pv_result_prefix></pv_result_prefix>
+    <height>116</height>
+    <name>Text Update</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>loc://pixel_info</pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <background_color>
+      <color name="Read_Background" red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>VTable Display</widget_type>
+    <font>
+      <opifont.name fontName="Lucida Grande" height="13" style="0">Default</opifont.name>
+    </font>
+    <width>250</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>428</y>
+    <actions hook="false" hook_all="false" />
+    <x>2</x>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
   </widget>
 </display>

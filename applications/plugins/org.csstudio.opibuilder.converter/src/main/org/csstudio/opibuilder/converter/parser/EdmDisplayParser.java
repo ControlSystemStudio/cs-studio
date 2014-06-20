@@ -123,7 +123,7 @@ public class EdmDisplayParser extends EdmParser{
 				nestError = true;
 			if (nestError)
 				throw new EdmException(EdmException.NESTING_ERROR,
-						"Nesting error at attribute: " + line);
+						"Nesting error at attribute: " + line, null);
 		}
 	}
 
@@ -210,7 +210,7 @@ public class EdmDisplayParser extends EdmParser{
 		if (begins.size() != ends.size())
 			throw new EdmException(EdmException.NESTING_ERROR,
 					"Open and close expressions count do not match: open = " + begins.size() + 
-					" close = " + ends.size() + ".");
+					" close = " + ends.size() + ".", null);
 
 		// returns the position of closing expression that is relevant to current group
 		int[] endPos = getClosingPosition(begins, ends);
@@ -261,7 +261,7 @@ public class EdmDisplayParser extends EdmParser{
 		}
 
 		if (level < 0)
-			throw new EdmException(EdmException.NESTING_ERROR, "Tree depth has fallen below zero.");
+			throw new EdmException(EdmException.NESTING_ERROR, "Tree depth has fallen below zero.", null);
 
 		int[] result = { end, endIndex};
 		return result;
@@ -451,6 +451,9 @@ public class EdmDisplayParser extends EdmParser{
 				else {
 					int start = m.start();
 					int end = m.end();
+					if(objType.contains(":")){
+						objType=objType.replace(":", "_");
+					}
 					parseObject(getRoot(), objType, objData);
 					
 					edmData.delete(start, end);

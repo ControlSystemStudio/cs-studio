@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.vtype;
 
@@ -306,7 +306,7 @@ public class ExpressionLanguage {
      * @return a double expression
      */
     public static DesiredRateExpression<VDouble> vConst(double value) {
-        return constant(newVDouble(value, alarmNone(), newTime(Timestamp.now()), displayNone()), Double.toString(value));
+        return constant(newVDouble(value, alarmNone(), timeNow(), displayNone()), Double.toString(value));
     }
     
     /**
@@ -317,7 +317,7 @@ public class ExpressionLanguage {
      * @return an int expression
      */
     public static DesiredRateExpression<VInt> vConst(int value) {
-        return constant(newVInt(value, alarmNone(), newTime(Timestamp.now()), displayNone()), Integer.toString(value));
+        return constant(newVInt(value, alarmNone(), timeNow(), displayNone()), Integer.toString(value));
     }
     
     /**
@@ -328,7 +328,7 @@ public class ExpressionLanguage {
      * @return a double array expression
      */
     public static DesiredRateExpression<VDoubleArray> vConst(double... values) {
-        return constant(newVDoubleArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
+        return constant(newVDoubleArray(new ArrayDouble(values), alarmNone(), timeNow(), displayNone()));
     }
     
     /**
@@ -339,7 +339,7 @@ public class ExpressionLanguage {
      * @return a double array expression
      */
     public static DesiredRateExpression<VDoubleArray> vConst(ListDouble values) {
-        return constant(newVDoubleArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
+        return constant(newVDoubleArray(values, alarmNone(), timeNow(), displayNone()));
     }
     
     /**
@@ -350,7 +350,7 @@ public class ExpressionLanguage {
      * @return an int array expression
      */
     public static DesiredRateExpression<VIntArray> vConst(int... values) {
-        return constant(newVIntArray(new ArrayInt(values), alarmNone(), newTime(Timestamp.now()), displayNone()));
+        return constant(newVIntArray(new ArrayInt(values), alarmNone(), timeNow(), displayNone()));
     }
     
     /**
@@ -361,7 +361,7 @@ public class ExpressionLanguage {
      * @return an int array expression
      */
     public static DesiredRateExpression<VIntArray> vConst(ListInt values) {
-        return constant(newVIntArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
+        return constant(newVIntArray(values, alarmNone(), timeNow(), displayNone()));
     }
 
     /**
@@ -373,7 +373,7 @@ public class ExpressionLanguage {
     public static DesiredRateExpressionList<VDouble> vDoubleConstants(List<Double> values) {
         DesiredRateExpressionList<VDouble> list = new DesiredRateExpressionListImpl<VDouble>();
         for (Double value : values) {
-            list.and(constant(newVDouble(value, alarmNone(), newTime(Timestamp.now()), displayNone())));
+            list.and(constant(newVDouble(value, alarmNone(), timeNow(), displayNone())));
         }
         return list;
     }

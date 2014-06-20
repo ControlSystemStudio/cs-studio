@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.alarm.beast.server;singleton:=true
 Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Description: BEAST Alarm Server
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.csstudio.logging;bundle-version="0.0.1",
  org.epics.util;bundle-version="0.1.0",

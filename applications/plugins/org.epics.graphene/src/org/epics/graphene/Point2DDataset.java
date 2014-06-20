@@ -1,13 +1,13 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
 import org.epics.util.array.ListNumber;
 
 /**
- * A dataset consisting on a set of 2D points.
+ * A dataset consisting of a set of 2D points.
  * <p>
  * It represents a list of ordered tuples of two values, and their statistical information.
  * The order may not be meaningful, but can be used to identify the points.
@@ -55,7 +55,7 @@ public interface Point2DDataset {
     /**
      * The number of points in the dataset.
      * <p>
-     * This number matches the size of the list returned by {@link #getValues() }.
+     * This number matches the size of the list returned by {@link #getXValues() }.
      * 
      * @return the number of values in this dataset
      */

@@ -7,10 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pace;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.display.pace.gui.GUI;
@@ -18,12 +15,10 @@ import org.csstudio.display.pace.model.Cell;
 import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
-import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
-import org.csstudio.logbook.LogbookBuilder;
-import org.csstudio.logbook.LogbookClient;
-import org.csstudio.logbook.LogbookClientFactory;
-import org.csstudio.logbook.LogbookClientManager;
+import org.csstudio.logbook.ui.LogEntryBuilderDialog;
+import org.csstudio.logbook.ui.LogEntryBuilderEnum;
+import org.csstudio.logbook.ui.LogEntryBuilderListener;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -38,14 +33,21 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
 /** Eclipse EditorPart for the PACE Model and GUI
+ * 
+ *  
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
 public class EditorPart extends org.eclipse.ui.part.EditorPart
-    implements ModelListener
+    implements ModelListener, LogEntryBuilderListener
 {
     private Model model;
     private boolean is_dirty = false;
+    
+    private String changes = "";
+    // Display ELog entry dialog
+    private Shell shell = null;
+    private String userName = "";
 
     /** Initialize Model from editor input */
     @Override
@@ -106,10 +108,9 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
 
     /** @return <code>true</code> if Model contains user changes */
     @Override
-    public boolean isDirty()
-    {
-        return is_dirty;
-    }
+	public boolean isDirty() {
+		return is_dirty;
+	}
 
     /** Create the 'body', the main text of the ELog entry which
      *  lists all the changes.
@@ -190,148 +191,63 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         return body.toString();
     }
 
-    /** "Save" means create elog entry about changes, then write user values
-     *   to PVs.
-     *   @see org.eclipse.ui.part.EditorPart#doSave(IProgressMonitor)
-     */
+	/**
+	 * "Save" means create elog entry about changes, then write user values to
+	 * PVs.
+	 * 
+	 * @see org.eclipse.ui.part.EditorPart#doSave(IProgressMonitor)
+	 */
     @Override
-    public void doSave(final IProgressMonitor monitor)
-    {
-        final String changes = createElogText();
+	public void doSave(final IProgressMonitor monitor) {
+        this.changes = createElogText();
         // Display ELog entry dialog
-        final Shell shell = getSite().getShell();
-
-        // Ideally, we actually have ELog support.
-        // But for sites without that, it displays a simple confirmation
-        // dialog
-        final LogbookClientFactory log_client_factory;
-        try
-        {
-            log_client_factory = LogbookClientManager.getLogbookClientFactory();
-        }
-        catch (Exception ex)
-        {
-            final String message = NLS.bind(Messages.ConfirmChangesFmt, changes);
-            if (!MessageDialog.openConfirm(shell, Messages.SaveTitle, message))
-                return;
-            try
-            {
-                model.saveUserValues(System.getenv("user.name")); //$NON-NLS-1$
-                model.clearUserValues();
-            }
-            catch (Exception save_ex)
-            {
-            	// On error, restore the original values
-                try
-                {
-                    model.revertOriginalValues();
-                }
-                catch (Exception ignore)
-                {
-                    // Since saving didn't work, restoral will also fail.
-                    // Hopefully those initial PVs that did get updated will
-                    // also be restored...
-                }
-                
-                MessageDialog.openError(shell, Messages.SaveError,
-                        NLS.bind(Messages.SaveErrorFmt, save_ex.getMessage()));
-            }
-            return;
-        }
+        this.shell = getSite().getShell();
+      
         // "Normal" case with ELog support
-        try
-        {
-            final String title = NLS.bind(Messages.ELogTitleFmt, model.getTitle());
-            final ElogDialog dialog = new ElogDialog(shell, Preferences.getDefaultLogbook(), title, changes)
-            {
-                @Override
-                public void save(final String user, final String password,
-                        final Collection<String> logbooks, final String title, final String body) throws Exception
-                {
-                    // The whole elog-and-pv-update should be handled
-                    // as a transaction that either succeeds or fails
-                    // as a whole.
+		try {
+			final String title = NLS.bind(Messages.ELogTitleFmt,
+					model.getTitle());
+			StringBuilder textContent = new StringBuilder();
+			textContent.append(title).append("\n").append(changes);
 
-                    // Check if we can connect to the logbook (user, password)
-                    final LogbookClient client = log_client_factory.getClient(user, password);
-                    try
-                    {   // Change PVs.
-                        model.saveUserValues(user);
-                    }
-                    catch (Exception ex)
-                    {   // At least some saves failed, to revert
-                        try
-                        {
-                            model.revertOriginalValues();
-                        }
-                        catch (Exception ignore)
-                        {
-                            // Since saving didn't work, restoral will also fail.
-                            // Hopefully those initial PVs that did get updated will
-                            // also be restored...
-                        }
+			final LogEntryBuilderDialog logEntryBuilderDialog = new LogEntryBuilderDialog(
+					shell, LogEntryBuilder.withText(textContent.toString()));
 
-                        // Update error to be more specific, displayed by ELog dialog
-                        throw new Exception(NLS.bind(Messages.PVWriteErrorFmt, ex.getMessage()));
-                    }
-
-                    try
-                    {   // Then make elog entry.
-                        final List<LogbookBuilder> books = new ArrayList<>();
-                        for (String logbook : logbooks)
-                            books.add(LogbookBuilder.logbook(logbook));
-                        final LogEntry entry = LogEntryBuilder
-                                .withText(title + "\n" + body) //$NON-NLS-1$
-                                .setLogbooks(books)
-                                .build();
-                        client.createLogEntry(entry);
-                        model.clearUserValues();
-                    }
-                    catch (Exception ex)
-                    {   // On error, restore the original values
-                        model.revertOriginalValues();
-                        throw ex;
-                    }
-                }
-            };
-            dialog.open();
-        }
-        catch (Exception ex)
-        {
-            MessageDialog.openError(shell, Messages.SaveError,
-                    NLS.bind(Messages.SaveErrorFmt, ex.getMessage()));
-        }
+			logEntryBuilderDialog.addListener(this);
+			logEntryBuilderDialog.setBlockOnOpen(true);
+			logEntryBuilderDialog.open();
+		} catch (Exception ex) {
+			MessageDialog.openError(shell, Messages.SaveError,
+					NLS.bind(Messages.SaveErrorFmt, ex.getMessage()));
+		}
     }
 
     /** "SaveAs isn't allowed and should not get invoked,
      *  but in case it is, we handle it like 'doSave'
      */
     @Override
-    public void doSaveAs()
-    {
-        doSave(new NullProgressMonitor());
-    }
+	public void doSaveAs() {
+		doSave(new NullProgressMonitor());
+	}
 
     /** @return <code>false</code> to prohibit 'save as' */
     @Override
-    public boolean isSaveAsAllowed()
-    {
-        return false;
-    }
+	public boolean isSaveAsAllowed() {
+		return false;
+	}
 
     /** Update the editor's "dirty" state when model changes
      *  @see ModelListener
      */
     @Override
-    public void cellUpdate(final Cell cell)
-    {
-        if (is_dirty == model.isEdited())
-            return;
-        is_dirty = model.isEdited();
+	public void cellUpdate(final Cell cell) {
+		if (is_dirty == model.isEdited())
+			return;
+		is_dirty = model.isEdited();
 
-        updateContentDescription();
-        firePropertyChange(PROP_DIRTY);
-    }
+		updateContentDescription();
+		firePropertyChange(PROP_DIRTY);
+	}
 
     /** Update the 'content description', i.e. a line just below
      *  the editor's title to show the model's title and some
@@ -346,4 +262,83 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             info = NLS.bind(Messages.FileUnchangedFmt, model.getTitle());
         setContentDescription(info);
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+    @Override
+	public void initializeSaveAction(String userName) {
+    	if (userName == null || userName.isEmpty()) {
+    		userName = System.getenv("user.name");
+    	}
+		this.userName = userName;
+	}
+
+    /**
+     * {@inheritDoc}
+     * @throws Exception 
+     */
+	@Override
+	public void saveProcessStatus(LogEntryBuilderEnum state) throws Exception {
+		switch (state) {
+		case START_SAVE:
+			saveUserValues();
+			break;
+		case STOP_SAVE:
+			finalizeSave();
+			break;
+		case CANCEL_SAVE:
+			reverOginalValues();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	/**
+	 * Rever oginal values.
+	 */
+	private void reverOginalValues() {
+		try {
+			model.revertOriginalValues();
+		} catch (Exception save_ex) {
+			MessageDialog.openError(shell, Messages.SaveError,
+                  NLS.bind(Messages.SaveErrorFmt, save_ex.getMessage()));
+		}
+	}
+	
+	/**
+	 * Finalize save.
+	 */
+	private void finalizeSave() {
+		model.clearUserValues();
+	}
+	
+	/**
+	 * Save user values.
+	 * @throws Exception 
+	 */
+	private void saveUserValues() throws Exception {
+		// The whole elog-and-pv-update should be handled
+		// as a transaction that either succeeds or fails
+		// as a whole.
+
+		// Check if we can connect to the logbook (user, password)
+		try { // Change PVs.
+			model.saveUserValues(this.userName);
+		} catch (Exception ex) { // At least some saves failed, to revert
+			try {
+				model.revertOriginalValues();
+			} catch (Exception ignore) {
+				// Since saving didn't work, restoral will also fail.
+				// Hopefully those initial PVs that did get updated will
+				// also be restored...
+			}
+			// Update error to be more specific, displayed by ELog dialog
+			throw new Exception(NLS.bind(Messages.PVWriteErrorFmt,
+					ex.getMessage()));
+		}
+	}
+
+
 }

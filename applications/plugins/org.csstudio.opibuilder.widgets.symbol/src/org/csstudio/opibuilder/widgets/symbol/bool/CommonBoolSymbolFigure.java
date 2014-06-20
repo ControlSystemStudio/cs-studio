@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -62,7 +62,10 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure {
 	private volatile boolean loadingImage;
 
 	private ExecutionMode executionMode;
-	
+
+	private Color foregroundColor;
+	private boolean useForegroundColor = false;
+
 	private AbstractSymbolImage createSymbolImage(boolean runMode) {
 		MonitorSymbolImage csi = new MonitorSymbolImage(runMode);
 		if (symbolProperties != null) {
@@ -194,7 +197,8 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure {
 				this.onImagePath = onImagePath;
 			}
 		}
-		if ("svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
+		if (imagePath.getFileExtension() != null
+				&& "svg".compareToIgnoreCase(imagePath.getFileExtension()) == 0) {
 			workingWithSVG = true;
 		} else {
 			workingWithSVG = false;
@@ -488,8 +492,10 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure {
 			}
 			return;
 		}
-		getOnImage().setCurrentColor(onColor);
-		getOffImage().setCurrentColor(offColor);
+		Color currentcolor = null;
+		if (useForegroundColor) currentcolor = getForegroundColor();
+		else currentcolor = booleanValue ? onColor : offColor;
+		getCurrentImage().setCurrentColor(currentcolor);
 		getCurrentImage().setBounds(bounds);
 		getCurrentImage().setBorder(getBorder());
 		getCurrentImage().setAbsoluteScale(gfx.getAbsoluteScale());
@@ -527,6 +533,24 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure {
 		} else {
 			this.offColor = offColor;
 		}
+		repaint();
+	}
+
+	public void setUseForegroundColor(boolean useForegroundColor) {
+		this.useForegroundColor = useForegroundColor;
+		repaint();
+	}
+
+	@Override
+	public Color getForegroundColor() {
+		return foregroundColor;
+	}
+
+	@Override
+	public void setForegroundColor(Color foregroundColor) {
+		this.foregroundColor = foregroundColor;
+		if (foregroundColor != null)
+			this.boolLabel.setForegroundColor(foregroundColor);
 		repaint();
 	}
 

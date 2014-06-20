@@ -15,11 +15,11 @@ import javax.jms.Connection;
 import org.csstudio.alarm.beast.annunciator.model.AnnunciationMessage;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
+import org.csstudio.apputil.args.ArgParser;
+import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
 
 /** Eclipse Application for the JMS-to-speech tool
  *
@@ -33,7 +33,7 @@ public class Application implements IApplication, JMSAnnunciatorListener
 {
     /** Flag to control if the application runs or stops */
     private boolean run = true;
-
+    
     /** {@inheritDoc} */
 	@Override
     public Object start(IApplicationContext context) throws Exception
@@ -56,14 +56,36 @@ public class Application implements IApplication, JMSAnnunciatorListener
 //            frame.setVisible(true);
 //	    }
 
-	    final String url = Preferences.getURL();
-	    final String topics[] = Preferences.getTopics();
+		final String url = Preferences.getURL();
+		final String topics[] = Preferences.getTopics();
 
-        // Get version number from plugin
-        final Bundle bundle = context.getBrandingBundle();
-        final Object version = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
+		// Display configuration info
+        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String app_info = context.getBrandingName() + " " + version;
+
+		// Create parser for arguments and run it.
+		final String args[] = (String[]) context.getArguments().get("application.args");
+
+		final ArgParser parser = new ArgParser();
+		final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+		final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
+		parser.addEclipseParameters();
+		try {
+			parser.parse(args);
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage() + "\n" + parser.getHelp());
+			return IApplication.EXIT_OK;
+		}
+		if (help_opt.get()) {
+			System.out.println(app_info + "\n\n" + parser.getHelp());
+			return IApplication.EXIT_OK;
+		}
+		if (version_opt.get()) {
+			System.out.println(app_info);
+			return IApplication.EXIT_OK;
+		}
+
         // Put startup info with JMS topic & URL into log
-
         Logger.getLogger(Activator.PLUGIN_ID).info
 		    ("JMS2SPEECH " + version + ", topic " + Arrays.toString(topics) + " @ " + url);
 

@@ -3,6 +3,9 @@
  */
 package org.csstudio.channel.opiwidgets;
 
+import org.csstudio.channel.widgets.ChannelViewerWidget;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
+
 
 /**
  * @author shroffk
@@ -11,7 +14,7 @@ package org.csstudio.channel.opiwidgets;
 public class ChannelViewerModel extends AbstractChannelWidgetModel {
 	
 	public ChannelViewerModel() {
-		super(true);
+		super(AbstractSelectionWidgetModelDescription.newModelFrom(ChannelViewerWidget.class));
 	}
 
 	public final String ID = "org.csstudio.channel.opiwidgets.ChannelViewer"; //$NON-NLS-1$

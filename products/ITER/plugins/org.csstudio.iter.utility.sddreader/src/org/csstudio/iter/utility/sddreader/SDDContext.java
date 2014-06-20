@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2013 ITER Organization.
+ * Copyright (c) 2010-2014 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import org.csstudio.autocomplete.data.Field;
-import org.csstudio.autocomplete.data.Record;
+import org.csstudio.iter.utility.sddreader.data.Field;
+import org.csstudio.iter.utility.sddreader.data.Record;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 public class SDDContext implements Serializable {

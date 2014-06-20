@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Auto-Complete PON Archive RDB Provider
+Bundle-SymbolicName: org.csstudio.autocomplete.archive;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.autocomplete.archive.Activator
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui;resolution:=optional,
+ org.eclipse.rap.ui;resolution:=optional,
+ org.csstudio.trends.databrowser2,
+ org.csstudio.archive.reader.rdb,
+ org.csstudio.archive.reader,
+ org.csstudio.archive.rdb,
+ org.csstudio.autocomplete
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.autocomplete.archive
+Service-Component: OSGI-INF/*.xml

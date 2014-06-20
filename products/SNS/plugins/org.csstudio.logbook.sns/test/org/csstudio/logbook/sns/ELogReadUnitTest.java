@@ -68,8 +68,9 @@ public class ELogReadUnitTest
         final Date start = new Date(now.getTime() - 1000L*60*60*24);
         final List<ELogEntry> entries = elog.getEntries(start, now);
         for (ELogEntry entry : entries)
-            System.out.format("%s - %-20s - %s: %s\n",
+            System.out.format("%s (%s) - %-20s - %s: %s\n",
                     format.format(entry.getDate()),
+                    entry.getPriority().getName(),
                     entry.getUser(),
                     entry.getTitle(),
                     shorten(entry.getText().replaceAll("[\r\n]", " ")));

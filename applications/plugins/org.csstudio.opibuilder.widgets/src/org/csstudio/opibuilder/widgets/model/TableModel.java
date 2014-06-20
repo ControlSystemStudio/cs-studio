@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringTableProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor.CellEditorType;
 
 /**Model for the Table widget.
  * @author Xihui Chen
@@ -74,9 +75,16 @@ public class TableModel extends AbstractWidgetModel {
 		
 		addProperty(contentProperty);
 		
-		StringTableProperty headersProperty = new StringTableProperty(
+		String[] dropDownOptions = new String[org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType.values().length];
+		for(int i=0; i<dropDownOptions.length; i++)
+			dropDownOptions[i]=org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType.values()[i].name();
+		
+		StringTableProperty headersProperty = new StringTableProperty( 
 				PROP_COLUMN_HEADERS, "Column Headers",WidgetPropertyCategory.Display,
-				new String[0][0], new String[]{"Column Title", "Column Width", "Editable(yes/no)"});
+				new String[0][0], new String[]{"Column Title", "Column Width", "Editable", "CellEditor"},
+				new CellEditorType[]{CellEditorType.TEXT, CellEditorType.TEXT,
+						CellEditorType.CHECKBOX, CellEditorType.DROPDOWN},
+						new Object[]{null, null, new String[]{"Yes", "No"}, dropDownOptions});
 		
 		addProperty(headersProperty);
 		
@@ -138,7 +146,25 @@ public class TableModel extends AbstractWidgetModel {
 			return r;
 		}
 		for(int i=0; i<headers.length; i++){
-			r[i] = headers[i][2].equals("no")?false:true; //$NON-NLS-1$
+			r[i] = headers[i][2].toLowerCase().equals("no")?false:true; //$NON-NLS-1$
+		}
+		return r;			
+	}
+	
+	public org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType[] getColumnCellEditorTypes(){
+		String[][] headers = (String[][]) getPropertyValue(PROP_COLUMN_HEADERS);
+		org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType[] r =
+				new org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType[headers.length];
+		if(headers.length ==0 || headers[0].length <4){
+			Arrays.fill(r, org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType.TEXT);
+			return r;
+		}
+		for(int i=0; i<headers.length; i++){
+			try {
+				r[i] = org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType.valueOf(headers[i][3]);
+			} catch (Exception e) {
+				r[i]=org.csstudio.swt.widgets.natives.SpreadSheetTable.CellEditorType.TEXT;
+			} 
 		}
 		return r;			
 	}

@@ -309,8 +309,29 @@ public class ValueRequest implements AsyncCallback
             final String stat = reader.getStatus(sevr, stat_code);
 			final Vector vv = (Vector)sample_hash.get("value");
 			final AlarmSeverity severity = sevr.getSeverity();
-
-			if (type == TYPE_DOUBLE)
+			
+			if (! sevr.hasValue()) {
+				if (si == 0) {
+					samples[si] = new ArchiveVString(time, AlarmSeverity.UNDEFINED, "Disconnected", "#N/A");
+				} else {
+					VType previousSample = samples[si -1];
+					if (previousSample instanceof ArchiveVNumber) {
+                		samples[si] = new ArchiveVNumber(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, ((ArchiveVNumber) previousSample).getValue());
+					} else if (previousSample instanceof ArchiveVNumberArray) {
+                		samples[si] = new ArchiveVNumberArray(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, ((ArchiveVNumberArray) previousSample).getData());
+					} else if (previousSample instanceof ArchiveVStatistics) {
+						ArchiveVStatistics sample = (ArchiveVStatistics) previousSample;
+                		samples[si] = new ArchiveVStatistics(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, 
+                				sample.getAverage(), sample.getMin(), sample.getMax(), sample.getStdDev(), sample.getNSamples());
+					} else if (previousSample instanceof ArchiveVEnum) {
+						ArchiveVEnum sample = (ArchiveVEnum) previousSample;
+                		samples[si] = new ArchiveVEnum(time, AlarmSeverity.UNDEFINED, "Disconnected", sample.getLabels(), sample.getIndex());
+					} else if (previousSample instanceof ArchiveVEnum) {
+						ArchiveVString sample = (ArchiveVString) previousSample;
+                		samples[si] = new ArchiveVString(time, AlarmSeverity.UNDEFINED, "Disconnected", sample.getValue());
+					}
+				}
+			} else if (type == TYPE_DOUBLE)
 			{
 				final double values[] = new double[count];
 				for (int vi=0; vi<count; ++vi)

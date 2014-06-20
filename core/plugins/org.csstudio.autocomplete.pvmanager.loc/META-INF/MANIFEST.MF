@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Loc DataSource AutoComplete
+Bundle-SymbolicName: org.csstudio.autocomplete.pvmanager.loc;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.autocomplete.pvmanager.loc.Activator
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager.loc,
+ org.csstudio.autocomplete
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.autocomplete.pvmanager.loc
+Service-Component: OSGI-INF/*.xml

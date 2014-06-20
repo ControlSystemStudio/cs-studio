@@ -3,13 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY Widgets Plug-in
 Bundle-Description: Widgets for BOY
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets;singleton:=true
-Bundle-Version: 3.2.6.qualifier
+Bundle-Version: 3.3.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.Activator
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
- org.csstudio.opibuilder,
- org.csstudio.swt.xygraph,
+ org.csstudio.opibuilder;bundle-version="3.2.16",
+ org.csstudio.swt.xygraph;bundle-version="2.0.3",
  org.eclipse.core.resources;resolution:=optional,
  org.eclipse.ui.browser;resolution:=optional,
  org.csstudio.swt.widgets,
@@ -26,3 +26,4 @@ Export-Package: org.csstudio.opibuilder.widgets.actions,
  org.csstudio.opibuilder.widgets.feedback,
  org.csstudio.opibuilder.widgets.figures,
  org.csstudio.opibuilder.widgets.model
+Import-Package: org.eclipse.gef

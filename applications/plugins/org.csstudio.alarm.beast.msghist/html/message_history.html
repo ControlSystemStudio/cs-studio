@@ -11,6 +11,7 @@
 <li><a href="#overview">Overview</a></li>
 <li><a href="#properties">Properties</a></li>
 <li><a href="#setting">Setting Start/End Time and Filter</a></li>
+<li><a href="#refresh">Automatic/manual refresh</a></li>
 <li><a href="#preference">Preferences Configuration</a></li>
 </ol>
 
@@ -46,7 +47,7 @@ identified by a Message TYPE.
 You can open the Message History View via the menu item
 <pre>CSS/Alarm/Message History</pre></p>
 
-<img alt="Message History" src="msghist.png" />
+<img alt="Message History" src="msghist_01.png" />
 
 
 <a name="#properties">
@@ -104,6 +105,16 @@ TYPE="alarm" and NAME="%Vac%" will show only alarm messages
 for PVs with "Vac" in their name for the selected time range.
 
 
+<a name="#refresh">
+<h2>Automatic Refresh</h2>
+</a>
+
+Preference settings allow to set auto-refresh period in seconds to reload message history view from RDB. 
+When the refresh period is > 0 second, then a RDB request will be triggered periodically to display the new messages. 
+If this period is set to 0 or if the end time is not set to "now", there is no automatic refresh. 
+It possible to force a refresh using panel button "manual refresh"  <img src=../icons/refresh.gif alt="">. 
+Finally, it is possible to pause the auto-refresh using the pause button <img src=../icons/pause.gif alt=""> .
+
 <a name="#preference">
 <h2>Preference Settings</h2>
 </a>
@@ -114,7 +125,7 @@ The preferences configuration panel can be opened via the menu
 then navigating to 
 <pre>CSS Applications/Alarm/Message History.</pre>
 </p>
-<img src=msghist_preferences.png alt="Message History Preferences Configuration">
+<img src=msghist_preferences_01.png alt="Message History Preferences Configuration">
 
 
 <ul>
@@ -125,6 +136,10 @@ then navigating to
 <li>Password: Password for the user.</li>
 
 <li>Schema: Schema name in the database.</li>
+
+<li>Start time: Start time used to filter on message history</>
+
+<li>Auto refresh period: Refresh period to reload message history from db</>
 
 <li>Message Property Columns: List of displayed Table Columns
                               (Message Property, widths, weight).</li>

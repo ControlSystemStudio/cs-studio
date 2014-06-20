@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>553ac269:135b01240d5:-693d</wuid>
-  <boy_version>3.2.7.qualifier</boy_version>
+  <boy_version>3.3.0</boy_version>
   <scripts>
     <path pathString="EmbeddedJs" checkConnect="true" sfe="false" seoe="false">
       <scriptName>checkVersion</scriptName>
@@ -18,7 +18,7 @@ var BOYVersion = ScriptUtil.getBOYVersion();
 
 if(opiVersion.compareTo(BOYVersion)<0)
 	MessageDialog.openInformation(
-			null, "Tip", "Your BOY Examples are outdated. To enjoy the latest examples, please delete and install them again using menu CSS->Utilities->Install Samples.");]]></scriptText>
+			null, "Tip", "Your BOY Examples are outdated.\nBOY: " + BOYVersion + ",\nOPI: " + opiVersion + ".\nTo enjoy the latest examples, please delete and install them again using menu CSS->Utilities->Install Samples.");]]></scriptText>
       <pv trig="true">=1</pv>
     </path>
   </scripts>

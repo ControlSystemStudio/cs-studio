@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmException;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class OpiAttributeTest extends TestCase {
 
@@ -26,7 +26,7 @@ public class OpiAttributeTest extends TestCase {
 		// instantiating OpiAttribute
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		Context context = new Context(doc, parent, 0, 0);
+		Context context = new Context(doc, parent, null,  0, 0);
 		new OpiAttribute(context, name);
 		
 		// testing

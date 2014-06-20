@@ -7,6 +7,10 @@ org.csstudio.alarm.beast.notifier
 org.csstudio.apputil
 org.csstudio.auth
 org.csstudio.autocomplete
+org.csstudio.autocomplete.pvmanager.formula
+org.csstudio.autocomplete.pvmanager.loc
+org.csstudio.autocomplete.pvmanager.sim
+org.csstudio.autocomplete.pvmanager.sys
 org.csstudio.csdata
 org.csstudio.data
 org.csstudio.email

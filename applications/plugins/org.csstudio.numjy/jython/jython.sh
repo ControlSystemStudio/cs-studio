@@ -1,6 +1,9 @@
 #!/bin/sh
 #
-# Invoke jython
+# Invoke jython with NumJy for tests
+#
+# See org.csstudio.scan/jython/jython.sh for
+# example that includes NumJy as well as scan support
 #
 # Kay Kasemir
 
@@ -22,7 +25,7 @@ else
 fi
 
 # When running jython as a JAR like this...
-#  java -jar ../../yabes.client/lib/jython.jar "$@"
+#  java -jar jython.jar "$@"
 # one cannot add more to the classpath.
 # So we put jython on the class path
 # and specify the main class to run.

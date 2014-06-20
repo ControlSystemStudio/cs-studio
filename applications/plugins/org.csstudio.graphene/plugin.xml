@@ -9,9 +9,9 @@
       </category>
       <view
             category="org.csstudio.graphene.category"
-            class="org.csstudio.graphene.HistogramView"
+            class="org.csstudio.graphene.HistogramGraph2DView"
             icon="icons/graphene-histogram-16.png"
-            id="org.csstudio.graphene.HistogramView"
+            id="org.csstudio.graphene.HistogramGraph2DView"
             name="Histogram (alpha)"
             restorable="true">
       </view>
@@ -39,6 +39,22 @@
             name="Bubble Graph"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.graphene.category"
+            class="org.csstudio.graphene.IntensityGraph2DView"
+            icon="icons/graphene-intensity-16.png"
+            id="org.csstudio.graphene.IntensityGraph2DView"
+            name="Intensity Graph"
+            restorable="true">
+      </view>
+      <view
+            category="org.csstudio.graphene.category"
+            class="org.csstudio.graphene.MultiAxisLineGraph2DView"
+            icon="icons/graphene-multiaxis-16.png"
+            id="org.csstudio.graphene.MultiAxisLineGraph2DView"
+            name="Multi-Axis Line Graph"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -52,7 +68,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.graphene.HistogramView">
+                  value="org.csstudio.graphene.HistogramGraph2DView">
             </parameter>
          </command>
          <command
@@ -83,6 +99,26 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.graphene.BubbleGraph2DView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/graphene-intensity-16.png"
+               label="Intensity Graph"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.graphene.IntensityGraph2DView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/graphene-multiaxis-16.png"
+               label="Multi-Axis Line Graph"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.graphene.MultiAxisLineGraph2DView">
             </parameter>
          </command>
       </menuContribution>

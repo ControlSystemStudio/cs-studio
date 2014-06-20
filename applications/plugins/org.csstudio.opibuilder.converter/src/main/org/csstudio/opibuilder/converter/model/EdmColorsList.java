@@ -49,6 +49,8 @@ public class EdmColorsList extends EdmEntity {
 	 */
 	private void populateColorsMaps(EdmEntity genericColors) throws EdmException {
 		colorsMap = new HashMap<Integer, EdmColor>();
+		//always has 0 as the undefined color
+		colorsMap.put(0, new EdmColor(null, 0,0,0));
 		colorsNameMap = new HashMap<String, EdmColor>();
 	
 		// parse subentities of generic ColorsList EdmEntity; 
@@ -121,6 +123,13 @@ public class EdmColorsList extends EdmEntity {
 	 */
 	public EdmColor getMenuColor(int index) {
 		return menuColorsMap.get(index);
+	}
+	
+	/**
+	 * Returns the color with the given name.
+	 */
+	public EdmColor getColor(String name) {
+		return colorsNameMap.get(name);
 	}
 	
 	/**

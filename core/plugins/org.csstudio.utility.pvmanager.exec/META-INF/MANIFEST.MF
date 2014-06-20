@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JDBC extensions for pvmanager
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.exec;singleton:=true
+Bundle-Version: 3.2.0.qualifier
+Require-Bundle: org.csstudio.utility.pvmanager;bundle-version="3.2.0";visibility:=reexport,
+ org.epics.vtype;bundle-version="2.1.0";visibility:=reexport,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Export-Package: org.epics.pvmanager.exec

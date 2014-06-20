@@ -15,18 +15,18 @@ import org.w3c.dom.Element;
 */
 public class OpiAttribute {
 
-	protected Context context;
+	protected Context propertyContext;
 	
 	/**
 	 * Appends an element with the given name to current element and
 	 * sets the local context to this element.  
 	 */
-	public OpiAttribute(Context con, String name) {
+	public OpiAttribute(Context widgetContext, String name) {
 
-		Element element = con.getDocument().createElement(name);
-	    con.getElement().appendChild(element);
+		Element element = widgetContext.getDocument().createElement(name);
+	    widgetContext.getElement().appendChild(element);
 		
 	    // Move context to this object. 
-		this.context = new Context(con.getDocument(), element, con.getX(), con.getY());
+		this.propertyContext = new Context(widgetContext.getDocument(), element, widgetContext.getRootDisplay(), widgetContext.getX(), widgetContext.getY());
 	}
 }

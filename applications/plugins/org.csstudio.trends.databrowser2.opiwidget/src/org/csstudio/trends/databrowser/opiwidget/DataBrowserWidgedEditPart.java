@@ -72,7 +72,8 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         else
             filename = model.getPlainFilename().toString();
         final DataBrowserWidgetFigure gui =
-            new DataBrowserWidgetFigure(filename, model.isToolbarVisible());
+            new DataBrowserWidgetFigure(filename, model.isToolbarVisible(), 
+            		model.getSelectionValuePv(), model.isShowAxisTrace(), model.isShowValueLabels());
 
         if (running)
         {   // In run mode, create a controller
@@ -116,7 +117,33 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
                 return false;
             }
         });
-
+        
+        // Selection PV value
+        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SELECTION_VALUE_PV, new IWidgetPropertyChangeHandler() {			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				getWidgetFigure().setSelectionValuePv((String) newValue.toString());
+				return false;
+			}
+		});
+        
+        // Show axis trace
+        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_AXIS_TRACE, new IWidgetPropertyChangeHandler() {			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				getWidgetFigure().setShowAxisTrace((boolean) newValue);
+				return false;
+			}
+		});
+        
+        // Show hover value labels
+        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_VALUE_LABELS, new IWidgetPropertyChangeHandler() {			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				getWidgetFigure().setShowAxisTrace((boolean) newValue);
+				return false;
+			}
+		});
     }
 
     /** {@inheritDoc}} */

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager;
 
@@ -136,7 +136,7 @@ public interface PVReader<T> {
      * this method returns false. You can use this method to determine whether
      * your notification comes from a complete set.
      * <p>
-     * When using {@link VType}s, you should use the {@link Alarm} interface to
+     * When using {@link org.epics.vtype.VType}s, you should use the {@link org.epics.vtype.Alarm} interface to
      * get the connection status. This scales when you get aggregates, such
      * as lists or maps of channels. This method does obviously not scale functionally
      * since, in an aggregate, it can't tell you which channel of the set

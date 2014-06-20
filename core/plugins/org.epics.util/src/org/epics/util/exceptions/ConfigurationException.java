@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 epics-util developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.util.exceptions;
 
@@ -12,9 +12,17 @@ package org.epics.util.exceptions;
  */
 public class ConfigurationException extends RuntimeException {
 
+    /**
+     * Creates a new configuration exception.
+     */
     public ConfigurationException() {
     }
     
+    /**
+     * Creates a new configuration exception with the given message.
+     * 
+     * @param message a message
+     */
     public ConfigurationException(String message) {
         super(message);
     }

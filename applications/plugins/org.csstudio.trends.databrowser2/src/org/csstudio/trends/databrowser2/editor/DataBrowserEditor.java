@@ -7,11 +7,12 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 
-import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.email.EMailSender;
 import org.csstudio.swt.xygraph.figures.Axis;
@@ -35,10 +36,12 @@ import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.Plot;
 import org.csstudio.trends.databrowser2.ui.RefreshAction;
+import org.csstudio.trends.databrowser2.ui.SelectionValueExporter;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
 import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.ui.util.perspective.OpenPerspectiveAction;
 import org.csstudio.utility.singlesource.PathEditorInput;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
@@ -85,6 +88,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  files.
  *  @author Kay Kasemir
  *  @author Xihui Chen (Adjustment to make it work like a view in RAP)
+ *  @author Naceur Benhadj (add property to hide "Property" view)
  */
 public class DataBrowserEditor extends EditorPart
 {
@@ -110,6 +114,9 @@ public class DataBrowserEditor extends EditorPart
 
     /** @see #isDirty() */
     private boolean is_dirty = false;
+    
+	/** The value exporter, which generates a value from the mouse position and forwards it to the PV manager */
+	private SelectionValueExporter selectionValueExporter;
 
 
     /** Create data browser editor
@@ -253,6 +260,14 @@ public class DataBrowserEditor extends EditorPart
 			@Override
 			public void changedXYGraphConfig()
 			{   setDirty(true);   }
+
+			@Override
+			public void itemRefreshRequested(PVItem item) {				
+			}
+			
+			@Override
+			public void cursorDataChanged() {
+			}
         };
         model.addListener(model_listener);
     }
@@ -282,6 +297,16 @@ public class DataBrowserEditor extends EditorPart
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         plot = Plot.forCanvas(plot_box);
+		selectionValueExporter = new SelectionValueExporter(plot.getXYGraph());
+		selectionValueExporter.setUseTimeFormatX(true);
+		selectionValueExporter.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				model.setCursorData(selectionValueExporter.getVTable());
+				
+			}
+		});
 
         // Create and start controller
         controller = new Controller(parent.getShell(), model, plot);
@@ -385,11 +410,13 @@ public class DataBrowserEditor extends EditorPart
 			mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
 					activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
 		}
-        open_properties = new OpenViewAction(IPageLayout.ID_PROP_SHEET,
-                Messages.OpenPropertiesView, activator
-                        .getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
-        mm.add(open_properties);
-        if(is_rcp || !Preferences.hideSearchView())
+        
+        	open_properties = new OpenViewAction(
+        			IPageLayout.ID_PROP_SHEET, 
+        			Messages.OpenPropertiesView, 
+        			activator.getImageDescriptor("icons/prop_ps.gif")); //$NON-NLS-1$
+        	mm.add(open_properties);
+
         	mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
 				activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
 		mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
@@ -553,7 +580,7 @@ public class DataBrowserEditor extends EditorPart
         	// Write model
         	model.write(stream);
             setDirty(false);
-        }
+        } 
         finally
         {
             monitor.done();
@@ -566,7 +593,7 @@ public class DataBrowserEditor extends EditorPart
      * @param axis
      */
     private void setAxisConfig(AxisConfig conf , Axis axis){
-
+    	
     	 //Don't fire axis change event to avoid SWT Illegal Thread Access
     	 conf.setFireEvent(false);
 

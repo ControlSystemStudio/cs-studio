@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
@@ -12,12 +13,15 @@
      EDM2OPI Converter
     </h2>
     <p>
-      EDM2OPI converter can help to convert some basic widgets from EDM edl file to BOY OPI file. Currently, it only supports the 
-      conversion of limited EDM widgets: Label, TextUpdate, Rectangle, Line and Group. More widgets will
-      be supported in future.
-    </p>
-    <p>
-    To convert edl files to OPI files, all the edl files and the EDM colors.list must be
+    EDM2OPI converter can convert EDM edl files to BOY OPI files automatically.
+    It may be able to convert 95% features of EDM, but still have 5% differences which may needs manual adjustment.
+    In below example, left side is the edl file and right side is the converted opi file.   
+   </p>
+   <p><a href="./img/EDM2BOYDemo.png">
+   	    <img width="800" src="./img/EDM2BOYDemo.png" alt="EDM2BOY example"/></a>
+	 </p>
+   
+   <p>To convert edl files to OPI files, all the edl files and the EDM colors.list must be
     accessible in the CSS Workspace, i.e. visible in the CSS Navigator.
     This can be accomplished by copying them into the workspace, or by
     creating a linked folder in the CSS Workspace that points to the directory
@@ -33,40 +37,121 @@
     Set Preferences
     </h3>
     <p>
-    Before edl files can be converted to OPI, some preferences must be set first as shown in this figure.
-   	The preference page can be opened via menu <b>CSS->Preferences...->CSS Applications->Display->EDM2OPI Converter</b>
+    Before edl files can be converted to OPI, some preferences must be set in EDM2OPI preference page.
+   	The preference page can be opened via menu <b>Edit->Preferences...->CSS Applications->Display->EDM2OPI Converter</b>
 	    <p>
-	    <img src="./img/preference.PNG" alt="Preference Page"/>
+	    <img src="./img/preference.png" alt="Preference Page"/>
 	    </p>
     
     <ul>
     <li>
-     <b>EDM colors.list File: </b> This is the path of the colors.list file which was copied from EDM.
+     <b>EDM colors.list File: </b> This is the workspace path of the colors.list file which was copied from EDM.
     </li>
      <li>
      <b>Output OPI Color File: </b> The output path of the OPI color definition file which will be converted
      from colors.list file. After this path has been set, you may need to set the BOY color file to this
      file path too to make colors displayed correctly.
     </li>
-     <li>
-     <b>Output OPIs Folder: </b> The folder where the converted OPIs will be stored. If this is not specified,
-     the output OPIs will be stored in the same folder as the source edl files.
-    </li>
-     <li>
-     <b>Stop parsing at exception: </b> Enable fail-fast mode for stricter tests, which means the parsing will be 
+    <li>
+    <b>Stop parsing at exception: </b> Enable fail-fast mode for stricter tests, which means the parsing will be 
      terminated at any exception.
     </li>
     </ul>
-   
+   <h3>Convert a whole directory</h3>
+	<p>You can convert a whole directory by right clicking the folder and select <b>Convert .edl files to OPI directly</b>.
+	The folder may contains edl files, sub-folder or other resource files such as images. The sub-folders will be converted
+	recursively and the resource files will be copied to the destination folder in the same structure.
+	The destination folder will be in the same directory of the top folder and with <code>_opi_output</code> appended to the 
+	source folder name.	The original directory structure is preserved so the relative paths will work for opi files.
+	</p>  
+	  <p>
+	    <img src="./img/convertFolder.png" alt="convert folder"/>
+	 </p>
    <h3>
-   Convert edl files to OPIs
+   Convert single edl files to OPIs
    </h3>
    <p>
    Right clicking one or multiple edl files in CSS navigator and choose <b>Convert to OPI file</b> will convert
-   all the selected edl files to OPI files.
+   all the selected edl files to OPI files. The output opi files are in the same directory of the edl files.
+   If there was already a same name opi file, it will be replaced silently.
    </p>
     <p>
-	    <img src="./img/convert_to_opi.png" alt="Preference Page"/>
+	    <img src="./img/convert_to_opi.png" alt="convert edl"/>
 	 </p>
-      </body>
+	
+	 
+	<h3>Widgets Conversion Map</h3>
+	<p>Below is the conversion map between EDM widgets and BOY widgets.</p>
+
+	<table border="1">
+	<tr><th style="width: 200">EDM Widgets</th><th  style="width: 200">BOY Widgets</th><th>Comment</th></tr>
+	<tr><td>Lines</td><td>Polyline/Polygon</td><td></td></tr>
+	<tr><td>Rectangle</td><td>Rectangle</td><td></td></tr>
+	<tr><td>Circle</td><td>Ellipse</td><td></td></tr>
+	<tr><td>Arc</td><td>Arc</td><td></td></tr>
+	<tr><td>Static Text</td><td>Label</td><td></td></tr>
+	<tr><td>Text W. Reg. Exp.</td><td>Label</td><td></td></tr>
+	<tr><td>Gif Image</td><td>Image</td><td></td></tr>
+	<tr><td>Png Image</td><td>Image</td><td></td></tr>
+	<tr><td>Embedded Window</td><td>Linking Container</td><td></td></tr>
+	<tr><td>Dynamic Symbol</td><td>Linking Container</td><td>
+	Gate Up/Down are ignored.</td></tr>
+	<tr><td>Meter</td><td>Meter</td><td></td></tr>
+	<tr><td>Bar</td><td>Progress Bar</td><td></td></tr>
+	<tr><td>Indicator</td><td>Progress Bar</td><td></td></tr>
+	<tr><td>Message Box</td><td>N/A</td><td></td></tr>
+	<tr><td>Byte</td><td>Byte Monitor</td><td></td></tr>
+	<tr><td>X-Y Graph</td><td>XY Graph</td><td>BOY doesn't support "plot" mode. 
+	BOY cannot automatically increase buffer size if the PV is a big waveform. </td></tr>
+	<tr><td>Table</td><td>N/A</td><td></td></tr>
+	<tr><td>Coef Table</td><td>N/A</td><td></td></tr>
+	<tr><td>PV Inspector</td><td>N/A</td><td></td></tr>
+	<tr><td>Symbol</td><td>Linking Container</td><td></td></tr>
+	<tr><td>Animated Symbol</td><td>N/A</td><td></td></tr>
+	<tr><td>Text Monitor</td><td>Text Update</td><td></td></tr>
+	<tr><td>Text Update</td><td>Text Update</td><td></td></tr>
+	<tr><td>Reg Text Update</td><td>Text Update</td><td>Regular expression is ignored.</td></tr>
+	<tr><td>Hoff Video</td><td>Intensity Graph</td><td></td></tr>
+	
+	<tr><td>Slider</td><td>Scaled Slider</td><td></td></tr>
+	<tr><td>Motif Slider</td><td>Scaled Slider</td><td></td></tr>
+	<tr><td>Text Control</td><td>Text Input</td><td></td></tr>
+	<tr><td>Button</td><td>Boolean Button</td><td></td></tr>
+	<tr><td>Menu Button</td><td>Menu Button</td><td></td></tr>
+	<tr><td>Up/Down Button</td><td>Spinner</td><td></td></tr>
+	<tr><td>Message Button</td><td>Boolean Button</td><td></td></tr>
+	<tr><td>Choice Button</td><td>Choice Button</td><td></td></tr>
+	<tr><td>Radio Box</td><td>Radio Box</td><td></td></tr>
+	<tr><td>Menu Mux</td><td>N/A</td><td></td></tr>
+	<tr><td>Ramp Button</td><td>N/A</td><td></td></tr>
+	<tr><td>Exit Button</td><td>Action Button</td><td>Only exit current OPI</td></tr>
+	
+	<tr><td>Related Display</td><td>Action Button/Rectangle/Menu Button</td><td>
+	In BOY, if the button is covered by other widgets, it may not clickable.</td></tr>
+	<tr><td>Shell Command</td><td>Action Button or Menu Button</td><td>Password,
+	Initial Exec Delay and Auto Exec Interval are ignored. The button is always visible in BOY
+	because invisible button in BOY is not clickable.</td></tr>
+	<tr><td>Text Entry</td><td>Text Input</td><td></td></tr>
+	
+	
+	</table>
+	
+
+	<h3>Notes</h3>
+	<ul>
+	<li>EDM dynamic and blinking colors are converted to OPI rules.</li>
+	<li>EDM Local PV are converted to CSS local PV, but EDM CALC\ PV and enum type of LOC PV are not converted.</li>
+	<li>EDM visibility rules, alarm sensitive rules are converted to OPI rules</li>
+	<li>BOY doesn't allow a macro name starts with number while EDM does.</li>
+	</ul>	
+	 
+	 <h3>Sample edl files</h3>
+	 <p>There are some sample edl files for test purpose. You can save them to your workspace to test if they 
+	 can be converted to opi files.</p>
+	 <ul>
+	 <li><a href="sample_edl_files/colors.list">colors.list</a></li>
+	 <li><a href="sample_edl_files/AllWidgetsDemo.edl">AllWidgetsDemo.edl</a></li>
+	 <li><a href="sample_edl_files/helpMovingArrow.edl">helpMovingArrow.edl</a></li>	 
+	 </ul>
+    </body>
     </html>

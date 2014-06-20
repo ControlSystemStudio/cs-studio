@@ -83,13 +83,13 @@
    <extension
          point="org.csstudio.startup.module">
       <startupParameters
-            class="org.csstudio.frib.product.startupmodule.StartupParameters">
+            class="org.csstudio.utility.product.StartupParameters">
       </startupParameters>
       <workspace
-            class="org.csstudio.frib.product.startupmodule.WorkspacePrompt">
+            class="org.csstudio.utility.product.WorkspacePrompt">
       </workspace>
       <workbench
-            class="org.csstudio.frib.product.startupmodule.Workbench">
+            class="org.csstudio.utility.product.Workbench">
       </workbench>
       <project
             class="org.csstudio.startup.module.defaults.DefaultProject">

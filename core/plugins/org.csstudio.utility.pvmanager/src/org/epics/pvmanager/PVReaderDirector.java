@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager;
 
@@ -147,11 +147,17 @@ public class PVReaderDirector<T> {
             }
         }
     }
+    
+    private volatile boolean closed = false;
+    
+    void close() {
+        closed = true;
+    }
 
     /**
      * Closed and disconnects all the child expressions.
      */
-    private void close() {
+    private void disconnect() {
         synchronized(lock) {
             while (!recipes.isEmpty()) {
                 DesiredRateExpression<?> expression = recipes.keySet().iterator().next();
@@ -201,7 +207,7 @@ public class PVReaderDirector<T> {
         final PVReader<T> pv = pvRef.get();
         if (pv != null && !pv.isClosed()) {
             return true;
-        } else if (pv == null) {
+        } else if (pv == null && closed != true) {
             log.warning("PVReader wasn't properly closed and it was garbage collected. Closing the associated connections...");
             return false;
         } else {
@@ -241,10 +247,15 @@ public class PVReaderDirector<T> {
         try {
             // Tries to calculate the value
             newValue = function.readValue();
+            if (newValue != null) {
+                NotificationSupport.findNotificationSupportFor(newValue);
+            }
             calculationSucceeded = true;
-        } catch(RuntimeException ex) {
+        } catch (RuntimeException ex) {
             // Calculation failed
             exceptionCollector.writeValue(ex);
+        } catch (Throwable ex) {
+            log.log(Level.SEVERE, "Unrecoverable error during scanning", ex);
         }
         
         // Calculate new connection
@@ -294,8 +305,10 @@ public class PVReaderDirector<T> {
                             Notification<T> notification =
                                     NotificationSupport.notification(pv.getValue(), finalValue);
                             // Remember to notify anyway if an exception need to be notified
-                            if (notification.isNotificationNeeded() || pv.isLastExceptionToNotify() || pv.isReadConnectionToNotify()) {
+                            if (notification.isNotificationNeeded()) {
                                 pv.setValue(notification.getNewValue());
+                            } else if (pv.isLastExceptionToNotify() || pv.isReadConnectionToNotify()) {
+                                pv.firePvValueChanged();
                             }
                         } else {
                             // Remember to notify anyway if an exception need to be notified
@@ -323,7 +336,7 @@ public class PVReaderDirector<T> {
                     }
                 } else {
                     stopScan();
-                    close();
+                    disconnect();
                 }
             }
         }, 0, duration.toNanosLong(), TimeUnit.NANOSECONDS);

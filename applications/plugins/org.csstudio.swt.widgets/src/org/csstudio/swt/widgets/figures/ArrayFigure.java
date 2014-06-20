@@ -315,7 +315,12 @@ public class ArrayFigure extends Figure implements Introspectable {
 		return r;
 	}
 
+	/**
+	 * @return each element widget's size. If no children, return null.
+	 */
 	public Dimension getElementSize() {
+		if(pane.getChildren().isEmpty())
+			return null;
 		return ((IFigure) pane.getChildren().get(0)).getSize();
 	}
 
@@ -356,6 +361,8 @@ public class ArrayFigure extends Figure implements Introspectable {
 	protected Dimension calculatePreferredSize() {
 		Dimension result = new Dimension();
 		Dimension elementSize = getElementSize();
+		if(elementSize == null)
+			return getSize();
 		if (horizontal) {
 			result.height = elementSize.height
 					+ (scrollbar.isVisible() ? SCROLLBAR_WIDTH : 0)

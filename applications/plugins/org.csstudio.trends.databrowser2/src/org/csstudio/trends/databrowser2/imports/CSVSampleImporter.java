@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
@@ -47,26 +49,46 @@ public class CSVSampleImporter implements SampleImporter
                 //    YYYY-MM-DD HH:MM:SS.SSS   value  ignore
                 // or
                 //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value  ignore
-                "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.eE]+)\\s*.*");
+                "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.,eE]+)\\s*.*");
 
+        final Pattern statisticsPattern = Pattern.compile(
+                //    YYYY-MM-DD HH:MM:SS.SSS   value	negativeError	positiveError	ignore
+                // or
+                //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value	negativeError	positiveError	ignore
+                "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.,eE]+)[ \\t,]+([-+0-9.,eE]+)[ \\t,]+([-+0-9.,eE]+)\\s*.*");
+
+        
         final List<VType> values = new ArrayList<VType>();
 
         final BufferedReader reader =
                 new BufferedReader(new InputStreamReader(input));
         String line;
+        char groupingSeparator = DecimalFormatSymbols.getInstance().getGroupingSeparator();
+        char decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+        boolean statistics = true;
         while ((line = reader.readLine()) != null)
         {
             line = line.trim();
             // Skip empty lines, comments
             if (line.length() <= 0  ||  line.startsWith("#"))
                 continue;
+            statistics = true;
             // Locate time and value
-            final Matcher matcher = pattern.matcher(line);
+            // Is statistical data?
+            Matcher matcher = statisticsPattern.matcher(line);
             if (! matcher.matches())
             {
-                logger.log(Level.INFO, "Ignored input: {0}", line);
-                continue;
+            	// Not statistical data, try normal
+                matcher = pattern.matcher(line);
+                if (! matcher.matches())
+                {
+                    logger.log(Level.INFO, "Ignored input: {0}", line);
+                    continue;
+                }
+                statistics = false;
             }
+            
+            
             // Parse
             // Date may use '-' or '/' as separator. Force '-'
             String date_text = matcher.group(1).replace('/', '-');
@@ -74,15 +96,43 @@ public class CSVSampleImporter implements SampleImporter
             if (date_text.length() > 23)
                 date_text = date_text.substring(0, 23);
             final Date date = date_parser.parse(date_text);
-            final double number = Double.parseDouble(matcher.group(2));
-            // Turn into IValue
+            //Double.parseDouble only parses numbers in format #.#... or #.#...#E0, meaning 
+            //that you cannot have any grouping separators, and the decimal separator must be '.'
+            //First remove all grouping separators, then replace the decimal separator with a '.'
+            final double number = Double.parseDouble(
+            		remove(matcher.group(2),groupingSeparator).replace(decimalSeparator, '.'));
             final Timestamp time = TimestampHelper.fromMillisecs(date.getTime());
-            final VType value = new ArchiveVNumber(time, AlarmSeverity.NONE, "",
-                    meta_data, number);
-            values.add(value);
+            if (statistics) {
+            	final double min = Double.parseDouble(
+                		remove(matcher.group(3),groupingSeparator).replace(decimalSeparator, '.'));
+            	final double max = Double.parseDouble(
+                		remove(matcher.group(4),groupingSeparator).replace(decimalSeparator, '.'));
+            	values.add(new ArchiveVStatistics(time, AlarmSeverity.NONE, "", meta_data, number, number-min, number+max, 0, 1));
+            } else {
+	            values.add(new ArchiveVNumber(time, AlarmSeverity.NONE, "", meta_data, number));
+            }
         }
         reader.close();
 
         return values;
+    }
+        
+    /**
+     * Remove all occurrences of the character from the string.
+     * 
+     * @param source the string to remove the characters from
+     * @param charToRemove the character to remove
+     * @return the string without any occurrence of the given character
+     */
+    private static String remove(String source, char charToRemove) {
+    	if (source.indexOf(charToRemove) < 0) return source;
+    	char[] chars = source.toCharArray();
+        int pos = 0;
+        for (int j = 0; j < chars.length; j++) {
+            if (chars[j] != charToRemove) {
+                chars[pos++] = chars[j];
+            }
+        }
+        return new String(chars,0,pos);
     }
 }

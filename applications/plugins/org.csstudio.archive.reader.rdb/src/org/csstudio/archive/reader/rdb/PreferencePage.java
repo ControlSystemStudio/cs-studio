@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -84,6 +85,15 @@ public class PreferencePage extends FieldEditorPreferencePage
         // FieldEditorPreferencePage will set all its
         // editors to the 'main' pref. store.
         // Hack around that by replacing setPreferenceStore
+        final IntegerFieldEditor fetch_size = new IntegerFieldEditor(Preferences.FETCH_SIZE, Messages.FetchSize, parent)
+        {
+            @Override
+            public void setPreferenceStore(final IPreferenceStore ignored)
+            {
+                super.setPreferenceStore(reader_prefs);
+            }
+        };
+        addField(fetch_size);
         final StringFieldEditor editor =
                 new StringFieldEditor(Preferences.STORED_PROCEDURE, Messages.StoredProcedure, parent)
         {

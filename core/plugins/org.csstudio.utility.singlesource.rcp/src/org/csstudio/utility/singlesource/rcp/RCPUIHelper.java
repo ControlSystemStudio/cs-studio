@@ -13,7 +13,6 @@ import java.io.IOException;
 
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
-import org.csstudio.utility.singlesource.SSTextLayout;
 import org.csstudio.utility.singlesource.UIHelper;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -191,12 +190,6 @@ public class RCPUIHelper extends UIHelper
         gc.dispose();
 
         return image;
-    }
-
-	/** {@inheritDoc} */
-	@Override
-	public SSTextLayout newTextLayout() {
-		return new RCPSSTextLayout();
 	}
 
 }

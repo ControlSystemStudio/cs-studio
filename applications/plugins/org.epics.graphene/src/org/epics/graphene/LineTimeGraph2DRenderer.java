@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -18,7 +18,7 @@ import org.epics.util.array.SortedListView;
 public class LineTimeGraph2DRenderer extends TemporalGraph2DRenderer<LineTimeGraph2DRendererUpdate> {
 
     public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(
-            InterpolationScheme.NEAREST_NEIGHBOUR, 
+            InterpolationScheme.NEAREST_NEIGHBOR, 
             InterpolationScheme.PREVIOUS_VALUE,
             InterpolationScheme.LINEAR,
             InterpolationScheme.CUBIC);
@@ -28,7 +28,7 @@ public class LineTimeGraph2DRenderer extends TemporalGraph2DRenderer<LineTimeGra
         return new LineTimeGraph2DRendererUpdate();
     }
 
-    private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOUR;
+    private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOR;
 
     /**
      * Creates a new line graph renderer.

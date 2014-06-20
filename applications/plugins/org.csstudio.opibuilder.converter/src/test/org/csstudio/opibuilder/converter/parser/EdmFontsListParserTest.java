@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
-import org.csstudio.opibuilder.converter.model.EdmException;
 import junit.framework.TestCase;
+
+import org.csstudio.opibuilder.converter.model.EdmException;
 
 public class EdmFontsListParserTest extends TestCase {
 	

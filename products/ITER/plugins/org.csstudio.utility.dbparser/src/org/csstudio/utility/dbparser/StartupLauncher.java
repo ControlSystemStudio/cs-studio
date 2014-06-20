@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@ package org.csstudio.utility.dbparser;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.csstudio.autocomplete.data.Record;
+import org.csstudio.utility.dbparser.data.Record;
 import org.csstudio.utility.dbparser.util.DbUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -72,12 +72,12 @@ public class StartupLauncher implements IStartup {
 											.toLowerCase().equals("db")) {
 								switch (delta.getKind()) {
 								case IResourceDelta.REMOVED:
-									DBContextValueHolder.get().removeFile((IFile) resource);
+									DBContext.get().removeFile((IFile) resource);
 									break;
 
 								case IResourceDelta.CHANGED:
 								case IResourceDelta.CONTENT:
-									DBContextValueHolder.get().removeFile((IFile) resource);
+									DBContext.get().removeFile((IFile) resource);
 									parseDB((IFile) resource);
 									break;
 									
@@ -106,7 +106,7 @@ public class StartupLauncher implements IStartup {
 			String dbContent = DbUtil.readFile(file);
 			List<Record> records = DbUtil.parseDb(dbContent);
 			for (Record r : records)
-				DBContextValueHolder.get().addRecord(file, r);
+				DBContext.get().addRecord(file, r);
 		} catch (Exception e) {
 			Activator.getLogger().log(Level.WARNING,
 					"Failed to parse " + file.getFullPath() + ": " + e.getMessage());

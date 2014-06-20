@@ -9,12 +9,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.gef;bundle-version="3.4.0",
  org.eclipse.core.resources;bundle-version="3.4.0",
- org.junit4;bundle-version="4.3.1",
  org.csstudio.platform.libs.jmock;bundle-version="1.1.0",
  org.csstudio.dal;bundle-version="1.0.0";visibility:=reexport,
  org.slf4j;bundle-version="1.6.1",
  org.jdom;bundle-version="1.1.0",
- org.csstudio.domain.common;bundle-version="1.0.0"
+ org.csstudio.domain.common;bundle-version="1.0.0",
+ org.junit
 Bundle-ActivationPolicy: lazy
 Export-Package: org.apache.commons.beanutils,
  org.apache.commons.beanutils.converters,

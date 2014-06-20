@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -42,6 +42,24 @@ public class RangeUtil {
     }
     
     /**
+     * Returns the range of the absolute values within the range.
+     * <p>
+     * If the range is all positive, it returns the same range.
+     * 
+     * @param range a range
+     * @return the range of the absolute values
+     */
+    public static Range absRange(Range range) {
+        if (range.getMinimum().doubleValue() >= 0 && range.getMaximum().doubleValue() >= 0) {
+            return range;
+        } else if (range.getMinimum().doubleValue() < 0 && range.getMaximum().doubleValue() < 0) {
+            return range(- range.getMaximum().doubleValue(), - range.getMinimum().doubleValue());
+        } else {
+            return range(0, Math.max(range.getMinimum().doubleValue(), range.getMaximum().doubleValue()));
+        }
+    }
+    
+    /**
      * Determines whether the subrange is contained in the range or not.
      * 
      * @param range a range
@@ -76,7 +94,7 @@ public class RangeUtil {
     }
     
     public static double normalize(Range range, double value) {
-        return NumberUtil.normalize(value, range.getMinimum().doubleValue(), range.getMaximum().doubleValue());
+        return MathUtil.normalize(value, range.getMinimum().doubleValue(), range.getMaximum().doubleValue());
     }
     
     public static double[] createBins(double min, double max, int nBins) {
@@ -91,5 +109,25 @@ public class RangeUtil {
 
     public static boolean contains(Range xRange, double value) {
         return value >= xRange.getMinimum().doubleValue() && value <= xRange.getMaximum().doubleValue();
+    }
+    
+    public static boolean equals(Range r1, Range r2) {
+        // Check null cases
+        if (r1 == null && r2 == null) {
+            return true;
+        }
+        if (r1 == null || r2 == null) {
+            return false;
+        }
+        
+        return r1.getMinimum().equals(r2.getMinimum()) && r1.getMaximum().equals(r2.getMaximum());
+    }
+    
+    public static Range aggregateRange(Range dataRange, Range aggregatedRange) {
+        if (aggregatedRange == null) {
+            return dataRange;
+        } else {
+            return RangeUtil.sum(dataRange, aggregatedRange);
+        }
     }
 }

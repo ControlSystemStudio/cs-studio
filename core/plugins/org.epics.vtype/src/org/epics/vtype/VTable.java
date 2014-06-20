@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
@@ -38,7 +38,7 @@ public interface VTable extends VType {
     /**
      * The type of the elements in the column. The column array will be
      * an array of the given type. For primitive types, this function will return
-     * the TYPE class (such as {@link Double#TYPE}, while {@link #getColumnArray(int)}
+     * the TYPE class (such as {@link Double#TYPE}, while {@link #getColumnData(int) }
      * will return a {@link ListNumber}.
      *
      * @param column the column index

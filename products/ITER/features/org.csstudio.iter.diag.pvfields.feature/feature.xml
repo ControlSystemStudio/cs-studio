@@ -6,7 +6,7 @@
       provider-name="ITER">
 
    <copyright>
-      Copyright (c) : 2010-2013 ITER Organization,
+      Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France
@@ -33,13 +33,12 @@ of the distribution package.
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit4"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.diag.pvfields" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.autocomplete" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -57,14 +56,21 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.diag.pvfields.iter"
+         id="org.csstudio.utility.dbparser"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.dbparser"
+         id="org.csstudio.diag.pvfields.dbfiles"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.dbdparser"
          download-size="0"
          install-size="0"
          version="0.0.0"

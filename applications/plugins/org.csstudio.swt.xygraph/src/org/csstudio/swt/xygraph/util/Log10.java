@@ -12,7 +12,8 @@ package org.csstudio.swt.xygraph.util;
  */
 public class Log10
 {
-    final static double HUGE_NEGATIVE=-1e100;
+    final static double HUGE_NEGATIVE = -1e100;
+    final static double TINY_VALUE = 1e-100;
 
     /** Adjusted log10 to handle values less or equal to zero.
      *  <p>
@@ -32,16 +33,24 @@ public class Log10
      *
      *  @return an adjusted log<sub>10</sub>(val).
      */
-    public static double log10(double val)
+    public static double log10(final double val)
     {
         if (val > 0.0)
             return Math.log10(val);
         return HUGE_NEGATIVE;
     }
 
-    /** @return pow(10, value) */
-    public static double pow10(double value)
+    /** Counterpart to log10.
+     * 
+     *  <p>Turns 'really big negative' number as provided by
+     *  log10 into a 'really small' value
+     *
+     *  @return pow(10, value)
+     */
+    public static double pow10(final double value)
     {
+        if (value <= HUGE_NEGATIVE)
+            return TINY_VALUE;
         return Math.pow(10.0, value);
     }
 }

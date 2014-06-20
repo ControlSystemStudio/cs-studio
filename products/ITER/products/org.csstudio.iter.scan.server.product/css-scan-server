@@ -1,0 +1,51 @@
+#! /bin/bash
+#
+# Startup Script for CSS Scan Server
+#
+# chkconfig: - 92 8
+# description: Starts and stops CSS Scan Server
+#
+
+#+======================================================================
+# $HeadURL: $
+# $Id: css-scan-server $
+#
+# Project       : CODAC Core System
+#
+# Description   : Starts and stops CSS Scan Server
+#
+# Author(s)     : Cosylab
+#
+# Copyright (c) : 2010-2014 ITER Organization,
+#                 CS 90 046
+#                 13067 St. Paul-lez-Durance Cedex
+#                 France
+#
+# This file is part of ITER CODAC software.
+# For the terms and conditions of redistribution or use of this software
+# refer to the file ITER-LICENSE.TXT located in the top level directory
+# of the distribution package.
+#
+#-======================================================================
+
+. codacenv
+
+CONFIGURATION=()
+VARFILES=()
+
+unset REQUSER
+DAEMONS=(/usr/bin/scan-server)
+NAMES=("CSS Scan Server")
+
+function scan_server_tmp_db_clean {
+  TMP_DB_PATH=/tmp/css-scan-server_log_db
+  if [ -d "$TMP_DB_PATH" ] ; then
+    rm -rf $TMP_DB_PATH
+  fi
+}
+export -f scan_server_tmp_db_clean
+
+STARTHOOKS=("${STARTHOOKS[@]}" "scan_server_tmp_db_clean")
+ARGS=("$(printf "'%s' " "-console" "4884" "${@:2}")")
+
+. $CODAC_ROOT/bin/services/service-startup

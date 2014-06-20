@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor.CellEditorType;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -30,12 +31,16 @@ public class StringTableEditDialog extends Dialog {
 	private List<String[]> contents;
 	
 	private StringTableEditor tableEditor;
+	private Object[] cellEditorDatas;
+	private CellEditorType[] cellEditorTypes;
 
 	public StringTableEditDialog(Shell parentShell, List<String[]> inputData, 
-			String dialogTitle, String[] columnTitles) {
+			String dialogTitle, String[] columnTitles, CellEditorType[] cellEditorTypes, Object[] cellEditorDatas) {
 		super(parentShell);
 		this.title = dialogTitle;
 		this.columnTitles = columnTitles;
+		this.cellEditorTypes = cellEditorTypes;
+		this.cellEditorDatas = cellEditorDatas;
 		this.contents = new ArrayList<String[]>();
 		for(String[] item : inputData){
 			this.contents.add(item);
@@ -55,7 +60,7 @@ public class StringTableEditDialog extends Dialog {
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.heightHint=200;
 		tableEditor = new StringTableEditor(container,columnTitles, 
-				null, contents, null, columnWidths);
+				null, contents, null, columnWidths, cellEditorTypes, cellEditorDatas);
 		tableEditor.setLayoutData(gd);	
 	
 		return container;

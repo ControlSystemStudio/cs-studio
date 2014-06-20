@@ -1,21 +1,29 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
+import org.epics.util.array.ListNumbers;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
+import static org.epics.vtype.ValueFactory.*;
 
 /**
  * Various utility methods for runtime handling of the types defined in
@@ -31,9 +39,10 @@ public class ValueUtil {
 
     private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByte.class, VByteArray.class, VDouble.class,
             VDoubleArray.class, VEnum.class, VEnumArray.class, VFloat.class, VFloatArray.class,
-            VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
+            VLong.class, VLongArray.class, VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
             VMultiInt.class, VMultiString.class, VShort.class, VShortArray.class,
-            VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VTable.class);
+            VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VTable.class,
+            VImage.class);
 
     /**
      * Returns the type of the object by returning the class object of one
@@ -99,6 +108,80 @@ public class ValueUtil {
         } else {
             return ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected");
         }
+    }
+    
+    /**
+     * Returns the alarm with highest severity. null values can either be ignored or
+     * treated as UNDEFINED severity.
+     * 
+     * @param args a list of values
+     * @param considerNull whether to consider null values
+     * @return the highest alarm; can't be null
+     */
+    public static Alarm highestSeverityOf(final List<Object> args, final boolean considerNull) {
+        Alarm finalAlarm = ValueFactory.alarmNone();
+        for (Object object : args) {
+            Alarm newAlarm;
+            if (object == null && considerNull) {
+                newAlarm = ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No Value");
+            } else {
+                newAlarm = ValueUtil.alarmOf(object);
+                if (newAlarm == null) {
+                    newAlarm = ValueFactory.alarmNone();
+                }
+            }
+            if (newAlarm.getAlarmSeverity().compareTo(finalAlarm.getAlarmSeverity()) > 0) {
+                finalAlarm = newAlarm;
+            }
+        }
+        
+        return finalAlarm;
+    }
+    
+    /**
+     * Returns the time with latest timestamp.
+     * 
+     * @param args a list of values
+     * @return the latest time; can be null
+     */
+    public static Time latestTimeOf(final List<Object> args) {
+        Time finalTime = null;
+        for (Object object : args) {
+            Time newTime;
+            if (object != null)  {
+                newTime = ValueUtil.timeOf(object);
+                if (newTime != null && (finalTime == null || newTime.getTimestamp().compareTo(finalTime.getTimestamp()) > 0)) {
+                    finalTime = newTime;
+                }
+            }
+        }
+        
+        return finalTime;
+    }
+    
+    /**
+     * Returns the time with latest valid timestamp or now.
+     * 
+     * @param args a list of values
+     * @return the latest time; can't be null
+     */
+    public static Time latestValidTimeOrNowOf(final List<Object> args) {
+        Time finalTime = null;
+        for (Object object : args) {
+            Time newTime;
+            if (object != null)  {
+                newTime = ValueUtil.timeOf(object);
+                if (newTime != null && newTime.isTimeValid() && (finalTime == null || newTime.getTimestamp().compareTo(finalTime.getTimestamp()) > 0)) {
+                    finalTime = newTime;
+                }
+            }
+        }
+        
+        if (finalTime == null) {
+            finalTime = ValueFactory.timeNow();
+        }
+        
+        return finalTime;
     }
 
     /**
@@ -428,4 +511,80 @@ public class ValueUtil {
         throw new IllegalArgumentException("Column '" + columnName +"' was not found");
     }
     
+    /**
+     * Extracts the values of a column, making sure it contains
+     * strings.
+     * 
+     * @param table a table
+     * @param columnName the name of the column to extract
+     * @return the values; null if the columnName is null or is not found
+     * @throws IllegalArgumentException if the column is found but does not contain string values
+     */
+    public static List<String> stringColumnOf(VTable table, String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+        
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            if (columnName.equals(table.getColumnName(i))) {
+                if (table.getColumnType(i).equals(String.class)) {
+                    @SuppressWarnings("unchecked")
+                    List<String> result = (List<String>) table.getColumnData(i);
+                    return result;
+                } else {
+                    throw new IllegalArgumentException("Column '" + columnName +"' is not string (contains " + table.getColumnType(i).getSimpleName() + ")");
+                }
+            }
+        }
+        
+        throw new IllegalArgumentException("Column '" + columnName +"' was not found");
+    }
+    
+    /**
+     * Returns the default array dimension display by looking at the size
+     * of the n dimensional array and creating cell boundaries based on index.
+     * 
+     * @param array the array
+     * @return the array dimension display
+     */
+    public static List<ArrayDimensionDisplay> defaultArrayDisplay(VNumberArray array) {
+        return defaultArrayDisplay(array.getSizes());
+    }
+    
+    /**
+     * Returns the default array dimension display given the size
+     * of the n dimensional array and creating cell boundaries based on index.
+     * 
+     * @param sizes the shape of the array
+     * @return the array dimension display
+     */
+    public static List<ArrayDimensionDisplay> defaultArrayDisplay(ListInt sizes) {
+        List<ArrayDimensionDisplay> displays = new ArrayList<>();
+        for (int i = 0; i < sizes.size(); i++) {
+            displays.add(ValueFactory.newDisplay(sizes.getInt(i)));
+        }
+        return displays;
+    }
+    
+    /**
+     * Filters an element of a one-dimensional array.
+     * 
+     * @param array a 1D array
+     * @param index a valid index
+     * @return the trimmed array to that one index
+     */
+    public static VNumberArray subArray(VNumberArray array, int index) {
+        if (array.getSizes().size() != 1) {
+            throw new IllegalArgumentException("Array was not one-dimensional");
+        }
+        if (index < 0 || array.getData().size() <= index) {
+            throw new IllegalArgumentException("Index not in the array range");
+        }
+        
+        ArrayDimensionDisplay display = array.getDimensionDisplay().get(0);
+        return ValueFactory.newVNumberArray(new ArrayDouble(array.getData().getDouble(index)),
+                new ArrayInt(1), Arrays.asList(ValueFactory.newDisplay(new ArrayDouble(display.getCellBoundaries().getDouble(index), display.getCellBoundaries().getDouble(index+1)), display.getUnits())),
+                array, array, array);
+
+    }
 }

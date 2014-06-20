@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
@@ -29,7 +29,35 @@ public class VTypeToString {
         }
     }
     
-    private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd hh:mm:ss.SSS");
+    /**
+     * Converts the given alarm to a string.
+     * 
+     * @param alarm the alarm
+     * @return the string representation; never null
+     */
+    public static String alarmToString(Alarm alarm) {
+        if (alarm == null) {
+            return "NONE";
+        }
+        
+        return alarm.getAlarmSeverity() + "(" + alarm.getAlarmName() + ")";
+    }
+
+    /**
+     * Converts the given time to a string.
+     * 
+     * @param time the time
+     * @return the string representation; never null
+     */
+    public static String timeToString(Time time) {
+        if (time == null) {
+            return "null";
+        }
+        
+        return timeFormat.format(time.getTimestamp()) + "(" + time.getTimeUserTag()+ ")";
+    }
+    
+    private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd HH:mm:ss.SSS");
     
     private static void appendTime(StringBuilder builder, Time time) {
         builder.append(", ").append(timeFormat.format(time.getTimestamp()));

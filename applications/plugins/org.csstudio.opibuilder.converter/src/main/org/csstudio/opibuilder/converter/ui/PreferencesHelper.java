@@ -49,30 +49,11 @@ public class PreferencesHelper {
     	if(getString(OUTPUT_OPICOLOR_FILE) != null)
     		return new Path(getString(OUTPUT_OPICOLOR_FILE));
     	return null;
-    }
-    
-    
-    /**Get the folder path for the output OPIs.
-     * @return folder path for the output OPIs.
-     */
-    public static IPath getOutputOPIsFolderPath(){
-    	if(getString(OUTPUT_OPIS_FOLDER) != null)
-    		return new Path(getString(OUTPUT_OPIS_FOLDER));
-    	return null;
-    }
-    
+    }   
     
     public static boolean isRobustParsing(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return !service.getBoolean(EDM2OPIConverterPlugin.PLUGIN_ID, FAIL_FAST, false, null);
     }
-    
-    public static boolean isOpenOPIsAfterConverted(){
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getBoolean(EDM2OPIConverterPlugin.PLUGIN_ID, OPEN_OPIS, true, null);
-    }
-   
-    
-	
-	
+    	
 }

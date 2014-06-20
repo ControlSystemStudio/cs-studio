@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
@@ -66,7 +66,6 @@ class SimulationChannelHandler<T> extends MultiplexedChannelHandler<Simulation<T
     public void disconnect() {
         taskFuture.cancel(false);
         taskFuture = null;
-        simulation.lastTime = null;
         processConnection(null);
     }
 

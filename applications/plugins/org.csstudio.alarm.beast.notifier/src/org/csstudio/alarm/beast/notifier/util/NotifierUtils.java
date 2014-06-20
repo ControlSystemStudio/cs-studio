@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -7,7 +7,9 @@
 ******************************************************************************/
 package org.csstudio.alarm.beast.notifier.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,11 +21,13 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.notifier.ActionID;
 import org.csstudio.alarm.beast.notifier.model.IActionProvider;
 import org.csstudio.alarm.beast.notifier.model.IActionValidator;
+import org.csstudio.alarm.beast.notifier.model.IApplicationListener;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -54,7 +58,25 @@ public class NotifierUtils {
 		}
 		return map;
 	}
-	
+
+	/**
+	 * Read application listener extension points from plugin.xml.
+	 * @return List<IApplicationListener>, listeners list.
+	 * @throws CoreException if implementations don't provide the correct IApplicationListener
+	 */
+	public static List<IApplicationListener> getListeners() throws CoreException {
+		final List<IApplicationListener> list = new ArrayList<IApplicationListener>();
+		final IExtensionRegistry reg = Platform.getExtensionRegistry();
+		final IConfigurationElement[] extensions = reg
+				.getConfigurationElementsFor(IApplicationListener.EXTENSION_POINT);
+		for (IConfigurationElement element : extensions) {
+			final IApplicationListener l = (IApplicationListener) element
+					.createExecutableExtension("class");
+			list.add(l);
+		}
+		return list;
+	}
+
 	/** @return {@link ActionID} for the specified {@link AlarmTreeItem} and {@link AADataStructure} */
 	public static ActionID getActionID(AlarmTreeItem item, AADataStructure aa) {
 		return new ActionID(item.getPathName(), aa.getTitle());
@@ -105,4 +127,18 @@ public class NotifierUtils {
 			validator.validate();
 		}
 	}
+
+	public static String getDurationString(Timestamp t) {
+		if (t == null)
+			return "";
+		TimeDuration duration = Timestamp.now().durationFrom(t);
+		if (duration.isNegative())
+			return "";
+		double seconds = duration.toSeconds();
+		long h = Math.round(seconds / 3600);
+		long m = Math.round((seconds % 3600) / 60);
+		long s = Math.round(seconds % 60);
+		return String.format("%d:%02d:%02d", h, m, s);
+	}
+
 }

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -30,6 +30,10 @@ public class Point2DDatasets {
 
     public static Point2DDataset lineData(final double[] x, final double[] y) {
         return lineData(new ArrayDouble(x), new ArrayDouble(y));
+    }
+    
+    public static Point2DDataset lineData(final Range xRange, final ListNumber y) {
+        return lineData(ListNumbers.linearListFromRange(xRange.getMinimum().doubleValue(), xRange.getMaximum().doubleValue(), y.size()), y);
     }
 
     public static Point2DDataset lineData(final ListNumber x, final ListNumber y) {

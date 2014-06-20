@@ -16,7 +16,21 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
+    public static final String WRITE_SAMPLE_TABLE = "write_sample_table";
+
     public static final String MAX_TEXT_SAMPLE_LENGTH = "max_text_sample_length";
+    
+    public static final String USE_POSTGRES_COPY = "use_postgres_copy";
+    
+    /** @return # Name of sample table for writing */
+    public static String getWriteSampleTable()
+    {
+        String name = "sample";
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs != null)
+            name = prefs.getString(Activator.ID, WRITE_SAMPLE_TABLE, name, null);
+        return name;
+    }
     
     /** @return Maximum length of text samples written to SAMPLE.STR_VAL */
     public static int getMaxStringSampleLength()
@@ -25,5 +39,14 @@ public class Preferences
         if (prefs == null)
             return 80;
         return prefs.getInt(Activator.ID, MAX_TEXT_SAMPLE_LENGTH, 80, null);
+    }
+    
+    /** @return true to use postgres copy instead of insert */
+    public static boolean isUsePostgresCopy()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return false;
+        return prefs.getBoolean(Activator.ID, USE_POSTGRES_COPY, false, null);
     }
 }

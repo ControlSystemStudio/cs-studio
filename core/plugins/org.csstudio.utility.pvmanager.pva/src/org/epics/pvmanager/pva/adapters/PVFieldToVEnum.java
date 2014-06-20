@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.pva.adapters;
 
@@ -15,7 +15,7 @@ import org.epics.pvdata.pv.StringArrayData;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VTypeToString;
 
-public class PVFieldToVEnum extends AlarmTimeDisplayExtractor implements VEnum {
+public class PVFieldToVEnum extends AlarmTimeExtractor implements VEnum {
 	
 	protected final int index;
 	protected final List<String> labels;

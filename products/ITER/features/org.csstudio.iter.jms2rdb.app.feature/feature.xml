@@ -6,7 +6,7 @@
       provider-name="ITER">
 
    <copyright>
-      Copyright (c) : 2010-2013 ITER Organization,
+      Copyright (c) : 2010-2014 ITER Organization,
 CS 90 046
 13067 St. Paul-lez-Durance Cedex
 France
@@ -35,7 +35,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.jms2rdb"
+         id="org.csstudio.logging.jms2rdb"
          download-size="0"
          install-size="0"
          version="0.0.0"

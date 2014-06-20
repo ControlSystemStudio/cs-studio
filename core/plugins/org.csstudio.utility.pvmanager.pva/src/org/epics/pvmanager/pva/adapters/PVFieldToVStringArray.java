@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.pva.adapters;
 
@@ -30,11 +30,11 @@ public class PVFieldToVStringArray extends AlarmTimeDisplayExtractor implements 
 	 * @param pvField
 	 * @param disconnected
 	 */
-	public PVFieldToVStringArray(PVStructure pvField, boolean disconnected) {
+	public PVFieldToVStringArray(PVStructure pvField, String fieldName, boolean disconnected) {
 		super(pvField, disconnected);
 		
 		PVStringArray valueField =
-			(PVStringArray)pvField.getScalarArrayField("value", ScalarType.pvString);
+			(PVStringArray)pvField.getScalarArrayField(fieldName, ScalarType.pvString);
 		if (valueField != null)
 		{
 			StringArrayData data = new StringArrayData();
@@ -50,6 +50,10 @@ public class PVFieldToVStringArray extends AlarmTimeDisplayExtractor implements 
 		}
 	}
 
+	public PVFieldToVStringArray(PVStructure pvField, boolean disconnected) {
+		this(pvField, "value", disconnected);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.epics.pvmanager.data.Array#getSizes()
 	 */

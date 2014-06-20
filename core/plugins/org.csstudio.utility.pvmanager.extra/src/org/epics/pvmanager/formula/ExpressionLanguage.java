@@ -1,19 +1,14 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.antlr.runtime.*;
-import org.epics.vtype.VDouble;
-import org.epics.vtype.VNumber;
 import org.epics.pvmanager.expression.DesiredRateExpression;
-import static org.epics.pvmanager.ExpressionLanguage.*;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
@@ -23,13 +18,10 @@ import org.epics.pvmanager.expression.DesiredRateReadWriteExpressionImpl;
 import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.WriteExpression;
 import org.epics.util.text.StringUtil;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VString;
-import org.epics.vtype.VTable;
-import org.epics.vtype.VType;
 import org.epics.vtype.ValueUtil;
 
 /**
+ * Support for formula expressions.
  *
  * @author carcassi
  */
@@ -150,7 +142,7 @@ public class ExpressionLanguage {
      */
     public static <T> DesiredRateExpression<T> formula(String formula, Class<T> readType) {
         DesiredRateExpression<?> exp = parseFormula(formula);
-        return checkReturnType(readType, exp);
+        return checkReturnType(readType, "Value", exp);
     }
     
     static DesiredRateExpression<?> cachedPv(String channelName) {
@@ -225,7 +217,7 @@ public class ExpressionLanguage {
         return new ErrorDesiredRateExpression<>(error, "");
     }
     
-    static <T> DesiredRateExpression<T> checkReturnType(final Class<T> clazz, final DesiredRateExpression<?> arg1) {
+    static <T> DesiredRateExpression<T> checkReturnType(final Class<T> clazz, final String argName, final DesiredRateExpression<?> arg1) {
         return new DesiredRateExpressionImpl<T>(arg1, new ReadFunction<T>() {
 
             @Override
@@ -238,7 +230,7 @@ public class ExpressionLanguage {
                 if (clazz.isInstance(obj)) {
                     return clazz.cast(obj);
                 } else {
-                    throw new RuntimeException("Formula does not return " + clazz.getSimpleName() + " (was " + ValueUtil.typeOf(obj).getSimpleName() + ")");
+                    throw new RuntimeException(argName + " must be a " + clazz.getSimpleName() + " (was " + ValueUtil.typeOf(obj).getSimpleName() + ")");
                 }
             }
         }, arg1.getName());

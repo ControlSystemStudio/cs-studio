@@ -1,10 +1,10 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
+ * Copyright (c) 2010-2014 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.dbparser;
 
 import java.io.Serializable;
@@ -12,20 +12,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.autocomplete.Proposal;
-import org.csstudio.autocomplete.ProposalStyle;
-import org.csstudio.autocomplete.TopProposalFinder;
-import org.csstudio.autocomplete.data.Record;
+import org.csstudio.utility.dbparser.data.Record;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.swt.SWT;
 
 /**
- * DB context management in a {@link ThreadLocal} thread. This context is
- * available in any level of the application.
+ * DB context management. This context is available in any level of the
+ * application.
  * 
  * @author Fred Arnaud (Sopra Group) - ITER
  */
@@ -35,38 +32,20 @@ public class DBContext implements Serializable {
 
 	private Map<String, List<Record>> records;
 
-	public DBContext() {
+	private static final DBContext context = new DBContext();
+
+	/**
+	 * Singleton = private constructor
+	 */
+	private DBContext() {
 		records = new TreeMap<String, List<Record>>();
 	}
-	
-	public List<Proposal> findProposals(Pattern p, int limit) {
-		List<Proposal> result = new ArrayList<Proposal>();
-		for (String rec : records.keySet()) {
-			Matcher m = p.matcher(rec);
-			if (m.find()) {
-				Proposal proposal = new Proposal(rec, false);
-				proposal.addStyle(new ProposalStyle(m.start(), m.end() - 1,
-						SWT.BOLD, SWT.COLOR_BLUE));
-				result.add(proposal);
-			}
-			if (result.size() >= limit)
-				return result;
-		}
-		return result;
-	}
 
-	public int countProposals(Pattern p) {
-		int count = 0;
-		for (String rec : records.keySet()) {
-			Matcher m = p.matcher(rec);
-			if (m.find())
-				count++;
-		}
-		return count;
-	}
-	
-	public List<Proposal> findTopProposals(TopProposalFinder trf, String name) {
-		return trf.getTopProposals(name, records.keySet());
+	/**
+	 * Get the instance of {@link DBContext}..
+	 */
+	public static DBContext get() {
+		return context;
 	}
 
 	public List<Record> findRecord(String name) {
@@ -80,6 +59,16 @@ public class DBContext implements Serializable {
 				result.addAll(records.get(rec));
 		}
 		return result;
+	}
+
+	public Record getRecord(String name) {
+		if (records.get(name) == null)
+			return null;
+		return records.get(name).get(0);
+	}
+
+	public Set<String> listRecords() {
+		return records.keySet();
 	}
 
 	public void addRecord(IFile file, Record record) {
@@ -98,7 +87,8 @@ public class DBContext implements Serializable {
 					it.remove();
 			}
 		}
-		Iterator<Map.Entry<String, List<Record>>> it = records.entrySet().iterator();
+		Iterator<Map.Entry<String, List<Record>>> it = records.entrySet()
+				.iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, List<Record>> entry = it.next();
 			if (entry.getValue().isEmpty())

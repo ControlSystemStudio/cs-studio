@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.vtype;
 
@@ -13,8 +13,19 @@ import org.epics.util.array.ListNumber;
  * Multi dimensional array, which can be used for waveforms or more rich data.
  * <p>
  * The data is stored in a linear structure. The sizes array gives the dimensionality
- * and size for each dimension.
- *
+ * and size for each dimension. The ordering defined by the sizes is {@code [..., zSize, ySize, xSize]}.
+ * Typical iteration is:
+ * <blockquote><pre>
+ * for (...) {
+ *   for (int z = 0; z &lt; zSize; z++) {
+ *     for (int y = 0; y &lt; ySize; y++) {
+ *       for (int x = 0; x &lt; xSize; x++) {
+ *          array.getData().getDouble(... + z*ySize + y*xSize + x);
+ *       }
+ *     }
+ *   }
+ * }</pre></blockquote>
+ * 
  * @author carcassi
  */
 public interface Array {
@@ -31,14 +42,19 @@ public interface Array {
      * <p>
      * If a numeric array is actually needed, refer to {@link CollectionNumbers}.
      * 
-     * @return 
+     * @return the array data
      */
     Object getData();
 
     /**
+     * The shape of the multidimensional array.
+     * <p>
+     * The size of the returned list will be the number of the dimension of the array.
+     * Each number represents the size of each dimension. The total number
+     * of elements in the array is therefore the product of all the
+     * numbers in the list returned.
      * 
-     * 
-     * @return 
+     * @return the dimension sizes
      */
     ListInt getSizes();
 }

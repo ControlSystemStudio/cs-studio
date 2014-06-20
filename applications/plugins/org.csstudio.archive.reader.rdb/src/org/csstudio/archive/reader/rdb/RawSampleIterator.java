@@ -93,6 +93,12 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             statement.close();
         }
 
+        boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
+		// Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
+		if (reader.getRDB().getDialect() == Dialect.PostgreSQL && autoCommit) {
+			reader.getRDB().getConnection().setAutoCommit(false);
+		}
+        
         // Fetch the samples
         if (reader.useArrayBlob())
 	        sel_samples = reader.getRDB().getConnection().prepareStatement(
@@ -111,7 +117,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         // So default is bad. 100 or 1000 are good.
         // Bigger numbers don't help much in repeated tests, but
         // just to be on the safe side, use a bigger number.
-        sel_samples.setFetchSize(100000);
+        sel_samples.setFetchSize(Preferences.getFetchSize());
 
         reader.addForCancellation(sel_samples);
         sel_samples.setInt(1, channel_id);
@@ -192,6 +198,14 @@ public class RawSampleIterator extends AbstractRDBValueIterator
                 // Ignore
             }
             sel_samples = null;
+        }
+        if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
+        	// Restore default auto-commit on result set close 
+        	 try {
+     			reader.getRDB().getConnection().setAutoCommit(true);
+     		} catch (Exception e) {
+     			// Ignore
+     		}
         }
     }
 }

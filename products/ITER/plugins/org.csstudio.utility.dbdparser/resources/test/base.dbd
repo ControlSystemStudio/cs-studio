@@ -1,0 +1,19 @@
+path "test:org:csstudio:utility:dbdparser:test"
+addpath ":includes"
+
+include "./includes/include.dbd"
+
+menu(name) {
+	include "menuInclude.dbd"
+	choice(choice_name, "choice_value")
+	choice(choice_name, "choice_value")
+}
+
+recordtype(event) {
+	include "fieldInclude.dbd"
+	field(VAL,DBF_USHORT) {
+		prompt("Event Number To Post")
+		promptgroup(GUI_INPUTS)
+		asl(ASL0)
+	}
+}

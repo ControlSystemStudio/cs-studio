@@ -9,14 +9,14 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.sds.ui,
  org.csstudio.sds.components,
  org.eclipse.gef,
- org.junit4,
  org.eclipse.help,
  org.csstudio.swt.xygraph;bundle-version="1.0.0",
  org.apache.log4j;bundle-version="1.2.16",
  org.slf4j;bundle-version="1.6.1",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.csdata;bundle-version="3.1.0",
- org.csstudio.data;bundle-version="3.1.0"
+ org.csstudio.data;bundle-version="3.1.0",
+ org.junit
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.sds.components.ui.internal.figureparts,
  org.csstudio.sds.components.ui.internal.figures

@@ -73,6 +73,10 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
 
     /** Waveform Index */
     private int waveform_index = 0;
+    
+    /** Indicating if the history data is automatically refreshed, whenever
+     * the live buffer is too small to show all the data */
+    private boolean automaticRefresh = Preferences.isAutomaticHistoryRefresh();
 
     /** Initialize
      *  @param name PV name
@@ -105,7 +109,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
         // change all the index of samples in this instance
         samples.setWaveformIndex(waveform_index);
 
-        fireItemLookChanged();
+//        fireItemLookChanged();
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -150,7 +154,13 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
         this.period = period;
         if (running)
             start(scan_timer);
-        fireItemLookChanged();
+//        fireItemLookChanged();
+    }
+        
+    @Override
+    void setModel(Model model) {
+    	super.setModel(model);
+    	this.automaticRefresh = model.isAutomaticHistoryRefresh();
     }
 
     /** @return Maximum number of live samples in ring buffer */
@@ -167,7 +177,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     public void setLiveCapacity(final int new_capacity) throws Exception
     {
         samples.setLiveCapacity(new_capacity);
-        fireItemLookChanged();
+//        fireItemLookChanged();
     }
 
     /** @return Archive data sources for this item */
@@ -357,7 +367,8 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
                 logDisconnected();
             return;
         }
-        else
+        else {
+        	boolean added = false;
             for (VType value : values)
             {
                 // Cache most recent for 'scanned' operation
@@ -367,8 +378,13 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
                 {
                     Activator.getLogger().log(Level.FINE, "PV {0} received {1}", new Object[] { getName(), value });
                     samples.addLiveSample(value);
+                    added = true;
                 }
             }
+            if (automaticRefresh && added && samples.isHistoryRefreshNeeded(model.getStartTime(), model.getEndTime())) {
+            	model.fireItemRefreshRequested(this);
+            }
+        }
     }
 
     /** @param value Value to log with 'now' as time stamp */
@@ -407,6 +423,9 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
             final List<VType> new_samples)
     {
         samples.mergeArchivedData(server_name, new_samples);
+        if (automaticRefresh && samples.isHistoryRefreshNeeded(model.getStartTime(), model.getEndTime())) {
+        	model.fireItemRefreshRequested(this);
+        }
     }
 
     /** Write XML formatted PV configuration

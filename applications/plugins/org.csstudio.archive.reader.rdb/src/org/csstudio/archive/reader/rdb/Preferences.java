@@ -22,8 +22,18 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
+    final public static String FETCH_SIZE = "fetch_size";
     final public static String STORED_PROCEDURE = "use_stored_procedure";
 
+    public static int getFetchSize()
+    {
+        int fetch_size = 10;
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return fetch_size;
+        return prefs.getInt(Activator.ID, FETCH_SIZE, fetch_size, null);
+    }
+    
     public static String getStoredProcedure()
     {
         return getString(STORED_PROCEDURE, "");

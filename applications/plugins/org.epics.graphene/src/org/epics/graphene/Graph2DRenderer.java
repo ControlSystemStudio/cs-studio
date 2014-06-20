@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -17,12 +17,11 @@ import java.util.Collections;
 import java.util.List;
 import static org.epics.graphene.InterpolationScheme.CUBIC;
 import static org.epics.graphene.InterpolationScheme.LINEAR;
-import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOUR;
+import static org.epics.graphene.InterpolationScheme.NEAREST_NEIGHBOR;
 import static org.epics.graphene.ReductionScheme.FIRST_MAX_MIN_LAST;
 import static org.epics.graphene.ReductionScheme.NONE;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
-import org.epics.util.array.ListInt;
 import org.epics.util.array.ListMath;
 import org.epics.util.array.ListNumber;
 
@@ -32,25 +31,42 @@ import org.epics.util.array.ListNumber;
  * @author carcassi
  */
 public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
+
+    // WARNING: the following has been cause of continuous confusion, so 
+    // please do not touch any drawing code before you fully understand the following.
+    // All the vairables marked as Coord are in unit of pixels. The precision
+    // is subpixel, and 0 coord represent the ideal boundary before the first pixel.
+    // When drawing a line, one has to pay special attention as to whether
+    // the last pixel really need to be drawn: drawing from 0 to 5, for example,
+    // may color 6 pixel which is not what is needed; 5 will be the boundary
+    // between the 5th and 6th pixel, so only 5 pixels should be colored.
     
+    // All the variables marked as Value are in unit of data to plot
+
+    // The range of values for the plot
+    // These match the xPlotCoordXxx
     protected double xPlotValueStart;
     protected double yPlotValueStart;
     protected double xPlotValueEnd;
     protected double yPlotValueEnd;
-    
-    protected double yPlotCoordHeight;
-    protected double xPlotCoordWidth;
-    
+
+    // The pixel coordinates for the area
+    protected int xAreaCoordStart;
+    protected int yAreaCoordStart;
+    protected int yAreaCoordEnd;
+    protected int xAreaCoordEnd;
+
+    // The pixel coordinates for the ranges
+    // These match the xPlotValueXxx
     protected double xPlotCoordStart;
     protected double yPlotCoordStart;
     protected double yPlotCoordEnd;
     protected double xPlotCoordEnd;
-    
-    protected int xAreaStart;
-    protected int yAreaStart;
-    protected int yAreaEnd;
-    protected int xAreaEnd;
 
+    // The pixel size of the range (not of the plot area)
+    protected double yPlotCoordHeight;
+    protected double xPlotCoordWidth;
+    
     /**
      * Creates a graph renderer.
      * 
@@ -88,11 +104,11 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     private int imageWidth;
     private int imageHeight;
     // Strategy for calculating the axis range
-    private AxisRange xAxisRange = AxisRanges.integrated();
-    private AxisRange yAxisRange = AxisRanges.integrated();
+    private AxisRangeInstance xAxisRange = AxisRanges.integrated().createInstance();
+    private AxisRangeInstance yAxisRange = AxisRanges.integrated().createInstance();
     // Strategy for generating labels and scaling value of the axis
-    private ValueScale xValueScale = ValueScales.linearScale();
-    private ValueScale yValueScale = ValueScales.linearScale();
+    protected ValueScale xValueScale = ValueScales.linearScale();
+    protected ValueScale yValueScale = ValueScales.linearScale();
     // Colors and fonts
     protected Color backgroundColor = Color.WHITE;
     protected Color labelColor = Color.BLACK;
@@ -111,6 +127,9 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     // Axis label margins
     protected int xLabelMargin = 3;
     protected int yLabelMargin = 3;
+    // Margin for starting drawing from center of pixel
+    protected double xPointMargin = 0.5;  //Set as point (not area) by default
+    protected double yPointMargin = 0.5;
     
     // Computed parameters, visible to outside //
     
@@ -127,14 +146,16 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
     protected List<String> yReferenceLabels;
     private int xLabelMaxHeight;
     private int yLabelMaxWidth;
-
+    private boolean xAsPoints = true;
+    private boolean yAsPoints = true;
+    
     /**
      * The current strategy to calculate the x range for the graph.
      * 
      * @return the x axis range calculator
      */
     public AxisRange getXAxisRange() {
-        return xAxisRange;
+        return xAxisRange.getAxisRange();
     }
 
     /**
@@ -143,7 +164,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
      * @return the y axis range calculator
      */
     public AxisRange getYAxisRange() {
-        return yAxisRange;
+        return yAxisRange.getAxisRange();
     }
 
     /**
@@ -198,16 +219,58 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             imageWidth = update.getImageWidth();
         }
         if (update.getXAxisRange() != null) {
-            xAxisRange = update.getXAxisRange();
+            xAxisRange = update.getXAxisRange().createInstance();
         }
         if (update.getYAxisRange() != null) {
-            yAxisRange = update.getYAxisRange();
+            yAxisRange = update.getYAxisRange().createInstance();
         }
         if (update.getXValueScale()!= null) {
             xValueScale = update.getXValueScale();
         }
         if (update.getYValueScale() != null) {
             yValueScale = update.getYValueScale();
+        }
+        if (update.getBackgroundColor() != null){
+            backgroundColor = update.getBackgroundColor();
+        }
+        if (update.getLabelColor() != null){
+            labelColor = update.getLabelColor();
+        }
+        if (update.getReferenceLineColor() != null){
+            referenceLineColor = update.getReferenceLineColor();
+        }
+        if (update.getLabelFont() != null){
+            labelFont = update.getLabelFont();
+        }
+        if (update.getBottomMargin() != null){
+            bottomMargin = update.getBottomMargin();
+        }
+        if (update.getTopMargin() != null){
+            topMargin = update.getTopMargin();
+        }
+        if (update.getLeftMargin() != null){
+            leftMargin = update.getLeftMargin();
+        }
+        if (update.getRightMargin() != null){
+            rightMargin = update.getRightMargin();
+        }
+        if (update.getBottomAreaMargin() != null){
+            bottomAreaMargin = update.getBottomAreaMargin();
+        }
+        if (update.getTopAreaMargin() != null){
+            topAreaMargin = update.getTopAreaMargin();
+        }
+        if (update.getLeftAreaMargin() != null){
+            leftAreaMargin = update.getLeftAreaMargin();
+        }
+        if (update.getRightAreaMargin() != null){
+            rightAreaMargin = update.getRightAreaMargin();
+        }
+        if (update.getXLabelMargin() != null){
+            xLabelMargin = update.getXLabelMargin();
+        }
+        if (update.getYLabelMargin() != null){
+            yLabelMargin = update.getYLabelMargin();
         }
     }
     
@@ -226,61 +289,82 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
      */
     public abstract T newUpdate();
     
+    /**
+     * Given the new data ranges, calculates the new aggregated and plot
+     * ranges.
+     * 
+     * @param xDataRange the new data range for x
+     * @param yDataRange the new data range for y
+     */
     protected void calculateRanges(Range xDataRange, Range yDataRange) {
         xAggregatedRange = aggregateRange(xDataRange, xAggregatedRange);
         yAggregatedRange = aggregateRange(yDataRange, yAggregatedRange);
-        xPlotRange = xAxisRange.axisRange(xDataRange, xAggregatedRange);
-        yPlotRange = yAxisRange.axisRange(yDataRange, yAggregatedRange);
+        // TODO: should be update to use display range
+        xPlotRange = xAxisRange.axisRange(xDataRange, xDataRange);
+        yPlotRange = yAxisRange.axisRange(yDataRange, yDataRange);
     }
     
+    /**
+     * Draws the horizontal reference lines based on the calculated
+     * graph area.
+     */
     protected void drawHorizontalReferenceLines() {
         g.setColor(referenceLineColor);
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
         ListNumber yTicks = yReferenceCoords;
         for (int i = 0; i < yTicks.size(); i++) {
-            Shape line = new Line2D.Double(xAreaStart, yTicks.getDouble(i), xAreaEnd, yTicks.getDouble(i));
+            Shape line = new Line2D.Double(xAreaCoordStart, yTicks.getDouble(i), xAreaCoordEnd - 1, yTicks.getDouble(i));
             g.draw(line);
         }
     }
 
+    /**
+     *Draw reference lines that correspond to reference values. Reference lines are drawn on the exact pixel that represents a reference value.
+     */
     protected void drawVerticalReferenceLines() {
         g.setColor(referenceLineColor);
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
         ListNumber xTicks = xReferenceCoords;
         for (int i = 0; i < xTicks.size(); i++) {
-            Shape line = new Line2D.Double(xTicks.getDouble(i), yAreaStart, xTicks.getDouble(i), yAreaEnd);
+            Shape line = new Line2D.Double(xTicks.getDouble(i), yAreaCoordStart, xTicks.getDouble(i), yAreaCoordEnd - 1);
             g.draw(line);
         }
     }
     
-    protected void calculateGraphArea() {
+    /**
+     * Calculates:
+     * <ul>
+     *    <li>The font for the labels</li>
+     *    <li>The margins based on labels</li>
+     * </ul>
+     */
+    protected void calculateLabels() {
         // Calculate horizontal axis references. If range is zero, use special logic
         if (!xPlotRange.getMinimum().equals(xPlotRange.getMaximum())) {
             ValueAxis xAxis = xValueScale.references(xPlotRange, 2, Math.max(2, getImageWidth() / 60));
             xReferenceLabels = Arrays.asList(xAxis.getTickLabels());
-            xReferenceValues = new ArrayDouble(xAxis.getTickValues());
+            xReferenceValues = new ArrayDouble(xAxis.getTickValues());            
         } else {
             // TODO: use something better to format the number
             xReferenceLabels = Collections.singletonList(xPlotRange.getMinimum().toString());
-            xReferenceValues = new ArrayDouble(xPlotRange.getMinimum().doubleValue());
-        }
-
+            xReferenceValues = new ArrayDouble(xPlotRange.getMinimum().doubleValue());            
+        }      
+        
         // Calculate vertical axis references. If range is zero, use special logic
         if (!yPlotRange.getMinimum().equals(yPlotRange.getMaximum())) {
             ValueAxis yAxis = yValueScale.references(yPlotRange, 2, Math.max(2, getImageHeight() / 60));
             yReferenceLabels = Arrays.asList(yAxis.getTickLabels());
-            yReferenceValues = new ArrayDouble(yAxis.getTickValues());
+            yReferenceValues = new ArrayDouble(yAxis.getTickValues());            
         } else {
             // TODO: use something better to format the number
             yReferenceLabels = Collections.singletonList(yPlotRange.getMinimum().toString());
-            yReferenceValues = new ArrayDouble(yPlotRange.getMinimum().doubleValue());
+            yReferenceValues = new ArrayDouble(yPlotRange.getMinimum().doubleValue());            
         }
         
         labelFontMetrics = g.getFontMetrics(labelFont);
         
         // Compute x axis spacing
         xLabelMaxHeight = labelFontMetrics.getHeight() - labelFontMetrics.getLeading();
-        int areaFromBottom = bottomMargin + xLabelMaxHeight + xLabelMargin;
         
         // Compute y axis spacing
         int[] yLabelWidths = new int[yReferenceLabels.size()];
@@ -289,6 +373,23 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             yLabelWidths[i] = labelFontMetrics.stringWidth(yReferenceLabels.get(i));
             yLabelMaxWidth = Math.max(yLabelMaxWidth, yLabelWidths[i]);
         }
+    }
+        
+    /**
+     * Calculates the graph area based on:
+     * <ul>
+     *    <li>The image size</li>
+     *    <li>The plot ranges</li>
+     *    <li>The value scales</li>
+     *    <li>The font for the labels</li>
+     *    <li>The margins</li>
+     * </ul>
+     * 
+     * To calculate area based on labels, ensure that calculateGraphArea() is called
+     * prior to calling calculateGraphAreaNoLabels().
+     */    
+    protected void calculateGraphArea() {
+        int areaFromBottom = bottomMargin + xLabelMaxHeight + xLabelMargin;
         int areaFromLeft = leftMargin + yLabelMaxWidth + yLabelMargin;
 
         xPlotValueStart = getXPlotRange().getMinimum().doubleValue();
@@ -298,10 +399,10 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             xPlotValueStart -= 1.0;
             xPlotValueEnd += 1.0;
         }
-        xAreaStart = areaFromLeft;
-        xAreaEnd = getImageWidth() - rightMargin - 1;
-        xPlotCoordStart = xAreaStart + topAreaMargin + 0.5;
-        xPlotCoordEnd = xAreaEnd - bottomAreaMargin + 0.5;
+        xAreaCoordStart = areaFromLeft;
+        xAreaCoordEnd = getImageWidth() - rightMargin;
+        xPlotCoordStart = xAreaCoordStart + leftAreaMargin + xPointMargin;
+        xPlotCoordEnd = xAreaCoordEnd - rightAreaMargin - xPointMargin;
         xPlotCoordWidth = xPlotCoordEnd - xPlotCoordStart;
         
         yPlotValueStart = getYPlotRange().getMinimum().doubleValue();
@@ -311,54 +412,64 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             yPlotValueStart -= 1.0;
             yPlotValueEnd += 1.0;
         }
-        yAreaStart = topMargin;
-        yAreaEnd = getImageHeight() - areaFromBottom - 1;
-        yPlotCoordStart = yAreaStart + leftAreaMargin + 0.5;
-        yPlotCoordEnd = yAreaEnd - rightAreaMargin + 0.5;
+        yAreaCoordStart = topMargin;
+        yAreaCoordEnd = getImageHeight() - areaFromBottom;
+        yPlotCoordStart = yAreaCoordStart + topAreaMargin + yPointMargin;
+        yPlotCoordEnd = yAreaCoordEnd - bottomAreaMargin - yPointMargin;
         yPlotCoordHeight = yPlotCoordEnd - yPlotCoordStart;
         
-        double[] xRefCoords = new double[xReferenceValues.size()];
-        for (int i = 0; i < xRefCoords.length; i++) {
-            xRefCoords[i] = scaledX(xReferenceValues.getDouble(i));
+        //Only calculates reference coordinates if calculateLabels() was called
+        if (xReferenceValues != null) {
+            double[] xRefCoords = new double[xReferenceValues.size()];
+            for (int i = 0; i < xRefCoords.length; i++) {
+                xRefCoords[i] = scaledX(xReferenceValues.getDouble(i));
+            }
+            xReferenceCoords = new ArrayDouble(xRefCoords);
         }
-        xReferenceCoords = new ArrayDouble(xRefCoords);
         
-        double[] yRefCoords = new double[yReferenceValues.size()];
-        for (int i = 0; i < yRefCoords.length; i++) {
-            yRefCoords[i] = scaledY(yReferenceValues.getDouble(i));
+        if (yReferenceValues != null) {
+            double[] yRefCoords = new double[yReferenceValues.size()];
+            for (int i = 0; i < yRefCoords.length; i++) {
+                yRefCoords[i] = scaledY(yReferenceValues.getDouble(i));
+            }
+            yReferenceCoords = new ArrayDouble(yRefCoords);
         }
-        yReferenceCoords = new ArrayDouble(yRefCoords);
     }
 
+    /**
+     * Draws the background with the background color.
+     */
     protected void drawBackground() {
         g.setColor(backgroundColor);
         g.fillRect(0, 0, getImageWidth(), getImageHeight());
     }
     
+    /**
+     * Draw the calculated graph area. Draws the the reference
+     * lines and the labels.
+     */
     protected void drawGraphArea() {
-        drawBackground();
-        
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // When drawing the reference line, align them to the pixel
         drawVerticalReferenceLines();
-        drawHorizontalReferenceLines();;
+        drawHorizontalReferenceLines();
         
         drawYLabels();
         drawXLabels();
     }
 
-    private ScaledData scaleNoReducation(ListNumber xValues, ListNumber yValues) {
-        return scaleNoReducation(xValues, yValues, 0);
+    private ScaledData scaleNoReduction(ListNumber xValues, ListNumber yValues) {
+        return scaleNoReduction(xValues, yValues, 0);
     }
 
-    private ScaledData scaleNoReducation(ListNumber xValues, ListNumber yValues, int dataStart) {
+    private ScaledData scaleNoReduction(ListNumber xValues, ListNumber yValues, int dataStart) {
         ScaledData scaledData = new ScaledData();
         int dataCount = xValues.size();
         scaledData.scaledX = new double[dataCount];
         scaledData.scaledY = new double[dataCount];
         for (int i = 0; i < scaledData.scaledY.length; i++) {
             scaledData.scaledX[i] = scaledX(xValues.getDouble(i));
-            scaledData.scaledY[i] = scaledY(yValues.getDouble(i));;
+            scaledData.scaledY[i] = scaledY(yValues.getDouble(i));
             processScaledValue(dataStart + i, xValues.getDouble(i), yValues.getDouble(i), scaledData.scaledX[i], scaledData.scaledY[i]);
         }
         scaledData.end = dataCount;
@@ -370,7 +481,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         // number of points on the x axis. If the number of points is less
         // than that, it's not worth it. Don't do the data reduction.
         if (xValues.size() < xPlotCoordWidth * 4) {
-            return scaleNoReducation(xValues, yValues, dataStart);
+            return scaleNoReduction(xValues, yValues, dataStart);
         }
 
         ScaledData scaledData = new ScaledData();
@@ -422,6 +533,15 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         return scaledData;
     }
     
+    /**
+     *Empty function, designed to be implemented in sub-classes.
+     * <p>Used on every value in a dataset.</p>
+     * @param index
+     * @param valueX
+     * @param valueY
+     * @param scaledX
+     * @param scaledY
+     */
     protected void processScaledValue(int index, double valueX, double valueY, double scaledX, double scaledY) {
     }
     
@@ -432,8 +552,19 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         private int end;
     }
     
+    /**
+     * Draws an implicit line given the interpolation scheme and the x,y values.
+     * The function will scale the values.
+     * 
+     * @param xValues the x values
+     * @param yValues the y values
+     * @param interpolation the interpolation scheme
+     */
     protected void drawValueLine(ListNumber xValues, ListNumber yValues, InterpolationScheme interpolation) {
         ReductionScheme reductionScheme = ReductionScheme.NONE;
+        
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 
         ScaledData scaledData;
         
@@ -441,7 +572,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             default:
                 throw new IllegalArgumentException("Reduction scheme " + reductionScheme + " not supported");
             case NONE:
-                scaledData = scaleNoReducation(xValues, yValues);
+                scaledData = scaleNoReduction(xValues, yValues);
                 break;
         }
         
@@ -449,7 +580,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         Path2D path;
         switch (interpolation) {
             default:
-            case NEAREST_NEIGHBOUR:
+            case NEAREST_NEIGHBOR:
                 path = nearestNeighbour(scaledData);
                 break;
             case LINEAR:
@@ -464,8 +595,20 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         g.draw(path);
     }
     
+    /**
+     * Draws an explicit line give the interpolation and reduction schemes,
+     * the x values and the y values. The function will scale the values.
+     * 
+     * @param xValues the x values
+     * @param yValues the y values
+     * @param interpolation the interpolation
+     * @param reduction the reduction
+     */
     protected void drawValueExplicitLine(ListNumber xValues, ListNumber yValues, InterpolationScheme interpolation, ReductionScheme reduction) {
         ScaledData scaledData;
+        
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
         
         // Narrow the data
         int start = org.epics.util.array.ListNumbers.binarySearchValueOrLower(xValues, xPlotValueStart);
@@ -478,7 +621,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             default:
                 throw new IllegalArgumentException("Reduction scheme " + reduction + " not supported");
             case NONE:
-                scaledData = scaleNoReducation(xValues, yValues, start);
+                scaledData = scaleNoReduction(xValues, yValues, start);
                 break;
             case FIRST_MAX_MIN_LAST:
                 scaledData = scaleFirstMaxMinLastReduction(xValues, yValues, start);
@@ -489,7 +632,7 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         Path2D path;
         switch (interpolation) {
             default:
-            case NEAREST_NEIGHBOUR:
+            case NEAREST_NEIGHBOR:
                 path = nearestNeighbour(scaledData);
                 break;
             case LINEAR:
@@ -524,64 +667,155 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         line.lineTo(scaledX[end - 1], scaledY[end - 1]);
         return line;
     }
-
-    private static Path2D.Double linearInterpolation(ScaledData scaledData) {
+   
+    private static Path2D.Double linearInterpolation(ScaledData scaledData){
         double[] scaledX = scaledData.scaledX;
         double[] scaledY = scaledData.scaledY;
         int start = scaledData.start;
-        int end = scaledData.end;        Path2D.Double line = new Path2D.Double();
-        line.moveTo(scaledX[start], scaledY[start]);
-        for (int i = 1; i < end; i++) {
-            line.lineTo(scaledX[i], scaledY[i]);
+        int end = scaledData.end;
+        Path2D.Double line = new Path2D.Double();
+        
+        for (int i = start; i < end; i++) {
+            // Do I have a current value?
+            if (!java.lang.Double.isNaN(scaledY[i])) {
+                // Do I have a previous value?
+                if (i != start && !java.lang.Double.isNaN(scaledY[i - 1])) {
+                    // Here I have both the previous value and the current value
+                    line.lineTo(scaledX[i], scaledY[i]);
+                } else {
+                    // Don't have a previous value
+                    // Do I have a next value?
+                    if (i != end - 1 && !java.lang.Double.isNaN(scaledY[i + 1])) {
+                        // There is no value before, but there is a value after
+                        line.moveTo(scaledX[i], scaledY[i]);
+                    } else {
+                        // There is no value either before or after
+                        line.moveTo(scaledX[i] - 1, scaledY[i]);
+                        line.lineTo(scaledX[i] + 1, scaledY[i]);
+                    }
+                }
+            } 
         }
         return line;
     }
-
-    private static Path2D.Double cubicInterpolation(ScaledData scaledData) {
+    
+    private static Path2D.Double cubicInterpolation(ScaledData scaledData){
         double[] scaledX = scaledData.scaledX;
         double[] scaledY = scaledData.scaledY;
         int start = scaledData.start;
         int end = scaledData.end;
         Path2D.Double path = new Path2D.Double();
-        path.moveTo(scaledX[start], scaledY[start]);
-        for (int i = 1; i < end; i++) {
-            // Extract 4 points (take care of boundaries)
-            double y1 = scaledY[i - 1];
-            double y2 = scaledY[i];
-            double x1 = scaledX[i - 1];
-            double x2 = scaledX[i];
+        for (int i = start; i < end; i++) {
+            
+            double y1;
+            double y2;
+            double x1;
+            double x2;
             double y0;
             double x0;
-            if (i > 1) {
-                y0 = scaledY[i - 2];
-                x0 = scaledX[i - 2];
-            } else {
-                y0 = y1 - (y2 - y1) / 2;
-                x0 = x1 - (x2 - x1);
-            }
             double y3;
             double x3;
-            if (i < end - 1) {
-                y3 = scaledY[i + 1];
-                x3 = scaledX[i + 1];
-            } else {
-                y3 = y2 + (y2 - y1) / 2;
-                x3 = x2 + (x2 - x1) / 2;
-            }
-
-            // Convert to Bezier
-            double bx0 = x1;
-            double by0 = y1;
-            double bx3 = x2;
-            double by3 = y2;
-            double bdy0 = (y2 - y0) / (x2 - x0);
-            double bdy3 = (y3 - y1) / (x3 - x1);
-            double bx1 = bx0 + (x2 - x0) / 6.0;
-            double by1 = (bx1 - bx0) * bdy0 + by0;
-            double bx2 = bx3 - (x3 - x1) / 6.0;
-            double by2 = (bx2 - bx3) * bdy3 + by3;
-
-            path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+            
+            double bx0;
+            double by0;
+            double bx3;
+            double by3;
+            double bdy0;
+            double bdy3;
+            double bx1;
+            double by1;
+            double bx2;
+            double by2;
+            
+            //Do I have current value?
+            if (!java.lang.Double.isNaN(scaledY[i])){
+                //Do I have previous value?
+                if (i > start && !java.lang.Double.isNaN(scaledY[i - 1])) {
+                    //Do I have value two before?
+                    if (i > start + 1 && !java.lang.Double.isNaN(scaledY[i - 2])) {
+                        //Do I have next value?
+                        if (i != end - 1 && !java.lang.Double.isNaN(scaledY[i + 1])) {
+                            y2 = scaledY[i];
+                            x2 = scaledX[i];
+                            y0 = scaledY[i - 2];
+                            x0 = scaledX[i - 2];
+                            y3 = scaledY[i + 1];
+                            x3 = scaledX[i + 1];
+                            y1 = scaledY[i - 1];
+                            x1 = scaledX[i - 1];
+                            bx0 = x1;
+                            by0 = y1;
+                            bx3 = x2;
+                            by3 = y2;
+                            bdy0 = (y2 - y0) / (x2 - x0);
+                            bdy3 = (y3 - y1) / (x3 - x1);
+                            bx1 = bx0 + (x2 - x0) / 6.0;
+                            by1 = (bx1 - bx0) * bdy0 + by0;
+                            bx2 = bx3 - (x3 - x1) / 6.0;
+                            by2 = (bx2 - bx3) * bdy3 + by3;
+                            path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+                        } 
+                        else{//Have current, previous, two before, but not value after
+                            y2 = scaledY[i];
+                            x2 = scaledX[i];
+                            y1 = scaledY[i - 1];
+                            x1 = scaledX[i - 1];
+                            y0 = scaledY[i - 2];
+                            x0 = scaledX[i - 2];
+                            y3 = y2 + (y2 - y1) / 2;
+                            x3 = x2 + (x2 - x1) / 2;
+                            bx0 = x1;
+                            by0 = y1;
+                            bx3 = x2;
+                            by3 = y2;
+                            bdy0 = (y2 - y0) / (x2 - x0);
+                            bdy3 = (y3 - y1) / (x3 - x1);
+                            bx1 = bx0 + (x2 - x0) / 6.0;
+                            by1 = (bx1 - bx0) * bdy0 + by0;
+                            bx2 = bx3 - (x3 - x1) / 6.0;
+                            by2 = (bx2 - bx3) * bdy3 + by3;
+                            path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+                        } 
+                    } else if (i != end - 1 && !java.lang.Double.isNaN(scaledY[i + 1])) {
+                        //Have current , previous, and next, but not two before
+                        path.moveTo(scaledX[i - 1], scaledY[i - 1]);
+                        y2 = scaledY[i];
+                        x2 = scaledX[i];
+                        y1 = scaledY[i - 1];
+                        x1 = scaledX[i - 1];
+                        y0 = y1 - (y2 - y1) / 2;
+                        x0 = x1 - (x2 - x1) / 2;
+                        y3 = scaledY[i + 1];
+                        x3 = scaledX[i + 1];
+                        bx0 = x1;
+                        by0 = y1;
+                        bx3 = x2;
+                        by3 = y2;
+                        bdy0 = (y2 - y0) / (x2 - x0);
+                        bdy3 = (y3 - y1) / (x3 - x1);
+                        bx1 = bx0 + (x2 - x0) / 6.0;
+                        by1 = (bx1 - bx0) * bdy0 + by0;
+                        bx2 = bx3 - (x3 - x1) / 6.0;
+                        by2 = (bx2 - bx3) * bdy3 + by3;
+                        path.curveTo(bx1, by1, bx2, by2, bx3, by3);
+                    }else{//have current, previous, but not two before or next
+                        path.lineTo(scaledX[i], scaledY[i]);
+                    }
+                //have current, but not previous
+                }else{
+                    // No previous value
+                    if (i != end - 1 && !java.lang.Double.isNaN(scaledY[i + 1])) {
+                        // If we have the next value, just move, we'll draw later
+                        path.moveTo(scaledX[i], scaledY[i]);
+                    } else {
+                        // If not, write a small horizontal line
+                        path.moveTo(scaledX[i] - 1, scaledY[i]);
+                        path.lineTo(scaledX[i] + 1, scaledY[i]);
+                    }
+                }
+            }else{ //do not have current
+               // Do nothing
+             }
         }
         return path;
     }
@@ -659,19 +893,38 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         }
     }
     
-
+    /*
+     * Scale the x value to the graph area.
+     * 
+     * @param value the x value
+     * @return the x position in the graph area
+     */
     protected final double scaledX(double value) {
         return xValueScale.scaleValue(value, xPlotValueStart, xPlotValueEnd, xPlotCoordStart, xPlotCoordEnd);
     }
 
+    /**
+     * Scale the y value to the graph area.
+     * 
+     * @param value the y value
+     * @return the y position in the graph area
+     */
     protected final double scaledY(double value) {
         return yValueScale.scaleValue(value, yPlotValueStart, yPlotValueEnd, yPlotCoordEnd, yPlotCoordStart);
     }
     
+    /**
+     * Sets the clip area to the actual graph area
+     * 
+     * @param g the graphics context
+     */
     protected void setClip(Graphics2D g) {
-        g.setClip(xAreaStart, yAreaStart, xAreaEnd - xAreaStart + 1, yAreaEnd - yAreaStart + 1);
+        g.setClip(xAreaCoordStart, yAreaCoordStart, xAreaCoordEnd - xAreaCoordStart, yAreaCoordEnd - yAreaCoordStart);
     }
 
+    /**
+     * Draw the vertical labels based on the calculated graph area.
+     */
     protected void drawYLabels() {
         // Draw Y labels
         ListNumber yTicks = yReferenceCoords;
@@ -682,8 +935,8 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             FontMetrics metrics = g.getFontMetrics();
 
             // Draw first and last label
-            int[] drawRange = new int[] {yAreaStart, yAreaEnd};
-            int xRightLabel = (int) (xAreaStart - yLabelMargin - 1);
+            int[] drawRange = new int[] {yAreaCoordStart, yAreaCoordEnd - 1};
+            int xRightLabel = (int) (xAreaCoordStart - yLabelMargin - 1);
             drawHorizontalReferencesLabel(g, metrics, yReferenceLabels.get(0), (int) Math.floor(yTicks.getDouble(0)),
                 drawRange, xRightLabel, true, false);
             drawHorizontalReferencesLabel(g, metrics, yReferenceLabels.get(yReferenceLabels.size() - 1), (int) Math.floor(yTicks.getDouble(yReferenceLabels.size() - 1)),
@@ -696,6 +949,9 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         }
     }
 
+    /**
+     * Draw the horizontal labels based on the calculated graph area.
+     */
     protected void drawXLabels() {
         // Draw X labels
         ListNumber xTicks = xReferenceCoords;
@@ -706,8 +962,8 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
             FontMetrics metrics = g.getFontMetrics();
 
             // Draw first and last label
-            int[] drawRange = new int[] {xAreaStart, xAreaEnd};
-            int yTop = (int) (yAreaEnd + xLabelMargin + 1);
+            int[] drawRange = new int[] {xAreaCoordStart, xAreaCoordEnd - 1};
+            int yTop = (int) (yAreaCoordEnd + xLabelMargin);
             drawVerticalReferenceLabel(g, metrics, xReferenceLabels.get(0), (int) Math.floor(xTicks.getDouble(0)),
                 drawRange, yTop, true, false);
             drawVerticalReferenceLabel(g, metrics, xReferenceLabels.get(xReferenceLabels.size() - 1), (int) Math.floor(xTicks.getDouble(xReferenceLabels.size() - 1)),
@@ -720,4 +976,45 @@ public abstract class Graph2DRenderer<T extends Graph2DRendererUpdate> {
         }
     }
 
+    /**
+     *Sets up a graph to start and end at the center of a pixel.
+     * Consequently, all drawing done after using this method should assume that every point is on the center of a pixel.
+     */
+    protected void setupDataAsPoints(){
+        setupXAsPoints();
+        setupYAsPoints();
+    }
+    /**
+     *Sets up the x-axis of a graph to start and end at the center of a pixel. 
+     */
+    protected void setupXAsPoints(){
+        xPointMargin = 0.5;
+    }
+    /**
+     *Sets up the y-axis of a graph to start and end at the center of a pixel.
+     */
+    protected void setupYAsPoints(){
+        yPointMargin = 0.5;
+    }
+    /**
+     *Sets up a graph to start and end at the beginning border of a pixel. 
+     *  After using this method, each point should be assumed to be at the top left corner of a pixel.
+     */
+    protected void setupDataAsAreas(){
+        setupXAsAreas();
+        setupYAsAreas();
+    }
+    /**
+     *Sets up the x-axis of a graph to start and end at the left border of a pixel.
+     */
+    protected void setupXAsAreas(){
+        xPointMargin = 0;
+    }
+    
+    /**
+     *Sets up the y-axis of a graph to start and end at the top border of a pixel.
+     */
+    protected void setupYAsAreas(){
+        yPointMargin = 0;
+    }
 }

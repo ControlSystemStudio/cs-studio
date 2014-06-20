@@ -198,7 +198,7 @@ public class RDBArchiveReader implements ArchiveReader
                 }
                 if (severity == null)
             	{
-                    Activator.getLogger().log(Level.WARNING,
+                    Activator.getLogger().log(Level.FINE,
                         "Undefined severity level {0}", text);
             		severities.put(id, AlarmSeverity.UNDEFINED);     
             	}

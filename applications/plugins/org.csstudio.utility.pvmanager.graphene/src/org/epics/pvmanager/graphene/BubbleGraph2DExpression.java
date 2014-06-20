@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.graphene;
 
@@ -26,10 +26,10 @@ public class BubbleGraph2DExpression extends DesiredRateExpressionImpl<Graph2DRe
 	    DesiredRateExpression<?> xColumnName,
 	    DesiredRateExpression<?> yColumnName,
 	    DesiredRateExpression<?> sizeColumnName,
-	    DesiredRateExpression<?> tooltipColumnName) {
-        super(ExpressionLanguage.<Object>createList(tableData, xColumnName, yColumnName, sizeColumnName, tooltipColumnName),
+	    DesiredRateExpression<?> colorColumnName) {
+        super(ExpressionLanguage.<Object>createList(tableData, xColumnName, yColumnName, sizeColumnName, colorColumnName),
                 new BubbleGraph2DFunction(functionOf(tableData),
-                functionOf(xColumnName), functionOf(yColumnName), functionOf(sizeColumnName), functionOf(tooltipColumnName)),
+                functionOf(xColumnName), functionOf(yColumnName), functionOf(sizeColumnName), functionOf(colorColumnName)),
                 "Bubble Graph");
     }
 

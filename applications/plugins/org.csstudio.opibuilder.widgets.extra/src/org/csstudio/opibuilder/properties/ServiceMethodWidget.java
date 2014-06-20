@@ -61,7 +61,7 @@ public class ServiceMethodWidget extends BeanComposite {
     private Text text_result_prefix;
     private Label lblServiceMethodDescription;
     private Color initialForegroundColor;
-    
+
     private Table argumentPvTable;
     private Table resultPvTable;
     private TableViewer argumentPvTableViewer;
@@ -72,14 +72,12 @@ public class ServiceMethodWidget extends BeanComposite {
     private final String DEFAULT_PREFIX = "loc://${DID}";
     // Model
     private Map<String, Service> services;
-    
+
     private String argumentPrefix;
     private boolean useArgumentPrefix;
     private String resultPrefix;
     private boolean useResultPrefix;
     private ServiceMethodDescription serviceMethodDescription;
-
-    
 
     public ServiceMethodWidget(Composite parent, int style, ServiceMethodDescription serviceMethodDescription) {
 	super(parent, style);
@@ -152,11 +150,13 @@ public class ServiceMethodWidget extends BeanComposite {
 
 	text_arg_prefix = new Text(this, SWT.BORDER);
 	text_arg_prefix.addMouseListener(new MouseAdapter() {
-		@Override
-		public void mouseUp(MouseEvent e) {
+	    @Override
+	    public void mouseUp(MouseEvent e) {
+		if (!useArgumentPrefix) {
 		    useArgumentPrefix = true;
-		    updateUI();
+		    text_arg_prefix.setForeground(initialForegroundColor);
 		}
+	    }
 	});
 	FormData fd_text_arg_prefix = new FormData();
 	fd_text_arg_prefix.right = new FormAttachment(100, -5);
@@ -258,8 +258,10 @@ public class ServiceMethodWidget extends BeanComposite {
 	text_result_prefix.addMouseListener(new MouseAdapter() {
 		@Override
 		public void mouseUp(MouseEvent e) {
-		    useResultPrefix = true;
-		    updateUI();
+		    if(!useResultPrefix){
+			useResultPrefix = true;
+			text_result_prefix.setForeground(initialForegroundColor);
+		    }
 		}
 	});
 	FormData fd_text_result_prefix = new FormData();
@@ -404,8 +406,7 @@ public class ServiceMethodWidget extends BeanComposite {
 	updateUI();
     }
 
-    
-    private void init(String service, String method){
+    private void init(String service, String method) {
 	// search for the service/method
 	if (services == null) {
 	    services = new HashMap<String, Service>();
@@ -448,13 +449,15 @@ public class ServiceMethodWidget extends BeanComposite {
 	    setServiceMethodDescription(serviceMethodDescription);
 	}
 	updateUI();
+	getShell().pack();
     }
-    
+
     private void updateUI() {
 	if (serviceMethodDescription != null) {
 	    text_method.setText(serviceMethodDescription.getService() + "/"
 		    + serviceMethodDescription.getMethod());
-	    lblServiceMethodDescription.setText(serviceMethodDescription.getDescription());
+	    lblServiceMethodDescription.setText(serviceMethodDescription
+		    .getDescription());
 	    text_arg_prefix.setEnabled(true);
 	    if (useArgumentPrefix) {
 		if (argumentPvTableViewer.isCellEditorActive()) {
@@ -498,55 +501,60 @@ public class ServiceMethodWidget extends BeanComposite {
 	    resultPvTableViewer.setInput(null);
 	    layout();
 	}
-	getParent().getShell().pack();
     }
 
-    
-    private Map<String, String> calculateArgumentPvs(Set<String> argumentNames, String prefix){
+    private Map<String, String> calculateArgumentPvs(Set<String> argumentNames,
+	    String prefix) {
 	Map<String, String> argumentPvs = new HashMap<String, String>();
 	for (String argument : argumentNames) {
 	    argumentPvs.put(argument, prefix + argument);
 	}
 	return argumentPvs;
     }
-    
-    private Map<String, String> calculateResultPvs(Set<String> resultNames, String prefix){
+
+    private Map<String, String> calculateResultPvs(Set<String> resultNames,
+	    String prefix) {
 	Map<String, String> resultPvs = new HashMap<String, String>();
 	for (String result : resultNames) {
 	    resultPvs.put(result, prefix + result);
 	}
 	return resultPvs;
     }
-    
-    private void setArgumentPvs(Map<String, String> argumentPvs){
+
+    private void setArgumentPvs(Map<String, String> argumentPvs) {
 	Object oldValue = this.serviceMethodDescription.getArgumentPvs();
 	this.serviceMethodDescription.setArgumentPvs(argumentPvs);
-	changeSupport.firePropertyChange("argumentPvs", oldValue, this.serviceMethodDescription.getArgumentPvs());
+	changeSupport.firePropertyChange("argumentPvs", oldValue,
+		this.serviceMethodDescription.getArgumentPvs());
     }
-    
+
     private void setArgumentPv(String key, String value) {
 	this.serviceMethodDescription.setArgumentPv(key, value);
-	changeSupport.firePropertyChange("argumentPvs", null, this.serviceMethodDescription.getArgumentPvs());
+	changeSupport.firePropertyChange("argumentPvs", null,
+		this.serviceMethodDescription.getArgumentPvs());
     }
-    
-    private void setResultPvs(Map<String, String> resultPvs){
+
+    private void setResultPvs(Map<String, String> resultPvs) {
 	Object oldValue = this.serviceMethodDescription.getResultPvs();
 	this.serviceMethodDescription.setResultPvs(resultPvs);
-	changeSupport.firePropertyChange("resultPvs", oldValue, this.serviceMethodDescription.getResultPvs());
+	changeSupport.firePropertyChange("resultPvs", oldValue,
+		this.serviceMethodDescription.getResultPvs());
     }
-    
 
     private void setResultPv(String key, String value) {
 	this.serviceMethodDescription.setResultPv(key, value);
-	changeSupport.firePropertyChange("resultPvs", null, this.serviceMethodDescription.getResultPvs());
+	changeSupport.firePropertyChange("resultPvs", null,
+		this.serviceMethodDescription.getResultPvs());
     }
 
-    private void setServiceMethodDescription(ServiceMethodDescription serviceMethodDescription){
+    private void setServiceMethodDescription(
+	    ServiceMethodDescription serviceMethodDescription) {
 	ServiceMethodDescription oldValue = this.serviceMethodDescription;
 	this.serviceMethodDescription = serviceMethodDescription;
-	changeSupport.firePropertyChange("serviceMethodDescription", oldValue, this.serviceMethodDescription);
+	changeSupport.firePropertyChange("serviceMethodDescription", oldValue,
+		this.serviceMethodDescription);
     }
-    
+
     /**
      * @return the serviceMethodDescription
      */

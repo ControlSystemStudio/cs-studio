@@ -82,7 +82,7 @@
                     <code>sim://noiseWaveform(minValue, maxValue, timeStep)</code><br/>
                     <code>sim://noiseWaveform(minValue, maxValue, nSamples, timeStep)</code></td>
                 <td>A waveform filled with nSampes random numbers uniformly distributed between the minValue and the maxValue, generated every
-                timeStep.<br/> The default is equivalent to <code>sim://noise(-5, 5, 100, 1)</code>. </td>
+                timeStep.<br/> The default is equivalent to <code>sim://noiseWaveform(-5, 5, 100, 1)</code>. </td>
             </tr>
             <tr>
                 <td><code>sim://ramp</code><br/>
@@ -90,7 +90,7 @@
                     <code>sim://ramp(minValue, maxValue, step, timeStep)</code></td>
                 <td>A ramp (sawtooth wave) between the minValue and maxValue, increasing by the step amount every
                 timeStep. If step is negative, the wave starts at maxValue and decreases
-                <br/> The default is equivalent to <code>sim://noise(-5, 5, 1, 1)</code>. </td>
+                <br/> The default is equivalent to <code>sim://ramp(-5, 5, 1, 1)</code>. </td>
             </tr>
             <tr>
                 <td><code>sim://sine</code><br/>
@@ -98,7 +98,7 @@
                     <code>sim://sine(minValue, maxValue, samplePerCycle, timeStep)</code></td>
                 <td>A sine wave between the minValue and maxValue divided into samplePerCycle samples in each period, updating every
                 timeStep.
-                <br/> The default is equivalent to <code>sim://noise(-5, 5, 10, 1)</code>. </td>
+                <br/> The default is equivalent to <code>sim://sine(-5, 5, 10, 1)</code>. </td>
             </tr>
             <tr>
                 <td><code>sim://strings</code><br/>

@@ -3,6 +3,9 @@
  */
 package org.csstudio.channel.opiwidgets;
 
+import org.csstudio.channel.widgets.ChannelLinePlotWidget;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
+
 
 /**
  * @author shroffk
@@ -11,7 +14,7 @@ package org.csstudio.channel.opiwidgets;
 public class Line2DPlotModel extends AbstractChannelWidgetModel {
 	
 	public Line2DPlotModel() {
-		super(true);
+		super(AbstractSelectionWidgetModelDescription.newModelFrom(ChannelLinePlotWidget.class));
 	}
 
 	public final String ID = "org.csstudio.channel.opiwidgets.Line2DPlot"; //$NON-NLS-1$

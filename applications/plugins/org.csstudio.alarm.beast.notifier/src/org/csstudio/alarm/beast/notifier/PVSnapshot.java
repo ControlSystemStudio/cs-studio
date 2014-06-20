@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -21,11 +21,10 @@ import org.epics.util.time.Timestamp;
  * @author Fred Arnaud (Sopra Group)
  *
  */
-public class PVSnapshot {
+public class PVSnapshot implements Comparable<PVSnapshot> {
 
 	/** Parser for received time stamp */
-    final protected static SimpleDateFormat date_format =
-        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
+    final protected static SimpleDateFormat date_format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
     
     /** Pattern for important priority */
     final protected static Pattern IMPPattern = Pattern.compile("^\\ *\\*?\\!.*");
@@ -47,7 +46,7 @@ public class PVSnapshot {
 	{
 		final int id = pv.getID();
 		final String name = pv.getName();
-		final String path = pv.getPathName();
+		final String path = pv.getParent().getPathName();
 		final String description = pv.getDescription();
 		final boolean enabled = pv.isEnabled();
 		final boolean latching = pv.isLatching();
@@ -101,13 +100,26 @@ public class PVSnapshot {
 		return false;
 	}
     
-    /** Return <code>true</code> if the automated action has to be executed */
+	/** Return <code>true</code> if the alarm severity is NOT OK */
 	public boolean isUnderAlarm() {
-		// no alarm => do not execute
-		if (this.current_severity == null
-				|| this.current_severity.equals(SeverityLevel.OK))
+		return !this.current_severity.equals(SeverityLevel.OK);
+	}
+
+	/**
+	 * Return <code>true</code> if this snapshot is the result of an acknowledge
+	 */
+	public boolean isAcknowledge() {
+		if (!latching)
 			return false;
-		return true;
+		return this.severity.name().startsWith(current_severity.name())
+				&& (this.severity.name().endsWith("_ACK") || severity.equals(SeverityLevel.OK));
+	}
+
+	/** Return <code>true</code> if the alarm has been acknowledged */
+	public boolean hasBeenAcknowledged() {
+		if (!latching)
+			return false;
+		return this.severity.name().endsWith("_ACK") || severity.equals(SeverityLevel.OK);
 	}
 
 	/** @return PV ID */
@@ -168,11 +180,20 @@ public class PVSnapshot {
 		return timestamp;
 	}
 
-	/** @return Debug representation */
 	@Override
 	public String toString() {
-		return "Update " + name + " to current "
-				+ current_severity.getDisplayName() + "/" + current_message
-				+ ", alarm " + severity.getDisplayName() + "/" + message;
+		return "PVSnapshot [id=" + id + ", name=" + name + ", path=" + path
+				+ ", description=" + description + ", enabled=" + enabled
+				+ ", latching=" + latching + ", current_severity="
+				+ current_severity + ", severity=" + severity
+				+ ", current_message=" + current_message + ", message="
+				+ message + ", value=" + value + ", timestamp=" + timestamp
+				+ "]";
 	}
+
+	@Override
+	public int compareTo(PVSnapshot arg) {
+		return name.compareTo(arg.getName());
+	}
+
 }

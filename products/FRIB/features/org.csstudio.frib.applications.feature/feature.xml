@@ -51,11 +51,11 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.scan.ui.feature"
+         id="org.csstudio.logbook.viewer.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.logbook.viewer.feature"
+         id="org.csstudio.scan.ui.feature"
          version="0.0.0"/>
 
    <plugin

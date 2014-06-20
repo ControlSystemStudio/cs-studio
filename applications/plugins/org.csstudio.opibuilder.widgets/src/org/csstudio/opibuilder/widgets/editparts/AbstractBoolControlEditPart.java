@@ -60,6 +60,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 				}
 			}
 		});		
+		delegate.setUpdateSuppressTime(-1);
 		markAsControlPV(AbstractBoolControlModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 	}	
 	

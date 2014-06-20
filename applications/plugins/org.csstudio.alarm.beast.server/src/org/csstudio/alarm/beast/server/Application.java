@@ -18,7 +18,6 @@ import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /** Alarm Server Application
@@ -48,13 +47,17 @@ public class Application implements IApplication
     @Override
     public Object start(final IApplicationContext context) throws Exception
     {
-        // Create parser for arguments and run it.
+    	// Display configuration info
+        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String app_info = context.getBrandingName() + " " + version;
+    	
+    	// Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
 
         final ArgParser parser = new ArgParser();
-        final BooleanOption help_opt = new BooleanOption(parser,
-    		"-help", "Display Help");
+        final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+        final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
         final StringOption config_name = new StringOption(parser,
     		"-root", "Alarm Configuration root", Preferences.getAlarmTreeRoot());
         final StringOption set_password = new StringOption(parser,
@@ -71,9 +74,14 @@ public class Application implements IApplication
         }
         if (help_opt.get())
         {
-            System.out.println(parser.getHelp());
+            System.out.println(app_info + "\n\n" + parser.getHelp());
             return IApplication.EXIT_OK;
         }
+        if (version_opt.get()) 
+        {
+			System.out.println(app_info);
+			return IApplication.EXIT_OK;
+		}
 
         final String option = set_password.get();
         if (option != null)
@@ -98,10 +106,6 @@ public class Application implements IApplication
         LogConfigurator.configureFromPreferences();
 
         // Display config info
-        final Bundle bundle = context.getBrandingBundle();
-        final String version = (String)
-                bundle.getHeaders().get("Bundle-Version");
-        final String app_info = context.getBrandingName() + " " + version;
         Activator.getLogger().info(app_info +
             " started for '" + config_name.get() + "' configuration");
         System.out.println(app_info);
@@ -121,7 +125,7 @@ public class Application implements IApplication
             
             // Enable console commands
             ConsoleCommands commands = new ConsoleCommands(alarm_server);
-            final BundleContext bundle_context = bundle.getBundleContext();
+            final BundleContext bundle_context = context.getBrandingBundle().getBundleContext();
             bundle_context.registerService(CommandProvider.class.getName(), commands, null);
 
             // "Main Loop"

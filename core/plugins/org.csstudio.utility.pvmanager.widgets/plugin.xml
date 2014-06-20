@@ -82,7 +82,7 @@
                   </iterate>
                   <and>
                      <count
-                           value="*">
+                           value="+">
                      </count>
                   </and>
                </with>

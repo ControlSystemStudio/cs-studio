@@ -1068,6 +1068,34 @@ Within the configuration, the text <code>{0}</code> will be replaced with the al
 and <code>{1}</code> with the value that triggered the alarm.
 </p>
 
+<h4>Electronic Logbook Notifications</h4>
+<p>
+Electronic Logbook notifications start with "log:" and require the specification of at least one logbook.
+It will create a new entry with alarm information such as:
+</p>
+<pre>
+/demo/TEST-BST0/TEST-BST0:
+MAJOR alarm: Whenever the LOW switch becomes dry, the pump will be forced OFF
+PV                      : TEST-BST0:LOW-SWITCH
+Alarm Time              : 2014/04/09 13:35:610 (Time since event: 0:01:01)
+Alarm Severity/Message  : MAJOR/STATE_ALARM
+Alarm Value             : Dry
+Current Severity/Message: MAJOR/STATE_ALARM
+</pre>
+<p>
+Examples:
+</p>
+<pre>
+log:Sandbox
+log:Cryo, Maintenance&level=Problem&tags=session_leader
+log:Cryo&body={0} Alarm raised - Water below {1} m3
+</pre>
+
+<p>
+Within the configuration, the text <code>{0}</code> will be replaced with the alarm severity
+and <code>{1}</code> with the value that triggered the alarm.
+</p>
+
 <h4>External Command</h4>
 <p>
 The prefix "cmd:" selects an external command to be executed. Examples:

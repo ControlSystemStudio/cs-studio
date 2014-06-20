@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.pva;
 
@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,7 +19,7 @@ import org.epics.pvaccess.client.ChannelProvider;
 import org.epics.pvaccess.client.ChannelPut;
 import org.epics.pvaccess.client.ChannelPutRequester;
 import org.epics.pvaccess.client.ChannelRequester;
-import org.epics.pvaccess.client.CreateRequestFactory;
+import org.epics.pvaccess.client.CreateRequest;
 import org.epics.pvaccess.client.GetFieldRequester;
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.misc.BitSet;
@@ -28,6 +29,7 @@ import org.epics.pvdata.monitor.MonitorRequester;
 import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.MessageType;
+import org.epics.pvdata.pv.PVBoolean;
 import org.epics.pvdata.pv.PVField;
 import org.epics.pvdata.pv.PVInt;
 import org.epics.pvdata.pv.PVScalar;
@@ -59,6 +61,7 @@ public class PVAChannelHandler extends
 	private volatile Channel channel = null;
 
 	private final AtomicBoolean monitorCreated = new AtomicBoolean(false);
+	private final AtomicLong monitorLossCounter = new AtomicLong(0);
 	//private volatile Monitor monitor = null;
 	
 	private volatile Field channelType = null;
@@ -71,8 +74,10 @@ public class PVAChannelHandler extends
 
 	private static final Logger logger = Logger.getLogger(PVAChannelHandler.class.getName());
 
-	private static PVStructure standardPutPVRequest = CreateRequestFactory.createRequest("field(value)", null);
-	private static PVStructure enumPutPVRequest = CreateRequestFactory.createRequest("field(value.index)", null);
+	private static CreateRequest createRequest = CreateRequest.create();
+	private static PVStructure allPVRequest = createRequest.createRequest("field()");
+	private static PVStructure standardPutPVRequest = createRequest.createRequest("field(value)");
+	private static PVStructure enumPutPVRequest = createRequest.createRequest("field(value.index)");
 	
 	public PVAChannelHandler(String channelName,
 			ChannelProvider channelProvider, short priority,
@@ -217,6 +222,7 @@ public class PVAChannelHandler extends
                 //properties.put("Read access", channel.getReadAccess());
                 //properties.put("Write access", channel.getWriteAccess());
             }
+            properties.put("Monitor loss count", monitorLossCounter.get());
         }
         return properties;
     }
@@ -430,7 +436,6 @@ public class PVAChannelHandler extends
 				convert.fromInt((PVScalar)field, ((Integer)newValue).intValue());
 			else if (newValue instanceof String)
 				convert.fromString((PVScalar)field, (String)newValue);
-	        
 			else if (newValue instanceof Byte)
 				convert.fromByte((PVScalar)field, ((Byte)newValue).byteValue());
 			else if (newValue instanceof Short)
@@ -439,6 +444,10 @@ public class PVAChannelHandler extends
 				convert.fromLong((PVScalar)field, ((Long)newValue).longValue());
 			else if (newValue instanceof Float)
 				convert.fromFloat((PVScalar)field, ((Float)newValue).floatValue());
+			else if (newValue instanceof Boolean)
+				//  TODO no convert.fromBoolean
+				//convert.fromBoolean((PVScalar)field, ((Boolean)newValue).booleanValue());
+				((PVBoolean)field).put(((Boolean)newValue).booleanValue());
     		else
     			throw new RuntimeException("Unsupported write, cannot put '" + newValue.getClass() + "' into scalar '" + channelPutValueField.getField() + "'");
         }
@@ -526,7 +535,7 @@ public class PVAChannelHandler extends
 				} catch (InterruptedException e) { }
 			}
 			// TODO optimize fields
-			channel.createMonitor(this, CreateRequestFactory.createRequest("field()", this));
+			channel.createMonitor(this, allPVRequest);
 		}
 	}
 
@@ -552,6 +561,9 @@ public class PVAChannelHandler extends
 		MonitorElement monitorElement;
 		while ((monitorElement = monitor.poll()) != null)
 		{
+			if (monitorElement.getOverrunBitSet().cardinality() > 0)
+				monitorLossCounter.incrementAndGet();
+			
 			// TODO combine bitSet, etc.... do we need to copy structure?
 			processMessage(monitorElement.getPVStructure());
 			monitor.release(monitorElement);

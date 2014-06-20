@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.opibuilder.feature"
       label="Operator Interface Builder (BOY)"
-      version="3.2.0.qualifier"
+      version="3.2.3.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -37,9 +37,8 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.jdom" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.widgets" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.python" version="2.5.2" match="greaterOrEqual"/>
+      <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.simplepv" version="1.0.0" match="greaterOrEqual"/>
@@ -174,7 +173,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.python"
+         id="org.python.jython"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
@@ -202,6 +201,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.simplepv"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.examples"
          download-size="0"
          install-size="0"
          version="0.0.0"

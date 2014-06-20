@@ -44,7 +44,7 @@ public class LinearScale extends AbstractScale {
         VERTICAL
     }
 
-	private static final int SPACE_BTW_MARK_LABEL = 2;
+	protected static final int SPACE_BTW_MARK_LABEL = 2;
     
     /** scale direction, no meaning for round scale */
     private Orientation orientation = Orientation.HORIZONTAL;
@@ -68,7 +68,7 @@ public class LinearScale extends AbstractScale {
     public LinearScale() {      
     	
         tickLabels = new LinearScaleTickLabels(this);        
-        tickMarks = new LinearScaleTickMarks(this);                  
+        tickMarks = new LinearScaleTickMarks(this);         
         add(tickMarks);        
         add(tickLabels);    
 //        setFont(XYGraphMediaFactory.getInstance().getFont(
@@ -171,10 +171,10 @@ public class LinearScale extends AbstractScale {
 		if(logScaleEnabled){
 			if(value <=0)
 				value = min;
-			pixelsToStart = (int) ((Math.log10(value) - Math.log10(min))/
+			pixelsToStart = (int) Math.round((Math.log10(value) - Math.log10(min))/
 							(Math.log10(max) - Math.log10(min)) * (length - 2*margin)) + margin;
 		}else			
-			pixelsToStart = (int) ((value - min)/(max-min)*(length-2*margin)) + margin;
+			pixelsToStart = (int) Math.round((value - min)/(max-min)*(length-2*margin)) + margin;
 		
 		if(relative) {
 			if(orientation == Orientation.HORIZONTAL)
@@ -334,8 +334,9 @@ public class LinearScale extends AbstractScale {
     		setDirty(false);
 	    	length = isHorizontal() ? 
 	    			getClientArea().width: getClientArea().height;    		
-	    	if(length > 2*margin)
-	    		tickLabels.update(length-2*margin);    
+	    	if(length > 2*margin) {
+	    		tickLabels.update(length-2*margin);
+	    	}
 	    	
     	}    	
     }	
@@ -345,4 +346,5 @@ public class LinearScale extends AbstractScale {
 	protected boolean useLocalCoordinates() {
 		return true;
 	}
+	
 }

@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.csstudio.logbook.sns.elog.ELog;
 import org.csstudio.logbook.sns.elog.ELogEntry;
+import org.csstudio.logbook.sns.elog.ELogPriority;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class ELogWriteUnitTest
     @Test
     public void testTextEntry() throws Exception
     {
-        entry_id = elog.createEntry(LOGBOOK, "Text test", "this is a test");
+        entry_id = elog.createEntry(LOGBOOK, "Text test", "this is a test", ELogPriority.Normal);
         
         final ELogEntry entry = elog.getEntry(entry_id);
         System.out.println(entry);
@@ -52,7 +53,7 @@ public class ELogWriteUnitTest
     @Test
     public void testTextEntryForMultipleLogbooks() throws Exception
     {
-        entry_id = elog.createEntry(LOGBOOK, "Text test", "this is a test");
+        entry_id = elog.createEntry(LOGBOOK, "Text test", "this is a test", ELogPriority.Urgent);
         elog.addLogbook(entry_id, "Automated Entries");
         
         final ELogEntry entry = elog.getEntry(entry_id);
@@ -71,7 +72,7 @@ public class ELogWriteUnitTest
             buf.append("This is a long test text... ");
         assertTrue(buf.length() > 4000);
         
-        entry_id = elog.createEntry(LOGBOOK, "Long text test", buf.toString());
+        entry_id = elog.createEntry(LOGBOOK, "Long text test", buf.toString(), ELogPriority.High);
 
         final ELogEntry entry = elog.getEntry(entry_id);
         System.out.println(entry);

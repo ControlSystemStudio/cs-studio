@@ -18,7 +18,7 @@ function buildProduct {
   echo ==== Start building $2
   ./build.sh "$1" -c -p "$2"
   if [ "$?" -ne "0" ]; then
-    echo Build failed: $2.
+    echo Build failed: $2. >&2
     exit 1;
   fi
   mkdir "$DIST/$2"
@@ -38,6 +38,7 @@ function buildWebProduct {
 }
 
 buildProduct ITER org.csstudio.iter.css.product
+buildProduct ITER org.csstudio.iter.scan.server.product
 buildProduct ITER org.csstudio.iter.alarm.beast.annunciator.product
 buildProduct ITER org.csstudio.iter.alarm.beast.configtool.product
 buildProduct ITER org.csstudio.iter.alarm.beast.notifier.product

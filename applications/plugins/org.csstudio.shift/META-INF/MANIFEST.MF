@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Shift Plug-in
+Bundle-SymbolicName: org.csstudio.shift;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform.libs.jersey,
+ gov.bnl.shiftClient,
+ com.google.common,
+ org.junit-dep;resolution:=optional
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.shift,
+ org.csstudio.shift.util
+Import-Package: org.csstudio.utility.shift,
+ org.epics.util.time

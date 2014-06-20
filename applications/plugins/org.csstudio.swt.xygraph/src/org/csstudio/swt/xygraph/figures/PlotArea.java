@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.figures;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,39 +38,13 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PlotArea extends Figure {
 
-	// Added by Laurent PHILIPPE
-	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(
-			this);
-
-	@Override
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		//System.out.println("**** PlotArea.addPropertyChangeListener() ****");
-		changeSupport.addPropertyChangeListener(listener);
-	}
-
-	@Override
-	public void addPropertyChangeListener(String property,
-			PropertyChangeListener listener) {
-		//System.out.println("**** PlotArea.addPropertyChangeListener() ****");
-		changeSupport.addPropertyChangeListener(property, listener);
-	}
-
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(listener);
-	}
-
-	@Override
-	public void removePropertyChangeListener(String property,
-			PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(property, listener);
-	}
-
-	public static final String BACKGROUND_COLOR = "background_color"; //$NON-NLS-1$
+	public static final String BACKGROUND_COLOR = "backgroundColor"; //$NON-NLS-1$
 	final private XYGraph xyGraph;
 	final private List<Trace> traceList = new ArrayList<Trace>();
 	final private List<Grid> gridList = new ArrayList<Grid>();
 	final private List<Annotation> annotationList = new ArrayList<Annotation>();
+	final private HoverLabels hoverLabels;
+	final private AxisTrace axisTrace;
 
 	final private Cursor grabbing;
 
@@ -83,6 +55,8 @@ public class PlotArea extends Figure {
 	private Point start;
 	private Point end;
 	private boolean armed;
+	private boolean showAxisTrace;
+	private boolean showValueLabels;
 
 	private Color revertBackColor;
 
@@ -98,6 +72,12 @@ public class PlotArea extends Figure {
 		PlotMouseListener zoomer = new PlotMouseListener();
 		addMouseListener(zoomer);
 		addMouseMotionListener(zoomer);
+		hoverLabels = new HoverLabels(this);
+		addMouseMotionListener(hoverLabels);
+		add(hoverLabels);
+		axisTrace = new AxisTrace(this);
+		addMouseMotionListener(axisTrace);
+		add(axisTrace);
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);
 		zoomType = ZoomType.NONE;
 	}
@@ -111,8 +91,7 @@ public class PlotArea extends Figure {
 		Color oldColor = getBackgroundColor();
 		super.setBackgroundColor(bg);
 		
-		changeSupport.firePropertyChange(BACKGROUND_COLOR, oldColor, bg);
-
+		firePropertyChange(BACKGROUND_COLOR, oldColor, bg);
 	}
 
 	/**
@@ -124,6 +103,12 @@ public class PlotArea extends Figure {
 	public void addTrace(final Trace trace) {
 		traceList.add(trace);
 		add(trace);
+		hoverLabels.addTrace(trace);
+		axisTrace.setVisible(showAxisTrace);
+		// Keep hoverLabels figure to front
+		remove(hoverLabels);
+		add(hoverLabels);
+		hoverLabels.setVisible(showValueLabels);
 		revalidate();
 	}
 
@@ -135,6 +120,8 @@ public class PlotArea extends Figure {
 	 */
 	public boolean removeTrace(final Trace trace) {
 		boolean result = traceList.remove(trace);
+		hoverLabels.removeTrace(trace);
+		axisTrace.setVisible(showAxisTrace && traceList.size() > 0);
 		if (result) {
 			remove(trace);
 			revalidate();
@@ -151,6 +138,13 @@ public class PlotArea extends Figure {
 	public void addGrid(final Grid grid) {
 		gridList.add(grid);
 		add(grid);
+		// Keep hoverLabels figure to front
+		remove(hoverLabels);
+		add(hoverLabels);
+		hoverLabels.setVisible(showValueLabels);
+		remove(axisTrace);
+		add(axisTrace);
+		axisTrace.setVisible(showAxisTrace && traceList.size() > 0);
 		revalidate();
 	}
 
@@ -183,7 +177,7 @@ public class PlotArea extends Figure {
 		revalidate();
 		
 		//Laurent PHILIPPE send event
-		changeSupport.firePropertyChange("annotationList", null , annotation);
+		firePropertyChange("annotationList", null , annotation);
 	}
 
 	/**
@@ -203,7 +197,7 @@ public class PlotArea extends Figure {
 			revalidate();
 			
 			//Laurent PHILIPPE send event
-			changeSupport.firePropertyChange("annotationList", annotation, null);
+			firePropertyChange("annotationList", annotation, null);
 		}
 		return result;
 	}
@@ -220,6 +214,13 @@ public class PlotArea extends Figure {
 		for (Grid grid : gridList) {
 			if (grid != null && grid.isVisible())
 				grid.setBounds(clientArea);
+		}
+		if(hoverLabels.isVisible()) {
+			hoverLabels.setBounds(clientArea);
+		}
+		
+		if(axisTrace.isVisible()) {
+			axisTrace.setBounds(clientArea);
 		}
 
 		for (Annotation annotation : annotationList) {
@@ -536,5 +537,45 @@ public class PlotArea extends Figure {
 			default: // NOP
 			}
 		}
+	}
+	
+	/**
+	 * Shows or hides the hover value labels.
+	 * 
+	 * @param show true to show, false to hide
+	 */
+	public void setShowValueLabels(boolean show) {
+		boolean old = showValueLabels;
+		showValueLabels = show;
+		hoverLabels.setVisible(show);
+		revalidate();
+		firePropertyChange("showValueLabels", old, show);
+	}
+	
+	/**
+	 * @return true if the hover value labels are shown or false otherwise
+	 */
+	public boolean isShowValueLabels() {
+		return showValueLabels;
+	}
+	
+	/**
+	 * Shows or hides the axis traces.
+	 * 
+	 * @param show true to show, false to hide
+	 */
+	public void setShowAxisTrace(boolean show) {
+		boolean old = showAxisTrace;
+		showAxisTrace = show;
+		axisTrace.setVisible(show && traceList.size() > 0);
+		revalidate();
+		firePropertyChange("showAxisTrace", old, showAxisTrace);
+	}
+	
+	/**
+	 * @return true if the axis traces are shown or false otherwise
+	 */
+	public boolean isShowAxisTrace() {
+		return showAxisTrace;
 	}
 }

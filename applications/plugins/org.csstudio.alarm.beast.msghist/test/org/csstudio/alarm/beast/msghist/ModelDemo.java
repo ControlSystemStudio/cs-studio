@@ -45,4 +45,10 @@ public class ModelDemo implements ModelListener
         System.out.println("Got " + messages.length + " messages");
         assertTrue(messages.length > 0);
     }
+
+	@Override
+	public void onErrorModel(String errorMsg) {
+		// TODO Auto-generated method stub
+		
+	}
 }

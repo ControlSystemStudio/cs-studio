@@ -23,6 +23,7 @@ import org.eclipse.ui.WorkbenchException;
 
 /** Create a perspective that's convenient for Data Browser use.
  *  @author Kay Kasemir
+ *  @author Naceur Benhadj (add property to hide "Property" view)
  */
 @SuppressWarnings("nls")
 public class Perspective implements IPerspectiveFactory
@@ -61,10 +62,6 @@ public class Perspective implements IPerspectiveFactory
 					0.25f, editor);
 		}
 		
-        IFolderLayout bottom = layout.createFolder("bottom",
-                        IPageLayout.BOTTOM, 0.66f, editor);
-
-
 		if (left != null) {
 			left.addView(SearchView.ID);
 			if (rcp) {
@@ -73,16 +70,17 @@ public class Perspective implements IPerspectiveFactory
 		}
 		
         // Stuff for 'bottom'
-        bottom.addView(IPageLayout.ID_PROP_SHEET);
+		IFolderLayout bottom = null;
+		if (rcp || !Preferences.hidePropertiesView()) {
+			bottom = layout.createFolder("bottom",IPageLayout.BOTTOM, 0.66f, editor);
+			bottom.addView(IPageLayout.ID_PROP_SHEET);
+		}
         
-        if (rcp)
-        	bottom.addView(ExportView.ID);
-        
-        bottom.addPlaceholder(SampleView.ID);
-        
-        if (rcp)
-        	bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
-
+		if (bottom != null) {
+			if (rcp) bottom.addView(ExportView.ID);
+			bottom.addPlaceholder(SampleView.ID);
+			if (rcp) bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
+		}
         // Populate the "Window/Views..." menu with suggested views
 		if (rcp) {
 			layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);

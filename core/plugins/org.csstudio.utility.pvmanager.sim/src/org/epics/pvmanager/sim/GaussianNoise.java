@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
@@ -48,7 +48,7 @@ public class GaussianNoise extends SimFunction<VDouble> {
         }
         this.average = average;
         this.stdDev = stdDev;
-        lastValue = newVDouble(average, alarmNone(), newTime(Timestamp.now()),
+        lastValue = newVDouble(average, alarmNone(), timeNow(),
                 newDisplay(average - 4 * stdDev, average - 2 * stdDev, average - stdDev, "x", Constants.DOUBLE_FORMAT,
                 average + stdDev, average + 2 * stdDev, average + 4 * stdDev, average - 4 * stdDev, average + 4 * stdDev));
     }

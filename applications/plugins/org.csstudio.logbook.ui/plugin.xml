@@ -24,7 +24,7 @@
             locationURI="menu:utility">
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               icon="icons/logentry-add-16.png"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
                label="%MakeLogEntry"
                style="push">
          </command>
@@ -33,8 +33,33 @@
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
                commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
-               icon="icons/logentry-add-16.png"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
                label="%MakeLogEntry"
+               style="push"
+               tooltip="Duplicate the selected log entry">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="org.csstudio.logbook.LogEntryBuilder">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-edit-16.png"
+               label="%UpdateLogEntry"
                style="push">
             <visibleWhen>
                <with
@@ -44,9 +69,54 @@
                            type="org.csstudio.logbook.LogEntryBuilder">
                      </adapt>
                   </iterate>
+                  <and>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="1">
+                        </count>
+                     </with>
+                  </and>
                </with>
             </visibleWhen>
          </command>
+         <command
+               commandId="org.csstudio.logbook.copyurltoclipboard"
+               icon="platform:/plugin/org.csstudio.csdata.clipboard/icons/clipboard.gif"
+               label="Copy URL to Clipboard"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <and>
+                     <iterate>
+                        <adapt
+                              type="java.net.URL">
+                        </adapt>
+                     </iterate>
+                     <with
+                           variable="activeMenuSelection">
+                        <count
+                              value="+">
+                        </count>
+                     </with>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="org.csstudio.logbook.ui.toolbar">
+            <command
+                  commandId="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
+                  icon="platform:/plugin/org.csstudio.logbook.ui/icons/logentry-add-16.png"
+                  label="%MakeLogEntry"
+                  style="push">
+            </command>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension
@@ -62,6 +132,15 @@
             id="org.csstudio.logbook.ui.OpenLogEntryBuilderDialog"
             name="%MakeLogEntry">
       </command>
+      <command
+            defaultHandler="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+            id="org.csstudio.logbook.ui.OpenLogEntryUpdateDialog"
+            name="%UpdateLogEntry">
+      </command>
+      <command
+            id="org.csstudio.logbook.copyurltoclipboard"
+            name="Copy URL to Clipboard">
+      </command>
    </extension>
    <extension
          point="org.eclipse.core.runtime.adapters">
@@ -72,5 +151,22 @@
                type="org.csstudio.logbook.LogEntryBuilder">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.csstudio.logbook.LogEntry"
+            class="org.csstudio.logbook.ui.util.AdapterFactory">
+         <adapter
+               type="java.net.URL">
+         </adapter>
+         <adapter
+               type="java.lang.String">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.csstudio.logbook.ui.util.CopyURLtoClipboard"
+            commandId="org.csstudio.logbook.copyurltoclipboard">
+      </handler>
    </extension>
 </plugin>

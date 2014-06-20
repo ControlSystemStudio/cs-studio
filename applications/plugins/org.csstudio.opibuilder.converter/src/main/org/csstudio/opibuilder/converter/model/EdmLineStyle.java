@@ -50,14 +50,13 @@ public class EdmLineStyle extends EdmAttribute {
 				val = DASH;
 			} else {
 				throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-				"Unrecognised line style '" + valueString + "'.");
+				"Unrecognised line style '" + valueString + "'.", null);
 			}
 			setInitialized(true);
 		
 		} else {
 			if (isRequired()) {
-				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-						"Trying to initialize a required attribute from null object.");
+				log.warn("Missing required property.");
 			} else {
 				log.warn("Missing optional property.");
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -31,8 +31,7 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
     
     
 	public AlarmRDBHandler(final String root) throws Exception {
-		model = AlarmClientModel.getInstance();
-		model.setConfigurationName(root, this);
+		model = AlarmClientModel.getInstance(root);
 		model.addListener(this);
 	}
 
@@ -68,17 +67,14 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
 
 	@Override
 	public void serverTimeout(AlarmClientModel model) {
-		Activator.getLogger().log(Level.SEVERE, "Alarm Server Timeout");
+		Activator.getLogger().log(Level.SEVERE, "Alarm Server timeout");
 	}
 
 	@Override
 	public void newAlarmState(AlarmClientModel model, AlarmTreePV pv,
 			boolean parent_changed) {
-		if (pv == null) return;
-		if (!pv.isEnabled()) {
-			// Ignore PV, it's disabled
+		if (pv == null)
 			return;
-		}
 		notifier.handleAlarmUpdate(pv);
 	}
 	

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Alarm Notification Application Logbook plugin
+Bundle-SymbolicName: org.csstudio.alarm.beast.notifier.logbook;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-Description: BEAST Alarm Notification Action to create a log entry
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.alarm.beast.notifier,
+ org.csstudio.alarm.beast,
+ org.csstudio.logbook
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

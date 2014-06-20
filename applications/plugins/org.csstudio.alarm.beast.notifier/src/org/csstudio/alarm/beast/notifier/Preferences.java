@@ -1,11 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
+
+import java.util.logging.Level;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -15,16 +17,14 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *  See preferences.ini for explanation of supported preferences.
  *  @author Fred Arnaud (Sopra Group)
  */
-@SuppressWarnings("nls")
 public class Preferences {
-    final public static String TIMER_THRESHOLD = "timer_threshold";
-    final public static String THREAD_THRESHOLD = "thread_threshold";
+	final public static String TIMER_THRESHOLD = "timer_threshold";
+	final public static String VERBOSE_LOG_LEVEL = "verbose_log.level";
 
 	/**
 	 * @param setting Preference identifier
 	 * @return String from preference system, or <code>null</code>
 	 */
-	@SuppressWarnings("unused")
 	private static String getString(final String setting) {
 		return getString(setting, null);
 	}
@@ -49,12 +49,18 @@ public class Preferences {
 			return 100; // default
 		return service.getInt(Activator.ID, TIMER_THRESHOLD, 100, null);
 	}
-	
-	/** @return threshold for automated actions */
-	public static int getThreadThreshold() {
-		final IPreferencesService service = Platform.getPreferencesService();
-		if (service == null)
-			return 100; // default
-		return service.getInt(Activator.ID, THREAD_THRESHOLD, 100, null);
+
+	/** @return {@link Level} for verbose log */
+	public static Level getVerboseLogLevel() {
+		String levelStr = getString(VERBOSE_LOG_LEVEL);
+		try {
+			return Level.parse(levelStr);
+		} catch (Exception e) {
+			Activator.getLogger().log(Level.WARNING,
+					"Illegal console log level '" + levelStr + "'");
+			return Level.WARNING;
+		}
+
 	}
+
 }

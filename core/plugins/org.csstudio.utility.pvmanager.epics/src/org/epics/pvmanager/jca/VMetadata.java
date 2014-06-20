@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.jca;
 
@@ -18,10 +18,16 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
 
     final TValue dbrValue;
     private final boolean disconnected;
+    private final Timestamp timestamp;
 
     VMetadata(TValue dbrValue, JCAConnectionPayload connPayload) {
         this.dbrValue = dbrValue;
         this.disconnected = !connPayload.isChannelConnected();
+        if (disconnected) {
+            timestamp = connPayload.getEventTime();
+        } else {
+            timestamp = DataUtils.timestampOf(dbrValue.getTimeStamp());
+        }
     }
 
     @Override
@@ -40,7 +46,7 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
 
     @Override
     public Timestamp getTimestamp() {
-        return DataUtils.timestampOf(dbrValue.getTimeStamp());
+        return timestamp;
     }
 
     @Override
@@ -50,7 +56,7 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
 
     @Override
     public boolean isTimeValid() {
-        return DataUtils.isTimeValid(getTimestamp());
+        return DataUtils.isTimeValid(dbrValue.getTimeStamp());
     }
 
 }

@@ -8,7 +8,9 @@
  <body>
 <h1>BOY Changelog</h1>
 <ul>
-<li><a href="#3.2.7">Version 3.2.7</a></li>
+<li><a href="#3.3.0">Version 3.3.0</a></li>
+<li><a href="#3.2.10">Version 3.2.10</a></li>
+<li><a href="#3.2.9">Version 3.2.9</a></li>
 <li><a href="#3.1.4">Version 3.1.4</a></li>
 <li><a href="#3.1.3">Version 3.1.3</a></li>
 <li><a href="#3.1.2">Version 3.1.2</a></li>
@@ -19,8 +21,33 @@
 <li><a href="#1.0.6">Version 1.0.6</a></li>
 </ul>
 
-<A NAME="3.2.7"></A>
-<h2>Version 3.2.8</h2>
+<A NAME="3.3.0"></A>
+<h2>Version 3.3.0</h2>
+<ul>
+	<li>Graphics Image Widget now handles SVG images</li>
+	<li>Symbol widgets now handle 'ForeColor Alarm Sensitive' property</li>
+	<li>Symbol widgets have a new preference that specifies which is the color code to replace by the On/Off color</li>
+	<li><a href="../../org.csstudio.opibuilder.converter/html/Getting_Started.html">EDM2OPI converter </a>has been finished to be able to convert 95% of EDM features to BOY. 
+	(Some of the widgets conversion was contributed by <a href="http://english.ihep.cas.cn/">IHEP</a>)
+	<p>  <a href="../../org.csstudio.opibuilder.converter/html/img/EDM2BOYDemo.png"><img src ="img/edm2boy_small.png" alt="EDM2OPI converter example"> </a></p></li>
+	
+	<li>Add <code>$(opi.dir)</code> macros to "Execute Command" widget action.
+	<code>$(opi.dir)</code> points to the directory of the OPI file on the OS file system. 
+	</li>
+</ul>
+
+
+
+<A NAME="3.2.10"></A>
+<h2>Version 3.2.10</h2>
+<ul>
+	<li>Support checkbox, dropdown and customzied cell editor in table widget.
+	 <p>  <img src ="img/Table_CellEditor.png">  </p>
+	</li>
+</ul>
+
+<A NAME="3.2.9"></A>
+<h2>Version 3.2.9</h2>
 <ul>
  <li>Add <a href="http://pvmanager.sourceforge.net/">PVManager</a> as an optional PV connection layer.
     It can be set from <code>Preferences->CSS Applications->Display->BOY->OPI Runtime->PV Connection Layer</code>.
@@ -47,6 +74,7 @@
     	See <a href=https://groups.google.com/d/msg/css-boy/ntuGAtbDCbE/qfjZvQURS-AJ>here</a> for more details.
     	
     </li>
+    <li>Cache files from remote URL on local disk for two minutes to speed up the repeat loading of same file.</li>
     <li>Automatically scale font size to make text size fit the size of text widgets (Label, Text Update and Text Input).
     Note that this function doesn't work for "wrap words" Label and native Text Input.
     </li>
@@ -79,7 +107,7 @@
 	<li>Support PV Name auto-complete. By default, it only supports history inputs, but a site may implement 
 	its own PV name provider. For more details, please see <code>CSS online help->CSS Core->Auto-Complete</code>  
 	(Primarily contributed by ITER).
-	<p><img src="img/autocomplete.png"</p>
+	<p><img src="img/autocomplete.png"></p>
 	
 	</li>    
     
@@ -199,7 +227,7 @@ If the message is not empty, a confirm dialog will pop up before writing the new
 
 <h2>Version 3.1.1 (2012-07-18)</h2>
 <ul>
-<li>Add Native <a href="widgets/NativeButton.html">Button<a>, <a href="widgets/NativeText.html">Text</a> widgets. 
+<li>Add Native <a href="widgets/NativeButton.html">Button</a>, <a href="widgets/NativeText.html">Text</a> widgets. 
 Native widgets will have significantly better performance in WebOPI. 
 They also support Tab key traversing.
 The native text widget can be used as either label, text update or text input. 

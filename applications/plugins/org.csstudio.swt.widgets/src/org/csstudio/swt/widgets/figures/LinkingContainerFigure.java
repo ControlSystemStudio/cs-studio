@@ -48,7 +48,17 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
 		scrollPane.setViewport(viewPort);
 		scrollPane.setContents(pane);	
 		
-		zoomManager = new ZoomManager(pane, viewPort);
+		zoomManager = new ZoomManager(pane, viewPort){
+			@Override
+			protected double getFitPageZoomLevel() {
+				double fitPageZoomLevel = super.getFitPageZoomLevel();
+				if(fitPageZoomLevel<=0){
+					fitPageZoomLevel = 0.1;					
+				}
+				return fitPageZoomLevel;
+				
+			}
+		};
 		
 		addFigureListener(new FigureListener(){
 			public void figureMoved(IFigure source) {
@@ -95,12 +105,12 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
 	/**
 	 * Refreshes the zoom.
 	 */
-	public void updateZoom() {
-		zoomManager.setZoom(1.0);
+	public void updateZoom() {		
 
 		if (zoomToFitAll) {
 			zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
-		}
+		}else
+			zoomManager.setZoom(1.0);
 	}
 	
 	public ZoomManager getZoomManager() {

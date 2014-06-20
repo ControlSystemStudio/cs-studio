@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
+import org.eclipse.swt.graphics.RGB;
+
 
 
 
@@ -61,6 +63,11 @@ public class ConsoleService{
 	public void writeString(String s) {
 		if(IMPL != null)
 			IMPL.writeString(s);
+	}
+	
+	public void writeString(String s, RGB color){
+		if(IMPL != null)
+			IMPL.writeString(s, color);
 	}
 
 	

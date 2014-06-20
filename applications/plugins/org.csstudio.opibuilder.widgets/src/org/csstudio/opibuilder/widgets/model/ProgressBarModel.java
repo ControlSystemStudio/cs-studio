@@ -94,7 +94,7 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 		addProperty(new DoubleProperty(PROP_ORIGIN, "Origin", WidgetPropertyCategory.Behavior,
 				0));
 			
-		addProperty(new BooleanProperty(PROP_ORIGIN_IGNORED, "Origine Ignored", 
+		addProperty(new BooleanProperty(PROP_ORIGIN_IGNORED, "Origin Ignored", 
 				WidgetPropertyCategory.Behavior , true));
 		
 		addProperty(new BooleanProperty(PROP_INDICATOR_MODE, "Indicator Mode", 

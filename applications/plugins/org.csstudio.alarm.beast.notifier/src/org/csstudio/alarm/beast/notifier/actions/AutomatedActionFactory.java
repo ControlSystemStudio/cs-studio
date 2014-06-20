@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -79,8 +79,8 @@ public class AutomatedActionFactory {
 	 * @param details
 	 * @return
 	 */
-	public IAutomatedAction getNotificationAction(
-			final AlarmTreeItem aaItem, final AADataStructure auto_action) {
+	public IAutomatedAction getNotificationAction(final AlarmTreeItem aaItem,
+			final AADataStructure auto_action, boolean isManual) {
 		if (auto_action == null)
 			return null;
 		IAutomatedAction action = null;
@@ -95,7 +95,7 @@ public class AutomatedActionFactory {
 				commands = parser.parseLine(details);
 				AutomatedActionSequence actionSequence = new AutomatedActionSequence();
 				for (int index = 0; index < commands.length; index++) {
-					final AAData data = new AAData(commands[index], auto_action.getDelay());
+					final AAData data = new AAData(commands[index], auto_action.getDelay(), isManual);
 					IAutomatedAction aa = createAutomatedAction(item, data);
 					if(aa != null) actionSequence.add(aa);
 				}
@@ -103,15 +103,20 @@ public class AutomatedActionFactory {
 					action = (IAutomatedAction) actionSequence;
 			} catch (IOException e) {
 				Activator.getLogger().log(Level.INFO,
-						"Unrecognized command pattern: {0}", details);
+						"Unrecognized command pattern: " + details, e);
 			}
 		} else {
-			final AAData data = new AAData(auto_action.getDetails(), auto_action.getDelay());
+			final AAData data = new AAData(auto_action.getDetails(), auto_action.getDelay(), isManual);
 			action = createAutomatedAction(item, data);
 		}
 		return action;
 	}
-	
+
+	public IAutomatedAction getNotificationAction(final AlarmTreeItem aaItem,
+			final AADataStructure auto_action) {
+		return getNotificationAction(aaItem, auto_action, false);
+	}
+
 	private IAutomatedAction createAutomatedAction(ItemInfo item, AAData data) {
 		final String details = data.getDetails();
 		// Find scheme in details
@@ -145,7 +150,7 @@ public class AutomatedActionFactory {
 			}
 			action.init(item, data, handler);
 		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE, e.getMessage());
+			Activator.getLogger().log(Level.SEVERE, "Action creation failed", e);
 			return null;
 		}
 		return action;

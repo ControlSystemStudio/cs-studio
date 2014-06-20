@@ -58,6 +58,8 @@ public class EdmModel {
 	public static void reloadEdmColorFile() throws EdmException{
 		// init EdmColorsList
 		String colorsFile = System.getProperty("edm2xml.colorsFile");
+		if(colorsFile==null || colorsFile.isEmpty())
+			return;
 		EdmColorsListParser colorsParser = new EdmColorsListParser(colorsFile);
 		genColorsList = colorsParser.getRoot();
 		colorsList = new EdmColorsList(genColorsList);	

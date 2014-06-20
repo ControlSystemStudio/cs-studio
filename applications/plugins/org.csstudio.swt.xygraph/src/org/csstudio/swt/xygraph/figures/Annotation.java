@@ -162,12 +162,15 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		yAxis.addListener(this);
 	}
 	
-	
-
 	public synchronized void addAnnotationListener(IAnnotationListener listener){
 		if(listeners == null)
 			listeners = new CopyOnWriteArrayList<IAnnotationListener>();
 		listeners.add(listener);
+	}
+	
+	public synchronized void removeAnnotationListener(IAnnotationListener listener){
+		if(listeners != null)
+			listeners.remove(listener);
 	}
 	
 	private void fireAnnotationMoved(double oldX, double oldY, double newX, double newY){
@@ -382,7 +385,7 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		if(trace != null && trace.getHotSampleList().size()>0){
 			currentSnappedSample = trace.getHotSampleList().get(trace.getHotSampleList().size()/2);
 			currentPosition = new Point(xAxis.getValuePosition(currentSnappedSample.getXValue(), false),
-				 yAxis.getValuePosition(currentSnappedSample.getXValue(), false));
+				 yAxis.getValuePosition(currentSnappedSample.getYValue(), false));
 			xValue = currentSnappedSample.getXValue();
 			yValue = currentSnappedSample.getYValue();
 		}else{
@@ -400,10 +403,13 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 
 			currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));	
-		}		
+		}
+		
 		updateInfoLableText(true);
-		revalidate();
-		fireAnnotationMoved(oldX, oldY, xValue, yValue);
+		if (oldX != xValue || oldY != yValue) {
+			revalidate();
+			fireAnnotationMoved(oldX, oldY, xValue, yValue);
+		}
 	}
 
 	/** Set the position of the annotation based on plot values
@@ -676,7 +682,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));
 		updateInfoLableText();
-		layout();
+		if(getParent()!=null)
+			layout();
 	}
 	
 	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {

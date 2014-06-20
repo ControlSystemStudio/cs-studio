@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2012 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2012-14 graphene developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
 
@@ -63,7 +63,7 @@ final class LinearValueScale implements ValueScale {
         String[] labels = new String[ticks.length];
         for (int i = 0; i < ticks.length; i++) {
             double value = ticks[i];
-            labels[i] = format(value, format, exponent, normalization);
+            labels[i] = format(value, format, exponent, normalization);//error happens here. value = -0.5, format = , exponent = null, normalization = 1.0
         }
         return new ValueAxis(minValue, maxValue, ticks, labels);
     }
@@ -87,8 +87,16 @@ final class LinearValueScale implements ValueScale {
      */
     static double incrementForRange(double min, double max, int maxTick, double minIncrement) {
         double range = max - min;
-        double increment = Math.max(range/maxTick, minIncrement);
-        int order = (int) orderOfMagnitude(increment);
+        double increment;
+        if(range!=0)
+            increment = Math.max(range/maxTick, minIncrement);
+        else
+            increment = 0;
+        int order;
+        if(increment != 0)
+            order = (int) orderOfMagnitude(increment);
+        else
+            order = 0;
         BigDecimal magnitude = BigDecimal.ONE.scaleByPowerOfTen(order);
         double normalizedIncrement = increment / magnitude.doubleValue();
         

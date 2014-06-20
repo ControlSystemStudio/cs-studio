@@ -37,6 +37,12 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class StringTableEditor extends Composite
 {
+	public enum CellEditorType{
+		TEXT,
+		CHECKBOX,
+		DROPDOWN	
+	}
+	
 	private static final String DELETE = "delete"; //$NON-NLS-1$
 	private static final String DOWN = "down"; //$NON-NLS-1$
 	private static final String UP = "up"; //$NON-NLS-1$
@@ -55,7 +61,7 @@ public class StringTableEditor extends Composite
 		images.put(DOWN, Activator.getImageDescriptor("icons/down.gif")); //$NON-NLS-1$
 		images.put(DELETE, Activator.getImageDescriptor("icons/delete.gif")); //$NON-NLS-1$
 	}
-
+	
 	/** Creates an editable table.  The size of headers array implies the number of columns.
 	 * @param parent The composite which the table resides in. Cannot be null.
 	 * @param headers Contains the header for each column. Cannot be null.
@@ -71,7 +77,29 @@ public class StringTableEditor extends Composite
 	public StringTableEditor(final Composite parent, final String[] headers,
 			final boolean[] editable, final List<String[]> items,
 			final RowEditDialog rowEditDialog,
-			final int[] columnsMinWidth)
+			final int[] columnsMinWidth){
+		this(parent, headers,editable,items,rowEditDialog,columnsMinWidth, null, null);
+	}
+
+	/** Creates an editable table.  The size of headers array implies the number of columns.
+	 * @param parent The composite which the table resides in. Cannot be null.
+	 * @param headers Contains the header for each column. Cannot be null.
+	 * @param editable Whether it is editable for each column. The size must be same as headers.
+	 * If it's null, all columns will be editable.
+	 * @param items The items to be displayed and manipulated in the table. Cannot be null.
+	 * Each element in the list, which is an array of string, represents the data in a row.
+	 * In turn, each element in the string array represents the data in a cell.
+	 * So it is required that every string array in the list must has the same size as headers.
+	 * @param rowEditDialog The dialog to edit a row. If it is null, there will be no edit button.
+	 * @param columnsMinWidth The minimum width for each column. Cannot be null.
+	 * @param cellEditorTypes the cell editor type for each column. null for default text cell editor.
+	 * @param cellEditorDatas the corresponding data for the cell editor. For example, a String[] for dropdown and checkbox cell editor.
+	 * null if not needed. For checkbox, String[0] is the text for false, String[1] is for true.
+	 */
+	public StringTableEditor(final Composite parent, final String[] headers,
+			final boolean[] editable, final List<String[]> items,
+			final RowEditDialog rowEditDialog,
+			final int[] columnsMinWidth, final CellEditorType[] cellEditorTypes, final Object[] cellEditorDatas)
 	{
 		super(parent, 0);
 
@@ -114,9 +142,18 @@ public class StringTableEditor extends Composite
 			col.setResizable(true);
 			table_layout.setColumnData(col, new ColumnWeightData(100, columnsMinWidth[i]));
 			view_col.setLabelProvider(new StringMultiColumnsLabelProvider(tableViewer, editableArray[i]));
-			if(editableArray[i])
+			if(editableArray[i]){
+				CellEditorType cellEditorType;
+				if(cellEditorTypes == null || cellEditorTypes[i]==null)
+					cellEditorType = CellEditorType.TEXT;
+				else
+					cellEditorType = cellEditorTypes[i];
+				Object cellEditorData = null;
+				if(cellEditorDatas!=null)
+					cellEditorData = cellEditorDatas[i];
 				view_col.setEditingSupport(new StringMultiColumnsEditor(tableViewer,
-				        table_columns, i));
+				        table_columns, i, cellEditorType, cellEditorData));
+			}
 		}
 		tableViewer.setContentProvider(new StringTableContentProvider<String[]>());
 		tableViewer.setInput(items);
@@ -136,9 +173,9 @@ public class StringTableEditor extends Composite
 		});
 	}
 
-	/** Initialize
+	/** Create a string list editor which is a table with only one column. 
 	 *  @param parent Parent widget
-	 *  @param items Array of items, will be changed in-place
+	 *  @param items List of strings, will be changed in-place
 	 */
 	public StringTableEditor(final Composite parent, final List<String> items)
 	{

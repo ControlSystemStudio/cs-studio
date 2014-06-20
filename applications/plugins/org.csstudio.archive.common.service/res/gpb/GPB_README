@@ -1,5 +1,0 @@
-Invoke here (.):
-> ..\com.google.protobuf\protoc --java_out=../../gen/java ./archive_sample.proto
-
-Afterwards the IArchiveSampleProtos.java has been generated in the correct package.
-Happy using.

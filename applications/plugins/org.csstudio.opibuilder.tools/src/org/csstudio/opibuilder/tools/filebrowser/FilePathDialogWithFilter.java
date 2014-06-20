@@ -42,7 +42,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
 	 * The default value for the file extensions.
 	 */
 	private static final String[] IMAGE_EXTENSIONS = new String[] { "gif",
-			"GIF", "png", "PNG" };
+			"GIF", "png", "PNG", "svg", "SVG" };
 
 	/**
 	 * The message to display, or <code>null</code> if none.

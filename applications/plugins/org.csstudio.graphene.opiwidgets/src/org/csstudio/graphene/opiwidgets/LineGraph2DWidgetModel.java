@@ -3,9 +3,12 @@
  */
 package org.csstudio.graphene.opiwidgets;
 
+import org.csstudio.graphene.LineGraph2DWidget;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
+import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 
 /**
@@ -16,13 +19,10 @@ public class LineGraph2DWidgetModel extends
 		AbstractPointDatasetGraph2DWidgetModel {
 
 	public LineGraph2DWidgetModel() {
-		super(true);
+		super(AbstractSelectionWidgetModelDescription.newModelFrom(LineGraph2DWidget.class));
 	}
 
 	public final String ID = "org.csstudio.graphene.opiwidgets.LineGraph2D"; //$NON-NLS-1$
-	
-	public static final String PROP_HIGHLIGHT_SELECTION_VALUE = "highlight_selection_value"; //$NON-NLS-1$
-	public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {

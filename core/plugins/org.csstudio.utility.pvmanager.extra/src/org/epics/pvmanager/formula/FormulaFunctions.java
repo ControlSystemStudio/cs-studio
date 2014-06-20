@@ -1,11 +1,12 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,18 @@ public class FormulaFunctions {
      * @return true if the function can accept the given arguments
      */
     public static boolean matchArgumentTypes(List<Object> arguments, FormulaFunction function) {
+        return matchArgumentTypes(arguments, function, false);
+    }
+    
+    /**
+     * Checks whether the function will accept the given arguments.
+     *
+     * @param arguments the arguments
+     * @param function a function
+     * @param allowNull whether the function should allow null arguments
+     * @return true if the function can accept the given arguments
+     */
+    public static boolean matchArgumentTypes(List<Object> arguments, FormulaFunction function, boolean allowNull) {
         List<Class<?>> types = function.getArgumentTypes();
         
         if (!matchArgumentCount(arguments.size(), function)) {
@@ -35,7 +48,10 @@ public class FormulaFunctions {
         for (int i = 0; i < arguments.size(); i++) {
             int j = Math.min(i, types.size() - 1);
             if (!types.get(j).isInstance(arguments.get(i))) {
-                return false;
+                if (allowNull && arguments.get(i) == null) {
+                } else {
+                    return false;
+                }
             }
         }
         return true;
@@ -71,12 +87,30 @@ public class FormulaFunctions {
      */
     public static FormulaFunction findFirstMatch(List<Object> arguments, Collection<FormulaFunction> formulaFunctions) {
         for (FormulaFunction formulaFunction : formulaFunctions) {
-            if (matchArgumentTypes(arguments, formulaFunction)) {
+            if (matchArgumentTypes(arguments, formulaFunction, true)) {
                 return formulaFunction;
             }
         }
         
         return null;
+    }
+
+    /**
+     * Finds the functions that match the given types as arguments.
+     * 
+     * @param argTypes the possible types
+     * @param formulaFunctions a collection of functions
+     * @return the first function that accepts the give arguments
+     */
+    public static Collection<FormulaFunction> findArgTypeMatch(List<Class<?>> argTypes, Collection<FormulaFunction> formulaFunctions) {
+        Collection<FormulaFunction> functions = new HashSet<>();
+        for (FormulaFunction formulaFunction : formulaFunctions) {
+            if (formulaFunction.getArgumentTypes().equals(argTypes)) {
+                functions.add(formulaFunction);
+            }
+        }
+        
+        return functions;
     }
 
     /**
@@ -110,8 +144,8 @@ public class FormulaFunctions {
         return sb.toString();
     }
     
-    private static Pattern postfixTwoArg = Pattern.compile("\\+|-|\\*|/|%|\\^|\\*\\*|<=|>=|<|>|==|!=|\\|\\||&&|\\||&");
-    private static Pattern prefixOneArg = Pattern.compile("-|!");
+    private static final Pattern postfixTwoArg = Pattern.compile("\\+|-|\\*|/|%|\\^|\\*\\*|<=|>=|<|>|==|!=|\\|\\||&&|\\||&");
+    private static final Pattern prefixOneArg = Pattern.compile("-|!");
 
     /**
      * Given the function name and a string representation of the arguments,

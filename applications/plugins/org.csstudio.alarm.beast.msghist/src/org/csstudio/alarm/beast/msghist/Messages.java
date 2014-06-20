@@ -36,6 +36,7 @@ public class Messages extends NLS
     public static String Pref_Password;
     public static String Pref_Schema;
     public static String Pref_Starttime;
+    public static String Pref_AutoRefreshPeriod;
     public static String Pref_URL;
     public static String Pref_User;
     public static String Property;

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2013 ITER Organization.
+* Copyright (c) 2010-2014 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -73,7 +73,7 @@ public class AutomatedAction extends Action
 			AutomatedActionFactory factory = AutomatedActionFactory.getInstance();
 			factory.init(NotifierUtils.getActions());
 			// Initialize automated action
-			IAutomatedAction action = factory.getNotificationAction(item, auto_action);
+			IAutomatedAction action = factory.getNotificationAction(item, auto_action, true);
 			if (action == null)
 				throw new Exception("Failed to create automated action");
 			// Initialize alarms
@@ -85,10 +85,10 @@ public class AutomatedAction extends Action
 			}
 			// Execute
 			action.execute(pvs);
-			Activator.getLogger().log(Level.INFO, getInfos() + " => EXECUTED");
+			Activator.getLogger().log(Level.INFO, getInfos() + " EXECUTED");
 		} catch (Exception ex) {
 			Activator.getLogger().log(Level.SEVERE,
-					"ERROR executing " + getInfos() + " => " + ex.getMessage());
+					"ERROR executing " + getInfos(), ex);
 			MessageDialog.openError(shell,
 					Messages.AutoActionError,
 					NLS.bind(Messages.AutoActionErrorFmt, new Object[] {

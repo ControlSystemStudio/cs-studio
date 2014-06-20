@@ -1,73 +1,77 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.formula;
 
-import static org.epics.vtype.ValueFactory.alarmNone;
 import static org.epics.vtype.ValueFactory.displayNone;
-import static org.epics.vtype.ValueFactory.newTime;
 import static org.epics.vtype.ValueFactory.newVNumberArray;
 
 import java.util.Arrays;
 import java.util.List;
+import org.epics.pvmanager.util.NullUtils;
 
-import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListMath;
-import org.epics.util.time.Timestamp;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
-import org.epics.vtype.ValueFactory;
+import org.epics.vtype.ValueUtil;
 
 /**
  * @author shroffk
- * 
+ *
  */
-public class RescaleArrayFormulaFunction implements FormulaFunction {
+class RescaleArrayFormulaFunction implements FormulaFunction {
 
     @Override
     public boolean isPure() {
-	return true;
+        return true;
     }
 
     @Override
     public boolean isVarArgs() {
-	return true;
+        return true;
     }
 
     @Override
     public String getName() {
-	return "rescale";
+        return "rescale";
     }
 
     @Override
     public String getDescription() {
-	return "Rescale an array using the factor and offset";
+        return "Rescale an array using the factor and offset";
     }
 
     @Override
     public List<Class<?>> getArgumentTypes() {
-	return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class,
-		VNumber.class);
+        return Arrays.<Class<?>> asList(VNumberArray.class, VNumber.class,
+                VNumber.class);
     }
 
     @Override
     public List<String> getArgumentNames() {
-	return Arrays.asList("array", "factor", "offset");
+        return Arrays.asList("array", "factor", "offset");
     }
 
     @Override
     public Class<?> getReturnType() {
-	return VNumberArray.class;
+        return VNumberArray.class;
     }
 
     @Override
     public Object calculate(final List<Object> args) {
+        if (NullUtils.containsNull(args)) {
+            return null;
+        }
+        
+        VNumberArray arg1 = (VNumberArray) args.get(0);
+        VNumber arg2 = (VNumber) args.get(1);
+        VNumber arg3 = (VNumber) args.get(2);
 
-	return ValueFactory.newVNumberArray(ListMath.rescale(
-		((VNumberArray) args.get(0)).getData(), ((VNumber) args.get(1))
-			.getValue().doubleValue(), ((VNumber) args.get(2))
-			.getValue().doubleValue()), alarmNone(),
-		newTime(Timestamp.now()), displayNone());
+        return newVNumberArray(
+		ListMath.rescale(arg1.getData(), arg2.getValue().doubleValue(), arg3.getValue().doubleValue()),
+                ValueUtil.highestSeverityOf(args, false),
+		ValueUtil.latestValidTimeOrNowOf(args),
+                displayNone());
     }
 }

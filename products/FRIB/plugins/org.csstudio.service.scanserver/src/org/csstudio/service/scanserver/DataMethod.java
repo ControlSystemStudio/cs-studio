@@ -78,8 +78,7 @@ public class DataMethod extends ServiceMethod {
 		    resultMap.put("result",
 			    ValueFactory.newVTable(types, data.getNames(), data.getValues()));
 		    resultMap.put("result_size", timeList.size());
-		    callback.writeValue(resultMap);
-		
+		    callback.writeValue(resultMap);	
 	}
 
 }

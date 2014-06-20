@@ -53,20 +53,26 @@ public class RDBCacheUnitTest
         // End user should not care how the RDBCache
         // does its work, but for asserting that it works
         // as supposed right now, we check it
-        final Thread thread = findThread();
-        System.out.println(thread);
+        Thread thread = findThread();
+        assertThat(thread, nullValue());
+
+        // When released, the cleanup thread should run
+        cache.releaseConnection();
+        thread = findThread();
         assertThat(thread, notNullValue());
         
         // Get same back
         Connection connection2 = cache.getConnection();
         System.out.println(connection2);
         assertThat(connection2, sameInstance(connection));
+        cache.releaseConnection();
         
         // .. once more within timeout
         Thread.sleep(500);
         connection2 = cache.getConnection();
         System.out.println(connection2);
         assertThat(connection2, sameInstance(connection));
+        cache.releaseConnection();
 
         // Allow to time out
         Thread.sleep(1500);
@@ -78,6 +84,7 @@ public class RDBCacheUnitTest
         connection2 = cache.getConnection();
         System.out.println(connection2);
         assertThat(connection2, not(sameInstance(connection)));
+        cache.releaseConnection();
 
         // Assert that timer thread quits once more
         Thread.sleep(1500);

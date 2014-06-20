@@ -157,13 +157,13 @@ public class ConnectionHandler {
 		
 		if (connected && !valueChangedFromNull)
 			return;		
-		boolean allConnected = true;
-		refreshModelTooltip();
+		boolean allConnected = true;		
 		hasNullValue = false;
 		for (IPV pv2 : pvMap.values()) {
 			allConnected &= pv2.isConnected();
 			hasNullValue |=(pv2.getValue()==null);
 		}
+		refreshModelTooltip();
 		if (allConnected) {
 			connected = true;
 			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {

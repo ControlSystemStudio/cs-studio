@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: AMS Log4j
-Bundle-SymbolicName: org.csstudio.ams.log4j
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Markus Moeller <markus.moeller@desy.de>
-Fragment-Host: org.apache.log4j;bundle-version="1.2.16"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6

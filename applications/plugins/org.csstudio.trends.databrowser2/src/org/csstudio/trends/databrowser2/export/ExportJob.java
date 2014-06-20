@@ -8,7 +8,11 @@
 package org.csstudio.trends.databrowser2.export;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.archive.reader.ArchiveReader;
@@ -205,24 +209,40 @@ abstract public class ExportJob extends Job
 
         // Start ValueIterator for each sub-archive
         final ArchiveDataSource archives[] = ((PVItem)item).getArchiveDataSources();
-        final ValueIterator iters[] = new ValueIterator[archives.length];
-        for (int i=0; i<iters.length; ++i)
+        final List<ValueIterator> iters = new ArrayList<>();
+        Exception error = null;
+        for (ArchiveDataSource archive : archives)
         {
             // Create reader, remember to close it when done
-            final ArchiveReader reader = ArchiveRepository.getInstance().getArchiveReader(archives[i].getUrl());
+            final ArchiveReader reader = ArchiveRepository.getInstance().getArchiveReader(archive.getUrl());
             archive_readers.add(reader);
             // Create ValueIterator
-            if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_parameter > 1)
-                iters[i] = reader.getOptimizedValues(archives[i].getKey(),
-                        item.getName(), start, end, (int)optimize_parameter);
-            else
+            try
             {
-                iters[i] = reader.getRawValues(archives[i].getKey(), item.getName(), start, end);
-                if (source == Source.LINEAR_INTERPOLATION && optimize_parameter >= 1)
-                    iters[i] = new LinearValueIterator(iters[i], TimeDuration.ofSeconds(optimize_parameter));
+                ValueIterator iter;
+                if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_parameter > 1)
+                    iter = reader.getOptimizedValues(archive.getKey(),
+                            item.getName(), start, end, (int)optimize_parameter);
+                else
+                {
+                    iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
+                    if (source == Source.LINEAR_INTERPOLATION && optimize_parameter >= 1)
+                        iter = new LinearValueIterator(iter, TimeDuration.ofSeconds(optimize_parameter));
+                }
+                
+                iters.add(iter);
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName()).log(Level.FINE, "Export error for " + item.getName(), ex);
+                if (error == null)
+                    error = ex;
             }
         }
+        // If none of the iterators work out, report the first error that we found
+        if (iters.isEmpty()  &&  error != null)
+            throw error;
         // Return a merging iterator
-        return new MergingValueIterator(iters);
+        return new MergingValueIterator(iters.toArray(new ValueIterator[iters.size()]));
     }
 }

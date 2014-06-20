@@ -114,6 +114,9 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doActivate() {
+		delegate.markAsControlPV(IPVWidgetModel.PROP_PVNAME,
+				IPVWidgetModel.PROP_PVVALUE);
+		delegate.setUpdateSuppressTime(500);
 		super.doActivate();
 		delegate.doActivate();
 		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
@@ -134,11 +137,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 						unSyncablePropIDsFromChild
 								.addAll(NONE_SYNCABLE_PROPIDS);
 					}
-				}
-				if (getChildren().get(0) instanceof IPVWidgetEditpart
-						&& ((IPVWidgetEditpart) getChildren().get(0)).isPVControlWidget()) {
-					delegate.markAsControlPV(IPVWidgetModel.PROP_PVNAME, IPVWidgetModel.PROP_PVVALUE);
-					delegate.setUpdateSuppressTime(-1);
 				}
 			}
 			registerLoadPVDataTypeListener();

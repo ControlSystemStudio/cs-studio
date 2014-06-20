@@ -3,18 +3,29 @@
  */
 package org.csstudio.opibuilder.widgets.extra;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.visualparts.BorderFactory;
+import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.ui.util.AdapterUtil;
+import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 import org.csstudio.utility.pvmanager.widgets.ProcessVariableAdaptable;
+import org.csstudio.utility.pvmanager.widgets.VTableWidget;
 import org.csstudio.utility.pvmanager.widgets.VTypeAdaptable;
+import org.eclipse.draw2d.Border;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.wb.swt.SWTResourceManager;
+import org.epics.vtype.Alarm;
+import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /**
  * Base class for all edit parts that are based on SWT widgets that provides a selection.
@@ -27,7 +38,7 @@ import org.epics.vtype.VType;
  * 
  */
 public abstract class AbstractSelectionWidgetEditpart
-	<F extends AbstractSelectionWidgetFigure<?>, M extends AbstractWidgetModel> 
+	<F extends AbstractSelectionWidgetFigure<?>, M extends AbstractSelectionWidgetModel> 
 	extends AbstractWidgetEditPart
 	implements ProcessVariableAdaptable, VTypeAdaptable, ConfigurableWidgetAdaptable {
 	
@@ -79,5 +90,40 @@ public abstract class AbstractSelectionWidgetEditpart
 			return adapted[0];
 		}
 	}
+	
+	@Override
+	public Border calculateBorder() {
+		if (getWidgetModel().isEnableBorderAlarmSensitiveProperty() && getWidgetModel().isAlarmSensitive()) {
+			return createBorderFromAlarm((((VTableDisplayFigure) getFigure()).getSWTWidget()).getAlarm());
+		} else {
+			return super.calculateBorder();
+		}
+	}
+	
+	protected Border createBorderFromAlarm(Alarm alarm) {
+		if (alarm.getAlarmSeverity() == AlarmSeverity.NONE) {
+			return super.calculateBorder();
+		} else {
+			java.awt.Color awtColor = new java.awt.Color(ValueUtil.colorFor(alarm.getAlarmSeverity()));
+			RGB swtColor = SWTResourceManager.getColor(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue()).getRGB();
+			return BorderFactory.createBorder(BorderStyle.LINE,
+					getWidgetModel().getBorderWidth(), swtColor,
+					"");
+		}
+	}
 
+	protected final void registerCommonProperties() {
+		if (getWidgetModel().isEnableBorderAlarmSensitiveProperty()) {
+			((BeanComposite) getFigure().getSWTWidget()).addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent event) {
+					if ("alarm".equals(event.getPropertyName())) {
+						setFigureBorder(createBorderFromAlarm(((VTableWidget) event.getSource()).getAlarm()));
+					}
+				}
+			});
+			setFigureBorder(calculateBorder());
+		}
+	}
 }

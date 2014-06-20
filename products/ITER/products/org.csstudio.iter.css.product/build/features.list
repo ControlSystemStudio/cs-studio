@@ -7,8 +7,8 @@ org.csstudio.iter.css.util.feature
 org.csstudio.iter.debugging.jmsmonitor.feature
 org.csstudio.iter.debugging.rdbshell.feature
 org.csstudio.iter.diag.epics.pvtree.feature
-org.csstudio.iter.diag.probe.feature
 org.csstudio.iter.diag.pvfields.feature
+org.csstudio.iter.diag.pvmanager.probe.feature
 org.csstudio.iter.display.pace.feature
 org.csstudio.iter.display.pvtable.feature
 org.csstudio.iter.display.rdbtable.feature
@@ -16,6 +16,7 @@ org.csstudio.iter.email.feature
 org.csstudio.iter.email.ui.feature
 org.csstudio.iter.logbook.feature
 org.csstudio.iter.opibuilder.feature
+org.csstudio.iter.scan.ui.feature
 org.csstudio.iter.snl.feature
 org.csstudio.iter.svn.feature
 org.csstudio.iter.test.feature

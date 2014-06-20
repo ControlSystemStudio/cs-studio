@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2010-12 Brookhaven National Laboratory
- * All rights reserved. Use is subject to license terms.
+ * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
+ * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.pvmanager.sim;
 
@@ -16,7 +16,8 @@ import org.epics.pvmanager.ChannelWriteCallback;
 import org.epics.pvmanager.MultiplexedChannelHandler;
 import org.epics.pvmanager.util.FunctionParser;
 import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.ValueFactory;
+import org.epics.vtype.VType;
+import static org.epics.vtype.ValueFactory.*;
 
 /**
  *
@@ -37,9 +38,9 @@ class IntermittentChannelHandler extends MultiplexedChannelHandler<Object, Objec
                 
                 if (toConnect) {
                     processConnection(new Object());
-                    processMessage(ValueFactory.wrapValue(value, ValueFactory.alarmNone()));
+                    processMessage(toVTypeChecked(value));
                 } else {
-                    processMessage(ValueFactory.wrapValue(value, ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected")));
+                    processMessage(toVTypeChecked(value, newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"), timeNow(), displayNone()));
                     processConnection(null);
                 }
             } catch (Exception ex) {

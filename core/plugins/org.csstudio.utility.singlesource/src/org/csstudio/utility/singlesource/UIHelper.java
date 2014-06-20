@@ -169,11 +169,7 @@ public class UIHelper
 	 * @return
 	 */
 	public boolean rapIsLoggedIn(Display display){		
-		return false;		
-	}
-
-	public SSTextLayout newTextLayout() {
-		return new SSTextLayout();
+		return false;
 	}
 
 }

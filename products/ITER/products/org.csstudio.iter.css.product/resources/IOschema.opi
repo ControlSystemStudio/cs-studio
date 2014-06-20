@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-14a921ec:134b2495e46:-7f53</wuid>
-  <boy_version>3.2.6.codac_core_4_1b3</boy_version>
+  <boy_version>3.2.9.codac_core_4_2b1</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>1024</height>
@@ -570,7 +570,7 @@ to enter the Label Text</text>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -626,7 +626,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -685,7 +685,7 @@ $(pv_value)</tooltip>
       <format_type>0</format_type>
       <precision_from_pv>true</precision_from_pv>
       <transparent>false</transparent>
-      <pv_name>sim://ramp(0,100000,11323,1)</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO InputPV Bg" red="255" green="255" blue="255" />
       </background_color>
@@ -767,7 +767,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>true</keep_wh_ratio>
       </scale_options>
-      <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
+      <pv_name></pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -858,7 +858,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
+      <pv_name></pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -947,7 +947,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>true</keep_wh_ratio>
       </scale_options>
-      <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
+      <pv_name></pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -1038,7 +1038,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
+      <pv_name></pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -1128,7 +1128,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>sim://ramp(0.1,1000,1,0.1)</pv_name>
+      <pv_name></pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -1229,7 +1229,7 @@ $(pv_value)</tooltip>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <axis_0_scale_format></axis_0_scale_format>
       <trace_0_x_pv></trace_0_x_pv>
-      <trace_0_y_pv>sim://sine(-50,50,20,0.1)</trace_0_y_pv>
+      <trace_0_y_pv></trace_0_y_pv>
       <axis_0_title_font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </axis_0_title_font>
@@ -1308,7 +1308,7 @@ $(trace_0_y_pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -1400,7 +1400,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>sim://ramp(0,1,-1,2)</pv_name>
+      <pv_name></pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
@@ -1587,20 +1587,59 @@ $(pv_value)</tooltip>
       <y_axis_scale_font>
         <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
       </y_axis_scale_font>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <color_depth>0</color_depth>
+      <border_style>5</border_style>
+      <vertical_profile_y_pv_name></vertical_profile_y_pv_name>
+      <x_axis_minimum>0.0</x_axis_minimum>
+      <crop_bottom>0</crop_bottom>
+      <x_axis_maximum>100.0</x_axis_maximum>
+      <horizon_profile_x_pv_value />
+      <crop_left>0</crop_left>
+      <minimum>0.0</minimum>
+      <vertial_profile_x_pv_value />
+      <wuid>76f41e83:1352e08df16:-7f03</wuid>
+      <data_height>0</data_height>
+      <y_axis_major_tick_step_hint>50</y_axis_major_tick_step_hint>
+      <y_axis_title_font>
+        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
+      </y_axis_title_font>
+      <x_axis_scale_font>
+        <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
+      </x_axis_scale_font>
+      <y_axis_axis_color>
+        <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      </y_axis_axis_color>
+      <data_width>0</data_width>
+      <y_axis_minimum>0.0</y_axis_minimum>
+      <pv_name></pv_name>
+      <foreground_color>
+        <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      </foreground_color>
+      <horizon_profile_x_pv_name></horizon_profile_x_pv_name>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <vertial_profile_y_pv_value />
+      <crop_top>0</crop_top>
+      <roi_count>0</roi_count>
+      <horizon_profile_y_pv_value />
+      <border_color>
+        <color name="IO Border" red="215" green="215" blue="215" />
+      </border_color>
+      <actions hook="false" hook_all="false" />
+      <y>0</y>
+      <x>0</x>
       <visible>true</visible>
       <rgb_mode>false</rgb_mode>
       <x_axis_axis_title>X Axis</x_axis_axis_title>
       <scripts />
       <height>240</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <single_line_profiling>false</single_line_profiling>
       <y_axis_maximum>100.0</y_axis_maximum>
+      <single_line_profiling>false</single_line_profiling>
       <background_color>
         <color name="IO InputPV Bg" red="255" green="255" blue="255" />
       </background_color>
-      <color_depth>0</color_depth>
-      <enabled>true</enabled>
       <widget_type>Intensity Graph</widget_type>
+      <enabled>true</enabled>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
@@ -1610,38 +1649,23 @@ $(pv_value)</tooltip>
         <autoscale>true</autoscale>
         <map>2</map>
       </color_map>
-      <border_style>5</border_style>
-      <vertical_profile_y_pv_name></vertical_profile_y_pv_name>
-      <x_axis_minimum>0.0</x_axis_minimum>
+      <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
       <roi_color>
         <color name="IO InputPV Bg" red="255" green="255" blue="255" />
       </roi_color>
-      <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
       <pv_value />
-      <crop_bottom>0</crop_bottom>
-      <maximum>255.0</maximum>
       <border_width>2</border_width>
+      <maximum>255.0</maximum>
       <x_axis_title_font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </x_axis_title_font>
-      <x_axis_maximum>100.0</x_axis_maximum>
       <crop_right>0</crop_right>
-      <horizon_profile_x_pv_value />
       <y_axis_visible>true</y_axis_visible>
-      <crop_left>0</crop_left>
       <graph_area_width>303</graph_area_width>
-      <minimum>0.0</minimum>
-      <vertial_profile_x_pv_value />
-      <data_height>0</data_height>
-      <wuid>76f41e83:1352e08df16:-7f03</wuid>
       <y_axis_axis_title>Y Axis</y_axis_axis_title>
-      <y_axis_major_tick_step_hint>50</y_axis_major_tick_step_hint>
       <x_axis_axis_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </x_axis_axis_color>
-      <y_axis_title_font>
-        <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
-      </y_axis_title_font>
       <x_axis_visible>true</x_axis_visible>
       <name>Intensity Graph Template</name>
       <scale_options>
@@ -1649,36 +1673,13 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>true</keep_wh_ratio>
       </scale_options>
-      <x_axis_scale_font>
-        <opifont.name fontName="arial" height="10" style="0">IO Scale 1</opifont.name>
-      </x_axis_scale_font>
-      <y_axis_axis_color>
-        <color name="IO InputPV Fg" red="0" green="32" blue="92" />
-      </y_axis_axis_color>
-      <data_width>0</data_width>
-      <vertical_profile_x_pv_name></vertical_profile_x_pv_name>
       <y_axis_show_minor_ticks>true</y_axis_show_minor_ticks>
-      <pv_name></pv_name>
-      <y_axis_minimum>0.0</y_axis_minimum>
+      <vertical_profile_x_pv_name></vertical_profile_x_pv_name>
       <horizon_profile_y_pv_name></horizon_profile_y_pv_name>
-      <foreground_color>
-        <color name="IO InputPV Fg" red="0" green="32" blue="92" />
-      </foreground_color>
-      <horizon_profile_x_pv_name></horizon_profile_x_pv_name>
-      <vertial_profile_y_pv_value />
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <crop_top>0</crop_top>
       <graph_area_height>195</graph_area_height>
       <rules />
       <x_axis_major_tick_step_hint>50</x_axis_major_tick_step_hint>
       <show_ramp>true</show_ramp>
-      <horizon_profile_y_pv_value />
-      <border_color>
-        <color name="IO Border" red="215" green="215" blue="215" />
-      </border_color>
-      <y>0</y>
-      <actions hook="false" hook_all="false" />
-      <x>0</x>
       <tooltip>$(pv_name)</tooltip>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
@@ -1696,7 +1697,7 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <transparent>false</transparent>
-      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Button" red="178" green="178" blue="178" />
       </background_color>
@@ -1741,7 +1742,7 @@ $(pv_value)</tooltip>
       <page_increment>10.0</page_increment>
       <precision_from_pv>true</precision_from_pv>
       <transparent>false</transparent>
-      <pv_name>loc://$(DID)_numdata(73)</pv_name>
+      <pv_name></pv_name>
       <buttons_on_left>false</buttons_on_left>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
@@ -1769,6 +1770,7 @@ $(pv_value)</tooltip>
         </rule>
       </rules>
       <pv_value />
+      <horizontal_buttons_layout>false</horizontal_buttons_layout>
       <border_width>2</border_width>
       <maximum>100.0</maximum>
       <limits_from_pv>true</limits_from_pv>
@@ -1835,7 +1837,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_input3(42)</pv_name>
+      <pv_name></pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -1928,7 +1930,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>true</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_input2(68)</pv_name>
+      <pv_name></pv_name>
       <color_hi>
         <color name="Minor" red="255" green="255" blue="0" />
       </color_hi>
@@ -1984,7 +1986,7 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <page_increment>10.0</page_increment>
-      <pv_name>loc://$(DID)_input2(68)</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2042,7 +2044,7 @@ $(pv_value)</tooltip>
       <internalFrameColor>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </internalFrameColor>
-      <pv_name>loc://$(DID)_numdata(73)</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2098,7 +2100,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://$(DID)_bool</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2116,7 +2118,7 @@ $(pv_value)</tooltip>
       <width>50</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <effect_3d>true</effect_3d>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
@@ -2164,7 +2166,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://$(DID)_bool</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Button" red="178" green="178" blue="178" />
       </background_color>
@@ -2182,7 +2184,7 @@ $(pv_value)</tooltip>
       <width>100</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <effect_3d>true</effect_3d>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
@@ -2202,11 +2204,11 @@ $(pv_value)</tooltip>
       <border_color>
         <color name="IO Border" red="215" green="215" blue="215" />
       </border_color>
-      <y>125</y>
+      <y>95</y>
       <actions hook="false" hook_all="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>510</x>
+      <x>521</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -2216,7 +2218,7 @@ $(pv_value)</tooltip>
       <auto_size>true</auto_size>
       <boolean_label_position>0</boolean_label_position>
       <scripts />
-      <height>74</height>
+      <height>40</height>
       <data_type>0</data_type>
       <name>Image Boolean Button Template</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -2227,7 +2229,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_bool</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2242,10 +2244,10 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
       </font>
-      <width>39</width>
+      <width>40</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
           <exp bool_exp="pv0==1">
@@ -2260,12 +2262,12 @@ $(pv_value)</tooltip>
       <show_confirm_dialog>1</show_confirm_dialog>
       <border_width>2</border_width>
       <on_label>ON</on_label>
-      <off_image></off_image>
+      <off_image>SymbolLibrary/PNG/Fluid/Valves/VG 2 way-Valves On-Off Angle Globe Off.png</off_image>
       <border_color>
         <color name="IO Border" red="215" green="215" blue="215" />
       </border_color>
-      <y>113</y>
-      <on_image></on_image>
+      <y>165</y>
+      <on_image>SymbolLibrary/PNG/Fluid/Valves/VG 2 way-Valves On-Off Angle Globe On.png</on_image>
       <actions hook="false" hook_all="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -2285,7 +2287,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_check</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2337,7 +2339,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
       </background_color>
@@ -2389,7 +2391,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO Button" red="178" green="178" blue="178" />
       </background_color>
@@ -2485,14 +2487,14 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://$(DID)_bool</pv_name>
+      <pv_name></pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
           <exp bool_exp="pv0==1">
@@ -2567,14 +2569,14 @@ $(pv_value)</tooltip>
       <off_color>
         <color name="IO PV OFF" red="77" green="77" blue="77" />
       </off_color>
-      <pv_name>loc://$(DID)_mbbval</pv_name>
+      <pv_name></pv_name>
       <foreground_color>
         <color name="IO InputPV Fg" red="0" green="32" blue="92" />
       </foreground_color>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <flip_horizontal>false</flip_horizontal>
       <crop_top>0</crop_top>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <confirm_message>Are you sure you want to do this?</confirm_message>
       <rules>
         <rule name="BorderRule" prop_id="border_style" out_exp="false">
           <exp bool_exp="pv0==1">
@@ -2609,16 +2611,12 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name></pv_name>
-      <background_color>
-        <color name="IO Button" red="178" green="178" blue="178" />
-      </background_color>
       <foreground_color>
         <color name="IO Foreground" red="0" green="0" blue="0" />
       </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>$(actions)</text>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="arial" height="10" style="1">IO Input 1</opifont.name>
       </font>
@@ -2675,7 +2673,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_input1(1.45)</pv_name>
+      <pv_name></pv_name>
       <foreground_color>
         <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
       </foreground_color>
@@ -2714,7 +2712,7 @@ $(pv_value)</tooltip>
         <height_scalable>false</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_choice("Choice 0", "Choice 1", "Choice 2")</pv_name>
+      <pv_name></pv_name>
       <background_color>
         <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
       </background_color>
@@ -2877,6 +2875,7 @@ $(pv_value)</tooltip>
       <scripts />
       <height>250</height>
       <show_spinner>false</show_spinner>
+      <data_type>0</data_type>
       <name>Array Template</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <scale_options>
@@ -2884,7 +2883,7 @@ $(pv_value)</tooltip>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
-      <pv_name>loc://$(DID)_array(0, 1.5, 1.5, 1.15, 1.15, 2, 2, 0)</pv_name>
+      <pv_name></pv_name>
       <show_scrollbar>false</show_scrollbar>
       <background_color>
         <color name="IO Background" red="255" green="255" blue="205" />
@@ -2894,6 +2893,7 @@ $(pv_value)</tooltip>
       </foreground_color>
       <widget_type>Array</widget_type>
       <enabled>true</enabled>
+      <array_length>10</array_length>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
@@ -3039,7 +3039,7 @@ $(pv_value)</tooltip>
         <lock_children>false</lock_children>
         <border_width>1</border_width>
         <border_color>
-          <color red="0" green="128" blue="255" />
+          <color name="IO Border" red="215" green="215" blue="215" />
         </border_color>
         <y>1</y>
         <actions hook="false" hook_all="false" />
@@ -3124,7 +3124,7 @@ $(pv_value)</tooltip>
         <lock_children>false</lock_children>
         <border_width>1</border_width>
         <border_color>
-          <color red="0" green="128" blue="255" />
+          <color name="IO Border" red="215" green="215" blue="215" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />
@@ -3165,7 +3165,7 @@ $(pv_value)</tooltip>
         <lock_children>false</lock_children>
         <border_width>1</border_width>
         <border_color>
-          <color red="0" green="128" blue="255" />
+          <color name="IO Border" red="215" green="215" blue="215" />
         </border_color>
         <y>0</y>
         <actions hook="false" hook_all="false" />

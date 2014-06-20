@@ -9,6 +9,8 @@ package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeGroupClass;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * XML conversion class for Edm_activeGroupClass
@@ -27,20 +29,27 @@ public class Opi_activeGroupClass extends OpiWidget {
 		super(con, g);
 		setTypeId(typeId);
 		
-		context.getElement().setAttribute("version", version);
+		setVersion(version);
+		NodeList childNodes = widgetContext.getElement().getParentNode().getChildNodes();
+		int i=0;
+		int j=-1;
+		for(i=0; i<childNodes.getLength(); i++){
+			if(childNodes.item(i) instanceof Element && ((Element)childNodes.item(i)).getAttribute("typeId").contains(typeId))
+				j++;
+			if(widgetContext==childNodes.item(i))
+				break;		
+		}
+		setName(""+j);
 		
-//		new OpiInt(context, "x", g.getX() - context.getX());
-//		new OpiInt(context, "y", g.getY() - context.getY());
-//		new OpiInt(context, "width", g.getW());
-//		new OpiInt(context, "height", g.getH());
-
-		new OpiInt(context, "border_style", 0);
-		new OpiBoolean(context, "show_scrollbar", false);
+		new OpiBoolean(widgetContext, "lock_children", true);
+		new OpiInt(widgetContext, "border_style", 0);
+		new OpiBoolean(widgetContext, "show_scrollbar", false);
+		new OpiBoolean(widgetContext, "transparent", true);
 		// Set absolute position in context.
-		context.setX(g.getX());
-		context.setY(g.getY());
+		widgetContext.setX(g.getX());
+		widgetContext.setY(g.getY());
 		
-		OpiWriter.writeWidgets(context, g.getWidgets());
+		OpiWriter.writeWidgets(widgetContext, g.getWidgets());
 		
 		log.debug("Edm_activeGroupClass written.");
 	}

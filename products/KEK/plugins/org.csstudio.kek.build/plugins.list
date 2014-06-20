@@ -89,6 +89,8 @@ org.csstudio.rap.ui.util/**
 org.csstudio.security.ui/**
 org.csstudio.security/**
 org.csstudio.simplepv/**
+org.csstudio.simplepv.pvmanager/**
+org.csstudio.simplepv.utilitypv/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.sns.startuphelper/**
 org.csstudio.startup/**
@@ -122,6 +124,7 @@ org.csstudio.utility.pvmanager.loc/**
 org.csstudio.utility.pvmanager.probe/**
 org.csstudio.utility.pvmanager.sim/**
 org.csstudio.utility.pvmanager.ui/**
+org.csstudio.utility.pvmanager.ui.toolbox/**
 org.csstudio.utility.pvmanager.vtype/**
 org.csstudio.utility.pvmanager.widgets/**
 org.csstudio.utility.pvmanager/**
