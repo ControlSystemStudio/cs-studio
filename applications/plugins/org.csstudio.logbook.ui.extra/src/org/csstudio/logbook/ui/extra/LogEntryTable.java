@@ -63,7 +63,9 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
     }
 
     private AbstractSelectionProviderWrapper selectionProvider;
-    private boolean expanded = false;   
+    private boolean expanded = false;
+    // The number of lines to show in the compact mode
+    private int rowSize = 1;
 
     private ErrorBar errorBar;
     private GridTableViewer gridTableViewer;
@@ -86,9 +88,10 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 		    break;
 		case "expanded":
 		    //TODO shroffk fix the refresh
+		    FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();	
+		    grid.setItemHeight(fm.getHeight() * rowSize);
 		    gridTableViewer.getGrid().setAutoHeight(expanded);
-		    gridTableViewer.setInput(logEntries
-			    .toArray(new LogEntry[logEntries.size()]));
+		    gridTableViewer.setInput(logEntries.toArray(new LogEntry[logEntries.size()]));
 		    break;
 		default:
 		    break;
@@ -108,13 +111,17 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	    protected ISelection transform(IStructuredSelection selection) {
 		return selection;
 	    }
+	    
+	    protected ISelection reverseTransform(IStructuredSelection selection) {
+		return selection;
+	    }
 
 	};
 
 	grid = gridTableViewer.getGrid();
 	grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	FontMetrics fm = new GC(Display.getCurrent()).getFontMetrics();	
-	grid.setItemHeight(fm.getHeight() * 4);
+	grid.setItemHeight(fm.getHeight() * rowSize);
 	grid.setAutoHeight(expanded);
 	grid.setRowsResizeable(true);
 	grid.setHeaderVisible(true);
@@ -350,5 +357,24 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 	boolean oldValue = this.expanded;	
         this.expanded = expanded;
         changeSupport.firePropertyChange("expanded", oldValue, this.expanded);
+    }
+    
+    
+    /**
+     * 
+     * @return
+     */
+    public int getRowSize() {
+        return rowSize;
+    }
+
+    /**
+     * 
+     * @param rowSize
+     */
+    public void setRowSize(int rowSize) {
+	int oldValue = this.rowSize;
+        this.rowSize = rowSize;
+        changeSupport.firePropertyChange("expanded", oldValue, this.rowSize);
     }
 }
