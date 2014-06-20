@@ -26,11 +26,46 @@
 		<pvaccess.version>3.0.5</pvaccess.version>
 		<csstudio.version>3.3.0-SNAPSHOT</csstudio.version>
 	</properties>
+	
+	<dependencies>
+	<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>osgi</artifactId>
+			<version>3.7.2-v20120110-1415</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>jobs</artifactId>
+			<version>3.5.101-v20120113-1953</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>runtime</artifactId>
+			<version>3.7.0-v20110110</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>common</artifactId>
+			<version>3.6.0-v20110523</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>preferences</artifactId>
+			<version>3.4.2-v20120111-2020</version>
+		</dependency>
+	</dependencies>
+	
+	
 	<repositories>
 		<repository>
 			<id>epics</id>
 			<name>EPICS Repository</name>
 			<url>http://epics.sourceforge.net/maven2/</url>
+		</repository>
+		<repository>
+			<id>controlsystemstudio</id>
+			<name>CS-Studio Maven Repository</name>
+			<url>http://maven.controlsystemstudio.org/</url>
 		</repository>
 	</repositories>
 

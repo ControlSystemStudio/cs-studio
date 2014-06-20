@@ -18,11 +18,6 @@
 			<version>${pvmanager.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-			<version>3.7.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.epics</groupId>
 			<artifactId>epics-util</artifactId>
 			<version>${epics.util.version}</version>
@@ -41,6 +36,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
+				<unpackBundle>true</unpackBundle>
 					<instructions>
 						<Private-Package>org.csstudio.utility.*</Private-Package>
 						<Bundle-Name>Graphene</Bundle-Name>
@@ -49,8 +45,11 @@
 						<Bundle-Description>Graphene Graphics</Bundle-Description>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Export-Package>org.epics.pvmanager.graphene</Export-Package>
-						<_exportcontents>*</_exportcontents>
+<!-- 						<_exportcontents>*</_exportcontents> -->
 						<!-- <_sources>true</_sources> -->
+						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+						<Embed-Directory>lib</Embed-Directory>
+						<Embed-StripGroup>true</Embed-StripGroup>
 						<_snapshot>${maven.build.timestamp}</_snapshot>
 					</instructions>
 				</configuration>

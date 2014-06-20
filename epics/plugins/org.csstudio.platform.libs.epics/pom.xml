@@ -14,20 +14,22 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-			<version>3.7.0</version>
+			<artifactId>runtime</artifactId>
+			<version>3.7.0-v20110110</version>
 		</dependency>
 		<dependency>
 			<groupId>org.epics</groupId>
 			<artifactId>caj</artifactId>
 			<version>${epics.caj.version}</version>
-			<optional>true</optional>
+<!-- 			<optional>true</optional> -->
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.epics</groupId>
 			<artifactId>jca</artifactId>
 			<version>${epics.jca.version}</version>
-			<optional>true</optional>
+<!-- 			<optional>true</optional> -->
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -48,6 +50,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
+				<unpackBundle>true</unpackBundle>
 					<instructions>
 						<Private-Package>org.csstudio.platform.*</Private-Package>
 						<Bundle-Activator>org.csstudio.platform.libs.epics.EpicsPlugin</Bundle-Activator>
@@ -79,12 +82,14 @@
 							gov.aps.jca.configuration,
 							gov.aps.jca.dbr,
 							gov.aps.jca.event,
-							gov.aps.jca.jni,
-							org.csstudio.platform.libs.epics</Export-Package>
+							gov.aps.jca.jni</Export-Package>
 						<Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
 						<!-- <Include-Resource>JCALibrary.properties=JCALibrary.properties,lib/caj-1.1.13.jar=lib/caj-1.1.13.jar,lib/jca-2.3.6.jar=lib/jca-2.3.6.jar</Include-Resource> -->
-						<_exportcontents>*</_exportcontents>
+<!-- 						<_exportcontents>*</_exportcontents> -->
 						<!-- <_sources>true</_sources> -->
+						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+						<Embed-Directory>lib</Embed-Directory>
+						<Embed-StripGroup>true</Embed-StripGroup>
 						<_snapshot>${maven.build.timestamp}</_snapshot>
 					</instructions>
 				</configuration>

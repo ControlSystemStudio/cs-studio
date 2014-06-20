@@ -18,11 +18,6 @@
 			<version>${pvmanager.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-			<version>3.7.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.epics</groupId>
 			<artifactId>epics-util</artifactId>
 			<version>${epics.util.version}</version>
@@ -58,6 +53,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
+				<unpackBundle>true</unpackBundle>
 					<instructions>
 						<Private-Package>org.csstudio.utility.*</Private-Package>
 						<Bundle-Name>PVManager JDBC Support</Bundle-Name>
@@ -68,14 +64,17 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 						<Export-Package>org.epics.pvmanager.jdbc</Export-Package>
-<!-- 						<Require-Bundle> -->
-<!-- 							org.csstudio.utility.pvmanager;bundle-version="3.2.0";visibility:=reexport, -->
-<!-- 							org.epics.vtype;bundle-version="2.1.0";visibility:=reexport, -->
-<!-- 							org.csstudio.platform.libs.jdbc;bundle-version="1.3.0";visibility:=reexport, -->
-<!-- 							org.eclipse.core.runtime</Require-Bundle> -->
+						<Require-Bundle>
+							org.csstudio.utility.pvmanager;bundle-version="3.2.0";visibility:=reexport,
+							org.epics.vtype;bundle-version="2.1.0";visibility:=reexport,
+							org.csstudio.platform.libs.jdbc;bundle-version="1.3.0";visibility:=reexport,
+							org.eclipse.core.runtime</Require-Bundle>
 						<!-- <Include-Resource>plugin.xml=plugin.xml</Include-Resource> -->
-						<_exportcontents>*</_exportcontents>
+<!-- 						<_exportcontents>*</_exportcontents> -->
 						<!-- <_sources>true</_sources> -->
+						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+						<Embed-Directory>lib</Embed-Directory>
+						<Embed-StripGroup>true</Embed-StripGroup>
 						<_snapshot>${maven.build.timestamp}</_snapshot>
 					</instructions>
 				</configuration>
