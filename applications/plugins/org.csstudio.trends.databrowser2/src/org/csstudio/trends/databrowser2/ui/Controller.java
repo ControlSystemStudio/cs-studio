@@ -925,7 +925,9 @@ public class Controller implements ArchiveFetchJobListener
                 switch (rescale)
                 {
                 case AUTOZOOM:
-                    plot.getXYGraph().performAutoScale();
+                	// Auto-zoom all value axes
+            		for(Axis axis : plot.getXYGraph().getYAxisList())
+            			axis.performAutoScale(true);
                     break;
                 case STAGGER:
                     plot.getXYGraph().performStagger();
