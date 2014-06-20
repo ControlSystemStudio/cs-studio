@@ -78,7 +78,7 @@ public class Controller implements ArchiveFetchJobListener
     final private Model model;
 
     /** Listener to model that informs this controller */
-	private ModelListener model_listener;
+    private ModelListener model_listener;
 
     /** GUI for displaying the data */
     final private Plot plot;
@@ -142,17 +142,17 @@ public class Controller implements ArchiveFetchJobListener
             // Update 'iconized' state from shell
             shell.addShellListener(new ShellListener()
             {
-				// Remove Override annotation for RAP
-				// @Override
-				public void shellIconified(ShellEvent e) {
-					window_is_iconized = true;
-				}
+                // Remove Override annotation for RAP
+                // @Override
+                public void shellIconified(ShellEvent e) {
+                    window_is_iconized = true;
+                }
 
-				// Remove Override annotation for RAP
-				// @Override
-				public void shellDeiconified(ShellEvent e) {
-					window_is_iconized = false;
-				}
+                // Remove Override annotation for RAP
+                // @Override
+                public void shellDeiconified(ShellEvent e) {
+                    window_is_iconized = false;
+                }
 
                 @Override
                 public void shellDeactivated(ShellEvent e) { /* Ignore */  }
@@ -186,10 +186,10 @@ public class Controller implements ArchiveFetchJobListener
             @Override
             public void timeAxisChanged(final long start_ms, final long end_ms)
             {
-            	final String start_spec, end_spec;
+                final String start_spec, end_spec;
                 if (model.isScrollEnabled())
                 {
-                	final long time = System.currentTimeMillis();
+                    final long time = System.currentTimeMillis();
                     final long dist = Math.abs(end_ms - time);
                     final long range = end_ms - start_ms;
                     // Iffy range?
@@ -200,13 +200,13 @@ public class Controller implements ArchiveFetchJobListener
                     // and we'll continue to scroll with the new time range.
                     if (dist * 100 / range > 10)
                     { // Time range 10% away from 'now', disable scrolling   
-                    	//but only if we are not using a future buffer
-                    	if (model.getFutureBufferInSeconds() > 0) {
-                    		if (end_ms < time)
-                    			model.enableScrolling(false);
-                    	} else {
-                    		model.enableScrolling(false);
-                    	}
+                        //but only if we are not using a future buffer
+                        if (model.getFutureBufferInSeconds() > 0) {
+                            if (end_ms < time)
+                                model.enableScrolling(false);
+                        } else {
+                            model.enableScrolling(false);
+                        }
                         // Use absolute start/end time
                         final Calendar cal = Calendar.getInstance();
                         cal.setTimeInMillis(start_ms);
@@ -231,21 +231,21 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 else
                 {
-                	final Calendar cal = Calendar.getInstance();
-                	cal.setTimeInMillis(start_ms);
-                	start_spec = AbsoluteTimeParser.format(cal);
-                	cal.setTimeInMillis(end_ms);
-                	end_spec = AbsoluteTimeParser.format(cal);
+                    final Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(start_ms);
+                    start_spec = AbsoluteTimeParser.format(cal);
+                    cal.setTimeInMillis(end_ms);
+                    end_spec = AbsoluteTimeParser.format(cal);
                 }
                 // Update model's time range
                 try
                 {
-                	model.setTimerange(start_spec, end_spec);
+                    model.setTimerange(start_spec, end_spec);
                 }
                 catch (Exception ex)
                 {
-                	Logger.getLogger(Controller.class.getName()).log(Level.WARNING,
-            			"Cannot adjust time range to " + start_spec + " .. " + end_spec, ex);
+                    Logger.getLogger(Controller.class.getName()).log(Level.WARNING,
+                        "Cannot adjust time range to " + start_spec + " .. " + end_spec, ex);
                 }
                 // Controller's ModelListener will fetch new archived data
             }
@@ -290,8 +290,8 @@ public class Controller implements ArchiveFetchJobListener
                 else
                 {   // Received PV name
 
-                	// Add the given PV to the model anyway even if the same PV
-                	// exists in the model.
+                    // Add the given PV to the model anyway even if the same PV
+                    // exists in the model.
                     final OperationsManager operations_manager = plot.getOperationsManager();
 
                     // Add to first empty axis, or create new axis
@@ -307,7 +307,7 @@ public class Controller implements ArchiveFetchJobListener
                 }
             }
 
-			@Override
+            @Override
             public void droppedFilename(String file_name)
             {
                 final FileImportDialog dlg = new FileImportDialog(shell, file_name);
@@ -333,102 +333,102 @@ public class Controller implements ArchiveFetchJobListener
             }
 
             @Override
-			public void xyGraphConfigChanged(XYGraph newValue)
-			{
-				model.fireGraphConfigChanged();
-			}
+            public void xyGraphConfigChanged(XYGraph newValue)
+            {
+                model.fireGraphConfigChanged();
+            }
 
-			@Override
-			public void removeAnnotationChanged(Annotation oldValue)
-			{
-				model.setAnnotations(plot.getAnnotations());
-			}
+            @Override
+            public void removeAnnotationChanged(Annotation oldValue)
+            {
+                model.setAnnotations(plot.getAnnotations());
+            }
 
-			@Override
-			public void addAnnotationChanged(Annotation newValue)
-			{
-				model.setAnnotations(plot.getAnnotations());
-			}
+            @Override
+            public void addAnnotationChanged(Annotation newValue)
+            {
+                model.setAnnotations(plot.getAnnotations());
+            }
 
-			@Override
-			public void backgroundColorChanged(Color newValue)
-			{
-				model.setPlotBackground(newValue.getRGB());
-			}
+            @Override
+            public void backgroundColorChanged(Color newValue)
+            {
+                model.setPlotBackground(newValue.getRGB());
+            }
 
 
-			@Override
-			public void timeAxisForegroundColorChanged(Color oldColor,
-					Color newColor)
-			{
-				// NOP
-			}
+            @Override
+            public void timeAxisForegroundColorChanged(Color oldColor,
+                    Color newColor)
+            {
+                // NOP
+            }
 
-			@Override
-			public void valueAxisForegroundColorChanged(int index,
-					Color oldColor, Color newColor)
-			{
-				final AxisConfig axis = model.getAxis(index);
-	            axis.setColor(newColor.getRGB());
-			}
+            @Override
+            public void valueAxisForegroundColorChanged(int index,
+                    Color oldColor, Color newColor)
+            {
+                final AxisConfig axis = model.getAxis(index);
+                axis.setColor(newColor.getRGB());
+            }
 
-			@Override
-			public void valueAxisTitleChanged(int index, String oldTitle,
-					String newTitle)
-			{
-				final AxisConfig axis = model.getAxis(index);
-	            axis.setName(newTitle);
-			}
+            @Override
+            public void valueAxisTitleChanged(int index, String oldTitle,
+                    String newTitle)
+            {
+                final AxisConfig axis = model.getAxis(index);
+                axis.setName(newTitle);
+            }
 
-			@Override
-			public void valueAxisAutoScaleChanged(int index,
-					boolean oldAutoScale, boolean newAutoScale)
-			{
-				final AxisConfig axis = model.getAxis(index);
-	            axis.setAutoScale(newAutoScale);
-			}
+            @Override
+            public void valueAxisAutoScaleChanged(int index,
+                    boolean oldAutoScale, boolean newAutoScale)
+            {
+                final AxisConfig axis = model.getAxis(index);
+                axis.setAutoScale(newAutoScale);
+            }
 
-			@Override
-			public void traceNameChanged(int index, String oldName,
-					String newName)
-			{
-				model.getItem(index).setDisplayName(newName);
-			}
+            @Override
+            public void traceNameChanged(int index, String oldName,
+                    String newName)
+            {
+                model.getItem(index).setDisplayName(newName);
+            }
 
-			@Override
-			public void traceYAxisChanged(int index, AxisConfig oldAxis, AxisConfig newAxis)
-			{
-				ModelItem item = model.getItem(index);
-				AxisConfig c = model.getAxis(newAxis.getName());
-				item.setAxis(c);
-			}
+            @Override
+            public void traceYAxisChanged(int index, AxisConfig oldAxis, AxisConfig newAxis)
+            {
+                ModelItem item = model.getItem(index);
+                AxisConfig c = model.getAxis(newAxis.getName());
+                item.setAxis(c);
+            }
 
-			@Override
-			public void traceTypeChanged(int index, TraceType old,
-					TraceType newTraceType)
-			{
-				//DO NOTHING
-				//The model trace type is not the same concept that graph settings traceType
-				//The model trace type gather TraceType, PointStyle, ErrorBar graph config settings
+            @Override
+            public void traceTypeChanged(int index, TraceType old,
+                    TraceType newTraceType)
+            {
+                //DO NOTHING
+                //The model trace type is not the same concept that graph settings traceType
+                //The model trace type gather TraceType, PointStyle, ErrorBar graph config settings
 
-				//ModelItem item = model.getItem(index);
-				//item.setTraceType(org.csstudio.trends.databrowser2.model.TraceType.newTraceType);
-			}
+                //ModelItem item = model.getItem(index);
+                //item.setTraceType(org.csstudio.trends.databrowser2.model.TraceType.newTraceType);
+            }
 
-			@Override
-			public void traceColorChanged(int index, Color old, Color newColor)
-			{
-				ModelItem item = model.getItem(index);
-				item.setColor(newColor.getRGB());
-			}
+            @Override
+            public void traceColorChanged(int index, Color old, Color newColor)
+            {
+                ModelItem item = model.getItem(index);
+                item.setColor(newColor.getRGB());
+            }
 
-			@Override
-			public void valueAxisLogScaleChanged(int index, boolean old,
-					boolean logScale)
-			{
-				final AxisConfig axis = model.getAxis(index);
-				axis.setLogScale(logScale);
-			}
+            @Override
+            public void valueAxisLogScaleChanged(int index, boolean old,
+                    boolean logScale)
+            {
+                final AxisConfig axis = model.getAxis(index);
+                axis.setLogScale(logScale);
+            }
 
         });
 
@@ -535,33 +535,33 @@ public class Controller implements ArchiveFetchJobListener
             /**
              * ADD L.PHILIPPE
              */
-			@Override
-			public void changedAnnotations()
-			{
-				// NOP
-			}
+            @Override
+            public void changedAnnotations()
+            {
+                // NOP
+            }
 
-		    /**
+            /**
              * ADD L.PHILIPPE
              */
-			@Override
-			public void changedXYGraphConfig()
-			{
-				// NOP
-			}
-			
-			@Override
-			public void itemRefreshRequested(PVItem item) {
-				final Timestamp start = model.getStartTime();
+            @Override
+            public void changedXYGraphConfig()
+            {
+                // NOP
+            }
+            
+            @Override
+            public void itemRefreshRequested(PVItem item) {
+                final Timestamp start = model.getStartTime();
                 final Timestamp end = model.getEndTime();
                 getArchivedData(item, start, end);
-			}
-			
-			@Override
-			public void cursorDataChanged() 
-			{
-				//NOP
-			}
+            }
+            
+            @Override
+            public void cursorDataChanged() 
+            {
+                //NOP
+            }
         };
         model.addListener(model_listener);
     }
@@ -720,7 +720,7 @@ public class Controller implements ArchiveFetchJobListener
 
         //Time axe
         if(model.getTimeAxis() != null)
-        	plot.updateTimeAxis( model.getTimeAxis());
+            plot.updateTimeAxis( model.getTimeAxis());
 
         for (int i=0; i<model.getAxisCount(); ++i)
             plot.updateAxis(i, model.getAxis(i));
@@ -729,7 +729,7 @@ public class Controller implements ArchiveFetchJobListener
             final ModelItem item = model.getItem(i);
 
             if (item.isVisible()){
-            	//System.out.println("Controller.createPlotTraces() INDEX " + i + " => " + model.getItem(i).getDisplayName());
+                //System.out.println("Controller.createPlotTraces() INDEX " + i + " => " + model.getItem(i).getDisplayName());
                 plot.addTrace(item, i);
             }
         }
@@ -738,78 +738,78 @@ public class Controller implements ArchiveFetchJobListener
     /** Add annotations from model to plot */
     private void createAnnotations()
     {
-		final XYGraph graph = plot.getXYGraph();
-    	final List<Axis> yaxes = graph.getYAxisList();
-    	final AnnotationInfo[] annotations = model.getAnnotations();
+        final XYGraph graph = plot.getXYGraph();
+        final List<Axis> yaxes = graph.getYAxisList();
+        final AnnotationInfo[] annotations = model.getAnnotations();
         for (final AnnotationInfo info : annotations)
         {
-			final int axis_index = info.getAxis();
-			if (axis_index < 0  ||  axis_index >= yaxes.size())
-				continue;
-			final Axis axis = yaxes.get(axis_index);
-        	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
-        	//ADD Laurent PHILIPPE
-			annotation.setCursorLineStyle(info.getCursorLineStyle());
-        	annotation.setShowName(info.isShowName());
-        	annotation.setShowPosition(info.isShowPosition());
-        	annotation.setShowSampleInfo(info.isShowSampleInfo());        	
-        	annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
-        			info.getValue());
-        	
-        	snapAnnotation(annotation, info);
+            final int axis_index = info.getAxis();
+            if (axis_index < 0  ||  axis_index >= yaxes.size())
+                continue;
+            final Axis axis = yaxes.get(axis_index);
+            final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
+            //ADD Laurent PHILIPPE
+            annotation.setCursorLineStyle(info.getCursorLineStyle());
+            annotation.setShowName(info.isShowName());
+            annotation.setShowPosition(info.isShowPosition());
+            annotation.setShowSampleInfo(info.isShowSampleInfo());            
+            annotation.setValues(TimestampHelper.toMillisecs(info.getTimestamp()),
+                    info.getValue());
+            
+            snapAnnotation(annotation, info);
 
-        	if(info.getColor() != null)
-        		annotation.setAnnotationColor(XYGraphMediaFactory.getInstance().getColor(info.getColor()));
+            if(info.getColor() != null)
+                annotation.setAnnotationColor(XYGraphMediaFactory.getInstance().getColor(info.getColor()));
 
-        	if(info.getFontData() != null)
-       			annotation.setAnnotationFont(XYGraphMediaFactory.getInstance().getFont(info.getFontData()));
+            if(info.getFontData() != null)
+                   annotation.setAnnotationFont(XYGraphMediaFactory.getInstance().getFont(info.getFontData()));
 
-        	graph.addAnnotation(annotation);
+            graph.addAnnotation(annotation);
         }
     }
     
-	//a workaround to snap the annotation in place
+    //a workaround to snap the annotation in place
     private void snapAnnotation(final Annotation annotation, final AnnotationInfo info) {
-    	annotation.addAnnotationListener(new IAnnotationListener() {
-			@Override
-			public void annotationMoved(double oldX, double oldY, double newX, double newY) {
-				//wait for the first annotation update after the trace is plotted and resnap
-				//the annotation to the correct position
-				if (annotation.getTrace() != null) {
-					if (annotation.getTrace().getHotSampleList().size() > 0) {
-						annotation.removeAnnotationListener(this);
-						double xValue = TimestampHelper.toMillisecs(info.getTimestamp());
-						List<ISample> samples = annotation.getTrace().getHotSampleList();
-						ISample sample = null;
-						if (samples.size() > 0) {
-							if (samples.get(0).getXValue() > xValue) {
-								sample = samples.get(0);
-							}
-						}
-						if (sample == null) {
-							for (int i = 1; i < samples.size(); i++) {
-								ISample first = samples.get(i-1);
-								ISample second = samples.get(i);
-								if (second.getXValue() > xValue && first.getXValue() <= xValue) {
-									sample = first;
-									break;
-								}
-							}
-						}
-						if (sample == null && samples.size() > 0) {
-							sample = samples.get(samples.size()-1);
-						}
-						if (sample != null) {
-							annotation.setCurrentSnappedSample(sample,false);
-						}
-						annotation.setValues(xValue,info.getValue());						
-					}
-				} else {
-					annotation.removeAnnotationListener(this);
-				}
-				
-			}
-		});
+        annotation.addAnnotationListener(new IAnnotationListener() {
+            @Override
+            public void annotationMoved(double oldX, double oldY, double newX, double newY) {
+                //wait for the first annotation update after the trace is plotted and resnap
+                //the annotation to the correct position
+                if (annotation.getTrace() != null) {
+                    if (annotation.getTrace().getHotSampleList().size() > 0) {
+                        annotation.removeAnnotationListener(this);
+                        double xValue = TimestampHelper.toMillisecs(info.getTimestamp());
+                        List<ISample> samples = annotation.getTrace().getHotSampleList();
+                        ISample sample = null;
+                        if (samples.size() > 0) {
+                            if (samples.get(0).getXValue() > xValue) {
+                                sample = samples.get(0);
+                            }
+                        }
+                        if (sample == null) {
+                            for (int i = 1; i < samples.size(); i++) {
+                                ISample first = samples.get(i-1);
+                                ISample second = samples.get(i);
+                                if (second.getXValue() > xValue && first.getXValue() <= xValue) {
+                                    sample = first;
+                                    break;
+                                }
+                            }
+                        }
+                        if (sample == null && samples.size() > 0) {
+                            sample = samples.get(samples.size()-1);
+                        }
+                        if (sample != null) {
+                            annotation.setCurrentSnappedSample(sample,false);
+                        }
+                        annotation.setValues(xValue,info.getValue());                        
+                    }
+                } else {
+                    annotation.removeAnnotationListener(this);
+                }
+                
+            }
+        });
     }
 
 
@@ -817,10 +817,10 @@ public class Controller implements ArchiveFetchJobListener
      * Add XYGraphMemento (Graph config settings from model to plot)
      */
     private void createXYGraphSettings() {
-     	plot.setGraphSettings(model.getGraphSettings());
- 	}
+         plot.setGraphSettings(model.getGraphSettings());
+     }
 
-	/** Scroll the plot to 'now' */
+    /** Scroll the plot to 'now' */
     protected void performScroll()
     {
         if (! model.isScrollEnabled())
@@ -831,14 +831,14 @@ public class Controller implements ArchiveFetchJobListener
         if (buffer > 0) {
             Range range = plot.getXYGraph().primaryXAxis.getRange();
             if (range.getUpper() < end_ms) {
-            	end_ms += (buffer*1000L);            	
+                end_ms += (buffer*1000L);                
                 plot.setTimeRange(start_ms, end_ms);
             } else {
-            	//set the same values, which will refresh the graph
-            	plot.setTimeRange((long)range.getLower(),(long)range.getUpper());
+                //set the same values, which will refresh the graph
+                plot.setTimeRange((long)range.getLower(),(long)range.getUpper());
             }
         } else {
-        	plot.setTimeRange(start_ms, end_ms);
+            plot.setTimeRange(start_ms, end_ms);
         }
        
         if (scrolling_was_off)
@@ -925,9 +925,9 @@ public class Controller implements ArchiveFetchJobListener
                 switch (rescale)
                 {
                 case AUTOZOOM:
-                	// Auto-zoom all value axes
-            		for(Axis axis : plot.getXYGraph().getYAxisList())
-            			axis.performAutoScale(true);
+                    // Auto-zoom all value axes
+                    for(Axis axis : plot.getXYGraph().getYAxisList())
+                        axis.performAutoScale(true);
                     break;
                 case STAGGER:
                     plot.getXYGraph().performStagger();
