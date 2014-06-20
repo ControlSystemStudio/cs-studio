@@ -23,9 +23,6 @@
  */
 package org.csstudio.utility.treemodel;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -60,11 +57,11 @@ public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeCon
      * @param fullName
      * @throws InvalidNameException
      */
-    public AbstractTreeNodeComponent(@Nonnull final String name,
-                                     @Nonnull final T type,
-                                     @Nullable final ISubtreeNodeComponent<T> parent,
-                                     @Nullable final Attributes attributes,
-                                     @Nullable final LdapName fullName) throws InvalidNameException {
+    public AbstractTreeNodeComponent(final String name,
+                                     final T type,
+                                     final ISubtreeNodeComponent<T> parent,
+                                     final Attributes attributes,
+                                     final LdapName fullName) throws InvalidNameException {
         _name = name;
         _type = type;
         _parent = parent;
@@ -76,7 +73,6 @@ public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeCon
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getName() {
         return _name;
     }
@@ -85,7 +81,6 @@ public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeCon
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public T getType() {
         return _type;
     }
@@ -94,7 +89,6 @@ public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeCon
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
     public ISubtreeNodeComponent<T> getParent() {
         return _parent;
     }
@@ -103,8 +97,7 @@ public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeCon
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public Attribute getAttribute(@Nonnull final String attrID) {
+    public Attribute getAttribute(final String attrID) {
         if (_attributes == null) {
             return null;
         }
@@ -115,7 +108,6 @@ public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeCon
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
     public LdapName getLdapName() {
         return (LdapName) _ldapName.clone();
     }
@@ -124,7 +116,6 @@ public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeCon
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public Attributes getAttributes() {
         return (Attributes) _attributes.clone();
     }

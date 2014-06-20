@@ -3,6 +3,7 @@ package org.csstudio.archive.reader.appliance.testClasses;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
+import org.csstudio.archive.reader.appliance.ApplianceArchiveReaderConstants;
 import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 
@@ -18,9 +19,9 @@ public class TestDataRetrieval implements DataRetrieval{
 	 */
 	@Override
 	public GenMsgIterator getDataForPV(String name, Timestamp start, Timestamp end) {
-		if (name.startsWith("mean_") || name.startsWith("std_") || 
-				name.startsWith("min_") || name.startsWith("max_") ||
-				name.startsWith("count_")) {
+		if (name.startsWith(ApplianceArchiveReaderConstants.OP_MEAN) || name.startsWith(ApplianceArchiveReaderConstants.OP_STD) || 
+				name.startsWith(ApplianceArchiveReaderConstants.OP_MIN) || name.startsWith(ApplianceArchiveReaderConstants.OP_MAX) ||
+				name.startsWith(ApplianceArchiveReaderConstants.OP_COUNT) || name.startsWith(ApplianceArchiveReaderConstants.OP_NCOUNT)) {
 			return new TestGenMsgIteratorOptimized(name, start, end);
 		} else {
 			if (name.contains("wave")) {

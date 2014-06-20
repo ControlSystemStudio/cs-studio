@@ -23,8 +23,6 @@
  */
 package org.csstudio.utility.treemodel;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
@@ -40,24 +38,18 @@ import javax.naming.ldap.LdapName;
  */
 public interface INodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
-    @Nonnull
     String getName();
 
-    @Nonnull
     T getType();
 
-    @CheckForNull
     ISubtreeNodeComponent<T> getParent();
 
     boolean hasChildren();
 
-    @CheckForNull
-    Attribute getAttribute(@Nonnull String attrID);
+    Attribute getAttribute(String attrID);
 
-    @Nonnull
     LdapName getLdapName();
 
 
-    @CheckForNull
     Attributes getAttributes();
 }

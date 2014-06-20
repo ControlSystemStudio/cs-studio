@@ -9,17 +9,14 @@
    </feature>
    <feature id="org.csstudio.core.all.feature">
       <category name="org.csstudio.category.core"/>
-   </feature> 
-   <feature id="org.csstudio.eclipse.feature">
-      <category name="org.csstudio.category.core"/>
-   </feature>
-   <feature id="org.csstudio.libs.feature">
-      <category name="org.csstudio.category.core"/>
    </feature>
    <feature id="org.csstudio.pvmanager.autocomplete.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
    <feature id="org.csstudio.pvmanager.exec.feature">
+      <category name="org.csstudio.category.core"/>
+   </feature>
+   <feature id="org.csstudio.pvmanager.extra.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
    <feature id="org.csstudio.pvmanager.feature">

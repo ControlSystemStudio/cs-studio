@@ -33,8 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -118,8 +116,7 @@ public class LdapNameSpace extends NameSpace {
         }
     }
     
-    @Nonnull
-    private List<ControlSystemItem> createCSIResultList(@Nonnull final ILdapSearchResult result) {
+    private List<ControlSystemItem> createCSIResultList(final ILdapSearchResult result) {
         
         final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
         final Set<SearchResult> answerSet = result.getAnswerSet();
@@ -160,7 +157,6 @@ public class LdapNameSpace extends NameSpace {
     }
     
     @Override
-    @CheckForNull
     public NameSpaceSearchResult getSearchResult() {
         return _resultList;
     }
@@ -169,7 +165,6 @@ public class LdapNameSpace extends NameSpace {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public NameSpace createNew() {
         return new LdapNameSpace();
     }

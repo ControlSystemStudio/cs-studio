@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
@@ -62,8 +61,7 @@ public final class LdapUtils {
      * @param fieldName the field to match any
      * @return .
      */
-    @Nonnull
-    public static String any(@Nonnull final String fieldName) {
+    public static String any(final String fieldName) {
         return equ(fieldName, FIELD_WILDCARD);
     }
     
@@ -73,8 +71,7 @@ public final class LdapUtils {
      * @param fieldValue the value the field type shall match
      * @return .
      */
-    @Nonnull
-    public static String equ(@Nonnull final String fieldName, @Nonnull final String fieldValue) {
+    public static String equ(final String fieldName, final String fieldValue) {
         return fieldName + FIELD_ASSIGNMENT + fieldValue;
     }
 
@@ -85,8 +82,7 @@ public final class LdapUtils {
      * @param keysAndValues an array of Strings that represent key value pairs, consecutively (1st=key, 2nd=value, 3rd=key, 4th=value, etc.)
      * @return the attributes for the new entry.
      */
-    @Nonnull
-    public static Attributes attributesForLdapEntry(@Nonnull final String... keysAndValues) {
+    public static Attributes attributesForLdapEntry(final String... keysAndValues) {
         if (keysAndValues.length % 2 > 0) {
             LOG.error("Ldap Attributes: For key value pairs the length of String array has to be multiple of 2!");
             throw new IllegalArgumentException("Length of parameter keysAndValues has to be multiple of 2.");
@@ -105,8 +101,7 @@ public final class LdapUtils {
      * @param fieldsAndValues an array of Strings that represent key value pairs, consecutively (1st=key, 2nd=value, 3rd=key, 4th=value, etc.)
      * @return the String with <field1>=<value1>, <field2>=<value2> assignments.
      */
-    @Nonnull
-    public static LdapName createLdapName(@Nonnull final String... fieldsAndValues) {
+    public static LdapName createLdapName(final String... fieldsAndValues) {
         if (fieldsAndValues.length % 2 > 0) {
             LOG.error("Ldap Attributes: For field and value pairs the length of String array has to be multiple of 2!");
             throw new IllegalArgumentException("Length of parameter fieldsAndValues has to be multiple of 2.");

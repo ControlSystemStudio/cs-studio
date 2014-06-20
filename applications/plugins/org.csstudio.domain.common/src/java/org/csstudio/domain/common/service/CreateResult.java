@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.common.service;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.domain.common.AbstractResult;
 
@@ -36,17 +35,15 @@ public final class CreateResult extends AbstractResult {
     /**
      * Constructor.
      */
-    private CreateResult(@Nonnull final Boolean result,
-                     @Nonnull final String message) {
+    private CreateResult(final Boolean result,
+                     final String message) {
         super(result, message);
     }
 
-    @Nonnull
-    public static CreateResult failed(@Nonnull final String msg) {
+    public static CreateResult failed(final String msg) {
         return new CreateResult(Boolean.FALSE, msg);
     }
-    @Nonnull
-    public static CreateResult succeeded(@Nonnull final String msg) {
+    public static CreateResult succeeded(final String msg) {
         return new CreateResult(Boolean.TRUE, msg);
     }
 }

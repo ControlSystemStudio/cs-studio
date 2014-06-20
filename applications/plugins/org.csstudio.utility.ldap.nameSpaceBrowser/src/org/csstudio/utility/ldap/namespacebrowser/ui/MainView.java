@@ -24,7 +24,6 @@ package org.csstudio.utility.ldap.namespacebrowser.ui;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
@@ -60,7 +59,7 @@ public class MainView extends ViewPart {
     private LDAP2Automat _automat;
     
     @Override
-    public void createPartControl(@Nonnull final Composite parent) {
+    public void createPartControl(final Composite parent) {
         _automat = new LDAP2Automat();
         final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL);
         final Composite c = new Composite(sc, SWT.NONE);
@@ -73,7 +72,7 @@ public class MainView extends ViewPart {
         
         c.getShell().addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(@Nonnull final KeyEvent e) {
+            public void keyReleased(final KeyEvent e) {
                 if(e.keyCode == SWT.F1) {
                     PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
                 }
@@ -107,7 +106,7 @@ public class MainView extends ViewPart {
         // EMPTY
     }
     
-    public void setDefaultPVFilter(@Nonnull final String defaultFilter) {
+    public void setDefaultPVFilter(final String defaultFilter) {
         _DEFAULT_PV_FILTER = defaultFilter;
         cssview.setDefaultFilter(_DEFAULT_PV_FILTER);
     }

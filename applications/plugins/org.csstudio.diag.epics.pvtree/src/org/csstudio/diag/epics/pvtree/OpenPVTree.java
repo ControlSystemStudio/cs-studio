@@ -18,6 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Command handler for opening PV Tree on the current selection.
@@ -72,7 +73,12 @@ public class OpenPVTree extends AbstractHandler implements IHandler
      */
     private PVTreeView openView(final ExecutionEvent event) throws Exception
     {
-        final IWorkbenchPage page = HandlerUtil.getActiveSite(event).getPage();
+    	// Use page which is related to the event
+    	// HandlerUtil.getActiveSite(event).getPage() fails because
+    	// 'activeSite' is null when there's no other view open.
+    	// 'activeWindow' is always defined
+    	final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+    	final IWorkbenchPage page = window.getActivePage();
         return (PVTreeView) page.showView(PVTreeView.ID, PVTreeView.newInstance(), IWorkbenchPage.VIEW_ACTIVATE);
     }
 }

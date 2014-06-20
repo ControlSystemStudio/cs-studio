@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
+import org.csstudio.archive.reader.appliance.ApplianceArchiveReaderConstants;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 import org.epics.archiverappliance.retrieval.client.InfoChangeHandler;
@@ -18,6 +19,13 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.ScalarDouble;
 
+/**
+ * 
+ * <code>TestGenMsgIteratorOptimized</code> is a message generator for the optimized data retrieval testing.
+ *
+ * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+ *
+ */
 public class TestGenMsgIteratorOptimized implements GenMsgIterator {
 	
 	protected PayloadInfo info;	
@@ -41,6 +49,8 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
 		3,2,2,1,0,0,0,1,2,4};
 	public static final int[] VALUES_COUNT = new int[]{
 		100,200,300,4,500,600,7,8,9,10};
+	public static final int VALUES_NCOUNT = 1000; 
+	public static final int VALUES_NCOUNT_WAVE = 10;
 	
 	/**
 	 * Constructor
@@ -51,16 +61,18 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
 	 */
 	public TestGenMsgIteratorOptimized(String name, Timestamp start, Timestamp end) {
 		int step = 0;
-		if (name.startsWith("mean_")) {
+		if (name.startsWith(ApplianceArchiveReaderConstants.OP_MEAN)) {
 			int index = name.indexOf('(');
 			step = Integer.parseInt(name.substring(5,index));
-		} else if (name.startsWith("std_") || name.startsWith("min_") ||
-				name.startsWith("max_")) {
+		} else if (name.startsWith(ApplianceArchiveReaderConstants.OP_STD) || name.startsWith(ApplianceArchiveReaderConstants.OP_MIN) ||
+				name.startsWith(ApplianceArchiveReaderConstants.OP_MAX)) {
 			int index = name.indexOf('(');
 			step = Integer.parseInt(name.substring(4,index));
-		} else if (name.startsWith("count_")) {
+		} else if (name.startsWith(ApplianceArchiveReaderConstants.OP_COUNT)) {
 			int index = name.indexOf('(');
 			step = Integer.parseInt(name.substring(6,index));
+		} else if (name.startsWith(ApplianceArchiveReaderConstants.OP_NCOUNT)) {
+			step = Integer.MAX_VALUE;
 		}
 		
 		try {
@@ -86,10 +98,18 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
 		ByteString byteString = ByteString.copyFrom(new byte[]{8, -52, -13, -57, 14, 16, -36, -78, -35, -51, 2, 25, 0, 0, 0, 0, 0, -87, -62, 64, 32, 2, 40, 3});
 		GeneratedMessage message = ScalarDouble.parseFrom(byteString);
 		
-		size = (int)(((end.getTime()-start.getTime())/1000)/step);
+		size = Math.max((int)(((end.getTime()-start.getTime())/1000)/step),1);
 		Number[] values = new Number[size];
 		
-		if (name.contains("count")) {
+		if (name.contains("ncount")) {
+			payloadType = PayloadType.SCALAR_INT;
+			values = new Number[1];
+			if (name.contains("wave")) {
+				values[0] = VALUES_NCOUNT_WAVE;
+			} else {
+				values[0] = VALUES_NCOUNT;
+			}
+		} else if (name.contains("count")) {
 			payloadType = PayloadType.SCALAR_INT;
 			for (int i = 0; i < size; i++) {
 				values[i] = VALUES_COUNT[i%VALUES_COUNT.length];

@@ -3,14 +3,12 @@ package org.csstudio.archive.reader.appliance;
 import java.util.ArrayList;
 
 import org.csstudio.archive.reader.ArchiveReader;
-import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.ArchiveVType;
-import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 
@@ -25,14 +23,6 @@ import org.epics.vtype.AlarmSeverity;
  */
 public abstract class AbstractArchiverReaderTesting {
 
-	
-	public static void main(String[] args) throws UnknownChannelException, Exception {
-		ApplianceArchiveReader reader = new ApplianceArchiveReader("pbraw://192.168.12.131:17665/retrieval", false);
-		ValueIterator it = reader.getRawValues(1, "waveform", Timestamp.now().minus(TimeDuration.ofMinutes(5)), Timestamp.now());
-		it.next();
-		System.out.println("21");
-		
-	}
 	/**
 	 * @return the reader used for loading the data
 	 */

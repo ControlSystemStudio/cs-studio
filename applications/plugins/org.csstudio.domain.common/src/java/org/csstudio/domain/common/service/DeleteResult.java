@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.common.service;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.domain.common.AbstractResult;
 
@@ -36,17 +35,15 @@ public final class DeleteResult extends AbstractResult {
     /**
      * Constructor.
      */
-    private DeleteResult(@Nonnull final Boolean result,
-                         @Nonnull final String message) {
+    private DeleteResult(final Boolean result,
+                         final String message) {
         super(result, message);
     }
 
-    @Nonnull
-    public static DeleteResult failed(@Nonnull final String msg) {
+    public static DeleteResult failed(final String msg) {
         return new DeleteResult(Boolean.FALSE, msg);
     }
-    @Nonnull
-    public static DeleteResult succeeded(@Nonnull final String msg) {
+    public static DeleteResult succeeded(final String msg) {
         return new DeleteResult(Boolean.TRUE, msg);
     }
 }

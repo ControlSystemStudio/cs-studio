@@ -1,6 +1,5 @@
 package org.csstudio.utility.ldap.service;
 
-import javax.annotation.Nonnull;
 
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 import org.csstudio.utility.treemodel.builder.IContentModelBuilder;
@@ -22,5 +21,5 @@ public interface ILdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigura
      * an existing model should be enriched with.
      * @param result the LDAP search result
      */
-    void setSearchResult(@Nonnull final ILdapSearchResult result);
+    void setSearchResult(final ILdapSearchResult result);
 }

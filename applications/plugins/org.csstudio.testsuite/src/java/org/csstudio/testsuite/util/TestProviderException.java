@@ -23,8 +23,6 @@
  */
 package org.csstudio.testsuite.util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Wraps test provider related exceptions.
@@ -41,7 +39,7 @@ public class TestProviderException extends Exception {
     /**
      * Constructor.
      */
-    public TestProviderException(@Nonnull final String message, @Nullable final Exception e) {
+    public TestProviderException(final String message, final Exception e) {
         super(message, e);
     }
 }

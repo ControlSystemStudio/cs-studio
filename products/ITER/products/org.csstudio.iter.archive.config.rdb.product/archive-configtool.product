@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Archive Engine Config Tool" uid="org.csstudio.iter.product.archive.config.rdb.product" id="org.csstudio.iter.archive.config.rdb.product.product" application="org.csstudio.archive.config.rdb.app" version="3.2.13.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Archive Engine Config Tool" uid="org.csstudio.iter.product.archive.config.rdb.product" id="org.csstudio.iter.archive.config.rdb.product.product" application="org.csstudio.archive.config.rdb.app" version="3.2.15.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

@@ -103,7 +103,7 @@ public class AutomatedActionFactory {
 					action = (IAutomatedAction) actionSequence;
 			} catch (IOException e) {
 				Activator.getLogger().log(Level.INFO,
-						"Unrecognized command pattern: {0}", details);
+						"Unrecognized command pattern: " + details, e);
 			}
 		} else {
 			final AAData data = new AAData(auto_action.getDetails(), auto_action.getDelay(), isManual);
@@ -150,7 +150,7 @@ public class AutomatedActionFactory {
 			}
 			action.init(item, data, handler);
 		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE, e.getMessage());
+			Activator.getLogger().log(Level.SEVERE, "Action creation failed", e);
 			return null;
 		}
 		return action;

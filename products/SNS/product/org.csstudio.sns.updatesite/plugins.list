@@ -106,7 +106,6 @@ org.csstudio.simplepv.utilitypv/**
 org.csstudio.security/**
 org.csstudio.security.ui/**
 org.csstudio.sns.mpsbypasses/**
-org.csstudio.sns.passwordprovider/**
 org.csstudio.sns.pvnames/**
 org.csstudio.sns.product/**
 org.csstudio.sns.updatesite/**

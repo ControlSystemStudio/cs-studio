@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		ApplianceArchiveReaderOptimizedTest.class,
 		ApplianceArchiveReaderOptimizedStatisticsTest.class,
 		ApplianceArchiveReaderRawTest.class,
-		ApplianceArchiveReaderRawWaveformTest.class})
+		ApplianceArchiveReaderRawWaveformTest.class,
+		ApplianceArchiveReaderOptimizedWaveformTest.class})
 public class ApplianceArchiveReaderTestSuite {
 
 }

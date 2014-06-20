@@ -16,8 +16,10 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -49,6 +51,7 @@ import org.eclipse.swt.widgets.Text;
 public class ItemConfigDialog extends TitleAreaDialog
 {
     private AlarmTreeItem item;
+    private AlarmClientModel model;
 
     /** PV description or null */
     private Text description_text;
@@ -81,12 +84,20 @@ public class ItemConfigDialog extends TitleAreaDialog
     /** Initialize
      *  @param shell Shell
      *  @param item Item who's configuration is initially displayed.
-     *  Dialog will not change the PV, only read its current configuration.
+     *  @param model The AlarmClientModel to which the configuration maps
+     *  @param blocking determines if the client should be blocking or not
+     *  
+     *  The Dialog will read the current configuration for a PV and save the changes when Ok is pressed.
      */
-    public ItemConfigDialog(final Shell shell, final AlarmTreeItem item)
+    public ItemConfigDialog(final Shell shell, final AlarmTreeItem item, final AlarmClientModel model, boolean blocking)
     {
         super(shell);
+        setBlockOnOpen(blocking);
+	if (!blocking) {
+	    setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
+	}
         this.item = item;
+        this.model = model;
     }
 
     @Override
@@ -546,6 +557,22 @@ public class ItemConfigDialog extends TitleAreaDialog
             setErrorMessage(Messages.Config_CountError);
             return;
         }
+	try {
+	    if (item instanceof AlarmTreePV) {
+		model.configurePV((AlarmTreePV) item, getDescription(),
+			isEnabled(), isAnnunciate(), isLatch(), getDelay(),
+			getCount(), getFilter(), getGuidance(), getDisplays(),
+			getCommands(), getAutomatedActions());
+	    } else {
+		model.configureItem(item, getGuidance(), getDisplays(),
+			getCommands(), getAutomatedActions());
+	    }
+
+	} catch (Throwable ex) {
+	    setErrorMessage(NLS.bind(
+		    Messages.CannotUpdateConfigurationErrorFmt, item.getName(),
+		    ex.getMessage()));
+	}
         super.okPressed();
     }
 }

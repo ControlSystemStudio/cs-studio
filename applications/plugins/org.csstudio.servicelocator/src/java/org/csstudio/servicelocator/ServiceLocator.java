@@ -21,15 +21,13 @@
  */
 package org.csstudio.servicelocator;
 
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
@@ -57,7 +55,6 @@ public final class ServiceLocator {
      * It is also possible to close the service provider. This is used to close the service trackers.
      */
     interface IServiceProvider<T> {
-        @CheckForNull
         T getService();
         
         void close();
@@ -99,8 +96,8 @@ public final class ServiceLocator {
      * @param service
      * @param impl
      */
-    public static <T, I extends T> void registerService(@Nonnull final Class<T> service,
-                                                 @Nonnull final I impl) {
+    public static <T, I extends T> void registerService(final Class<T> service,
+                                                 final I impl) {
         IServiceProvider<T> serviceProvider = createServiceProvider(impl);
         // If called more than once, the last one will survive.
         // This simplifies tests, where more than one call to register a service will usually be
@@ -117,8 +114,8 @@ public final class ServiceLocator {
      * @param service
      * @param serviceTracker
      */
-    public static <T, I extends T> void registerServiceTracker(@Nonnull final Class<T> service,
-                                                        @Nonnull final ServiceTracker<?, ?> serviceTracker) {
+    public static <T, I extends T> void registerServiceTracker(final Class<T> service,
+                                                        final ServiceTracker<?, ?> serviceTracker) {
         IServiceProvider<T> serviceProvider = createServiceProviderFromTracker(serviceTracker);
         registerServiceProvider(service, serviceProvider);
     }
@@ -144,8 +141,7 @@ public final class ServiceLocator {
      * @return service implementation or null
      */
     @SuppressWarnings("unchecked")
-    @CheckForNull
-    public static <T> T getService(@Nonnull final Class<T> typeOfService) {
+    public static <T> T getService(final Class<T> typeOfService) {
         // guard: only when not closed
         if (IS_CLOSED) {
             throw new IllegalStateException("Trying to get s service of type " + typeOfService +
@@ -160,12 +156,10 @@ public final class ServiceLocator {
         return (T) serviceProvider.getService();
     }
     
-    @Nonnull
-    private static <T, I extends T> IServiceProvider<T> createServiceProvider(@Nonnull final I service) {
+    private static <T, I extends T> IServiceProvider<T> createServiceProvider(final I service) {
         return new IServiceProvider<T>() {
             
             @Override
-            @CheckForNull
             public T getService() {
                 return service;
             }
@@ -177,8 +171,7 @@ public final class ServiceLocator {
         };
     }
     
-    @Nonnull
-    private static <T> IServiceProvider<T> createServiceProviderFromTracker(@Nonnull final ServiceTracker<?, ?> serviceTracker) {
+    private static <T> IServiceProvider<T> createServiceProviderFromTracker(final ServiceTracker<?, ?> serviceTracker) {
         return new ServiceProviderBasedOnServiceTracker<T>(serviceTracker);
     }
     
@@ -189,13 +182,12 @@ public final class ServiceLocator {
         
         private final ServiceTracker<?, ?> _serviceTracker;
         
-        public ServiceProviderBasedOnServiceTracker(@Nonnull final ServiceTracker<?, ?> serviceTracker) {
+        public ServiceProviderBasedOnServiceTracker(final ServiceTracker<?, ?> serviceTracker) {
             _serviceTracker = serviceTracker;
         }
         
         @SuppressWarnings("unchecked")
         @Override
-        @Nonnull
         public T getService() {
             T service = (T) _serviceTracker.getService();
             if (service == null) {
@@ -224,7 +216,7 @@ public final class ServiceLocator {
         private final int _rmiPort;
         private final Class<T> _service;
         
-        public ServiceProviderForRemote(@Nonnull final String rmiServer, final int rmiPort, @Nonnull final Class<T> service) {
+        public ServiceProviderForRemote(final String rmiServer, final int rmiPort, final Class<T> service) {
             _rmiServer = rmiServer;
             _rmiPort = rmiPort;
             _service = service;
@@ -232,7 +224,6 @@ public final class ServiceLocator {
         
         @Override
         @SuppressWarnings({ "unchecked", "synthetic-access" })
-        @CheckForNull
         public T getService() {
             I result = null;
             Registry registry;

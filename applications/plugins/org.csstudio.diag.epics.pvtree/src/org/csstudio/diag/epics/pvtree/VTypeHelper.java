@@ -75,7 +75,7 @@ public class VTypeHelper
             buf.append("(").append(item.getIndex()).append(")");
         }
         else
-            buf.append(value.getClass().getName());
+            buf.append(value.toString());
     }
 
     public static void appendAlarm(final StringBuilder buf, final VType value)

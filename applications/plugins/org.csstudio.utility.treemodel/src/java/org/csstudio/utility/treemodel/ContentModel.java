@@ -30,8 +30,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
@@ -72,12 +70,12 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
      * Constructor.
      * @param virtualConfigurationRoot .
      */
-    public ContentModel(@Nonnull final T virtualConfigurationRoot) {
+    public ContentModel(final T virtualConfigurationRoot) {
         _virtualConfigurationRoot = virtualConfigurationRoot;
         initFields(_virtualConfigurationRoot);
     }
 
-    private void initFields(@Nonnull final T objectClassRoot) {
+    private void initFields(final T objectClassRoot) {
         _cacheByLdapName = new HashMap<String, INodeComponent<T>>();
 
         final Class<T> clazz = objectClassRoot.getDeclaringClass();
@@ -97,8 +95,7 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     }
 
 
-    @Nonnull
-    private Map<T, Map<String, INodeComponent<T>>> initCacheByType(@Nonnull final Class<T> enumClass) {
+    private Map<T, Map<String, INodeComponent<T>>> initCacheByType(final Class<T> enumClass) {
         return new EnumMap<T, Map<String, INodeComponent<T>>>(enumClass);
     }
 
@@ -111,8 +108,8 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
      * @param parent
      * @param newChild
      */
-    public void addChild(@Nonnull final ISubtreeNodeComponent<T> parent,
-                         @Nonnull final INodeComponent<T> newChild) {
+    public void addChild(final ISubtreeNodeComponent<T> parent,
+                         final INodeComponent<T> newChild) {
 
         if (parent.equals(_virtualRoot)) {
             parent.addChild(newChild);
@@ -128,7 +125,7 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         cacheNewChild(newChild);
     }
 
-    private void cacheNewChild(@Nonnull final INodeComponent<T> newChild) {
+    private void cacheNewChild(final INodeComponent<T> newChild) {
         // CACHING
         _cacheByLdapName.put(newChild.getLdapName().toString(), newChild);
 
@@ -161,46 +158,39 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
      * @param type the type of the children
      * @return a copy of the keys of the children featuring the given type
      */
-    @Nonnull
-    public Set<String> getSimpleNames(@Nonnull final T type) {
+    public Set<String> getSimpleNames(final T type) {
         final Map<String, INodeComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
 
         return new HashSet<String>(children.keySet());
     }
 
-    @Nonnull
-    public Map<String, INodeComponent<T>> getChildrenByTypeAndLdapName(@Nonnull final T type) {
+    public Map<String, INodeComponent<T>> getChildrenByTypeAndLdapName(final T type) {
 
         final Map<String, INodeComponent<T>> map = _cacheByTypeAndLdapName.get(type);
         return map != null ? map : Collections.<String, INodeComponent<T>>emptyMap();
     }
 
-    @Nonnull
-    public Map<String, INodeComponent<T>> getChildrenByTypeAndSimpleName(@Nonnull final T type) {
+    public Map<String, INodeComponent<T>> getChildrenByTypeAndSimpleName(final T type) {
         final Map<String, INodeComponent<T>> map = _cacheByTypeAndSimpleName.get(type);
         return map != null ? map : Collections.<String, INodeComponent<T>>emptyMap();
     }
 
-    @CheckForNull
-    public INodeComponent<T> getByTypeAndLdapName(@Nonnull final T type, @Nonnull final LdapName key) {
+    public INodeComponent<T> getByTypeAndLdapName(final T type, final LdapName key) {
         final Map<String, INodeComponent<T>> children = _cacheByTypeAndLdapName.get(type);
         return children != null ? children.get(key.toString()) : null;
     }
 
 
-    @CheckForNull
-    public INodeComponent<T> getByTypeAndSimpleName(@Nonnull final T type, @Nonnull final String key) {
+    public INodeComponent<T> getByTypeAndSimpleName(final T type, final String key) {
         final Map<String, INodeComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
         return children != null ? children.get(key) : null;
     }
 
-    @CheckForNull
-    public INodeComponent<T> getChildByLdapName(@Nonnull final String name) {
+    public INodeComponent<T> getChildByLdapName(final String name) {
         return _cacheByLdapName.get(name);
     }
 
-    @Nonnull
-    public Map<String, INodeComponent<T>> getByType(@Nonnull final T type) {
+    public Map<String, INodeComponent<T>> getByType(final T type) {
         final Map<String, INodeComponent<T>> map = _cacheByTypeAndLdapName.get(type);
         return map != null ? map : Collections.<String, INodeComponent<T>>emptyMap();
     }
@@ -211,7 +201,6 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
      * the modeled content.
      * @return the virtual root of the model
      */
-    @Nonnull
     public ISubtreeNodeComponent<T> getVirtualRoot() {
         return _virtualRoot;
     }

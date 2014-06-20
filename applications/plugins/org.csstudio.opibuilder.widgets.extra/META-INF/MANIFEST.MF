@@ -9,5 +9,6 @@ Require-Bundle: org.csstudio.utility.pvmanager;bundle-version="3.2.0",
  org.csstudio.opibuilder.widgets;bundle-version="3.2.0",
  org.csstudio.opibuilder;bundle-version="3.2.0",
  org.csstudio.utility.pvmanager.ui.toolbox;bundle-version="3.2.0",
- org.csstudio.ui.util;bundle-version="3.2.0"
+ org.csstudio.ui.util;bundle-version="3.2.0",
+ org.eclipse.ui.views
 Export-Package: org.csstudio.opibuilder.widgets.extra

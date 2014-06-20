@@ -100,6 +100,16 @@
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="true"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=file">
+         <toolbar
+               id="additions">
+         </toolbar>
+      </menuContribution>
+   </extension>
    
 
 </plugin>

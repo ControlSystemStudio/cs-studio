@@ -1,8 +1,8 @@
 package org.csstudio.opibuilder.runmode;
 
 import java.io.InputStream;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -44,18 +45,13 @@ import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.internal.PartPane;
-import org.eclipse.ui.internal.PartSite;
-import org.eclipse.ui.internal.PartStack;
 
 /**
  * The delegate to run an OPI in an editor or view.
@@ -331,23 +327,12 @@ public class OPIRuntimeDelegate implements IAdaptable{
 	private void hideCloseButton(final IWorkbenchPartSite site) {
 		if (!displayModel.isShowCloseButton()) {
 			Display.getCurrent().asyncExec(new Runnable() {
-
 				public void run() {
-					
-					PartPane currentEditorPartPane = ((PartSite) site)
-							.getPane();
-					PartStack stack = currentEditorPartPane.getStack();
-					Control control = stack.getControl();
-					if (control instanceof CTabFolder) {
-						CTabFolder tabFolder = (CTabFolder) control;
-						tabFolder.getSelection().setShowClose(false);
-					}
+					SingleSourcePlugin.getUIHelper().enableClose(site, false);
 				}
 			});
 		}
 	}
-	
-	
 	
 	public void setEditorInput(IEditorInput editorInput) {
 		this.editorInput = editorInput;

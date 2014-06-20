@@ -7,10 +7,14 @@
 ******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
+import java.util.List;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.notifier.actions.AutomatedActionFactory;
+import org.csstudio.alarm.beast.notifier.model.IApplicationListener;
 import org.csstudio.alarm.beast.notifier.rdb.AlarmRDBHandler;
 import org.csstudio.alarm.beast.notifier.rdb.IAlarmRDBHandler;
 import org.csstudio.alarm.beast.notifier.util.NotifierUtils;
@@ -23,14 +27,27 @@ import org.eclipse.equinox.app.IApplicationContext;
 
 public class Application implements IApplication {
 
+	private static final String[] VERBOSE_PACKAGES = new String[] {
+			"com.sun.jersey.core.spi.component",
+			"com.sun.jersey.spi.service.ServiceFinder" };
+
 	final public static String APPLICATION_NAME = "AlarmNotifier";
-    private boolean run = true;
+	private boolean run = true;
 
     /** {@inheritDoc} */
     @Override
-    public Object start(final IApplicationContext context) throws Exception
-    {
-    	// Display configuration info
+	public Object start(final IApplicationContext context) throws Exception 
+	{
+		// Set upper log level on too verbose packages
+		Level verboseLogLevel = org.csstudio.alarm.beast.notifier.Preferences.getVerboseLogLevel();
+		for (String verbosePackage : VERBOSE_PACKAGES) {
+			Logger logger = Logger.getLogger(verbosePackage);
+			logger.setLevel(verboseLogLevel);
+			for (Handler handler : logger.getHandlers())
+				handler.setLevel(verboseLogLevel);
+		}
+
+		// Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
         
@@ -69,6 +86,10 @@ public class Application implements IApplication {
         System.out.println("Notifier timer threshold: " + org.csstudio.alarm.beast.notifier.Preferences.getTimerThreshold());
         
 		try {
+			List<IApplicationListener> listeners = NotifierUtils.getListeners();
+			if (listeners != null)
+				for (IApplicationListener l : listeners)
+					l.applicationStarted(context);
 			AutomatedActionFactory factory = AutomatedActionFactory.getInstance();
 			factory.init(NotifierUtils.getActions());
 			final IAlarmRDBHandler rdbHandler = new AlarmRDBHandler(config_name.get());
@@ -83,8 +104,7 @@ public class Application implements IApplication {
 			alarm_notifer.stop();
 		} catch (Throwable ex) {
 			Activator.getLogger().log(Level.SEVERE,
-					"Exception during Alarm Notifier starting: {0}",
-					ex.getMessage());
+					"Exception during Alarm Notifier starting", ex);
 			return Integer.valueOf(-1);
 		}
 		return IApplication.EXIT_OK;

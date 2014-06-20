@@ -21,7 +21,6 @@
  */
 package org.csstudio.remote.jms.command;
 
-import javax.annotation.Nonnull;
 
 /**
  * This exception may be thrown from the implementation of the IRemoteCommandService.
@@ -38,7 +37,7 @@ public class RemoteCommandException extends Exception {
      * Constructor.
      * @param message
      */
-    public RemoteCommandException(@Nonnull final String message) {
+    public RemoteCommandException(final String message) {
         super(message);
     }
     
@@ -47,7 +46,7 @@ public class RemoteCommandException extends Exception {
      * @param message
      * @param e the root cause
      */
-    public RemoteCommandException(@Nonnull final String message, @Nonnull final Throwable e) {
+    public RemoteCommandException(final String message, final Throwable e) {
         super(message, e);
     }
 }

@@ -51,7 +51,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getDouble(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_DOUBLE,array,0.000001);
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_DOUBLE[i],array,0.000001);
 			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
@@ -79,7 +79,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getFloat(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_FLOAT,array,0.000001);
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_FLOAT[i],array,0.000001);
 			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
@@ -107,7 +107,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getInt(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_INT,array);
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_INT[i],array);
 			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
@@ -135,7 +135,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getShort(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_SHORT,array);
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_SHORT[i],array);
 			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
@@ -163,7 +163,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 			for (int j = 0; j < array.length; j++) {
 				array[j] = val.getData().getByte(j);
 			}
-			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_BYTE,array);
+			assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_BYTE[i],array);
 			assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
 			assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
 			assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
@@ -179,6 +179,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 	 */
 	@Test
 	public void testDataRetrievalString() throws Exception {
+		//this is not supported on the CSS core side
 		Timestamp end = Timestamp.now();
 		Timestamp start = end.minus(TimeDuration.ofHours(24.0));
 		try {

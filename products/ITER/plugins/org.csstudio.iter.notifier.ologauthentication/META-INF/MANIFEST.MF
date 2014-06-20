@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Olog authentication fragment of Alarm Notifier
+Bundle-SymbolicName: org.csstudio.iter.notifier.ologauthentication;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-Description: Olog authentication fragment of Alarm Notifier
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.alarm.beast.notifier,
+ edu.msu.nscl.olog.api
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

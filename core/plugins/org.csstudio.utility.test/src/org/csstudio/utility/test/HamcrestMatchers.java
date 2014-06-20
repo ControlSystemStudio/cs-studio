@@ -17,32 +17,19 @@ import org.hamcrest.Matcher;
 @SuppressWarnings("nls")
 public class HamcrestMatchers
 {
-	/** @param segment Segment to find within {@link String}
-	 *  @return {@link Matcher}
-	 */
-	public static Matcher<String> containsString(final String segment)
-	{
-		return new BaseMatcher<String>()
-		{
-            @Override
-			public void describeTo(final Description descr)
-			{
-				descr.appendText("text that contains \"").appendText(segment).appendText("\"");
-			}
-
-			@Override
-			public boolean matches(final Object obj)
-			{
-				return obj instanceof String
-					&& ((String) obj).contains(segment);
-			}
-		};
-	}
-	
-	/** @param goal Desired value
-	 *  @param tolerance Allowed tolerance
+    /** @param segment Segment to find within {@link String}
      *  @return {@link Matcher}
-	 */
+     */
+    public static Matcher<String> containsString(final String segment)
+    {   // With Eclipse 4.x, org.hamcrest.core offers containsString().
+        // Before, that was not the case, so HamcrestMatchers implemented it.
+        return org.hamcrest.CoreMatchers.containsString(segment);
+    }
+
+    /** @param goal Desired value
+     *  @param tolerance Allowed tolerance
+     *  @return {@link Matcher}
+     */
     public static Matcher<Number> closeTo(final Number goal, final double tolerance)
     {
         return new BaseMatcher<Number>()

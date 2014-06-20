@@ -3,6 +3,33 @@
   <div style="margin: 5px 15px 10px; color: #656565; font: 12px Verdana, 'Lucida Sans', sans-serif">
     Loading Data Browser...
   </div>
-  
 </div>
+
+<!-- Fixes problem with Firefox 29, see https://wiki.eclipse.org/RAP/FAQ#Blank_page_or_client_crash_in_Firefox_29.2B
+     Would be included in RAP 2.3
+  -->
+<script type="text/javascript">
+(function()
+{
+    try
+    {
+        var e=navigator.userAgent;
+        if (e.indexOf("like Gecko") === -1  &&  e.indexOf("Gecko/") !== -1)
+        {
+            if (!window.controllers)
+            {
+                window.controllers = {}
+            }
+            if (!navigator.product)
+            {
+                navigator.product="Gecko"
+            }
+        }
+    }
+    catch(t)
+    {}
+}
+)()
+</script>
+
 <span id="dummy"></span>

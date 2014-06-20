@@ -21,8 +21,6 @@
  */
 package org.csstudio.utility.ldap.reader;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.servicelocator.ServiceLocator;
@@ -79,8 +77,8 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
          * @param searchRoot the root
          * @param filter the filter
          */
-        public Builder(@Nonnull final LdapName searchRoot,
-                       @Nonnull final String filter) {
+        public Builder(final LdapName searchRoot,
+                       final String filter) {
             _searchParams = new LdapSearchParams(searchRoot, filter);
             _searchResult = new LdapSearchResult();
         }
@@ -90,8 +88,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
          * @param scope the search scope of {@link javax.naming.directory.SearchControls}
          * @return
          */
-        @Nonnull
-        public Builder setScope(final int scope) {
+            public Builder setScope(final int scope) {
             _searchParams.setScope(scope);
             return this;
         }
@@ -101,8 +98,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
          * @param callBack called on job completion
          * @return the builder for chaining
          */
-        @Nonnull
-        public Builder setJobCompletedCallBack(@Nonnull final ILdapReadCompletedCallback callBack) {
+            public Builder setJobCompletedCallBack(final ILdapReadCompletedCallback callBack) {
             _callBack = callBack;
             return this;
         }
@@ -111,15 +107,14 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
          * Eventually constructs an LDAPReader instance.
          * @return the LDAP reader job
          */
-        @Nonnull
-        public LDAPReaderJob build() {
+            public LDAPReaderJob build() {
             return new LDAPReaderJob(this);
         }
     }
 
 
     @SuppressWarnings("synthetic-access")
-    LDAPReaderJob(@Nonnull final Builder builder){
+    LDAPReaderJob(final Builder builder){
         super("LDAPReader");
         _searchParams = builder._searchParams;
         _searchResult = builder._searchResult;
@@ -127,11 +122,11 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
     }
 
 
-    private void setJobCompletedCallBack(@CheckForNull final ILdapReadCompletedCallback callBack) {
+    private void setJobCompletedCallBack(final ILdapReadCompletedCallback callBack) {
         if (callBack != null) {
             addJobChangeListener(new JobChangeAdapter() {
                 @Override
-                public void done(@Nonnull final IJobChangeEvent event) {
+                public void done(final IJobChangeEvent event) {
                     if (event.getResult().isOK()) {
                         callBack.onLdapReadComplete();
                     }
@@ -145,8 +140,7 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    protected IStatus run(@Nonnull final IProgressMonitor monitor) {
+    protected IStatus run(final IProgressMonitor monitor) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
 
         final ILdapService service = ServiceLocator.getService(ILdapService.class);
@@ -174,7 +168,6 @@ public final class LDAPReaderJob extends Job implements ILdapReaderJob {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public ILdapSearchResult getSearchResult() {
         return _searchResult;
     }

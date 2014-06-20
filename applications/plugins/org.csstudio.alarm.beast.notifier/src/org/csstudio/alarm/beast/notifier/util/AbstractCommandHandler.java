@@ -70,15 +70,15 @@ public abstract class AbstractCommandHandler implements IActionHandler {
 
 		Matcher mainMatcher = Pattern.compile("^" + scheme + ":(.*)$").matcher(data);
 		if (type == null && mainMatcher.matches())
-			parseDataType(mainMatcher.group(1), ParamType.To);
+			parseDataType(mainMatcher.group(1).trim(), ParamType.To);
 
 		boolean found = false;
 		for (ParamType param : ParamType.values()) {
-			Matcher matcher = Pattern.compile("^(.*)(?:\\?|&)" + param.getName() + "=(.*)$").matcher(data);
+			Matcher matcher = Pattern.compile("^(.*)(?:\\?|&)(?i:" + param.getName() + ")=(.*)$").matcher(data);
 			if (matcher.matches()) {
 				found = true;
-				parseDataType(matcher.group(1), type);
-				parseDataType(matcher.group(2), param);
+				parseDataType(matcher.group(1).trim(), type);
+				parseDataType(matcher.group(2).trim(), param);
 			}
 		}
 		// no pattern found => final data

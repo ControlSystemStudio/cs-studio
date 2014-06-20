@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.common.softioc;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -28,9 +29,6 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import org.eclipse.core.runtime.FileLocator;
 
@@ -65,7 +63,6 @@ public class Caget {
         _waitTime = waitTimeInSec;
     }
 
-    @Nonnull
     private String getWaitTimeOptionString() {
         if (_waitTime == DEFAULT_WAIT_TIME) {
             return "";
@@ -80,7 +77,6 @@ public class Caget {
         _terseMode = terseMode;
     }
 
-    @Nonnull
     private String getTerseModeOptionString() {
         if (_terseMode) {
             return "-t";
@@ -88,20 +84,18 @@ public class Caget {
         return "";
     }
 
-    @Nonnull
     private String getDBROptionString() {
         return _dbr.getAsOptionString();
     }
 
-    public void setDbr(@Nonnull final DBR dbr) {
+    public void setDbr(final DBR dbr) {
         _dbr = dbr;
     }
 
 
 
 
-    @Nonnull
-    public ArrayList<String> caget(@Nonnull final String recodName) throws IOException, URISyntaxException {
+    public ArrayList<String> caget(final String recodName) throws IOException, URISyntaxException {
         final ArrayList<String> lines = new ArrayList<String>();
         final URL camExeUrl = FileLocator.toFileURL(Caget.class.getClassLoader()
                 .getResource("win/caget.exe"));
@@ -130,8 +124,7 @@ public class Caget {
      * @param recodName
      * @return
      */
-    @Nonnull
-    private String[] buildCommand(@Nonnull final String exe, @Nonnull final String recodName) {
+    private String[] buildCommand(final String exe, final String recodName) {
         final ArrayList<String> commands = new ArrayList<String>();
         commands.add(exe);
         addNotEmpty(commands, getWaitTimeOptionString());
@@ -146,8 +139,8 @@ public class Caget {
      * @param commands
      * @param command
      */
-    private void addNotEmpty(@Nonnull final ArrayList<String> commands,
-                             @CheckForNull final String command) {
+    private void addNotEmpty(final ArrayList<String> commands,
+                             final String command) {
         if (command != null && !command.isEmpty()) {
             commands.add(command);
         }

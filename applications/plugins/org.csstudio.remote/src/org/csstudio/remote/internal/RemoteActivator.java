@@ -1,7 +1,5 @@
 package org.csstudio.remote.internal;
 
-import javax.annotation.Nonnull;
-
 import org.csstudio.remote.jms.command.IRemoteCommandService;
 import org.csstudio.remote.jms.command.JmsRemoteCommandService;
 import org.csstudio.servicelocator.ServiceLocatorFactory;
@@ -39,7 +37,7 @@ public class RemoteActivator extends Plugin {
         // see activator of o.c.alarm.service for details
     }
     
-    private void registerRemoteCommandService(@Nonnull final BundleContext bundleContext) {
+    private void registerRemoteCommandService(final BundleContext bundleContext) {
         ServiceLocatorFactory.registerServiceWithTracker("Remote command service implementation",
                                                          bundleContext,
                                                          IRemoteCommandService.class,
