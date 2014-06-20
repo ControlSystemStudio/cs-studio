@@ -8,14 +8,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.askap.sb.ui.SchedulerDialog;
-import org.csstudio.askap.sb.util.DataCaptureDataModel;
 import org.csstudio.askap.sb.util.DataChangeEvent;
 import org.csstudio.askap.sb.util.DataChangeListener;
 import org.csstudio.askap.sb.util.SBDataModel;
 import org.csstudio.askap.sb.util.SchedulingBlock;
 import org.csstudio.askap.sb.util.SchedulingBlock.SBState;
 import org.csstudio.askap.utility.AskapEditorInput;
-import org.csstudio.askap.utility.AskapHelper;
+import org.csstudio.askap.utility.icemanager.LogObject;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -23,7 +22,6 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -49,6 +47,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
+import askap.interfaces.monitoring.MonitorPoint;
+
 public class SBExecutionView extends EditorPart {
 
 	public static final String ID = "org.csstudio.askap.sb.SBExecutionView";
@@ -70,28 +70,13 @@ public class SBExecutionView extends EditorPart {
 
 	private static final Map<SBState, Integer> STATE_COLOR_MAP = new HashMap<SBState, Integer>();
 	
-	private static Image RED_BUTTON_IMAGE = null;
-	private static Image GREEN_BUTTON_IMAGE = null;
-	private static Image GREY_BUTTON_IMAGE = null;
-		
 	private Composite parent = null;
 	
 	SBDataModel dataModel = new SBDataModel();
-	DataCaptureDataModel dataCaptureModel = new DataCaptureDataModel();
-
 	
 	static {
 		STATE_COLOR_MAP.put(SBState.ERRORED, SWT.COLOR_RED);
 		STATE_COLOR_MAP.put(SBState.EXECUTING, SWT.COLOR_GREEN);
-		        
-        try {
-
-        	RED_BUTTON_IMAGE = Activator.getDefault().getImage("icons/red_round_button.png");        	
-        	GREEN_BUTTON_IMAGE = Activator.getDefault().getImage("icons/green_round_button.png");
-        	GREY_BUTTON_IMAGE = Activator.getDefault().getImage("icons/grey_round_button.png");
-        } catch (Exception e) {
-        	logger.log(Level.WARNING, "Could not load images", e);
-        }
 	}
 	
 
@@ -244,11 +229,11 @@ public class SBExecutionView extends EditorPart {
 			}
 		});
 
-		Composite dataCapturePanel = createParkesDataCaptureComponent(page);
+		Label dummyLabel = new Label(page, 0);
 		g3 = new GridData();
 		g3.horizontalAlignment = GridData.FILL;	
 		g3.grabExcessHorizontalSpace = true;
-		dataCapturePanel.setLayoutData(g3);
+		dummyLabel.setLayoutData(g3);
 		
 		
 		editButton = new Button(page, SWT.PUSH);
@@ -350,6 +335,7 @@ public class SBExecutionView extends EditorPart {
 		page.pack();
 		
 		setupListener();
+		disableAllButtons();
 	}
 
 	private void setupListener() {
@@ -373,13 +359,13 @@ public class SBExecutionView extends EditorPart {
 			@Override
 			public void partClosed(IWorkbenchPartReference partRef) {
 				if (isThisEditor(partRef))
-					close();
+					stop();
 			}
 
 			@Override
 			public void partHidden(IWorkbenchPartReference partRef) {
 				if (isThisEditor(partRef))
-					close();
+					stop();
 			}
 			
 
@@ -407,6 +393,11 @@ public class SBExecutionView extends EditorPart {
 		});
 	}
 
+	
+	public void stop() {
+		dataModel.stopPollingThreads();
+	}
+	
 	protected void start() {
 		dataModel.startSBPollingThread(new DataChangeListener() {
 			public void dataChanged(final DataChangeEvent event) {
@@ -423,37 +414,29 @@ public class SBExecutionView extends EditorPart {
 				});
 			}
 		});
-/*		
-		dataCaptureModel.start(new DataChangeListener() {			
+
+		dataModel.startExecutiveStatusPollingThread(new String[]{Preferences.getExecutiveMonitorPointName()},				
+			new DataChangeListener() {
+				public void dataChanged(final DataChangeEvent event) {
+					getParent().getDisplay().asyncExec(new Runnable() {					
+						public void run() {
+							MonitorPoint newPointValue[] = (MonitorPoint[]) event.getChange();
+							setupButtons(true);
+						}
+					});
+				}
+		});	
+		
+		dataModel.startExecutiveLogSubscriber(new DataChangeListener() {
+			
 			@Override
-			public void dataChanged(final DataChangeEvent e) {
-				getParent().getDisplay().asyncExec(new Runnable() {					
-					@Override
-					public void run() {
-						if (e.getChange()==null) {
-							sbidLabel.setText("");
-							status.setImage(GREY_BUTTON_IMAGE);
-							stopCaptureButton.setEnabled(false);
-							
-							return;
-						}
-						
-						final long sbid = ((Long)e.getChange()).longValue();
- 						if (sbid>=0) {
-							sbidLabel.setText("" + sbid);
-							status.setImage(GREEN_BUTTON_IMAGE);
-							stopCaptureButton.setEnabled(true);
-						} else {
-							sbidLabel.setText("");
-							status.setImage(RED_BUTTON_IMAGE);
-							stopCaptureButton.setEnabled(false);
-						}
-					}
-				});
-				
+			public void dataChanged(DataChangeEvent e) {
+				LogObject logObj = (LogObject) e.getChange();
+				if (logObj!=null)
+					ExecutiveLogHelper.getInstance().writeLog(logObj);
 			}
+			
 		});
-*/
 	}
 
 	@Override
@@ -479,21 +462,12 @@ public class SBExecutionView extends EditorPart {
 				getParent().getDisplay().asyncExec(new Runnable() {		
 					public void run() {
 						Exception e = (Exception) event.getChange();				
-						if (e==null) {
-					        MessageBox messageBox = new MessageBox(getParent().getShell(), SWT.ICON_INFORMATION | SWT.OK);
-					        messageBox.setMessage("Executive service is no longer running.");
-					        messageBox.open();
-					        		        
-							setupButtons(false, true);
-
-						} else {
+						if (e !=null ) {
 							logger.log(Level.WARNING, "Could not stop/abort Executive Service", e);
 				            ExceptionDetailsErrorDialog.openError(getParent().getShell(),
 				                    "ERROR",
 				                    "Could not stop/abort Executive Service",
 				                    e);
-							
-							setupButtons(true, false);
 						}
 					}
 				});
@@ -502,10 +476,10 @@ public class SBExecutionView extends EditorPart {
 		});
 	}
 	
-	protected void setupButtons(boolean started, boolean stopped) {
-		scheduleTable.setToolTipText("You have to stop the Executive to enable '" + editButton.getText() + "' button to reschedule SB");
+	protected void setupButtons(boolean isRunning) {
 
-		if (started) {
+		if (isRunning) {
+			scheduleTable.setToolTipText("You have to stop the Executive to enable '" + editButton.getText() + "' button to reschedule SB");
 			startButton.setEnabled(false);
 			editButton.setEnabled(false);
 			
@@ -513,30 +487,32 @@ public class SBExecutionView extends EditorPart {
 			abortButton.setEnabled(true);
 			
 			return;
-		}
-		
-		if (stopped) {
+			
+		} else {
 			startButton.setEnabled(true);
 			editButton.setEnabled(true);
+
 			scheduleTable.setToolTipText("You have to start the Executive to execute the SB");
 			
 			stopButton.setEnabled(false);
 			abortButton.setEnabled(false);
 			
-			return;
 		}
-		
+	}
+	
+	
+	protected void disableAllButtons() {
 		startButton.setEnabled(false);
 		editButton.setEnabled(false);
 		
 		stopButton.setEnabled(false);
-		abortButton.setEnabled(true);		
+		abortButton.setEnabled(false);		
 	}
 	
 	protected void stopExecutive() {
 		try {
 			dataModel.stop();
-			setupButtons(false, false);
+			disableAllButtons();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not stop 'Executive Service'", e);
             ExceptionDetailsErrorDialog.openError(getParent().getShell(),
@@ -551,7 +527,7 @@ public class SBExecutionView extends EditorPart {
 		try {
 			dataModel.start();
 
-			setupButtons(true, false);
+			disableAllButtons();
 
 	        MessageBox messageBox = new MessageBox(getParent().getShell(), SWT.ICON_INFORMATION | SWT.OK);
 	        messageBox.setMessage("Executive service started");
@@ -571,7 +547,7 @@ public class SBExecutionView extends EditorPart {
 	protected void abortExecutive() {
 		try {
 			dataModel.abort();
-			setupButtons(false, false);
+			disableAllButtons();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not abort 'Executive Service'", e);
             ExceptionDetailsErrorDialog.openError(getParent().getShell(),
@@ -605,56 +581,6 @@ public class SBExecutionView extends EditorPart {
 		
         dataModel.interruptPollingThread();
 	}
-	
-	private Composite createParkesDataCaptureComponent(final Composite p) {		
-		Composite panel = new Composite(p, 0);
-		panel.setLayout(new GridLayout(4, false));
-		
-		Label title = new Label(panel, 0);
-		title.setText("Parkes Data Capture");
-		
-		stopCaptureButton = new Button(panel, SWT.PUSH);
-		stopCaptureButton.setEnabled(false);
-		stopCaptureButton.setText("Stop");
-		stopCaptureButton.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				try {
-					dataCaptureModel.stopDataCapture();
-				} catch (Exception e) {
-					logger.log(Level.WARNING, "Could not stop Data Capture", e);
-		            ExceptionDetailsErrorDialog.openError(p.getShell(),
-		                    "ERROR",
-		                    "Could not stop Data Capture",
-		                    e);
-
-				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent event) {
-			}
-		});
-		
-		status = new Label(panel, 0);
-		status.setImage(GREY_BUTTON_IMAGE);
-		
-		sbidLabel = new Label(panel, 0);
-		sbidLabel.setText("");
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		sbidLabel.setLayoutData(gridData);
-		
-		return panel;
-	}
-	
-	public void close() {
-		dataModel.stopSBPollingThread();
-		dataCaptureModel.stop();
-	}
-
 	
 	/**
 	 * @param table

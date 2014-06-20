@@ -27,6 +27,9 @@ import java.util.logging.Logger;
 
 import org.csstudio.askap.sb.Preferences;
 import org.csstudio.askap.sb.util.SchedulingBlock.SBState;
+import org.csstudio.askap.utility.icemanager.LogObject;
+
+import askap.interfaces.monitoring.MonitorPoint;
 
 /**
  * @author wu049
@@ -45,12 +48,18 @@ public class SBDataModel {
 
 	IceSBController sbController = new IceSBController();
 	IceExecutiveController executiveController = new IceExecutiveController();
+	IceMonitoringController executiveMonitorController = null;
+	IceExecutiveLogController executivelogController = null;
 	DataChangeListener dataChangeListener = null;
 	
 	boolean keepRunning = true;
 	Object pollingThreadLock = new Object();
 	
 	public SBDataModel() {
+		executiveMonitorController = new IceMonitoringController(Preferences.getExecutiveMonitorIceName());
+		executivelogController = new IceExecutiveLogController(Preferences.getExecutiveLogSubscriberName(),
+										Preferences.getExecutiveLogTopicName(),
+										Preferences.getExecutiveLogTag());
 	}
 
 	public void setDataChangeListener(DataChangeListener listener) {
@@ -105,7 +114,51 @@ public class SBDataModel {
 		keepRunning = true;
 		sbPollingThread.start();		
 	}
+
+	public void startExecutiveStatusPollingThread(final String pointNames[], 
+			final DataChangeListener pollingThreadListener) {
+/*
+		Thread executiveStatusPollingThread = new Thread(new Runnable() {		
+			public void run() {
+				while (keepRunning) {
+					try {
+						MonitorPoint newPointValue[] = executiveMonitorController.getStatus(pointNames);
+						
+						DataChangeEvent e = new DataChangeEvent();
+						e.setChange(newPointValue);
+						pollingThreadListener.dataChanged(e);
+							
+						Thread.sleep(Preferences.getSBExecutionStatePollingPeriod());
+					} catch (Exception e) {
+						logger.log(Level.WARNING, "Could not poll Executive status" + e.getMessage());
+					}
+				}
+			}
+		});
+		keepRunning = true;
+		executiveStatusPollingThread.start();
+*/		
+	}
 	
+	public void startExecutiveLogSubscriber(final DataChangeListener subscriber) {
+		try {
+			executivelogController.subscribe(subscriber);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Could not subscribe to Executive Log" + e.getMessage());
+		}
+	}	
+	
+	public void stopPollingThreads() {
+		keepRunning = false;
+		
+		// stop subscriber too
+		try {
+			executivelogController.stop();
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Could not stop subscribing to Executive Log" + e.getMessage());
+		}
+	}
+
 	public void interruptPollingThread() {
 		synchronized (pollingThreadLock) {
 			pollingThreadLock.notify();
@@ -163,10 +216,6 @@ public class SBDataModel {
 		}
 		
 		return false;
-	}
-
-	public void stopSBPollingThread() {
-		keepRunning = false;
 	}
 
 	/**

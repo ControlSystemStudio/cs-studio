@@ -1,7 +1,7 @@
 package org.csstudio.askap.logviewer.ui;
 
 import org.csstudio.askap.logviewer.util.FilterObject;
-import org.csstudio.askap.logviewer.util.LogObject;
+import org.csstudio.askap.utility.icemanager.LogObject;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 

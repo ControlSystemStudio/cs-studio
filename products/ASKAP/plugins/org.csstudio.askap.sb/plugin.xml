@@ -39,6 +39,11 @@
             id="org.csstudio.askap.sb.OpenSBExecutionView"
             name="Open SB Execution">
       </command>
+      <command
+            defaultHandler="org.csstudio.askap.sb.OpenExecutiveLogView"
+            id="org.csstudio.askap.sb.OpenExecutiveLogView"
+            name="Open Executive Log">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -61,6 +66,13 @@
                   style="push"
                   tooltip="Open SB Execution">
             </command>
+            <command
+                  commandId="org.csstudio.askap.sb.OpenExecutiveLogView"
+                  icon="icons/red_lego_log.png"
+                  label="Open Executive Log"
+                  style="push"
+                  tooltip="Open Executive Log">
+            </command>
          </toolbar>
       </menuContribution>
    </extension>
@@ -73,6 +85,23 @@
             icon="icons/red_lego.png"
             id="org.csstudio.askap.sb.SBTemplateView"
             name="SB Template"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.askap"
+            class="org.csstudio.askap.sb.ExecutiveSummaryView"
+            icon="icons/red_lego_summary.png"
+            id="org.csstudio.askap.sb.ExecutiveSummaryView"
+            name="Executive Summary"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            class="org.csstudio.askap.sb.ExecutiveLogView"
+            icon="icons/red_lego_log.png"
+            id="org.csstudio.askap.sb.ExecutiveLogView"
+            name="Executive Log View"
             restorable="true">
       </view>
       

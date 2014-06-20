@@ -12,3 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.askap.utility;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Export-Package: org.csstudio.askap.logviewer,
+ org.csstudio.askap.logviewer.ui,
+ org.csstudio.askap.logviewer.util

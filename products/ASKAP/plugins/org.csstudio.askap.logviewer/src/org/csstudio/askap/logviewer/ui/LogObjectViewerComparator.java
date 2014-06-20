@@ -1,8 +1,8 @@
 package org.csstudio.askap.logviewer.ui;
 
-import org.csstudio.askap.logviewer.util.LogObject;
-import org.csstudio.askap.logviewer.util.LogObject.LogComparatorField;
-import org.csstudio.askap.logviewer.util.LogObject.LogObjectComparator;
+import org.csstudio.askap.utility.icemanager.LogObject;
+import org.csstudio.askap.utility.icemanager.LogObject.LogComparatorField;
+import org.csstudio.askap.utility.icemanager.LogObject.LogObjectComparator;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 

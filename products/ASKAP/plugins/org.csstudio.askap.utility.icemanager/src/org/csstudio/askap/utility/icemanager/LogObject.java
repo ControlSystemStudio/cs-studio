@@ -18,11 +18,17 @@
  * 330, Boston, MA 02111-1307 USA
  */
 
-package org.csstudio.askap.logviewer.util;
+package org.csstudio.askap.utility.icemanager;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
+
+import org.eclipse.swt.SWT;
+
+import askap.interfaces.logging.ILogEvent;
 
 public class LogObject {
 	
@@ -37,6 +43,23 @@ public class LogObject {
 	private String tag="";
 	
 	private String logMessage="";
+	
+	private static Map<String, Integer> LOG_LEVEL_COLOR_MAP = new HashMap<String, Integer>();
+	static {
+//		"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"
+		LOG_LEVEL_COLOR_MAP.put("FATAL", SWT.COLOR_RED);
+		LOG_LEVEL_COLOR_MAP.put("WARN", SWT.COLOR_YELLOW);
+		LOG_LEVEL_COLOR_MAP.put("ERROR", SWT.COLOR_RED);
+	}
+	
+	
+	public static int getLogLevelColor(String logLevel) {
+		Integer color =  LOG_LEVEL_COLOR_MAP.get(logLevel);
+		if (color!=null) 
+			return color;
+		
+		return SWT.COLOR_WHITE;
+	}
 	
 	public static enum LogComparatorField {
 		origin,		
@@ -127,6 +150,7 @@ public class LogObject {
 		public int startIndex;
 	}
 
+	
 	public LogObject() {
 		
 	}
@@ -223,6 +247,24 @@ public class LogObject {
 	 */
 	public void setLogMessage(String logMessage) {
 		this.logMessage = (logMessage==null ? "" : logMessage);
+	}
+
+	
+	public static LogObject logEventToLogObject(ILogEvent event) {
+		LogObject logObj = new LogObject();
+
+		Date date = new Date((long) (event.created * 1000));					
+		logObj.setTimeStamp(date);
+		
+		logObj.setLogMessage(event.message);
+		
+		logObj.setLogLevel(event.level.name());
+		logObj.setOrigin(event.origin);
+		
+		logObj.setHostName(event.hostname);
+		logObj.setTag(event.tag);
+
+		return logObj;
 	}
 
 

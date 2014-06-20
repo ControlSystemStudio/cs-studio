@@ -25,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.csstudio.askap.logviewer.util.LogObject.LogQueryObject;
 import org.csstudio.askap.utility.icemanager.IceManager;
+import org.csstudio.askap.utility.icemanager.LogObject;
+import org.csstudio.askap.utility.icemanager.LogObject.LogQueryObject;
 
 import Ice.Current;
 import Ice.ObjectPrx;
@@ -94,7 +95,7 @@ public class IceLogMessageController {
 	
 		List<LogObject> logs = new ArrayList<LogObject>();
 		for (int i=0; i<messages.length; i++) {
-			logs.add(logEventToLogObject(messages[i]));
+			logs.add(LogObject.logEventToLogObject(messages[i]));
 		}
 		return logs;
 	}
@@ -103,30 +104,13 @@ public class IceLogMessageController {
 		dataModel = (LogDataModel) receiver;
 		_ILoggerDisp callbackObj = new _ILoggerDisp() {
 			public void send(ILogEvent event, Current current) {
-				LogObject logObj = logEventToLogObject(event);
+				LogObject logObj = LogObject.logEventToLogObject(event);
 				dataModel.addMessage(logObj);
 			}
 		};
 		subscriber = IceManager.setupSubscriber(logMessageTopicName, adaptorName, callbackObj);
 	}
-	
-	protected LogObject logEventToLogObject(ILogEvent event) {
-		LogObject logObj = new LogObject();
-
-		Date date = new Date((long) (event.created * 1000));					
-		logObj.setTimeStamp(date);
 		
-		logObj.setLogMessage(event.message);
-		
-		logObj.setLogLevel(event.level.name());
-		logObj.setOrigin(event.origin);
-		
-		logObj.setHostName(event.hostname);
-		logObj.setTag(event.tag);
-
-		return logObj;
-	}
-	
 	protected ILogEvent logObjectToLogEvent(LogObject logObject) {
 		ILogEvent logEvent = new ILogEvent();
 		logEvent.created = logObject.getTimeStamp().getTime()/1000;

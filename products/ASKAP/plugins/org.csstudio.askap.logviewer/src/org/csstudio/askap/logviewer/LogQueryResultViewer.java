@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 
 import org.csstudio.askap.logviewer.ui.LogMessageTable;
 import org.csstudio.askap.logviewer.util.LogDataModel;
-import org.csstudio.askap.logviewer.util.LogObject.LogQueryObject;
 import org.csstudio.askap.utility.AskapEditorInput;
+import org.csstudio.askap.utility.icemanager.LogObject.LogQueryObject;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;

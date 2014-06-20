@@ -23,8 +23,8 @@ package org.csstudio.askap.logviewer.ui;
 import java.util.Date;
 
 import org.csstudio.askap.logviewer.Preferences;
-import org.csstudio.askap.logviewer.util.LogObject;
 import org.csstudio.askap.utility.AskapHelper;
+import org.csstudio.askap.utility.icemanager.LogObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

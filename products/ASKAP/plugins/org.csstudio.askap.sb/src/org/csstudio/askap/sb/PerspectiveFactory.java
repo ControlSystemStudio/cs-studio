@@ -24,7 +24,14 @@ public class PerspectiveFactory implements IPerspectiveFactory {
         IFolderLayout left = layout.createFolder("left",
                         IPageLayout.LEFT, 0.25f, editor);
 
-        left.addView(SBTemplateView.ID);
+        left.addView(ExecutiveSummaryView.ID);
+        
+        IFolderLayout bottom = layout.createFolder("bottom",
+                IPageLayout.BOTTOM, 0.75f, editor);
+
+        bottom.addView(ExecutiveLogView.ID); 
+        
+        SBExecutionView.openSBExecutionView();
 	}
 
 }

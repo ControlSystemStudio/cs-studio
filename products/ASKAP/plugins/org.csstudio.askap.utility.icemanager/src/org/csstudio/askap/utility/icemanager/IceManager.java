@@ -41,6 +41,8 @@ import askap.interfaces.logging.ILogQueryPrx;
 import askap.interfaces.logging.ILogQueryPrxHelper;
 import askap.interfaces.logging.ILoggerPrx;
 import askap.interfaces.logging.ILoggerPrxHelper;
+import askap.interfaces.monitoring.MonitoringProviderPrx;
+import askap.interfaces.monitoring.MonitoringProviderPrxHelper;
 import askap.interfaces.pksdatacapture.IPksDataCaptureServicePrx;
 import askap.interfaces.pksdatacapture.IPksDataCaptureServicePrxHelper;
 import askap.interfaces.schedblock.IObsProgramServicePrx;
@@ -385,6 +387,29 @@ public class IceManager {
 
 		return sourceSearchProxy;
 	}
+
+	public static MonitoringProviderPrx getMonitoringProvider(String name) throws Exception {
+		if (ic==null)
+			initialize();
+
+		Ice.ObjectPrx proxy = ic.stringToProxy(name);
+		MonitoringProviderPrx monitoringProxy = null;
+		
+		try {
+			monitoringProxy = MonitoringProviderPrxHelper.checkedCast(proxy);
+	        
+			if (monitoringProxy == null) {
+				logger.log(Level.WARNING, "Invalid proxy for " + name); 
+				throw new Exception("Invalid proxy for " + name);
+			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Could not creat proxy for " + name + ": " + e.getMessage());
+			throw new Exception("Could not creat proxy for " + name, e);
+		}			
+
+		return monitoringProxy;
+	}
+
 	
 	public static IPksDataCaptureServicePrx getDataCaptureProxy(String name) throws Exception {
 		if (ic==null)

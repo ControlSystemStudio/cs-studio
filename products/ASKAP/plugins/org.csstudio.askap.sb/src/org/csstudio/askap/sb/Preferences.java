@@ -27,8 +27,13 @@ public class Preferences {
 
 	static final String OBS_DEFAULT_PROGRAM_NAME = "schedulingblock_default_obsprogram";
 
-	static final String DATA_CAPTURE_ICE_NAME = "schedulingblock_datacapture_icename";
+	static final String EXECUTIVE_MONITOR_ICE_NAME = "executive_monitor_icename";
+	static final String EXECUTIVE_MONITOR_POINT_NAME = "executive_monitor_pointname";
 
+	static final String EXECUTIVE_LOG_TOPIC_NAME = "executive_log_topic_name";
+	static final String EXECUTIVE_LOG_SUBSCRIBER_NAME = "executive_log_subscriber";
+	static final String EXECUTIVE_LOG_TAG = "executive_log_tag";
+	
 	static final String SOURCE_SEARCH_MAX_MESSAGES = "ephemeris_sourcesearch_maxmessages";
 
 	static final String EPHEMERIS_ICE_NAME = "ephemeris_icename";
@@ -43,10 +48,27 @@ public class Preferences {
 	public static final String getEphemerisIceName() {
 		return getString(EPHEMERIS_ICE_NAME, "");
 	}
-	
-	public static final String getDataCaptureIceName() {
-		return getString(DATA_CAPTURE_ICE_NAME, "");
+		
+	public static final String getExecutiveLogTopicName() {
+		return getString(EXECUTIVE_LOG_TOPIC_NAME, "");
 	}
+	
+	public static final String getExecutiveLogSubscriberName() {
+		return getString(EXECUTIVE_LOG_SUBSCRIBER_NAME, "");
+	}
+
+	public static final String getExecutiveLogTag() {
+		return getString(EXECUTIVE_LOG_TAG, "");
+	}
+
+	public static final String getExecutiveMonitorIceName() {
+		return getString(EXECUTIVE_MONITOR_ICE_NAME, "");
+	}
+
+	public static final String getExecutiveMonitorPointName() {
+		return getString(EXECUTIVE_MONITOR_POINT_NAME, "");
+	}
+	
 	
 	public static final String getSBTemplateIceName() {
 		return getString(SB_TEMPLATE_ICE_NAME, "");

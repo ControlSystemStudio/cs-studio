@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.askap.utility;bundle-version="1.0.0",
  org.csstudio.askap.utility.icemanager;bundle-version="1.0.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
- org.eclipse.jface.text;bundle-version="3.7.2"
+ org.eclipse.jface.text;bundle-version="3.7.2",
+ org.eclipse.ui.console;bundle-version="3.5.100"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

@@ -5,8 +5,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.askap.logviewer.util.LogDataModel;
-import org.csstudio.askap.logviewer.util.LogObject.LogQueryObject;
 import org.csstudio.askap.utility.AskapHelper;
+import org.csstudio.askap.utility.icemanager.LogObject.LogQueryObject;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;

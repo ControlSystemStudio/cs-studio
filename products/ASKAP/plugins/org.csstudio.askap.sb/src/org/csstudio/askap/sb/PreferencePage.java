@@ -30,7 +30,14 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 		final Composite parent = getFieldEditorParent();
 		addField(new StringFieldEditor(Preferences.OBS_DEFAULT_PROGRAM_NAME, "Default Obs Program:", parent));
 		addField(new StringFieldEditor(Preferences.EPHEMERIS_ICE_NAME, "Ephemeris Service Ice Name:", parent));
-		addField(new StringFieldEditor(Preferences.DATA_CAPTURE_ICE_NAME, "Data Capture Ice Name:", parent));
+		
+		addField(new StringFieldEditor(Preferences.EXECUTIVE_MONITOR_ICE_NAME, "Executive Status Monitor Ice Name:", parent));
+		addField(new StringFieldEditor(Preferences.EXECUTIVE_MONITOR_POINT_NAME, "Executive Status Monitor Point Name:", parent));
+
+		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_SUBSCRIBER_NAME, "Executive Log Subscriber Name:", parent));
+		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_TOPIC_NAME, "Executive Log Topic Name:", parent));
+		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_TAG, "Executive Log Tag:", parent));
+		
 		addField(new StringFieldEditor(Preferences.SB_TEMPLATE_ICE_NAME, "SB Template Service Ice Name:", parent));
 		addField(new StringFieldEditor(Preferences.SCHEDULING_BLOCK_ICE_NAME, "SB Service Ice Name:", parent));
 		

@@ -20,13 +20,9 @@
 
 package org.csstudio.askap.logviewer.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.csstudio.askap.logviewer.util.LogObject;
+import org.csstudio.askap.utility.icemanager.LogObject;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
@@ -38,16 +34,6 @@ import org.eclipse.swt.widgets.Display;
 public class LogMessageColorProvider extends ColumnLabelProvider implements
 		IColorProvider {
 	
-	public static Map<String, Integer> LOG_LEVEL_COLOR_MAP = new HashMap<String, Integer>();
-	static {
-//		"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"
-		LOG_LEVEL_COLOR_MAP.put("FATAL", SWT.COLOR_RED);
-		LOG_LEVEL_COLOR_MAP.put("WARN", SWT.COLOR_YELLOW);
-		LOG_LEVEL_COLOR_MAP.put("ERROR", SWT.COLOR_RED);
-	}
-	
-
-	
 	@Override
 	public Color getForeground(Object element) {
 		return null;
@@ -56,7 +42,7 @@ public class LogMessageColorProvider extends ColumnLabelProvider implements
 	@Override
 	public Color getBackground(Object element) {
 		LogObject log = (LogObject) element;
-		Integer color = LOG_LEVEL_COLOR_MAP.get(log.getLogLevel());
+		Integer color = LogObject.getLogLevelColor(log.getLogLevel());
 		if (color!=null)
 			return Display.getCurrent().getSystemColor(color);					
 		

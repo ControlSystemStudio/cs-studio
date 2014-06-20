@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.csstudio.askap.logviewer.util.LogObject.LogQueryObject;
+import org.csstudio.askap.utility.icemanager.LogObject;
+import org.csstudio.askap.utility.icemanager.LogObject.LogQueryObject;
 
 
 
