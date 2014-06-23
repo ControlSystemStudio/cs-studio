@@ -427,6 +427,18 @@ public class SBExecutionView extends EditorPart {
 				}
 		});	
 		
+		dataModel.startExecutiveStatusPollingThread(ExecutiveSummaryView.POINT_NAMES,				
+				new DataChangeListener() {
+					public void dataChanged(final DataChangeEvent event) {
+						getParent().getDisplay().asyncExec(new Runnable() {					
+							public void run() {
+								MonitorPoint newPointValue[] = (MonitorPoint[]) event.getChange();
+								ExecutiveSummaryHelper.getInstance().updateValue(newPointValue);
+							}
+						});
+					}
+			});	
+			
 		dataModel.startExecutiveLogSubscriber(new DataChangeListener() {
 			
 			@Override

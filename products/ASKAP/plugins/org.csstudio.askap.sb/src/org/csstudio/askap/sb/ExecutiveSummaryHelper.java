@@ -3,10 +3,11 @@ package org.csstudio.askap.sb;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.askap.utility.icemanager.LogObject;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+
+import askap.interfaces.monitoring.MonitorPoint;
 
 /**
  * @author Xinyu Wu
@@ -14,42 +15,42 @@ import org.eclipse.ui.PlatformUI;
  * base on org.csstudio.opibuilder.util.ConsoleServiceSSHelperImpl
  * 
  */
-public class ExecutiveLogHelper {
+public class ExecutiveSummaryHelper {
 
-	private static Logger logger = Logger.getLogger(ExecutiveLogHelper.class.getName());
+	private static Logger logger = Logger.getLogger(ExecutiveSummaryHelper.class.getName());
 	
-	ExecutiveLogView logView = null;
+	private ExecutiveSummaryView summaryView = null;
 
-	private static ExecutiveLogHelper helper = new ExecutiveLogHelper();
+	private static ExecutiveSummaryHelper helper = new ExecutiveSummaryHelper();
 	
-	private ExecutiveLogHelper() {
+	private ExecutiveSummaryHelper() {
 	}
 
-	public static ExecutiveLogHelper getInstance() {
+	public static ExecutiveSummaryHelper getInstance() {
 		return helper;
 	}
 
-	public void writeLog(final LogObject logObj) {
+	public void updateValue(final MonitorPoint points[]) {
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {
 				public void run() {
 					// find the view
-					if (logView==null)
-						logView= (ExecutiveLogView) PlatformUI.getWorkbench()
+					if (summaryView==null)
+						summaryView= (ExecutiveSummaryView) PlatformUI.getWorkbench()
 								.getActiveWorkbenchWindow()
-								.getActivePage().findView(ExecutiveLogView.ID);
+								.getActivePage().findView(ExecutiveSummaryView.ID);
 					
 					// if view has not been created, created it					
-					if (logView==null) {
+					if (summaryView==null) {
 						try {
-							logView= (ExecutiveLogView) PlatformUI.getWorkbench()
+							summaryView= (ExecutiveSummaryView) PlatformUI.getWorkbench()
 									.getActiveWorkbenchWindow()
-									.getActivePage().showView(ExecutiveLogView.ID);
+									.getActivePage().showView(ExecutiveSummaryView.ID);
 						} catch (PartInitException e) {
-							logger.log(Level.WARNING, "ExecutiveLogView activation error", e);
+							logger.log(Level.WARNING, "ExecutiveSummaryView activation error", e);
 						}	
 					}
 					
-					logView.logMessage(logObj);
+					summaryView.update(points);
 				}
 			});
 	}
@@ -63,12 +64,12 @@ public class ExecutiveLogHelper {
 							&& PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 									.getActivePage() != null) {
 												
-						logView= (ExecutiveLogView) PlatformUI.getWorkbench()
+						summaryView= (ExecutiveSummaryView) PlatformUI.getWorkbench()
 								.getActiveWorkbenchWindow()
-								.getActivePage().showView(ExecutiveLogView.ID);	
+								.getActivePage().showView(ExecutiveSummaryView.ID);	
 					}
 				} catch (PartInitException e) {
-					logger.log(Level.WARNING, "ExecutiveLogView activation error", e);
+					logger.log(Level.WARNING, "ExecutiveSummaryView activation error", e);
 				}
 			}
 		});
