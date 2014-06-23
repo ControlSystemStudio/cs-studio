@@ -1,9 +1,14 @@
 com.google.common
+edu.msu.nscl.olog.api
 javax.annotation
 javax.mail
+net.coobird.thumbnailator
 org.antlr.runtime
+org.apache.commons.collections
+org.apache.jackrabbit
 org.csstudio.alarm.beast
 org.csstudio.alarm.beast.notifier
+org.csstudio.alarm.beast.notifier.logbook
 org.csstudio.apputil
 org.csstudio.auth
 org.csstudio.autocomplete
@@ -15,7 +20,11 @@ org.csstudio.csdata
 org.csstudio.data
 org.csstudio.email
 org.csstudio.iter.alarm.beast.notifier.product
+org.csstudio.iter.notifier.ologauthentication
+org.csstudio.iter.passwordprovider
 org.csstudio.java
+org.csstudio.logbook
+org.csstudio.logbook.olog
 org.csstudio.logging
 org.csstudio.platform.libs.easymock
 org.csstudio.platform.libs.epics
@@ -23,6 +32,7 @@ org.csstudio.platform.libs.epics.linux
 org.csstudio.platform.libs.epics.macosx
 org.csstudio.platform.libs.epics.win32
 org.csstudio.platform.libs.jdbc
+org.csstudio.platform.libs.jersey
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.utility.jms
@@ -34,6 +44,7 @@ org.csstudio.simplepv
 org.csstudio.simplepv.pvmanager
 org.csstudio.simplepv.utilitypv
 org.csstudio.utility.jms
+org.csstudio.utility.olog
 org.csstudio.utility.pv
 org.csstudio.utility.pv.epics
 org.csstudio.utility.pv.simu
@@ -47,6 +58,7 @@ org.csstudio.utility.pvmanager.sys
 org.csstudio.utility.pvmanager.vtype
 org.csstudio.utility.singlesource
 org.csstudio.utility.test
+org.csstudio.vtype.pv
 org.csstudio.workspace
 org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505
 org.eclipse.equinox.launcher.carbon.macosx_1.1.100.v20110502

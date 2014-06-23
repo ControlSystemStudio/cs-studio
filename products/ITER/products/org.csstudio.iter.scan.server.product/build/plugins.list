@@ -10,6 +10,7 @@ org.csstudio.autocomplete.pvmanager.sim
 org.csstudio.autocomplete.pvmanager.sys
 org.csstudio.csdata
 org.csstudio.data
+org.csstudio.iter.passwordprovider
 org.csstudio.iter.scan.server.product
 org.csstudio.java
 org.csstudio.logging
@@ -50,6 +51,7 @@ org.csstudio.utility.pvmanager.sys
 org.csstudio.utility.pvmanager.vtype
 org.csstudio.utility.singlesource
 org.csstudio.utility.test
+org.csstudio.vtype.pv
 org.csstudio.workspace
 org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505
 org.eclipse.equinox.launcher.carbon.macosx_1.1.100.v20110502
@@ -73,6 +75,6 @@ org.epics.util
 org.epics.vtype
 org.junit_4.8.2.v4_8_2_v20110321-1705
 org.junit4_4.8.1.v20100525
-org.python
+org.python.jython
 org.slf4j
 org.slf4j.slf4j-jdk14

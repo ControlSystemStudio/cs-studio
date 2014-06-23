@@ -28,6 +28,7 @@ org.csstudio.alarm.beast.annunciator
 org.csstudio.alarm.beast.msghist
 org.csstudio.alarm.beast.notifier
 org.csstudio.alarm.beast.notifier.intro
+org.csstudio.alarm.beast.notifier.logbook
 org.csstudio.alarm.beast.ui
 org.csstudio.alarm.beast.ui.alarmtable
 org.csstudio.alarm.beast.ui.alarmtree
@@ -68,7 +69,9 @@ org.csstudio.email.ui
 org.csstudio.examples
 org.csstudio.iter.authorizationprovider
 org.csstudio.iter.css.product
+org.csstudio.iter.passwordprovider
 org.csstudio.iter.pydev.configurator
+org.csstudio.iter.utility.ologauthentication
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog
@@ -162,6 +165,7 @@ org.csstudio.utility.singlesource.rcp
 org.csstudio.utility.speech
 org.csstudio.utility.sysmon
 org.csstudio.utility.test
+org.csstudio.vtype.pv
 org.csstudio.workspace
 org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505
 org.eclipse.equinox.launcher.carbon.macosx_1.1.100.v20110502
@@ -191,7 +195,7 @@ org.jdom
 org.junit_4.8.2.v4_8_2_v20110321-1705
 org.junit4_4.8.1.v20100525
 org.mockito
-org.python
+org.python.jython
 org.python.pydev_2.8.1.2013072611
 org.python.pydev.ast_2.8.1.2013072611
 org.python.pydev.core_2.8.1.2013072611

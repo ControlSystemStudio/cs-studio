@@ -15,6 +15,7 @@ org.csstudio.autocomplete.pvmanager.sys
 org.csstudio.csdata
 org.csstudio.data
 org.csstudio.iter.archive.config.rdb.product
+org.csstudio.iter.passwordprovider
 org.csstudio.java
 org.csstudio.logging
 org.csstudio.platform.libs.easymock
@@ -47,6 +48,7 @@ org.csstudio.utility.pvmanager.sys
 org.csstudio.utility.pvmanager.vtype
 org.csstudio.utility.singlesource
 org.csstudio.utility.test
+org.csstudio.vtype.pv
 org.csstudio.workspace
 org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505
 org.eclipse.equinox.launcher.carbon.macosx_1.1.100.v20110502
