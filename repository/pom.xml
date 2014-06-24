@@ -87,11 +87,6 @@
 									<transitive>false</transitive>
 								</artifact>
 								<artifact>
-									<id>org.epics:epics-vtype:${pvmanager.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
-								</artifact>
-								<artifact>
 									<id>org.hamcrest:hamcrest-library:1.2</id>
 								</artifact>
 								<artifact>

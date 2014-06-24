@@ -18,11 +18,6 @@
 			<version>${pvmanager.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>runtime</artifactId>
-			<version>${eclipse.runtime.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.epics</groupId>
 			<artifactId>epics-util</artifactId>
 			<version>${epics.util.version}</version>
@@ -31,11 +26,6 @@
 			<groupId>org.epics</groupId>
 			<artifactId>epics-vtype</artifactId>
 			<version>${pvmanager.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.csstudio</groupId>
-			<artifactId>org.csstudio.platform.libs.epics</artifactId>
-			<version>${csstudio.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -59,6 +49,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
+				<unpackBundle>true</unpackBundle>
 					<instructions>
 						<Private-Package>org.csstudio.utility.*</Private-Package>
 						<Bundle-Activator>org.csstudio.utility.pvmanager.sys.Activator</Bundle-Activator>
@@ -69,12 +60,8 @@
 						<Bundle-Description>Provides system information to pvManager</Bundle-Description>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-						<Export-Package>org.epics.pvmanager.jca</Export-Package>
-<!-- 						<Require-Bundle>org.eclipse.core.runtime, -->
-<!-- 							org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0"</Require-Bundle> -->
-						<!-- <Include-Resource>plugin.xml=plugin.xml</Include-Resource> -->
-						<_exportcontents>*</_exportcontents>
-						<!-- <_sources>true</_sources> -->
+						<Export-Package>org.epics.pvmanager.sys.*</Export-Package>
+						<Import-Package>*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
 						<_snapshot>${maven.build.timestamp}</_snapshot>
 					</instructions>
 				</configuration>

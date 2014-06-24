@@ -27,11 +27,27 @@
 		<csstudio.version>4.0.0-SNAPSHOT</csstudio.version>
 		<eclipse.runtime.version>3.9.100-v20131218-1515</eclipse.runtime.version>
 	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>runtime</artifactId>
+			<version>${eclipse.runtime.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	
+	
 	<repositories>
 		<repository>
 			<id>epics</id>
 			<name>EPICS Repository</name>
 			<url>http://epics.sourceforge.net/maven2/</url>
+		</repository>
+		<repository>
+			<id>controlsystemstudio</id>
+			<name>CS-Studio Maven Repository</name>
+			<url>http://maven.controlsystemstudio.org/</url>
 		</repository>
 	</repositories>
 

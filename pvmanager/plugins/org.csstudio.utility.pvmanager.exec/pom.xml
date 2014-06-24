@@ -18,11 +18,6 @@
 			<version>${pvmanager.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>runtime</artifactId>
-			<version>${eclipse.runtime.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.epics</groupId>
 			<artifactId>epics-vtype</artifactId>
 			<version>${pvmanager.version}</version>
@@ -48,6 +43,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
+				<unpackBundle>true</unpackBundle>
 					<instructions>
 						<Private-Package>org.csstudio.utility.*</Private-Package>
 						<Bundle-Name>PVManager Execute Support</Bundle-Name>
@@ -59,12 +55,7 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 						<Export-Package>org.epics.pvmanager.exec</Export-Package>
-<!-- 						<Require-Bundle>org.csstudio.utility.pvmanager;bundle-version="3.2.0";visibility:=reexport, -->
-<!-- 							org.epics.vtype;bundle-version="2.1.0";visibility:=reexport, -->
-<!-- 							org.eclipse.core.runtime</Require-Bundle> -->
-						<!-- <Include-Resource>plugin.xml=plugin.xml</Include-Resource> -->
-						<_exportcontents>*</_exportcontents>
-						<!-- <_sources>true</_sources> -->
+						<Import-Package>*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
 						<_snapshot>${maven.build.timestamp}</_snapshot>
 					</instructions>
 				</configuration>
