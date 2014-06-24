@@ -32,27 +32,38 @@
 			<groupId>org.eclipse</groupId>
 			<artifactId>osgi</artifactId>
 			<version>3.7.2-v20120110-1415</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>jobs</artifactId>
 			<version>3.5.101-v20120113-1953</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>runtime</artifactId>
 			<version>3.7.0-v20110110</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.equinox</groupId>
 			<artifactId>common</artifactId>
 			<version>3.6.0-v20110523</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.equinox</groupId>
 			<artifactId>preferences</artifactId>
 			<version>3.4.2-v20120111-2020</version>
+			<scope>provided</scope>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.eclipse.equinox</groupId> -->
+<!-- 			<artifactId>registry</artifactId> -->
+<!-- 			<version>3.5.301-v20130717-1549</version> -->
+<!-- 			<scope>provided</scope> -->
+<!-- 		</dependency> -->
 	</dependencies>
 	
 	
