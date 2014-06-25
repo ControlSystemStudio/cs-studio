@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>6cc102d7:13895a319f6:-7d55</wuid>
-  <boy_version>3.3.0</boy_version>
+  <boy_version>3.2.18.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
