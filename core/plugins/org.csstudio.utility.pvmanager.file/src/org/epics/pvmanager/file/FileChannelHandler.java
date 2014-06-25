@@ -27,13 +27,20 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
             update();
         }
     };
+    // private final FileFormat format
 
     FileChannelHandler(FileDataSource dataSource, String channelName, File file) {
         super(channelName);
         this.file = file;
         this.dataSource = dataSource;
     }
-    
+
+//    FileChannelHandler(FileDataSource dataSource, String channelName, File file, FileFormat format) {
+//        super(channelName);
+//        this.file = file;
+//        this.dataSource = dataSource;
+//    }
+//    
     private CSVIO io = new CSVIO();
 
     @Override
@@ -53,6 +60,8 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
     }
     
     protected Object readValueFromFile(File file) throws Exception {
+        // format.readValue(...)
+        // Use try catch block!
         FileReader fileReader = new FileReader(file);
         VTable value = io.importVTable(fileReader);
         fileReader.close();
@@ -70,8 +79,24 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
         return payload != null && payload.exists() && payload.isFile();
     }
 
+//    @Override
+//    protected boolean isWriteConnected(File payload) {
+//        return isConnected(payload) && format.isWriteSupproted()
+//    }
+
     @Override
     protected void write(Object newValue, ChannelWriteCallback callback) {
+//        File file = getConnectionPayload();
+//        if (file == null) {
+//            callback.channelWritten(new RuntimeException("Channel is closed"));
+//        }
+//        
+//        try (OutputStream out = new FileOutputStream(file)) {
+//            format.write(newValue, out);
+//            callback.channelWritten(null);
+//        } catch (Exception ex) {
+//            callback.channelWritten(ex);
+//        }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

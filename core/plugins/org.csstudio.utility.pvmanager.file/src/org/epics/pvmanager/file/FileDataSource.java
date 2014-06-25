@@ -51,6 +51,10 @@ public final class FileDataSource extends DataSource {
     
     @Override
     protected ChannelHandler createChannel(String channelName) {
+        // TODO
+        // String extension =...
+        // FileFormat format = ...
+        // return new FileCH(.... format);
         if (channelName.endsWith(".png") || channelName.endsWith(".bmp")) {
             return new ImageChannelHandler(this, channelName, new File(URI.create("file://" + channelName)));
         }
