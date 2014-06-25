@@ -157,10 +157,16 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
 //        fireItemLookChanged();
     }
         
+    /** {@inheritDoc} */
     @Override
-    void setModel(Model model) {
-    	super.setModel(model);
-    	this.automaticRefresh = model.isAutomaticHistoryRefresh();
+    void setModel(final Model model)
+    {
+        super.setModel(model);
+        // Dis-associated from model? Then refresh is no longer required
+        if (model == null)
+            automaticRefresh = false;
+        else // Otherwise use model's configuration
+            automaticRefresh = model.isAutomaticHistoryRefresh();
     }
 
     /** @return Maximum number of live samples in ring buffer */
@@ -368,7 +374,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
             return;
         }
         else {
-        	boolean added = false;
+            boolean added = false;
             for (VType value : values)
             {
                 // Cache most recent for 'scanned' operation
@@ -382,7 +388,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
                 }
             }
             if (automaticRefresh && added && samples.isHistoryRefreshNeeded(model.getStartTime(), model.getEndTime())) {
-            	model.fireItemRefreshRequested(this);
+                model.fireItemRefreshRequested(this);
             }
         }
     }
@@ -424,7 +430,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     {
         samples.mergeArchivedData(server_name, new_samples);
         if (automaticRefresh && samples.isHistoryRefreshNeeded(model.getStartTime(), model.getEndTime())) {
-        	model.fireItemRefreshRequested(this);
+            model.fireItemRefreshRequested(this);
         }
     }
 
@@ -507,16 +513,16 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
         return item;
     }
     
-	public PVItem clone() {
-		PVItem ret = (PVItem)super.clone();
-		ret.samples = samples;
-		ret.archives = archives;
-		ret.pv = pv;
-		ret.current_value = current_value;
-		ret.period = period;
-		ret.scan_timer = scan_timer;
-		ret.request_type = request_type;
-		ret.waveform_index = waveform_index;
-		return ret;
-	}
+    public PVItem clone() {
+        PVItem ret = (PVItem)super.clone();
+        ret.samples = samples;
+        ret.archives = archives;
+        ret.pv = pv;
+        ret.current_value = current_value;
+        ret.period = period;
+        ret.scan_timer = scan_timer;
+        ret.request_type = request_type;
+        ret.waveform_index = waveform_index;
+        return ret;
+    }
 }

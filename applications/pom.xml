@@ -54,11 +54,11 @@
     P2 REPOSITORIES
   -->
   <repositories>
-    <!--<repository>
+    <repository>
       <id>csstudio-core</id>
       <url>http://download.controlsystemstudio.org/core/4.0</url>
       <layout>p2</layout>
-    </repository>-->
+    </repository>
     <repository>
       <id>csstudio-thirdparty</id>
       <url>http://download.controlsystemstudio.org/thirdparty/4.0</url>
