@@ -47,7 +47,7 @@
 				<configuration>
 				<unpackBundle>true</unpackBundle>
 					<instructions>
-						<Private-Package>org.csstudio.platform.*</Private-Package>
+						<Private-Package>org.csstudio.platform.libs.epics.*</Private-Package>
 						<Bundle-Activator>org.csstudio.platform.libs.epics.EpicsPlugin</Bundle-Activator>
 						<Bundle-Name>EPICS Plug-in</Bundle-Name>
 						<Bundle-SymbolicName>org.csstudio.platform.libs.epics;singleton:=true</Bundle-SymbolicName>
@@ -55,7 +55,8 @@
 						<Bundle-Description>EPICS Cannel Access V3 Library</Bundle-Description>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-						<Export-Package>com.cosylab.epics.caj,
+						<Export-Package>org.csstudio.platform.libs.epics.*,
+						    com.cosylab.epics.caj,
 							com.cosylab.epics.caj.cas,
 							com.cosylab.epics.caj.cas.handlers,
 							com.cosylab.epics.caj.cas.requests,
