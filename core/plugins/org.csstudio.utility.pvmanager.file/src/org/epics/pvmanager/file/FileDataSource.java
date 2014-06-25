@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
+
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.ChannelReadRecipe;
 import org.epics.pvmanager.ChannelWriteRecipe;
@@ -28,10 +29,10 @@ import org.epics.util.time.TimeDuration;
  * @author carcassi
  */
 public final class FileDataSource extends DataSource {
-
+    private final static FileFormatRegister register = FileFormatRegister.getDefault();
     static {
-        // Install type support for the types it generates.
-        DataTypeSupport.install();
+	// Install type support for the types it generates.
+	DataTypeSupport.install();
     }
 
     /**
@@ -50,18 +51,18 @@ public final class FileDataSource extends DataSource {
     }
     
     @Override
-    protected ChannelHandler createChannel(String channelName) {
-        // TODO
-        // String extension =...
-        // FileFormat format = ...
-        // return new FileCH(.... format);
-        if (channelName.endsWith(".png") || channelName.endsWith(".bmp")) {
-            return new ImageChannelHandler(this, channelName, new File(URI.create("file://" + channelName)));
-        }
-        if (channelName.endsWith(".list")) {
-            return new ListChannelHandler(this, channelName, new File(URI.create("file://" + channelName)));
-        }
-        return new FileChannelHandler(this, channelName, new File(URI.create("file://" + channelName)));
+    protected ChannelHandler createChannel(String channelName) {	
+	if (channelName.contains(".")) {
+	    String fileExt = channelName.substring(
+		    channelName.lastIndexOf('.') + 1, channelName.length());
+	    if (register.contains(fileExt)) {
+		return new FileChannelHandler(this, channelName, new File(
+			URI.create("file://" + channelName)),
+			register.getFileFormatFor(fileExt));
+	    }
+	}
+	return new FileChannelHandler(this, channelName, new File(
+		URI.create("file://" + channelName)), new CSVFileFormat());
     }
     
 }

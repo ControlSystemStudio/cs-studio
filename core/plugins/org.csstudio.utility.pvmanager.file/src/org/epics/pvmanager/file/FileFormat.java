@@ -20,7 +20,7 @@ public interface FileFormat {
      * @param in a stream; not null
      * @return the value de-serialized
      */
-    public Object readValue(InputStream in);
+    public Object readValue(InputStream in) throws Exception;
     
     /**
      * Write the value to the given stream.
@@ -28,7 +28,7 @@ public interface FileFormat {
      * @param value the value to write; not null
      * @param out the output stream; not null
      */
-    public void writeValue(Object value, OutputStream out);
+    public void writeValue(Object value, OutputStream out) throws Exception;
     
     /**
      * Whether writes are supported.

@@ -5,7 +5,11 @@
 package org.epics.pvmanager.file;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.OutputStream;
+
 import org.epics.pvmanager.ChannelWriteCallback;
 import org.epics.pvmanager.MultiplexedChannelHandler;
 import org.epics.vtype.VTable;
@@ -27,22 +31,16 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
             update();
         }
     };
-    // private final FileFormat format
+        
+    private final FileFormat format;
 
-    FileChannelHandler(FileDataSource dataSource, String channelName, File file) {
+    FileChannelHandler(FileDataSource dataSource, String channelName, File file, FileFormat format) {
         super(channelName);
         this.file = file;
         this.dataSource = dataSource;
+        this.format = format;
     }
-
-//    FileChannelHandler(FileDataSource dataSource, String channelName, File file, FileFormat format) {
-//        super(channelName);
-//        this.file = file;
-//        this.dataSource = dataSource;
-//    }
-//    
-    private CSVIO io = new CSVIO();
-
+    
     @Override
     public void connect() {
         processConnection(file);
@@ -59,13 +57,16 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
         }
     }
     
-    protected Object readValueFromFile(File file) throws Exception {
-        // format.readValue(...)
-        // Use try catch block!
-        FileReader fileReader = new FileReader(file);
-        VTable value = io.importVTable(fileReader);
-        fileReader.close();
-        return value;
+    protected Object readValueFromFile(File file) {
+	try {	    
+	    FileInputStream in = new FileInputStream(file);
+	    Object value = format.readValue(in);
+	    in.close();
+	    return value;
+	} catch (Exception e) {
+	    reportExceptionToAllReadersAndWriters(e);
+	}
+	return null;
     }
 
     @Override
@@ -79,25 +80,25 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
         return payload != null && payload.exists() && payload.isFile();
     }
 
-//    @Override
-//    protected boolean isWriteConnected(File payload) {
-//        return isConnected(payload) && format.isWriteSupproted()
-//    }
+    @Override
+    protected boolean isWriteConnected(File payload) {
+        return isConnected(payload) && format.isWriteSupported();
+    }
 
     @Override
     protected void write(Object newValue, ChannelWriteCallback callback) {
-//        File file = getConnectionPayload();
-//        if (file == null) {
-//            callback.channelWritten(new RuntimeException("Channel is closed"));
-//        }
-//        
-//        try (OutputStream out = new FileOutputStream(file)) {
-//            format.write(newValue, out);
-//            callback.channelWritten(null);
-//        } catch (Exception ex) {
-//            callback.channelWritten(ex);
-//        }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        File file = getConnectionPayload();
+        if (file == null) {
+            callback.channelWritten(new RuntimeException("Channel is closed"));
+        }
+        
+        try (OutputStream out = new FileOutputStream(file)) {
+            format.writeValue(newValue, out);
+            callback.channelWritten(null);
+        } catch (Exception ex) {
+            callback.channelWritten(ex);
+        }
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
