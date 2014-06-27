@@ -4,8 +4,8 @@
    <extension
          point="org.csstudio.utility.pv.pvfactory">
       <PVFactory
-            class="org.csstudio.askap.utility.pv.ice.IceStormPVFactory"
-            name="IceStorm PV"
+            class="org.csstudio.askap.utility.pv.ice.IceMonitorPVFactory"
+            name="ICE Monitor PV"
             prefix="ice">
       </PVFactory>
    </extension>

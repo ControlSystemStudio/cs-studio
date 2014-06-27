@@ -5,7 +5,8 @@ import java.util.logging.Logger;
 
 import org.csstudio.askap.logviewer.Preferences;
 import org.csstudio.askap.logviewer.util.FilterObject;
-import org.csstudio.askap.logviewer.util.LogDataModel;
+import org.csstudio.askap.logviewer.util.LogMessageDataModel;
+import org.csstudio.askap.logviewer.util.LogQueryDataModel;
 import org.csstudio.askap.utility.AskapHelper;
 import org.csstudio.askap.utility.icemanager.LogObject;
 import org.csstudio.askap.utility.icemanager.LogObject.LogComparatorField;
@@ -42,7 +43,7 @@ public class LogMessageTable {
 	int messageCount = 0;
 	
 	private static final int NUM_OF_COLUMNS = 6;
-	private LogDataModel dataModel = null;
+	private LogMessageDataModel dataModel = null;
 
 	private boolean isScrolling = false;
 	
@@ -61,7 +62,7 @@ public class LogMessageTable {
 	public LogMessageTable() {
 	}
 
-	public Control createLogTable(Composite comp, LogDataModel model, boolean shouldRefresh) {
+	public Control createLogTable(Composite comp, LogMessageDataModel model, boolean shouldRefresh) {
 		this.shouldRefresh = shouldRefresh;
 		this.parent = comp;
 		this.dataModel = model;
@@ -406,7 +407,6 @@ public class LogMessageTable {
 	public void stop() {
 		try {
 			haltUpdates();
-			dataModel.stop();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not stop subscribing to log messages", e);
 		}

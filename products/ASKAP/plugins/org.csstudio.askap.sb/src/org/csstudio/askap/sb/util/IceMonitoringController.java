@@ -20,10 +20,14 @@
 
 package org.csstudio.askap.sb.util;
 
-import org.csstudio.askap.utility.icemanager.IceManager;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import askap.interfaces.monitoring.MonitorPoint;
-import askap.interfaces.monitoring.MonitoringProviderPrx;
+import org.csstudio.askap.utility.icemanager.IceManager;
+import org.csstudio.askap.utility.icemanager.MonitorPointListener;
 
 /**
  * @author wu049
@@ -31,19 +35,73 @@ import askap.interfaces.monitoring.MonitoringProviderPrx;
  *
  */
 public class IceMonitoringController {
-	private MonitoringProviderPrx monitoringProxy = null;
 	private String monitoringAdaptorName = null;
+	
+	private Map<MonitorPointListener, PointListenerManager> pointListenerMap 
+					= new HashMap<MonitorPointListener, PointListenerManager>();
 
+	private class PointListenerManager {
+		List<String> pointNameList = new ArrayList<>();
+		
+		void addPointNames(String pointNames[]) {
+			if (pointNames==null)
+				return;
+			
+			for (int i=0; i<pointNames.length; i++) {
+				String name = pointNames[i];
+				
+				if (!pointNameList.contains(name)) {
+					pointNameList.add(name);
+				}
+			}
+		}
+		
+		void removePointNames(String pointNames[]) {
+			if (pointNames==null)
+				return;
+			
+			for (int i=0; i<pointNames.length; i++) {
+				String name = pointNames[i];
+				pointNameList.remove(name);
+			}
+		}
+		
+		String[] getPointNames() {
+			return pointNameList.toArray(new String[]{});
+		}
+	}
+	
+	
 	public IceMonitoringController(String monitoringAdaptorName) {
+		this.monitoringAdaptorName = monitoringAdaptorName;
 	}
 		
-	synchronized public MonitorPoint[] getStatus(String pointNames[]) throws Exception {
-		if (monitoringProxy==null)
-			monitoringProxy = IceManager.getMonitoringProvider(monitoringAdaptorName);
+	public void addMonitorPointListener(String pointNames[], MonitorPointListener listener) throws Exception {
+		PointListenerManager manager = pointListenerMap.get(listener);
+		if (manager==null)
+			manager = new PointListenerManager();
 		
+		manager.addPointNames(pointNames);
+		pointListenerMap.put(listener, manager);
 		
-		MonitorPoint[] points = monitoringProxy.get(pointNames);
-		
-		return points;
+		IceManager.addPointListener(pointNames, listener, monitoringAdaptorName);
 	}
+
+	public void removeMonitorPointListener(String pointNames[], MonitorPointListener listener) throws Exception {
+		PointListenerManager manager = pointListenerMap.get(listener);
+		if (manager!=null)
+			manager.removePointNames(pointNames);
+		
+		IceManager.removePointListener(pointNames, listener, monitoringAdaptorName);
+	}
+	
+	public void removeAllListeners() {
+		for (Iterator<MonitorPointListener> iter = pointListenerMap.keySet().iterator(); iter.hasNext();) {
+			MonitorPointListener listener = iter.next();
+			PointListenerManager manager = pointListenerMap.get(listener);
+			String pointNames[] = manager.getPointNames();
+			
+			IceManager.removePointListener(pointNames, listener, monitoringAdaptorName);
+		}
+	}	
 }

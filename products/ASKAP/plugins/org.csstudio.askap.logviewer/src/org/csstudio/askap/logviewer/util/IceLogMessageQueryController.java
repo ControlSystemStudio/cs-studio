@@ -38,25 +38,17 @@ import askap.interfaces.logging.IQueryObject;
 import askap.interfaces.logging.LogLevel;
 import askap.interfaces.logging._ILoggerDisp;
 
-public class IceLogMessageController {
+public class IceLogMessageQueryController {
 
-	public static final Logger log = Logger.getLogger(IceLogMessageController.class.getName());
+	public static final Logger log = Logger.getLogger(IceLogMessageQueryController.class.getName());
 	
-	private LogDataModel dataModel = null;
-
 	private ILogQueryPrx logQueryProxy = null;
 	
-	private ILoggerPrx logMessagePublisher = null;
-	
-	private String logMessageTopicName = "";
 	private String logQueryObjectName = "";
 	private int maxMessagePerLogQuery = 1000;
 	
-	ObjectPrx subscriber = null;
-	
-	public IceLogMessageController(String logMessageTopicName, String logQueryObjectName, int maxMessagePerLogQuery) {
+	public IceLogMessageQueryController(String logQueryObjectName, int maxMessagePerLogQuery) {
 		this.logQueryObjectName = logQueryObjectName;
-		this.logMessageTopicName = logMessageTopicName;
 		this.maxMessagePerLogQuery = maxMessagePerLogQuery;
 	}
 	
@@ -98,45 +90,5 @@ public class IceLogMessageController {
 			logs.add(LogObject.logEventToLogObject(messages[i]));
 		}
 		return logs;
-	}
-	
-	public void subscribe(Object receiver, String adaptorName) throws Exception{
-		dataModel = (LogDataModel) receiver;
-		_ILoggerDisp callbackObj = new _ILoggerDisp() {
-			public void send(ILogEvent event, Current current) {
-				LogObject logObj = LogObject.logEventToLogObject(event);
-				dataModel.addMessage(logObj);
-			}
-		};
-		subscriber = IceManager.setupSubscriber(logMessageTopicName, adaptorName, callbackObj);
-	}
-		
-	protected ILogEvent logObjectToLogEvent(LogObject logObject) {
-		ILogEvent logEvent = new ILogEvent();
-		logEvent.created = logObject.getTimeStamp().getTime()/1000;
-		logEvent.message = logObject.getLogMessage();
-		logEvent.level = LogLevel.valueOf(logObject.getLogLevel());
-		logEvent.origin = logObject.getOrigin();
-		logEvent.tag = logObject.getTag();
-		logEvent.hostname = logObject.getHostName();
-		
-		return logEvent;
-	}
-
-	/**
-	 * 
-	 */
-	public void stop() throws Exception {
-		IceManager.unsubscribe(logMessageTopicName, subscriber);
-	}
-
-	/* (non-Javadoc)
-	 * @see askap.ui.operatordisplay.controller.LogMessageController#publishLogMessage(askap.ui.operatordisplay.util.LogObject)
-	 */
-	public void publishLogMessage(LogObject logObject) throws Exception {
-		if (logMessagePublisher==null)
-			logMessagePublisher = IceManager.getLogMessagePublisher(logMessageTopicName);
-		
-		logMessagePublisher.send(logObjectToLogEvent(logObject));
 	}
 }

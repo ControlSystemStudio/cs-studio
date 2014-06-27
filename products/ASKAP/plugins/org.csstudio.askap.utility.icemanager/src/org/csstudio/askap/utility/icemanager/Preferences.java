@@ -17,6 +17,7 @@ public class Preferences {
 	
     public static final String ICE_PROPERTIES = "ice_properties";
     public static final String ICESTORM_TOPICMANAGER_NAME = "icestorm_topicmanager_name";
+	static final String MONITOR_POINT_POLLING_PERIOD = "MONITOR_POINT_pollingPeriod";		
 
 
     public static String getIceStormTopicManagerName(){
@@ -42,6 +43,10 @@ public class Preferences {
     	return map;
     }
     
+	public static final int getMonitorPointPollingPeriod() {
+		return getInt(MONITOR_POINT_POLLING_PERIOD, 1000);
+	}
+    
     /** Get string preference
      *  @param key Preference key
      *  @return String or <code>null</code>
@@ -54,4 +59,13 @@ public class Preferences {
         return prefs.getString(Activator.ID, key, default_value, null);
     }
     
+    private static int getInt(final String key, final int default_value)
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return default_value;
+        
+        return prefs.getInt(Activator.ID, key, default_value, null);
+    }
+
 }

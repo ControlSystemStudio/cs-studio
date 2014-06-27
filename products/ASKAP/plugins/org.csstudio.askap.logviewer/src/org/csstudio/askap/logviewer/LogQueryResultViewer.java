@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.askap.logviewer.ui.LogMessageTable;
-import org.csstudio.askap.logviewer.util.LogDataModel;
+import org.csstudio.askap.logviewer.util.LogQueryDataModel;
 import org.csstudio.askap.utility.AskapEditorInput;
 import org.csstudio.askap.utility.icemanager.LogObject.LogQueryObject;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -32,15 +32,13 @@ public class LogQueryResultViewer extends EditorPart {
 	private static final String ID = "org.csstudio.askap.logviewer.LogQueryResultViewer";
 
 	private LogMessageTable messageTable;
-	private LogDataModel dataModel;
+	private LogQueryDataModel dataModel;
 
 	public LogQueryResultViewer() {
 		messageTable = new LogMessageTable();
-		dataModel = new LogDataModel(Preferences.getLogMessageTopicName(), 
-				Preferences.getLogQueryAdaptorName(), 
+		dataModel = new LogQueryDataModel(Preferences.getLogQueryAdaptorName(), 
 				Preferences.getLogQueryMessagesPerQuery(), 
-				Preferences.getMaxMessages(), 
-				Preferences.getLogSubscriberEndPointName());
+				Preferences.getMaxMessages());
 	}
 
 	@Override
@@ -140,7 +138,7 @@ public class LogQueryResultViewer extends EditorPart {
 		return null;
 	}
 
-	public LogDataModel getDataModel() {
+	public LogQueryDataModel getDataModel() {
 		return dataModel;
 	}
 

@@ -32,13 +32,10 @@ public class PreferencePage extends FieldEditorPreferencePage
 	protected void createFieldEditors() {
 		setMessage("ICE Settings");
 		final Composite parent = getFieldEditorParent();
-		//FileFieldEditor fileEditor = new FileFieldEditor(
-		//		Preferences.ICE_PROPERTIES_FILE, "ICE Properties File:",
-		//		parent);
-		//addField(fileEditor);
 		
-/// Replaced with StringTableFieldEditor		
 		addField(new StringFieldEditor(Preferences.ICESTORM_TOPICMANAGER_NAME, "Topic Manager Name:", parent));		
+		addField(new StringFieldEditor(Preferences.MONITOR_POINT_POLLING_PERIOD, "Monitor Interface polling period:", parent));		
+
 		iceConfigEditor = new StringTableFieldEditor(
 				Preferences.ICE_PROPERTIES, "ICE Properties: " , parent, new String[]{"Name", "Value"}, 
 				new boolean[]{true, true}, new MacroEditDialog(parent.getShell()), new int[]{120, 120}){			

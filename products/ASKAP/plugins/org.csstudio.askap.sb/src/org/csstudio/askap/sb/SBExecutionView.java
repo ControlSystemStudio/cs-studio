@@ -15,6 +15,7 @@ import org.csstudio.askap.sb.util.SchedulingBlock;
 import org.csstudio.askap.sb.util.SchedulingBlock.SBState;
 import org.csstudio.askap.utility.AskapEditorInput;
 import org.csstudio.askap.utility.icemanager.LogObject;
+import org.csstudio.askap.utility.icemanager.MonitorPointListener;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -348,8 +349,6 @@ public class SBExecutionView extends EditorPart {
 			
 			@Override
 			public void partVisible(IWorkbenchPartReference partRef) {
-				if (isThisEditor(partRef))
-					start();
 			}
 			
 			@Override
@@ -364,8 +363,6 @@ public class SBExecutionView extends EditorPart {
 
 			@Override
 			public void partHidden(IWorkbenchPartReference partRef) {
-				if (isThisEditor(partRef))
-					stop();
 			}
 			
 
@@ -395,7 +392,7 @@ public class SBExecutionView extends EditorPart {
 
 	
 	public void stop() {
-		dataModel.stopPollingThreads();
+		dataModel.stopUpdates();
 	}
 	
 	protected void start() {
@@ -415,25 +412,41 @@ public class SBExecutionView extends EditorPart {
 			}
 		});
 
-		dataModel.startExecutiveStatusPollingThread(new String[]{Preferences.getExecutiveMonitorPointName()},				
-			new DataChangeListener() {
-				public void dataChanged(final DataChangeEvent event) {
+		dataModel.addPointListener(new String[]{Preferences.getExecutiveMonitorPointName()},				
+			new MonitorPointListener() {
+				@Override
+				public void onUpdate(MonitorPoint point) {
 					getParent().getDisplay().asyncExec(new Runnable() {					
 						public void run() {
-							MonitorPoint newPointValue[] = (MonitorPoint[]) event.getChange();
 							setupButtons(true);
 						}
 					});
 				}
-		});	
+				
+				@Override
+				public void disconnected(String pointName) {
+					getParent().getDisplay().asyncExec(new Runnable() {					
+						public void run() {
+							disableAllButtons();
+						}
+					});
+				}});
 		
-		dataModel.startExecutiveStatusPollingThread(ExecutiveSummaryView.POINT_NAMES,				
-				new DataChangeListener() {
-					public void dataChanged(final DataChangeEvent event) {
+		dataModel.addPointListener(ExecutiveSummaryView.POINT_NAMES,				
+				new MonitorPointListener() {
+					public void onUpdate(final MonitorPoint point) {
 						getParent().getDisplay().asyncExec(new Runnable() {					
 							public void run() {
-								MonitorPoint newPointValue[] = (MonitorPoint[]) event.getChange();
-								ExecutiveSummaryHelper.getInstance().updateValue(newPointValue);
+								ExecutiveSummaryHelper.getInstance().updateValue(point);
+							}
+						});
+					}
+
+					@Override
+					public void disconnected(final String pointName) {
+						getParent().getDisplay().asyncExec(new Runnable() {					
+							public void run() {
+								ExecutiveSummaryHelper.getInstance().disconnected(pointName);
 							}
 						});
 					}

@@ -30,30 +30,56 @@ public class ExecutiveSummaryHelper {
 		return helper;
 	}
 
-	public void updateValue(final MonitorPoint points[]) {
-			UIBundlingThread.getInstance().addRunnable(new Runnable() {
-				public void run() {
-					// find the view
-					if (summaryView==null)
+	public void updateValue(final MonitorPoint point) {
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			public void run() {
+				// find the view
+				if (summaryView==null)
+					summaryView= (ExecutiveSummaryView) PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow()
+							.getActivePage().findView(ExecutiveSummaryView.ID);
+				
+				// if view has not been created, created it					
+				if (summaryView==null) {
+					try {
 						summaryView= (ExecutiveSummaryView) PlatformUI.getWorkbench()
 								.getActiveWorkbenchWindow()
-								.getActivePage().findView(ExecutiveSummaryView.ID);
-					
-					// if view has not been created, created it					
-					if (summaryView==null) {
-						try {
-							summaryView= (ExecutiveSummaryView) PlatformUI.getWorkbench()
-									.getActiveWorkbenchWindow()
-									.getActivePage().showView(ExecutiveSummaryView.ID);
-						} catch (PartInitException e) {
-							logger.log(Level.WARNING, "ExecutiveSummaryView activation error", e);
-						}	
-					}
-					
-					summaryView.update(points);
+								.getActivePage().showView(ExecutiveSummaryView.ID);
+					} catch (PartInitException e) {
+						logger.log(Level.WARNING, "ExecutiveSummaryView activation error", e);
+					}	
 				}
-			});
+				
+				summaryView.update(point);
+			}
+		});
 	}
+
+	public void disconnected(final String pointName) {
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			public void run() {
+				// find the view
+				if (summaryView==null)
+					summaryView= (ExecutiveSummaryView) PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow()
+							.getActivePage().findView(ExecutiveSummaryView.ID);
+				
+				// if view has not been created, created it					
+				if (summaryView==null) {
+					try {
+						summaryView= (ExecutiveSummaryView) PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow()
+								.getActivePage().showView(ExecutiveSummaryView.ID);
+					} catch (PartInitException e) {
+						logger.log(Level.WARNING, "ExecutiveSummaryView activation error", e);
+					}	
+				}
+				
+				summaryView.disconnected(pointName);
+			}
+		});
+	}
+
 	
 	public void popConsoleView() {
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {

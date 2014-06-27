@@ -63,11 +63,20 @@ import atnf.atoms.mon.comms.MoniCAIcePrxHelper;
 public class IceManager {
 	private static Logger logger = Logger.getLogger(IceManager.class.getName());
 	private static Communicator ic = null;
-
+	
 	// I can't seem to get ICE to tell me if an ObjectAdaptor has already been registered.
 	// So I'll remember it myself.
 	private static Map<String, ObjectAdapter> ADAPTOR_MAP = new HashMap<String, ObjectAdapter>();
 	
+
+	/*
+	 * This maps is MonitoringProvider interface name to a MonitoringPointManager
+	 * So for each MonitoringProvider interface, we only need to create one MonitoringProviderPrx.
+	 * We'll update all the listener of monitoring points listeners
+	 */
+	private static Map<String, MonitoringPointManager> MONITORING_MAP 
+										= new HashMap<String, MonitoringPointManager>(); 
+
 	private IceManager() {
 		
 	}
@@ -208,10 +217,10 @@ public class IceManager {
             Ice.ObjectPrx proxy = ic.stringToProxy(Preferences.getIceStormTopicManagerName());
             TopicManagerPrx topicManager = TopicManagerPrxHelper.checkedCast(proxy);
             
-            ObjectAdapter adapter = ADAPTOR_MAP.get(topicName);
+            ObjectAdapter adapter = ADAPTOR_MAP.get(adaptorName);
             if (adapter==null) {
             	adapter = ic.createObjectAdapter(adaptorName);
-            	ADAPTOR_MAP.put(topicName, adapter);
+            	ADAPTOR_MAP.put(adaptorName, adapter);
             }
             subscriber = adapter.addWithUUID(callbackObj).ice_oneway();
             
@@ -237,7 +246,7 @@ public class IceManager {
 
 	}
 
-	public static void unsubscribe(String topicName, ObjectPrx subscriber) throws Exception {
+	public static void unsubscribe(String topicName, String adaptorName, ObjectPrx subscriber) throws Exception {
 		if (ic==null)
 			initialize();
 
@@ -250,7 +259,7 @@ public class IceManager {
             topic = topicManager.retrieve(topicName);
             if (subscriber!=null) {
             	topic.unsubscribe(subscriber);
-            	ObjectAdapter adapter = ADAPTOR_MAP.get(topicName);
+            	ObjectAdapter adapter = ADAPTOR_MAP.get(adaptorName);
             	if (adapter==null)
             		return;
             	
@@ -388,15 +397,14 @@ public class IceManager {
 		return sourceSearchProxy;
 	}
 
-	public static MonitoringProviderPrx getMonitoringProvider(String name) throws Exception {
+	private static MonitoringProviderPrx getMonitoringProvider(String name) throws Exception {
 		if (ic==null)
 			initialize();
 
 		Ice.ObjectPrx proxy = ic.stringToProxy(name);
-		MonitoringProviderPrx monitoringProxy = null;
 		
+		MonitoringProviderPrx monitoringProxy = MonitoringProviderPrxHelper.checkedCast(proxy);
 		try {
-			monitoringProxy = MonitoringProviderPrxHelper.checkedCast(proxy);
 	        
 			if (monitoringProxy == null) {
 				logger.log(Level.WARNING, "Invalid proxy for " + name); 
@@ -410,6 +418,26 @@ public class IceManager {
 		return monitoringProxy;
 	}
 
+	public static void addPointListener(String pointNames[], MonitorPointListener listener, String adaptorName) 
+		throws Exception {
+		MonitoringPointManager manager = MONITORING_MAP.get(adaptorName);
+		
+		if (manager==null) {
+			MonitoringProviderPrx proxy = getMonitoringProvider(adaptorName);			
+			manager = new MonitoringPointManager(adaptorName, proxy);
+		}
+		
+		manager.addListener(pointNames, listener);
+	}
+	
+	public static void removePointListener(String pointNames[], MonitorPointListener listener, String adaptorName) {
+		MonitoringPointManager manager = MONITORING_MAP.get(adaptorName);
+		
+		if (manager!=null) {
+			manager.remove(pointNames, listener);
+		}
+		
+	}
 	
 	public static IPksDataCaptureServicePrx getDataCaptureProxy(String name) throws Exception {
 		if (ic==null)

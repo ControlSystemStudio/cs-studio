@@ -143,8 +143,11 @@ public class ExecutiveSummaryView extends ViewPart {
 
 	}
 	
+	public void disconnected(String pointName) {
+		
+	}
 	
-	public void update(MonitorPoint[] points) {
+	public void update(MonitorPoint point) {
 		
 	}
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.askap.logviewer.util.LogDataModel;
+import org.csstudio.askap.logviewer.util.LogQueryDataModel;
 import org.csstudio.askap.utility.AskapHelper;
 import org.csstudio.askap.utility.icemanager.LogObject.LogQueryObject;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -179,7 +179,7 @@ public class LogQuery extends ViewPart {
 				query.startIndex = 0;
 				try {
 					LogQueryResultViewer viewer = ((LogQueryResultViewer)LogQueryResultViewer.openLogResultViewer());
-					LogDataModel dataModel = viewer.getDataModel();
+					LogQueryDataModel dataModel = viewer.getDataModel();
 					dataModel.clear();
 					dataModel.getLogMessage(query);
 					viewer.updateTable();

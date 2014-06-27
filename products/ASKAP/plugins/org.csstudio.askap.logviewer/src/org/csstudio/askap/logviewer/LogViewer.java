@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.askap.logviewer.ui.LogMessageTable;
-import org.csstudio.askap.logviewer.util.LogDataModel;
+import org.csstudio.askap.logviewer.util.LogSubscriberDataModel;
 import org.csstudio.askap.utility.AskapEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,7 +25,7 @@ public class LogViewer extends EditorPart {
 	public static final String ID = "org.csstudio.askap.logviewer.logviewer";
 	
 	private LogMessageTable messageTable;
-	private LogDataModel dataModel = null;
+	private LogSubscriberDataModel dataModel = null;
 
 	public LogViewer() {
 		messageTable = new LogMessageTable();
@@ -50,11 +50,9 @@ public class LogViewer extends EditorPart {
         setPartName(input.getToolTipText());
     	setInput(input);
     	
-		dataModel = new LogDataModel(input.getName(), 
-				Preferences.getLogQueryAdaptorName() , 
-				Preferences.getLogQueryMessagesPerQuery(), 
+		dataModel = new LogSubscriberDataModel(input.getName(), 
 				Preferences.getMaxMessages(), 
-				Preferences.getLogSubscriberEndPointName() + "-" + input.getName());
+				Preferences.getLogSubscriberEndPointName());
 	}
 
 	@Override
@@ -107,8 +105,14 @@ public class LogViewer extends EditorPart {
 			
 			@Override
 			public void partClosed(IWorkbenchPartReference partRef) {
-				if (isThisEditor(partRef))
+				if (isThisEditor(partRef)) {
+					try {
+						dataModel.stop();
+					} catch (Exception e) {
+						logger.log(Level.WARNING , "Could not stop subscribing to log messages", e);
+					}
 					messageTable.stop();
+				}
 			}
 
 			@Override

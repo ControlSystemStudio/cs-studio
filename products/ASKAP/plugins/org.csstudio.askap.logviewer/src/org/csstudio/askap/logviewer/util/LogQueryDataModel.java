@@ -28,31 +28,27 @@ import java.util.logging.Logger;
 import org.csstudio.askap.utility.icemanager.LogObject;
 import org.csstudio.askap.utility.icemanager.LogObject.LogQueryObject;
 
+public class LogQueryDataModel implements LogMessageDataModel {
 
-
-public class LogDataModel {
-
-	private static final Logger logger = Logger.getLogger(LogDataModel.class.getName());
+	private static final Logger logger = Logger.getLogger(LogQueryDataModel.class.getName());
 	
 	private List<LogObject> allMessages = new Vector<LogObject>();
 	
-	private IceLogMessageController messageController = null;
+	private IceLogMessageQueryController messageController = null;
+	
 	private int logViewMaxMessages = 1000;
-	private String logAdaptorName = "";
 	
 	private LogQueryObject lastQuery = null;
 		
-	public LogDataModel(String logMessageTopicName, String logQueryObjectName,
-			int maxMessagePerLogQuery, int logViewMaxMessages, String logAdaptorName) {
+	public LogQueryDataModel(String logQueryObjectName, int maxMessagePerLogQuery, int logViewMaxMessages) {
 		this.logViewMaxMessages = logViewMaxMessages;
-		this.logAdaptorName = logAdaptorName;
-		messageController = new IceLogMessageController(logMessageTopicName, logQueryObjectName, maxMessagePerLogQuery);
+		messageController = new IceLogMessageQueryController(logQueryObjectName, maxMessagePerLogQuery);
 	}
 	
+	@Override
 	public LogObject[] getMessages() {
 		return allMessages.toArray(new LogObject[]{});
-	}
-	
+	}	
 	
 	synchronized public void addMessages(List<LogObject> logObjects) {
 		if (allMessages.size()>logViewMaxMessages) {
@@ -65,15 +61,6 @@ public class LogDataModel {
 		}		
 	}
 
-
-	synchronized public void addMessage(LogObject logObject) {
-		if (allMessages.size()>logViewMaxMessages) {
-			removeMessages();
-		}
-		
-		allMessages.add(logObject);
-	}
-		
 	private void removeMessages() {
 		// we'll remove 1/10 of messages each time
 		for (int i=0; i<logViewMaxMessages/10; i++) {
@@ -81,20 +68,13 @@ public class LogDataModel {
 		}
 	}
 
+	@Override
 	public int getSize() {
 		return allMessages.size();
 	}
 
 	public void clear() {
 		allMessages.clear();
-	}
-	
-	public void start() throws Exception {
-		messageController.subscribe(this, logAdaptorName);
-	}
-
-	public void stop() throws Exception {
-		messageController.stop();		
 	}
 	
 	/**

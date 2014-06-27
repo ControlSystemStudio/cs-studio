@@ -22,7 +22,7 @@ public class Preferences {
 	static final String SB_TEMPLATE_ICE_NAME = "schedulingblock_sbtemplate_icename";
 	static final String SCHEDULING_BLOCK_ICE_NAME = "schedulingblock_sb_icename";
 	static final String OBS_PROGRAM_ICE_NAME = "schedulingblock_obsprogram_icename";
-	static final String SB_EXECUTION_STATE_POLLING_PERIOD = "schedulingblock_execution_pollingPeriod";		
+	static final String SB_EXECUTION_STATE_POLLING_PERIOD = "schedulingblock_execution_pollingPeriod"; 
 	static final String SB_MAINTENANCE_POLLING_PERIOD = "schedulingblock_maintenance_pollingPeriod";
 
 	static final String OBS_DEFAULT_PROGRAM_NAME = "schedulingblock_default_obsprogram";
@@ -87,10 +87,10 @@ public class Preferences {
 		return getString(EXECUTIVE_ICE_NAME, "");
 	}
 	
-	
 	public static final int getSBExecutionStatePollingPeriod() {
 		return getInt(SB_EXECUTION_STATE_POLLING_PERIOD, 1000);
 	}
+
 	
 	public static final int getSBMaintenancePollingPeriod() {
 		return getInt(SB_MAINTENANCE_POLLING_PERIOD, 1000);
