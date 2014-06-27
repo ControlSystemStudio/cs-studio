@@ -17,7 +17,10 @@
       <programArgs>-pluginCustomization configuration/plugin_customization.ini</programArgs>
       <vmArgs>-Xmx1024m
 -Xms128m
--XX:MaxPermSize=256M</vmArgs>
+-XX:MaxPermSize=256M
+-Dosgi.configuration.cascaded=true
+-Dosgi.sharedConfiguration.area.readOnly=true
+-Dosgi.install.area.readOnly=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
