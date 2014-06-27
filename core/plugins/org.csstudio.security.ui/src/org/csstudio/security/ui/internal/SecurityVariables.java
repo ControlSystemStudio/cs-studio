@@ -1,9 +1,9 @@
 package org.csstudio.security.ui.internal;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 
@@ -75,10 +75,13 @@ public class SecurityVariables extends AbstractSourceProvider implements Securit
         final Boolean authenticated = subject != null;
         variables.put(AUTHENTICATED, authenticated);
         variables.put(CURRENT_USER, is_current_user);
-        variables.put(CURRENT_AUTHORIZATION, authorizations.getAuthorizations());
+        final Set<String> auth = authorizations != null
+                ? authorizations.getAuthorizations()
+                : Collections.<String>emptySet();
+        variables.put(CURRENT_AUTHORIZATION, auth);
         
         fireSourceChanged(ISources.WORKBENCH, AUTHENTICATED, authenticated);
         fireSourceChanged(ISources.WORKBENCH, CURRENT_USER, is_current_user);
-        fireSourceChanged(ISources.WORKBENCH, CURRENT_AUTHORIZATION, authorizations.getAuthorizations());
+        fireSourceChanged(ISources.WORKBENCH, CURRENT_AUTHORIZATION, auth);
     }
 }
