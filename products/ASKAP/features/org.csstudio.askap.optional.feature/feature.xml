@@ -39,6 +39,9 @@
       <import plugin="org.csstudio.askap.utility.icemanager" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.7.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.console" version="3.5.100" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -71,6 +74,13 @@
 
    <plugin
          id="org.csstudio.askap.sb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.utility.pv.ice"
          download-size="0"
          install-size="0"
          version="0.0.0"

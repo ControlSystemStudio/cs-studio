@@ -353,7 +353,9 @@ public class SBExecutionView extends EditorPart {
 			
 			@Override
 			public void partOpened(IWorkbenchPartReference partRef) {
-			}
+				if (isThisEditor(partRef))
+					start();
+		}
 			
 			@Override
 			public void partClosed(IWorkbenchPartReference partRef) {
@@ -384,8 +386,6 @@ public class SBExecutionView extends EditorPart {
 			
 			@Override
 			public void partActivated(IWorkbenchPartReference partRef) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 	}

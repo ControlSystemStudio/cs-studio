@@ -96,30 +96,7 @@ public class IceManager {
 		            
 		logger.info("ICE has been initialised");
 	}
-	
-//	public static IServicePrx getServiceComponent(String name) throws Exception {
-//		if (ic==null)
-//			initialize();
-//		
-//		Ice.ObjectPrx proxy = ic.stringToProxy(name);
-//		IServicePrx serviceProxy = null;
-//		
-//		try {
-//			serviceProxy = IServicePrxHelper.checkedCast(proxy);
-//	        
-//			if (serviceProxy == null) {
-//				logger.log(Level.WARNING, "Invalid proxy for " + name);
-//				throw new Exception("Invalid proxy for " + name);
-//			}
-//			
-//		} catch (Exception e) {
-//			logger.log(Level.WARNING, "Could not create proxy for " + name);
-//			throw new Exception("Could not create proxy for " + name , e);
-//		}
-//       
-//		return serviceProxy;
-//	}
-	
+		
 	public static boolean icePing(String iceName) {
 		if (ic==null)
 			initialize();

@@ -35,7 +35,9 @@ public class MonitoringPointManager {
 			@Override
 			public void run() {
 				while (keepPolling) {
-					String[] pointNames = (String[]) pointUpdaters.keySet().toArray();
+					String[] pointNames = (String[]) pointUpdaters.keySet().toArray(new String[]{});
+					
+					
 					if (pointNames!=null && pointNames.length>0) {
 						
 						try {
@@ -73,6 +75,7 @@ public class MonitoringPointManager {
 				
 				if (updater == null) {
 					updater = new MonitorPointUpdater();
+					pointUpdaters.put(pointName, updater);
 				}
 				
 				updater.addListener(listener);

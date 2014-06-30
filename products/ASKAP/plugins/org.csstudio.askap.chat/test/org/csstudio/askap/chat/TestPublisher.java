@@ -36,14 +36,12 @@ public class TestPublisher {
 			MapMessage map = session.createMapMessage();
 			map.setString("FROM", "Robert");
 			map.setString("MESSAGE", "Hello Xinyu again!");
-			map.setJMSExpiration(1000);
 			publisher.send(map);
 			
 			System.out.println(map.toString());			
 			
 			map.setString("FROM", "Tony");
 			map.setString("MESSAGE", "Hello world again!");
-			map.setJMSExpiration(1000);
 			publisher.send(map);
 
 			System.out.println(map.toString());			
@@ -52,7 +50,6 @@ public class TestPublisher {
 			map.setString(
 					"MESSAGE",
 					"Hello TOS again! Let me try and send a really really really long message and see what happens. I wonder if this message is going to be long enough. Maybe I'll just make it just a bit longer to make sure");
-			map.setJMSExpiration(1000);
 			publisher.send(map);
 
 			System.out.println(map.toString());			

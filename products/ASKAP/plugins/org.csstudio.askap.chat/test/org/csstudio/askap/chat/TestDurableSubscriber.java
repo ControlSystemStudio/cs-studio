@@ -41,9 +41,9 @@ public class TestDurableSubscriber implements MessageListener {
 	        
 	        connection.start();
 	        
-	        Thread.sleep(5000);
+//	        Thread.sleep(5000);
 	        
-	        connection.close();
+//	        connection.close();
         
 		} catch (Exception e) {
 			e.printStackTrace();
