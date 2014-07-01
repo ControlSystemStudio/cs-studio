@@ -55,6 +55,13 @@
             name="Channel Orchestrator"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.channel.application.category"
+            class="org.csstudio.channel.pretune.PreTune"
+            id="org.csstudio.channel.pretune"
+            name="pretune"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -65,6 +72,15 @@
                name="org.csstudio.channel.views.before"
                visible="true">
          </separator>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               label="pretune"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channel.pretune">
+            </parameter>
+         </command>
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-viewer-16.png"
