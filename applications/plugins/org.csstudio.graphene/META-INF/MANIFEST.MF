@@ -20,3 +20,5 @@ Require-Bundle: org.csstudio.csdata;bundle-version="3.1.0",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.graphene.Activator
 Export-Package: org.csstudio.graphene
+Import-Package: org.epics.pvmanager,
+ org.epics.pvmanager.expression

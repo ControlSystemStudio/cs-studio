@@ -20,3 +20,4 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.csdata;bundle-version="3.2.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.epics.pvmanager

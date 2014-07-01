@@ -20,3 +20,7 @@ Require-Bundle: org.eclipse.ui,
  org.epics.util;bundle-version="0.2.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Import-Package: org.epics.pvmanager,
+ org.epics.pvmanager.expression,
+ org.epics.vtype,
+ org.epics.vtype.io

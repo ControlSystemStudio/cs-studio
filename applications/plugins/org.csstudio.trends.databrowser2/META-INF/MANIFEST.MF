@@ -21,10 +21,10 @@ Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.eclipse.ui.cheatsheets;resolution:=optional,
  org.eclipse.ui.ide;bundle-version="3.6.0";resolution:=optional,
  org.csstudio.csdata;bundle-version="3.0.0";visibility:=reexport,
+ org.csstudio.apputil;bundle-version="3.0.2",
+ org.csstudio.apputil.ui;bundle-version="3.2.0",
  org.csstudio.ui.util;bundle-version="3.1.0";resolution:=optional;visibility:=reexport,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional;visibility:=reexport,
- org.csstudio.apputil;bundle-version="1.1.0";visibility:=reexport,
- org.csstudio.apputil.ui;bundle-version="3.2.0";visibility:=reexport,
  org.csstudio.swt.xygraph;bundle-version="1.0.2",
  org.csstudio.archive.reader;bundle-version="2.0.1";visibility:=reexport,
  org.csstudio.logbook;bundle-version="1.0.2",
@@ -34,8 +34,8 @@ Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
  org.csstudio.utility.pvmanager.loc;bundle-version="3.1.0";resolution:=optional,
  org.csstudio.utility.pvmanager.sim;bundle-version="3.1.0";resolution:=optional,
- org.csstudio.autocomplete.ui,
- org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0"
+ org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
+ org.csstudio.autocomplete.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
@@ -53,3 +53,4 @@ Export-Package: org.csstudio.trends.databrowser2,
  org.csstudio.trends.databrowser2.ui,
  org.csstudio.trends.databrowser2.waveformview
 Bundle-ClassPath: .
+Import-Package: org.epics.pvmanager
