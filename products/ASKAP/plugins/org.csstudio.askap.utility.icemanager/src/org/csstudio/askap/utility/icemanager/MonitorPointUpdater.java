@@ -19,7 +19,7 @@ public class MonitorPointUpdater {
 			listeners.add(listener);
 	}
 	
-	public boolean remove(MonitorPointListener listener) {
+	public boolean removeListener(MonitorPointListener listener) {
 		return listeners.remove(listener);
 	}
 

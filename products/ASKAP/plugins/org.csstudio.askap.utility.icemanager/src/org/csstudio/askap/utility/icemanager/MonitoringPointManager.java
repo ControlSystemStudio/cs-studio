@@ -91,7 +91,7 @@ public class MonitoringPointManager {
 				MonitorPointUpdater updater = pointUpdaters.get(pointName);
 				
 				if (updater != null) {
-					updater.remove(listener);
+					updater.removeListener(listener);
 				}
 			}
 		}

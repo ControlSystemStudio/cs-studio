@@ -402,6 +402,7 @@ public class IceManager {
 		if (manager==null) {
 			MonitoringProviderPrx proxy = getMonitoringProvider(adaptorName);			
 			manager = new MonitoringPointManager(adaptorName, proxy);
+			MONITORING_MAP.put(adaptorName, manager);
 		}
 		
 		manager.addListener(pointNames, listener);
