@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * A way to read and write an object with a particular file format.
  *
  * @author carcassi
  */
@@ -19,6 +20,7 @@ public interface FileFormat {
      * 
      * @param in a stream; not null
      * @return the value de-serialized
+     * @throws java.lang.Exception any error
      */
     public Object readValue(InputStream in) throws Exception;
     
@@ -27,6 +29,7 @@ public interface FileFormat {
      * 
      * @param value the value to write; not null
      * @param out the output stream; not null
+     * @throws java.lang.Exception any error
      */
     public void writeValue(Object value, OutputStream out) throws Exception;
     

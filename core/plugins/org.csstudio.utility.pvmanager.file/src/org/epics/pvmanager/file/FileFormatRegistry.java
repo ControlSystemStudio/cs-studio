@@ -9,16 +9,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Place to registers file formats so that the file datasource can use them.
  *
  * @author carcassi
  */
-public class FileFormatRegister {
+public class FileFormatRegistry {
     
-    private final static FileFormatRegister registry = new FileFormatRegister();
+    private final static FileFormatRegistry registry = new FileFormatRegistry();
     
-    private static Map<String, FileFormat> fileFormatRegistry = new ConcurrentHashMap<String, FileFormat>();
+    private static final Map<String, FileFormat> fileFormatRegistry = new ConcurrentHashMap<>();
     
-    public static FileFormatRegister getDefault() {
+    public static FileFormatRegistry getDefault() {
         return registry;
     }
     

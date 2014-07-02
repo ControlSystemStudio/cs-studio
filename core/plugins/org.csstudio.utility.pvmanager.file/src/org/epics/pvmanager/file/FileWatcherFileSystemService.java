@@ -7,7 +7,6 @@ package org.epics.pvmanager.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import static java.nio.file.StandardWatchEventKinds.*;
 import java.nio.file.WatchEvent;
@@ -15,7 +14,6 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
