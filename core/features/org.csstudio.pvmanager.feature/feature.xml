@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.pvmanager.feature"
       label="CS-Studio Common Data Layer (pvmanager)"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://pvmanager.sourceforge.net/">
