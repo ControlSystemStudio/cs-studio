@@ -63,7 +63,7 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
 
     @Override
     protected boolean isConnected(File payload) {
-        return payload.exists() && payload.isFile();
+        return payload != null && payload.exists() && payload.isFile();
     }
 
     @Override

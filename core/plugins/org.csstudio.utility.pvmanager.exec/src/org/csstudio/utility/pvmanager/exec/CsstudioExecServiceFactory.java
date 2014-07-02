@@ -25,8 +25,11 @@ public class CsstudioExecServiceFactory extends ExecXMLServiceFactory {
 	
 	@Override
 	public Collection<Service> createServices() {
-		Collection<Service> fileServices =  super.createServices();
-		Collection<Service> allServices = new HashSet<>(fileServices);
+		Collection<Service> allServices = new HashSet<>();
+		if (getJdbcServiceDirectory().exists()) {
+			Collection<Service> fileServices =  super.createServices();
+			allServices.addAll(fileServices);
+		}
 		allServices.add(new GenericExecService());
 		return allServices;
 	}

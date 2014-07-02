@@ -126,10 +126,9 @@ public class AlarmClientModel
     final private boolean allow_write = ! Preferences.isReadOnly();
 
 	/** Initialize client model */
-    private AlarmClientModel() throws Exception
-    {
-    	config_name = Preferences.getAlarmTreeRoot();
-
+	private AlarmClientModel(String config_name) throws Exception 
+	{
+		this.config_name = config_name;
         // Initial dummy alarm info
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
 
@@ -140,21 +139,36 @@ public class AlarmClientModel
      *  <p>
      *  Increments the reference count.
      *  @see #release()
+     *  @param config_name Name of alarm tree root, raise an Exception if null
      *  @return Alarm client model instance
      *  @throws Exception on error
      */
-    public static AlarmClientModel getInstance() throws Exception
+    public static AlarmClientModel getInstance(String config_name) throws Exception
     {
+    	if(config_name == null)
+    		throw new Exception("Configuration name can't be null");
         synchronized (AlarmClientModel.class)
         {
             if (instance == null)
-                instance = new AlarmClientModel();
+                instance = new AlarmClientModel(config_name);
         }
         instance.references.incrementAndGet();
         return instance;
-    }
+	}
 
-    /** Release the 'instance' */
+    /** Obtain the shared instance.
+     *  <p>
+     *  Increments the reference count.
+     *  @see #release()
+     *  @return Alarm client model instance
+     *  @throws Exception on error
+     */
+	public static AlarmClientModel getInstance() throws Exception 
+	{
+		return getInstance(Preferences.getAlarmTreeRoot());
+	}
+
+	/** Release the 'instance' */
     private static void releaseInstance()
     {
         synchronized (AlarmClientModel.class)

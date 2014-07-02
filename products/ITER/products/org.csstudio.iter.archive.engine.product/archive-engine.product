@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Archive Engine" uid="org.csstudio.iter.product.archive.engine.product" id="org.csstudio.iter.archive.engine.product.product" application="org.csstudio.archive.engine.application" version="3.2.15.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Archive Engine" uid="org.csstudio.iter.product.archive.engine.product" id="org.csstudio.iter.archive.engine.product.product" application="org.csstudio.archive.engine.application" version="3.3.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

@@ -48,15 +48,6 @@ public class ExpressionLanguage {
 	return new IntensityGraph2DExpression(arrayData);
     }
     
-    public static AreaGraph2DExpression histogramOf(SourceRateExpression<? extends VNumber> vDoubles) {
-        DesiredRateExpression<? extends List<? extends VNumber>> queue = newValuesOf(vDoubles);
-        return new AreaGraph2DExpression(queue, new AreaGraph2DFunction(queue.getFunction()), "histogram");
-    }
-
-    public static AreaGraph2DExpression histogramOf(DesiredRateExpression<? extends List<? extends VNumber>> vDoubles) {
-        return new AreaGraph2DExpression(vDoubles, new AreaGraph2DFunction(vDoubles.getFunction()), "histogram");
-    }
-    
     public static LineGraph2DExpression lineGraphOf(DesiredRateExpression<? extends VNumberArray> vDoubleArray) {
         return lineGraphOf(vDoubleArray, null, null, null);
     }
@@ -116,6 +107,20 @@ public class ExpressionLanguage {
 	    DesiredRateExpression<?> yColumnName,
 	    DesiredRateExpression<?> tooltipColumnName) {
 	return new LineGraph2DExpression(tableData, xColumnName, yColumnName, tooltipColumnName);
+    }
+    
+    public static MultilineGraph2DExpression multilineGraphOf(
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName) {
+	return new MultilineGraph2DExpression(tableData, xColumnName, yColumnName);
+    }
+    
+    public static MultiAxisLineGraph2DExpression multiAxisLineGraphOf(
+	    DesiredRateExpression<?> tableData,
+	    DesiredRateExpression<?> xColumnName,
+	    DesiredRateExpression<?> yColumnName) {
+	return new MultiAxisLineGraph2DExpression(tableData, xColumnName, yColumnName);
     }
     
     public static SparklineGraph2DExpression sparklineGraphOf(
