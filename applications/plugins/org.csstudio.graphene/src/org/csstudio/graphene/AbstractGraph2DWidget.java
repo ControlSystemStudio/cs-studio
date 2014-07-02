@@ -93,12 +93,16 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 			@Override
 			public void rangeChanged() {
 				if (graph != null && isResizableAxis()) {
-					double invert = yRangeControl.getMin()
-							+ yRangeControl.getMax();
-					graph.update(graph.newUpdate().yAxisRange(
-							AxisRanges.absolute(
-									invert - yRangeControl.getSelectedMax(),
-									invert - yRangeControl.getSelectedMin())));
+					if (xRangeControl.isRangeSet()) {
+						double invert = yRangeControl.getMin()
+								+ yRangeControl.getMax();
+						graph.update(graph.newUpdate().yAxisRange(
+								AxisRanges.absolute(
+										invert - yRangeControl.getSelectedMax(),
+										invert - yRangeControl.getSelectedMin())));
+					} else {
+						graph.update(graph.newUpdate().yAxisRange(getYAxisRange()));
+					}
 				}
 			}
 		});
@@ -142,9 +146,13 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 			@Override
 			public void rangeChanged() {
 				if (graph != null && isResizableAxis()) {
-					graph.update(graph.newUpdate().xAxisRange(
-							AxisRanges.absolute(xRangeControl.getSelectedMin(),
-									xRangeControl.getSelectedMax())));
+					if (xRangeControl.isRangeSet()) {
+						graph.update(graph.newUpdate().xAxisRange(
+								AxisRanges.absolute(xRangeControl.getSelectedMin(),
+										xRangeControl.getSelectedMax())));
+					} else {
+						graph.update(graph.newUpdate().xAxisRange(getXAxisRange()));
+					}
 				}
 			}
 		});
