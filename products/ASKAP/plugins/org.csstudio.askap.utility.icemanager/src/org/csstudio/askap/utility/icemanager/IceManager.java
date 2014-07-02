@@ -374,7 +374,7 @@ public class IceManager {
 		return sourceSearchProxy;
 	}
 
-	private static MonitoringProviderPrx getMonitoringProvider(String name) throws Exception {
+	protected static MonitoringProviderPrx getMonitoringProvider(String name) throws Exception {
 		if (ic==null)
 			initialize();
 
@@ -400,8 +400,7 @@ public class IceManager {
 		MonitoringPointManager manager = MONITORING_MAP.get(adaptorName);
 		
 		if (manager==null) {
-			MonitoringProviderPrx proxy = getMonitoringProvider(adaptorName);			
-			manager = new MonitoringPointManager(adaptorName, proxy);
+			manager = new MonitoringPointManager(adaptorName);
 			MONITORING_MAP.put(adaptorName, manager);
 		}
 		
@@ -415,6 +414,10 @@ public class IceManager {
 			manager.remove(pointNames, listener);
 		}
 		
+	}
+	
+	public static void removeMonitoringPointManager(String adaptorName) {
+		MONITORING_MAP.remove(adaptorName);
 	}
 	
 	public static IPksDataCaptureServicePrx getDataCaptureProxy(String name) throws Exception {

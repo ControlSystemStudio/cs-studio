@@ -27,8 +27,7 @@ public class MonitoringPointManager {
 	private String myAdaptorName = "";
 	
 	
-	public MonitoringPointManager(String adaptorName, MonitoringProviderPrx proxy) {
-		this.monitorProxy = proxy;
+	public MonitoringPointManager(String adaptorName) {
 		myAdaptorName = adaptorName;
 		
 		Thread pointPollingThread = new Thread(new Runnable() {
@@ -36,17 +35,21 @@ public class MonitoringPointManager {
 			public void run() {
 				while (keepPolling) {
 					String[] pointNames = (String[]) pointUpdaters.keySet().toArray(new String[]{});
-					
-					
 					if (pointNames!=null && pointNames.length>0) {
-						
 						try {
+							
+							if (monitorProxy == null) 
+								monitorProxy = IceManager.getMonitoringProvider(myAdaptorName);
+								
 							MonitorPoint[] pointValues = monitorProxy.get(pointNames);
 							update(pointValues);
-						} catch (RuntimeException e) {
-							logger.log(Level.WARNING, "Adaptor " + myAdaptorName + " disconnected", e);						
-							// notify all listeners
 							
+						} catch (Exception e) {
+							logger.log(Level.WARNING, "Adaptor " + myAdaptorName + " disconnected: " + e.getMessage());						
+							monitorProxy = null;
+							IceManager.removeMonitoringPointManager(myAdaptorName);
+							// notify all listeners
+							disconnected();
 						}
 					}
 					
