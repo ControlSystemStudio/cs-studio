@@ -72,6 +72,7 @@
       <feature id="org.csstudio.boy.feature"/>
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.opibuilder.feature"/>
+      <feature id="org.csstudio.product.configuration.feature"/>
    </features>
 
    <configurations>
