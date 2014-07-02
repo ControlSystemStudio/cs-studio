@@ -118,7 +118,7 @@ public class InterpreterUtils {
 		}
 		// Code copies from Pydev when the user chooses a Jython interpreter
 		// - these are the defaults.
-		final File jydir = BundleUtils.getBundleLocation("org.python");
+		final File jydir = BundleUtils.getBundleLocation("org.python.jython");
 		final File exeFile = new File(jydir, "jython.jar");
 
 		if (info != null

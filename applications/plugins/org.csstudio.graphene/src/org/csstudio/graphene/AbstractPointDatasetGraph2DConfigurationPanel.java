@@ -17,25 +17,14 @@ import org.eclipse.swt.widgets.Text;
  * 
  */
 public class AbstractPointDatasetGraph2DConfigurationPanel extends
-		AbstractConfigurationPanel {
+		AbstractGraph2DConfigurationPanel {
 	
-	private Text textDataFormula;
 	private Text textXColumnFormula;
 	private Text textYColumnFormula;
-	private Button btnResizableAxis;
 
 	public AbstractPointDatasetGraph2DConfigurationPanel(Composite parent,
 			int style) {
 		super(parent, style);
-		setLayout(new GridLayout(2, false));
-
-		Label lblDataFormula = new Label(this, SWT.NONE);
-		lblDataFormula.setText("Data Formula:");
-
-		textDataFormula = new Text(this, SWT.BORDER);
-		textDataFormula.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 1, 1));
-		forwardTextEvents(textDataFormula, "dataFormula");
 
 		Label lblXColumnFormula = new Label(this, SWT.NONE);
 		lblXColumnFormula.setText("X Column Formula:");
@@ -53,29 +42,6 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 				true, false, 1, 1));
 		forwardTextEvents(textYColumnFormula, "yColumnFormula");
 		
-//		new Label(this, SWT.NONE);
-//
-//		btnShowAxis = new Button(this, SWT.CHECK);
-//		btnShowAxis.setText("Show Axis Scroll");
-//		btnShowAxis.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				changeSupport.firePropertyChange("showAxisScroll", null,
-//						getShowAxis());
-//			}
-//		});
-	}
-
-	public String getDataFormula() {
-		return textDataFormula.getText();
-	}
-
-	public void setDataFormula(String dataFormula) {
-		if (dataFormula != null) {
-			this.textDataFormula.setText(dataFormula);
-			changeSupport.firePropertyChange("dataFormula", null,
-					textDataFormula.getText());
-		}
 	}
 
 	public String getXColumnFormula() {
@@ -100,15 +66,6 @@ public class AbstractPointDatasetGraph2DConfigurationPanel extends
 			changeSupport.firePropertyChange("yColumnFormula", null,
 					textYColumnFormula.getText());
 		}
-	}
-
-	public boolean isResizableAxis() {
-		return this.btnResizableAxis.getSelection();
-	}
-
-	public void setShowAxis(boolean showAxis) {
-		this.btnResizableAxis.setSelection(showAxis);
-		changeSupport.firePropertyChange("resizableAxis", null, isResizableAxis());
 	}
 
 }

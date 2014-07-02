@@ -10,6 +10,7 @@ package org.epics.pvmanager.jca;
 
 import gov.aps.jca.Channel;
 import gov.aps.jca.dbr.DBRType;
+import org.epics.util.time.Timestamp;
 
 /**
  * Represents the connection payload, which consists of the actual JCA
@@ -24,6 +25,7 @@ public class JCAConnectionPayload {
     private final boolean connected;
     private final boolean longString;
     private final DBRType fieldType;
+    private final Timestamp eventTime = Timestamp.now();
 
     public JCAConnectionPayload(JCAChannelHandler channleHandler, Channel channel, JCAConnectionPayload previousPayload) {
         this.jcaDataSource = channleHandler.getJcaDataSource();
@@ -86,6 +88,15 @@ public class JCAConnectionPayload {
      */
     public boolean isLongString() {
         return longString;
+    }
+
+    /**
+     * Returns the local time of the connection event.
+     * 
+     * @return client connection/disconnection time
+     */
+    public Timestamp getEventTime() {
+        return eventTime;
     }
 
     @Override

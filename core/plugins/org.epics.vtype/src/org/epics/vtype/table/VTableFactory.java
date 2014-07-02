@@ -189,6 +189,17 @@ public class VTableFactory {
         };
     }
     
+    private static Object createView(final Object columnData, final ListInt indexes) {
+        if (columnData instanceof List) {
+            List<?> data = (List<?>) columnData;
+            return createView(data, indexes);
+        } else if (columnData instanceof ListNumber) {
+            return createView((ListNumber) columnData, indexes);
+        } else {
+            throw new IllegalArgumentException("Unsupported column data " + columnData);
+        }
+    }
+    
     public static VTable select(final VTable table, final ListInt indexes) {
         List<String> names = columnNames(table);
         List<Class<?>> types = columnTypes(table);
@@ -371,6 +382,21 @@ public class VTableFactory {
         return ValueFactory.newVTable(columnTypes, columnNames, columnData);
     }
     
+    private static VTable extractRows(VTable vTable, ListInt indexes) {
+        if (vTable == null || indexes == null) {
+            return null;
+        }
+        List<String> columnNames = new ArrayList<>(vTable.getColumnCount());
+        List<Class<?>> columnTypes = new ArrayList<>(vTable.getColumnCount());
+        List<Object> columnData = new ArrayList<>(vTable.getColumnCount());
+        for (int nCol = 0; nCol < vTable.getColumnCount(); nCol++) {
+            columnNames.add(vTable.getColumnName(nCol));
+            columnTypes.add(vTable.getColumnType(nCol));
+            columnData.add(createView(vTable.getColumnData(nCol), indexes));
+        }
+        return ValueFactory.newVTable(columnTypes, columnNames, columnData);
+    }
+    
     private static Object extractColumnData(Object columnData, int... rows) {
         if (columnData instanceof List) {
             List<Object> data = new ArrayList<>(rows.length);
@@ -477,5 +503,29 @@ public class VTableFactory {
                     column("Severity", newVStringArray(severity, alarmNone(), timeNow())),
                     column("Status", newVStringArray(status, alarmNone(), timeNow())));
         }
+    }
+    
+    public static VTable tableValueFilter(VTable table, String columnName, Object value) {
+        ValueFilter valueFilter = new ValueFilter(table, columnName, value);
+        BufferInt indexes = new BufferInt();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (valueFilter.filterRow(i)) {
+                indexes.addInt(i);
+            }
+        }
+        
+        return extractRows(table, indexes);
+    }
+    
+    public static VTable tableRangeFilter(VTable table, String columnName, Object min, Object max) {
+        RangeFilter valueFilter = new RangeFilter(table, columnName, min, max);
+        BufferInt indexes = new BufferInt();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (valueFilter.filterRow(i)) {
+                indexes.addInt(i);
+            }
+        }
+        
+        return extractRows(table, indexes);
     }
 }

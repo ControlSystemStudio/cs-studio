@@ -5,6 +5,7 @@ package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.graphene.LineGraph2DWidget;
 import org.eclipse.draw2d.IFigure;
+import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 /**
  * @author shroffk
@@ -32,8 +33,8 @@ public class LineGraph2DWidgetEditpart extends AbstractPointDatasetGraph2DWidget
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		super.registerPropertyChangeHandlers();
-		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
-		setPropertyChangeHandler(LineGraph2DWidgetModel.PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_HIGHLIGHT_SELECTION_VALUE, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_SELECTION_VALUE_PV, getReconfigureWidgetPropertyChangeHandler());
 	}
 
 }

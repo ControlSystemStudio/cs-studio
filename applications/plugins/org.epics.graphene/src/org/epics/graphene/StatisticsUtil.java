@@ -104,6 +104,76 @@ public class StatisticsUtil {
         return new StatisticsImpl(count, min, max, average, stdDev);
     }
     
+    /**
+     * Creates the statistics, excluding NaN values, but the values
+     * are actually calculated when requested.
+     * 
+     * @param data the data
+     * @return the calculated statistics
+     */
+    public static Statistics lazyStatisticsOf(CollectionNumber data) {
+        return new LazyStatistics(data);
+    }
+    
+    private static class LazyStatistics implements Statistics {
+        
+        private Statistics stats;
+        private CollectionNumber data;
+
+        public LazyStatistics(CollectionNumber data) {
+            this.data = data;
+        }
+        
+        private void calculateStats() {
+            if (stats == null) {
+                stats = statisticsOf(data);
+                data = null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            calculateStats();
+            return stats.getCount();
+        }
+
+        @Override
+        public double getAverage() {
+            calculateStats();
+            return stats.getAverage();
+        }
+
+        @Override
+        public double getStdDev() {
+            calculateStats();
+            return stats.getStdDev();
+        }
+
+        @Override
+        public Number getMinimum() {
+            calculateStats();
+            return stats.getMinimum();
+        }
+
+        @Override
+        public Number getMaximum() {
+            calculateStats();
+            return stats.getMaximum();
+        }
+        
+    }
+    
+    /**
+     *Returns the statistics of the data, which knows:
+     * <ul>
+     *      <li>Number of data points</li>
+     *      <li>Min and Max of data</li>
+     *      <li>Average value of the data</li>
+     *      <li>The standard deviation of the data</li>
+     * </ul>
+     * @param data
+     * @return Statistics
+     */
     public static Statistics statisticsOf(List<Statistics> data) {
         if (data.isEmpty())
             return null;

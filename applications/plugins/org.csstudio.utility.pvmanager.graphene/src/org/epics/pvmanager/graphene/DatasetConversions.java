@@ -4,15 +4,20 @@
  */
 package org.epics.pvmanager.graphene;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.epics.graphene.Cell2DDataset;
+import org.epics.graphene.Cell2DDatasets;
 import org.epics.graphene.Point2DDataset;
 import org.epics.graphene.Point2DDatasets;
 import org.epics.graphene.Point3DWithLabelDataset;
 import org.epics.graphene.Point3DWithLabelDatasets;
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
+import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
 
@@ -130,5 +135,59 @@ public class DatasetConversions {
         }
         
         return Point3DWithLabelDatasets.build(xValues, yValues, sizeValues, colorValues);
+    }
+
+    public static List<Point2DDataset> point2DDatasetsFromVTable(VTable vTable, List<String> xColumns, List<String> yColumns) {
+        List<ListNumber> xValues = new ArrayList<>();
+        List<ListNumber> yValues = new ArrayList<>();
+        
+        if (xColumns != null && yColumns != null) {
+            for (String column : xColumns) {
+                xValues.add(ValueUtil.numericColumnOf(vTable, column));
+            }
+
+            for (String column : yColumns) {
+                yValues.add(ValueUtil.numericColumnOf(vTable, column));
+            }
+        } else if (xColumns == null && yColumns == null) {
+            for (int i = 0; i < vTable.getColumnCount(); i++) {
+                if (vTable.getColumnType(i).isPrimitive()) {
+                    yValues.add((ListNumber) vTable.getColumnData(i));
+                }
+            }
+        } else {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+        
+        
+        if (xValues.isEmpty()) {
+            List<Point2DDataset> datasets = new ArrayList<>();
+            for (int i = 0; i < yValues.size(); i++) {
+                datasets.add(Point2DDatasets.lineData(ListNumbers.linearList(0, 1, yValues.get(i).size()), yValues.get(i)));
+            }
+            return datasets;
+        }
+        
+        if (xValues.size() == yValues.size()) {
+            List<Point2DDataset> datasets = new ArrayList<>();
+            for (int i = 0; i < xValues.size(); i++) {
+                datasets.add(Point2DDatasets.lineData(xValues.get(i), yValues.get(i)));
+            }
+            return datasets;
+        }
+        
+        if (xValues.size() == 1) {
+            List<Point2DDataset> datasets = new ArrayList<>();
+            for (int i = 0; i < yValues.size(); i++) {
+                datasets.add(Point2DDatasets.lineData(xValues.get(0), yValues.get(i)));
+            }
+            return datasets;
+        }
+        
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public static Cell2DDataset cell2DDatasetsFromVNumberArray(VNumberArray data) {
+        return new Cell2DDatasetFromVNumberArray(data);
     }
 }
