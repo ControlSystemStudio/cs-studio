@@ -4,8 +4,10 @@
  */
 package org.epics.pvmanager.graphene;
 
+import java.util.List;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.vtype.VString;
+import org.epics.vtype.VStringArray;
 
 /**
  *
@@ -17,6 +19,14 @@ public class ArgumentExpressions {
             return new ReadFunctionArgument<>();
         } else {
             return new ReadFunctionArgument<>(new VStringToStringReadFunction(new CheckedReadFunction<>(function, argumentName, VString.class)));
+        }
+    }
+    
+    public static ReadFunctionArgument<List<String>> stringArrayArgument(ReadFunction<?> function, String argumentName) {
+        if (function == null) {
+            return new ReadFunctionArgument<>();
+        } else {
+            return new ReadFunctionArgument<>(new VStringArrayToListStringReadFunction(new CheckedReadFunction<>(function, argumentName, VStringArray.class)));
         }
     }
 }

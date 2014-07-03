@@ -33,7 +33,8 @@
     <tycho.version>0.20.0</tycho.version>
     <tycho-extras.version>0.20.0</tycho-extras.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.0</cs-studio-central.url>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree> 
 	
 	<!-- SonarQube configuration -->
  	<sonar.language>java</sonar.language>
@@ -142,7 +143,7 @@
           <configuration>
             <timestampProvider>jgit</timestampProvider>
             <!-- jgit.dirtyWorkingTree options: ignore, warning, error -->
-            <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
+            <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
             <jgit.ignore>
               pom.xml
             </jgit.ignore>

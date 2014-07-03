@@ -16,7 +16,7 @@ public class LineGraph2DConfigurationPanel extends
 		btnHighlightFocusData = new Button(this, SWT.CHECK);
 		btnHighlightFocusData.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		btnHighlightFocusData.setText("Highlight Focus Data");
-		forwardCheckBodEvents(btnHighlightFocusData, "highlightFocusData");
+		forwardCheckBoxEvents(btnHighlightFocusData, "highlightFocusData");
 	}
 	
 	public boolean getHighlightFocusData() {

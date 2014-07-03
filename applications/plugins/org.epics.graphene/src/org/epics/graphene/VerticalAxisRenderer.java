@@ -75,7 +75,7 @@ class VerticalAxisRenderer {
         
         yTicks = new int[yLabels.length];
         for (int i = 0; i < yTicks.length; i++) {
-            yTicks[i] = imageHeight - endAxis + (int) (NumberUtil.normalize(yValueTicks[i], axis.getMinValue(), axis.getMaxValue()) * plotHeight);
+            yTicks[i] = imageHeight - endAxis + (int) (MathUtil.normalize(yValueTicks[i], axis.getMinValue(), axis.getMaxValue()) * plotHeight);
         }
 
         // Draw y-axis

@@ -63,7 +63,7 @@ final class LinearValueScale implements ValueScale {
         String[] labels = new String[ticks.length];
         for (int i = 0; i < ticks.length; i++) {
             double value = ticks[i];
-            labels[i] = format(value, format, exponent, normalization);
+            labels[i] = format(value, format, exponent, normalization);//error happens here. value = -0.5, format = , exponent = null, normalization = 1.0
         }
         return new ValueAxis(minValue, maxValue, ticks, labels);
     }

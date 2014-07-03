@@ -23,14 +23,16 @@ package org.epics.graphene;
  */
 public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<IntensityGraph2DRendererUpdate> {
 
-    private Integer zLabelMargin,
-                    legendWidth,
-                    legendMarginToGraph,
-                    legendMarginToEdge;
+    // TODO: if z refers to color, then all the zXxx should be renamed to colorXxx
+    private Integer zLabelMargin;
+    private Integer legendWidth;
+    private Integer graphAreaToLegendMargin;
+
+    private Boolean drawLegend;
+
+    private NumberColorMap colorMap;
     
-      private Boolean drawLegend;
-    
-    private ColorScheme valueColorScheme;
+    // TODO: review comments (they mostly just repeat the method name)
     
     /**
      * Sets this object's drawLegend to the given boolean value.
@@ -43,13 +45,17 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
         return self();
     }
 
+    // TODO: add keepAspectRatio
+    // If enables, the plot should stretch but keep the ratio of the image
+    // the same as the one given by the range of the x and y boundaries
+    
     /**
-     * Sets this object's valueColorScheme to the given ColorScheme.
-     * @param scheme supported schemes: any <code>ColorScheme</code> supported by the <code>ValueColorSchemes</code>
+     * Sets this object's colorMap to the given ColorScheme.
+     * @param colorMap supported schemes: any <code>ColorScheme</code> supported by the <code>NumberColorMaps</code>
      * @return this
      */
-    public IntensityGraph2DRendererUpdate valueColorScheme(ColorScheme scheme) {
-        this.valueColorScheme = scheme;
+    public IntensityGraph2DRendererUpdate colorMap(NumberColorMap colorMap) {
+        this.colorMap = colorMap;
         return self();
     }
     
@@ -74,22 +80,12 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     }
     
     /**
-     * Sets this object's legendMarginToGraph to the given margin size.
-     * @param margin distance(pixels) from the intensity graph to the legend.
-     * @return this
-     */
-    public IntensityGraph2DRendererUpdate legendMarginToGraph(int margin) {
-        this.legendMarginToGraph = margin;
-        return self();
-    }
-    
-    /**
-     * Sets this object's legendMarginToEdge to the given margin size.
+     * Sets this object's graphAreaToLegendMargin to the given margin size.
      * @param margin distance(pixels) from the end of the legend(including labels and other margins) to the end of the graphics component.
      * @return this
      */
-    public IntensityGraph2DRendererUpdate legendMarginToEdge(int margin) {
-        this.legendMarginToEdge = margin;
+    public IntensityGraph2DRendererUpdate graphAreaToLegendMargin(int margin) {
+        this.graphAreaToLegendMargin = margin;
         return self();
     }
     
@@ -103,11 +99,11 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     
     /**
      *
-     * @return ColorScheme valueColorScheme, used to determine which color scheme will be used when drawing an intensity graph. 
-     * Possible values include: GRAY_SCALE, JET, HOT, COOL, SPRING, BONE, COPPER, PINK
+     * @return ColorScheme colorMap, used to determine which color scheme will be used when drawing an intensity graph. 
+ Possible values include: GRAY_SCALE, JET, HOT, COOL, SPRING, BONE, COPPER, PINK
      */
-    public ColorScheme getValueColorScheme() {
-        return valueColorScheme;
+    public NumberColorMap getColorMap() {
+        return colorMap;
     }
     
     /**
@@ -128,17 +124,9 @@ public class IntensityGraph2DRendererUpdate extends Graph2DRendererUpdate<Intens
     
     /**
      *
-     * @return Integer legendMarginToGraph, distance(pixels) from the intensity graph to the legend.
+     * @return Integer graphAreaToLegendMargin, distance(pixels) from the end of the legend(including labels and other margins) to the end of the graphics component.
      */
-    public Integer getLegendMarginToGraph(){
-        return legendMarginToGraph;
-    }
-    
-    /**
-     *
-     * @return Integer legendMarginToEdge, distance(pixels) from the end of the legend(including labels and other margins) to the end of the graphics component.
-     */
-    public Integer getLegendMarginToEdge(){
-        return legendMarginToEdge;
+    public Integer getGraphAreaToLegendMargin(){
+        return graphAreaToLegendMargin;
     }
 }

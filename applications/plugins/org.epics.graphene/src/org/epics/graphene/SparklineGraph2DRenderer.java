@@ -86,9 +86,9 @@ public class SparklineGraph2DRenderer extends Graph2DRenderer<SparklineGraph2DRe
     //Scaling Schemes    
     /**
      * The set of interpolation schemes that are supported by the <code>SparklineGraph2DRenderer</code>.
-     * The interpolation schemes supported are <code>NEAREST_NEIGHBOUR</code>, <code>LINEAR</code>, and <code>CUBIC</code>.
+     * The interpolation schemes supported are <code>NEAREST_NEIGHBOR</code>, <code>LINEAR</code>, and <code>CUBIC</code>.
      */
-    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOUR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
+    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
 
     private InterpolationScheme interpolation = InterpolationScheme.LINEAR;
 

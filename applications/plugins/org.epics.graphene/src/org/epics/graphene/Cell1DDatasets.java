@@ -97,4 +97,9 @@ public class Cell1DDatasets {
             }
         };
     }
+    
+    public static Cell1DDataset createHistogram(Point1DDataset dataset) {
+        Cell1DHistogramDataset histogram = new Cell1DHistogramDataset(dataset);
+        return histogram;
+    }
 }

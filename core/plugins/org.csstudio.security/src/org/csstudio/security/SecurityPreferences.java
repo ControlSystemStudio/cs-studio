@@ -67,7 +67,20 @@ public class SecurityPreferences
 	{
         return getSetting("ldap_group_base", "ou=Group");
 	}
-    
+
+	/** @return secure_read_only preference boolean value */
+	public static boolean isSecureReadOnly() 
+	{
+		String boolStr = getSetting("secure_read_only", "false");
+		try {
+			return Boolean.valueOf(boolStr);
+		} catch (Exception e) {
+			Logger.getLogger(SecuritySupport.ID).log(Level.WARNING,
+					"Error setting preference 'secure_read_only' with '" + boolStr + "': " + e.getMessage());
+			return false; // default
+		}
+	}
+
     /** @return {@link SecurePreferences} location type */
     public static SecurePreferences.Type getSecurePreferenceLocation()
     {
