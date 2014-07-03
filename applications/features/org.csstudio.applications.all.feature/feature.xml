@@ -26,7 +26,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -35,7 +34,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -44,7 +42,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -53,7 +50,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -62,7 +58,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -71,7 +66,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -80,7 +74,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -89,7 +82,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -98,7 +90,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -107,7 +98,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -116,7 +106,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -125,7 +114,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -134,7 +122,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -143,25 +130,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.apputil.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.apputil.ui"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -170,7 +146,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -179,25 +154,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.archive.config.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.archive.engine"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -206,7 +170,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -215,7 +178,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -224,7 +186,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
  
@@ -233,7 +194,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -242,7 +202,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -251,7 +210,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -260,7 +218,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -269,25 +226,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.archive.reader.rdb.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.archive.vtype"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -296,7 +242,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -305,25 +250,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.archive.writer.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.autocomplete.channelfinder"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -332,7 +266,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -341,7 +274,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -350,7 +282,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -359,7 +290,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -368,7 +298,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -377,7 +306,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -386,7 +314,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -395,7 +322,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -404,7 +330,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -413,7 +338,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -422,7 +346,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -431,7 +354,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -440,7 +362,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -449,7 +370,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -458,7 +378,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -467,7 +386,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -476,7 +394,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -485,7 +402,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -494,25 +410,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.domain.common.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.dummyauthorization"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -521,25 +426,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.email.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.email.ui"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -548,7 +442,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -557,7 +450,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -566,7 +458,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -575,7 +466,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -584,7 +474,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -593,7 +482,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -602,7 +490,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -611,7 +498,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -620,7 +506,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -629,7 +514,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -638,7 +522,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -656,7 +539,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -665,7 +547,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -674,7 +555,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -683,7 +563,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -692,7 +571,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -701,7 +579,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -710,7 +587,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -719,7 +595,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -728,7 +603,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -737,25 +611,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.opibuilder.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.opibuilder.tools"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -764,7 +627,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -773,7 +635,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -782,7 +643,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -791,7 +651,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -800,7 +659,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -809,25 +667,15 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
-   <!--plugin
-         id="org.csstudio.remote.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.scan"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -836,7 +684,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -845,7 +692,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -854,7 +700,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -863,7 +708,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -872,7 +716,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -881,7 +724,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -890,7 +732,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -899,7 +740,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -908,7 +748,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -917,7 +756,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -926,7 +764,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -935,7 +772,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -944,7 +780,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -953,43 +788,22 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.servicelocator.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.simplepv.utilitypv"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.simplepv.utilitypv.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.snl.intro"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -998,7 +812,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1007,7 +820,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1016,25 +828,15 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
-   <!--plugin
-         id="org.csstudio.swt.widgets.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.swt.xygraph"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1043,7 +845,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1052,25 +853,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.swt.xygraph.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.systemopen"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1079,7 +869,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"
          os="linux"/>
@@ -1089,7 +878,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"
          os="macosx"/>
@@ -1099,26 +887,15 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"
          os="win32"/>
-
-   <!--plugin
-         id="org.csstudio.testsuite"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.trends.databrowser2"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1127,7 +904,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1136,7 +912,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1145,7 +920,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1154,7 +928,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1163,7 +936,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1172,7 +944,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1181,7 +952,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1190,7 +960,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1199,7 +968,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1208,7 +976,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1217,7 +984,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1226,7 +992,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1235,7 +1000,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1244,7 +1008,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1253,7 +1016,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1262,7 +1024,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1271,7 +1032,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1280,7 +1040,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1298,7 +1057,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1307,34 +1065,15 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
-   <!--plugin
-         id="org.csstudio.utility.ldap.service.impl.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
-
-   <!--plugin
-         id="org.csstudio.utility.ldap.service.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.utility.ldap.treeconfiguration"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1343,7 +1082,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1352,7 +1090,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1361,7 +1098,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1370,7 +1106,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1379,7 +1114,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1388,7 +1122,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1397,7 +1130,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1406,7 +1138,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1415,7 +1146,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1424,7 +1154,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1433,7 +1162,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1442,7 +1170,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1451,7 +1178,6 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 
@@ -1460,25 +1186,14 @@
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
-
-   <!--plugin
-         id="org.csstudio.utility.treemodel.test"
-         download-size="0"
-         install-size="0"
-		 match="greaterOrEqual"
-
-         version="0.0.0"
-         unpack="false"/-->
 
    <plugin
          id="org.csstudio.vtype.pv"
          download-size="0"
          install-size="0"
 		 match="greaterOrEqual"
-
          version="0.0.0"
          unpack="false"/>
 

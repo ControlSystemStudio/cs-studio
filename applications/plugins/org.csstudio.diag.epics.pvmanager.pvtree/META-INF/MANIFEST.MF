@@ -16,6 +16,7 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.apputil.ui,
  org.csstudio.autocomplete.ui,
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.csstudio.csdata;bundle-version="3.2.0"
+ org.csstudio.csdata;bundle-version="3.2.0",
+ org.epics.vtype
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

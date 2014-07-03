@@ -5,6 +5,8 @@ Bundle-SymbolicName: org.csstudio.service.jdbcsample;singleton:=true
 Bundle-Version: 3.2.0.qualifier
 Bundle-Activator: org.csstudio.service.jdbcsample.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager.jdbc
+ org.csstudio.utility.pvmanager.jdbc,
+ org.epics.vtype,
+ org.csstudio.utility.pvmanager
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
