@@ -7,13 +7,10 @@ package org.epics.pvmanager.file;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.OutputStream;
 
 import org.epics.pvmanager.ChannelWriteCallback;
 import org.epics.pvmanager.MultiplexedChannelHandler;
-import org.epics.vtype.VTable;
-import org.epics.vtype.io.CSVIO;
 
 /**
  * Implementation for channels of a {@link LocalDataSource}.
@@ -58,15 +55,12 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
     }
     
     protected Object readValueFromFile(File file) {
-	try {	    
-	    FileInputStream in = new FileInputStream(file);
-	    Object value = format.readValue(in);
-	    in.close();
-	    return value;
-	} catch (Exception e) {
-	    reportExceptionToAllReadersAndWriters(e);
-	}
-	return null;
+        try (FileInputStream in = new FileInputStream(file)) {
+            return format.readValue(in);
+        } catch (Exception e) {
+            reportExceptionToAllReadersAndWriters(e);
+        }
+        return null;
     }
 
     @Override

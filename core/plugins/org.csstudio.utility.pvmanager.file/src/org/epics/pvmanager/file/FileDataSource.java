@@ -6,20 +6,11 @@ package org.epics.pvmanager.file;
 
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.ChannelReadRecipe;
-import org.epics.pvmanager.ChannelWriteRecipe;
 import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.ReadRecipe;
-import org.epics.pvmanager.WriteRecipe;
 import org.epics.pvmanager.vtype.DataTypeSupport;
-import org.epics.pvmanager.util.FunctionParser;
-import org.epics.util.array.ArrayDouble;
 import org.epics.util.time.TimeDuration;
 
 /**
@@ -29,7 +20,7 @@ import org.epics.util.time.TimeDuration;
  * @author carcassi
  */
 public final class FileDataSource extends DataSource {
-    private final static FileFormatRegister register = FileFormatRegister.getDefault();
+    private final static FileFormatRegistry register = FileFormatRegistry.getDefault();
     static {
 	// Install type support for the types it generates.
 	DataTypeSupport.install();

@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.epics.pvmanager.file.FileFormat;
-import org.epics.pvmanager.file.FileFormatRegister;
+import org.epics.pvmanager.file.FileFormatRegistry;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -43,7 +43,7 @@ public class Activator extends Plugin {
 			    final Object o = iConfigurationElement.createExecutableExtension("fileFormat");
 			    final String extension = iConfigurationElement.getAttribute("extension");
 			    if (extension!= null && !extension.isEmpty() && o instanceof FileFormat) {
-			        FileFormatRegister.getDefault().registerFileFormat(extension, (FileFormat) o);			    
+			        FileFormatRegistry.getDefault().registerFileFormat(extension, (FileFormat) o);			    
 			    }
 			} catch (Exception e) {
 			    log.log(Level.INFO, "Failed to registed FileFormat : Cause " + e.getMessage());

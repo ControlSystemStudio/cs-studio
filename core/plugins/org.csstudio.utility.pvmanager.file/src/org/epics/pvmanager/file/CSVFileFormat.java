@@ -10,9 +10,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import org.epics.vtype.VTable;
-import org.epics.vtype.VType;
 import org.epics.vtype.io.CSVIO;
-import org.epics.vtype.io.TextIO;
 
 /**
  * A FileFormat for reading .csv files into VTables
