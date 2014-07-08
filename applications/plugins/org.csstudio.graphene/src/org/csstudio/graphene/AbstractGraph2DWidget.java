@@ -7,6 +7,8 @@ import static org.epics.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
 
 import org.csstudio.ui.util.composites.BeanComposite;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -27,6 +29,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
+import org.epics.graphene.AxisRange;
 import org.epics.graphene.AxisRanges;
 import org.epics.graphene.Graph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
@@ -89,13 +92,17 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 			@Override
 			public void rangeChanged() {
-				if (graph != null) {
-					double invert = yRangeControl.getMin()
-							+ yRangeControl.getMax();
-					graph.update(graph.newUpdate().yAxisRange(
-							AxisRanges.absolute(
-									invert - yRangeControl.getSelectedMax(),
-									invert - yRangeControl.getSelectedMin())));
+				if (graph != null && isResizableAxis()) {
+					if (xRangeControl.isRangeSet()) {
+						double invert = yRangeControl.getMin()
+								+ yRangeControl.getMax();
+						graph.update(graph.newUpdate().yAxisRange(
+								AxisRanges.absolute(
+										invert - yRangeControl.getSelectedMax(),
+										invert - yRangeControl.getSelectedMin())));
+					} else {
+						graph.update(graph.newUpdate().yAxisRange(getYAxisRange()));
+					}
 				}
 			}
 		});
@@ -138,24 +145,29 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 			@Override
 			public void rangeChanged() {
-				if (graph != null) {
-					graph.update(graph.newUpdate().xAxisRange(
-							AxisRanges.absolute(xRangeControl.getSelectedMin(),
-									xRangeControl.getSelectedMax())));
+				if (graph != null && isResizableAxis()) {
+					if (xRangeControl.isRangeSet()) {
+						graph.update(graph.newUpdate().xAxisRange(
+								AxisRanges.absolute(xRangeControl.getSelectedMin(),
+										xRangeControl.getSelectedMax())));
+					} else {
+						graph.update(graph.newUpdate().xAxisRange(getXAxisRange()));
+					}
 				}
 			}
 		});
 		xRangeControl.setVisible(resizableAxis);
 
+		final List<String> reconnectionProperties = Arrays.asList("dataFormula", "xColumnFormula", "yColumnFormula", "tooltipFormula");
+		final List<String> updateProperties = Arrays.asList("xAxisRange", "yAxisRange");
 		addPropertyChangeListener(new PropertyChangeListener() {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getPropertyName().equals("dataFormula")
-						|| event.getPropertyName().equals("xColumnFormula")
-						|| event.getPropertyName().equals("yColumnFormula")
-						|| event.getPropertyName().equals("tooltipFormula")) {
+				if (reconnectionProperties.contains(event.getPropertyName())) {
 					reconnect();
+				} else if (updateProperties.contains(event.getPropertyName())) {
+					updateGraph();
 				} else if (event.getPropertyName().equals("resizableAxis")) {
 					xRangeControl.setVisible(resizableAxis);
 					yRangeControl.setVisible(resizableAxis);
@@ -192,7 +204,8 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 	
 	protected void updateGraph() {
 		if (getGraph() != null) {
-			getGraph().update(createUpdate());
+			getGraph().update(createUpdate().xAxisRange(getXAxisRange())
+					.yAxisRange(getYAxisRange()));
 		}
 	}
 
@@ -264,7 +277,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 	private void setRange(StartEndRangeWidget control,
 			GraphDataRange plotDataRange) {
-		if (plotDataRange.getIntegratedRange() != null) {
+		if (isResizableAxis() && plotDataRange.getIntegratedRange() != null) {
 			control.setRange(plotDataRange.getIntegratedRange().getMinimum()
 					.doubleValue(), plotDataRange.getIntegratedRange().getMaximum()
 					.doubleValue());
@@ -272,10 +285,14 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 	}
 
 	private void resetRange(StartEndRangeWidget control) {
-		control.setRanges(0, 0, 1, 1);
+		if (isResizableAxis()) {
+			control.resetRange();
+		}
 	}
 
 	private String dataFormula;
+	private AxisRange xAxisRange = AxisRanges.display();
+	private AxisRange yAxisRange = AxisRanges.display();
 
 	private static final String MEMENTO_DATA_FORMULA = "dataFormula"; //$NON-NLS-1$
 
@@ -288,6 +305,28 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 		this.dataFormula = dataFormula;
 		changeSupport.firePropertyChange("dataFormula", oldValue,
 				this.dataFormula);
+	}
+	
+	public AxisRange getXAxisRange() {
+		return xAxisRange;
+	}
+	
+	public void setXAxisRange(AxisRange xAxisRange) {
+		AxisRange oldValue = this.xAxisRange;
+		this.xAxisRange = xAxisRange;
+		changeSupport.firePropertyChange("xAxisRange", oldValue,
+				this.xAxisRange);
+	}
+	
+	public AxisRange getYAxisRange() {
+		return yAxisRange;
+	}
+	
+	public void setYAxisRange(AxisRange yAxisRange) {
+		AxisRange oldValue = this.yAxisRange;
+		this.yAxisRange = yAxisRange;
+		changeSupport.firePropertyChange("yAxisRange", oldValue,
+				this.yAxisRange);
 	}
 
 	public void saveState(IMemento memento) {

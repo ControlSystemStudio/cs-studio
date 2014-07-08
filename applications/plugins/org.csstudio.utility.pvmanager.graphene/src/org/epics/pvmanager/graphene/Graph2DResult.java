@@ -17,13 +17,19 @@ public class Graph2DResult {
     private final GraphDataRange xRange;
     private final GraphDataRange yRange;
     private final int focusDataIndex;
+    private final VType selectedData;
 
     Graph2DResult(VType data, VImage image, GraphDataRange xRange, GraphDataRange yRange, int focusDataIndex) {
+        this(data, image, xRange, yRange, focusDataIndex, null);
+    }
+
+    Graph2DResult(VType data, VImage image, GraphDataRange xRange, GraphDataRange yRange, int focusDataIndex, VType selectedData) {
         this.data = data;
         this.image = image;
         this.xRange = xRange;
         this.yRange = yRange;
         this.focusDataIndex = focusDataIndex;
+        this.selectedData = selectedData;
     }
     
     public VType getData() {

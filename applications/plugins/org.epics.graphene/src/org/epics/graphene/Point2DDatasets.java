@@ -4,6 +4,9 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.StatisticsUtil;
+import org.epics.util.stats.Statistics;
+import org.epics.util.stats.Range;
 import org.epics.util.array.*;
 
 /**
@@ -64,6 +67,16 @@ public class Point2DDatasets {
             @Override
             public Statistics getYStatistics() {
                 return yStatistics;
+            }
+
+            @Override
+            public Range getXDisplayRange() {
+                return null;
+            }
+
+            @Override
+            public Range getYDisplayRange() {
+                return null;
             }
 
             @Override

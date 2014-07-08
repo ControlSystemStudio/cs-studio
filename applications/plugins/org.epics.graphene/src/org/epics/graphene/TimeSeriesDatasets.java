@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.StatisticsUtil;
+import org.epics.util.stats.Statistics;
 import java.util.List;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListNumber;

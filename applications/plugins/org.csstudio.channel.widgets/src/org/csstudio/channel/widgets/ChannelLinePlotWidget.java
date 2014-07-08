@@ -554,7 +554,7 @@ public class ChannelLinePlotWidget extends AbstractChannelQueryResultWidget
     }
 
     private void resetRange(StartEndRangeWidget control) {
-	control.setRanges(0, 0, 1, 1);
+	control.resetRange();
     }
 
     private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();

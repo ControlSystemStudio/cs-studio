@@ -93,9 +93,7 @@ public class TimeParser {
      * A Helper function to help you convert various string represented time
      * definition to an absolute Timestamp.
      * 
-     * i.e.
-     * 
-     * @param time
+     * @param time a string represent the time
      * @return the parsed timestamp or null
      */
     public static Timestamp getTimeStamp(String time) {

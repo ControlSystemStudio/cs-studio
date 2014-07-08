@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
+
 /**
  *
  * @author carcassi
