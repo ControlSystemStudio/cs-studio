@@ -31,6 +31,15 @@ final class LogValueScale implements ValueScale {
     }
 
     @Override
+    public double invScaleValue(double scaleValue, double actualMinValue, double actualMaxValue, double scaleMinValue, double scaleMaxValue) {
+        actualMinValue = Math.log10(actualMinValue);
+        actualMaxValue = Math.log10(actualMaxValue);
+        double actualRange = actualMaxValue - actualMinValue;
+        double scaleRange = scaleMaxValue - scaleMinValue;
+        return Math.pow(10.0, actualMinValue + (scaleValue - scaleMinValue) / scaleRange * actualRange);
+    }
+
+    @Override
     public ValueAxis references(Range range, int minRefs, int maxRefs) {
         double minValue = range.getMinimum().doubleValue();
         double maxValue = range.getMaximum().doubleValue();
