@@ -23,6 +23,12 @@ final class LinearValueScale implements ValueScale {
         double newRange = newMaxValue - newMinValue;
         return newMinValue + (value - minValue) / oldRange * newRange;
     }
+
+    @Override
+    public double invScaleValue(double scaleValue, double minValue, double maxValue, double newMinValue, double newMaxValue) {
+        return scaleValue(scaleValue, newMinValue, newMaxValue, minValue, maxValue);
+    }
+    
     private static final DecimalFormat defaultFormat = new DecimalFormat("0.###");
 
     @Override
