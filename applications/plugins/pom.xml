@@ -189,6 +189,7 @@
     <module>org.csstudio.utility.channelfinder.ui</module>
     <module>org.csstudio.utility.clock</module>
     <module>org.csstudio.utility.eliza</module>
+    <module>org.csstudio.utility.file</module>
     <module>org.csstudio.utility.httpd</module>
     <module>org.csstudio.utility.jms</module>
     <module>org.csstudio.utility.jmssendcmd</module>
