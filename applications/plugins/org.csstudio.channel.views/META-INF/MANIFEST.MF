@@ -7,7 +7,6 @@ Bundle-Activator: org.csstudio.channel.views.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  gov.bnl.channelfinder.api;bundle-version="2.0.0",
- org.epics.vtype,
  org.epics.graphene;bundle-version="0.6.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.csdata;bundle-version="3.1.0",
@@ -15,13 +14,10 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.channelfinder;bundle-version="1.1.0",
  org.csstudio.utility.channel,
  org.csstudio.channel.widgets;bundle-version="1.0.0",
- org.csstudio.platform.libs.jersey,
  org.csstudio.utility.pvmanager,
  org.csstudio.utility.pvmanager.ui;bundle-version="3.1.0",
  org.csstudio.utility.pvmanager.widgets;bundle-version="3.1.0",
- org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
- org.csstudio.utility.pvmanager.graphene;bundle-version="3.2.0",
- com.google.common
+ org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Description: Set of RCP views that expose the channel based widgets in org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
