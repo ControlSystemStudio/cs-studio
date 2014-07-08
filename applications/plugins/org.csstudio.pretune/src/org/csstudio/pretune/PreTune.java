@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.channel.pretune;
+package org.csstudio.pretune;
 
 import static org.epics.pvmanager.ExpressionLanguage.channels;
 import static org.epics.pvmanager.ExpressionLanguage.mapOf;
@@ -20,9 +20,15 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.csstudio.graphene.MultiAxisLineGraph2DWidget;
+import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -64,10 +70,10 @@ import com.google.common.collect.Lists;
  * @author Kunal Shroff
  * 
  */
-public class PreTune extends ViewPart implements PropertyChangeListener {
+public class PreTune extends ViewPart implements PropertyChangeListener, ISelectionProvider {
     
     @SuppressWarnings("unused")
-    private static final String ID = "org.csstudio.channel.pretune";
+    private static final String ID = "org.csstudio.pretune";
 
     // GUI
     
@@ -161,7 +167,7 @@ public class PreTune extends ViewPart implements PropertyChangeListener {
 	});
 	label.setCursor(Display.getCurrent().getSystemCursor(SWT.CURSOR_SIZENS));
 	
-	composite = new Composite(parent, SWT.NONE);
+	composite = new Composite(parent, SWT.NONE);	
 	FormData fd_composite = new FormData();
 	fd_composite.bottom = new FormAttachment(label);
 	fd_composite.right = new FormAttachment(100);
@@ -204,8 +210,17 @@ public class PreTune extends ViewPart implements PropertyChangeListener {
 	});
 	btnLogConfig.setText("Load");
 	tableDisplay = new VTableDisplay(composite);
-	tableDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
-	
+	tableDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));	
+	tableDisplay.addSelectionChangedListener(new ISelectionChangedListener() {
+	    
+	    @Override
+	    public void selectionChanged(SelectionChangedEvent event) {
+		if (tableDisplay.getVTable() != null) {
+		    selection = new StructuredSelection(tableDisplay.getVTable());
+		}
+	    }
+	});
+
 	composite_1 = new Composite(composite, SWT.NONE);
 	composite_1.setLayout(new GridLayout(7, false));
 	composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
@@ -373,7 +388,7 @@ public class PreTune extends ViewPart implements PropertyChangeListener {
 		model.setFormula(formulaCombo.getText());
 	    }
 	});
-	formulaCombo.setToolTipText("use the regular pv manager formulas\r\ne.g. ${SP} + (${SP} * ${Weight})\r\nThe ${SP} will be replaced with the set point pv assocaited with the channel\r\nThe ${Weight} will be replaced with the weight of that channel");
+	formulaCombo.setToolTipText("use the regular pv manager formulas\r\ne.g. ${SP} + (${SP} * ${Weight})\r\nThe ${SP} will be replaced with the set point pv assocaited with the channel\r\nThe ${Weight} will be replaced with the weight of that channel\r\nThe ${RefStepSize} will be replaced with the Reference Step Size\r\nThe ${ScalingFactor} will be replaced with the Scaling Factor");
 
 	formulaStrings.add(SCALEDOWN);
 	formulaStrings.add(SCALEUP);
@@ -401,6 +416,11 @@ public class PreTune extends ViewPart implements PropertyChangeListener {
 	fd_widget.left = new FormAttachment(0);
 	fd_widget.right = new FormAttachment(100);
 	widget.setLayoutData(fd_widget);
+	
+	PopupMenuUtil.installPopupForView(tableDisplay, getViewSite(), tableDisplay);
+	// get the complete table which makes sense for log entries.
+	PopupMenuUtil.installPopupForView(tableDisplay, getViewSite(), this);
+	PopupMenuUtil.installPopupForView(widget, getViewSite(), widget);	
     }
     
 
@@ -812,5 +832,40 @@ public class PreTune extends ViewPart implements PropertyChangeListener {
 	}
 	
     }
+
+    private List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
+
+    @Override
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+	selectionChangedListeners.add(listener);
+    }
+
+    private ISelection selection = new StructuredSelection();
+
+    @Override
+    public ISelection getSelection() {
+	return selection;
+    }
+
+    @Override
+    public void removeSelectionChangedListener(
+	    ISelectionChangedListener listener) {
+	selectionChangedListeners.remove(listener);
+    }
+
+    @Override
+    public void setSelection(ISelection selection) {
+	this.selection = selection;
+	if (selection == null)
+	    this.selection = new StructuredSelection();
+	fireSelectionChangedListener();
+    }
+
+    private void fireSelectionChangedListener() {
+	for (ISelectionChangedListener listener : selectionChangedListeners) {
+	    listener.selectionChanged(new SelectionChangedEvent(this, getSelection()));
+	}
+    }
+
 
 }
