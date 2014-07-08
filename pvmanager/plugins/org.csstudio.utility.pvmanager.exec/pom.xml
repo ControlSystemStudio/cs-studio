@@ -54,7 +54,7 @@
 						<Bundle-Description>Exec extensions for pvmanager</Bundle-Description>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-						<Export-Package>org.epics.pvmanager.exec</Export-Package>
+						<Export-Package>org.epics.pvmanager.exec,org.csstudio.utility.pvmanager.exec.*</Export-Package>
 						<Import-Package>*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
 						<_snapshot>${maven.build.timestamp}</_snapshot>
 					</instructions>
