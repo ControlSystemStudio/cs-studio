@@ -56,7 +56,7 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 						<Export-Package>org.csstudio.platform.libs.epics.*,
-						    com.cosylab.epics.caj,
+							com.cosylab.epics.caj,
 							com.cosylab.epics.caj.cas,
 							com.cosylab.epics.caj.cas.handlers,
 							com.cosylab.epics.caj.cas.requests,
