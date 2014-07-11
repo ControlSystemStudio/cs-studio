@@ -81,9 +81,12 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
 
     @Override
     protected void write(Object newValue, ChannelWriteCallback callback) {
-        File file = getConnectionPayload();
         if (file == null) {
             callback.channelWritten(new RuntimeException("Channel is closed"));
+        }
+        
+        if (format == null || !format.isWriteSupported()) {
+            callback.channelWritten(new RuntimeException("Format does not support write"));
         }
         
         try (OutputStream out = new FileOutputStream(file)) {
@@ -92,7 +95,6 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
         } catch (Exception ex) {
             callback.channelWritten(ex);
         }
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
