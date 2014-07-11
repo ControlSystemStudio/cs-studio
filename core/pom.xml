@@ -34,7 +34,8 @@
     <tycho-extras.version>0.20.0</tycho-extras.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.0</cs-studio-central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree> 
+    <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
+    <baselineMode>fail</baselineMode> 
 	
 	<!-- SonarQube configuration -->
  	<sonar.language>java</sonar.language>
@@ -156,6 +157,7 @@
           <configuration>
             <!-- baselineMode options: disable, warn, fail -->
             <baselineMode>fail</baselineMode>
+			<baselineMode>${baselineMode}</baselineMode>
             <!-- baselineReplace options: none, all -->
             <baselineReplace>none</baselineReplace>
             <baselineRepositories> 

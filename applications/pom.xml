@@ -36,6 +36,20 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode> 
+	
+	<!-- SonarQube configuration -->
+ 	<sonar.language>java</sonar.language>
+ 	<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+ 	<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+	<sonar.junit.reportsPath>
+ 		../${project.artifactId}.test/target/surefire-reports/
+ 	</sonar.junit.reportsPath>
+	
+	<!--sonar.host.url>INSERT YOUR SONARQUBE URL</sonar.host.url-->
+	<!--sonar.jdbc.url>INSERT YOUR JDBC CONNECTION</sonar.jdbc.url-->
+	<!--sonar.jdbc.driver>INSERT YOUR JDBC DRIVER</sonar.jdbc.driver-->
+	<!--sonar.jdbc.username>username</sonar.jdbc.username!-->
+	<!--sonar.jdbc.password>password</sonar.jdbc.password-->
   </properties>
 
   <!--
@@ -54,7 +68,7 @@
     P2 REPOSITORIES
   -->
   <repositories>
-    <repository>
+	<repository>
       <id>csstudio-core</id>
       <url>http://download.controlsystemstudio.org/core/4.0</url>
       <layout>p2</layout>
@@ -266,6 +280,33 @@
         <configuration>
           <!--Some project include things that no longer exists. This should be fixed, but for now this parameter lets the build continue.-->
           <strictBinIncludes>false</strictBinIncludes>
+		  <environments>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86_64</arch>
+              </environment>
+              <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86_64</arch>
+              </environment>
+              <environment>
+                <os>macosx</os>
+                <ws>cocoa</ws>
+                <arch>x86</arch>
+              </environment>
+          </environments>
         </configuration>
       </plugin>
       <plugin>
@@ -290,9 +331,34 @@
         <artifactId>tycho-surefire-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <skipTests>true</skipTests>
+			<!-- Exclude the UI tests -->
+			<excludes>
+				<exclude>**/*UiPluginTest.java</exclude>
+				<exclude>**/*Demo.java</exclude>
+			</excludes>
+		
+			<skipTests>false</skipTests>
+			<!--Some tests fail right now-->
+			<testFailureIgnore>true</testFailureIgnore>
+			<failIfNoTests>false</failIfNoTests>
+			<!--UI tests.-->
+			<!--useUIHarness>true</useUIHarness>
+			<useUIThread>false</useUIThread-->
         </configuration>
       </plugin>
+	  <!-- Used for collecting tests results before sending them to Sonar. -->
+		<plugin>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>0.5.3.201107060350</version>
+			<configuration>
+				<includes>*</includes>
+				<destFile>${project.basedir}/../target/jacoco.exec</destFile>
+			</configuration>
+			<executions>
+				<execution><goals><goal>prepare-agent</goal></goals></execution>
+			</executions>
+		</plugin>
     </plugins>
   </build>
 

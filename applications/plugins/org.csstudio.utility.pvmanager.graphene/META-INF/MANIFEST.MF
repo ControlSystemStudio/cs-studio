@@ -9,3 +9,4 @@ Require-Bundle: org.epics.graphene,
  org.csstudio.utility.pvmanager.vtype,
  org.epics.util;bundle-version="0.2.5"
 Export-Package: org.epics.pvmanager.graphene
+Import-Package: org.epics.pvmanager, org.epics.vtype

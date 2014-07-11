@@ -162,7 +162,7 @@
     <module>org.csstudio.swt.chart</module>
     <module>org.csstudio.swt.widgets</module>
     <module>org.csstudio.swt.widgets.rcp</module>
-    <module>org.csstudio.swt.widgets.test</module>
+    <!--module>org.csstudio.swt.widgets.test</module--><!-- Graphic test that does not follow naming convention for tests-->
     <module>org.csstudio.swt.xygraph</module>
     <module>org.csstudio.swt.xygraph.rap</module>
     <module>org.csstudio.swt.xygraph.rcp</module>
@@ -181,6 +181,7 @@
     <module>org.csstudio.ui.menu.web</module>
     <module>org.csstudio.unitconversion.ui</module>
     <!--<module>org.csstudio.utility.adlConverter</module>--><!-- depends on org.csstudio.sds.ui -->
+	<!--module>org.csstudio.utility.adlConverter.test</module--><!-- depends on org.csstudio.utility.adlConverter -->
     <module>org.csstudio.utility.adlParser</module>
     <module>org.csstudio.utility.caSnooperUi</module>
     <module>org.csstudio.utility.channel</module>
@@ -195,7 +196,7 @@
     <module>org.csstudio.utility.ldap.nameSpaceBrowser</module>
     <module>org.csstudio.utility.ldap.service</module>
     <module>org.csstudio.utility.ldap.service.impl</module>
-    <module>org.csstudio.utility.ldap.service.impl.test</module>
+    <!--module>org.csstudio.utility.ldap.service.impl.test</module--><!--Tests do not execute.-->
     <module>org.csstudio.utility.ldap.service.test</module>
     <module>org.csstudio.utility.ldap.treeconfiguration</module>
     <module>org.csstudio.utility.ldap.ui</module>
@@ -233,5 +234,33 @@
     <!--<module>org.slf4j</module>--><!-- Moved to third party repository -->
     <!--<module>org.slf4j-log4j12</module>--><!-- Moved to third party repository -->
     <!--<module>org.slf4j.bridge</module>--><!-- Moved to third party maven repository -->
+	
+	<!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
+	<module>org.csstudio.alarm.beast.annunciator.test</module>
+	<module>org.csstudio.alarm.beast.msghist.test</module>
+	<module>org.csstudio.alarm.beast.notifier.test</module>
+	<module>org.csstudio.alarm.beast.server.test</module>
+	<module>org.csstudio.alarm.beast.ui.test</module>
+	<module>org.csstudio.archive.engine.test</module>
+	<module>org.csstudio.archive.reader.test</module>
+	<module>org.csstudio.archive.reader.appliance.test</module>
+	<module>org.csstudio.archive.vtype.test</module>
+	<module>org.csstudio.diag.postanalyser.test</module>
+	<!--module>org.csstudio.diag.pvfields.test</module--> <!--Tests do not end.-->
+	<module>org.csstudio.ndarray.test</module>
+	<module>org.csstudio.scan.test</module>
+	<!--module>org.csstudio.scan.server.test</module--> <!--Error at runtime.-->
+	<!--module>org.csstudio.trends.databrowser2.test</module--> <!--Error at runtime.-->
+	<!--module>org.csstudio.vtype.pv.test</module-->
+	<module>org.csstudio.utility.channel.test</module>
+	<module>org.csstudio.display.pace.test</module>
+	<module>org.csstudio.alarm.beast.configtool.test</module>
+	<!--module>org.csstudio.apputil.ui.test</module--> <!--UI tests - wrong naming.-->
+	<module>org.csstudio.archive.reader.aapi.test</module>
+	
+	
+	
+	
+	
   </modules>
 </project>
