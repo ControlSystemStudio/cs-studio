@@ -13,7 +13,11 @@ import org.csstudio.archive.reader.fastarchiver.fast_archive_requests.FastArchiv
 import org.csstudio.archive.reader.fastarchiver.fast_archive_requests.FastArchiverInfoRequest;
 import org.epics.util.time.Timestamp;
 
-
+/**
+ * 
+ * @author Friederike Johlinger
+ *
+ */
 //most methods need to be implemented
 public class FastArchiveReader implements ArchiveReader{
 		
@@ -96,7 +100,7 @@ public class FastArchiveReader implements ArchiveReader{
 		public ValueIterator getRawValues(int key, String name, Timestamp start,
 				Timestamp end) throws UnknownChannelException, Exception {
 			// TODO Auto-generated method stub
-			return null; //faDataRequest.getRawValues(name, start, end);
+			return faDataRequest.getRawValues(name, start, end);
 		}
 
 		/** {@inheritDoc}*/
@@ -104,8 +108,8 @@ public class FastArchiveReader implements ArchiveReader{
 		public ValueIterator getOptimizedValues(int key, String name,
 				Timestamp start, Timestamp end, int count)
 				throws UnknownChannelException, Exception {
-			// TODO Auto-generated method stub
-			return null;
+			
+			return faDataRequest.getOptimisedValues(name, start, end, count);
 		}
 
 		/** {@inheritDoc}*/
@@ -118,8 +122,7 @@ public class FastArchiveReader implements ArchiveReader{
 		/** {@inheritDoc}*/
 		@Override
 		public void close() {
-			// TODO Auto-generated method stub
-			
+			//working with sockets, nothing to close			
 		}
 		
 		/* OWN METHODS */

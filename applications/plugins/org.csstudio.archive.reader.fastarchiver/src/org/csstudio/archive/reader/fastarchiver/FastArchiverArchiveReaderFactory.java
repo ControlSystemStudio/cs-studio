@@ -6,7 +6,7 @@ import org.csstudio.archive.reader.ArchiveReaderFactory;
 
 /** The plugin.xml registers this factory for ArchiveReaders when the
  *  URL prefix indicates a Fast Archiver URL
- *  @author Kay Kasemir
+ *  @author Friederike Johlinger
  */
 public class FastArchiverArchiveReaderFactory implements ArchiveReaderFactory{
 
