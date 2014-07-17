@@ -2,15 +2,18 @@ package org.csstudio.archive.reader.fastarchiver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.reader.fastarchiver.fast_archive_requests.FastArchiverArchivedDataRequest;
-import org.csstudio.archive.reader.fastarchiver.fast_archive_requests.FastArchiverInfoRequest;
+import org.csstudio.archive.reader.fastarchiver.fast_archive_requests.FAArchivedDataRequest;
+import org.csstudio.archive.reader.fastarchiver.fast_archive_requests.FAInfoRequest;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -24,8 +27,7 @@ public class FastArchiveReader implements ArchiveReader{
 		private final String url;
 		private final int version = 1;
 		private final String description;
-		private FastArchiverInfoRequest faInfoRequest;
-		private FastArchiverArchivedDataRequest faDataRequest;
+		private HashMap<String, int[]> mapping;
 		
 		/**
 		 * Connect to the Fast Archiver
@@ -34,9 +36,6 @@ public class FastArchiveReader implements ArchiveReader{
 		public FastArchiveReader (String url){
 			this.url = url;
 			description = createDescription();
-			faInfoRequest = new FastArchiverInfoRequest(url);
-			faDataRequest = new FastArchiverArchivedDataRequest(url);
-			
 		}
 
 		/* FROM ARCHIVEREADER */
@@ -64,13 +63,17 @@ public class FastArchiveReader implements ArchiveReader{
 		// rather superfluous for the fast archiver
 		@Override
 		public ArchiveInfo[] getArchiveInfos() {
-			return faInfoRequest.getArchiveInfos();
+				int numOfArchives = 1;
+				ArchiveInfo[] archiveInfo = new ArchiveInfo[numOfArchives];
+				archiveInfo[0] = new ArchiveInfo("Fast Archiver", "Fast Archiver of DLS", 1);
+				return archiveInfo;
 		}
 
 		/** {@inheritDoc}*/
 		@Override
 		public String[] getNamesByPattern(int key, String glob_pattern)
 				throws Exception {
+			System.out.println("RegExp: "+RegExHelper.fullRegexFromGlob(glob_pattern));
 			return getNamesByRegExp(key, RegExHelper.fullRegexFromGlob(glob_pattern));
 		}
 
@@ -78,11 +81,17 @@ public class FastArchiveReader implements ArchiveReader{
 		// ignores key, not very neat, works
 		@Override
 		public String[] getNamesByRegExp(int key, String reg_exp) throws Exception {
-			String [] allNames = faInfoRequest.getAllNames();
+			// get all names
+			FAInfoRequest faInfoRequest = new FAInfoRequest(url);
+			mapping = faInfoRequest.createMapping();
+			TreeSet<String> allNames = new TreeSet<String>(mapping.keySet());
+			
 			// find matching names
 			List<String> matches = new ArrayList<String>();
-			for (int i = 0; i < allNames.length; i++){
-				if (allNames[i].toLowerCase().matches(reg_exp.toLowerCase())) matches.add(allNames[i]);
+			for (String name: allNames){
+				System.out.println("Name: "+name+", RegExp: "+ reg_exp);
+				if (Pattern.matches(reg_exp.toLowerCase(), name.toLowerCase())) matches.add(name);
+				else System.out.println(Pattern.matches(reg_exp.toLowerCase(), name.toLowerCase()));
 			}
 			String[] matchingNames = new String[matches.size()];
 			int i = 0;
@@ -99,7 +108,10 @@ public class FastArchiveReader implements ArchiveReader{
 		@Override
 		public ValueIterator getRawValues(int key, String name, Timestamp start,
 				Timestamp end) throws UnknownChannelException, Exception {
-			// TODO Auto-generated method stub
+			if (mapping == null){
+				mapping = new FAInfoRequest(url).createMapping();
+			}
+			FAArchivedDataRequest faDataRequest = new FAArchivedDataRequest(url, mapping);
 			return faDataRequest.getRawValues(name, start, end);
 		}
 
@@ -108,9 +120,12 @@ public class FastArchiveReader implements ArchiveReader{
 		public ValueIterator getOptimizedValues(int key, String name,
 				Timestamp start, Timestamp end, int count)
 				throws UnknownChannelException, Exception {
-			
+			if (mapping == null){
+				mapping = new FAInfoRequest(url).createMapping();
+			}
+			FAArchivedDataRequest faDataRequest = new FAArchivedDataRequest(url, mapping);
 			return faDataRequest.getOptimisedValues(name, start, end, count);
-		}
+			}
 
 		/** {@inheritDoc}*/
 		@Override

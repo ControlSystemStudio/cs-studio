@@ -8,7 +8,7 @@ import org.csstudio.archive.reader.ArchiveReaderFactory;
  *  URL prefix indicates a Fast Archiver URL
  *  @author Friederike Johlinger
  */
-public class FastArchiverArchiveReaderFactory implements ArchiveReaderFactory{
+public class FastArchiveReaderFactory implements ArchiveReaderFactory{
 
 	/**
 	 * {@inheritDoc}

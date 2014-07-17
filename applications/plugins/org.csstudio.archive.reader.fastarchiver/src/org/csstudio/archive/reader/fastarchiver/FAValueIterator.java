@@ -13,11 +13,11 @@ import org.epics.vtype.VType;
  * @author Friederike Johlinger
  *
  */
-public class FastArchiverValueIterator implements ValueIterator{
+public class FAValueIterator implements ValueIterator{
 	private VType[] values;
 	int index;
 	
-	public FastArchiverValueIterator(VType[] values){
+	public FAValueIterator(VType[] values){
 		this.values = values;
 		index = -1;
 	}
@@ -25,18 +25,20 @@ public class FastArchiverValueIterator implements ValueIterator{
 	@Override
 	public boolean hasNext() {
 		//return index < 5;
-		return index+2 != values.length;
+		return index + 1 < values.length;
 	}
 
 	@Override
 	public VType next() throws Exception {
 		index++;
+		//System.out.println("valuesLength: "+ values.length+", index: "+index);
 		/*System.out.println("Iterator.next is called");
 		System.out.println("value returned is: " + ((ArchiveVNumber)values[index]).getValue() );
 		System.out.println("class returned is: " + values[index].getClass() );
 		System.out.println("time returned is: " + ((ArchiveVNumber)values[index]).getTimestamp() );*/
 		VType nextItem = values[index];
 //		System.out.println(((ArchiveVNumber)nextItem).getValue());
+		
 		return nextItem;
 	}
 	/*public VType next(){

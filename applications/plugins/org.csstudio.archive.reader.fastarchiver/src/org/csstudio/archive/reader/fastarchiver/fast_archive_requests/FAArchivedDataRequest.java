@@ -7,10 +7,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
+import java.util.HashMap;
 
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.reader.fastarchiver.FastArchiverValueIterator;
+import org.csstudio.archive.reader.fastarchiver.FAValueIterator;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
@@ -24,14 +24,16 @@ import from_fa_archiver.EndOfStreamException;
  * @author Friederike Johlinger
  */
 
-public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
+public class FAArchivedDataRequest extends FARequest{
 	
 	public enum ValueType {MEAN, MIN, MAX, STD}
 	ValueType defaultValueType;
+	HashMap<String, int[]> bpmMapping;
 	
 	//need to change for optional host????
-	public FastArchiverArchivedDataRequest(String url) {
+	public FAArchivedDataRequest(String url, HashMap<String, int[]> bpmMapping) {
 		super(url);
+		this.bpmMapping = bpmMapping;
 		defaultValueType = ValueType.MEAN;
 	}
 	
@@ -45,11 +47,9 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 	 */
 	public ValueIterator getRawValues(String name, Timestamp start,
 			Timestamp end) {
-		// !!need to make coordinate dependent on name
-		int coordinate = 0;
-		
 		// create request string
-		int bpm = bpmMapping.get(name);
+		int bpm = bpmMapping.get(name)[0];
+		int coordinate = bpmMapping.get(name)[1];
 		String request = translate(start, end, bpm, Decimation.UNDEC, defaultValueType);
 		// make request, returning ValueIterator 
 
@@ -63,11 +63,10 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 	
 	public ValueIterator getOptimisedValues(String name, Timestamp start,
 			Timestamp end, int count) {
-		// !!need to make coordinate dependent on name
-		int coordinate = 0;
 		
 		// create request string
-		int bpm = bpmMapping.get(name);
+		int bpm = bpmMapping.get(name)[0];
+		int coordinate = bpmMapping.get(name)[1];
 		Decimation dec = calculateDecimation(start, end, count);
 		String request = translate(start, end, bpm, dec, defaultValueType);
 		// make request, returning ValueIterator 
@@ -95,14 +94,6 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 	 * data is form [zero char][sample count(8b)][block size(4b)][offset(4b)] ([timestamp(8b)][duration(4b)][datasets(4b*blocksize)])*N 
 	 */
 	private ValueIterator getValues(String request, Timestamp start, Timestamp end, int coordinate) throws UnknownHostException, IOException, EndOfStreamException, DataNotAvailableException {
-		//check if data is available --> use A in request instead
-		/*if (!dataAvailable(start, end)){
-			System.out.println("Not all data available");
-			throw new DataNotAvailableException("Timeframe specified not completely archived");
-		}*/
-		
-		//System.out.println("getValues is called");
-		
 		// create socket
 		Socket socket = new Socket(host, port);
 		OutputStream outToServer = socket.getOutputStream();
@@ -110,84 +101,83 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 		
 		// write request to archiver
 		writeToArchive(request, outToServer);
-		System.out.println(request);
-
+		
 		/* Check if first byte reply is zero -> data is sent */
-		// change into ifError(inFromServer);
-		byte[] firstChar;
-		firstChar = readNumBytes(1, inFromServer);
-		// checking for error messages
+		byte[] firstChar = readNumBytes(1, inFromServer);
 		if (firstChar[0] != '\0') {
 			String message = getServerErrorMessage(firstChar[0], inFromServer);
 			socket.close();
 			throw new DataNotAvailableException(message);
 		}
 
-		/* Get number of samples sent, first 8 bytes */
-		byte[] bA;
-		bA = readNumBytes(8, inFromServer);
-		long sampleCount = longFromByteArray(bA);
+		// get initial data out
+		int lengthInitData = 16;
+		ByteBuffer bb = ByteBuffer.wrap(readNumBytes(lengthInitData, inFromServer));
+		bb.position(0);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
 		
-		/* Get block size */
-		bA = readNumBytes(4, inFromServer);
-		int blockSize = intFromByteArray(bA);
-		
-		/* Get offset */
-		bA = readNumBytes(4, inFromServer);
-		int offset = intFromByteArray(bA);
+
+		long sampleCount = bb.getLong(); //number of samples sent
+		int blockSize = bb.getInt(); // samples per block
+		int offset = bb.getInt(); // offset samples in first block
 
 		/* Get actual data */
-		int sampleLength = 12 + 8 * blockSize;  // 8 bytes timestamp + 4 bytes duration + (4 bytes * 2 coordinates) * blockSize 
-		int numBytesToRead = calcDataLength((int)sampleCount, sampleLength, blockSize, offset);
-		System.out.println("NBtR: "+numBytesToRead + ", samplecount: " +sampleCount+ ", offset: "+offset);
-		bA = readNumBytes(numBytesToRead, inFromServer);
+		int numBytesToRead = calcDataLength((int)sampleCount, blockSize, offset);
+		//System.out.println("cast samplecount: "+ (int)sampleCount);
+		//System.out.println("NBtR: "+numBytesToRead + ", samplecount: " +sampleCount+ ", offset: "+offset);
+
+		bb = ByteBuffer.wrap(readNumBytes(numBytesToRead, inFromServer));
+		bb.position(0);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
 		
 		socket.close();
 		
-		//convert to readable 
-		int value;
-		long timestamp = 0;//should be initialised
-		int duration = 0; // should be initialised
+		VType[] values = decodeData(bb, (int)sampleCount, blockSize, offset, coordinate);
+		return new FAValueIterator(values); 
+	}
+		
+	private static VType[] decodeData(ByteBuffer bb,int sampleCount, int blockSize, int offset, int coordinate){
 		VType[] values = new ArchiveVNumber[(int)sampleCount];
-		byte[] miniBuffer;
-		int indexBA = 0;
-		//get first timeStamp and duration, if start with offset:
+		
+		bb.position(0);
+		int value;
+		long timestamp;
+		int duration;
+		
 		if (offset != 0) {
-			miniBuffer = Arrays.copyOfRange(bA, indexBA, indexBA + 8);
-			timestamp = longFromByteArray(miniBuffer);
-			indexBA += 8;
-
-			miniBuffer = Arrays.copyOfRange(bA, indexBA, indexBA + 4);
-			duration = intFromByteArray(miniBuffer); 
-			indexBA += 4;
+			timestamp = bb.getLong();
+			duration = bb.getInt();
+			timestamp += offset*duration/blockSize;
+			//System.out.println("first timestamp");
 			//System.out.println("TimeStamp: "+timestamp+", Duration: "+duration+", offset: "+offset);
+		} else {
+			timestamp = 0;//should be really initialised later on
+			duration = 0;
 		}
 		for(int indexValues = 0; indexValues < sampleCount; indexValues += 1){
 			//when to read in timeStamps and durations
 			if ((indexValues+offset)%blockSize == 0){
-				miniBuffer = Arrays.copyOfRange(bA, indexBA, indexBA+8);
-				timestamp = longFromByteArray(miniBuffer);
-				indexBA += 8;
-				
-				miniBuffer = Arrays.copyOfRange(bA, indexBA, indexBA+4);
-				duration = intFromByteArray(miniBuffer);
-				indexBA += 4;
+				timestamp = bb.getLong();
+				duration = bb.getInt();
+				//System.out.println("next timestamp");
 			}
-			miniBuffer = Arrays.copyOfRange(bA, indexBA+coordinate*4, indexBA+4+coordinate*4);
-			value = intFromByteArray(miniBuffer);
-			indexBA += 8;
-			System.out.println("Value: "+value+", TimeStamp: "+timestamp+", Duration: "+duration);
+			if (coordinate == 0){
+				value = bb.getInt();
+				bb.getInt();
+			} else {
+				bb.getInt();
+				value = bb.getInt();
+			}
+			//System.out.println("Value: "+value+", TimeStamp: "+timestamp+", Duration: "+duration);
 			
-			timestamp += (duration*((offset+indexValues)%blockSize))/blockSize;
+			timestamp += duration/blockSize;
 			values[indexValues] = new ArchiveVNumber(timeStampFromMicroS(timestamp), AlarmSeverity.NONE, "status", null, value);
 		}
 		
-		// create valueIterator for this format 
-		System.out.println(request);
-		return new FastArchiverValueIterator(values); 
+		return values;
 	}
-		
-	private byte[] getTimeStamp(String request) throws UnknownHostException,
+
+	/*private byte[] getTimeStamp(String request) throws UnknownHostException,
 			IOException {
 		// get time for oldest data (seconds from Unix UTC epoch)
 		byte[] buffer = new byte[TIMESTAMP_BYTE_LENGTH];
@@ -200,7 +190,8 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 		socket.close();
 		return buffer;
 
-	}
+	}*/
+	
 	// METHODS USING SOCKET STREAMS
 
 	/**
@@ -208,7 +199,7 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 	 * InputStream
 	 * @return byte[]
 	 */
-	private byte[] readNumBytes(int length, InputStream inFromServer)
+	private static byte[] readNumBytes(int length, InputStream inFromServer)
 			throws EndOfStreamException {
 		//System.out.println("length: "+length);
 		byte[] buffer = new byte[length];
@@ -287,7 +278,7 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 		} else if (dec == Decimation.DOUBLE_DEC){
 			decimation = "DD";
 		}
-		System.out.println("Decimation = "+ decimation);
+		//System.out.println("Decimation = "+ decimation);
 		String dataSet = "";
 		if (dec == Decimation.UNDEC){
 			dataSet = "";
@@ -300,7 +291,7 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 		} else if (set == ValueType.STD){
 			dataSet = "F4";
 		}
-		System.out.println("dataSet = "+dataSet); //RFM1S1405096100ES1405096101
+		//System.out.println("dataSet = "+dataSet); //RFM1S1405096100ES1405096101
 		return String.format("R%s%sM%dS%sES%sNATE\n", decimation, dataSet, bpm, start.getSec(), end.getSec());
 		//return "RDDF1M4S1405417272ES1405417274NATE\n";
 	}
@@ -308,31 +299,33 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 	/**
 	 * Forms a long integer from a byte array
 	 */
-	private static long longFromByteArray(byte[] bA) {
+	/*private static long longFromByteArray(byte[] bA) {
 		ByteBuffer bb = ByteBuffer.wrap(bA);
 		bb.position(0);
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 		return bb.getLong();
-	}
+	}*/
 
 	/**
 	 * Forms an integer from a byte array
 	 */
+	/*
 	private static int intFromByteArray(byte[] bA) {
 		ByteBuffer bb = ByteBuffer.wrap(bA);
 		bb.position(0);
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 		return bb.getInt();
-	}
+	}*/
 	
-	private static int calcDataLength(int sampleCount, int sampleLength, int blockSize, int offset) {
+	private static int calcDataLength(int sampleCount, int blockSize, int offset) {
+		int sampleLength = 12 + 8 * blockSize;  // 8 bytes timestamp + 4 bytes duration + (4 bytes * 2 coordinates) * blockSize 
 		int length = 0;
-		if (sampleCount >= blockSize - offset) {
+		if (sampleCount + offset > blockSize) { // more than one block of data 
 			length += 12 + (blockSize - offset) * 8; // length first block
 			length += sampleLength
 					* ((sampleCount - (blockSize - offset)) / blockSize); // complete
 																			// blocks
-			if ((sampleCount + offset) / blockSize != 0)
+			if ((sampleCount + offset) % blockSize != 0)
 				length += 12 + ((sampleCount + offset) % blockSize) * 8;
 		} else
 			length += 12 + 8 * sampleCount;
@@ -353,7 +346,7 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 	 * 
 	 * @throws DataNotAvailableException
 	 */
-	private boolean dataAvailable(Timestamp start, Timestamp end)
+	/*private boolean dataAvailable(Timestamp start, Timestamp end)
 			throws DataNotAvailableException {
 
 		// get time for oldest data (seconds from Unix UTC epoch)
@@ -382,5 +375,5 @@ public class FastArchiverArchivedDataRequest extends FastArchiverRequest{
 		boolean tooLate = (end.getSec()) > latestSampleTime;
 		return (!tooEarly && !tooLate && start.getSec() <= end.getSec());
 	}
-	
+	*/
 }

@@ -10,3 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: org.csstudio.archive.reader
+Export-Package: from_fa_archiver,
+ org.csstudio.archive.reader.fastarchiver,
+ org.csstudio.archive.reader.fastarchiver.fast_archive_requests
