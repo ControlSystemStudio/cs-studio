@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import from_fa_archiver.EndOfStreamException;
+import org.csstudio.archive.reader.fastarchiver.exceptions.EndOfStreamException;
 
 /**
  * Class to communicate with Fast Archiver about non-data requests. 
- * @author pvw24041
+ * @author Friederike Johlinger
  */
 
 public class FAInfoRequest extends FARequest{
@@ -98,10 +98,16 @@ public class FAInfoRequest extends FARequest{
 						coordinate2 = coordinate2+"2";
 					}
 					newName = new String(name+":"+coordinate1);
-					bpmMapping.put(newName, new int[]{bpmId, 0});
+					bpmMapping.put(newName+":MEAN", new int[]{bpmId, 0, 1});
+					bpmMapping.put(newName+":MIN", new int[]{bpmId, 0, 2});
+					bpmMapping.put(newName+":MAX", new int[]{bpmId, 0, 4});
+					bpmMapping.put(newName+":STD", new int[]{bpmId, 0, 8});
 					
 					newName = new String(name+":"+coordinate2);
-					bpmMapping.put(newName, new int[]{bpmId, 1});
+					bpmMapping.put(newName+":MEAN", new int[]{bpmId, 1, 1});
+					bpmMapping.put(newName+":MIN", new int[]{bpmId, 1, 2});
+					bpmMapping.put(newName+":MAX", new int[]{bpmId, 1, 4});
+					bpmMapping.put(newName+":STD", new int[]{bpmId, 1, 8});
 			}
 				
 				

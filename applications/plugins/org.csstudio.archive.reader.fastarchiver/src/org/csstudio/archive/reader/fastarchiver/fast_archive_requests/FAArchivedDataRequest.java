@@ -7,17 +7,19 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.reader.fastarchiver.FAValueIterator;
+import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
+import org.csstudio.archive.reader.fastarchiver.exceptions.EndOfStreamException;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
-
-import from_fa_archiver.DataNotAvailableException;
-import from_fa_archiver.EndOfStreamException;
 
 /**
  * Class to communicate with Fast Archiver about archived data requests. 
@@ -26,16 +28,20 @@ import from_fa_archiver.EndOfStreamException;
 
 public class FAArchivedDataRequest extends FARequest{
 	
-	public enum ValueType {MEAN, MIN, MAX, STD}
-	ValueType defaultValueType;
+	//public enum ValueType {MEAN, MIN, MAX, STD}
+	//ValueType defaultValueType;
 	HashMap<String, int[]> bpmMapping;
+	int sampleFrequency;
+	int firstDecimation;
 	
-	//need to change for optional host????
-	public FAArchivedDataRequest(String url, HashMap<String, int[]> bpmMapping) {
+	public FAArchivedDataRequest(String url, HashMap<String, int[]> bpmMapping) throws IOException
+	{
 		super(url);
 		this.bpmMapping = bpmMapping;
-		defaultValueType = ValueType.MEAN;
+		//defaultValueType = ValueType.MEAN;
+		initialiseServerSettings();
 	}
+	
 	
 	// PUBLIC METHODS
 	/**
@@ -50,7 +56,8 @@ public class FAArchivedDataRequest extends FARequest{
 		// create request string
 		int bpm = bpmMapping.get(name)[0];
 		int coordinate = bpmMapping.get(name)[1];
-		String request = translate(start, end, bpm, Decimation.UNDEC, defaultValueType);
+		int dataSet = bpmMapping.get(name)[2];
+		String request = translate(start, end, bpm, Decimation.UNDEC, dataSet);
 		// make request, returning ValueIterator 
 
 		try {
@@ -62,13 +69,14 @@ public class FAArchivedDataRequest extends FARequest{
 	}
 	
 	public ValueIterator getOptimisedValues(String name, Timestamp start,
-			Timestamp end, int count) {
+			Timestamp end, int count) throws IOException {
 		
 		// create request string
 		int bpm = bpmMapping.get(name)[0];
 		int coordinate = bpmMapping.get(name)[1];
+		int dataSet = bpmMapping.get(name)[2];
 		Decimation dec = calculateDecimation(start, end, count);
-		String request = translate(start, end, bpm, dec, defaultValueType);
+		String request = translate(start, end, bpm, dec, dataSet);
 		// make request, returning ValueIterator 
 
 		try {
@@ -85,10 +93,44 @@ public class FAArchivedDataRequest extends FARequest{
 	
 	//! need to implement
 	private Decimation calculateDecimation(Timestamp start, Timestamp end,
-			int count) {
-		//Not entirely sure if actual socket method. Might need frequency and decimation values
-		return Decimation.DOUBLE_DEC;
+			int count) throws IOException {
+		int maxNoOfSamples = (int) (count * 1.1); // small margin
+		// calculate total timeInterval requested (and available?)
+		long seconds = (start.durationBetween(end)).getSec();
+		//System.out.printf("calculateDecimation: %d\n", seconds);
+		// calculate for which decimation, approximately count samples are returned
+		if (seconds*sampleFrequency <= maxNoOfSamples)
+			return Decimation.UNDEC;
+		else if ((seconds*sampleFrequency)/firstDecimation <= maxNoOfSamples)
+			return Decimation.DEC;
+		else return Decimation.DOUBLE_DEC;
+		
 	}
+	
+	private void initialiseServerSettings() throws IOException {
+		// create socket
+		Socket socket = new Socket(host, port);
+		OutputStream outToServer = socket.getOutputStream();
+		InputStream inFromServer = socket.getInputStream();
+		
+		// write request to archiver for sample frequency
+		writeToArchive("CFd\n", outToServer);
+		
+		//read message
+		byte[] bA = new byte[200];
+		int read = inFromServer.read(bA);
+		String message = new String(Arrays.copyOfRange(bA, 0, read));
+		socket.close();
+		
+		Pattern pattern = Pattern.compile("([0-9]+)\\.([0-9]+)\n([0-9]+)\n");
+		Matcher matcher = pattern.matcher(message);
+		if (matcher.matches()) {
+			sampleFrequency = Integer.parseInt(matcher.group(1));
+			firstDecimation = Integer.parseInt(matcher.group(3));
+		}
+		else throw new IOException("Pattern does not match String");
+	}
+
 	/**
 	 * @param coordinate 0 or 1 indicating the x or y coordinate, respectively
 	 * data is form [zero char][sample count(8b)][block size(4b)][offset(4b)] ([timestamp(8b)][duration(4b)][datasets(4b*blocksize)])*N 
@@ -132,16 +174,17 @@ public class FAArchivedDataRequest extends FARequest{
 		
 		socket.close();
 		
-		VType[] values = decodeData(bb, (int)sampleCount, blockSize, offset, coordinate);
+		ArchiveVNumber[] values = decodeData(bb, (int)sampleCount, blockSize, offset, coordinate);
 		return new FAValueIterator(values); 
 	}
 		
-	private static VType[] decodeData(ByteBuffer bb,int sampleCount, int blockSize, int offset, int coordinate){
-		VType[] values = new ArchiveVNumber[(int)sampleCount];
+	private static ArchiveVNumber[] decodeData(ByteBuffer bb,int sampleCount, int blockSize, int offset, int coordinate){
+		ArchiveVNumber[] values = new ArchiveVNumber[(int)sampleCount];
 		
 		bb.position(0);
 		int value;
 		long timestamp;
+		//long newTimestamp;
 		int duration;
 		
 		if (offset != 0) {
@@ -158,6 +201,12 @@ public class FAArchivedDataRequest extends FARequest{
 			//when to read in timeStamps and durations
 			if ((indexValues+offset)%blockSize == 0){
 				timestamp = bb.getLong();
+				/*newTimestamp = bb.getLong();
+				if (newTimestamp - timestamp > 15000000) System.out.println("DecodeData: Gap in time");
+				timestamp = newTimestamp;*/
+				if (timestamp < 0){
+					System.out.println("Negative time");
+				}
 				duration = bb.getInt();
 				//System.out.println("next timestamp");
 			}
@@ -168,10 +217,11 @@ public class FAArchivedDataRequest extends FARequest{
 				bb.getInt();
 				value = bb.getInt();
 			}
-			//System.out.println("Value: "+value+", TimeStamp: "+timestamp+", Duration: "+duration);
 			
+			//System.out.println("Value: "+value+", TimeStamp: "+timestamp+", Duration: "+duration);
+			double valueDouble = value/1000.0; //micrometers
+			values[indexValues] = new ArchiveVNumber(timeStampFromMicroS(timestamp), AlarmSeverity.NONE, "status", null, valueDouble);
 			timestamp += duration/blockSize;
-			values[indexValues] = new ArchiveVNumber(timeStampFromMicroS(timestamp), AlarmSeverity.NONE, "status", null, value);
 		}
 		
 		return values;
@@ -267,7 +317,7 @@ public class FAArchivedDataRequest extends FARequest{
 	 * Translates the given dates and bpm number into a String for a request to
 	 * the fa-archiver
 	 */
-	private static String translate(Timestamp start, Timestamp end, int bpm, Decimation dec, ValueType set) {
+	private static String translate(Timestamp start, Timestamp end, int bpm, Decimation dec, int dataSetNo) {
 		// Needs format
 		// "R[decimation]M[number of BPM][start time in seconds from epoch]E[end time in seconds from epoch]N[include sample count]A[all data available]\n"
 		String decimation = "F"; // need way to make this variable always dependent
@@ -279,20 +329,11 @@ public class FAArchivedDataRequest extends FARequest{
 			decimation = "DD";
 		}
 		//System.out.println("Decimation = "+ decimation);
-		String dataSet = "";
-		if (dec == Decimation.UNDEC){
-			dataSet = "";
-		} else if (set == ValueType.MEAN){
-			dataSet = "F1";
-		} else if (set == ValueType.MIN){
-			dataSet = "F2";
-		} else if (set == ValueType.MAX){
-			dataSet = "F3";
-		} else if (set == ValueType.STD){
-			dataSet = "F4";
-		}
+		String dataSet;
+		if (dec == Decimation.UNDEC) dataSet = "";
+		else dataSet = String.format("F%d", dataSetNo);
 		//System.out.println("dataSet = "+dataSet); //RFM1S1405096100ES1405096101
-		return String.format("R%s%sM%dS%sES%sNATE\n", decimation, dataSet, bpm, start.getSec(), end.getSec());
+		return String.format("R%s%sM%dS%d.%dES%d.%dNATE\n", decimation, dataSet, bpm, start.getSec(), start.getNanoSec(), end.getSec(), end.getNanoSec());
 		//return "RDDF1M4S1405417272ES1405417274NATE\n";
 	}
 	

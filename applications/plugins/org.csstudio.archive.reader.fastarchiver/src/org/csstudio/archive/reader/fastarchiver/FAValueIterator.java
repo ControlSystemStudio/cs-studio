@@ -2,8 +2,8 @@ package org.csstudio.archive.reader.fastarchiver;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVNumber; // only for checking
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
+import org.epics.util.time.Timestamp;// only for checking
+import org.epics.vtype.AlarmSeverity;// only for checking
 import org.epics.vtype.VType;
 
 
@@ -15,9 +15,11 @@ import org.epics.vtype.VType;
  */
 public class FAValueIterator implements ValueIterator{
 	private VType[] values;
-	int index;
+	private int index;
+	long lastTime; //for checking
+	long thisTime; // for checking
 	
-	public FAValueIterator(VType[] values){
+	public FAValueIterator(ArchiveVNumber[] values){
 		this.values = values;
 		index = -1;
 	}
@@ -37,6 +39,15 @@ public class FAValueIterator implements ValueIterator{
 		System.out.println("class returned is: " + values[index].getClass() );
 		System.out.println("time returned is: " + ((ArchiveVNumber)values[index]).getTimestamp() );*/
 		VType nextItem = values[index];
+		if (index == 0){
+			lastTime = ((ArchiveVNumber)nextItem).getTimestamp().getSec();
+		} else {
+			thisTime = ((ArchiveVNumber)nextItem).getTimestamp().getSec();
+			if (thisTime - lastTime  >  15){
+				System.out.println("ValueIterator: Gap in time");
+			}
+			lastTime = thisTime;
+		}
 //		System.out.println(((ArchiveVNumber)nextItem).getValue());
 		
 		return nextItem;

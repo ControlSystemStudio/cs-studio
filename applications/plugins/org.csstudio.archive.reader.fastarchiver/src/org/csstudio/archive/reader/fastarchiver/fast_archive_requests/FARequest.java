@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * Class with common methods for communicating with the fast archiver 
- * @author pvw24041
+ * @author Friederike Johlinger
  *
  */
 

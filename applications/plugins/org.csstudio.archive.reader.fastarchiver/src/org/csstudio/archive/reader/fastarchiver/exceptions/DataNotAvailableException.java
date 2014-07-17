@@ -1,4 +1,4 @@
-package from_fa_archiver;
+package org.csstudio.archive.reader.fastarchiver.exceptions;
 
 public class DataNotAvailableException extends Exception {
 	

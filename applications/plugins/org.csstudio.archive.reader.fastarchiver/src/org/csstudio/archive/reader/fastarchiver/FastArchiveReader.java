@@ -73,7 +73,6 @@ public class FastArchiveReader implements ArchiveReader{
 		@Override
 		public String[] getNamesByPattern(int key, String glob_pattern)
 				throws Exception {
-			System.out.println("RegExp: "+RegExHelper.fullRegexFromGlob(glob_pattern));
 			return getNamesByRegExp(key, RegExHelper.fullRegexFromGlob(glob_pattern));
 		}
 
@@ -89,9 +88,7 @@ public class FastArchiveReader implements ArchiveReader{
 			// find matching names
 			List<String> matches = new ArrayList<String>();
 			for (String name: allNames){
-				System.out.println("Name: "+name+", RegExp: "+ reg_exp);
 				if (Pattern.matches(reg_exp.toLowerCase(), name.toLowerCase())) matches.add(name);
-				else System.out.println(Pattern.matches(reg_exp.toLowerCase(), name.toLowerCase()));
 			}
 			String[] matchingNames = new String[matches.size()];
 			int i = 0;
@@ -99,7 +96,7 @@ public class FastArchiveReader implements ArchiveReader{
 				matchingNames[i] = name;
 				i++;
 			}
-			System.out.println(Arrays.toString(matchingNames));
+			//System.out.println(Arrays.toString(matchingNames));
 			return matchingNames;
 			
 		}
@@ -108,6 +105,7 @@ public class FastArchiveReader implements ArchiveReader{
 		@Override
 		public ValueIterator getRawValues(int key, String name, Timestamp start,
 				Timestamp end) throws UnknownChannelException, Exception {
+			System.out.println("getRawValues");
 			if (mapping == null){
 				mapping = new FAInfoRequest(url).createMapping();
 			}
@@ -120,6 +118,7 @@ public class FastArchiveReader implements ArchiveReader{
 		public ValueIterator getOptimizedValues(int key, String name,
 				Timestamp start, Timestamp end, int count)
 				throws UnknownChannelException, Exception {
+			System.out.printf("getOptimizedValues %d, %s, ..., %d\n", key, name, count);
 			if (mapping == null){
 				mapping = new FAInfoRequest(url).createMapping();
 			}
