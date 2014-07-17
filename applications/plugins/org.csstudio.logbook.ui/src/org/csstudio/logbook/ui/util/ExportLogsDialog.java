@@ -1,4 +1,4 @@
-package org.csstudio.logbook.olog.properties;
+package org.csstudio.logbook.ui.util;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,7 +44,7 @@ public class ExportLogsDialog extends Dialog {
 	private Text filePath;
 	private MultipleSelectionCombo<String> fieldsText;
 	private Map<String, Integer> fieldPositionMap = new HashMap<String,Integer>();
-	private final List<String> fields = Arrays.asList("id", "date", "description", "owner", "logbooks", "tags", "level");
+	private final List<String> fields = Arrays.asList("id", "date", "modifyDate", "description", "owner", "logbooks", "tags", "level");
 	private final String separator = "\t";
  
     protected ExportLogsDialog(Shell parentShell, Collection<LogEntryBuilder> data) {
@@ -162,6 +162,9 @@ public class ExportLogsDialog extends Dialog {
     			case "date":
     				line[fieldPositionMap.get(field)] = log.getCreateDate().toString();
     				 break;
+    			case "modifyDate":
+				line[fieldPositionMap.get(field)] = log.getModifiedDate() != null ?  log.getModifiedDate().toString() : "";
+				 break;
     			case "description":
     				line[fieldPositionMap.get(field)] = log.getText().replaceAll("\\r|\\n|\\t", " ");
     				 break;
@@ -169,8 +172,7 @@ public class ExportLogsDialog extends Dialog {
     				StringBuilder logbooks = new StringBuilder();
     				for (final Logbook logbook : log.getLogbooks()) {
     				    logbooks.append(logbook.getName() + "/");
-    				}
-    				
+    				}    				
     				line[fieldPositionMap.get(field)] = logbooks.substring(0, logbooks.length() - 1);
     				 break;
     			case "tags":

@@ -1,4 +1,4 @@
-package org.csstudio.logbook.olog.properties;
+package org.csstudio.logbook.ui.util;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +19,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class ExportLogs extends AbstractHandler {
 
-    public static final String ID = "org.csstudio.logbook.olog.properties.exportlogs";
+    public static final String ID = "org.csstudio.logbook.ui.exportlogs";
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
