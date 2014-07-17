@@ -89,6 +89,7 @@ public class ExportLogsDialog extends Dialog {
 	    fieldsText = new MultipleSelectionCombo<String>(container, SWT.NONE);
 	    fieldsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		fieldsText.setItems(fields);
+		fieldsText.setSelection(fields);
 	    btnAddFields = new Button(container, SWT.PUSH);
 		btnAddFields.addSelectionListener(new SelectionAdapter() {
 		    @Override
@@ -162,7 +163,7 @@ public class ExportLogsDialog extends Dialog {
     				line[fieldPositionMap.get(field)] = log.getCreateDate().toString();
     				 break;
     			case "description":
-    				line[fieldPositionMap.get(field)] = log.getText().replaceAll("\n", " ").replaceAll("\t", " ");
+    				line[fieldPositionMap.get(field)] = log.getText().replaceAll("\\r|\\n|\\t", " ");
     				 break;
     			case "logbooks":
     				StringBuilder logbooks = new StringBuilder();
