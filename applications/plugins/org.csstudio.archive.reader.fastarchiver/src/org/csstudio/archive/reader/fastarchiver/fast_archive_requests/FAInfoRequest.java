@@ -79,7 +79,6 @@ public class FAInfoRequest extends FARequest {
 		String coordinate1;
 		String coordinate2;
 		String name;
-		String newName;
 
 		Pattern pattern = Pattern
 				.compile("(\\*| )([0-9]+) ([^ ]+) ([^ ]+) ([^ ]*)");
@@ -100,19 +99,8 @@ public class FAInfoRequest extends FARequest {
 						coordinate1 = coordinate1 + "1";
 						coordinate2 = coordinate2 + "2";
 					}
-					newName = new String(name + ":" + coordinate1);
-					bpmMapping
-							.put(newName + ":MEAN", new int[] { bpmId, 0, 1 });
-					bpmMapping.put(newName + ":MIN", new int[] { bpmId, 0, 2 });
-					bpmMapping.put(newName + ":MAX", new int[] { bpmId, 0, 4 });
-					bpmMapping.put(newName + ":STD", new int[] { bpmId, 0, 8 });
-
-					newName = new String(name + ":" + coordinate2);
-					bpmMapping
-							.put(newName + ":MEAN", new int[] { bpmId, 1, 1 });
-					bpmMapping.put(newName + ":MIN", new int[] { bpmId, 1, 2 });
-					bpmMapping.put(newName + ":MAX", new int[] { bpmId, 1, 4 });
-					bpmMapping.put(newName + ":STD", new int[] { bpmId, 1, 8 });
+					bpmMapping.put((name + ":" + coordinate1), new int[]{bpmId, 0});
+					bpmMapping.put((name + ":" + coordinate2), new int[]{bpmId, 1});
 				}
 
 			} else {

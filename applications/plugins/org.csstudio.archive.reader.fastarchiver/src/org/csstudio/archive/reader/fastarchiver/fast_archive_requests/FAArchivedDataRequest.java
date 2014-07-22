@@ -76,8 +76,8 @@ public class FAArchivedDataRequest extends FARequest {
 		// create request string
 		int bpm = bpmMapping.get(name)[0];
 		int coordinate = bpmMapping.get(name)[1];
-		int dataSet = bpmMapping.get(name)[2];
-		String request = translate(start, end, bpm, Decimation.UNDEC, dataSet);
+		//int dataSet = bpmMapping.get(name)[2];
+		String request = translate(start, end, bpm, Decimation.UNDEC);
 		// make request, returning ValueIterator
 
 		return getValues(request, start, end, coordinate, Decimation.UNDEC);
@@ -105,9 +105,9 @@ public class FAArchivedDataRequest extends FARequest {
 		// create request string
 		int bpm = bpmMapping.get(name)[0];
 		int coordinate = bpmMapping.get(name)[1];
-		int dataSet = bpmMapping.get(name)[2];
+		//int dataSet = bpmMapping.get(name)[2];
 		Decimation dec = calculateDecimation(start, end, count);
-		String request = translate(start, end, bpm, dec, dataSet);
+		String request = translate(start, end, bpm, dec);
 		//System.out.print(request);
 		
 		
@@ -335,29 +335,19 @@ public class FAArchivedDataRequest extends FARequest {
 	 * the Fast Archiver
 	 */
 	private static String translate(Timestamp start, Timestamp end, int bpm,
-			Decimation dec, int dataSetNo) {
-		// Needs format
+			Decimation dec) {
+		// Needs format:
 		// "R[decimation]M[number of BPM][start time in seconds from epoch]E[end time in seconds from epoch]N[include sample count]A[all data available]\n"
-		String decimation = "F"; // need way to make this variable always
-									// dependent
+		String decimation;
 		if (dec == Decimation.UNDEC) {
 			decimation = "F";
 		} else if (dec == Decimation.DEC) {
 			decimation = "D";
-		} else if (dec == Decimation.DOUBLE_DEC) {
+		} else {
 			decimation = "DD";
 		}
-		// System.out.println("Decimation = "+ decimation);
-		String dataSet = "";
-		/*if (dec == Decimation.UNDEC)
-			dataSet = "";
-		else
-			dataSet = String.format("F%d", dataSetNo);
-		//return "RDF2M5S1405945635.711000000ES1405945675.347000000NATE\n"; // Used to find bug in time
-		// System.out.println("dataSet = "+dataSet); */
-		String request = String.format("R%s%sM%dS%d.%09dES%d.%09dNATE\n", decimation,
-				dataSet, bpm, start.getSec(), start.getNanoSec(), end.getSec(),
-				end.getNanoSec());
+		String request = String.format("R%sM%dS%d.%09dES%d.%09dNATE\n", decimation,
+				bpm, start.getSec(), start.getNanoSec(), end.getSec(), end.getNanoSec());
 		return request;
 	}
 
