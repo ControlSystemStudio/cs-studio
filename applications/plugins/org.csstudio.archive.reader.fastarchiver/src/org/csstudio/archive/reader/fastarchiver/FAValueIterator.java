@@ -2,6 +2,7 @@ package org.csstudio.archive.reader.fastarchiver;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
+import org.csstudio.archive.vtype.ArchiveVDisplayType;
 import org.csstudio.archive.vtype.ArchiveVNumber; // only for checking
 import org.epics.util.time.Timestamp;// only for checking
 import org.epics.vtype.AlarmSeverity;// only for checking
@@ -20,7 +21,7 @@ public class FAValueIterator implements ValueIterator{
 	long lastTime; //for checking
 	long thisTime; // for checking
 	
-	public FAValueIterator(ArchiveVNumber[] values){
+	public FAValueIterator(ArchiveVDisplayType[] values){
 		this.values = values;
 		index = -1;
 	}
@@ -40,11 +41,7 @@ public class FAValueIterator implements ValueIterator{
 	@Override
 	public VType next() throws Exception {
 		index++;
-		//System.out.println("valuesLength: "+ values.length+", index: "+index);
-		/*System.out.println("Iterator.next is called");
-		System.out.println("value returned is: " + ((ArchiveVNumber)values[index]).getValue() );
-		System.out.println("class returned is: " + values[index].getClass() );
-		System.out.println("time returned is: " + ((ArchiveVNumber)values[index]).getTimestamp() );*/
+
 		VType nextItem = values[index];
 		/*if (index == 0){
 			lastTime = ((ArchiveVNumber)nextItem).getTimestamp().getSec();

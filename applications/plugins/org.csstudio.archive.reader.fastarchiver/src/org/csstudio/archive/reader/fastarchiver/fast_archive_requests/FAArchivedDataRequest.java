@@ -14,7 +14,9 @@ import java.util.regex.Pattern;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.reader.fastarchiver.FAValueIterator;
 import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
+import org.csstudio.archive.vtype.ArchiveVDisplayType;
 import org.csstudio.archive.vtype.ArchiveVNumber;
+import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 
@@ -31,6 +33,7 @@ public class FAArchivedDataRequest extends FARequest {
 	HashMap<String, int[]> bpmMapping;
 	int sampleFrequency;
 	int firstDecimation;
+	int secondDecimation;
 
 	/**
 	 * 
@@ -64,9 +67,12 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @param end
 	 *            timestamp of last sample
 	 * @return a ValueIterator with the samples requested as VTypes
+	 * @throws IOException when no connection can be made with the host (and port)
+	 *             specified
+	 * @throws DataNotAvailableException when data can not be retrieved from Archive
 	 */
 	public ValueIterator getRawValues(String name, Timestamp start,
-			Timestamp end) {
+			Timestamp end) throws DataNotAvailableException, IOException {
 		// create request string
 		int bpm = bpmMapping.get(name)[0];
 		int coordinate = bpmMapping.get(name)[1];
@@ -74,12 +80,8 @@ public class FAArchivedDataRequest extends FARequest {
 		String request = translate(start, end, bpm, Decimation.UNDEC, dataSet);
 		// make request, returning ValueIterator
 
-		try {
-			return getValues(request, start, end, coordinate);
-		} catch (IOException | DataNotAvailableException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return getValues(request, start, end, coordinate, Decimation.UNDEC);
+
 	}
 
 	/**
@@ -109,7 +111,7 @@ public class FAArchivedDataRequest extends FARequest {
 		//System.out.print(request);
 		
 		
-		return getValues(request, start, end, coordinate);
+		return getValues(request, start, end, coordinate, dec);
 	
 	}
 
@@ -127,7 +129,7 @@ public class FAArchivedDataRequest extends FARequest {
 		InputStream inFromServer = socket.getInputStream();
 
 		// write request to archiver for sample frequency
-		writeToArchive("CFd\n", outToServer);
+		writeToArchive("CFdD\n", outToServer);
 
 		// read message
 		byte[] bA = new byte[200];
@@ -135,11 +137,12 @@ public class FAArchivedDataRequest extends FARequest {
 		String message = new String(Arrays.copyOfRange(bA, 0, read));
 		socket.close();
 
-		Pattern pattern = Pattern.compile("([0-9]+)\\.([0-9]+)\n([0-9]+)\n");
+		Pattern pattern = Pattern.compile("([0-9]+)\\.([0-9]+)\n([0-9]+)\n([0-9]+)\n");
 		Matcher matcher = pattern.matcher(message);
 		if (matcher.matches()) {
 			sampleFrequency = Integer.parseInt(matcher.group(1));
 			firstDecimation = Integer.parseInt(matcher.group(3));
+			secondDecimation = firstDecimation * Integer.parseInt(matcher.group(4));
 		} else
 			throw new IOException("Pattern does not match String");
 	}
@@ -159,12 +162,13 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @throws DataNotAvailableException when data can not be retrieved from Archive
 	 */
 	private ValueIterator getValues(String request, Timestamp start,
-			Timestamp end, int coordinate) throws DataNotAvailableException, IOException {
+			Timestamp end, int coordinate, Decimation decimation) throws DataNotAvailableException, IOException {
 		// create socket
 		Socket socket = new Socket(host, port);
 		OutputStream outToServer = socket.getOutputStream();
 		InputStream inFromServer = socket.getInputStream();
 
+		//System.out.println(request);
 		// write request to archiver
 		writeToArchive(request, outToServer);
 
@@ -184,14 +188,15 @@ public class FAArchivedDataRequest extends FARequest {
 		bb.position(0);
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 		
-
-
 		long sampleCount = bb.getLong(); // number of samples sent
 		int blockSize = bb.getInt(); // samples per block
 		int offset = bb.getInt(); // offset samples in first block
 
+		
 		/* Get actual data */
-		int numBytesToRead = calcDataLength((int) sampleCount, blockSize,
+		ArchiveVDisplayType[] values;
+		if (decimation == Decimation.UNDEC){
+					int numBytesToRead = calcDataLengthUndec((int) sampleCount, blockSize,
 				offset);
 		// System.out.println("cast samplecount: "+ (int)sampleCount);
 		// System.out.println("NBtR: "+numBytesToRead + ", samplecount: "
@@ -203,12 +208,29 @@ public class FAArchivedDataRequest extends FARequest {
 		
 		socket.close();
 
-		ArchiveVNumber[] values = decodeData(bb, (int) sampleCount, blockSize,
-				offset, coordinate);
+		values = decodeDataUndec(bb, (int) sampleCount, blockSize, offset, coordinate);
+		} else {
+			int numBytesToRead = calcDataLengthDec((int) sampleCount, blockSize,
+					offset);
+			
+			// take outside?
+			bb = ByteBuffer.wrap(readNumBytes(numBytesToRead, inFromServer));
+			bb.position(0);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			
+			socket.close();
+			
+			values = decodeDataDec(bb, (int) sampleCount, blockSize,
+					offset, coordinate, decimation);
+			
+		}
+
 		return new FAValueIterator(values);
 	}
 
 	// METHODS USING SOCKET STREAMS
+
+
 
 	/**
 	 * Returns a Byte Array with length as specified filled with data from the
@@ -326,16 +348,17 @@ public class FAArchivedDataRequest extends FARequest {
 			decimation = "DD";
 		}
 		// System.out.println("Decimation = "+ decimation);
-		String dataSet;
-		if (dec == Decimation.UNDEC)
+		String dataSet = "";
+		/*if (dec == Decimation.UNDEC)
 			dataSet = "";
 		else
 			dataSet = String.format("F%d", dataSetNo);
 		//return "RDF2M5S1405945635.711000000ES1405945675.347000000NATE\n"; // Used to find bug in time
-		// System.out.println("dataSet = "+dataSet);
-		return String.format("R%s%sM%dS%d.%09dES%d.%09dNATE\n", decimation,
+		// System.out.println("dataSet = "+dataSet); */
+		String request = String.format("R%s%sM%dS%d.%09dES%d.%09dNATE\n", decimation,
 				dataSet, bpm, start.getSec(), start.getNanoSec(), end.getSec(),
 				end.getNanoSec());
+		return request;
 	}
 
 	/**
@@ -345,20 +368,38 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @param offset the offset (number of missing samples) in the first datablock
 	 * @return the number of bytes to read from the InputStream
 	 */
-	private static int calcDataLength(int sampleCount, int blockSize, int offset) {
-		int sampleLength = 12 + 8 * blockSize; // 8 bytes timestamp + 4 bytes
+	private static int calcDataLengthUndec(int sampleCount, int blockSize, int offset) {
+		int blockLength = 12 + 8 * blockSize; // 8 bytes timestamp + 4 bytes
 												// duration + (4 bytes * 2
 												// coordinates) * blockSize
 		int length = 0;
 		if (sampleCount + offset > blockSize) { // more than one block of data
 			length += 12 + (blockSize - offset) * 8; // length first block
-			length += sampleLength
+			length += blockLength
 					* ((sampleCount - (blockSize - offset)) / blockSize); // complete
 																			// blocks
 			if ((sampleCount + offset) % blockSize != 0)
 				length += 12 + ((sampleCount + offset) % blockSize) * 8;
 		} else
 			length += 12 + 8 * sampleCount;
+		return length;
+	}
+	
+
+	private static int calcDataLengthDec(int sampleCount, int blockSize, int offset) {
+		int blockLength = 12 + 8 * 4 * blockSize; // 8 bytes timestamp + 4 bytes
+												// duration + (4 bytes * 2
+												// coordinates * 4 dataSets) * blockSize
+		int length = 0;
+		if (sampleCount + offset > blockSize) { // more than one block of data
+			length += 12 + (blockSize - offset) * 8 * 4; // length first block
+			length += blockLength
+					* ((sampleCount - (blockSize - offset)) / blockSize); // complete
+			// blocks
+			if ((sampleCount + offset) % blockSize != 0)
+				length += 12 + ((sampleCount + offset) % blockSize) * 8 * 4;
+		} else
+			length += 12 + 8 * 4 * sampleCount;
 		return length;
 	}
 
@@ -371,12 +412,12 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @param coordinate the index (0 or 1) of the coordinate wanted
 	 * @return ArchiveVNumber[] that can be used to create a FAValueIterator
 	 */
-	private static ArchiveVNumber[] decodeData(ByteBuffer bb, int sampleCount,
+	private static ArchiveVNumber[] decodeDataUndec(ByteBuffer bb, int sampleCount,
 			int blockSize, int offset, int coordinate) {
 		ArchiveVNumber[] values = new ArchiveVNumber[(int) sampleCount];
 		bb.position(0);
 		
-		//System.out.printf("DecodeData: \nsampleCount: %d, blockSize: %d, offset: %d, bufferLength: %d\n", sampleCount, blockSize, offset, bb.remaining());
+		//System.out.printf("DecodeDataUndec: \nsampleCount: %d, blockSize: %d, offset: %d, bufferLength: %d\n", sampleCount, blockSize, offset, bb.remaining());
 		int value;
 		double timestamp; // in microseconds
 		//double oldTimestamp; // for checking
@@ -433,6 +474,76 @@ public class FAArchivedDataRequest extends FARequest {
 		return values;
 	}
 	
+	
+
+	private ArchiveVDisplayType[] decodeDataDec(ByteBuffer bb, int sampleCount,
+			int blockSize, int offset, int coordinate, Decimation decimation) {
+		int count;
+		if (decimation == Decimation.DEC) {
+			count = firstDecimation;
+		} else {
+			count = secondDecimation;
+		}
+
+		ArchiveVStatistics[] values = new ArchiveVStatistics[(int) sampleCount];
+		bb.position(0);
+
+		System.out.printf("DecodeDataDec: \nsampleCount: %d, blockSize: %d, offset: %d, bufferLength: %d\n",
+		sampleCount, blockSize, offset, bb.remaining());
+		double mean, min, max, std;
+		double timestamp; // in microseconds
+		double duration;
+		Timestamp ts;
+		double timeInterval = 0.0; 
+		
+		if (offset != 0) {
+			timestamp = (double) bb.getLong();
+			duration = (double) bb.getInt();
+			timeInterval = duration / blockSize;
+			timestamp += offset * timeInterval;
+		} else {
+			timestamp = 0;// should be really initialised later on
+			duration = 0;
+			
+		}
+
+		for (int indexValues = 0; indexValues < sampleCount; indexValues += 1) {
+			// when to read in timeStamps and durations
+			if ((indexValues + offset) % blockSize == 0) {
+				timestamp = (double) bb.getLong();
+
+				duration = (double) bb.getInt();
+				timeInterval = duration / blockSize;
+			}
+			if (coordinate == 0) {
+				mean = bb.getInt()/1000.0; // micrometers
+				bb.getInt();
+				min = bb.getInt()/1000.0;
+				bb.getInt();
+				max = bb.getInt()/1000.0;
+				bb.getInt();
+				std = bb.getInt()/1000.0;
+				bb.getInt();
+			} else {
+				bb.getInt();
+				mean = bb.getInt()/1000.0;
+				bb.getInt();
+				min = bb.getInt()/1000.0;
+				bb.getInt();
+				max = bb.getInt()/1000.0;
+				bb.getInt();
+				std = bb.getInt()/1000.0;
+			}
+
+			ts = timeStampFromMicroS((long) timestamp);
+			values[indexValues] = new ArchiveVStatistics(ts, AlarmSeverity.NONE, "status", null, mean, min, max, std, count);
+
+			timestamp += timeInterval;
+		}
+
+		return values;
+
+	}
 /*
 	{
 		offset = ???;
