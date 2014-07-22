@@ -42,8 +42,11 @@ public abstract class FARequest {
 	// METHODS USING SOCKET STREAMS
 
 	/**
-	 * Writes a message to the fa-archiver to request data, only to be used by
+	 * Writes a message to the Fast Archiver to request data, only to be used by
 	 * methods creating sockets
+	 * 
+	 * @param message String to write to the Archiver to make a request
+	 * @param outToServer OutputStream of socket connected to Fast Archiver
 	 */
 	protected static void writeToArchive(String message, OutputStream outToServer) {
 		try {

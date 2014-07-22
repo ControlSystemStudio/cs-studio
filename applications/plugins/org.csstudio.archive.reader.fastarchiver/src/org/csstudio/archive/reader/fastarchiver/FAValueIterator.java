@@ -1,6 +1,7 @@
 package org.csstudio.archive.reader.fastarchiver;
 
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
 import org.csstudio.archive.vtype.ArchiveVNumber; // only for checking
 import org.epics.util.time.Timestamp;// only for checking
 import org.epics.vtype.AlarmSeverity;// only for checking
@@ -24,12 +25,18 @@ public class FAValueIterator implements ValueIterator{
 		index = -1;
 	}
 
+	/**
+	 * {@inheritDoc}}
+	 */
 	@Override
 	public boolean hasNext() {
 		//return index < 5;
 		return index + 1 < values.length;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public VType next() throws Exception {
 		index++;
@@ -39,24 +46,24 @@ public class FAValueIterator implements ValueIterator{
 		System.out.println("class returned is: " + values[index].getClass() );
 		System.out.println("time returned is: " + ((ArchiveVNumber)values[index]).getTimestamp() );*/
 		VType nextItem = values[index];
-		if (index == 0){
+		/*if (index == 0){
 			lastTime = ((ArchiveVNumber)nextItem).getTimestamp().getSec();
+			
 		} else {
 			thisTime = ((ArchiveVNumber)nextItem).getTimestamp().getSec();
-			if (thisTime - lastTime  >  15){
-				System.out.println("ValueIterator: Gap in time");
+			
+			if (thisTime - lastTime  >  4){
+				System.out.println("ValueIterator: lastTime: "+lastTime+", thisTime: "+ thisTime);
+				throw new DataNotAvailableException("Gap in time");
 			}
 			lastTime = thisTime;
-		}
-//		System.out.println(((ArchiveVNumber)nextItem).getValue());
-		
+		}*/
 		return nextItem;
 	}
-	/*public VType next(){
-		index++;
-		return new ArchiveVNumber (Timestamp.now(), AlarmSeverity.NONE, "status", null, 3);
-	}*/
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() {
 		values = null;		

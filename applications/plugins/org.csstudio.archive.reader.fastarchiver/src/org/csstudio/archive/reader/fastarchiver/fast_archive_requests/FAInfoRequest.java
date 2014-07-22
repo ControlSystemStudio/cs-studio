@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.archive.reader.fastarchiver.exceptions.EndOfStreamException;
+import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
 
 /**
  * Class to communicate with Fast Archiver about non-data requests. 
@@ -28,8 +27,11 @@ public class FAInfoRequest extends FARequest{
 	/**
 	 * Creates a list of all BPMs in the archiver, as returned by the archiver
 	 * @return String[] of all names
+	 * @throws IOException when no connection can be made with the host (and port)
+	 *             specified
+	 * @throws DataNotAvailableException when data can not be retrieved from archive
 	 */
-	private String[] getAllBPMs() throws UnknownHostException, IOException, EndOfStreamException {
+	private String[] getAllBPMs() throws IOException{
 		Socket socket = new Socket(host, port);
 		OutputStream outToServer = socket.getOutputStream();
 		InputStream inFromServer = socket.getInputStream();		
@@ -42,13 +44,12 @@ public class FAInfoRequest extends FARequest{
 		String infoFromServer = "";
 		int readNumBytes = 0;
 		while (readNumBytes != -1){
-			buffer = new byte[16384];
+			buffer = new byte[40];
 			allIds.append(infoFromServer);
 			readNumBytes = inFromServer.read(buffer);
 			infoFromServer = new String(buffer);
 			//System.out.println(infoFromServer);
-			//System.out.println();
-			
+			System.out.printf("%s", ""); //Do not remove!! Otherwise not complete name of bpm SR16-DI-EBPM-07.
 		}
 		//System.out.println("ID's: "+allIds);
 		
@@ -61,13 +62,12 @@ public class FAInfoRequest extends FARequest{
 	
 	/* OTHER METHODS */
 	/**
-	 * Creates a hasmap of all BPMs in the archiver, with names as keys and BPM number and coordinates in an int array as values. 
+	 * Creates a Hasmap of all BPMs in the archiver, with names as keys and BPM number and coordinates in an int array as values. 
 	 * @return Hashmap with names as keys and BPM number and coordinates in an int array as values. 
-	 * @throws UnknownHostException
-	 * @throws IOException
-	 * @throws EndOfStreamException
+	 * @throws IOException when no connection can be made with the host (and port)
+	 *             specified
 	 */
-	public HashMap<String, int[]> createMapping() throws UnknownHostException, IOException, EndOfStreamException {
+	public HashMap<String, int[]> createMapping() throws IOException  {
 		String[] allBPMs = getAllBPMs();
 		HashMap<String, int[]> bpmMapping = new HashMap<String, int[]>();
 		

@@ -1,7 +1,6 @@
 package org.csstudio.archive.reader.fastarchiver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
@@ -118,7 +117,9 @@ public class FastArchiveReader implements ArchiveReader{
 		public ValueIterator getOptimizedValues(int key, String name,
 				Timestamp start, Timestamp end, int count)
 				throws UnknownChannelException, Exception {
-			System.out.printf("getOptimizedValues %d, %s, ..., %d\n", key, name, count);
+			//String startString = start.toDate().toString();
+			//String endString = end.toDate().toString();
+			//System.out.printf("getOptimizedValues start: %s, end: %s\n", startString, endString);
 			if (mapping == null){
 				mapping = new FAInfoRequest(url).createMapping();
 			}
@@ -129,8 +130,7 @@ public class FastArchiveReader implements ArchiveReader{
 		/** {@inheritDoc}*/
 		@Override
 		public void cancel() {
-			// TODO Auto-generated method stub
-			
+			//Does nothing			
 		}
 
 		/** {@inheritDoc}*/
@@ -140,6 +140,10 @@ public class FastArchiveReader implements ArchiveReader{
 		}
 		
 		/* OWN METHODS */
+		/**
+		 * Creates a brief description of the ArchiverReader
+		 * @return description as a String
+		 */
 		private String createDescription(){
 			StringBuffer sb = new StringBuffer();
 			sb.append("ArchiveReader to communicate with the Fast Archiver.\n");
