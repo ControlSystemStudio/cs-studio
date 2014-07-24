@@ -14,7 +14,6 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-pluginCustomization configuration/plugin_customization.ini</programArgs>
       <vmArgs>-Xmx1024m
 -Xms128m
 -XX:MaxPermSize=256M</vmArgs>
