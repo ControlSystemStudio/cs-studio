@@ -127,6 +127,8 @@ public class EditItemsCommand implements IUndoableCommand {
 				((PVItem)item).setRequestType(result.getRequest());
 			if (result.appliedIndex())
 				item.setWaveformIndex(result.getIndex());
+			if (result.appliedErrorType() && item instanceof PVItem)
+				((PVItem)item).setErrorType(result.getErrorType());
 		}
 	}
 }

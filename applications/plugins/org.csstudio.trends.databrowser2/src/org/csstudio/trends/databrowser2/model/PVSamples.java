@@ -83,6 +83,36 @@ public class PVSamples extends PlotSamples
     		}
     	}
     }
+    
+    /**
+     * @param errorType
+     * @author Friederike Johlinger
+     */
+    public void setErrorType(ErrorType errorType){
+    	live.setErrorType(errorType);
+    	history.setErrorType(errorType);
+
+    	synchronized (listeners)
+    	{
+    		for (IDataProviderListener listener : listeners)
+    		{
+    			// Notify listeners of the change of the waveform index
+    			// mainly in order to update the position of snapped
+    			// annotations. For more details, see the comment in
+    			// Annotation.dataChanged(IDataProviderListener).
+    			listener.dataChanged(this);
+    		}
+    	} //! Not sure if needed
+    	//samples.setErrorType(errorType);
+    }
+    
+    /** @return ErrorType 
+     *  @author Friederike Johlinger */
+    public ErrorType getErrorType(){
+    	if (history.getErrorType() == ErrorType.STD_DEV || live.getErrorType() == ErrorType.STD_DEV)
+    		return ErrorType.STD_DEV;
+    	return ErrorType.MIN_MAX; 
+    }    
 
     /** @return Maximum number of live samples in ring buffer */
     public int getLiveCapacity()

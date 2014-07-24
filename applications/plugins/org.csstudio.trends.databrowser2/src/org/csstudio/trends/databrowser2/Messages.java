@@ -84,6 +84,9 @@ public class Messages extends NLS
     public static String EndTimeTT;
     public static String Error;
     public static String ErrorFmt;
+    public static String ErrorType_MinMax;
+    public static String ErrorType_StdDev;
+    public static String ErrorTypeTrace;
     public static String Export_Delimiter;
     public static String Export_NoValueMarker;
     public static String ExportBrowse;

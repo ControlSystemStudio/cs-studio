@@ -36,6 +36,9 @@ public class PlotSample implements ISample
     
     /** Waveform index */
     private int waveform_index = 0;
+    
+    /** ErrorType, determines whether min/max or std are used for errors */
+    private ErrorType errorType = ErrorType.MIN_MAX;
 
     /** Initialize with valid control system value
      *  @param source Info about the source of this sample
@@ -75,6 +78,18 @@ public class PlotSample implements ISample
     public void setWaveformIndex(int index)
     {
     	this.waveform_index = index;
+    }
+    
+    /** @return ErrorType 
+     * @author Friederike Johlinger */
+    public ErrorType getErrorType(){
+    	return errorType;
+    }
+    
+    /** @param errorType either stdDev or min_max (i.e. range) 
+     * @author Friederike Johlinger */
+    public void setErrorType(ErrorType errorType){
+    	this.errorType = errorType;
     }
 
     /** @return Source of the data */
@@ -117,7 +132,7 @@ public class PlotSample implements ISample
     @Override
     public double getYValue()
     {
-        return VTypeHelper.toDouble(value, waveform_index);
+    	return VTypeHelper.toDouble(value, waveform_index);
     }
 
     /** Get sample's info text.
@@ -162,7 +177,10 @@ public class PlotSample implements ISample
         	return 0;
 
         final VStatistics minmax = (VStatistics)value;
-        return minmax.getAverage() - minmax.getMin();
+        if (errorType == ErrorType.MIN_MAX)
+        	return minmax.getAverage() - minmax.getMin();
+        else 
+        	return minmax.getStdDev();
     }
 
     /** {@inheritDoc} */
@@ -182,7 +200,11 @@ public class PlotSample implements ISample
         	return 0;
         
         final VStatistics minmax = (VStatistics)value;
-        return minmax.getMax() - minmax.getAverage();
+        if (errorType == ErrorType.MIN_MAX)
+        	return minmax.getMax() - minmax.getAverage();
+        else 
+        	return minmax.getStdDev();
+        
     }
 
     @Override

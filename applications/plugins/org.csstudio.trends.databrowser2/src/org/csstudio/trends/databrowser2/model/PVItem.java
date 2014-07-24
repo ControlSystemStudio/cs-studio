@@ -74,6 +74,9 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     /** Waveform Index */
     private int waveform_index = 0;
     
+    /** ErrorType */
+    private ErrorType errorType = ErrorType.MIN_MAX;
+    
     /** Indicating if the history data is automatically refreshed, whenever
      * the live buffer is too small to show all the data */
     private boolean automaticRefresh = Preferences.isAutomaticHistoryRefresh();
@@ -110,6 +113,21 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
         samples.setWaveformIndex(waveform_index);
 
 //        fireItemLookChanged();
+    }
+    /**
+     * @return Error Type
+     * @author Friederike Johlinger
+     */
+    public ErrorType getErrorType(){
+    	return errorType;
+    }
+    
+    /**
+     * @param errorType
+     */
+    public void setErrorType(ErrorType errorType){
+    	this.errorType = errorType;
+    	samples.setErrorType(errorType);
     }
 
     /** Set new item name, which changes the underlying PV name
