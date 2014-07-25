@@ -24,6 +24,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 
+import org.csstudio.askap.sb.Preferences;
+
 
 /**
  * @author wu049
@@ -36,6 +38,7 @@ public class SchedulingBlock {
 	Long id;
 	SBState state;
 	Map<String, String> parameterMap = null;
+	Map<String, String> obsVariableMap = null;
 	
 	String lastExecutedDate = null;
 	long lastExecutionDuration = 0;
@@ -79,6 +82,32 @@ public class SchedulingBlock {
 
 	public void setScheduledTime(long scheduledTime) {
 		this.scheduledTime = scheduledTime;
+	}
+
+	
+	public Map<String, String> getObsVariable() {
+		return obsVariableMap;
+	}
+
+	public void setObsVariable(Map<String, String> obsVarMap) {
+		this.obsVariableMap = obsVarMap;
+		
+		String startTime = obsVarMap.get(Preferences.SB_OBS_VAR_START_TIME);
+		if (startTime != null)
+			setLastExecutedDate(startTime.substring(0, startTime.indexOf(".")));
+		
+		String duration = obsVarMap.get(Preferences.SB_OBS_VAR_DURATION);
+		if (duration != null)
+			setLastExecutionDuration((long) Double.parseDouble(duration)*1000);
+		
+		setExecutedVersion(obsVarMap.get(Preferences.SB_OBS_VAR_VERSION));
+		
+		
+		String errorTime = obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_TIME);
+		if (errorTime != null)
+			setErrorTimeStamp(errorTime.substring(0, errorTime.indexOf(".")));
+		
+		setErrorMessage(obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_MESSAGE));
 	}
 
 	/**

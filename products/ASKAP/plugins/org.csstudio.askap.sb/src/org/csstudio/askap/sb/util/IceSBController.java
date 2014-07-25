@@ -173,24 +173,8 @@ public class IceSBController {
 			sb.setParameterMap(sbProxy.getObsParameters(id));
 			sb.setScheduledTime((long) Math.floor(sbProxy.getScheduledTime(id)*1000));
 			
-			Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");		
-			String startTime = obsVarMap.get(Preferences.SB_OBS_VAR_START_TIME);
-			if (startTime != null)
-				sb.setLastExecutedDate(startTime.substring(0, startTime.indexOf(".")));
-			
-			String duration = obsVarMap.get(Preferences.SB_OBS_VAR_DURATION);
-			if (duration != null)
-				sb.setLastExecutionDuration((long) Double.parseDouble(duration)*1000);
-			
-			sb.setExecutedVersion(obsVarMap.get(Preferences.SB_OBS_VAR_VERSION));
-			
-			
-			String errorTime = obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_TIME);
-			if (errorTime != null)
-				sb.setErrorTimeStamp(errorTime.substring(0, errorTime.indexOf(".")));
-			
-			sb.setErrorMessage(obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_MESSAGE));
-						
+			Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");
+			sb.setObsVariable(obsVarMap);
 			sbList.add(sb);
 			
 			if (sbList.size()==maxNumber)
