@@ -657,13 +657,13 @@ public class SBExecutionView extends EditorPart {
 					table.getColumn(4).setWidth(width * 20/100);
 				} else {
 					table.getColumn(0).setWidth(width * 10/100);
-					table.getColumn(1).setWidth(width * 20/100);
-					table.getColumn(2).setWidth(width * 15/100);
-					table.getColumn(3).setWidth(width * 5/100);
-					table.getColumn(4).setWidth(width * 20/100);
+					table.getColumn(1).setWidth(width * 10/100);
+					table.getColumn(2).setWidth(width * 20/100);
+					table.getColumn(3).setWidth(width * 10/100);
+					table.getColumn(4).setWidth(width * 10/100);
 					table.getColumn(5).setWidth(width * 10/100);
 					table.getColumn(6).setWidth(width * 10/100);
-					table.getColumn(7).setWidth(width * 10/100);
+					table.getColumn(7).setWidth(width * 20/100);
 				}
 				table.setSize(area.width, area.height);
 			} else {
