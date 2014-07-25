@@ -2,15 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.askap.sb.PerspectiveFactory"
-            icon="icons/red_lego.png"
-            id="org.csstudio.askap.sb.Perspective"
-            name="Scheduling Block">
-      </perspective>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="org.csstudio.askap.sb.SBMaintenanceView"
@@ -53,13 +44,6 @@
          <toolbar
                id="org.csstudio.askap.logviewer.toolbar">
             <command
-                  commandId="org.csstudio.askap.sb.OpenSBMaintenanceView"
-                  icon="icons/red_lego.png"
-                  label="SB Maintenance View"
-                  style="push"
-                  tooltip="Open SB Maintenance View">
-            </command>
-            <command
                   commandId="org.csstudio.askap.sb.OpenSBExecutionView"
                   icon="icons/run_red_lego.png"
                   label="Open SB Execution"
@@ -78,15 +62,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.views">
-      <view
-            allowMultiple="false"
-            category="org.askap"
-            class="org.csstudio.askap.sb.SBTemplateView"
-            icon="icons/red_lego.png"
-            id="org.csstudio.askap.sb.SBTemplateView"
-            name="SB Template"
-            restorable="true">
-      </view>
       <view
             allowMultiple="false"
             category="org.askap"
