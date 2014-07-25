@@ -1,6 +1,7 @@
 package org.csstudio.askap.sb;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.csstudio.askap.sb.util.SBDataModel;
 import org.csstudio.askap.sb.util.SchedulingBlock;
 import org.csstudio.askap.sb.util.SchedulingBlock.SBState;
 import org.csstudio.askap.utility.AskapEditorInput;
+import org.csstudio.askap.utility.AskapHelper;
 import org.csstudio.askap.utility.icemanager.LogObject;
 import org.csstudio.askap.utility.icemanager.MonitorPointListener;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -280,16 +282,22 @@ public class SBExecutionView extends EditorPart {
 		scheduleTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		scheduleTable.setLinesVisible (true);
 		scheduleTable.setHeaderVisible (true);
+
+		column = new TableColumn (scheduleTable, SWT.NONE);
+		column.setText ("ID");
 		
 		column = new TableColumn (scheduleTable, SWT.NONE);
-		column.setText ("Scheduling Block");
+		column.setText ("Alias");
 
 		column = new TableColumn (scheduleTable, SWT.NONE);
 		column.setText ("Template Name");
 				
 		column = new TableColumn (scheduleTable, SWT.NONE);
 		column.setText ("Template Version");
-				
+		
+		column = new TableColumn (scheduleTable, SWT.NONE);
+		column.setText ("Scheduled Time");
+		
 		scheduleTable.setItemCount(dataModel.getScheduledSBCount());
 		setTableSize(scheduleTable);
 		
@@ -306,8 +314,11 @@ public class SBExecutionView extends EditorPart {
 				TableItem item = (TableItem)event.item;
 				int index = event.index;
 				SchedulingBlock sb = dataModel.getScheduledSBAt(index);
+				long scheduledTime = sb.getScheduledTime();
+
 				if (sb != null) {
-					item.setText(new String[]{sb.getAliasName(), sb.getTemplateName(), "" + sb.getMajorVersion()});
+					item.setText(new String[]{"" + sb.getId(), sb.getAliasName(), sb.getTemplateName(), 
+							"" + sb.getMajorVersion(), AskapHelper.getFormatedData(new Date(scheduledTime), null) });
 					item.setData(sb.getId());
 				}
 			}
@@ -639,10 +650,12 @@ public class SBExecutionView extends EditorPart {
 				// table is getting smaller so make the columns 
 				// smaller first and then resize the table to
 				// match the client area width
-				if (table.getColumnCount()==3) {
-					table.getColumn(0).setWidth(width/3);
-					table.getColumn(1).setWidth(width/3);					
-					table.getColumn(2).setWidth(width/3);					
+				if (table.getColumnCount()==5) {
+					table.getColumn(0).setWidth(width * 20/100);
+					table.getColumn(1).setWidth(width * 20/100);					
+					table.getColumn(2).setWidth(width * 20/100);					
+					table.getColumn(3).setWidth(width * 20/100);
+					table.getColumn(4).setWidth(width * 20/100);
 				} else {
 					table.getColumn(0).setWidth(width * 10/100);
 					table.getColumn(1).setWidth(width * 20/100);
@@ -659,10 +672,12 @@ public class SBExecutionView extends EditorPart {
 				// bigger first and then make the columns wider
 				// to match the client area width
 				table.setSize(area.width, area.height);
-				if (table.getColumnCount()==3) {
-					table.getColumn(0).setWidth(width/3);
-					table.getColumn(1).setWidth(width/3);					
-					table.getColumn(2).setWidth(width/3);					
+				if (table.getColumnCount()==5) {
+					table.getColumn(0).setWidth(width * 20/100);
+					table.getColumn(1).setWidth(width * 20/100);					
+					table.getColumn(2).setWidth(width * 20/100);					
+					table.getColumn(3).setWidth(width * 20/100);
+					table.getColumn(4).setWidth(width * 20/100);
 				} else {
 					table.getColumn(0).setWidth(width * 10/100);
 					table.getColumn(1).setWidth(width * 10/100);

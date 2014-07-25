@@ -170,7 +170,8 @@ public class IceSBController {
 			sb.setMajorVersion(sbInfo.templateVersion);
 
 			
-			sb.setParameterMap(sbProxy.getObsParameters(id));			
+			sb.setParameterMap(sbProxy.getObsParameters(id));
+			sb.setScheduledTime((long) Math.floor(sbProxy.getScheduledTime(id)*1000));
 			
 			Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");		
 			String startTime = obsVarMap.get(Preferences.SB_OBS_VAR_START_TIME);

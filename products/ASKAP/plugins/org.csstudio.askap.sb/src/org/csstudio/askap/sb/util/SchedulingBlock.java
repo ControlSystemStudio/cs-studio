@@ -47,6 +47,8 @@ public class SchedulingBlock {
 	String errorTimeStamp = null;
 	String errorMessage = "";
 	
+	long scheduledTime = -1;
+	
 	public enum SBState {
 	    DRAFT,	    
 	    SUBMITTED,    
@@ -69,6 +71,14 @@ public class SchedulingBlock {
 			return o1.aliasName.compareTo(o2.aliasName);
 		}
 		
+	}
+
+	public long getScheduledTime() {
+		return scheduledTime;
+	}
+
+	public void setScheduledTime(long scheduledTime) {
+		this.scheduledTime = scheduledTime;
 	}
 
 	/**
