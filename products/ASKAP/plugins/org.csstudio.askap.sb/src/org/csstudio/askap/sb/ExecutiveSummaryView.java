@@ -3,6 +3,7 @@ package org.csstudio.askap.sb;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Point;
@@ -10,6 +11,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -30,7 +32,8 @@ public class ExecutiveSummaryView extends ViewPart {
 												"schedblock.target.frequency",
 												"schedblock.target.name",
 												"schedblock.scan",
-												"executive.running"};
+												"schedblock.duration",
+												"schedblock.progress"};
 	
     Table table = null;
 
@@ -96,6 +99,19 @@ public class ExecutiveSummaryView extends ViewPart {
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Scan Number");
 	    item.setText(1, "XX");
+
+	    item = new TableItem(table, SWT.NULL);
+	    item.setText(0, "Scan Duration");
+	    item.setText(1, "XX");
+
+	    item = new TableItem(table, SWT.NULL);
+	    item.setText(0, "Scan Progress");
+	    
+	    ProgressBar bar = new ProgressBar(table, SWT.NONE);
+	    bar.setSelection(5);
+        TableEditor editor = new TableEditor(table);
+        editor.grabHorizontal = editor.grabVertical = true;
+        editor.setEditor(bar, item, 1);
 	    
 		parent.addControlListener(new ControlAdapter() {
 			public void controlResized(ControlEvent e) {

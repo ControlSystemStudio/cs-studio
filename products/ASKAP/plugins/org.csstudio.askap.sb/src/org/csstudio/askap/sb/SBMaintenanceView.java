@@ -596,7 +596,8 @@ public class SBMaintenanceView extends EditorPart {
 			@Override
 			public String getText(Object element) {
 				SBParameter sb = (SBParameter) element;
-				return "" + sb.getStrValue();
+				String text = "" + sb.getStrValue();
+				return text;
 			}
 		});
 		

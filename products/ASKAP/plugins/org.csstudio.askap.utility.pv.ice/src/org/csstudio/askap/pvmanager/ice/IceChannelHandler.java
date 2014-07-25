@@ -15,7 +15,6 @@ import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayFloat;
 import org.epics.util.array.ArrayInt;
 import org.epics.util.array.ArrayLong;
-import org.epics.util.array.ListFloat;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
@@ -25,7 +24,6 @@ import org.epics.vtype.ValueFactory;
 
 import askap.interfaces.TypedValue;
 import askap.interfaces.TypedValueBool;
-import askap.interfaces.TypedValueBoolSeq;
 import askap.interfaces.TypedValueDouble;
 import askap.interfaces.TypedValueDoubleSeq;
 import askap.interfaces.TypedValueFloat;

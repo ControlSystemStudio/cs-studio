@@ -8,8 +8,8 @@ public class Preferences {
 	public static final String OD_SCHEDULE_BLOCK_NAME = "operatordisplay.filename";
 	
 	public static final String SB_OBS_VAR_VERSION = "schedulingblock.version_executed";
-	public static final String SB_OBS_VAR_START_TIME = "executive.schedulingblock.start_time";
-	public static final String SB_OBS_VAR_DURATION = "executive.schedulingblock.duration";
+	public static final String SB_OBS_VAR_START_TIME = "executive.start_time";
+	public static final String SB_OBS_VAR_DURATION = "executive.duration";
 	public static final String SB_OBS_VAR_ERROR_TIME = "schedulingblock.error.time";
 	public static final String SB_OBS_VAR_ERROR_MESSAGE = "schedulingblock.error.message";
 
@@ -24,6 +24,7 @@ public class Preferences {
 	static final String OBS_PROGRAM_ICE_NAME = "schedulingblock_obsprogram_icename";
 	static final String SB_EXECUTION_STATE_POLLING_PERIOD = "schedulingblock_execution_pollingPeriod"; 
 	static final String SB_MAINTENANCE_POLLING_PERIOD = "schedulingblock_maintenance_pollingPeriod";
+	static final String SB_EXECUTION_MAX_NUMBER_SB = "schedulingblock_execution_max_number_sb";
 
 	static final String OBS_DEFAULT_PROGRAM_NAME = "schedulingblock_default_obsprogram";
 
@@ -87,29 +88,32 @@ public class Preferences {
 		return getString(EXECUTIVE_ICE_NAME, "");
 	}
 	
-	public static final int getSBExecutionStatePollingPeriod() {
-		return getInt(SB_EXECUTION_STATE_POLLING_PERIOD, 1000);
+	public static final long getSBExecutionStatePollingPeriod() {
+		return getLong(SB_EXECUTION_STATE_POLLING_PERIOD, 1000);
 	}
 
+	public static final long getSBExecutionMaxNumberSB() {
+		return getLong(SB_EXECUTION_MAX_NUMBER_SB, 50);
+	}
 	
-	public static final int getSBMaintenancePollingPeriod() {
-		return getInt(SB_MAINTENANCE_POLLING_PERIOD, 1000);
+	public static final long getSBMaintenancePollingPeriod() {
+		return getLong(SB_MAINTENANCE_POLLING_PERIOD, 1000);
 	}	
 	
-	public static final int getSourceSearchMaxMessages() {
-		return getInt(SOURCE_SEARCH_MAX_MESSAGES, 3000);
+	public static final long getSourceSearchMaxMessages() {
+		return getLong(SOURCE_SEARCH_MAX_MESSAGES, 3000);
 	}	
     /** Get long preference
      *  @param key Preference key
      *  @return long or <code>null</code>
      */
-    private static int getInt(final String key, final int default_value)
+    private static long getLong(final String key, final long default_value)
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null)
             return default_value;
         
-        return prefs.getInt(Activator.PLUGIN_ID, key, default_value, null);
+        return prefs.getLong(Activator.PLUGIN_ID, key, default_value, null);
     }
     
 

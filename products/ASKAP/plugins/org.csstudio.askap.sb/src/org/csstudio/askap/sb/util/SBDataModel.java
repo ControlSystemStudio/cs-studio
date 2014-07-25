@@ -162,30 +162,28 @@ public class SBDataModel {
 	
 	protected boolean processFinishedList() throws Exception {
 		// if scheduled list has changed, notify the listener
-		List<SchedulingBlock> newFinishedList = getSBByState(new SBState[]{SBState.COMPLETED, SBState.ERRORED, SBState.EXECUTING});
+		// also only display the given max number of sb
+		List<SchedulingBlock> finishedSB = getSBByState(new SBState[] {
+				SBState.COMPLETED, SBState.ERRORED}, Preferences.getSBExecutionMaxNumberSB());
 		
-		if (newFinishedList!=null) {
-			// move the EXECUTING scheduling block to the beginning
-			SchedulingBlock executingSB = null;
-			for (SchedulingBlock sb : newFinishedList) {
-				if (sb.getState().equals(SBState.EXECUTING))
-					executingSB = sb;			
-			}
+		List<SchedulingBlock> sbList = getSBByState(new SBState[] {SBState.EXECUTING});
+		SchedulingBlock executingSB = null;
+		if (sbList!=null && sbList.size()>0)
+			executingSB = sbList.get(0);
+
+		if (finishedSB!=null) {
+			if (executingSB!=null)
+				finishedSB.add(0, executingSB);
 			
-			if (executingSB!=null) {
-				newFinishedList.remove(executingSB);
-				newFinishedList.add(0, executingSB);
-			}
-			
-			if (newFinishedList.size()==executedSBList.size()) {
-				for (int i=0; i<newFinishedList.size(); i++) {
-					if (!newFinishedList.get(i).equals(executedSBList.get(i))) {
-						executedSBList = newFinishedList;
+			if (finishedSB.size()==executedSBList.size()) {
+				for (int i=0; i<finishedSB.size(); i++) {
+					if (!finishedSB.get(i).equals(executedSBList.get(i))) {
+						executedSBList = finishedSB;
 						return true;
 					}
 				}					
 			} else {
-				executedSBList = newFinishedList;
+				executedSBList = finishedSB;
 				return true;
 			}
 		}
@@ -235,11 +233,19 @@ public class SBDataModel {
 	}
 
 	/**
-	 * @param scheduled
-	 * @return
+	 * @param 
+	 * @return sbs for the given list of sbstates
 	 */
 	public List<SchedulingBlock> getSBByState(SBState states[]) throws Exception {
 		return sbController.getSBByState(states);
+	}
+
+	/**
+	 * @param 
+	 * @return maxNumber of sbs for the given list of sbstates
+	 */
+	public List<SchedulingBlock> getSBByState(SBState states[], long maxNumber) throws Exception {
+		return sbController.getSBByState(states, maxNumber);
 	}
 
 	/**

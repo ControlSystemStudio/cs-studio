@@ -23,6 +23,7 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -55,7 +56,7 @@ public class SBExecutionView extends EditorPart {
 	public static final String ID = "org.csstudio.askap.sb.SBExecutionView";
 	private static Logger logger = Logger.getLogger(SBExecutionView.class.getName());
 
-	private static final int NUM_OF_COLUMNS = 5;
+	private static final int NUM_OF_COLUMNS = 6;
 	
 	Table executedTable = null;
 	Table scheduleTable = null;
@@ -68,7 +69,12 @@ public class SBExecutionView extends EditorPart {
 	Label status = null;	
 	Label sbidLabel = null;
 	Button stopCaptureButton = null;
-
+	
+	private static Image RED_LED_IMAGE = null;
+	private static Image GREEN_LED_IMAGE = null;
+	private static Image GREY_LED_IMAGE = null;
+		
+	
 	private static final Map<SBState, Integer> STATE_COLOR_MAP = new HashMap<SBState, Integer>();
 	
 	private Composite parent = null;
@@ -78,6 +84,10 @@ public class SBExecutionView extends EditorPart {
 	static {
 		STATE_COLOR_MAP.put(SBState.ERRORED, SWT.COLOR_RED);
 		STATE_COLOR_MAP.put(SBState.EXECUTING, SWT.COLOR_GREEN);
+		
+		RED_LED_IMAGE = Activator.getDefault().getImage("icons/red_round_button.png");        	
+		GREEN_LED_IMAGE = Activator.getDefault().getImage("icons/green_round_button.png");
+		GREY_LED_IMAGE = Activator.getDefault().getImage("icons/grey_round_button.png");
 	}
 	
 
@@ -124,7 +134,7 @@ public class SBExecutionView extends EditorPart {
 		page.setLayout(gridLayout);				
 		
 		Label executedTitle = new Label(page, SWT.NONE);
-		executedTitle.setText("Executing and executed Scheduling Block:");
+		executedTitle.setText("Executing and executed Scheduling Block (last " + Preferences.getSBExecutionMaxNumberSB()  + " scheduling blocks):");
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = NUM_OF_COLUMNS;
 		executedTitle.setLayoutData(gridData);
@@ -135,9 +145,12 @@ public class SBExecutionView extends EditorPart {
 		
 		TableColumn column = new TableColumn (executedTable, SWT.NONE);
 		column.setText ("Status");
+
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("ID");
 		
 		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Scheduling Block");
+		column.setText ("Alias Name");
 
 		column = new TableColumn (executedTable, SWT.NONE);
 		column.setText ("Template Name");
@@ -150,9 +163,6 @@ public class SBExecutionView extends EditorPart {
 
 		column = new TableColumn (executedTable, SWT.NONE);
 		column.setText ("Last Run Duration");
-		
-		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Error Timestamp");
 		
 		column = new TableColumn (executedTable, SWT.NONE);
 		column.setText ("Error Message");
@@ -180,12 +190,8 @@ public class SBExecutionView extends EditorPart {
 					
 					String duration = getStringDuration(sb.getLastExecutionDuration());
 					
-					String errorTime = "";
-					if (sb.getErrorTimeStamp()!=null)
-						errorTime = sb.getErrorTimeStamp();
-						
-					item.setText(new String[]{sb.getState().toString(), sb.getAliasName(), sb.getTemplateName(), sb.getExecutedVersion(), 
-							executeTime, duration, errorTime, sb.getErrorMessage()});
+					item.setText(new String[]{sb.getState().toString(), "" + sb.getId(),  sb.getAliasName(), sb.getTemplateName(), sb.getExecutedVersion(), 
+							executeTime, duration, sb.getErrorMessage()});
 					item.setData(sb.getId());
 					
 					if (STATE_COLOR_MAP.get(sb.getState())!=null)
@@ -196,6 +202,19 @@ public class SBExecutionView extends EditorPart {
 				}				
 			}
 		});
+	
+		
+		Label statusText = new Label(page, 0);
+		statusText.setText("Executive Status: ");
+		
+		status = new Label(page, 0);		
+		g3 = new GridData();
+		g3.horizontalAlignment = GridData.FILL;	
+		g3.grabExcessHorizontalSpace = true;
+		g3.horizontalAlignment = SWT.LEFT;
+		status.setLayoutData(g3);
+		status.setImage(GREY_LED_IMAGE);
+
 		
 		startButton = new Button(page, SWT.PUSH);
 		startButton.setText("Start Executive");
@@ -230,12 +249,6 @@ public class SBExecutionView extends EditorPart {
 			}
 		});
 
-		Label dummyLabel = new Label(page, 0);
-		g3 = new GridData();
-		g3.horizontalAlignment = GridData.FILL;	
-		g3.grabExcessHorizontalSpace = true;
-		dummyLabel.setLayoutData(g3);
-		
 		
 		editButton = new Button(page, SWT.PUSH);
 		editButton.setText("Modify Scheduling List");
@@ -355,7 +368,7 @@ public class SBExecutionView extends EditorPart {
 			public void partOpened(IWorkbenchPartReference partRef) {
 				if (isThisEditor(partRef))
 					start();
-		}
+			}
 			
 			@Override
 			public void partClosed(IWorkbenchPartReference partRef) {
@@ -652,13 +665,13 @@ public class SBExecutionView extends EditorPart {
 					table.getColumn(2).setWidth(width/3);					
 				} else {
 					table.getColumn(0).setWidth(width * 10/100);
-					table.getColumn(1).setWidth(width * 20/100);
-					table.getColumn(2).setWidth(width * 15/100);
-					table.getColumn(3).setWidth(width * 5/100);
-					table.getColumn(4).setWidth(width * 20/100);
+					table.getColumn(1).setWidth(width * 10/100);
+					table.getColumn(2).setWidth(width * 20/100);
+					table.getColumn(3).setWidth(width * 10/100);
+					table.getColumn(4).setWidth(width * 10/100);
 					table.getColumn(5).setWidth(width * 10/100);
 					table.getColumn(6).setWidth(width * 10/100);
-					table.getColumn(7).setWidth(width * 10/100);
+					table.getColumn(7).setWidth(width * 20/100);
 				}
 			}
 			table.pack();

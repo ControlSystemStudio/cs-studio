@@ -96,7 +96,7 @@ public class SBTemplateDataModel {
 		return versionList;
 	}
 	
-	public List<SBTemplate> getMinorVersionsForTemplate(String templateName, int majorVersion) throws Exception {		
+	public List<SBTemplate> getMinorVersionsForTemplate(String templateName, long majorVersion) throws Exception {		
 		List<SBTemplate> templateList = templateMap.get(templateName);
 		List<SBTemplate> minorList = new ArrayList<SBTemplate>();
 		
@@ -130,7 +130,7 @@ public class SBTemplateDataModel {
 	 * @return
 	 * @throws Exception
 	 */
-	public SBTemplate getLatestVersion(String templateName, int majorVersion) throws Exception {
+	public SBTemplate getLatestVersion(String templateName, long majorVersion) throws Exception {
 		List<SBTemplate> tempList = templateMap.get(templateName);
 					
 		// the latest template should be the first one with that major version
@@ -163,14 +163,18 @@ public class SBTemplateDataModel {
 	
 	
 	public SchedulingBlock getSB(long id) throws Exception {
-		return controller.getSchedulingBlock(id);
+		List<SchedulingBlock> sbList = controller.getSchedulingBlocks(new long[]{id});
+		if (sbList==null || sbList.size()==0)
+			return null;
+		
+		return sbList.get(0);
 	}
 	/**
 	 * return all Scheduling Block for a particular template
 	 * @param template
 	 * @return
 	 */
-	public List<SchedulingBlock> getSBForTemplate(String templateName, int majorVersion) throws Exception {
+	public List<SchedulingBlock> getSBForTemplate(String templateName, long majorVersion) throws Exception {
 		// fetch all sb from DataServic
 		List<SchedulingBlock> sbList = controller.getSBForTemplate(templateName, majorVersion);
 		return sbList;
@@ -231,9 +235,12 @@ public class SBTemplateDataModel {
 		throws Exception{
 		long id = controller.createSB(aliasName, template.getName(), userConfig);
 		controller.setSBState(id, SBState.SUBMITTED);
-		SchedulingBlock sb = controller.getSchedulingBlock(id);
 		
-		return sb;
+		List<SchedulingBlock> sbList = controller.getSchedulingBlocks(new long[]{id});
+		if (sbList==null || sbList.size()==0)
+			return null;
+		
+		return sbList.get(0);
 	}
 
 	/**

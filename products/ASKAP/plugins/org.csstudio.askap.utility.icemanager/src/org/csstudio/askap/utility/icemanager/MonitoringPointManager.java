@@ -23,7 +23,7 @@ public class MonitoringPointManager {
 	private Map<String, MonitorPointUpdater> pointUpdaters = new HashMap<String, MonitorPointUpdater>();
 	private MonitoringProviderPrx monitorProxy = null;
 	
-	private boolean keepPolling = true;
+	private boolean keepPolling = false;
 	private String myAdaptorName = "";
 	
 	

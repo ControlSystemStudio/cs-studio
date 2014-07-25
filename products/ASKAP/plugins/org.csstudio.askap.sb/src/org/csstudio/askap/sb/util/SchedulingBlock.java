@@ -40,7 +40,7 @@ public class SchedulingBlock {
 	String lastExecutedDate = null;
 	long lastExecutionDuration = 0;
 
-	int majorVersion;
+	long majorVersion;
 	String templateName = "";
 	String executedVersion = "";
 	
@@ -165,14 +165,14 @@ public class SchedulingBlock {
 	/**
 	 * @return the majorVersion
 	 */
-	public int getMajorVersion() {
+	public long getMajorVersion() {
 		return majorVersion;
 	}
 
 	/**
 	 * @param majorVersion the majorVersion to set
 	 */
-	public void setMajorVersion(int majorVersion) {
+	public void setMajorVersion(long majorVersion) {
 		this.majorVersion = majorVersion;
 	}
 

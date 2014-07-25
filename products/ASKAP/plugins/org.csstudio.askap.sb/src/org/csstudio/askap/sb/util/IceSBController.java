@@ -21,7 +21,7 @@
 package org.csstudio.askap.sb.util;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,7 @@ import askap.interfaces.schedblock.NoSuchObsProgramException;
 import askap.interfaces.schedblock.ObsProgram;
 import askap.interfaces.schedblock.ObsState;
 import askap.interfaces.schedblock.SBTemplateStatus;
+import askap.interfaces.schedblock.SchedulingBlockInfo;
 import askap.interfaces.schedblock.Version;
 import askap.interfaces.schedblock.VersionType;
 
@@ -124,58 +125,78 @@ public class IceSBController {
 	/* (non-Javadoc)
 	 * @see askap.ui.operatordisplay.controller.SBController#getSBForTemplate(long)
 	 */
-	public List<SchedulingBlock> getSBForTemplate(String templateName, int majorVersion) throws Exception {
+	public List<SchedulingBlock> getSBForTemplate(String templateName, long majorVersion) throws Exception {
 		if (sbProxy==null)
 			sbProxy = IceManager.getSBServiceProxy(Preferences.getSBIceName());
 		
-		List<SchedulingBlock> sbList = new ArrayList<SchedulingBlock>();
-		long idList[] = sbProxy.getByTemplate(templateName, majorVersion);
-		
-		if (idList!=null && idList.length>0) {
-			for (long id : idList) {
-				SchedulingBlock sb = getSchedulingBlock(id);
-				sbList.add(sb);
-			}
-		}
-		
+		long idList[] = sbProxy.getByTemplate(templateName, (int) majorVersion);
+		List<SchedulingBlock> sbList = getSchedulingBlocks(idList);
+
 		return sbList;
 	}
 
+	public List<SchedulingBlock> getSchedulingBlocks(long ids[]) throws Exception {
+		return getSchedulingBlocks(ids, -1);
+	}
+	
+	
 	/* (non-Javadoc)
-	 * @see askap.ui.operatordisplay.controller.SBController#getSchedulingBlock(long)
+	 * @see askap.ui.operatordisplay.controller.SBController#getSchedulingBlock(long[], long)
+	 * if maxNumber >=0 return at most maxNumber of SB
+	 * if maxNumber == -1, return all
 	 */
-	public SchedulingBlock getSchedulingBlock(long id) throws Exception {
+		public List<SchedulingBlock> getSchedulingBlocks(long ids[], long maxNumber) throws Exception {
 		if (sbProxy==null)
 			sbProxy = IceManager.getSBServiceProxy(Preferences.getSBIceName());
 		
-		SchedulingBlock sb = new SchedulingBlock();
-		sb.setAliasName(sbProxy.getAlias(id));
-		sb.setId(id);
 		
-		Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");		
-		String startTime = obsVarMap.get(Preferences.SB_OBS_VAR_START_TIME);
-		if (startTime != null)
-			sb.setLastExecutedDate(startTime.substring(0, startTime.indexOf(".")));
+		List<SchedulingBlock> sbList = new ArrayList<SchedulingBlock>();		
+		List<SchedulingBlockInfo> sbInfos = sbProxy.getMany(ids);
+		Collections.reverse(sbInfos);
 		
-		String duration = obsVarMap.get(Preferences.SB_OBS_VAR_DURATION);
-		if (duration != null)
-			sb.setLastExecutionDuration((long) Double.parseDouble(duration)*1000);
+		long size = sbInfos.size();
+		if (maxNumber>0 && maxNumber<size)
+			size = maxNumber;
 		
-		sb.setExecutedVersion(obsVarMap.get(Preferences.SB_OBS_VAR_VERSION));
+		for (SchedulingBlockInfo sbInfo : sbInfos) {
+			
+			long id = sbInfo.id;
+			
+			SchedulingBlock sb = new SchedulingBlock();
+			sb.setAliasName(sbInfo.alias);
+			sb.setId(id);
+			sb.setState(getObsState(sbInfo.state));
+			sb.setTemplateName(sbInfo.templateName);
+			sb.setMajorVersion(sbInfo.templateVersion);
+
+			
+			sb.setParameterMap(sbProxy.getObsParameters(id));			
+			
+			Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");		
+			String startTime = obsVarMap.get(Preferences.SB_OBS_VAR_START_TIME);
+			if (startTime != null)
+				sb.setLastExecutedDate(startTime.substring(0, startTime.indexOf(".")));
+			
+			String duration = obsVarMap.get(Preferences.SB_OBS_VAR_DURATION);
+			if (duration != null)
+				sb.setLastExecutionDuration((long) Double.parseDouble(duration)*1000);
+			
+			sb.setExecutedVersion(obsVarMap.get(Preferences.SB_OBS_VAR_VERSION));
+			
+			
+			String errorTime = obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_TIME);
+			if (errorTime != null)
+				sb.setErrorTimeStamp(errorTime.substring(0, errorTime.indexOf(".")));
+			
+			sb.setErrorMessage(obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_MESSAGE));
+						
+			sbList.add(sb);
+			
+			if (sbList.size()==maxNumber)
+				break;
+		}
 		
-		
-		String errorTime = obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_TIME);
-		if (errorTime != null)
-			sb.setErrorTimeStamp(errorTime.substring(0, errorTime.indexOf(".")));
-		
-		sb.setErrorMessage(obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_MESSAGE));
-		
-		sb.setParameterMap(sbProxy.getObsParameters(id));
-		sb.setState(getObsState(sbProxy.getState(id)));
-		sb.setTemplateName(sbProxy.getSBTemplate(id));
-		sb.setMajorVersion(sbProxy.getVersion(id));
-		
-		return sb;
+		return sbList;
 	}
 	
 
@@ -255,10 +276,7 @@ public class IceSBController {
 		return newid;
 	}
 
-	/* (non-Javadoc)
-	 * @see askap.ui.operatordisplay.controller.SBController#getSBByState(askap.ui.operatordisplay.util.SchedulingBlock.SBState)
-	 */
-	public List<SchedulingBlock> getSBByState(SBState states[]) throws Exception {
+	public List<SchedulingBlock> getSBByState(SBState states[], long maxNumber) throws Exception {
 		if (sbProxy==null)
 			sbProxy = IceManager.getSBServiceProxy(Preferences.getSBIceName());
 		
@@ -269,13 +287,16 @@ public class IceSBController {
 				obsStates[i] = STATE_MAP.get(states[i]);
 			
 			long idList[] = sbProxy.getByState(obsStates);
-			for (long id : idList) {
-				sbList.add(getSchedulingBlock(id));
-			}
+			sbList = getSchedulingBlocks(idList, maxNumber);
 		}
 		
-		
-		return sbList;
+		return sbList;		
+	}
+	/* (non-Javadoc)
+	 * @see askap.ui.operatordisplay.controller.SBController#getSBByState(askap.ui.operatordisplay.util.SchedulingBlock.SBState)
+	 */
+	public List<SchedulingBlock> getSBByState(SBState states[]) throws Exception {
+		return getSBByState(states, -1);
 	}
 
 	/* (non-Javadoc)

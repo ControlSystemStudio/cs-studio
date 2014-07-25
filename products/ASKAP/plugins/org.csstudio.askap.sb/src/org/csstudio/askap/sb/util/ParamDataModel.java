@@ -226,6 +226,8 @@ public class ParamDataModel {
 			type = "";
 		
 		String unit = (String) paramSet.remove(param + "unit");
+		unit = (unit==null?"":unit);
+		
 		String description = (String) paramSet.remove(param + "description");
 		String name = (String) paramSet.remove(param + "label");
 		String defaultStr = (String) paramSet.remove(param + "default");
@@ -344,9 +346,14 @@ public class ParamDataModel {
 	 * @param type
 	 * @return
 	 */
-	public static Object getTypedValue(String value, String type) {
-		if (type!=null && type.endsWith("Vector"))
-			return ParameterSet.getVector(value, TYPE_DEFINITION.get(type));
+	public static Object getTypedValue(String value, String type) {		
+		if (type!=null && type.endsWith("Vector")) {
+			String temp = value;
+			if (value==null || value.trim().length()==0)
+				temp = "[]";
+			
+			return ParameterSet.getVector(temp, TYPE_DEFINITION.get(type));
+		}
 					
 		return ParameterSet.getTypedValue(value, TYPE_DEFINITION.get(type));
 	}

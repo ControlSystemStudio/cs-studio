@@ -23,10 +23,10 @@ public class SBTemplateContentProvider extends LabelProvider implements ITreeCon
 	SBTemplateDataModel dataModel;
 	
 	public class MajorVersion {
-		public int majorVersion;
+		public long majorVersion;
 		public String templateName;
 		
-		public MajorVersion(int majorVersion, String templateName) {
+		public MajorVersion(long majorVersion, String templateName) {
 			this.majorVersion = majorVersion;
 			this.templateName = templateName;
 		}

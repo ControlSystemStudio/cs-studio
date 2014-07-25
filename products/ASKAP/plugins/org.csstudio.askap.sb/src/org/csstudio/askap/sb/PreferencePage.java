@@ -46,6 +46,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 		addField(new StringFieldEditor(Preferences.EXECUTIVE_ICE_NAME, "Executive Service Ice Name:", parent));
 		
 		addField(new StringFieldEditor(Preferences.SB_EXECUTION_STATE_POLLING_PERIOD, "Executive Polling Period(ms):", parent));
+		addField(new StringFieldEditor(Preferences.SB_EXECUTION_MAX_NUMBER_SB, "Max Number of executed SB to display:", parent));
 		
 		addField(new StringFieldEditor(Preferences.SB_MAINTENANCE_POLLING_PERIOD, "SB Polling Period(ms):", parent));
 		addField(new StringFieldEditor(Preferences.SOURCE_SEARCH_MAX_MESSAGES, "Max Number of Messages per Source Search:", parent));

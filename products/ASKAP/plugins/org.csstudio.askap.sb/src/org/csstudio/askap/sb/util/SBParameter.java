@@ -98,7 +98,11 @@ public class SBParameter {
 		Object o = ParamDataModel.getTypedValue(strValue, type);
 		if (isValid(o)) {
 			value = o;
-			this.strValue = strValue;
+			
+			if (strValue==null)
+				this.strValue = "";
+			else
+				this.strValue = strValue;
 		}
 	}
 	

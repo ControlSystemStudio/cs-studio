@@ -65,7 +65,7 @@ public class IceEphemerisController {
 		sourceQuery.name = (name==null ? "" : name);
 		sourceQuery.catalogue = (category==null ? "" : category);
 		
-		Source sources[] = sourceSearchProxy.query(sourceQuery,Preferences.getSourceSearchMaxMessages(), 0);
+		Source sources[] = sourceSearchProxy.query(sourceQuery, (int)Preferences.getSourceSearchMaxMessages(), 0);
 		List<CalibrationSource> sourceList = new ArrayList<CalibrationSource>();
 		
 		if (sources!=null) {
