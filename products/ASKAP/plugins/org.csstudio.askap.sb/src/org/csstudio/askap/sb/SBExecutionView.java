@@ -341,7 +341,7 @@ public class SBExecutionView extends EditorPart {
 				TableItem item = (TableItem) event.item;
 				long sbId = (Long) item.getData();
 				
-				openSBView(sbId, item.getText(2));
+				openSBView(sbId);
 			}
 		});
 		
@@ -353,7 +353,7 @@ public class SBExecutionView extends EditorPart {
 				TableItem item = (TableItem) event.item;
 				long sbId = (Long) item.getData();
 				
-				openSBView(sbId, item.getText(1));
+				openSBView(sbId);
 			}
 		});
 		
@@ -495,10 +495,9 @@ public class SBExecutionView extends EditorPart {
 	/**
 	 * @param sbId
 	 */
-	protected void openSBView(long sbId, String templateName) {
+	protected void openSBView(long sbId) {
 		try {
-			SBTemplateView sbView = (SBTemplateView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SBTemplateView.ID);				
-			sbView.refreshAndSelect(templateName, sbId);
+			SBMaintenanceView.openSBMaintenanceView().display(sbId);			
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not open SB view for " + sbId, e);
 		}

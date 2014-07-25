@@ -428,6 +428,21 @@ public class SBMaintenanceView extends EditorPart {
 		
 	}
 
+	public void display(long id) {
+		
+		try {
+			SchedulingBlock sb = sbTemplateDataModel.getSB(id);
+			loadTemplate(sbTemplateDataModel.getLatestVersion(sb.getTemplateName(), sb.getMajorVersion()), false);
+			loadSB(sb, false); 
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Could not load SchedulingBlock " + id, e);
+            ExceptionDetailsErrorDialog.openError(getShell(),
+                    "ERROR",
+                    "Could not load SchedulingBlock " + id,
+                    e);
+		}
+	}
+
 
 	public void display(SchedulingBlock sb, SBTemplateDataModel dataModel) {
 		sbTemplateDataModel = dataModel;
@@ -720,7 +735,15 @@ public class SBMaintenanceView extends EditorPart {
 
 	
 	public SBMaintenanceView() {
-		// TODO Auto-generated constructor stub
+		try {
+			sbTemplateDataModel = new SBTemplateDataModel();
+		} catch (Exception e) {
+            ExceptionDetailsErrorDialog.openError(getShell(),
+                    "ERROR",
+                    "Could not create data model",
+                    e);
+			logger.log(Level.WARNING, "Could retrieve templates", e);
+		}
 	}
 
 	@Override
