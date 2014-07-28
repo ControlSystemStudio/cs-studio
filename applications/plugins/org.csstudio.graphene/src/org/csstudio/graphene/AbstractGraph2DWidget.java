@@ -305,7 +305,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 	protected abstract T createGraph();
 
 	private void setRange(StartEndRangeWidget control, GraphDataRange plotDataRange) {
-        if (isResizableAxis()) {
+        if (isResizableAxis() && plotDataRange.getPlotRange() != null && control != null) {
             control.setRange(plotDataRange.getPlotRange().getMinimum()
                     .doubleValue(), plotDataRange.getPlotRange().getMaximum()
                     .doubleValue());
