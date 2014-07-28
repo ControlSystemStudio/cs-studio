@@ -4,29 +4,28 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVDisplayType;
 import org.epics.vtype.VType;
 
-
 /**
- * Used to return data from the Fast Archiver
- * Backed by an Array, uses VType ArchiveVString, as channelArchiver
+ * Used to return data from the Fast Archiver. Backed by an Array, uses VType
+ * ArchiveVNumber and ArchiveVStatistics, subclasses of ArchiveVDisplayType
+ * 
  * @author Friederike Johlinger
  *
  */
-public class FAValueIterator implements ValueIterator{
+public class FAValueIterator implements ValueIterator {
 	private ArchiveVDisplayType[] values;
 	private int index;
 
-	
-	public FAValueIterator(ArchiveVDisplayType[] values){
+	public FAValueIterator(ArchiveVDisplayType[] values) {
 		this.values = values;
 		index = 0;
 	}
 
 	/**
-	 * {@inheritDoc}}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean hasNext() {
-		return index + 1 < values.length;
+		return (values != null && index + 1 < values.length);
 	}
 
 	/**
@@ -34,7 +33,7 @@ public class FAValueIterator implements ValueIterator{
 	 */
 	@Override
 	public VType next() throws Exception {
-		
+
 		ArchiveVDisplayType nextItem = values[index];
 		index++;
 		return nextItem;
@@ -45,8 +44,7 @@ public class FAValueIterator implements ValueIterator{
 	 */
 	@Override
 	public void close() {
-		values = null;		
+		values = null;
 	}
-
 
 }

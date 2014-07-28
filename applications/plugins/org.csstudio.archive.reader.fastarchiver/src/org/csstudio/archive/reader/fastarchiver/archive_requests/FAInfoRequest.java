@@ -1,9 +1,6 @@
-package org.csstudio.archive.reader.fastarchiver.fast_archive_requests;
+package org.csstudio.archive.reader.fastarchiver.archive_requests;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,47 +15,18 @@ import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableExcep
 
 public class FAInfoRequest extends FARequest {
 
-	public FAInfoRequest(String url) {
+	/**
+	 * 
+	 * @param url 
+	 * 			  needs to start with "fads://" followed by the host name and
+	 *            optionally a colon followed by a port number (default 8888)
+	 * @throws DataNotAvailableException
+	 *             when the url doesn't have the right format
+	 */
+	public FAInfoRequest(String url) throws DataNotAvailableException {
 		super(url);
 	}
 
-	/* METHODS USING SOCKETS DIRECTLY */
-	/**
-	 * Creates a list of all BPMs in the archiver, as returned by the archiver
-	 * 
-	 * @return String[] of all names
-	 * @throws IOException
-	 *             when no connection can be made with the host (and port)
-	 *             specified
-	 * @throws DataNotAvailableException
-	 *             when data can not be retrieved from archive
-	 */
-	private String[] getAllBPMs() throws IOException {
-		Socket socket = new Socket(host, port);
-		OutputStream outToServer = socket.getOutputStream();
-		InputStream inFromServer = socket.getInputStream();
-
-		// get String Array of fa-ids
-		writeToArchive("CL\n", outToServer);
-
-		byte[] buffer;
-		StringBuffer allIds = new StringBuffer();
-		int readNumBytes = 0;
-
-		while (true) {
-			buffer = new byte[4096];
-			readNumBytes = inFromServer.read(buffer);
-			if (readNumBytes == -1)
-				break;
-			allIds.append(new String(buffer).substring(0, readNumBytes));
-
-		}
-		socket.close();
-
-		return allIds.toString().split("\n");
-	}
-
-	/* OTHER METHODS */
 	/**
 	 * Creates a Hasmap of all BPMs in the archiver, with names as keys and BPM
 	 * number and coordinates in an int array as values.
@@ -69,7 +37,7 @@ public class FAInfoRequest extends FARequest {
 	 *             when no connection can be made with the host (and port)
 	 *             specified
 	 */
-	public HashMap<String, int[]> createMapping() throws IOException {
+	public HashMap<String, int[]> fetchMapping() throws IOException {
 		String[] allBPMs = getAllBPMs();
 		HashMap<String, int[]> bpmMapping = new HashMap<String, int[]>();
 
@@ -99,17 +67,39 @@ public class FAInfoRequest extends FARequest {
 						coordinate1 = coordinate1 + "1";
 						coordinate2 = coordinate2 + "2";
 					}
-					bpmMapping.put((name + ":" + coordinate1), new int[]{bpmId, 0});
-					bpmMapping.put((name + ":" + coordinate2), new int[]{bpmId, 1});
+					bpmMapping.put(name + ":" + coordinate1, new int[]{bpmId, 0});
+					bpmMapping.put(name + ":" + coordinate2, new int[]{bpmId, 1});
 				}
-
-			} else {
-				System.out.println("BPM did not have valid name");
 			}
-
 		}
 
 		return bpmMapping;
 	}
+	
+	/**
+	 * Creates a list of all BPMs in the archiver, as returned by the archiver
+	 * 
+	 * @return String[] of all names
+	 * @throws IOException
+	 *             when no connection can be made with the host (and port)
+	 *             specified
+	 */
+	private String[] getAllBPMs() throws IOException {
+		byte[] buffer = fetchData("CL\n");
+		return new String(buffer).split("\n");
+	}
 
+	/**
+	 * Sends a request to the server to get the name of the archive
+	 * @return name as a String
+	 * @throws IOException
+	 *             when no connection can be made with the host (and port)
+	 *             specified
+	 */
+	public String getName() throws IOException {
+		byte[] buffer = fetchData("CN\n");
+		
+		String[] allInfo = new String(buffer).split("\n");
+		return allInfo[0];
+	}
 }

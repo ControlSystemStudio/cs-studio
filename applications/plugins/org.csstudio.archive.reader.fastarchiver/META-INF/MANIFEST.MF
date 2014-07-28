@@ -11,5 +11,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: org.csstudio.archive.reader
 Export-Package: org.csstudio.archive.reader.fastarchiver,
- org.csstudio.archive.reader.fastarchiver.exceptions,
- org.csstudio.archive.reader.fastarchiver.fast_archive_requests
+ org.csstudio.archive.reader.fastarchiver.archive_requests,
+ org.csstudio.archive.reader.fastarchiver.exceptions

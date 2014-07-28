@@ -1,4 +1,4 @@
-package org.csstudio.archive.reader.fastarchiver.fast_archive_requests;
+package org.csstudio.archive.reader.fastarchiver.archive_requests;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.reader.fastarchiver.FAValueIterator;
 import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
 import org.csstudio.archive.vtype.ArchiveVDisplayType;
 import org.csstudio.archive.vtype.ArchiveVNumber;
@@ -26,7 +24,7 @@ import org.epics.vtype.AlarmSeverity;
  * @author Friederike Johlinger
  */
 
-public class FAArchivedDataRequest extends FARequest {
+public class FAArchivedDataRequest2 extends FARequest {
 
 	// public enum ValueType {MEAN, MIN, MAX, STD}
 	// ValueType defaultValueType;
@@ -34,6 +32,10 @@ public class FAArchivedDataRequest extends FARequest {
 	int sampleFrequency;
 	int firstDecimation;
 	int secondDecimation;
+	
+	protected enum Decimation {
+		UNDEC, DEC, DOUBLE_DEC
+	}; 
 
 	/**
 	 * 
@@ -47,9 +49,10 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
 	 *             specified
+	 * @throws DataNotAvailableException 
 	 */
-	public FAArchivedDataRequest(String url, HashMap<String, int[]> bpmMapping)
-			throws IOException {
+	public FAArchivedDataRequest2(String url, HashMap<String, int[]> bpmMapping)
+			throws IOException, DataNotAvailableException {
 		super(url);
 		this.bpmMapping = bpmMapping;
 		// defaultValueType = ValueType.MEAN;
@@ -71,7 +74,7 @@ public class FAArchivedDataRequest extends FARequest {
 	 *             specified
 	 * @throws DataNotAvailableException when data can not be retrieved from Archive
 	 */
-	public ValueIterator getRawValues(String name, Timestamp start,
+	public ArchiveVDisplayType[] getRawValues(String name, Timestamp start,
 			Timestamp end) throws DataNotAvailableException, IOException {
 		// create request string
 		int bpm = bpmMapping.get(name)[0];
@@ -99,7 +102,7 @@ public class FAArchivedDataRequest extends FARequest {
 	 *             specified
 	 * @throws DataNotAvailableException when data can not be retrieved from archive
 	 */
-	public ValueIterator getOptimisedValues(String name, Timestamp start,
+	public ArchiveVDisplayType[] getOptimisedValues(String name, Timestamp start,
 			Timestamp end, int count) throws IOException, DataNotAvailableException {
 
 		// create request string
@@ -129,8 +132,13 @@ public class FAArchivedDataRequest extends FARequest {
 		InputStream inFromServer = socket.getInputStream();
 
 		// write request to archiver for sample frequency
-		writeToArchive("CFdD\n", outToServer);
-
+		try {
+			outToServer.write("CFdD\n".getBytes(CHAR_ENCODING));
+			outToServer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		// read message
 		byte[] bA = new byte[200];
 		int read = inFromServer.read(bA);
@@ -161,7 +169,7 @@ public class FAArchivedDataRequest extends FARequest {
 	 *             specified
 	 * @throws DataNotAvailableException when data can not be retrieved from Archive
 	 */
-	private ValueIterator getValues(String request, Timestamp start,
+	private ArchiveVDisplayType[] getValues(String request, Timestamp start,
 			Timestamp end, int coordinate, Decimation decimation) throws DataNotAvailableException, IOException {
 		// create socket
 		Socket socket = new Socket(host, port);
@@ -170,7 +178,12 @@ public class FAArchivedDataRequest extends FARequest {
 
 		//System.out.println(request);
 		// write request to archiver
-		writeToArchive(request, outToServer);
+		try {
+			outToServer.write(request.getBytes(CHAR_ENCODING));
+			outToServer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		/* Check if first byte reply is zero -> data is sent */
 		byte[] firstChar;
@@ -225,7 +238,7 @@ public class FAArchivedDataRequest extends FARequest {
 			
 		}
 
-		return new FAValueIterator(values);
+		return values;
 	}
 
 	// METHODS USING SOCKET STREAMS
@@ -480,6 +493,7 @@ public class FAArchivedDataRequest extends FARequest {
 
 		System.out.printf("DecodeDataDec: \nsampleCount: %d, blockSize: %d, offset: %d, bufferLength: %d\n",
 		sampleCount, blockSize, offset, bb.remaining());
+		
 		double mean, min, max, std;
 		double timestamp; // in microseconds
 		double duration;
