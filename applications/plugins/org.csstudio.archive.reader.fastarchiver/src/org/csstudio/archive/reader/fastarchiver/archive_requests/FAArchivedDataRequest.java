@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.reader.fastarchiver.FAValueIterator;
-import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
+import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
 import org.csstudio.archive.vtype.ArchiveVDisplayType;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
@@ -44,11 +44,11 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
 	 *             specified
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 *             when the url doesn't have the right format
 	 */
 	public FAArchivedDataRequest(String url, HashMap<String, int[]> bpmMapping)
-			throws IOException, DataNotAvailableException {
+			throws IOException, FADataNotAvailableException {
 		super(url);
 		this.bpmMapping = bpmMapping;
 		initialiseServerSettings();
@@ -69,11 +69,11 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
 	 *             specified
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 *             when data can not be retrieved from Archive
 	 */
 	public ValueIterator getRawValues(String name, Timestamp start,
-			Timestamp end) throws DataNotAvailableException, IOException {
+			Timestamp end) throws FADataNotAvailableException, IOException {
 		// create request string
 		int bpm = bpmMapping.get(name)[0];
 		int coordinate = bpmMapping.get(name)[1];
@@ -101,12 +101,12 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
 	 *             specified
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 *             when data can not be retrieved from archive
 	 */
 	public ValueIterator getOptimisedValues(String name, Timestamp start,
 			Timestamp end, int count) throws IOException,
-			DataNotAvailableException {
+			FADataNotAvailableException {
 
 		// create request string
 		int bpm = bpmMapping.get(name)[0];
@@ -126,11 +126,11 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
 	 *             specified
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 *             when data from archiver has not expected format
 	 */
 	private void initialiseServerSettings() throws IOException,
-			DataNotAvailableException {
+			FADataNotAvailableException {
 		String message = new String(fetchData("CFdD\n"));
 
 		Pattern pattern = Pattern
@@ -142,7 +142,7 @@ public class FAArchivedDataRequest extends FARequest {
 			secondDecimation = firstDecimation
 					* Integer.parseInt(matcher.group(4));
 		} else
-			throw new DataNotAvailableException("Pattern does not match String");
+			throw new FADataNotAvailableException("Pattern does not match String");
 	}
 
 	/**
@@ -161,12 +161,12 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
 	 *             specified
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 *             when data can not be retrieved from Archive
 	 */
 	private ValueIterator getValues(String request, Timestamp start,
 			Timestamp end, int coordinate, Decimation decimation)
-			throws DataNotAvailableException, IOException {
+			throws FADataNotAvailableException, IOException {
 
 		ByteBuffer bb = ByteBuffer.wrap(fetchData(request));
 		bb.position(0);
@@ -180,7 +180,7 @@ public class FAArchivedDataRequest extends FARequest {
 		byte firstChar = bb.get();
 		if (firstChar != '\0') {
 			String message = new String(bb.array());
-			throw new DataNotAvailableException(message);
+			throw new FADataNotAvailableException(message);
 		}
 
 		// get initial data out
@@ -194,7 +194,7 @@ public class FAArchivedDataRequest extends FARequest {
 			int numBytesToRead = calcDataLengthUndec((int) sampleCount,
 					blockSize, offset);
 			if (bb.remaining() != numBytesToRead)
-				throw new DataNotAvailableException(
+				throw new FADataNotAvailableException(
 						"Data stream does not have expected length");
 			values = decodeDataUndec(bb, (int) sampleCount, blockSize, offset,
 					coordinate);
@@ -203,7 +203,7 @@ public class FAArchivedDataRequest extends FARequest {
 					blockSize, offset);
 
 			if (bb.remaining() != numBytesToRead)
-				throw new DataNotAvailableException(
+				throw new FADataNotAvailableException(
 						"Data stream does not have expected length");
 
 			values = decodeDataDec(bb, (int) sampleCount, blockSize, offset,

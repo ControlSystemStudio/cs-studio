@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
+import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
 
 /**
  * Class with common methods for communicating with the fast archiver
@@ -26,7 +26,7 @@ public abstract class FARequest {
 	protected String host;
 	protected int port;
 
-	public FARequest(String url) throws DataNotAvailableException {
+	public FARequest(String url) throws FADataNotAvailableException {
 		Pattern pattern = Pattern.compile("fads://([A-Za-z0-9-]+)(:[0-9]+)?");
 		Matcher matcher = pattern.matcher(url);
 		if (matcher.matches()) {
@@ -36,7 +36,7 @@ public abstract class FARequest {
 			else
 				this.port = Integer.parseInt(matcher.group(2).substring(1));
 		} else {
-			throw new DataNotAvailableException("Invalid url");
+			throw new FADataNotAvailableException("Invalid url");
 		}
 	}
 

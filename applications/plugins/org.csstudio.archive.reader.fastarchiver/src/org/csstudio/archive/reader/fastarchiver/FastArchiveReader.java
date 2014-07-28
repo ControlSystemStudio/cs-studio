@@ -14,7 +14,7 @@ import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.reader.fastarchiver.archive_requests.FAArchivedDataRequest;
 import org.csstudio.archive.reader.fastarchiver.archive_requests.FAInfoRequest;
-import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
+import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
 import org.epics.util.time.Timestamp;
 
 /**
@@ -35,10 +35,10 @@ public class FastArchiveReader implements ArchiveReader {
 	 * @param url
 	 *            String should start with "fads://"
 	 * @throws IOException
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 */
 	public FastArchiveReader(String url) throws IOException,
-			DataNotAvailableException {
+			FADataNotAvailableException {
 		this.url = url;
 		description = createDescription();
 		this.mapping = new FAInfoRequest(url).fetchMapping();
@@ -52,7 +52,7 @@ public class FastArchiveReader implements ArchiveReader {
 	public String getServerName() {
 		try {
 			return new FAInfoRequest(url).getName();
-		} catch (IOException | DataNotAvailableException e) {
+		} catch (IOException | FADataNotAvailableException e) {
 			e.printStackTrace();
 			return "Could not connect to server";
 		}
@@ -124,11 +124,11 @@ public class FastArchiveReader implements ArchiveReader {
 	 * {@inheritDoc}
 	 * 
 	 * @throws IOException
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 */
 	@Override
 	public ValueIterator getRawValues(int key, String name, Timestamp start,
-			Timestamp end) throws IOException, DataNotAvailableException {
+			Timestamp end) throws IOException, FADataNotAvailableException {
 		FAArchivedDataRequest faDataRequest = new FAArchivedDataRequest(url,
 				mapping);
 		return faDataRequest.getRawValues(name, start, end);
@@ -138,12 +138,12 @@ public class FastArchiveReader implements ArchiveReader {
 	 * {@inheritDoc}
 	 * 
 	 * @throws IOException
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 */
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name,
 			Timestamp start, Timestamp end, int count) throws IOException,
-			DataNotAvailableException {
+			FADataNotAvailableException {
 		FAArchivedDataRequest faDataRequest = new FAArchivedDataRequest(url,
 				mapping);
 		return faDataRequest.getOptimisedValues(name, start, end, count);

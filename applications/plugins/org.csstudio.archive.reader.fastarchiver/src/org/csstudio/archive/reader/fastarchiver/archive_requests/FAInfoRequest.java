@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.archive.reader.fastarchiver.exceptions.DataNotAvailableException;
+import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
 
 /**
  * Class to communicate with Fast Archiver about non-data requests.
@@ -20,10 +20,10 @@ public class FAInfoRequest extends FARequest {
 	 * @param url 
 	 * 			  needs to start with "fads://" followed by the host name and
 	 *            optionally a colon followed by a port number (default 8888)
-	 * @throws DataNotAvailableException
+	 * @throws FADataNotAvailableException
 	 *             when the url doesn't have the right format
 	 */
-	public FAInfoRequest(String url) throws DataNotAvailableException {
+	public FAInfoRequest(String url) throws FADataNotAvailableException {
 		super(url);
 	}
 
