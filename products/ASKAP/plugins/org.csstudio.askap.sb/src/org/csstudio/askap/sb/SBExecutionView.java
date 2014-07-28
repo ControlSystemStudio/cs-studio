@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -50,6 +51,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
+import org.mihalis.opal.multiChoice.MultiChoice;
+import org.mihalis.opal.multiChoice.MultiChoiceSelectionListener;
 
 import askap.interfaces.monitoring.MonitorPoint;
 
@@ -68,6 +71,9 @@ public class SBExecutionView extends EditorPart {
 	Button abortButton = null;
 	Button startButton = null;
 	
+	MultiChoice<String> statesCombo = null;
+
+	
 	Label status = null;	
 	Label sbidLabel = null;
 	Button stopCaptureButton = null;
@@ -75,13 +81,20 @@ public class SBExecutionView extends EditorPart {
 	private static Image RED_LED_IMAGE = null;
 	private static Image GREEN_LED_IMAGE = null;
 	private static Image GREY_LED_IMAGE = null;
+	private static Image WAIT_IMAGE = null;
 		
+	Label waitLabel = null;
 	
 	private static final Map<SBState, Integer> STATE_COLOR_MAP = new HashMap<SBState, Integer>();
 	
 	private Composite parent = null;
 	
 	SBDataModel dataModel = new SBDataModel();
+	
+	private String STATES[] = {SBState.COMPLETED.name(), SBState.ERRORED.name(), SBState.PENDINGTRANSFER.name(),
+			SBState.POSTPROCESSING.name()};
+	
+	private String selectedStates[] = STATES;
 	
 	static {
 		STATE_COLOR_MAP.put(SBState.ERRORED, SWT.COLOR_RED);
@@ -90,9 +103,36 @@ public class SBExecutionView extends EditorPart {
 		RED_LED_IMAGE = Activator.getDefault().getImage("icons/red_round_button.png");        	
 		GREEN_LED_IMAGE = Activator.getDefault().getImage("icons/green_round_button.png");
 		GREY_LED_IMAGE = Activator.getDefault().getImage("icons/grey_round_button.png");
+
+		WAIT_IMAGE = Activator.getDefault().getImage("icons/time-machine-icon.png");
 	}
 	
 
+	public class SBListener implements DataChangeListener {
+		@Override
+		public void dataChanged(DataChangeEvent e) {
+			getParent().getDisplay().asyncExec(new Runnable() {					
+				public void run() {
+					executedTable.clearAll();
+					executedTable.setItemCount(dataModel.getExecutedSBCount());
+					scheduleTable.clearAll();
+					scheduleTable.setItemCount(dataModel.getScheduledSBCount());
+					
+					executedTable.redraw();
+					scheduleTable.redraw();
+					
+					if (waitLabel.isVisible())
+						waitLabel.setVisible(false);
+				}
+			});
+		}
+		
+		public String[] getStates() {
+			return selectedStates;
+		}
+		
+	}
+	
 	public SBExecutionView() {
 	}
 
@@ -137,10 +177,31 @@ public class SBExecutionView extends EditorPart {
 		
 		Label executedTitle = new Label(page, SWT.NONE);
 		executedTitle.setText("Executing and executed Scheduling Block (last " + Preferences.getSBExecutionMaxNumberSB()  + " scheduling blocks):");
-		GridData gridData = new GridData();
-		gridData.horizontalSpan = NUM_OF_COLUMNS;
-		executedTitle.setLayoutData(gridData);
+
+		statesCombo = new MultiChoice<String>(page, SWT.READ_ONLY);
 		
+		statesCombo.addAll(STATES);
+		
+		GridData gridData = new GridData();
+		gridData.horizontalSpan = NUM_OF_COLUMNS-2;
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		statesCombo.setLayoutData(gridData);
+		statesCombo.selectAll();
+				
+		statesCombo.setSelectionListener(new MultiChoiceSelectionListener<String>(statesCombo) {
+
+			@Override
+			public void handle(MultiChoice<String> parent, String receiver,
+					boolean selection, Shell popup) {
+				selectedStates = statesCombo.getSelection().toArray(new String[]{});
+				waitLabel.setVisible(true);
+			}
+		});
+		
+		waitLabel = new Label(page, SWT.NONE);
+		waitLabel.setImage(WAIT_IMAGE);
+				
 		executedTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		executedTable.setLinesVisible (true);
 		executedTable.setHeaderVisible (true);
@@ -360,7 +421,7 @@ public class SBExecutionView extends EditorPart {
 		page.pack();
 		
 		setupListener();
-		disableAllButtons();
+//		disableAllButtons();
 	}
 
 	private void setupListener() {
@@ -420,21 +481,7 @@ public class SBExecutionView extends EditorPart {
 	}
 	
 	protected void start() {
-		dataModel.startSBPollingThread(new DataChangeListener() {
-			public void dataChanged(final DataChangeEvent event) {
-				getParent().getDisplay().asyncExec(new Runnable() {					
-					public void run() {
-						executedTable.clearAll();
-						executedTable.setItemCount(dataModel.getExecutedSBCount());
-						scheduleTable.clearAll();
-						scheduleTable.setItemCount(dataModel.getScheduledSBCount());
-						
-						executedTable.redraw();
-						scheduleTable.redraw();
-					}
-				});
-			}
-		});
+		dataModel.startSBPollingThread(new SBListener());
 
 		dataModel.addPointListener(new String[]{Preferences.getExecutiveMonitorPointName()},				
 			new MonitorPointListener() {
@@ -451,7 +498,8 @@ public class SBExecutionView extends EditorPart {
 				public void disconnected(String pointName) {
 					getParent().getDisplay().asyncExec(new Runnable() {					
 						public void run() {
-							disableAllButtons();
+//							disableAllButtons();
+							status.setImage(GREY_LED_IMAGE);
 						}
 					});
 				}});
@@ -560,7 +608,7 @@ public class SBExecutionView extends EditorPart {
 	protected void stopExecutive() {
 		try {
 			dataModel.stop();
-			disableAllButtons();
+//			disableAllButtons();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not stop 'Executive Service'", e);
             ExceptionDetailsErrorDialog.openError(getParent().getShell(),
@@ -575,7 +623,7 @@ public class SBExecutionView extends EditorPart {
 		try {
 			dataModel.start();
 
-			disableAllButtons();
+//			disableAllButtons();
 
 	        MessageBox messageBox = new MessageBox(getParent().getShell(), SWT.ICON_INFORMATION | SWT.OK);
 	        messageBox.setMessage("Executive service started");
@@ -595,7 +643,7 @@ public class SBExecutionView extends EditorPart {
 	protected void abortExecutive() {
 		try {
 			dataModel.abort();
-			disableAllButtons();
+//			disableAllButtons();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not abort 'Executive Service'", e);
             ExceptionDetailsErrorDialog.openError(getParent().getShell(),

@@ -26,11 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.askap.sb.Preferences;
+import org.csstudio.askap.sb.SBExecutionView.SBListener;
 import org.csstudio.askap.sb.util.SchedulingBlock.SBState;
-import org.csstudio.askap.utility.icemanager.LogObject;
 import org.csstudio.askap.utility.icemanager.MonitorPointListener;
-
-import askap.interfaces.monitoring.MonitorPoint;
 
 /**
  * @author wu049
@@ -90,14 +88,16 @@ public class SBDataModel {
 		return scheduledList.get(index);
 	}
 	
-	public void startSBPollingThread(final DataChangeListener pollingThreadListener) {
+	public void startSBPollingThread(final SBListener pollingThreadListener) {
 		Thread sbPollingThread = new Thread(new Runnable() {		
 			public void run() {
 				synchronized (pollingThreadLock) {
 					while (keepRunning) {				
 						try {
+							String states[] = pollingThreadListener.getStates();
+							
 							boolean b1 = processScheduledList();
-							boolean b2 = processFinishedList();
+							boolean b2 = processFinishedList(states);
 							if (b1 || b2) {
 								DataChangeEvent event = new DataChangeEvent();
 								pollingThreadListener.dataChanged(event);
@@ -160,11 +160,14 @@ public class SBDataModel {
 		}
 	}
 	
-	protected boolean processFinishedList() throws Exception {
+	protected boolean processFinishedList(String stateStr[]) throws Exception {
+		SBState states[] = new SBState[stateStr.length];
+		for (int i=0; i<stateStr.length; i++)
+			states[i] = SBState.valueOf(stateStr[i]);
+		
 		// if scheduled list has changed, notify the listener
 		// also only display the given max number of sb
-		List<SchedulingBlock> finishedSB = getSBByState(new SBState[] {
-				SBState.COMPLETED, SBState.ERRORED}, Preferences.getSBExecutionMaxNumberSB());
+		List<SchedulingBlock> finishedSB = getSBByState(states, Preferences.getSBExecutionMaxNumberSB());
 		
 		List<SchedulingBlock> sbList = getSBByState(new SBState[] {SBState.EXECUTING});
 		SchedulingBlock executingSB = null;

@@ -29,8 +29,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.security.auth.login.Configuration;
-
 import org.csstudio.askap.sb.Preferences;
 
 import askap.util.ParameterSet;

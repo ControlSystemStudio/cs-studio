@@ -21,7 +21,6 @@
 package org.csstudio.askap.sb.util;
 
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Map;
 
 import org.csstudio.askap.sb.Preferences;
