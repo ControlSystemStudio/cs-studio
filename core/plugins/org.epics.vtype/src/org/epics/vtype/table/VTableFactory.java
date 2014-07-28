@@ -21,6 +21,7 @@ import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
@@ -495,6 +496,18 @@ public class VTableFactory {
         BufferInt indexes = new BufferInt();
         for (int i = 0; i < table.getRowCount(); i++) {
             if (valueFilter.filterRow(i)) {
+                indexes.addInt(i);
+            }
+        }
+        
+        return extractRows(table, indexes);
+    }
+    
+    public static VTable tableStringMatchFilter(VTable table, String columnName, String substring) {
+        StringMatchFilter filter = new StringMatchFilter(table, columnName, substring);
+        BufferInt indexes = new BufferInt();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (filter.filterRow(i)) {
                 indexes.addInt(i);
             }
         }
