@@ -114,7 +114,12 @@
 									<id>org.mockito:mockito-core:1.8.5</id>
 								</artifact>
 								<artifact>
-									<id>org.python:jython:2.5.3</id>
+									<id>org.python:jython-standalone:2.5.3</id>
+									<instructions>
+										<Bundle-Name>org.python.jython</Bundle-Name>
+										<Bundle-SymbolicName>org.python.jython</Bundle-SymbolicName>
+									</instructions>
+									
 								</artifact>
 								<artifact>
 									<id>org.slf4j:jul-to-slf4j:1.7.2</id>
