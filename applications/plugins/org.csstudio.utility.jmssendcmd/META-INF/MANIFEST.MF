@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Headless JMS Sender
 Bundle-SymbolicName: org.csstudio.utility.jmssendcmd;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: Command-line tool for sending JMS messages, also usable as EDM 'write' logger
