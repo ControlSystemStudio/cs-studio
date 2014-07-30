@@ -38,10 +38,17 @@ public class ScriptStoreFactory {
 			return;
 		//add org.python.jython/jython.jar/Lib to PYTHONPATH
 		final Bundle bundle = Platform.getBundle("org.python.jython");
+		String pythonPath = null;
 		if (bundle == null)
 		    throw new Exception("Cannot locate jython bundle");
 		URL fileURL = FileLocator.find(bundle, new Path("jython.jar"), null);
-		String pythonPath = FileLocator.resolve(fileURL).getPath() + "/Lib";
+		if (fileURL != null){
+			pythonPath = FileLocator.resolve(fileURL).getPath() + "/Lib";
+		} else {
+			pythonPath = FileLocator.resolve(new URL("platform:/plugin/org.python.jython/Lib/")).getPath();
+		}
+			
+		
 		String prefPath = PreferencesHelper.getPythonPath();
 		if( prefPath!=null)
 			pythonPath = pythonPath + System.getProperty("path.separator") +
