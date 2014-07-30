@@ -22,7 +22,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -30,7 +29,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          fragment="true"
          unpack="false"/>
 
@@ -39,7 +37,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -47,7 +44,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -55,7 +51,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -63,7 +58,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -71,7 +65,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -79,7 +72,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -87,7 +79,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -95,7 +86,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -103,7 +93,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -111,7 +100,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -119,7 +107,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -127,7 +114,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -135,7 +121,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -143,7 +128,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -151,7 +135,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -159,7 +142,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -167,7 +149,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -175,7 +156,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -183,7 +163,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -191,7 +170,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -199,7 +177,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -207,7 +184,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
@@ -215,14 +191,12 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 match="greaterOrEqual"
          unpack="false"/>
 
    <plugin
          id="org.epics.vtype"
          download-size="0"
          install-size="0"
-		 match="greaterOrEqual"
          version="0.0.0"
          unpack="false"/>
 

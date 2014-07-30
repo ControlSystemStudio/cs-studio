@@ -1,50 +1,36 @@
 # Modified Date: 05/04/2013
 # Alarm colors
-Major = 250,12,14
+Major = 255,0,0
 Minor = 255,255,0
-Invalid = 255, 255, 255
-Disconnected = 255, 255, 255
-
-IO Invalid Level Alarm = 255, 255, 255
-IO High Level Alarm = 250,12,14
-IO Medium Level Alarm = 255,255,0
-IO Normal Level Alarm = 0, 176, 80
-
-IO Light Grey = 200, 200, 200
-IO Black = 0, 0, 0
-IO White = 255, 255, 255
-IO Grey = 140, 140, 140
-IO Red = 250,12,14
-IO Yellow = 255,255,0
-IO Green = 0, 176, 80
-IO Blue = 20, 50, 202
+Invalid = 200,100,200
+Disconnected = 200,100,200
 
 # Display widget colors
-IO Background = 200,200,200
+IO Background = 255,255,205
 IO Foreground = 0, 0, 0
 IO Grid = 215,215,215
 
 # Shape colors
-IO Border = 0, 0, 0
-IO Shape Fill= 255, 255, 255
-IO Line = 0, 0, 0
-IO Link = 0, 0, 0
+IO Border = 215,215,215
+IO Shape Fill= 188, 188, 188
+IO Line = 0, 32, 92
+IO Link = 0, 32, 92
 
 # Label & Text colors
-IO Text Fg = 0, 0, 0
+IO Text Fg = 0, 32, 92
 
 # Boolean Symbol colors
 IO PV ON = 0,0,225
 IO PV OFF = 77, 77, 77
 
 # PV colors
-IO InputPV Bg = 200, 200, 200 
-IO InputPV Fg = 0, 0, 0
-IO OutputPV Bg = 255, 255, 255
-IO OutputPV Fg = 0, 0, 0
+IO InputPV Bg = 255,255,255 
+IO InputPV Fg = 0, 32, 92
+IO OutputPV Bg = 121, 123, 126
+IO OutputPV Fg = 255,255,255
 
 # Scaled widget colors
-IO Stick = 0, 0, 0
+IO Stick = 0, 32, 92
 
 # XY Graph Trace colors
 IO Trace 1 = 79,129,189 
