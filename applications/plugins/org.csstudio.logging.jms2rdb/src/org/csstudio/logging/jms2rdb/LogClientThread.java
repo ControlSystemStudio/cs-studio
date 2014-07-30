@@ -238,7 +238,7 @@ public class LogClientThread extends Thread
     {
         Activator.getLogger().log(Level.WARNING, "JMS Exception", ex);
     }
-
+   
     /** @see JMS MessageListener */
     @Override
     public void onMessage(final Message message)
@@ -258,8 +258,7 @@ public class LogClientThread extends Thread
                 }
                 rdb_writer.write(map);
             }
-            else
-                Activator.getLogger().log(Level.WARNING, "Received unhandled message type {0}", message.getClass().getName());
+                Activator.getLogger().log(Level.WARNING, "Received unhandled message type {0}" + message, message.getClass().getName());
         }
         catch (Exception ex)
         {
@@ -267,7 +266,7 @@ public class LogClientThread extends Thread
             {
                 last_error = ex.getMessage();
             }
-            Activator.getLogger().log(Level.WARNING, "Message handling error", ex);
+            Activator.getLogger().log(Level.WARNING, "Message handling error for " + message, ex);
             // Leave run == true, toggle a restart
             run = true;
             synchronized (this)
