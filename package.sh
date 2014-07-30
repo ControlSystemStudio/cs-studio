@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Check parameters
 VERSION=$1

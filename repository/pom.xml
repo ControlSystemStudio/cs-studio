@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>product</artifactId>
-    <version>BUILD-VERSION</version>
+    <version>3.3.8-SNAPSHOT</version>
   </parent>
 
   <groupId>org.csstudio</groupId>
@@ -21,6 +21,24 @@
 
   <build>
     <plugins>
+    <plugin>
+        <groupId>lt.velykis.maven</groupId>
+        <artifactId>pde-target-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <executions>
+          <execution>
+            <id>pde-target</id>
+            <goals>
+              <goal>add-pom-dependencies</goal>
+            </goals>
+            <configuration>
+              <baseDefinition>${project.basedir}/cs-studio.target</baseDefinition>
+              <outputFile>${project.basedir}/cs-studio-pde.target</outputFile>
+              <excludeP2>false</excludeP2>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-director-plugin</artifactId>

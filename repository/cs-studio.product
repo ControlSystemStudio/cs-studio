@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CS-Studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="4.0.0" useFeatures="true" includeLaunchers="true">
+<product name="Cs-studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="4.0.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.product/icons/cs-studio-about.png"/>
@@ -14,10 +14,12 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-pluginCustomization configuration/plugin_customization.ini</programArgs>
       <vmArgs>-Xmx1024m
 -Xms128m
--XX:MaxPermSize=256M</vmArgs>
+-XX:MaxPermSize=256M
+-Dosgi.configuration.cascaded=true
+-Dosgi.sharedConfiguration.area.readOnly=true
+-Dosgi.install.area.readOnly=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -52,24 +54,35 @@
    </plugins>
 
    <features>
+      <feature id="org.csstudio.eclipse.feature"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.csstudio.libs.feature"/>
+      <feature id="org.csstudio.product.feature"/>
       <feature id="org.csstudio.core.feature"/>
+      <feature id="org.csstudio.pvmanager.feature"/>
       <feature id="org.csstudio.pvmanager.ca.feature"/>
       <feature id="org.csstudio.pvmanager.jdbc.feature"/>
       <feature id="org.csstudio.pvmanager.exec.feature"/>
       <feature id="org.csstudio.pvmanager.extra.feature"/>
       <feature id="org.csstudio.utilities.feature"/>
       <feature id="org.csstudio.boy.feature"/>
-      <feature id="org.csstudio.product.feature"/>
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
+      <feature id="org.csstudio.opibuilder.feature"/>
+      <feature id="org.csstudio.product.configuration.feature"/>
    </features>
 
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="4" />
-      <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
       <plugin id="org.csstudio.utility.pvmanager.extra" autoStart="true" startLevel="4" />
    </configurations>
 
