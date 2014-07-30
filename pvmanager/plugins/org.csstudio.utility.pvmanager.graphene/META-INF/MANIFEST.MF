@@ -9,8 +9,8 @@ Created-By: Apache Maven Bundle Plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov
 Build-Jdk: 1.7.0_45
-Bundle-Version: 3.3.0.SNAPSHOT
-Bnd-LastModified: 1403013253242
+Bundle-Version: 4.0.0.SNAPSHOT
+Bnd-LastModified: 1406731629963
 Bundle-ManifestVersion: 2
 Bundle-Description: Graphene Graphics
 Import-Package: org.epics.graphene,org.epics.pvmanager,org.epics.pvman

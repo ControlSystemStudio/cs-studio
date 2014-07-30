@@ -11,8 +11,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
  @bnl.gov - BNL
 Build-Jdk: 1.7.0_45
-Bundle-Version: 3.2.0.SNAPSHOT
-Bnd-LastModified: 1402508872570
+Bundle-Version: 4.0.0.SNAPSHOT
+Bnd-LastModified: 1406731627368
 Bundle-ManifestVersion: 2
 Bundle-Description: pvManager integration with the vType datastructure
  s

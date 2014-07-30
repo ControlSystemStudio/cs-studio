@@ -1,9 +1,6 @@
 Manifest-Version: 1.0
 Export-Package: org.epics.pvmanager.loc;uses:="org.epics.vtype,org.epi
- cs.pvmanager,org.epics.pvmanager.util,org.epics.pvmanager.vtype",html
- ,org.csstudio.utility.pvmanager.loc;uses:="org.eclipse.core.runtime,o
- rg.osgi.framework,org.eclipse.core.runtime.preferences,org.epics.pvma
- nager.loc"
+ cs.pvmanager,org.epics.pvmanager.util,org.epics.pvmanager.vtype"
 Bundle-ActivationPolicy: lazy
 Built-By: berryman
 Tool: Bnd-0.0.357
@@ -13,16 +10,15 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
  @bnl.gov - BNL
 Build-Jdk: 1.7.0_45
-Bundle-Version: 3.2.0.SNAPSHOT
-Bnd-LastModified: 1402508874398
+Bundle-Version: 4.0.0.SNAPSHOT
+Bnd-LastModified: 1406732397154
 Bundle-Activator: org.csstudio.utility.pvmanager.loc.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: Provides local variable DataSource topvManager
-Import-Package: html,org.csstudio.utility.pvmanager.loc,org.eclipse.co
- re.runtime;registry=split;version="3.4",org.eclipse.core.runtime.pref
- erences;version="3.3",org.epics.pvmanager,org.epics.pvmanager.loc,org
- .epics.pvmanager.util,org.epics.pvmanager.vtype,org.epics.vtype,org.o
- sgi.framework;version="1.6"
+Import-Package: org.eclipse.core.runtime;version="3.4",org.eclipse.cor
+ e.runtime.preferences;version="3.3",org.epics.pvmanager,org.epics.pvm
+ anager.loc,org.epics.pvmanager.util,org.epics.pvmanager.vtype,org.epi
+ cs.vtype,org.osgi.framework;version="1.7"
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.loc;singleton:=tru
  e
 

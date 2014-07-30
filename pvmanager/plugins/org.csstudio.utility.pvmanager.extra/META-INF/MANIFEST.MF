@@ -5,9 +5,7 @@ Export-Package: org.epics.pvmanager.extra;uses:="org.epics.util.array,
  ula;uses:="org.epics.vtype,org.epics.pvmanager.util,org.epics.util.ar
  ray,org.epics.vtype.table,org.epics.pvmanager,org.epics.pvmanager.exp
  ression,org.epics.util.text,org.antlr.runtime,org.epics.pvmanager.vty
- pe,org.epics.util.stats,org.epics.util.time",html,org.csstudio.utilit
- y.pvmanager.extra;uses:="org.eclipse.core.runtime,org.osgi.framework,
- org.epics.pvmanager.formula"
+ pe,org.epics.util.stats,org.epics.util.time"
 Bundle-ActivationPolicy: lazy
 Built-By: berryman
 Tool: Bnd-0.0.357
@@ -17,19 +15,18 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
  @bnl.gov - BNL
 Build-Jdk: 1.7.0_45
-Bundle-Version: 3.2.0.SNAPSHOT
-Bnd-LastModified: 1402508876446
+Bundle-Version: 4.0.0.SNAPSHOT
+Bnd-LastModified: 1406732402207
 Bundle-Activator: org.csstudio.utility.pvmanager.extra.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: Experimental expression that, if useful, willbe mi
  grated to other packages
-Import-Package: html,org.antlr.runtime,org.csstudio.utility.pvmanager.
- extra,org.eclipse.core.runtime;registry=split;version="3.4",org.epics
- .pvmanager,org.epics.pvmanager.expression,org.epics.pvmanager.extra,o
- rg.epics.pvmanager.formula,org.epics.pvmanager.util,org.epics.pvmanag
- er.vtype,org.epics.util.array,org.epics.util.stats,org.epics.util.tex
- t,org.epics.util.time,org.epics.vtype,org.epics.vtype.table,org.osgi.
- framework;version="1.6"
+Import-Package: org.antlr.runtime,org.eclipse.core.runtime;version="3.
+ 4",org.epics.pvmanager,org.epics.pvmanager.expression,org.epics.pvman
+ ager.extra,org.epics.pvmanager.formula,org.epics.pvmanager.util,org.e
+ pics.pvmanager.vtype,org.epics.util.array,org.epics.util.stats,org.ep
+ ics.util.text,org.epics.util.time,org.epics.vtype,org.epics.vtype.tab
+ le,org.osgi.framework;version="1.7"
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.extra;singleton:=t
  rue
 

@@ -2,8 +2,7 @@ Manifest-Version: 1.0
 Export-Package: org.epics.pvmanager.sim;uses:="org.epics.vtype,org.epi
  cs.pvmanager,org.epics.pvmanager.util,org.epics.util.time,org.epics.u
  til.array,javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.ann
- otation.adapters,org.epics.pvmanager.vtype",org.csstudio.utility.pvma
- nager.sim;uses:="org.eclipse.core.runtime,org.osgi.framework",html
+ otation.adapters,org.epics.pvmanager.vtype"
 Bundle-ActivationPolicy: lazy
 Built-By: berryman
 Tool: Bnd-0.0.357
@@ -13,17 +12,16 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
  @bnl.gov - BNL
 Build-Jdk: 1.7.0_45
-Bundle-Version: 3.2.0.SNAPSHOT
-Bnd-LastModified: 1402508875724
+Bundle-Version: 4.0.0.SNAPSHOT
+Bnd-LastModified: 1406732396655
 Bundle-Activator: org.csstudio.utility.pvmanager.sim.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: Provides simulated channels to pvManager
-Import-Package: html,javax.xml.bind,javax.xml.bind.annotation,javax.xm
- l.bind.annotation.adapters,org.csstudio.utility.pvmanager.sim,org.ecl
- ipse.core.runtime;registry=split;version="3.4",org.epics.pvmanager,or
- g.epics.pvmanager.sim,org.epics.pvmanager.util,org.epics.pvmanager.vt
- ype,org.epics.util.array,org.epics.util.time,org.epics.vtype,org.osgi
- .framework;version="1.6"
+Import-Package: javax.xml.bind,javax.xml.bind.annotation,javax.xml.bin
+ d.annotation.adapters,org.eclipse.core.runtime;version="3.4",org.epic
+ s.pvmanager,org.epics.pvmanager.sim,org.epics.pvmanager.util,org.epic
+ s.pvmanager.vtype,org.epics.util.array,org.epics.util.time,org.epics.
+ vtype,org.osgi.framework;version="1.7"
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.sim;singleton:=tru
  e
 

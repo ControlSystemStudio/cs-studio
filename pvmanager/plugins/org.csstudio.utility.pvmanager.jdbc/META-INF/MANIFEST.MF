@@ -2,10 +2,7 @@ Manifest-Version: 1.0
 Export-Package: org.epics.pvmanager.jdbc;uses:="org.epics.pvmanager.se
  rvice,javax.sql,org.epics.vtype,org.epics.pvmanager,org.epics.util.ar
  ray,org.epics.util.time,javax.xml.parsers,org.epics.pvmanager.util,or
- g.w3c.dom,org.xml.sax,javax.xml.namespace,javax.xml.xpath",org.csstud
- io.utility.pvmanager.jdbc;uses:="org.eclipse.core.runtime,org.epics.p
- vmanager.jdbc,org.eclipse.osgi.service.datalocation,org.epics.pvmanag
- er.service",html
+ g.w3c.dom,org.xml.sax,javax.xml.namespace,javax.xml.xpath"
 Bundle-ActivationPolicy: lazy
 Built-By: berryman
 Tool: Bnd-0.0.357
@@ -15,16 +12,16 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
  @bnl.gov - BNL
 Build-Jdk: 1.7.0_45
-Bundle-Version: 3.2.0.SNAPSHOT
-Bnd-LastModified: 1402508873972
+Bundle-Version: 4.0.0.SNAPSHOT
+Bnd-LastModified: 1406732385357
 Bundle-ManifestVersion: 2
 Bundle-Description: JDBC extensions for pvmanager
-Import-Package: html,javax.sql,javax.xml.namespace,javax.xml.parsers,j
- avax.xml.xpath,org.csstudio.utility.pvmanager.jdbc,org.eclipse.core.r
- untime;registry=split;version="3.4",org.eclipse.osgi.service.dataloca
- tion;version="1.3",org.epics.pvmanager,org.epics.pvmanager.jdbc,org.e
- pics.pvmanager.service,org.epics.pvmanager.util,org.epics.util.array,
- org.epics.util.time,org.epics.vtype,org.w3c.dom,org.xml.sax
+Import-Package: com.mysql.jdbc,javax.sql,javax.xml.namespace,javax.xml
+ .parsers,javax.xml.xpath,oracle.jdbc.driver,org.eclipse.core.runtime;
+ version="3.4",org.eclipse.osgi.service.datalocation;version="1.3",org
+ .epics.pvmanager,org.epics.pvmanager.jdbc,org.epics.pvmanager.service
+ ,org.epics.pvmanager.util,org.epics.util.array,org.epics.util.time,or
+ g.epics.vtype,org.postgresql,org.w3c.dom,org.xml.sax
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.jdbc;singleton:=tr
  ue
 

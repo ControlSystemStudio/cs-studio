@@ -3,9 +3,7 @@ Export-Package: org.epics.pvmanager.jca;uses:="gov.aps.jca.dbr,org.epi
  cs.util.time,org.epics.vtype,gov.aps.jca,gov.aps.jca.event,org.epics.
  pvmanager,org.epics.util.array,gov.aps.jca.jni,org.epics.pvmanager.ut
  il,com.cosylab.epics.caj,org.epics.pvmanager.vtype,org.epics.util.tex
- t",org.csstudio.utility.pvmanager.epics;uses:="org.eclipse.core.runti
- me,org.osgi.framework,org.epics.pvmanager.jca,org.csstudio.platform.l
- ibs.epics,gov.aps.jca",html
+ t"
 Bundle-ActivationPolicy: lazy
 Built-By: berryman
 Tool: Bnd-0.0.357
@@ -15,18 +13,17 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
  @bnl.gov - BNL
 Build-Jdk: 1.7.0_45
-Bundle-Version: 3.2.0.SNAPSHOT
-Bnd-LastModified: 1402508872398
+Bundle-Version: 4.0.0.SNAPSHOT
+Bnd-LastModified: 1406732392754
 Bundle-Activator: org.csstudio.utility.pvmanager.epics.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: Provides epics v3 connectivity to pvManager
 Import-Package: com.cosylab.epics.caj,gov.aps.jca,gov.aps.jca.dbr,gov.
- aps.jca.event,gov.aps.jca.jni,html,org.csstudio.platform.libs.epics,o
- rg.csstudio.utility.pvmanager.epics,org.eclipse.core.runtime;registry
- =split;version="3.4",org.epics.pvmanager,org.epics.pvmanager.jca,org.
- epics.pvmanager.util,org.epics.pvmanager.vtype,org.epics.util.array,o
- rg.epics.util.text,org.epics.util.time,org.epics.vtype,org.osgi.frame
- work;version="1.6"
+ aps.jca.event,gov.aps.jca.jni,org.csstudio.platform.libs.epics,org.ec
+ lipse.core.runtime;version="3.4",org.epics.pvmanager,org.epics.pvmana
+ ger.jca,org.epics.pvmanager.util,org.epics.pvmanager.vtype,org.epics.
+ util.array,org.epics.util.text,org.epics.util.time,org.epics.vtype,or
+ g.osgi.framework;version="1.7"
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.epics;singleton:=t
  rue
 

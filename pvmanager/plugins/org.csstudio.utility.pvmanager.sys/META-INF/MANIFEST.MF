@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
-Export-Package: html,org.csstudio.utility.pvmanager.sys;uses:="org.osg
- i.framework"
+Export-Package: org.epics.pvmanager.sys;uses:="org.epics.vtype,org.epi
+ cs.util.text,org.epics.pvmanager,org.epics.pvmanager.util,org.epics.p
+ vmanager.vtype,org.epics.util.time"
 Bundle-ActivationPolicy: lazy
 Built-By: berryman
 Tool: Bnd-0.0.357
@@ -10,13 +11,14 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi carcassi@bnl.gov, Kunal Shroffkshroff
  @bnl.gov - BNL
 Build-Jdk: 1.7.0_45
-Bundle-Version: 3.2.0.SNAPSHOT
-Bnd-LastModified: 1402508875918
+Bundle-Version: 4.0.0.SNAPSHOT
+Bnd-LastModified: 1406732393077
 Bundle-Activator: org.csstudio.utility.pvmanager.sys.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: Provides system information to pvManager
-Import-Package: html,org.csstudio.utility.pvmanager.sys,org.osgi.frame
- work;version="1.6"
+Import-Package: org.epics.pvmanager,org.epics.pvmanager.sys,org.epics.
+ pvmanager.util,org.epics.pvmanager.vtype,org.epics.util.text,org.epic
+ s.util.time,org.epics.vtype,org.osgi.framework;version="1.7"
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.sys;singleton:=tru
  e
 
