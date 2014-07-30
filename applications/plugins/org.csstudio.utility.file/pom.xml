@@ -7,7 +7,13 @@
     <artifactId>applications-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
+<<<<<<< HEAD:applications/plugins/org.csstudio.utility.pvmanager.graphene/pom.xml
   <artifactId>org.csstudio.utility.pvmanager.graphene</artifactId>
   <version>3.2.0-SNAPSHOT</version>
+=======
+  <groupId>org.csstudio</groupId>
+  <artifactId>org.csstudio.utility.file</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+>>>>>>> remotes/upstream/3.3.x:applications/plugins/org.csstudio.utility.file/pom.xml
   <packaging>eclipse-plugin</packaging>
 </project>

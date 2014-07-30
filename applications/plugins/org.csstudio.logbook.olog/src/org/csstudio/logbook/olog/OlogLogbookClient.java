@@ -40,7 +40,6 @@ import edu.msu.nscl.olog.api.Log;
 import edu.msu.nscl.olog.api.LogBuilder;
 import edu.msu.nscl.olog.api.OlogClient;
 import edu.msu.nscl.olog.api.PropertyBuilder;
-
 import static org.csstudio.logbook.util.LogEntrySearchUtil.*;
 
 public class OlogLogbookClient implements LogbookClient {
@@ -502,6 +501,41 @@ public class OlogLogbookClient implements LogbookClient {
 	@Override
 	public Collection<Property> getProperties() {
 	    return this.properties;
+	}
+
+
+	@Override
+	public int hashCode() {
+	    final int prime = 31;
+	    int result = 1;
+	    result = prime * result + getOuterType().hashCode();
+	    result = prime * result + ((log == null) ? 0 : log.hashCode());
+	    return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj)
+		return true;
+	    if (obj == null)
+		return false;
+	    if (getClass() != obj.getClass())
+		return false;
+	    OlogEntry other = (OlogEntry) obj;
+	    if (!getOuterType().equals(other.getOuterType()))
+		return false;
+	    if (log == null) {
+		if (other.log != null)
+		    return false;
+	    } else if (!log.equals(other.log))
+		return false;
+	    return true;
+	}
+
+
+	private OlogLogbookClient getOuterType() {
+	    return OlogLogbookClient.this;
 	}
 
     }

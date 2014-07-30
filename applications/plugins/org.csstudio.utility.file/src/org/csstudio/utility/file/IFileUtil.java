@@ -50,7 +50,6 @@ public class IFileUtil {
 	private static final String TAG_PART = "part"; //$NON-NLS-1$
 	private static final String TAG_PATH = "path"; //$NON-NLS-1$
 	private static final String TAG_COUNT = "count"; //$NON-NLS-1$
-    private final static IFileUtil instance = new IFileUtil();
     final ConcurrentMap<IFile, AtomicLong> map = new ConcurrentHashMap<IFile, AtomicLong>();
     private final SyncShutdown syncShutdown = new SyncShutdown();
 
@@ -64,6 +63,14 @@ public class IFileUtil {
     	public synchronized boolean status() {
     		return shutdown;
     	}
+    }
+    
+    private final static class IFileUtilHolder {
+        private static final IFileUtil instance = new IFileUtil();
+    }
+    
+    public static IFileUtil getInstance() {
+    	return IFileUtilHolder.instance;
     }
     
 	private IFileUtil() {
@@ -124,18 +131,21 @@ public class IFileUtil {
 										// e1.printStackTrace();
 									}
 								}
-								if (iFile !=null && !map.isEmpty()){
-									if(map.get(iFile).decrementAndGet() <= 0){
-		        		    			map.remove(iFile);
-		        		    			try {
-											iFile.delete(true, null);
-										} catch (CoreException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
+								if (iFile != null && !map.isEmpty()) {
+									if (map.get(iFile) != null) {
+										if (map.get(iFile).decrementAndGet() <= 0) {
+											map.remove(iFile);
+											try {
+												iFile.delete(true, null);
+											} catch (CoreException e) {
+												// TODO Auto-generated catch
+												// block
+												e.printStackTrace();
+											}
 										}
-		        		    		}
+									}
 								}
-	        		    	}
+							}
 	        		    }
 
 	        		    @Override
@@ -187,12 +197,6 @@ public class IFileUtil {
 		
 		attachShutdownListener();
 	}
-
-    
-
-    public static IFileUtil getInstance() {
-	return instance;
-    }
 
     private void attachShutdownListener(){
     	PlatformUI.getWorkbench().addWorkbenchListener(
