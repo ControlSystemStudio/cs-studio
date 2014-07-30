@@ -72,8 +72,8 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
     private List<ListDouble> yReferenceValues;
     private List<List<String>> yReferenceLabels;
     private Range emptyRange;
-    private AxisRangeInstance xAxisRange = AxisRanges.integrated().createInstance();
-    private AxisRangeInstance yAxisRange = AxisRanges.integrated().createInstance();
+    private AxisRangeInstance xAxisRange = AxisRanges.auto().createInstance();
+    private AxisRangeInstance yAxisRange = AxisRanges.auto().createInstance();
     private List<AxisRangeInstance> yAxisRanges;
     private ValueScale xValueScale = ValueScales.linearScale();
     private ValueScale yValueScale = ValueScales.linearScale();

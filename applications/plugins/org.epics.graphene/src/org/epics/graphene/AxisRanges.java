@@ -9,7 +9,26 @@ import org.epics.util.stats.Range;
 import org.epics.util.stats.Ranges;
 
 /**
- * TODO: finalize names
+ * Standard implementation for the logic to calculate the data range to
+ * be displayed in a graph.
+ * <p>
+ * There are four cases:
+ * <ul>
+ *   <li><b>Display</b> (default): it’s the range that comes directly with the
+ * data. If it’s not set, or if it’s invalid, then it’s calculated from
+ * the data the first time and kept forever.</li>
+ *   <li><b>Data</b>: it’s the range of the current data being displayed. To determine
+ * the current range, all values may be scanned, and it can be costly if the dataset is large. If the
+ * data changes in time, the range displayed will grow and shrink, which may
+ * make the plot confusing.</li>
+ *   <li><b>Fixed</b>: use defined minimum and maximum.</li>
+ *   <li><b>Auto</b>: keeps growing the range so that incoming data always fits.
+ * In most cases, as data comes in, the Auto range will become stable.
+ * To deal with outliers you can specify the the minimum percentage of the range
+ * that must be used to display data. So, if you set a 80% threshold, the
+ * range will  shrinks if less than 80% of the range contains actual data.
+ * This option may have the same performance issues than Data.</li>
+ * </ul>
  *
  * @author carcassi
  */
@@ -18,17 +37,27 @@ public class AxisRanges {
     private AxisRanges() {
     }
     
-    public static AxisRange absolute(final double min, final double max) {
-        final Range absoluteRange = Ranges.range(min, max);
-        return new Absolute(absoluteRange);
+    /**
+     * A fixed range from the given values.
+     * 
+     * @param min minimum value displayed on the axis
+     * @param max maximum value displayed on the axis
+     * @return the axis range; never null
+     */
+    public static AxisRange fixed(final double min, final double max) {
+        final Range fixedRange = Ranges.range(min, max);
+        return new Fixed(fixedRange);
     }
-    
-    public static class Absolute implements AxisRange {
+
+    /**
+     * An AxisRange with Fixed value range.
+     */
+    public static class Fixed implements AxisRange {
         
         private final AxisRange axisRange = this;
         private final Range absoluteRange;
 
-        private Absolute(Range absoluteRange) {
+        private Fixed(Range absoluteRange) {
             this.absoluteRange = absoluteRange;
         }
 
@@ -50,17 +79,22 @@ public class AxisRanges {
 
         @Override
         public String toString() {
-            return "absolute(" + absoluteRange.getMinimum() + ", " + absoluteRange.getMaximum() + ")";
+            return "fixed(" + absoluteRange.getMinimum() + ", " + absoluteRange.getMaximum() + ")";
         }
 
-        public Range getAbsoluteRange() {
+        /**
+         * Returns the value range of the axis.
+         * 
+         * @return the range; never null
+         */
+        public Range getFixedRange() {
             return absoluteRange;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Absolute) {
-                return Ranges.equals(getAbsoluteRange(), ((Absolute) obj).getAbsoluteRange());
+            if (obj instanceof Fixed) {
+                return Ranges.equals(getFixedRange(), ((Fixed) obj).getFixedRange());
             } else {
                 return false;
             }
@@ -75,12 +109,20 @@ public class AxisRanges {
         
     }
     
+    /**
+     * A range for the axis that fits the data.
+     * 
+     * @return the range; never null
+     */
     public static AxisRange data() {
         return DATA;
     }
     
     private static Data DATA = new Data();
-    
+
+    /**
+     * An AxisRange with Fixed value range.
+     */
     public static class Data implements AxisRange {
         
         private final AxisRange axisRange = this;
@@ -110,22 +152,39 @@ public class AxisRanges {
         }
     }
     
-    public static AxisRange integrated() {
-        return INTEGRATED;
+    /**
+     * A range that grows to fit the current and past data.
+     * If will shrink if the data shrinks to less than 80% of the range.
+     * 
+     * @return an axis range; never null
+     */
+    public static AxisRange auto() {
+        return AUTO;
     }
     
-    public static AxisRange integrated(double minUsage) {
-        return new Integrated(minUsage);
+    /**
+     * A range that grows to fit the current and past data, and shrinks
+     * if the data shrinks more than minUsage. minUsage represents the
+     * minimum percentage to be used to display actual data.
+     * 
+     * @param minUsage a number from 0.0 to 1.0
+     * @return an axis range; never null
+     */
+    public static AxisRange auto(double minUsage) {
+        return new Auto(minUsage);
     }
     
-    private static final Integrated INTEGRATED = new Integrated(0.8);
+    private static final Auto AUTO = new Auto(0.8);
     
-    public static class Integrated implements AxisRange {
+    /**
+     * An AxisRange with Auto value range.
+     */
+    public static class Auto implements AxisRange {
 
         private final AxisRange axisRange = this;
         private final double minUsage;
 
-        private Integrated(double minUsage) {
+        private Auto(double minUsage) {
             this.minUsage = minUsage;
         }
 
@@ -153,17 +212,22 @@ public class AxisRanges {
 
         @Override
         public String toString() {
-            return "integrated(" + (int) (minUsage * 100) + "%)";
+            return "auto(" + (int) (minUsage * 100) + "%)";
         }
 
+        /**
+         * The minimum percentage of the range to be used for actual data.
+         * 
+         * @return a number from 0.0 to 1.0
+         */
         public double getMinUsage() {
             return minUsage;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Integrated) {
-                return getMinUsage() == ((Integrated) obj).getMinUsage();
+            if (obj instanceof Auto) {
+                return getMinUsage() == ((Auto) obj).getMinUsage();
             } else {
                 return false;
             }
@@ -177,13 +241,21 @@ public class AxisRanges {
         }
         
     }
-    
+
+    /**
+     * The suggested range for the data.
+     * 
+     * @return an axis range; never null
+     */
     public static AxisRange display() {
         return DISPLAY;
     }
     
     private static final Display DISPLAY = new Display();
-    
+
+    /**
+     * An AxisRange with Display value range.
+     */
     public static class Display implements AxisRange {
             
         private final AxisRange axisRange = this;
