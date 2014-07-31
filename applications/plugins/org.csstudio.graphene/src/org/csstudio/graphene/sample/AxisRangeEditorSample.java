@@ -129,40 +129,40 @@ public class AxisRangeEditorSample {
 		btnAbsolute1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				axisRangeEditorComposite.setAxisRange(AxisRanges.absolute(-10, 10));
+				axisRangeEditorComposite.setAxisRange(AxisRanges.fixed(-10, 10));
 			}
 		});
-		btnAbsolute1.setText("Absolute -10/10");
+		btnAbsolute1.setText("Fixed -10/10");
 		
 		Button btnIntegrated = new Button(composite, SWT.NONE);
 		btnIntegrated.setBounds(230, 85, 105, 30);
 		btnIntegrated.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				axisRangeEditorComposite.setAxisRange(AxisRanges.integrated());
+				axisRangeEditorComposite.setAxisRange(AxisRanges.auto());
 			}
 		});
-		btnIntegrated.setText("Integrated");
+		btnIntegrated.setText("Auto");
 		
 		Button btnAbsolute2 = new Button(composite, SWT.NONE);
 		btnAbsolute2.setBounds(96, 49, 128, 30);
 		btnAbsolute2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				axisRangeEditorComposite.setAxisRange(AxisRanges.absolute(0, 25));
+				axisRangeEditorComposite.setAxisRange(AxisRanges.fixed(0, 25));
 			}
 		});
-		btnAbsolute2.setText("Absolute 0/25");
+		btnAbsolute2.setText("Fixed 0/25");
 		
 		Button btnIntegrated50 = new Button(composite, SWT.NONE);
 		btnIntegrated50.setBounds(230, 49, 105, 30);
 		btnIntegrated50.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				axisRangeEditorComposite.setAxisRange(AxisRanges.integrated(0.5));
+				axisRangeEditorComposite.setAxisRange(AxisRanges.auto(0.5));
 			}
 		});
-		btnIntegrated50.setText("Integrated 50");
+		btnIntegrated50.setText("Auto 50");
 
 	}
 }

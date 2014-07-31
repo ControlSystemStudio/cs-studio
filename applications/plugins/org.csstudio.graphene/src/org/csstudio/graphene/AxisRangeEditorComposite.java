@@ -21,18 +21,18 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.epics.graphene.AxisRange;
 import org.epics.graphene.AxisRanges;
-import org.epics.graphene.AxisRanges.Absolute;
+import org.epics.graphene.AxisRanges.Fixed;
 import org.epics.graphene.AxisRanges.Data;
 import org.epics.graphene.AxisRanges.Display;
-import org.epics.graphene.AxisRanges.Integrated;
+import org.epics.graphene.AxisRanges.Auto;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
 
 public class AxisRangeEditorComposite extends Composite implements ISelectionProvider {
 	private Button btnData;
 	private Button btnDisplay;
-	private Button btnAbsolute;
-	private Button btnIntegrated;
+	private Button btnFixed;
+	private Button btnAuto;
 	private Spinner minUsedRange;
 	
 	private boolean updating = false;
@@ -64,16 +64,16 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 		});
 		btnData.setText("Data: range of the current data");
 		
-		btnAbsolute = new Button(this, SWT.RADIO);
-		btnAbsolute.addSelectionListener(new SelectionAdapter() {
+		btnFixed = new Button(this, SWT.RADIO);
+		btnFixed.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				minAbsolute.setEnabled(btnAbsolute.getSelection());
-				maxAbsolute.setEnabled(btnAbsolute.getSelection());
+				minFixed.setEnabled(btnFixed.getSelection());
+				maxFixed.setEnabled(btnFixed.getSelection());
 				newValue();
 			}
 		});
-		btnAbsolute.setText("Absolute: range specified by the following values");
+		btnFixed.setText("Fixed: range specified by the following values");
 		
 		Composite composite = new Composite(this, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
@@ -85,27 +85,27 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 		lblMin.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblMin.setText("Min:");
 		
-		minAbsolute = new Text(composite, SWT.BORDER);
-		minAbsolute.addModifyListener(new ModifyListener() {
+		minFixed = new Text(composite, SWT.BORDER);
+		minFixed.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				newValue();
 			}
 		});
-		minAbsolute.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		minFixed.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblMax = new Label(composite, SWT.NONE);
 		lblMax.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblMax.setText("Max:");
 		
-		btnIntegrated = new Button(this, SWT.RADIO);
-		btnIntegrated.addSelectionListener(new SelectionAdapter() {
+		btnAuto = new Button(this, SWT.RADIO);
+		btnAuto.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				minUsedRange.setEnabled(btnIntegrated.getSelection());
+				minUsedRange.setEnabled(btnAuto.getSelection());
 				newValue();
 			}
 		});
-		btnIntegrated.setText("Integrated: range of all past data");
+		btnAuto.setText("Auto: range of all past data");
 		
 		Composite composite_1 = new Composite(this, SWT.NONE);
 		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
@@ -113,13 +113,13 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 		composite_1.setLayoutData(gd_composite_1);
 		composite_1.setLayout(new GridLayout(3, false));
 		
-		maxAbsolute = new Text(composite, SWT.BORDER);
-		maxAbsolute.addModifyListener(new ModifyListener() {
+		maxFixed = new Text(composite, SWT.BORDER);
+		maxFixed.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				newValue();
 			}
 		});
-		maxAbsolute.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		maxFixed.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblMinUsedRange = new Label(composite_1, SWT.NONE);
 		lblMinUsedRange.setText("Min used range:");
@@ -140,8 +140,8 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 	
 	
 	private AxisRange axisRange;
-	private Text minAbsolute;
-	private Text maxAbsolute;
+	private Text minFixed;
+	private Text maxFixed;
 	
 	public AxisRange getAxisRange() {
 		return axisRange;
@@ -159,20 +159,20 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 	private void update(AxisRange range) 	{
 		updating = true;
 		clear();
-		if (range instanceof Absolute) {
-			Absolute abs = (Absolute) range;
-			btnAbsolute.setSelection(true);
-			minAbsolute.setText(abs.getAbsoluteRange().getMinimum().toString());
-			maxAbsolute.setText(abs.getAbsoluteRange().getMaximum().toString());
-			minAbsolute.setEnabled(true);
-			maxAbsolute.setEnabled(true);
+		if (range instanceof Fixed) {
+			Fixed abs = (Fixed) range;
+			btnFixed.setSelection(true);
+			minFixed.setText(abs.getFixedRange().getMinimum().toString());
+			maxFixed.setText(abs.getFixedRange().getMaximum().toString());
+			minFixed.setEnabled(true);
+			maxFixed.setEnabled(true);
 		} else if (range instanceof Data) {
 			btnData.setSelection(true);
 		} else if (range instanceof Display) {
 			btnDisplay.setSelection(true);
-		} else if (range instanceof Integrated) {
-			btnIntegrated.setSelection(true);
-			Integrated integrated = (Integrated) range;
+		} else if (range instanceof Auto) {
+			btnAuto.setSelection(true);
+			Auto integrated = (Auto) range;
 			minUsedRange.setSelection((int) (integrated.getMinUsage() * 100));
 			minUsedRange.setEnabled(true);
 		}
@@ -180,14 +180,14 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 	}
 	
 	private void clear() {
-		btnAbsolute.setSelection(false);
+		btnFixed.setSelection(false);
 		btnData.setSelection(false);
 		btnDisplay.setSelection(false);
-		btnIntegrated.setSelection(false);
-		minAbsolute.setText("0");
-		maxAbsolute.setText("1");
-		minAbsolute.setEnabled(false);
-		maxAbsolute.setEnabled(false);
+		btnAuto.setSelection(false);
+		minFixed.setText("0");
+		maxFixed.setText("1");
+		minFixed.setEnabled(false);
+		maxFixed.setEnabled(false);
 		minUsedRange.setSelection(80);
 		minUsedRange.setEnabled(false);
 	}
@@ -207,17 +207,17 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
 			return AxisRanges.display();
 		} else if (btnData.getSelection()) {
 			return AxisRanges.data();
-		} else if (btnAbsolute.getSelection()) {
+		} else if (btnFixed.getSelection()) {
 			try {
-				double min = Double.parseDouble(minAbsolute.getText());
-				double max = Double.parseDouble(maxAbsolute.getText());
-				return AxisRanges.absolute(min, max);
+				double min = Double.parseDouble(minFixed.getText());
+				double max = Double.parseDouble(maxFixed.getText());
+				return AxisRanges.fixed(min, max);
 			} catch (RuntimeException ex) {
 				// Can't parse the double, ignore
 			}
-		} else if (btnIntegrated.getSelection()) {
+		} else if (btnAuto.getSelection()) {
 			double usage = minUsedRange.getSelection() / 100.0;
-			return AxisRanges.integrated(usage);
+			return AxisRanges.auto(usage);
 		}
 		return null;
 	}

@@ -104,7 +104,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
                             yRangeModified = true;
                             double invert = yRangeControl.getMin() + yRangeControl.getMax();
                             graph.update(graph.newUpdate().yAxisRange(
-                                    AxisRanges.absolute(
+                                    AxisRanges.fixed(
                                             invert - yRangeControl.getSelectedMax(),
                                             invert - yRangeControl.getSelectedMin())));
                         }
@@ -162,7 +162,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
                         }else{
                             xRangeModified = true;
                             graph.update(graph.newUpdate().xAxisRange(
-                                    AxisRanges.absolute(
+                                    AxisRanges.fixed(
                                             xRangeControl.getSelectedMin(),
                                             xRangeControl.getSelectedMax())));
                         }
