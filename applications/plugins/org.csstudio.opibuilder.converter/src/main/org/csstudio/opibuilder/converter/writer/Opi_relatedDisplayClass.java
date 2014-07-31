@@ -109,6 +109,8 @@ public class Opi_relatedDisplayClass extends OpiWidget {
 		}
 		if (r.getButtonLabel() != null) {
 			new OpiString(widgetContext, r.getNumDsps() == 1 ? "text" : "label", r.getButtonLabel());
+		} else {
+			new OpiString(widgetContext, r.getNumDsps() == 1 ? "text" : "label", "");
 		}
 
 	}
