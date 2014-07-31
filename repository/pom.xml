@@ -192,6 +192,11 @@
 									<source>true</source>
 									<transitive>false</transitive>
 								</artifact>
+								<artifact>
+									<id>org.apache.httpcomponents:httpcomponents-client:4.3.4</id>
+									<source>true</source>
+									<transitive>false</transitive>
+								</artifact>
 							</artifacts>
 						</configuration>
 					</execution>
