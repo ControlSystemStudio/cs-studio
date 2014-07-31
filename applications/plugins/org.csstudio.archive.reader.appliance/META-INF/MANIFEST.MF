@@ -7,7 +7,6 @@ Bundle-Activator: org.csstudio.archive.reader.appliance.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.archive.reader;bundle-version="3.2.0",
  org.csstudio.apputil;bundle-version="3.0.2",
- org.junit,
  org.eclipse.help
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Desy, Jan Hatje <jan.hatje@desy.de>
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.archive.reader,
- org.junit,
  org.apache.log4j;bundle-version="1.2.16",
  org.csstudio.data;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
