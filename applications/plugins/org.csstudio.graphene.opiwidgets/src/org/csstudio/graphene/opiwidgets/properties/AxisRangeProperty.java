@@ -5,10 +5,10 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.epics.graphene.AxisRange;
 import org.epics.graphene.AxisRanges;
-import org.epics.graphene.AxisRanges.Absolute;
+import org.epics.graphene.AxisRanges.Auto;
 import org.epics.graphene.AxisRanges.Data;
 import org.epics.graphene.AxisRanges.Display;
-import org.epics.graphene.AxisRanges.Integrated;
+import org.epics.graphene.AxisRanges.Fixed;
 import org.jdom.Element;
 
 /**
@@ -21,10 +21,10 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
 	public static final String XML_ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
 	public static final String XML_VALUE_TYPE_DISPLAY = "display"; //$NON-NLS-1$
 	public static final String XML_VALUE_TYPE_DATA = "data"; //$NON-NLS-1$
-	public static final String XML_VALUE_TYPE_ABSOLUTE = "absolute"; //$NON-NLS-1$
-	public static final String XML_VALUE_TYPE_INTEGRATED = "integrated"; //$NON-NLS-1$
-	public static final String XML_ATTRIBUTE_MINABSOLUTE = "min"; //$NON-NLS-1$
-	public static final String XML_ATTRIBUTE_MAXABSOLUTE = "max"; //$NON-NLS-1$
+	public static final String XML_VALUE_TYPE_ABSOLUTE = "fixed"; //$NON-NLS-1$
+	public static final String XML_VALUE_TYPE_AUTO = "auto"; //$NON-NLS-1$
+	public static final String XML_ATTRIBUTE_MINFIXED = "min"; //$NON-NLS-1$
+	public static final String XML_ATTRIBUTE_MAXFIXED = "max"; //$NON-NLS-1$
 	public static final String XML_ATTRIBUTE_MINUSAGE = "minUsage"; //$NON-NLS-1$
 	
 	/**
@@ -69,15 +69,15 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
 			axisRangeElement.setAttribute(XML_ATTRIBUTE_TYPE, XML_VALUE_TYPE_DISPLAY);
 		} else if (value instanceof Data) {
 			axisRangeElement.setAttribute(XML_ATTRIBUTE_TYPE, XML_VALUE_TYPE_DATA);
-		} else if (value instanceof Integrated) {
-			axisRangeElement.setAttribute(XML_ATTRIBUTE_TYPE, XML_VALUE_TYPE_INTEGRATED);
-			Integrated integrated = (Integrated) value;
+		} else if (value instanceof Auto) {
+			axisRangeElement.setAttribute(XML_ATTRIBUTE_TYPE, XML_VALUE_TYPE_AUTO);
+			Auto integrated = (Auto) value;
 			axisRangeElement.setAttribute(XML_ATTRIBUTE_MINUSAGE, Double.toString(integrated.getMinUsage()));
-		} else if (value instanceof Absolute) {
+		} else if (value instanceof Fixed) {
 			axisRangeElement.setAttribute(XML_ATTRIBUTE_TYPE, XML_VALUE_TYPE_ABSOLUTE);
-			Absolute abs = (Absolute) value;
-			axisRangeElement.setAttribute(XML_ATTRIBUTE_MINABSOLUTE, abs.getAbsoluteRange().getMinimum().toString());
-			axisRangeElement.setAttribute(XML_ATTRIBUTE_MAXABSOLUTE, abs.getAbsoluteRange().getMaximum().toString());
+			Fixed abs = (Fixed) value;
+			axisRangeElement.setAttribute(XML_ATTRIBUTE_MINFIXED, abs.getFixedRange().getMinimum().toString());
+			axisRangeElement.setAttribute(XML_ATTRIBUTE_MAXFIXED, abs.getFixedRange().getMaximum().toString());
 		}
 		propElement.addContent(axisRangeElement);
 	}
@@ -97,18 +97,20 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
 		switch(type) {
 			case XML_VALUE_TYPE_DATA:
 				return AxisRanges.data();
+			case "absolute":
 			case XML_VALUE_TYPE_ABSOLUTE:
 				try {
-					double min = Double.parseDouble(axisRangeElement.getAttributeValue(XML_ATTRIBUTE_MINABSOLUTE));
-					double max = Double.parseDouble(axisRangeElement.getAttributeValue(XML_ATTRIBUTE_MAXABSOLUTE));
-					return AxisRanges.absolute(min, max);
+					double min = Double.parseDouble(axisRangeElement.getAttributeValue(XML_ATTRIBUTE_MINFIXED));
+					double max = Double.parseDouble(axisRangeElement.getAttributeValue(XML_ATTRIBUTE_MAXFIXED));
+					return AxisRanges.fixed(min, max);
 				} catch(RuntimeException ex) {
 					break;
 				}
-			case XML_VALUE_TYPE_INTEGRATED:
+			case "integrated":
+			case XML_VALUE_TYPE_AUTO:
 				try {
 					double minUsage = Double.parseDouble(axisRangeElement.getAttributeValue(XML_ATTRIBUTE_MINUSAGE));
-					return AxisRanges.integrated(minUsage);
+					return AxisRanges.auto(minUsage);
 				} catch(RuntimeException ex) {
 					break;
 				}
