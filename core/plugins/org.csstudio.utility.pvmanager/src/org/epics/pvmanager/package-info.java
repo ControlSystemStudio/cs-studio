@@ -3,13 +3,13 @@
  * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 /**
- * <p align="center"><img alt="pvManager" src="http://pvmanager.diirt.org/images/PVManagerLogo150.png"/></p>
+ * <p align="center"><img alt="pvManager" src="http://pvmanager.diirt.org/images/PVManagerLogo150.png"></p>
  * <div style="float: right; margin-top: -170px" id="contents"></div>
  * 
  * 
  * <h1>Examples</h1>
  * 
- * <p>You can find examples in {@link org.epics.pvmanager.sample} package.
+ * <p>You can find examples in <code>link org.epics.pvmanager.sample</code> package.
  * We stopped including examples in the documentation itself because they tend
  * to become stale. We link to actual code that is part of the build, so that
  * there is more of a guarantee that they stay correct</p>
@@ -49,27 +49,27 @@
  * All support for data types is relegated to separate packages: you can use
  * the same style to extend the framework to your needs.
  * <p>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
- * <br/>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
  */
 package org.epics.pvmanager;
 
