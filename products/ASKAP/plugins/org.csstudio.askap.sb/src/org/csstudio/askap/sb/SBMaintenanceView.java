@@ -11,33 +11,22 @@ import org.csstudio.askap.sb.util.SBParameter;
 import org.csstudio.askap.sb.util.SBTemplate;
 import org.csstudio.askap.sb.util.SBTemplateDataModel;
 import org.csstudio.askap.sb.util.SchedulingBlock;
-import org.csstudio.askap.sb.util.SchedulingBlock.SBState;
 import org.csstudio.askap.utility.AskapEditorInput;
-import org.csstudio.askap.utility.AskapHelper;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
@@ -71,19 +60,15 @@ public class SBMaintenanceView extends EditorPart {
 	private ParamDataModel userConfigModel = new ParamDataModel();
 	private ParamDataModel fixedConfigModel = new ParamDataModel();
 
-	private TableViewer userParamTable;
+	private TableViewer obsParameterTable;
 	private TableViewer obsVarTable;
 	
-	private Button exportTemplate;
-	private Button stateTransitionButton;
-	private Button createSBButton;
-
 	private ExpandItem obsVarExpandItem;
 	private ExpandItem scriptExpandItem;
 
 	private Text scriptText;
 	
-	private Label sbInfoLabel;
+	private Label sbInfoLabel[];
 
 	class ParameterValueEditor extends EditingSupport {
 		
@@ -157,58 +142,22 @@ public class SBMaintenanceView extends EditorPart {
 		GridLayout layout = new GridLayout(NUM_OF_COLUMNS, false);
 		parent.setLayout(layout);
 		
-		sbInfoLabel = new Label(parent, SWT.NONE);
+		sbInfoLabel = new Label[4];
+		
+		sbInfoLabel[0] = new Label(parent, SWT.NONE);
 		GridData g = new GridData();
 		g.horizontalAlignment = GridData.FILL;	
 		g.grabExcessHorizontalSpace = true;
-		sbInfoLabel.setLayoutData(g);
-
-		exportTemplate = new Button(parent, SWT.PUSH);
-		exportTemplate.setText("Export Template to File");
-		exportTemplate.setEnabled(false);
+		sbInfoLabel[0].setLayoutData(g);
 		
-		exportTemplate.addSelectionListener(new SelectionListener() {			
-			public void widgetSelected(SelectionEvent event) {
-				try {
-					exportTemplate();
-				} catch (Exception e) {
-					logger.log(Level.WARNING, "Could not export schema to file", e);
-		            ExceptionDetailsErrorDialog.openError(getShell(),
-		                    "ERROR",
-		                    "Could not export schema to file",
-		                    e);
-				}				
-			}
-			
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-			}
-		});
+		sbInfoLabel[1] = new Label(parent, SWT.NONE);
+		sbInfoLabel[1].setLayoutData(g);
 		
-		stateTransitionButton = new Button(parent, SWT.PUSH);
-		stateTransitionButton.setText("Deprecate");
-		stateTransitionButton.setVisible(false);
-		stateTransitionButton.addSelectionListener(new SelectionListener() {			
-			public void widgetSelected(SelectionEvent arg0) {
-				transitionSB();
-			}
-			
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-			}
-		});
-
+		sbInfoLabel[2] = new Label(parent, SWT.NONE);
+		sbInfoLabel[2].setLayoutData(g);
 		
-		// if 'Create' is clicked, user is required to specify a filename if this is not a load
-		createSBButton = new Button(parent, SWT.PUSH);
-		createSBButton.setText("Create Scheduling Block");
-		createSBButton.setEnabled(false);
-		createSBButton.addSelectionListener(new SelectionListener() {			
-			public void widgetSelected(SelectionEvent arg0) {
-				createSB();
-			}
-			
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-			}
-		});
+		sbInfoLabel[3] = new Label(parent, SWT.NONE);
+		sbInfoLabel[3].setLayoutData(g);
 		
 		final ExpandBar bar = new ExpandBar(parent, SWT.NO_SCROLL);
 		final GridData gridData = new GridData();
@@ -230,6 +179,7 @@ public class SBMaintenanceView extends EditorPart {
 		g1.grabExcessHorizontalSpace = true;
 		g1.verticalAlignment = GridData.FILL;	
 		g1.grabExcessVerticalSpace = true;
+		g1.horizontalSpan = NUM_OF_COLUMNS;
 		scriptText.setLayoutData(g1);
 				
 		scriptExpandItem = new ExpandItem (bar, SWT.V_SCROLL, 0);
@@ -250,6 +200,7 @@ public class SBMaintenanceView extends EditorPart {
 		tableGridData.verticalAlignment = GridData.FILL;	
 		tableGridData.grabExcessHorizontalSpace = true;
 		tableGridData.grabExcessVerticalSpace = true;
+		tableGridData.horizontalSpan = NUM_OF_COLUMNS;
 		obsVarTable.getControl().setLayoutData(tableGridData);
 		
 		obsVarExpandItem = new ExpandItem (bar, SWT.V_SCROLL, 1);
@@ -261,7 +212,7 @@ public class SBMaintenanceView extends EditorPart {
 		
 		obsVariables.addControlListener(new ControlAdapter() {
 			public void controlResized(ControlEvent e) {
-				setObsVarTableSize(obsVarTable.getTable());
+				setTableSize(obsVarTable.getTable());
 			}
 		});
 		
@@ -313,23 +264,26 @@ public class SBMaintenanceView extends EditorPart {
 		
 		// user configurable parameters
 		Label userParamLabel = new Label(parent, SWT.NONE);
-		userParamLabel.setText("User Configurable Parameters");
+		userParamLabel.setText("Observation Parameters");
 		GridData g3 = new GridData();
+		g3.horizontalAlignment = GridData.FILL;	
+		g3.grabExcessHorizontalSpace = true;
 		g3.horizontalSpan = NUM_OF_COLUMNS;
 		userParamLabel.setLayoutData(g3);
 		
-		userParamTable = createParamTable(parent, true);
+		obsParameterTable = createParamTable(parent, true);
 		tableGridData = new GridData();
-		tableGridData.horizontalSpan = NUM_OF_COLUMNS;
 		tableGridData.horizontalAlignment = GridData.FILL;	
 		tableGridData.verticalAlignment = GridData.FILL;	
 		tableGridData.grabExcessHorizontalSpace = true;
 		tableGridData.grabExcessVerticalSpace = true;
-		userParamTable.getControl().setLayoutData(tableGridData);
+		tableGridData.horizontalSpan = NUM_OF_COLUMNS;
+
+		obsParameterTable.getControl().setLayoutData(tableGridData);
 				
 		parent.addControlListener(new ControlAdapter() {
 			public void controlResized(ControlEvent e) {
-				setTableSize(userParamTable.getTable());
+				setTableSize(obsParameterTable.getTable());
 			}
 		});
 	}
@@ -340,9 +294,11 @@ public class SBMaintenanceView extends EditorPart {
 		table.getTable().setLinesVisible (true);
 		table.getTable().setHeaderVisible (true);
 		
-		createColumns(parent, table, isEditable);
+		TableColumn column = new TableColumn (table.getTable(), SWT.NONE);
+		column.setText ("Name");
 		
-		table.setContentProvider(new ArrayContentProvider());
+		column = new TableColumn (table.getTable(), SWT.NONE);
+		column.setText ("Value");
 
 		return table;
 	}
@@ -353,108 +309,29 @@ public class SBMaintenanceView extends EditorPart {
 		table.getTable().setHeaderVisible (true);
 		
 		TableColumn column = new TableColumn (table.getTable(), SWT.NONE);
-		column.setText ("ID");
+		column.setText ("Name");
 		
 		column = new TableColumn (table.getTable(), SWT.NONE);
-		column.setText ("Alias");
+		column.setText ("Value");
 		
 		return table;
 	}
 
+
+	private void setSBInfo(SchedulingBlock sb) {
+		sbInfoLabel[0].setText("ID: " + sb.getId());
+		sbInfoLabel[1].setText("Alias: " + sb.getAliasName());
+		sbInfoLabel[2].setText("Template Name: " + sb.getTemplateName());
+		sbInfoLabel[3].setText("Version: " + sb.getMajorVersion());
+	}
 	
-	protected void createSB() {
-		SBTemplate template = (SBTemplate) createSBButton.getData();
-		try {
-			if (template!=null) {
-				// get SB name from dialog box
-				String sbName = template.getName() + "-" 
-									+ AskapHelper.getFormatedData(null, DATE_FORMAT);
-				
-				InputDialog sbDialog = new InputDialog(this.getSite().getShell(),
-						"Please enter an alias name",
-						"Please enter an alias name:", 
-						sbName, 
-						new IInputValidator() {								
-							@Override
-							public String isValid(String newText) {
-								if (newText==null || newText.trim().length()==0)
-									return "Please enter a reason for Deprecation!";
-								
-								return null;
-							}
-						});
-				if (sbDialog.open() != Window.OK)
-					return;
-				
-				sbName = sbDialog.getValue();				
-				SchedulingBlock sb = sbTemplateDataModel.createSB(sbName.trim(), template, userConfigModel.getParamValues());
-				
-				SBTemplateView view = (SBTemplateView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SBTemplateView.ID);				
-				view.refreshAndSelect(sb);
-			}
-		} catch (Exception e) {
-			logger.log(Level.WARNING, "Could not create Scheduling Block", e);
-            ExceptionDetailsErrorDialog.openError(getShell(),
-                    "ERROR",
-                    "Could not create Scheduling Block",
-                    e);
-		}
-		
-	}
-
-	protected void transitionSB() {
-		SchedulingBlock sb = (SchedulingBlock) stateTransitionButton.getData();
-		try {
-			if (sb!=null) {
-				if (sb.getState().equals(SBState.SUBMITTED)) {
-					// transition to error, must enter reason
-					InputDialog sbDialog = new InputDialog(this.getSite().getShell(),
-							"Please enter reason for Deprecation",
-							"Please enter a reason:", 
-							"Deprecate due to major version upgrade", 
-							new IInputValidator() {								
-								@Override
-								public String isValid(String newText) {
-									if (newText==null || newText.trim().length()==0)
-										return "Please enter a reason for Deprecation!";
-									
-									return null;
-								}
-							});
-					if (sbDialog.open() != Window.OK)
-						return;
-					
-					String reason = sbDialog.getValue();					
-					sbTemplateDataModel.setSBState(sb.getId(), SBState.ERRORED, reason);
-					
-				} else if (sb.getState().equals(SBState.ERRORED)){
-					sbTemplateDataModel.setSBState(sb.getId(), SBState.SUBMITTED);
-				}
-				SBTemplateView view = (SBTemplateView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SBTemplateView.ID);				
-				view.refreshAndSelect(sb);
-			}
-		} catch (Exception e) {
-			logger.log(Level.WARNING, "Could not " + stateTransitionButton.getText() + " Scheduling Block " + sb.getId(), e);
-            ExceptionDetailsErrorDialog.openError(getShell(),
-                    "ERROR",
-                    "Could not " + stateTransitionButton.getText() + " Scheduling Block",
-                    e);
-		}
-	}
-
-	protected void exportTemplate() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public void display(long id) {
 		
 		try {
 			SchedulingBlock sb = sbTemplateDataModel.getSB(id);
 			
-			sbInfoLabel.setText("Scheduling Block: " + sb.getId());
+			setSBInfo(sb);
 			
-			loadTemplate(sbTemplateDataModel.getLatestVersion(sb.getTemplateName(), sb.getMajorVersion()), false);
 			loadSB(sb, false); 
 			
 		} catch (Exception e) {
@@ -471,10 +348,8 @@ public class SBMaintenanceView extends EditorPart {
 		sbTemplateDataModel = dataModel;
 		SBTemplate latestTemplate = sbTemplateDataModel.getLatestVersion(sb.getTemplateName());
 		boolean isLatest = (sb.getMajorVersion()==latestTemplate.getMajorVersion());
-		createSBButton.setEnabled(false);
-		stateTransitionButton.setVisible(false);
 
-		sbInfoLabel.setText("Scheduling Block: " + sb.getId());
+		setSBInfo(sb);
 
 		try {
 			loadTemplate(sbTemplateDataModel.getLatestVersion(sb.getTemplateName(), sb.getMajorVersion()), isLatest);
@@ -490,13 +365,14 @@ public class SBMaintenanceView extends EditorPart {
 
 	public void display(SBTemplate template, SBTemplateDataModel dataModel) {
 		
-		sbInfoLabel.setText("SB Template: " + template.getDisplayName());
+		sbInfoLabel[0].setText("SB Template: " + template.getDisplayName());
+		sbInfoLabel[1].setText("");
+		sbInfoLabel[2].setText("");
+		sbInfoLabel[3].setText("");
 
 		sbTemplateDataModel = dataModel;
 		SBTemplate latestTemplate = sbTemplateDataModel.getLatestVersion(template.getName());
 		boolean isLatest = (template.getVersion().equals(latestTemplate.getVersion()));
-		createSBButton.setEnabled(false);
-		stateTransitionButton.setVisible(false);
 		
 		try {
 			loadTemplate(template, isLatest);
@@ -510,21 +386,11 @@ public class SBMaintenanceView extends EditorPart {
 	}
 
 	private void loadSB(SchedulingBlock sb, boolean canCreateSB) throws Exception {
-		userConfigModel.loadValue(sb.getParameterMap());
-		populateTable(userParamTable, userConfigModel, true);
+		populateTable(obsParameterTable, sb.getParameterMap());
 		populateTable(obsVarTable, sb.getObsVariable());
 		
-		if (sb.getState().equals(SBState.ERRORED)) {
-			if (canCreateSB) {
-				stateTransitionButton.setText("Resubmit");
-				stateTransitionButton.setVisible(true);
-				stateTransitionButton.setData(sb);
-			}
-		} else if (sb.getState().equals(SBState.SUBMITTED)) {
-			stateTransitionButton.setText("Deprecate");
-			stateTransitionButton.setVisible(true);
-			stateTransitionButton.setData(sb);
-		}
+		SBTemplate template = sbTemplateDataModel.getLatestVersion(sb.getTemplateName(), sb.getMajorVersion());
+		scriptText.setText(template.getPythonScript());
 	}
 
 	private void populateTable(TableViewer tableViewer,
@@ -556,157 +422,9 @@ public class SBMaintenanceView extends EditorPart {
 		scriptText.setText(template.getPythonScript());
 		ParamDataModel.loadParamModel(template.getParameterMap(), userConfigModel, fixedConfigModel);
 
-		populateTable(userParamTable, userConfigModel, true);
-//		populateTable(fixedParamTable, fixedConfigModel, false);
-		
-		exportTemplate.setEnabled(true);
-		exportTemplate.setData(template);
-		
-		createSBButton.setEnabled(canCreateSB);
-		createSBButton.setData(template);		
+		populateTable(obsParameterTable, userConfigModel, true);
 	}
 
-	
-	private void createColumns(final Composite parent, final TableViewer table, boolean isEditable) {		
-		
-		TableViewerColumn col = createTableViewerColumn("Name", table);		
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return sb.getParam();
-			}
-		});	
-		
-		col = createTableViewerColumn("Description", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return sb.getDescription();
-			}
-		});	
-		
-		col = createTableViewerColumn("Type", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return sb.getType();
-			}
-		});	
-
-		col = createTableViewerColumn("Min Val", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return sb.getMin()==null ? "" : sb.getMin().toString();
-			}
-		});	
-
-		col = createTableViewerColumn("Max Val", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return sb.getMax()==null ? "" : sb.getMax().toString();
-			}
-		});	
-
-		col = createTableViewerColumn("Size", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return "" + sb.getSize();
-			}
-		});	
-
-		col = createTableViewerColumn("Enum", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return sb.getEnumStr();
-			}
-		});	
-
-		col = createTableViewerColumn("Step", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return "" + sb.getStep();
-			}
-		});	
-		
-		col = createTableViewerColumn("Unit", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				return "" + sb.getUnit();
-			}
-		});	
-
-		col = createTableViewerColumn("Value", table);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				SBParameter sb = (SBParameter) element;
-				String text = "" + sb.getStrValue();
-				return text;
-			}
-		});
-		
-		if (isEditable)
-			col.setEditingSupport(new ParameterValueEditor(table));
-	}
-
-	private TableViewerColumn createTableViewerColumn(String title, TableViewer table) {
-		TableViewerColumn viewerColumn = new TableViewerColumn(table,
-				SWT.NONE);
-		TableColumn column = viewerColumn.getColumn();
-		column.setText(title);
-		column.setResizable(true);
-		column.setMoveable(true);
-		
-		return viewerColumn;
-	}
-	
-	protected void setObsVarTableSize(Table table) {
-		Rectangle area = table.getParent().getClientArea();
-		Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		ScrollBar vBar = table.getVerticalBar();
-		int width = area.width - table.computeTrim(0, 0, 0, 0).width
-				- vBar.getSize().x;
-		if (size.y > area.height + table.getHeaderHeight()) {
-			// Subtract the scrollbar width from the total column width
-			// if a vertical scrollbar will be required
-			Point vBarSize = vBar.getSize();
-			width -= vBarSize.x;
-		}
-		Point oldSize = table.getSize();
-		if (oldSize.x > area.width) {
-			// table is getting smaller so make the columns
-			// smaller first and then resize the table to
-			// match the client area width
-			table.getColumn(0).setWidth(width * 20 / 100);
-			table.getColumn(1).setWidth(width * 80 / 100);
-			table.setSize(area.width, area.height);
-		} else {
-			// table is getting bigger so make the table
-			// bigger first and then make the columns wider
-			// to match the client area width
-			table.setSize(area.width, area.height);
-			table.getColumn(0).setWidth(width * 20 / 100);
-			table.getColumn(1).setWidth(width * 80 / 100);
-		}
-		table.pack();
-	}
-
-	
 	protected void setTableSize(Table table) {
 		Rectangle area = table.getParent().getClientArea();
 		Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -724,48 +442,20 @@ public class SBMaintenanceView extends EditorPart {
 			// table is getting smaller so make the columns
 			// smaller first and then resize the table to
 			// match the client area width
-			table.getColumn(0).setWidth(width * 15 / 100);
-			if (table.getColumnCount() > 10)
-				table.getColumn(1).setWidth(width * 20 / 100);
-			else
-				table.getColumn(1).setWidth(width * 25 / 100);
-
-			table.getColumn(2).setWidth(width * 5 / 100);
-			table.getColumn(3).setWidth(width * 5 / 100);
-			table.getColumn(4).setWidth(width * 5 / 100);
-			table.getColumn(5).setWidth(width * 5 / 100);
-			table.getColumn(6).setWidth(width * 5 / 100);
-			table.getColumn(7).setWidth(width * 5 / 100);
-			table.getColumn(8).setWidth(width * 5 / 100);
-			table.getColumn(9).setWidth(width * 25 / 100);
-			if (table.getColumnCount() > 10)
-				table.getColumn(10).setWidth(width * 5 / 100);
+			table.getColumn(0).setWidth(width * 30 / 100);
+			table.getColumn(1).setWidth(width * 70 / 100);
 			table.setSize(area.width, area.height);
 		} else {
 			// table is getting bigger so make the table
 			// bigger first and then make the columns wider
 			// to match the client area width
 			table.setSize(area.width, area.height);
-			table.getColumn(0).setWidth(width * 15 / 100);
-
-			if (table.getColumnCount() > 10)
-				table.getColumn(1).setWidth(width * 20 / 100);
-			else
-				table.getColumn(1).setWidth(width * 25 / 100);
-			table.getColumn(2).setWidth(width * 5 / 100);
-			table.getColumn(3).setWidth(width * 5 / 100);
-			table.getColumn(4).setWidth(width * 5 / 100);
-			table.getColumn(5).setWidth(width * 5 / 100);
-			table.getColumn(6).setWidth(width * 5 / 100);
-			table.getColumn(7).setWidth(width * 5 / 100);
-			table.getColumn(8).setWidth(width * 5 / 100);
-			table.getColumn(9).setWidth(width * 25 / 100);
-			if (table.getColumnCount() > 10)
-				table.getColumn(10).setWidth(width * 5 / 100);
+			table.getColumn(0).setWidth(width * 30 / 100);
+			table.getColumn(1).setWidth(width * 70 / 100);
 		}
 		table.pack();
 	}
-	
+
 	
 	protected String selectSource(String param) {
 		String sourceName = "";
@@ -773,7 +463,7 @@ public class SBMaintenanceView extends EditorPart {
 				getShell());
 		CalibrationSource source = sourceSelectionDialog.open();
 		if (source != null) {
-			for (TableItem tableItem : userParamTable.getTable().getItems()) {
+			for (TableItem tableItem : obsParameterTable.getTable().getItems()) {
 				SBParameter sb = (SBParameter) tableItem.getData();
 				try {
 					// source.name

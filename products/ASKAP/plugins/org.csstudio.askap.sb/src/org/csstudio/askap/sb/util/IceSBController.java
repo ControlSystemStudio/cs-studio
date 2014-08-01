@@ -138,7 +138,41 @@ public class IceSBController {
 	public List<SchedulingBlock> getSchedulingBlocks(long ids[]) throws Exception {
 		return getSchedulingBlocks(ids, -1);
 	}
-	
+
+	public SchedulingBlock getSchedulingBlock(long id) throws Exception {
+		if (sbProxy==null)
+			sbProxy = IceManager.getSBServiceProxy(Preferences.getSBIceName());
+		
+		
+		List<SchedulingBlock> sbList = new ArrayList<SchedulingBlock>();		
+		List<SchedulingBlockInfo> sbInfos = sbProxy.getMany(new long[]{id});
+		Collections.reverse(sbInfos);
+
+		if (sbInfos==null || sbInfos.size()==0)
+			return null;
+
+		SchedulingBlockInfo sbInfo = sbInfos.get(0);
+			
+		SchedulingBlock sb = new SchedulingBlock();
+		sb.setAliasName(sbInfo.alias);
+		sb.setId(id);
+		sb.setState(getObsState(sbInfo.state));
+		sb.setTemplateName(sbInfo.templateName);
+		sb.setMajorVersion(sbInfo.templateVersion);
+
+		
+		sb.setParameterMap(sbProxy.getObsParameters(id));
+		sb.setScheduledTime((long) Math.floor(sbProxy.getScheduledTime(id)*1000));
+		
+		Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");
+		sb.setObsVariable(obsVarMap);
+		sbList.add(sb);
+			
+		
+		return sb;
+
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see askap.ui.operatordisplay.controller.SBController#getSchedulingBlock(long[], long)
@@ -170,7 +204,6 @@ public class IceSBController {
 			sb.setMajorVersion(sbInfo.templateVersion);
 
 			
-			sb.setParameterMap(sbProxy.getObsParameters(id));
 			sb.setScheduledTime((long) Math.floor(sbProxy.getScheduledTime(id)*1000));
 			
 			Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");

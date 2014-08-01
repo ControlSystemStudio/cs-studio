@@ -162,11 +162,7 @@ public class SBTemplateDataModel {
 	
 	
 	public SchedulingBlock getSB(long id) throws Exception {
-		List<SchedulingBlock> sbList = controller.getSchedulingBlocks(new long[]{id});
-		if (sbList==null || sbList.size()==0)
-			return null;
-		
-		return sbList.get(0);
+		return controller.getSchedulingBlock(id);
 	}
 	/**
 	 * return all Scheduling Block for a particular template
