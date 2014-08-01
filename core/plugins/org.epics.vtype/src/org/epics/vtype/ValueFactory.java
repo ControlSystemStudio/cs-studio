@@ -755,12 +755,12 @@ public class ValueFactory {
      * <p>
      * Types are converted as follow:
      * <ul>
-     *   <li>Boolean -> VBoolean</li>
-     *   <li>Number -> corresponding VNumber</li>
-     *   <li>String -> VString</li>
-     *   <li>number array -> corresponding VNumberArray</li>
-     *   <li>ListNumber -> corresponding VNumberArray</li>
-     *   <li>List-> if all elements are String, VStringArray</li>
+     *   <li>Boolean -&gt; VBoolean</li>
+     *   <li>Number -&gt; corresponding VNumber</li>
+     *   <li>String -&gt; VString</li>
+     *   <li>number array -&gt; corresponding VNumberArray</li>
+     *   <li>ListNumber -&gt; corresponding VNumberArray</li>
+     *   <li>List -&gt; if all elements are String, VStringArray</li>
      * </ul>
      * 
      * @param javaObject the value to wrap
