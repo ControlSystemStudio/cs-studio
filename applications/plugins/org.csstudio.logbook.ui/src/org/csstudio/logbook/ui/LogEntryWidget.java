@@ -72,6 +72,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -134,7 +135,6 @@ public class LogEntryWidget extends Composite {
     private Label lblTags;
     private Composite composite;
     private ErrorBar errorBar;
-    private final boolean newWindow;
 
     private String imageToSelect;
 
@@ -163,7 +163,6 @@ public class LogEntryWidget extends Composite {
     public LogEntryWidget(final Composite parent, int style,
 	    final boolean newWindow, boolean editable) {
 	super(parent, style);
-	this.newWindow = newWindow;
 	this.editable = editable;
 	GridLayout gridLayout = new GridLayout(1, false);
 	gridLayout.verticalSpacing = 2;
@@ -175,7 +174,8 @@ public class LogEntryWidget extends Composite {
 	errorBar = new ErrorBar(this, SWT.NONE);
 
 	composite = new Composite(this, SWT.NONE | SWT.DOUBLE_BUFFERED);
-	GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+	GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+		1);
 	gd_composite.heightHint = 638;
 	composite.setLayoutData(gd_composite);
 	composite.setLayout(new FormLayout());
@@ -337,13 +337,14 @@ public class LogEntryWidget extends Composite {
 	fd_combo.right = new FormAttachment(100, -5);
 	level.setLayoutData(fd_combo);
 	level.addSelectionListener(new SelectionAdapter() {
-	    
+
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
 
 		try {
 		    LogEntryBuilder logEntryBuilder = logEntry(
-			    logEntryChangeset.getLogEntry()).setLevel(level.getItem(level.getSelectionIndex()));
+			    logEntryChangeset.getLogEntry()).setLevel(
+			    level.getItem(level.getSelectionIndex()));
 		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 		} catch (IOException e1) {
 		    setLastException(e1);
@@ -391,9 +392,11 @@ public class LogEntryWidget extends Composite {
 		    }
 		});
 
-	multiSelectionComboTag = new MultipleSelectionCombo<String>(composite, SWT.NONE);
+	multiSelectionComboTag = new MultipleSelectionCombo<String>(composite,
+		SWT.NONE);
 	FormData fd_multiSelectionCombo_1 = new FormData();
-	fd_multiSelectionCombo_1.top = new FormAttachment(btnAddTags, -3, SWT.TOP);
+	fd_multiSelectionCombo_1.top = new FormAttachment(btnAddTags, -3,
+		SWT.TOP);
 	fd_multiSelectionCombo_1.right = new FormAttachment(
 		multiSelectionComboLogbook, 0, SWT.RIGHT);
 	fd_multiSelectionCombo_1.left = new FormAttachment(
@@ -495,14 +498,7 @@ public class LogEntryWidget extends Composite {
 	btnAddScreenshot.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
-		try {
-		    LogEntryBuilder logEntryBuilder = logEntry(
-			    logEntryChangeset.getLogEntry()).attach(
-			    addScreenshot(true, newWindow));
-		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-		} catch (IOException e1) {
-		    setLastException(e1);
-		}
+		addScreenshot(true, newWindow);
 	    }
 	});
 	FormData fd_btnAddScreenshot = new FormData();
@@ -517,14 +513,7 @@ public class LogEntryWidget extends Composite {
 	btnCSSWindow.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
-		try {
-		    LogEntryBuilder logEntryBuilder = logEntry(
-			    logEntryChangeset.getLogEntry()).attach(
-			    addScreenshot(false, newWindow));
-		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
-		} catch (IOException e1) {
-		    setLastException(e1);
-		}
+		addScreenshot(false, newWindow);
 	    }
 	});
 	FormData fd_btnCSSWindow = new FormData();
@@ -756,12 +745,13 @@ public class LogEntryWidget extends Composite {
 	tbtmPropertyTreeComposite.setLayout(new GridLayout());
 
 	propertyTree = new PropertyTree(tbtmPropertyTreeComposite, SWT.NONE);
-	propertyTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+	propertyTree
+		.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 	tabFolder.showItem(tbtmAttachments);
 
 	final AtomicReference<PropertyChangeEvent> eventRef = new AtomicReference<PropertyChangeEvent>();
-	
+
 	this.addPropertyChangeListener(new PropertyChangeListener() {
 
 	    @Override
@@ -936,9 +926,9 @@ public class LogEntryWidget extends Composite {
     }
 
     private void updateUI() {
-    	if (isDisposed()) {
-    		return;
-    	}
+	if (isDisposed()) {
+	    return;
+	}
 	// Dispose the contributed tabs, only keep the default attachments tab
 	for (CTabItem cTabItem : tabFolder.getItems()) {
 	    if (!cTabItem.equals(tbtmAttachments)
@@ -955,11 +945,11 @@ public class LogEntryWidget extends Composite {
 	}
 	if (logEntry != null) {
 	    // Show the logEntry
-	    text.setText(logEntry.getText());	    
-	    if(!level.getItems().equals(levels)){
+	    text.setText(logEntry.getText());
+	    if (!level.getItems().equals(levels)) {
 		level.setItems(levels.toArray(new String[levels.size()]));
 	    }
-	    if(levels.contains(logEntry.getLevel())){
+	    if (levels.contains(logEntry.getLevel())) {
 		level.select(levels.indexOf(logEntry.getLevel()));
 	    }
 	    textDate.setText(DateFormat.getDateInstance().format(
@@ -968,11 +958,13 @@ public class LogEntryWidget extends Composite {
 	    if (!multiSelectionComboLogbook.getItems().equals(logbookNames)) {
 		multiSelectionComboLogbook.setItems(logbookNames);
 	    }
-	    multiSelectionComboLogbook.setSelection(LogEntryUtil.getLogbookNames(logEntry));
+	    multiSelectionComboLogbook.setSelection(LogEntryUtil
+		    .getLogbookNames(logEntry));
 	    if (!multiSelectionComboTag.getItems().equals(tagNames)) {
 		multiSelectionComboTag.setItems(tagNames);
 	    }
-	    multiSelectionComboTag.setSelection(LogEntryUtil.getTagNames(logEntry));
+	    multiSelectionComboTag.setSelection(LogEntryUtil
+		    .getTagNames(logEntry));
 
 	    if (logEntry.getAttachment().size() > 0) {
 		setExpanded(true);
@@ -1011,12 +1003,15 @@ public class LogEntryWidget extends Composite {
 		setLastException(e);
 	    }
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
-	    linkTable.setFiles(new ArrayList<Attachment>(logEntry.getAttachment()));
-	    propertyTree.setProperties(new ArrayList<Property>(logEntry.getProperties()));
+	    linkTable.setFiles(new ArrayList<Attachment>(logEntry
+		    .getAttachment()));
+	    propertyTree.setProperties(new ArrayList<Property>(logEntry
+		    .getProperties()));
 	} else {
 	    text.setText("");
 	    level.setItems(new String[0]);
-	    multiSelectionComboLogbook.setItems(Collections.<String> emptyList());
+	    multiSelectionComboLogbook.setItems(Collections
+		    .<String> emptyList());
 	    multiSelectionComboTag.setItems(Collections.<String> emptyList());
 	    imageStackWidget.setSelectedImageName(null);
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
@@ -1041,40 +1036,66 @@ public class LogEntryWidget extends Composite {
     }
 
     @SuppressWarnings("nls")
-    private AttachmentBuilder addScreenshot(final boolean full,
-	    final boolean newWindow) {
-	// Hide the shell that displays the dialog
-	// to keep the dialog itself out of the screenshot
-	if (newWindow)
-	    getShell().setVisible(false);
+    private void addScreenshot(final boolean full, final boolean newWindow) {
 
-	// Take the screen shot
-	final Image image = full ? Screenshot.getFullScreenshot() : Screenshot
-		.getApplicationScreenshot();
+	final Shell shell = getShell();
+	int delay = 0;
 
-	// Show the dialog again
-	if (newWindow)
-	    getShell().setVisible(true);
-
-	// Write to file
-	try {
-	    final File screenshot_file = File.createTempFile("screenshot",
-		    ".png");
-	    screenshot_file.deleteOnExit();
-
-	    final ImageLoader loader = new ImageLoader();
-	    loader.data = new ImageData[] { image.getImageData() };
-	    image.dispose();
-	    // Save
-	    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
-	    imageToSelect = screenshot_file.getName();
-	    return AttachmentBuilder
-		    .attachment(screenshot_file.getName())
-		    .inputStream(new FileInputStream(screenshot_file.getPath()));
-	} catch (Exception ex) {
-	    setLastException(ex);
+	if (newWindow) {
+	    // Hide the shell that displays the dialog
+	    // to keep the dialog itself out of the screenshot
+	    shell.setVisible(false);
+	    delay = 500;
 	}
-	return null;
+
+	// On Linux (X11, GTK), the dialog's shell may now be hidden, but the
+	// vacated area on the screen is blank, not redrawn.
+	// Force a redraw.
+	final Shell main_shell = PlatformUI.getWorkbench()
+		.getActiveWorkbenchWindow().getShell();
+	main_shell.forceActive();
+	main_shell.redraw();
+
+	// Delay screenshot in UI event queue to allow for the refresh
+	final Display display = shell.getDisplay();
+	display.timerExec(delay, new Runnable() {
+	    @Override
+	    public void run() {
+		// Take the screen shot
+		final Image image = full ? Screenshot.getFullScreenshot()
+			: Screenshot.getApplicationScreenshot();
+
+		if (newWindow) {
+		    // Show the dialog again
+		    shell.setVisible(true);
+		}
+
+		// Write to file
+		try {
+		    final File screenshot_file = File.createTempFile(
+			    "screenshot", ".png");
+		    screenshot_file.deleteOnExit();
+
+		    final ImageLoader loader = new ImageLoader();
+		    loader.data = new ImageData[] { image.getImageData() };
+		    image.dispose();
+		    // Save
+		    loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
+		    imageToSelect = screenshot_file.getName();
+
+		    LogEntryBuilder logEntryBuilder = logEntry(
+			    logEntryChangeset.getLogEntry()).attach(
+			    AttachmentBuilder.attachment(
+				    screenshot_file.getName()).inputStream(
+				    new FileInputStream(screenshot_file
+					    .getPath())));
+		    logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+		} catch (Exception ex) {
+		    setLastException(ex);
+		}
+	    }
+	});
+
     }
 
     public void setLastException(final Exception exception) {
@@ -1082,9 +1103,9 @@ public class LogEntryWidget extends Composite {
 
 	    @Override
 	    public void run() {
-	    	if (!errorBar.isDisposed()) {
-	    		errorBar.setException(exception);
-	    	}
+		if (!errorBar.isDisposed()) {
+		    errorBar.setException(exception);
+		}
 	    }
 	});
 

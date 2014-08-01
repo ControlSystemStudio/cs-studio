@@ -983,6 +983,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.utility.file"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.utility.httpd"
          download-size="0"
          install-size="0"
@@ -1103,13 +1110,6 @@
 
    <plugin
          id="org.csstudio.utility.pv.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.graphene"
          download-size="0"
          install-size="0"
          version="0.0.0"

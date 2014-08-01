@@ -108,11 +108,11 @@ public class LogViewer extends EditorPart {
 		    if (first instanceof LogEntry) {
 			logEntryWidget.setLogEntry((LogEntry) first);
 		    } else {
-			try {
-			    logEntryWidget.setLogEntry(LogEntryBuilder.withText("").build());
-			} catch (IOException e) {
-			    //
-			}
+//			try {
+//			    logEntryWidget.setLogEntry(LogEntryBuilder.withText("").build());
+//			} catch (IOException e) {
+//			    //
+//			}
 		    }
 		}
 	    }
