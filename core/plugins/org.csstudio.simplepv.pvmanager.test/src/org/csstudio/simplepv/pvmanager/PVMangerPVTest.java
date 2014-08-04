@@ -8,11 +8,11 @@
 
 package org.csstudio.simplepv.pvmanager;
 
-import org.csstudio.simplepv.test.BasicReadTester;
-import org.csstudio.simplepv.test.BasicReadWriteTester;
-import org.csstudio.simplepv.test.BufferingReadTester;
-import org.csstudio.simplepv.test.BulkTester;
-import org.csstudio.simplepv.test.BulkTester.PVNameProvider;
+import org.csstudio.simplepv.testutil.BasicReadTester;
+import org.csstudio.simplepv.testutil.BasicReadWriteTester;
+import org.csstudio.simplepv.testutil.BufferingReadTester;
+import org.csstudio.simplepv.testutil.BulkTester;
+import org.csstudio.simplepv.testutil.BulkTester.PVNameProvider;
 import org.junit.Before;
 import org.junit.Test;
 
