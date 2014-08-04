@@ -81,15 +81,15 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
         else
         {
    	        // Read translations from translations_file (in preferences.ini)
-        	try
-        	{
-        		translations = TranslationFileReader.getTranslations(translations_file);
-        	}
-        	catch (Exception ex)
-        	{
-        		Activator.getLogger().log(Level.WARNING, "Cannot open translation file", ex);
+            try
+            {
+                translations = TranslationFileReader.getTranslations(translations_file);
+            }
+            catch (Exception ex)
+            {
+                Activator.getLogger().log(Level.WARNING, "Cannot open translation file", ex);
                 queue.add(Severity.forError(), "Cannot open translation file, proceeding without translations");
-        	}
+            }
         }
 
         this.connection = connection;

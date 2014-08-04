@@ -72,11 +72,11 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         // running
         // -> Must always keep the annunciator view visible!
         // 
-    	// When closing the AnnunciatorView while it is still part of
-    	// another currently loaded perspective, the annunciator will just hide
-    	// to allow quick re-open in this view or when switching to one
-    	// of the other perspectives which had the annuniator open.
-    	// To the user that means: Annunciations continue even after closing
+        // When closing the AnnunciatorView while it is still part of
+        // another currently loaded perspective, the annunciator will just hide
+        // to allow quick re-open in this view or when switching to one
+        // of the other perspectives which had the annuniator open.
+        // To the user that means: Annunciations continue even after closing
         // the view.
         // Tried IPartListener2, but no good solution at this point.
 //        final IPartService service =
