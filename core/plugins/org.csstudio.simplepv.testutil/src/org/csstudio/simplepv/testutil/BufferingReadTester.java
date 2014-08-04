@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 
-package org.csstudio.simplepv.test;
+package org.csstudio.simplepv.testutil;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

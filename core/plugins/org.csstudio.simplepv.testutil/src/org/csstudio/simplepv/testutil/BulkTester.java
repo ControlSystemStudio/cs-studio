@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 
-package org.csstudio.simplepv.test;
+package org.csstudio.simplepv.testutil;
 
 import java.util.Calendar;
 import java.util.HashSet;
