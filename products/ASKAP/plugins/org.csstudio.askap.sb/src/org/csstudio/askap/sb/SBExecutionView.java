@@ -61,7 +61,7 @@ public class SBExecutionView extends EditorPart {
 	public static final String ID = "org.csstudio.askap.sb.SBExecutionView";
 	private static Logger logger = Logger.getLogger(SBExecutionView.class.getName());
 
-	private static final int NUM_OF_COLUMNS = 6;
+	private static final int NUM_OF_COLUMNS = 7;
 	
 	Table executedTable = null;
 	Table scheduleTable = null;
@@ -177,13 +177,15 @@ public class SBExecutionView extends EditorPart {
 		
 		Label executedTitle = new Label(page, SWT.NONE);
 		executedTitle.setText("Executing and executed Scheduling Block (last " + Preferences.getSBExecutionMaxNumberSB()  + " scheduling blocks):");
+		GridData gd = new GridData();
+		gd.horizontalSpan = 2;
+		gd.grabExcessHorizontalSpace = false;
+		executedTitle.setLayoutData(gd);
 
-		statesCombo = new MultiChoice<String>(page, SWT.READ_ONLY);
-		
-		statesCombo.addAll(STATES);
-		
+		statesCombo = new MultiChoice<String>(page, SWT.READ_ONLY);		
+		statesCombo.addAll(STATES);		
 		GridData gridData = new GridData();
-		gridData.horizontalSpan = NUM_OF_COLUMNS-2;
+		gridData.horizontalSpan = 4;
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		statesCombo.setLayoutData(gridData);
@@ -201,6 +203,8 @@ public class SBExecutionView extends EditorPart {
 		
 		waitLabel = new Label(page, SWT.NONE);
 		waitLabel.setImage(WAIT_IMAGE);
+		
+		
 				
 		executedTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		executedTable.setLinesVisible (true);
@@ -271,13 +275,17 @@ public class SBExecutionView extends EditorPart {
 		statusText.setText("Executive Status: ");
 		
 		status = new Label(page, 0);		
-		g3 = new GridData();
-		g3.horizontalAlignment = GridData.FILL;	
-		g3.grabExcessHorizontalSpace = true;
-		g3.horizontalAlignment = SWT.LEFT;
-		status.setLayoutData(g3);
+		GridData g4 = new GridData();
+		g4.grabExcessHorizontalSpace = false;
+		g4.horizontalAlignment = SWT.LEFT;
+		status.setLayoutData(g4);
 		status.setImage(GREY_LED_IMAGE);
 
+		Label dummy = new Label(page, 0);
+		GridData g5 = new GridData();
+		g5.grabExcessHorizontalSpace = true;
+		g5.horizontalAlignment = SWT.FILL;
+		dummy.setLayoutData(g5);
 		
 		startButton = new Button(page, SWT.PUSH);
 		startButton.setText("Start Executive");
@@ -316,6 +324,7 @@ public class SBExecutionView extends EditorPart {
 		editButton = new Button(page, SWT.PUSH);
 		editButton.setText("Modify Scheduling List");
 		editButton.setEnabled(false);
+		editButton.setVisible(false);
 		editButton.addSelectionListener(new SelectionListener() {	
 			public void widgetSelected(SelectionEvent event) {
 				try {
@@ -336,9 +345,9 @@ public class SBExecutionView extends EditorPart {
 		
 		Label scheduleTitle = new Label(page, SWT.NONE);
 		scheduleTitle.setText("Scheduled Blocks:");
-		gridData = new GridData();
-		gridData.horizontalSpan = NUM_OF_COLUMNS;
-		scheduleTitle.setLayoutData(gridData);
+		GridData gd1 = new GridData();
+		gd1.horizontalSpan = NUM_OF_COLUMNS;
+		scheduleTitle.setLayoutData(gd1);
 		
 		scheduleTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		scheduleTable.setLinesVisible (true);
@@ -362,13 +371,13 @@ public class SBExecutionView extends EditorPart {
 		scheduleTable.setItemCount(dataModel.getScheduledSBCount());
 		setTableSize(scheduleTable);
 		
-		GridData g4 = new GridData();
-		g4.horizontalAlignment = GridData.FILL;	
-		g4.verticalAlignment = GridData.FILL;	
-		g4.grabExcessHorizontalSpace = true;
-		g4.grabExcessVerticalSpace = true;
-		g4.horizontalSpan = NUM_OF_COLUMNS;
-		scheduleTable.setLayoutData(g4);
+		GridData g6 = new GridData();
+		g6.horizontalAlignment = GridData.FILL;	
+		g6.verticalAlignment = GridData.FILL;	
+		g6.grabExcessHorizontalSpace = true;
+		g6.grabExcessVerticalSpace = true;
+		g6.horizontalSpan = NUM_OF_COLUMNS;
+		scheduleTable.setLayoutData(g6);
 		
 		scheduleTable.addListener(SWT.SetData, new Listener() {
 			public void handleEvent(Event event) {
