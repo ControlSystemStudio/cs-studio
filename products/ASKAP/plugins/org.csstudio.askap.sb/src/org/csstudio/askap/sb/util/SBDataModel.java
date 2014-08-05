@@ -54,6 +54,8 @@ public class SBDataModel {
 	boolean keepRunning = true;
 	Object pollingThreadLock = new Object();
 	
+	int numberOfRetries = 1;
+	
 	public SBDataModel() {
 		executiveMonitorController = new IceMonitoringController(Preferences.getExecutiveMonitorIceName());
 		executivelogController = new IceExecutiveLogController(Preferences.getExecutiveLogSubscriberName(),
@@ -101,15 +103,19 @@ public class SBDataModel {
 							if (b1 || b2) {
 								DataChangeEvent event = new DataChangeEvent();
 								pollingThreadListener.dataChanged(event);
-							}							
-						} catch (Exception e) {
-							logger.log(Level.WARNING, "Could not poll SB state" + e.getMessage());
-						}
-						
-						try {
+							}
+							numberOfRetries = 1;
 							pollingThreadLock.wait(Preferences.getSBExecutionStatePollingPeriod());
 						} catch (Exception e) {
-							logger.log(Level.INFO, "Wait interrupted " + e.getMessage());
+							try {
+								pollingThreadLock.wait(Preferences.getSBExecutionStatePollingPeriod()*numberOfRetries);
+								numberOfRetries++;
+								if (numberOfRetries>10)
+									numberOfRetries = 10;
+							} catch (Exception ex) {
+								logger.log(Level.INFO, "Wait interrupted " + e.getMessage());
+							}
+							logger.log(Level.WARNING, "Could not poll SB state" + e.getMessage());
 						}
 					}
 					
