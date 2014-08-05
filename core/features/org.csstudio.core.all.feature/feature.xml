@@ -137,12 +137,12 @@
       version="0.0.0"
       unpack="false"/>
 
-   <!--plugin
+   <plugin
       id="org.csstudio.logging.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/-->
+      unpack="false"/>
 
    <plugin
       id="org.csstudio.logging.ui"
