@@ -79,7 +79,7 @@ private void installButtonActionPerformed()
 	}
 	catch(Exception exception)
 	{
-		Console.getInstance().println("An error occured while loading the plugins list!");
+		Console.getInstance().println("An error occurred while loading the plugins list!");
 		Console.getInstance().println(exception);
 	}
 }

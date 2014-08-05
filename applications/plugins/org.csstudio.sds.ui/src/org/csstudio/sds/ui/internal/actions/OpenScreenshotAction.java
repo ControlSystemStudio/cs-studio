@@ -40,7 +40,7 @@ public class OpenScreenshotAction extends Action {
 
     public OpenScreenshotAction() {
         this.setText("Capture Me");
-        this.setToolTipText("Capture the content of the SDS display and open the scrennshot plugin in CSS.");
+        this.setToolTipText("Capture the content of the SDS display and open the screenshot plugin in CSS.");
         this.setEnabled(true);
     }
     

@@ -132,7 +132,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             {   // Not holding the lock; could have been another subscription while we established this one...
                 if (this.value_monitor != null)
                 {
-                    logger.log(Level.FINE, getName() + " already had a subscribtion");
+                    logger.log(Level.FINE, getName() + " already had a subscription");
                     this.value_monitor.clear();
                 }
                 this.value_monitor = value_monitor;

@@ -94,7 +94,7 @@ public class EPICSPlug extends AbstractPlug
 			try {
 				r.run();
 			} catch (final Throwable th) {
-				Logger.getLogger(this.getClass()).warn("Sheduled task had unhandled error.", th);
+				Logger.getLogger(this.getClass()).warn("Scheduled task had unhandled error.", th);
 			}
 		}
 	}
@@ -570,7 +570,7 @@ public class EPICSPlug extends AbstractPlug
 		} catch (final IllegalStateException ise) {
 			return defaultPropertyImplClass;
 		} catch (final Throwable th) {
-			throw new RuntimeException("Failed create CA channel tqo determine channel type.", th);
+			throw new RuntimeException("Failed create CA channel to determine channel type.", th);
 		}
 		finally {
 			if (channel != null && channel.getConnectionState() != Channel.CLOSED) {
@@ -694,7 +694,7 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	public synchronized Context getContext() {
 		if (context==null) {
-			throw new IllegalStateException("Connection to EPICS has beeen already destroyed.");
+			throw new IllegalStateException("Connection to EPICS has been already destroyed.");
 		}
 		return context;
 	}
@@ -723,7 +723,7 @@ public class EPICSPlug extends AbstractPlug
 
 		} catch (final Throwable th) {
 			// rethrow to abort EPICS plug instance creation
-			throw new RemoteException(this,"Failed to initilze EPICS plug: "+PlugUtilities.toShortErrorReport(th), th);
+			throw new RemoteException(this,"Failed to initialize EPICS plug: "+PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
 
@@ -751,7 +751,7 @@ public class EPICSPlug extends AbstractPlug
 
 		} catch (final Throwable th) {
 			// rethrow to abort EPICS plug instance creation
-			throw new RemoteException(this,"Failed to initilze EPICS plug: "+PlugUtilities.toShortErrorReport(th), th);
+			throw new RemoteException(this,"Failed to initialize EPICS plug: "+PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
 

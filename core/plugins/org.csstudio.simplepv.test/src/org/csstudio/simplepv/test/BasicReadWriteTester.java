@@ -69,7 +69,7 @@ public class BasicReadWriteTester {
 
 			@Override
 			public void exceptionOccurred(IPV pv, Exception exception) {
-				System.err.println("Exception Occured: " + exception);
+				System.err.println("Exception Occurred: " + exception);
 			}
 
 			@Override

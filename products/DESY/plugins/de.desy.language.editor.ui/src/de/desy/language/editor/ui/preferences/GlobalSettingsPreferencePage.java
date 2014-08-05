@@ -36,7 +36,7 @@ public class GlobalSettingsPreferencePage extends FieldEditorPreferencePage
 
 		editor = new BooleanFieldEditor(PreferenceConstants.MARGIN_PAINTER_ENABLE.getPreferenceStoreId(), "Enables margin highlighting", getFieldEditorParent());
 		this.addField(editor);
-		editor = new ColorFieldEditor(PreferenceConstants.MARGIN_PAINTER_COLOR.getPreferenceStoreId(), "Color for marging line", getFieldEditorParent());
+		editor = new ColorFieldEditor(PreferenceConstants.MARGIN_PAINTER_COLOR.getPreferenceStoreId(), "Color for margin line", getFieldEditorParent());
 		this.addField(editor);
 		editor = new IntegerFieldEditor(PreferenceConstants.MARGIN_COLUMNS.getPreferenceStoreId(), "Columns for margins", getFieldEditorParent());
 		this.addField(editor);

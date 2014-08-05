@@ -36,7 +36,7 @@ public class AssertionFailure extends RuntimeException {
 
 	private static final Logger log = LoggerFactory.getLogger( AssertionFailure.class );
 
-	private static final String MESSAGE = "an assertion failure occured" +
+	private static final String MESSAGE = "an assertion failure occurred" +
 			" (this may indicate a bug in Hibernate, but is more likely due" +
 			" to unsafe use of the session)";
 

@@ -511,7 +511,7 @@ public class YAxis extends Axis
             return;
         if (Chart.debug)
             System.out.println("paint axis '" + getLabel() + "', "
-                          + region.height + " pixel heigh");
+                          + region.height + " pixel height");
         final GC gc = event.gc;
         final Point char_size = gc.textExtent("X"); //$NON-NLS-1$
         
