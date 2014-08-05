@@ -46,6 +46,8 @@ M extends AbstractPointDatasetGraph2DWidgetModel> extends AbstractSelectionWidge
 			widget.setConfigurable(false);
 		}
 		widget.setResizableAxis(model.isResizableAxis());
+		widget.setXAxisRange(model.getXAxisRange());
+		widget.setYAxisRange(model.getYAxisRange());
 	}
 	
 	@Override
@@ -55,6 +57,8 @@ M extends AbstractPointDatasetGraph2DWidgetModel> extends AbstractSelectionWidge
 		setPropertyChangeHandler(PROP_Y_FORMULA, getReconfigureWidgetPropertyChangeHandler());
 		setPropertyChangeHandler(AbstractPointDatasetGraph2DWidgetModel.CONFIGURABLE, getReconfigureWidgetPropertyChangeHandler());
 		setPropertyChangeHandler(PROP_RESIZABLE_AXIS, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_X_AXIS_RANGE, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_Y_AXIS_RANGE, getReconfigureWidgetPropertyChangeHandler());
 	}
 	
 }

@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -26,6 +27,7 @@ import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListMath;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.SortedListView;
+import org.epics.util.stats.Ranges;
 
 /**
  * Renderer for a line graph with multiple y axes.
@@ -70,8 +72,8 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
     private List<ListDouble> yReferenceValues;
     private List<List<String>> yReferenceLabels;
     private Range emptyRange;
-    private AxisRangeInstance xAxisRange = AxisRanges.integrated().createInstance();
-    private AxisRangeInstance yAxisRange = AxisRanges.integrated().createInstance();
+    private AxisRangeInstance xAxisRange = AxisRanges.auto().createInstance();
+    private AxisRangeInstance yAxisRange = AxisRanges.auto().createInstance();
     private List<AxisRangeInstance> yAxisRanges;
     private ValueScale xValueScale = ValueScales.linearScale();
     private ValueScale yValueScale = ValueScales.linearScale();
@@ -203,7 +205,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
             xLabelMaxHeight = labelFontMetrics.getHeight() - labelFontMetrics.getLeading();
             totalYMargins = xLabelMaxHeight + marginBetweenGraphs + topMargin + bottomMargin + topAreaMargin + bottomAreaMargin + xLabelMargin + 1;
             getNumGraphsSplit(data);
-            Range datasetRange = RangeUtil.range(0,numGraphs-1);
+            Range datasetRange = Ranges.range(0,numGraphs-1);
             valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
             calculateRanges(dataRangesX, dataRangesY, numGraphs);
             setGraphBoundaries(data);
@@ -213,7 +215,7 @@ public class MultiAxisLineGraph2DRenderer extends Graph2DRenderer<MultiAxisLineG
             drawGraphArea();
         }else{
             getNumGraphs(data);
-            Range datasetRange = RangeUtil.range(0,numGraphs-1);
+            Range datasetRange = Ranges.range(0,numGraphs-1);
             valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
             calculateRanges(dataRangesX, dataRangesY, numGraphs);
             calculateLabels();

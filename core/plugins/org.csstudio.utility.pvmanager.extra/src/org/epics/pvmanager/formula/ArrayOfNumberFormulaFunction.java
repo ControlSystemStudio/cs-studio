@@ -7,9 +7,10 @@ package org.epics.pvmanager.formula;
 import java.util.Arrays;
 import java.util.List;
 import org.epics.util.array.ListDouble;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.Time;
+import org.epics.util.stats.Statistics;
+import org.epics.util.stats.StatisticsUtil;
+import org.epics.util.text.NumberFormats;
+import org.epics.vtype.Display;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.ValueFactory;
@@ -74,11 +75,31 @@ class ArrayOfNumberFormulaFunction implements FormulaFunction {
                 return args.size();
             }
         };
+        
+        VNumber firstNonNull = null;
+        for (Object object : args) {
+            if (object != null) {
+                firstNonNull = (VNumber) object;
+            }
+        }
+        
+        Display display = displayNone();
+        if (firstNonNull != null) {
+            if (ValueUtil.displayHasValidDisplayLimits(firstNonNull)) {
+                display = firstNonNull;
+            } else {
+                Statistics stats = StatisticsUtil.statisticsOf(data);
+                display = newDisplay(stats.getMinimum().doubleValue(), stats.getMinimum().doubleValue(), stats.getMinimum().doubleValue(), 
+                        "", NumberFormats.toStringFormat(), stats.getMaximum().doubleValue(), stats.getMaximum().doubleValue(), stats.getMaximum().doubleValue(),
+                        stats.getMinimum().doubleValue(), stats.getMaximum().doubleValue());
+            }
+            
+        }
 
         return ValueFactory.newVNumberArray(data,
                 ValueUtil.highestSeverityOf(args, false),
 		ValueUtil.latestValidTimeOrNowOf(args),
-                displayNone());
+                display);
     }
 
 }

@@ -5,23 +5,12 @@
 package org.epics.pvmanager.file;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
 import org.epics.pvmanager.ChannelWriteCallback;
-import org.epics.pvmanager.ChannelHandlerReadSubscription;
 import org.epics.pvmanager.MultiplexedChannelHandler;
-import org.epics.pvmanager.ChannelHandlerWriteSubscription;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.epics.pvmanager.*;
-import static org.epics.vtype.ValueFactory.*;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ListDouble;
-import org.epics.vtype.VTable;
-import org.epics.vtype.VType;
-import org.epics.vtype.io.CSVIO;
 
 /**
  * Implementation for channels of a {@link LocalDataSource}.
@@ -30,18 +19,33 @@ import org.epics.vtype.io.CSVIO;
  */
 class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
     
-    private File file;
+    private final File file;
+    private final FileDataSource dataSource;
+    private final Runnable updateTask = new Runnable() {
 
-    FileChannelHandler(String channelName, File file) {
+        @Override
+        public void run() {
+            update();
+        }
+    };
+        
+    private final FileFormat format;
+
+    FileChannelHandler(FileDataSource dataSource, String channelName, File file, FileFormat format) {
         super(channelName);
         this.file = file;
+        this.dataSource = dataSource;
+        this.format = format;
     }
     
-    private CSVIO io = new CSVIO();
-
     @Override
     public void connect() {
         processConnection(file);
+        update();
+        dataSource.getFileWatchService().addWatcher(file, updateTask);
+    }
+    
+    private void update() {
         try {
             Object value = readValueFromFile(file);
             processMessage(value);
@@ -50,14 +54,18 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
         }
     }
     
-    protected Object readValueFromFile(File file) throws Exception {
-        FileReader fileReader = new FileReader(file);
-        VTable value = io.importVTable(fileReader);
-        return value;
+    protected Object readValueFromFile(File file) {
+        try (FileInputStream in = new FileInputStream(file)) {
+            return format.readValue(in);
+        } catch (Exception e) {
+            reportExceptionToAllReadersAndWriters(e);
+        }
+        return null;
     }
 
     @Override
     public void disconnect() {
+        dataSource.getFileWatchService().removeWatcher(file, updateTask);
         processConnection(null);
     }
 
@@ -67,8 +75,26 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
     }
 
     @Override
+    protected boolean isWriteConnected(File payload) {
+        return isConnected(payload) && format.isWriteSupported();
+    }
+
+    @Override
     protected void write(Object newValue, ChannelWriteCallback callback) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (file == null) {
+            callback.channelWritten(new RuntimeException("Channel is closed"));
+        }
+        
+        if (format == null || !format.isWriteSupported()) {
+            callback.channelWritten(new RuntimeException("Format does not support write"));
+        }
+        
+        try (OutputStream out = new FileOutputStream(file)) {
+            format.writeValue(newValue, out);
+            callback.channelWritten(null);
+        } catch (Exception ex) {
+            callback.channelWritten(ex);
+        }
     }
 
 }

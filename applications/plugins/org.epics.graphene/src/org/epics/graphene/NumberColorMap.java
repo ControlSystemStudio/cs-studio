@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
+
 /**
  * A function that associates a numeric value with an RBG color.
  * <p>

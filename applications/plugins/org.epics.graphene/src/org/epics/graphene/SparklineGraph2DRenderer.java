@@ -20,13 +20,14 @@ import org.epics.util.array.SortedListView;
  *      <li>Does not have axes labels</li>
  *      <li>Does not have scales display on the axes</li>
  *      <li>Often draws small circles at important values on the line</li>
- *      <li>Important values are:</li>
+ *      <li>Important values are:
  *          <ul>
  *              <li>First Value</li>
  *              <li>Last Value</li>
  *              <li>Maximum Value</li>
  *              <li>Minimum Value</li>
  *          </ul>
+ *      </li>
  *      <li>Often maintains a high width to height aspect ratio.
  *          This can be manually setting the appropriate image width and height,
  *          or can be applied in the code through the <code>aspectRatio</code>.
@@ -126,7 +127,7 @@ public class SparklineGraph2DRenderer extends Graph2DRenderer<SparklineGraph2DRe
         }
         
         //General Rendering
-        calculateRanges(data.getXStatistics(), data.getYStatistics());
+        calculateRanges(data.getXStatistics(), data.getXDisplayRange(), data.getYStatistics(), data.getYDisplayRange());
         calculateGraphArea();
 
         drawBackground();

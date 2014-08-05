@@ -5,6 +5,7 @@
 
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.Color;
 import java.util.Collections;
 import java.util.Map;

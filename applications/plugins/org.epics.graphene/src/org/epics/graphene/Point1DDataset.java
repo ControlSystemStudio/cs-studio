@@ -4,7 +4,9 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Statistics;
 import org.epics.util.array.ListNumber;
+import org.epics.util.stats.Range;
 
 /**
  * A dataset consisting on a set of 1D points.
@@ -33,6 +35,13 @@ public interface Point1DDataset {
      * @return statistical information; null if no actual values in the dataset
      */
     public Statistics getStatistics();
+    
+    /**
+     * The suggested range to display the values.
+     * 
+     * @return the suggested display range
+     */
+    public Range getDisplayRange();
 
     /**
      * The number of points in the dataset.

@@ -1321,7 +1321,7 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "primary"
-    // org/epics/pvmanager/formula/Formula.g:117:1: primary returns [DesiredRateExpression<?> result] : ( functionExpression | parExpression | pv | numericLiteral | stringLiteral );
+    // org/epics/pvmanager/formula/Formula.g:117:1: primary returns [DesiredRateExpression<?> result] : ( functionExpression | parExpression | pv | numericLiteral | stringLiteral | constant );
     public final DesiredRateExpression<?> primary() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
@@ -1336,14 +1336,53 @@ public class FormulaParser extends Parser {
 
         DesiredRateExpression<?> stringLiteral8 =null;
 
+        DesiredRateExpression<?> constant9 =null;
+
 
         try {
-            // org/epics/pvmanager/formula/Formula.g:118:5: ( functionExpression | parExpression | pv | numericLiteral | stringLiteral )
-            int alt13=5;
+            // org/epics/pvmanager/formula/Formula.g:118:5: ( functionExpression | parExpression | pv | numericLiteral | stringLiteral | constant )
+            int alt13=6;
             switch ( input.LA(1) ) {
             case FUNCTION:
                 {
-                alt13=1;
+                switch ( input.LA(2) ) {
+                case 20:
+                    {
+                    alt13=1;
+                    }
+                    break;
+                case EOF:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 21:
+                case 22:
+                case 23:
+                case 24:
+                case 25:
+                case 26:
+                case 27:
+                case 28:
+                case 29:
+                case 31:
+                case 32:
+                case 33:
+                case 34:
+                case 35:
+                case 36:
+                    {
+                    alt13=6;
+                    }
+                    break;
+                default:
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 13, 1, input);
+
+                    throw nvae;
+
+                }
+
                 }
                 break;
             case 20:
@@ -1441,6 +1480,19 @@ public class FormulaParser extends Parser {
 
                     }
                     break;
+                case 6 :
+                    // org/epics/pvmanager/formula/Formula.g:123:9: constant
+                    {
+                    pushFollow(FOLLOW_constant_in_primary1032);
+                    constant9=constant();
+
+                    state._fsp--;
+
+
+                    result = constant9;
+
+                    }
+                    break;
 
             }
         }
@@ -1459,34 +1511,34 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "functionExpression"
-    // org/epics/pvmanager/formula/Formula.g:125:1: functionExpression returns [DesiredRateExpression<?> result] : FUNCTION '(' op= expression ( ',' op2= expression )* ')' ;
+    // org/epics/pvmanager/formula/Formula.g:126:1: functionExpression returns [DesiredRateExpression<?> result] : FUNCTION '(' op= expression ( ',' op2= expression )* ')' ;
     public final DesiredRateExpression<?> functionExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
 
-        Token FUNCTION9=null;
+        Token FUNCTION10=null;
         DesiredRateExpression<?> op =null;
 
         DesiredRateExpression<?> op2 =null;
 
 
         try {
-            // org/epics/pvmanager/formula/Formula.g:126:5: ( FUNCTION '(' op= expression ( ',' op2= expression )* ')' )
-            // org/epics/pvmanager/formula/Formula.g:126:9: FUNCTION '(' op= expression ( ',' op2= expression )* ')'
+            // org/epics/pvmanager/formula/Formula.g:127:5: ( FUNCTION '(' op= expression ( ',' op2= expression )* ')' )
+            // org/epics/pvmanager/formula/Formula.g:127:9: FUNCTION '(' op= expression ( ',' op2= expression )* ')'
             {
-            FUNCTION9=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_functionExpression1045); 
+            FUNCTION10=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_functionExpression1057); 
 
-            match(input,20,FOLLOW_20_in_functionExpression1047); 
+            match(input,20,FOLLOW_20_in_functionExpression1059); 
 
-            pushFollow(FOLLOW_expression_in_functionExpression1051);
+            pushFollow(FOLLOW_expression_in_functionExpression1063);
             op=expression();
 
             state._fsp--;
 
 
-            String name = (FUNCTION9!=null?FUNCTION9.getText():null); DesiredRateExpressionList args = new DesiredRateExpressionListImpl().and(op);
+            String name = (FUNCTION10!=null?FUNCTION10.getText():null); DesiredRateExpressionList args = new DesiredRateExpressionListImpl().and(op);
 
-            // org/epics/pvmanager/formula/Formula.g:127:9: ( ',' op2= expression )*
+            // org/epics/pvmanager/formula/Formula.g:128:9: ( ',' op2= expression )*
             loop14:
             do {
                 int alt14=2;
@@ -1501,11 +1553,11 @@ public class FormulaParser extends Parser {
 
                 switch (alt14) {
             	case 1 :
-            	    // org/epics/pvmanager/formula/Formula.g:127:13: ',' op2= expression
+            	    // org/epics/pvmanager/formula/Formula.g:128:13: ',' op2= expression
             	    {
-            	    match(input,25,FOLLOW_25_in_functionExpression1067); 
+            	    match(input,25,FOLLOW_25_in_functionExpression1079); 
 
-            	    pushFollow(FOLLOW_expression_in_functionExpression1071);
+            	    pushFollow(FOLLOW_expression_in_functionExpression1083);
             	    op2=expression();
 
             	    state._fsp--;
@@ -1522,7 +1574,7 @@ public class FormulaParser extends Parser {
             } while (true);
 
 
-            match(input,21,FOLLOW_21_in_functionExpression1086); 
+            match(input,21,FOLLOW_21_in_functionExpression1098); 
 
             result = function(name, args);
 
@@ -1544,29 +1596,29 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "parExpression"
-    // org/epics/pvmanager/formula/Formula.g:131:1: parExpression returns [DesiredRateExpression<?> result] : '(' expression ')' ;
+    // org/epics/pvmanager/formula/Formula.g:132:1: parExpression returns [DesiredRateExpression<?> result] : '(' expression ')' ;
     public final DesiredRateExpression<?> parExpression() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
 
-        DesiredRateExpression<?> expression10 =null;
+        DesiredRateExpression<?> expression11 =null;
 
 
         try {
-            // org/epics/pvmanager/formula/Formula.g:132:5: ( '(' expression ')' )
-            // org/epics/pvmanager/formula/Formula.g:132:9: '(' expression ')'
+            // org/epics/pvmanager/formula/Formula.g:133:5: ( '(' expression ')' )
+            // org/epics/pvmanager/formula/Formula.g:133:9: '(' expression ')'
             {
-            match(input,20,FOLLOW_20_in_parExpression1111); 
+            match(input,20,FOLLOW_20_in_parExpression1123); 
 
-            pushFollow(FOLLOW_expression_in_parExpression1113);
-            expression10=expression();
+            pushFollow(FOLLOW_expression_in_parExpression1125);
+            expression11=expression();
 
             state._fsp--;
 
 
-            match(input,21,FOLLOW_21_in_parExpression1115); 
+            match(input,21,FOLLOW_21_in_parExpression1127); 
 
-            result = expression10;
+            result = expression11;
 
             }
 
@@ -1586,20 +1638,20 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "pv"
-    // org/epics/pvmanager/formula/Formula.g:135:1: pv returns [DesiredRateExpression<?> result] : PV ;
+    // org/epics/pvmanager/formula/Formula.g:136:1: pv returns [DesiredRateExpression<?> result] : PV ;
     public final DesiredRateExpression<?> pv() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
 
-        Token PV11=null;
+        Token PV12=null;
 
         try {
-            // org/epics/pvmanager/formula/Formula.g:136:5: ( PV )
-            // org/epics/pvmanager/formula/Formula.g:136:9: PV
+            // org/epics/pvmanager/formula/Formula.g:137:5: ( PV )
+            // org/epics/pvmanager/formula/Formula.g:137:9: PV
             {
-            PV11=(Token)match(input,PV,FOLLOW_PV_in_pv1140); 
+            PV12=(Token)match(input,PV,FOLLOW_PV_in_pv1152); 
 
-            result = cachedPv(unquote((PV11!=null?PV11.getText():null)));
+            result = cachedPv(unquote((PV12!=null?PV12.getText():null)));
 
             }
 
@@ -1619,16 +1671,16 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "numericLiteral"
-    // org/epics/pvmanager/formula/Formula.g:139:1: numericLiteral returns [DesiredRateExpression<?> result] : ( INT | FLOAT );
+    // org/epics/pvmanager/formula/Formula.g:140:1: numericLiteral returns [DesiredRateExpression<?> result] : ( INT | FLOAT );
     public final DesiredRateExpression<?> numericLiteral() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
 
-        Token INT12=null;
-        Token FLOAT13=null;
+        Token INT13=null;
+        Token FLOAT14=null;
 
         try {
-            // org/epics/pvmanager/formula/Formula.g:140:5: ( INT | FLOAT )
+            // org/epics/pvmanager/formula/Formula.g:141:5: ( INT | FLOAT )
             int alt15=2;
             switch ( input.LA(1) ) {
             case INT:
@@ -1651,20 +1703,20 @@ public class FormulaParser extends Parser {
 
             switch (alt15) {
                 case 1 :
-                    // org/epics/pvmanager/formula/Formula.g:140:9: INT
+                    // org/epics/pvmanager/formula/Formula.g:141:9: INT
                     {
-                    INT12=(Token)match(input,INT,FOLLOW_INT_in_numericLiteral1165); 
+                    INT13=(Token)match(input,INT,FOLLOW_INT_in_numericLiteral1177); 
 
-                    result = vConst(Integer.parseInt((INT12!=null?INT12.getText():null)));
+                    result = vConst(Integer.parseInt((INT13!=null?INT13.getText():null)));
 
                     }
                     break;
                 case 2 :
-                    // org/epics/pvmanager/formula/Formula.g:141:9: FLOAT
+                    // org/epics/pvmanager/formula/Formula.g:142:9: FLOAT
                     {
-                    FLOAT13=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_numericLiteral1177); 
+                    FLOAT14=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_numericLiteral1189); 
 
-                    result = vConst(Double.parseDouble((FLOAT13!=null?FLOAT13.getText():null)));
+                    result = vConst(Double.parseDouble((FLOAT14!=null?FLOAT14.getText():null)));
 
                     }
                     break;
@@ -1686,20 +1738,20 @@ public class FormulaParser extends Parser {
 
 
     // $ANTLR start "stringLiteral"
-    // org/epics/pvmanager/formula/Formula.g:144:1: stringLiteral returns [DesiredRateExpression<?> result] : STRING ;
+    // org/epics/pvmanager/formula/Formula.g:145:1: stringLiteral returns [DesiredRateExpression<?> result] : STRING ;
     public final DesiredRateExpression<?> stringLiteral() throws RecognitionException {
         DesiredRateExpression<?> result = null;
 
 
-        Token STRING14=null;
+        Token STRING15=null;
 
         try {
-            // org/epics/pvmanager/formula/Formula.g:145:5: ( STRING )
-            // org/epics/pvmanager/formula/Formula.g:145:7: STRING
+            // org/epics/pvmanager/formula/Formula.g:146:5: ( STRING )
+            // org/epics/pvmanager/formula/Formula.g:146:7: STRING
             {
-            STRING14=(Token)match(input,STRING,FOLLOW_STRING_in_stringLiteral1200); 
+            STRING15=(Token)match(input,STRING,FOLLOW_STRING_in_stringLiteral1212); 
 
-            result = vConst(unquote((STRING14!=null?STRING14.getText():null)));
+            result = vConst(unquote((STRING15!=null?STRING15.getText():null)));
 
             }
 
@@ -1715,6 +1767,39 @@ public class FormulaParser extends Parser {
         return result;
     }
     // $ANTLR end "stringLiteral"
+
+
+
+    // $ANTLR start "constant"
+    // org/epics/pvmanager/formula/Formula.g:149:1: constant returns [DesiredRateExpression<?> result] : FUNCTION ;
+    public final DesiredRateExpression<?> constant() throws RecognitionException {
+        DesiredRateExpression<?> result = null;
+
+
+        Token FUNCTION16=null;
+
+        try {
+            // org/epics/pvmanager/formula/Formula.g:150:5: ( FUNCTION )
+            // org/epics/pvmanager/formula/Formula.g:150:7: FUNCTION
+            {
+            FUNCTION16=(Token)match(input,FUNCTION,FOLLOW_FUNCTION_in_constant1235); 
+
+            result = namedConstant((FUNCTION16!=null?FUNCTION16.getText():null));
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+
+        finally {
+        	// do for sure before leaving
+        }
+        return result;
+    }
+    // $ANTLR end "constant"
 
     // Delegated rules
 
@@ -1787,18 +1872,20 @@ public class FormulaParser extends Parser {
     public static final BitSet FOLLOW_pv_in_primary996 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_numericLiteral_in_primary1008 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_stringLiteral_in_primary1020 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FUNCTION_in_functionExpression1045 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_20_in_functionExpression1047 = new BitSet(new long[]{0x0000000004109AC0L});
-    public static final BitSet FOLLOW_expression_in_functionExpression1051 = new BitSet(new long[]{0x0000000002200000L});
-    public static final BitSet FOLLOW_25_in_functionExpression1067 = new BitSet(new long[]{0x0000000004109AC0L});
-    public static final BitSet FOLLOW_expression_in_functionExpression1071 = new BitSet(new long[]{0x0000000002200000L});
-    public static final BitSet FOLLOW_21_in_functionExpression1086 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_20_in_parExpression1111 = new BitSet(new long[]{0x0000000004109AC0L});
-    public static final BitSet FOLLOW_expression_in_parExpression1113 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_21_in_parExpression1115 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PV_in_pv1140 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_numericLiteral1165 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_numericLiteral1177 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_stringLiteral1200 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_constant_in_primary1032 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FUNCTION_in_functionExpression1057 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_functionExpression1059 = new BitSet(new long[]{0x0000000004109AC0L});
+    public static final BitSet FOLLOW_expression_in_functionExpression1063 = new BitSet(new long[]{0x0000000002200000L});
+    public static final BitSet FOLLOW_25_in_functionExpression1079 = new BitSet(new long[]{0x0000000004109AC0L});
+    public static final BitSet FOLLOW_expression_in_functionExpression1083 = new BitSet(new long[]{0x0000000002200000L});
+    public static final BitSet FOLLOW_21_in_functionExpression1098 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_20_in_parExpression1123 = new BitSet(new long[]{0x0000000004109AC0L});
+    public static final BitSet FOLLOW_expression_in_parExpression1125 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_parExpression1127 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PV_in_pv1152 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_numericLiteral1177 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_numericLiteral1189 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_stringLiteral1212 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FUNCTION_in_constant1235 = new BitSet(new long[]{0x0000000000000002L});
 
 }

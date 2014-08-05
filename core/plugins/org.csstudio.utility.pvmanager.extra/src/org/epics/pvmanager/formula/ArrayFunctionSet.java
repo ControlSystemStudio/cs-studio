@@ -43,6 +43,7 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
                 })
                 .addFormulaFunction(new CaHistogramFormulaFunction())
                 .addFormulaFunction(new HistogramOfFormulaFunction())
+                .addFormulaFunction(new Histogram2DOfFormulaFunction())
                 .addFormulaFunction(new RescaleArrayFormulaFunction())
                 .addFormulaFunction(
                         new AbstractVNumberArrayVNumberArrayToVNumberArrayFormulaFunction("arrayMult", "Result[x] = array1[x] * array2[x]",
@@ -157,6 +158,8 @@ public class ArrayFunctionSet extends FormulaFunctionSet {
                         })
                 .addFormulaFunction(new DftFormulaFunction())
                 .addFormulaFunction(new ArrayRangeOfFormulaFunction())
+                .addFormulaFunction(new DimDisplayFormulaFunction())
+                .addFormulaFunction(new NdArrayFormulaFunction())
         );
     }
 }

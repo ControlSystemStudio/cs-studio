@@ -4,10 +4,15 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.StatisticsUtil;
+import org.epics.util.stats.Statistics;
+import org.epics.util.stats.Range;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.IteratorNumber;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListNumber;
+import org.epics.util.array.ListNumbers;
+import org.epics.util.stats.Ranges;
 
 /**
  *
@@ -17,13 +22,12 @@ class Cell1DHistogramDataset implements Cell1DDataset {
     
     private Statistics statistics;
     private Range xRange;
-    private ListDouble xBoundaries;
+    private ListNumber xBoundaries;
     
     private double minValueRange;
     private double maxValueRange;
     private int minCountRange;
     private int maxCountRange;
-    private double[] binValueBoundary;
     
     
     private double[] values;
@@ -43,9 +47,8 @@ class Cell1DHistogramDataset implements Cell1DDataset {
         if (autoValueRange) {
             this.minValueRange = dataset.getStatistics().getMinimum().doubleValue();
             this.maxValueRange = dataset.getStatistics().getMaximum().doubleValue();
-            binValueBoundary = RangeUtil.createBins(minValueRange, maxValueRange, nBins);
-            xBoundaries = new ArrayDouble(binValueBoundary);
-            xRange = RangeUtil.range(binValueBoundary[0], binValueBoundary[nBins]);
+            xBoundaries = ListNumbers.linearListFromRange(minValueRange, maxValueRange, nBins);
+            xRange = Ranges.range(xBoundaries.getDouble(0), xBoundaries.getDouble(nBins));
         }
         values = new double[nBins];
         while (newValues.hasNext()) {
@@ -57,7 +60,7 @@ class Cell1DHistogramDataset implements Cell1DDataset {
     
     private void addValueToBin(double value) {
         // Discard value outsie the binning area
-        if (!RangeUtil.contains(xRange, value)) {
+        if (!Ranges.contains(xRange, value)) {
             return;
         }
         
@@ -77,6 +80,11 @@ class Cell1DHistogramDataset implements Cell1DDataset {
     @Override
     public Statistics getStatistics() {
         return statistics;
+    }
+
+    @Override
+    public Range getDisplayRange() {
+        return null;
     }
 
     @Override

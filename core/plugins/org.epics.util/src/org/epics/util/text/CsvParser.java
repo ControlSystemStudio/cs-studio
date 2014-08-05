@@ -26,7 +26,7 @@ import static org.epics.util.text.StringUtil.DOUBLE_REGEX_WITH_NAN;
  * <p>
  * Since there is no CSV strict format, this parser honors as best it
  * can the suggestions found in <a href="http://tools.ietf.org/html/rfc4180">RFC4180</a>,
- * in the <a haref="http://en.wikipedia.org/wiki/Comma-separated_values">CSV wikipedia article</a>
+ * in the <a href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV wikipedia article</a>
  * and other sources.
  * <p>
  * The parser can try multiple separators, so that it can auto-detect the
@@ -89,6 +89,7 @@ public class CsvParser {
         private List<Boolean> columnNumberParsable;
         private List<Boolean> columnTimestampParsable;
         private List<List<String>> columnTokens;
+        private String currentSeparator;
         
         // Regex object used for parsing
         private Matcher mLineTokens;
@@ -181,13 +182,13 @@ public class CsvParser {
         // Try each seaparater
         separatorLoop:
         for(int nSeparator = 0; nSeparator < getSeparators().length(); nSeparator++) {
-            String currentSeparator = getSeparators().substring(nSeparator, nSeparator+1);
+            state.currentSeparator = getSeparators().substring(nSeparator, nSeparator+1);
             
             // Taken from Mastering Regular Exceptions
             // Disabled comments so that space could work as possible separator
             String regex = // puts a doublequoted field in group(1) and an unquoted field into group(2)
                     // Start with beginning of line or separator
-                    "\\G(?:^|" + currentSeparator + ")" +
+                    "\\G(?:^|" + state.currentSeparator + ")" +
                     // Match a quoted string
                     "(?:" +
                     "\"" +
@@ -195,7 +196,7 @@ public class CsvParser {
                     "\"" +
                     // Or match a string without the separator
                     "|" +
-                    "([^\"" + currentSeparator + "]*)" +
+                    "([^\"" + state.currentSeparator + "]*)" +
                     ")";
             // Compile the matcher once for all the parsing
             state.mLineTokens = Pattern.compile(regex).matcher("");
@@ -277,7 +278,11 @@ public class CsvParser {
     private ListDouble convertToListDouble(List<String> tokens) {
         double[] values = new double[tokens.size()];
         for (int i = 0; i < values.length; i++) {
-            values[i] = Double.parseDouble(tokens.get(i));
+            if (tokens.get(i).isEmpty()) {
+                values[i] = Double.NaN;
+            } else {
+                values[i] = Double.parseDouble(tokens.get(i));
+            }
         }
         return new ArrayDouble(values);
     }
@@ -376,6 +381,15 @@ public class CsvParser {
      * @param line a new line
      */
     private void parseLine(State state, String line) {
+        // XXX The regex does not work if the first token is blank, and I
+        // don't understand why. Workaround: if it's blank, add a space,
+        // and remember I added a space.
+        boolean firstEmpty = false;
+        if (line.startsWith(state.currentSeparator)) {
+            line = " " + line;
+            firstEmpty = true;
+        }
+        
         // Match using the parser
         state.mLineTokens.reset(line);
         int nColumn = 0;
@@ -390,6 +404,10 @@ public class CsvParser {
             if (state.mLineTokens.start(2) >= 0) {
                 // The token was unquoted. Check if it could be a number.
                 token = state.mLineTokens.group(2);
+                if (firstEmpty) {
+                    token = "";
+                    firstEmpty = false;
+                }
                 if (!isTokenNumberParsable(state, token)) {
                     state.columnNumberParsable.set(nColumn, false);
                 }
@@ -415,6 +433,9 @@ public class CsvParser {
      * @return true if token matches a double
      */
     private boolean isTokenNumberParsable(State state, String token) {
+        if (token.isEmpty()) {
+            return true;
+        }
         return state.mDouble.reset(token).matches();
     }
     
