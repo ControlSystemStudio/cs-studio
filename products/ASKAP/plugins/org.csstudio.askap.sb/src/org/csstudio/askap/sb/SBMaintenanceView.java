@@ -1,6 +1,8 @@
 package org.csstudio.askap.sb;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -406,7 +408,11 @@ public class SBMaintenanceView extends EditorPart {
 			tableViewer.setItemCount(valueMap.size());
 			
 			int index = 0;
-			for (String key : valueMap.keySet()) {
+			
+			Set<String> keys = valueMap.keySet();
+			TreeSet<String> sortedKeys = new TreeSet<String>(keys);
+			
+			for (String key : sortedKeys) {
 				TableItem item = tableViewer.getTable().getItem(index);
 				item.setText(new String[]{key, valueMap.get(key)});
 				index++;
