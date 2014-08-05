@@ -101,11 +101,15 @@ public class SBDataModel {
 							if (b1 || b2) {
 								DataChangeEvent event = new DataChangeEvent();
 								pollingThreadListener.dataChanged(event);
-							}
-							
-							pollingThreadLock.wait(Preferences.getSBExecutionStatePollingPeriod());
+							}							
 						} catch (Exception e) {
 							logger.log(Level.WARNING, "Could not poll SB state" + e.getMessage());
+						}
+						
+						try {
+							pollingThreadLock.wait(Preferences.getSBExecutionStatePollingPeriod());
+						} catch (Exception e) {
+							logger.log(Level.INFO, "Wait interrupted " + e.getMessage());
 						}
 					}
 					
