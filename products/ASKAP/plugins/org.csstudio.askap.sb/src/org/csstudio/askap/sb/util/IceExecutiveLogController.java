@@ -37,20 +37,20 @@ public class IceExecutiveLogController {
 	private ObjectPrx subscriber = null;
 	private String topicName = null;
 	private String adaptorName = null;
-	private String tagName = null;
+	private String origin = null;
 	
 
 	
-	public IceExecutiveLogController(String adaptorName, String topicName, String tagName) {
+	public IceExecutiveLogController(String adaptorName, String topicName, String origin) {
 		this.topicName = topicName;
 		this.adaptorName = adaptorName;
-		this.tagName  = tagName;
+		this.origin  = origin;
 	}
 			
 	public void subscribe(final DataChangeListener messageReceiver) throws Exception{
 		_ILoggerDisp callbackObj = new _ILoggerDisp() {
 			public void send(ILogEvent event, Current current) {
-				if (event.tag!=null && event.tag.equals(tagName)) {				
+				if (event.tag!=null && event.origin.equals(origin)) {				
 					LogObject logObj = LogObject.logEventToLogObject(event);
 					DataChangeEvent change = new DataChangeEvent();
 					change.setChange(logObj);

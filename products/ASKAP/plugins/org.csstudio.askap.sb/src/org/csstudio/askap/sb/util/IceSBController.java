@@ -76,7 +76,7 @@ public class IceSBController {
 	 */
 	public IceSBController() {
 		super();
-		
+/*		
 		if (DEFAULT_OBS_PROGRAM.length() == 0) {
 			String programName = Preferences.getDefaultObsProgram();
 			try {
@@ -92,7 +92,7 @@ public class IceSBController {
 				logger.log(Level.WARNING, "Could not create default ObjProgram: " + programName, e);
 			}
 		}
-		
+*/		
 	}
 
 	/* (non-Javadoc)

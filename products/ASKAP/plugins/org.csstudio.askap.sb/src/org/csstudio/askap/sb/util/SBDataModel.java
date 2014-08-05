@@ -60,7 +60,7 @@ public class SBDataModel {
 		executiveMonitorController = new IceMonitoringController(Preferences.getExecutiveMonitorIceName());
 		executivelogController = new IceExecutiveLogController(Preferences.getExecutiveLogSubscriberName(),
 										Preferences.getExecutiveLogTopicName(),
-										Preferences.getExecutiveLogTag());
+										Preferences.getExecutiveLogOrigin());
 	}
 
 	public void setDataChangeListener(DataChangeListener listener) {

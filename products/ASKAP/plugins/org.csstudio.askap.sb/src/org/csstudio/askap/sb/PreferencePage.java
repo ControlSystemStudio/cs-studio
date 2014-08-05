@@ -36,7 +36,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 
 		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_SUBSCRIBER_NAME, "Executive Log Subscriber Name:", parent));
 		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_TOPIC_NAME, "Executive Log Topic Name:", parent));
-		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_TAG, "Executive Log Tag:", parent));
+		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_ORIGIN, "Executive Log origin:", parent));
 		
 		addField(new StringFieldEditor(Preferences.SB_TEMPLATE_ICE_NAME, "SB Template Service Ice Name:", parent));
 		addField(new StringFieldEditor(Preferences.SCHEDULING_BLOCK_ICE_NAME, "SB Service Ice Name:", parent));

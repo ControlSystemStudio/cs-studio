@@ -33,7 +33,7 @@ public class Preferences {
 
 	static final String EXECUTIVE_LOG_TOPIC_NAME = "executive_log_topic_name";
 	static final String EXECUTIVE_LOG_SUBSCRIBER_NAME = "executive_log_subscriber";
-	static final String EXECUTIVE_LOG_TAG = "executive_log_tag";
+	static final String EXECUTIVE_LOG_ORIGIN = "executive_log_origin";
 	
 	static final String SOURCE_SEARCH_MAX_MESSAGES = "ephemeris_sourcesearch_maxmessages";
 
@@ -58,8 +58,8 @@ public class Preferences {
 		return getString(EXECUTIVE_LOG_SUBSCRIBER_NAME, "");
 	}
 
-	public static final String getExecutiveLogTag() {
-		return getString(EXECUTIVE_LOG_TAG, "");
+	public static final String getExecutiveLogOrigin() {
+		return getString(EXECUTIVE_LOG_ORIGIN, "");
 	}
 
 	public static final String getExecutiveMonitorIceName() {
