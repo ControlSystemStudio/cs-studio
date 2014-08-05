@@ -82,7 +82,7 @@ public final class CommandParameterDefinition implements Serializable {
 					.toArray(new CommandParameterEnumValue[builder._enumValues.size()]);
 			break;
 		default:
-			throw new IllegalArgumentException("unknown paramter type");
+			throw new IllegalArgumentException("unknown parameter type");
 		}
 	}
 

@@ -268,7 +268,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
 							@Override
 							public void onErrorsOccured(final List<String> errors) {
-								showMessage(progressMonitor, "Error occured: "
+								showMessage(progressMonitor, "Error occurred: "
 										+ errors.get(0));
 							}
 

@@ -18,7 +18,7 @@ public class MultiLineEmbeddedCNode extends AbstractSNLNode {
 
 	@Override
 	public String getNodeTypeName() {
-		return "embeddded C";
+		return "embedded C";
 	}
 
 	@Override

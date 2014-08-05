@@ -134,7 +134,7 @@ public String getAuthor()
 	}
 	catch (Exception e)
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while obtaining author of plugin instance of "+ className);
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining author of plugin instance of "+ className);
 		com.cosylab.vdct.Console.getInstance().println(e);
 		return "";
 	}
@@ -169,7 +169,7 @@ public String getDescription()
 	}
 	catch (Exception e)
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while obtaining description of plugin instance of "+ className);
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining description of plugin instance of "+ className);
 		com.cosylab.vdct.Console.getInstance().println(e);
 		return "";
 	}
@@ -191,7 +191,7 @@ public String getName()
 	}
 	catch (Exception e)
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while obtaining name of plugin instance of "+ className);
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while obtaining name of plugin instance of "+ className);
 		com.cosylab.vdct.Console.getInstance().println(e);
 		return "";
 	}
@@ -269,7 +269,7 @@ public void init()
 		setStatus(PLUGIN_LOADED);
 	}
 	catch (Throwable t)	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while loading plugin instance of "+ className);
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while loading plugin instance of "+ className);
 		com.cosylab.vdct.Console.getInstance().println(t);
 
 		plugin = null;
@@ -334,7 +334,7 @@ public static Plugin loadPlugin(String className) throws Throwable
 	}
 	catch (Throwable t)
 	{
-		//com.cosylab.vdct.Console.getInstance().println("An error occured while loading the class: " + className);
+		//com.cosylab.vdct.Console.getInstance().println("An error occurred while loading the class: " + className);
 		//com.cosylab.vdct.Console.getInstance().println(e);
 		throw t;
 	}
@@ -412,7 +412,7 @@ public void start()
 	}
 	catch (Exception e)
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while starting plugin instance of "+ className);
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while starting plugin instance of "+ className);
 		com.cosylab.vdct.Console.getInstance().println(e);
 	}
 }
@@ -434,7 +434,7 @@ public void stop()
 	}
 	catch (Exception e)
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while stopping plugin instance of "+ className);
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while stopping plugin instance of "+ className);
 		com.cosylab.vdct.Console.getInstance().println(e);
 	}
 }

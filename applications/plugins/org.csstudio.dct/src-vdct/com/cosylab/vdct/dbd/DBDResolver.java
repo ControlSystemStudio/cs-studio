@@ -200,7 +200,7 @@ public static EnhancedStreamTokenizer getEnhancedStreamTokenizer(String fileName
 		tokenizer = new EnhancedStreamTokenizer(new BufferedReader(new InputStreamReader(fi)));
 		initializeTokenizer(tokenizer);
 	} catch (IOException e) {
-		Console.getInstance().println("\no) Error occured while opening file '"+fileName+"'");
+		Console.getInstance().println("\no) Error occurred while opening file '"+fileName+"'");
 		Console.getInstance().println(e);
 	}
 
@@ -429,7 +429,7 @@ public static void processFields(DBDRecordData rd, EnhancedStreamTokenizer token
 						else if (tokenizer.sval.equalsIgnoreCase(PROMPTGROUP)) {
 							tokenizer.nextToken();
 							if (tokenizer.ttype == EnhancedStreamTokenizer.TT_WORD) fd.setGUI_type(getGUIType(tokenizer.sval));
-							else throw (new DBDParseException("Invalid gui_gruop...", tokenizer, fileName));
+							else throw (new DBDParseException("Invalid gui_group...", tokenizer, fileName));
 						}
 
 						else tokenizer.nextToken();			// "read"/skip data
@@ -557,7 +557,7 @@ public static DBDData resolveDBDasURL(DBDData data, java.net.URL url) {
 		tokenizer = new EnhancedStreamTokenizer(new BufferedReader(new InputStreamReader(fi)));
 		initializeTokenizer(tokenizer);
 	} catch (Exception e) {
-		Console.getInstance().println("\nError occured while opening URL '"+url.toString()+"'");
+		Console.getInstance().println("\nError occurred while opening URL '"+url.toString()+"'");
 		Console.getInstance().println(e);
 		return null;
 	}

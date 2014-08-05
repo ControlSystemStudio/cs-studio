@@ -29,7 +29,7 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 		if (manager == null) {
 			manager = new DefaultPropertyFactoryBroker();
 
-			final AbstractApplicationContext ctx = new DefaultApplicationContext("Default Property Factory Borker Context");
+			final AbstractApplicationContext ctx = new DefaultApplicationContext("Default Property Factory Broker Context");
 			manager.initialize(ctx, LinkPolicy.ASYNC_LINK_POLICY);
 		}
 		return manager;

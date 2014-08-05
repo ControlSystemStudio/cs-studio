@@ -304,7 +304,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 					"End of reading the standard output of " + kblogrdPath + " (" + commandId + ").");
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.SEVERE, 
-					"An error occured while closing the pipe to stdout of " + kblogrdPath + " (" + commandId + ").", ex);
+					"An error occurred while closing the pipe to stdout of " + kblogrdPath + " (" + commandId + ").", ex);
 		}
 	}
 	

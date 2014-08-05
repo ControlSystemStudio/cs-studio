@@ -90,7 +90,7 @@ public class MatFileHeader
     {
         StringBuffer sb = new StringBuffer();
         sb.append("[");
-        sb.append("desriptive text: " + description);
+        sb.append("descriptive text: " + description);
         sb.append(", version: " + version);
         sb.append(", endianIndicator: " + new String(endianIndicator) );
         sb.append("]");

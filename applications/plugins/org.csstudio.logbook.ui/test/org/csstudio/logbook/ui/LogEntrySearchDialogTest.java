@@ -32,7 +32,7 @@ public class LogEntrySearchDialogTest {
 	Display display = new Display();
 	final Shell shell = new Shell(display);
 	List<String> logbooks = new ArrayList<String>(Arrays.asList(
-		"Operations", "LOTO", "Mechanical Maintanance",
+		"Operations", "LOTO", "Mechanical Maintenance",
 		" Timing System"));
 	List<String> tags = new ArrayList<String>(Arrays.asList("testing",
 		"clean up", "shroffk"));

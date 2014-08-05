@@ -74,7 +74,7 @@ public class EPICSArchiveReader implements ArchiveReader {
     public ArchiveInfo[] getArchiveInfos() {
 
 	return new ArchiveInfo[] { new ArchiveInfo(serverURL,
-		"EPICS Archiver Appliaction", 1) };
+		"EPICS Archiver Application", 1) };
     }
 
     @Override

@@ -142,7 +142,7 @@ public abstract class PluralAttributeImpl<X, C, E>
 						builder
 				);
 			}
-			throw new UnsupportedOperationException( "Unkown collection: " + collectionClass );
+			throw new UnsupportedOperationException( "Unknown collection: " + collectionClass );
 		}
 	}
 

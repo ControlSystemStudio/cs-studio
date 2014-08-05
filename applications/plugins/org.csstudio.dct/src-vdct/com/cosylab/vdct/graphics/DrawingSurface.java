@@ -2693,7 +2693,7 @@ public static HashMap applyVisualData(boolean importDB, Group group, DBData dbDa
 		    UndoManager.getInstance().setMonitor(monitor);
 		}
 	} catch (Exception e) {
-		Console.getInstance().println("Error occured while applying visual data!");
+		Console.getInstance().println("Error occurred while applying visual data!");
 		e.printStackTrace();
 	}
 
