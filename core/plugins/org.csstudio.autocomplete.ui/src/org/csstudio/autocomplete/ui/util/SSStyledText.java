@@ -24,7 +24,7 @@ public class SSStyledText {
 	public void setText(String content) {
 	}
 
-	public void setStyle(Color color, int fontStyle, int start, int lenght) {
+	public void setStyle(Color color, int fontStyle, int start, int length) {
 	}
 
 	public Point getSize() {
