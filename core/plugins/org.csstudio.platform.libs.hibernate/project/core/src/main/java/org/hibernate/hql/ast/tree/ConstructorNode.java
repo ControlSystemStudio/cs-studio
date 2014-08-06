@@ -62,7 +62,7 @@ public class ConstructorNode extends SelectExpressionList implements AggregatedS
 		else if ( isList ) {
 			return Transformers.TO_LIST;
 		}
-		throw new QueryException( "Unable to determine proper dynamic-instantiation tranformer to use." );
+		throw new QueryException( "Unable to determine proper dynamic-instantiation transformer to use." );
 	}
 
 	public boolean isMap() {

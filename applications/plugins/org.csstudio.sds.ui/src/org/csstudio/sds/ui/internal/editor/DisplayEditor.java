@@ -326,7 +326,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
     /**
      * {@inheritDoc}
      * 
-     * We overide the behaviour of the superclass totally. Don´t add a super
+     * We override the behaviour of the superclass totally. Don´t add a super
      * call in future!!
      */
     @Override
@@ -972,7 +972,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
                 MessageDialog
                         .openInformation(getSite().getShell(),
                                          "Information",
-                                         "The displayed model isn't completeley loaded, yet. It can not be saved until this operation is completed.");
+                                         "The displayed model isn't completely loaded, yet. It can not be saved until this operation is completed.");
             } else {
                 // getInputStream().setContents(is, false, false, null);
                 if (getEditorInput() instanceof FileEditorInput) {

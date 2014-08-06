@@ -32,7 +32,7 @@ import java.sql.Types;
 import org.hibernate.dialect.Dialect;
 
 /**
- * Maps {@link Types#INTEGER interger} database values to boolean java values.  Zero is considered false;
+ * Maps {@link Types#INTEGER integer} database values to boolean java values.  Zero is considered false;
  * <tt>NULL</tt> maps to {@link #getDefaultValue()}; any other value is considered true.
  *
  * @author Steve Ebersole

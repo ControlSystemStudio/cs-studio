@@ -84,7 +84,7 @@ class NameParser {
 
     /**
      * Given a string representing a function call, finds the appropriate call
-     * matching the function name, and the appropriate constructor and instanciates
+     * matching the function name, and the appropriate constructor and instantiates
      * it.
      *
      * @param string the function call

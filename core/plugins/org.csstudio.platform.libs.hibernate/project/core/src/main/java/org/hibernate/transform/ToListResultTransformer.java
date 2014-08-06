@@ -29,7 +29,7 @@ import java.util.List;
 import java.io.Serializable;
 
 /**
- * Tranforms each result row from a tuple into a {@link List}, such that what
+ * Transforms each result row from a tuple into a {@link List}, such that what
  * you end up with is a {@link List} of {@link List Lists}.
  */
 public class ToListResultTransformer extends BasicTransformerAdapter implements Serializable {
