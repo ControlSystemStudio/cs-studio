@@ -21,7 +21,7 @@ public class TooltipContent {
 	public String value;
 	/** SWT StyleRange that will be applied to value. */
 	public ProposalStyle[] styles;
-	public int maxLineLenght;
+	public int maxLineLength;
 	public int numberOfLines;
 
 }
