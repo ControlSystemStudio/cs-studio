@@ -62,7 +62,7 @@ public class ScriptedRule implements IRule {
 	 * The name of the script field that contains the descriptions of the
 	 * script's parameters.
 	 */
-	private static final String SCRIPT_PARAMTER_DESCRIPTIONS = "parameters"; //$NON-NLS-1$
+	private static final String SCRIPT_PARAMETER_DESCRIPTIONS = "parameters"; //$NON-NLS-1$
 
 	/**
 	 * The name of the script field that contains the descriptions of the
@@ -309,7 +309,7 @@ public class ScriptedRule implements IRule {
 		List<String> result = new ArrayList<String>();
 
 		Object parameterDescriptionsObject = _scriptScope.get(
-				SCRIPT_PARAMTER_DESCRIPTIONS, _scriptScope);
+				SCRIPT_PARAMETER_DESCRIPTIONS, _scriptScope);
 
 		if ((parameterDescriptionsObject instanceof NativeArray)) {
 			NativeArray parameterDescriptions = (NativeArray) parameterDescriptionsObject;
