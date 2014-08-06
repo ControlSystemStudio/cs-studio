@@ -25,6 +25,8 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -70,7 +72,7 @@ public class SBMaintenanceView extends EditorPart {
 
 	private Text scriptText;
 	
-	private Label sbInfoLabel[];
+	private Label sbInfoLabel;
 
 	class ParameterValueEditor extends EditingSupport {
 		
@@ -144,22 +146,22 @@ public class SBMaintenanceView extends EditorPart {
 		GridLayout layout = new GridLayout(NUM_OF_COLUMNS, false);
 		parent.setLayout(layout);
 		
-		sbInfoLabel = new Label[4];
-		
-		sbInfoLabel[0] = new Label(parent, SWT.NONE);
+		sbInfoLabel = new Label(parent, 0);
 		GridData g = new GridData();
 		g.horizontalAlignment = GridData.FILL;	
 		g.grabExcessHorizontalSpace = true;
-		sbInfoLabel[0].setLayoutData(g);
+		g.horizontalSpan = NUM_OF_COLUMNS;
+		sbInfoLabel.setLayoutData(g);
 		
-		sbInfoLabel[1] = new Label(parent, SWT.NONE);
-		sbInfoLabel[1].setLayoutData(g);
+		FontData[] fontData = sbInfoLabel.getFont().getFontData();
+		for (FontData f : fontData) {
+//			f.setHeight(f.getHeight()*2);
+			f.setStyle(SWT.ITALIC|SWT.BOLD);
+		}
 		
-		sbInfoLabel[2] = new Label(parent, SWT.NONE);
-		sbInfoLabel[2].setLayoutData(g);
-		
-		sbInfoLabel[3] = new Label(parent, SWT.NONE);
-		sbInfoLabel[3].setLayoutData(g);
+		sbInfoLabel.setFont(new Font(parent.getDisplay(), fontData));
+		sbInfoLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+//		sbInfoLabel.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		
 		final ExpandBar bar = new ExpandBar(parent, SWT.NO_SCROLL);
 		final GridData gridData = new GridData();
@@ -189,7 +191,7 @@ public class SBMaintenanceView extends EditorPart {
 		scriptExpandItem.setHeight(EXPAND_ITEM_HEIGHT);
 		scriptExpandItem.setControl(script);
 		
-		scriptExpandItem.setExpanded(true);
+		scriptExpandItem.setExpanded(false);
 		
 		// 2nd item
 		Composite obsVariables = new Composite(bar, SWT.NONE);
@@ -321,10 +323,10 @@ public class SBMaintenanceView extends EditorPart {
 
 
 	private void setSBInfo(SchedulingBlock sb) {
-		sbInfoLabel[0].setText("ID: " + sb.getId());
-		sbInfoLabel[1].setText("Alias: " + sb.getAliasName());
-		sbInfoLabel[2].setText("Template Name: " + sb.getTemplateName());
-		sbInfoLabel[3].setText("Version: " + sb.getMajorVersion());
+		sbInfoLabel.setText("ID: " + sb.getId()
+					+ "         Alias: " + sb.getAliasName()
+					+ "         Template Name: " + sb.getTemplateName()
+					+ "         Version: " + sb.getMajorVersion());
 	}
 	
 	public void display(long id) {
@@ -367,10 +369,7 @@ public class SBMaintenanceView extends EditorPart {
 
 	public void display(SBTemplate template, SBTemplateDataModel dataModel) {
 		
-		sbInfoLabel[0].setText("SB Template: " + template.getDisplayName());
-		sbInfoLabel[1].setText("");
-		sbInfoLabel[2].setText("");
-		sbInfoLabel[3].setText("");
+		sbInfoLabel.setText("SB Template: " + template.getDisplayName());
 
 		sbTemplateDataModel = dataModel;
 		SBTemplate latestTemplate = sbTemplateDataModel.getLatestVersion(template.getName());
