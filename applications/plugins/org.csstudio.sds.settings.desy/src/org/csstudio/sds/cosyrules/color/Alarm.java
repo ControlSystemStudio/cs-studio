@@ -40,7 +40,7 @@ public final class Alarm extends AbstractAlarmRule  {
 	 * The rule can not calculate the State color!<br>
 	 * Purple
 	 */
-	public static final String UNKNOW = "#8000FF";
+	public static final String UNKNOWN = "#8000FF";
 	/**
 	 *  Red.
 	 */
@@ -71,7 +71,7 @@ public final class Alarm extends AbstractAlarmRule  {
 	 */
 	@Override
 	public String getDescription() {
-		final String msg = "Kann für ein oder mehrere Channels die Severity als Farbe zurückgeben. Ist mehr als ein Channel angeben wird die höste Severity zurückgben.";
+		final String msg = "Kann für ein oder mehrere Channels die Severity als Farbe zurückgeben. Ist mehr als ein Channel angegeben wird die höchste Severity zurückgegeben.";
 		return msg;
 	}
 
@@ -85,7 +85,7 @@ public final class Alarm extends AbstractAlarmRule  {
 	 */
     @Override
     protected Object evaluateWorker(final DynamicValueState dvc) {
-        String result = UNKNOW;
+        String result = UNKNOWN;
         if (dvc != null) {
             switch (dvc) {
             case ALARM:
