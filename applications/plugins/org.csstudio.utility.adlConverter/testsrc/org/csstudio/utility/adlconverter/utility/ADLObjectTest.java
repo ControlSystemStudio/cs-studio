@@ -123,25 +123,25 @@ public class ADLObjectTest {
 //            // check x
 //            assertNotNull("ADLObject x is Null",testObj.getX());
 //            assertEquals("x is not a Property --"+testObj.getX().getName(), "property", testObj.getX().getName());
-//            assertEquals("x isn't a Interger --"+testObj.getX().getAttributeValue("type"), "sds.integer", testObj.getX().getAttributeValue("type"));
+//            assertEquals("x isn't a Integer --"+testObj.getX().getAttributeValue("type"), "sds.integer", testObj.getX().getAttributeValue("type"));
 //            assertEquals("x isn't position.x --"+testObj.getX().getAttributeValue("id"), "position.x", testObj.getX().getAttributeValue("id"));
 //            assertEquals("Make wrong x value --"+testObj.getX().getAttributeValue("value"), "10", testObj.getX().getAttributeValue("value"));
 //            // check y
 //            assertNotNull("ADLObject y is Null",testObj.getY());
 //            assertEquals("y is not a Property --"+testObj.getY().getName(), "property", testObj.getY().getName());
-//            assertEquals("y isn't a Interger --"+testObj.getY().getAttributeValue("type"), "sds.integer", testObj.getY().getAttributeValue("type"));
+//            assertEquals("y isn't a Integer --"+testObj.getY().getAttributeValue("type"), "sds.integer", testObj.getY().getAttributeValue("type"));
 //            assertEquals("y isn't positoion.y --"+testObj.getY().getAttributeValue("id"), "position.y", testObj.getY().getAttributeValue("id"));
 //            assertEquals("Make wrong y value --"+testObj.getY().getAttributeValue("value"), "60", testObj.getY().getAttributeValue("value"));
 //            // check width
 //            assertNotNull("ADLObject width is Null",testObj.getAdlObjects(2));
 //            assertEquals("width is not a Propertwidth --"+testObj.getAdlObjects(2).getName(), "property", testObj.getAdlObjects(2).getName());
-//            assertEquals("width isn't a Interger--"+testObj.getAdlObjects(2).getAttributeValue("type"), "sds.integer", testObj.getAdlObjects(2).getAttributeValue("type"));
+//            assertEquals("width isn't a Integer--"+testObj.getAdlObjects(2).getAttributeValue("type"), "sds.integer", testObj.getAdlObjects(2).getAttributeValue("type"));
 //            assertEquals("width isn't width--"+testObj.getAdlObjects(2).getAttributeValue("id"), "width", testObj.getAdlObjects(2).getAttributeValue("id"));
 //            assertEquals("Make wrong width value --"+testObj.getAdlObjects(2).getAttributeValue("value"), "1200", testObj.getAdlObjects(2).getAttributeValue("value"));
 //            // check height
 //            assertNotNull("ADLObject height is Null",testObj.getAdlObjects(3));
 //            assertEquals("height is not a Propertheight --"+testObj.getAdlObjects(3).getName(), "property", testObj.getAdlObjects(3).getName());
-//            assertEquals("height isn't a Interger--"+testObj.getAdlObjects(3).getAttributeValue("type"), "sds.integer", testObj.getAdlObjects(3).getAttributeValue("type"));
+//            assertEquals("height isn't a Integer--"+testObj.getAdlObjects(3).getAttributeValue("type"), "sds.integer", testObj.getAdlObjects(3).getAttributeValue("type"));
 //            assertEquals("height isn't height--"+testObj.getAdlObjects(3).getAttributeValue("id"), "height", testObj.getAdlObjects(3).getAttributeValue("id"));
 //            assertEquals("Make wrong height value --"+testObj.getAdlObjects(3).getAttributeValue("value"), "880", testObj.getAdlObjects(3).getAttributeValue("value"));
 //            // Negative
@@ -169,25 +169,25 @@ public class ADLObjectTest {
 //            // check x
 //            assertNotNull("ADLObject x is Null",testObj.getAdlObject()[0]);
 //            assertEquals("x is not a Property --"+testObj.getAdlObject()[0].getName(), "property", testObj.getAdlObject()[0].getName());
-//            assertEquals("x isn't a Interger --"+testObj.getAdlObject()[0].getAttributeValue("type"), "sds.integer", testObj.getAdlObject()[0].getAttributeValue("type"));
+//            assertEquals("x isn't a Integer --"+testObj.getAdlObject()[0].getAttributeValue("type"), "sds.integer", testObj.getAdlObject()[0].getAttributeValue("type"));
 //            assertEquals("x isn't position.x --"+testObj.getAdlObject()[0].getAttributeValue("id"), "position.x", testObj.getAdlObject()[0].getAttributeValue("id"));
 //            assertEquals("Make wrong x value --"+testObj.getAdlObject()[0].getAttributeValue("value"), "10", testObj.getAdlObject()[0].getAttributeValue("value"));
 //            // check y
 //            assertNotNull("ADLObject y is Null",testObj.getAdlObject()[1]);
 //            assertEquals("y is not a Property --"+testObj.getAdlObject()[1].getName(), "property", testObj.getAdlObject()[1].getName());
-//            assertEquals("y isn't a Interger --"+testObj.getAdlObject()[1].getAttributeValue("type"), "sds.integer", testObj.getAdlObject()[1].getAttributeValue("type"));
-//            assertEquals("y isn't positoion.y --"+testObj.getAdlObject()[1].getAttributeValue("id"), "position.y", testObj.getAdlObject()[1].getAttributeValue("id"));
+//            assertEquals("y isn't a Integer --"+testObj.getAdlObject()[1].getAttributeValue("type"), "sds.integer", testObj.getAdlObject()[1].getAttributeValue("type"));
+//            assertEquals("y isn't position.y --"+testObj.getAdlObject()[1].getAttributeValue("id"), "position.y", testObj.getAdlObject()[1].getAttributeValue("id"));
 //            assertEquals("Make wrong y value --"+testObj.getAdlObject()[1].getAttributeValue("value"), "60", testObj.getAdlObject()[1].getAttributeValue("value"));
 //            // check width
 //            assertNotNull("ADLObject width is Null",testObj.getAdlObject()[2]);
 //            assertEquals("width is not a Propertwidth --"+testObj.getAdlObject()[2].getName(), "property", testObj.getAdlObject()[2].getName());
-//            assertEquals("width isn't a Interger--"+testObj.getAdlObject()[2].getAttributeValue("type"), "sds.integer", testObj.getAdlObject()[2].getAttributeValue("type"));
+//            assertEquals("width isn't a Integer--"+testObj.getAdlObject()[2].getAttributeValue("type"), "sds.integer", testObj.getAdlObject()[2].getAttributeValue("type"));
 //            assertEquals("width isn't width--"+testObj.getAdlObject()[2].getAttributeValue("id"), "width", testObj.getAdlObject()[2].getAttributeValue("id"));
 //            assertEquals("Make wrong width value --"+testObj.getAdlObject()[2].getAttributeValue("value"), "1200", testObj.getAdlObject()[2].getAttributeValue("value"));
 //            // check height
 //            assertNotNull("ADLObject height is Null",testObj.getAdlObject()[3]);
 //            assertEquals("height is not a Propertheight --"+testObj.getAdlObject()[3].getName(), "property", testObj.getAdlObject()[3].getName());
-//            assertEquals("height isn't a Interger--"+testObj.getAdlObject()[3].getAttributeValue("type"), "sds.integer", testObj.getAdlObject()[3].getAttributeValue("type"));
+//            assertEquals("height isn't a Integer--"+testObj.getAdlObject()[3].getAttributeValue("type"), "sds.integer", testObj.getAdlObject()[3].getAttributeValue("type"));
 //            assertEquals("height isn't height--"+testObj.getAdlObject()[3].getAttributeValue("id"), "height", testObj.getAdlObject()[3].getAttributeValue("id"));
 //            assertEquals("Make wrong height value --"+testObj.getAdlObject()[3].getAttributeValue("value"), "880", testObj.getAdlObject()[3].getAttributeValue("value"));
 

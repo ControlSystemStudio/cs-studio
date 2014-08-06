@@ -283,7 +283,7 @@ public class Ejb3Configuration implements Serializable, Referenceable {
 	/**
 	 * Build the configuration from an entity manager name and given the
 	 * appropriate extra properties. Those properties override the one get through
-	 * the peristence.xml file.
+	 * the persistence.xml file.
 	 * If the persistence unit name is not found or does not match the Persistence Provider, null is returned
 	 *
 	 * This method is used in a non managed environment
@@ -919,11 +919,11 @@ public class Ejb3Configuration implements Serializable, Referenceable {
 						+ AvailableSettings.SESSION_INTERCEPTOR + ": " + sessionInterceptorClassname, e);
 			}
 			catch (IllegalAccessException e) {
-				throw new PersistenceException( getExceptionHeader() + "Unable to instanciate "
+				throw new PersistenceException( getExceptionHeader() + "Unable to instantiate "
 						+ AvailableSettings.SESSION_INTERCEPTOR + ": " + sessionInterceptorClassname, e);
 			}
 			catch (InstantiationException e) {
-				throw new PersistenceException( getExceptionHeader() + "Unable to instanciate "
+				throw new PersistenceException( getExceptionHeader() + "Unable to instantiate "
 						+ AvailableSettings.SESSION_INTERCEPTOR + ": " + sessionInterceptorClassname, e);
 			}
 		}
@@ -1035,7 +1035,7 @@ public class Ejb3Configuration implements Serializable, Referenceable {
 			}
 			catch (InstantiationException e) {
 				throw new PersistenceException(
-						getExceptionHeader() + "Unable to instanciate interceptor class: " + interceptorName, e
+						getExceptionHeader() + "Unable to instantiate interceptor class: " + interceptorName, e
 				);
 			}
 			catch (ClassCastException e) {
@@ -1065,7 +1065,7 @@ public class Ejb3Configuration implements Serializable, Referenceable {
 			}
 			catch (InstantiationException e) {
 				throw new PersistenceException(
-						getExceptionHeader() + "Unable to instanciate naming strategy class: " + namingStrategyName, e
+						getExceptionHeader() + "Unable to instantiate naming strategy class: " + namingStrategyName, e
 				);
 			}
 			catch (ClassCastException e) {
@@ -1554,7 +1554,7 @@ public class Ejb3Configuration implements Serializable, Referenceable {
 
 	/**
 	 * This API is intended to give a read-only configuration.
-	 * It is sueful when working with SchemaExport or any Configuration based
+	 * It is useful when working with SchemaExport or any Configuration based
 	 * tool.
 	 * DO NOT update configuration through it.
 	 */

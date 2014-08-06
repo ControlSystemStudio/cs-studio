@@ -34,7 +34,7 @@ import static org.epics.vtype.ValueFactory.*;
 public class ValueUtil {
 
     private ValueUtil() {
-        // Can't instanciate
+        // Can't instantiate
     }
 
     private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByte.class, VByteArray.class, VDouble.class,

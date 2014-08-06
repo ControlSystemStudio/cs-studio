@@ -48,18 +48,18 @@ public class DDLTest extends TestCase {
 	public void testSingleTableAvoidNotNull() throws Exception {
 		PersistentClass classMapping = getCfg().getClassMapping( Rock.class.getName() );
 		Column serialColumn = (Column) classMapping.getProperty( "bit" ).getColumnIterator().next();
-		assertTrue( "Notnull should not be applised on single tables", serialColumn.isNullable() );
+		assertTrue( "Notnull should not be applied on single tables", serialColumn.isNullable() );
 	}
 
 	public void testNotNullOnlyAppliedIfEmbeddedIsNotNullItself() throws Exception {
 		PersistentClass classMapping = getCfg().getClassMapping( Tv.class.getName() );
 		Property property = classMapping.getProperty( "tuner.frequency" );
 		Column serialColumn = (Column) property.getColumnIterator().next();
-		assertEquals( "Validator annotations are applied on tunner as it is @NotNull", false, serialColumn.isNullable() );
+		assertEquals( "Validator annotations are applied on tuner as it is @NotNull", false, serialColumn.isNullable() );
 
 		property = classMapping.getProperty( "recorder.time" );
 		serialColumn = (Column) property.getColumnIterator().next();
-		assertEquals( "Validator annotations are applied on tunner as it is @NotNull", true, serialColumn.isNullable() );
+		assertEquals( "Validator annotations are applied on tuner as it is @NotNull", true, serialColumn.isNullable() );
 	}
 
 	protected Class<?>[] getAnnotatedClasses() {

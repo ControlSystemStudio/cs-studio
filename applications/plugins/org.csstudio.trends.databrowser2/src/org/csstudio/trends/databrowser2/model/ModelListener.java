@@ -16,7 +16,7 @@ public interface ModelListener
     /** The update period changed */
     void changedUpdatePeriod();
 
-    /** The archive-rescale configuraton has changed */
+    /** The archive-rescale configuration has changed */
     void changedArchiveRescale();
 
     /** One of the colors (background, ...) changed */

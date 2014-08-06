@@ -94,7 +94,7 @@ public class MachineModeMonitor
                     mode = null;
                 else
                     mode = getSelectedMode(switch_reader.getValue(), 0);
-                logger.log(Level.FINE, "Swtich Mode: {0}", mode);
+                logger.log(Level.FINE, "Switch Mode: {0}", mode);
                 updateModes(rtdl_mode, mode);
             }
         };

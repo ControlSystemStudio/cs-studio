@@ -29,7 +29,7 @@ import java.util.concurrent.locks.Condition;
 
 
 /**
- * The GroupsAccess enables accesss of data in group of properties of same type
+ * The GroupsAccess enables access of data in group of properties of same type
  * in packed operations.
  * <p>
  * Group access is in the same time property collections, since group data type
@@ -77,7 +77,7 @@ public interface GroupDataAccess<T, P extends DynamicValueProperty<?>>
 
 	/**
 	 * Returns whether the values can be set. If false, all methods
-	 * that perform set may be ignored. It returnes false if at least one
+	 * that perform set may be ignored. It returns false if at least one
 	 * property in group is not settable;
 	 *
 	 * @return True if value can be set.
@@ -139,7 +139,7 @@ public interface GroupDataAccess<T, P extends DynamicValueProperty<?>>
 	public String getPropertyName(int index);
 
 	/**
-	 * Returns properties which are in timeout. This is convenicence
+	 * Returns properties which are in timeout. This is convenience
 	 * method.
 	 *
 	 * @return properties which are in timeout
@@ -147,7 +147,7 @@ public interface GroupDataAccess<T, P extends DynamicValueProperty<?>>
 	public DynamicValueProperty<T>[] getTimeoutProperties();
 
 	/**
-	 * Returns properties which are in timelag. This is convenicence
+	 * Returns properties which are in timelag. This is convenience
 	 * method.
 	 *
 	 * @return properties which are in timelag

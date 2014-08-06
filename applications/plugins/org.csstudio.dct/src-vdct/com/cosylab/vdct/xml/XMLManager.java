@@ -239,7 +239,7 @@ public static void writeDocument(String fileName, Document doc, String publicId,
 	try
 	{
 
-		// Serialisation through Tranform.
+		// Serialisation through Transform.
 		DOMSource domSource = new DOMSource(doc);
 		StreamResult streamResult = new StreamResult(out);
 		TransformerFactory tf = TransformerFactory.newInstance();

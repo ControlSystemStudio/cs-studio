@@ -195,7 +195,7 @@ public final class DynamicAspectsWizard extends Wizard {
 				Map<DynamicValueState, Object> conditionStateValues) {
 			super(pageName);
 			assert pageName != null;
-			setTitle("State Configurater");
+			setTitle("State Configurator");
 			setDescription("Use this page to configure the states");
 			_connectionStateValues = connectionStateValues != null ? connectionStateValues : new HashMap<ConnectionState, Object>();
 			_conditionStateValues = conditionStateValues != null ? conditionStateValues : new HashMap<DynamicValueState, Object>();

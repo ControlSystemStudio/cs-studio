@@ -62,7 +62,7 @@ public class CommonPreferencePage extends FieldEditorPreferencePage
 			new WorkspaceFileFieldEditor(PreferencesHelper.PROBE_OPI, 
 				"Probe OPI: ", new String[]{"opi"}, parent);//$NON-NLS-2$
 		probeOPIEditor.getTextControl(parent).setToolTipText(
-				"The opi file to be invoked from CSS->OPI Proble context menu");
+				"The opi file to be invoked from CSS->OPI Probe context menu");
 		addField(probeOPIEditor);	
 		
 		BooleanFieldEditor noEditModeEditor = 

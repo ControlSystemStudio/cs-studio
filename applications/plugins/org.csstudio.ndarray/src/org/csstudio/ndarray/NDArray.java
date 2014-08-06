@@ -1,4 +1,4 @@
-/*******************************************************************************
+/c*******************************************************************************
  * Copyright (c) 2012 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -120,7 +120,7 @@ public class NDArray
     protected NDArray(final NDArray base, final NDShape shape, final int offset, final NDStrides stride)
     {
         if (shape.getSize() > base.getShape().getSize())
-            throw new IllegalArgumentException("Attemping to access array with shape " +
+            throw new IllegalArgumentException("Attempting to access array with shape " +
                     base.getShape() + " as bigger shape " + shape);
         // Better way to check stride?
         if (stride.getSize() != shape.getDimensions())
