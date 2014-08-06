@@ -82,6 +82,7 @@ public class SBExecutionView extends EditorPart {
 	private static Image GREEN_LED_IMAGE = null;
 	private static Image GREY_LED_IMAGE = null;
 	private static Image WAIT_IMAGE = null;
+	private static Image RUN_IMAGE = null;
 		
 	Label waitLabel = null;
 	
@@ -98,13 +99,15 @@ public class SBExecutionView extends EditorPart {
 	
 	static {
 		STATE_COLOR_MAP.put(SBState.ERRORED, SWT.COLOR_RED);
-		STATE_COLOR_MAP.put(SBState.EXECUTING, SWT.COLOR_GREEN);
+		STATE_COLOR_MAP.put(SBState.EXECUTING, SWT.COLOR_DARK_GREEN);
 		
 		RED_LED_IMAGE = Activator.getDefault().getImage("icons/red_round_button.png");        	
 		GREEN_LED_IMAGE = Activator.getDefault().getImage("icons/green_round_button.png");
 		GREY_LED_IMAGE = Activator.getDefault().getImage("icons/grey_round_button.png");
 
 		WAIT_IMAGE = Activator.getDefault().getImage("icons/time-machine-icon.png");
+		RUN_IMAGE = Activator.getDefault().getImage("icons/Animals-Running-Rabbit-icon.png");
+		
 	}
 	
 
@@ -174,102 +177,6 @@ public class SBExecutionView extends EditorPart {
 		Composite page = new Composite(parent, SWT.NONE);
 		GridLayout gridLayout = new GridLayout(NUM_OF_COLUMNS, false);
 		page.setLayout(gridLayout);				
-		
-		Label executedTitle = new Label(page, SWT.NONE);
-		executedTitle.setText("Executing and executed Scheduling Block (last " + Preferences.getSBExecutionMaxNumberSB()  + " scheduling blocks):");
-		GridData gd = new GridData();
-		gd.horizontalSpan = 2;
-		gd.grabExcessHorizontalSpace = false;
-		executedTitle.setLayoutData(gd);
-
-		statesCombo = new MultiChoice<String>(page, SWT.READ_ONLY);		
-		statesCombo.addAll(STATES);		
-		GridData gridData = new GridData();
-		gridData.horizontalSpan = 4;
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		statesCombo.setLayoutData(gridData);
-		statesCombo.selectAll();
-				
-		statesCombo.setSelectionListener(new MultiChoiceSelectionListener<String>(statesCombo) {
-
-			@Override
-			public void handle(MultiChoice<String> parent, String receiver,
-					boolean selection, Shell popup) {
-				selectedStates = statesCombo.getSelection().toArray(new String[]{});
-				waitLabel.setVisible(true);
-			}
-		});
-		
-		waitLabel = new Label(page, SWT.NONE);
-		waitLabel.setImage(WAIT_IMAGE);
-		
-		
-				
-		executedTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
-		executedTable.setLinesVisible (true);
-		executedTable.setHeaderVisible (true);
-		
-		TableColumn column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Status");
-
-		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("ID");
-		
-		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Alias Name");
-
-		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Template Name");
-		
-		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Template Version");
-		
-		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Last Run Time");
-
-		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Last Run Duration");
-		
-		column = new TableColumn (executedTable, SWT.NONE);
-		column.setText ("Error Message");
-		
-		executedTable.setItemCount(0);
-		setTableSize(executedTable);
-		
-		GridData g3 = new GridData();
-		g3.horizontalAlignment = GridData.FILL;	
-		g3.verticalAlignment = GridData.FILL;	
-		g3.grabExcessHorizontalSpace = true;
-		g3.grabExcessVerticalSpace = true;
-		g3.horizontalSpan = NUM_OF_COLUMNS;
-		executedTable.setLayoutData(g3);
-		
-		executedTable.addListener(SWT.SetData, new Listener() {
-			public void handleEvent(Event event) {
-				TableItem item = (TableItem)event.item;
-				int index = event.index;
-				SchedulingBlock sb = dataModel.getExecutedSBAt(index);
-				if (sb != null) {
-					String executeTime = "";
-					if (sb.getLastExecutedDate()!=null)
-						executeTime = sb.getLastExecutedDate();
-					
-					String duration = getStringDuration(sb.getLastExecutionDuration());
-					
-					item.setText(new String[]{sb.getState().toString(), "" + sb.getId(),  sb.getAliasName(), sb.getTemplateName(), sb.getExecutedVersion(), 
-							executeTime, duration, sb.getErrorMessage()});
-					item.setData(sb.getId());
-					
-					if (STATE_COLOR_MAP.get(sb.getState())!=null)
-						item.setBackground(getParent().getDisplay().getSystemColor(STATE_COLOR_MAP.get(sb.getState())));
-					else
-						item.setBackground(null);						
-					
-				}				
-			}
-		});
-	
 		
 		Label statusText = new Label(page, 0);
 		statusText.setText("Executive Status: ");
@@ -353,7 +260,7 @@ public class SBExecutionView extends EditorPart {
 		scheduleTable.setLinesVisible (true);
 		scheduleTable.setHeaderVisible (true);
 
-		column = new TableColumn (scheduleTable, SWT.NONE);
+		TableColumn column = new TableColumn (scheduleTable, SWT.NONE);
 		column.setText ("ID");
 		
 		column = new TableColumn (scheduleTable, SWT.NONE);
@@ -387,14 +294,120 @@ public class SBExecutionView extends EditorPart {
 				long scheduledTime = sb.getScheduledTime();
 
 				if (sb != null) {
+					SBState state = sb.getState();
 					item.setText(new String[]{"" + sb.getId(), sb.getAliasName(), sb.getTemplateName(), 
-							"" + sb.getMajorVersion(), AskapHelper.getFormatedData(new Date(scheduledTime), null) });
+							"" + sb.getMajorVersion(), "" });
 					item.setData(sb.getId());
+					
+					if (state != null) {
+						if (SBState.EXECUTING.equals(state)) {
+							item.setImage(4, RUN_IMAGE);
+							item.setForeground(getParent().getDisplay().getSystemColor(STATE_COLOR_MAP.get(sb.getState())));
+						} else {
+							item.setText(new String[]{"" + sb.getId(), sb.getAliasName(), sb.getTemplateName(), 
+									"" + sb.getMajorVersion(), AskapHelper.getFormatedData(new Date(scheduledTime), null) });
+						}
+					}
 				}
 			}
 		});
 
 		scheduleTable.setToolTipText("You have to stop the Executive to enable '" + editButton.getText() + "' button to reschedule SB");
+
+		Label executedTitle = new Label(page, SWT.NONE);
+		executedTitle.setText("Executed Scheduling Block (last " + Preferences.getSBExecutionMaxNumberSB()  + " ):");
+		GridData gd = new GridData();
+		gd.horizontalSpan = 2;
+		gd.grabExcessHorizontalSpace = false;
+		executedTitle.setLayoutData(gd);
+
+		statesCombo = new MultiChoice<String>(page, SWT.READ_ONLY);		
+		statesCombo.addAll(STATES);		
+		GridData gridData = new GridData();
+		gridData.horizontalSpan = 4;
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		statesCombo.setLayoutData(gridData);
+		statesCombo.selectAll();
+				
+		statesCombo.setSelectionListener(new MultiChoiceSelectionListener<String>(statesCombo) {
+
+			@Override
+			public void handle(MultiChoice<String> parent, String receiver,
+					boolean selection, Shell popup) {
+				selectedStates = statesCombo.getSelection().toArray(new String[]{});
+				waitLabel.setVisible(true);
+			}
+		});
+		
+		waitLabel = new Label(page, SWT.NONE);
+		waitLabel.setImage(WAIT_IMAGE);		
+				
+		executedTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
+		executedTable.setLinesVisible (true);
+		executedTable.setHeaderVisible (true);
+		
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("ID");
+		
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("Alias Name");
+
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("Status");
+
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("Template Name");
+		
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("Template Version");
+		
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("Last Run Time");
+
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("Last Run Duration");
+		
+		column = new TableColumn (executedTable, SWT.NONE);
+		column.setText ("Error Message");
+		
+		executedTable.setItemCount(0);
+		setTableSize(executedTable);
+		
+		GridData g3 = new GridData();
+		g3.horizontalAlignment = GridData.FILL;	
+		g3.verticalAlignment = GridData.FILL;	
+		g3.grabExcessHorizontalSpace = true;
+		g3.grabExcessVerticalSpace = true;
+		g3.horizontalSpan = NUM_OF_COLUMNS;
+		executedTable.setLayoutData(g3);
+		
+		executedTable.addListener(SWT.SetData, new Listener() {
+			public void handleEvent(Event event) {
+				TableItem item = (TableItem)event.item;
+				int index = event.index;
+				SchedulingBlock sb = dataModel.getExecutedSBAt(index);
+				if (sb != null) {
+					String executeTime = "";
+					if (sb.getLastExecutedDate()!=null)
+						executeTime = sb.getLastExecutedDate();
+					
+					String duration = getStringDuration(sb.getLastExecutionDuration());
+					
+					item.setText(new String[]{"" + sb.getId(),  sb.getAliasName(), sb.getState().toString(), sb.getTemplateName(), sb.getExecutedVersion(), 
+							executeTime, duration, sb.getErrorMessageSummary()});
+					item.setData(sb.getId());
+					
+					if (STATE_COLOR_MAP.get(sb.getState())!=null)
+						item.setForeground(getParent().getDisplay().getSystemColor(STATE_COLOR_MAP.get(sb.getState())));
+					else
+						item.setBackground(null);						
+					
+				}				
+			}
+		});
+	
+		
 
 		page.addControlListener(new ControlAdapter() {
 			public void controlResized(ControlEvent e) {
@@ -714,8 +727,8 @@ public class SBExecutionView extends EditorPart {
 					table.getColumn(4).setWidth(width * 20/100);
 				} else {
 					table.getColumn(0).setWidth(width * 10/100);
-					table.getColumn(1).setWidth(width * 10/100);
-					table.getColumn(2).setWidth(width * 20/100);
+					table.getColumn(1).setWidth(width * 20/100);
+					table.getColumn(2).setWidth(width * 10/100);
 					table.getColumn(3).setWidth(width * 10/100);
 					table.getColumn(4).setWidth(width * 10/100);
 					table.getColumn(5).setWidth(width * 10/100);
@@ -736,8 +749,8 @@ public class SBExecutionView extends EditorPart {
 					table.getColumn(4).setWidth(width * 20/100);
 				} else {
 					table.getColumn(0).setWidth(width * 10/100);
-					table.getColumn(1).setWidth(width * 10/100);
-					table.getColumn(2).setWidth(width * 20/100);
+					table.getColumn(1).setWidth(width * 20/100);
+					table.getColumn(2).setWidth(width * 10/100);
 					table.getColumn(3).setWidth(width * 10/100);
 					table.getColumn(4).setWidth(width * 10/100);
 					table.getColumn(5).setWidth(width * 10/100);

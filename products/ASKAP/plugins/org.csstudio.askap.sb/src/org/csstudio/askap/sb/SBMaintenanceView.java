@@ -58,7 +58,7 @@ public class SBMaintenanceView extends EditorPart {
 	private static final String DATE_FORMAT = "ddMMyyyy-HHmmss";
 	private static final int NUM_OF_COLUMNS = 4;
 	private static final int BAR_SPACING = 10;
-	private static final int EXPAND_ITEM_HEIGHT = 150;
+	private static final int EXPAND_ITEM_HEIGHT = 200;
 
 	private SBTemplateDataModel sbTemplateDataModel = null;
 	private ParamDataModel userConfigModel = new ParamDataModel();

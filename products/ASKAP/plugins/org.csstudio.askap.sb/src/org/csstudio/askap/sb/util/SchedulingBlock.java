@@ -31,11 +31,15 @@ import org.csstudio.askap.sb.Preferences;
  * @created Sep 2, 2010
  *
  */
+/**
+ * @author wu049
+ *
+ */
 public class SchedulingBlock {
 	
 	String aliasName;
-	Long id;
-	SBState state;
+	long id = 0;
+	SBState state = null;
 	Map<String, String> parameterMap = null;
 	Map<String, String> obsVariableMap = null;
 	
@@ -47,7 +51,8 @@ public class SchedulingBlock {
 	String executedVersion = "";
 	
 	String errorTimeStamp = null;
-	String errorMessage = "";
+	String errorMessageSummary = "";
+	String errorMessageFull = "";
 	
 	long scheduledTime = -1;
 	
@@ -106,7 +111,19 @@ public class SchedulingBlock {
 		if (errorTime != null)
 			setErrorTimeStamp(errorTime.substring(0, errorTime.indexOf(".")));
 		
-		setErrorMessage(obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_MESSAGE));
+		String errorMsg = obsVarMap.get(Preferences.SB_OBS_VAR_ERROR_MESSAGE);
+		
+		// get firstline if there is \n for summery 
+		// full text for detail
+		if (errorMsg==null) {
+			errorMessageFull = "";
+			errorMessageSummary = "";
+		} else {
+			errorMessageFull = errorMsg;
+			if (errorMsg.indexOf("\n")>0) {
+				errorMessageSummary = errorMsg.substring(0, errorMsg.indexOf("\n"));
+			}
+		}
 	}
 
 	/**
@@ -240,20 +257,22 @@ public class SchedulingBlock {
 	 */
 	public void setErrorTimeStamp(String errorTimeStamp) {
 		this.errorTimeStamp = errorTimeStamp;
+	}	
+
+	public String getErrorMessageSummary() {
+		return errorMessageSummary;
 	}
 
-	/**
-	 * @return the errorMessage
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
+	public void setErrorMessageSummary(String errorMessageSummary) {
+		this.errorMessageSummary = errorMessageSummary;
 	}
 
-	/**
-	 * @param errorMessage the errorMessage to set
-	 */
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public String getErrorMessageFull() {
+		return errorMessageFull;
+	}
+
+	public void setErrorMessageFull(String errorMessageFull) {
+		this.errorMessageFull = errorMessageFull;
 	}
 
 	/**
@@ -278,7 +297,7 @@ public class SchedulingBlock {
 		if (obj instanceof SchedulingBlock) {
 			SchedulingBlock sb = (SchedulingBlock) obj;
 			
-			if (sb.id!=null && sb.id.equals(this.id))
+			if (sb.id == this.id)
 				return true;
 		}
 		

@@ -69,10 +69,16 @@ public class SBDataModel {
 	}
 	
 	public int getExecutedSBCount() {
+		if (executedSBList==null)
+			return 0;
+		
 		return executedSBList.size();
 	}
 	
 	public int getScheduledSBCount() {
+		if (scheduledList==null)
+			return 0;
+		
 		return scheduledList.size();
 	}
 	
@@ -179,15 +185,7 @@ public class SBDataModel {
 		// also only display the given max number of sb
 		List<SchedulingBlock> finishedSB = getSBByState(states, Preferences.getSBExecutionMaxNumberSB());
 		
-		List<SchedulingBlock> sbList = getSBByState(new SBState[] {SBState.EXECUTING});
-		SchedulingBlock executingSB = null;
-		if (sbList!=null && sbList.size()>0)
-			executingSB = sbList.get(0);
-
 		if (finishedSB!=null) {
-			if (executingSB!=null)
-				finishedSB.add(0, executingSB);
-			
 			if (finishedSB.size()==executedSBList.size()) {
 				for (int i=0; i<finishedSB.size(); i++) {
 					if (!finishedSB.get(i).equals(executedSBList.get(i))) {
@@ -199,6 +197,9 @@ public class SBDataModel {
 				executedSBList = finishedSB;
 				return true;
 			}
+		} else {
+			executedSBList = finishedSB;
+			return true;
 		}
 		
 		return false;
@@ -207,18 +208,27 @@ public class SBDataModel {
 	protected boolean processScheduledList() throws Exception {
 		// if scheduled list has changed, notify the listener
 		List<SchedulingBlock> newScheduledList = getSBByState(new SBState[]{SBState.SCHEDULED});
+		
+		List<SchedulingBlock> runningList = getSBByState(new SBState[] {SBState.EXECUTING});
+		
 		if (newScheduledList!=null) {
+			// add currently running one at the beginning
+			newScheduledList.addAll(0, runningList);
 			if (newScheduledList.size()==scheduledList.size()) {
 				for (int i=0; i<newScheduledList.size(); i++) {
 					if (newScheduledList.get(i).getId() != scheduledList.get(i).getId()) {
 						scheduledList = newScheduledList;
 						return true;
 					}
-				}					
+				}
 			} else {
 				scheduledList = newScheduledList;
 				return true;
 			}
+		} else {
+			if (scheduledList!=null)
+				scheduledList = runningList;
+			return true;
 		}
 		
 		return false;
