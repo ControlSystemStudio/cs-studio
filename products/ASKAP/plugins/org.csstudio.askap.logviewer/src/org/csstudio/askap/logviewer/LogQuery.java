@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public class LogQuery extends ViewPart {
@@ -205,6 +206,25 @@ public class LogQuery extends ViewPart {
 												time.getMinutes(), time.getSeconds());
 		return new Date(millisec);
 	}	
+
+	
+	public static Object openLogQueryView() {
+		try{
+			if (PlatformUI.getWorkbench() != null
+					&& PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null
+					&& PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getActivePage() != null) {
+										
+				return PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow()
+						.getActivePage().showView(LogQuery.ID);
+			}
+				
+		} catch (Exception ex) {
+			logger.log(Level.SEVERE, "Cannot create LogQueryResultViewer", ex);
+		}
+		return null;
+	}
 
 
 	@Override

@@ -13,6 +13,7 @@ public class OpenLogQueryResult extends AbstractHandler {
 		} catch (Exception ex) {
 			// never mind
 		}
+		LogQuery.openLogQueryView();
 		return LogQueryResultViewer.openLogResultViewer();
 	}
 
