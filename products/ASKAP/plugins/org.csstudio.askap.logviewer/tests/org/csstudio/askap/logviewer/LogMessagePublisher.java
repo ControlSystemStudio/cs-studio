@@ -22,6 +22,11 @@ import askap.interfaces.logging.LogLevel;
 
 public class LogMessagePublisher {
 	public static String SERVICE_NAMES[] = {"Executive", "Data", "TOM"};
+	public static String ORIGINS[] = {"askap.executive", "askap.executive.xxx",
+								"askap.yyy", 
+								"askap.opl", "askap.opl.yyy", 
+								"askap.epics", "askap.epics.zzz"};
+	
 	private static int i=0;
 	private static final SimpleDateFormat dateformat = new SimpleDateFormat("ss");
 	
@@ -92,11 +97,12 @@ public class LogMessagePublisher {
     	String s = "Hello world " + new Date();
     	
 		String serviceName = SERVICE_NAMES[i%SERVICE_NAMES.length].replace(" ", "");
+		String orign = ORIGINS[i%ORIGINS.length].replace(" ", "");
 		String logLevel = LOG_LEVELS[i%LOG_LEVELS.length];
 		String logMessage = logLevel + " Could not open configuration file" + i;
 
     	ILogEvent e = new ILogEvent();
-    	e.origin = topicName;
+    	e.origin = orign;
     	e.created = System.currentTimeMillis();
     	e.message = logMessage;
     	e.level = LogLevel.valueOf(logLevel);

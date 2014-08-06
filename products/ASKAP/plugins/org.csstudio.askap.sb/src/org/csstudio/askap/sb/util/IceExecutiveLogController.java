@@ -66,7 +66,7 @@ public class IceExecutiveLogController {
 		_ILoggerDisp callbackObj = new _ILoggerDisp() {
 			public void send(ILogEvent event, Current current) {
 				
-				if (filterOrigin(event.tag)) {
+				if (filterOrigin(event.origin)) {
 					LogObject logObj = LogObject.logEventToLogObject(event);
 					DataChangeEvent change = new DataChangeEvent();
 					change.setChange(logObj);
@@ -83,6 +83,9 @@ public class IceExecutiveLogController {
 			return false;
 		
 		for (String originFilter : origins) {
+			if (origin.equals(originFilter))
+				return true;
+			
 			if (origin.startsWith(originFilter+"."))
 				return true;
 		}

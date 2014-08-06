@@ -45,6 +45,8 @@ public class ExecutiveLogView extends ViewPart {
 	private Label messageCountLabel = null;
 	
 	private int numberOfMessage = 0;
+
+	private boolean isDisposed = false;
 	
 	
 	class LogMessageColorProvider extends ColumnLabelProvider implements IColorProvider {
@@ -234,5 +236,16 @@ public class ExecutiveLogView extends ViewPart {
 		column.setMoveable(true);
 		
 		return viewerColumn;
+	}
+	
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		super.dispose();
+		isDisposed  = true;
+	}
+	
+	public boolean isDisposed() {
+		return isDisposed;
 	}
 }

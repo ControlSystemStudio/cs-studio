@@ -38,8 +38,8 @@ public class ExecutiveLogHelper {
 								.getActiveWorkbenchWindow()
 								.getActivePage().findView(ExecutiveLogView.ID);
 					
-					// if view has not been created, created it					
-					if (logView==null) {
+					// if view has not been created or it has been disposed, created it					
+					if (logView==null || logView.isDisposed()) {
 						try {
 							logView= (ExecutiveLogView) PlatformUI.getWorkbench()
 									.getActiveWorkbenchWindow()
