@@ -20,6 +20,8 @@
 
 package org.csstudio.askap.sb.util;
 
+import java.util.StringTokenizer;
+
 import org.csstudio.askap.utility.icemanager.IceManager;
 import org.csstudio.askap.utility.icemanager.LogObject;
 
@@ -37,20 +39,34 @@ public class IceExecutiveLogController {
 	private ObjectPrx subscriber = null;
 	private String topicName = null;
 	private String adaptorName = null;
-	private String origin = null;
+	private String origins[] = null;
 	
 
 	
 	public IceExecutiveLogController(String adaptorName, String topicName, String origin) {
 		this.topicName = topicName;
 		this.adaptorName = adaptorName;
-		this.origin  = origin;
+		
+		// a semi colon (;) separated list of origins
+		// each origin is hierarchical. eg if you have askap.epics as an origin filter, you'll get logs
+		// whose origins are askap.epics.xxx and askap.epics.xxx.yyy etc
+		if (origin==null) {
+			origins = new String[0];
+		} else {
+			StringTokenizer tokeniser = new StringTokenizer(origin, ";");
+			origins = new String[tokeniser.countTokens()];
+			for (int i=0; i<tokeniser.countTokens(); i++) {
+				origins[i] = tokeniser.nextToken();
+			}
+		}
+		
 	}
 			
 	public void subscribe(final DataChangeListener messageReceiver) throws Exception{
 		_ILoggerDisp callbackObj = new _ILoggerDisp() {
 			public void send(ILogEvent event, Current current) {
-				if (event.tag!=null && event.origin.equals(origin)) {				
+				
+				if (filterOrigin(event.tag)) {
 					LogObject logObj = LogObject.logEventToLogObject(event);
 					DataChangeEvent change = new DataChangeEvent();
 					change.setChange(logObj);
@@ -60,6 +76,20 @@ public class IceExecutiveLogController {
 		};
 		subscriber = IceManager.setupSubscriber(topicName, adaptorName, callbackObj);
 	}
+	
+	private boolean filterOrigin(String origin) {
+		
+		if (origin==null || origin.trim().length()==0)
+			return false;
+		
+		for (String originFilter : origins) {
+			if (origin.startsWith(originFilter+"."))
+				return true;
+		}
+		
+		return false;
+	}
+
 	
 	public void stop() throws Exception {
 		IceManager.unsubscribe(topicName, adaptorName, subscriber);
