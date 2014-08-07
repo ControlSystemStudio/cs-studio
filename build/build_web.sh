@@ -39,17 +39,16 @@ else
   mkdir -p ext
   cd ext
 
-  if [[ ! -f eclipse-rcp-indigo-SR2-linux-gtk.tar.gz ]]
+  if [[ ! -f eclipse-rcp-kepler-SR2-linux-gtk.tar.gz ]]
     then
-      wget http://download.eclipse.org/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
+      wget http://download.eclipse.org/technology/epp/downloads/release/kepler/SR2/eclipse-rcp-kepler-SR2-linux-gtk.tar.gz
     fi
-  if [[ ! -f eclipse-3.7.2-delta-pack.zip ]]
+  if [[ ! -f eclipse-4.3.2-delta-pack.zip ]]
   then
-     wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.7.2-201202080800/eclipse-3.7.2-delta-pack.zip
+     wget http://download.eclipse.org/eclipse/downloads/drops4/R-4.3.2-201402211700/eclipse-4.3.2-delta-pack.zip
   fi
-  tar -xzvf eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
-  unzip -o eclipse-3.7.2-delta-pack.zip
-
+  tar -xzvf eclipse-rcp-kepler-SR2-linux-gtk.tar.gz
+  unzip -o eclipse-4.3.2-delta-pack.zip
   cd ..
 fi
 
@@ -135,9 +134,9 @@ cd ..
 ABSOLUTE_DIR="$PWD"
 echo "Start build"
 echo $ABSOLUTE_DIR
-java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar \
+java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.3.*.jar \
 	-application org.eclipse.ant.core.antRunner \
-	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.7.*/scripts/build.xml \
+	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.8.*/scripts/build.xml \
 	-Dbuild.dir="$ABSOLUTE_DIR" \
     -DbuildDirectory="$ABSOLUTE_DIR"/build/BuildDirectory \
 	-Dbuilder="$ABSOLUTE_DIR"/build \
