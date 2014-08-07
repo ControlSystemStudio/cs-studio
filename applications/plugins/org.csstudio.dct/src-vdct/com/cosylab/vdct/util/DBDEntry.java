@@ -65,13 +65,13 @@ public class DBDEntry {
 	public File getFile() {
 		File f = new File( matchAndReplace(value) );
 		
-		// if not absolute, make relatove to DB file
+		// if not absolute, make relative to DB file
 		if (!f.isAbsolute()) f = new File(baseDir, value);
 		
 		try {
 			return f.getCanonicalFile();
 		} catch (IOException ioe) {
-			System.out.println("Failed to cannonize '"+f.toString()+"'. Exception: ");
+			System.out.println("Failed to canonize '"+f.toString()+"'. Exception: ");
 			ioe.printStackTrace();
 		}
 		return f.getAbsoluteFile();
@@ -155,7 +155,7 @@ public class DBDEntry {
 		if (properties==null) {
 			properties = new Properties(System.getProperties());
 			
-			// imoport from epics release file
+			// import from epics release file
 			File f = new File(properties.getProperty("EPICS_BASE")+"/configure/RELEASE");
 			if (f.canRead()) {
 				LineNumberReader r = null;

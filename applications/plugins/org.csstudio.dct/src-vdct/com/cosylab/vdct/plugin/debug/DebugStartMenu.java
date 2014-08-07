@@ -73,7 +73,7 @@ public void actionPerformed(ActionEvent event)
 
 		if (PluginDebugManager.getDebugPlugin()!=null)
 		{
-			Console.getInstance().println("Debug pluging '" + PluginDebugManager.getDebugPlugin().getName()+ "' is already running, stop it first...");
+			Console.getInstance().println("Debug plugin '" + PluginDebugManager.getDebugPlugin().getName()+ "' is already running, stop it first...");
 			Toolkit.getDefaultToolkit().beep();
 			return;
 		}

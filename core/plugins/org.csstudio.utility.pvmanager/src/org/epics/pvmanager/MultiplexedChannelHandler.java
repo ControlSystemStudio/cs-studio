@@ -156,7 +156,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      */
     protected synchronized final void processConnection(ConnectionPayload connectionPayload) {
         if (log.isLoggable(Level.FINEST)) {
-            log.log(Level.FINEST, "processConnection for channel {0} connecionPayload {1}", new Object[] {getChannelName(), connectionPayload});
+            log.log(Level.FINEST, "processConnection for channel {0} connectionPayload {1}", new Object[] {getChannelName(), connectionPayload});
         }
         
         this.connectionPayload = connectionPayload;

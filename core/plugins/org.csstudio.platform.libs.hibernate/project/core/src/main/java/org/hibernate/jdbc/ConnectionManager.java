@@ -294,11 +294,11 @@ public class ConnectionManager implements Serializable {
 			if ( isFlushing ) {
 				log.debug( "skipping aggressive-release due to flush cycle" );
 			}
-			else if ( batcher.hasOpenResources() ) {
-				log.debug( "skipping aggresive-release due to open resources on batcher" );
+         else if ( batcher.hasOpenResources() ) {
+            log.debug( "skipping aggressive-release due to open resources on batcher" );
 			}
 			else if ( borrowedConnection != null ) {
-				log.debug( "skipping aggresive-release due to borrowed connection" );
+				log.debug( "skipping aggressive-release due to borrowed connection" );
 			}
 			else {
 				aggressiveRelease();
@@ -432,7 +432,7 @@ public class ConnectionManager implements Serializable {
 	}
 
 	/**
-	 * Pysically opens a JDBC Connection.
+	 * Physically opens a JDBC Connection.
 	 *
 	 * @throws HibernateException
 	 */

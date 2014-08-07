@@ -34,7 +34,7 @@ import org.csstudio.sds.util.ExecutionService;
  */
 public class PersistenceUtil {
 	/**
-	 * Load the given display model from the given input stream synchroneously.
+	 * Load the given display model from the given input stream synchronously.
 	 * 
 	 * @param displayModel
 	 *            The diplay model to load.
@@ -48,7 +48,7 @@ public class PersistenceUtil {
 	}
 
 	/**
-	 * Load the given display model from the given input stream asynchroneously.
+	 * Load the given display model from the given input stream asynchronously.
 	 * 
 	 * @param displayModel
 	 *            The diplay model to load.

@@ -199,7 +199,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
 				if (plug!=null) {
 					sb.append(plug.getPlugType());
 				} else {
-					sb.append("UKNOWN_PLUG");
+					sb.append("UNKNOWN_PLUG");
 				}
 				sb.append('/');
 				sb.append(getRemoteHostInfo());
@@ -211,7 +211,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
 				if (plug!=null) {
 					sb.append(plug.getPlugType());
 				} else {
-					sb.append("UKNOWN_PLUG");
+					sb.append("UNKNOWN_PLUG");
 				}
 				sb.append('/');
 				sb.append("(NOT_CONNECTED)");
@@ -227,7 +227,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
 	 * @return remote host information
 	 */
 	protected String getRemoteHostInfo() {
-		return "UKNOWN_HOST";
+		return "UNKNOWN_HOST";
 	}
 }
 

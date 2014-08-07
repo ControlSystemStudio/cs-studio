@@ -29,7 +29,7 @@ public class AlarmBorder extends AbstractAlarmRule {
      */
     @Override
     public String getDescription() {
-        final String desc= "Only if the given arument a String "+DynamicValueState.NORMAL.toString()+" (DynamicValueState.NORMAL) or the argument is a Number between +- 0.00001 retrun a None-Border otherwise return a Line-Border.";
+        final String desc= "Only if the given argument a String "+DynamicValueState.NORMAL.toString()+" (DynamicValueState.NORMAL) or the argument is a Number between +- 0.00001 return a None-Border otherwise return a Line-Border.";
         return desc;
     }
 

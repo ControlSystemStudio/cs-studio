@@ -41,7 +41,7 @@ public class ContentProposalList {
 	// index => provider
 	private SortedMap<Integer, String> providerMap;
 
-	private int lenght = 0;
+	private int length = 0;
 	private int expected = 0;
 	private int responded = 0;
 
@@ -62,7 +62,7 @@ public class ContentProposalList {
 		this.proposalMap = new HashMap<String, Proposal[]>(list.proposalMap);
 		this.countMap = new HashMap<String, Integer>(list.countMap);
 		this.providerMap = new TreeMap<Integer, String>(list.providerMap);
-		this.lenght = list.lenght;
+		this.length = list.length;
 		this.expected = list.expected;
 		this.responded = list.responded;
 		this.maxTopProposals = list.maxTopProposals;
@@ -167,7 +167,7 @@ public class ContentProposalList {
 		}
 		proposalMap.put(provider, proposals);
 		countMap.put(provider, count);
-		lenght += proposals.length;
+		length += proposals.length;
 		providerMap.put(index, provider);
 	}
 
@@ -188,7 +188,7 @@ public class ContentProposalList {
 	}
 
 	public int length() {
-		return lenght;
+		return length;
 	}
 
 	public int fullLength() {
@@ -200,7 +200,7 @@ public class ContentProposalList {
 		proposalMap.clear();
 		countMap.clear();
 		providerMap.clear();
-		lenght = 0;
+		length = 0;
 		expected = 0;
 		responded = 0;
 		hasContentMatchingProposal = false;
@@ -215,7 +215,7 @@ public class ContentProposalList {
 		return "ContentProposalList [originalValue=" + originalValue
 				+ ", topProposalList=" + topProposalList + ", proposalMap="
 				+ proposalMap + ", countMap=" + countMap + ", providerMap="
-				+ providerMap + ", lenght=" + lenght + ", expected=" + expected
+				+ providerMap + ", length=" + length + ", expected=" + expected
 				+ ", responded=" + responded + ", maxTopProposals="
 				+ maxTopProposals + "]";
 	}

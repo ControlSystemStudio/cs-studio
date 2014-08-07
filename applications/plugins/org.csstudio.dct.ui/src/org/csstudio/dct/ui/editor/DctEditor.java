@@ -112,7 +112,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
         }
 
         private void search() {
-            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensitive());
         }
 
         public void widgetDefaultSelected(final SelectionEvent e) {
@@ -142,7 +142,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
         public void modifyText(final ModifyEvent e) {
 
-        	final boolean found = searchAndMarkInPreview(_searchBox.getText(), false, isCaseSensetiv());
+		final boolean found = searchAndMarkInPreview(_searchBox.getText(), false, isCaseSensitive());
         	if(found) {
         	    _searchBox.setBackground(white);
         	    _searchBox.setForeground(black);
@@ -168,7 +168,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	private StyledText dbFilePreviewText;
 	private ExporterDescriptor exporterDescriptor;
 
-    private boolean _caseSensetiv;
+    private boolean _caseSensitive;
 
     private Text _searchBox;
 
@@ -300,7 +300,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		    @Override
             public void keyReleased(final KeyEvent e) {
 		        if(e.keyCode==SWT.KEYPAD_CR||e.keyCode==SWT.CR||e.keyCode==SWT.F3) {
-		            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+		            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensitive());
 		        }
 		    }
         });
@@ -312,17 +312,17 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		searchButton.addSelectionListener(new SearchListener(_searchBox));
 		searchButton.setText("Search");
 
-		final Button caseSensetivButton = new Button(c, SWT.CHECK);
-        caseSensetivButton.setLayoutData(swtDefaults.create());
-        caseSensetivButton.setText("Case Sensetiv");
-        caseSensetivButton.addSelectionListener(new SelectionListener() {
+		final Button caseSensitiveButton = new Button(c, SWT.CHECK);
+        caseSensitiveButton.setLayoutData(swtDefaults.create());
+        caseSensitiveButton.setText("Case Sensitive");
+        caseSensitiveButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(final SelectionEvent e) {
-                setCaseSensetiv(caseSensetivButton.getSelection());
+                setCaseSensitive(caseSensitiveButton.getSelection());
             }
 
             public void widgetDefaultSelected(final SelectionEvent e) {
-                setCaseSensetiv(caseSensetivButton.getSelection());
+                setCaseSensitive(caseSensitiveButton.getSelection());
             }
         });
 
@@ -372,7 +372,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
             @Override
             public void keyReleased(final KeyEvent e) {
                 if(e.keyCode==SWT.F3) {
-                    searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
+                    searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensitive());
                 }
             }
         });
@@ -408,12 +408,12 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	    return found;
 	}
 
-	protected boolean isCaseSensetiv() {
-        return _caseSensetiv;
+	protected boolean isCaseSensitive() {
+        return _caseSensitive;
     }
 
-	protected void setCaseSensetiv(final boolean caseSensetiv) {
-        _caseSensetiv = caseSensetiv;
+	protected void setCaseSensitive(final boolean caseSensitive) {
+        _caseSensitive = caseSensitive;
     }
 	/**
 	 * Updates the preview of the db file.

@@ -156,7 +156,7 @@ public class Waveform extends Widget {
                 double max = Double.parseDouble(row[1].trim());
                 _widget.setPropertyValue(AbstractChartModel.PROP_MAX+id, max);
             }else{
-                LOG.info("Unknown Waveform {} paramerter: {}",waveformPart.getType(),fileLine);
+                LOG.info("Unknown Waveform {} parameter: {}",waveformPart.getType(),fileLine);
             }
         }
     }
@@ -205,7 +205,7 @@ public class Waveform extends Widget {
                 _widget.setPropertyValue(AbstractChartModel.PROP_X_AXIS_LABEL, xLabel);
                 _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
             }else{
-                LOG.info("Unknown Waveform {} paramerter: {}",waveformPart.getType(),fileLine);
+                LOG.info("Unknown Waveform {} parameter: {}",waveformPart.getType(),fileLine);
             }
         }
     }
@@ -262,7 +262,7 @@ public class Waveform extends Widget {
                     LOG.info("Can not convert correct the Waveform. The Source have to many Wave's colors. They are only %s possible", WaveformModel.NUMBER_OF_ARRAYS);
                 }
             }else{
-                LOG.info("Unknown Waveform {} paramerter: {}",waveformPart.getType(),fileLine);
+                LOG.info("Unknown Waveform {} parameter: {}",waveformPart.getType(),fileLine);
             }
         }
     }
@@ -300,7 +300,7 @@ public class Waveform extends Widget {
                 String yLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(AbstractChartModel.PROP_Y_AXIS_LABEL,yLabel);
             }else{
-                LOG.info("Unknown Waveform {} paramerter: {}",waveformPart.getType(),fileLine);
+                LOG.info("Unknown Waveform {} parameter: {}",waveformPart.getType(),fileLine);
             }
         }
     }

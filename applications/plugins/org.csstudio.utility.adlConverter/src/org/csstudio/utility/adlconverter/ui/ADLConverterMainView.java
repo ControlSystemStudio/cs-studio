@@ -368,7 +368,7 @@ public class ADLConverterMainView extends ViewPart {
 						.getSelection();
 				final ArrayList<Object> list = new ArrayList<Object>(sel
 						.toList());
-				Job job = new Job("Convered ADL Files") {
+				Job job = new Job("Convert ADL Files") {
 
 					@Override
 					protected IStatus run(final IProgressMonitor monitor) {

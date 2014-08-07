@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * @author Emmanuel Bernard
  */
 @Entity
-@Table(name = "Translatn")
+@Table(name = "Translation")
 @CountryChecker
 public class Translation {
 	private Integer id;

@@ -34,7 +34,7 @@ public abstract class AbstractChoiceFigureTest extends AbstractWidgetTest {
 	@Override
 	public Object generateTestData(PropertyDescriptor pd, Object seed) {
 		if(pd.getName().equals("states"))
-			return Arrays.asList("choice 1", "choice 2", "Chioce 3");
+			return Arrays.asList("choice 1", "choice 2", "Choice 3");
 		return super.generateTestData(pd, seed);
 	}
 	

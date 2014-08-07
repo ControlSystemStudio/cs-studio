@@ -221,7 +221,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	{
 		// TODO: at some point this initialization must be changed. 
 		// device factory should be obtained only after RemoteInfo is set and correct plug type is known, 
-		// now it is used default plug tipe from ctx
+		// now it is used default plug type from ctx
 		deviceFactory = DefaultDeviceFactoryService.getDeviceFactoryService()
 			.getDeviceFactory(ctx, null);
 
@@ -282,7 +282,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 					prop.initialize(pp, dp);
 					prop.refresh();
 				} catch (Exception e) {
-					Logger.getLogger(DeviceBean.class).warn("Problem on re-inizializing property " + pns[i]+".",e);
+					Logger.getLogger(DeviceBean.class).warn("Problem on re-initializing property " + pns[i]+".",e);
 				}
 			}
 		}

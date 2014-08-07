@@ -30,7 +30,7 @@ import org.csstudio.dal.ResponseListener;
 
 /**
  * Intercepts calls to asynchronous getValue method and makes them
- * syncrhonous.
+ * synchronous.
  *
  * @author ikriznar
  *
@@ -65,13 +65,13 @@ public class GetValueInterceptor<T> implements ResponseListener<T>
 	public synchronized void responseError(ResponseEvent<T> event)
 	{
 		error = new DataExchangeException(event.getSource(),
-			    "REmote call returned error.", event.getResponse().getError());
+			    "Remote call returned error.", event.getResponse().getError());
 		done = true;
 		notify();
 	}
 
 	/**
-	 * Executes an asynchronus getValue call and waits for it to finish or timeout.
+	 * Executes an asynchronous getValue call and waits for it to finish or timeout.
 	 *
 	 * @param proxy  Proxy on which to execute getValue
 	 *

@@ -63,7 +63,7 @@ public class BorrowedConnectionProxy implements InvocationHandler {
 		}
 		// should probably no-op commit/rollback here, at least in JTA scenarios
 		if ( !useable ) {
-			throw new HibernateException( "connnection proxy not usable after transaction completion" );
+			throw new HibernateException( "connection proxy not usable after transaction completion" );
 		}
 
 		if ( "getWrappedConnection".equals( method.getName() ) ) {

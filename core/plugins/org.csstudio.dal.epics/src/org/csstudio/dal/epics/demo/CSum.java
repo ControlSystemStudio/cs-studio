@@ -150,7 +150,7 @@ public class CSum implements Runnable {
 		factoryB= DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY,EPICSPlug.PLUG_TYPE);
 
 
-		out("This is simple demo which sums two channls from two independent protocols underneath DAL.");
+		out("This is simple demo which sums two channels from two independent protocols underneath DAL.");
 		out("So far we can use Simulator and EPICS.");
 		out("Channel A: put in name for Simulator channel (any name will be accepted):");
 

@@ -394,7 +394,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 				MonitorProxy mp = proxy.createMonitor(mm[i],null);
 				mm[i].initialize(mp);
 			} catch (Exception e) {
-				Logger.getLogger(SimplePropertyImpl.class).warn("Problem on re-inizializing monitor on property"+getName()+".",e);
+				Logger.getLogger(SimplePropertyImpl.class).warn("Problem on re-initializing monitor on property"+getName()+".",e);
 			}
 		}
 		// catch the identifier
