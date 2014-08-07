@@ -17,9 +17,9 @@ then
    export WORKSPACE=/home/kasemir/Eclipse/LocalCSS
 
    # Location of Eclipse and Delta pack, the 'target' platform
-   export ECLIPSE=/home/kasemir/Eclipse/4.3.2/rcp/
+   export ECLIPSE=/home/kasemir/Eclipse/4.4.0/rcp/
    # Deltapack can list several sites: delta pack;PyDev;...
-   export DELTAPACK="/home/kasemir/Eclipse/4.3.2/delta:/home/kasemir/Eclipse/CSS_Additions/PyDev2.6.0"
+   export DELTAPACK="/home/kasemir/Eclipse/4.4.0/delta:/home/kasemir/Eclipse/CSS_Additions/PyDev2.6.0"
 
    # Output directory. Must NOT include symbolic link (like /tmp on Mac OS X)
    export BUILDDIR=/tmp/css_build
