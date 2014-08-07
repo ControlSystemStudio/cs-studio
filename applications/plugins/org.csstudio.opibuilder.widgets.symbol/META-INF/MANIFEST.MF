@@ -3,22 +3,18 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY Symbol Widgets
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets.symbol;singleton:=true
-Bundle-Version: 4.3.4.qualifier
+Bundle-Version: 4.4.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.symbol.Activator
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
- org.eclipse.ui.views,
  org.csstudio.opibuilder,
  org.csstudio.opibuilder.widgets,
  org.csstudio.swt.widgets,
- org.csstudio.ui.util;resolution:=optional,
- org.apache.batik,
- org.junit
+ org.apache.commons.lang
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .
 Eclipse-BuddyPolicy: registered
 Export-Package: org.csstudio.opibuilder.widgets.symbol.bool,
- org.csstudio.opibuilder.widgets.symbol.image,
  org.csstudio.opibuilder.widgets.symbol.multistate,
  org.csstudio.opibuilder.widgets.symbol.util

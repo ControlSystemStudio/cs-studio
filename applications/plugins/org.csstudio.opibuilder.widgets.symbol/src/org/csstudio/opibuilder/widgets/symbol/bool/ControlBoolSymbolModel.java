@@ -21,7 +21,8 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolControlModel;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
-import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
+import org.csstudio.opibuilder.widgets.symbol.util.SymbolUtils;
+import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.graphics.RGB;
@@ -95,8 +96,13 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 	private static final RGB DEFAULT_ON_COLOR = new RGB(0, 255, 0);
 	/** The default color of the off color property. */
 	private static final RGB DEFAULT_OFF_COLOR = new RGB(255, 0, 0);
-
-	private static final String[] IMAGE_EXTENSIONS = new String[] { "gif", "png", "svg", "GIF", "PNG", "SVG" };
+	
+	/**
+	 * True if the widget doesn't show animation even it is a animated image
+	 * file.
+	 */
+	public static final String PROP_NO_ANIMATION = "no_animation";
+	public static final String PROP_ALIGN_TO_NEAREST_SECOND = "align_to_nearest_second";
 
 	/**
 	 * Initialize the properties when the widget is first created.
@@ -129,7 +135,7 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 
 		addProperty(new FilePathPropertyWithFilter(PROP_SYMBOL_IMAGE_FILE,
 				"Symbol Image", WidgetPropertyCategory.Display, new Path(""),
-				IMAGE_EXTENSIONS));
+				SymbolUtils.IMAGE_EXTENSIONS));
 		
 		addProperty(new IntegerProperty(PROP_TOPCROP, "Crop Top",
 				WidgetPropertyCategory.Image, 0));
@@ -140,6 +146,10 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 		addProperty(new IntegerProperty(PROP_RIGHTCROP, "Crop Right",
 				WidgetPropertyCategory.Image, 0));
 		addProperty(new BooleanProperty(PROP_STRETCH, "Stretch to Fit",
+				WidgetPropertyCategory.Image, false));
+		addProperty(new BooleanProperty(PROP_NO_ANIMATION, "No Animation",
+				WidgetPropertyCategory.Image, false));
+		addProperty(new BooleanProperty(PROP_ALIGN_TO_NEAREST_SECOND, "Animation aligned to the nearest second",
 				WidgetPropertyCategory.Image, false));
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size",
 				WidgetPropertyCategory.Image, true));
@@ -322,6 +332,18 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 			}
 		}
 		super.setPropertyValue(id, value);
+	}
+
+	/**
+	 * @return True if the animation is stopped.
+	 */
+	public boolean isStopAnimation() {
+		return (Boolean) getProperty(PROP_NO_ANIMATION).getPropertyValue();
+	}
+
+	public boolean isAlignedToNearestSecond() {
+		return (Boolean) getProperty(PROP_ALIGN_TO_NEAREST_SECOND)
+				.getPropertyValue();
 	}
 
 }

@@ -30,7 +30,7 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.MatrixProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.swt.widgets.util.PermutationMatrix;
+import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -78,8 +78,14 @@ public final class ImageModel extends AbstractWidgetModel {
 	/**
 	 * True if the widget doesn't show animation even it is a animated image file.
 	 */
-	public static final String PROP_NO_ANIMATION= "no_animation";	
-	
+	public static final String PROP_NO_ANIMATION = "no_animation";
+
+	/**
+	 * True if the widget animation start should be aligned to the nearest
+	 * second.
+	 */
+	public static final String PROP_ALIGN_TO_NEAREST_SECOND = "align_to_nearest_second";
+
 	/**
 	 * The default value for the file extensions.
 	 */
@@ -134,6 +140,8 @@ public final class ImageModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Image,true));
 		addProperty(new BooleanProperty(PROP_NO_ANIMATION, "No Animation",
 				WidgetPropertyCategory.Image,false));
+		addProperty(new BooleanProperty(PROP_ALIGN_TO_NEAREST_SECOND, "Animation aligned to the nearest second",
+				WidgetPropertyCategory.Image, false));
 		addProperty(new ComboProperty(PROP_DEGREE, "Rotation Angle",
 				WidgetPropertyCategory.Image, allowedDegrees, 0));
 		addProperty(new BooleanProperty(PROP_FLIP_HORIZONTAL,
@@ -205,12 +213,17 @@ public final class ImageModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 *  @return True if the animation is stopped.
+	 * @return True if the animation is stopped.
 	 */
 	public boolean isStopAnimation() {
 		return (Boolean) getProperty(PROP_NO_ANIMATION).getPropertyValue();
 	}
-	
+
+	public boolean isAlignedToNearestSecond() {
+		return (Boolean) getProperty(PROP_ALIGN_TO_NEAREST_SECOND)
+				.getPropertyValue();
+	}
+
 	/**
 	 * @return The permutation matrix
 	 */

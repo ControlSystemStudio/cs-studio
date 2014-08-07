@@ -5,12 +5,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.opibuilder.widgets.symbol.util;
+package org.csstudio.swt.widgets.symbol;
 
-import org.eclipse.draw2d.IFigure;
+/**
+ * @author Fred Arnaud (Sopra Group) - ITER
+ */
+public interface SymbolImageListener {
 
-public interface IImageLoadedListener {
-	
-	public void imageLoaded(final IFigure figure);
+	public void symbolImageLoaded();
+
+	public void repaintRequested();
+
+	public void sizeChanged();
 
 }
