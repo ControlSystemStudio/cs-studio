@@ -26,11 +26,11 @@ then
 
    export JRE_Win64=/home/kasemir/Eclipse/CSS_Additions/Win64/jre/
 else
-   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home
+   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_65.jdk/Contents/Home
    export TOP=/Users/ky9/git/cs-studio_4
    export WORKSPACE=/Users/ky9/Eclipse/Workspace4
-   export ECLIPSE=/Users/ky9/Eclipse/4.3.2/rcp
-   export DELTAPACK="/Users/ky9/Eclipse/4.3.2/delta:/Users/ky9/Eclipse/CSS_Additions/PyDev2.6.0"
+   export ECLIPSE=/Users/ky9/Eclipse/4.4.0/rcp
+   export DELTAPACK="/Users/ky9/Eclipse/4.4.0/delta:/Users/ky9/Eclipse/CSS_Additions/PyDev2.6.0"
    export BUILDDIR=/Kram/build
    export JRE_Win64=/Users/ky9/Eclipse/CSS_Additions/Win64/jre
 fi
