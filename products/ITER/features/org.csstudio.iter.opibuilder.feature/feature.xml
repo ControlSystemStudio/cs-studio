@@ -24,45 +24,38 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pv" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.jdom" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.swt.widgets" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.extra" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.4.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.opibuilder" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.junit" version="3.8.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.swt.xygraph" version="1.0.5" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.console" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.email.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook" version="1.0.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.csstudio.apputil"/>
       <import plugin="org.csstudio.apputil.ui"/>
-      <import plugin="org.csstudio.opibuilder" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.opibuilder.widgets" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.swt.xygraph" version="1.1.3" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata"/>
+      <import plugin="org.csstudio.email.ui"/>
+      <import plugin="org.csstudio.java"/>
+      <import plugin="org.csstudio.logbook"/>
+      <import plugin="org.csstudio.openfile"/>
+      <import plugin="org.csstudio.opibuilder"/>
+      <import plugin="org.csstudio.opibuilder.widgets"/>
+      <import plugin="org.csstudio.swt.widgets"/>
+      <import plugin="org.csstudio.swt.xygraph"/>
+      <import plugin="org.csstudio.trends.databrowser2"/>
+      <import plugin="org.csstudio.utility.pv"/>
+      <import plugin="org.csstudio.utility.pvmanager"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
+      <import plugin="org.csstudio.utility.pvmanager.widgets"/>
+      <import plugin="org.csstudio.utility.singlesource"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="org.csstudio.utility.pvmanager.widgets" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.opibuilder" version="1.0.6" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.opibuilder.widgets" version="1.0.5" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.trends.databrowser2" version="3.1.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.swt.xygraph" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.jdom"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.python.jython"/>
    </requires>
 
    <plugin
