@@ -512,4 +512,9 @@ public class MockIFile implements IFile {
 			IProgressMonitor arg3) throws CoreException {
 	}
 
+	@Override
+	public void accept(IResourceProxyVisitor visitor, int depth, int memberFlags)
+			throws CoreException {
+	}
+
 }
