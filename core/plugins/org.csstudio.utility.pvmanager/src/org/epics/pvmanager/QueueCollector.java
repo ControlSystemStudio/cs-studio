@@ -23,6 +23,7 @@ public class QueueCollector<T> implements Collector<T, List<T>> {
     private List<T> readBuffer;
     private List<T> writeBuffer;
     private int maxSize;
+    private Runnable notification;
 
     /**
      * New queue collector with the given max size for the queue.
@@ -38,12 +39,25 @@ public class QueueCollector<T> implements Collector<T, List<T>> {
     }
 
     @Override
+    public void setChangeNotification(Runnable notification) {
+        synchronized (lock) {
+            this.notification = notification;
+        }
+    }
+
+    @Override
     public void writeValue(T newValue) {
+        Runnable task;
         synchronized(lock) {
             writeBuffer.add(newValue);
             if (writeBuffer.size() > maxSize) {
                 writeBuffer.remove(0);
             }
+            task = notification;
+        }
+        // Run task without holding the lock
+        if (task != null) {
+            task.run();
         }
     }
 

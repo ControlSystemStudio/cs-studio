@@ -78,7 +78,7 @@ class PVReaderImpl<T> implements PVReader<T> {
     private boolean connectionToNotify = false;
     private boolean valueToNotify = false;
     private boolean sentFirstEvent = false;
-    private PVReaderDirector<T> director = null;
+    private PVReaderDirector director = null;
 
     void setReaderForNotification(PVReader<T> readerForNotification) {
         synchronized(lock) {
@@ -220,7 +220,7 @@ class PVReaderImpl<T> implements PVReader<T> {
         firePvValueChanged();
     }
 
-    public void setDirector(PVReaderDirector<T> director) {
+    public void setDirector(PVReaderDirector director) {
         synchronized(this) {
             this.director = director;
         }
@@ -258,7 +258,15 @@ class PVReaderImpl<T> implements PVReader<T> {
     @Override
     public void setPaused(boolean paused) {
         synchronized(lock) {
+            if (this.paused == paused){
+                return;
+            }
             this.paused = paused;
+        }
+        if (paused) {
+            director.pause();
+        } else {
+            director.resume();
         }
     }
 

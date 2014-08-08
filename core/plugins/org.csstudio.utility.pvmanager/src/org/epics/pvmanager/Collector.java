@@ -14,4 +14,11 @@ package org.epics.pvmanager;
  */
 public interface Collector<I, O> extends WriteFunction<I>, ReadFunction<O> {
     
+    /**
+     * Task to run to notify of the presence of a new value in the collector.
+     * 
+     * @param notification 
+     */
+    public void setChangeNotification(Runnable notification);
+    
 }
