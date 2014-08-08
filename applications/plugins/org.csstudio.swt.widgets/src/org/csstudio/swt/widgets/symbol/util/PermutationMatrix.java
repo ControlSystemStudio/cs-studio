@@ -5,7 +5,7 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
-package org.csstudio.opibuilder.widgets.symbol.util;
+package org.csstudio.swt.widgets.symbol.util;
 
 import java.util.Arrays;
 
@@ -87,7 +87,14 @@ public class PermutationMatrix {
 	public double[][] getMatrix() {
 		return matrix;
 	}
-	
+
+	public void roundToIntegers() {
+		matrix[0][0] = Math.round(matrix[0][0]);
+		matrix[0][1] = Math.round(matrix[0][1]);
+		matrix[1][0] = Math.round(matrix[1][0]);
+		matrix[1][1] = Math.round(matrix[1][1]);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

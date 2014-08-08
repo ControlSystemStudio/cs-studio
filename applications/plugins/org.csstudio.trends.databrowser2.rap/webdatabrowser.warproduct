@@ -3,10 +3,10 @@
 
 <product name="WebDatabrowser" uid="org.csstudio.trends.databrowser2.rap" version="1.0.0" useFeatures="false" includeLaunchers="false">
    <plugins>
-      <plugin id="com.ibm.icu.base"/>
       <plugin id="javax.mail"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.apache.batik"/>
+      <plugin id="org.apache.commons.lang"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.archive.rdb"/>
@@ -49,7 +49,6 @@
       <plugin id="org.csstudio.utility.pvmanager.vtype"/>
       <plugin id="org.csstudio.utility.singlesource"/>
       <plugin id="org.csstudio.utility.singlesource.rap"/>
-      <plugin id="org.csstudio.utility.test"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -92,7 +91,6 @@
       <plugin id="org.hamcrest"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
-      <plugin id="org.junit4"/>
       <plugin id="org.mockito"/>
    </plugins>
 
@@ -139,7 +137,6 @@
       <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
-      <plugin id="org.csstudio.utility.test" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.contenttype" autoStart="true" startLevel="0" />
@@ -181,7 +178,6 @@
       <plugin id="org.hamcrest" autoStart="true" startLevel="0" />
       <plugin id="org.hamcrest.core" autoStart="true" startLevel="0" />
       <plugin id="org.junit" autoStart="true" startLevel="0" />
-      <plugin id="org.junit4" autoStart="true" startLevel="0" />
       <plugin id="org.mockito" autoStart="true" startLevel="0" />
    </configurations>
 

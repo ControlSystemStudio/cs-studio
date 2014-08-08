@@ -7,20 +7,18 @@
 ******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
-import org.csstudio.opibuilder.widgets.symbol.image.AbstractSymbolImage;
-import org.csstudio.opibuilder.widgets.symbol.image.ControlSymbolImage;
-import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolBrowser;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
-import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.swt.widgets.symbol.SymbolImage;
+import org.csstudio.swt.widgets.symbol.SymbolImageFactory;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Cursors;
@@ -33,7 +31,6 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -63,15 +60,6 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 	protected String confirmTip = "Are you sure you want to do this?";
 
 	protected ButtonPresser buttonPresser;
-
-	@Override
-	protected AbstractSymbolImage createSymbolImage(boolean runMode) {
-		ControlSymbolImage csi = new ControlSymbolImage(runMode);
-		if (symbolProperties != null) {
-			symbolProperties.fillSymbolImage(csi);
-		}
-		return csi;
-	}
 
 	public ControlMultiSymbolFigure(final AbstractBaseEditPart editPart) {
 		super(editPart.getExecutionMode() == ExecutionMode.RUN_MODE);
@@ -129,8 +117,11 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 	@Override
 	public synchronized void setState(int stateIndex) {
 		super.setState(stateIndex);
-		symbolBrowser.setCurrentState(currentState);
-		symbolBrowser.initCurrentDisplay();
+		if (stateIndex > 0) {
+			String currentState = statesStr.get(stateIndex);
+			symbolBrowser.setCurrentState(currentState);
+			symbolBrowser.initCurrentDisplay();
+		}
 	}
 
 	@Override
@@ -215,7 +206,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 	
 	private void initSymbolBrowser() {
 		// initialize symbol browser with images
-//		symbolBrowser.clear();
+		symbolBrowser.clear();
 		if (symbolBrowser.isEmpty())
 			try {
 				loadSymbolBrowserImages();
@@ -225,6 +216,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 						"ERROR in loading symbol browser images:\n"
 								+ e.getMessage());
 			}
+		String currentState = statesStr.get(currentStateIndex);
 		symbolBrowser.setCurrentState(currentState);
 		symbolBrowser.initCurrentDisplay();
 		
@@ -238,53 +230,24 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 		symbolBrowser.setBounds(xPos, yPos, width, height);
 		symbolBrowser.moveAbove(null);
 	}
-	
+
 	private void loadSymbolBrowserImages() throws Exception {
-		if (statesStr == null || statesStr.isEmpty()) {
-			ImageData data = getImageData(originalSymbolImagePath);
+		if (images.isEmpty()) {
+			ImageData data = getImageData(symbolImagePath);
 			symbolBrowser.addImage("??", data);
 			return;
 		}
-		// Get base name
-		String imageBasePath = ImageUtils.getMultistateBaseImagePath(originalSymbolImagePath);
-		if (imageBasePath == null) { // Image do not match any state
-			// TODO: alert state image missing
-			for (int stateIndex = 0; stateIndex < statesStr.size(); stateIndex++) {
-				String state = statesStr.get(stateIndex);
-				// Load default image for all states
-				ImageData data = getImageData(originalSymbolImagePath);
-				symbolBrowser.addImage(state, data);
-			}
-			return;
-		}
-		// Retrieve & set images paths
-		for (int stateIndex = 0; stateIndex < statesStr.size(); stateIndex++) {
-			String state = statesStr.get(stateIndex);
-			IPath path = ImageUtils.searchStateImage(stateIndex, imageBasePath);
-			ImageData data = null;
-			if (path == null) { // Test existence
-				// TODO: alert state image missing
-				data = getImageData(originalSymbolImagePath);
-			} else {
-				// Launch loading !
-				data = getImageData(path);
-			}
-			symbolBrowser.addImage(state, data);
+		for (Entry<Integer, SymbolImage> entry : images.entrySet()) {
+			symbolBrowser.addImage(statesStr.get(entry.getKey()), 
+					entry.getValue().getOriginalImageData());
 		}
 	}
-	
+
 	private ImageData getImageData(IPath imagePath) throws Exception {
-		AbstractSymbolImage asi = createSymbolImage(true);
-		asi.setImagePath(imagePath);
-		if (!workingWithSVG) {
-			InputStream stream = ResourceUtil.pathToInputStream(imagePath);
-			Image tempImage = new Image(Display.getDefault(), stream);
-			ImageData imgData = tempImage.getImageData();
-			asi.setOriginalImageData(imgData);
-		}
-		return asi.getOriginalImageData();
+		SymbolImage si = SymbolImageFactory.synCreateSymbolImage(imagePath, true, symbolProperties);
+		return si.getOriginalImageData();
 	}
-	
+
 	// ************************************************************
 	// Confirm dialog
 	// ************************************************************

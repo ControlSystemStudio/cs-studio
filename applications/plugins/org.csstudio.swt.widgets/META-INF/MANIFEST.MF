@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CSS Widgets
 Bundle-Description: Widgets figure for draw2d and SWT applications.
 Bundle-SymbolicName: org.csstudio.swt.widgets
-Bundle-Version: 2.0.3.qualifier
+Bundle-Version: 2.1.0.qualifier
 Bundle-Activator: org.csstudio.swt.widgets.Activator
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.ui;resolution:=optional,
@@ -18,6 +18,7 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.gef;bundle-version="1.5.0";resolution:=optional,
  org.eclipse.rap.draw2d;bundle-version="1.5.0";resolution:=optional,
  org.eclipse.rap.draw2d.compatibility;bundle-version="1.5.0";resolution:=optional,
+ org.apache.commons.lang,
  org.apache.batik
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
@@ -26,4 +27,6 @@ Export-Package: org.csstudio.swt.widgets.datadefinition,
  org.csstudio.swt.widgets.figures,
  org.csstudio.swt.widgets.introspection,
  org.csstudio.swt.widgets.natives,
+ org.csstudio.swt.widgets.symbol,
+ org.csstudio.swt.widgets.symbol.util,
  org.csstudio.swt.widgets.util

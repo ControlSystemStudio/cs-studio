@@ -1,4 +1,5 @@
 org.csstudio.iter.archive.config.rdb.app.feature
 org.csstudio.iter.core.util.feature
+org.eclipse.e4.rcp_1.2.2.v20140206-1358
 org.eclipse.iter.feature
-org.eclipse.rcp_3.7.2.v20120120-1424-9DB5FmnFq5JCf1UA38R-kz0S0272
+org.eclipse.rcp_4.3.2.v20140221-1700

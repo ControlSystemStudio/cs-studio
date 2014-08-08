@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.utility.dbdparser;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.utility.dbdparser.Activator
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  org.antlr.runtime
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER

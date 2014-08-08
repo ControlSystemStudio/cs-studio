@@ -28,11 +28,12 @@ import org.eclipse.core.runtime.CoreException;
 
 public class DbUtil {
 
+	private static Pattern record_pattern = Pattern.compile("^\\s*record\\s*\\(");
 	private static Pattern comment_pattern = Pattern.compile("#.*");
 
 	public static List<Record> parseDb(String dbFile)
 			throws RecognitionException, DbParsingException {
-		if (dbFile == null)
+		if (dbFile == null || !isEPICSDB(dbFile))
 			return Collections.emptyList();
 		CharStream cs = new ANTLRStringStream(dbFile);
 		DbRecordLexer lexer = new DbRecordLexer(cs);
@@ -76,6 +77,13 @@ public class DbUtil {
 		}
 		br.close();
 		return out.toString();
+	}
+
+	public static boolean isEPICSDB(String fileContent) {
+		Matcher matcher = record_pattern.matcher(fileContent);
+		if (matcher.find())
+			return true;
+		return false;
 	}
 
 }
