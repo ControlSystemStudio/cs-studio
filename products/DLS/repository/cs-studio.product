@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="CS-Studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="4.0.0" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/org.csstudio.product/icons/cs-studio-about.png"/>
+      <text>
+         %aboutText
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-pluginCustomization configuration/plugin_customization.ini</programArgs>
+      <vmArgs>-Xmx1024m
+-Xms128m
+-XX:MaxPermSize=256M</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="/org.csstudio.product/icons/css16.png" i32="/org.csstudio.product/icons/css32.png" i48="/org.csstudio.product/icons/css48.png" i64="/org.csstudio.product/icons/css64.png" i128="/org.csstudio.product/icons/css128.png"/>
+
+   <splash
+      location="org.csstudio.product"
+      startupProgressRect="5,222,470,15"
+      startupMessageRect="7,200,466,20"
+      startupForegroundColor="FFFFFF" />
+   <launcher name="cs-studio">
+      <solaris/>
+      <win useIco="true">
+         <ico path="/org.csstudio.product/icons/css.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+   <intro introId="org.eclipse.ui.intro.universal"/>
+
+   <vm>
+   </vm>
+
+   <license>
+        <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        <text>
+   Eclipse Public License
+         </text>
+   </license>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.csstudio.libs.feature"/>
+      <feature id="org.csstudio.core.feature"/>
+      <feature id="org.csstudio.pvmanager.ca.feature"/>
+      <feature id="org.csstudio.pvmanager.jdbc.feature"/>
+      <feature id="org.csstudio.pvmanager.exec.feature"/>
+      <feature id="org.csstudio.pvmanager.extra.feature"/>
+      <feature id="org.csstudio.utilities.feature"/>
+      <feature id="org.csstudio.boy.feature"/>
+      <feature id="org.csstudio.product.feature"/>
+      <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="4" />
+      <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="4" />
+      <plugin id="org.csstudio.utility.pvmanager.extra" autoStart="true" startLevel="4" />
+   </configurations>
+
+</product>

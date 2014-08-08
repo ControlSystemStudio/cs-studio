@@ -1,0 +1,13 @@
+instructions.configure=\
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:0,name:CS-Studio update site,location:http${#58}//download.controlsystemstudio.org/updates/3.3,enabled:true);\
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:1,name:CS-Studio update site,location:http${#58}//download.controlsystemstudio.org/updates/3.3,enabled:true);\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/logs);\
+  org.eclipse.equinox.p2.touchpoint.natives.copy(source:plugin_customization.ini,target:\
+    ${installFolder}/configuration/plugin_customization.ini);
+  
+#  setProgramProperty(propName:org.eclipse.equinox.p2.cache,propValue:@user.home/p2Cache);\
+#  setProgramProperty(propName:org.eclipse.equinox.p2.installFolder,propValue:@user.home/p2InstallFolder);
+  
+# See https://bugs.eclipse.org/bugs/show_bug.cgi?id=231557
+instructions.install = \
+  setProgramProperty(propName:osgi.instance.area.default,propValue:@user.home/.cs-studio); 
