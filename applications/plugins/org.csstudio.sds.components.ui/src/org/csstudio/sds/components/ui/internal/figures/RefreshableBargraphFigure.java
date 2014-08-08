@@ -1398,7 +1398,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 */
 		private boolean _showNegativSections = false;
 		/**
-		 * The lenght of the lines.
+		 * The length of the lines.
 		 */
 		private final int _wideness = 10;
 		/**

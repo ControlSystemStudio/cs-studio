@@ -195,7 +195,7 @@ public class BulkOperationsTestCase extends FunctionalTestCase {
          tm.commit();
          return rowsAffected;
       } catch (Exception e) {
-         log.error("Unable to delete contac", e);
+         log.error("Unable to delete contact", e);
          tm.setRollbackOnly();
          throw e;
       } finally {

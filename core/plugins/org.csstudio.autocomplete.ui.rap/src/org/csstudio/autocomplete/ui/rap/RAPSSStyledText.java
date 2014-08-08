@@ -43,7 +43,7 @@ public class RAPSSStyledText extends SSStyledText {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setStyle(Color color, int fontStyle, int start, int lenght) {
+	public void setStyle(Color color, int fontStyle, int start, int length) {
 	}
 
 	/**

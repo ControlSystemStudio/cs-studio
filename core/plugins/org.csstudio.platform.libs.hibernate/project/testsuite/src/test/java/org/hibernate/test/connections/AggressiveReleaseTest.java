@@ -95,7 +95,7 @@ public class AggressiveReleaseTest extends ConnectionManagementTestCase {
 		s.flush();
 
 		// both scroll() and iterate() cause the batcher to hold on
-		// to resources, which should make aggresive-release not release
+		// to resources, which should make aggressive-release not release
 		// the connection (and thus cause serialization to fail)
 		ScrollableResults sr = s.createQuery( "from Silly" ).scroll();
 
@@ -195,7 +195,7 @@ public class AggressiveReleaseTest extends ConnectionManagementTestCase {
 		session.save( silly );
 
 		// this will cause the connection manager to cycle through the aggressive release logic;
-		// it should not release the connection since we explicitly suplied it ourselves.
+		// it should not release the connection since we explicitly supplied it ourselves.
 		session.flush();
 
 		assertTrue( "Different connections", originalConnection == session.connection() );

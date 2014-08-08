@@ -338,7 +338,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
     }
 
     /**
-     * Determine is the apply button should be enabled based on the avaliability
+     * Determine if the apply button should be enabled based on the availability
      * of setpoints to be written.
      */
     private void enableApplyButton() {

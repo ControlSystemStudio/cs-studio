@@ -175,7 +175,7 @@ class PVTreeItem
     	            if (first_char >= 'a' && first_char <= 'z')
     	                type = text;
     	            else
-    	                type = Messages.UnkownPVType;
+    	                type = Messages.UnknownPVType;
     	            // Only need one update
     	            type_pv.removeListener(this);
     	            updateType();

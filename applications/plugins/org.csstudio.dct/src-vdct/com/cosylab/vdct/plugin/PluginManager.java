@@ -190,7 +190,7 @@ private void load()
 	}
 	catch (Exception e)
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while loading the plugins list!");
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while loading the plugins list!");
 		com.cosylab.vdct.Console.getInstance().println(e);
 
 		plugins.clear();
@@ -242,7 +242,7 @@ public void save()
 	}
 	catch (Exception e)
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while saving the plugins list!");
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while saving the plugins list!");
 		com.cosylab.vdct.Console.getInstance().println(e);
 	}
 }

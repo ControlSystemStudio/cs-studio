@@ -379,7 +379,7 @@ public class ELog implements Closeable
 		catch (Exception ex)
 		{
 		    Logger.getLogger(getClass().getName()).log(Level.WARNING,
-	            "Cannot set prority of log entry " + entry_id + " to " + priority, ex);
+	            "Cannot set priority of log entry " + entry_id + " to " + priority, ex);
 		}
 		
 		return entry_id;

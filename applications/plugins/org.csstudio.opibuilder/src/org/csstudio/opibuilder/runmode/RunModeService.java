@@ -231,7 +231,7 @@ public class RunModeService {
 								workbench.showPerspective(OPIRunnerPerspective.ID, window);
 							} catch (WorkbenchException e) {
 								ErrorHandlerUtil.handleError(
-									"Faile to switch to OPI Runtime perspective", e, false, true);
+									"Failed to switch to OPI Runtime perspective", e, false, true);
 							}
 						
 					}

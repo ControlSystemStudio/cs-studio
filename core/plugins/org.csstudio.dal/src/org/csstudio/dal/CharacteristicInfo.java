@@ -138,7 +138,7 @@ public class CharacteristicInfo {
 	 * The name of the units characteristic. Such characteristic represents the
 	 * units of the dynamic value.
 	 */
-	public static final CharacteristicInfo C_UNITS = new CharacteristicInfo("units",String.class, new Class[]{NumericProperty.class},"A physical units fo property value.");
+	public static final CharacteristicInfo C_UNITS = new CharacteristicInfo("units",String.class, new Class[]{NumericProperty.class},"A physical units of property value.");
 
 	/**
 	 * The name of the scaleType characteristic. Such characteristic represents
