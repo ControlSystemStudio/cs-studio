@@ -39,16 +39,30 @@ else
   mkdir -p ext
   cd ext
 
-  if [[ ! -f eclipse-rcp-kepler-SR2-linux-gtk.tar.gz ]]
-    then
-      wget http://download.eclipse.org/technology/epp/downloads/release/kepler/SR2/eclipse-rcp-kepler-SR2-linux-gtk.tar.gz
-    fi
-  if [[ ! -f eclipse-4.3.2-delta-pack.zip ]]
+  if [ `uname` == 'Linux' ]
   then
-     wget http://download.eclipse.org/eclipse/downloads/drops4/R-4.3.2-201402211700/eclipse-4.3.2-delta-pack.zip
+    if [ `uname -m` == 'x86_64' ]
+    then
+      if [[ ! -f eclipse-rcp-luna-R-linux-gtk-x86_64.tar.gz ]]
+      then
+        wget http://download.eclipse.org/technology/epp/downloads/release/luna/R/eclipse-rcp-luna-R-linux-gtk-x86_64.tar.gz
+      fi
+    else
+      if [[ ! -f eclipse-rcp-luna-R-linux-gtk.tar.gz ]]
+      then
+        wget http://download.eclipse.org/technology/epp/downloads/release/luna/R/eclipse-rcp-luna-R-linux-gtk.tar.gz
+      fi
+    fi
+  else
+    echo "Missing Eclipse, only know locations for Linux"
+    exit 1
   fi
-  tar -xzvf eclipse-rcp-kepler-SR2-linux-gtk.tar.gz
-  unzip -o eclipse-4.3.2-delta-pack.zip
+  if [[ ! -f eclipse-4.4-delta-pack.zip ]]
+  then
+     wget http://download.eclipse.org/eclipse/downloads/drops4/R-4.4-201406061215/eclipse-4.4-delta-pack.zip
+  fi
+  tar -xzvf eclipse-rcp-luna*.tar.gz
+  unzip -o eclipse-*-delta-pack.zip
   cd ..
 fi
 
@@ -136,7 +150,7 @@ echo "Start build"
 echo $ABSOLUTE_DIR
 java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.3.*.jar \
 	-application org.eclipse.ant.core.antRunner \
-	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.8.*/scripts/build.xml \
+	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.*/scripts/build.xml \
 	-Dbuild.dir="$ABSOLUTE_DIR" \
     -DbuildDirectory="$ABSOLUTE_DIR"/build/BuildDirectory \
 	-Dbuilder="$ABSOLUTE_DIR"/build \
