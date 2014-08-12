@@ -144,11 +144,11 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
                 timeoutMessage = "Read timeout";
             director.timeout(timeout, timeoutMessage);
         }
-//        if (aggregatedFunction instanceof Collector || aggregatedFunction instanceof ValueCache) {
-//            scannerParameters.type(ScannerParameters.Type.PASSIVE);
-//        } else {
+        if (aggregatedFunction instanceof Collector || aggregatedFunction instanceof ValueCache) {
+            scannerParameters.type(ScannerParameters.Type.PASSIVE);
+        } else {
             scannerParameters.type(ScannerParameters.Type.ACTIVE);
-//        }
+        }
         SourceDesiredRateDecoupler rateDecoupler = scannerParameters.build();
         pv.setDirector(director);
         director.setScanner(rateDecoupler);

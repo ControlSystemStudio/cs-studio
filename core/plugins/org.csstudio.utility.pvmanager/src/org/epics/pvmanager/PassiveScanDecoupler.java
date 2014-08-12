@@ -44,6 +44,13 @@ class PassiveScanDecoupler extends SourceDesiredRateDecoupler {
     };
 
     @Override
+    void onStart() {
+        // When starting, send an event in case the expressions
+        // are constants
+        newEvent(DesiredRateEvent.Type.READ_CONNECTION);
+    }
+
+    @Override
     void onStop() {
         synchronized(lock) {
             queuedEvent = null;
