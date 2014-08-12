@@ -123,8 +123,8 @@ public abstract class DataSource {
     
     // Keeps track of the recipes that were opened with
     // this data source.
-    private Set<ChannelReadRecipe> readRecipes = new CopyOnWriteArraySet<ChannelReadRecipe>();
-    private Set<ChannelWriteRecipe> writeRecipes = new CopyOnWriteArraySet<ChannelWriteRecipe>();
+    private Set<ChannelReadRecipe> readRecipes = Collections.synchronizedSet(new HashSet<ChannelReadRecipe>());
+    private Set<ChannelWriteRecipe> writeRecipes = Collections.synchronizedSet(new HashSet<ChannelWriteRecipe>());
 
     /**
      * Connects to a set of channels based on the given recipe.
