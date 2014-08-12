@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.apputil
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Import-Package: org.csstudio.archive.reader
+Import-Package: org.csstudio.archive.reader,
+ org.epics.pvmanager
 Export-Package: org.csstudio.archive.reader.fastarchiver,
  org.csstudio.archive.reader.fastarchiver.archive_requests,
  org.csstudio.archive.reader.fastarchiver.exceptions
