@@ -15,9 +15,11 @@ import org.csstudio.archive.reader.fastarchiver.archive_requests.FALiveDataReque
 import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
 import org.csstudio.archive.vtype.ArchiveVDisplayType;
 import org.epics.pvmanager.ChannelWriteCallback;
+import org.epics.pvmanager.DataSourceTypeAdapter;
 import org.epics.pvmanager.MultiplexedChannelHandler;
+import org.epics.pvmanager.ValueCache;
 
-public class FAChannelHandler<T> extends MultiplexedChannelHandler<T,T> {
+public class FAChannelHandler extends MultiplexedChannelHandler<FALiveDataRequest, ArchiveVDisplayType> {
 	
 	private String url;
     private static ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
@@ -31,10 +33,9 @@ public class FAChannelHandler<T> extends MultiplexedChannelHandler<T,T> {
             // Protect the timer thread for possible problems.
             try {
                 List<ArchiveVDisplayType> newValues = faChannel.fetchNewValues();
-                //System.out.println("Getting new values from FALiveDataRequest");
-                
+
                 for (ArchiveVDisplayType newValue : newValues) {
-                    processMessage((T)newValue);
+                    processMessage(newValue);
                 }
             } catch (Exception ex) {
                 log.log(Level.WARNING, "Problem fetching data from FastArchiver", ex);
@@ -45,7 +46,6 @@ public class FAChannelHandler<T> extends MultiplexedChannelHandler<T,T> {
 	public FAChannelHandler(String channelName, String url) {
 		super(channelName);
 		this.url = url;
-		//System.out.println("Trying to create a new FAChannelHandler: "+channelName);
 		HashMap<String, int[]> mapping = null;
 		try {
 			FAInfoRequest faInfo = new FAInfoRequest(url);
@@ -71,7 +71,7 @@ public class FAChannelHandler<T> extends MultiplexedChannelHandler<T,T> {
 			e.printStackTrace();
 		}
 		taskFuture = exec.scheduleWithFixedDelay(task, 0, 10, TimeUnit.MILLISECONDS);
-        processConnection(null); //TODO: What is this ConnectionPayload?		
+        processConnection(faChannel); //TODO: What is this ConnectionPayload?		
 	}
 
 	/** {@inheritDoc} */
@@ -89,6 +89,12 @@ public class FAChannelHandler<T> extends MultiplexedChannelHandler<T,T> {
 	protected void write(Object newValue, ChannelWriteCallback callback) {
         throw new UnsupportedOperationException("Can't write to Fast Archiver channel.");
 	}
+	
+	@Override
+    protected DataSourceTypeAdapter<FALiveDataRequest, ArchiveVDisplayType> findTypeAdapter(ValueCache<?> cache, FALiveDataRequest connection) {
+		return new FADataSourceTypeAdapter();
+	}
+
 
 
 

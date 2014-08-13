@@ -12,7 +12,7 @@ import org.epics.vtype.AlarmSeverity;
 public class FALiveDataRequest extends FARequest {
 
 	public FALiveDataRequest(String url) throws FADataNotAvailableException {
-		super(url);
+		super(url);		
 		// TODO create a usable constructor, maybe collecting values on an own
 		// Thread?
 	}
@@ -24,14 +24,14 @@ public class FALiveDataRequest extends FARequest {
 		
 		//Dummy implementation
 		LinkedList<ArchiveVDisplayType> newValues = new LinkedList<ArchiveVDisplayType>();
-		ArchiveVNumber number = new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE,
-				"status", null, 5.0);
 		for (int i = 0; i < 50; i++){
-			newValues.add((ArchiveVDisplayType)number);
+			newValues.add((ArchiveVDisplayType)new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE,
+				"status", null, 5.0));
 		}		
 		return newValues;
 		
 	}
+
 
 	public void close() {
 		// TODO Need to implement if there is a thread running collecting data

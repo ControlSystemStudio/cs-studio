@@ -23,7 +23,7 @@ public class FADataSource extends DataSource{
 		
 		// TODO Need to find a way to find out the url(Add to the ChannelName?)
 		String url = "fads://fa-archiver";
-		return new FAChannelHandler<VType>(channelName, url);
+		return new FAChannelHandler(channelName, url);
 	}
 
 	/** Returns the lookup name to use to find the channel handler in the cache.
