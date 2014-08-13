@@ -14,6 +14,8 @@ import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableExc
  */
 
 public class FAInfoRequest extends FARequest {
+	/** To determine the dataSource for the PVManager */
+	private String prefix = "fads://";
 
 	/**
 	 * 
@@ -28,7 +30,7 @@ public class FAInfoRequest extends FARequest {
 	}
 
 	/**
-	 * Creates a Hasmap of all BPMs in the archiver, with names as keys and BPM
+	 * Creates a Hashmap of all BPMs in the archiver, with names as keys and BPM
 	 * number and coordinates in an int array as values.
 	 * 
 	 * @return Hashmap with names as keys and BPM number and coordinates in an
@@ -67,8 +69,8 @@ public class FAInfoRequest extends FARequest {
 						coordinate1 = coordinate1 + "1";
 						coordinate2 = coordinate2 + "2";
 					}
-					bpmMapping.put(name + ":" + coordinate1, new int[]{bpmId, 0});
-					bpmMapping.put(name + ":" + coordinate2, new int[]{bpmId, 1});
+					bpmMapping.put(prefix + name + ":" + coordinate1, new int[]{bpmId, 0});
+					bpmMapping.put(prefix + name + ":" + coordinate2, new int[]{bpmId, 1});
 				}
 			}
 		}
