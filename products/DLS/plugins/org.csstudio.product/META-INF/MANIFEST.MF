@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Eclipse-BundleShape: dir
 Bundle-ManifestVersion: 2
 Bundle-Name: CS-Studio Product
 Bundle-SymbolicName: org.csstudio.product; singleton:=true
