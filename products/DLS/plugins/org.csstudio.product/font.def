@@ -1,12 +1,5 @@
-//Default Title Font. It will used in case the OS specified font macro was not defined.
-Example Title = Arial-bold-18
-
-//Title Font for Linux GTK 
-Example Title(linux_gtk) = Sans-bold-18
-
-//Title Font for MacOS
-Example Title(macosx) = Lucida Grande-bold-18
-
-Example Text = SystemDefault-regular-10
-
-Example LinkText = SystemDefault-italic-10
+Overview = Arial-regular-28
+Sub Domain = Arial-regular-24
+Technical Area = Arial-regular-20
+Device = Arial-regular-18
+Engineering  = Arial-regular-16
