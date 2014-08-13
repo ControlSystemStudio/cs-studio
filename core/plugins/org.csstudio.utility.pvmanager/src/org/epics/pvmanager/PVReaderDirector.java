@@ -44,13 +44,12 @@ public class PVReaderDirector<T> {
     private final Executor notificationExecutor;
     /** Executor used to scan the connection/exception queues */
     private final ScheduledExecutorService scannerExecutor;
-    private volatile ScheduledFuture<?> scanTaskHandle;
     /** PVReader to update during the notification */
     private final WeakReference<PVReaderImpl<T>> pvRef;
     /** Function for the new value */
     private final ReadFunction<T> function;
     /** Creation for stack trace */
-    private Exception creationStackTrace = new Exception("PV was never closed (stack trace for creation)");
+    private final Exception creationStackTrace = new Exception("PV was never closed (stack trace for creation)");
     
     // Required to connect/disconnect expressions
     private final DataSource dataSource;
@@ -192,7 +191,7 @@ public class PVReaderDirector<T> {
     /**
      * Close and disconnects all the child expressions.
      */
-    void disconnect() {
+    private void disconnect() {
         synchronized(lock) {
             while (!recipes.isEmpty()) {
                 DesiredRateExpression<?> expression = recipes.keySet().iterator().next();
@@ -237,7 +236,7 @@ public class PVReaderDirector<T> {
      *
      * @return true if new notification should be performed
      */
-    boolean isActive() {
+    private boolean isActive() {
         // Making sure to get the reference once for thread safety
         final PVReader<T> pv = pvRef.get();
         if (pv != null && !pv.isClosed()) {
@@ -245,20 +244,6 @@ public class PVReaderDirector<T> {
         } else if (pv == null && closed != true) {
             log.log(Level.WARNING, "PVReader wasn't properly closed and it was garbage collected. Closing the associated connections...", creationStackTrace);
             return false;
-        } else {
-            return false;
-        }
-    }
-    
-    /**
-     * Checks whether the pv is paused
-     * 
-     * @return true if paused
-     */
-    boolean isPaused() {
-        final PVReader<T> pv = pvRef.get();
-        if (pv == null || pv.isPaused()) {
-            return true;
         } else {
             return false;
         }
@@ -277,7 +262,7 @@ public class PVReaderDirector<T> {
     /**
      * Notifies the PVReader of a new value.
      */
-    void notifyPv() {
+    private void notifyPv() {
         // Don't even calculate if notification is in flight.
         // This makes pvManager automatically throttle back if the consumer
         // is slower than the producer.
@@ -376,7 +361,7 @@ public class PVReaderDirector<T> {
      * 
      * @param timeoutMessage the message for the timeout
      */
-    void processTimeout(String timeoutMessage) {
+    private void processTimeout(String timeoutMessage) {
         PVReaderImpl<T> pv = pvRef.get();
         if (pv != null && !pv.isSentFirsEvent()) {
             exceptionCollector.writeValue(new TimeoutException(timeoutMessage));
@@ -392,7 +377,7 @@ public class PVReaderDirector<T> {
         }, timeout.toNanosLong(), TimeUnit.NANOSECONDS);
     }
     
-    private DesiredRateEventListener desiredRateEventListener = new DesiredRateEventListener() {
+    private final DesiredRateEventListener desiredRateEventListener = new DesiredRateEventListener() {
 
         @Override
         public void desiredRateEvent(DesiredRateEvent event) {

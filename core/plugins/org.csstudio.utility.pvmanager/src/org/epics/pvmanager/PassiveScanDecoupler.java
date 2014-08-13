@@ -108,12 +108,20 @@ class PassiveScanDecoupler extends SourceDesiredRateDecoupler {
     void onDesiredEventProcessed() {
         TimeDuration delay = null;
         synchronized (lock) {
+            // If an event is pending submit it
             if (queuedEvent != null) {
                 Timestamp nextSubmission = lastSubmission.plus(getMaxDuration());
                 delay = nextSubmission.durationFrom(Timestamp.now());
-                lastSubmission = nextSubmission;
-                if (log.isLoggable(logLevel)) {
-                    log.log(Level.WARNING, "Schedule next {0}", Timestamp.now());
+                if (delay.isPositive()) {
+                    lastSubmission = nextSubmission;
+                    if (log.isLoggable(logLevel)) {
+                        log.log(Level.WARNING, "Schedule next {0}", Timestamp.now());
+                    }
+                } else {
+                    lastSubmission = Timestamp.now();
+                    if (log.isLoggable(logLevel)) {
+                        log.log(Level.WARNING, "Schedule now {0}", Timestamp.now());
+                    }
                 }
             } else {
                 scanActive = false;
