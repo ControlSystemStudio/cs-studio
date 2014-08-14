@@ -64,14 +64,14 @@ class PvFormulaFunction extends DynamicFormulaFunction {
         if (!Objects.equals(newName, previousName)) {
             // Disconnect previous
             if (currentExpression != null) {
-                getDirector().disconnectExpression(currentExpression);
+                getDirector().disconnectReadExpression(currentExpression);
                 currentExpression = null;
             }
             
             // Connect new
             if (newName != null) {
                 currentExpression = new LastOfChannelExpression<Object>(newName, Object.class);
-                getDirector().connectExpression(currentExpression);
+                getDirector().connectReadExpression(currentExpression);
             }
             previousName = newName;
         }
@@ -86,7 +86,7 @@ class PvFormulaFunction extends DynamicFormulaFunction {
     @Override
     public void dispose() {
         // Disconnect everything on dispose
-        getDirector().disconnectExpression(currentExpression);
+        getDirector().disconnectReadExpression(currentExpression);
         currentExpression = null;
     }
     

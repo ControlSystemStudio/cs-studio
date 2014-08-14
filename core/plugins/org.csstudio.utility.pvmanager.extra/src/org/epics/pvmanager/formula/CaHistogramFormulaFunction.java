@@ -68,7 +68,7 @@ class CaHistogramFormulaFunction extends DynamicFormulaFunction {
             if (currentExpressions != null) {
                 for (DesiredRateExpression<?> desiredRateExpression : currentExpressions) {
                     if (desiredRateExpression != null) {
-                        getDirector().disconnectExpression(desiredRateExpression);
+                        getDirector().disconnectReadExpression(desiredRateExpression);
                     }
                 }
             }
@@ -81,13 +81,13 @@ class CaHistogramFormulaFunction extends DynamicFormulaFunction {
             // Connect new expressions
             if (newName != null) {
                 DesiredRateExpression<?> newExpression = new LastOfChannelExpression<Object>(newName, Object.class);
-                getDirector().connectExpression(newExpression);
+                getDirector().disconnectReadExpression(newExpression);
                 newExpressions.set(0, newExpression);
                 newExpression = new LastOfChannelExpression<Object>(newName + ".LLIM", Object.class);
-                getDirector().connectExpression(newExpression);
+                getDirector().disconnectReadExpression(newExpression);
                 newExpressions.set(1, newExpression);
                 newExpression = new LastOfChannelExpression<Object>(newName + ".ULIM", Object.class);
-                getDirector().connectExpression(newExpression);
+                getDirector().disconnectReadExpression(newExpression);
                 newExpressions.set(2, newExpression);
             }
             
@@ -129,7 +129,7 @@ class CaHistogramFormulaFunction extends DynamicFormulaFunction {
     public void dispose() {
         // Disconnect everything on dispose
         for (DesiredRateExpression<?> desiredRateExpression : new HashSet<>(currentExpressions)) {
-            getDirector().disconnectExpression(desiredRateExpression);
+            getDirector().disconnectReadExpression(desiredRateExpression);
         }
         currentExpressions = null;
         previousName = null;

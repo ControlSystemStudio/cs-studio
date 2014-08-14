@@ -82,7 +82,7 @@ class PvsFormulaFunction extends DynamicFormulaFunction {
                 // Disconnect previous expressions no longer used
                 for (DesiredRateExpression<?> desiredRateExpression : currentExpressions) {
                     if (desiredRateExpression != null) {
-                        getDirector().disconnectExpression(desiredRateExpression);
+                        getDirector().disconnectReadExpression(desiredRateExpression);
                     }
                 }
             }
@@ -92,7 +92,7 @@ class PvsFormulaFunction extends DynamicFormulaFunction {
                 for (int i = 0; i < newNames.size(); i++) {
                     if (newNames.get(i) != null && newExpressions.get(i) == null) {
                         DesiredRateExpression<?> newExpression = new LastOfChannelExpression<Object>(newNames.get(i), Object.class);
-                        getDirector().connectExpression(newExpression);
+                        getDirector().connectReadExpression(newExpression);
                         newExpressions.set(i, newExpression);
                     }
                 }
@@ -139,7 +139,7 @@ class PvsFormulaFunction extends DynamicFormulaFunction {
     public void dispose() {
         // Disconnect everything on dispose
         for (DesiredRateExpression<?> desiredRateExpression : new HashSet<>(currentExpressions)) {
-            getDirector().disconnectExpression(desiredRateExpression);
+            getDirector().disconnectReadExpression(desiredRateExpression);
         }
         currentExpressions = null;
         previousNames = null;

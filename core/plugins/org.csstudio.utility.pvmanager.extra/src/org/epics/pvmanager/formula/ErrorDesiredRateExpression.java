@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.formula;
 
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.ReadRecipeBuilder;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
@@ -28,9 +28,9 @@ class ErrorDesiredRateExpression<T> extends DesiredRateExpressionImpl<T> {
     }
 
     @Override
-    public void fillReadRecipe(PVReaderDirector director, ReadRecipeBuilder builder) {
+    public void fillReadRecipe(PVDirector director, ReadRecipeBuilder builder) {
         super.fillReadRecipe(director, builder); //To change body of generated methods, choose Tools | Templates.
-        director.connectStatic(error, false, getName());
+        director.connectStaticRead(error, false, getName());
     }
     
 }

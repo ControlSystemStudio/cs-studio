@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.formula;
 
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 
 /**
  * Formula function that can add and remove dynamically access to
@@ -17,14 +17,14 @@ import org.epics.pvmanager.PVReaderDirector;
  */
 public abstract class DynamicFormulaFunction extends StatefulFormulaFunction {
     
-    private PVReaderDirector<?> director;
+    private PVDirector<?> director;
 
     /**
      * The director to use to connect/disconnect live data expressions.
      * 
      * @return the director
      */
-    public final PVReaderDirector<?> getDirector() {
+    public final PVDirector<?> getDirector() {
         return director;
     }
     
@@ -34,7 +34,7 @@ public abstract class DynamicFormulaFunction extends StatefulFormulaFunction {
      * 
      * @param director the new director
      */
-    void setDirector(PVReaderDirector<?> director) {
+    void setDirector(PVDirector<?> director) {
         this.director = director;
     }
     
