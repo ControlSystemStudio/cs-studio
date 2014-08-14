@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 import org.epics.pvmanager.PVWriterDirector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.ReadRecipeBuilder;
@@ -67,7 +67,7 @@ public class DesiredRateReadWriteExpressionImpl<R, W> extends DesiredRateReadWri
     }
 
     @Override
-    public void fillReadRecipe(PVReaderDirector director, ReadRecipeBuilder builder) {
+    public void fillReadRecipe(PVDirector director, ReadRecipeBuilder builder) {
         desiredRateExpression.fillReadRecipe(director, builder);
     }
 

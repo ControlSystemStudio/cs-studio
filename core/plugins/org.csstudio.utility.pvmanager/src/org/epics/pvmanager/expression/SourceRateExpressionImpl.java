@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.ForwardCache;
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.ReadRecipeBuilder;
 import org.epics.pvmanager.ValueCache;
@@ -104,7 +104,7 @@ public class SourceRateExpressionImpl<R> extends SourceRateExpressionListImpl<R>
      * @param collector the collector to be notified by changes in this expression
      * @return a data recipe
      */
-    void fillDataRecipe(PVReaderDirector director, Collector<R, ?> collector, ReadRecipeBuilder builder) {
+    void fillDataRecipe(PVDirector director, Collector<R, ?> collector, ReadRecipeBuilder builder) {
         for (Map.Entry<String, ValueCache<?>> entry : caches.entrySet()) {
             String channelName = entry.getKey();
             @SuppressWarnings("unchecked")

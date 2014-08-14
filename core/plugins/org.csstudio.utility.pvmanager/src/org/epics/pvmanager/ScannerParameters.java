@@ -18,10 +18,10 @@ class ScannerParameters {
     
     private Type type = Type.ACTIVE;
     private ScheduledExecutorService scannerExecutor;
-    private PVReaderDirector readerDirector;
     private TimeDuration maxDuration;
     private TimeDuration timeout;
     private String timeoutMessage;
+    private DesiredRateEventListener listener;
     
     public ScannerParameters type(Type type) {
         this.type = type;
@@ -41,13 +41,14 @@ class ScannerParameters {
         return maxDuration;
     }
 
-    public ScannerParameters readerDirector(PVReaderDirector readerDirector) {
-        this.readerDirector = readerDirector;
+    public ScannerParameters readerDirector(PVDirector readerDirector) {
+        this.listener = readerDirector.getDesiredRateEventListener();
         return this;
     }
 
-    public PVReaderDirector getReaderDirector() {
-        return readerDirector;
+    public ScannerParameters writerDirector(PVWriterDirector director) {
+        this.listener = director.getDesiredRateEventListener();
+        return this;
     }
 
     public ScannerParameters scannerExecutor(ScheduledExecutorService scannerExecutor) {
@@ -70,26 +71,25 @@ class ScannerParameters {
             if (scannerExecutor == null) {
                 throw new NullPointerException("Active scanner requires a scannerExecutor");
             }
-            if (readerDirector == null) {
-                throw new NullPointerException("Active scanner requires a readerDirector");
+            if (listener == null) {
+                throw new NullPointerException("Active scanner requires a director");
             }
             if (maxDuration == null) {
                 throw new NullPointerException("Active scanner requires a maxDuration");
             }
-            // TODO: add timeout
-            return new ActiveScanDecoupler(scannerExecutor, maxDuration, readerDirector.getDesiredRateEventListener());
+            return new ActiveScanDecoupler(scannerExecutor, maxDuration, listener);
         }
         if (type == Type.PASSIVE) {
             if (scannerExecutor == null) {
                 throw new NullPointerException("Passive scanner requires a scannerExecutor");
             }
-            if (readerDirector == null) {
-                throw new NullPointerException("Passive scanner requires a readerDirector");
+            if (listener == null) {
+                throw new NullPointerException("Passive scanner requires a director");
             }
             if (maxDuration == null) {
                 throw new NullPointerException("Passive scanner requires a maxDuration");
             }
-            return new PassiveScanDecoupler(scannerExecutor, maxDuration, readerDirector.getDesiredRateEventListener());
+            return new PassiveScanDecoupler(scannerExecutor, maxDuration, listener);
         }
         throw new IllegalStateException("Can't create suitable scanner");
     }

@@ -7,7 +7,7 @@ package org.epics.pvmanager.expression;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadRecipeBuilder;
 
@@ -30,7 +30,7 @@ public class ReadMap<T> extends DesiredRateExpressionImpl<Map<String, T>> {
 
     private final Object lock = new Object();
     private final Map<String, DesiredRateExpression<T>> expressions = new HashMap<>();
-    private PVReaderDirector<?> director;
+    private PVDirector<?> director;
 
     /**
      * Creates a new group.
@@ -53,7 +53,7 @@ public class ReadMap<T> extends DesiredRateExpressionImpl<Map<String, T>> {
             getMapOfFunction().getMapUpdateCollector().writeValue(MapUpdate.<T>clear());
             if (director != null) {
                 for (DesiredRateExpression<T> desiredRateExpression : expressions.values()) {
-                    director.disconnectExpression(desiredRateExpression);
+                    director.disconnectReadExpression(desiredRateExpression);
                 }
             }
             expressions.clear();
@@ -90,7 +90,7 @@ public class ReadMap<T> extends DesiredRateExpressionImpl<Map<String, T>> {
             getMapOfFunction().getMapUpdateCollector().writeValue(MapUpdate.addReadFunction(expression.getName(), expression.getFunction()));
             expressions.put(expression.getName(), expression);
             if (director != null) {
-                director.connectExpression(expression);
+                director.connectReadExpression(expression);
             }
             return this;
         }
@@ -126,7 +126,7 @@ public class ReadMap<T> extends DesiredRateExpressionImpl<Map<String, T>> {
             getMapOfFunction().getMapUpdateCollector().writeValue(MapUpdate.<T>removeFunction(name));
             DesiredRateExpression<T> expression = expressions.remove(name);
             if (director != null) {
-                director.disconnectExpression(expression);
+                director.disconnectReadExpression(expression);
             }
             return this;
         }
@@ -149,12 +149,12 @@ public class ReadMap<T> extends DesiredRateExpressionImpl<Map<String, T>> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void fillReadRecipe(PVReaderDirector director, ReadRecipeBuilder builder) {
+    public void fillReadRecipe(PVDirector director, ReadRecipeBuilder builder) {
         synchronized(lock) {
             this.director = director;
             for (Map.Entry<String, DesiredRateExpression<T>> entry : expressions.entrySet()) {
                 DesiredRateExpression<T> readExpression = entry.getValue();
-                director.connectExpression(readExpression);
+                director.connectReadExpression(readExpression);
             }
         }
     }

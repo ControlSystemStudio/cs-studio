@@ -65,9 +65,12 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
         return this;
     }
     
-    private WriteExpression<T> writeExpression;
+    private final WriteExpression<T> writeExpression;
     private ExceptionHandler exceptionHandler;
-    private List<PVWriterListener<T>> writeListeners = new ArrayList<>();
+    private final List<PVWriterListener<T>> writeListeners = new ArrayList<>();
+    
+    PVWriterImpl<T> pvWriter;
+    WriteFunction<T> writeFunction;
 
     PVWriterConfiguration(WriteExpression<T> writeExpression) {
         this.writeExpression = writeExpression;
@@ -105,29 +108,52 @@ public class PVWriterConfiguration<T> extends CommonConfiguration {
     }
 
     private PVWriter<T> create(boolean syncWrite) {
+        validateWriterConfiguration();
         checkDataSourceAndThreadSwitch();
 
-        // Create PVReader and connect
-        PVWriterImpl<T> pvWriter = new PVWriterImpl<T>(syncWrite, Executors.localThread() == notificationExecutor);
-        for (PVWriterListener<T> pVWriterListener : writeListeners) {
-            pvWriter.addPVWriterListener(pVWriterListener);
-        }
-        WriteFunction<T> writeFunction = writeExpression.getWriteFunction();
-
-        
-        // TODO: we are ignoring the exception handler for now
-        
-        if (timeoutMessage == null)
-            timeoutMessage = "Write timeout";
-        PVWriterDirector<T> writerDirector = new PVWriterDirector<T>(pvWriter, writeFunction, dataSource, PVManager.getAsyncWriteExecutor(),
-                notificationExecutor, PVManager.getReadScannerExecutorService(), timeout, timeoutMessage, exceptionHandler);
-        writerDirector.connectExpression(writeExpression);
-        writerDirector.startScan(TimeDuration.ofMillis(100));
-        pvWriter.setWriteDirector(writerDirector);
+        preparePvWriter(syncWrite);
+        PVWriterDirector<T> writerDirector = prepareDirector(this);
+        prepareDecoupler(writerDirector, this);
         
         return pvWriter;
     }
 
+    private void validateWriterConfiguration() {
+        if (timeoutMessage == null)
+            timeoutMessage = "Write timeout";
+    }
+    
+    void preparePvWriter(boolean syncWrite) {
+        // Create PVReader and connect
+        pvWriter = new PVWriterImpl<>(syncWrite, Executors.localThread() == notificationExecutor);
+        for (PVWriterListener<T> pVWriterListener : writeListeners) {
+            pvWriter.addPVWriterListener(pVWriterListener);
+        }
+        writeFunction = writeExpression.getWriteFunction();
+    }
+    
+    static <T> PVWriterDirector<T> prepareDirector(PVWriterConfiguration<T> writerConfiguration) {
+        PVWriterDirector<T> writerDirector = new PVWriterDirector<T>(writerConfiguration.pvWriter,
+                writerConfiguration.writeFunction, writerConfiguration.dataSource, PVManager.getAsyncWriteExecutor(),
+                writerConfiguration.notificationExecutor, PVManager.getReadScannerExecutorService(),
+                writerConfiguration.timeout, writerConfiguration.timeoutMessage, writerConfiguration.exceptionHandler);
+        writerDirector.connectExpression(writerConfiguration.writeExpression);
+        writerConfiguration.pvWriter.setWriteDirector(writerDirector);
+        return writerDirector;
+    }
+    
+    static <T> void prepareDecoupler(PVWriterDirector<T> director, PVWriterConfiguration<T> writerConfiguration) {
+        ScannerParameters scannerParameters = new ScannerParameters()
+                .writerDirector(director)
+                .scannerExecutor(PVManager.getReadScannerExecutorService())
+                .maxDuration(TimeDuration.ofMillis(100));
+        scannerParameters.type(ScannerParameters.Type.PASSIVE);
+        SourceDesiredRateDecoupler rateDecoupler = scannerParameters.build();
+        
+        director.setScanner(rateDecoupler);
+        rateDecoupler.start();
+    }
+    
     /**
      * Creates a new PVWriter where the {@link PVWriter#write(java.lang.Object) }
      * method is synchronous (i.e. blocking).

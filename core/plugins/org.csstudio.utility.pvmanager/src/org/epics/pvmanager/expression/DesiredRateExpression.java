@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.expression;
 
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.ReadRecipeBuilder;
 
@@ -43,7 +43,7 @@ public interface DesiredRateExpression<R> extends DesiredRateExpressionList<R> {
      * @param director the director for the reader
      * @param builder the recipe to fill
      */
-    public void fillReadRecipe(PVReaderDirector director, ReadRecipeBuilder builder);
+    public void fillReadRecipe(PVDirector director, ReadRecipeBuilder builder);
     
     /**
      * The function that calculates this expression.
