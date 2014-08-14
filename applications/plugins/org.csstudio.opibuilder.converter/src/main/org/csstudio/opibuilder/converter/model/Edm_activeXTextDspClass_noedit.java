@@ -20,6 +20,7 @@ public class Edm_activeXTextDspClass_noedit extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private boolean limitsFromDb;
 	@EdmAttributeAn @EdmOptionalAn private boolean showUnits;
 	@EdmAttributeAn @EdmOptionalAn private boolean useAlarmBorder;
+	@EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
 	@EdmAttributeAn @EdmOptionalAn private int precision;
 	@EdmAttributeAn @EdmOptionalAn private String fontAlign;
 	
@@ -42,6 +43,10 @@ public class Edm_activeXTextDspClass_noedit extends EdmWidget {
 
 	public boolean isUseAlarmBorder() {
 		return useAlarmBorder;
+	}
+
+	public boolean isTransparent() {
+		return useDisplayBg;
 	}
 
 
