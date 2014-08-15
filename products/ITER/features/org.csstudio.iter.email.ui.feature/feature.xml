@@ -24,10 +24,10 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.email" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.email"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.help"/>
    </requires>
 
    <plugin

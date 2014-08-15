@@ -40,12 +40,22 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
 	/**
 	 * True if the button size is automatically adjusted to the size of the image.
 	 */
-	public static final String PROP_AUTOSIZE= "auto_size";	
-	
-	
-	private static final String[] FILE_EXTENSIONS = new String[] {"jpg", "jpeg", "gif", "bmp", "png"};
+	public static final String PROP_AUTOSIZE = "auto_size";
 
-	
+	private static final String[] FILE_EXTENSIONS = new String[] { "jpg", "jpeg", "gif", "bmp", "png", "svg" };
+
+	/**
+	 * True if the widget doesn't show animation even it is a animated image
+	 * file.
+	 */
+	public static final String PROP_NO_ANIMATION = "no_animation";
+
+	/**
+	 * True if the widget animation start should be aligned to the nearest
+	 * second.
+	 */
+	public static final String PROP_ALIGN_TO_NEAREST_SECOND = "align_to_nearest_second";
+
 	public ImageBoolButtonModel() {
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
 	}
@@ -61,7 +71,10 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
 				WidgetPropertyCategory.Image,false));
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size",
 				WidgetPropertyCategory.Image,true));
-		
+		addProperty(new BooleanProperty(PROP_NO_ANIMATION, "No Animation",
+				WidgetPropertyCategory.Image, false));
+		addProperty(new BooleanProperty(PROP_ALIGN_TO_NEAREST_SECOND, "Animation aligned to the nearest second",
+				WidgetPropertyCategory.Image, false));
 		
 		removeProperty(PROP_ACTIONS);		
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
@@ -116,5 +129,17 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
 			absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
 		return absolutePath;
 	}
-	
+
+	/**
+	 * @return True if the animation is stopped.
+	 */
+	public boolean isStopAnimation() {
+		return (Boolean) getProperty(PROP_NO_ANIMATION).getPropertyValue();
+	}
+
+	public boolean isAlignedToNearestSecond() {
+		return (Boolean) getProperty(PROP_ALIGN_TO_NEAREST_SECOND)
+				.getPropertyValue();
+	}
+
 }

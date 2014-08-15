@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 
+import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -15,10 +16,14 @@ import org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel;
 import org.csstudio.opibuilder.widgets.model.ImageBoolIndicatorModel;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
+import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
+import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.epics.vtype.AlarmSeverity;
 
 /**
  * EditPart controller for the image widget.
@@ -47,11 +52,26 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 	protected IFigure doCreateFigure() {
 		ImageBoolIndicatorModel model = getWidgetModel();
 		// create AND initialize the view properly
-		final ImageBoolButtonFigure figure = new ImageBoolButtonFigure(true);	
-		initializeCommonFigureProperties(figure, model);			
+		final ImageBoolButtonFigure figure = new ImageBoolButtonFigure(true);
+		initializeCommonFigureProperties(figure, model);
+
+		SymbolImageProperties sip = new SymbolImageProperties();
+		sip.setStretch(model.isStretch());
+		sip.setAutoSize(model.isAutoSize());
+		sip.setAnimationDisabled(model.isStopAnimation());
+		sip.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
+		sip.setBackgroundColor(new Color(Display.getDefault(), model.getBackgroundColor()));
+		figure.setSymbolProperties(sip);
+		figure.setImageLoadedListener(new IImageListener() {
+
+			@Override
+			public void imageResized(IFigure figure) {
+				ImageBoolButtonFigure symbolFigure = (ImageBoolButtonFigure) figure;
+				autoSizeWidget(symbolFigure);
+			}
+		});
 		figure.setOnImagePath(model.getOnImagePath());
 		figure.setOffImagePath(model.getOffImagePath());
-		figure.setStretch(model.isStretch());
 		return figure;
 	}
 	
@@ -77,9 +97,24 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 //			}
 //		};
 //		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
-		
-		
-		
+
+		// ForeColor Alarm Sensitive
+		getPVWidgetEditpartDelegate().addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(AlarmSeverity severity,
+					IFigure refreshableFigure) {
+				ImageBoolButtonFigure figure = (ImageBoolButtonFigure) refreshableFigure;
+				if (!getWidgetModel().isForeColorAlarmSensitve()) {
+					figure.setUseForegroundColor(false);
+				} else {
+					if (severity.equals(AlarmSeverity.NONE))
+						figure.setUseForegroundColor(false);
+					else figure.setUseForegroundColor(true);
+				}
+				return true;
+			}
+		});
+
 		// changes to the on image property
 		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
@@ -138,10 +173,29 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 			}
 		};
 		setPropertyChangeHandler(ImageBoolButtonModel.PROP_AUTOSIZE, handle);
-		
-		
-	
-		
+
+		// changes to the stop animation property
+		handle = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
+				imageFigure.setAnimationDisabled((Boolean) newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ImageBoolIndicatorModel.PROP_NO_ANIMATION, handle);
+
+		// changes to the align to nearest second property
+		handle = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
+				imageFigure.setAlignedToNearestSecond((Boolean) newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ImageBoolIndicatorModel.PROP_ALIGN_TO_NEAREST_SECOND, handle);
+
 		// changes to the border width property
 		handle = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,

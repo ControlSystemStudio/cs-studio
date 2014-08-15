@@ -258,7 +258,8 @@ public class LogClientThread extends Thread
                 }
                 rdb_writer.write(map);
             }
-                Activator.getLogger().log(Level.WARNING, "Received unhandled message type {0}" + message, message.getClass().getName());
+            else
+                Activator.getLogger().log(Level.WARNING, "Received unhandled message {0}", message);
         }
         catch (Exception ex)
         {

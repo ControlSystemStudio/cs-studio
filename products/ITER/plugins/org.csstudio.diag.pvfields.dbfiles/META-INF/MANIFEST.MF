@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: DB Files Data Provider
 Bundle-SymbolicName: org.csstudio.diag.pvfields.dbfiles;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit,
  org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.platform.utility.rdb;bundle-version="1.2.0",
  org.csstudio.diag.pvfields;bundle-version="3.2.0",

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css" uid="org.csstudio.iter.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="3.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css" uid="org.csstudio.iter.product.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="3.3.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.iter.css.product/icons/about.png"/>

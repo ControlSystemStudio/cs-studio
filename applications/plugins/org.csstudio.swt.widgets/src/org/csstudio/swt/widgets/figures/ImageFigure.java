@@ -27,6 +27,8 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -35,15 +37,16 @@ import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.batik.utils.SVGUtils;
 import org.apache.batik.utils.SimpleImageTranscoder;
+import org.apache.commons.lang.time.DateUtils;
 import org.csstudio.java.thread.ExecutionService;
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.symbol.util.ImageUtils;
+import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
 import org.csstudio.swt.widgets.util.IImageLoadedListener;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
-import org.csstudio.swt.widgets.util.ImageUtils;
-import org.csstudio.swt.widgets.util.PermutationMatrix;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.widgets.util.TextPainter;
@@ -71,6 +74,8 @@ import org.w3c.dom.Document;
  */
 
 public final class ImageFigure extends Figure implements Introspectable {
+
+	private static final int MILLISEC_IN_SEC = 1000;
 
 	/**
 	 * The {@link IPath} to the image.
@@ -114,6 +119,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * If this is an animated image
 	 */
 	private boolean animated = false;
+	private boolean alignedToNearestSecond = false;
 
 	private Image offScreenImage;
 
@@ -803,12 +809,25 @@ public final class ImageFigure extends Figure implements Introspectable {
 				scheduledFuture.cancel(true);
 				scheduledFuture = null;
 			}
+			long initialDelay = 100;
+			if (alignedToNearestSecond) {
+				Date now = new Date();
+				DateUtils.round(now, Calendar.SECOND);
+				Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
+				initialDelay = nearestSecond.getTime() - now.getTime();
+				if (initialDelay < 0)
+					initialDelay = MILLISEC_IN_SEC + initialDelay;
+			}
 			scheduledFuture = ExecutionService
 					.getInstance()
 					.getScheduledExecutorService()
-					.scheduleAtFixedRate(animationTask, 100, 10,
+					.scheduleAtFixedRate(animationTask, initialDelay, 10,
 							TimeUnit.MILLISECONDS);
 		}
+	}
+
+	public void setAlignedToNearestSecond(boolean aligned) {
+		this.alignedToNearestSecond = aligned;
 	}
 
 	/**

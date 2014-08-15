@@ -20,12 +20,12 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.csstudio.platform.libs.epics"/>
+      <import plugin="org.csstudio.remote"/>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.csstudio.remote" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.slf4j" version="1.6.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.slf4j"/>
    </requires>
 
    <plugin

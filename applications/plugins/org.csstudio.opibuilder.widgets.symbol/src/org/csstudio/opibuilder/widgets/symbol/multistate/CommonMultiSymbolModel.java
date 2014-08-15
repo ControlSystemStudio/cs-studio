@@ -25,9 +25,10 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.bool.MonitorBoolSymbolModel;
 import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
-import org.csstudio.opibuilder.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
+import org.csstudio.opibuilder.widgets.symbol.util.SymbolUtils;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure.BoolLabelPosition;
+import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.graphics.Color;
@@ -108,14 +109,18 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 	/** True if the boolean label should be visible. */
 	public static final String PROP_SHOW_SYMBOL_LABEL = "show_boolean_label"; //$NON-NLS-1$
 	public static final String PROP_SYMBOL_LABEL_POS = "boolean_label_position"; //$NON-NLS-1$
-	
+
+	/**
+	 * True if the widget doesn't show animation even it is a animated image
+	 * file.
+	 */
+	public static final String PROP_NO_ANIMATION = "no_animation";
+	public static final String PROP_ALIGN_TO_NEAREST_SECOND = "align_to_nearest_second";
+
 	/**
 	 * The color of the selected item.
 	 */
-//	public static final String PROP_SELECTED_COLOR = "selected_color";//$NON-NLS-1$
-
-	public static final String[] IMAGE_EXTENSIONS = new String[] { "gif",
-			"png", "GIF", "PNG", "svg", "SVG" };
+	//	public static final String PROP_SELECTED_COLOR = "selected_color";//$NON-NLS-1$
 
 	@Override
 	protected void configureProperties() {
@@ -131,6 +136,10 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 		addProperty(new IntegerProperty(PROP_RIGHTCROP, "Crop Right",
 				WidgetPropertyCategory.Image, 0));
 		addProperty(new BooleanProperty(PROP_STRETCH, "Stretch to Fit",
+				WidgetPropertyCategory.Image, false));
+		addProperty(new BooleanProperty(PROP_NO_ANIMATION, "No Animation",
+				WidgetPropertyCategory.Image, false));
+		addProperty(new BooleanProperty(PROP_ALIGN_TO_NEAREST_SECOND, "Animation aligned to the nearest second",
 				WidgetPropertyCategory.Image, false));
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size",
 				WidgetPropertyCategory.Image, true));
@@ -156,7 +165,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 		// Display properties
 		addProperty(new FilePathPropertyWithFilter(PROP_SYMBOL_IMAGE_FILE,
 				"Symbol Image", WidgetPropertyCategory.Display, new Path(""),
-				IMAGE_EXTENSIONS));
+				SymbolUtils.IMAGE_EXTENSIONS));
 		addProperty(new ColorProperty(PROP_ON_COLOR, "Non-Zero Color",
 				WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
 		addProperty(new ColorProperty(PROP_OFF_COLOR, "Zero Color",
@@ -362,6 +371,18 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 			}
 		}
 		super.setPropertyValue(id, value);
+	}
+
+	/**
+	 * @return True if the animation is stopped.
+	 */
+	public boolean isStopAnimation() {
+		return (Boolean) getProperty(PROP_NO_ANIMATION).getPropertyValue();
+	}
+
+	public boolean isAlignedToNearestSecond() {
+		return (Boolean) getProperty(PROP_ALIGN_TO_NEAREST_SECOND)
+				.getPropertyValue();
 	}
 
 }

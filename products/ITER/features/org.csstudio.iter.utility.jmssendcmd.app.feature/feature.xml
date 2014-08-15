@@ -20,7 +20,7 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java"/>
    </requires>
 
    <plugin

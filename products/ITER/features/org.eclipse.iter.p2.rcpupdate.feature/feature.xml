@@ -28,28 +28,23 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.util"/>
-      <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.eclipse.equinox.common" version="3.5.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.3.0" match="compatible"/>
-      <import plugin="org.sat4j.core" version="2.2.0"/>
-      <import plugin="org.sat4j.pb" version="2.2.0"/>
-      <import plugin="org.eclipse.core.jobs" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.p2.metadata" version="2.0.0" match="compatible"/>
-      <import plugin="org.eclipse.core.jobs" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.p2.core" version="2.0.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.p2.artifact.repository" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.equinox.app"/>
+      <import plugin="org.eclipse.equinox.common"/>
       <import plugin="org.eclipse.equinox.frameworkadmin"/>
       <import plugin="org.eclipse.equinox.frameworkadmin.equinox"/>
+      <import plugin="org.eclipse.equinox.p2.artifact.repository"/>
+      <import plugin="org.eclipse.equinox.p2.core"/>
+      <import plugin="org.eclipse.equinox.p2.metadata"/>
+      <import plugin="org.eclipse.equinox.preferences"/>
+      <import plugin="org.eclipse.equinox.registry"/>
+      <import plugin="org.eclipse.equinox.security"/>
       <import plugin="org.eclipse.equinox.simpleconfigurator.manipulator"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.common" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.util"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.sat4j.core"/>
+      <import plugin="org.sat4j.pb"/>
    </requires>
 
    <plugin

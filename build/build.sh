@@ -94,16 +94,30 @@ else
   mkdir -p ext
   cd ext
 
-  if [[ ! -f eclipse-rcp-indigo-SR2-linux-gtk.tar.gz ]]
-    then
-      wget http://download.eclipse.org/technology/epp/downloads/release/indigo/SR2/eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
-    fi
-  if [[ ! -f eclipse-3.7.2-delta-pack.zip ]]
+  if [ `uname` == 'Linux' ]
   then
-     wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.7.2-201202080800/eclipse-3.7.2-delta-pack.zip
+    if [ `uname -m` == 'x86_64' ]
+    then
+      if [[ ! -f eclipse-rcp-luna-R-linux-gtk-x86_64.tar.gz ]]
+      then
+        wget http://download.eclipse.org/technology/epp/downloads/release/luna/R/eclipse-rcp-luna-R-linux-gtk-x86_64.tar.gz
+      fi
+    else
+      if [[ ! -f eclipse-rcp-luna-R-linux-gtk.tar.gz ]]
+      then
+        wget http://download.eclipse.org/technology/epp/downloads/release/luna/R/eclipse-rcp-luna-R-linux-gtk.tar.gz
+      fi
+    fi
+  else
+    echo "Missing Eclipse, only know locations for Linux"
+    exit 1
   fi
-  tar -xzvf eclipse-rcp-indigo-SR2-linux-gtk.tar.gz
-  unzip -o eclipse-3.7.2-delta-pack.zip
+  if [[ ! -f eclipse-4.4-delta-pack.zip ]]
+  then
+     wget http://download.eclipse.org/eclipse/downloads/drops4/R-4.4-201406061215/eclipse-4.4-delta-pack.zip
+  fi
+  tar -xzvf eclipse-rcp-luna*.tar.gz
+  unzip -o eclipse-*-delta-pack.zip
   cd ..
 fi
 if [ "$ORGANIZATION" = "ITER" ]
@@ -112,20 +126,20 @@ then
   if [[ ! -d eclipse/dropins/subclipse ]]
   then
     # Download and install subclipse in dropins directory
-    if [[ ! -f org.tigris.subclipse-site-1.6.18.zip ]]
+    if [[ ! -f subclipse-site-1.10.5.zip ]]
     then
-      wget -O subclipse-site-1.6.18.zip http://subclipse.tigris.org/files/documents/906/49028/site-1.6.18.zip
+      wget -O subclipse-site-1.10.5.zip http://subclipse.tigris.org/files/documents/906/49382/site-1.10.5.zip
     fi
-    unzip -o subclipse-site-1.6.18.zip -d eclipse/dropins/subclipse
+    unzip -o subclipse-site-1.10.5.zip -d eclipse/dropins/subclipse
   fi
   if [[ ! -d eclipse/dropins/pydev ]]
   then
     # Download and install pydev in dropins directory
-    if [[ ! -f PyDev_2.8.1.zip ]]
+    if [[ ! -f PyDev_3.6.0.zip ]]
     then
-      wget -O PyDev_2.8.1.zip http://sourceforge.net/projects/pydev/files/pydev/PyDev%202.8.1/PyDev%202.8.1.zip/download
+      wget -O PyDev_3.6.0.zip http://sourceforge.net/projects/pydev/files/pydev/PyDev%203.6.0/PyDev%203.6.0.zip/download
     fi
-    unzip -o PyDev_2.8.1.zip -d eclipse/dropins/pydev
+    unzip -o PyDev_3.6.0.zip -d eclipse/dropins/pydev
     # Remove signature from pydev jars
     find eclipse/dropins/pydev -name '*.DSA' -exec rm -f {} \;
     find eclipse/dropins/pydev -name '*.SF' -exec rm -f {} \;
@@ -217,9 +231,9 @@ cd ..
 ABSOLUTE_DIR=$PWD
 echo "Start build"
 echo $ABSOLUTE_DIR
-java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar \
+java -jar "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.*.jar \
 	-application org.eclipse.ant.core.antRunner \
-	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.7.*/scripts/productBuild/productBuild.xml \
+	-buildfile "$ABSOLUTE_DIR"/ext/eclipse/plugins/org.eclipse.pde.build_3.*/scripts/productBuild/productBuild.xml \
 	-Dbuilder="$ABSOLUTE_DIR"/build \
 	-Dbuild.dir="$ABSOLUTE_DIR"
 
