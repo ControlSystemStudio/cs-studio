@@ -21,6 +21,8 @@ public class OpiFont extends OpiAttribute {
 	private static final int NORMAL = 0;
 	private static final int BOLD = 1 << 0;
 	private static final int ITALIC = 1 << 1;
+	
+	private final double fontScale = 0.76;
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.OpiFont");	
 
@@ -42,12 +44,8 @@ public class OpiFont extends OpiAttribute {
 		propertyContext.getElement().appendChild(fontElement);
 
 		String fontName = f.getName();
-		int size = (int) f.getSize();
-		if(size>=14){
-			size=size-4;
-		}else if (size>=10)
-			size=size-2;
 		
+		int size = (int) (f.getSize() * fontScale);
 		String height = String.valueOf(size);
 
 		// Style conversion copied from org.eclipse.swt.SWT class.

@@ -30,7 +30,10 @@ public class Opi_ByteClass extends OpiWidget {
 		setName(name);
 		setVersion(version);
 		
-		new OpiBoolean(widgetContext, "horizontal", true);
+		// EDM byte monitors judge which way to display according to 
+		//dimensions of the widget
+		boolean horizontal = r.getW() > r.getH();
+		new OpiBoolean(widgetContext, "horizontal", horizontal);
 		new OpiBoolean(widgetContext, "effect_3d", false);
 		new OpiBoolean(widgetContext, "square_led", true);
 		

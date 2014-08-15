@@ -65,6 +65,8 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
 		}
 		new OpiInt(widgetContext, "format_type", f);
 		
+		new OpiString(widgetContext, "border_style", "None");
+		new OpiBoolean(widgetContext, "transparent", r.isTransparent());
 		
 
 		log.debug("Edm_activeXTextDspClass written.");
