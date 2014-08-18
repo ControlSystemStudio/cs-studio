@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgetActions;
 
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 				absolutePath = ResourceUtil.getFileOnSearchPath(getPath(), true);
 			}
 		}
-		if (absolutePath == null)
+		if (absolutePath == null || !(absolutePath.toFile().exists()))
 			try {
 				throw new FileNotFoundException(
 						NLS.bind(
