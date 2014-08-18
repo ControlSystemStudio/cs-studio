@@ -45,7 +45,7 @@ public class FAArchivedDataRequest extends FARequest {
 	 *             when no connection can be made with the host (and port)
 	 *             specified
 	 * @throws FADataNotAvailableException
-	 *             when the url doesn't have the right format
+	 *             when the URL doesn't have the right format
 	 */
 	public FAArchivedDataRequest(String url, HashMap<String, int[]> bpmMapping)
 			throws IOException, FADataNotAvailableException {
@@ -345,7 +345,7 @@ public class FAArchivedDataRequest extends FARequest {
 	 *            the index (0 or 1) of the coordinate wanted
 	 * @return ArchiveVNumber[] that can be used to create a FAValueIterator
 	 */
-	private static ArchiveVNumber[] decodeDataUndec(ByteBuffer bb,
+	protected static ArchiveVNumber[] decodeDataUndec(ByteBuffer bb,
 			int sampleCount, int blockSize, int offset, int coordinate) {
 		ArchiveVNumber[] values = new ArchiveVNumber[(int) sampleCount];
 
@@ -404,7 +404,7 @@ public class FAArchivedDataRequest extends FARequest {
 	 *            the index (0 or 1) of the coordinate wanted
 	 * @return ArchiveVStatistics[] that can be used to create a FAValueIterator
 	 */
-	private ArchiveVStatistics[] decodeDataDec(ByteBuffer bb, int sampleCount,
+	protected ArchiveVStatistics[] decodeDataDec(ByteBuffer bb, int sampleCount,
 			int blockSize, int offset, int coordinate, Decimation decimation) {
 		int count;
 		if (decimation == Decimation.DEC) {

@@ -20,6 +20,9 @@ public class FADataSourceTypeAdapter implements DataSourceTypeAdapter<FALiveData
 		return 0;
 	}
 
+	/**
+	 * Not implemented, throws an UnsupportedOperationException when to accessed during runtime 
+	 */
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Object getSubscriptionParameter(ValueCache cache,

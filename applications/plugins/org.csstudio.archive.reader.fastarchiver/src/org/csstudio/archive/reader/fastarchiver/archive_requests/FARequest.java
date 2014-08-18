@@ -26,6 +26,12 @@ public abstract class FARequest {
 	protected String host;
 	protected int port;
 
+	/**
+	 * @param url
+	 *            needs to start with "fads://" followed by the host name and
+	 *            optionally a colon followed by a port number (default 8888)
+	 * @throws FADataNotAvailableException if the URL does not have the right format
+	 */
 	public FARequest(String url) throws FADataNotAvailableException {
 		Pattern pattern = Pattern.compile("fads://([A-Za-z0-9-]+)(:[0-9]+)?");
 		Matcher matcher = pattern.matcher(url);
