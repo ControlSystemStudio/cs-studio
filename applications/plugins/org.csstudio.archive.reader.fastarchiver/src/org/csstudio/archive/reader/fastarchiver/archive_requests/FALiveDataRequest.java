@@ -100,7 +100,7 @@ public class FALiveDataRequest extends FARequest {
 	 * @throws IOException
 	 *             when the fetch encounters a problem with the socket
 	 */
-	public ArchiveVDisplayType[] fetchNewValues() throws IOException,
+	public ArchiveVDisplayType[] fetchNewValues(int decimation) throws IOException,
 			FADataNotAvailableException {
 		// Read out from BufferedInputStream into ByteBuffer
 		int bytesToRead = calcNumBytesToRead();
@@ -111,11 +111,10 @@ public class FALiveDataRequest extends FARequest {
 		ByteBuffer bb = ByteBuffer.wrap(newData);
 		bb.position(0);
 		bb.order(ByteOrder.LITTLE_ENDIAN);
-
 		// Process ByteBuffer as in FAArchivedDataRequest
-		ArchiveVDisplayType[] newValues = FAArchivedDataRequest
-				.decodeDataUndec(bb, getSampleCount(bytesToRead), blockSize,
-						offset, mapping.get("fads://" + name)[1]);
+		ArchiveVDisplayType[] newValues = decodeDataUndecToDec(bb,
+				getSampleCount(bytesToRead), blockSize, offset,
+				mapping.get("fads://" + name)[1], decimation);
 		offset = 0;
 		return newValues;
 	}

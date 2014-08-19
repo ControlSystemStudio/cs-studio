@@ -11,10 +11,7 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.reader.fastarchiver.FAValueIterator;
 import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
 import org.csstudio.archive.vtype.ArchiveVDisplayType;
-import org.csstudio.archive.vtype.ArchiveVNumber;
-import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
 
 /**
  * Class to communicate with Fast Archiver about archived data requests.
@@ -205,9 +202,16 @@ public class FAArchivedDataRequest extends FARequest {
 			if (bb.remaining() != numBytesToRead)
 				throw new FADataNotAvailableException(
 						"Data stream does not have expected length");
-
+			
+			int count;
+			if (decimation == Decimation.DEC) {
+				count = firstDecimation;
+			} else {
+				count = secondDecimation;
+			}
+			
 			values = decodeDataDec(bb, (int) sampleCount, blockSize, offset,
-					coordinate, decimation);
+					coordinate, count);
 
 		}
 
@@ -327,165 +331,6 @@ public class FAArchivedDataRequest extends FARequest {
 		} else
 			length += 12 + 8 * 4 * sampleCount;
 		return length;
-	}
-
-	/**
-	 * Decodes the raw data from the Archive from a ByteBuffer into an array of
-	 * ArchiveVNumbers
-	 * 
-	 * @param bb
-	 *            the ByteBuffer with the raw data
-	 * @param sampleCount
-	 *            the total number of samples returned
-	 * @param blockSize
-	 *            the general number of samples per data block
-	 * @param offset
-	 *            the offset (number of missing samples) in the first data block
-	 * @param coordinate
-	 *            the index (0 or 1) of the coordinate wanted
-	 * @return ArchiveVNumber[] that can be used to create a FAValueIterator
-	 */
-	protected static ArchiveVNumber[] decodeDataUndec(ByteBuffer bb,
-			int sampleCount, int blockSize, int offset, int coordinate) {
-		ArchiveVNumber[] values = new ArchiveVNumber[(int) sampleCount];
-
-		int value;
-		double timestamp; // in microseconds
-		double duration;
-		Timestamp ts;
-		double timeInterval = 0.0; // for checking
-
-		if (offset != 0) {
-			timestamp = (double) bb.getLong();
-			duration = (double) bb.getInt();
-			timeInterval = duration / blockSize;
-			timestamp += offset * timeInterval;
-		} else {
-			timestamp = 0;// should be really initialised later on
-			duration = 0;
-		}
-		for (int indexValues = 0; indexValues < sampleCount; indexValues += 1) {
-			if ((indexValues + offset) % blockSize == 0) {
-				timestamp = (double) bb.getLong();
-				duration = (double) bb.getInt();
-				timeInterval = duration / blockSize;
-			}
-			if (coordinate == 0) {
-				value = bb.getInt();
-				bb.getInt();
-			} else {
-				bb.getInt();
-				value = bb.getInt();
-			}
-
-			double valueDouble = value / 1000.0; // micrometers
-			ts = timeStampFromMicroS((long) timestamp);
-			values[indexValues] = new ArchiveVNumber(ts, AlarmSeverity.NONE,
-					"status", null, valueDouble);
-			timestamp += timeInterval;
-		}
-
-		return values;
-	}
-
-	/**
-	 * Decodes the raw data from the Archive from a ByteBuffer into an array of
-	 * ArchiveVStatistics
-	 * 
-	 * @param bb
-	 *            the ByteBuffer with the raw data
-	 * @param sampleCount
-	 *            the total number of samples returned
-	 * @param blockSize
-	 *            the general number of samples per data block
-	 * @param offset
-	 *            the offset (number of missing samples) in the first data block
-	 * @param coordinate
-	 *            the index (0 or 1) of the coordinate wanted
-	 * @return ArchiveVStatistics[] that can be used to create a FAValueIterator
-	 */
-	protected ArchiveVStatistics[] decodeDataDec(ByteBuffer bb, int sampleCount,
-			int blockSize, int offset, int coordinate, Decimation decimation) {
-		int count;
-		if (decimation == Decimation.DEC) {
-			count = firstDecimation;
-		} else {
-			count = secondDecimation;
-		}
-
-		ArchiveVStatistics[] values = new ArchiveVStatistics[(int) sampleCount];
-
-		// System.out.
-		// printf("DecodeDataDec: \nsampleCount: %d, blockSize: %d, offset: %d,
-		// bufferLength: %d\n", sampleCount, blockSize, offset, bb.remaining());
-
-		double mean, min, max, std;
-		double timestamp; // in microseconds
-		double duration;
-		Timestamp ts;
-		double timeInterval = 0.0;
-
-		if (offset != 0) {
-			timestamp = (double) bb.getLong();
-			duration = (double) bb.getInt();
-			timeInterval = duration / blockSize;
-			timestamp += offset * timeInterval;
-		} else {
-			timestamp = 0;// should be really initialised later on
-			duration = 0;
-		}
-
-		for (int indexValues = 0; indexValues < sampleCount; indexValues += 1) {
-			// when to read in timeStamps and durations
-			if ((indexValues + offset) % blockSize == 0) {
-				timestamp = (double) bb.getLong();
-
-				duration = (double) bb.getInt();
-				timeInterval = duration / blockSize;
-			}
-			if (coordinate == 0) {
-				mean = bb.getInt() / 1000.0; // micrometers
-				bb.getInt();
-				min = bb.getInt() / 1000.0;
-				bb.getInt();
-				max = bb.getInt() / 1000.0;
-				bb.getInt();
-				std = bb.getInt() / 1000.0;
-				bb.getInt();
-			} else {
-				bb.getInt();
-				mean = bb.getInt() / 1000.0;
-				bb.getInt();
-				min = bb.getInt() / 1000.0;
-				bb.getInt();
-				max = bb.getInt() / 1000.0;
-				bb.getInt();
-				std = bb.getInt() / 1000.0;
-			}
-
-			ts = timeStampFromMicroS((long) timestamp);
-			values[indexValues] = new ArchiveVStatistics(ts,
-					AlarmSeverity.NONE, "status", null, mean, min, max, std,
-					count);
-			timestamp += timeInterval;
-		}
-
-		return values;
-
-	}
-
-	/**
-	 * Creates a new Timstamp object from a given value of microseconds from the
-	 * epoch.
-	 * 
-	 * @param timeInMicroS
-	 *            time in microseconds from epoch
-	 * @return corresponding Timestamp
-	 */
-	private static Timestamp timeStampFromMicroS(long timeInMicroS) {
-		long seconds = timeInMicroS / 1000000;
-		int nanoseconds = (int) (timeInMicroS % 1000000) * 1000;
-		return Timestamp.of(seconds, nanoseconds);
 	}
 
 }

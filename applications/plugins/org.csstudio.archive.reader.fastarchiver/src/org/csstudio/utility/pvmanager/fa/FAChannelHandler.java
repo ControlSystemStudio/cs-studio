@@ -41,12 +41,12 @@ public class FAChannelHandler extends
 		public void run() {
 			// Protect the timer thread for possible problems.
 			try {
-				ArchiveVDisplayType[] newValues = faChannel.fetchNewValues();
-				System.out.println("Have new values");
+				ArchiveVDisplayType[] newValues = faChannel.fetchNewValues(100);
 				for (ArchiveVDisplayType newValue : newValues) {
 					processMessage(newValue);
 					System.out.println(newValue.getTimestamp().toDate()
 							.toString());
+					System.out.println(newValue.getTimestamp().getNanoSec());
 				}
 			} catch (FADataNotAvailableException ex) {
 				// No new values available, no problem
