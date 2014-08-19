@@ -170,7 +170,6 @@ public class PVNameConversion {
 			int firstParen = calcString.indexOf('(');
 			String ops = calcString.substring(0, firstParen);
 			String args = calcString.substring(firstParen, calcString.length());
-			System.out.println("args is " + args);
 			Deque<String> arguments = new ArrayDeque<String>(parseArguments(args));
 			StringBuilder sb = new StringBuilder("=(");
 			if (functions.contains(ops)) {
