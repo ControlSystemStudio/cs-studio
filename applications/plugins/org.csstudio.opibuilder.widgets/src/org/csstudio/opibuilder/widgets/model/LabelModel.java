@@ -71,6 +71,7 @@ public class LabelModel extends AbstractPVWidgetModel implements ITextModel{
 			setPropertyVisible(PROP_BACKCOLOR_ALARMSENSITIVE, false);
 			setPropertyVisible(PROP_BORDER_ALARMSENSITIVE, false);
 			setPropertyVisible(PROP_FORECOLOR_ALARMSENSITIVE, false);
+			setPropertyVisible(PROP_ALARM_PULSING, false);
 		}		
 	}
 

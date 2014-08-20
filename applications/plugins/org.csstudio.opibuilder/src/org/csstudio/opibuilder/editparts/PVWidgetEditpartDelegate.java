@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
+import org.csstudio.java.thread.ExecutionService;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -135,6 +138,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 	
 	private ListenerList setPVValueListeners;
 	private ListenerList alarmSeverityListeners;
+	private boolean isAlarmPulsing = false;
+	private ScheduledFuture<?> scheduledFuture;
 	
 	/**
 	 * @param editpart the editpart to be delegated. 
@@ -205,7 +210,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 			}
 
 			pvMap.clear();
-			pvListenerMap.clear();		
+			pvListenerMap.clear();	
+			stopPulsing();
 	}
 	
 	public IPV getControlPV(){
@@ -265,6 +271,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 		isBorderAlarmSensitive = getWidgetModel().isBorderAlarmSensitve();
 		isBackColorAlarmSensitive = getWidgetModel().isBackColorAlarmSensitve();
 		isForeColorAlarmSensitive = getWidgetModel().isForeColorAlarmSensitve();
+		isAlarmPulsing = getWidgetModel().isAlarmPulsing();
 
 		if(isBorderAlarmSensitive
 				&& editpart.getWidgetModel().getBorderStyle()== BorderStyle.NONE){
@@ -377,6 +384,21 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 			}
 		});
 
+		// Pulsing Alarm Sensitive
+		addAlarmSeverityListener(new AlarmSeverityListener() {
+			@Override
+			public boolean severityChanged(AlarmSeverity severity, IFigure figure) {
+				if (!isAlarmPulsing)
+					return false;
+				if (severity == AlarmSeverity.MAJOR || severity == AlarmSeverity.MINOR) {
+					startPulsing();
+				} else {
+					stopPulsing();
+				}
+				return true;
+			}
+		});		
+		
 		class PVNamePropertyChangeHandler implements IWidgetPropertyChangeHandler{
 			private String pvNamePropID;
 			public PVNamePropertyChangeHandler(String pvNamePropID) {
@@ -456,8 +478,56 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
 		editpart.setPropertyChangeHandler(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, foreColorAlarmSensitiveHandler);
 
+		IWidgetPropertyChangeHandler alarmPulsingHandler = new IWidgetPropertyChangeHandler() {
+
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				isAlarmPulsing = (Boolean)newValue;
+				stopPulsing();
+				fireAlarmSeverityChanged(alarmSeverity, figure);
+				return true;
+			}
+		};
+
+		editpart.setPropertyChangeHandler(AbstractPVWidgetModel.PROP_ALARM_PULSING, alarmPulsingHandler);
+		
+		
 	}
 	
+	public synchronized void stopPulsing() {
+		if (scheduledFuture != null) {
+			// stop the pulsing runnable
+			scheduledFuture.cancel(true);
+			scheduledFuture = null;
+		}
+	}
+	
+	public synchronized void startPulsing() {	    	
+		stopPulsing();
+		Runnable pulsingTask = new Runnable() {
+			public void run() {
+				UIBundlingThread.getInstance().addRunnable(new Runnable() {
+
+					public void run() {
+						synchronized (PVWidgetEditpartDelegate.this) {
+							// Change the colours of all alarm sensitive components
+							if (isBorderAlarmSensitive)
+								editpart.setFigureBorder(editpart.calculateBorder());
+							if (isBackColorAlarmSensitive)
+								editpart.getFigure().setBackgroundColor(calculateBackColor());
+							if (isForeColorAlarmSensitive)
+								editpart.getFigure().setForegroundColor(calculateForeColor());
+						}
+					}
+				});
+			}
+		};
+		scheduledFuture = ExecutionService
+				.getInstance()
+				.getScheduledExecutorService()
+				.scheduleAtFixedRate(pulsingTask, 100, 100,
+						TimeUnit.MILLISECONDS);	
+	}	
+
 	private void saveFigureOKStatus(IFigure figure) {
 		saveForeColor = figure.getForegroundColor();
 		saveBackColor = figure.getBackgroundColor();
@@ -524,6 +594,19 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 			RGB alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
 			if (alarmColor != null) {
 				// Alarm severity is either "Major", "Minor" or "Invalid.
+				if (isAlarmPulsing && 
+						(alarmSeverity == AlarmSeverity.MINOR || alarmSeverity == AlarmSeverity.MAJOR)) {					
+					double alpha = 0.3;
+					if (alarmSeverity == AlarmSeverity.MINOR) {
+						alpha += Math.abs(System.currentTimeMillis() % 3000 - 1500) / 3000.0;
+					} else if (alarmSeverity == AlarmSeverity.MAJOR) {
+						alpha += Math.abs(System.currentTimeMillis() % 1500 - 750) / 1500.0;
+					}
+					alarmColor = new RGB(
+							(int) (saveColor.getRed() * alpha + alarmColor.red * (1-alpha)),
+							(int) (saveColor.getGreen() * alpha + alarmColor.green * (1-alpha)),
+							(int) (saveColor.getBlue() * alpha + alarmColor.blue * (1-alpha)));
+				}
 				return CustomMediaFactory.getInstance().getColor(alarmColor);
 			} else {
 				// Alarm severity is "OK".

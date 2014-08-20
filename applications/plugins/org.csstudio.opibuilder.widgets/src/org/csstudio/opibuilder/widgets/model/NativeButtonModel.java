@@ -29,6 +29,7 @@ public final class NativeButtonModel extends ActionButtonModel{
 		super.configureProperties();
 		removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);
 		removeProperty(PROP_COLOR_BACKGROUND);
+		removeProperty(PROP_ALARM_PULSING);
 	}
 	
 	
