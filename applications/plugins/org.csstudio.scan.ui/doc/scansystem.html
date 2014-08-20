@@ -551,8 +551,12 @@ and their state:
 <li>Running...: This scan is currently being executed. The "%" column displays the
     progress, and the "Command" column shows the currently active command.
 </li>
+<li>Paused: This scan is currently being executed, but paused.</li>
 <li>Idle: The scan has been submitted to the scan server and will be executed
     when previously queued scans have been handled.
+</li>
+<li>Logged: An older scan that ran before the scan server was started.
+    Scan log data is still available, but not the commands.
 </li>
 </ul>
 
@@ -766,6 +770,8 @@ The scan server will update the following PVs:
 
 <ol>
 <li>{prefix}Active - Set to 1 when the scan server is actively executing a scan, else 0.
+</li>
+<li>{prefix}State - State of the last executed scan, with alarm severity to indicate "Failed".
 </li>
 <li>{prefix}Status - Set to the name of the active scan.
 </li>

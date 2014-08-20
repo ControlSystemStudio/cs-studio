@@ -41,14 +41,16 @@ import org.epics.vtype.ValueUtil;
 @SuppressWarnings("nls")
 public class PVDevice extends Device
 {
+    final Logger logger = Logger.getLogger(getClass().getName());
+    
     /** 'compile time' option to treat byte arrays as string */
-    final private static boolean TREAD_BYTES_AS_STRING = true; // TODO Make configurable
+    final private static boolean TREAT_BYTES_AS_STRING = true; // TODO Make configurable
     
     /** Alarm that is used to identify a disconnected PV */
    final private static Alarm DISCONNECTED = ValueFactory.newAlarm(AlarmSeverity.INVALID, "Disconnected");
     
 	/** Is the underlying PV type a BYTE[]?
-	 *  @see #TREAD_BYTES_AS_STRING
+	 *  @see #TREAT_BYTES_AS_STRING
 	 */
 	private boolean is_byte_array = false;
 	
@@ -67,7 +69,7 @@ public class PVDevice extends Device
         @Override
         public void valueChanged(final PV pv, final VType new_value)
         {
-            Logger.getLogger(getClass().getName()).log(Level.FINE,
+            logger.log(Level.FINE,
                 "PV {0} received {1}", new Object[] { getName(), new_value });
             synchronized (PVDevice.this)
             {
@@ -80,7 +82,7 @@ public class PVDevice extends Device
         public void disconnected(PV pv)
         {
             value = getDisconnectedValue();
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "PV " + getName() + " disconnected");
+            logger.log(Level.WARNING, "PV " + getName() + " disconnected");
             fireDeviceUpdate();
         }
     };
@@ -89,13 +91,13 @@ public class PVDevice extends Device
     {
         if (new_value == null)
             return getDisconnectedValue();
-        else if (TREAD_BYTES_AS_STRING  && new_value instanceof VByteArray)
+        else if (TREAT_BYTES_AS_STRING  && new_value instanceof VByteArray)
         {
             is_byte_array = true;
             final VByteArray barray = (VByteArray) new_value;
             new_value = ValueFactory.newVString(
                     ByteHelper.toString(barray), (Alarm)barray, (Time)barray);
-            Logger.getLogger(getClass().getName()).log(Level.FINE,
+            logger.log(Level.FINE,
                     "PV BYTE[] converted to {0}", new_value);
             return new_value;
         }
@@ -175,7 +177,7 @@ public class PVDevice extends Device
         {
             current = this.value;
         }
-		Logger.getLogger(getClass().getName()).log(Level.FINER, "Reading: PV {0} = {1}",
+		logger.log(Level.FINER, "Reading: PV {0} = {1}",
 				new Object[] { getName(), current });
 		return current;
     }
@@ -219,7 +221,7 @@ public class PVDevice extends Device
             {
                 value = getDisconnectedValue();
             }
-            throw ex;
+            throw new Exception("Failed to read " + getName(), ex);
         }
     }	
 	
@@ -235,7 +237,7 @@ public class PVDevice extends Device
      */
     private Object wrapSentValue(Object value)
     {
-        if (is_byte_array && TREAD_BYTES_AS_STRING)
+        if (is_byte_array && TREAT_BYTES_AS_STRING)
         {
             // If value is a scalar, turn into string
             if (value instanceof Number)
@@ -254,16 +256,23 @@ public class PVDevice extends Device
     @Override
     public void write(Object value) throws Exception
     {
-        Logger.getLogger(getClass().getName()).log(Level.FINER, "Writing: PV {0} = {1}",
+		logger.log(Level.FINER, "Writing: PV {0} = {1}",
                 new Object[] { getName(), value });
-        value = wrapSentValue(value);
-
-        final PV pv; // Copy to access PV outside of lock
-        synchronized (this)
-        {
-            pv = this.pv;
-        }
-        pv.write(value);
+		try
+		{
+	        value = wrapSentValue(value);
+	
+	        final PV pv; // Copy to access PV outside of lock
+	        synchronized (this)
+	        {
+	            pv = this.pv;
+	        }
+	        pv.write(value);
+		}
+		catch (Exception ex)
+		{
+			throw new Exception("Failed to write " + value + " to " + getName(), ex);
+		}
     }
 	
 	/** Write value to device, with special handling of EPICS BYTE[] as String 
@@ -274,20 +283,27 @@ public class PVDevice extends Device
 	@Override
     public void write(Object value, final TimeDuration timeout) throws Exception
     {
-	    Logger.getLogger(getClass().getName()).log(Level.FINE, "Writing with completion: PV {0} = {1}",
+		logger.log(Level.FINE, "Writing with completion: PV {0} = {1}",
 	            new Object[] { getName(), value });
-	    value = wrapSentValue(value);
-
-	    final PV pv; // Copy to access PV outside of lock
-	    synchronized (this)
+		try
 		{
-	        pv = this.pv;
+		    value = wrapSentValue(value);
+	
+		    final PV pv; // Copy to access PV outside of lock
+		    synchronized (this)
+			{
+		        pv = this.pv;
+			}
+		    final Future<?> write_result = pv.asyncWrite(value);
+		    final long millisec = getMillisecs(timeout);
+		    if (millisec > 0)
+		        write_result.get(millisec, TimeUnit.MILLISECONDS);
+		    else
+		        write_result.get();
 		}
-	    final Future<?> write_result = pv.asyncWrite(value);
-	    final long millisec = getMillisecs(timeout);
-	    if (millisec > 0)
-	        write_result.get(millisec, TimeUnit.MILLISECONDS);
-	    else
-	        write_result.get();
+		catch (Exception ex)
+		{
+			throw new Exception("Failed to write " + value + " to " + getName(), ex);
+		}
     }
 }
