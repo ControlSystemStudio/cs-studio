@@ -12,6 +12,7 @@
 -- 		    If there is less data than requested the raw data are returned.
 -- 		    This includes the case of no data at all.                 
 -- ******************************************************************************
+
 CREATE OR REPLACE FUNCTION public.get_browser_data (
 	p_chan_id 	IN bigint,
 	p_start_time    varchar(20),
