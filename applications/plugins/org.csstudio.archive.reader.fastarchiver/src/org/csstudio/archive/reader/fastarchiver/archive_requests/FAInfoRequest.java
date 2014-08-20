@@ -15,7 +15,7 @@ import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableExc
 
 public class FAInfoRequest extends FARequest {
 	/** To determine the dataSource for the PVManager */
-	private String prefix = "fads://";
+	private String prefix = "fa://";
 
 	/**
 	 * 

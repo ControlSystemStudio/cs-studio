@@ -14,7 +14,7 @@
       <datasource
             datasource="org.csstudio.utility.pvmanager.fa.FADataSource"
             name="FADataSource"
-            prefix="fads">
+            prefix="fa">
       </datasource>
    </extension>
 

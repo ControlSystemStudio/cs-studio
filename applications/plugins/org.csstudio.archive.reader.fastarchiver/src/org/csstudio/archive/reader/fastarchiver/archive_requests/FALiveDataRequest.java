@@ -52,7 +52,7 @@ public class FALiveDataRequest extends FARequest {
 
 		// Make a connection to the Fast Archiver
 		socket = new Socket(host, port);
-		int bpm = mapping.get("fads://" + name)[0];
+		int bpm = mapping.get("fa://" + name)[0];
 		String request = String.format("S%dTED\n", bpm);
 		socket.getOutputStream().write(request.getBytes(CHAR_ENCODING));
 		socket.getOutputStream().flush();
@@ -114,7 +114,7 @@ public class FALiveDataRequest extends FARequest {
 		// Process ByteBuffer as in FAArchivedDataRequest
 		ArchiveVDisplayType[] newValues = decodeDataUndecToDec(bb,
 				getSampleCount(bytesToRead), blockSize, offset,
-				mapping.get("fads://" + name)[1], decimation);
+				mapping.get("fa://" + name)[1], decimation);
 		offset = 0;
 		return newValues;
 	}
