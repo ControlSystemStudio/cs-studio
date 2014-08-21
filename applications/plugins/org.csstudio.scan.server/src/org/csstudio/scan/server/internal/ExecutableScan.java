@@ -112,7 +112,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     private volatile Future<Object> future = null;
 
     /** Device Names for status PVs */
-	private String device_active = null, device_status = null, device_progress = null, device_finish = null;
+	private String device_active = null, device_status = null, device_state = null, device_progress = null, device_finish = null;
 
 	/** Timeout for updating the status PVs */
 	final private static TimeDuration timeout = TimeDuration.ofSeconds(10);
@@ -394,6 +394,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 data_logger = logger;
             }
             execute_or_die_trying();
+            // Exceptions will already have been caught within execute_or_die_trying,
+            // hopefully updating the status PVs, but there could be exceptions
+            // when connecting or closing devices which we'll catch here
         }
         catch (InterruptedException ex)
         {
@@ -401,7 +404,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         	{
         		state = ScanState.Aborted;
         	}
-            error = "Interrupted";
+            error = "Aborted";
         }
         catch (Exception ex)
         {
@@ -450,6 +453,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             device_status = prefix + "Status";
             devices.addPVDevice(new DeviceInfo(device_status));
 
+            device_state = prefix + "State";
+            devices.addPVDevice(new DeviceInfo(device_state));
+            
             device_progress = prefix + "Progress";
             devices.addPVDevice(new DeviceInfo(device_progress));
 
@@ -474,6 +480,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             if (device_active != null)
             {
             	getDevice(device_status).write(getName());
+            	ScanCommandUtil.write(this, device_state, getScanState().ordinal(), 0.1, timeout);
             	ScanCommandUtil.write(this, device_active, Double.valueOf(1.0), 0.1, timeout);
             	ScanCommandUtil.write(this, device_progress, Double.valueOf(0.0), 0.1, timeout);
             	getDevice(device_finish).write("Starting ...");
@@ -518,6 +525,23 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 }
             }
         }
+        catch (InterruptedException ex)
+        {
+        	synchronized (this)
+        	{
+        		state = ScanState.Aborted;
+        	}
+            error = "Aborted";
+        }
+        catch (Exception ex)
+        {
+        	synchronized (this)
+        	{
+        		state = ScanState.Failed;
+        	}
+            error = ex.getMessage();
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan " + getName() + " failed", ex);
+        }
         finally
         {
             current_address = -1;
@@ -530,6 +554,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 if (device_active != null)
                 {
                     getDevice(device_status).write("");
+                	ScanCommandUtil.write(this, device_state, getScanState().ordinal(), 0.1, timeout);
                     getDevice(device_finish).write(ScanSampleFormatter.format(new Date()));
                     ScanCommandUtil.write(this, device_progress, Double.valueOf(100.0), 0.1, timeout);
                     ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1, timeout);
@@ -567,10 +592,15 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     {
         synchronized (this)
         {
-            while (state == ScanState.Paused)
-            {
-                wait();
-            }
+        	if (state == ScanState.Paused)
+        	{
+            	ScanCommandUtil.write(this, device_state, ScanState.Paused.ordinal(), 0.1, timeout);
+	            while (state == ScanState.Paused)
+	            {
+	                wait();
+	            }
+            	ScanCommandUtil.write(this, device_state, ScanState.Running.ordinal(), 0.1, timeout);
+        	}
         }
         
         boolean retry;
@@ -633,7 +663,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     public synchronized void pause()
     {
         if (state == ScanState.Running)
+        {
             state = ScanState.Paused;
+        }
     }
 
     /** Resume execution of a paused scan */

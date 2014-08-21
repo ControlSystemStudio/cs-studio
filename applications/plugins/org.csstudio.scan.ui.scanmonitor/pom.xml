@@ -9,6 +9,6 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.scan.ui.scanmonitor</artifactId>
-  <version>3.2.1-SNAPSHOT</version>
+  <version>4.0.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

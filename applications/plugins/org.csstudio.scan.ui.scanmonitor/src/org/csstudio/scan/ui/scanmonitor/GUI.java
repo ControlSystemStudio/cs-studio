@@ -349,6 +349,7 @@ public class GUI implements ScanInfoModelListener
         case Idle:
             return display.getSystemColor(SWT.COLOR_DARK_BLUE);
         case Aborted:
+            return display.getSystemColor(SWT.COLOR_DARK_YELLOW);
         case Failed:
             return display.getSystemColor(SWT.COLOR_RED);
         case Finished:
