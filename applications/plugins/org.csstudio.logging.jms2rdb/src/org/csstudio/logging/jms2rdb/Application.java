@@ -46,9 +46,19 @@ public class Application implements IApplication
      */
     private String jms_filters = "ALARM;TEXT=IDLE";
 
-    /** RDB Server URL */
+    /** RDB Server URL
+     *  
+     *  Must include the user/password unless they are provided
+     *  in rdb_user, rdb_password
+     */
     private String rdb_url = "jdbc:mysql://[host]/[database]?user=[user]&password=[password]";
 
+    /** RDB user name */
+    private String rdb_user = null;
+
+    /** RDB password */
+    private String rdb_password = null;
+    
     /** RDB Schema */
     private String rdb_schema = "";
 
@@ -111,6 +121,10 @@ public class Application implements IApplication
             service.getString(Activator.ID, "jms_filters", jms_filters, null);
         rdb_url =
             service.getString(Activator.ID, "rdb_url", rdb_url, null);
+        rdb_user =
+                service.getString(Activator.ID, "rdb_user", rdb_user, null);
+        rdb_password =
+                service.getString(Activator.ID, "rdb_password", rdb_password, null);
         rdb_schema =
             service.getString(Activator.ID, "rdb_schema", rdb_schema, null);
 
@@ -120,7 +134,7 @@ public class Application implements IApplication
 
         // Start log handler and web interface
         log_client_thread =
-            new LogClientThread(jms_url, jms_topic, rdb_url, rdb_schema,
+            new LogClientThread(jms_url, jms_topic, rdb_url, rdb_user, rdb_password, rdb_schema,
                                 Filter.parse(jms_filters));
         startHttpd();
         log_client_thread.start();
