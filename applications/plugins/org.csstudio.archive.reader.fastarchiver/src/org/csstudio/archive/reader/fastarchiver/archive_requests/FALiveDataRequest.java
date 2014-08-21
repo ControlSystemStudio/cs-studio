@@ -3,7 +3,6 @@ package org.csstudio.archive.reader.fastarchiver.archive_requests;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -24,6 +23,9 @@ public class FALiveDataRequest extends FARequest {
 	private Socket socket;
 	private int bpm;
 	private int coordinate;
+	private int noNewValuesOccurence = 0;
+	private int reconnectAfter = 10;
+	boolean closed = true;
 	
 	private BufferedInputStream inFromServer;
 
@@ -54,10 +56,30 @@ public class FALiveDataRequest extends FARequest {
 		socket.getOutputStream().write(request.getBytes(CHAR_ENCODING));
 		socket.getOutputStream().flush();
 		inFromServer = new BufferedInputStream(socket.getInputStream(), 1000000);
+		closed = false;
 
 		decodeInitialData();
 	}
 
+	/**
+	 * reconnectAfter is the number of times the archiver tries to fetch data, without 
+	 * actually returning new values, before trying to reconnect to the archiver.
+	 * @return the current value for reconnectAfter
+	 */
+	public int getReconnectAfter(){
+		return reconnectAfter;
+	}
+	
+	/**
+	 * reconnectAfter is the number of times the archiver tries to fetch data, without 
+	 * actually returning new values, before trying to reconnect to the archiver.
+	 * Default value is 10, should be higher for more frequent requests.
+	 * @param reconnectAfter
+	 */
+	public synchronized void setReconnectAfter(int reconnectAfter){
+		this.reconnectAfter = reconnectAfter;
+	}
+	
 	/**
 	 * Used to get the initial data from the live data stream
 	 * 
@@ -98,32 +120,65 @@ public class FALiveDataRequest extends FARequest {
 	 * @throws IOException
 	 *             when the fetch encounters a problem with the socket
 	 */
-	public ArchiveVDisplayType[] fetchNewValues(int decimation) throws IOException, FADataNotAvailableException {
+	public synchronized ArchiveVDisplayType[] fetchNewValues(int decimation) throws IOException, FADataNotAvailableException{
+		if(closed) throw new FADataNotAvailableException("Socket has been closed");
 		// Read out from BufferedInputStream into ByteBuffer
 		int bytesToRead = calcNumBytesToRead();
-		
-		if (bytesToRead == 0) return new ArchiveVDisplayType[0];
+		System.out.println(bytesToRead);
+		if (bytesToRead == 0){
+			noNewValuesOccurence++;
+			//check whether  we have gotten no new values more than "reconnectAfter" times
+			if(noNewValuesOccurence >= reconnectAfter){
+				reconnect();				
+			}
+			return new ArchiveVDisplayType[0];
+		}
 			
 		byte[] newData = new byte[bytesToRead];
 		inFromServer.read(newData);
 		ByteBuffer bb = ByteBuffer.wrap(newData);
 		bb.position(0);
 		bb.order(ByteOrder.LITTLE_ENDIAN);
-		// Process ByteBuffer as in FAArchivedDataRequest
+		// Process ByteBuffer and return new values
 		ArchiveVDisplayType[] newValues = decodeDataUndecToDec(bb,
 				getSampleCount(bytesToRead), blockSize, offset,
 				coordinate, decimation);
+		
 		offset = 0;
+		noNewValuesOccurence = 0;
 		return newValues;
 	}
 
-	
+	private void reconnect() throws IOException{		
+		// close old socket and inputStream
+		inFromServer.close();
+		socket.close();
+		
+		// Make a connection to the Fast Archiver
+		socket = new Socket(host, port);
+		String request = String.format("S%dTE\n", bpm);
+		socket.getOutputStream().write(request.getBytes(CHAR_ENCODING));
+		socket.getOutputStream().flush();
+		inFromServer = new BufferedInputStream(socket.getInputStream(), 1000000);
+
+		try{
+			decodeInitialData();
+		} catch (FADataNotAvailableException e){
+			return; // try connecting again on next call of fetchNewValues(int)
+		}
+		
+		noNewValuesOccurence = 0;
+		System.out.println("Reconnecting");
+	}
+
 	/**
 	 * Should be called when the connection to the archiver becomes redundant
 	 */
-	public void close() {
+	public synchronized void close() {
 		try {
+			inFromServer.close();
 			socket.close();
+			closed = true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -151,6 +206,7 @@ public class FALiveDataRequest extends FARequest {
 	private int calcNumBytesToRead() throws IOException {
 		int numOfBytes;
 		numOfBytes = inFromServer.available();
+		System.out.println("number of Bytes available: "+numOfBytes);
 		int lengthFirstBlock = 0;
 		if (offset != 0)
 			lengthFirstBlock = 12 + (blockSize - offset) * 8;
