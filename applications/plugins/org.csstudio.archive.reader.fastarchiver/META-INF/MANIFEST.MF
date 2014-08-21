@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: org.csstudio.archive.reader,
+ org.csstudio.trends.databrowser2.preferences,
  org.epics.pvmanager
 Export-Package: org.csstudio.archive.reader.fastarchiver,
  org.csstudio.archive.reader.fastarchiver.archive_requests,

@@ -18,9 +18,9 @@ import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableExc
 import org.epics.util.time.Timestamp;
 
 /**
+ * Archive Reader to fetch data from the Fast Archiver at DLS. 
  * 
  * @author Friederike Johlinger
- *
  */
 public class FastArchiveReader implements ArchiveReader {
 
@@ -88,7 +88,6 @@ public class FastArchiveReader implements ArchiveReader {
 	 * @throws IOException
 	 * @throws UnknownHostException
 	 */
-	// rather superfluous for the fast archiver
 	@Override
 	public ArchiveInfo[] getArchiveInfos() {
 		int numOfArchives = 1;

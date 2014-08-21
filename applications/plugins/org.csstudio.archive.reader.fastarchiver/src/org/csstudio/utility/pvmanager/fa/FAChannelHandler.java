@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.archive.reader.fastarchiver.archive_requests.FAInfoRequest;
 import org.csstudio.archive.reader.fastarchiver.archive_requests.FALiveDataRequest;
 import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
 import org.csstudio.archive.vtype.ArchiveVDisplayType;
@@ -28,6 +27,8 @@ public class FAChannelHandler extends
 		MultiplexedChannelHandler<FALiveDataRequest, ArchiveVDisplayType> {
 
 	private String url;
+	private int bpm;
+	private int coordinate;
 
 	private static ScheduledExecutorService exec = Executors
 			.newSingleThreadScheduledExecutor();
@@ -41,15 +42,14 @@ public class FAChannelHandler extends
 		public void run() {
 			// Protect the timer thread for possible problems.
 			try {
-				ArchiveVDisplayType[] newValues = faChannel.fetchNewValues(100);
+				ArchiveVDisplayType[] newValues = faChannel
+						.fetchNewValues(1000);
 				for (ArchiveVDisplayType newValue : newValues) {
 					processMessage(newValue);
-					System.out.println(newValue.getTimestamp().toDate()
-							.toString());
-					System.out.println(newValue.getTimestamp().getNanoSec());
+					// System.out.println(newValue.getTimestamp().toDate()
+					// .toString());
+					// System.out.println(newValue.getTimestamp().getNanoSec());
 				}
-			} catch (FADataNotAvailableException ex) {
-				// No new values available, no problem
 			} catch (Exception ex) {
 				log.log(Level.WARNING,
 						"Problem fetching data from FastArchiver", ex);
@@ -70,20 +70,22 @@ public class FAChannelHandler extends
 	 * @throws FADataNotAvailableException
 	 *             if the URL doesn't have the right format
 	 */
-	public FAChannelHandler(String channelName, String url) throws IOException,
-			FADataNotAvailableException {
+	public FAChannelHandler(String channelName, String url, int[] bpmAndCoordinate) {
 		super(channelName);
+		
 		this.url = url;
+		this.bpm = bpmAndCoordinate[0];
+		this.coordinate = bpmAndCoordinate[1];
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void connect() {
 		try {
-			faChannel = new FALiveDataRequest(url, getChannelName(), new FAInfoRequest(url).fetchMapping());
+			faChannel = new FALiveDataRequest(url, bpm, coordinate);
 		} catch (FADataNotAvailableException | IOException e) {
 			throw new RuntimeException(
-					"Connection to Fast Archiver not possible, ");
+					"Connection to Fast Archiver not possible");
 		}
 		taskFuture = exec.scheduleWithFixedDelay(task, 0, 100,
 				TimeUnit.MILLISECONDS);

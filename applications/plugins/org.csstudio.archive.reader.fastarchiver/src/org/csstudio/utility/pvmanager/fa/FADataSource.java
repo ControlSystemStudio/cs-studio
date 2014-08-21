@@ -1,12 +1,50 @@
 package org.csstudio.utility.pvmanager.fa;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import org.csstudio.archive.reader.fastarchiver.archive_requests.FAInfoRequest;
 import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
+import org.csstudio.trends.databrowser2.preferences.ArchiveServerURL;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.DataSource;
 
 public class FADataSource extends DataSource {
+	// Maps ChannelNames to URLs
+	private static HashMap<String, String> availablePVs;
+	// Maps ChannelNames to BPM number and coordinate
+	private static HashMap<String, int[]> mappingNameToBPMs;
+	private static String prefix = "fa://";
+	private static String defaultUrl = "fads://fa-archiver:8888";
+
+	static {
+		availablePVs = new HashMap<String, String>();
+		mappingNameToBPMs = new HashMap<String, int[]>();
+		ArchiveServerURL[] archiveURLs = Preferences.getArchiveServerURLs();
+		List<String> urls = new ArrayList<String>();
+		for (ArchiveServerURL archiveURL : archiveURLs) {
+			String url = archiveURL.getURL();
+			String prefix = url.substring(0, url.indexOf(':'));
+			if (prefix.equals("fads")) {
+				urls.add(url);
+			}
+		}
+		if(urls.size()==0) urls.add(defaultUrl);
+		HashMap<String, int[]> mapping;
+		for (String url:urls){			
+			try {
+				mapping = new FAInfoRequest(url).fetchMapping();
+				mappingNameToBPMs.putAll(mapping);
+				for (String pvName : mapping.keySet())
+					availablePVs.put(pvName, url);
+			} catch (IOException | FADataNotAvailableException e) {
+				// invalid URL, cannot put into HashMap
+			}
+		}
+	}
 
 	// is called from extension point
 	public FADataSource() {
@@ -16,22 +54,14 @@ public class FADataSource extends DataSource {
 	/** {@inheritDoc} */
 	@Override
 	protected ChannelHandler createChannel(String channelName) {
-		// TODO Need to find a way to find out the url(Add to the ChannelName?)
-		String[] urls = new String[] { "fads://fa-archiver",
-				"fads://fa-archiver:8889" };
-		for (String url : urls) {
-			try {
-				return new FAChannelHandler(channelName, url);
-			} catch (FADataNotAvailableException | IOException e) {
-				continue;
-			}
-		}
+		if (availablePVs.containsKey(prefix + channelName))
+			return new FAChannelHandler(channelName, availablePVs.get(prefix
+					+ channelName), mappingNameToBPMs.get(prefix + channelName));
 		return null;
 	}
 
 	/**
 	 * Returns the lookup name to use to find the channel handler in the cache.
-	 * It removes the coordinate
 	 */
 	@Override
 	protected String channelHandlerLookupName(String channelName) {

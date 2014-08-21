@@ -28,7 +28,7 @@ public class FAValueIterator implements ValueIterator {
 	 */
 	@Override
 	public boolean hasNext() {
-		return (values != null && index + 1 < values.length);
+		return (values != null && index < values.length);
 	}
 
 	/**

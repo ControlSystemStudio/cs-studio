@@ -18,10 +18,10 @@ import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 
 /**
- * Class with common methods for communicating with the fast archiver
+ * Class with common methods for communicating with the fast archiver and
+ * decoding data streams.
  * 
  * @author Friederike Johlinger
- *
  */
 
 public abstract class FARequest {
@@ -30,6 +30,7 @@ public abstract class FARequest {
 	protected static final String CHAR_ENCODING = "US-ASCII";
 	protected String host;
 	protected int port;
+	protected String url;
 
 	/**
 	 * @param url
@@ -39,6 +40,7 @@ public abstract class FARequest {
 	 *             if the URL does not have the right format
 	 */
 	public FARequest(String url) throws FADataNotAvailableException {
+		this.url = url;
 		Pattern pattern = Pattern.compile("fads://([A-Za-z0-9-]+)(:[0-9]+)?");
 		Matcher matcher = pattern.matcher(url);
 		if (matcher.matches()) {
@@ -102,7 +104,7 @@ public abstract class FARequest {
 		return allData;
 	}
 
-	// Data stream decoding methods
+	// DATA STREAM DECODING METHODS
 	/**
 	 * Decodes the raw data from the Archive from a ByteBuffer into an array of
 	 * ArchiveVNumbers
@@ -121,13 +123,14 @@ public abstract class FARequest {
 	 */
 	protected static ArchiveVNumber[] decodeDataUndec(ByteBuffer bb,
 			int sampleCount, int blockSize, int offset, int coordinate) {
+
 		ArchiveVNumber[] values = new ArchiveVNumber[(int) sampleCount];
 
 		int value;
 		double timestamp; // in microseconds
 		double duration;
 		Timestamp ts;
-		double timeInterval = 0.0; // for checking
+		double timeInterval = 0.0;
 
 		if (offset != 0) {
 			timestamp = (double) bb.getLong();
@@ -176,6 +179,8 @@ public abstract class FARequest {
 	 *            the offset (number of missing samples) in the first data block
 	 * @param coordinate
 	 *            the index (0 or 1) of the coordinate wanted
+	 * @param count
+	 *            the approximate decimation of the values
 	 * @return ArchiveVStatistics[] that can be used to create a FAValueIterator
 	 */
 	protected static ArchiveVStatistics[] decodeDataDec(ByteBuffer bb,
@@ -183,10 +188,6 @@ public abstract class FARequest {
 			int count) {
 
 		ArchiveVStatistics[] values = new ArchiveVStatistics[(int) sampleCount];
-
-		// System.out.
-		// printf("DecodeDataDec: \nsampleCount: %d, blockSize: %d, offset: %d,
-		// bufferLength: %d\n", sampleCount, blockSize, offset, bb.remaining());
 
 		double mean, min, max, std;
 		double timestamp; // in microseconds
@@ -243,7 +244,7 @@ public abstract class FARequest {
 
 	}
 
-	// Data stream decoding methods
+	// Not used, may be thrown out
 	/**
 	 * Decodes the raw data from the Archive from a ByteBuffer into an array of
 	 * ArchiveVNumbers
@@ -330,7 +331,6 @@ public abstract class FARequest {
 		return values;
 	}
 
-	// Data stream decoding methods
 	/**
 	 * Decodes the raw data from the Archive from a ByteBuffer into an array of
 	 * ArchiveVNumbers
@@ -347,13 +347,12 @@ public abstract class FARequest {
 	 *            the index (0 or 1) of the coordinate wanted
 	 * @param decimation
 	 *            the decimation required by the user
-	 * @return ArchiveVNumber[] that can be used to create a FAValueIterator
+	 * @return ArchiveVStatistics[] that can be used to create a FAValueIterator
 	 */
 	protected static ArchiveVStatistics[] decodeDataUndecToDec(ByteBuffer bb,
 			int sampleCount, int blockSize, int offset, int coordinate,
 			int decimation) {
-		
-		System.out.println("FAR: sampleCount: "+sampleCount);
+
 		// decode bytes
 		double[] values = new double[sampleCount];
 		double[] timestamps = new double[sampleCount];
@@ -361,7 +360,7 @@ public abstract class FARequest {
 		int value;
 		double timestamp; // in microseconds
 		double duration;
-		double timeInterval = 0.0; // for checking
+		double timeInterval = 0.0;
 
 		if (offset != 0) {
 			timestamp = (double) bb.getLong();
@@ -416,7 +415,15 @@ public abstract class FARequest {
 				decimatedValues[indexDec][3] = timestamps[i]
 						- (timestamps[i] - timestamps[i - decimation + 1]) / 2;
 				indexDec += 1;
+
 				sum = 0;
+				// in case of having looped over values[] completely
+				try {
+					min = values[i + 1];
+					max = values[i + 1];
+				} catch (ArrayIndexOutOfBoundsException e) {
+				}
+
 			}
 		}
 		if (sampleCount % decimation != 0) {
@@ -424,7 +431,7 @@ public abstract class FARequest {
 			decimatedValues[indexDec][1] = min;
 			decimatedValues[indexDec][2] = max;
 			decimatedValues[indexDec][3] = timestamps[sampleCount - 1]
-					- (timestamps[sampleCount - 1] - timestamps[sampleCount - 1
+					- (timestamps[sampleCount - 1] - timestamps[sampleCount
 							- (sampleCount % decimation)]) / 2;
 		}
 
