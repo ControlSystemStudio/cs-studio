@@ -50,6 +50,7 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * A re-written action button figure which can pass mouse event state to action listener.
@@ -128,7 +129,8 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 			protected void paintBorder(Graphics graphics) {
 				super.paintBorder(graphics);
 				if (ActionButtonFigure.this.hasFocus()) {
-					graphics.setForegroundColor(ColorConstants.lightBlue);
+					Color selection = Display.getCurrent().getSystemColor(SWT.COLOR_LIST_SELECTION);
+					graphics.setForegroundColor(selection);
 					graphics.setBackgroundColor(ColorConstants.white);
 
 					Rectangle area = getClientArea();
