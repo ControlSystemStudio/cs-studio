@@ -510,8 +510,6 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 					public void run() {
 						synchronized (PVWidgetEditpartDelegate.this) {
 							// Change the colours of all alarm sensitive components
-							if (isBorderAlarmSensitive)
-								editpart.setFigureBorder(editpart.calculateBorder());
 							if (isBackColorAlarmSensitive)
 								editpart.getFigure().setBackgroundColor(calculateBackColor());
 							if (isForeColorAlarmSensitive)
