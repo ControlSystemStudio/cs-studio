@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
@@ -522,7 +523,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 		scheduledFuture = ExecutionService
 				.getInstance()
 				.getScheduledExecutorService()
-				.scheduleAtFixedRate(pulsingTask, 100, 100,
+				.scheduleAtFixedRate(pulsingTask, PreferencesHelper.getGUIRefreshCycle(), PreferencesHelper.getGUIRefreshCycle(),
 						TimeUnit.MILLISECONDS);	
 	}	
 
@@ -595,11 +596,13 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 				if (isAlarmPulsing && 
 						(alarmSeverity == AlarmSeverity.MINOR || alarmSeverity == AlarmSeverity.MAJOR)) {					
 					double alpha = 0.3;
+					int period;
 					if (alarmSeverity == AlarmSeverity.MINOR) {
-						alpha += Math.abs(System.currentTimeMillis() % 3000 - 1500) / 3000.0;
-					} else if (alarmSeverity == AlarmSeverity.MAJOR) {
-						alpha += Math.abs(System.currentTimeMillis() % 1500 - 750) / 1500.0;
+						period = PreferencesHelper.getPulsingAlarmMinorPeriod();
+					} else {
+						period = PreferencesHelper.getPulsingAlarmMajorPeriod();
 					}
+					alpha += Math.abs(System.currentTimeMillis() % period - period / 2) / (double) period;
 					alarmColor = new RGB(
 							(int) (saveColor.getRed() * alpha + alarmColor.red * (1-alpha)),
 							(int) (saveColor.getGreen() * alpha + alarmColor.green * (1-alpha)),
