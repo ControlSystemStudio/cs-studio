@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.widgetActions;
 
 import java.io.FileNotFoundException;
-import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,6 +18,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -60,11 +60,10 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 				absolutePath = ResourceUtil.getFileOnSearchPath(getPath(), true);
 			}
 		}
-		if (absolutePath == null || !(absolutePath.toFile().exists()))
+		if (absolutePath == null || !ResourceUtil.isExsitingFile(absolutePath, true)) {
 			try {
 				throw new FileNotFoundException(
-						NLS.bind(
-								"The file {0} does not exist.",
+						NLS.bind("The file {0} does not exist.",
 								getPath().toString()));
 			} catch (FileNotFoundException e) {
 				MessageDialog.openError(Display.getDefault().getActiveShell(),
@@ -72,9 +71,8 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 				ConsoleService.getInstance().writeError(e.toString());
 				return;
 			}
-		
+		}
 		openOPI(absolutePath);
-		
 	}
 
 	abstract protected void openOPI(IPath absolutePath);
