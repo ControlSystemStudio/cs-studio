@@ -50,6 +50,7 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * A re-written action button figure which can pass mouse event state to action listener.
@@ -128,11 +129,12 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 			protected void paintBorder(Graphics graphics) {
 				super.paintBorder(graphics);
 				if (ActionButtonFigure.this.hasFocus()) {
-					graphics.setForegroundColor(ColorConstants.black);
+					Color selection = Display.getCurrent().getSystemColor(SWT.COLOR_LIST_SELECTION);
+					graphics.setForegroundColor(selection);
 					graphics.setBackgroundColor(ColorConstants.white);
 
 					Rectangle area = getClientArea();
-					graphics.drawFocus(area.x, area.y, area.width, area.height);
+					graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
 
 				}
 			}
@@ -347,6 +349,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 							grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
 					label.setIcon(grayImage);
 				}
+				calculateTextPosition();
 			}
 		};
 		if(path != null && !path.isEmpty()){
@@ -371,6 +374,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 					grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
 			label.setIcon(grayImage);
 		}
+		calculateTextPosition();
 	}
 
 	protected void setMousePressed(boolean mousePressed) {
@@ -431,7 +435,33 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 			label.setTextAlignment(alignments[alignment]);
 		}
 	}
-
+	
+	public void calculateTextPosition() {		
+		calculateTextPosition(getClientArea().width(), getClientArea().height());
+	}
+	
+	public void calculateTextPosition(int width, int height) {		
+		if (image != null) {
+			Dimension textDimension = TextUtilities.INSTANCE.getTextExtents(getText(), baseFont);
+			// Calculate available space in height and width
+			double hratio = ((double) height - image.getBounds().height) / textDimension.height;
+			double wratio = ((double) width - image.getBounds().width) / textDimension.width;
+			// Put the label where we have the most space (highest ratio)
+			if (wratio > hratio) {				
+				// Space for text on the right of the icon
+				label.setTextPlacement(PositionConstants.EAST);
+				label.setTextAlignment(PositionConstants.LEFT);	
+			} else {
+				// Text goes under the icon
+				label.setTextPlacement(PositionConstants.SOUTH);
+				label.setTextAlignment(PositionConstants.CENTER);	
+			}
+		} else {
+			// Center text
+			label.setTextAlignment(PositionConstants.CENTER);
+		}
+	}
+	
 	public void setToggled(boolean toggled) {
 		this.toggled = toggled;
 		setSelected(toggled);
@@ -444,6 +474,13 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	public void setToggleStyle(final boolean style){
 		  toggleStyle = style;
 
+	}
+	
+	// Need this as label has repaint bug so it doesn't always change colour when its parent does
+	public void setBackgroundColor(Color bg) {
+		label.setBackgroundColor(bg);
+		super.setBackgroundColor(bg);
+		repaint();
 	}
 
 	public BeanInfo getBeanInfo() throws IntrospectionException {
@@ -604,7 +641,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	 */
 	ButtonScheme BUTTON = new ButtonScheme(
 			new Color[] {buttonLightest},
-			DARKEST_DARKER
+			new Color[] {buttonDarker}
 	);
 	/**
 	 * Constructs a ButtonBorder with a predefined button scheme set as its default.
@@ -731,7 +768,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 		
 		@Override
 		public void mouseEntered(MouseEvent me) {
-				Color backColor = label.getBackgroundColor();
+				Color backColor = getBackgroundColor();
 				RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
 						new RGB(255, 255, 255), 0.5);
 				label.setBackgroundColor(CustomMediaFactory.getInstance()
