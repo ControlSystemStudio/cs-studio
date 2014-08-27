@@ -228,13 +228,13 @@ public class FAArchivedDataRequest extends FARequest {
 	 * @param end
 	 *            Timestamp of last sample
 	 * @param count
-	 *            the approximately maximum number of samples returned via the
+	 *            the maximum number of samples returned via the
 	 *            ValueIterator
 	 * @return a value of the enum Decimation
 	 */
 	private Decimation calculateDecimation(Timestamp start, Timestamp end,
 			int count) {
-		int maxNoOfSamples = (int) (count * 1.1); // small margin
+		int maxNoOfSamples = count;
 		// calculate total timeInterval requested
 		long seconds = (start.durationBetween(end)).getSec();
 		if (seconds * sampleFrequency <= maxNoOfSamples)

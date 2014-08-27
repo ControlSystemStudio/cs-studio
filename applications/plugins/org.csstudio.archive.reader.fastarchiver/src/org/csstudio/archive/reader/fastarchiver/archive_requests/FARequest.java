@@ -68,12 +68,8 @@ public abstract class FARequest {
 		OutputStream outToServer = socket.getOutputStream();
 		InputStream inFromServer = socket.getInputStream();
 
-		try {
-			outToServer.write(request.getBytes(CHAR_ENCODING));
-			outToServer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		outToServer.write(request.getBytes(CHAR_ENCODING));
+		outToServer.flush();
 
 		// get data out of archive one buffer at a time. Append it to a list of
 		// buffers.
@@ -104,6 +100,7 @@ public abstract class FARequest {
 		return allData;
 	}
 
+
 	// DATA STREAM DECODING METHODS
 	/**
 	 * Decodes the raw data from the Archive from a ByteBuffer into an array of
@@ -120,9 +117,15 @@ public abstract class FARequest {
 	 * @param coordinate
 	 *            the index (0 or 1) of the coordinate wanted
 	 * @return ArchiveVNumber[] that can be used to create a FAValueIterator
+	 * @throws FADataNotAvailableException when coordinate is not 0 or 1
 	 */
 	protected static ArchiveVNumber[] decodeDataUndec(ByteBuffer bb,
-			int sampleCount, int blockSize, int offset, int coordinate) {
+			int sampleCount, int blockSize, int offset, int coordinate) throws FADataNotAvailableException {
+
+		if (!(coordinate == 0 || coordinate == 1))
+			throw new FADataNotAvailableException(
+					"Coordinate mapped to name is invalid");
+
 
 		ArchiveVNumber[] values = new ArchiveVNumber[(int) sampleCount];
 
@@ -182,10 +185,16 @@ public abstract class FARequest {
 	 * @param count
 	 *            the approximate decimation of the values
 	 * @return ArchiveVStatistics[] that can be used to create a FAValueIterator
+	 * @throws FADataNotAvailableException when coordinate is not 0 or 1
 	 */
 	protected static ArchiveVStatistics[] decodeDataDec(ByteBuffer bb,
 			int sampleCount, int blockSize, int offset, int coordinate,
-			int count) {
+			int count) throws FADataNotAvailableException {
+
+		if (!(coordinate == 0 || coordinate == 1))
+			throw new FADataNotAvailableException(
+					"Coordinate mapped to name is invalid");
+
 
 		ArchiveVStatistics[] values = new ArchiveVStatistics[(int) sampleCount];
 
@@ -244,92 +253,6 @@ public abstract class FARequest {
 
 	}
 
-	// Not used, may be thrown out
-	/**
-	 * Decodes the raw data from the Archive from a ByteBuffer into an array of
-	 * ArchiveVNumbers
-	 * 
-	 * @param bb
-	 *            the ByteBuffer with the raw data
-	 * @param sampleCount
-	 *            the total number of samples returned
-	 * @param blockSize
-	 *            the general number of samples per data block
-	 * @param offset
-	 *            the offset (number of missing samples) in the first data block
-	 * @param coordinate
-	 *            the index (0 or 1) of the coordinate wanted
-	 * @param decimation
-	 *            the decimation required by the user
-	 * @return ArchiveVNumber[] that can be used to create a FAValueIterator
-	 */
-	protected static ArchiveVNumber[] decodeDataUndecToDecMean(ByteBuffer bb,
-			int sampleCount, int blockSize, int offset, int coordinate,
-			int decimation) {
-		int newSampleCount = sampleCount / decimation;
-		if (sampleCount % decimation != 0)
-			newSampleCount++;
-		ArchiveVNumber[] values = new ArchiveVNumber[newSampleCount];
-
-		double timestamp = 0.0; // in microseconds
-		double duration = 0.0;
-		double timeInterval = 0.0;
-		Timestamp ts;
-
-		int newIndex = 0;
-		int sum = 0;
-		double valueMean;
-		double timestampLastMean = 0; // otherwise complains about not
-										// initialised
-		double timeIntervalLastMean = 0;
-
-		if (offset != 0) {
-			timestamp = (double) bb.getLong();
-			duration = (double) bb.getInt();
-			timeInterval = duration / blockSize;
-			timestamp += offset * timeInterval;
-		}
-		for (int oldIndex = 0; oldIndex < sampleCount; oldIndex += 1) {
-			if ((oldIndex + offset) % blockSize == 0) {
-				timestamp = (double) bb.getLong();
-				duration = (double) bb.getInt();
-				timeInterval = duration / blockSize;
-			}
-			if (coordinate == 0) {
-				sum += bb.getInt();
-				bb.getInt(); // dismiss other coordinate
-			} else {
-				bb.getInt();
-				sum += bb.getInt();
-			}
-
-			if ((oldIndex + 1) % decimation == 0) {
-				valueMean = sum / 1000.0 / decimation; // micrometers
-				if (newIndex == 0)
-					timestampLastMean = timestamp - timeIntervalLastMean;
-				timestampLastMean += timeIntervalLastMean / 2;
-				ts = timeStampFromMicroS((long) timestampLastMean);
-				values[newIndex] = new ArchiveVNumber(ts, AlarmSeverity.NONE,
-						"status", null, valueMean);
-				newIndex++;
-				timeIntervalLastMean = 0;
-				timestampLastMean = timestamp;
-				sum = 0;
-			}
-			timeIntervalLastMean += timeInterval;
-			timestamp += timeInterval;
-		}
-		// take average of last sum
-		if (sampleCount % decimation != 0) {
-			valueMean = sum / 1000.0 / (sampleCount % decimation);
-			timestampLastMean += timeIntervalLastMean / 2;
-			ts = timeStampFromMicroS((long) timestampLastMean);
-			values[newIndex] = new ArchiveVNumber(ts, AlarmSeverity.NONE,
-					"status", null, valueMean);
-		}
-
-		return values;
-	}
 
 	/**
 	 * Decodes the raw data from the Archive from a ByteBuffer into an array of
@@ -348,10 +271,16 @@ public abstract class FARequest {
 	 * @param decimation
 	 *            the decimation required by the user
 	 * @return ArchiveVStatistics[] that can be used to create a FAValueIterator
+	 * @throws FADataNotAvailableException
+	 *             when coordinate is not 0 or 1
 	 */
 	protected static ArchiveVStatistics[] decodeDataUndecToDec(ByteBuffer bb,
 			int sampleCount, int blockSize, int offset, int coordinate,
-			int decimation) {
+			int decimation) throws FADataNotAvailableException {
+
+		if (!(coordinate == 0 || coordinate == 1))
+			throw new FADataNotAvailableException(
+					"Coordinate mapped to name is invalid");
 
 		// decode bytes
 		double[] values = new double[sampleCount];
@@ -477,4 +406,5 @@ public abstract class FARequest {
 		int nanoseconds = (int) (timeInMicroS % 1000000) * 1000;
 		return Timestamp.of(seconds, nanoseconds);
 	}
+
 }

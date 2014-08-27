@@ -40,7 +40,9 @@ public class FAInfoRequest extends FARequest {
 	 *             specified
 	 */
 	public HashMap<String, int[]> fetchMapping() throws IOException {
-		String[] allBPMs = getAllBPMs();
+		byte[] buffer = fetchData("CL\n");
+		String[] allBPMs = new String(buffer).split("\n");
+		
 		HashMap<String, int[]> bpmMapping = new HashMap<String, int[]>();
 
 		// split descriptions
@@ -74,23 +76,9 @@ public class FAInfoRequest extends FARequest {
 				}
 			}
 		}
-
 		return bpmMapping;
 	}
 	
-	/**
-	 * Creates a list of all BPMs in the archiver, as returned by the archiver
-	 * 
-	 * @return String[] of all names
-	 * @throws IOException
-	 *             when no connection can be made with the host (and port)
-	 *             specified
-	 */
-	private String[] getAllBPMs() throws IOException {
-		byte[] buffer = fetchData("CL\n");
-		return new String(buffer).split("\n");
-	}
-
 	/**
 	 * Sends a request to the server to get the name of the archive
 	 * @return name as a String
