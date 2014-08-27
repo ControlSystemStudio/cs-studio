@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 
 /**
  * Utility for request related functions.
