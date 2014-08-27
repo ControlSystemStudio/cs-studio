@@ -10,8 +10,8 @@ import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableExc
 import org.csstudio.archive.vtype.ArchiveVDisplayType;
 
 /**
- * Class to get new values for an item in the Fast Archiver. Right now using the
- * decimated data stream.
+ * Class to get new values for an item in the Fast Archiver. Uses the
+ * undecimated data stream. Stores the data for approx. 3 seconds between fetches. 
  * 
  * @author Friederike Johlinger
  *
@@ -25,8 +25,9 @@ public class FALiveDataRequest extends FARequest {
 	private int coordinate;
 	private int noNewValuesOccurence = 0;
 	private int reconnectAfter = 10;
-	boolean closed = true;
-	
+	private int buffersize = 32768;
+	private boolean closed = true;
+
 	private BufferedInputStream inFromServer;
 
 	/**
@@ -38,14 +39,15 @@ public class FALiveDataRequest extends FARequest {
 	 *            PV for which data is fetched
 	 * @param bpm
 	 *            number of the BPM in the archive
-	 * @param coordinate either 0 (X-coordinate) or 1 (Y-coordinate)
+	 * @param coordinate
+	 *            either 0 (X-coordinate) or 1 (Y-coordinate)
 	 * @throws FADataNotAvailableException
 	 *             if the URL does not have the right format
 	 * @throws IOException
 	 *             when the connection to the Fast Archiver encounters a problem
 	 */
-	public FALiveDataRequest(String url, int bpm, int coordinate) throws IOException,
-			FADataNotAvailableException {
+	public FALiveDataRequest(String url, int bpm, int coordinate)
+			throws IOException, FADataNotAvailableException {
 		super(url);
 		this.bpm = bpm;
 		this.coordinate = coordinate;
@@ -55,31 +57,35 @@ public class FALiveDataRequest extends FARequest {
 		String request = String.format("S%dTE\n", bpm);
 		socket.getOutputStream().write(request.getBytes(CHAR_ENCODING));
 		socket.getOutputStream().flush();
-		inFromServer = new BufferedInputStream(socket.getInputStream(), 1000000);
+		inFromServer = new BufferedInputStream(socket.getInputStream(), buffersize);
 		closed = false;
 
 		decodeInitialData();
 	}
 
 	/**
-	 * reconnectAfter is the number of times the archiver tries to fetch data, without 
-	 * actually returning new values, before trying to reconnect to the archiver.
+	 * reconnectAfter is the number of times the archiver tries to fetch data,
+	 * without actually returning new values, before trying to reconnect to the
+	 * archiver.
+	 * 
 	 * @return the current value for reconnectAfter
 	 */
-	public int getReconnectAfter(){
+	public int getReconnectAfter() {
 		return reconnectAfter;
 	}
-	
+
 	/**
-	 * reconnectAfter is the number of times the archiver tries to fetch data, without 
-	 * actually returning new values, before trying to reconnect to the archiver.
-	 * Default value is 10, should be higher for more frequent requests.
+	 * reconnectAfter is the number of times the archiver tries to fetch data,
+	 * without actually returning new values, before trying to reconnect to the
+	 * archiver. Default value is 10, should be higher for more frequent
+	 * requests.
+	 * 
 	 * @param reconnectAfter
 	 */
-	public synchronized void setReconnectAfter(int reconnectAfter){
+	public synchronized void setReconnectAfter(int reconnectAfter) {
 		this.reconnectAfter = reconnectAfter;
 	}
-	
+
 	/**
 	 * Used to get the initial data from the live data stream
 	 * 
@@ -93,7 +99,7 @@ public class FALiveDataRequest extends FARequest {
 		/* Check if first byte reply is zero -> data is sent */
 		inFromServer.mark(2);
 		byte firstChar = (byte) inFromServer.read();
-		// Otherwise an error message is sent 
+		// Otherwise an error message is sent
 		if (firstChar != '\0') {
 			inFromServer.reset();
 			int available = inFromServer.available();
@@ -114,26 +120,30 @@ public class FALiveDataRequest extends FARequest {
 	}
 
 	/**
+	 * @param decimation the approximate number the samples are reduced by
 	 * @return New values from the live stream
 	 * @throws FADataNotAvailableException
-	 *             when no new values are available
+	 *             when the socket has been closed or an invalid coordinate has
+	 *             been specified during the construction
 	 * @throws IOException
 	 *             when the fetch encounters a problem with the socket
 	 */
-	public synchronized ArchiveVDisplayType[] fetchNewValues(int decimation) throws IOException, FADataNotAvailableException{
-		if(closed) throw new FADataNotAvailableException("Socket has been closed");
+	public synchronized ArchiveVDisplayType[] fetchNewValues(int decimation)
+			throws IOException, FADataNotAvailableException {
+		if (closed)
+			throw new FADataNotAvailableException("Socket has been closed");
 		// Read out from BufferedInputStream into ByteBuffer
 		int bytesToRead = calcNumBytesToRead();
-		System.out.println(bytesToRead);
-		if (bytesToRead == 0){
+		if (bytesToRead == 0) {
 			noNewValuesOccurence++;
-			//check whether  we have gotten no new values more than "reconnectAfter" times
-			if(noNewValuesOccurence >= reconnectAfter){
-				reconnect();				
+			// check whether we have gotten no new values more than
+			// "reconnectAfter" times
+			if (noNewValuesOccurence >= reconnectAfter) {
+				reconnect();
 			}
 			return new ArchiveVDisplayType[0];
 		}
-			
+
 		byte[] newData = new byte[bytesToRead];
 		inFromServer.read(newData);
 		ByteBuffer bb = ByteBuffer.wrap(newData);
@@ -141,34 +151,33 @@ public class FALiveDataRequest extends FARequest {
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 		// Process ByteBuffer and return new values
 		ArchiveVDisplayType[] newValues = decodeDataUndecToDec(bb,
-				getSampleCount(bytesToRead), blockSize, offset,
-				coordinate, decimation);
-		
+				getSampleCount(bytesToRead), blockSize, offset, coordinate,
+				decimation);
+
 		offset = 0;
 		noNewValuesOccurence = 0;
 		return newValues;
 	}
 
-	private void reconnect() throws IOException{		
+	private void reconnect() throws IOException {
 		// close old socket and inputStream
 		inFromServer.close();
 		socket.close();
-		
+
 		// Make a connection to the Fast Archiver
 		socket = new Socket(host, port);
 		String request = String.format("S%dTE\n", bpm);
 		socket.getOutputStream().write(request.getBytes(CHAR_ENCODING));
 		socket.getOutputStream().flush();
-		inFromServer = new BufferedInputStream(socket.getInputStream(), 1000000);
+		inFromServer = new BufferedInputStream(socket.getInputStream(), buffersize);
 
-		try{
+		try {
 			decodeInitialData();
-		} catch (FADataNotAvailableException e){
+		} catch (FADataNotAvailableException e) {
 			return; // try connecting again on next call of fetchNewValues(int)
 		}
-		
+
 		noNewValuesOccurence = 0;
-		System.out.println("Reconnecting");
 	}
 
 	/**
@@ -206,7 +215,6 @@ public class FALiveDataRequest extends FARequest {
 	private int calcNumBytesToRead() throws IOException {
 		int numOfBytes;
 		numOfBytes = inFromServer.available();
-		System.out.println("number of Bytes available: "+numOfBytes);
 		int lengthFirstBlock = 0;
 		if (offset != 0)
 			lengthFirstBlock = 12 + (blockSize - offset) * 8;
@@ -221,7 +229,8 @@ public class FALiveDataRequest extends FARequest {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(this.getClass() + "\n");
-		buffer.append("URL: " + url + ", BPM number: " + bpm + ", coordinate: "+coordinate);
+		buffer.append("URL: " + url + ", BPM number: " + bpm + ", coordinate: "
+				+ coordinate);
 		return buffer.toString();
 	}
 

@@ -23,18 +23,23 @@ public class FADataSource extends DataSource {
 	static {
 		availablePVs = new HashMap<String, String>();
 		mappingNameToBPMs = new HashMap<String, int[]>();
-		ArchiveServerURL[] archiveURLs = Preferences.getArchiveServerURLs();
 		List<String> urls = new ArrayList<String>();
-		for (ArchiveServerURL archiveURL : archiveURLs) {
-			String url = archiveURL.getURL();
-			String prefix = url.substring(0, url.indexOf(':'));
-			if (prefix.equals("fads")) {
-				urls.add(url);
+		try {
+			ArchiveServerURL[] archiveURLs = Preferences.getArchiveServerURLs();
+			for (ArchiveServerURL archiveURL : archiveURLs) {
+				String url = archiveURL.getURL();
+				String prefix = url.substring(0, url.indexOf(':'));
+				if (prefix.equals("fads"))
+					urls.add(url);
 			}
+		} catch(NullPointerException e) {
+		} finally {
+			if (urls.size() == 0)
+				urls.add(defaultUrl);
 		}
-		if(urls.size()==0) urls.add(defaultUrl);
+		
 		HashMap<String, int[]> mapping;
-		for (String url:urls){			
+		for (String url : urls) {
 			try {
 				mapping = new FAInfoRequest(url).fetchMapping();
 				mappingNameToBPMs.putAll(mapping);

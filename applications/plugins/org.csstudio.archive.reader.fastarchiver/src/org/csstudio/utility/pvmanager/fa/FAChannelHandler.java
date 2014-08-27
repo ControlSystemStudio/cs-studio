@@ -46,9 +46,6 @@ public class FAChannelHandler extends
 						.fetchNewValues(1000);
 				for (ArchiveVDisplayType newValue : newValues) {
 					processMessage(newValue);
-					// System.out.println(newValue.getTimestamp().toDate()
-					// .toString());
-					// System.out.println(newValue.getTimestamp().getNanoSec());
 				}
 			} catch (Exception ex) {
 				log.log(Level.WARNING,
