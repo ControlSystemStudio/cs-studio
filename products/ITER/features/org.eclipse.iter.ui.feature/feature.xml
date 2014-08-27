@@ -88,7 +88,7 @@ of the distribution package.
       <import plugin="org.eclipse.wst.validation"/>
       <import plugin="org.eclipse.wst.validation.ui"/>
       <import plugin="org.apache.jasper.glassfish"/>
-      <import plugin="org.w3c.dom.smil"   version="1.0.0" match="compatible"/>
+      <import plugin="org.w3c.dom.smil"/>
    </requires>
 
    <plugin
@@ -646,7 +646,7 @@ of the distribution package.
          id="org.w3c.dom.smil"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v200806040011"
          unpack="false"/>
 
 </feature>
