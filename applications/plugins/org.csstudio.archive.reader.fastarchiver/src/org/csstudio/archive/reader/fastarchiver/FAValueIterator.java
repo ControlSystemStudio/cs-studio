@@ -15,6 +15,9 @@ public class FAValueIterator implements ValueIterator {
 	private ArchiveVDisplayType[] values;
 	private int index;
 
+	/**
+	 * @param values, the array to iterate over.
+	 */
 	public FAValueIterator(ArchiveVDisplayType[] values) {
 		this.values = values;
 		index = 0;
@@ -45,6 +48,18 @@ public class FAValueIterator implements ValueIterator {
 	@Override
 	public void close() {
 		values = null;
+	}
+
+	/**
+	 * To be used for testing
+	 * 
+	 * @return the number of remaining elements in the iterator, -1 if iterator
+	 *         is closed.
+	 */
+	public int remaining() {
+		if (values == null)
+			return -1;
+		return values.length - index;
 	}
 
 }

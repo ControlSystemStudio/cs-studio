@@ -1,7 +1,11 @@
 package org.csstudio.archive.reader.fastarchiver;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveReaderFactory;
+import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableException;
 
 /**
  * The plugin.xml registers this factory for ArchiveReaders when the URL prefix
@@ -10,16 +14,19 @@ import org.csstudio.archive.reader.ArchiveReaderFactory;
  * @author Friederike Johlinger
  */
 public class FastArchiveReaderFactory implements ArchiveReaderFactory {
-	//private static int createCount = 0;
 
+	private static HashMap<String, ArchiveReader> archivers = new HashMap<String, ArchiveReader>();
+		
 	/**
 	 * {@inheritDoc}
+	 * @throws FADataNotAvailableException 
+	 * @throws IOException 
 	 */
 	@Override
-	public ArchiveReader getArchiveReader(String url) throws Exception {
-		//System.out.println("FastArchiveReader number "+createCount);
-		//createCount ++;
-		return new FastArchiveReader(url);
+	public ArchiveReader getArchiveReader(String url) throws IOException, FADataNotAvailableException {
+		if (!archivers.containsKey(url)) 
+			archivers.put(url, new FastArchiveReader(url));
+		return archivers.get(url);
 	}
 
 }
