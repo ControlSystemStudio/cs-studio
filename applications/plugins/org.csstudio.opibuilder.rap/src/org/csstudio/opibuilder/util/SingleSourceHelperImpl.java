@@ -23,9 +23,9 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.widgets.JSExecutor;
-import org.eclipse.rwt.widgets.ExternalBrowser;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.widgets.ExternalBrowser;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
@@ -126,7 +126,10 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
 			
 		String code = "document.getElementById(\"dummy\").innerHTML=\"<embed src=\\\""+ //$NON-NLS-1$
 				absolutePath + "\\\" hidden=\\\"true\\\" autostart=\\\"true\\\" loop=\\\"false\\\" />\""; //$NON-NLS-1$
-		JSExecutor.executeJS(code);
+		JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
+		if( executor != null ) {
+		  executor.execute( code );
+		}
 	}
 
 	@Override

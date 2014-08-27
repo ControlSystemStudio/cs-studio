@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="cs-studio" sequenceNumber="61">
+<?pde version="3.8"?><target name="cs-studio" sequenceNumber="62">
 <locations>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jdt.source.feature.group" version="3.9.2.v20140221-1700"/>
-<unit id="org.eclipse.test.feature.group" version="3.6.0.v20140203-1326"/>
-<unit id="org.eclipse.pde.source.feature.group" version="3.9.1.v20140221-1700"/>
-<unit id="org.eclipse.platform.sdk" version="4.3.2.M20140221-1700"/>
-<unit id="org.eclipse.rcp.source.feature.group" version="4.3.2.v20140221-1700"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.9.0.v20140221-1852"/>
-<unit id="org.eclipse.sdk.ide" version="4.3.2.M20140221-1700"/>
-<unit id="org.eclipse.rcp.feature.group" version="4.3.2.v20140221-1700"/>
-<unit id="org.eclipse.jdt.feature.group" version="3.9.2.v20140221-1700"/>
-<unit id="org.eclipse.sdk.tests.feature.group" version="4.3.0.v20140221-2329"/>
-<unit id="org.eclipse.pde.feature.group" version="3.9.1.v20140221-1700"/>
-<unit id="org.eclipse.platform.ide" version="4.3.2.M20140221-1700"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.3"/>
-</location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.csstudio.utility.pvmanager.vtype" version="4.0.0.20140731145754"/>
 <unit id="org.csstudio.utility.pvmanager.graphene" version="4.0.0.20140731145757"/>
@@ -555,6 +540,25 @@
 <unit id="org.eclipse.rap.runtime.requirements.feature.group" version="1.5.2.20130205-2024"/>
 <unit id="org.eclipse.rap.runtime.feature.group" version="1.5.2.20130205-2024"/>
 <repository location="http://download.eclipse.org/rt/rap/1.5/runtime"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jdt.source.feature.group" version="3.9.2.v20140221-1700"/>
+<unit id="org.eclipse.pde.source.feature.group" version="3.9.1.v20140221-1700"/>
+<unit id="org.eclipse.platform.sdk" version="4.3.2.M20140221-1700"/>
+<unit id="org.eclipse.rcp.feature.group" version="4.3.2.v20140221-1700"/>
+<unit id="org.eclipse.sdk.tests.feature.group" version="4.3.0.v20140221-2329"/>
+<unit id="org.eclipse.pde.feature.group" version="3.9.1.v20140221-1700"/>
+<unit id="org.eclipse.platform.ide" version="4.3.2.M20140221-1700"/>
+<unit id="org.eclipse.cvs.source.feature.group" version="1.4.0.v20140221-1700"/>
+<unit id="org.eclipse.test.feature.group" version="3.6.0.v20140203-1326"/>
+<unit id="org.eclipse.rcp.source.feature.group" version="4.3.2.v20140221-1700"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.9.0.v20140221-1852"/>
+<unit id="org.eclipse.pde.api.tools.ee.feature.feature.group" version="1.0.0.v20130327-1631"/>
+<unit id="org.eclipse.sdk.ide" version="4.3.2.M20140221-1700"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.9.2.v20140221-1700"/>
+<unit id="org.eclipse.releng.tools.feature.group" version="3.5.0.v20140203-1326"/>
+<unit id="org.eclipse.cvs.feature.group" version="1.4.0.v20140221-1700"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.3"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>

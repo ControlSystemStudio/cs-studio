@@ -18,7 +18,7 @@ import org.csstudio.rap.core.security.SecurityService;
 import org.csstudio.webopi.WebOPIConstants;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.widgets.Display;
 
 /**
