@@ -42,6 +42,8 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.draw2d.TextUtilities;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
