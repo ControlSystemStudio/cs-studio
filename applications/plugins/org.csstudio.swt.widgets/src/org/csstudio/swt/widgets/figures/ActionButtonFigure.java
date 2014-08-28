@@ -326,6 +326,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	@Override
 	public void setFont(Font f) {
 		super.setFont(f);
+		calculateTextPosition();
 		label.revalidate();
 	}
 

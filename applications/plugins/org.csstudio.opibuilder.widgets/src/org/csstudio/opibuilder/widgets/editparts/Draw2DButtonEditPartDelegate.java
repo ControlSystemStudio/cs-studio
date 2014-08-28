@@ -111,11 +111,11 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 					final Object newValue, final IFigure refreshableFigure) {
 				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
 				figure.setText(newValue.toString());
+				figure.calculateTextPosition();
 				return true;
 			}
 		};
 		editpart.setPropertyChangeHandler(ActionButtonModel.PROP_TEXT, textHandler);
-
 
 		//image
 		IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
@@ -137,7 +137,8 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				figure.calculateTextPosition((Integer) newValue, figure.getClientArea().height());
+				Integer height = (Integer) editpart.getPropertyValue(ActionButtonModel.PROP_HEIGHT);
+				figure.calculateTextPosition((Integer) newValue, height);
 				return true;
 			}
 		};
@@ -148,7 +149,8 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				figure.calculateTextPosition(figure.getClientArea().width(), (Integer) newValue);
+				Integer width = (Integer) editpart.getPropertyValue(ActionButtonModel.PROP_WIDTH);
+				figure.calculateTextPosition(width, (Integer) newValue);
 				return true;
 			}
 		};
