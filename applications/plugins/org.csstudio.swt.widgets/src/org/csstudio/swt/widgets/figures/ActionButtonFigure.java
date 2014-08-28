@@ -326,6 +326,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	@Override
 	public void setFont(Font f) {
 		super.setFont(f);
+		calculateTextPosition();
 		label.revalidate();
 	}
 
@@ -444,7 +445,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	
 	public void calculateTextPosition(int width, int height) {		
 		if (image != null) {
-			Dimension textDimension = TextUtilities.INSTANCE.getTextExtents(getText(), FONT);
+			Dimension textDimension = TextUtilities.INSTANCE.getTextExtents(getText(), getFont());
 			// Calculate available space in height and width
 			double hratio = ((double) height - image.getBounds().height) / textDimension.height;
 			double wratio = ((double) width - image.getBounds().width) / textDimension.width;
