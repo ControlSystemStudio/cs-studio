@@ -3,7 +3,7 @@ package org.csstudio.archive.reader.fastarchiver.exceptions;
 /**
  * Thrown when a data fetch from the archiver failed for some reason.
  * 
- * @author Friederike Johlinger
+ * @author FJohlinger
  *
  */
 public class FADataNotAvailableException extends Exception {

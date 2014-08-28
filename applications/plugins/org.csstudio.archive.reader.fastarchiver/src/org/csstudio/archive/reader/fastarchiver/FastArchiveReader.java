@@ -1,7 +1,6 @@
 package org.csstudio.archive.reader.fastarchiver;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +17,9 @@ import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableExc
 import org.epics.util.time.Timestamp;
 
 /**
- * Archive Reader to fetch data from the Fast Archiver at DLS. 
+ * Archive Reader to fetch data from the FA Archiver.
  * 
- * @author Friederike Johlinger
+ * @author FJohlinger
  */
 public class FastArchiveReader implements ArchiveReader {
 
@@ -33,9 +32,11 @@ public class FastArchiveReader implements ArchiveReader {
 	 * Connect to the Fast Archiver
 	 * 
 	 * @param url
-	 *            String should start with "fads://"
-	 * @throws IOException
+	 *            String must start with "fads://" followed by the host and
+	 *            optionally a colon and a port. Default port is 8888.
+	 * @throws IOException if the connection to the archiver fails
 	 * @throws FADataNotAvailableException
+	 *             for an invalid URL
 	 */
 	public FastArchiveReader(String url) throws IOException,
 			FADataNotAvailableException {
@@ -44,7 +45,6 @@ public class FastArchiveReader implements ArchiveReader {
 		this.mapping = new FAInfoRequest(url).fetchMapping();
 	}
 
-	/* FROM ARCHIVEREADER */
 	/**
 	 * {@inheritDoc}
 	 */
@@ -84,9 +84,6 @@ public class FastArchiveReader implements ArchiveReader {
 
 	/**
 	 * {@inheritDoc}
-	 * 
-	 * @throws IOException
-	 * @throws UnknownHostException
 	 */
 	@Override
 	public ArchiveInfo[] getArchiveInfos() {
@@ -151,7 +148,7 @@ public class FastArchiveReader implements ArchiveReader {
 	/** {@inheritDoc} */
 	@Override
 	public void cancel() {
-		// Does nothing
+		// NOP
 	}
 
 	/** {@inheritDoc} */
@@ -161,7 +158,6 @@ public class FastArchiveReader implements ArchiveReader {
 		// close.
 	}
 
-	/* OTHER METHODS */
 	/**
 	 * Creates a brief description of the ArchiverReader
 	 * 

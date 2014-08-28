@@ -17,10 +17,10 @@ import org.epics.pvmanager.MultiplexedChannelHandler;
 import org.epics.pvmanager.ValueCache;
 
 /**
- * Extends a multiplexedChannelHandler, using values from the DLS Fast Archiver
+ * Extends the multiplexedChannelHandler, using values from the FA Archiver
  * and creating a FADataSourceTypeAdapter to handle these.
  * 
- * @author Friederike Johlinger
+ * @author FJohlinger
  *
  */
 public class FAChannelHandler extends
@@ -106,7 +106,9 @@ public class FAChannelHandler extends
 	}
 
 	/**
-	 * {@inheritDoc} Returns a FADataSourceTypeAdapter
+	 * {@inheritDoc} 
+	 * 
+	 * Returns a FADataSourceTypeAdapter
 	 */
 	@Override
 	protected DataSourceTypeAdapter<FALiveDataRequest, ArchiveVDisplayType> findTypeAdapter(

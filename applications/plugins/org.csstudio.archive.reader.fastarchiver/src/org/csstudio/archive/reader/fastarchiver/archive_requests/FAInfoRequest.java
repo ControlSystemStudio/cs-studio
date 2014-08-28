@@ -10,15 +10,15 @@ import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableExc
 /**
  * Class to communicate with Fast Archiver about non-data requests.
  * 
- * @author Friederike Johlinger
+ * @author FJohlinger
  */
 
 public class FAInfoRequest extends FARequest {
-	/** To determine the dataSource for the PVManager */
+	
+	/** Prefix to determine right DataSource in the PVManager */
 	private String prefix = "fa://";
 
 	/**
-	 * 
 	 * @param url 
 	 * 			  needs to start with "fads://" followed by the host name and
 	 *            optionally a colon followed by a port number (default 8888)
@@ -30,14 +30,13 @@ public class FAInfoRequest extends FARequest {
 	}
 
 	/**
-	 * Creates a Hashmap of all BPMs in the archiver, with names as keys and BPM
-	 * number and coordinates in an int array as values.
+	 * Creates a Hashmap of all BPMs in the archiver.
 	 * 
 	 * @return Hashmap with names as keys and BPM number and coordinates in an
 	 *         int array as values.
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
-	 *             specified
+	 *             specified at construction
 	 */
 	public HashMap<String, int[]> fetchMapping() throws IOException {
 		byte[] buffer = fetchData("CL\n");
@@ -84,7 +83,7 @@ public class FAInfoRequest extends FARequest {
 	 * @return name as a String
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
-	 *             specified
+	 *             specified at construction
 	 */
 	public String getName() throws IOException {
 		byte[] buffer = fetchData("CN\n");

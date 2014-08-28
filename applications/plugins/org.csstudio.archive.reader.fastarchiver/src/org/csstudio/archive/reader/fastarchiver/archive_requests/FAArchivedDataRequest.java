@@ -16,7 +16,7 @@ import org.epics.util.time.Timestamp;
 /**
  * Class to communicate with Fast Archiver about archived data requests.
  * 
- * @author Friederike Johlinger
+ * @author FJohlinger
  */
 
 public class FAArchivedDataRequest extends FARequest {
@@ -35,7 +35,7 @@ public class FAArchivedDataRequest extends FARequest {
 	 *            needs to start with "fads://" followed by the host name and
 	 *            optionally a colon followed by a port number (default 8888)
 	 * @param bpmMapping
-	 *            a Hashmap containing the mapping from BPM names to BPM
+	 *            a HashMap containing the mapping from BPM names to BPM
 	 *            numbers, coordinates and dataSet wanted. Can be obtained
 	 *            through FAInfoRequest.createMapping();
 	 * @throws IOException
@@ -59,9 +59,9 @@ public class FAArchivedDataRequest extends FARequest {
 	 *            name of BPM also specifying the coordinate and the data set
 	 *            wanted
 	 * @param start
-	 *            timestamp of first sample
+	 *            Timestamp of first sample
 	 * @param end
-	 *            timestamp of last sample
+	 *            Timestamp of last sample
 	 * @return a ValueIterator with the samples requested as VTypes
 	 * @throws IOException
 	 *             when no connection can be made with the host (and port)
@@ -114,8 +114,6 @@ public class FAArchivedDataRequest extends FARequest {
 
 	}
 
-	// SOCKET METHODS
-
 	/**
 	 * Used by constructor to initialise sampleFrequency and firstDecimation
 	 * with information from the Fast Archiver
@@ -139,7 +137,7 @@ public class FAArchivedDataRequest extends FARequest {
 			secondDecimation = firstDecimation
 					* Integer.parseInt(matcher.group(4));
 		} else
-			throw new FADataNotAvailableException("Pattern does not match String");
+			throw new FADataNotAvailableException("Reply from Archiver does not match Pattern");
 	}
 
 	/**
@@ -255,8 +253,8 @@ public class FAArchivedDataRequest extends FARequest {
 			Decimation dec) {
 		// Needs format:
 		// "R[decimation]M[number of BPM][start time in seconds from epoch]
-		// E[end time in seconds from epoch]N[include sample count]
-		// A[all data available]\n"
+		// E[end time in seconds from epoch]N(include sample count)
+		// A(all data available)TE(send with extended timestamps)\n"
 
 		String decimation;
 		if (dec == Decimation.UNDEC) {

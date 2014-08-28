@@ -11,9 +11,10 @@ import org.csstudio.archive.vtype.ArchiveVDisplayType;
 
 /**
  * Class to get new values for an item in the Fast Archiver. Uses the
- * undecimated data stream. Stores the data for approx. 3 seconds between fetches. 
+ * undecimated data stream. Stores the data for approx. 3 seconds between
+ * fetches.
  * 
- * @author Friederike Johlinger
+ * @author FJohlinger
  *
  */
 public class FALiveDataRequest extends FARequest {
@@ -57,7 +58,8 @@ public class FALiveDataRequest extends FARequest {
 		String request = String.format("S%dTE\n", bpm);
 		socket.getOutputStream().write(request.getBytes(CHAR_ENCODING));
 		socket.getOutputStream().flush();
-		inFromServer = new BufferedInputStream(socket.getInputStream(), buffersize);
+		inFromServer = new BufferedInputStream(socket.getInputStream(),
+				buffersize);
 		closed = false;
 
 		decodeInitialData();
@@ -77,8 +79,8 @@ public class FALiveDataRequest extends FARequest {
 	/**
 	 * reconnectAfter is the number of times the archiver tries to fetch data,
 	 * without actually returning new values, before trying to reconnect to the
-	 * archiver. Default value is 10, should be higher for more frequent
-	 * requests.
+	 * archiver. Default value is {@value #noNewValuesOccurence}, should be
+	 * higher for more frequent requests.
 	 * 
 	 * @param reconnectAfter
 	 */
@@ -120,13 +122,14 @@ public class FALiveDataRequest extends FARequest {
 	}
 
 	/**
-	 * @param decimation the approximate number the samples are reduced by
+	 * @param decimation
+	 *            the approximate number the samples are reduced by
 	 * @return New values from the live stream
 	 * @throws FADataNotAvailableException
 	 *             when the socket has been closed or an invalid coordinate has
 	 *             been specified during the construction
 	 * @throws IOException
-	 *             when the fetch encounters a problem with the socket
+	 *             when the fetch encounters a problem with the connection
 	 */
 	public synchronized ArchiveVDisplayType[] fetchNewValues(int decimation)
 			throws IOException, FADataNotAvailableException {
@@ -169,7 +172,8 @@ public class FALiveDataRequest extends FARequest {
 		String request = String.format("S%dTE\n", bpm);
 		socket.getOutputStream().write(request.getBytes(CHAR_ENCODING));
 		socket.getOutputStream().flush();
-		inFromServer = new BufferedInputStream(socket.getInputStream(), buffersize);
+		inFromServer = new BufferedInputStream(socket.getInputStream(),
+				buffersize);
 
 		try {
 			decodeInitialData();
@@ -225,6 +229,10 @@ public class FALiveDataRequest extends FARequest {
 		return numOfBytes - bytesRemaining;
 	}
 
+	/**
+	 * Returns the class of this object followed by the given URL, BPM number
+	 * and coordinate.
+	 */
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();

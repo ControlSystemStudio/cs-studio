@@ -8,8 +8,7 @@ import org.epics.vtype.VType;
  * Used to return data from the Fast Archiver. Backed by an Array, uses VType
  * ArchiveVNumber and ArchiveVStatistics, subclasses of ArchiveVDisplayType
  * 
- * @author Friederike Johlinger
- *
+ * @author FJohlinger
  */
 public class FAValueIterator implements ValueIterator {
 	private ArchiveVDisplayType[] values;

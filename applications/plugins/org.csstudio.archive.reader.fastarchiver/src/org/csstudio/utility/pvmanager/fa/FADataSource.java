@@ -12,6 +12,11 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.DataSource;
 
+/**
+ * Provides FAChannelHandlers to connect to the live stream of the FA Archiver.
+ * 
+ * @author FJohlinger
+ */
 public class FADataSource extends DataSource {
 	// Maps ChannelNames to URLs
 	private static HashMap<String, String> availablePVs;
@@ -32,12 +37,12 @@ public class FADataSource extends DataSource {
 				if (prefix.equals("fads"))
 					urls.add(url);
 			}
-		} catch(NullPointerException e) {
+		} catch (NullPointerException e) {
 		} finally {
 			if (urls.size() == 0)
 				urls.add(defaultUrl);
 		}
-		
+
 		HashMap<String, int[]> mapping;
 		for (String url : urls) {
 			try {
@@ -51,12 +56,18 @@ public class FADataSource extends DataSource {
 		}
 	}
 
-	// is called from extension point
+	/**
+	 * Default constructor, sets writable to false, as the live stream of the FA
+	 * Archiver is never writable.
+	 */
 	public FADataSource() {
 		super(false);
 	}
 
-	/** {@inheritDoc} */
+	/** Creates a channel handler for the given name. In the simplest case, this is the only method a data source needs to implement.
+	 * @param channelName the name for a new channel
+	 * @return a new handler
+	 */
 	@Override
 	protected ChannelHandler createChannel(String channelName) {
 		if (availablePVs.containsKey(prefix + channelName))
@@ -67,6 +78,9 @@ public class FADataSource extends DataSource {
 
 	/**
 	 * Returns the lookup name to use to find the channel handler in the cache.
+	 * 
+	 * @param channelName the channel name
+	 * @return the channel handler to look up in the cache
 	 */
 	@Override
 	protected String channelHandlerLookupName(String channelName) {

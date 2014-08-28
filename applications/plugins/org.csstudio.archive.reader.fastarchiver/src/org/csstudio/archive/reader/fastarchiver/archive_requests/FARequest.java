@@ -21,7 +21,7 @@ import org.epics.vtype.AlarmSeverity;
  * Class with common methods for communicating with the fast archiver and
  * decoding data streams.
  * 
- * @author Friederike Johlinger
+ * @author FJohlinger
  */
 
 public abstract class FARequest {
@@ -61,7 +61,7 @@ public abstract class FARequest {
 	 * @param request
 	 *            String to be written to the server
 	 * @return byte[] containing the complete response
-	 * @throws IOException
+	 * @throws IOException when the connection to the archiver fails
 	 */
 	protected byte[] fetchData(String request) throws IOException {
 		Socket socket = new Socket(host, port);
@@ -71,7 +71,7 @@ public abstract class FARequest {
 		outToServer.write(request.getBytes(CHAR_ENCODING));
 		outToServer.flush();
 
-		// get data out of archive one buffer at a time. Append it to a list of
+		// Get data out of archive one buffer at a time. Append it to a list of
 		// buffers.
 		byte[] buffer = new byte[4096];
 		List<byte[]> allBuffers = new LinkedList<byte[]>();
@@ -141,7 +141,7 @@ public abstract class FARequest {
 			timeInterval = duration / blockSize;
 			timestamp += offset * timeInterval;
 		} else {
-			timestamp = 0;// should be really initialised later on
+			timestamp = 0;// Is initialised later on 
 			duration = 0;
 		}
 		for (int indexValues = 0; indexValues < sampleCount; indexValues += 1) {
@@ -210,7 +210,7 @@ public abstract class FARequest {
 			timeInterval = duration / blockSize;
 			timestamp += offset * timeInterval;
 		} else {
-			timestamp = 0;// should be really initialised later on
+			timestamp = 0;// Is initialised later on
 			duration = 0;
 		}
 
@@ -297,7 +297,7 @@ public abstract class FARequest {
 			timeInterval = duration / blockSize;
 			timestamp += offset * timeInterval;
 		} else {
-			timestamp = 0;// should be really initialised later on
+			timestamp = 0;// Is initialised later on
 			duration = 0;
 		}
 		for (int valuesIndex = 0; valuesIndex < sampleCount; valuesIndex += 1) {

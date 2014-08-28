@@ -11,7 +11,7 @@ import org.csstudio.archive.reader.fastarchiver.exceptions.FADataNotAvailableExc
  * The plugin.xml registers this factory for ArchiveReaders when the URL prefix
  * indicates a Fast Archiver URL (i.e. starts with "fads://")
  * 
- * @author Friederike Johlinger
+ * @author FJohlinger
  */
 public class FastArchiveReaderFactory implements ArchiveReaderFactory {
 
