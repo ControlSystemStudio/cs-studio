@@ -42,6 +42,8 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.draw2d.TextUtilities;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
@@ -324,6 +326,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	@Override
 	public void setFont(Font f) {
 		super.setFont(f);
+		calculateTextPosition();
 		label.revalidate();
 	}
 
@@ -442,7 +445,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	
 	public void calculateTextPosition(int width, int height) {		
 		if (image != null) {
-			Dimension textDimension = TextUtilities.INSTANCE.getTextExtents(getText(), baseFont);
+			Dimension textDimension = TextUtilities.INSTANCE.getTextExtents(getText(), getFont());
 			// Calculate available space in height and width
 			double hratio = ((double) height - image.getBounds().height) / textDimension.height;
 			double wratio = ((double) width - image.getBounds().width) / textDimension.width;
