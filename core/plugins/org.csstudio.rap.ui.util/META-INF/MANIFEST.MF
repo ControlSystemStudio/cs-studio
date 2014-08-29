@@ -6,8 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.csstudio.autocomplete.ui,
  org.eclipse.core.runtime,
  org.eclipse.rap.jface,
- org.eclipse.rap.ui;bundle-version="1.4.0",
- org.csstudio.rap.core;bundle-version="1.0.0"
+ org.eclipse.rap.ui,
+ org.csstudio.rap.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Export-Package: org.csstudio.ui.util,
