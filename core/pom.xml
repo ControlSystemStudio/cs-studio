@@ -35,7 +35,8 @@
     <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.0</cs-studio-central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
-    <baselineMode>fail</baselineMode> 
+    <baselineMode>fail</baselineMode>
+    <platform-version-name>kepler</platform-version-name> 
 	
 	<!-- SonarQube configuration -->
  	<sonar.language>java</sonar.language>
@@ -65,54 +66,119 @@
   </pluginRepositories>
 
   <!--
-    P2 REPOSITORIES
+    Profiles
   -->
-  <repositories>
-    <repository>
-      <id>csstudio-thirdparty</id>
-      <url>http://download.controlsystemstudio.org/thirdparty/4.0</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>csstudio-maven-osgi-bundles</id>
-      <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.0</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>kepler</id>
-      <url>http://download.eclipse.org/releases/kepler</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>kepler-updates</id>
-      <url>http://download.eclipse.org/eclipse/updates/4.3</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>rap</id>
-      <url>http://download.eclipse.org/rt/rap/1.5/runtime</url>
-      <layout>p2</layout>
-    </repository>
-  </repositories>
-  
-  <!-- If a local repository is specified then enable that repository -->
-  <profiles>
-    <profile>
-      <id>csstudio-local-repo-enable</id>
-      <activation>
-        <file>
-          <exists>${csstudio.local.repo}/artifacts.jar</exists>
-        </file>
-      </activation>
-      <repositories>
-        <repository>
-          <id>csstudio-local-repo</id>
-          <url>file:${csstudio.local.repo}</url>
-          <layout>p2</layout>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
+	<profiles>
+		<profile>
+			<id>platform-luna</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>luna</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
+				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
+				<rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
+				<platform-version>[4.3,4.4)</platform-version>
+				<swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
+			</properties>
+		</profile>
+		<profile>
+			<id>platform-kepler</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>kepler</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
+				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.3</eclipse-update-site>
+				<rap-site>http://download.eclipse.org/rt/rap/2.2</rap-site>
+				<platform-version>[4.2,4.3)</platform-version>
+				<swtbot-site>http://download.eclipse.org/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
+			</properties>
+		</profile>
+		<profile>
+			<id>csstudio-local-repo-enable</id>
+			<activation>
+				<property>
+					<name>csstudio.local.repo</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>csstudio-local-repo</id>
+					<url>file:${csstudio.local.repo}</url>
+					<layout>p2</layout>
+				</repository>
+			</repositories>
+		</profile>
+		<profile>
+			<id>local-dev</id>
+			<properties>
+				<jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+				<baselineMode>warn</baselineMode>
+			</properties>
+			<repositories>
+			</repositories>
+			<pluginRepositories>
+			</pluginRepositories>
+		</profile>
+		<profile>
+			<id>eclipse</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>eclipse</id>
+					<url>${eclipse-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>eclipse-updates</id>
+					<url>${eclipse-update-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>rap</id>
+					<url>${rap-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>orbit</id>
+					<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
+					<layout>p2</layout>
+				</repository>
+			</repositories>
+		</profile>
+		<profile>
+			<id>cs-studio</id>
+			<activation>
+				<property>
+					<name>cs-studio-central.url</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>csstudio-thirdparty</id>
+					<url>http://download.controlsystemstudio.org/thirdparty/4.0</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>csstudio-maven-osgi-bundles</id>
+					<url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.0</url>
+					<layout>p2</layout>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
+
 
   <!--
     CHILD MODULES
@@ -208,24 +274,6 @@
               <!-- Default behavior is to resolve ALL dependencies. -->
               <!--<optionalDependencies>ignore</optionalDependencies>-->
             </dependency-resolution>
-
-            <filters>
-              <!--
-                This is how features/plugins can be ignored in case of conflicts.
-                See details: https://wiki.eclipse.org/Tycho/Target_Platform#Filtering
-              -->
-              <!--
-                Need to select RAP v1.5 instead of the newer version include in Eclipse 4.
-              -->
-              <filter>
-                <type>eclipse-plugin</type>
-                <id>org.eclipse.rap.ui</id>
-                <restrictTo>
-                  <versionRange>[1.5,2.0)</versionRange>
-                </restrictTo>
-              </filter>
-            </filters>
-
             <environments>
               <environment>
                 <os>linux</os>

@@ -11,8 +11,8 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 

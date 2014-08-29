@@ -6,12 +6,12 @@
       <entrypoint
             class="org.csstudio.webopi.WorkbenchOPIRuntimeEntryPoint"
             id="org.csstudio.webopi.workbenchOPIRuntime"
-            parameter="webopi">
+            path="/webopi">
       </entrypoint>
       <entrypoint
             class="org.csstudio.webopi.StandaloneOPIRuntimeEntryPoint"
             id="org.csstudio.webopi.standaloneOPIRuntime"
-            parameter="webopi_s">
+            path="/webopi_s">
       </entrypoint>
    </extension>
    <extension

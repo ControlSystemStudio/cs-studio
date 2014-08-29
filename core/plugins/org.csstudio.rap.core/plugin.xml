@@ -13,7 +13,7 @@
         <entrypoint
               class="org.csstudio.rap.core.debug.RAPDebugEntryPoint"
               id="org.csstudio.rap.core.debug.entrypoint"
-              parameter="debug">
+              path="/debug">
         </entrypoint>
      </extension>
      <extension

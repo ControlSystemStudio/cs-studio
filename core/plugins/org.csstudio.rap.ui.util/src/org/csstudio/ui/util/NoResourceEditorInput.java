@@ -8,7 +8,7 @@
 package org.csstudio.ui.util;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rap.ui.resources.IResource;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
