@@ -114,7 +114,7 @@ public class RDBArchiveReader implements ArchiveReader
         	break;
         case PostgreSQL:
             is_oracle = false;
-            this.stored_procedure = "";
+            this.stored_procedure = stored_procedure;
             break;
         case Oracle:
             is_oracle = true;
