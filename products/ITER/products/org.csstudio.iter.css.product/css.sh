@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #+======================================================================
-# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-css-iter/trunk/org.csstudio.iter.css.product/css.sh $
-# $Id: css.sh 31100 2012-10-23 20:17:15Z zagara $
+# $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-css/trunk/products/ITER/products/org.csstudio.iter.css.product/css.sh $
+# $Id: css.sh 49232 2014-08-25 15:17:45Z zagara $
 #
 # Project       : CODAC Core System
 #
@@ -28,23 +28,25 @@ CODAC_ROOT=$(readlink -f "$0" | sed -n -e 's|^\(/[^/]*/[^/]*\)/.*|\1|p')
 
 # If user args do not contain any argument starting with -
 # add --launcher.openFile before to interpret them as files to open
-OPEN_FILE_ARG="--launcher.openFile"
-USER_ARGS=""
+OPEN_FILES=()
+USER_ARGS=()
 while [ -n "$1" ]; do
   case $1 in
+    --launcher.openFile)
+      ;;
+    -*)
+      USER_ARGS=("${USER_ARGS[@]}" "$1")
+      ;;
     *)
-      USER_ARGS="${USER_ARGS:+${USER_ARGS} }\"$1\"";
-      if [[ "${1:0:1}" == "-"  ]]; then
-        OPEN_FILE_ARG="";
-      fi
-     shift 1;;
+      OPEN_FILES=("${OPEN_FILES[@]}" "$(readlink -fm "$1")")
+      ;;
   esac
+  shift 1
 done
-if [[ USER_ARGS != "" ]]; then
-  USER_ARGS="${OPEN_FILE_ARG} ${USER_ARGS}"
+if [ ${#OPEN_FILES[@]} -gt 0 ]; then
+  USER_ARGS=("${USER_ARGS[@]}" "--launcher.openFile" "${OPEN_FILES[@]}")
 fi
-
-set -- ${USER_ARGS} -share_link /opt/codac/opi=CSS/opi,/opt/codac/examples=CSS/examples,/opt/codac/opi/boy/SymbolLibrary=CSS/SymbolLibrary
+set -- -share_link /opt/codac/opi=CSS/opi,/opt/codac/examples=CSS/examples,/opt/codac/opi/boy/SymbolLibrary=CSS/SymbolLibrary "${USER_ARGS[@]}"
 
 . ${CODAC_ROOT}/bin/codacenv
 . ${CODAC_ROOT}/bin/css-wrapper-script
