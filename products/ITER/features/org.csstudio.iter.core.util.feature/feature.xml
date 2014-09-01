@@ -20,7 +20,6 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="javax.annotation"/>
       <import plugin="org.csstudio.data"/>
       <import plugin="org.csstudio.java"/>
       <import plugin="org.csstudio.platform.libs.epics"/>
@@ -47,13 +46,6 @@ of the distribution package.
 
    <plugin
          id="com.google.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.annotation"
          download-size="0"
          install-size="0"
          version="0.0.0"
