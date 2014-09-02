@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.display.pvtable.xml;
+package org.csstudio.display.pvtable.persistence;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,7 +21,6 @@ import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -29,8 +28,11 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PVTableXMLPersistence
+public class PVTableXMLPersistence extends PVTablePersistence
 {
+    /** File extension used for XML files */
+    final public static String FILE_EXTENSION = "pvs";
+    
     final private static String XML_HEADER = "<?xml version=\"1.0\"?>\n<pvtable version=\"2.0\">";
     final private static String XML_TAIL = "</pvtable>\n";
     final private static String ROOT = "pvtable";
@@ -42,12 +44,17 @@ public class PVTableXMLPersistence
     final private static String SAVED = "saved_value";
     final private static String READBACK_NAME = "readback";
     final private static String READBACK_SAVED = "readback_value";
-    
-    /** @param stream XML stream
-     *  @return PV table model
-     *  @throws Exception on error
-     */
-    public static PVTableModel read(final InputStream stream) throws Exception
+
+    /** {@inheritDoc} */
+    @Override
+    public String getFileExtension()
+    {
+        return FILE_EXTENSION;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PVTableModel read(final InputStream stream) throws Exception
     {
         final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
@@ -59,7 +66,7 @@ public class PVTableXMLPersistence
      *  @return PV table model
      *  @throws Exception on error
      */
-    private static PVTableModel read(final Document doc) throws Exception
+    private PVTableModel read(final Document doc) throws Exception
     {
         final PVTableModel model = new PVTableModel();
         // Check if it's a <pvtable/>.
@@ -113,30 +120,9 @@ public class PVTableXMLPersistence
         return model;
     }
 
-    /** @param value_text Text of a value
-     *  @return VType for that text, either VNumber(VDouble) or VString, or <code>null</code>
-     */
-    private static VType createValue(final String value_text)
-    {
-        if (value_text.isEmpty())
-            return null;
-        // Try to parse as number
-        try
-        {
-            final double value = Double.parseDouble(value_text);
-            return ValueFactory.newVDouble(value);
-        }
-        catch (NumberFormatException ex)
-        {
-            // Not a number, fall through to return VString
-        }
-        return ValueFactory.newVString(value_text, ValueFactory.alarmNone(), ValueFactory.timeNow());
-    }
-
-    /** @param model PV table model
-     *  @param stream Stream to which model is written as XML
-     */
-    public static void write(final PVTableModel model, final OutputStream stream)
+    /** {@inheritDoc} */
+    @Override
+    public void write(final PVTableModel model, final OutputStream stream)
     {
         final PrintWriter out = new PrintWriter(stream);
 

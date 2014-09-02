@@ -26,9 +26,6 @@ public class Plugin extends AbstractUIPlugin
     /** The plug-in ID */
     final public static String ID = "org.csstudio.display.pvtable";
 
-    /** File extension for config. files */
-    final public static String FileExtension = "css-pvtable";
-
     /** Logger */
     final private static Logger logger = Logger.getLogger(ID);
 

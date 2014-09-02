@@ -18,7 +18,7 @@ public class Preferences
 {
     public static double getTolerance()
     {
-        double tolerance = 50;
+        double tolerance = 0.01;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service != null)
             tolerance = service.getDouble(Plugin.ID, "tolerance", tolerance, null);

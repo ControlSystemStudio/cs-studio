@@ -16,7 +16,8 @@ import java.io.FileInputStream;
 
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.VTypeHelper;
-import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
+import org.csstudio.display.pvtable.persistence.PVTablePersistence;
+import org.csstudio.display.pvtable.persistence.PVTableXMLPersistence;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +37,8 @@ public class PVTableXMLPersistenceTest
     @Test
     public void testReadXML() throws Exception
     {
-        final PVTableModel model = PVTableXMLPersistence.read(new FileInputStream("lib/example.xml"));
+        final PVTablePersistence persistence = new PVTableXMLPersistence();
+        final PVTableModel model = persistence.read(new FileInputStream("lib/example.pvs"));
         assertThat(model.getItemCount(), equalTo(52));
         assertThat(model.getItem(0).getName(), equalTo(TestSettings.NAME));
         assertThat(VTypeHelper.toString(model.getItem(0).getSavedValue()), equalTo("3.14"));
@@ -47,11 +49,12 @@ public class PVTableXMLPersistenceTest
     @Test
     public void testWriteXML() throws Exception
     {
+        final PVTablePersistence persistence = new PVTableXMLPersistence();
         final PVTableModel model = new PVTableModel();
         model.addItem(TestSettings.NAME);
         
         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        PVTableXMLPersistence.write(model, buf);
+        persistence.write(model, buf);
         final String xml = buf.toString();
         System.out.println(xml);
         model.dispose();
