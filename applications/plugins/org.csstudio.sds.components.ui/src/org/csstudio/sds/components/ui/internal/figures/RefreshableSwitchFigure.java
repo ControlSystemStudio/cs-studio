@@ -171,7 +171,7 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 		try {
 			gfx.rotate(_rotAngle);
 		} catch (RuntimeException e) {
-			LOG.error("Error occured during ratation");
+			LOG.error("Error occurred during rotation");
 		}
 		gfx.translate(-(int)(_scaling*figureBounds.width*0.5),-(int)(_scaling*figureBounds.height*0.5));
 		
@@ -190,7 +190,7 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 			try {
 				gfx.rotate(-(float)_rotAngle);
 			} catch (RuntimeException e) {
-				LOG.error("Error occured during rotation");
+				LOG.error("Error occurred during rotation");
 			}
 			gfx.translate(-figureBounds.width/2,-figureBounds.height/2);
 		}

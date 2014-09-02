@@ -746,7 +746,7 @@ public class ASTParserLoadingTest extends FunctionalTestCase {
 		Long id;
 		PropertySet ps = new PropertySet( "my properties" );
 		ps.setSomeSpecificProperty( redValue );
-		ps.getGeneralProperties().put( "the lonliest number", lonliestNumberValue );
+		ps.getGeneralProperties().put( "the loneliest number", lonliestNumberValue );
 		ps.getGeneralProperties().put( "i like", new StringPropertyValue( "pina coladas" ) );
 		ps.getGeneralProperties().put( "i also like", new StringPropertyValue( "getting caught in the rain" ) );
 		s.save( ps );
@@ -2188,7 +2188,7 @@ public class ASTParserLoadingTest extends FunctionalTestCase {
 		results = session.createQuery( "select new Animal(an.description, an.bodyWeight) from Animal an" )
 				.setCacheable( true )
 				.list();
-		assertEquals( "dynamic intantiation query not served from cache", initCacheHits + 1, stats.getCacheHitCount() );
+		assertEquals( "dynamic instantiation query not served from cache", initCacheHits + 1, stats.getCacheHitCount() );
 		assertEquals( "incorrect result size", 2, results.size() );
 		assertClassAssignability( Animal.class, results.get( 0 ).getClass() );
 

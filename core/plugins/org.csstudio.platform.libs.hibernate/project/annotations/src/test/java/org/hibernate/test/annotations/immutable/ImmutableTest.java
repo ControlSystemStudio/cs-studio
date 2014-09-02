@@ -152,7 +152,7 @@ public class ImmutableTest extends TestCase {
 			config.buildSessionFactory();
 			fail();
 		} catch (AnnotationException ae) {
-			log.debug("succes");
+			log.debug("success");
 		}
 	}
 	

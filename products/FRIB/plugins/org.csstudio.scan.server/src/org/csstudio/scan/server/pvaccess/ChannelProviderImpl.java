@@ -672,7 +672,7 @@ public class ChannelProviderImpl implements ChannelProvider {
                 }
                 catch (Throwable th)
                 {
-                    status = statusCreate.createStatus(StatusType.ERROR, "exceptuon caught: " + th.getMessage(), th);
+                    status = statusCreate.createStatus(StatusType.ERROR, "exception caught: " + th.getMessage(), th);
                 }
                 finally {
                     pvTopStructure.unlock();

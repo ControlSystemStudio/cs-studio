@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Servicelocator
 Bundle-SymbolicName: org.csstudio.servicelocator
-Bundle-Version: 1.0.0.201204101400
+Bundle-Version: 1.0.1.qualifier
 Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-BuddyPolicy: registered

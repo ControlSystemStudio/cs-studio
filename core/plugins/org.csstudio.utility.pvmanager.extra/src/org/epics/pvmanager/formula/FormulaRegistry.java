@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.epics.vtype.ValueFactory;
 
 /**
  * The registry to add functions that will be used by the formula parser.
@@ -40,8 +41,16 @@ public class FormulaRegistry {
         }
     }
     
-    private Map<String, FormulaFunctionSet> functionSets = new ConcurrentHashMap<>();
-    private Map<String, Map<Integer, Collection<FormulaFunction>>> formulaFunctions = new ConcurrentHashMap<>();
+    private final Map<String, FormulaFunctionSet> functionSets = new ConcurrentHashMap<>();
+    private final Map<String, Map<Integer, Collection<FormulaFunction>>> formulaFunctions = new ConcurrentHashMap<>();
+    private final Map<String, Object> constants = new ConcurrentHashMap<>();
+    
+    {
+        constants.put("TRUE", ValueFactory.toVType(true));
+        constants.put("FALSE", ValueFactory.toVType(false));
+        constants.put("PI", ValueFactory.toVType(Math.PI));
+        constants.put("E", ValueFactory.toVType(Math.E));
+    }
     
     private void registerFormulaFunction(FormulaFunction formulaFunction) {
         // Get the map based by name
@@ -101,5 +110,9 @@ public class FormulaRegistry {
         }
         
         return functions;
+    }
+    
+    public Object findNamedConstant(String constantName) {
+        return constants.get(constantName);
     }
 }

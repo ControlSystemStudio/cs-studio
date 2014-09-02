@@ -193,12 +193,12 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	/**
 	 * Source Connections.
 	 */
-	public static final String PROP_SRC_CONNETIONS = "src_connections"; //$NON-NLS-1$	
+	public static final String PROP_SRC_CONNECTIONS = "src_connections"; //$NON-NLS-1$
 	
 	/**
 	 * Target Connections.
 	 */
-	public static final String PROP_TGT_CONNETIONS = "tgt_connections"; //$NON-NLS-1$	
+	public static final String PROP_TGT_CONNECTIONS = "tgt_connections"; //$NON-NLS-1$
 	
 	
 	/**
@@ -252,10 +252,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		}
 		if (conn.getSource() == this) {
 			sourceConnections.add(conn);
-			setPropertyValue(PROP_SRC_CONNETIONS, sourceConnections, true);
+			setPropertyValue(PROP_SRC_CONNECTIONS, sourceConnections, true);
 		} else if (conn.getTarget() == this) {
 			targetConnections.add(conn);
-			setPropertyValue(PROP_TGT_CONNETIONS, targetConnections, true);
+			setPropertyValue(PROP_TGT_CONNECTIONS, targetConnections, true);
 		}		
 	}	
 	
@@ -270,10 +270,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		}
 		if (conn.getSource() == this) {
 			sourceConnections.remove(conn);
-			setPropertyValue(PROP_SRC_CONNETIONS, sourceConnections, true);
+			setPropertyValue(PROP_SRC_CONNECTIONS, sourceConnections, true);
 		} else if (conn.getTarget() == this) {
 			targetConnections.remove(conn);
-			setPropertyValue(PROP_TGT_CONNETIONS, targetConnections, true);
+			setPropertyValue(PROP_TGT_CONNECTIONS, targetConnections, true);
 		}
 	}
 	
@@ -382,12 +382,12 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Basic, name));
 		
 		addProperty(new UnsavableListProperty(
-				PROP_SRC_CONNETIONS, "Source Connections", WidgetPropertyCategory.Display, sourceConnections));
-		setPropertyVisible(PROP_SRC_CONNETIONS, false);
+				PROP_SRC_CONNECTIONS, "Source Connections", WidgetPropertyCategory.Display, sourceConnections));
+		setPropertyVisible(PROP_SRC_CONNECTIONS, false);
 		
 		addProperty(new UnsavableListProperty(
-				PROP_TGT_CONNETIONS, "Target Connections", WidgetPropertyCategory.Display, targetConnections));
-		setPropertyVisible(PROP_TGT_CONNETIONS, false);
+				PROP_TGT_CONNECTIONS, "Target Connections", WidgetPropertyCategory.Display, targetConnections));
+		setPropertyVisible(PROP_TGT_CONNECTIONS, false);
 		
 		
 	}

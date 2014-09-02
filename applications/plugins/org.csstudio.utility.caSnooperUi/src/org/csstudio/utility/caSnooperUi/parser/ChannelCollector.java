@@ -114,7 +114,7 @@ public class ChannelCollector implements Runnable{
 		
 		statistics = "There were "+numberOfRequests+" requests for "+listOfAllChannels.size()+" different PVs.\n";
 		statistics = statistics+"Max frequency: "+maximumFrequency+"Hz\n";
-		statistics = statistics+"Avarage frequency: "+avarageFrequency+"Hz\n";
+		statistics = statistics+"Average frequency: "+avarageFrequency+"Hz\n";
 		return statistics;
 	}
 

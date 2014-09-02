@@ -60,7 +60,7 @@ public class ConnectionStateMachine {
 	}
 
 	/**
-	 * Requests from this state machine to change connection state to provided paramter. 
+	 * Requests from this state machine to change connection state to provided parameter.
 	 * If request was illegal regarding the current state, it will throw exception.
 	 * If sconnection wtate was changes, <code>true</code> is returned. 
 	 * @param state requested new state

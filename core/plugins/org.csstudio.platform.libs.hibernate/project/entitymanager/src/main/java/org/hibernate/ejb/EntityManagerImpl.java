@@ -73,11 +73,11 @@ public class EntityManagerImpl extends AbstractEntityManagerImpl {
 							ReflectHelper.classForName( (String) localSessionInterceptor, EntityManagerImpl.class );
 				}
 				catch (ClassNotFoundException e) {
-					throw new PersistenceException("Unable to instanciate interceptor: " + localSessionInterceptor, e);
+					throw new PersistenceException("Unable to instantiate interceptor: " + localSessionInterceptor, e);
 				}
 			}
 			else {
-				throw new PersistenceException("Unable to instanciate interceptor: " + localSessionInterceptor);
+				throw new PersistenceException("Unable to instantiate interceptor: " + localSessionInterceptor);
 			}
 		}
 		this.sessionInterceptorClass = sessionInterceptorClass;
@@ -99,10 +99,10 @@ public class EntityManagerImpl extends AbstractEntityManagerImpl {
 					interceptor = (Interceptor) sessionInterceptorClass.newInstance();
 				}
 				catch (InstantiationException e) {
-					throw new PersistenceException("Unable to instanciate session interceptor: " + sessionInterceptorClass, e);
+					throw new PersistenceException("Unable to instantiate session interceptor: " + sessionInterceptorClass, e);
 				}
 				catch (IllegalAccessException e) {
-					throw new PersistenceException("Unable to instanciate session interceptor: " + sessionInterceptorClass, e);
+					throw new PersistenceException("Unable to instantiate session interceptor: " + sessionInterceptorClass, e);
 				}
 				catch (ClassCastException e) {
 					throw new PersistenceException("Session interceptor does not implement Interceptor: " + sessionInterceptorClass, e);

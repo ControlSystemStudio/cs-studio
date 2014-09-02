@@ -11,15 +11,10 @@ import java.awt.*;
  * @author carcassi
  */
 public class AreaGraph2DRenderer extends Graph2DRenderer<AreaGraph2DRendererUpdate> {
-    
-    private static final AxisRange DEFAULT_X_RANGE = AxisRanges.relative();
-    private static final AxisRange DEFAULT_Y_RANGE = AxisRanges.display();
 
     public AreaGraph2DRenderer(int imageWidth, int imageHeight) {
         super(imageWidth, imageHeight);
-        super.update(new AreaGraph2DRendererUpdate()
-                .xAxisRange(DEFAULT_X_RANGE)
-                .yAxisRange(DEFAULT_Y_RANGE));
+        super.update(new AreaGraph2DRendererUpdate());
     }
 
     @Override
@@ -55,7 +50,7 @@ public class AreaGraph2DRenderer extends Graph2DRenderer<AreaGraph2DRendererUpda
 
         this.g = graphics;
         this.referenceLineColor = this.backgroundColor;
-        calculateRanges(dataset.getXRange(), dataset.getStatistics());
+        calculateRanges(dataset.getXRange(), dataset.getXRange(), dataset.getStatistics(), dataset.getDisplayRange());
         calculateLabels();
         calculateGraphArea();
         drawBackground();

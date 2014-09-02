@@ -106,7 +106,7 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
 					"OPI GUI Refresh Cycle (ms)", parent);
 		guiRefreshCycleEditor.setValidRange(10, 5000);
 		guiRefreshCycleEditor.getTextControl(parent).setToolTipText(
-				"The fatest refresh cycle for OPI GUI in millisecond");
+				"The fastest refresh cycle for OPI GUI in millisecond");
 		addField(guiRefreshCycleEditor);	
 	
 		String[] allPVFactories = SimplePVLayer.getAllPVFactoryExtensions();
@@ -149,7 +149,7 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
 		addField(startWindowInCompactEditor);
 		BooleanFieldEditor showOPIRuntimePerspectiveDialogEditor =
 				new BooleanFieldEditor(PreferencesHelper.SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, 
-						"Show dialog asking about switching to OPI Runtime perspective before openning OPI in view", parent);
+						"Show dialog asking about switching to OPI Runtime perspective before opening OPI in view", parent);
 		addField(showOPIRuntimePerspectiveDialogEditor);
 	}
 

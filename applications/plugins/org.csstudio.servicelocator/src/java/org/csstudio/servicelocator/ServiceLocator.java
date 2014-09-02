@@ -192,7 +192,7 @@ public final class ServiceLocator {
             T service = (T) _serviceTracker.getService();
             if (service == null) {
                 Thread.dumpStack();
-                throw new IllegalStateException("Service unavailabe from tracker: "
+                throw new IllegalStateException("Service unavailable from tracker: "
                         + _serviceTracker.toString());
             }
             

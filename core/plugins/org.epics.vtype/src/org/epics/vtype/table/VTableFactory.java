@@ -21,6 +21,7 @@ import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
@@ -123,8 +124,8 @@ public class VTableFactory {
             columnNames.add(tables[0].getColumnName(nColumn));
             Class<?> type = tables[0].getColumnType(nColumn);
             if (type.isPrimitive()) {
-                columnTypes.add(double.class);
-                columnData.add(createView((ListNumber) tables[0].getColumnData(nColumn), rowIndexes.get(0)));
+                columnTypes.add(type);
+                columnData.add(ListNumbers.listView((ListNumber) tables[0].getColumnData(nColumn), rowIndexes.get(0)));
             } else {
                 columnTypes.add(type);
                 columnData.add(createView((List<?>) tables[0].getColumnData(nColumn), rowIndexes.get(0)));
@@ -137,8 +138,8 @@ public class VTableFactory {
                     columnNames.add(vTable.getColumnName(nColumn));
                     Class<?> type = vTable.getColumnType(nColumn);
                     if (type.isPrimitive()) {
-                        columnTypes.add(double.class);
-                        columnData.add(createView((ListNumber) vTable.getColumnData(nColumn), rowIndexes.get(i)));
+                        columnTypes.add(type);
+                        columnData.add(ListNumbers.listView((ListNumber) vTable.getColumnData(nColumn), rowIndexes.get(i)));
                     } else {
                         columnTypes.add(type);
                         columnData.add(createView((List<?>) vTable.getColumnData(nColumn), rowIndexes.get(i)));
@@ -153,7 +154,7 @@ public class VTableFactory {
     private static Object selectColumnData(VTable table, int column, ListInt indexes) {
         Class<?> type = table.getColumnType(column);
         if (type.isPrimitive()) {
-            return createView((ListNumber) table.getColumnData(column), indexes);
+            return ListNumbers.listView((ListNumber) table.getColumnData(column), indexes);
         } else {
             return createView((List<?>) table.getColumnData(column), indexes);
         }
@@ -174,27 +175,12 @@ public class VTableFactory {
         };
     }
     
-    private static ListNumber createView(final ListNumber list, final ListInt indexes) {
-        return new ListDouble() {
-
-            @Override
-            public double getDouble(int index) {
-                return list.getDouble(indexes.getInt(index));
-            }
-
-            @Override
-            public int size() {
-                return indexes.size();
-            }
-        };
-    }
-    
     private static Object createView(final Object columnData, final ListInt indexes) {
         if (columnData instanceof List) {
             List<?> data = (List<?>) columnData;
             return createView(data, indexes);
         } else if (columnData instanceof ListNumber) {
-            return createView((ListNumber) columnData, indexes);
+            return ListNumbers.listView((ListNumber) columnData, indexes);
         } else {
             throw new IllegalArgumentException("Unsupported column data " + columnData);
         }
@@ -510,6 +496,18 @@ public class VTableFactory {
         BufferInt indexes = new BufferInt();
         for (int i = 0; i < table.getRowCount(); i++) {
             if (valueFilter.filterRow(i)) {
+                indexes.addInt(i);
+            }
+        }
+        
+        return extractRows(table, indexes);
+    }
+    
+    public static VTable tableStringMatchFilter(VTable table, String columnName, String substring) {
+        StringMatchFilter filter = new StringMatchFilter(table, columnName, substring);
+        BufferInt indexes = new BufferInt();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (filter.filterRow(i)) {
                 indexes.addInt(i);
             }
         }

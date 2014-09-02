@@ -9,6 +9,6 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.opibuilder.feature</artifactId>
-  <version>3.2.4-SNAPSHOT</version>
+  <version>3.2.7-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
 </project>

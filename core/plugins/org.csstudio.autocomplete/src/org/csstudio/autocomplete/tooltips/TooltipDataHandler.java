@@ -41,12 +41,12 @@ public class TooltipDataHandler {
 			return null; // no content
 
 		// build content
-		int offset = 0, maxLineLenght = 0, numberOfLines = 0;
+		int offset = 0, maxLineLength = 0, numberOfLines = 0;
 		StringBuilder sb = new StringBuilder();
 		List<ProposalStyle> styleList = new ArrayList<ProposalStyle>();
 		synchronized (tooltipDataList) {
 			for (TooltipData data : tooltipDataList) {
-				int startLenght = sb.length();
+				int startLength = sb.length();
 				sb.append(data.value);
 				sb.append("\n");
 				if (data.styles != null) {
@@ -57,8 +57,8 @@ public class TooltipDataHandler {
 						styleList.add(ps);
 					}
 				}
-				offset += sb.length() - startLenght;
-				maxLineLenght = Math.max(maxLineLenght, sb.length() - startLenght);
+				offset += sb.length() - startLength;
+				maxLineLength = Math.max(maxLineLength, sb.length() - startLength);
 				numberOfLines++;
 			}
 		}
@@ -74,7 +74,7 @@ public class TooltipDataHandler {
 		tc.value = sb.toString();
 		tc.styles = styleList.toArray(new ProposalStyle[styleList.size()]);
 		tc.numberOfLines = numberOfLines;
-		tc.maxLineLenght = maxLineLenght;
+		tc.maxLineLength = maxLineLength;
 		return tc;
 	}
 

@@ -96,7 +96,7 @@ public class GaussianWaveform extends SimFunction<VDoubleArray> {
         double t = lastTime.durationFrom(initialRefernce).toSeconds();
         double omega = 2 * Math.PI / periodInSeconds;
         return newVDoubleArray(new ArrayDouble(generateNewValue(omega, t)), alarmNone(),
-                newTime(lastTime), newDisplay(-0.5, -0.35, -0.25, "x", Constants.DOUBLE_FORMAT,
-                1.0, 1.10, 1.25, -0.5, 1.25));
+                newTime(lastTime), newDisplay(0.0, 0.0, 0.0, "x", Constants.DOUBLE_FORMAT,
+                1.0, 1.0, 1.0, 0.0, 1.0));
     }
 }

@@ -1385,7 +1385,7 @@ public class PSGr extends java.awt.Graphics {
         emitThis ("% ejfried@ca.sandia.gov");
         emitThis ("% http://herzberg.ca.sandia.gov");
 
-        emitThis ("% Right to unrestricted personal and commerical use is granted");
+        emitThis ("% Right to unrestricted personal and commercial use is granted");
         emitThis ("% if this acknowledgement is given on product or packing materials");
 
         emitThis ("% Color picture stuff, lifted from XV's PS files");

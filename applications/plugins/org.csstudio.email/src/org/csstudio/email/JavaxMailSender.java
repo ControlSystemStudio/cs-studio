@@ -63,7 +63,7 @@ public class JavaxMailSender {
             Activator.getLogger().log(Level.FINE, "Sent EMail to {0}", to);
 		} catch (MessagingException e) {
 			Activator.getLogger().log(Level.SEVERE,
-					"Exception durring EMail sending: {0}", e.getMessage());
+					"Exception during EMail sending: {0}", e.getMessage());
 		}
 	}
 	

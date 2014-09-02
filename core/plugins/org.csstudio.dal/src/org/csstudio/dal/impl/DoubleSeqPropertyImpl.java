@@ -61,7 +61,7 @@ public class DoubleSeqPropertyImpl extends NumericPropertyImpl<double[],Double>
 		Integer length = null;
 		length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
 		if (length==null) {
-			throw new DataExchangeException(this, "Obtaining characteristic "+SequencePropertyCharacteristics.C_SEQUENCE_LENGTH+" failed for uknown reason.");
+			throw new DataExchangeException(this, "Obtaining characteristic "+SequencePropertyCharacteristics.C_SEQUENCE_LENGTH+" failed for unknown reason.");
 		}
 		sequenceLength = length.intValue();
 		chInitialized = true;

@@ -206,8 +206,8 @@ public class ProxoolConnectionProvider implements ConnectionProvider {
 		catch (Exception e) {
 			// If you're closing down the ConnectionProvider chances are an
 			// is not a real big deal, just warn
-			log.warn("Exception occured when closing the Proxool pool", e);
-			throw new HibernateException("Exception occured when closing the Proxool pool", e);
+			log.warn("Exception occurred when closing the Proxool pool", e);
+			throw new HibernateException("Exception occurred when closing the Proxool pool", e);
 		}
 	}
 

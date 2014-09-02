@@ -64,7 +64,7 @@ public final class DoubleArrayCellEditor extends CellEditor {
 	@Override
 	public void activate() {
 		String initValue = this.parseToString(_value);
-		InputDialog dialog = new InputDialog(_shell,"Numbers","The numbers have to be seperated by a comma and a spare.\nExample: 0.5, 10.1, 2",initValue,null);
+		InputDialog dialog = new InputDialog(_shell,"Numbers","The numbers have to be separated by a comma and a spare.\nExample: 0.5, 10.1, 2",initValue,null);
 		if (dialog.open()==Window.OK) {
 			_value = this.parseToDoubleArray(dialog.getValue());
 		}
@@ -74,7 +74,7 @@ public final class DoubleArrayCellEditor extends CellEditor {
 	}
 	
 	/**
-	 * Parses the given double[] into a comma seperated String.
+	 * Parses the given double[] into a comma separated String.
 	 * @param array
 	 * 				The double[]
 	 * @return String
@@ -93,9 +93,9 @@ public final class DoubleArrayCellEditor extends CellEditor {
 	}
 	
 	/**
-	 * Parses the given comma seperated String into double[].
+	 * Parses the given comma separated String into double[].
 	 * @param text	
-	 * 				The String, which contains doubles seperated by comma
+	 * 				The String, which contains doubles separated by comma
 	 * @return double[]
 	 * 				The corresponding double[]
 	 */

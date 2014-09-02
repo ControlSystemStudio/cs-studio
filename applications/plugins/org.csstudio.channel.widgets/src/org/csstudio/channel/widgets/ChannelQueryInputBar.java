@@ -42,11 +42,11 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
 		combo = comboViewer.getCombo();
 		ToolTipHelp tooltip = new ToolTipHelp(combo);
 		tooltip.setText(
-				"Space seperated search criterias, patterns may include * and ? wildcards\n" +
+				"Space separated search criterias, patterns may include * and ? wildcards\n" +
 				"channelNamePattern\n" +
 				"propertyName=valuePattern1,valuePattern2\n" +
 				"Tags=tagNamePattern\n" +
-				"Each criteria is logically ANDed, || seperated values are logically ORed");
+				"Each criteria is logically ANDed, || separated values are logically ORed");
 
 		ComboHistoryHelper name_helper = new ComboHistoryHelper(dialogSettings,
 				settingsKey, combo, 20, true) {

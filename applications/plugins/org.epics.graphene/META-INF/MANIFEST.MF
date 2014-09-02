@@ -7,4 +7,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov> - BNL
 Bundle-Description: Graphene graphics library to create plots and manage dataset
 Export-Package: org.epics.graphene
-Require-Bundle: org.epics.util
+Require-Bundle: org.epics.util;visibility:=reexport

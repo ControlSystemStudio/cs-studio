@@ -145,7 +145,7 @@ public class AssignmentSpecification {
 	private void validateLhs(FromReferenceNode lhs) {
 		// make sure the lhs is "assignable"...
 		if ( !lhs.isResolved() ) {
-			throw new UnsupportedOperationException( "cannot validate assignablity of unresolved node" );
+			throw new UnsupportedOperationException( "cannot validate assignability of unresolved node" );
 		}
 
 		if ( lhs.getDataType().isCollectionType() ) {
