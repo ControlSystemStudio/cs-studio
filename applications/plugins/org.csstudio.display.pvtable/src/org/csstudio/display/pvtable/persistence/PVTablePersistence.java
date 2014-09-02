@@ -7,10 +7,13 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.persistence;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.epics.vtype.VDouble;
+import org.epics.vtype.VLong;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
@@ -21,6 +24,10 @@ import org.epics.vtype.ValueFactory;
  */
 abstract public class PVTablePersistence
 {
+    // TODO static PVTablePersistence forFilename(XML or SAV file)
+    // TODO Update PVTableXMLPersistence to use this
+    // TODO Update 'editor' to use this
+    
     /** Read {@link PVTableModel} from file
      *  @param filename Filename
      *  @return PV table model
@@ -38,6 +45,23 @@ abstract public class PVTablePersistence
      */
     abstract public PVTableModel read(final InputStream stream) throws Exception;
     
+    /** Write {@link PVTableModel} to file
+     *  @param model Model
+     *  @param filename Filename
+     *  @throws Exception on error
+     */
+    public void write(final PVTableModel model, final String filename) throws Exception
+    {
+        write(model, new FileOutputStream(filename));
+    }
+
+    /** Write {@link PVTableModel} to stream
+     *  @param model Model
+     *  @param stream Stream
+     *  @throws Exception on error
+     */
+    abstract public void write(final PVTableModel model, final OutputStream stream) throws Exception;
+    
     /** Helper for creating {@link VType} from a saved value
      *  @param value_text Text of a value
      *  @return VType for that text, either {@link VNumber} ({@link VDouble}) or {@link VString}, or <code>null</code>
@@ -49,13 +73,37 @@ abstract public class PVTablePersistence
         // Try to parse as number
         try
         {
-            final double value = Double.parseDouble(value_text);
-            return ValueFactory.newVDouble(value);
+            // Integer?
+            if (value_text.contains("."))
+            {
+                final double value = Double.parseDouble(value_text);
+                return ValueFactory.newVDouble(value);
+            }
+            else
+            {
+                final long value = Long.parseLong(value_text);
+                return ValueFactory.newVLong(value, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
+            }
         }
         catch (NumberFormatException ex)
         {
             // Not a number, fall through to return VString
         }
         return ValueFactory.newVString(value_text, ValueFactory.alarmNone(), ValueFactory.timeNow());
+    }
+
+    /** Format the value (without alarm, timestamp) as a string
+     *  @param value VType returned by <code>createValue</code>
+     *  @return Text for the value
+     */
+    protected String formatValue(final VType value)
+    {
+        if (value instanceof VLong)
+            return Long.toString(((VLong) value).getValue());
+        if (value instanceof VDouble)
+            return Double.toString(((VDouble) value).getValue());
+        if (value instanceof VString)
+            return ((VString) value).getValue();
+        return value.toString();
     }
 }
