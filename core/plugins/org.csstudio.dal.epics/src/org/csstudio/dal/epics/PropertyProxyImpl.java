@@ -160,7 +160,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	//private boolean abortConnection = false;
 
 	/**
-	 * Create a new proprty instance (channel).
+	 * Create a new property instance (channel).
 	 * @param plug plug hosting this property.
 	 * @param name name of the property.
 	 * @param dataType java data type to work with.
@@ -213,7 +213,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				Logger.getLogger(this.getClass()).warn("Removing CA listener: "+PlugUtilities.toShortErrorReport(e), e);
 			}
 		}
-		// destory channel
+		// destroy channel
 		channel.dispose();
 
 		if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
@@ -719,7 +719,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		synchronized (getCharacteristics())
 		{
 //			System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before size "+getCharacteristics().size());
-			// characteristics not iniialized yet... wait
+			// characteristics not initialized yet... wait
 			if (getCharacteristics().size() == 0)
 			{
 				initializeCharacteristics();
@@ -1141,7 +1141,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
             public void run() {
 
 				try {
-					plug.getLogger().warn("Received NULL DBR, trying again with reovery procedure.");
+					plug.getLogger().warn("Received NULL DBR, trying again with recovery procedure.");
 					getChannel().get(DBRType.CTRL_STRING, 1, fallbackListener);
 					plug.flushIO();
 				} catch (final Throwable e) {

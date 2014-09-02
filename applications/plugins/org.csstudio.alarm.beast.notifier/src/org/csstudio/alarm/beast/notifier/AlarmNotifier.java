@@ -200,7 +200,7 @@ public class AlarmNotifier {
 		final double total = Runtime.getRuntime().totalMemory() / (1024.0 * 1024.0);
 		final double max = Runtime.getRuntime().maxMemory() / (1024.0 * 1024.0);
 		final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-		System.out.format("%s == Alarm Notifer Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
+		System.out.format("%s == Alarm Notifier Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
 						format.format(new Date()), max, free, 100.0 * free / max, total, 100.0 * total / max);
 
 		workQueue.dump();

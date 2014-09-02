@@ -52,7 +52,7 @@ public class Caget {
     public Caget() {
         final String os = System.getProperty("os.name").toLowerCase();
         if (!(os.indexOf("win") >= 0 || os.indexOf("Win") >= 0)) {
-            throw new IllegalStateException("Wrong OS! Run only on Windos");
+            throw new IllegalStateException("Wrong OS! Run only on Windows");
         }
     }
 

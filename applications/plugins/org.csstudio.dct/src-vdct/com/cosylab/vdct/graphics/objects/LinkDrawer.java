@@ -429,7 +429,7 @@ public static void drawKneeLine(Graphics g, OutLink out, InLink in, boolean firs
 	    }
 	    
 	    
-	    if (Settings.getInstance().isWireCrossingAvoidiance())	
+	    if (Settings.getInstance().isWireCrossingAvoidance())
 		{
 				// diff left from right size
 				// tails to be drawn to cover distance -?[ (where ? is)

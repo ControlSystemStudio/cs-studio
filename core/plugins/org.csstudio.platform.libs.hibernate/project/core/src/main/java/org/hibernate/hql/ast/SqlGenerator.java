@@ -271,7 +271,7 @@ public class SqlGenerator extends SqlGeneratorBase implements ErrorReporter {
 	}
 
 	protected void fromFragmentSeparator(AST a) {
-		// check two "adjecent" nodes at the top of the from-clause tree
+		// check two "adjacent" nodes at the top of the from-clause tree
 		AST next = a.getNextSibling();
 		if ( next == null || !hasText( a ) ) {
 			return;

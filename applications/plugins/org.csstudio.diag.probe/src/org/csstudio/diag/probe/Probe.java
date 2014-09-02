@@ -613,9 +613,9 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 			throws NotDefinedException
 	{
 		final Command saveValueCommand = getSaveValueCommand();
-		final IParameter pvParamter = saveValueCommand.getParameter(PV_PARAMETER_ID);
+		final IParameter pvParameter = saveValueCommand.getParameter(PV_PARAMETER_ID);
 		final Parameterization pvParameterization = new Parameterization(
-				pvParamter, pv.getName());
+				pvParameter, pv.getName());
 		final IParameter valueParameter = saveValueCommand.getParameter(VALUE_PARAMETER_ID);
 		final Parameterization valueParameterization = new Parameterization(
 				valueParameter, value.getValueString());

@@ -98,7 +98,7 @@ public class ChooseControlSystemPrefixDialog extends MessageDialog {
 		});
 		
 		Label l = new Label(parent, SWT.NONE);
-		l.setText("Note: You can change the default settting on the | > CSS Core > Control System | preference page.");
+		l.setText("Note: You can change the default setting on the | > CSS Core > Control System | preference page.");
 		return parent;
 	}
 

@@ -10,20 +10,16 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
-import org.epics.util.array.ListNumbers;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
-import static org.epics.vtype.ValueFactory.*;
 
 /**
  * Various utility methods for runtime handling of the types defined in
@@ -34,14 +30,14 @@ import static org.epics.vtype.ValueFactory.*;
 public class ValueUtil {
 
     private ValueUtil() {
-        // Can't instanciate
+        // Can't instantiate
     }
 
     private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByte.class, VByteArray.class, VDouble.class,
             VDoubleArray.class, VEnum.class, VEnumArray.class, VFloat.class, VFloatArray.class,
             VLong.class, VLongArray.class, VInt.class, VIntArray.class, VMultiDouble.class, VMultiEnum.class,
             VMultiInt.class, VMultiString.class, VShort.class, VShortArray.class,
-            VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VTable.class,
+            VStatistics.class, VString.class, VStringArray.class, VBoolean.class, VBooleanArray.class, VTable.class,
             VImage.class);
 
     /**

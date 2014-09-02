@@ -1200,7 +1200,7 @@ public class JPAOverridenAnnotationReader implements AnnotationReader {
 				type = AccessType.valueOf( access );
 			}
 			catch ( IllegalArgumentException e ) {
-				throw new AnnotationException( access + " is not a valid access type. Check you xml confguration." );
+				throw new AnnotationException( access + " is not a valid access type. Check your xml configuration." );
 			}
 
 			if ( ( AccessType.PROPERTY.equals( type ) && this.element instanceof Method ) ||

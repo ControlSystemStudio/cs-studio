@@ -74,7 +74,7 @@ public class EPICSArchiveReader implements ArchiveReader {
     public ArchiveInfo[] getArchiveInfos() {
 
 	return new ArchiveInfo[] { new ArchiveInfo(serverURL,
-		"EPICS Archiver Appliaction", 1) };
+		"EPICS Archiver Application", 1) };
     }
 
     @Override
@@ -137,7 +137,7 @@ public class EPICSArchiveReader implements ArchiveReader {
 	    EpicsMessage dbrevent = theIter.next();
 	    return org.epics.vtype.ValueFactory.newVNumber(
 		    dbrevent.getNumberValue(),
-		    tranformToISeverity(dbrevent.getSeverity()),
+		    transformToISeverity(dbrevent.getSeverity()),
 		    org.epics.vtype.ValueFactory.newTime(org.epics.util.time.Timestamp
 			    .of(dbrevent.getTimestamp().getTime() / 1000,
 				    dbrevent.getTimestamp().getNanos())),
@@ -196,7 +196,7 @@ public class EPICSArchiveReader implements ArchiveReader {
 
     }
 
-    private static Alarm tranformToISeverity(int severity) {
+    private static Alarm transformToISeverity(int severity) {
 	return org.epics.vtype.ValueFactory.newAlarm(
 		AlarmSeverity.values()[severity], "N/a");
 

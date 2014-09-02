@@ -4,7 +4,6 @@
  */
 /**
  * Contains basic common classes to handle time at nanosecond precision.
- * <p>
  * <h3>JSR 310 compatibility</h3>
  * Java 8 will introduce a better time definition that is going to be very
  * similar to these class. That effort is unfortunately too unstable to use

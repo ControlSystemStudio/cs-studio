@@ -101,7 +101,7 @@ public class ADLDisplay extends Widget{
                 _widget.setPropertyValue(DisplayModel.PROP_GRID_ON, row[1].equals("1"));
                 LOG.debug("snaptogrid {}",display.toString());
             }else {//Unknown Property
-                LOG.info("Unknwon Property: {}",fileLine, new WrongADLFormatException(fileLine+Messages.Display_WrongADLFormatException_Parameter_End));
+                LOG.info("Unknown Property: {}",fileLine, new WrongADLFormatException(fileLine+Messages.Display_WrongADLFormatException_Parameter_End));
             }
 
         }

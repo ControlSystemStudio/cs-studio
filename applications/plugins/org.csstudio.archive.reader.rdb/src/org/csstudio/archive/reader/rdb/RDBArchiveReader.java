@@ -494,7 +494,7 @@ public class RDBArchiveReader implements ArchiveReader
                 catch (Exception ex)
                 {
                     Logger.getLogger(Activator.ID).log(Level.WARNING,
-                        "Attempt to cancel statment", ex); //$NON-NLS-1$
+                        "Attempt to cancel statement", ex); //$NON-NLS-1$
                 }
             }
         }

@@ -40,7 +40,7 @@ public class SimDSFunctionSet extends DSFunctionSet {
 		function = new DSFunction("intermittentChannel", null, true, false);
 		function.addArgument("delayInSeconds", Double.class);
 		function.addArgument("value", Object.class);
-		function.setDescription("A channel that keeps connecting and disonnecting. This is useful to test disconnect behavior of applications. The value can be a number, a string, an array of numbers or an array of strings.");
+		function.setDescription("A channel that keeps connecting and disconnecting. This is useful to test disconnect behavior of applications. The value can be a number, a string, an array of numbers or an array of strings.");
 		setDescription.addFunction(function);
 
 		// const

@@ -376,7 +376,7 @@ public class OPIColorDialog extends HelpTrayDialog {
 		@Override
 		public void run() {
 			MediaService.getInstance().reloadColorFile();
-			Job job = new Job("Update Colors viewser") {
+			Job job = new Job("Update Colors Viewer") {
 
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {

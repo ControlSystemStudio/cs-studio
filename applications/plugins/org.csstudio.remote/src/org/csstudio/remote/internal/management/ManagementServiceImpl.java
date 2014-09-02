@@ -171,7 +171,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
 							parameterConfig.createExecutableExtension("class");
 				} catch (CoreException e) {
 					throw new RuntimeException(
-							"Could not create object for dynamic paramter values.",
+							"Could not create object for dynamic parameter values.",
 							e);
 				}
 			} else {

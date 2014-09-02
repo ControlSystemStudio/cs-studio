@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.graphene;
 
-import org.epics.graphene.Range;
+import org.epics.util.stats.Range;
 
 /**
  * Range information of a drawn graph.

@@ -94,14 +94,14 @@ public class Application implements IApplication {
 			factory.init(NotifierUtils.getActions());
 			final IAlarmRDBHandler rdbHandler = new AlarmRDBHandler(config_name.get());
 			final int timer_threshold = org.csstudio.alarm.beast.notifier.Preferences.getTimerThreshold();
-			final AlarmNotifier alarm_notifer = new AlarmNotifier(
+			final AlarmNotifier alarm_notifier = new AlarmNotifier(
 					config_name.get(), rdbHandler, factory, timer_threshold);
-			rdbHandler.init(alarm_notifer);
-			alarm_notifer.start();
+			rdbHandler.init(alarm_notifier);
+			alarm_notifier.start();
 			while (run) {
 				Thread.sleep(500);
 			}
-			alarm_notifer.stop();
+			alarm_notifier.stop();
 		} catch (Throwable ex) {
 			Activator.getLogger().log(Level.SEVERE,
 					"Exception during Alarm Notifier starting", ex);

@@ -5,12 +5,14 @@
 package org.epics.vtype;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ListBoolean;
 import org.epics.util.array.ListByte;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListFloat;
@@ -20,6 +22,7 @@ import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
 import org.epics.util.array.ListShort;
 import org.epics.util.time.Timestamp;
+import org.epics.vtype.table.ListNumberProvider;
 
 /**
  * Factory class for all concrete implementation of the types.
@@ -313,18 +316,19 @@ public class ValueFactory {
     }
     
     public static ArrayDimensionDisplay newDisplay(final ListNumber boundaries, final String unit) {
-        return new ArrayDimensionDisplay() {
-
-            @Override
-            public ListNumber getCellBoundaries() {
-                return boundaries;
-            }
-
-            @Override
-            public String getUnits() {
-                return unit;
-            }
-        };
+        return newDisplay(boundaries, false, unit);
+    }
+    
+    public static ArrayDimensionDisplay newDisplay(final ListNumber boundaries, final boolean reversed, final String unit) {
+        return new IArrayDimensionDisplay(boundaries, reversed, unit);
+    }
+    
+    public static ArrayDimensionDisplay newDisplay(final int size, final ListNumberProvider boundaryProvider, final boolean invert) {
+        return newDisplay(boundaryProvider.createListNumber(size + 1), invert, "");
+    }
+    
+    public static ArrayDimensionDisplay newDisplay(final int size, final ListNumberProvider boundaryProvider) {
+        return newDisplay(boundaryProvider.createListNumber(size + 1), false, "");
     }
     
     /**
@@ -537,6 +541,25 @@ public class ValueFactory {
     }
     
     /**
+     * Constructs and nd array with the data, time and alarm in the first array and the given
+     * dimension information.
+     * 
+     * @param data the array with the data
+     * @param dimensions the dimension information
+     * @return a new array
+     */
+    public static VNumberArray ndArray(VNumberArray data, ArrayDimensionDisplay... dimensions) {
+        int[] sizes = new int[dimensions.length];
+        List<ArrayDimensionDisplay> displays = new ArrayList<>();
+        for (int i = 0; i < dimensions.length; i++) {
+            ArrayDimensionDisplay dimensionInfo = dimensions[i];
+            sizes[i] = dimensionInfo.getCellBoundaries().size() - 1;
+            displays.add(dimensionInfo);
+        }
+        return ValueFactory.newVNumberArray(data.getData(), new ArrayInt(sizes), displays, data, data, data);
+    }
+    
+    /**
      * Creates a new VDoubleArray.
      * 
      * @param data array data
@@ -614,6 +637,18 @@ public class ValueFactory {
      */
     public static VEnumArray newVEnumArray(ListInt indexes, List<String> labels, Alarm alarm, Time time) {
         return new IVEnumArray(indexes, labels, new ArrayInt(indexes.size()), alarm, time);
+    }
+
+    /**
+     * Creates a new VBooleanArray.
+     * 
+     * @param data the strings
+     * @param alarm the alarm
+     * @param time the time
+     * @return the new value
+     */
+    public static VBooleanArray newVBooleanArray(ListBoolean data, Alarm alarm, Time time) {
+        return new IVBooleanArray(data, new ArrayInt(data.size()), alarm, time);
     }
 
     /**
@@ -720,12 +755,12 @@ public class ValueFactory {
      * <p>
      * Types are converted as follow:
      * <ul>
-     *   <li>Boolean -> VBoolean</li>
-     *   <li>Number -> corresponding VNumber</li>
-     *   <li>String -> VString</li>
-     *   <li>number array -> corresponding VNumberArray</li>
-     *   <li>ListNumber -> corresponding VNumberArray</li>
-     *   <li>List-> if all elements are String, VStringArray</li>
+     *   <li>Boolean -&gt; VBoolean</li>
+     *   <li>Number -&gt; corresponding VNumber</li>
+     *   <li>String -&gt; VString</li>
+     *   <li>number array -&gt; corresponding VNumberArray</li>
+     *   <li>ListNumber -&gt; corresponding VNumberArray</li>
+     *   <li>List -&gt; if all elements are String, VStringArray</li>
      * </ul>
      * 
      * @param javaObject the value to wrap

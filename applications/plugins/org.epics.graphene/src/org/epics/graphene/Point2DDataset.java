@@ -4,7 +4,9 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Statistics;
 import org.epics.util.array.ListNumber;
+import org.epics.util.stats.Range;
 
 /**
  * A dataset consisting of a set of 2D points.
@@ -51,6 +53,20 @@ public interface Point2DDataset {
      * @return x statistical information; null if no actual values in the dataset
      */
     public Statistics getYStatistics();
+    
+    /**
+     * The suggested range to display the x values.
+     * 
+     * @return the suggested x display range
+     */
+    public Range getXDisplayRange();
+    
+    /**
+     * The suggested range to display the y values.
+     * 
+     * @return the suggested y display range
+     */
+    public Range getYDisplayRange();
     
     /**
      * The number of points in the dataset.

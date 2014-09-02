@@ -7,6 +7,8 @@ package org.epics.pvmanager.graphene;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.epics.graphene.Cell1DDataset;
+import org.epics.graphene.Cell1DDatasets;
 import org.epics.graphene.Cell2DDataset;
 import org.epics.graphene.Cell2DDatasets;
 import org.epics.graphene.Point2DDataset;
@@ -17,6 +19,9 @@ import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.ListNumbers;
+import org.epics.util.stats.Range;
+import org.epics.util.stats.Ranges;
+import org.epics.vtype.Display;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.ValueUtil;
@@ -189,5 +194,24 @@ public class DatasetConversions {
 
     public static Cell2DDataset cell2DDatasetsFromVNumberArray(VNumberArray data) {
         return new Cell2DDatasetFromVNumberArray(data);
+    }
+    
+    public static Range toRange(Display display) {
+        if (display == null) {
+            return null;
+        }
+        
+        Double min = display.getLowerDisplayLimit();
+        Double max = display.getUpperDisplayLimit();
+        
+        if (min != null && max != null) {
+            return Ranges.range(min, max);
+        } else {
+            return null;
+        }
+    }
+
+    public static Cell1DDataset cell1DDatasetsFromVNumberArray(VNumberArray data) {
+        return Cell1DDatasets.datasetFrom(data.getData(), data.getDimensionDisplay().get(0).getCellBoundaries(), toRange(data));
     }
 }

@@ -133,7 +133,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * Specify an association fetching strategy for an association or a
 	 * collection of values.
 	 *
-	 * @param associationPath a dot seperated property path
+	 * @param associationPath a dot separated property path
 	 * @param mode The fetch mode for the referenced association
 	 *
 	 * @return this (for method chaining)
@@ -168,7 +168,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * Functionally equivalent to {@link #createAlias(String, String, int)} using
 	 * {@link #INNER_JOIN} for the joinType.
 	 *
-	 * @param associationPath A dot-seperated property path
+	 * @param associationPath A dot-separated property path
 	 * @param alias The alias to assign to the joined association (for later reference).
 	 *
 	 * @return this (for method chaining)
@@ -184,7 +184,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * The joinType is expected to be one of {@link #INNER_JOIN} (the default),
 	 * {@link #FULL_JOIN}, or {@link #LEFT_JOIN}.
 	 *
-	 * @param associationPath A dot-seperated property path
+	 * @param associationPath A dot-separated property path
 	 * @param alias The alias to assign to the joined association (for later reference).
 	 * @param joinType The type of join to use.
 	 *
@@ -201,7 +201,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * The joinType is expected to be one of {@link #INNER_JOIN} (the default),
 	 * {@link #FULL_JOIN}, or {@link #LEFT_JOIN}.
 	 *
-	 * @param associationPath A dot-seperated property path
+	 * @param associationPath A dot-separated property path
 	 * @param alias The alias to assign to the joined association (for later reference).
 	 * @param joinType The type of join to use.
 	 * @param withClause The criteria to be added to the join condition (<tt>ON</tt> clause)
@@ -218,7 +218,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * Functionally equivalent to {@link #createCriteria(String, int)} using
 	 * {@link #INNER_JOIN} for the joinType.
 	 *
-	 * @param associationPath A dot-seperated property path
+	 * @param associationPath A dot-separated property path
 	 *
 	 * @return the created "sub criteria"
 	 *
@@ -230,7 +230,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * Create a new <tt>Criteria</tt>, "rooted" at the associated entity, using the
 	 * specified join type.
 	 *
-	 * @param associationPath A dot-seperated property path
+	 * @param associationPath A dot-separated property path
 	 * @param joinType The type of join to use.
 	 *
 	 * @return the created "sub criteria"
@@ -246,7 +246,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * Functionally equivalent to {@link #createCriteria(String, String, int)} using
 	 * {@link #INNER_JOIN} for the joinType.
 	 *
-	 * @param associationPath A dot-seperated property path
+	 * @param associationPath A dot-separated property path
 	 * @param alias The alias to assign to the joined association (for later reference).
 	 *
 	 * @return the created "sub criteria"
@@ -259,7 +259,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * Create a new <tt>Criteria</tt>, "rooted" at the associated entity,
 	 * assigning the given alias and using the specified join type.
 	 *
-	 * @param associationPath A dot-seperated property path
+	 * @param associationPath A dot-separated property path
 	 * @param alias The alias to assign to the joined association (for later reference).
 	 * @param joinType The type of join to use.
 	 *
@@ -273,7 +273,7 @@ public interface Criteria extends CriteriaSpecification {
 	 * Create a new <tt>Criteria</tt>, "rooted" at the associated entity,
 	 * assigning the given alias and using the specified join type.
 	 *
-	 * @param associationPath A dot-seperated property path
+	 * @param associationPath A dot-separated property path
 	 * @param alias The alias to assign to the joined association (for later reference).
 	 * @param joinType The type of join to use.
 	 * @param withClause The criteria to be added to the join condition (<tt>ON</tt> clause)

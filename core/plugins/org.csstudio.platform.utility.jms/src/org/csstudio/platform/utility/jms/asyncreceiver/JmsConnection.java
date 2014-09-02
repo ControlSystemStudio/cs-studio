@@ -240,7 +240,7 @@ final class JmsConnection implements TransportListener {
 	 */
 	public void onException(final IOException e) {
 		// TODO perform recovery in this case?
-//		_log.error(this, "Exception occured.", e);
+//		_log.error(this, "Exception occurred.", e);
 		_connector.onConnectionStateChanged();
 	}
 

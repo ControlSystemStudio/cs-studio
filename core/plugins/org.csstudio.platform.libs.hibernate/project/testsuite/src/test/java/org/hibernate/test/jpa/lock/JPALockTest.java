@@ -177,7 +177,7 @@ public class JPALockTest extends AbstractJPATest {
 		item2.setName( "updated" );
 		try {
 			t2.commit();
-			fail( "optimisitc lock should have failed" );
+			fail( "optimistic lock should have failed" );
 		}
 		catch (Throwable ignore) {
 			// expected behavior

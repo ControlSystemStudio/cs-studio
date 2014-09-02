@@ -114,7 +114,7 @@ public abstract class SingleNodeTestCase extends FunctionalTestCase {
    }
 
    protected void setRollbackOnlyTxExpected(Exception e) throws Exception {
-      log.debug("Expected behaivour", e);
+      log.debug("Expected behaviour", e);
       tm.setRollbackOnly();
    }
 

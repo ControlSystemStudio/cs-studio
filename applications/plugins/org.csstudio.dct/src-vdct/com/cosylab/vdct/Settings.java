@@ -62,7 +62,7 @@ public class Settings {
 	private boolean defaultVisibility = true;
 	private boolean hideLinks = false;
 	
-	private boolean wireCrossingAvoidiance = true;
+	private boolean wireCrossingAvoidance = true;
 	
 	private int doubleClickSpeed = -1;
 	private int doubleClickSmudge = 4;
@@ -105,7 +105,7 @@ protected Settings() {
 	canvasHeight = prefs.getInt("CanvasHeight", 5000);
 	defaultVisibility = prefs.getBoolean("DefaultVisibility", true);
 	hideLinks = prefs.getBoolean("HideLinks", false);
-	wireCrossingAvoidiance = prefs.getBoolean("WireCrossingAvoidiance", wireCrossingAvoidiance);
+	wireCrossingAvoidance = prefs.getBoolean("WireCrossingAvoidance", wireCrossingAvoidance);
 	
 	legendLogo = prefs.get("LegendLogo", "");
 	legendVisibility = prefs.getInt("LegendVisibility", 1);
@@ -649,9 +649,9 @@ public void loadRecentFiles()
 	/**
 	 * @param b
 	 */
-	public void setWireCrossingAvoidiance(boolean b) {
-		wireCrossingAvoidiance = b;
-		prefs.putBoolean("WireCrossingAvoidiance", wireCrossingAvoidiance);
+	public void setWireCrossingAvoidance(boolean b) {
+		wireCrossingAvoidance = b;
+		prefs.putBoolean("WireCrossingAvoidance", wireCrossingAvoidance);
 		sync();
 	}
 
@@ -706,8 +706,8 @@ public void loadRecentFiles()
 	/**
 	 * @return
 	 */
-    public boolean isWireCrossingAvoidiance()
+    public boolean isWireCrossingAvoidance()
     {
-        return wireCrossingAvoidiance;
+        return wireCrossingAvoidance;
     }
 }

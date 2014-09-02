@@ -193,10 +193,10 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                                                                                            new WorkbenchContentProvider());
                         IWorkspace workspace = ResourcesPlugin.getWorkspace();
                         dialog.setInput(workspace.getRoot());
-                        dialog.setTitle("Select Maintence Display");
+                        dialog.setTitle("Select Maintenance Display");
                         dialog.setAllowMultiple(false);
                         dialog.setBlockOnOpen(true);
-                        dialog.setMessage("Choose the Maintence Display:");
+                        dialog.setMessage("Choose the Maintenance Display:");
                         dialog.setStatusLineAboveButtons(true);
                         String stringValue = (String) getValue();
                         IResource findMember = workspace.getRoot().findMember(stringValue);

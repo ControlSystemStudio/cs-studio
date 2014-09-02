@@ -69,7 +69,7 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
                                                                    if (d <= 0) {
                                                                        return "Value has to be greater than 0";
                                                                    }else if (d > 100) {
-                                                                       return "Value has to be smaller or eqaul than 100";
+                                                                       return "Value has to be smaller or equal than 100";
                                                                    }
 
                                                                } catch (NumberFormatException x) {

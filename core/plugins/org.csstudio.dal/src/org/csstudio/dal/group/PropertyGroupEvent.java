@@ -55,7 +55,7 @@ public class PropertyGroupEvent<T extends DynamicValueProperty<?>> extends Event
 		}
 
 		if (members.length == 0) {
-			throw new IllegalArgumentException("Members aray is empty");
+			throw new IllegalArgumentException("Members array is empty");
 		}
 	}
 

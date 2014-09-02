@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
+
 /**
  * The scale to be used to create axis references and rescale values.
  *
@@ -12,15 +14,28 @@ package org.epics.graphene;
 public interface ValueScale {
     
     /**
-     * Scales the value from range A to range B.
-     * @param value original value in original range
-     * @param minValue original range min
-     * @param maxValue original range max
-     * @param newMinValue new range min
-     * @param newMaxValue new range max
-     * @return new value in new range
+     * Scales the actual value to the scale value.
+     * 
+     * @param value actual value to be scaled
+     * @param minValue actual range min
+     * @param maxValue actual range max
+     * @param newMinValue scale range min
+     * @param newMaxValue scale range max
+     * @return new value in the scale
      */
     double scaleValue(double value, double minValue, double maxValue, double newMinValue, double newMaxValue);
+    
+    /**
+     * Scales the scale value to the actual value.
+     * 
+     * @param scaleValue scale value to be scaled
+     * @param minValue actual range min
+     * @param maxValue actual range max
+     * @param newMinValue scale range min
+     * @param newMaxValue scale range max
+     * @return new value in the actual range
+     */
+    double invScaleValue(double scaleValue, double minValue, double maxValue, double newMinValue, double newMaxValue);
     
     /**
      * Returns the reference axes for a given range

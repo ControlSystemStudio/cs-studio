@@ -84,7 +84,7 @@ public class BinaryLogicOperatorNode extends HqlSqlWalkerNode implements BinaryO
 			int lhsColumnSpan = getColumnSpan( lhsType, sessionFactory );
 			if ( lhsColumnSpan != getColumnSpan( rhsType, sessionFactory ) ) {
 				throw new TypeMismatchException(
-						"left and right hand sides of a binary logic operator were incompatibile [" +
+						"left and right hand sides of a binary logic operator were incompatible [" +
 						lhsType.getName() + " : "+ rhsType.getName() + "]"
 				);
 			}
@@ -222,7 +222,7 @@ public class BinaryLogicOperatorNode extends HqlSqlWalkerNode implements BinaryO
 			return splits;
 		}
 		else {
-			throw new HibernateException( "dont know how to extract row value elements from node : " + operand );
+			throw new HibernateException( "don't know how to extract row value elements from node : " + operand );
 		}
 	}
 

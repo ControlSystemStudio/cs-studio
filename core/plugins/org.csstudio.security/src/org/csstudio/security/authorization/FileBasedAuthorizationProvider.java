@@ -68,7 +68,7 @@ public class FileBasedAuthorizationProvider implements AuthorizationProvider
         {
             final String auth_setting_cfg = settings.getProperty(authorization);
             final String[] auth_setting = auth_setting_cfg.split("\\s*,\\s*");
-            logger.fine("Autorization '" + authorization + "' : Name Patterns " + Arrays.toString(auth_setting));
+            logger.fine("Authorization '" + authorization + "' : Name Patterns " + Arrays.toString(auth_setting));
             final List<Pattern> patterns = new ArrayList<>(auth_setting.length);
             for (String setting : auth_setting)
                 patterns.add(Pattern.compile(setting));

@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -20,6 +21,7 @@ import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
+import org.epics.util.stats.Ranges;
 import org.epics.util.time.TimeInterval;
 import org.epics.util.time.Timestamp;
 
@@ -87,7 +89,7 @@ public abstract class TemporalGraph2DRenderer<T extends TemporalGraph2DRendererU
     private int imageHeight;
     // Strategy for calculating the axis range
     private TimeAxisRange timeAxisRange = TimeAxisRanges.relative();
-    private AxisRangeInstance axisRange = AxisRanges.integrated().createInstance();
+    private AxisRangeInstance axisRange = AxisRanges.auto(0.0).createInstance();
     // Strategy for generating labels and scaling value of the axis
     private TimeScale timeScale = TimeScales.linearAbsoluteScale();
     private ValueScale valueScale = ValueScales.linearScale();
@@ -214,7 +216,7 @@ public abstract class TemporalGraph2DRenderer<T extends TemporalGraph2DRendererU
         if (aggregatedRange == null) {
             return dataRange;
         } else {
-            return RangeUtil.sum(dataRange, aggregatedRange);
+            return Ranges.sum(dataRange, aggregatedRange);
         }
     }
     
