@@ -38,7 +38,7 @@ public class PVTableXMLPersistenceTest
     public void testReadXML() throws Exception
     {
         final PVTablePersistence persistence = new PVTableXMLPersistence();
-        final PVTableModel model = persistence.read(new FileInputStream("lib/example.xml"));
+        final PVTableModel model = persistence.read(new FileInputStream("lib/example.pvs"));
         assertThat(model.getItemCount(), equalTo(52));
         assertThat(model.getItem(0).getName(), equalTo(TestSettings.NAME));
         assertThat(VTypeHelper.toString(model.getItem(0).getSavedValue()), equalTo("3.14"));

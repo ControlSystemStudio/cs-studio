@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!-- PV Table Configuration file schema
+
+	 To run standalone validation  (use double'-', can't show that in XML comment):
+	  xmllint -schema pv_table.xsd ../org.csstudio.display.pvtable.test/lib/example.pvs
+  -->
+<xs:element name="pvtable">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="tolerance" type="xs:double" minOccurs="0"/>
+      <xs:element name="pvlist" type="pvlist"/>
+    </xs:sequence>
+    <xs:attribute name="version" type="xs:string" default="1.0"/>
+  </xs:complexType>
+</xs:element>
+
+<xs:complexType name="pvlist">
+    <xs:sequence>
+         <xs:element name="pv" type="pv" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pv">
+    <xs:sequence>
+        <xs:element name="selected" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="name" type="xs:string" minOccurs="1"/>
+        <xs:element name="tolerance" type="xs:double" minOccurs="0"/>
+        <xs:element name="saved_value" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+</xs:complexType>
+
+</xs:schema>
