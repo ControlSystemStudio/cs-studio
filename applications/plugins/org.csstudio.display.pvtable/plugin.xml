@@ -20,7 +20,7 @@
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type id="org.csstudio.display.pvtable"
             base-type="org.eclipse.core.runtime.xml"
-            file-extensions="pvs,css-pvtable"
+            file-extensions="pvs,css-pvtable,sav"
             name="PV Table Editor File">
       </content-type>
    </extension>

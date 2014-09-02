@@ -16,7 +16,6 @@ import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
 import org.csstudio.display.pvtable.persistence.PVTablePersistence;
-import org.csstudio.display.pvtable.persistence.PVTableXMLPersistence;
 import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.NoResourceEditorInput;
@@ -207,9 +206,8 @@ public class PVTableEditor extends EditorPart
         
         // If there is an original file name, try to display it
         final IPath original = resources.getPath(getEditorInput());
-        PVTablePersistence persistence = PVTablePersistence.forFilename(original.getFileExtension());
-        IPath path = SingleSourcePlugin.getUIHelper()
-            .openSaveDialog(getEditorSite().getShell(), original, persistence.getFileExtension());
+        final IPath path = SingleSourcePlugin.getUIHelper()
+            .openSaveDialog(getEditorSite().getShell(), original, null);
         if (path == null)
             return;
         
@@ -217,8 +215,8 @@ public class PVTableEditor extends EditorPart
         final IEditorInput new_input = new PathEditorInput(path);
         try
         {
-            final OutputStream stream =
-                    resources.getOutputStream(new_input);
+            final OutputStream stream = resources.getOutputStream(new_input);
+            final PVTablePersistence persistence = PVTablePersistence.forFilename(path.getFileExtension());
             saveToStream(null, persistence, stream);
         }
         catch (Exception ex)
