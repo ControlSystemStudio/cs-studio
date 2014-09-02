@@ -82,20 +82,12 @@ abstract public class PVTablePersistence
     {
         if (value_text.isEmpty())
             return null;
-        // Try to parse as number
         try
-        {
-            // Integer?
-            if (value_text.contains("."))
-            {
-                final double value = Double.parseDouble(value_text);
-                return ValueFactory.newVDouble(value);
-            }
-            else
-            {
-                final long value = Long.parseLong(value_text);
-                return ValueFactory.newVLong(value, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
-            }
+        {   // Try to parse as number
+            final double value = Double.parseDouble(value_text);
+            if (value == (long) value)
+                return ValueFactory.newVLong((long) value, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
+            return ValueFactory.newVDouble(value);
         }
         catch (NumberFormatException ex)
         {
