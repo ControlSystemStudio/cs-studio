@@ -6,9 +6,8 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
  org.eclipse.draw2d;bundle-version="3.4.0";resolution:=optional;visibility:=reexport,
  org.eclipse.rap.ui;bundle-version="1.4.0";resolution:=optional,
- org.eclipse.draw2d.rap;bundle-version="1.0.0";resolution:=optional,
- org.eclipse.rap.draw2d;bundle-version="1.5.0";resolution:=optional,
- org.eclipse.rap.draw2d.compatibility;bundle-version="1.5.0";resolution:=optional
+ org.eclipse.rap.draw2d;resolution:=optional,
+ org.eclipse.rap.draw2d.compatibility;resolution:=optional
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 2.0.3.qualifier
