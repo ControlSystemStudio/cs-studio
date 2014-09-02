@@ -17,11 +17,11 @@
 		<tycho.version>0.20.0</tycho.version>
 		<manifest-location>META-INF</manifest-location>
 		<cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.0</cs-studio-central.url>
-		<pvmanager.version>2.6</pvmanager.version>
-		<epics.util.version>0.3.1</epics.util.version>
+		<pvmanager.version>2.7.1</pvmanager.version>
+		<epics.util.version>0.3.2</epics.util.version>
 		<epics.caj.version>1.1.14</epics.caj.version>
 		<epics.jca.version>2.3.6</epics.jca.version>
-		<graphene.version>0.7.0</graphene.version>
+		<graphene.version>0.8.0</graphene.version>
 		<pvdata.version>3.0.3</pvdata.version>
 		<pvaccess.version>3.0.5</pvaccess.version>
 		<csstudio.version>4.0.0-SNAPSHOT</csstudio.version>

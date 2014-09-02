@@ -118,6 +118,7 @@
 									<instructions>
 										<Bundle-Name>org.python.jython</Bundle-Name>
 										<Bundle-SymbolicName>org.python.jython</Bundle-SymbolicName>
+										<Bundle-Version>2.5.3.v1</Bundle-Version>
 									</instructions>
 									
 								</artifact>
