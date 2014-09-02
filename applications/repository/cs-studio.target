@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="cs-studio" sequenceNumber="72">
+<?pde version="3.8"?><target name="cs-studio" sequenceNumber="73">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="net.miginfocom.layout.swing" version="3.7.1.v200911230030"/>
@@ -493,58 +493,6 @@
 <repository location="http://download.eclipse.org/eclipse/updates/4.3"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.csstudio.utility.pvmanager.vtype" version="4.0.0.20140731145754"/>
-<unit id="org.csstudio.utility.pvmanager.graphene" version="4.0.0.20140731145757"/>
-<unit id="org.objenesis" version="1.0.0"/>
-<unit id="org.epics.pvdata" version="3.0.3"/>
-<unit id="org.hamcrest.core" version="1.3.0"/>
-<unit id="org.csstudio.utility.pvmanager.jdbc" version="4.0.0.20140731145755"/>
-<unit id="org.hamcrest.library" version="1.3.0"/>
-<unit id="org.csstudio.pvmanager.pva.feature.feature.group" version="3.3.2.201408041355"/>
-<unit id="org.csstudio.utility.pvmanager.file" version="4.0.0.20140731145754"/>
-<unit id="org.csstudio.libs.feature.feature.group" version="3.2.1.201407311944"/>
-<unit id="org.csstudio.utility.pvmanager.sys" version="4.0.0.20140731145756"/>
-<unit id="org.epics.vtype" version="2.6.0"/>
-<unit id="org.epics.util.source" version="0.3.1"/>
-<unit id="org.epics.pvmanager-graphene" version="2.6.0"/>
-<unit id="org.csstudio.utility.pvmanager" version="4.0.0.20140731145752"/>
-<unit id="org.epics.pvmanager-integration.source" version="2.6.0"/>
-<unit id="org.csstudio.utility.pvmanager.loc" version="4.0.0.20140731145755"/>
-<unit id="org.antlr.runtime" version="3.4.0"/>
-<unit id="org.csstudio.core.all.feature.feature.group" version="1.0.7.201408051753"/>
-<unit id="org.csstudio.pvmanager.jdbc.feature.feature.group" version="3.3.0.201408041355"/>
-<unit id="org.csstudio.thirdparty.all.feature.source.feature.group" version="1.0.1.201407311944"/>
-<unit id="org.epics.pvaccess" version="3.0.5"/>
-<unit id="org.csstudio.core.all.feature.source.feature.group" version="1.0.7.201408051753"/>
-<unit id="org.csstudio.utility.pvmanager.exec" version="4.0.0.20140731145754"/>
-<unit id="slf4j.api" version="1.7.2"/>
-<unit id="jul.to.slf4j" version="1.7.2"/>
-<unit id="org.epics.graphene.source" version="0.7.0"/>
-<unit id="org.jdom" version="1.1.0"/>
-<unit id="org.csstudio.utility.pvmanager.extra" version="4.0.0.20140731145756"/>
-<unit id="org.epics.pvmanager-graphene.source" version="2.6.0"/>
-<unit id="org.antlr.runtime.source" version="3.4.0"/>
-<unit id="org.epics.util" version="0.3.1"/>
-<unit id="org.epics.pvdata.source" version="3.0.3"/>
-<unit id="org.csstudio.utility.pvmanager.pva" version="4.0.0.20140731145755"/>
-<unit id="org.csstudio.pvmanager.exec.feature.feature.group" version="3.3.0.201408041354"/>
-<unit id="org.mockito.mockito-core" version="1.9.5"/>
-<unit id="org.csstudio.pvmanager.autocomplete.feature.feature.group" version="1.0.1.201406252040"/>
-<unit id="org.csstudio.thirdparty.all.feature.feature.group" version="1.0.1.201407311944"/>
-<unit id="org.epics.pvaccess.source" version="3.0.5"/>
-<unit id="org.csstudio.platform.libs.epics" version="4.0.0.20140731145758"/>
-<unit id="org.epics.graphene" version="0.7.0"/>
-<unit id="org.python.jython" version="2.5.3"/>
-<unit id="org.csstudio.pvmanager.extra.feature.feature.group" version="3.3.0.201408041356"/>
-<unit id="org.csstudio.utility.pvmanager.epics" version="4.0.0.20140731145753"/>
-<unit id="org.junit-dep" version="4.10.0"/>
-<unit id="org.csstudio.utility.pvmanager.sim" version="4.0.0.20140731145756"/>
-<unit id="org.csstudio.pvmanager.feature.feature.group" version="4.0.0.201408041356"/>
-<unit id="org.epics.pvmanager-integration" version="2.6.0"/>
-<unit id="org.epics.vtype.source" version="2.6.0"/>
-<repository location="http://download.controlsystemstudio.org/updates/4.0"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.oda.sdk.feature.group" version="1.2.0.v20140203-1126"/>
 <unit id="org.eclipse.emf.query.examples.feature.group" version="1.7.0.201306111332"/>
 <unit id="org.eclipse.emf.compare.diagram.papyrus.feature.group" version="2.1.3.201402040808"/>
@@ -587,6 +535,58 @@
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rap.gef.feature.feature.group" version="0.1.0.20140725-1636"/>
 <repository location="http://download.eclipse.org/rt/rap/incubator/nightly/gef/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.csstudio.utility.pvmanager.epics" version="4.0.0.20140902104714"/>
+<unit id="org.objenesis" version="1.0.0"/>
+<unit id="org.csstudio.utility.pvmanager" version="4.0.0.20140902104713"/>
+<unit id="org.csstudio.utility.pvmanager.vtype" version="4.0.0.20140902104715"/>
+<unit id="org.epics.pvdata" version="3.0.3"/>
+<unit id="org.hamcrest.core" version="1.3.0"/>
+<unit id="org.epics.graphene" version="0.8.0"/>
+<unit id="org.epics.vtype" version="2.7.1"/>
+<unit id="org.hamcrest.library" version="1.3.0"/>
+<unit id="org.csstudio.pvmanager.pva.feature.feature.group" version="3.3.2.201408041355"/>
+<unit id="org.csstudio.platform.libs.epics" version="4.0.0.20140902104719"/>
+<unit id="org.csstudio.libs.feature.feature.group" version="3.2.1.201407311944"/>
+<unit id="org.csstudio.utility.pvmanager.pva" version="4.0.0.20140902104716"/>
+<unit id="org.csstudio.utility.pvmanager.graphene" version="4.0.0.20140902104719"/>
+<unit id="org.epics.pvmanager-integration.source" version="2.7.1"/>
+<unit id="org.epics.util" version="0.3.2"/>
+<unit id="org.epics.pvmanager-integration" version="2.7.1"/>
+<unit id="org.epics.pvmanager-graphene" version="2.7.1"/>
+<unit id="org.antlr.runtime" version="3.4.0"/>
+<unit id="org.csstudio.core.all.feature.feature.group" version="1.0.7.201408051753"/>
+<unit id="org.csstudio.pvmanager.jdbc.feature.feature.group" version="3.3.0.201408041355"/>
+<unit id="org.csstudio.utility.pvmanager.sim" version="4.0.0.20140902104717"/>
+<unit id="org.csstudio.thirdparty.all.feature.source.feature.group" version="1.0.1.201407311944"/>
+<unit id="org.csstudio.utility.pvmanager.extra" version="4.0.0.20140902104717"/>
+<unit id="org.epics.vtype.source" version="2.7.1"/>
+<unit id="org.epics.pvaccess" version="3.0.5"/>
+<unit id="org.csstudio.utility.pvmanager.jdbc" version="4.0.0.20140902104716"/>
+<unit id="org.csstudio.core.all.feature.source.feature.group" version="1.0.7.201408051753"/>
+<unit id="org.csstudio.utility.pvmanager.loc" version="4.0.0.20140902104716"/>
+<unit id="slf4j.api" version="1.7.2"/>
+<unit id="jul.to.slf4j" version="1.7.2"/>
+<unit id="org.epics.pvmanager-graphene.source" version="2.7.1"/>
+<unit id="org.jdom" version="1.1.0"/>
+<unit id="org.antlr.runtime.source" version="3.4.0"/>
+<unit id="org.epics.pvdata.source" version="3.0.3"/>
+<unit id="org.epics.util.source" version="0.3.2"/>
+<unit id="org.csstudio.pvmanager.exec.feature.feature.group" version="3.3.0.201408041354"/>
+<unit id="org.csstudio.pvmanager.autocomplete.feature.feature.group" version="1.0.1.201406252040"/>
+<unit id="org.mockito.mockito-core" version="1.9.5"/>
+<unit id="org.csstudio.utility.pvmanager.file" version="4.0.0.20140902104715"/>
+<unit id="org.epics.pvaccess.source" version="3.0.5"/>
+<unit id="org.python.jython" version="2.5.3.v1"/>
+<unit id="org.csstudio.thirdparty.all.feature.feature.group" version="1.0.1.201407311944"/>
+<unit id="org.csstudio.pvmanager.extra.feature.feature.group" version="3.3.0.201408041356"/>
+<unit id="org.csstudio.utility.pvmanager.exec" version="4.0.0.20140902104715"/>
+<unit id="org.epics.graphene.source" version="0.8.0"/>
+<unit id="org.junit-dep" version="4.10.0"/>
+<unit id="org.csstudio.pvmanager.feature.feature.group" version="4.0.0.201408041356"/>
+<unit id="org.csstudio.utility.pvmanager.sys" version="4.0.0.20140902104717"/>
+<repository location="http://download.controlsystemstudio.org/updates/4.0"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
