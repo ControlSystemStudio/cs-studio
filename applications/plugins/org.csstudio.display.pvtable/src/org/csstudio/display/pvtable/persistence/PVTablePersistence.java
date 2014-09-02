@@ -24,9 +24,21 @@ import org.epics.vtype.ValueFactory;
  */
 abstract public class PVTablePersistence
 {
-    // TODO static PVTablePersistence forFilename(XML or SAV file)
-    // TODO Update PVTableXMLPersistence to use this
-    // TODO Update 'editor' to use this
+    /** Create a persistance helper based on file extension
+     *  @param filename File name
+     *  @return {@link PVTablePersistence}
+     */
+    public static PVTablePersistence forFilename(final String filename)
+    {
+        // Use Autosave for *.sav files
+        if (filename.endsWith(PVTableAutosavePersistence.FILE_EXTENSION))
+            return new PVTableAutosavePersistence();
+        // Use XML for anything else, because at some time "css-pvtable" was used
+        return new PVTableXMLPersistence();
+    }
+
+    /** @return Preferred file extension (without '.') */
+    abstract public String getFileExtension();
     
     /** Read {@link PVTableModel} from file
      *  @param filename Filename

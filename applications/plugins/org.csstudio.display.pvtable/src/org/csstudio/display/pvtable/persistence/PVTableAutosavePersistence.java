@@ -33,9 +33,20 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class PVTableAutosavePersistence extends PVTablePersistence
 {
+    /** File extension used for autosave files */
+    final public static String FILE_EXTENSION = "sav";
+
     final private static String END_MARKER = "<END>";
     
     /** {@inheritDoc} */
+    @Override
+    public String getFileExtension()
+    {
+        return FILE_EXTENSION;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public PVTableModel read(final InputStream stream) throws Exception
     {
         final BufferedReader input = new BufferedReader(new InputStreamReader(stream));
@@ -70,6 +81,7 @@ public class PVTableAutosavePersistence extends PVTablePersistence
     }
     
     /** {@inheritDoc} */
+    @Override
     public void write(final PVTableModel model, final OutputStream stream) throws Exception
     {
         final PrintWriter out = new PrintWriter(stream);

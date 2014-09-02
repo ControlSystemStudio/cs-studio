@@ -10,8 +10,9 @@ package org.csstudio.display.pvtable;
 import java.io.FileInputStream;
 
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.persistence.PVTablePersistence;
+import org.csstudio.display.pvtable.persistence.PVTableXMLPersistence;
 import org.csstudio.display.pvtable.ui.PVTable;
-import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -38,7 +39,8 @@ public class GUIDemo
         final Shell shell = new Shell(display);
         shell.setLayout(new GridLayout(1, false));
 
-        final PVTableModel model = PVTableXMLPersistence.read(new FileInputStream("lib/example.xml"));
+        final PVTablePersistence persistence = new PVTableXMLPersistence();
+        final PVTableModel model = persistence.read(new FileInputStream("lib/example.xml"));
         final PVTable table = new PVTable(shell, null);
         table.setModel(model);
 

@@ -8,7 +8,7 @@
             class="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
             contributorClass="org.csstudio.display.pvtable.ui.editor.PVTableEditorActionBarContributor"
             default="false"
-            extensions="pvs,css-pvtable"
+            extensions="pvs,css-pvtable,sav"
             icon="icons/pvtable.png"
             id="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
             name="%PVTable">

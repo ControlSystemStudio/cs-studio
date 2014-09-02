@@ -15,8 +15,9 @@ import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
+import org.csstudio.display.pvtable.persistence.PVTablePersistence;
+import org.csstudio.display.pvtable.persistence.PVTableXMLPersistence;
 import org.csstudio.display.pvtable.ui.PVTable;
-import org.csstudio.display.pvtable.xml.PVTableXMLPersistence;
 import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -44,8 +45,6 @@ import org.eclipse.ui.part.EditorPart;
 public class PVTableEditor extends EditorPart
 {
     public static final String ID = PVTableEditor.class.getName();
-
-    private static final String FILE_EXTENSION = "pvs"; //$NON-NLS-1$
 
     private PVTableModel model;
     private PVTable gui;
@@ -90,7 +89,11 @@ public class PVTableEditor extends EditorPart
             final InputStream stream = 
                 SingleSourcePlugin.getResourceHelper().getInputStream(input);
             if (stream != null)
-                model = PVTableXMLPersistence.read(stream);
+            {
+                final PVTablePersistence persistence =
+                    PVTablePersistence.forFilename(input.getName());
+                model = persistence.read(stream);
+            }
             else // Empty model
                 model = new PVTableModel();
         }
@@ -160,7 +163,10 @@ public class PVTableEditor extends EditorPart
         try
         {
             if (resources.isWritable(input))
-                saveToStream(monitor, resources.getOutputStream(input));
+            {
+                final PVTablePersistence persistence = PVTablePersistence.forFilename(input.getName());
+                saveToStream(monitor, persistence, resources.getOutputStream(input));
+            }
             else
                 doSaveAs();
         }
@@ -175,11 +181,18 @@ public class PVTableEditor extends EditorPart
      *  @param monitor <code>IProgressMonitor</code>, may be <code>null</code>.
      *  @param stream Output stream
      */
-    private void saveToStream(final IProgressMonitor monitor, final OutputStream stream)
+    private void saveToStream(final IProgressMonitor monitor, final PVTablePersistence persistence, final OutputStream stream)
     {
         if (monitor != null)
             monitor.beginTask("Save", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-        PVTableXMLPersistence.write(model, stream);
+        try
+        {
+            persistence.write(model, stream);
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+        }        
         if (monitor != null)
             monitor.done();
         // Mark as clean
@@ -194,8 +207,9 @@ public class PVTableEditor extends EditorPart
         
         // If there is an original file name, try to display it
         final IPath original = resources.getPath(getEditorInput());
+        PVTablePersistence persistence = PVTablePersistence.forFilename(original.getFileExtension());
         IPath path = SingleSourcePlugin.getUIHelper()
-            .openSaveDialog(getEditorSite().getShell(), original, FILE_EXTENSION);
+            .openSaveDialog(getEditorSite().getShell(), original, persistence.getFileExtension());
         if (path == null)
             return;
         
@@ -205,7 +219,7 @@ public class PVTableEditor extends EditorPart
         {
             final OutputStream stream =
                     resources.getOutputStream(new_input);
-            saveToStream(null, stream);
+            saveToStream(null, persistence, stream);
         }
         catch (Exception ex)
         {
