@@ -119,6 +119,21 @@
 			</repositories>
 		</profile>
 		<profile>
+			<id>csstudio-composite-repo-enable</id>
+			<activation>
+				<property>
+					<name>csstudio.composite.repo</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>csstudio-composite-repo</id>
+					<url>file:${csstudio.composite.repo}</url>
+					<layout>p2</layout>
+				</repository>
+			</repositories>
+		</profile>
+		<profile>
 			<id>local-dev</id>
 			<properties>
 				<jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
