@@ -60,6 +60,7 @@ public class ConsoleCommands implements CommandProvider
         buf.append("\tdump                - Dump complete alarm tree\n");
         buf.append("\tpvs                 - List PVs\n");
         buf.append("\tpvs -d              - List disconnected PVs\n");
+        buf.append("\tpvs 'partial_name'  - List PVs where part the name matches\n");
         buf.append("\tlsa '/path/to/item' - List alarm tree based on path\n");
         buf.append("\tpwd                 - Print working 'directory'\n");
         buf.append("\tcd '/path'          - Change working 'directory'\n");
@@ -93,7 +94,9 @@ public class ConsoleCommands implements CommandProvider
     /** 'pvs' command */
     public Object _pvs(final CommandInterpreter intp)
     {
-        final boolean only_disconnected = "-d".equals(intp.nextArgument());
+        final String arg = intp.nextArgument();
+        final boolean only_disconnected = "-d".equals(arg);
+        final String partial_match = only_disconnected ? null : arg;
         try
         {
             final AlarmPV[] pvs = server.getPVs();
@@ -101,7 +104,8 @@ public class ConsoleCommands implements CommandProvider
             {
                 if (only_disconnected  &&  pv.isConnected())
                     continue;
-                intp.println(pv.toString());
+                if (partial_match == null   ||   pv.getName().contains(partial_match))
+                    intp.println(pv.toString());
             }
         }
         catch (Exception ex)
