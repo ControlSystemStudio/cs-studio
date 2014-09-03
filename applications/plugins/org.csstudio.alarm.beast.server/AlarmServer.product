@@ -7,12 +7,15 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>--launcher.suppressErrors</programArgs>
+      <programArgs>--launcher.suppressErrors
+      </programArgs>
       <vmArgs>-Declipse.exitdata=
 -Djava.awt.headless=true -Xms64m -Xmx256m
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
--Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+-Dorg.apache.commons.logging.simplelog.defaultlog=fatal
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
@@ -46,10 +49,7 @@
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.security"/>
-      <plugin id="org.csstudio.utility.pvmanager"/>
-      <plugin id="org.csstudio.utility.pvmanager.epics"/>
-      <plugin id="org.csstudio.utility.pvmanager.sim"/>
-      <plugin id="org.csstudio.utility.pvmanager.vtype"/>
+      <plugin id="org.csstudio.vtype.pv"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.expressions"/>
