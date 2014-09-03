@@ -30,7 +30,7 @@ import org.epics.util.time.TimestampFormat;
 public class ValueUtil {
 
     private ValueUtil() {
-        // Can't instantiate
+        // Can't instanciate
     }
 
     private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByte.class, VByteArray.class, VDouble.class,
