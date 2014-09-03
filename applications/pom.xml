@@ -36,7 +36,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
-    <platform-version-name>kepler</platform-version-name> 
 	
 	<!-- SonarQube configuration -->
  	<sonar.language>java</sonar.language>
@@ -69,6 +68,21 @@
     Profiles
   -->
 	<profiles>
+	    <profile>
+			<id>platform-default</id>
+			<activation>
+				<property>
+					<name>!platform-version-name</name>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
+				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.3</eclipse-update-site>
+				<rap-site>http://download.eclipse.org/rt/rap/2.2</rap-site>
+				<platform-version>[4.2,4.3)</platform-version>
+				<swtbot-site>http://download.eclipse.org/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
+			</properties>
+		</profile>
 		<profile>
 			<id>platform-luna</id>
 			<activation>
@@ -145,45 +159,10 @@
 			</pluginRepositories>
 		</profile>
 		<profile>
-			<id>eclipse</id>
-			<activation>
-				<property>
-					<name>platform-version-name</name>
-				</property>
-			</activation>
-			<repositories>
-				<repository>
-					<id>eclipse</id>
-					<url>${eclipse-site}</url>
-					<layout>p2</layout>
-				</repository>
-				<repository>
-					<id>eclipse-updates</id>
-					<url>${eclipse-update-site}</url>
-					<layout>p2</layout>
-				</repository>
-				<repository>
-					<id>rap</id>
-					<url>${rap-site}</url>
-					<layout>p2</layout>
-				</repository>
-				<repository>
-					<id>rap-incubator</id>
-					<url>${rap-incubator-site}</url>
-					<layout>p2</layout>
-				</repository>
-				<repository>
-					<id>orbit</id>
-					<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
-					<layout>p2</layout>
-				</repository>
-			</repositories>
-		</profile>
-		<profile>
 			<id>cs-studio</id>
 			<activation>
 				<property>
-					<name>cs-studio-central.url</name>
+					<name>!cs-studio</name>
 				</property>
 			</activation>
 			<repositories>
@@ -205,7 +184,33 @@
 			</repositories>
 		</profile>
 	</profiles>
-
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<url>${eclipse-site}</url>
+			<layout>p2</layout>
+		</repository>
+		<repository>
+			<id>eclipse-updates</id>
+			<url>${eclipse-update-site}</url>
+			<layout>p2</layout>
+		</repository>
+		<repository>
+			<id>rap</id>
+			<url>${rap-site}</url>
+			<layout>p2</layout>
+		</repository>
+		<repository>
+			<id>rap-incubator</id>
+			<url>${rap-incubator-site}</url>
+			<layout>p2</layout>
+		</repository>
+		<repository>
+			<id>orbit</id>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
   <!--
     CHILD MODULES
   -->
