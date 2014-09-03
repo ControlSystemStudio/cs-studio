@@ -171,7 +171,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         }
         catch (Exception ex)
         {
-            logger.log(Level.WARNING, getName() + " cannot subscribe", ex);
+            logger.log(Level.WARNING, getName() + " cannot unsubscribe", ex);
         }
     }
 
