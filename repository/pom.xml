@@ -42,6 +42,8 @@
 							<artifacts>
 								<!-- specify your dependecies here -->
 								<!-- groupId:artifactId:version -->
+								
+								<!--  EPICS artifacts -->
 								<artifact>
 									<id>epics:pvDataJava:${pvdata.version}</id>
 									<instructions>
@@ -86,6 +88,53 @@
 									<source>true</source>
 									<transitive>false</transitive>
 								</artifact>
+								
+								
+								<!-- Thirdparty artifacts -->
+								<artifact>
+									<id>com.google.guava:guava:18.0</id>
+								</artifact>
+								<artifact>
+									<id>com.google.inject:guice:3.0</id>
+								</artifact>
+								<artifact>
+									<id>mysql:mysql-connector-java:5.1.32</id>
+								</artifact>
+								<artifact>
+									<id>commons-beanutils:commons-beanutils:1.9.2</id>
+								</artifact>
+								<artifact>
+									<id>batik:batik:1.5</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.ant:ant:1.9.4</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.ant:ant-junit:1.9.4</id>
+								</artifact>
+								<artifact>
+									<id>org.slf4j:log4j-over-slf4j:1.5.11</id>
+								</artifact>
+								<artifact>
+									<id>org.slf4j:slf4j-api:1.7.7</id>
+								</artifact>
+								<artifact>
+									<id>org.slf4j:slf4j-log4j12:1.7.7</id>
+								</artifact>
+								<artifact>
+									<id>org.slf4j:jul-to-slf4j:1.7.7</id>
+								</artifact>
+								<artifact>
+									<id>net.sf.ehcache.internal:ehcache-core:2.8.3</id>
+								</artifact>
+								<artifact>
+									<id>com.sun.mail:javax.mail:1.5.2</id>
+								</artifact>
+								<artifact>
+									<id>org.antlr:antlr-runtime:3.4</id>
+									<source>true</source>
+									<transitive>false</transitive>
+								</artifact>
 								<artifact>
 									<id>org.hamcrest:hamcrest-library:1.2</id>
 								</artifact>
@@ -93,12 +142,13 @@
 									<id>org.hamcrest:hamcrest-library:1.3</id>
 								</artifact>
 								<artifact>
-									<id>org.jdom:jdom:1.1</id>
+									<id>org.hibernate:hibernate-core:4.1.3.Final</id>
 								</artifact>
 								<artifact>
-									<id>org.antlr:antlr-runtime:3.4</id>
-									<source>true</source>
-									<transitive>false</transitive>
+									<id>org.hibernate:hibernate-validator:4.3.0.Final</id>
+								</artifact>
+								<artifact>
+									<id>org.jdom:jdom:1.1</id>
 								</artifact>
 								<artifact>
 									<id>junit:junit-dep:4.10</id>
@@ -114,20 +164,21 @@
 									<id>org.mockito:mockito-core:1.9.5</id>
 								</artifact>
 								<artifact>
-									<id>xmlunit:xmlunit:1.5</id>
-								</artifact>
-								<artifact>
 									<id>org.python:jython-standalone:2.5.3</id>
 									<instructions>
 										<Bundle-Name>org.python.jython</Bundle-Name>
 										<Bundle-SymbolicName>org.python.jython</Bundle-SymbolicName>
 										<Bundle-Version>2.5.3.v1</Bundle-Version>
-									</instructions>
-									
+									</instructions>	
 								</artifact>
 								<artifact>
 									<id>org.slf4j:jul-to-slf4j:1.7.2</id>
 								</artifact>
+								<artifact>
+									<id>xmlunit:xmlunit:1.5</id>
+								</artifact>
+								
+								
 
 								<!-- pvmanager-plugins from reactor -->
 
