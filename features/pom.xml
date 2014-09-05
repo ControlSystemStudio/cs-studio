@@ -13,6 +13,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.thirdparty.all.feature</module>
-    <module>org.csstudio.libs.feature</module>
+<!--     <module>org.csstudio.libs.feature</module> -->
   </modules>
 </project>

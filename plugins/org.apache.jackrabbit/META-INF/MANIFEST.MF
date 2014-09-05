@@ -14,9 +14,7 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.apache.commons.collections;bundle-version="1.0.0",
  org.apache.xerces;bundle-version="2.9.0",
  org.apache.httpcomponents.httpclient;bundle-version="4.1.3"
-Export-Package: org.apache.commons.logging,
- org.apache.commons.logging.impl,
- org.apache.jackrabbit.webdav,
+Export-Package: org.apache.jackrabbit.webdav,
  org.apache.jackrabbit.webdav.client.methods,
  org.apache.jackrabbit.webdav.header,
  org.apache.jackrabbit.webdav.io,

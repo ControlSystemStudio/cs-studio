@@ -7,3 +7,4 @@ Bundle-Version: 1.0.1
 Export-Package: net.miginfocom.layout,
  net.miginfocom.swt
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: .

@@ -61,12 +61,12 @@
     </repository>
     <repository>
       <id>kepler</id>
-      <url>http://download.eclipse.org/releases/kepler</url>
+      <url>http://download.eclipse.org/releases/luna</url>
       <layout>p2</layout>
     </repository>
     <repository>
       <id>keplerupdate</id>
-      <url>http://download.eclipse.org/eclipse/updates/4.3</url>
+      <url>http://download.eclipse.org/eclipse/updates/4.4</url>
       <layout>p2</layout>
     </repository>
   </repositories>
