@@ -181,6 +181,9 @@
 									<id>com.miglayout:miglayout-swt:4.2</id>
 								</artifact>
 								<artifact>
+									<id>com.miglayout:miglayout-swing:4.2</id>
+								</artifact>
+								<artifact>
 									<id>xmlunit:xmlunit:1.5</id>
 								</artifact>
 								
