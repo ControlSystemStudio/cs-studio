@@ -262,6 +262,21 @@
     <plugins>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <dependency-resolution>
+            <extraRequirements>
+              <requirement>
+                <type>eclipse-plugin</type>
+                <id>com.google.guava</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+            </extraRequirements>
+          </dependency-resolution>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho.version}</version>
         <extensions>true</extensions>

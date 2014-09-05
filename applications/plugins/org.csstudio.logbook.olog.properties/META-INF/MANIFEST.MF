@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.security;bundle-version="1.0.0",
  org.csstudio.security.ui;bundle-version="1.0.0",
  org.csstudio.logbook.viewer;bundle-version="1.0.0",
- org.csstudio.csdata;bundle-version="3.2.0",
- com.google.common
-Import-Package: org.eclipse.ui.part
+ org.csstudio.csdata;bundle-version="3.2.0"
+Import-Package: com.google.common.base,
+ org.eclipse.ui.part
 Bundle-ActivationPolicy: lazy
