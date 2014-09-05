@@ -211,6 +211,9 @@ Each party waives its rights to a jury trial in any resulting
 litigation.
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.swt"/>
+   </requires>
 
    <plugin
          id="org.eclipse.nebula.widgets.grid"

@@ -35,3 +35,4 @@ Export-Package: org.apache.batik.utils,
  org.eclipse.wb.swt
 Bundle-Activator: org.csstudio.ui.util.Activator
 Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.batik.utils

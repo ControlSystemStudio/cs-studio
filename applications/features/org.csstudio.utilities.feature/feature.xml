@@ -41,8 +41,19 @@
       <import plugin="org.csstudio.opibuilder" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder.widgets" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.epics.graphene" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util"/>
       <import feature="org.csstudio.core.feature" version="3.2.0.qualifier"/>
+      <import plugin="org.epics.util" version="0.2.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete.ui"/>
    </requires>
 
    <plugin

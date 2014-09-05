@@ -69,6 +69,23 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.search"/>
+      <import plugin="org.jdom" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.singlesource" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.eclipse.rap.gef"/>
+      <import plugin="org.apache.commons.lang" version="2.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder" version="3.2.16" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.swt.xygraph" version="2.0.3" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.dom.svg"/>
+      <import plugin="org.apache.batik.util"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.browser"/>
+      <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.rap.draw2d"/>
+      <import plugin="org.epics.vtype" version="2.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

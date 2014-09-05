@@ -35,12 +35,13 @@
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="javax.mail" version="1.4.4" match="greaterOrEqual"/>
+      <import plugin="com.sun.mail.javax.mail"/>
       <import plugin="org.csstudio.email" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi" version="3.6.0" match="greaterOrEqual"/>
@@ -61,14 +62,29 @@
       <import plugin="org.eclipse.help.webapp"/>
       <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.bridge" version="1.7.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.dom" version="1.7.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.dom.svg" version="1.7.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.transcoder" version="1.7.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.util" version="1.7.0" match="greaterOrEqual"/>
+      <import plugin="org.w3c.dom.svg" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.css" version="1.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.ui.model.workbench" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.ui.workbench" version="1.0.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.ui" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pvmanager.extra" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.5" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.loc"/>
+      <import plugin="org.csstudio.utility.pvmanager.sim"/>
+      <import plugin="org.csstudio.utility.pvmanager.sys"/>
    </requires>
 
    <plugin
