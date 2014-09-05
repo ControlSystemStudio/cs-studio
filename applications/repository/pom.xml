@@ -32,7 +32,7 @@
               <goal>add-pom-dependencies</goal>
             </goals>
             <configuration>
-              <baseDefinition>${project.basedir}/cs-studio.target</baseDefinition>
+              <baseDefinition>${project.basedir}/cs-studio-kepler.target</baseDefinition>
               <outputFile>${project.basedir}/cs-studio-pde.target</outputFile>
               <excludeP2>false</excludeP2>
             </configuration>
