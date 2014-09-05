@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Collections;
+import java.util.Set;
 
 import org.epics.vtype.VTable;
 import org.epics.vtype.io.CSVIO;
@@ -36,6 +38,11 @@ public class CSVFileFormat implements FileFormat {
     @Override
     public boolean isWriteSupported() {
 	return true;
+    }
+
+    @Override
+    public Set<String> getFileExtensions() {
+        return Collections.singleton("csv");
     }
 
 }

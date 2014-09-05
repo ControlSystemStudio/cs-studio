@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.epics.vtype.VType;
 import org.epics.vtype.io.TextIO;
@@ -34,4 +36,10 @@ public class ListFileFormat implements FileFormat  {
     public boolean isWriteSupported() {
 	return true;
     }
+
+    @Override
+    public Collection<String> getFileExtensions() {
+        return Arrays.asList("list");
+    }
+    
 }

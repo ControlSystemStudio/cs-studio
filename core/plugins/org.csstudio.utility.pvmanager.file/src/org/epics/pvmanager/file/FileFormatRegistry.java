@@ -6,7 +6,10 @@
 package org.epics.pvmanager.file;
 
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Place to registers file formats so that the file datasource can use them.
@@ -18,9 +21,18 @@ public class FileFormatRegistry {
     private final static FileFormatRegistry registry = new FileFormatRegistry();
     
     private static final Map<String, FileFormat> fileFormatRegistry = new ConcurrentHashMap<>();
+    private static final Logger log = Logger.getLogger(FileFormatRegistry.class.getName());
     
     public static FileFormatRegistry getDefault() {
         return registry;
+    }
+    
+    static {
+        // Find file formats to register using the ServiceLoader
+        ServiceLoader<FileFormat> sl = ServiceLoader.load(FileFormat.class);
+        for (FileFormat fileFormat : sl) {
+            registry.registerFileFormat(fileFormat);
+        }
     }
     
     /**
@@ -30,7 +42,20 @@ public class FileFormatRegistry {
      * @param format the FileFormat
      */
     public void registerFileFormat(String extension, FileFormat format) {
+        log.log(Level.FINE, "File datasource: registering extension {0}", extension);
 	fileFormatRegistry.put(extension, format);
+    }
+    
+    /**
+     * Register a new FileFormat for the extensions declared by the format
+     * itself.
+     *  
+     * @param format the FileFormat
+     */
+    public void registerFileFormat(FileFormat format) {
+        for (String extension : format.getFileExtensions()) {
+            registerFileFormat(extension, format);
+        }
     }
     
     /**
