@@ -27,8 +27,6 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
@@ -126,8 +124,8 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      * @param description
      *            the description of this tree component.
      */
-    private TestTreeConfiguration(@Nonnull final String nodeTypeName,
-                                  @Nonnull final String description) {
+    private TestTreeConfiguration(final String nodeTypeName,
+                                  final String description) {
         _nodeTypeName = nodeTypeName;
         _description = description;
     }
@@ -136,7 +134,6 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public TestTreeConfiguration getRoot() {
         return UNIT;
     }
@@ -145,7 +142,6 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getDescription() {
         return _description;
     }
@@ -154,7 +150,6 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getNodeTypeName() {
         return _nodeTypeName;
     }
@@ -163,7 +158,6 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
     public ImmutableSet<TestTreeConfiguration> getNestedContainerTypes() {
         return Sets.immutableEnumSet(_nestedClasses);
     }
@@ -172,13 +166,11 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public TestTreeConfiguration getNodeTypeByNodeTypeName(@Nonnull final String name) {
+    public TestTreeConfiguration getNodeTypeByNodeTypeName(final String name) {
         return getNodeTypeByNodeNameStatic(name);
     }
 
-    @CheckForNull
-    private static TestTreeConfiguration getNodeTypeByNodeNameStatic(@Nonnull final String name) {
+    private static TestTreeConfiguration getNodeTypeByNodeNameStatic(final String name) {
         return CACHE_BY_NAME.get(name);
     }
 
@@ -186,7 +178,6 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public ImmutableSet<String> getAttributes() {
         return ImmutableSet.<String>builder().build();
     }

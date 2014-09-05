@@ -35,8 +35,8 @@ public class BubbleGraph2DConfigurationPanel extends
 		
 		btnHighlightFocusValue = new Button(this, SWT.CHECK);
 		btnHighlightFocusValue.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		btnHighlightFocusValue.setText("Highlilght Focus Value");
-		forwardCheckBodEvents(btnHighlightFocusValue, "highlightFocusValue");
+		btnHighlightFocusValue.setText("Highlight Focus Value");
+		forwardCheckBoxEvents(btnHighlightFocusValue, "highlightFocusValue");
 	}
 
 	public String getSizeColumnFormula() {

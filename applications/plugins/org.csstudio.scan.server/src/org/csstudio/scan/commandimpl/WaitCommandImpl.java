@@ -15,8 +15,11 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.WaitCommand;
+import org.csstudio.scan.condition.DeviceCondition;
 import org.csstudio.scan.condition.NumericValueCondition;
+import org.csstudio.scan.condition.TextValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.device.VTypeHelper;
@@ -57,33 +60,38 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     public void simulate(final SimulationContext context) throws Exception
     {
 		final SimulatedDevice device = context.getDevice(command.getDeviceName());
-
+		
 		// Estimate execution time
+		final double time_estimate;
 		double original = VTypeHelper.toDouble(device.read());
-		final double desired_value;
-		switch (command.getComparison())
+		Object desired = command.getDesiredValue();
+		if (desired instanceof Number)
 		{
-		case INCREASE_BY:
-			if (Double.isNaN(original))
+			switch (command.getComparison())
 			{
-				original = 0.0;
-		    	device.write(original);
+			case INCREASE_BY:
+				if (Double.isNaN(original))
+				{
+					original = 0.0;
+			    	device.write(original);
+				}
+				desired = original + ((Number) desired).doubleValue();
+				break;
+			case DECREASE_BY:
+				if (Double.isNaN(original))
+				{
+					original = 0.0;
+			    	device.write(original);
+				}
+				desired = original - ((Number) desired).doubleValue();
+				break;
+			default:
+				break;
 			}
-			desired_value = original + command.getDesiredValue();
-			break;
-		case DECREASE_BY:
-			if (Double.isNaN(original))
-			{
-				original = 0.0;
-		    	device.write(original);
-			}
-			desired_value = original - command.getDesiredValue();
-			break;
-		default:
-			desired_value = command.getDesiredValue();
-			break;
+			time_estimate = device.getChangeTimeEstimate(((Number) desired).doubleValue());
 		}
-		final double time_estimate = device.getChangeTimeEstimate(desired_value);
+		else
+			time_estimate = 1.0; // Not numeric, no known slew rate 
 
 		// Show command
 		final StringBuilder buf = new StringBuilder();
@@ -93,7 +101,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     	context.logExecutionStep(buf.toString(), time_estimate);
 
     	// Set to (simulated) new value
-    	device.write(desired_value);
+    	device.write(desired);
     }
 
     /** {@inheritDoc} */
@@ -102,10 +110,17 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     {
         final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
-        final NumericValueCondition condition =
-            new NumericValueCondition(device, command.getComparison(),
-                    command.getDesiredValue(), command.getTolerance(),
-                    TimeDuration.ofSeconds(command.getTimeout()));
+        final TimeDuration timeout = TimeDuration.ofSeconds(command.getTimeout());
+        final Object desired = command.getDesiredValue();
+        final DeviceCondition condition;
+        if (desired instanceof Number)
+        {
+            final double number = ((Number)desired).doubleValue();
+			condition = new NumericValueCondition(device, command.getComparison(),
+					number, command.getTolerance(), timeout);
+        }
+        else
+            condition = new TextValueCondition(device, Comparison.EQUALS, desired.toString(), timeout);
         condition.await();
         context.workPerformed(1);
     }

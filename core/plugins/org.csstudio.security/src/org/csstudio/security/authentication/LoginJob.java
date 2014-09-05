@@ -127,7 +127,6 @@ public class LoginJob extends Job
         }
         catch (Exception ex)
         {
-            logout();
             logger.log(Level.WARNING, "Log in error", ex);
             final String message;
             if (ex.getCause() != null)

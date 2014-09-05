@@ -779,7 +779,7 @@ public void loadPreview() {
 	}
 	catch (Exception ex2) {
 		ex2.printStackTrace();
-		com.cosylab.vdct.Console.getInstance().println("Exception occured while rendering: "+ex2);
+		com.cosylab.vdct.Console.getInstance().println("Exception occurred while rendering: "+ex2);
 	}
 
 	getStatusLabel().setText("Rendering done.");

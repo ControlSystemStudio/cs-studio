@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.ldap.preference;
 
-import javax.annotation.Nonnull;
 import javax.naming.Context;
 
 import org.csstudio.domain.common.preferences.AbstractPreference;
@@ -62,9 +61,9 @@ public final class LdapPreference<T> extends AbstractPreference<T> {
      * @param defaultValue
      * @param contextId the LDAP context identifier of this preference
      */
-    private LdapPreference(@Nonnull final String keyAsString,
-                           @Nonnull final T defaultValue,
-                           @Nonnull final String contextId) {
+    private LdapPreference(final String keyAsString,
+                           final T defaultValue,
+                           final String contextId) {
         super(keyAsString, defaultValue);
 
         _contextId = contextId;
@@ -74,7 +73,6 @@ public final class LdapPreference<T> extends AbstractPreference<T> {
      * The corresponding LDAP context id of this property.
      * @return the context id
      */
-    @Nonnull
     public String getContextId() {
         return _contextId;
     }
@@ -84,7 +82,6 @@ public final class LdapPreference<T> extends AbstractPreference<T> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    @Nonnull
     protected Class<? extends AbstractPreference<T>> getClassType() {
         return (Class<? extends AbstractPreference<T>>) LdapPreference.class;
     }
@@ -93,7 +90,6 @@ public final class LdapPreference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getPluginID() {
         return LdapServiceImplActivator.PLUGIN_ID;
     }

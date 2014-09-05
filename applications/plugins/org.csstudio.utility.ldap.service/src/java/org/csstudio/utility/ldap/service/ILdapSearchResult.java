@@ -23,8 +23,6 @@ package org.csstudio.utility.ldap.service;
 
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
 /**
@@ -42,21 +40,19 @@ public interface ILdapSearchResult {
      * @param searchParams the search root, the search filter, and search controls
      * @param answerSet the corresponding result set
      */
-    void setResult(@Nonnull ILdapSearchParams searchParams,
-                   @Nonnull Set<SearchResult> answerSet);
+    void setResult(ILdapSearchParams searchParams,
+                   Set<SearchResult> answerSet);
 
     /**
      * Getter.
      * @return the result set
      */
-    @Nonnull
     Set<SearchResult> getAnswerSet();
 
     /**
      * Search root of the current result
      * @return the current search root, may be null
      */
-    @CheckForNull
     ILdapSearchParams getSearchParams();
 
 }

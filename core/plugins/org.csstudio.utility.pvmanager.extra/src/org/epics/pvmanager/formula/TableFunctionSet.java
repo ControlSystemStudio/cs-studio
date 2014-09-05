@@ -24,6 +24,10 @@ public class TableFunctionSet extends FormulaFunctionSet {
                 .addFormulaFunction(new StepFormulaFunction())
                 .addFormulaFunction(new ColumnFromListNumberGeneratorFunction())
                 .addFormulaFunction(new NaturalJoinFunction())
+                .addFormulaFunction(new TableRangeFilterFunction())
+                .addFormulaFunction(new TableRangeArrayFilterFunction())
+                .addFormulaFunction(new TableStringMatchFilterFunction())
+                .addFormulaFunction(new TableValueFilterFunction())
                 );
     }
 

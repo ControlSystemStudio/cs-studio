@@ -20,13 +20,14 @@ import org.epics.util.array.SortedListView;
  *      <li>Does not have axes labels</li>
  *      <li>Does not have scales display on the axes</li>
  *      <li>Often draws small circles at important values on the line</li>
- *      <li>Important values are:</li>
+ *      <li>Important values are:
  *          <ul>
  *              <li>First Value</li>
  *              <li>Last Value</li>
  *              <li>Maximum Value</li>
  *              <li>Minimum Value</li>
  *          </ul>
+ *      </li>
  *      <li>Often maintains a high width to height aspect ratio.
  *          This can be manually setting the appropriate image width and height,
  *          or can be applied in the code through the <code>aspectRatio</code>.
@@ -86,9 +87,9 @@ public class SparklineGraph2DRenderer extends Graph2DRenderer<SparklineGraph2DRe
     //Scaling Schemes    
     /**
      * The set of interpolation schemes that are supported by the <code>SparklineGraph2DRenderer</code>.
-     * The interpolation schemes supported are <code>NEAREST_NEIGHBOUR</code>, <code>LINEAR</code>, and <code>CUBIC</code>.
+     * The interpolation schemes supported are <code>NEAREST_NEIGHBOR</code>, <code>LINEAR</code>, and <code>CUBIC</code>.
      */
-    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOUR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
+    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
 
     private InterpolationScheme interpolation = InterpolationScheme.LINEAR;
 
@@ -126,7 +127,7 @@ public class SparklineGraph2DRenderer extends Graph2DRenderer<SparklineGraph2DRe
         }
         
         //General Rendering
-        calculateRanges(data.getXStatistics(), data.getYStatistics());
+        calculateRanges(data.getXStatistics(), data.getXDisplayRange(), data.getYStatistics(), data.getYDisplayRange());
         calculateGraphArea();
 
         drawBackground();

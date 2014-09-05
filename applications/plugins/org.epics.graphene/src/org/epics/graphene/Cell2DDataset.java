@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Statistics;
+import org.epics.util.stats.Range;
 import org.epics.util.array.ListNumber;
 
 /**
@@ -33,6 +35,13 @@ public interface Cell2DDataset {
      * @return statistical information; null if no actual value is defined on the grid
      */
     public Statistics getStatistics();
+    
+    /**
+     * Returns the suggested range to display the values.
+     * 
+     * @return the suggested display range
+     */
+    public Range getDisplayRange();
     
     /**
      * Returns the boundaries of the cells along x.

@@ -23,9 +23,6 @@ package org.csstudio.utility.ldap.service;
 
 import java.util.Map;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
@@ -53,7 +50,7 @@ public interface ILdapService {
      * @param ldapPrefs the map of preferences, if <code>null</code> the default values from preferences are used
      * @return true, if reconnection has been successful, false otherwise
      */
-    boolean reInitializeLdapConnection(@CheckForNull final Map<String, String> ldapPrefs);
+    boolean reInitializeLdapConnection(final Map<String, String> ldapPrefs);
 
 
     /**
@@ -64,10 +61,9 @@ public interface ILdapService {
      * @return the content model builder
      * @throws LdapServiceException
      */
-    @Nonnull
     <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
-        getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                   @Nonnull final ILdapSearchResult searchResult) throws LdapServiceException;
+        getLdapContentModelBuilder(final T objectClassRoot,
+                                   final ILdapSearchResult searchResult) throws LdapServiceException;
 
     /**
      * Returns the ldap content model builder for the specified parameters
@@ -76,14 +72,12 @@ public interface ILdapService {
      * @return the content model builder
      * @throws LdapServiceException
      */
-    @Nonnull
     <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
-        getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws LdapServiceException;
+        getLdapContentModelBuilder(final ContentModel<T> model) throws LdapServiceException;
 
-    @CheckForNull
     <T extends Enum<T> & ITreeNodeConfiguration<T>>
-    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot,
-                                                       @Nonnull final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException;
+    ContentModel<T> getLdapContentModelForSearchResult(final T configurationRoot,
+                                                       final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException;
 
     /**
      * Creates a new Record in LDAP.
@@ -91,8 +85,8 @@ public interface ILdapService {
      * @param attributes the attributes of the new ldap component
      * @return true if the new record could be created, false otherwise
      */
-    boolean createComponent(@Nonnull LdapName newComponentName,
-                            @Nullable Attributes attributes);
+    boolean createComponent(LdapName newComponentName,
+                            Attributes attributes);
 
 
     /**
@@ -100,7 +94,7 @@ public interface ILdapService {
      * Attention, the component may not have children components!
      * @param component .
      */
-    boolean removeLeafComponent(@Nonnull LdapName component);
+    boolean removeLeafComponent(LdapName component);
 
     /**
      * Removes the component from the LDAP context incl. its subtree!
@@ -110,8 +104,8 @@ public interface ILdapService {
      * @throws LdapServiceException
      */
     <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        boolean removeComponent(@Nonnull final T configurationRoot,
-                                @Nonnull LdapName component) throws InvalidNameException, CreateContentModelException, LdapServiceException;
+        boolean removeComponent(final T configurationRoot,
+                                LdapName component) throws InvalidNameException, CreateContentModelException, LdapServiceException;
 
     /**
      * Retrieves LDAP entries for the given query and search scope synchronously.
@@ -122,9 +116,8 @@ public interface ILdapService {
      * @param searchScope the search scope
      * @return the search result
      */
-    @CheckForNull
-    ILdapSearchResult retrieveSearchResultSynchronously(@Nonnull LdapName searchRoot,
-                                                        @Nonnull String filter,
+    ILdapSearchResult retrieveSearchResultSynchronously(LdapName searchRoot,
+                                                        String filter,
                                                         int searchScope);
 
     /**
@@ -134,9 +127,8 @@ public interface ILdapService {
      * @param callBack called on job completion
      * @return the LDAP reader job
      */
-    @Nonnull
-    ILdapReaderJob createLdapReaderJob(@Nonnull ILdapSearchParams params,
-                                       @Nullable ILdapReadCompletedCallback callBack);
+    ILdapReaderJob createLdapReaderJob(ILdapSearchParams params,
+                                       ILdapReadCompletedCallback callBack);
 
 
     /**
@@ -145,7 +137,7 @@ public interface ILdapService {
      * @param mods .
      * @throws NamingException
      */
-    void modifyAttributes(@Nonnull LdapName name, @Nonnull ModificationItem[] mods) throws NamingException;
+    void modifyAttributes(LdapName name, ModificationItem[] mods) throws NamingException;
 
 
     /**
@@ -154,7 +146,7 @@ public interface ILdapService {
      * @param newLdapName .
      * @throws NamingException
      */
-    void rename(@Nonnull LdapName oldLdapName, @Nonnull LdapName newLdapName) throws NamingException;
+    void rename(LdapName oldLdapName, LdapName newLdapName) throws NamingException;
 
 
     /**
@@ -163,8 +155,7 @@ public interface ILdapService {
      * @return the attributes
      * @throws NamingException
      */
-    @CheckForNull
-    Attributes getAttributes(@Nonnull LdapName ldapName) throws NamingException;
+    Attributes getAttributes(LdapName ldapName) throws NamingException;
 
 
     /**
@@ -173,8 +164,7 @@ public interface ILdapService {
      * @param name the object name
      * @throws NamingException when a naming exception occurs.
      */
-    @CheckForNull
-    Object lookup(@Nonnull LdapName name) throws NamingException;
+    Object lookup(LdapName name) throws NamingException;
 
 
     /**
@@ -182,7 +172,6 @@ public interface ILdapService {
      * @return the parser
      * @throws LdapServiceException
      */
-    @Nonnull
     NameParser getLdapNameParser() throws LdapServiceException;
 
     /**
@@ -192,6 +181,5 @@ public interface ILdapService {
      * @return the ldap composite name
      * @throws LdapServiceException
      */
-    @Nonnull
-    LdapName parseSearchResult(@Nonnull final SearchResult row) throws LdapServiceException;
+    LdapName parseSearchResult(final SearchResult row) throws LdapServiceException;
 }

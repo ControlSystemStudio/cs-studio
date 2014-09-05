@@ -262,6 +262,9 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 	}
 
 	private void changeColor(Document doc, Color oldColor, Color newColor) {
+		if (oldColor.equals(newColor))
+			return;
+
 		Matcher matcher = null;
 		String svgOldColor = toHexString(oldColor.getRed(), oldColor.getGreen(), oldColor.getBlue());
 		String svgNewColor = toHexString(newColor.getRed(), newColor.getGreen(), newColor.getBlue());

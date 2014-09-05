@@ -34,7 +34,7 @@ public enum MeasureCategoriesEnum {
 	/**
 	 * Category for sync executions.
 	 */
-	SYNC_EXEC_CATEGORY("Synchroneous Executions"),
+	SYNC_EXEC_CATEGORY("Synchronous Executions"),
 
 	/**
 	 * Category for property events.

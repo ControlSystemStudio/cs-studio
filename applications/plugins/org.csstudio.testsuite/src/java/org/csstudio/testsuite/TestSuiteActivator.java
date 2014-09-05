@@ -21,7 +21,6 @@
  */
 package org.csstudio.testsuite;
 
-import javax.annotation.Nonnull;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.Bundle;
@@ -58,7 +57,7 @@ public class TestSuiteActivator extends Plugin {
      * {@inheritDoc}
      */
     @Override
-    public void start(@Nonnull final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
         super.start(context);
         _context = context;
     }
@@ -67,17 +66,15 @@ public class TestSuiteActivator extends Plugin {
      * {@inheritDoc}
      */
     @Override
-    public void stop(@Nonnull final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
         super.stop(context);
     }
 
-    @Nonnull
     public Bundle[] getBundles() {
         final Bundle[] bundles = _context.getBundles();
         return bundles == null ? new Bundle[0] : bundles;
     }
 
-    @Nonnull
     public static TestSuiteActivator getInstance() {
         return INSTANCE;
     }

@@ -23,7 +23,6 @@
  */
 package org.csstudio.domain.common;
 
-import javax.annotation.Nonnull;
 
 /**
  * Site identifier to enable parameterizable test configuration
@@ -51,7 +50,7 @@ public enum SiteId {
     /**
      * Constructor.
      */
-    private SiteId(@Nonnull final String prefix) {
+    private SiteId(final String prefix) {
         _prefix = prefix;
     }
 
@@ -59,7 +58,6 @@ public enum SiteId {
      * Usable as prefix for site specific filenames for instance
      * @return the prefix
      */
-    @Nonnull
     public String getPrefix() {
         return _prefix;
     }

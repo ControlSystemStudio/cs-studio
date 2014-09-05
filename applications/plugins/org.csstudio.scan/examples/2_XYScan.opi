@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-c5286a:133f4cc6b0e:-7fea</wuid>
-  <boy_version>3.2.0.qualifier</boy_version>
+  <boy_version>3.2.18.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>580</height>
@@ -57,7 +57,7 @@
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
     <width>247</width>
     <border_style>13</border_style>
@@ -101,7 +101,7 @@
       <step_increment>0.1</step_increment>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>187</width>
       <border_style>0</border_style>
@@ -149,7 +149,7 @@ $(pv_value)</tooltip>
       <step_increment>0.1</step_increment>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>23</width>
       <border_style>0</border_style>
@@ -205,7 +205,7 @@ $(pv_value)</tooltip>
       </fg_gradient_color>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>25</width>
       <line_style>0</line_style>
@@ -264,7 +264,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
     <width>275</width>
     <border_style>13</border_style>
@@ -285,7 +285,7 @@ $(pv_value)</tooltip>
       <wuid>-c5286a:133f4cc6b0e:-7fe4</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -304,9 +304,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Start</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>36</width>
+      <width>25</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -336,7 +336,7 @@ $(pv_value)</tooltip>
       <widget_type>Text Input</widget_type>
       <text></text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>73</width>
       <border_style>3</border_style>
@@ -381,7 +381,7 @@ $(pv_value)</tooltip>
       <wuid>-c5286a:133f4cc6b0e:-7fe2</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_1</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -400,9 +400,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>End</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>27</width>
+      <width>20</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -432,7 +432,7 @@ $(pv_value)</tooltip>
       <widget_type>Text Input</widget_type>
       <text></text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>73</width>
       <border_style>3</border_style>
@@ -497,7 +497,7 @@ $(pv_value)</tooltip>
       <text>$(actions)</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>78</width>
       <border_style>0</border_style>
@@ -538,7 +538,7 @@ $(pv_value)</tooltip>
       <widget_type>Text Input</widget_type>
       <text></text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>76</width>
       <border_style>3</border_style>
@@ -593,7 +593,7 @@ $(pv_value)</tooltip>
       <widget_type>Text Input</widget_type>
       <text></text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>76</width>
       <border_style>3</border_style>
@@ -648,7 +648,7 @@ $(pv_value)</tooltip>
       <widget_type>Text Input</widget_type>
       <text></text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>76</width>
       <border_style>3</border_style>
@@ -708,7 +708,7 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <off_color>
-        <color name="Off" red="0" green="100" blue="0" />
+        <color name="Off" red="60" green="100" blue="60" />
       </off_color>
       <pv_name>loc://updown(1)</pv_name>
       <background_color>
@@ -723,7 +723,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>73</width>
       <border_style>0</border_style>
@@ -751,7 +751,7 @@ $(pv_value)</tooltip>
       <wuid>-c5286a:133f4cc6b0e:-7fd8</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_4</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -770,9 +770,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Up/Down</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>64</width>
+      <width>51</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -792,7 +792,7 @@ $(pv_value)</tooltip>
       <wuid>-c5286a:133f4cc6b0e:-7fc7</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_4</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -811,9 +811,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Name</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>40</width>
+      <width>31</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -843,7 +843,7 @@ $(pv_value)</tooltip>
       <widget_type>Text Input</widget_type>
       <text></text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>85</width>
       <border_style>3</border_style>
@@ -888,7 +888,7 @@ $(pv_value)</tooltip>
       <wuid>-c5286a:133f4cc6b0e:-7fb6</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_7</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -907,9 +907,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>X</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>10</width>
+      <width>7</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -929,7 +929,7 @@ $(pv_value)</tooltip>
       <wuid>-c5286a:133f4cc6b0e:-7fa8</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_8</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -948,9 +948,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Y</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>9</width>
+      <width>7</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -970,7 +970,7 @@ $(pv_value)</tooltip>
       <wuid>-c5286a:133f4cc6b0e:-7fd6</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_1</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -989,9 +989,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Step</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>33</width>
+      <width>24</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -1021,7 +1021,7 @@ $(pv_value)</tooltip>
       <widget_type>Text Input</widget_type>
       <text></text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>73</width>
       <border_style>3</border_style>
@@ -1066,7 +1066,7 @@ $(pv_value)</tooltip>
       <wuid>-1be3700a:1361717322d:-7f86</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_1</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -1085,9 +1085,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Neutrons</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>63</width>
+      <width>49</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -1117,7 +1117,7 @@ $(pv_value)</tooltip>
       <widget_type>Text Input</widget_type>
       <text></text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>73</width>
       <border_style>3</border_style>
@@ -1181,7 +1181,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>107</width>
       <border_style>0</border_style>
@@ -1217,30 +1217,33 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <foreground_color>
-      <color name="Black" red="0" green="0" blue="0" />
-    </foreground_color>
+    <selection_value_pv></selection_value_pv>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <enabled>true</enabled>
+    <foreground_color>
+      <color name="Black" red="0" green="0" blue="0" />
+    </foreground_color>
     <widget_type>Data Browser</widget_type>
+    <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
     <width>733</width>
     <border_style>1</border_style>
+    <show_axis_trace>false</show_axis_trace>
     <rules />
+    <show_value_labels>false</show_value_labels>
     <border_width>0</border_width>
     <filename>simulation.plt</filename>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <show_toolbar>false</show_toolbar>
-    <y>364</y>
     <actions hook="false" hook_all="false" />
-    <x>0</x>
+    <y>364</y>
     <tooltip></tooltip>
+    <x>0</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
     <macros>
@@ -1267,7 +1270,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <widget_type>Grouping Container</widget_type>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
     <width>217</width>
     <border_style>13</border_style>
@@ -1288,7 +1291,7 @@ $(pv_value)</tooltip>
       <wuid>41683398:13616df0de6:-7db7</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_4</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -1307,9 +1310,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Beam</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>40</width>
+      <width>29</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -1329,7 +1332,7 @@ $(pv_value)</tooltip>
       <wuid>41683398:13616df0de6:-7db3</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_2</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -1348,9 +1351,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Shutter</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>54</width>
+      <width>39</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -1370,7 +1373,7 @@ $(pv_value)</tooltip>
       <wuid>41683398:13616df0de6:-7db4</wuid>
       <auto_size>true</auto_size>
       <scripts />
-      <height>17</height>
+      <height>13</height>
       <name>Label_1</name>
       <scale_options>
         <width_scalable>true</width_scalable>
@@ -1389,9 +1392,9 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Neutrons</text>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
-      <width>63</width>
+      <width>49</width>
       <border_style>0</border_style>
       <rules />
       <border_width>1</border_width>
@@ -1408,110 +1411,112 @@ $(pv_value)</tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
-      <wuid>-1be3700a:1361717322d:-7d62</wuid>
-      <password></password>
       <auto_size>false</auto_size>
-      <boolean_label_position>0</boolean_label_position>
+      <password></password>
       <scripts />
       <height>49</height>
       <data_type>0</data_type>
-      <name>Image Boolean Button</name>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <show_boolean_label>false</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <off_label>OFF</off_label>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <released_action_index>0</released_action_index>
+      <enabled>true</enabled>
+      <widget_type>Image Boolean Button</widget_type>
+      <font>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
+      </font>
+      <no_animation>false</no_animation>
+      <width>55</width>
+      <push_action_index>0</push_action_index>
+      <border_style>0</border_style>
+      <pv_value />
+      <bit>-1</bit>
+      <on_label>ON</on_label>
+      <border_width>1</border_width>
+      <on_image>images/shutter_open.png</on_image>
+      <wuid>-1be3700a:1361717322d:-7d62</wuid>
+      <align_to_nearest_second>false</align_to_nearest_second>
+      <boolean_label_position>0</boolean_label_position>
       <stretch_to_fit>true</stretch_to_fit>
+      <name>Image Boolean Button</name>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <pv_name>shutter</pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
-      <off_label>OFF</off_label>
-      <released_action_index>0</released_action_index>
-      <widget_type>Image Boolean Button</widget_type>
-      <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
-      </font>
-      <width>55</width>
-      <border_style>0</border_style>
-      <push_action_index>0</push_action_index>
       <confirm_message>Are your sure you want to do this?</confirm_message>
       <rules />
-      <pv_value />
-      <bit>-1</bit>
-      <toggle_button>true</toggle_button>
       <show_confirm_dialog>0</show_confirm_dialog>
-      <border_width>1</border_width>
-      <on_label>ON</on_label>
+      <toggle_button>true</toggle_button>
       <off_image>images/shutter_closed.png</off_image>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
       <y>54</y>
-      <on_image>images/shutter_open.png</on_image>
       <actions hook="false" hook_all="false" />
-      <tooltip>Open/close the shutter</tooltip>
       <x>84</x>
+      <tooltip>Open/close the shutter</tooltip>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
-      <wuid>-1be3700a:1361717322d:-7d61</wuid>
-      <scripts />
       <square_led>false</square_led>
+      <scripts />
+      <height>31</height>
+      <data_type>0</data_type>
+      <show_boolean_label>false</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <off_label>OFF</off_label>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>LED</widget_type>
+      <font>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
+      </font>
+      <width>31</width>
+      <border_style>0</border_style>
+      <effect_3d>true</effect_3d>
+      <pv_value />
+      <bit>0</bit>
+      <on_label>ON</on_label>
+      <border_width>1</border_width>
+      <wuid>-1be3700a:1361717322d:-7d61</wuid>
       <on_color>
         <color name="On" red="0" green="255" blue="0" />
       </on_color>
-      <height>31</height>
-      <data_type>0</data_type>
       <name>LED</name>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <show_boolean_label>false</show_boolean_label>
       <scale_options>
         <width_scalable>true</width_scalable>
         <height_scalable>true</height_scalable>
         <keep_wh_ratio>true</keep_wh_ratio>
       </scale_options>
       <off_color>
-        <color name="Off" red="0" green="100" blue="0" />
+        <color name="Off" red="60" green="100" blue="60" />
       </off_color>
       <pv_name>beam_on</pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
-      <off_label>OFF</off_label>
-      <widget_type>LED</widget_type>
-      <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
-      </font>
-      <width>31</width>
-      <border_style>0</border_style>
-      <effect_3d>true</effect_3d>
       <rules />
-      <pv_value />
-      <bit>0</bit>
-      <border_width>1</border_width>
-      <on_label>ON</on_label>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" hook_all="false" />
       <y>12</y>
+      <actions hook="false" hook_all="false" />
+      <x>96</x>
       <tooltip>Is the beam "on"?
 Should be abt. 95% of the time.</tooltip>
-      <x>96</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1546,7 +1551,7 @@ Should be abt. 95% of the time.</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <precision>0</precision>
       <font>
-        <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+        <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
       </font>
       <width>100</width>
       <border_style>0</border_style>
@@ -1599,7 +1604,7 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
     <width>238</width>
     <border_style>0</border_style>
@@ -1651,7 +1656,7 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
     <width>68</width>
     <border_style>0</border_style>
@@ -1668,7 +1673,7 @@ $(pv_value)</tooltip>
     <tooltip>Scan Server Status
 $(pv_name)
 $(pv_value)</tooltip>
-    <x>253</x>
+    <x>324</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1703,7 +1708,7 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
     <width>196</width>
     <border_style>0</border_style>
@@ -1720,7 +1725,7 @@ $(pv_value)</tooltip>
     <tooltip>Scan Server Status
 $(pv_name)
 $(pv_value)</tooltip>
-    <x>331</x>
+    <x>396</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
@@ -1728,7 +1733,7 @@ $(pv_value)</tooltip>
     <wuid>-1e66626d:135d5269a94:-7fa2</wuid>
     <auto_size>true</auto_size>
     <scripts />
-    <height>17</height>
+    <height>13</height>
     <name>Label_4</name>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1747,9 +1752,9 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Scan:</text>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
-    <width>40</width>
+    <width>28</width>
     <border_style>0</border_style>
     <rules />
     <border_width>1</border_width>
@@ -1766,54 +1771,54 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
-    <wuid>-1e66626d:135d5269a94:-7fc6</wuid>
-    <scripts />
     <square_led>false</square_led>
+    <scripts />
+    <height>31</height>
+    <data_type>0</data_type>
+    <show_boolean_label>false</show_boolean_label>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <off_label>OFF</off_label>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>LED</widget_type>
+    <font>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
+    </font>
+    <width>31</width>
+    <border_style>0</border_style>
+    <effect_3d>true</effect_3d>
+    <pv_value />
+    <bit>0</bit>
+    <on_label>ON</on_label>
+    <border_width>1</border_width>
+    <wuid>-1e66626d:135d5269a94:-7fc6</wuid>
     <on_color>
       <color name="On" red="0" green="255" blue="0" />
     </on_color>
-    <height>31</height>
-    <data_type>0</data_type>
     <name>LED</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <show_boolean_label>false</show_boolean_label>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>true</keep_wh_ratio>
     </scale_options>
     <off_color>
-      <color name="Off" red="0" green="100" blue="0" />
+      <color name="Off" red="60" green="100" blue="60" />
     </off_color>
     <pv_name>Demo:Scan:Active</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <widget_type>LED</widget_type>
-    <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
-    </font>
-    <width>31</width>
-    <border_style>0</border_style>
-    <effect_3d>true</effect_3d>
     <rules />
-    <pv_value />
-    <bit>0</bit>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <y>331</y>
     <actions hook="false" hook_all="false" />
-    <y>334</y>
+    <x>600</x>
     <tooltip>Is there an active scan?</tooltip>
-    <x>535</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
@@ -1821,7 +1826,7 @@ $(pv_value)</tooltip>
     <wuid>-4b6f5b3b:13ea90560a6:-7f4d</wuid>
     <auto_size>true</auto_size>
     <scripts />
-    <height>17</height>
+    <height>13</height>
     <name>Label_1</name>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1840,9 +1845,9 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Progress:</text>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
-    <width>65</width>
+    <width>50</width>
     <border_style>0</border_style>
     <rules />
     <border_width>1</border_width>
@@ -1854,7 +1859,7 @@ $(pv_value)</tooltip>
     <y>312</y>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
-    <x>253</x>
+    <x>324</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
@@ -1862,7 +1867,7 @@ $(pv_value)</tooltip>
     <wuid>-4b6f5b3b:13ea90560a6:-7f3f</wuid>
     <auto_size>true</auto_size>
     <scripts />
-    <height>17</height>
+    <height>13</height>
     <name>Label_2</name>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1881,9 +1886,9 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Finish:</text>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
-    <width>47</width>
+    <width>35</width>
     <border_style>0</border_style>
     <rules />
     <border_width>1</border_width>
@@ -1895,7 +1900,7 @@ $(pv_value)</tooltip>
     <y>312</y>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
-    <x>331</x>
+    <x>396</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <visible>true</visible>
@@ -1903,7 +1908,7 @@ $(pv_value)</tooltip>
     <wuid>-4b6f5b3b:13ea90560a6:-7f31</wuid>
     <auto_size>true</auto_size>
     <scripts />
-    <height>17</height>
+    <height>13</height>
     <name>Label_3</name>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1922,9 +1927,102 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Active:</text>
     <font>
-      <opifont.name fontName="Verdana" height="14" style="0">Default</opifont.name>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
     </font>
-    <width>49</width>
+    <width>36</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" hook_all="false" />
+    <y>309</y>
+    <wrap_words>true</wrap_words>
+    <tooltip></tooltip>
+    <x>600</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <show_units>true</show_units>
+    <wuid>-10f1d708:147f52731af:-7faa</wuid>
+    <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
+    <scripts />
+    <height>25</height>
+    <name>Text Update_3</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <format_type>0</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <pv_name>Demo:Scan:State</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Update</widget_type>
+    <enabled>true</enabled>
+    <text>0%</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
+    </font>
+    <width>68</width>
+    <border_style>0</border_style>
+    <rules />
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" hook_all="false" />
+    <y>334</y>
+    <wrap_words>false</wrap_words>
+    <tooltip>Scan Server Status
+$(pv_name)
+$(pv_value)</tooltip>
+    <x>252</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <wuid>-10f1d708:147f52731af:-7fa9</wuid>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>13</height>
+    <name>Label_4</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>State:</text>
+    <font>
+      <opifont.name fontName="Lucida Grande" height="11" style="0">Default</opifont.name>
+    </font>
+    <width>30</width>
     <border_style>0</border_style>
     <rules />
     <border_width>1</border_width>
@@ -1936,6 +2034,6 @@ $(pv_value)</tooltip>
     <y>312</y>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
-    <x>535</x>
+    <x>252</x>
   </widget>
 </display>

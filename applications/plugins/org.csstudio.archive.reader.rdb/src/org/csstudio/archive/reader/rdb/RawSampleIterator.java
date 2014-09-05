@@ -93,6 +93,12 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             statement.close();
         }
 
+        boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
+		// Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
+		if (reader.getRDB().getDialect() == Dialect.PostgreSQL && autoCommit) {
+			reader.getRDB().getConnection().setAutoCommit(false);
+		}
+        
         // Fetch the samples
         if (reader.useArrayBlob())
 	        sel_samples = reader.getRDB().getConnection().prepareStatement(
@@ -192,6 +198,14 @@ public class RawSampleIterator extends AbstractRDBValueIterator
                 // Ignore
             }
             sel_samples = null;
+        }
+        if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
+        	// Restore default auto-commit on result set close 
+        	 try {
+     			reader.getRDB().getConnection().setAutoCommit(true);
+     		} catch (Exception e) {
+     			// Ignore
+     		}
         }
     }
 }

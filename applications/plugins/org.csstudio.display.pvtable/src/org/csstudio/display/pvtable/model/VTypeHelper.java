@@ -82,9 +82,10 @@ public class VTypeHelper
             return ((VNumber)value).getValue().toString();
         if (value instanceof VEnum)
         {
+            final VEnum ev = (VEnum) value;
             try
             {
-                return ((VEnum)value).getValue();
+                return ev.getIndex() + " '" + ev.getValue() + "'";
             }
             catch (ArrayIndexOutOfBoundsException ex)
             {    // PVManager doesn't handle enums that have no label

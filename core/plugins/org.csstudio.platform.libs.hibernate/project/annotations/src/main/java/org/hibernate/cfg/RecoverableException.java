@@ -26,8 +26,8 @@ package org.hibernate.cfg;
 import org.hibernate.AnnotationException;
 
 /**
- * Should neven be exposed to the client
- * An exception that wrap an underlying exception whith the hope
+ * Should never be exposed to the client
+ * An exception that wraps an underlying exception with the hope
  * subsequent processing will recover from it.
  *
  * @author Emmanuel Bernard

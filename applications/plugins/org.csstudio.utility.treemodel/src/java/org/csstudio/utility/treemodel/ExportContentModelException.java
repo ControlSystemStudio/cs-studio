@@ -23,7 +23,6 @@
  */
 package org.csstudio.utility.treemodel;
 
-import javax.annotation.Nonnull;
 
 /**
  * Export xml file exception for content model.
@@ -40,7 +39,7 @@ public class ExportContentModelException extends Exception {
     /**
      * Constructor.
      */
-    public ExportContentModelException(@Nonnull final String message, @Nonnull final Exception e) {
+    public ExportContentModelException(final String message, final Exception e) {
         super(message, e);
 
     }

@@ -24,18 +24,18 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.junit4"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.csstudio.csdata"/>
+      <import plugin="org.csstudio.java"/>
+      <import plugin="org.csstudio.logging"/>
+      <import plugin="org.csstudio.platform.utility.jms"/>
+      <import plugin="org.csstudio.platform.utility.rdb"/>
+      <import plugin="org.csstudio.security"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.utility.jms"/>
-      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logging" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.epics.vtype"/>
+      <import plugin="org.junit"/>
    </requires>
 
    <plugin

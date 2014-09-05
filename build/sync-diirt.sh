@@ -14,14 +14,14 @@ cd $BASEDIR
 
 HGDIR=diirt_tmp
 rm -rf $HGDIR
-hg clone http://hg.code.sf.net/p/epics-util/code $HGDIR
+git clone git@github.com:diirt/util.git $HGDIR
 echo Synching epics-util
 sync_dir util $HGDIR/src/main/java/org/epics ../core/plugins/org.epics.util/src/org/epics/
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "org.epics.util: update to current SNAPSHOT" ../core/plugins/org.epics.util
 echo Done epics-util
 
 rm -rf $HGDIR
-hg clone http://hg.code.sf.net/p/graphene/code $HGDIR
+git clone git@github.com:diirt/graphene.git $HGDIR
 echo Synching graphene
 cp -R $HGDIR/graphene/src/main/resources/org $HGDIR/graphene/src/main/java
 sync_dir graphene $HGDIR/graphene/src/main/java/org/epics ../applications/plugins/org.epics.graphene/src/org/epics/
@@ -30,7 +30,7 @@ echo Done graphene
 
 rm -rf $HGDIR
 echo pvmanager repo
-hg clone http://hg.code.sf.net/p/pvmanager/pvmanager $HGDIR
+git clone git@github.com:diirt/pvmanager.git $HGDIR
 
 echo Synching epics-vtype
 sync_dir vtype $HGDIR/epics-vtype/src/main/java/org/epics ../core/plugins/org.epics.vtype/src/org/epics/

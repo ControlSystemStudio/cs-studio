@@ -22,8 +22,6 @@
 package org.csstudio.utility.ldap;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.servicelocator.ServiceLocatorFactory;
 import org.csstudio.utility.ldap.preference.LdapPreference;
@@ -61,7 +59,7 @@ public final class LdapServiceImplActivator implements BundleActivator {
     }
 
     @Override
-    public void start(@Nullable final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
 
         // FIXME (jpenning) Hack: Find a better way to find out whether to use ldap
         // TODO (jpenning) Hack: Find a better way to find out whether to use ldap
@@ -80,7 +78,7 @@ public final class LdapServiceImplActivator implements BundleActivator {
      * @see org.csstudio.platform.AbstractCssPlugin#doStop(org.osgi.framework.BundleContext)
      */
     @Override
-    public void stop(@Nullable final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
         // nothing to do
     }
 
@@ -89,7 +87,6 @@ public final class LdapServiceImplActivator implements BundleActivator {
      *
      * @return the instance
      */
-    @Nonnull
     public static LdapServiceImplActivator getDefault() {
         return INSTANCE;
     }

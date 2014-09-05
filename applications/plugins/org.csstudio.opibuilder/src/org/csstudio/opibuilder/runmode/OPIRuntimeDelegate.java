@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,7 +30,6 @@ import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.UpdateListener;
 import org.eclipse.draw2d.UpdateManager;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
@@ -327,35 +327,12 @@ public class OPIRuntimeDelegate implements IAdaptable{
 	private void hideCloseButton(final IWorkbenchPartSite site) {
 		if (!displayModel.isShowCloseButton()) {
 			Display.getCurrent().asyncExec(new Runnable() {
-
 				public void run() {
-					// TODO Port to E4
-					// This code will configure the model element.
-					// Issue 1:
-					// When opening the display for the first time,
-					// the 'x' in the tab is still displayed.
-					// Only on _restart_ of the app will the tab be displayed
-					// without the 'x' to close it.
-					// Issue 2:
-					// Part can still be closed via Ctrl-W (Command-W on OS X)
-					// or via menu File/close.
-					MPart part = (MPart) site.getService(MPart.class);
-					part.setCloseable(false);
-					
-//					PartPane currentEditorPartPane = ((PartSite) site)
-//							.getPane();
-//					PartStack stack = currentEditorPartPane.getStack();
-//					Control control = stack.getControl();
-//					if (control instanceof CTabFolder) {
-//						CTabFolder tabFolder = (CTabFolder) control;
-//						tabFolder.getSelection().setShowClose(false);
-//					}
+					SingleSourcePlugin.getUIHelper().enableClose(site, false);
 				}
 			});
 		}
 	}
-	
-	
 	
 	public void setEditorInput(IEditorInput editorInput) {
 		this.editorInput = editorInput;

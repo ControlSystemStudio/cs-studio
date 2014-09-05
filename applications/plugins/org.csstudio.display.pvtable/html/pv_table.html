@@ -16,7 +16,8 @@ You can take a "snapshot" of current values, and the table will now highlight ro
 where the current value differs from the snapshot.
 </p>
 <p>
-The configuration (PV names, saved value) can be saved and later re-loaded.
+The configuration (PV names, saved value) can be saved and later re-loaded,
+see details on the file format described below.
 </p>
 
 <img src="pvtable.png"/>
@@ -58,7 +59,44 @@ their saved value back to the PVs.
 </p>
 
 
+<h2>File Formats</h2>
+<p>
+The original PVTable file format uses a ".pvs" extension for its file names.
+The files have an XML format which is described by the <file>pv_table.xsd</file>
+contained in the PV Table sources.
+</p>
+<p>
+Since version 4.0.0, the PVTable also supports file format
+used by the EPICS synApps <code>autosave</code> module,
+<a href="http://www.aps.anl.gov/bcda/synApps/autosave/autosave.html">http://www.aps.anl.gov/bcda/synApps/autosave/autosave.html</a>.
+Whenever loading or saving a PVTable from a file with a ".sav" extension,
+the <code>autosave</code> format will be used.
+</p>
+<p>
+Advantages of the original PVTable ".pvs" file format:
+<ul>
+<li>Contains global as well as per-element 'tolerance'.</li>
+<li>Tracks which rows were selected.</li>
+<li>Best for standalone operation of the PVTable.</li>
+</ul>
+</p>
+<p>
+Advantages of the <code>autosave</code> ".sav" file format:
+<ul>
+<li>It can be used by the IOC to load/save settings.</li>
+<li>PVTable allows easy comparison of last settings written by IOC against current values.</li>
+<li>Best for use together with on-demand save/restore on the IOC.</li>
+</ul>
+</p>
+
+
 <h1>History</h1>
+
+<h2>Version 4.0.0 - 2014-09-02</h2>
+<ul>
+<li>Support *.sav autosave/restore file format.</li>
+</ul>
+
 
 <h2>Version 3.2.1 - 2013-12-05</h2>
 <ul>

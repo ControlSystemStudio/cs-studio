@@ -40,7 +40,6 @@ public class ServletHelper
     /** Dump request headers 
      *  @param request
      */
-    @SuppressWarnings("unchecked")
     public static void dumpHeaders(final HttpServletRequest request)
     {
         final Enumeration<String> headers = request.getHeaderNames();

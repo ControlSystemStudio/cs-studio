@@ -383,7 +383,7 @@ public class AlarmServer implements Runnable
         }
         catch (Exception e)
         {
-        	Activator.getLogger().log(Level.SEVERE, "Error commiting state update batches.",e);
+        	Activator.getLogger().log(Level.SEVERE, "Error committing state update batches.",e);
         	had_RDB_error = true;
         } 
     }
@@ -653,7 +653,7 @@ public class AlarmServer implements Runnable
 	        }
 			catch (Exception e)
 			{
-	        	Activator.getLogger().log(Level.SEVERE, "Error commiting state update batches.", e);
+	        	Activator.getLogger().log(Level.SEVERE, "Error committing state update batches.", e);
 	        	had_RDB_error = true;
 	        }
 		}
@@ -683,7 +683,7 @@ public class AlarmServer implements Runnable
 	        }
 			catch (Exception e)
 			{
-	        	Activator.getLogger().log(Level.SEVERE,"Error commiting global update batches.",e);
+	        	Activator.getLogger().log(Level.SEVERE,"Error committing global update batches.",e);
 	        	had_RDB_error = true;
 	        }
 		}

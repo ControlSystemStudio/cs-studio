@@ -4,10 +4,15 @@
 package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.graphene.BubbleGraph2DWidget;
+import org.csstudio.graphene.opiwidgets.properties.AxisRangeProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
+import org.epics.graphene.AxisRange;
+import org.epics.graphene.AxisRanges;
+
+import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 /**
  * @author shroffk
@@ -28,8 +33,6 @@ public class BubbleGraph2DWidgetModel extends AbstractPointDatasetGraph2DWidgetM
 
 	public static final String PROP_SIZE_FORMULA = "size_formula"; //$NON-NLS-1$
 	public static final String PROP_COLOR_FORMULA = "color_formula"; //$NON-NLS-1$
-	public static final String PROP_HIGHLIGHT_SELECTION_VALUE = "highlight_selection_value"; //$NON-NLS-1$
-	public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureProperties() {

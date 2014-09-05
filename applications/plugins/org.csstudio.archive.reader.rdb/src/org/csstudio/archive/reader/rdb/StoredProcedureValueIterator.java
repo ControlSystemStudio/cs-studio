@@ -10,8 +10,12 @@ package org.csstudio.archive.reader.rdb;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,6 +85,9 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         case MySQL:
             sql = "{call " + stored_procedure + "(?, ?, ?, ?)}";
         	break;
+        case PostgreSQL:
+            sql = "{? = call " + stored_procedure + "(?, ?, ?, ?)}";
+        	break;
         case Oracle:
             sql = "begin ? := " + stored_procedure + "(?, ?, ?, ?); end;";
             break;
@@ -104,6 +111,26 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
                  statement.setInt(4, count);
                  result = statement.executeQuery();
         	}
+        	else if(dialect == RDBUtil.Dialect.PostgreSQL) 
+        	{	//PostgreSQL
+        		boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
+        		// Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
+        		if (autoCommit) {
+        			reader.getRDB().getConnection().setAutoCommit(false);
+        		}
+        		statement.registerOutParameter(1, Types.OTHER);
+                statement.setLong(2, channel_id);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                statement.setString(3, sdf.format(new Date(TimestampHelper.toSQLTimestamp(start).getTime())));
+                statement.setString(4, sdf.format(new Date(TimestampHelper.toSQLTimestamp(end).getTime())));
+                statement.setLong(5, count);
+                statement.setFetchDirection(ResultSet.FETCH_FORWARD);
+                statement.setFetchSize(1000);
+                statement.execute();
+                result = (ResultSet) statement.getObject(1);
+        	}
+
         	else
         	{	//ORACLE
         		statement.registerOutParameter(1, OracleTypes.CURSOR);
@@ -246,5 +273,14 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         super.close();
         index = -1;
         values = null;
+        if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
+        	// Restore default auto-commit on result set close 
+        	 try {
+     			reader.getRDB().getConnection().setAutoCommit(true);
+     		} catch (Exception e) {
+     			// Ignore
+     		}
+        }
+
     }
 }

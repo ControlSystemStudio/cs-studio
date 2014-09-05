@@ -42,6 +42,7 @@ into a shell script 'edm_write_logger.sh' and use that as the EDM put logger:
  Version History
  ---------------
  
+ 4.0.0, 2014-07 - Eclipse 4.0, allow EDMPUTLOGGER 'ssh' format without "::ffff:"
  1.2.0, 2010-09 - Eclipse 3.6, platform dependency changes
  1.1.0, 2009-08 - EDM 'write' logging, Eclipse 3.5
  1.0.0,         - Initial

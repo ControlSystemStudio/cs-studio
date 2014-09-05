@@ -269,7 +269,7 @@ public boolean hasDefaultValue() {
 	if (dbdData.getField_type()==DBDConstants.DBF_MENU ||
 		dbdData.getField_type()==DBDConstants.DBF_DEVICE)
 	{
-		// if initial value is pecified, than it is explicity written
+		// if initial value is specified, than it is explicitly written
 		if ((value.equals(com.cosylab.vdct.Constants.NONE) && dbdData.getInit_value().length()==0) ||
 			(dbdData.getInit_value().length()>0 &&
 			 value.equals(dbdData.getInit_value()+com.cosylab.vdct.Constants.MENU_DEFAULT_VALUE_INDICATOR))) 
@@ -379,7 +379,7 @@ public void updateInspector()
 {
 	Record visualRecord = (Record)Group.getRoot().findObject(record.getName(), true);
 	if (visualRecord==null) {
-		//com.cosylab.vdct.Console.getInstance().println("o) Internal error: no visual representaton of record "+getName()+" found.");
+		//com.cosylab.vdct.Console.getInstance().println("o) Internal error: no visual representation of record "+getName()+" found.");
 		return;
 	}
 

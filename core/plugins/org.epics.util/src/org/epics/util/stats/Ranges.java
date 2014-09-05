@@ -12,6 +12,24 @@ package org.epics.util.stats;
 public class Ranges {
     
     /**
+     * Returns the range of the absolute values within the range.
+     * <p>
+     * If the range is all positive, it returns the same range.
+     * 
+     * @param range a range
+     * @return the range of the absolute values
+     */
+    public static Range absRange(Range range) {
+        if (range.getMinimum().doubleValue() >= 0 && range.getMaximum().doubleValue() >= 0) {
+            return range;
+        } else if (range.getMinimum().doubleValue() < 0 && range.getMaximum().doubleValue() < 0) {
+            return range(- range.getMaximum().doubleValue(), - range.getMinimum().doubleValue());
+        } else {
+            return range(0, Math.max(range.getMinimum().doubleValue(), range.getMaximum().doubleValue()));
+        }
+    }
+    
+    /**
      * Range from given min and max.
      * 
      * @param minValue minimum value
@@ -116,5 +134,79 @@ public class Ranges {
      */
     public static boolean contains(Range range, double value) {
         return value >= range.getMinimum().doubleValue() && value <= range.getMaximum().doubleValue();
+    }
+    
+    /**
+     * Increases the given aggregated range with the new data range.
+     * <p>
+     * TODO: maybe this should be re-thought: it's the same as sum with 
+     * different null handling. Maybe a RangeAggregator utility class
+     * that also handles numbers?
+     * 
+     * @param dataRange the new data range; can't be null
+     * @param aggregatedRange the old aggregated range; can be null
+     * @return a range big enough to contain both ranges
+     */
+    public static Range aggregateRange(Range dataRange, Range aggregatedRange) {
+        if (aggregatedRange == null) {
+            return dataRange;
+        } else {
+            return Ranges.sum(dataRange, aggregatedRange);
+        }
+    }
+    
+    /**
+     * Percentage, from 0 to 1, of the first range that is contained by
+     * the second range.
+     * 
+     * @param range the range to be contained by the second
+     * @param otherRange the range that has to contain the first
+     * @return from 0 (if there is no intersection) to 1 (if the ranges are the same)
+     */
+    public static double overlap(Range range, Range otherRange) {
+        double minOverlap = Math.max(range.getMinimum().doubleValue(), otherRange.getMinimum().doubleValue());
+        double maxOverlap = Math.min(range.getMaximum().doubleValue(), otherRange.getMaximum().doubleValue());
+        double overlapWidth = maxOverlap - minOverlap;
+        double rangeWidth = range.getMaximum().doubleValue() - range.getMinimum().doubleValue();
+        double fraction = Math.max(0.0, overlapWidth / rangeWidth);
+        return fraction;
+    }
+    
+    /**
+     * Checks whether the range is of non-zero size and the boundaries are
+     * neither NaN or Infinity.
+     * 
+     * @param range the range
+     * @return true if range is of finite, non-zero size
+     */
+    public static boolean isValid(Range range) {
+        if (range == null) {
+            return false;
+        }
+        
+        double min = range.getMinimum().doubleValue();
+        double max = range.getMaximum().doubleValue();
+        
+        return min != max && !Double.isNaN(min) && !Double.isInfinite(min) &&
+                !Double.isNaN(max) && !Double.isInfinite(max);
+    }
+    
+    /**
+     * True if the tow ranges have the same min and max.
+     * 
+     * @param r1 a range
+     * @param r2 another range
+     * @return true if equal
+     */
+    public static boolean equals(Range r1, Range r2) {
+        // Check null cases
+        if (r1 == null && r2 == null) {
+            return true;
+        }
+        if (r1 == null || r2 == null) {
+            return false;
+        }
+        
+        return r1.getMinimum().equals(r2.getMinimum()) && r1.getMaximum().equals(r2.getMaximum());
     }
 }

@@ -51,11 +51,8 @@ class HistogramGraph2DFunction implements ReadFunction<Graph2DResult> {
         // TODO: check array is one dimensional
 
         Cell1DDataset dataset = null;
-        try {
-            dataset = Cell1DDatasets.datasetFrom(data.getData(), data.getDimensionDisplay().get(0).getCellBoundaries());
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        dataset = DatasetConversions.cell1DDatasetsFromVNumberArray(data);
+        
         // Process all renderer updates
         for (AreaGraph2DRendererUpdate rendererUpdate : getUpdateQueue().readValue()) {
             renderer.update(rendererUpdate);
@@ -67,11 +64,15 @@ class HistogramGraph2DFunction implements ReadFunction<Graph2DResult> {
         
         BufferedImage image = new BufferedImage(renderer.getImageWidth(), renderer.getImageHeight(), BufferedImage.TYPE_3BYTE_BGR);
         renderer.draw(image.createGraphics(), dataset);
+        int index = -1;
+        if (renderer.getFocusValueIndex() != null) {
+            index = renderer.getFocusValueIndex();
+        }
         
-        return new Graph2DResult(null, ValueUtil.toVImage(image),
-                new GraphDataRange(renderer.getXPlotRange(), dataset.getXRange(), renderer.getXAggregatedRange()),
+        return new Graph2DResult(data, ValueUtil.toVImage(image),
+                new GraphDataRange(renderer.getXPlotRange(), dataset.getXRange(), dataset.getXRange()),
                 new GraphDataRange(renderer.getYPlotRange(), dataset.getStatistics(), renderer.getYAggregatedRange()),
-                -1);
+                index);
     }
     
 }

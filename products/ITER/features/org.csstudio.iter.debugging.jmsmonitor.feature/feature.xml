@@ -20,15 +20,15 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.junit4"/>
-      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.logging"/>
+      <import plugin="org.csstudio.platform.libs.jms"/>
+      <import plugin="org.csstudio.platform.utility.jms"/>
+      <import plugin="org.csstudio.security.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.csstudio.apputil.ui"/>
-      <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jms"/>
-      <import plugin="org.csstudio.platform.utility.jms" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
    </requires>
 
    <plugin

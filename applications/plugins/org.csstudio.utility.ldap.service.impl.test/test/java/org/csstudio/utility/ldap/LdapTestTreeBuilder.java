@@ -29,7 +29,6 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttribute
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 
 
-import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
@@ -94,8 +93,8 @@ public final class LdapTestTreeBuilder {
     /**
      * Tests the method {@link ILdapService#createComponent(LdapName, Attributes)}.
      */
-    public static void createLdapEpicsControlsTestTree(@Nonnull final ILdapService service,
-                                                       @Nonnull final String efanName) {
+    public static void createLdapEpicsControlsTestTree(final ILdapService service,
+                                                       final String efanName) {
         try {
             final LdapName name =
                 LdapUtils.createLdapName(LdapEpicsControlsConfiguration.FACILITY.getNodeTypeName(), efanName,
@@ -139,8 +138,8 @@ public final class LdapTestTreeBuilder {
     }
 
 
-    public static void createLdapEpicsAlarmcfgTestTree(@Nonnull final ILdapService service,
-                                                       @Nonnull final String efanName) {
+    public static void createLdapEpicsAlarmcfgTestTree(final ILdapService service,
+                                                       final String efanName) {
         try {
             final LdapName name =
                 LdapUtils.createLdapName(LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeName(), efanName,

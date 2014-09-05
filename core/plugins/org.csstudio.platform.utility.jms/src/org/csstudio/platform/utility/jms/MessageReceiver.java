@@ -60,7 +60,7 @@ public class MessageReceiver {
      */
     private ConnectionFactory           _factory     = null;
     /**
-     * The Connetion.
+     * The Connection.
      */
     private Connection                  _connection  = null;
     /**
@@ -232,7 +232,7 @@ public class MessageReceiver {
      */
 	public final void startListener(final MessageListener listener) {
 	    _listener = listener;
-        _connectionJob = new ConnectionJob("JMS Connetion");
+        _connectionJob = new ConnectionJob("JMS Connection");
         _jobChangeListener = new IJobChangeListener(){
             public void done(final IJobChangeEvent event) {
                 if(event.getResult().isOK()){

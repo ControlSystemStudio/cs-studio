@@ -24,35 +24,30 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.apache.commons.httpclient"/>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="com.google.common"/>
-      <import plugin="org.apache.commons.collections" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.xerces" version="2.9.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.autocomplete" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.google.common" version="10.0.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.7.100" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.csstudio.apputil.ui" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="edu.msu.nscl.olog.api"/>
+      <import plugin="org.apache.commons.collections"/>
+      <import plugin="org.apache.commons.httpclient"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.autocomplete"/>
+      <import plugin="org.csstudio.autocomplete.logbook"/>
+      <import plugin="org.csstudio.autocomplete.ui"/>
+      <import plugin="org.csstudio.logbook"/>
+      <import plugin="org.csstudio.logbook.olog"/>
+      <import plugin="org.csstudio.logbook.ui"/>
+      <import plugin="org.csstudio.security"/>
+      <import plugin="org.csstudio.security.ui"/>
+      <import plugin="org.csstudio.ui.util"/>
+      <import plugin="org.csstudio.utility.olog"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.nebula.widgets.grid"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="edu.msu.nscl.olog.api" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.olog" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook.ui" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.2.2" match="greaterOrEqual"/>
-      <import plugin="edu.msu.nscl.olog.api" version="2.2.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook.olog" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.autocomplete.logbook" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.nebula.widgets.grid" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.epics.util"/>
    </requires>
 
    <plugin

@@ -31,7 +31,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 
-import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 
@@ -89,8 +88,7 @@ public class ContentModelExporterHeadlessTest {
         IMPORTED_DOC = getDomTreeOfResource(resource);
     }
 
-    @Nonnull
-    private static Document getDomTreeOfResource(@Nonnull final URL resource) {
+    private static Document getDomTreeOfResource(final URL resource) {
         InputStream stream = null;
         Document doc = null;
         // Get DOM tree of imported test file via JDOM

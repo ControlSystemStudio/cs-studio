@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -27,6 +28,15 @@ final class LogValueScale implements ValueScale {
         double oldRange = maxValue - minValue;
         double newRange = newMaxValue - newMinValue;
         return newMinValue + (value - minValue) / oldRange * newRange;
+    }
+
+    @Override
+    public double invScaleValue(double scaleValue, double actualMinValue, double actualMaxValue, double scaleMinValue, double scaleMaxValue) {
+        actualMinValue = Math.log10(actualMinValue);
+        actualMaxValue = Math.log10(actualMaxValue);
+        double actualRange = actualMaxValue - actualMinValue;
+        double scaleRange = scaleMaxValue - scaleMinValue;
+        return Math.pow(10.0, actualMinValue + (scaleValue - scaleMinValue) / scaleRange * actualRange);
     }
 
     @Override

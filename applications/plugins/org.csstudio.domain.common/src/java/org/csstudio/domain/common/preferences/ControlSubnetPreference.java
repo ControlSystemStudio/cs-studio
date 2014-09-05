@@ -24,7 +24,6 @@ package org.csstudio.domain.common.preferences;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public final class ControlSubnetPreference<T> extends AbstractPreference<T> {
      * @param keyAsString
      * @param defaultValue
      */
-    private ControlSubnetPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
+    private ControlSubnetPreference(final String keyAsString, final T defaultValue) {
         super(keyAsString, defaultValue);
     }
 
@@ -60,7 +59,6 @@ public final class ControlSubnetPreference<T> extends AbstractPreference<T> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    @Nonnull
     protected Class<? extends AbstractPreference<T>> getClassType() {
         return (Class<? extends AbstractPreference<T>>) ControlSubnetPreference.class;
     }
@@ -69,7 +67,6 @@ public final class ControlSubnetPreference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getPluginID() {
         return "org.csstudio.domain.desy";
     }
@@ -82,7 +79,6 @@ public final class ControlSubnetPreference<T> extends AbstractPreference<T> {
     *
     * @return an unmodifiable list with the control subnets
     */
-    @Nonnull
     public static List<String> getControlSubnets() {
         final String resultString = CONTROL_SUBNETS.getValue();
         String[] result = resultString.split(STRING_LIST_SEPARATOR);
@@ -96,7 +92,7 @@ public final class ControlSubnetPreference<T> extends AbstractPreference<T> {
         return asList;
     }
 
-    private static boolean hasNoControlSubnets(@Nonnull final String[] result) {
+    private static boolean hasNoControlSubnets(final String[] result) {
         return result.length == 0 || result.length == 1 && result[0].isEmpty();
     }
 

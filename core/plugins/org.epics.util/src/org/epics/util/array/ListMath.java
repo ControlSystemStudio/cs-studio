@@ -309,6 +309,9 @@ public class ListMath {
 
     /**
      * XXX: This is just a prototype
+     * @param x real part
+     * @param y imaginary part
+     * @return the real and imaginary part of the transform
      */
     public static List<ListNumber> dft(ListNumber x, ListNumber y) {
         if (x.size() != y.size()) {

@@ -52,7 +52,7 @@ class HorizontalAxisRenderer {
         int imageHeight = axisPosition + getAxisHeight();
         xTicks = new int[xLabels.length];
         for (int i = 0; i < xTicks.length; i++) {
-            xTicks[i] = startAxis + (int) (NumberUtil.normalize(xValueTicks[i], axis.getMinValue(), axis.getMaxValue()) * plotWidth);
+            xTicks[i] = startAxis + (int) (MathUtil.normalize(xValueTicks[i], axis.getMinValue(), axis.getMaxValue()) * plotWidth);
         }
         
         // Draw x-axis

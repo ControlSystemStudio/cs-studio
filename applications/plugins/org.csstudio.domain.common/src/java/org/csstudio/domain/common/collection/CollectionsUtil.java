@@ -24,7 +24,6 @@ package org.csstudio.domain.common.collection;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
 
 /**
  * Utility class for some missing things on collections, indeed sometimes there are...
@@ -53,8 +52,7 @@ public final class CollectionsUtil {
      * @param limit the maximum number of elements to represented in the string
      * @return the (limited length) string representation
      */
-    @Nonnull
-    public static <E> String toLimitLengthString(@Nonnull final Collection<E> coll,
+    public static <E> String toLimitLengthString(final Collection<E> coll,
                                                   final int limit) {
         if (fallBackToStandardImplementation(coll, limit)) {
             return coll.toString();
@@ -76,7 +74,7 @@ public final class CollectionsUtil {
         return "[]";
     }
 
-    private static <E> boolean fallBackToStandardImplementation(@Nonnull final Collection<E> coll,
+    private static <E> boolean fallBackToStandardImplementation(final Collection<E> coll,
                                                                 final int limit) {
         return limit >= coll.size() || limit < 0 || coll.isEmpty();
     }

@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.ldap.ui;
 
-import javax.annotation.Nonnull;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -76,7 +75,6 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	@Nonnull
 	public static Activator getDefault() {
 		return INSTANCE;
 	}

@@ -15,7 +15,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /** Helper for accessing UI.
  * 
@@ -172,4 +174,15 @@ public class UIHelper
 		return false;
 	}
 
+	/** @param site Site on which to enable/disable closing
+	 *  @param enable_close Enable the close button, allow closing the part?
+	 */
+	public void enableClose(IWorkbenchPartSite site, boolean enable_close) {
+		// By default, this is not supported
+	}
+	
+	/** @param view View to 'detach' */
+	public void detachView(IViewPart view) {
+		// By default, this is not supported
+	}
 }

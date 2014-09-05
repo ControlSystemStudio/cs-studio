@@ -1,0 +1,19 @@
+Bundle-Name: Test Fragment
+Bundle-SymbolicName: org.csstudio.trends.databrowser2.test
+Fragment-Host: org.csstudio.trends.databrowser2
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.csstudio.utility.test,
+ org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
+ org.csstudio.utility.pvmanager.loc;bundle-version="3.1.0",
+ org.csstudio.utility.pvmanager.sim;bundle-version="3.1.0"
+Export-Package: org.csstudio.trends.databrowser2.archive,
+ org.csstudio.trends.databrowser2.export,
+ org.csstudio.trends.databrowser2.imports,
+ org.csstudio.trends.databrowser2.model,
+ org.csstudio.trends.databrowser2.propsheet,
+ org.csstudio.trends.databrowser2.ui
+Import-Package: gov.aps.jca.cas

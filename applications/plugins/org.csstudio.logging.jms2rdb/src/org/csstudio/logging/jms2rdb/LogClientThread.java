@@ -54,9 +54,15 @@ public class LogClientThread extends Thread
     /** RDB Server URL */
     final private String rdb_url;
 
+    /** RDB user name */
+    private String rdb_user = null;
+    
+    /** RDB password */
+    private String rdb_password = null;
+    
     /** RDB Schema */
     final private String rdb_schema;
-
+    
     /** Message filters */
     final private Filter filters[];
 
@@ -82,16 +88,21 @@ public class LogClientThread extends Thread
      *  @param jms_url JMS server URL
      *  @param jms_topic JMS topic (or list of topics, separated by ',')
      *  @param rdb_url RDB server URL
+     *  @param rdb_user User (or null)
+     *  @param rdb_password Password (or null)
      *  @param rdb_schema RDB schema or ""
      */
     public LogClientThread(final String jms_url, final String jms_topic,
-            final String rdb_url, final String rdb_schema,
+            final String rdb_url, final String rdb_user, final String rdb_password,
+            final String rdb_schema,
             final Filter filters[])
     {
         super("LogClientThread");
         this.jms_url = jms_url;
         this.jms_topic = jms_topic;
         this.rdb_url = rdb_url;
+        this.rdb_user = rdb_user;
+        this.rdb_password = rdb_password;
         this.rdb_schema = rdb_schema;
         this.filters = filters;
 
@@ -128,7 +139,7 @@ public class LogClientThread extends Thread
             try
             {
                 // First open RDB, then the JMS client that writes to RDB
-                rdb_writer = new RDBWriter(rdb_url, rdb_schema);
+                rdb_writer = new RDBWriter(rdb_url, rdb_user, rdb_password, rdb_schema);
                 Activator.getLogger().log(Level.INFO, "Connected to RDB {0}", rdb_url);
 
                 // Add start message
@@ -238,7 +249,7 @@ public class LogClientThread extends Thread
     {
         Activator.getLogger().log(Level.WARNING, "JMS Exception", ex);
     }
-
+   
     /** @see JMS MessageListener */
     @Override
     public void onMessage(final Message message)
@@ -259,7 +270,7 @@ public class LogClientThread extends Thread
                 rdb_writer.write(map);
             }
             else
-                Activator.getLogger().log(Level.WARNING, "Received unhandled message type {0}", message.getClass().getName());
+                Activator.getLogger().log(Level.WARNING, "Received unhandled message {0}", message);
         }
         catch (Exception ex)
         {
@@ -267,7 +278,7 @@ public class LogClientThread extends Thread
             {
                 last_error = ex.getMessage();
             }
-            Activator.getLogger().log(Level.WARNING, "Message handling error", ex);
+            Activator.getLogger().log(Level.WARNING, "Message handling error for " + message, ex);
             // Leave run == true, toggle a restart
             run = true;
             synchronized (this)

@@ -59,7 +59,7 @@ public final class DisplayModelReader extends ErrorMessagesTracker {
 	 *            The <code>DisplayModel</code> that the read model data will
 	 *            be appended to.
 	 * @param display
-	 *            SWT <code>Display</code> that will be used for asynchroneous
+	 *            SWT <code>Display</code> that will be used for asynchronous
 	 *            loading.
 	 */
 	public void readModelFromXml(final InputStream inputStream,

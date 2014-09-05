@@ -26,7 +26,7 @@ public class DummyAutoCompleteSearchProvider extends
 		new ArrayList<String>(Arrays.asList("Operations", "Test",
 			"Controls")));
 	result.put(LogEntrySearchUtil.SEARCH_KEYWORD_TAGS,
-		new ArrayList<String>(Arrays.asList("Timming", "Bumps", "RF")));
+		new ArrayList<String>(Arrays.asList("Timing", "Bumps", "RF")));
 	return result;
     }
 

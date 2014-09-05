@@ -111,11 +111,11 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 					final Object newValue, final IFigure refreshableFigure) {
 				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
 				figure.setText(newValue.toString());
+				figure.calculateTextPosition();
 				return true;
 			}
 		};
 		editpart.setPropertyChangeHandler(ActionButtonModel.PROP_TEXT, textHandler);
-
 
 		//image
 		IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
@@ -131,7 +131,31 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 			}
 		};
 		editpart.setPropertyChangeHandler(ActionButtonModel.PROP_IMAGE, imageHandler);		
-	
+
+		// width
+		IWidgetPropertyChangeHandler widthHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
+				Integer height = (Integer) editpart.getPropertyValue(ActionButtonModel.PROP_HEIGHT);
+				figure.calculateTextPosition((Integer) newValue, height);
+				return true;
+			}
+		};
+		editpart.setPropertyChangeHandler(ActionButtonModel.PROP_WIDTH, widthHandler);			
+
+		// height
+		IWidgetPropertyChangeHandler heightHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
+				Integer width = (Integer) editpart.getPropertyValue(ActionButtonModel.PROP_WIDTH);
+				figure.calculateTextPosition(width, (Integer) newValue);
+				return true;
+			}
+		};
+		editpart.setPropertyChangeHandler(ActionButtonModel.PROP_HEIGHT, heightHandler);	
+		
 		// button style
 		final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

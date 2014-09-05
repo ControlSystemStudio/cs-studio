@@ -237,15 +237,15 @@ public class EngineModel
                      group.getName(), name, channel.getGroup(0).getName()));
 
         // Channel is new to this engine.
-        // See if there's already a sample in the archive,
-        // because we won't be able to go back-in-time before that sample.
-    	final VType last_sample;
-
-    	if (last_sample_time == null)
-    		last_sample = null;
-    	else // Create fake string sample with that time
-        	last_sample = new ArchiveVString(last_sample_time,
-                             AlarmSeverity.NONE, "", "Last timestamp in archive");
+        // If there's already a sample in the archive, we won't go back-in-time before that sample,
+        // because it may be an "Archive Off" or "Channel Disconnected" indicator.
+        // We need to show that it's now fine again, even if the original time stamp
+        // of the channel hasn't changed.
+        // Create fake string sample with that time, using the current time
+        // if we don't have a known last value resulting from the "-skip_last" option.
+        final VType last_sample = last_sample_time == null
+        ? new ArchiveVString(Timestamp.now(),  AlarmSeverity.NONE, "", "Engine start time")
+        : new ArchiveVString(last_sample_time, AlarmSeverity.NONE, "", "Last timestamp in archive");
 
     	// Determine buffer capacity
         int buffer_capacity = (int) (write_period / sample_mode.getPeriod() * buffer_reserve);

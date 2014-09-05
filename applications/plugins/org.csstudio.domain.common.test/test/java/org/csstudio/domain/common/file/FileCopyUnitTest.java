@@ -28,8 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import javax.annotation.Nonnull;
-
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -99,23 +97,22 @@ public class FileCopyUnitTest {
 
     }
 
-    private void insertContent(@Nonnull final File file,
-                               @Nonnull final String content) throws IOException {
+    private void insertContent(final File file,
+                               final String content) throws IOException {
         final FileWriter writer = new FileWriter(file, true);
         writer.append(content);
         writer.close();
     }
 
-    private boolean fileContentsMatch(@Nonnull final File first,
-                                      @Nonnull final File second) throws IOException {
+    private boolean fileContentsMatch(final File first,
+                                      final File second) throws IOException {
 
         final String firstStr = readFileIntoString(first);
         final String secStr = readFileIntoString(second);
         return firstStr.equals(secStr);
     }
 
-    @Nonnull
-    private String readFileIntoString(@Nonnull final File file) throws IOException {
+    private String readFileIntoString(final File file) throws IOException {
         if (!file.isFile()) {
             throw new IllegalArgumentException("File " + file.getName() + " cannot be read into string (is it a directory?).");
         }

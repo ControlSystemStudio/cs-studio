@@ -59,11 +59,10 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 				absolutePath = ResourceUtil.getFileOnSearchPath(getPath(), true);
 			}
 		}
-		if (absolutePath == null)
+		if (absolutePath == null || !ResourceUtil.isExsitingFile(absolutePath, true)) {
 			try {
 				throw new FileNotFoundException(
-						NLS.bind(
-								"The file {0} does not exist.",
+						NLS.bind("The file {0} does not exist.",
 								getPath().toString()));
 			} catch (FileNotFoundException e) {
 				MessageDialog.openError(Display.getDefault().getActiveShell(),
@@ -71,9 +70,8 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 				ConsoleService.getInstance().writeError(e.toString());
 				return;
 			}
-		
+		}
 		openOPI(absolutePath);
-		
 	}
 
 	abstract protected void openOPI(IPath absolutePath);

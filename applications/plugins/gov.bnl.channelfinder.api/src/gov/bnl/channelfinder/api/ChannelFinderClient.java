@@ -271,9 +271,9 @@ public interface ChannelFinderClient {
 			String... pattern) throws ChannelFinderException;
 
 	/**
-	 * Space seperated search criterias, patterns may include * and ? wildcards
+	 * Space separated search criterias, patterns may include * and ? wildcards
 	 * channelNamePattern propertyName=valuePattern1,valuePattern2
-	 * Tags=tagNamePattern Each criteria is logically ANDed, || seperated values
+	 * Tags=tagNamePattern Each criteria is logically ANDed, || separated values
 	 * are logically ORed
 	 * 
 	 * Query for channels based on the Query string <tt>query</tt> example:

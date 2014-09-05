@@ -11,10 +11,10 @@ package org.csstudio.simplepv.utilitypv;
 
 import static org.junit.Assert.assertEquals;
 
-import org.csstudio.simplepv.test.BasicReadTester;
-import org.csstudio.simplepv.test.BasicReadWriteTester;
-import org.csstudio.simplepv.test.BulkTester;
-import org.csstudio.simplepv.test.BulkTester.PVNameProvider;
+import org.csstudio.simplepv.testutil.BasicReadTester;
+import org.csstudio.simplepv.testutil.BasicReadWriteTester;
+import org.csstudio.simplepv.testutil.BulkTester;
+import org.csstudio.simplepv.testutil.BulkTester.PVNameProvider;
 import org.junit.Test;
 
 /**

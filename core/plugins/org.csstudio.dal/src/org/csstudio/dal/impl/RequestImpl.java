@@ -81,7 +81,7 @@ public class RequestImpl<T> implements Request<T>
 
 		if (capacity < 0) {
 			throw new IllegalArgumentException(
-			    "Capaciti must be larger than 0, not " + capacity + ".");
+			    "Capacity must be larger than 0, not " + capacity + ".");
 		}
 
 		responses = new LinkedList<Response<T>>();
@@ -134,7 +134,7 @@ public class RequestImpl<T> implements Request<T>
 
 		if (r.getSource() != source) {
 			throw new IllegalArgumentException(
-			    "Can not dispatch response which has different source identifeable.");
+			    "Can not dispatch response which has different source identifiable.");
 		}
 
 		synchronized (this) {

@@ -4,6 +4,9 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.StatisticsUtil;
+import org.epics.util.stats.Statistics;
+import org.epics.util.stats.Range;
 import org.epics.util.array.*;
 
 /**
@@ -30,6 +33,10 @@ public class Point2DDatasets {
 
     public static Point2DDataset lineData(final double[] x, final double[] y) {
         return lineData(new ArrayDouble(x), new ArrayDouble(y));
+    }
+    
+    public static Point2DDataset lineData(final Range xRange, final ListNumber y) {
+        return lineData(ListNumbers.linearListFromRange(xRange.getMinimum().doubleValue(), xRange.getMaximum().doubleValue(), y.size()), y);
     }
 
     public static Point2DDataset lineData(final ListNumber x, final ListNumber y) {
@@ -60,6 +67,16 @@ public class Point2DDatasets {
             @Override
             public Statistics getYStatistics() {
                 return yStatistics;
+            }
+
+            @Override
+            public Range getXDisplayRange() {
+                return null;
+            }
+
+            @Override
+            public Range getYDisplayRange() {
+                return null;
             }
 
             @Override

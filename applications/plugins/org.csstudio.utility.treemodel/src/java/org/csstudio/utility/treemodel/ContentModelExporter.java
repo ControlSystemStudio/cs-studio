@@ -28,9 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
@@ -73,9 +70,9 @@ public final class ContentModelExporter {
      * @throws ExportContentModelException
      */
     public static <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        void exportContentModelToXmlFile(@Nonnull final String filePath,
-                                         @Nonnull final ContentModel<T> model,
-                                         @Nullable final String dtdFilePath) throws ExportContentModelException {
+        void exportContentModelToXmlFile(final String filePath,
+                                         final ContentModel<T> model,
+                                         final String dtdFilePath) throws ExportContentModelException {
 
 
         OutputStream outputStream = null;
@@ -97,10 +94,9 @@ public final class ContentModelExporter {
      * Exports the given content model to String.
      * @throws ExportContentModelException
      */
-    @CheckForNull
     public static <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        String exportContentModelToXmlString(@Nonnull final ContentModel<T> model,
-                                             @Nullable final String dtdFilePath) throws ExportContentModelException {
+        String exportContentModelToXmlString(final ContentModel<T> model,
+                                             final String dtdFilePath) throws ExportContentModelException {
 
             final Format f = Format.getPrettyFormat();
             f.setEncoding(XML_ENCODING_FORMAT);
@@ -109,9 +105,8 @@ public final class ContentModelExporter {
             return outputter.outputString(doc);
     }
 
-    @Nonnull
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        Document createDOM(@Nonnull final ContentModel<T> model, @Nullable final String dtdFilePath) throws ExportContentModelException {
+        Document createDOM(final ContentModel<T> model, final String dtdFilePath) throws ExportContentModelException {
 
         final ISubtreeNodeComponent<T> virtualRoot = model.getVirtualRoot();
 
@@ -145,8 +140,8 @@ public final class ContentModelExporter {
     }
 
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        void createDOMElement(@Nonnull final Element parentElem,
-                              @Nonnull final INodeComponent<T> modelNode) throws ExportContentModelException {
+        void createDOMElement(final Element parentElem,
+                              final INodeComponent<T> modelNode) throws ExportContentModelException {
 
         // FIXME (bknerr) : once the deprecated esco, ioc components have vanished, the next lines can be removed
         String typeName = modelNode.getType().getNodeTypeName();
@@ -165,10 +160,9 @@ public final class ContentModelExporter {
         }
     }
 
-    @Nonnull
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>> Element
-        createElement(@Nonnull final INodeComponent<T> modelNode,
-                      @Nonnull final String typeName) throws ExportContentModelException {
+        createElement(final INodeComponent<T> modelNode,
+                      final String typeName) throws ExportContentModelException {
 
         final Element newNode = new Element(typeName);
 

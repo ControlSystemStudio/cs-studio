@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.applications.all.feature"
       label="CS-Studio Applications All"
-      version="1.0.2.qualifier"
+      version="1.0.4.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -119,13 +119,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.apputil.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.apputil.ui"
          download-size="0"
          install-size="0"
@@ -141,13 +134,6 @@
 
    <plugin
          id="org.csstudio.archive.config.rdb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archive.config.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -180,7 +166,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
    <plugin
          id="org.csstudio.archive.reader.appliance"
          download-size="0"
@@ -217,13 +203,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archive.reader.rdb.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.archive.vtype"
          download-size="0"
          install-size="0"
@@ -239,13 +218,6 @@
 
    <plugin
          id="org.csstudio.archive.writer.rdb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archive.writer.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -392,13 +364,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.domain.common.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.dummyauthorization"
          download-size="0"
          install-size="0"
@@ -407,13 +372,6 @@
 
    <plugin
          id="org.csstudio.email"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.email.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -581,13 +539,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.opibuilder.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.opibuilder.tools"
          download-size="0"
          install-size="0"
@@ -631,13 +582,6 @@
 
    <plugin
          id="org.csstudio.remote"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.remote.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -749,21 +693,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.servicelocator.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.simplepv.utilitypv"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.simplepv.utilitypv.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -798,13 +728,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.swt.widgets.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.swt.xygraph"
          download-size="0"
          install-size="0"
@@ -826,13 +749,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.swt.xygraph.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.systemopen"
          download-size="0"
          install-size="0"
@@ -841,30 +757,23 @@
 
    <plugin
          id="org.csstudio.systemopen.linux"
+         os="linux"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"
-         os="linux"/>
+         unpack="false"/>
 
    <plugin
          id="org.csstudio.systemopen.mac"
+         os="macosx"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"
-         os="macosx"/>
+         unpack="false"/>
 
    <plugin
          id="org.csstudio.systemopen.win"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"
-         os="win32"/>
-
-   <plugin
-         id="org.csstudio.testsuite"
+         os="win32"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -983,6 +892,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.utility.file"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.utility.httpd"
          download-size="0"
          install-size="0"
@@ -1019,20 +935,6 @@
 
    <plugin
          id="org.csstudio.utility.ldap.service.impl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.ldap.service.impl.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.ldap.service.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1109,13 +1011,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager.graphene"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.screenshot"
          download-size="0"
          install-size="0"
@@ -1138,13 +1033,6 @@
 
    <plugin
          id="org.csstudio.utility.treemodel"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.treemodel.test"
          download-size="0"
          install-size="0"
          version="0.0.0"

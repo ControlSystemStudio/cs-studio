@@ -147,7 +147,7 @@ public final class SimulatorUtilities
 
 			return characteristic;
 		} catch (NamingException e) {
-			throw new RuntimeException("Cannot instanitate URIName.", e);
+			throw new RuntimeException("Cannot instantiate URIName.", e);
 		}
 	}
 
@@ -178,7 +178,7 @@ public final class SimulatorUtilities
 
 			return characteristic;
 		} catch (NamingException e) {
-			throw new RuntimeException("Cannot instanitate URIName.", e);
+			throw new RuntimeException("Cannot instantiate URIName.", e);
 		}
 	}
 
@@ -208,7 +208,7 @@ public final class SimulatorUtilities
 
 			return list.toArray(names);
 		} catch (NamingException e) {
-			throw new RuntimeException("Cannot instanitate URIName.", e);
+			throw new RuntimeException("Cannot instantiate URIName.", e);
 		}
 	}
 	

@@ -92,7 +92,7 @@ public class GenericCommandAdapter implements IPropertySource
         // By prefixing the display names with a number,
         // the order of properties defined by ScanCommand.getProperties()
         // will be reflected in the view.
-        final String label = Integer.toString(index+1) + ". " + property.getName();
+        final String label = String.format("%02d. %s",  index+1, property.getName());
 
         if (property.getType() == String.class)
             descriptors.add(new TextPropertyDescriptor(id, label));

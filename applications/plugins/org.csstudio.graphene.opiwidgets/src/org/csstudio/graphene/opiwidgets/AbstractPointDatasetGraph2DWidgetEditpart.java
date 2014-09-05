@@ -7,6 +7,7 @@ import org.csstudio.graphene.AbstractPointDatasetGraph2DWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetEditpart;
 import org.eclipse.draw2d.IFigure;
+import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
 /**
  * 
@@ -45,15 +46,19 @@ M extends AbstractPointDatasetGraph2DWidgetModel> extends AbstractSelectionWidge
 			widget.setConfigurable(false);
 		}
 		widget.setResizableAxis(model.isResizableAxis());
+		widget.setXAxisRange(model.getXAxisRange());
+		widget.setYAxisRange(model.getYAxisRange());
 	}
 	
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		setPropertyChangeHandler(AbstractPointDatasetGraph2DWidgetModel.PROP_DATA_FORMULA, getReconfigureWidgetPropertyChangeHandler());
-		setPropertyChangeHandler(AbstractPointDatasetGraph2DWidgetModel.PROP_X_FORMULA, getReconfigureWidgetPropertyChangeHandler());
-		setPropertyChangeHandler(AbstractPointDatasetGraph2DWidgetModel.PROP_Y_FORMULA, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_DATA_FORMULA, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_X_FORMULA, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_Y_FORMULA, getReconfigureWidgetPropertyChangeHandler());
 		setPropertyChangeHandler(AbstractPointDatasetGraph2DWidgetModel.CONFIGURABLE, getReconfigureWidgetPropertyChangeHandler());
-		setPropertyChangeHandler(AbstractPointDatasetGraph2DWidgetModel.PROP_RESIZABLE_AXIS, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_RESIZABLE_AXIS, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_X_AXIS_RANGE, getReconfigureWidgetPropertyChangeHandler());
+		setPropertyChangeHandler(PROP_Y_AXIS_RANGE, getReconfigureWidgetPropertyChangeHandler());
 	}
 	
 }

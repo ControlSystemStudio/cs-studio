@@ -24,8 +24,6 @@ package org.csstudio.remote.jms.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -100,14 +98,14 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
         
     }
     
-    private RemoteCommandException newRemoteCommandException(@Nonnull final String message,
-                                                             @Nonnull final Exception e) {
+    private RemoteCommandException newRemoteCommandException(final String message,
+                                                             final Exception e) {
         LOG.error(message, e);
         return new RemoteCommandException(message, e);
     }
     
-    private void sendViaMessageProducer(@Nonnull final Session session,
-                                        @Nonnull final Message message) throws JMSException {
+    private void sendViaMessageProducer(final Session session,
+                                        final Message message) throws JMSException {
         MessageProducer producer = null;
         try {
             producer = newMessageProducer(session);
@@ -117,8 +115,7 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
         }
     }
     
-    @Nonnull
-    private MessageProducer newMessageProducer(@Nonnull final Session session) throws JMSException {
+    private MessageProducer newMessageProducer(final Session session) throws JMSException {
         Destination destination = session.createTopic(_topicName);
         MessageProducer result = session.createProducer(destination);
         result.setDeliveryMode(DeliveryMode.PERSISTENT);
@@ -126,19 +123,18 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
         return result;
     }
     
-    private void tryToCloseMessageProducer(@CheckForNull final MessageProducer messageProducer) throws JMSException {
+    private void tryToCloseMessageProducer(final MessageProducer messageProducer) throws JMSException {
         if (messageProducer != null) {
             messageProducer.close();
         }
     }
     
-    @Nonnull
     private Session newSession() throws JMSException, JmsUtilityException {
         return SharedJmsConnections.sharedSenderConnection()
                 .createSession(false, Session.AUTO_ACKNOWLEDGE);
     }
     
-    private void tryToCloseSession(@CheckForNull final Session session) {
+    private void tryToCloseSession(final Session session) {
         if (session != null) {
             try {
                 session.close();
@@ -153,15 +149,15 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
         private final IListener _listener;
         private final ClientGroup _group;
         
-        public MessageListenerAdapter(@Nonnull final ClientGroup group,
-                                      @Nonnull final IListener listener) {
+        public MessageListenerAdapter(final ClientGroup group,
+                                      final IListener listener) {
             _group = group;
             _listener = listener;
         }
         
         @SuppressWarnings("synthetic-access")
         @Override
-        public void onMessage(@Nonnull final Message message) {
+        public void onMessage(final Message message) {
             // guard: only MapMessages can be handled
             if (! (message instanceof MapMessage)) {
                 LOG.error("JmsRemoteCommandService.MessageListenerAdapter.onMessage failed: Invalid message type ({}) received",
@@ -181,11 +177,11 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
             }
         }
         
-        private boolean isProperClientGroup(@Nonnull final MapMessage message) throws JMSException {
+        private boolean isProperClientGroup(final MapMessage message) throws JMSException {
             return _group.toString().equals(message.getString("GROUP"));
         }
         
-        private boolean isCommandMessage(@Nonnull final MapMessage message) throws JMSException {
+        private boolean isCommandMessage(final MapMessage message) throws JMSException {
             return "command".equals(message.getString("TYPE"));
         }
         

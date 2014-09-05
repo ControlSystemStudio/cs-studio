@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.core.all.feature"
       label="CS-Studio Core All"
-      version="1.0.1.qualifier"
+      version="1.0.7.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -95,12 +95,12 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin
+   <!--plugin
       id="org.csstudio.csdata.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/>
+      unpack="false"/-->
 
    <plugin
       id="org.csstudio.data"
@@ -109,12 +109,12 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin
+   <!--plugin
       id="org.csstudio.data.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/>
+      unpack="false"/-->
 
    <plugin
       id="org.csstudio.java"
@@ -123,12 +123,12 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin
+   <!--plugin
       id="org.csstudio.java.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/>
+      unpack="false"/-->
 
    <plugin
       id="org.csstudio.logging"
@@ -263,15 +263,15 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin
+   <!--plugin
       id="org.csstudio.simplepv.pvmanager.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/>
+      unpack="false"/-->
 
    <plugin
-      id="org.csstudio.simplepv.test"
+      id="org.csstudio.simplepv.testutil"
       download-size="0"
       install-size="0"
       version="0.0.0"
@@ -305,12 +305,12 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin
+   <!--plugin
       id="org.csstudio.ui.menu.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/>
+      unpack="false"/-->
 
    <plugin
       id="org.csstudio.ui.preferences"
@@ -340,12 +340,12 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin
+   <!--plugin
       id="org.csstudio.utility.pv.epics.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/>
+      unpack="false"/-->
 
    <plugin
       id="org.csstudio.utility.pv.simu"
@@ -354,12 +354,12 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin
+   <!--plugin
       id="org.csstudio.utility.pv.simu.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/>
+      unpack="false"/-->
 
    <plugin
       id="org.csstudio.utility.pvmanager.ui"
@@ -382,12 +382,12 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin
+   <!--plugin
       id="org.csstudio.utility.pvmanager.widgets.test"
       download-size="0"
       install-size="0"
       version="0.0.0"
-      unpack="false"/>
+      unpack="false"/-->
 
    <plugin
       id="org.csstudio.utility.singlesource"

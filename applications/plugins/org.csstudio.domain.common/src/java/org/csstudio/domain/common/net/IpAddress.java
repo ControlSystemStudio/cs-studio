@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
 
 /**
  * IP address class with regex validator.
@@ -45,7 +44,7 @@ public class IpAddress implements Serializable {
     /**
      * Constructor.
      */
-    public IpAddress(@Nonnull final String ipAddress) {
+    public IpAddress(final String ipAddress) {
         final Matcher m = Pattern.compile("^" + IP_ADDRESS_REGEX + "$").matcher(ipAddress);
         if (!m.matches()) {
             throw new IllegalArgumentException("IP address doesn't match pattern described by: " + IP_ADDRESS_REGEX);
@@ -57,7 +56,6 @@ public class IpAddress implements Serializable {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String toString() {
         return _address;
     }
@@ -74,7 +72,7 @@ public class IpAddress implements Serializable {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(@Nonnull final Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof IpAddress)) {
             return false;
         }

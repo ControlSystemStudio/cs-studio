@@ -20,6 +20,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.BOYPVFactory;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPITimer;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -153,9 +154,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 	}
 	
 	public void doActivate(){
+		saveFigureOKStatus(editpart.getFigure());		
 		if(editpart.getExecutionMode() == ExecutionMode.RUN_MODE){
 				pvMap.clear();
-				saveFigureOKStatus(editpart.getFigure());
 				final Map<StringProperty, PVValueProperty> pvPropertyMap = editpart.getWidgetModel().getPVMap();
 
 				for(final StringProperty sp : pvPropertyMap.keySet()){
@@ -434,6 +435,21 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 				}
 			});
 		
+		IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {		
+				saveBackColor = ((OPIColor)newValue).getSWTColor();
+				return false;
+			}
+		};		
+		editpart.setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_BACKGROUND, backColorHandler);		
+
+		IWidgetPropertyChangeHandler foreColorHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {		
+				saveForeColor = ((OPIColor)newValue).getSWTColor();
+				return false;
+			}
+		};		
+		editpart.setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND, foreColorHandler);			
 
 		IWidgetPropertyChangeHandler backColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
 

@@ -10,6 +10,8 @@ package org.csstudio.opibuilder.widgets.symbol.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
+
 public final class ImagePermuter {
 	
 	private static Map<String, PermutationMatrix> ops = initOperations();

@@ -28,8 +28,6 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -151,9 +149,9 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      *            the value for the epicsCssType attribute in the directory.
      *
      */
-    private LdapEpicsAlarmcfgConfiguration(@Nonnull final String objectClass,
-                                           @Nonnull final String nodeName,
-                                           @Nonnull final ImmutableSet<String> attributes) {
+    private LdapEpicsAlarmcfgConfiguration(final String objectClass,
+                                           final String nodeName,
+                                           final ImmutableSet<String> attributes) {
         _objectClass = objectClass;
         _nodeName = nodeName;
         _attributes = attributes;
@@ -163,7 +161,6 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public LdapEpicsAlarmcfgConfiguration getRoot() {
         return UNIT;
     }
@@ -172,12 +169,10 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getDescription() {
         return _objectClass;
     }
 
-    @Nonnull
     public String getObjectClass() {
         return _objectClass;
     }
@@ -186,7 +181,6 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getNodeTypeName() {
         return _nodeName;
     }
@@ -195,7 +189,6 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public ImmutableSet<LdapEpicsAlarmcfgConfiguration> getNestedContainerTypes() {
         return Sets.immutableEnumSet(_nestedClasses);
     }
@@ -204,13 +197,11 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public LdapEpicsAlarmcfgConfiguration getNodeTypeByNodeTypeName(@Nonnull final String name) {
+    public LdapEpicsAlarmcfgConfiguration getNodeTypeByNodeTypeName(final String name) {
         return getNodeTypeByNodeNameStatic(name);
     }
 
-    @CheckForNull
-    private static LdapEpicsAlarmcfgConfiguration getNodeTypeByNodeNameStatic(@Nonnull final String name) {
+    private static LdapEpicsAlarmcfgConfiguration getNodeTypeByNodeNameStatic(final String name) {
         return CACHE_BY_NAME.get(name);
     }
 
@@ -218,7 +209,6 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getUnitTypeValue() {
         return "EpicsAlarmcfg";
     }
@@ -228,12 +218,10 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      * @return the immutable set of permitted attributes.
      */
     @Override
-    @Nonnull
     public ImmutableSet<String> getAttributes() {
         return _attributes;
     }
     
-    @Nonnull
     public static String getDtdFilePath() throws IOException {
         return TreeConfigurationActivator.getResourceFromBundle("./res/dtd/epicsAlarmCfg.dtd");
     }

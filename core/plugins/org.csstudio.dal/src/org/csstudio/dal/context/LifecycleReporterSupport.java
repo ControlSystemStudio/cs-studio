@@ -68,7 +68,7 @@ public class LifecycleReporterSupport implements LifecycleReporter
 
 	/**
 	     * Constructor for <code>LifecycleReporterSupport</code> with initial
-	     * state to be set from provided parmeters.
+	     * state to be set from provided parameters.
 	     * @param source a default source in generated
 	     * <code>LifecycleEvent</code> events, if <code>null</code> this object will be
 	     * event's source
@@ -116,8 +116,8 @@ public class LifecycleReporterSupport implements LifecycleReporter
 
 	/**
 	 * Moves the state of this support object from
-	 * <code>BEFOR_INITIALIZATION</code> to <code>INITIALIZING</code> phase
-	 * and notifys listeners that source of this support object has begun with
+	 * <code>BEFORE_INITIALIZATION</code> to <code>INITIALIZING</code> phase
+	 * and notifies listeners that source of this support object has begun with
 	 * initialization process. All exception caught during event dispatching
 	 * are collected and rethrown as single <code>CombinedException</code>.
 	 */
@@ -140,7 +140,7 @@ public class LifecycleReporterSupport implements LifecycleReporter
 
 	/**
 	 * Moves the state of this support object from
-	 * <code>INITIALIZING</code> to <code>INITIALIZED</code> phase and notifys
+	 * <code>INITIALIZING</code> to <code>INITIALIZED</code> phase and notifies
 	 * listeners that source of this support object is ready to be used. All
 	 * exception caught during event dispatching are collected and rethrown as
 	 * single <code>CombinedException</code>.
@@ -165,7 +165,7 @@ public class LifecycleReporterSupport implements LifecycleReporter
 	/**
 	 * Moves the state of this support object from
 	 * <code>INITIALIZED</code> or <code>INITIALIZING</code> to
-	 * <code>DESTROYING</code> phase and notifys listeners that source of this
+	 * <code>DESTROYING</code> phase and notifies listeners that source of this
 	 * support object is about to be destroyed. All exception caught during
 	 * event dispatching are collected and rethrown as single
 	 * <code>CombinedException</code>.
@@ -190,9 +190,9 @@ public class LifecycleReporterSupport implements LifecycleReporter
 
 	/**
 	 * Moves the state of this support object from
-	 * <code>DESTROYING</code> to  <code>DESTROYED</code> phase and notifys
+	 * <code>DESTROYING</code> to  <code>DESTROYED</code> phase and notifies
 	 * listeners that source of  this support object is destroyed and should
-	 * not be used any more if it is  not recycable.  All exception caught
+	 * not be used any more if it is  not recyclable.  All exception caught
 	 * during event dispatching are collected and rethrown as single
 	 * <code>CombinedException</code>.
 	 */
@@ -217,7 +217,7 @@ public class LifecycleReporterSupport implements LifecycleReporter
 		throws IllegalStateException
 	{
 		throw new IllegalStateException("The '" + source
-		    + "' can not go out of '" + state + "' phase whith '" + method
+		    + "' can not go out of '" + state + "' phase with '" + method
 		    + "'!");
 	}
 

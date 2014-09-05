@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -22,6 +23,12 @@ final class LinearValueScale implements ValueScale {
         double newRange = newMaxValue - newMinValue;
         return newMinValue + (value - minValue) / oldRange * newRange;
     }
+
+    @Override
+    public double invScaleValue(double scaleValue, double minValue, double maxValue, double newMinValue, double newMaxValue) {
+        return scaleValue(scaleValue, newMinValue, newMaxValue, minValue, maxValue);
+    }
+    
     private static final DecimalFormat defaultFormat = new DecimalFormat("0.###");
 
     @Override
@@ -63,7 +70,7 @@ final class LinearValueScale implements ValueScale {
         String[] labels = new String[ticks.length];
         for (int i = 0; i < ticks.length; i++) {
             double value = ticks[i];
-            labels[i] = format(value, format, exponent, normalization);
+            labels[i] = format(value, format, exponent, normalization);//error happens here. value = -0.5, format = , exponent = null, normalization = 1.0
         }
         return new ValueAxis(minValue, maxValue, ticks, labels);
     }

@@ -96,13 +96,19 @@ public class EDMParser
        * If this is a remote ssh connection, set the host to the IP address
        * of the machine the connection was made from.
        */
-      if(ssh!=null)
+      if (ssh != null)
       {
-         if(ssh.indexOf("f:")+2!=ssh.lastIndexOf("f:")+2 &&
-            ssh.indexOf(' ')!=ssh.lastIndexOf(' '))
-           host=ssh.substring(ssh.indexOf("f:")+2, ssh.indexOf(' '));
-         else 
-             throw new Exception("ssh entry has an INVALID format. " + ssh);
+    	  // Format is "IP port IP port", looking for the first IP:
+    	  // "::ffff:160.91.234.112 56165 ::ffff:160.91.230.38 22"
+    	  // "172.31.96.16 53395 172.31.72.100 22"
+    	  final String[] sections = ssh.split(" +");
+    	  // Unclear if that's possible, but accepting single "IP port"
+    	  if (sections.length < 2)
+    		  throw new Exception("Expecting ssh entry with \"IP port IP port\", got " + ssh);
+    	  host = sections[0];
+    	  final int prefix = host.lastIndexOf(':');
+    	  if (prefix > 0)
+    		  host = host.substring(prefix + 1);
       }
       /**
        * If an error exists in the entries for user, host, value or pv name

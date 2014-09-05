@@ -24,8 +24,6 @@ package org.csstudio.utility.ldap.treeconfiguration;
 import java.io.File;
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -64,7 +62,7 @@ public class TreeConfigurationActivator implements BundleActivator {
      * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
      */
     @Override
-    public void start(@Nullable final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
         // EMPTY
     }
 
@@ -73,12 +71,11 @@ public class TreeConfigurationActivator implements BundleActivator {
      * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
     @Override
-    public void stop(@Nullable final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
         // EMPTY
     }
 
-    @Nonnull
-    static String getResourceFromBundle(@Nonnull final String dtdFilePath) throws IOException {
+    static String getResourceFromBundle(final String dtdFilePath) throws IOException {
         final Bundle bundle = Platform.getBundle(TreeConfigurationActivator.PLUGIN_ID);
         final File loc = FileLocator.getBundleFile(bundle);
         return  new File(loc, dtdFilePath).toString();

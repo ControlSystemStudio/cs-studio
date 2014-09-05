@@ -20,19 +20,19 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.junit4"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil"/>
       <import plugin="org.csstudio.apputil.ui"/>
-      <import plugin="org.csstudio.utility.pvmanager.ui" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.autocomplete.ui"/>
+      <import plugin="org.csstudio.csdata"/>
+      <import plugin="org.csstudio.ui.util"/>
+      <import plugin="org.csstudio.utility.pvmanager"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.epics.vtype"/>
+      <import plugin="org.junit"/>
    </requires>
 
    <plugin

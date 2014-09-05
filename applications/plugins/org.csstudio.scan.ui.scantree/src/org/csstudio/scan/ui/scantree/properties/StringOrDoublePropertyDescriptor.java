@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.properties;
 
+import org.csstudio.scan.util.StringOrDouble;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -16,6 +19,16 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public class StringOrDoublePropertyDescriptor extends TextPropertyDescriptor
 {
+	/** {@link LabelProvider} that decorates {@link String}s with quotes */
+	static class StringOrDoubleLabelProvider extends LabelProvider
+	{
+		@Override
+		public String getText(final Object element)
+		{
+			return StringOrDouble.quote(element);
+		}
+	}
+
     /** Initialize
      *  @param id ID to edit
      *  @param label Label to show
@@ -25,7 +38,16 @@ public class StringOrDoublePropertyDescriptor extends TextPropertyDescriptor
         super(id, label);
     }
 
-    /** {@inheritDoc} */
+    /** Decorate Strings with quotes.
+     *  {@inheritDoc}
+     */
+    @Override
+	public ILabelProvider getLabelProvider()
+    {
+    	return new StringOrDoubleLabelProvider();
+	}
+
+	/** {@inheritDoc} */
     @Override
     public CellEditor createPropertyEditor(final Composite parent)
     {

@@ -114,7 +114,7 @@ public class RDBArchiveReader implements ArchiveReader
         	break;
         case PostgreSQL:
             is_oracle = false;
-            this.stored_procedure = "";
+            this.stored_procedure = stored_procedure;
             break;
         case Oracle:
             is_oracle = true;
@@ -494,7 +494,7 @@ public class RDBArchiveReader implements ArchiveReader
                 catch (Exception ex)
                 {
                     Logger.getLogger(Activator.ID).log(Level.WARNING,
-                        "Attempt to cancel statment", ex); //$NON-NLS-1$
+                        "Attempt to cancel statement", ex); //$NON-NLS-1$
                 }
             }
         }

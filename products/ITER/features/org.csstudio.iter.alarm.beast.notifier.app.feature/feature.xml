@@ -28,35 +28,33 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
+      <import plugin="com.google.common"/>
+      <import plugin="edu.msu.nscl.olog.api"/>
+      <import plugin="org.apache.commons.codec"/>
+      <import plugin="org.apache.commons.collections"/>
+      <import plugin="org.apache.commons.httpclient"/>
+      <import plugin="org.apache.commons.logging"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.csstudio.alarm.beast"/>
+      <import plugin="org.csstudio.alarm.beast.notifier.logbook"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.csstudio.csdata"/>
+      <import plugin="org.csstudio.email"/>
+      <import plugin="org.csstudio.java"/>
+      <import plugin="org.csstudio.logbook"/>
+      <import plugin="org.csstudio.logging"/>
+      <import plugin="org.csstudio.platform.utility.jms"/>
+      <import plugin="org.csstudio.platform.utility.rdb"/>
+      <import plugin="org.csstudio.security"/>
+      <import plugin="org.csstudio.utility.olog"/>
+      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.utility.jms"/>
-      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logging" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.alarm.beast" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.email" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="com.google.common"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.hamcrest.core" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.collections" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.xerces" version="2.9.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.apache.commons.logging"/>
-      <import plugin="edu.msu.nscl.olog.api" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.olog" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="com.google.common" version="10.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.7.100" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.2.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.alarm.beast.notifier.logbook" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util"/>
+      <import plugin="org.epics.vtype"/>
+      <import plugin="org.hamcrest.core"/>
+      <import plugin="org.junit"/>
    </requires>
 
    <plugin

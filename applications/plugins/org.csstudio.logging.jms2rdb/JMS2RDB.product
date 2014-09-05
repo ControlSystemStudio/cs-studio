@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="JMS-to-RDB" id="org.csstudio.logging.jms2rdb.product" application="org.csstudio.logging.jms2rdb.application" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="JMS-to-RDB" id="org.csstudio.logging.jms2rdb.product" application="org.csstudio.logging.jms2rdb.application" version="4.0.1.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Djava.awt.headless=true</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <vmArgs>-Djava.awt.headless=true
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages/>

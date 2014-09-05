@@ -26,7 +26,7 @@ import java.util.EnumSet;
 
 
 /**
- * Enumeration <code>DynamicValue</code> describes avaliable states in which
+ * Enumeration <code>DynamicValue</code> describes available states in which
  * dynamic value property might find itself. This state does not described
  * connection management status since this is done by ConnectionState. 
  * By definition DynamicValueState

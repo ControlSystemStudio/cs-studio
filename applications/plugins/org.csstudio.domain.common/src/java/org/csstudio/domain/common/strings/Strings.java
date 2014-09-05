@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -57,14 +56,12 @@ public final class Strings {
      * @param source a string of comma separated entries
      * @return an iterable of strings, and an empty list if the string is blank
      */
-    @Nonnull
-    public static String[] splitOnCommaIgnoreInQuotes(@Nonnull final String source) {
+    public static String[] splitOnCommaIgnoreInQuotes(final String source) {
         return source.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
     }
 
-    @Nonnull
-    public static Collection<String> splitIgnoreWithinQuotes(@Nonnull final String source,
-                                                             @Nonnull final char sep) {
+    public static Collection<String> splitIgnoreWithinQuotes(final String source,
+                                                             final char sep) {
         return splitIgnore(source, sep, '\"');
     }
 
@@ -78,10 +75,9 @@ public final class Strings {
      * @param ignore
      * @return
      */
-    @Nonnull
-    public static Collection<String> splitIgnore(@Nonnull final String source,
-                                                 @Nonnull final char sep,
-                                                 @Nonnull final char ign) {
+    public static Collection<String> splitIgnore(final String source,
+                                                 final char sep,
+                                                 final char ign) {
 
         final List<String> result = Lists.newArrayList();
         final Matcher matcher = Pattern.compile(createRegEx(sep, ign)).matcher(source);
@@ -104,16 +100,14 @@ public final class Strings {
      * @param trim
      * @return
      */
-    @Nonnull
-    public static Collection<String> splitIgnoreWithinQuotesTrimmed(@Nonnull final String source,
-                                                                    @Nonnull final char sep,
-                                                                    @Nonnull final char trim) {
+    public static Collection<String> splitIgnoreWithinQuotesTrimmed(final String source,
+                                                                    final char sep,
+                                                                    final char trim) {
 
         return Collections2.transform(splitIgnoreWithinQuotes(source, sep),
                                       new Function<String, String>() {
                                             @Override
-                                            @Nonnull
-                                            public String apply(@Nonnull final String input) {
+                                                                                    public String apply(final String input) {
                                                 return Strings.trim(input, trim);
                                             }
                                         });
@@ -126,8 +120,7 @@ public final class Strings {
      * @param char
      * @return
      */
-    @Nonnull
-    public static String trim(@Nonnull final String source, final char trim) {
+    public static String trim(final String source, final char trim) {
         final String trimQuoted = Pattern.quote(String.valueOf(trim));
         final String sourceWOLeadingChars = source.replaceAll("^" + trimQuoted + "+", "");
         final String sourceWOLeadingAndTrailingChars = sourceWOLeadingChars.replaceAll(trimQuoted + "+$", "");
@@ -143,7 +136,7 @@ public final class Strings {
      * @param s the string
      * @return the number of bytes of the unicode characters
      */
-    public static int getSizeInBytes(@Nonnull final String s) {
+    public static int getSizeInBytes(final String s) {
         if (com.google.common.base.Strings.isNullOrEmpty(s)) {
             return 0;
         }
@@ -155,9 +148,8 @@ public final class Strings {
      * Note that their order matters!
      * sep=, ign=X : ([^X,]*X[^X]+X[^X,]*) | ([^,X]*X[^,X]*)(?=[^X]*) | ([^X,]+)
      */
-    @Nonnull
-    private static String createRegEx(@Nonnull final char sep,
-                                      @Nonnull final char ign) {
+    private static String createRegEx(final char sep,
+                                      final char ign) {
         final String qSep = Pattern.quote(String.valueOf(sep));
         final String qIgn = Pattern.quote(String.valueOf(ign));
         return createRegExDoubleIgnore(qSep, qIgn) + "|" +
@@ -167,25 +159,22 @@ public final class Strings {
     /**
      * Regex matching anything between qSeps(,) with two qIgn(X): ,(abcXab,c,Xabc), OR ,(Xa,X), OR ,(abcXmX),
      */
-    @Nonnull
-    private static String createRegExDoubleIgnore(@Nonnull final String qSep,
-                                                  @Nonnull final String qIgn) {
+    private static String createRegExDoubleIgnore(final String qSep,
+                                                  final String qIgn) {
         return "([^" + qSep + qIgn + "]*" + qIgn + "[^" + qIgn + "]+" + qIgn + "[^" + qSep + qIgn + "]*)";
     }
     /**
      * Regex matching anything between qSeps(,) with ONE qIgn(X) when there isn't any other qIgn later on: ,(abcXab),abaa,aa
      */
-    @Nonnull
-    private static String createRegExSingleIgnoreWithLookAhead(@Nonnull final String qSep,
-                                                               @Nonnull final String qIgn) {
+    private static String createRegExSingleIgnoreWithLookAhead(final String qSep,
+                                                               final String qIgn) {
         return "([^" + qSep + qIgn + "]*" + qIgn + "[^" + qSep + qIgn + "]*)(?=[^" + qIgn + "]*)";
     }
     /**
      * Regex matching anything between qSeps and qIgns: ,(abc), OR x(foo)x OR X(aa), OR ,(aa)X
      */
-    @Nonnull
-    private static String createRegExWithoutSepsOrIgnore(@Nonnull final String qSep,
-                                                         @Nonnull final String qIgn) {
+    private static String createRegExWithoutSepsOrIgnore(final String qSep,
+                                                         final String qIgn) {
         return "([^" + qSep + qIgn + "]+)";
     }
     

@@ -110,7 +110,7 @@ public class ColorMap {
 	 */
 	public static RGB getRGBColor(String inColor) throws NumberFormatException, IllegalArgumentException {
 		if ( inColor.length() < 6 || inColor.length() >6 ) {
-			throw new IllegalArgumentException("RGB string is Hex reptesentation of the color triad.  In should "
+			throw new IllegalArgumentException("RGB string is Hex representation of the color triad.  It should "
 					+ "have 6 characters");
 		}	
 		String redStr = "#".concat(inColor.substring(0, 2));

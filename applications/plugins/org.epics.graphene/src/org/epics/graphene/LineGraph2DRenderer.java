@@ -4,12 +4,15 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Arrays;
+import java.util.List;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.SortedListView;
+import org.epics.util.stats.Ranges;
 
 /**
  * Renderer for a line graph.
@@ -18,15 +21,18 @@ import org.epics.util.array.SortedListView;
  */
 public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpdate> {
 
-    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOUR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
+    public static java.util.List<InterpolationScheme> supportedInterpolationScheme = Arrays.asList(InterpolationScheme.NEAREST_NEIGHBOR, InterpolationScheme.LINEAR, InterpolationScheme.CUBIC);
     public static java.util.List<ReductionScheme> supportedReductionScheme = Arrays.asList(ReductionScheme.FIRST_MAX_MIN_LAST, ReductionScheme.NONE);
     
     @Override
     public LineGraph2DRendererUpdate newUpdate() {
         return new LineGraph2DRendererUpdate();
     }
-
-    private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOUR;
+    
+    private NumberColorMap valueColorScheme = NumberColorMaps.GRAY;
+    private NumberColorMapInstance valueColorSchemeInstance;
+    private Range datasetRange;
+    private InterpolationScheme interpolation = InterpolationScheme.NEAREST_NEIGHBOR;
     private ReductionScheme reduction = ReductionScheme.FIRST_MAX_MIN_LAST;
     // Pixel focus
     private Integer focusPixelX;
@@ -85,6 +91,10 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
     @Override
     public void update(LineGraph2DRendererUpdate update) {
         super.update(update);
+        if(update.getValueColorScheme() != null){
+            valueColorScheme = update.getValueColorScheme();
+            valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
+        }
         if (update.getInterpolation() != null) {
             interpolation = update.getInterpolation();
         }
@@ -108,7 +118,7 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
     public void draw(Graphics2D g, Point2DDataset data) {
         this.g = g;
         
-        calculateRanges(data.getXStatistics(), data.getYStatistics());
+        calculateRanges(data.getXStatistics(), data.getXDisplayRange(), data.getYStatistics(), data.getYDisplayRange());
         calculateLabels();
         calculateGraphArea();        
         drawBackground();
@@ -135,6 +145,40 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
             focusValueIndex = -1;
         }
     }
+    
+    /**
+     *Draws a graph with multiple lines, each pertaining to a different set of data.
+     * @param g Graphics2D object used to perform drawing functions within draw.
+     * @param data can not be null
+     */
+    public void draw(Graphics2D g, List<Point2DDataset> data) {
+        this.g = g;
+        
+        //Calculate range, range will end up being from the lowest point to highest in all of the given data.
+        for(Point2DDataset dataPiece: data){
+          super.calculateRanges(dataPiece.getXStatistics(), dataPiece.getXDisplayRange(), dataPiece.getYStatistics(), dataPiece.getYDisplayRange());
+        }
+        calculateLabels();
+        calculateGraphArea();
+        drawBackground();
+        drawGraphArea();
+        
+        Range datasetRangeCheck = Ranges.range(0,data.size());
+        
+        //Set color scheme
+        if(valueColorSchemeInstance == null || datasetRange == null || datasetRange != datasetRangeCheck){
+            datasetRange = datasetRangeCheck;
+            valueColorSchemeInstance = valueColorScheme.createInstance(datasetRange);
+        }
+        //Draw a line for each set of data in the data array.
+        for(int datasetNumber = 0; datasetNumber < data.size(); datasetNumber++){
+            SortedListView xValues = org.epics.util.array.ListNumbers.sortedView(data.get(datasetNumber).getXValues());
+            ListNumber yValues = org.epics.util.array.ListNumbers.sortedView(data.get(datasetNumber).getYValues(), xValues.getIndexes());        
+            setClip(g);
+            g.setColor(new Color(valueColorSchemeInstance.colorFor((double)datasetNumber)));
+            drawValueExplicitLine(xValues, yValues, interpolation, reduction);
+        }
+    }
 
     @Override
     protected void processScaledValue(int index, double valueX, double valueY, double scaledX, double scaledY) {
@@ -149,6 +193,6 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
     
     private int currentIndex;
     private double currentScaledDiff;
-    
+
     
 }

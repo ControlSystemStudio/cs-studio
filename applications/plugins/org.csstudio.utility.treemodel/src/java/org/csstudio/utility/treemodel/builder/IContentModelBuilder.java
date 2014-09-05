@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.treemodel.builder;
 
-import javax.annotation.CheckForNull;
 
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -50,6 +49,5 @@ public interface IContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration
      * @param <T> the tree configuration type
      * @return the model
      */
-    @CheckForNull
     ContentModel<T> getModel();
 }

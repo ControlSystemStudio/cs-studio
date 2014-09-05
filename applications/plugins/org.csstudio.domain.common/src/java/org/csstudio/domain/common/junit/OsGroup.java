@@ -23,7 +23,6 @@ package org.csstudio.domain.common.junit;
 
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -53,11 +52,11 @@ public enum OsGroup {
     /**
      * Constructor.
      */
-    private OsGroup(@Nonnull final String... prefixes) {
+    private OsGroup(final String... prefixes) {
         _prefixes = ImmutableSet.copyOf(prefixes);
     }
 
-    public boolean contains(@Nonnull final String osType) {
+    public boolean contains(final String osType) {
         for (final String prefix : _prefixes) {
             if (osType.startsWith(prefix)) {
                 return true;

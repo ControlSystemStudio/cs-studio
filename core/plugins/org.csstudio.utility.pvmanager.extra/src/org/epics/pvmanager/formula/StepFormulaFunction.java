@@ -33,7 +33,7 @@ class StepFormulaFunction implements FormulaFunction {
 
     @Override
     public String getDescription() {
-        return "A generator for values based on initial value and incremen";
+        return "A generator for values based on initial value and increment";
     }
 
     @Override

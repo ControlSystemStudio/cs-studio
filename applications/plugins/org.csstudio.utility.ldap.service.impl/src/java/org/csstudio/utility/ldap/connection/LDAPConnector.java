@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
@@ -73,7 +72,7 @@ public class LDAPConnector {
         }
     }
 
-    private void logError(@Nonnull final NamingException e) {
+    private void logError(final NamingException e) {
         LOG.error("The LDAP settings are invalid.", e);
     }
 
@@ -81,7 +80,6 @@ public class LDAPConnector {
      *
      * @return the LDAP Connection
      */
-    @Nonnull
     public final DirContext getDirContext() {
         return _ctx;
     }
@@ -90,7 +88,6 @@ public class LDAPConnector {
      * @return the DirContext
      * @throws NamingException
      */
-    @Nonnull
     public final DirContext reconnect() throws NamingException {
         try {
             _ctx = createInitialContext(_contextPrefs);
@@ -110,7 +107,6 @@ public class LDAPConnector {
      *
      * @return env with the settings from PreferencePage
      */
-    @Nonnull
     private Map<String, String> createContextPrefsFromLdapPrefs() {
 
         LOG.debug("++++++++++++++++++++++++++++++++++++++++++++++");
@@ -134,8 +130,7 @@ public class LDAPConnector {
     }
 
 
-    @Nonnull
-    private InitialLdapContext createInitialContext(@Nonnull final Map<String, String> contextPrefs) throws NamingException {
+    private InitialLdapContext createInitialContext(final Map<String, String> contextPrefs) throws NamingException {
 
         final Hashtable<Object, String> env = new Hashtable<Object, String>(contextPrefs);
 

@@ -18,11 +18,9 @@ import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.visualparts.TipDialog;
 import org.csstudio.ui.util.perspective.PerspectiveHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.e4.ui.model.application.ui.basic.MPartSashContainerElement;
-import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -240,16 +238,7 @@ public class RunModeService {
 						((OPIView)opiView).setOPIInput(runnerInput);
 						
 						if(position == Position.DETACHED)
-						{	// Port to E4: 
-							//  ((WorkbenchPage)page).detachView(page.findViewReference(OPIView.ID, secondID));
-							// See http://tomsondev.bestsolution.at/2012/07/13/so-you-used-internal-api/
-							final EModelService model = (EModelService) opiView.getSite().getService(EModelService.class);
-							MPartSashContainerElement p = (MPart) opiView.getSite().getService(MPart.class);
-							// Part may be shared by several perspectives, get the shared instance
-							if (p.getCurSharedRef() != null)
-								p = p.getCurSharedRef();
-							model.detach(p, 100, 100, 600, 800);
-						}
+							SingleSourcePlugin.getUIHelper().detachView(opiView);
 					}
 				} catch (PartInitException e) {
 					ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", path), e);

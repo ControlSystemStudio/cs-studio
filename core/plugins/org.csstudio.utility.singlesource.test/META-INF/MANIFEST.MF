@@ -1,0 +1,10 @@
+Bundle-Name: Test Fragment
+Bundle-SymbolicName: org.csstudio.utility.singlesource.test
+Fragment-Host: org.csstudio.utility.singlesource
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.utility.singlesource
+Require-Bundle: org.junit
+

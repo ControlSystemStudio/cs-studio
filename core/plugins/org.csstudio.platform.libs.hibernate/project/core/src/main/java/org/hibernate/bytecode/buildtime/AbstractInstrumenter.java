@@ -240,7 +240,7 @@ public abstract class AbstractInstrumenter implements Instrumenter {
 		ClassDescriptor descriptor = getClassDescriptor( bytes );
 		ClassTransformer transformer = getClassTransformer( descriptor, classNames );
 		if ( transformer == null ) {
-			logger.debug( "no trasformer for class file : " + file.getAbsolutePath() );
+			logger.debug( "no transformer for class file : " + file.getAbsolutePath() );
 			return;
 		}
 

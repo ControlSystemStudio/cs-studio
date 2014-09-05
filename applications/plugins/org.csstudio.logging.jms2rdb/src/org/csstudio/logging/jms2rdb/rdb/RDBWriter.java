@@ -61,14 +61,16 @@ public class RDBWriter
 
     /** Constructor
      *  @param url RDB URL
+     *  @param user RDB user
+     *  @param password RDB password
      *  @param schema Schema name or ""
      *  @throws Exception on error
      */
-    public RDBWriter(final String url, final String schema) throws Exception
+    public RDBWriter(final String url, final String user, final String password, final String schema) throws Exception
     {
         try
         {
-            rdb_util = RDBUtil.connect(url, false);
+            rdb_util = RDBUtil.connect(url, user, password, false);
         }
         catch (Exception ex)
         {

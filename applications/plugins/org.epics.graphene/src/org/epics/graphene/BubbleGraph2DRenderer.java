@@ -4,10 +4,12 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import org.epics.util.array.ListInt;
+import org.epics.util.stats.Ranges;
 
 /**
  *
@@ -16,7 +18,7 @@ import org.epics.util.array.ListInt;
 public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRendererUpdate> {
     
     private Range zAggregatedRange;
-    private AxisRange zAxisRange = AxisRanges.integrated();
+    private AxisRangeInstance zAxisRange = AxisRanges.display().createInstance();
     private Range zPlotRange;
     private Integer focusPixelX;
     private Integer focusPixelY;
@@ -42,10 +44,9 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
         }
     }
 
-    protected void calculateRanges(Range xDataRange, Range yDataRange, Range zDataRange) {
-        super.calculateRanges(xDataRange, yDataRange);
-        zAggregatedRange = aggregateRange(zDataRange, zAggregatedRange);
-        zPlotRange = zAxisRange.axisRange(zDataRange, zAggregatedRange);
+    protected void calculateRanges(Range xDataRange, Range xDisplayRange, Range yDataRange, Range yDisplayRange, Range zDataRange, Range zDisplayRange) {
+        super.calculateRanges(xDataRange, xDisplayRange, yDataRange, yDisplayRange);
+        zPlotRange = zAxisRange.axisRange(zDataRange, zDisplayRange);
     }
 
     /**
@@ -59,7 +60,9 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
             throw new NullPointerException("g is null");
         this.g = g;
         
-        calculateRanges(data.getXStatistics(), data.getYStatistics(), data.getZStatistics());
+        calculateRanges(data.getXStatistics(), data.getXDisplayRange(),
+                data.getYStatistics(), data.getYDisplayRange(),
+                data.getZStatistics(), data.getZDisplayRange());
         
         drawBackground();
         calculateLabels();
@@ -82,7 +85,7 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
         // Make sure that the line does not go ouside the chart
         setClip(g);
         
-        Range absZPlotRange = RangeUtil.absRange(zPlotRange);
+        Range absZPlotRange = Ranges.absRange(zPlotRange);
         for (int j = indexes.size() - 1; j >= 0; j--) {
             int i = indexes.getInt(j);
             double zValue = data.getZValues().getDouble(i);
@@ -134,7 +137,7 @@ public class BubbleGraph2DRenderer extends Graph2DRenderer<BubbleGraph2DRenderer
         if (value >= maxValue) {
             return maxRadius;
         }
-        return minRadius + NumberUtil.scale(Math.sqrt(value), Math.sqrt(minValue), Math.sqrt(maxValue), (maxRadius - minRadius));
+        return minRadius + MathUtil.scale(Math.sqrt(value), Math.sqrt(minValue), Math.sqrt(maxValue), (maxRadius - minRadius));
     }
     
     /**
