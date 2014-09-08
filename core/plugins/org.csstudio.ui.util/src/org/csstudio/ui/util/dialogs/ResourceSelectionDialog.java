@@ -170,10 +170,14 @@ public final class ResourceSelectionDialog extends Dialog implements Listener {
 	}
 
     public void handleEvent(Event event) {    	
-        ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
-        _resourcePathText.setText(widget.getFullPath().toString());
-        if(event.type == SWT.MouseDoubleClick){
+       if(event != null){
+    	   ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
+    	   if(widget != null &&  widget.getFullPath() != null ){
+    		   _resourcePathText.setText(widget.getFullPath().toString());
+    	   }
+       }
+       if(SWT.MouseDoubleClick == event.type ){
         	okPressed();
-        }
+       }
     }
 }
