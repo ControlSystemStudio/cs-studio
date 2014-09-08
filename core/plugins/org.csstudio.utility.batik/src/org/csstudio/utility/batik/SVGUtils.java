@@ -5,16 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.ui.util.batik;
+package org.csstudio.utility.batik;
 
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.InputStream;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.csstudio.ui.util.Activator;
+import org.csstudio.utility.batik.Activator;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.eclipse.core.runtime.IPath;
@@ -55,7 +53,7 @@ public class SVGUtils {
 				return toSWT(Display.getCurrent(), awtImage);
 			}
 		} catch (Exception e) {
-			Logger.getLogger(Activator.ID).log(Level.WARNING,
+			Activator.getLogger().log(Level.WARNING,
 					"Error loading SVG file" + fullPath, e);
 		}
 		return null;
