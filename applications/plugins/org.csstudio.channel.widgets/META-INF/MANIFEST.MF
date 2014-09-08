@@ -19,10 +19,11 @@ Require-Bundle: org.eclipse.ui,
  org.epics.util;bundle-version="0.1.0",
  org.csstudio.utility.pvmanager.graphene;bundle-version="1.0.0",
  org.epics.graphene;bundle-version="0.1.0",
- com.google.common;bundle-version="10.0.1",
  org.csstudio.utility.pvmanager.extra;bundle-version="2.0.0",
  org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
  org.epics.vtype;bundle-version="2.5.0"
 Export-Package: org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-ActivationPolicy: lazy
+Import-Package: com.google.common.base,
+ com.google.common.collect

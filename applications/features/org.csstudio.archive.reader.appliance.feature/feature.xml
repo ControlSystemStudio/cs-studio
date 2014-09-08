@@ -17,6 +17,13 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.archive.reader" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
+   </requires>
+
    <plugin
          id="org.csstudio.archive.reader.appliance"
          download-size="0"

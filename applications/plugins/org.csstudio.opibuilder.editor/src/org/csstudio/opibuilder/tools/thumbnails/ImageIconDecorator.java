@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.batik.utils.SVGUtils;
+import org.csstudio.utility.batik.SVGUtils;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ILabelDecorator;

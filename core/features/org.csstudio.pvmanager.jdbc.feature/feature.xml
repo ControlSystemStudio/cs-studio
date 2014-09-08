@@ -17,6 +17,10 @@
       GPL 2 with Classpath Exception for pvmanager libraries.
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+   </requires>
+
    <plugin
          id="org.csstudio.platform.libs.jdbc"
          download-size="0"

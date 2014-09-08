@@ -7,14 +7,15 @@ Bundle-Activator: org.csstudio.testsuite.TestSuiteActivator
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.junit.core;bundle-version="3.6.1",
- org.csstudio.domain.common;bundle-version="1.0.0",
- com.google.common;bundle-version="0.9.0",
- org.apache.tools.ant;bundle-version="1.8.2",
- org.apache.tools.ant.junit;bundle-version="1.8.2",
- org.junit;bundle-version="4.8.1",
- org.slf4j;bundle-version="1.6.1"
+ org.csstudio.domain.common;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.testsuite,
  org.csstudio.testsuite.util
 Eclipse-BuddyPolicy: dependent
+Import-Package: com.google.common.base,
+ junit.framework;version="4.11.0",
+ org.apache.tools.ant,
+ org.apache.tools.ant.taskdefs.optional.junit,
+ org.junit,
+ org.slf4j

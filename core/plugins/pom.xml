@@ -79,6 +79,7 @@
     <!--module>org.csstudio.ui.menu.test</module--><!-- Exception while trying to execute test. -->
     <module>org.csstudio.ui.preferences</module>
     <module>org.csstudio.ui.util</module>
+    <module>org.csstudio.utility.batik</module>
     <module>org.csstudio.utility.pv</module>
     <module>org.csstudio.utility.pv.epics</module>
     <module>org.csstudio.utility.pv.epics.test</module>

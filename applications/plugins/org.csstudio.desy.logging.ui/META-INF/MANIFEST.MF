@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.csstudio.desy.logging.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.desy.logging.ui.DesyLoggingActivator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.slf4j;bundle-version="1.7.2"
+ org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: DESY, Joerg Penning <css-developer@desy.de>
+Import-Package: org.slf4j
