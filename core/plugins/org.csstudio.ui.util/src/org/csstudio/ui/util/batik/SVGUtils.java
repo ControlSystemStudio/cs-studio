@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.apache.batik.utils;
+package org.csstudio.ui.util.batik;
 
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;

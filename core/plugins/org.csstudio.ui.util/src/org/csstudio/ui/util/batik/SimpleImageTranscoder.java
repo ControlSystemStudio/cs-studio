@@ -9,7 +9,7 @@
  * Contributors:
  *    Dmitry Stadnik - initial API and implementation
  */
-package org.apache.batik.utils;
+package org.csstudio.ui.util.batik;
 
 import java.awt.Dimension;
 import java.awt.RenderingHints;

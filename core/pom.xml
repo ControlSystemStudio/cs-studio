@@ -1,72 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright (c) 2013 DESY.
-  All rights reserved. This program and the accompanying materials
-  are made available under the terms of the Eclipse Distribution License v1.0
-  which accompanies this distribution, and is available at
-  http://www.eclipse.org/org/documents/edl-v10.php
- 
-  Contributors:
-     Jan Hatje - created the pom to build the plug-ins
--->
+<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying 
+	materials are made available under the terms of the Eclipse Distribution 
+	License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php 
+	Contributors: Jan Hatje - created the pom to build the plug-ins -->
 <project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.csstudio</groupId>
-  <artifactId>core</artifactId>
-  <version>BUILD-VERSION</version>
-  <packaging>pom</packaging>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.csstudio</groupId>
+	<artifactId>core</artifactId>
+	<version>BUILD-VERSION</version>
+	<packaging>pom</packaging>
 
-  <!--
-    USE MAVEN 3.0
-  --> 
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
+	<!-- USE MAVEN 3.0 -->
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
 
-  <!-- 
-    PROPERTIES
-  -->
-  <properties>
-    <!-- VERSIONS -->
-    <tycho.version>0.20.0</tycho.version>
-    <tycho-extras.version>0.20.0</tycho-extras.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.0</cs-studio-central.url>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
-    <baselineMode>fail</baselineMode>
-	
-	<!-- SonarQube configuration -->
- 	<sonar.language>java</sonar.language>
- 	<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
- 	<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-	<sonar.junit.reportsPath>
- 		../${project.artifactId}.test/target/surefire-reports/
- 	</sonar.junit.reportsPath>
-	
-	<!--sonar.host.url>INSERT YOUR SONARQUBE URL</sonar.host.url-->
-	<!--sonar.jdbc.url>INSERT YOUR JDBC CONNECTION</sonar.jdbc.url-->
-	<!--sonar.jdbc.driver>INSERT YOUR JDBC DRIVER</sonar.jdbc.driver-->
-	<!--sonar.jdbc.username>username</sonar.jdbc.username!-->
-	<!--sonar.jdbc.password>password</sonar.jdbc.password-->
-  </properties>
+	<!-- PROPERTIES -->
+	<properties>
+		<!-- VERSIONS -->
+		<tycho.version>0.20.0</tycho.version>
+		<tycho-extras.version>0.20.0</tycho-extras.version>
+		<cs-studio-central.url>http://download.controlsystemstudio.org/core/4.0</cs-studio-central.url>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
+		<baselineMode>fail</baselineMode>
 
-  <!--
-    PLUGIN REPOSITORIES
-  -->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>tycho</id>
-      <url>https://oss.sonatype.org/content/groups/public</url>
-      <releases><enabled>false</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+		<!-- SonarQube configuration -->
+		<sonar.language>java</sonar.language>
+		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.junit.reportsPath>
+			../${project.artifactId}.test/target/surefire-reports/
+		</sonar.junit.reportsPath>
 
-  <!--
-    Profiles
-  -->
+		<!--sonar.host.url>INSERT YOUR SONARQUBE URL</sonar.host.url -->
+		<!--sonar.jdbc.url>INSERT YOUR JDBC CONNECTION</sonar.jdbc.url -->
+		<!--sonar.jdbc.driver>INSERT YOUR JDBC DRIVER</sonar.jdbc.driver -->
+		<!--sonar.jdbc.username>username</sonar.jdbc.username! -->
+		<!--sonar.jdbc.password>password</sonar.jdbc.password -->
+	</properties>
+
+	<!-- PLUGIN REPOSITORIES -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>tycho</id>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- Profiles -->
 	<profiles>
 		<profile>
 			<id>platform-default</id>
@@ -201,209 +191,194 @@
 		</repository>
 	</repositories>
 
-  <!--
-    CHILD MODULES
-  -->
-  <modules>
-    <module>plugins</module>
-    <module>features</module>
-    <module>repository</module>
-  </modules>
+	<!-- CHILD MODULES -->
+	<modules>
+		<module>plugins</module>
+		<module>features</module>
+		<module>repository</module>
+	</modules>
 
 
-  <build>
-    <!--
-      PLUGIN MANAGEMENT
-    -->
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-packaging-plugin</artifactId>
-          <version>${tycho.version}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.eclipse.tycho.extras</groupId>
-              <artifactId>tycho-buildtimestamp-jgit</artifactId>
-              <version>${tycho-extras.version}</version>
-            </dependency>
-          </dependencies>
-          <configuration>
-            <timestampProvider>jgit</timestampProvider>
-            <!-- jgit.dirtyWorkingTree options: ignore, warning, error -->
-            <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
-            <jgit.ignore>
-              pom.xml
-            </jgit.ignore>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-p2-plugin</artifactId>
-          <version>${tycho.version}</version>
-          <configuration>
-            <!-- baselineMode options: disable, warn, fail -->
-	    <baselineMode>${baselineMode}</baselineMode>
-            <!-- baselineReplace options: none, all -->
-            <baselineReplace>none</baselineReplace>
-            <baselineRepositories> 
-              <repository>
-                <url>${cs-studio-central.url}</url>
-              </repository>
-            </baselineRepositories>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+	<build>
+		<!-- PLUGIN MANAGEMENT -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-packaging-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.eclipse.tycho.extras</groupId>
+							<artifactId>tycho-buildtimestamp-jgit</artifactId>
+							<version>${tycho-extras.version}</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<timestampProvider>jgit</timestampProvider>
+						<!-- jgit.dirtyWorkingTree options: ignore, warning, error -->
+						<jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
+						<jgit.ignore>
+							pom.xml
+						</jgit.ignore>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<!-- baselineMode options: disable, warn, fail -->
+						<baselineMode>${baselineMode}</baselineMode>
+						<!-- baselineReplace options: none, all -->
+						<baselineReplace>none</baselineReplace>
+						<baselineRepositories>
+							<repository>
+								<url>${cs-studio-central.url}</url>
+							</repository>
+						</baselineRepositories>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
-    <!--
-      PLUGIN CONFIGURATION
-    -->
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>target-platform-configuration</artifactId>
-        <configuration>
-          <dependency-resolution>
-            <extraRequirements>
-              <requirement>
-                <type>eclipse-plugin</type>
-                <id>com.google.guava</id>
-                <versionRange>0.0.0</versionRange>
-              </requirement>
-            </extraRequirements>
-          </dependency-resolution>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-maven-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <extensions>true</extensions>
-      </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>target-platform-configuration</artifactId>
-          <version>${tycho.version}</version>
-          <configuration>
-            <dependency-resolution>
-              <extraRequirements>
-                <!-- 
-                  Needed to satisfy the import packages javax.servlet and
-                  javax.servlet.http required by the plugin org.csstudio.rap.core
-                -->
-                <requirement>
-                  <type>eclipse-plugin</type>
-                  <id>javax.servlet</id>
-                  <versionRange>0.0.0</versionRange>
-                </requirement>
-                <!--
-                  Needed to satisfy the import package org.eclipse.ui.parts 
-                  required by the plugin org.csstudio.ui.util
-                -->
-                <requirement>
-                  <type>eclipse-plugin</type>
-                  <id>org.eclipse.ui.ide</id>
-                  <versionRange>0.0.0</versionRange>
-                </requirement>
-              </extraRequirements>
-              <!-- Default behavior is to resolve ALL dependencies. -->
-              <!--<optionalDependencies>ignore</optionalDependencies>-->
-            </dependency-resolution>
-            <environments>
-              <environment>
-                <os>linux</os>
-                <ws>gtk</ws>
-                <arch>x86</arch>
-              </environment>
-              <environment>
-                <os>linux</os>
-                <ws>gtk</ws>
-                <arch>x86_64</arch>
-              </environment>
-              <environment>
-                <os>win32</os>
-                <ws>win32</ws>
-                <arch>x86</arch>
-              </environment>
-              <environment>
-                <os>win32</os>
-                <ws>win32</ws>
-                <arch>x86_64</arch>
-              </environment>
-              <environment>
-                <os>macosx</os>
-                <ws>cocoa</ws>
-                <arch>x86</arch>
-              </environment>
-          </environments>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-compiler-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <configuration>
-          <!--
-            Without this argument I get an error in the plugin 'org.csstudio.rap.core'
-          -->
-          <compilerArgument>-err:-forbidden</compilerArgument>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-packaging-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <configuration>
-          <!--Some project include things that no longer exists. This should be fixed, but for now this parameter lets the build continue.-->
-          <strictBinIncludes>false</strictBinIncludes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-source-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <executions>
-          <execution>
-            <id>plugin-source</id>
-            <goals>
-              <goal>plugin-source</goal>
-            </goals>
-            <configuration>
-              <!--Some project include things that no longer exists. This should be fixed, but for now this parameter lets the build continue.-->
-              <strictSrcIncludes>false</strictSrcIncludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-surefire-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <configuration>
-			<skipTests>false</skipTests>
-			<testFailureIgnore>true</testFailureIgnore>
-			<failIfNoTests>false</failIfNoTests>
-			<skipTests>false</skipTests>
-			<!--Some tests fail right now-->
-			<testFailureIgnore>true</testFailureIgnore>
-			<failIfNoTests>false</failIfNoTests>
-        </configuration>
-      </plugin>
-	  <!-- Used for collecting tests results before sending them to Sonar. -->
-		<plugin>
-			<groupId>org.jacoco</groupId>
-			<artifactId>jacoco-maven-plugin</artifactId>
-			<version>0.5.3.201107060350</version>
-			<configuration>
-				<includes>*</includes>
-				<destFile>${project.basedir}/../target/jacoco.exec</destFile>
-			</configuration>
-			<executions>
-				<execution><goals><goal>prepare-agent</goal></goals></execution>
-			</executions>
-		</plugin>
-    </plugins>
-  </build>
+		<!-- PLUGIN CONFIGURATION -->
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+							<!-- com.google.*  import -->
+								<type>eclipse-plugin</type>
+								<id>com.google.guava</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<!-- Needed to satisfy the import packages javax.servlet and javax.servlet.http 
+								required by the plugin org.csstudio.rap.core -->
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>javax.servlet</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<!-- Needed to satisfy the import package org.eclipse.ui.parts required 
+								by the plugin org.csstudio.ui.util -->
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.ui.ide</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+						<!-- Default behavior is to resolve ALL dependencies. -->
+						<!--<optionalDependencies>ignore</optionalDependencies> -->
+					</dependency-resolution>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<!-- Without this argument I get an error in the plugin 'org.csstudio.rap.core' -->
+					<compilerArgument>-err:-forbidden</compilerArgument>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<!--Some project include things that no longer exists. This should be 
+						fixed, but for now this parameter lets the build continue. -->
+					<strictBinIncludes>false</strictBinIncludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+						<configuration>
+							<!--Some project include things that no longer exists. This should 
+								be fixed, but for now this parameter lets the build continue. -->
+							<strictSrcIncludes>false</strictSrcIncludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<skipTests>false</skipTests>
+					<testFailureIgnore>true</testFailureIgnore>
+					<failIfNoTests>false</failIfNoTests>
+					<skipTests>false</skipTests>
+					<!--Some tests fail right now -->
+					<testFailureIgnore>true</testFailureIgnore>
+					<failIfNoTests>false</failIfNoTests>
+				</configuration>
+			</plugin>
+			<!-- Used for collecting tests results before sending them to Sonar. -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.5.3.201107060350</version>
+				<configuration>
+					<includes>*</includes>
+					<destFile>${project.basedir}/../target/jacoco.exec</destFile>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
