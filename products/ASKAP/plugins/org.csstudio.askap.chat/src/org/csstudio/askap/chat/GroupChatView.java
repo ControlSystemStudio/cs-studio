@@ -45,7 +45,13 @@ public class GroupChatView extends ViewPart implements ChatListener, SecurityLis
 
 	public GroupChatView() throws Exception {
 		
-		changedSecurity(SecuritySupport.getSubject(), SecuritySupport.isCurrentUser(), SecuritySupport.getAuthorizations());
+		Subject subject = SecuritySupport.getSubject();
+		if (subject==null) {
+			userName = null;
+		} else {
+			userName = SecuritySupport.getSubjectName(subject);
+		}
+
 		
         // Update when security info changes
         SecuritySupport.addListener(this);		
