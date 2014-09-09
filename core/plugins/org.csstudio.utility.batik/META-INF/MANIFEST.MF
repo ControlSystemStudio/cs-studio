@@ -19,3 +19,4 @@ Export-Package: org.csstudio.utility.batik
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Description: Extra utils for apache batik
+Bundle-ClassPath: .
