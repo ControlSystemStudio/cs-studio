@@ -20,46 +20,33 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="com.ibm.icu"/>
-      <import plugin="javax.servlet"/>
-      <import plugin="javax.xml"/>
       <import plugin="org.apache.lucene.analysis"/>
       <import plugin="org.apache.lucene.core"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.compare.core"/>
       <import plugin="org.eclipse.core.commands"/>
-      <import plugin="org.eclipse.core.databinding.observable"/>
-      <import plugin="org.eclipse.core.databinding.property"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filebuffers"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.core.jobs"/>
-      <import plugin="org.eclipse.core.net"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.variables"/>
       <import plugin="org.eclipse.draw2d"/>
-      <import plugin="org.eclipse.equinox.app"/>
+      <import plugin="org.eclipse.equinox.bidi"/>
       <import plugin="org.eclipse.equinox.common"/>
-      <import plugin="org.eclipse.equinox.http.jetty"/>
       <import plugin="org.eclipse.equinox.http.registry"/>
       <import plugin="org.eclipse.equinox.jsp.jasper.registry"/>
       <import plugin="org.eclipse.equinox.p2.core"/>
       <import plugin="org.eclipse.equinox.p2.engine"/>
       <import plugin="org.eclipse.equinox.p2.metadata"/>
-      <import plugin="org.eclipse.equinox.p2.touchpoint.eclipse"/>
-      <import plugin="org.eclipse.equinox.preferences"/>
       <import plugin="org.eclipse.equinox.registry"/>
-      <import plugin="org.eclipse.equinox.security"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.base"/>
       <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.jface.databinding"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ltk.core.refactoring"/>
       <import plugin="org.eclipse.ltk.ui.refactoring"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.team.ui"/>
@@ -74,32 +61,23 @@ of the distribution package.
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.sat4j.core"/>
-      <import plugin="org.sat4j.pb"/>
-      <import plugin="javax.el"/>
-      <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.emf.ecore.change"/>
-      <import plugin="org.eclipse.emf.ecore.xmi"/>
-      <import plugin="org.eclipse.jetty.http"/>
-      <import plugin="org.eclipse.jetty.io"/>
-      <import plugin="org.eclipse.jetty.server"/>
-      <import plugin="org.eclipse.jetty.servlet"/>
-      <import plugin="org.eclipse.jetty.util"/>
+      <import plugin="org.eclipse.wst.common.core"/>
+      <import plugin="org.eclipse.wst.common.environment"/>
+      <import plugin="org.eclipse.wst.common.frameworks"/>
+      <import plugin="org.eclipse.wst.common.frameworks.ui"/>
+      <import plugin="org.eclipse.wst.common.project.facet.core"/>
       <import plugin="org.eclipse.wst.validation"/>
-      <import plugin="org.eclipse.wst.validation.ui"/>
-      <import plugin="org.apache.jasper.glassfish"/>
-      <import plugin="org.w3c.dom.smil"/>
    </requires>
 
    <plugin
-         id="javax.servlet.jsp"
+         id="com.ibm.icu"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.logging"
+         id="org.apache.commons.httpclient"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -141,42 +119,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.filesystem"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.resources"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.variables"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.draw2d"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.frameworkadmin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.frameworkadmin.equinox"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -190,21 +133,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.jsp.jasper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.jsp.jasper.registry"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.artifact.repository"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -218,20 +147,6 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.p2.director"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.directorywatcher"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.p2.engine"
          download-size="0"
          install-size="0"
@@ -239,83 +154,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.p2.extensionlocation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.garbagecollector"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.jarprocessor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.p2.metadata"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.metadata.repository"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.publisher"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.publisher.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.reconciler.dropins"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.repository"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.touchpoint.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.simpleconfigurator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.simpleconfigurator.manipulator"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -378,13 +217,6 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.search"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.team.core"
          download-size="0"
          install-size="0"
@@ -400,13 +232,6 @@ of the distribution package.
 
    <plugin
          id="org.eclipse.text"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -465,7 +290,8 @@ of the distribution package.
          id="org.eclipse.ui.intro.universal"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.navigator"
@@ -476,13 +302,6 @@ of the distribution package.
 
    <plugin
          id="org.eclipse.ui.navigator.resources"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.net"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -503,133 +322,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ui.workbench"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.ui.workbench.texteditor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.sat4j.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.sat4j.pb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.el"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.ecore"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.ecore.change"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.ecore.xmi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jetty.http"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jetty.io"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jetty.server"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jetty.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jetty.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.wst.validation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.wst.validation.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.jasper.glassfish"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jetty.continuation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jetty.security"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.wst.common.frameworks"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -643,10 +336,45 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.w3c.dom.smil"
+         id="org.eclipse.wst.validation.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0.v200806040011"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.jsp.jasper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.servlet.jsp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.jasper.glassfish"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.el"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

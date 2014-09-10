@@ -146,6 +146,15 @@ then
     find eclipse/dropins/pydev -name '*.DSA' -exec rm -f {} \;
     find eclipse/dropins/pydev -name '*.SF' -exec rm -f {} \;
   fi
+  if [[ ! -d eclipse/dropins/mylyn ]]
+  then
+    # Download and install mylyn in dropins directory (https://bugs.eclipse.org/bugs/show_bug.cgi?id=336129)
+    if [[ ! -f mylyn-3.12.0.zip ]]
+    then
+      wget -O mylyn-3.12.0.zip http://download.eclipse.org/mylyn/drops/3.12.0/v20140609-1648/mylyn-3.12.0.v20140609-1648.zip
+    fi
+    unzip -o mylyn-3.12.0.zip -d eclipse/dropins/mylyn
+  fi
   cd ..
 fi
 
