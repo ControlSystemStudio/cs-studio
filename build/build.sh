@@ -118,6 +118,8 @@ else
   fi
   tar -xzvf eclipse-rcp-luna*.tar.gz
   unzip -o eclipse-*-delta-pack.zip
+  #https://bugs.eclipse.org/bugs/show_bug.cgi?id=438652
+  cp ../org.eclipse.osgi.compatibility.state_1.0.0.v20140403-1907.jar eclipse/plugins/
   cd ..
 fi
 if [ "$ORGANIZATION" = "ITER" ]
@@ -135,11 +137,11 @@ then
   if [[ ! -d eclipse/dropins/pydev ]]
   then
     # Download and install pydev in dropins directory
-    if [[ ! -f PyDev_3.6.0.zip ]]
+    if [[ ! -f PyDev_3.7.0.zip ]]
     then
-      wget -O PyDev_3.6.0.zip http://sourceforge.net/projects/pydev/files/pydev/PyDev%203.6.0/PyDev%203.6.0.zip/download
+      wget -O PyDev_3.7.0.zip http://sourceforge.net/projects/pydev/files/pydev/PyDev%203.7.0/PyDev%203.7.0.zip/download
     fi
-    unzip -o PyDev_3.6.0.zip -d eclipse/dropins/pydev
+    unzip -o PyDev_3.7.0.zip -d eclipse/dropins/pydev
     # Remove signature from pydev jars
     find eclipse/dropins/pydev -name '*.DSA' -exec rm -f {} \;
     find eclipse/dropins/pydev -name '*.SF' -exec rm -f {} \;

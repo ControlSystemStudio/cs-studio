@@ -63,6 +63,8 @@ else
   fi
   tar -xzvf eclipse-rcp-luna*.tar.gz
   unzip -o eclipse-*-delta-pack.zip
+  #https://bugs.eclipse.org/bugs/show_bug.cgi?id=438652
+  cp ../org.eclipse.osgi.compatibility.state_1.0.0.v20140403-1907.jar eclipse/plugins/
   cd ..
 fi
 
