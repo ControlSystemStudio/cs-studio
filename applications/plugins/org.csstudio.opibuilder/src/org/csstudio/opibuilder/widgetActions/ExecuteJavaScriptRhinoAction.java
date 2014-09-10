@@ -28,11 +28,11 @@ import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.ScriptableObject;
 
-/**The action executing javascript.
+/**The action executing javascript with Mozilla Rhino script engine.
  * @author Xihui Chen
  *
  */
-public class ExecuteJavaScriptAction extends AbstractExecuteScriptAction {
+public class ExecuteJavaScriptRhinoAction extends AbstractExecuteScriptAction {
 
 	private Script script;
 	private ImporterTopLevel scriptScope;

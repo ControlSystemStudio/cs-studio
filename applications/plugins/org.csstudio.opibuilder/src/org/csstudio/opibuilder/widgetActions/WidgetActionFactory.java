@@ -8,6 +8,8 @@
 package org.csstudio.opibuilder.widgetActions;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.script.ScriptStoreFactory;
+import org.csstudio.opibuilder.script.ScriptStoreFactory.JavaScriptEngine;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -86,7 +88,12 @@ public class WidgetActionFactory {
 		case EXECUTE_CMD:
 			return new ExecuteCommandAction();
 		case EXECUTE_JAVASCRIPT:
-			return new ExecuteJavaScriptAction();
+			if (ScriptStoreFactory.getDefaultJavaScriptEngine() == JavaScriptEngine.RHINO) {
+				return new ExecuteJavaScriptRhinoAction();
+			}
+			else {
+				return new ExecuteJavaScriptJdkAction();
+			}
 		case EXECUTE_PYTHONSCRIPT:
 			return new ExecutePythonScriptAction();
 		case OPEN_WEBPAGE:
