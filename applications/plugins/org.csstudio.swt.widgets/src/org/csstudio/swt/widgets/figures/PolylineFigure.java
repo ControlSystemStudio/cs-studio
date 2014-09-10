@@ -29,6 +29,7 @@ import org.csstudio.swt.widgets.figureparts.PolarPoint;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
 import org.csstudio.swt.widgets.util.PointsUtil;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -138,7 +139,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	
 	private int arrowLineLength = 30;
 	
-	private static final Rectangle LINEBOUNDS = Rectangle.SINGLETON;
+	private static final Rectangle LINEBOUNDS = Draw2dSingletonUtil.getRectangle();
 	/**
 	 * Constructor.
 	 */

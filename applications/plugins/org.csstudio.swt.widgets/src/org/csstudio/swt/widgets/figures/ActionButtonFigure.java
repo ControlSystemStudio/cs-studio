@@ -25,6 +25,7 @@ import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
@@ -42,7 +43,6 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.StackLayout;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -445,7 +445,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 	
 	public void calculateTextPosition(int width, int height) {		
 		if (image != null) {
-			Dimension textDimension = TextUtilities.INSTANCE.getTextExtents(getText(), getFont());
+			Dimension textDimension = Draw2dSingletonUtil.getTextUtilities().getTextExtents(getText(), getFont());
 			// Calculate available space in height and width
 			double hratio = ((double) height - image.getBounds().height) / textDimension.height;
 			double wratio = ((double) width - image.getBounds().width) / textDimension.width;

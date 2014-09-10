@@ -14,8 +14,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
@@ -308,7 +308,7 @@ public abstract class AbstractScale extends Figure{
     		return;
     	this.formatPattern = formatPattern;
     	if(isDateEnabled())
-    		formatPatternSize = TextUtilities.INSTANCE.getTextExtents(formatPattern, getFont()).width;
+    		formatPatternSize = Draw2dSingletonUtil.getTextUtilities().getTextExtents(formatPattern, getFont()).width;
     }
 
 	/**

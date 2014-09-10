@@ -12,6 +12,7 @@ import org.csstudio.swt.widgets.figures.IntensityGraphFigure.GraphArea;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure.ICroppedDataSizeListener;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure.IROIInfoProvider;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure.IROIListener;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
@@ -23,7 +24,6 @@ import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
@@ -320,7 +320,7 @@ public class ROIFigure extends Figure {
 				public boolean containsPoint(int x, int y) {
 					if (!super.containsPoint(x, y))
 						return false;
-					return !Rectangle.SINGLETON.setBounds(getBounds())
+					return !Draw2dSingletonUtil.getRectangle().setBounds(getBounds())
 							.shrink(3, 3).contains(x, y);
 				}
 			};
@@ -395,7 +395,7 @@ public class ROIFigure extends Figure {
 			if(roiInfoProvider!=null && roiDataBounds!=null){
 				String text = roiInfoProvider.getROIInfo(roiDataBounds.x, roiDataBounds.y, 
 						roiDataBounds.width, roiDataBounds.height);
-				Dimension size = TextUtilities.INSTANCE.getTextExtents(text, getFont());
+				Dimension size = Draw2dSingletonUtil.getTextUtilities().getTextExtents(text, getFont());
 				graphics.pushState();
 				graphics.translate(getLocation());
 				graphics.fillRectangle(roiGeoBounds.x, roiGeoBounds.y - size.height, size.width, size.height);

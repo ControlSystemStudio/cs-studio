@@ -15,12 +15,12 @@ import org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenAction;
 import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
 import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Locator;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -83,7 +83,7 @@ public class GroupingContainerFeedbackFactory extends DefaultGraphicalFeedbackFa
 		
 		private Dimension getTextExtent(){
 			if(textExtents == null)
-				textExtents = TextUtilities.INSTANCE.getTextExtents(((GroupingContainerEditPart) getOwner())
+				textExtents = Draw2dSingletonUtil.getTextUtilities().getTextExtents(((GroupingContainerEditPart) getOwner())
 						.getWidgetModel().isLocked() ? LOCKED : UNLOCKED, getFont());	
 			return textExtents;
 		}
@@ -144,7 +144,7 @@ public class GroupingContainerFeedbackFactory extends DefaultGraphicalFeedbackFa
 		
 		@Override
 		public boolean containsPoint(int x, int y) {
-			return Rectangle.SINGLETON.setBounds(
+			return Draw2dSingletonUtil.getRectangle().setBounds(
 					getTextLocation(),
 					getTextExtent()).contains(x, y);
 		}

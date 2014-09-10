@@ -1,12 +1,12 @@
 package org.csstudio.trends.databrowser2;
 
 import org.csstudio.rap.core.DisplayManager;
-import org.eclipse.rap.rwt.application.IEntryPoint;
+import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 
-public class WorkbenchDataBrowserRuntimeEntryPoint implements IEntryPoint {
+public class WorkbenchDataBrowserRuntimeEntryPoint implements EntryPoint {
 
 	
 

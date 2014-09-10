@@ -12,6 +12,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.IPVWidgetModel;
 import org.csstudio.opibuilder.visualparts.PVNameTextCellEditor;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
@@ -19,7 +20,6 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Locator;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -91,7 +91,7 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
 	
 	private Dimension getTextExtent(){
 		if(textExtents == null){
-			textExtents = TextUtilities.INSTANCE.getTextExtents(pvName, getFont());
+			textExtents = Draw2dSingletonUtil.getTextUtilities().getTextExtents(pvName, getFont());
 		}
 		return textExtents;
 	}

@@ -13,9 +13,9 @@ import java.beans.IntrospectionException;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -210,7 +210,7 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 	}
 
 	protected Dimension calculateTextSize(Font font) {
-		return TextUtilities.INSTANCE.getTextExtents(text, font);
+		return Draw2dSingletonUtil.getTextUtilities().getTextExtents(text, font);
 	}
 	
 	protected void clearLocationSize(){		

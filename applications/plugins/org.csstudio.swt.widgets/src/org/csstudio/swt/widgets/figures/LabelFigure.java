@@ -12,9 +12,9 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -89,7 +89,7 @@ public class LabelFigure extends Figure implements Introspectable{
 	}
 
 	protected Dimension calculateTextSize() {
-		return TextUtilities.INSTANCE.getTextExtents(text, getFont());
+		return Draw2dSingletonUtil.getTextUtilities().getTextExtents(text, getFont());
 	}
 	
 	protected void clearLocation(){

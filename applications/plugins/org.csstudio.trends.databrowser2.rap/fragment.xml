@@ -6,29 +6,16 @@
       <entrypoint
             class="org.csstudio.trends.databrowser2.WorkbenchDataBrowserRuntimeEntryPoint"
             id="org.csstudio.trends.databrowser2.workbenchDataBrowserRuntime"
-            path="/d">
+            path="/d"
+            brandingId="org.csstudio.trends.databrowser2.branding.workbench">
       </entrypoint>
    </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.csstudio.trends.databrowser2.perspectives.StandaloneRuntimePerspective"
-            fixed="true"
-            icon="icons/DataBrowserRunner.png"
-            id="org.csstudio.trends.databrowser2.standaloneRuntime"
-            name="Standalone Data Browser Runtime Perspective">
-      </perspective>
-   </extension>
-
-   
    <extension
          point="org.eclipse.rap.ui.branding">
       <branding
             body="html/body.html"
-            defaultEntrypointId="org.csstudio.trends.databrowser2.workbenchDataBrowserRuntime"
             favicon="icons/DataBrowserRunner.png"
             id="org.csstudio.trends.databrowser2.branding.workbench"
-            servletName="d"
             themeId="org.csstudio.trends.databrowser2.rap.theme"
             title="DataBrowser">
       </branding>
@@ -79,6 +66,7 @@
          </command>
       </menuContribution>
    </extension>
+   
    <extension
          point="org.eclipse.ui.commands">
       <command

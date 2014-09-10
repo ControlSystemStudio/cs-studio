@@ -15,9 +15,9 @@ import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -113,7 +113,7 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 			return;
 		}
 		Rectangle textArea = getClientArea();		
-		Dimension textSize = TextUtilities.INSTANCE.getTextExtents(
+		Dimension textSize = Draw2dSingletonUtil.getTextUtilities().getTextExtents(
 				boolLabel.getText(), getFont());
 			int x=0;
 			if(textArea.width > textSize.width){				
