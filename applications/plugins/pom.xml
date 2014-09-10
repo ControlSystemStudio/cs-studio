@@ -126,7 +126,7 @@
     <module>org.csstudio.opibuilder.widgets.rcp</module>
     <module>org.csstudio.opibuilder.widgets.symbol</module>
     <module>org.csstudio.remote</module>
-    <module>org.csstudio.remote.test</module>
+<!--     <module>org.csstudio.remote.test</module> -->
     <module>org.csstudio.scan</module>
     <module>org.csstudio.scan.client</module>
     <module>org.csstudio.scan.log</module>
@@ -156,7 +156,7 @@
     <module>org.csstudio.service.math</module>
     <module>org.csstudio.service.unitconversion</module>
     <module>org.csstudio.servicelocator</module>
-    <module>org.csstudio.servicelocator.test</module>
+<!--     <module>org.csstudio.servicelocator.test</module> -->
     <module>org.csstudio.simplepv.utilitypv</module>
     <module>org.csstudio.simplepv.utilitypv.test</module>
     <module>org.csstudio.snl.intro</module>
@@ -199,7 +199,7 @@
     <module>org.csstudio.utility.ldap.service</module>
     <module>org.csstudio.utility.ldap.service.impl</module>
     <!--module>org.csstudio.utility.ldap.service.impl.test</module--><!--Tests do not execute.-->
-    <module>org.csstudio.utility.ldap.service.test</module>
+<!--     <module>org.csstudio.utility.ldap.service.test</module> -->
     <module>org.csstudio.utility.ldap.treeconfiguration</module>
     <module>org.csstudio.utility.ldap.ui</module>
     <module>org.csstudio.utility.nameSpaceBrowser</module>
