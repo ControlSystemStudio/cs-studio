@@ -1,14 +1,46 @@
-<!-- Demo configuration with root element "Annunciator" -->
-<config name="Annunciator">
-    <component name="System1">
-        <component name="Subsys1">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+     Example Alarm Configuration
+  -->
+<config name="Example">
+    <component name="Area42">
+        <!-- There may be display, guidance, commands, automated action
+             for a component or a PV
+          -->
+        <guidance>
+            <title>Area Guidance</title>
+            <details>If all fails, call your mother</details>
+        </guidance>
+        <display>
+            <title>Area Overview</title>
+            <details>/Common/opi/Area42.opi</details>
+        </display>
+        <automated_action>
+            <title>Trigger automated email</title>
+            <details>mailto:fred@site.gov,8001234567@txt.att.net</details>
+            <delay>900</delay>
+        </automated_action>
+        <!--  The Top-level component is aka "Area",
+              while any sub(-sub) components are "Systems"
+          -->
+        <component name="Vacuum">
             <guidance>
-                <title>Demo</title>
-                <details>Trouble in subsystem 1. Do something about it!</details>
+                <title>What to do</title>
+                <details>Check vacuum display for detail.&#10;Contact vacuum group (Fred, Jane)</details>
             </guidance>
-            <pv name="test_pv">
-                <description>Test PV alarm</description>
+            <display>
+                <title>Vacuum Display</title>
+                <details>opi:https://my.site/files/opi/vac.opi</details>
+            </display>
+            <!-- A PV can be on any component level, Area, System, SubSystem, .. -->
+            <pv name="VacOK">
+                <description>Beam Line Vacuum</description>
+                <latching>true</latching>
                 <annunciating>true</annunciating>
+                <command>
+                    <title>Cycle Valve</title>
+                    <details>caput ValveCycle 1</details>
+                </command>
             </pv>
         </component>
     </component>

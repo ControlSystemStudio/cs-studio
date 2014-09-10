@@ -13,8 +13,19 @@ by all other alarm system tools.
 Revisions before 3.1.0 refer to the associated SNS CSS update.
 </p>
 
+<h2>4.0.0 - 2014-09-03</h2>
+<ul>
+  <li>AlarmServer ignored brief alarms because of the way it used the PVManager. For now on vtype.pv.</li>
+  <li>Maintenance mode fix for PVManager/VType "UNKNOWN" severity level.</li>
+  <li>AlarmServer console "pvs partial_name" to list matching PVs.</li>
+  <li>AlarmServer defaults to org.csstudio.platform.libs.epics/monitor=VALUE.
+      ALARM can reduce network traffic, but tends to prevent formulas from functioning as expected.
+  </li>
+</ul>
+
 <h2>3.2.2 - 2014-04-10</h2>
 <ul>
+  <li>AlarmServer uses PVManager.</li>
   <li>Alarm notifier can now create a new entry in the electronic logbook.</li>
 </ul>
 
