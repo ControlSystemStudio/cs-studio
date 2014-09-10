@@ -221,6 +221,9 @@ public class PVDevice extends Device
             {
                 value = getDisconnectedValue();
             }
+            // Report InterruptedException (from abort) as such
+            if (ex instanceof InterruptedException)
+                throw new InterruptedException("Failed to read " + getName());
             throw new Exception("Failed to read " + getName(), ex);
         }
     }	
@@ -300,6 +303,10 @@ public class PVDevice extends Device
 		        write_result.get(millisec, TimeUnit.MILLISECONDS);
 		    else
 		        write_result.get();
+		}
+		catch (InterruptedException ex)
+		{   // Report InterruptedException (from abort) as such
+            throw new InterruptedException("Interrupted while writing " + value + " to " + getName());
 		}
 		catch (Exception ex)
 		{
