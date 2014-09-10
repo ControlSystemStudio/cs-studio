@@ -384,7 +384,7 @@ public class DirContextSupport implements DirContext
 	{
 		if (!(matchingAttributes instanceof org.epics.css.dal.directory.Attributes)) {
 			throw new NamingException(
-			    "Onlu instance of org.epics.css.dal.directory.Attributes is supported.");
+			    "Only instance of org.epics.css.dal.directory.Attributes is supported.");
 		}
 
 		/*

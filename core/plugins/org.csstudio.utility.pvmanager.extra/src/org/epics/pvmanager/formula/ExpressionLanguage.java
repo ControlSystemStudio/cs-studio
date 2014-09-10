@@ -149,6 +149,14 @@ public class ExpressionLanguage {
         return new LastOfChannelExpression<>(channelName, Object.class);
     }
     
+    static DesiredRateExpression<?> namedConstant(String constantName) {
+        Object value = FormulaRegistry.getDefault().findNamedConstant(constantName);
+        if (value == null) {
+            throw new IllegalArgumentException("No constant named '" + constantName + "' is defined");
+        }
+        return org.epics.pvmanager.ExpressionLanguage.constant(value, constantName);
+    }
+    
     static <T> DesiredRateExpression<T> cast(Class<T> clazz, DesiredRateExpression<?> arg1) {
         if (arg1 instanceof LastOfChannelExpression) {
             return ((LastOfChannelExpression<?>)arg1).cast(clazz);

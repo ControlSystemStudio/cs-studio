@@ -52,6 +52,6 @@
         <pv> <selected>true</selected> <name>sim://noise(-4,7,0.1)</name> <saved_value></saved_value> </pv>
         <pv> <selected>true</selected> <name>sim://noise(-4,8,0.1)</name> <saved_value></saved_value> </pv>
         <pv> <selected>true</selected> <name>sim://noise(-4,9,0.1)</name> <saved_value></saved_value> </pv>
-        <pv> <selected>true</selected> <name>sim://noise(-4,10,0.1)</name> <saved_value></saved_value> </pv>
+        <pv> <selected>true</selected> <name>sim://noise(-4,10,0.1)</name> <tolerance>0.001</tolerance> <saved_value></saved_value> </pv>
     </pvlist>
 </pvtable>

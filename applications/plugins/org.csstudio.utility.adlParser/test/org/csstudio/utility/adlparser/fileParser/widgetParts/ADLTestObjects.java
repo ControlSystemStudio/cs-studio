@@ -26,7 +26,7 @@ public class ADLTestObjects {
 	 * 
 	 * @return
 	 */
-	public static ADLWidget setupRelDispUnkownElement() {
+	public static ADLWidget setupRelDispUnknownElement() {
 		ADLWidget object = new ADLWidget("display[0]", null, 5);
 		object.addBody(new FileLine("label=myLabel", 6));
 		object.addBody(new FileLine("//", 7));

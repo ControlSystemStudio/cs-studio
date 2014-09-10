@@ -62,7 +62,7 @@ public interface IManagementCommandService {
 
 	/**
 	 * Returns the dynamic enumeration values for the specified command and
-	 * paramter.
+	 * parameter.
 	 * 
 	 * @param commandId
 	 *            the identifier of the command.

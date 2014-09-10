@@ -8,7 +8,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager,
  gov.bnl.channelfinder.api,
  org.csstudio.utility.pvmanager.ui,
- org.epics.vtype,
- com.google.common
+ org.epics.vtype
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: com.google.common.base,
+ com.google.common.collect

@@ -130,7 +130,7 @@ public class MathFunctionSet extends FormulaFunctionSet {
                         return Math.toDegrees(arg);
                     }
                 })
-                .addFormulaFunction(new OneArgNumericFormulaFunction("toRadians", "Conerts degrees to radians", "arg") {
+                .addFormulaFunction(new OneArgNumericFormulaFunction("toRadians", "Converts degrees to radians", "arg") {
                     @Override
                     double calculate(double arg) {
                         return Math.toRadians(arg);

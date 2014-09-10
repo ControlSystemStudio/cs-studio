@@ -39,7 +39,7 @@ public interface ColumnMapper {
 	 *
 	 * @return The underlying columns, or null if the property reference is unknown.
 	 *
-	 * @throws HibernateException Generally indicates that the property reference is unkown; interpretation is the
+	 * @throws HibernateException Generally indicates that the property reference is unknown; interpretation is the
 	 * same as a null return.
 	 */
 	public String[] map(String reference) throws HibernateException;

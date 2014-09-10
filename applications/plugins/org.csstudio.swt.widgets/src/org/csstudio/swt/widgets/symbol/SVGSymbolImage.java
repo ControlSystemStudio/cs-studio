@@ -14,8 +14,8 @@ import java.util.logging.Level;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.batik.utils.SVGUtils;
-import org.apache.batik.utils.SimpleImageTranscoder;
+import org.csstudio.utility.batik.SVGUtils;
+import org.csstudio.utility.batik.SimpleImageTranscoder;
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.eclipse.draw2d.Graphics;

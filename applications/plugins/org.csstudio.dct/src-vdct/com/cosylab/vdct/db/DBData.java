@@ -152,7 +152,7 @@ public void addRecord(DBRecordData rd) {
 		structure.addElement(rd);		// add entry
 	}
 	else
-		Console.getInstance().println("Warning: Record with name '"+rd.getName()+"' already exists, skiping...");
+		Console.getInstance().println("Warning: Record with name '"+rd.getName()+"' already exists, skipping...");
 }
 /**
  * This method was created in VisualAge.
@@ -164,7 +164,7 @@ public void addTemplateInstance(DBTemplateInstance ti) {
 		structure.addElement(ti);		// add entry
 	}
 	else
-		Console.getInstance().println("Warning: Template instance of '"+ti.getTemplateInstanceId()+"' already exists, skiping...");
+		Console.getInstance().println("Warning: Template instance of '"+ti.getTemplateInstanceId()+"' already exists, skipping...");
 }
 
 /**
@@ -177,7 +177,7 @@ public void addTemplate(DBTemplate t) {
 		templatesV.addElement(t);
 	}
 	else
-		Console.getInstance().println("Warning: Template of '"+t.getId()+"' already exists, skiping...");
+		Console.getInstance().println("Warning: Template of '"+t.getId()+"' already exists, skipping...");
 }
 
 /**

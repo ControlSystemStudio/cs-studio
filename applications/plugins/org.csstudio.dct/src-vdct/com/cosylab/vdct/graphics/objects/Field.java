@@ -224,7 +224,7 @@ protected void validate() {
 	 * @return
 	 */
 	public int getVerticalPosition() {
-	    return Settings.getInstance().isWireCrossingAvoidiance() ? verticalPosition : 0;
+	    return Settings.getInstance().isWireCrossingAvoidance() ? verticalPosition : 0;
 	}
 
 	/**

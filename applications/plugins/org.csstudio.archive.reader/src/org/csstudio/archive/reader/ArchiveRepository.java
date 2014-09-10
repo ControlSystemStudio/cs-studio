@@ -95,7 +95,7 @@ public class ArchiveRepository
         // Locate implementation for that prefix
         final ArchiveReaderFactory factory = reader_factories.get(prefix);
         if (factory == null)
-            throw new Exception("Unkown archive reader URL " + url);
+            throw new Exception("Unknown archive reader URL " + url);
         return factory.getArchiveReader(url);
     }
 }

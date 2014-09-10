@@ -17,7 +17,7 @@ public class ADLDynamicAttributeTest extends TestCase {
 		try {
 			attribute = new ADLDynamicAttribute(setupDynamicADLWidget());
 			assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
-			assertTrue( "Test default visability", attribute.get_vis().equals("if zero"));
+			assertTrue( "Test default visibility", attribute.get_vis().equals("if zero"));
 			assertTrue( "Test default calc", attribute.get_calc().equals("A+B"));
 			assertTrue( "Test default chan", attribute.get_chan().equals("chan1"));
 			assertTrue( "Test default chanb", attribute.get_chanb().equals("chan2"));
@@ -30,7 +30,7 @@ public class ADLDynamicAttributeTest extends TestCase {
 		try {
 			attribute = new ADLDynamicAttribute(setupWithAttrSublevelDynamicADLWidget());
 			assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
-			assertTrue( "Test default visability", attribute.get_vis().equals("if zero"));
+			assertTrue( "Test default visibility", attribute.get_vis().equals("if zero"));
 			assertTrue( "Test default calc", attribute.get_calc().equals("A+B"));
 			assertTrue( "Test default chan", attribute.get_chan().equals("chan1"));
 			assertTrue( "Test default chanb", attribute.get_chanb().equals("chan2"));
@@ -43,7 +43,7 @@ public class ADLDynamicAttributeTest extends TestCase {
 		try {
 			attribute = new ADLDynamicAttribute(setupWithColorModeDiscreteDynamicADLWidget());
 			assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
-			assertTrue( "Test default visability", attribute.get_vis().equals("if zero"));
+			assertTrue( "Test default visibility", attribute.get_vis().equals("if zero"));
 			assertTrue( "Test default calc", attribute.get_calc().equals("A+B"));
 			assertTrue( "Test default chan", attribute.get_chan().equals("chan1"));
 			assertTrue( "Test default chanb", attribute.get_chanb().equals("chan2"));
@@ -65,7 +65,7 @@ public class ADLDynamicAttributeTest extends TestCase {
 
 	public void testADLDynamicAttribute() {
 		assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
-		assertTrue( "Test default visability", attribute.get_vis().equals("static"));
+		assertTrue( "Test default visibility", attribute.get_vis().equals("static"));
 		assertTrue( "Test default calc", attribute.get_calc().equals(""));
 		assertTrue( "Test default chan", attribute.get_chan().equals(""));
 		assertTrue( "Test default chanb", attribute.get_chanb().equals(""));

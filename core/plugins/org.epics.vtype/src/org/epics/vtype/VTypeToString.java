@@ -4,7 +4,6 @@
  */
 package org.epics.vtype;
 
-import java.util.AbstractList;
 import org.epics.util.text.NumberFormats;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.table.VTableFactory;
@@ -180,6 +179,26 @@ public class VTypeToString {
                 .append(vStringArray.getData().size());
         appendAlarm(builder, vStringArray);
         appendTime(builder, vStringArray);
+        builder.append(']');
+        return builder.toString();
+    }
+    
+    /**
+     * Default toString implementation for VBooleanArray.
+     *
+     * @param vBooleanArray the object
+     * @return the string representation
+     */
+    public static String toString(VBooleanArray vBooleanArray) {
+        StringBuilder builder = new StringBuilder();
+        Class type = ValueUtil.typeOf(vBooleanArray);
+        builder.append(type.getSimpleName())
+                .append("[");
+        builder.append(format.format(vBooleanArray));
+        builder.append(", size ")
+                .append(vBooleanArray.getData().size());
+        appendAlarm(builder, vBooleanArray);
+        appendTime(builder, vBooleanArray);
         builder.append(']');
         return builder.toString();
     }

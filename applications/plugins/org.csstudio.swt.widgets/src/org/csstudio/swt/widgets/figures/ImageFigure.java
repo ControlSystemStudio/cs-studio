@@ -35,8 +35,8 @@ import java.util.logging.Level;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.batik.utils.SVGUtils;
-import org.apache.batik.utils.SimpleImageTranscoder;
+import org.csstudio.utility.batik.SVGUtils;
+import org.csstudio.utility.batik.SimpleImageTranscoder;
 import org.apache.commons.lang.time.DateUtils;
 import org.csstudio.java.thread.ExecutionService;
 import org.csstudio.swt.widgets.Activator;

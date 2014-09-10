@@ -13,8 +13,8 @@ Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.2.0";visibility:=r
  org.csstudio.ui.util,
  org.eclipse.core.runtime,
  org.eclipse.search,
- org.apache.batik,
- org.csstudio.autocomplete.ui;bundle-version="1.0.0"
+ org.csstudio.autocomplete.ui;bundle-version="1.0.0",
+ org.csstudio.utility.batik;bundle-version="0.0.1"
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.opibuilder.editor.Activator
@@ -24,5 +24,7 @@ Export-Package: org.csstudio.opibuilder.actions,
  org.csstudio.opibuilder.properties.support,
  org.csstudio.opibuilder.visualparts,
  org.csstudio.opibuilder.wizards
-Import-Package: org.eclipse.draw2d.geometry,
+Import-Package: org.apache.batik,
+ org.apache.batik.util,
+ org.eclipse.draw2d.geometry,
  org.eclipse.gef.commands

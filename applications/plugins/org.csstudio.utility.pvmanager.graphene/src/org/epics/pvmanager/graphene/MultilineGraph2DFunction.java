@@ -15,6 +15,8 @@ import org.epics.graphene.*;
 import org.epics.pvmanager.QueueCollector;
 import org.epics.pvmanager.ReadFunction;
 import static org.epics.pvmanager.graphene.ArgumentExpressions.*;
+import org.epics.util.stats.Statistics;
+import org.epics.util.stats.StatisticsUtil;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
 

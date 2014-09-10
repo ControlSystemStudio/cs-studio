@@ -154,7 +154,7 @@ public static EnhancedStreamTokenizer getEnhancedStreamTokenizer(String fileName
 		tokenizer = new EnhancedStreamTokenizer(new BufferedReader(new InputStreamReader(fi)));
 		initializeTokenizer(tokenizer);
 	} catch (IOException e) {
-		Console.getInstance().println("\no) Error occured while opening file '"+fileName+"'");
+		Console.getInstance().println("\no) Error occurred while opening file '"+fileName+"'");
 		Console.getInstance().println(e);
 	}
 
@@ -173,7 +173,7 @@ public static EnhancedStreamTokenizer getEnhancedStreamTokenizer(InputStream is)
 		tokenizer = new EnhancedStreamTokenizer(new BufferedReader(new InputStreamReader(is)));
 		initializeTokenizer(tokenizer);
 	} catch (Throwable e) {
-		Console.getInstance().println("\no) Error occured while opening stream '"+is+"'");
+		Console.getInstance().println("\no) Error occurred while opening stream '"+is+"'");
 		Console.getInstance().println(e);
 	}
 
@@ -1698,7 +1698,7 @@ public static DBData resolveDBasURL(java.net.URL url) throws Exception {
 		tokenizer = new EnhancedStreamTokenizer(new BufferedReader(new InputStreamReader(fi)));
 		initializeTokenizer(tokenizer);
 	} catch (Exception e) {
-		Console.getInstance().println("\nError occured while opening URL '"+url.toString()+"'");
+		Console.getInstance().println("\nError occurred while opening URL '"+url.toString()+"'");
 		Console.getInstance().println(e);
 		return null;
 	}

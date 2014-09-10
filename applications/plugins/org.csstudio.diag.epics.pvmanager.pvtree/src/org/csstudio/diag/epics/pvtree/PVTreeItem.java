@@ -174,7 +174,7 @@ class PVTreeItem
     	            if (first_char >= 'a' && first_char <= 'z')
     	                type = text;
     	            else
-    	                type = Messages.UnkownPVType;
+		                type = Messages.UnknownPVType;
     	            updateType();
 				}
     	    };

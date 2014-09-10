@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.opibuilder.feature"
       label="Operator Interface Builder (BOY)"
-      version="3.2.4.qualifier"
+      version="3.2.7.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -37,17 +37,27 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.jdom" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.widgets" version="1.0.2" match="greaterOrEqual"/>
       <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.simplepv" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.singlesource" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.eclipse.rap.gef"/>
       <import plugin="org.eclipse.ui" version="3.4.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.4.1" match="greaterOrEqual"/>
       <import plugin="org.junit" version="3.8.2" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.lang" version="2.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.examples" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder" version="3.2.16" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.swt.xygraph" version="2.0.3" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
@@ -57,6 +67,9 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.utility.adlParser" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.draw2d" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.xygraph" version="1.0.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.dom.svg"/>
+      <import plugin="org.apache.batik.util"/>
       <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.email.ui" version="1.0.0" match="greaterOrEqual"/>
@@ -64,11 +77,15 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.apputil.ui"/>
       <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.csstudio.opibuilder.widgets" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.xygraph" version="1.1.3" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.rap.draw2d"/>
+      <import plugin="org.epics.vtype" version="2.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -177,13 +194,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.apache.batik"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.csstudio.opibuilder.widgets.symbol"

@@ -3,7 +3,7 @@ package org.csstudio.opibuilder.tools.filebrowser;
 import java.io.InputStream;
 import java.util.logging.Level;
 
-import org.apache.batik.utils.SVGUtils;
+import org.csstudio.utility.batik.SVGUtils;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.tools.Activator;
 import org.csstudio.opibuilder.util.ResourceUtil;

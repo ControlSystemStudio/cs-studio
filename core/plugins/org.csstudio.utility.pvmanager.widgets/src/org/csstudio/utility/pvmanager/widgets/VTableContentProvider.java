@@ -33,7 +33,12 @@ public class VTableContentProvider implements IStructuredContentProvider {
 			} else if (vTable.getColumnType(column).equals(Double.TYPE)) {
 				return ((ListNumber) vTable.getColumnData(column)).getDouble(row);
 			} else if (vTable.getColumnType(column).equals(String.class)) {
-				return ((List<?>) vTable.getColumnData(column)).get(row).toString();
+			        Object o = ((List<?>) vTable.getColumnData(column)).get(row);
+			    	if(o == null){
+			    	    return null;
+			    	}else{
+				    return o.toString();
+			    	}
 			} else if (vTable.getColumnType(column).equals(Timestamp.class)){
 			 	return ((List<?>) vTable.getColumnData(column)).get(row);
 		 	} else {

@@ -112,7 +112,7 @@ public class ChannelLinePlotWidget extends AbstractChannelQueryResultWidget
 		    double invert = yRangeControl.getMin()
 			    + yRangeControl.getMax();
 		    plot.update(new LineGraph2DRendererUpdate()
-			    .yAxisRange(AxisRanges.absolute(
+			    .yAxisRange(AxisRanges.fixed(
 				    (invert - yRangeControl.getSelectedMax()),
 				    invert - yRangeControl.getSelectedMin())));
 		}
@@ -159,7 +159,7 @@ public class ChannelLinePlotWidget extends AbstractChannelQueryResultWidget
 	    public void rangeChanged() {
 		if (plot != null) {
 		    plot.update(new LineGraph2DRendererUpdate()
-			    .xAxisRange(AxisRanges.absolute(
+			    .xAxisRange(AxisRanges.fixed(
 				    xRangeControl.getSelectedMin(),
 				    xRangeControl.getSelectedMax())));
 		}
@@ -554,7 +554,7 @@ public class ChannelLinePlotWidget extends AbstractChannelQueryResultWidget
     }
 
     private void resetRange(StartEndRangeWidget control) {
-	control.setRanges(0, 0, 1, 1);
+	control.resetRange();
     }
 
     private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();

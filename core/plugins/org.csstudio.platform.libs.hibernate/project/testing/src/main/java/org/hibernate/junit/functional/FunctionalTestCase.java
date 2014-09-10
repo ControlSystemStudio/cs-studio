@@ -477,17 +477,17 @@ public abstract class FunctionalTestCase extends UnitTestCase implements Executi
 	}
 
 	/**
-	 * Does the current dialect support propogating changes to LOB
+	 * Does the current dialect support propagating changes to LOB
 	 * values back to the database?  Talking about mutating the
 	 * underlying value as opposed to supplying a new
 	 * LOB instance...
 	 *
-	 * @return True if the changes are propogated back to the
+	 * @return True if the changes are propagated back to the
 	 * database; false otherwise.
 	 */
 	protected boolean supportsLobValueChangePropogation() {
 		if ( ! getDialect().supportsLobValueChangePropogation() ) {
-			reportSkip( "database/driver does not support propogating LOB value change back to database", "LOB support" );
+			reportSkip( "database/driver does not support propagating LOB value change back to database", "LOB support" );
 			return false;
 		}
 		return true;

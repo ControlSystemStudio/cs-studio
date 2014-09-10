@@ -203,7 +203,7 @@ public class VDBTemplatePort extends VDBFieldData implements Descriptable, Chang
 	{
 		Template visualTemplate = (Template)Group.getRoot().findObject(templateInstance.getName(), true);
 		if (visualTemplate==null) {
-			//com.cosylab.vdct.Console.getInstance().println("o) Internal error: no visual representaton of record "+getName()+" found.");
+			//com.cosylab.vdct.Console.getInstance().println("o) Internal error: no visual representation of record "+getName()+" found.");
 			return;
 		}
 	

@@ -104,7 +104,7 @@ final class CommandContribution {
 	}
 
 	/**
-	 * Returns the dynamic enumeration values for the specified paramter.
+	 * Returns the dynamic enumeration values for the specified parameter.
 	 * 
 	 * @param parameterId
 	 *            the parameter identifier.

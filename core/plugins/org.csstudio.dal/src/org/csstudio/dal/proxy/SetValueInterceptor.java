@@ -30,7 +30,7 @@ import org.csstudio.dal.ResponseListener;
 
 /**
  * Intercepts calls to asynchronous setValue method and makes them
- * syncrhonous
+ * synchronous
  *
  * @author ikriznar
  *
@@ -64,13 +64,13 @@ public class SetValueInterceptor<T> implements ResponseListener<T>
 	public synchronized void responseError(ResponseEvent<T> event)
 	{
 		error = new DataExchangeException(event.getSource(),
-			    "REmote call returned error.", event.getResponse().getError());
+			    "Remote call returned error.", event.getResponse().getError());
 		done = true;
 		notify();
 	}
 
 	/**
-	 * Executes an asynchronus setValue method and waits for the execution to end.
+	 * Executes an asynchronous setValue method and waits for the execution to end.
 	 * If the execution times out an exception is thrown.
 	 *
 	 * @param proxy The proxy to execute the setValue on

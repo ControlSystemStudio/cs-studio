@@ -50,7 +50,7 @@ public class EdmLineStyle extends EdmAttribute {
 				val = DASH;
 			} else {
 				throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-				"Unrecognised line style '" + valueString + "'.", null);
+				"Unrecognized line style '" + valueString + "'.", null);
 			}
 			setInitialized(true);
 		
