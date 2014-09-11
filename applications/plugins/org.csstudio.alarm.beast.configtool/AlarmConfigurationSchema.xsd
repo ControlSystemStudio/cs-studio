@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Contributed by Laurier Baribeau,
+<!-- 
+     XML schema as used by the AlarmConfigTool
+     
+     Command-line check of XML file against this schema:
+     
+     xmllint -schema AlarmConfigurationSchema.xsd alarm_config_IHC_2014-09-04.xml 
+
+      .. but using two '-' for the -schema arg, yet cannot have double- in this file
+         because that's confused with end of comment
+
+     Contributed by Laurier Baribeau,
      <Laurier.Baribeau@lightsource.ca>
      Updated by Denis Stepanov,
-     <Denis.Stepanov@iter.org>
+     <Denis.Stepanov@iter.org>,
+     kasemirk@ornl.gov
+     
   -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="config">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="guidance" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="display" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="command" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="automated_action" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="pv" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name="name" use="required"/>
+        </xs:complexType>
+    </xs:element>
 
 	<xs:element name="guidance">
 		<xs:complexType>
@@ -33,6 +59,30 @@
 		</xs:complexType>
 	</xs:element>
 
+    <xs:element name="automated_action">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="title" type="xs:string"/>
+                <xs:element name="details" type="xs:string"/>
+                <xs:element name="delay" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="component">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="guidance" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="display" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="command" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="automated_action" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="pv" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name="name" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
 	<xs:element name="pv">
 		<xs:complexType>
 			<xs:sequence>
@@ -46,42 +96,9 @@
 				<xs:element ref="guidance" minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="display" minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="command" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attribute name="name" use="required"/>
-		</xs:complexType>
-	</xs:element>
-
-	<xs:element name="component">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="pv" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attribute name="name" use="required"/>
-		</xs:complexType>
-	</xs:element>
-
-	<xs:element name="config">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="pv" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="automated_action" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="name" use="required"/>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>
-
-
-<!-- My notepad (Laurier Baribeau):
-- Add definitions for 'command' element and 'display' element.
-- 'latching' tag is to be investigated... I think its optional but don't know 
-the default. 
--  How to configure delay and count such that if one is there the other is 
-required?  Do I need to?
-- ORDERED sequences:  Not difficult to maintain... in fact I don't know how 
-to write the schema with unordered sequences... Pro: diffs with XML created 
-by exporting from the database will be easier to read.
-- 'annunciating' might be out of order.
-- Enforce unique PV names?
--->

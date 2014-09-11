@@ -7,17 +7,14 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
-import static org.epics.util.time.TimeDuration.ofSeconds;
-
 import java.util.logging.Level;
 
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListener;
+import org.csstudio.vtype.pv.PVListenerAdapter;
+import org.csstudio.vtype.pv.PVPool;
 import org.epics.vtype.VType;
 
 /** Filter that computes alarm enablement from expression.
@@ -37,11 +34,8 @@ import org.epics.vtype.VType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Filter
+public class Filter extends PVListenerAdapter
 {
-    /** Timeout for PV connections */
-    public static final int TIMEOUT_SECS = 30;
-
     /** Listener to notify when the filter computes a new value */
     final private FilterListener listener;
 
@@ -54,7 +48,7 @@ public class Filter
     /** This array is linked to <code>variables</code>:
      *  Same size, and there's a PV for each VariableNode.
      */
-    final private PVReader<VType> pvs[];
+    final private PV pvs[];
 
     private double previous_value = Double.NaN;
 
@@ -62,7 +56,6 @@ public class Filter
      *  @param filter_expression Formula that might contain PV names
      *  @throws Exception on error
      */
-    @SuppressWarnings("unchecked")
     public Filter(final String filter_expression,
             final FilterListener listener) throws Exception
     {
@@ -74,52 +67,66 @@ public class Filter
         else
             variables = vars;
         
-        pvs = (PVReader<VType>[]) new PVReader[variables.length];
+        pvs = new PV[variables.length];
     }
 
     /** Start control system subscriptions */
     public void start() throws Exception
     {
-        // Note:
-        // Could use
-        //   PVManager.read(listOf(latestValueOf(vTypes(pv_names)))).listeners(pvlistener).timeout(ofSeconds(TIMEOUT_SECS)).maxRate(ofSeconds(0.5));
-        // to read all variables as a list, but then no idea which individual PV is causing an error
-        // in case of disconnects.
-        // Could also try the PVManager's formula support, but already had a formula package...
         for (int i=0; i<pvs.length; ++i)
         {
-        	final VariableNode variable = variables[i];
-            final PVReaderListener<VType> pvlistener = new PVReaderListener<VType>()
-            {
-                @Override
-                public void pvChanged(final PVReaderEvent<VType> event)
-                {
-                    final PVReader<VType> pv = event.getPvReader();
-                    final Exception error = pv.lastException();
-                    if (error != null)
-                    {
-                        Activator.getLogger().log(Level.WARNING, "Error from PV " + pv.getName() + " (var. " + variable.getName() + ")", error);
-                        variable.setValue(Double.NaN);
-                    }
-                    else
-                    {
-                        final double value = VTypeHelper.toDouble(pv.getValue());
-                        Activator.getLogger().log(Level.FINER, "Filter {0}: {1} = {2}",
-                                new Object[] { formula.getFormula(), pv.getName(), value });
-                        variable.setValue(value);
-                    }
-                    evaluate();
-                }
-            };
-            pvs[i] = PVManager.read(vType(variables[i].getName())).readListener(pvlistener).timeout(ofSeconds(TIMEOUT_SECS)).maxRate(ofSeconds(0.5));
+            pvs[i] = PVPool.getPV(variables[i].getName());
+            pvs[i].addListener(this);
         }
     }
 
     /** Stop control system subscriptions */
     public void stop()
     {
-        for (PVReader<VType> pv : pvs)
-            pv.close();
+        for (int i=0; i<pvs.length; ++i)
+        {
+            pvs[i].removeListener(this);
+            PVPool.releasePV(pvs[i]);
+            pvs[i] = null;
+        }
+    }
+    
+    /** @param pv PV used by the formula
+     *  @return Associated variable node
+     */
+    private VariableNode findVariableForPV(final PV pv)
+    {
+        for (int i=0; i<pvs.length; ++i) // Linear, assuming there are just a few PVs in one formula
+            if (pvs[i] == pv)
+                return variables[i];
+        Activator.getLogger().log(Level.WARNING, "Got update for PV {0} that is not assigned to variable", pv.getName());
+        return null;
+    }
+
+    /** @see PVListener */
+    @Override
+    public void valueChanged(final PV pv, final VType value)
+    {
+        final VariableNode variable = findVariableForPV(pv);
+        if (variable == null)
+            return;
+        final double number = VTypeHelper.toDouble(value);
+        Activator.getLogger().log(Level.FINER, "Filter {0}: {1} = {2}",
+                new Object[] { formula.getFormula(), pv.getName(), number });
+        variable.setValue(number);
+        evaluate();
+    }
+
+    /** @see PVListener */
+    @Override
+    public void disconnected(final PV pv)
+    {
+        final VariableNode variable = findVariableForPV(pv);
+        if (variable == null)
+            return;
+        Activator.getLogger().log(Level.WARNING, "PV " + pv.getName() + " (var. " + variable.getName() + ") disconnected");
+        variable.setValue(Double.NaN);
+        evaluate();
     }
 
     /** Evaluate filter formula with current input values */

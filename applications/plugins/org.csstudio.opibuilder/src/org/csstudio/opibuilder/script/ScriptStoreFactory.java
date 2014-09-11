@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.script.ScriptService.ScriptType;
@@ -26,11 +29,18 @@ import org.python.util.PythonInterpreter;
  */
 public class ScriptStoreFactory {
 	
-	private static boolean pythonInterpreterInitialized = false;
+	public static enum JavaScriptEngine {
+		RHINO,
+		JDK;
+	}
 	
+	private static volatile JavaScriptEngine defaultJsEngine = JavaScriptEngine.JDK;
+	
+	private static boolean pythonInterpreterInitialized = false;
 	
 	private static Map<Display, Context> displayContextMap = 
 			new HashMap<Display, Context>();
+	private static Map<Display, ScriptEngine> displayScriptEngineMap = new HashMap<>();
 	
 	@SuppressWarnings("nls")
     public static void initPythonInterpreter() throws Exception{
@@ -62,16 +72,37 @@ public class ScriptStoreFactory {
         PythonInterpreter.initialize(System.getProperties(), props,
                  new String[] {""}); //$NON-NLS-1$
 		pythonInterpreterInitialized = true;
-	}	
+	}
+	
+	public static JavaScriptEngine getDefaultJavaScriptEngine()
+	{
+		return defaultJsEngine;
+	}
 	
 	/**
 	 * Must be called in UI Thread.
 	 * @throws Exception 
 	 */
-	private static void initJSEngine() throws Exception {
+	private static void initRhinoJSEngine() throws Exception {
 		Context scriptContext = Context.enter();
 		final Display display = Display.getCurrent();
 		displayContextMap.put(display, scriptContext);
+		SingleSourceHelper.rapAddDisplayDisposeListener(display, new Runnable() {
+			
+			public void run() {
+				displayContextMap.remove(display);
+			}
+		});
+	}
+	
+	/**
+	 * Must be called in UI Thread.
+	 * @throws Exception 
+	 */
+	private static void initJdkJSEngine() throws Exception {
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("javascript");
+		final Display display = Display.getCurrent();
+		displayScriptEngineMap.put(display, engine);
 		SingleSourceHelper.rapAddDisplayDisposeListener(display, new Runnable() {
 			
 			public void run() {
@@ -89,13 +120,10 @@ public class ScriptStoreFactory {
 	 */
 	public static AbstractScriptStore getScriptStore(
 			ScriptData scriptData, AbstractBaseEditPart editpart, IPV[] pvArray) throws Exception{
-		boolean jsEngineInitialized = displayContextMap.containsKey(Display.getCurrent());
 		if(!scriptData.isEmbedded() && 
 				(scriptData.getPath() == null || scriptData.getPath().getFileExtension() == null)){
 			if(scriptData instanceof RuleScriptData){
-				if(!jsEngineInitialized)
-					initJSEngine();
-				return new RhinoScriptStore(scriptData, editpart, pvArray);
+				return getJavaScriptStore(scriptData, editpart, pvArray);
 			}
 			else
 				throw new RuntimeException("No Script Engine for this type of script");
@@ -109,9 +137,7 @@ public class ScriptStoreFactory {
 		}else
 			fileExt= scriptData.getPath().getFileExtension().trim().toLowerCase();
 		if(fileExt.equals(ScriptService.JS)){ //$NON-NLS-1$
-			if(!jsEngineInitialized)
-				initJSEngine();
-			return new RhinoScriptStore(scriptData, editpart, pvArray);
+			return getJavaScriptStore(scriptData, editpart, pvArray);
 		}
 		else if (fileExt.equals(ScriptService.PY)){ //$NON-NLS-1$
 			if(!pythonInterpreterInitialized)
@@ -122,6 +148,23 @@ public class ScriptStoreFactory {
 			throw new RuntimeException("No Script Engine for this type of script");
 	}
 	
+	private static AbstractScriptStore getJavaScriptStore(
+			ScriptData scriptData, AbstractBaseEditPart editpart, IPV[] pvArray) throws Exception {
+		if (defaultJsEngine == JavaScriptEngine.RHINO) {
+			boolean rhinoJsEngineInitialized = displayContextMap.containsKey(Display.getCurrent());
+			if(!rhinoJsEngineInitialized)
+				initRhinoJSEngine();
+			return new RhinoScriptStore(scriptData, editpart, pvArray);
+		}
+		else {
+			boolean jdkJsEngineInitialized = displayScriptEngineMap.containsKey(Display.getCurrent());
+			if (!jdkJsEngineInitialized) {
+				initJdkJSEngine();
+			}
+			return new JavaScriptStore(scriptData, editpart, pvArray);
+		}
+	}
+	
 	/**This method must be executed in UI Thread!
 	 * @return the script context.
 	 * @throws Exception 
@@ -130,7 +173,7 @@ public class ScriptStoreFactory {
 		Display display = Display.getCurrent();
 		boolean jsEngineInitialized = displayContextMap.containsKey(display);
 		if(!jsEngineInitialized)
-			initJSEngine();		
+			initRhinoJSEngine();		
 		return displayContextMap.get(display);
 	}
 	
@@ -142,6 +185,18 @@ public class ScriptStoreFactory {
 					Context.exit();
 				}
 			});
+	}
+	
+	/**This method must be executed in UI Thread!
+	 * @return the script engine.
+	 * @throws Exception 
+	 */
+	public static ScriptEngine getJavaScriptEngine() throws Exception {
+		Display display = Display.getCurrent();
+		boolean jsEngineInitialized = displayScriptEngineMap.containsKey(display);
+		if(!jsEngineInitialized)
+			initJdkJSEngine();		
+		return displayScriptEngineMap.get(display);
 	}
 	
 }

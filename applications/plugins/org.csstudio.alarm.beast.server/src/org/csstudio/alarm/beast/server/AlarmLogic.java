@@ -291,10 +291,13 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
             // -> At least briefly return to OK so that 'new' alarm
             //    will take effect
             final boolean maint_leaving_invalid =
-                (maintenance_mode &&
-                        (alarm_state.getSeverity() == SeverityLevel.INVALID_ACK  ||
-                         alarm_state.getSeverity() == SeverityLevel.INVALID)  &&
-                        current_state.getSeverity() != SeverityLevel.INVALID);
+             maintenance_mode &&
+             // Current severity is better than INVALID & UNDEFINED
+             current_state.getSeverity().ordinal() < SeverityLevel.INVALID.ordinal()  &&
+             // Alarm state was INVALID, INVALID_ACK, UNDEFINED, UNDEFINED_ACK
+             alarm_state.getSeverity().getAlarmUpdatePriority()
+                          >= SeverityLevel.INVALID.getAlarmUpdatePriority();
+            
             return_to_ok = alarm_cleared  ||  maint_leaving_invalid;
             if (return_to_ok)
                 alarm_state = AlarmState.createClearState(received_state.getValue(), received_state.getTime());
@@ -357,11 +360,11 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
                     alarm_state = new_state;
                 }
             }
-            // In maint. mode, INVALID is automatically ack'ed and not annunciated,
+            // In maint. mode, INVALID & UNDEFINED are automatically ack'ed and not annunciated,
             // except for 'priority' alarms
             if (maintenance_mode &&
                 !has_priority &&
-                alarm_state.getSeverity() == SeverityLevel.INVALID)
+                alarm_state.getSeverity().ordinal() >= SeverityLevel.INVALID.ordinal())
             {
                 alarm_state = alarm_state.createAcknowledged(alarm_state);
                 raised_level = null;

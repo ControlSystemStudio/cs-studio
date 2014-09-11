@@ -12,6 +12,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.SimpleScriptContext;
+
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.mozilla.javascript.Context;
@@ -24,22 +32,24 @@ public class RunScriptFileDemo {
   public static void main(String[] args) throws IOException {
 	  
 	  
-	  final String testFile = "test/org/csstudio/opibuilder/scriptTest/ComplexSWTDialogs.js";
-	/* 
-	// use Java 1.6 script engine 
-	  ScriptEngineManager manager = new ScriptEngineManager();
-	    ScriptEngine engine = manager.getEngineByName("js");
-	    try {
+	  final String testFile = "src/org/csstudio/opibuilder/scriptTest/ComplexSWTDialogs.js";
+	
+	  // use Java 1.6 script engine 
+	  /*ScriptEngineManager manager = new ScriptEngineManager();
+	  ScriptEngine engine = manager.getEngineByName("javascript");
+	  try {
 	      FileReader reader = new FileReader(testFile);
 	      
 	      // this will make the object stay in engine
-	      engine.put("x", new Hello("x1"));
+	      engine.put("x", new Hello("Hello js 1"));
+	      CompiledScript script = ((Compilable) engine).compile(reader);
+	      script.eval();
 	      Object o = engine.eval(reader);
 	      
 	      //this will make the object only stay for this eval.
 	      ScriptContext newContext = new SimpleScriptContext();
 	      Bindings engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE);
-	      engineScope.put("x", new Hello("x2"));
+	      engineScope.put("x", new Hello("Hello js 2"));
       
 	      reader.close();
 	      reader = new FileReader(testFile);
@@ -54,9 +64,9 @@ public class RunScriptFileDemo {
 	      reader.close();
 	    } catch (Exception e) {
 	      e.printStackTrace();
-	    }
+	    }*/
 	  
-    */
+    
     
     //use Rhino script engine
   //Refer to sds.ui.scripting.RunnableScript.java

@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.scriptUtil;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.mozilla.javascript.NativeArray;
@@ -46,34 +47,60 @@ public class DataUtil {
 	 * @param jsArray JavaScript array
 	 * @return java int array.
 	 */
-	public final static int[] toJavaIntArray(NativeArray jsArray){
-		int[] result = new int[(int) jsArray.getLength()];
-		int i=0;
-		for(Object id : jsArray.getIds()){
-			Object o = jsArray.get((Integer)id, null);
-			if(o instanceof Number)
-				result[i++]=((Number)o).intValue();
-			else
-				result[i++] = 0;				
-		}
-		return result;
+	public final static int[] toJavaIntArray(Object array){
+	    if (array instanceof NativeArray) {
+	        NativeArray jsArray = (NativeArray) array;
+	        int[] result = new int[(int) jsArray.getLength()];
+	        int i=0;
+	        for(Object id : jsArray.getIds()){
+	            Object o = jsArray.get((Integer)id, null);
+	            if(o instanceof Number)
+	                result[i++]=((Number)o).intValue();
+	            else
+	                result[i++] = 0;				
+	        }
+	        return result;
+	    } else {
+	           Object[] objArray = ((List<?>) array).toArray();
+	            int[] result = new int[objArray.length];
+	            for (int i = 0; i < objArray.length; i++) {
+	                if(objArray[i] instanceof Number)
+	                    result[i]=((Number)objArray[i]).intValue();
+	                else
+	                    result[i] = 0;
+	            }
+	            return result;
+	    }
 	}
 	
 	/**Convert JavaScript array to Java double array.
 	 * @param jsArray JavaScript array
 	 * @return java array.
 	 */
-	public final static double[] toJavaDoubleArray(NativeArray jsArray){
-		double[] result = new double[(int) jsArray.getLength()];
-		int i=0;
-		for(Object id : jsArray.getIds()){
-			Object o = jsArray.get((Integer)id, null);
-			if(o instanceof Number)
-				result[i++]=((Number)o).doubleValue();
-			else
-				result[i++] = 0;				
-		}
-		return result;
+	public final static double[] toJavaDoubleArray(Object array){
+	    if (array instanceof NativeArray) {
+            NativeArray jsArray = (NativeArray) array;
+            double[] result = new double[(int) jsArray.getLength()];
+            int i=0;
+            for(Object id : jsArray.getIds()){
+                Object o = jsArray.get((Integer)id, null);
+                if(o instanceof Number)
+                    result[i++]=((Number)o).doubleValue();
+                else
+                    result[i++] = 0;
+            }
+            return result;
+	    } else {
+	        Object[] objArray = ((List<?>) array).toArray();
+	        double[] result = new double[objArray.length];
+	        for (int i = 0; i < objArray.length; i++) {
+	            if(objArray[i] instanceof Number)
+                    result[i]=((Number)objArray[i]).doubleValue();
+                else
+                    result[i] = 0;
+	        }
+	        return result;
+	    }
 	}
 	
 	/**Create a MacrosInput, which can be used as the macros input for a container widget or display.
