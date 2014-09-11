@@ -228,6 +228,67 @@ public class FARequestTest {
 		data.position(0);
 		FARequest.decodeDataUndecToDec(data, 0, blockSize, offset, -1, 0);
 	}
+	
+	@Test
+	public void testDecodeDataDecToDecValidInput() {
+		int blockSize = 4;
+		int[][] values = new int[][] { { 0, 0, 5, 0 }, { 3, 1, 1, 1 },
+				{ 2, 2, 2, 5 }, { 3, 2, 3, 3 }, { 4, 4, 4, 7 }, { 5, 3, 5, 5 },
+				{ 1, 6, 6, 6 } };
+		int offset = 2;
+		ByteBuffer data = encodeDec(blockSize, values, offset);
+		data.position(0);
+		ArchiveVStatistics[] result;
+		try {
+			result = (ArchiveVStatistics[]) FARequest.decodeDataDecToDec(data,
+					values.length, blockSize, offset, 0, 2, 4);
+		} catch (FADataNotAvailableException e) {
+			fail("Should only throw an FADataNotAvailableException when coordinate is not 0 or 1");
+			return;
+		}
+
+		// manually calculate result
+		double[][] expected = new double[][]{{2, 0, 5, Math.sqrt(35.0)}, {10/3.0, 3, 6, Math.sqrt(110)}};
+		
+		for (int i = 0; i < expected.length; i++) {
+			assertEquals("Mean not calculated properly", expected[i][0] / 1000.0, result[i].getAverage(), 0.000001);
+		}
+		for (int i = 0; i < expected.length; i++) {
+			assertEquals("Min not calculated properly", expected[i][1] / 1000.0, result[i].getMin(), 0);
+		}
+		for (int i = 0; i < expected.length; i++) {
+			assertEquals("Max not calculated properly", expected[i][2] / 1000.0, result[i].getMax(), 0);
+		}
+		for (int i = 0; i < expected.length; i++) {
+			assertEquals("STD not calculated properly", expected[i][3] / 1000.0, result[i].getStdDev(), 0.000001);
+		}
+	}
+
+	@Test(expected = Exception.class)
+	public void testDecodeDataDecToDecNullByteArray() {
+		int blockSize = 4;
+		int offset = 0;
+		ByteBuffer data = ByteBuffer.wrap(null);
+		data.position(0);
+		try {
+			FARequest.decodeDataDecToDec(data, 0, blockSize, offset, 0, 0, 0);
+		} catch (FADataNotAvailableException e) {
+			fail("Should only throw an FADataNotAvailableException when coordinate is not 0 or 1");
+		}
+	}
+
+	@Test(expected = FADataNotAvailableException.class)
+	public void testDecodeDataDecToDecInvalidCoordinate()
+			throws FADataNotAvailableException {
+		int blockSize = 4;
+		int[][] values = new int[][] { { 0, 0, 5, 0 }, { 3, 1, 1, 1 },
+				{ 2, 2, 2, 5 }, { 3, 2, 3, 3 }, { 4, 4, 4, 7 }, { 5, 3, 5, 5 },
+				{ 1, 6, 6, 6 } };
+		int offset = 2;
+		ByteBuffer data = encodeDec(blockSize, values, offset);
+		data.position(0);
+		FARequest.decodeDataDecToDec(data, 0, blockSize, offset, -1, 0, 0);
+	}
 
 	@Test
 	/**

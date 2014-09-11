@@ -26,8 +26,11 @@ public class FAArchivedDataRequest extends FARequest {
 	int firstDecimation;
 	int secondDecimation;
 
+	// Extra_Dec allows a further decimation by 100
+	int extraDecimation = 100;
+	
 	protected enum Decimation {
-		UNDEC, DEC, DOUBLE_DEC
+		UNDEC, DEC, DOUBLE_DEC, EXTRA_DEC
 	};
 
 	/**
@@ -200,16 +203,22 @@ public class FAArchivedDataRequest extends FARequest {
 			if (bb.remaining() != numBytesToRead)
 				throw new FADataNotAvailableException(
 						"Data stream does not have expected length");
-			
-			int count;
-			if (decimation == Decimation.DEC) {
-				count = firstDecimation;
+			if (decimation == Decimation.EXTRA_DEC){
+				values = decodeDataDecToDec(bb, (int) sampleCount, blockSize,
+						offset, coordinate, secondDecimation, extraDecimation);
 			} else {
-				count = secondDecimation;
+				int count;
+				if (decimation == Decimation.DEC) {
+					count = firstDecimation;
+				} else {
+					count = secondDecimation;
+				}
+
+				values = decodeDataDec(bb, (int) sampleCount, blockSize,
+						offset, coordinate, count);
 			}
 			
-			values = decodeDataDec(bb, (int) sampleCount, blockSize, offset,
-					coordinate, count);
+			
 
 		}
 
@@ -239,8 +248,10 @@ public class FAArchivedDataRequest extends FARequest {
 			return Decimation.UNDEC;
 		else if ((seconds * sampleFrequency) / firstDecimation <= maxNoOfSamples)
 			return Decimation.DEC;
-		else
+		else if ((seconds * sampleFrequency) / firstDecimation <= maxNoOfSamples || seconds < (3600*3)) // 3 hours of data
 			return Decimation.DOUBLE_DEC;
+		else
+			return Decimation.EXTRA_DEC;
 
 	}
 
