@@ -8,5 +8,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.utility.test,
  org.csstudio.utility.pvmanager.epics,
- org.csstudio.utility.pvmanager.loc
+ org.csstudio.utility.pvmanager.loc,
+ org.csstudio.utility.pvmanager
 Import-Package: org.epics.pvmanager.jca, org.epics.pvmanager.loc

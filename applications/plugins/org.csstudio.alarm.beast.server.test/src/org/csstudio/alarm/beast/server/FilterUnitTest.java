@@ -155,7 +155,7 @@ public class FilterUnitTest implements FilterListener
 
         // Default time out is 30 seconds
         // Should not get any updates while waiting for the connection...
-        TimeUnit.SECONDS.sleep(Filter.TIMEOUT_SECS / 2);
+        TimeUnit.SECONDS.sleep(30 / 2);
         assertThat(updates.get(), equalTo(0));
         
         // .. but then there should be an update
@@ -171,7 +171,7 @@ public class FilterUnitTest implements FilterListener
         final Timestamp end = Timestamp.now();
         final TimeDuration duration = end.durationFrom(start);
         System.err.println("Timeout was " + duration);
-        assertThat(duration.toSeconds(), greaterThanOrEqualTo(Filter.TIMEOUT_SECS * 0.8));
+        assertThat(duration.toSeconds(), greaterThanOrEqualTo(30 * 0.8));
         
         filter.stop();
     }
