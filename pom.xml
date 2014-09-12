@@ -50,14 +50,14 @@
     P2 REPOSITORIES
   -->
   <repositories>
-    <!--<repository>
+    <repository>
       <id>cs-studio-updates</id>
       <url>http://download.controlsystemstudio.org/updates/4.0</url>
       <layout>p2</layout>
-    </repository>-->
+    </repository>
     <repository>
       <id>indigo</id>
-      <url>http://download.eclipse.org/releases/kepler</url>
+      <url>http://download.eclipse.org/releases/luna</url>
       <layout>p2</layout>
     </repository>
   </repositories>

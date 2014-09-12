@@ -5,23 +5,7 @@ VERSION=$1
 PUSH=$2
 BUILD_DIR="build"
 
-increment_version ()
-{
-  declare -a part=( ${1//\./ } )
-  declare    new
-  declare -i carry=1
-
-  for (( CNTR=${#part[@]}-1; CNTR>=0; CNTR-=1 )); do
-    len=${#part[CNTR]}
-    new=$((part[CNTR]+carry))
-    [ ${#new} -gt $len ] && carry=1 || carry=0
-    [ $CNTR -gt 0 ] && part[CNTR]=${new: -len} || part[CNTR]=${new}
-  done
-  new="${part[*]}"
-  echo -e "${new// /.}"
-} 
-
-VERSIONP=$(increment_version ${VERSION})
+VERSIONP=$(echo $VERSION | sed -r 's/(.*)\.(.*)\.(.*)/echo \1\.\2\.$((\3+1))/ge');
 VERSION="${VERSIONP}-SNAPSHOT"
 
 if [! $# == 1 ]
@@ -36,7 +20,7 @@ echo ::: Change about dialog version :::
 echo 0=$VERSION > plugins/org.csstudio.product/about.mappings
 
 echo ::: Updating plugin versions ::
-mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$VERSION -Dartifacts=product,products-csstudio-plugins,org.csstudio.product,org.csstudio.startup.intro,products-csstudio-features,org.csstudio.product.feature,org.csstudio.product.configuration.feature,repository
+mvn -Dtycho.mode=maven org.eclipse.tycho:tycho-versions-plugin:0.20.0:set-version -DnewVersion=$VERSION -Dartifacts=product,products-csstudio-plugins,org.csstudio.product,org.csstudio.startup.intro,products-csstudio-features,org.csstudio.product.feature,org.csstudio.product.configuration.feature,repository
 # update product because set-version doesn't
 sed -i 's/\(\<product[^>]\+\? version=\"\)[^"]*\("[^>]\+\?>\)/\1'${VERSIONP}'\2/g'  repository/cs-studio.product
 

@@ -56,13 +56,11 @@
    </plugins>
 
    <features>
-      <feature id="org.csstudio.eclipse.feature"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
-      <feature id="org.csstudio.libs.feature"/>
       <feature id="org.csstudio.product.feature"/>
       <feature id="org.csstudio.core.feature"/>
       <feature id="org.csstudio.pvmanager.feature"/>
@@ -75,20 +73,16 @@
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.opibuilder.feature"/>
       <feature id="org.csstudio.product.configuration.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
       <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
       <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
       <feature id="org.eclipse.emf.common"/>
    </features>
 
-   <configurations>
-      <plugin id="org.csstudio.utility.pvmanager.extra" autoStart="true" startLevel="4" />
-      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
-      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
-      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
-   </configurations>
 
 </product>
