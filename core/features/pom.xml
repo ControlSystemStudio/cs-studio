@@ -13,7 +13,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.core.all.feature</module>
-<!--     <module>org.csstudio.eclipse.feature</module> -->
+    <module>org.csstudio.eclipse.feature</module>
 <!--     <module>org.csstudio.libs.feature</module> -->
     <module>org.csstudio.pvmanager.autocomplete.feature</module>
     <module>org.csstudio.pvmanager.exec.feature</module>

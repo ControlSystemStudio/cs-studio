@@ -62,13 +62,6 @@
       <import plugin="org.eclipse.help.webapp"/>
       <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.bridge" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.dom" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.dom.svg" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.transcoder" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.util" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.w3c.dom.svg" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.css" version="1.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console" version="3.3.0" match="greaterOrEqual"/>
@@ -85,6 +78,13 @@
       <import plugin="org.csstudio.utility.pvmanager.loc"/>
       <import plugin="org.csstudio.utility.pvmanager.sim"/>
       <import plugin="org.csstudio.utility.pvmanager.sys"/>
+      <import plugin="org.apache.batik.bridge" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.dom" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.dom.svg" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.transcoder" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.util" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.w3c.dom.svg"/>
+      <import plugin="org.apache.batik.css" version="1.6.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -311,6 +311,20 @@
 
    <plugin
          id="org.csstudio.autocomplete.pvmanager.sys"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.batik"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.jms"
          download-size="0"
          install-size="0"
          version="0.0.0"
