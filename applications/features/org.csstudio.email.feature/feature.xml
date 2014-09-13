@@ -21,13 +21,7 @@
       <update label="CSS update site" url="http://cs-studio.sourceforge.net/nsls2/updates"/>
    </url>
 
-   <requires>
-      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.email" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.sun.mail.javax.mail"/>
-      <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
-   </requires>
+   
 
    <plugin
          id="org.csstudio.email"

@@ -16,15 +16,7 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.csstudio.utility.pvmanager.extra"/>
-      <import plugin="org.csstudio.autocomplete"/>
-      <import plugin="org.csstudio.utility.pvmanager.loc"/>
-      <import plugin="org.csstudio.utility.pvmanager.sim"/>
-      <import plugin="org.csstudio.utility.pvmanager.sys"/>
-   </requires>
+  
 
    <plugin
          id="org.csstudio.autocomplete.pvmanager.formula"

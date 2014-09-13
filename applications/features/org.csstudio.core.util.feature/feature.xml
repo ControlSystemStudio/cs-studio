@@ -17,51 +17,7 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import plugin="org.eclipse.osgi" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jms" version="1.1.1" match="greaterOrEqual"/>
-      <import plugin="org.junit" version="4.8.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.preferences" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.workbench" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.console" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.ui" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager.extra" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.csdata" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.2.5" match="greaterOrEqual"/>
-      <import plugin="org.epics.vtype" version="2.5.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.autocomplete.ui"/>
-      <import plugin="org.apache.batik.bridge" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.dom" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.dom.svg" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.transcoder" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.util" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.w3c.dom.svg" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.css" version="1.7.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pv" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.epics" version="3.1.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.security" version="1.1.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.workspace" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.workspace" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jms" version="5.4.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.servicelocator" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.jms" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="slf4j.api"/>
-      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.ui"/>
-      <import plugin="org.eclipse.help.webapp"/>
-   </requires>
+   
 
    <plugin
          id="org.csstudio.logging"

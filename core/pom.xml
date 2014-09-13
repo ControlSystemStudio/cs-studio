@@ -66,11 +66,11 @@
 				</property>
 			</activation>
 			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
-				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.3</eclipse-update-site>
-				<rap-site>http://download.eclipse.org/rt/rap/2.2</rap-site>
-				<platform-version>[4.2,4.3)</platform-version>
-				<swtbot-site>http://download.eclipse.org/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
+				<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
+				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
+				<rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
+				<platform-version>[4.3,4.4)</platform-version>
+				<swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
 			</properties>
 		</profile>
 		<profile>
