@@ -16,19 +16,7 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.csstudio.logbook" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook.ui" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.autocomplete.logbook" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.autocomplete.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook.ui.extra" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.nebula.widgets.grid" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.google.guava"/>
-      <import plugin="org.eclipse.swt"/>
-   </requires>
+   
 
    <plugin
          id="org.csstudio.logbook.viewer"
