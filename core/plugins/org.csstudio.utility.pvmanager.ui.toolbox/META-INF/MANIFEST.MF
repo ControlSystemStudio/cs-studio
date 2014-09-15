@@ -7,7 +7,8 @@ Bundle-Activator: org.csstudio.utility.pvmanager.ui.toolbox.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager,
- org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0"
+ org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
+ com.google.guava
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
