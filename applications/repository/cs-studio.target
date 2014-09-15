@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="cs-studio" sequenceNumber="101">
+<?pde version="3.8"?><target name="cs-studio" sequenceNumber="102">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="com.google.guava" version="18.0.0"/>
@@ -103,12 +103,6 @@
 <unit id="org.csstudio.alarm.beast.ui.feature.feature.group" version="3.2.1.201409021446"/>
 <unit id="org.jboss.logging.jboss-logging" version="3.1.0.GA"/>
 <repository location="http://download.controlsystemstudio.org/updates/4.0"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.csstudio.frib.product.feature.feature.group" version="3.3.3.201407311354"/>
-<unit id="org.eclipse.egit.feature.group" version="1.3.0.201202151440-r"/>
-<unit id="org.csstudio.team.repomonitor.feature.feature.group" version="1.0.0.201312031545"/>
-<repository location="https://controls.frib.msu.edu/css/updates/3.3"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="net.miginfocom.layout.swing" version="3.7.1.v200911230030"/>
@@ -722,15 +716,15 @@
 <repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.rap.gef.feature.feature.group" version="0.1.0.20140725-1636"/>
+<repository location="http://download.eclipse.org/rt/rap/incubator/nightly/gef/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rap.equinox.target.feature.feature.group" version="2.3.0.20140608-1653"/>
 <unit id="org.eclipse.rap.feature.feature.group" version="2.3.0.20140610-0925"/>
 <unit id="org.eclipse.rap.examples.feature.feature.group" version="2.3.0.20140602-1108"/>
 <unit id="org.eclipse.rap.sdk.feature.feature.group" version="2.3.0.20140610-0925"/>
 <repository location="http://download.eclipse.org/rt/rap/2.3"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.rap.gef.feature.feature.group" version="0.1.0.20140725-1636"/>
-<repository location="http://download.eclipse.org/rt/rap/incubator/nightly/gef/"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
