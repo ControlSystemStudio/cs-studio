@@ -84,7 +84,8 @@ else
   find eclipse-rap -name 'org.eclipse.rap.rwt.testfixture*.jar' -exec rm -f {} \;
   cp -r ../../core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_2.3_GEF/* eclipse-rap/plugins/
   cp -r ../../core/plugins/org.csstudio.rap.core/third_party_plugins/JUnit/* eclipse-rap/plugins/
-
+  # Install BATIK in plugins directory
+  unzip -o ../batik-1.7.zip -d eclipse-rap/
   cd ..
 fi
 

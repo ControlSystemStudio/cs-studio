@@ -8,10 +8,18 @@
       <plugin id="javax.xml"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.apache.batik"/>
+      <plugin id="org.apache.batik.bridge"/>
+      <plugin id="org.apache.batik.css"/>
+      <plugin id="org.apache.batik.dom"/>
+      <plugin id="org.apache.batik.dom.svg"/>
+      <plugin id="org.apache.batik.ext.awt"/>
+      <plugin id="org.apache.batik.parser"/>
+      <plugin id="org.apache.batik.svggen"/>
+      <plugin id="org.apache.batik.transcoder"/>
+      <plugin id="org.apache.batik.util"/>
+      <plugin id="org.apache.batik.util.gui"/>
+      <plugin id="org.apache.batik.xml"/>
       <plugin id="org.apache.commons.lang"/>
-<!--      <plugin id="org.apache.felix.gogo.command"/>-->
-<!--      <plugin id="org.apache.felix.gogo.runtime"/>-->
-<!--      <plugin id="org.apache.felix.gogo.shell"/>-->
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.archive.rdb"/>
@@ -47,6 +55,7 @@
       <plugin id="org.csstudio.swt.xygraph.rap" fragment="true"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.rap" fragment="true"/>
+      <plugin id="org.csstudio.utility.batik"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.pvmanager.epics"/>
@@ -68,7 +77,6 @@
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
-<!--      <plugin id="org.eclipse.equinox.console"/>-->
       <plugin id="org.eclipse.equinox.ds"/>
       <plugin id="org.eclipse.equinox.http.registry"/>
       <plugin id="org.eclipse.equinox.http.servlet"/>
@@ -99,6 +107,10 @@
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
       <plugin id="org.mockito"/>
+      <plugin id="org.w3c.css.sac"/>
+      <plugin id="org.w3c.dom.events"/>
+      <plugin id="org.w3c.dom.smil"/>
+      <plugin id="org.w3c.dom.svg"/>
    </plugins>
 
    <configurations>
@@ -107,10 +119,18 @@
       <plugin id="javax.xml" autoStart="true" startLevel="0" />
       <plugin id="org.antlr.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.apache.batik" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.bridge" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.css" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.dom" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.dom.svg" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.ext.awt" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.parser" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.svggen" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.transcoder" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.util" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.util.gui" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.batik.xml" autoStart="true" startLevel="0" />
       <plugin id="org.apache.commons.lang" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.apputil" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.apputil.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.archive.rdb" autoStart="true" startLevel="0" />
@@ -132,6 +152,9 @@
       <plugin id="org.csstudio.logbook" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.openfile" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.epics" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.epics.linux" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.epics.macosx" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.epics.win32" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.libs.jdbc" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.platform.utility.rdb" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.rap.core" autoStart="true" startLevel="0" />
@@ -140,7 +163,9 @@
       <plugin id="org.csstudio.security.ui" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.swt.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.swt.xygraph" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.swt.xygraph.rap" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.trends.databrowser2" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.batik" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pv" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="0" />
       <plugin id="org.csstudio.utility.pvmanager.epics" autoStart="true" startLevel="0" />
@@ -162,7 +187,6 @@
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
@@ -193,6 +217,10 @@
       <plugin id="org.hamcrest.core" autoStart="true" startLevel="0" />
       <plugin id="org.junit" autoStart="true" startLevel="0" />
       <plugin id="org.mockito" autoStart="true" startLevel="0" />
+      <plugin id="org.w3c.css.sac" autoStart="true" startLevel="0" />
+      <plugin id="org.w3c.dom.events" autoStart="true" startLevel="0" />
+      <plugin id="org.w3c.dom.smil" autoStart="true" startLevel="0" />
+      <plugin id="org.w3c.dom.svg" autoStart="true" startLevel="0" />
    </configurations>
 
    <warConfiguration webXml="/org.csstudio.trends.databrowser2.rap/WEB-INF/web.xml" launchIni="/org.csstudio.trends.databrowser2.rap/WEB-INF/launch.ini">

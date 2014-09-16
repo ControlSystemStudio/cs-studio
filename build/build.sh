@@ -120,8 +120,11 @@ else
   unzip -o eclipse-*-delta-pack.zip
   #https://bugs.eclipse.org/bugs/show_bug.cgi?id=438652
   cp ../org.eclipse.osgi.compatibility.state_1.0.0.v20140403-1907.jar eclipse/plugins/
+  # Install BATIK in plugins directory
+  unzip -o ../batik-1.7.zip -d eclipse/
   cd ..
 fi
+
 if [ "$ORGANIZATION" = "ITER" ]
 then
   cd ext
