@@ -48,8 +48,6 @@ public class JavaScriptStore extends AbstractScriptStore {
 	protected void compileInputStream(InputStream s) throws Exception {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(s))) {
 			script = ((Compilable) engine).compile(reader);
-			s.close();
-			reader.close();
 		}
 		
 	}
