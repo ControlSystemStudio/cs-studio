@@ -1,6 +1,6 @@
 instructions.configure=\
-  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:0,name:CS-Studio update site,location:http${#58}//download.controlsystemstudio.org/updates/3.3,enabled:true);\
-  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:1,name:CS-Studio update site,location:http${#58}//download.controlsystemstudio.org/updates/3.3,enabled:true);\
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:0,name:CS-Studio update site,location:http${#58}//download.controlsystemstudio.org/updates/4.0,enabled:true);\
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(type:1,name:CS-Studio update site,location:http${#58}//download.controlsystemstudio.org/updates/4.0,enabled:true);\
   org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/logs);
 
   
