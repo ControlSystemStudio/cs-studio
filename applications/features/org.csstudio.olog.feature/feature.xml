@@ -17,16 +17,7 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="edu.msu.nscl.olog.api" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.olog" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.7.100" match="greaterOrEqual"/>
-      <import plugin="org.epics.util" version="0.2.2" match="greaterOrEqual"/>
-      <import plugin="com.google.guava"/>
-      <import plugin="javax.ws.rs"/>
-   </requires>
+  
 
    <plugin
          id="org.csstudio.logbook.olog"
