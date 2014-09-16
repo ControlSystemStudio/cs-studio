@@ -15,6 +15,12 @@ dist
 logs/*.log
 log/*.log
 
+# ignore the cs-studio-pde.target
+core/repository/cs-studio-pde.target
+applications/repository/cs-studio-pde.target
+
+# ignore the mvn repo produced by the build
+*/mvn/repo*
 
 # SNS, KEK Products: Ignore output of headless build
 syntax: glob
