@@ -29,9 +29,9 @@
 <!--     <module>org.apache.tools.ant.junit</module> -->
     <module>org.csstudio.platform.libs.easymock</module>
 <!--     <module>org.apache.log4j</module> -->
-    <module>org.csstudio.platform.libs.epics.linux</module>
-    <module>org.csstudio.platform.libs.epics.macosx</module>
-    <module>org.csstudio.platform.libs.epics.win32</module>
+<!--     <module>org.csstudio.platform.libs.epics.linux</module> -->
+<!--     <module>org.csstudio.platform.libs.epics.macosx</module> -->
+<!--     <module>org.csstudio.platform.libs.epics.win32</module> -->
     <module>org.csstudio.platform.libs.hibernate</module>
     <module>org.csstudio.platform.libs.jdbc</module>
     <module>org.csstudio.platform.libs.jfreechart</module>
