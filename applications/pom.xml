@@ -26,6 +26,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<baselineMode>fail</baselineMode>
+		<skipTests>false</skipTests>
 
 		<!-- SonarQube configuration -->
 		<sonar.language>java</sonar.language>
@@ -399,7 +400,7 @@
 						<exclude>**/*Demo.java</exclude>
 					</excludes>
 
-					<skipTests>false</skipTests>
+					<skipTests>${skipTests}</skipTests>
 					<!--Some tests fail right now -->
 					<testFailureIgnore>true</testFailureIgnore>
 					<failIfNoTests>false</failIfNoTests>
