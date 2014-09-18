@@ -41,14 +41,15 @@ public class JavaScriptStore extends AbstractScriptStore {
 
 	@Override
 	protected void compileString(String string) throws Exception {
-		((Compilable) engine).compile(string);
+		script = ((Compilable) engine).compile(string);
 	}
 
 	@Override
 	protected void compileInputStream(InputStream s) throws Exception {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(s))) {
-			((Compilable) engine).compile(reader);
+			script = ((Compilable) engine).compile(reader);
 		}
+		
 	}
 
 	@Override
