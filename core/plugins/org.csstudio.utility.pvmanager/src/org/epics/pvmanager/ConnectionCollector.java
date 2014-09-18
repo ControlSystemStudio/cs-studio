@@ -20,6 +20,13 @@ public class ConnectionCollector implements ReadFunction<Boolean> {
     private final Map<String, Boolean> channelConnected = new HashMap<>();
     private final Map<String, ConnectionWriteFunction> writeFunctions = new HashMap<>();
     private Boolean connected;
+    private Runnable notification;
+
+    public void setChangeNotification(Runnable notification) {
+        synchronized (lock) {
+            this.notification = notification;
+        }
+    }
     
     private class ConnectionWriteFunction implements WriteFunction<Boolean> {
         
@@ -32,12 +39,18 @@ public class ConnectionCollector implements ReadFunction<Boolean> {
 
         @Override
         public void writeValue(Boolean newValue) {
+            Runnable task;
             synchronized(lock) {
                 if (isClosed()) {
                     throw new IllegalStateException("ConnectionCollector for '" + name + "' was closed.");
                 }
                 channelConnected.put(name, newValue);
                 connected = null;
+                task = notification;
+            }
+            // Run task without holding the lock
+            if (task != null) {
+                task.run();
             }
         }
         

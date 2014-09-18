@@ -19,9 +19,10 @@ import org.epics.pvaccess.client.ChannelProvider;
 import org.epics.pvaccess.client.ChannelPut;
 import org.epics.pvaccess.client.ChannelPutRequester;
 import org.epics.pvaccess.client.ChannelRequester;
-import org.epics.pvaccess.client.CreateRequest;
 import org.epics.pvaccess.client.GetFieldRequester;
+import org.epics.pvdata.copy.CreateRequest;
 import org.epics.pvdata.factory.ConvertFactory;
+import org.epics.pvdata.factory.PVDataFactory;
 import org.epics.pvdata.misc.BitSet;
 import org.epics.pvdata.monitor.Monitor;
 import org.epics.pvdata.monitor.MonitorElement;
@@ -69,6 +70,8 @@ public class PVAChannelHandler extends
 	
 	private final AtomicBoolean channelPutCreated = new AtomicBoolean(false);
 	private volatile ChannelPut channelPut = null;
+	private volatile PVStructure channelPutStructure = null;
+	private volatile BitSet bitSet = null;
 	private volatile PVField channelPutValueField = null;
 
 
@@ -302,7 +305,7 @@ public class PVAChannelHandler extends
 					throw new RuntimeException("No 'value' field");
 					
 				fromObject(channelPutValueField, writeRequest.getNewValue());
-				channelPut.put(false);
+				channelPut.put(channelPutStructure, bitSet);
 			} catch (Exception ex) {
 				writeRequests.poll();
 				writeRequest.getCallback().channelWritten(ex);
@@ -311,27 +314,31 @@ public class PVAChannelHandler extends
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.epics.pvaccess.client.ChannelPutRequester#channelPutConnect(org.epics.pvdata.pv.Status, org.epics.pvaccess.client.ChannelPut, org.epics.pvdata.pv.PVStructure, org.epics.pvdata.misc.BitSet)
-	 */
 	@Override
-	public void channelPutConnect(Status status, ChannelPut channelPut, PVStructure pvStructure, BitSet bitSet) {
+	public void channelPutConnect(Status status, ChannelPut channelPut, Structure putStructure) {
 		reportStatus("Failed to create ChannelPut instance", status);
 
 		if (status.isSuccess())
 		{
 			this.channelPut = channelPut;
 			
+			if (channelPutStructure == null ||
+				!channelPutStructure.getStructure().equals(putStructure))
+			{
+				channelPutStructure = PVDataFactory.getPVDataCreate().createPVStructure(putStructure);
+				bitSet = new BitSet(channelPutStructure.getNumberFields());
+			}
+			
 			if (isChannelEnumType)
 			{
 				// handle inconsistent behavior
-				this.channelPutValueField = pvStructure.getSubField("value");
+				this.channelPutValueField = channelPutStructure.getSubField("value");
 				if (this.channelPutValueField instanceof PVStructure)
-					this.channelPutValueField = ((PVStructure)pvStructure).getSubField("index");
+					this.channelPutValueField = ((PVStructure)channelPutValueField).getSubField("index");
 			}
 			else
 			{
-				this.channelPutValueField = pvStructure.getSubField("value");
+				this.channelPutValueField = channelPutStructure.getSubField("value");
 			}
 
 			
@@ -344,11 +351,8 @@ public class PVAChannelHandler extends
 		doNextWrite();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.epics.pvaccess.client.ChannelPutRequester#putDone(org.epics.pvdata.pv.Status)
-	 */
 	@Override
-	public void putDone(Status status) {
+	public void putDone(Status status, ChannelPut channePut) {
 		reportStatus("Failed to put value", status);
 		
 		WriteRequest writeRequest;
@@ -373,11 +377,8 @@ public class PVAChannelHandler extends
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.epics.pvaccess.client.ChannelPutRequester#getDone(org.epics.pvdata.pv.Status)
-	 */
 	@Override
-	public void getDone(Status status) {
+	public void getDone(Status status, ChannelPut channelPut, PVStructure pvStructure, BitSet bitSet) {
 		// never used, i.e. ChannelPut.get() never called
 	}
 

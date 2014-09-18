@@ -67,9 +67,12 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         return this;
     }
     
-    private DesiredRateExpression<T> aggregatedPVExpression;
+    private final DesiredRateExpression<T> aggregatedPVExpression;
+    private final List<PVReaderListener<T>> readListeners = new ArrayList<>();
     private ExceptionHandler exceptionHandler;
-    private List<PVReaderListener<T>> readListeners = new ArrayList<>();
+    private TimeDuration maxRate;
+    PVReaderImpl<T> pv;
+    ReadFunction<T> aggregatedFunction;
 
     PVReaderConfiguration(DesiredRateExpression<T> aggregatedPVExpression) {
         this.aggregatedPVExpression = aggregatedPVExpression;
@@ -118,32 +121,63 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
      * @return the PVReader
      */
     public PVReader<T> maxRate(TimeDuration rate) {
-        //int scanPeriodMs = (int) (period.getNanoSec() / 1000000);
+        maxRateAndValidate(rate);
         
-        if (rate.getSec() < 0 && rate.getNanoSec() < 5000000) {
-            throw new IllegalArgumentException("Current implementation limits the rate to >5ms or <200Hz (requested " + rate + "s)");
+        preparePvReader();
+        
+        PVDirector<T> director = prepareDirector(this);
+        prepareDecoupler(director, this);
+
+        return pv;
+    }
+    
+    void maxRateAndValidate(TimeDuration rate) {
+        this.maxRate = rate;
+        validateReaderConfiguration();
+    }
+    
+    static <T> PVDirector<T> prepareDirector(PVReaderConfiguration<T> readConfiguration) {
+        PVDirector<T> director = new PVDirector<>(readConfiguration.pv, readConfiguration.aggregatedFunction, PVManager.getReadScannerExecutorService(),
+                readConfiguration.notificationExecutor, readConfiguration.dataSource, readConfiguration.exceptionHandler);
+        if (readConfiguration.timeout != null) {
+            if (readConfiguration.timeoutMessage == null)
+                readConfiguration.timeoutMessage = "Read timeout";
+            director.readTimeout(readConfiguration.timeout, readConfiguration.timeoutMessage);
+        }
+        return director;
+    }
+    
+    static <T> void prepareDecoupler(PVDirector<T> director, PVReaderConfiguration<T> readConfiguration) {
+        ScannerParameters scannerParameters = new ScannerParameters()
+                .readerDirector(director)
+                .scannerExecutor(PVManager.getReadScannerExecutorService())
+                .maxDuration(readConfiguration.maxRate);
+        if (readConfiguration.aggregatedFunction instanceof Collector || readConfiguration.aggregatedFunction instanceof ValueCache) {
+            scannerParameters.type(ScannerParameters.Type.PASSIVE);
+        } else {
+            scannerParameters.type(ScannerParameters.Type.ACTIVE);
+        }
+        SourceDesiredRateDecoupler rateDecoupler = scannerParameters.build();
+        
+        readConfiguration.pv.setDirector(director);
+        director.setScanner(rateDecoupler);
+        director.connectReadExpression(readConfiguration.aggregatedPVExpression);
+        rateDecoupler.start();
+    }
+    
+    private void validateReaderConfiguration() {
+        if (maxRate.getSec() < 0 && maxRate.getNanoSec() < 5000000) {
+            throw new IllegalArgumentException("Current implementation limits the rate to >5ms or <200Hz (requested " + maxRate + "s)");
         }
 
         checkDataSourceAndThreadSwitch();
-
-        // Create PVReader and connect
-        PVReaderImpl<T> pv = new PVReaderImpl<T>(aggregatedPVExpression.getName(), Executors.localThread() == notificationExecutor);
+    }
+    
+    void preparePvReader() {
+        pv = new PVReaderImpl<>(aggregatedPVExpression.getName(), Executors.localThread() == notificationExecutor);
         for (PVReaderListener<T> pVReaderListener : readListeners) {
             pv.addPVReaderListener(pVReaderListener);
         }
-        ReadFunction<T> aggregatedFunction = aggregatedPVExpression.getFunction();
-        
-        PVReaderDirector<T> director = new PVReaderDirector<T>(pv, aggregatedFunction, PVManager.getReadScannerExecutorService(),
-                notificationExecutor, dataSource, exceptionHandler);
-        pv.setDirector(director);
-        if (timeout != null) {
-            if (timeoutMessage == null)
-                timeoutMessage = "Read timeout";
-            director.timeout(timeout, timeoutMessage);
-        }
-        director.connectExpression(aggregatedPVExpression);
-        director.startScan(rate);
-
-        return pv;
+        aggregatedFunction = aggregatedPVExpression.getFunction();
     }
 }

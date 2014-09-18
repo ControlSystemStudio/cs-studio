@@ -5,14 +5,13 @@
 package org.epics.pvmanager.formula;
 
 import java.util.List;
-import org.epics.pvmanager.ReadRecipe;
 import org.epics.pvmanager.ReadRecipeBuilder;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
 import static org.epics.pvmanager.ExpressionLanguage.*;
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 
 /**
  *
@@ -39,7 +38,7 @@ class LastOfChannelExpression<T> implements DesiredRateExpression<T> {
     }
 
     @Override
-    public void fillReadRecipe(PVReaderDirector director, ReadRecipeBuilder builder) {
+    public void fillReadRecipe(PVDirector director, ReadRecipeBuilder builder) {
         expression.fillReadRecipe(director, builder);
     }
 

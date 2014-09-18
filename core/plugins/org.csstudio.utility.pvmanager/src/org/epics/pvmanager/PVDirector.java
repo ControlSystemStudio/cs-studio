@@ -34,9 +34,9 @@ import org.epics.util.time.TimeDuration;
  * @param <T> value type for the reader managed by this director
  * @author carcassi
  */
-public class PVReaderDirector<T> {
+public class PVDirector<T> {
     
-    private static final Logger log = Logger.getLogger(PVReaderDirector.class.getName());
+    private static final Logger log = Logger.getLogger(PVDirector.class.getName());
 
     // Required for connection and exception notification
 
@@ -44,35 +44,68 @@ public class PVReaderDirector<T> {
     private final Executor notificationExecutor;
     /** Executor used to scan the connection/exception queues */
     private final ScheduledExecutorService scannerExecutor;
-    private volatile ScheduledFuture<?> scanTaskHandle;
     /** PVReader to update during the notification */
-    private final WeakReference<PVReaderImpl<T>> pvRef;
+    private final WeakReference<PVReaderImpl<T>> pvReaderRef;
     /** Function for the new value */
-    private final ReadFunction<T> function;
+    private final ReadFunction<T> readFunction;
+    /** Creation for stack trace */
+    private final Exception creationStackTrace = new Exception("PV was never closed (stack trace for creation)");
     
     // Required to connect/disconnect expressions
     private final DataSource dataSource;
     private final Object lock = new Object();
-    private final Map<DesiredRateExpression<?>, ReadRecipe> recipes =
+    private final Map<DesiredRateExpression<?>, ReadRecipe> readRecipies =
             new HashMap<>();
+    private SourceDesiredRateDecoupler scanStrategy;
 
     // Required for multiple operations
     /** Connection collector required to connect/disconnect expressions and for connection notification */
-    private final ConnectionCollector connCollector =
+    private final ConnectionCollector readConnCollector =
             new ConnectionCollector();
     /** Exception queue to be used to connect/disconnect expression and for exception notification */
-    private final QueueCollector<Exception> exceptionCollector;
+    private final QueueCollector<Exception> readExceptionCollector;
     
+    void setScanner(final SourceDesiredRateDecoupler scanStrategy) {
+        synchronized(lock) {
+            this.scanStrategy = scanStrategy;
+        }
+        readExceptionCollector.setChangeNotification(new Runnable() {
+
+            @Override
+            public void run() {
+                scanStrategy.newReadExceptionEvent();
+            }
+        });
+        readConnCollector.setChangeNotification(new Runnable() {
+
+            @Override
+            public void run() {
+                scanStrategy.newReadConnectionEvent();
+            }
+        });
+    }
+    
+    public void registerCollector(Collector<?, ?> collector) {
+        collector.setChangeNotification(new Runnable() {
+
+            @Override
+            public void run() {
+                if (scanStrategy != null) {
+                    scanStrategy.newValueEvent();
+                }
+            }
+        });
+    }
     
     ReadRecipe getCurrentReadRecipe() {
         ReadRecipeBuilder builder = new ReadRecipeBuilder();
-        for (Map.Entry<DesiredRateExpression<?>, ReadRecipe> entry : recipes.entrySet()) {
+        for (Map.Entry<DesiredRateExpression<?>, ReadRecipe> entry : readRecipies.entrySet()) {
             ReadRecipe readRecipe = entry.getValue();
             for (ChannelReadRecipe channelReadRecipe : readRecipe.getChannelReadRecipes()) {
                 builder.addChannel(channelReadRecipe.getChannelName(), channelReadRecipe.getReadSubscription().getValueCache());
             }
         }
-        return builder.build(exceptionCollector, connCollector);
+        return builder.build(readExceptionCollector, readConnCollector);
     }
     
     /**
@@ -84,12 +117,12 @@ public class PVReaderDirector<T> {
      * 
      * @param expression the expression to connect
      */
-    public void connectExpression(DesiredRateExpression<?> expression) {
+    public void connectReadExpression(DesiredRateExpression<?> expression) {
         ReadRecipeBuilder builder = new ReadRecipeBuilder();
         expression.fillReadRecipe(this, builder);
-        ReadRecipe recipe = builder.build(exceptionCollector, connCollector);
+        ReadRecipe recipe = builder.build(readExceptionCollector, readConnCollector);
         synchronized(lock) {
-            recipes.put(expression, recipe);
+            readRecipies.put(expression, recipe);
         }
         if (!recipe.getChannelReadRecipes().isEmpty()) {
             try {
@@ -117,9 +150,9 @@ public class PVReaderDirector<T> {
      * @param connection the connection flag
      * @param channelName the channel name
      */
-    public void connectStatic(Exception ex, boolean connection, String channelName) {
-        exceptionCollector.writeValue(ex);
-        connCollector.addChannel(channelName).writeValue(connection);
+    public void connectStaticRead(Exception ex, boolean connection, String channelName) {
+        readExceptionCollector.writeValue(ex);
+        readConnCollector.addChannel(channelName).writeValue(connection);
     }
     
     /**
@@ -130,10 +163,10 @@ public class PVReaderDirector<T> {
      *
      * @param expression the expression to disconnect
      */
-    public void disconnectExpression(DesiredRateExpression<?> expression) {
+    public void disconnectReadExpression(DesiredRateExpression<?> expression) {
         ReadRecipe recipe;
         synchronized(lock) {
-            recipe = recipes.remove(expression);
+            recipe = readRecipies.remove(expression);
         }
         if (recipe == null) {
             log.log(Level.SEVERE, "Director was asked to disconnect expression '" + expression + "' which was not found.");
@@ -152,16 +185,17 @@ public class PVReaderDirector<T> {
     
     void close() {
         closed = true;
+        disconnect();
     }
 
     /**
-     * Closed and disconnects all the child expressions.
+     * Close and disconnects all the child expressions.
      */
     private void disconnect() {
         synchronized(lock) {
-            while (!recipes.isEmpty()) {
-                DesiredRateExpression<?> expression = recipes.keySet().iterator().next();
-                disconnectExpression(expression);
+            while (!readRecipies.isEmpty()) {
+                DesiredRateExpression<?> expression = readRecipies.keySet().iterator().next();
+                disconnectReadExpression(expression);
             }
         }
     }
@@ -178,17 +212,17 @@ public class PVReaderDirector<T> {
      * @param function the function used to calculate new values
      * @param notificationExecutor the thread switching mechanism
      */
-    PVReaderDirector(PVReaderImpl<T> pv, ReadFunction<T> function, ScheduledExecutorService scannerExecutor,
+    PVDirector(PVReaderImpl<T> pv, ReadFunction<T> function, ScheduledExecutorService scannerExecutor,
             Executor notificationExecutor, DataSource dataSource, ExceptionHandler exceptionHandler) {
-        this.pvRef = new WeakReference<>(pv);
-        this.function = function;
+        this.pvReaderRef = new WeakReference<>(pv);
+        this.readFunction = function;
         this.notificationExecutor = notificationExecutor;
         this.scannerExecutor = scannerExecutor;
         this.dataSource = dataSource;
         if (exceptionHandler == null) {
-            exceptionCollector = new QueueCollector<>(1);
+            readExceptionCollector = new QueueCollector<>(1);
         } else {
-            exceptionCollector = new LastExceptionCollector(1, exceptionHandler);
+            readExceptionCollector = new LastExceptionCollector(1, exceptionHandler);
         }
     }
 
@@ -202,31 +236,25 @@ public class PVReaderDirector<T> {
      *
      * @return true if new notification should be performed
      */
-    boolean isActive() {
+    private boolean isActive() {
         // Making sure to get the reference once for thread safety
-        final PVReader<T> pv = pvRef.get();
+        final PVReader<T> pv = pvReaderRef.get();
         if (pv != null && !pv.isClosed()) {
             return true;
         } else if (pv == null && closed != true) {
-            log.warning("PVReader wasn't properly closed and it was garbage collected. Closing the associated connections...");
+            log.log(Level.WARNING, "PVReader wasn't properly closed and it was garbage collected. Closing the associated connections...", creationStackTrace);
             return false;
         } else {
             return false;
         }
     }
     
-    /**
-     * Checks whether the pv is paused
-     * 
-     * @return true if paused
-     */
-    boolean isPaused() {
-        final PVReader<T> pv = pvRef.get();
-        if (pv == null || pv.isPaused()) {
-            return true;
-        } else {
-            return false;
-        }
+    void pause() {
+        scanStrategy.pause();
+    }
+    
+    void resume() {
+        scanStrategy.resume();
     }
     
     private volatile boolean notificationInFlight = false;
@@ -234,7 +262,7 @@ public class PVReaderDirector<T> {
     /**
      * Notifies the PVReader of a new value.
      */
-    void notifyPv() {
+    private void notifyPv() {
         // Don't even calculate if notification is in flight.
         // This makes pvManager automatically throttle back if the consumer
         // is slower than the producer.
@@ -243,26 +271,29 @@ public class PVReaderDirector<T> {
         
         // Calculate new value
         T newValue = null;
+        Exception calculationException = null;
         boolean calculationSucceeded = false;
         try {
             // Tries to calculate the value
-            newValue = function.readValue();
+            newValue = readFunction.readValue();
             if (newValue != null) {
                 NotificationSupport.findNotificationSupportFor(newValue);
             }
             calculationSucceeded = true;
         } catch (RuntimeException ex) {
             // Calculation failed
-            exceptionCollector.writeValue(ex);
+            calculationException = ex;
         } catch (Throwable ex) {
             log.log(Level.SEVERE, "Unrecoverable error during scanning", ex);
         }
         
         // Calculate new connection
-        final boolean connected = connCollector.readValue();
-        List<Exception> exceptions = exceptionCollector.readValue();
+        final boolean connected = readConnCollector.readValue();
+        List<Exception> exceptions = readExceptionCollector.readValue();
         final Exception lastException;
-        if (exceptions.isEmpty()) {
+        if (calculationException != null) {
+            lastException = calculationException;
+        } else if (exceptions.isEmpty()) {
             lastException = null;
         } else {
             lastException = exceptions.get(exceptions.size() - 1);
@@ -282,7 +313,7 @@ public class PVReaderDirector<T> {
             @Override
             public void run() {
                 try {
-                    PVReaderImpl<T> pv = pvRef.get();
+                    PVReaderImpl<T> pv = pvReaderRef.get();
                     // Proceed with notification only if PVReader was not garbage
                     // collected
                     if (pv != null) {
@@ -319,49 +350,49 @@ public class PVReaderDirector<T> {
                     }
                 } finally {
                     notificationInFlight = false;
+                    scanStrategy.readyForNextEvent();
                 }
             }
         });
     }
-    
-    void startScan(TimeDuration duration) {
-        scanTaskHandle = scannerExecutor.scheduleWithFixedDelay(new Runnable() {
 
-            @Override
-            public void run() {
-                if (isActive()) {
-                    // If paused, simply skip without stopping the scan
-                    if (!isPaused()) {
-                        notifyPv();
-                    }
-                } else {
-                    stopScan();
-                    disconnect();
-                }
-            }
-        }, 0, duration.toNanosLong(), TimeUnit.NANOSECONDS);
+    /**
+     * Posts a readTimeout exception in the exception queue.
+     * 
+     * @param timeoutMessage the message for the readTimeout
+     */
+    private void processReadTimeout(String timeoutMessage) {
+        PVReaderImpl<T> pv = pvReaderRef.get();
+        if (pv != null && !pv.isSentFirsEvent()) {
+            readExceptionCollector.writeValue(new TimeoutException(timeoutMessage));
+        }
     }
     
-    void timeout(TimeDuration timeout, final String timeoutMessage) {
+    void readTimeout(TimeDuration timeout, final String timeoutMessage) {
         scannerExecutor.schedule(new Runnable() {
-
             @Override
             public void run() {
-                PVReaderImpl<T> pv = pvRef.get();
-                if (pv != null && !pv.isSentFirsEvent()) {
-                    exceptionCollector.writeValue(new TimeoutException(timeoutMessage));
-                }
+                processReadTimeout(timeoutMessage);
             }
         }, timeout.toNanosLong(), TimeUnit.NANOSECONDS);
     }
     
-    void stopScan() {
-        if (scanTaskHandle != null) {
-            scanTaskHandle.cancel(false);
-            scanTaskHandle = null;
-        } else {
-            throw new IllegalStateException("Scan was never started");
-        }
-    }
+    private final DesiredRateEventListener desiredRateEventListener = new DesiredRateEventListener() {
 
+        @Override
+        public void desiredRateEvent(DesiredRateEvent event) {
+            if (isActive()) {
+                notifyPv();
+            } else {
+                close();
+            }
+        }
+
+    };
+
+    DesiredRateEventListener getDesiredRateEventListener() {
+        return desiredRateEventListener;
+    }
+    
+    
 }

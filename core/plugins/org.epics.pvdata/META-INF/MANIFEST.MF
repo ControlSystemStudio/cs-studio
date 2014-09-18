@@ -6,9 +6,10 @@ Bundle-Version: 3.1.1.qualifier
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/pvDataJava-3.0.3.jar
+ lib/pvDataJava-3.1.1-SNAPSHOT.jar
 Export-Package: 
  org.epics.pvdata.accessSecurity,
+ org.epics.pvdata.copy,
  org.epics.pvdata.factory;uses:="org.epics.pvdata.pv,org.epics.pvdata.misc",
  org.epics.pvdata.misc;uses:="org.epics.pvdata.pv",
  org.epics.pvdata.monitor;uses:="org.epics.pvdata.pv,org.epics.pvdata.misc",

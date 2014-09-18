@@ -52,9 +52,9 @@ public class PVWriterDirector<T> {
     private final ScheduledExecutorService scannerExecutor;
     private volatile ScheduledFuture<?> scanTaskHandle;
     private final WeakReference<PVWriterImpl<T>> pvRef;
-    private final ConnectionCollector connCollector =
+    private final ConnectionCollector writeConnCollector =
             new ConnectionCollector();
-    private final QueueCollector<Exception> exceptionCollector;
+    private final QueueCollector<Exception> writeExceptionCollector;
     
     // Required to process the write
     
@@ -80,7 +80,7 @@ public class PVWriterDirector<T> {
 
     PVWriterDirector(PVWriterImpl<T> pvWriter, WriteFunction<T> writeFunction, DataSource dataSource,
             ScheduledExecutorService writeExecutor, Executor notificationExecutor,
-            ScheduledExecutorService scannerExecutor, TimeDuration timeout, String timeoutMessage,
+            ScheduledExecutorService scannerExecutor, TimeDuration writeTimeout, String writeTimeoutMessage,
             ExceptionHandler exceptionHandler) {
         this.pvRef = new WeakReference<>(pvWriter);
         this.writeFunction = writeFunction;
@@ -88,12 +88,12 @@ public class PVWriterDirector<T> {
         this.writeExecutor = writeExecutor;
         this.notificationExecutor = notificationExecutor;
         this.scannerExecutor = scannerExecutor;
-        this.timeout = timeout;
-        this.timeoutMessage = timeoutMessage;
+        this.timeout = writeTimeout;
+        this.timeoutMessage = writeTimeoutMessage;
         if (exceptionHandler == null) {
-            exceptionCollector = new QueueCollector<>(1);
+            writeExceptionCollector = new QueueCollector<>(1);
         } else {
-            exceptionCollector = new LastExceptionCollector(1, exceptionHandler);
+            writeExceptionCollector = new LastExceptionCollector(1, exceptionHandler);
         }
     }
     
@@ -115,8 +115,8 @@ public class PVWriterDirector<T> {
      * @param channelName the channel name
      */
     public void connectStatic(Exception ex, boolean connection, String channelName) {
-        exceptionCollector.writeValue(ex);
-        connCollector.addChannel(channelName).writeValue(connection);
+        writeExceptionCollector.writeValue(ex);
+        writeConnCollector.addChannel(channelName).writeValue(connection);
     }
     
     /**
@@ -131,7 +131,7 @@ public class PVWriterDirector<T> {
     public void connectExpression(WriteExpression<?> expression) {
         WriteRecipeBuilder builder = new WriteRecipeBuilder();
         expression.fillWriteRecipe(this, builder);
-        WriteRecipe recipe = builder.build(exceptionCollector, connCollector);
+        WriteRecipe recipe = builder.build(writeExceptionCollector, writeConnCollector);
         synchronized(lock) {
             recipes.put(expression, recipe);
         }
@@ -139,7 +139,7 @@ public class PVWriterDirector<T> {
             try {
                 dataSource.connectWrite(recipe);
             } catch(Exception ex) {
-                exceptionCollector.writeValue(ex);
+                writeExceptionCollector.writeValue(ex);
             }
             updateWriteRecipe();
         }
@@ -166,7 +166,7 @@ public class PVWriterDirector<T> {
             try {
                 dataSource.disconnectWrite(recipe);
             } catch(Exception ex) {
-                exceptionCollector.writeValue(ex);
+                writeExceptionCollector.writeValue(ex);
             }
             updateWriteRecipe();
         }
@@ -187,6 +187,7 @@ public class PVWriterDirector<T> {
      */
     public void close() {
         synchronized(lock) {
+            scanStrategy.stop();
             while (!recipes.isEmpty()) {
                 WriteExpression<?> expression = recipes.keySet().iterator().next();
                 disconnectExpression(expression);
@@ -205,7 +206,7 @@ public class PVWriterDirector<T> {
     private class WriteTask implements Runnable {
         final PVWriterImpl<T> pvWriter;
         final T newValue;
-        private AtomicBoolean done = new AtomicBoolean();
+        private final AtomicBoolean done = new AtomicBoolean();
 
         public WriteTask(PVWriterImpl<T> pvWriter, T newValue) {
             this.pvWriter = pvWriter;
@@ -218,7 +219,7 @@ public class PVWriterDirector<T> {
                 @Override
                 public void run() {
                     if (!done.get()) {
-                        exceptionCollector.writeValue(new TimeoutException(timeoutMessage));
+                        writeExceptionCollector.writeValue(new TimeoutException(timeoutMessage));
                     }
                 }
             };
@@ -310,7 +311,7 @@ public class PVWriterDirector<T> {
                 } catch (RuntimeException ex) {
                     exception.set(ex);
                     latch.countDown();
-                    exceptionCollector.writeValue(ex);
+                    writeExceptionCollector.writeValue(ex);
                 }
             }
         });
@@ -332,7 +333,7 @@ public class PVWriterDirector<T> {
         }
         if (done == false) {
             TimeoutException ex = new TimeoutException(timeoutMessage);
-            exceptionCollector.writeValue(ex);
+            writeExceptionCollector.writeValue(ex);
             throw ex;
         }
         log.finest("Waiting done. No exceptions.");
@@ -369,8 +370,8 @@ public class PVWriterDirector<T> {
             return;
         
         // Calculate new connection
-        final boolean connected = connCollector.readValue();
-        List<Exception> exceptions = exceptionCollector.readValue();
+        final boolean connected = writeConnCollector.readValue();
+        List<Exception> exceptions = writeExceptionCollector.readValue();
         final Exception lastException;
         if (exceptions.isEmpty()) {
             lastException = null;
@@ -381,6 +382,7 @@ public class PVWriterDirector<T> {
         // If the connection flag is the same, don't notify
         final PVWriterImpl<T> pv = pvRef.get();
         if (pv == null || (pv.isWriteConnected() == connected && lastException == null)) {
+            scanStrategy.readyForNextEvent();
             return;
         }
 
@@ -396,37 +398,53 @@ public class PVWriterDirector<T> {
                     pv.firePvWritten();
                 } finally {
                     notificationInFlight = false;
+                    scanStrategy.readyForNextEvent();
                 }
             }
         });
     }
-    
-    void startScan(TimeDuration duration) {
-        scanTaskHandle = scannerExecutor.scheduleWithFixedDelay(new Runnable() {
-
-            @Override
-            public void run() {
-                if (isActive()) {
-                    notifyPv();
-                } else {
-                    stopScan();
-                    close();
-                }
-            }
-        }, 0, duration.toNanosLong(), TimeUnit.NANOSECONDS);
-    }
-    
-    void stopScan() {
-        if (scanTaskHandle != null) {
-            scanTaskHandle.cancel(false);
-            scanTaskHandle = null;
-        } else {
-            throw new IllegalStateException("Scan was never started");
-        }
-    }
 
     WriteRecipe getCurrentWriteRecipe() {
         return currentWriteRecipe;
+    }
+    
+    private final DesiredRateEventListener desiredRateEventListener = new DesiredRateEventListener() {
+
+        @Override
+        public void desiredRateEvent(DesiredRateEvent event) {
+            if (isActive()) {
+                notifyPv();
+            } else {
+                close();
+            }
+        }
+
+    };
+
+    DesiredRateEventListener getDesiredRateEventListener() {
+        return desiredRateEventListener;
+    }
+    
+    private SourceDesiredRateDecoupler scanStrategy;
+    
+    void setScanner(final SourceDesiredRateDecoupler scanStrategy) {
+        synchronized(lock) {
+            this.scanStrategy = scanStrategy;
+        }
+        writeExceptionCollector.setChangeNotification(new Runnable() {
+
+            @Override
+            public void run() {
+                scanStrategy.newWriteExceptionEvent();
+            }
+        });
+        writeConnCollector.setChangeNotification(new Runnable() {
+
+            @Override
+            public void run() {
+                scanStrategy.newWriteConnectionEvent();
+            }
+        });
     }
     
 }

@@ -7,7 +7,7 @@ package org.epics.pvmanager.formula;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 import org.epics.pvmanager.ReadFunction;
 import org.epics.vtype.ValueUtil;
 
@@ -23,7 +23,7 @@ class FormulaReadFunction implements ReadFunction<Object> {
     public final String functionName;
     public FormulaFunction lastFormula;
     public Object lastValue;
-    public volatile PVReaderDirector<?> director;
+    public volatile PVDirector<?> director;
 
     FormulaReadFunction(List<ReadFunction<?>> argumentFunctions, Collection<FormulaFunction> formulaMatches) {
         this.argumentFunctions = argumentFunctions;
@@ -35,8 +35,8 @@ class FormulaReadFunction implements ReadFunction<Object> {
         this.functionName = formulaMatches.iterator().next().getName();
     }
 
-    void setDirectory(PVReaderDirector<?> directory) {
-        this.director = directory;
+    void setDirector(PVDirector<?> director) {
+        this.director = director;
     }
     
    @Override
