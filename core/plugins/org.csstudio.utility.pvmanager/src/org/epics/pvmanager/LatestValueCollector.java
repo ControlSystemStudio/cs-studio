@@ -12,16 +12,35 @@ package org.epics.pvmanager;
  */
 public class LatestValueCollector<T> implements Collector<T, T> {
     
+    private final Object lock = new Object();
     private T value;
+    private Runnable notification;
 
     @Override
     public void writeValue(T newValue) {
-        value = newValue;
+        Runnable task;
+        synchronized (lock) {
+            value = newValue;
+            task = notification;
+        }
+        // Run the task without holding the lock
+        if (task != null) {
+            task.run();
+        }
     }
 
     @Override
     public T readValue() {
-        return value;
+        synchronized (lock) {
+            return value;
+        }
+    }
+
+    @Override
+    public void setChangeNotification(Runnable notification) {
+        synchronized (lock) {
+            this.notification = notification;
+        }
     }
     
 }

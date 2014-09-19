@@ -4,6 +4,7 @@
  */
 package org.epics.pvmanager.loc;
 
+import java.util.ArrayList;
 import org.epics.pvmanager.ChannelWriteCallback;
 import org.epics.pvmanager.ChannelHandlerReadSubscription;
 import org.epics.pvmanager.MultiplexedChannelHandler;
@@ -19,6 +20,7 @@ import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VEnum;
 import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.VTable;
@@ -45,7 +47,7 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
 
     @Override
     public void disconnect() {
-        initialValue = null;
+        initialArguments = null;
         type = null;
         processConnection(null);
     }
@@ -84,17 +86,29 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         try {
-            // If the string can be parse to a number, do it
-            if (newValue instanceof String) {
-                String value = (String) newValue;
-                try {
-                    newValue = Double.valueOf(value);
-                } catch (NumberFormatException ex) {
+            // XXX Actual write is not enforcing the type!
+            
+            if (VEnum.class.equals(type)) {
+                // Handle enum writes
+                int newIndex = -1;
+                // TODO calculate the newIndex from the new value
+                // Add error message if type does not match
+                VEnum firstEnum = (VEnum) initialValue;
+                newValue = ValueFactory.newVEnum(newIndex, firstEnum.getLabels(), alarmNone(), timeNow());
+            } else {
+            
+                // If the string can be parse to a number, do it
+                if (newValue instanceof String) {
+                    String value = (String) newValue;
+                    try {
+                        newValue = Double.valueOf(value);
+                    } catch (NumberFormatException ex) {
+                    }
                 }
-            }
-            // If new value is not a VType, try to convert it
-            if (!(newValue instanceof VType)) {
-                newValue = checkValue(ValueFactory.toVTypeChecked(newValue));
+                // If new value is not a VType, try to convert it
+                if (!(newValue instanceof VType)) {
+                    newValue = checkValue(ValueFactory.toVTypeChecked(newValue));
+                }
             }
             processMessage(newValue);
             callback.channelWritten(null);
@@ -108,18 +122,33 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
         return isConnected(payload);
     }
     
+    private Object initialArguments;
     private Object initialValue;
     private Class<?> type;
     
     synchronized void setInitialValue(Object value) {
-        if (initialValue != null && !initialValue.equals(value)) {
-            String message = "Different initialization for local channel " + getChannelName() + ": " + value + " but was " + initialValue;
+        if (initialArguments != null && !initialArguments.equals(value)) {
+            String message = "Different initialization for local channel " + getChannelName() + ": " + value + " but was " + initialArguments;
             log.log(Level.WARNING, message);
             throw new RuntimeException(message);
         }
-        initialValue = value;
+        initialArguments = value;
         if (getLastMessagePayload() == null) {
-            processMessage(checkValue(ValueFactory.toVTypeChecked(value)));
+            if (VEnum.class.equals(type)) {
+                List<?> args = (List<?>) initialArguments;
+                // TODO error message if not Number
+                int index = ((Number) args.get(0)).intValue();
+                List<String> labels = new ArrayList<>();
+                for (Object arg : args.subList(1, args.size())) {
+                    // TODO error message if not String
+                    labels.add((String) arg);
+                }
+                
+                initialValue = ValueFactory.newVEnum(index, labels, alarmNone(), timeNow());
+            } else {
+                initialValue = checkValue(ValueFactory.toVTypeChecked(value));
+            }
+            processMessage(initialValue);
         }
     }
     
@@ -143,6 +172,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
         if ("VTable".equals(typeName)) {
             newType = VTable.class;
         }
+        if ("VEnum".equals(typeName)) {
+            newType = VEnum.class;
+        }
         if (newType == null) {
             throw new IllegalArgumentException("Type " + typeName + " for channel " + getChannelName() + " is not supported by local datasource.");
         }
@@ -157,7 +189,7 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
         Map<String, Object> properties = new HashMap<>();
         properties.put("Name", getChannelName());
         properties.put("Type", type);
-        properties.put("Initial Value", initialValue);
+        properties.put("Initial Value", initialArguments);
         return properties;
     }
     

@@ -56,7 +56,7 @@ public class AnnotationsPrototype {
 			if (entity1 instanceof Edm_activeRectangleClass) {
 				System.out.println("entity1 is Edm_activeRectangleClass");
 				Edm_activeRectangleClass rectangle = (Edm_activeRectangleClass)entity1;
-				System.out.println("rectange : " + rectangle);
+				System.out.println("rectangle : " + rectangle);
 			}
 			if (entity2 instanceof Edm_activeGroupClass) {
 				System.out.println("entity2 is Edm_activeGroupClass");

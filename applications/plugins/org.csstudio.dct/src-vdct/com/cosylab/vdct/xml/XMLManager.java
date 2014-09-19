@@ -107,7 +107,7 @@ private static DocumentBuilder getDocumentBuilder(final String dtdSymbol, final 
 	}
 	catch (Exception e)
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while trying to create new XML document builder!");
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while trying to create new XML document builder!");
 		com.cosylab.vdct.Console.getInstance().println(e.toString());
 		return null;
 	}
@@ -128,7 +128,7 @@ private static DocumentBuilder getDocumentBuilder(final String dtdSymbol, final 
 					}
 					catch( Exception e )
 					{
-						com.cosylab.vdct.Console.getInstance().println("An error occured while trying to resolve the main DTD!");
+						com.cosylab.vdct.Console.getInstance().println("An error occurred while trying to resolve the main DTD!");
 						com.cosylab.vdct.Console.getInstance().println(e);
 						return null;
 					}
@@ -181,7 +181,7 @@ public static Document newDocument()
 	}
 	catch( Exception e )
 	{
-		com.cosylab.vdct.Console.getInstance().println("An error occured while trying to create new XML document!");
+		com.cosylab.vdct.Console.getInstance().println("An error occurred while trying to create new XML document!");
 		com.cosylab.vdct.Console.getInstance().println(e);
 		return null;
 	}
@@ -239,7 +239,7 @@ public static void writeDocument(String fileName, Document doc, String publicId,
 	try
 	{
 
-		// Serialisation through Tranform.
+		// Serialisation through Transform.
 		DOMSource domSource = new DOMSource(doc);
 		StreamResult streamResult = new StreamResult(out);
 		TransformerFactory tf = TransformerFactory.newInstance();

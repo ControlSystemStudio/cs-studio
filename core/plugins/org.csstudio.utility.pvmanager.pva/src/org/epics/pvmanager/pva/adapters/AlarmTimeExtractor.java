@@ -67,7 +67,7 @@ public class AlarmTimeExtractor implements Alarm, Time {
 		if (timeStampStructure != null)
 		{
 			PVLong secsField = timeStampStructure.getLongField("secondsPastEpoch");
-			PVInt nanosField = timeStampStructure.getIntField("nanoSeconds");
+			PVInt nanosField = timeStampStructure.getIntField("nanoseconds");
 			
 			if (secsField == null || nanosField == null)
 				timeStamp = noTimeStamp;

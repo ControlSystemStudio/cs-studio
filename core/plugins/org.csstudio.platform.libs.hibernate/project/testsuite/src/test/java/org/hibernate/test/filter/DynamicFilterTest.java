@@ -279,7 +279,7 @@ public class DynamicFilterTest extends FunctionalTestCase {
 		Session session = openSession();
 		session.enableFilter("region").setParameter("region", "APAC");
 
-		log.info("Criteria query against Department with a subquery on Salesperson in the APAC reqion...");
+		log.info("Criteria query against Department with a subquery on Salesperson in the APAC region...");
 		DetachedCriteria salespersonSubquery = DetachedCriteria.forClass(Salesperson.class)
 				.add(Restrictions.eq("name", "steve"))
 				.setProjection(Property.forName("department"));
@@ -289,7 +289,7 @@ public class DynamicFilterTest extends FunctionalTestCase {
 
 		assertEquals("Incorrect department count", 1, departments.size());
 
-		log.info("Criteria query against Department with a subquery on Salesperson in the FooBar reqion...");
+		log.info("Criteria query against Department with a subquery on Salesperson in the FooBar region...");
 
 		session.enableFilter("region").setParameter("region", "Foobar");
 		departments = departmentsQuery.list();
@@ -360,13 +360,13 @@ public class DynamicFilterTest extends FunctionalTestCase {
 		Session session = openSession();
 		session.enableFilter("region").setParameter("region", "APAC");
 
-		log.info("query against Department with a subquery on Salesperson in the APAC reqion...");
+		log.info("query against Department with a subquery on Salesperson in the APAC region...");
 
 		List departments = session.createQuery("select d from Department as d where d.id in (select s.department from Salesperson s where s.name = ?)").setString(0, "steve").list();
 
 		assertEquals("Incorrect department count", 1, departments.size());
 
-		log.info("query against Department with a subquery on Salesperson in the FooBar reqion...");
+		log.info("query against Department with a subquery on Salesperson in the FooBar region...");
 
 		session.enableFilter("region").setParameter("region", "Foobar");
 		departments = session.createQuery("select d from Department as d where d.id in (select s.department from Salesperson s where s.name = ?)").setString(0, "steve").list();

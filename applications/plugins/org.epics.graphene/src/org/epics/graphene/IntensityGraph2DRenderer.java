@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import java.awt.Color;
+import org.epics.util.stats.Range;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Arrays;
@@ -12,6 +14,7 @@ import org.epics.util.array.ListNumbers;
 import org.epics.util.array.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import org.epics.util.stats.Ranges;
 
 /**
  * A renderer for intensity graph (also known as heat graph), which visualizes
@@ -42,7 +45,8 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
      * @param imageHeight should be equal to the height of the bufferedImage.
      */
     public IntensityGraph2DRenderer(int imageWidth, int imageHeight) {
-        super(imageWidth, imageHeight); 
+        super(imageWidth, imageHeight);
+        super.update(new IntensityGraph2DRendererUpdate());
     }
 
     /**
@@ -74,6 +78,12 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         if(update.getRightMargin() != null){
             originalRightMargin = update.getRightMargin();
         }
+        if(update.getXPixelSelectionRange()!= null){
+            xPixelSelectionRange = update.getXPixelSelectionRange();
+        }
+        if(update.getYPixelSelectionRange()!= null){
+            yPixelSelectionRange = update.getYPixelSelectionRange();
+        }
     }
     
     /*legendWidth,legendMarginToGraph,graphAreaToLegendMargin, and zLabelMargin are all lengths, in terms of pixels.
@@ -98,6 +108,14 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
     
     private NumberColorMap colorMap = DEFAULT_COLOR_MAP;
     
+    private Range xPixelSelectionRange;
+    private Range yPixelSelectionRange;
+    
+    private Range xValueSelectionRange;
+    private Range yValueSelectionRange;
+    
+    private Range xIndexSelectionRange;
+    private Range yIndexSelectionRange;
     
     /**
      *Draws an intensity graph in the given graphics context, using the given data.
@@ -111,7 +129,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         this.g = graphBuffer.getGraphicsContext();
         GraphAreaData area = new GraphAreaData();
         BufferedImage image = graphBuffer.getImage();
-        calculateRanges(data.getXRange(), data.getYRange());
+        calculateRanges(data.getXRange(), data.getXRange(), data.getYRange(), data.getYRange());
         area.setGraphBuffer(graphBuffer);
         graphBuffer.drawBackground(backgroundColor);
         calculateZRange(data.getStatistics(), data.getDisplayRange());
@@ -157,7 +175,7 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
         if (!optimizeColorScheme){
             colorMapInstance = colorMap.createInstance(zPlotRange);
         } else {
-            if (colorMapInstance == null || !RangeUtil.equals(optimizedRange, zRange)) {
+            if (colorMapInstance == null || !Ranges.equals(optimizedRange, zRange)) {
                 colorMapInstance = colorMap.createInstance(zPlotRange);
                 colorMapInstance = NumberColorMaps.optimize(colorMapInstance, zPlotRange);
                 optimizedRange = zPlotRange;
@@ -183,12 +201,58 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
             same length as the the height of the graph in pixels.*/
             ListNumber dataList = ListNumbers.linearListFromRange(zPlotRange.getMinimum().doubleValue(),zPlotRange.getMaximum().doubleValue(),(int)yHeightTotal);
             //legendData is a Cell2DDataset representation of dataList.
-            Cell2DDataset legendData = Cell2DDatasets.linearRange(dataList, RangeUtil.range(0, 1), 1, RangeUtil.range(0, (int)yHeightTotal), (int)yHeightTotal);
+            Cell2DDataset legendData = Cell2DDatasets.linearRange(dataList, Ranges.range(0, 1), 1, Ranges.range(0, (int)yHeightTotal), (int)yHeightTotal);
             int xLegendStart = getImageWidth() - originalRightMargin - zLabelMaxWidth - zLabelMargin - legendWidth;
             drawRectanglesArray(g, legendData, xLegendStart, yEndGraph, legendWidth, yHeightTotal, 1, legendWidth, image);
             graphBuffer.drawLeftLabels(zReferenceLabels, zReferenceCoords, labelColor, labelFont, area.areaBottom, area.areaTop, getImageWidth() - originalRightMargin - 1);
         }
         
+        // Calculate selection and draw rectangle
+        if (xPixelSelectionRange != null && yPixelSelectionRange != null) {
+            // Calculate the selection pixel box
+            int selectionLeftPixel = xPixelSelectionRange.getMinimum().intValue();
+            int selectionRightPixel = xPixelSelectionRange.getMaximum().intValue();
+            int selectionTopPixel = yPixelSelectionRange.getMinimum().intValue();
+            int selectionBottomPixel = yPixelSelectionRange.getMaximum().intValue();
+            
+            // Calculate the selection value range
+            double selectionLeftValue = graphBuffer.xPixelLeftToValue(selectionLeftPixel);
+            double selectionRightValue = graphBuffer.xPixelRightToValue(selectionRightPixel);
+            double selectionTopValue = graphBuffer.yPixelTopToValue(selectionTopPixel);
+            double selectionBottomValue = graphBuffer.yPixelBottomToValue(selectionBottomPixel);
+            xValueSelectionRange = Ranges.range(selectionLeftValue, selectionRightValue);
+            yValueSelectionRange = Ranges.range(selectionBottomValue, selectionTopValue);
+            
+            // Calcualte the selection data index boundaries
+            int xLeftOffset = selectionLeftPixel - xPointToDataMap.startPoint;
+            int xRightOffset = selectionRightPixel - xPointToDataMap.startPoint;
+            if ((xLeftOffset < 0 && xRightOffset <0) 
+                    || (xLeftOffset >= xPointToDataMap.pointToDataMap.length && xRightOffset >= xPointToDataMap.pointToDataMap.length)) {
+                // Selection range is outside range
+                xIndexSelectionRange = null;
+            } else {
+                xLeftOffset = Math.max(0, xLeftOffset);
+                xRightOffset = Math.min(xPointToDataMap.pointToDataMap.length, xRightOffset);
+                xIndexSelectionRange = Ranges.range(xPointToDataMap.pointToDataMap[xLeftOffset], xPointToDataMap.pointToDataMap[xRightOffset]);
+            }
+            
+            int yBottomOffset = selectionBottomPixel - yPointToDataMap.startPoint;
+            int yTopOffset = selectionTopPixel - yPointToDataMap.startPoint;
+            if ((yBottomOffset < 0 && yTopOffset <0) 
+                    || (yBottomOffset >= yPointToDataMap.pointToDataMap.length && yTopOffset >= yPointToDataMap.pointToDataMap.length)) {
+                // Selection range is outside range
+                yIndexSelectionRange = null;
+            } else {
+                yTopOffset = Math.max(0, yTopOffset);
+                yBottomOffset = Math.min(xPointToDataMap.pointToDataMap.length, yBottomOffset);
+                yIndexSelectionRange = Ranges.range(yPointToDataMap.pointToDataMap[yBottomOffset], yPointToDataMap.pointToDataMap[yTopOffset]);
+            }
+            
+            g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            g.setColor(Color.BLACK);
+            graphBuffer.getGraphicsContext().drawRect(selectionLeftPixel, selectionTopPixel,
+                    selectionRightPixel - selectionLeftPixel, selectionBottomPixel - selectionTopPixel);
+        }
     }
     
     @Override
@@ -393,5 +457,30 @@ public class IntensityGraph2DRenderer extends Graph2DRenderer<IntensityGraph2DRe
     public NumberColorMap getColorMap() {
         return colorMap;
     }
+
+    public Range getXIndexSelectionRange() {
+        return xIndexSelectionRange;
+    }
+
+    public Range getYIndexSelectionRange() {
+        return yIndexSelectionRange;
+    }
+
+    public Range getXValueSelectionRange() {
+        return xValueSelectionRange;
+    }
+
+    public Range getYValueSelectionRange() {
+        return yValueSelectionRange;
+    }
+
+    public Range getXPixelSelectionRange() {
+        return xPixelSelectionRange;
+    }
+
+    public Range getYPixelSelectionRange() {
+        return yPixelSelectionRange;
+    }
+    
 
 }

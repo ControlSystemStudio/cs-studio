@@ -584,7 +584,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 				refreshVisualHandler);
 
 		//add connection should not be ignored by widget listener.
-		getWidgetModel().getProperty(AbstractWidgetModel.PROP_SRC_CONNETIONS)
+		getWidgetModel().getProperty(AbstractWidgetModel.PROP_SRC_CONNECTIONS)
 			.addPropertyChangeListener(new PropertyChangeListener() {				
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -592,7 +592,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 				}
 			});		
 		
-		getWidgetModel().getProperty(AbstractWidgetModel.PROP_TGT_CONNETIONS)
+		getWidgetModel().getProperty(AbstractWidgetModel.PROP_TGT_CONNECTIONS)
 			.addPropertyChangeListener(new PropertyChangeListener() {				
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {

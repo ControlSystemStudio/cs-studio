@@ -3,6 +3,7 @@
  * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
 package org.epics.graphene;
+import org.epics.util.stats.Range;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -154,6 +155,36 @@ public class GraphBuffer {
     public int xValueToPixel(double value) {
         return (int) xValueScale.scaleValue(value, xLeftValue, xRightValue, xLeftPixel, xRightPixel);
     }
+
+    /**
+     * Converts the left side of given pixel position to the actual value.
+     * 
+     * @param pixelValue the pixel
+     * @return the value at the pixel
+     */
+    public double xPixelLeftToValue(int pixelValue) {
+        return xValueScale.invScaleValue(pixelValue, xLeftValue, xRightValue, xLeftPixel, xRightPixel);
+    }
+
+    /**
+     * Converts the right side of given pixel position to the actual value.
+     * 
+     * @param pixelValue the pixel
+     * @return the value at the pixel
+     */
+    public double xPixelRightToValue(int pixelValue) {
+        return xValueScale.invScaleValue(pixelValue + 1, xLeftValue, xRightValue, xLeftPixel, xRightPixel);
+    }
+
+    /**
+     * Converts the center of given pixel position to the actual value.
+     * 
+     * @param pixelValue the pixel
+     * @return the value at the pixel
+     */
+    public double xPixelCenterToValue(int pixelValue) {
+        return xValueScale.invScaleValue(pixelValue + 0.5, xLeftValue, xRightValue, xLeftPixel, xRightPixel);
+    }
     
     private double yTopValue;
     private double yBottomValue;
@@ -208,6 +239,36 @@ public class GraphBuffer {
      */
     public int yValueToPixel(double value) {
         return (int) Math.ceil(yValueScale.scaleValue(value, yBottomValue, yTopValue, yBottomPixel, yTopPixel));
+    }
+    
+    /**
+     * Converts the top side of given pixel position to the actual value.
+     * 
+     * @param pixelValue the pixel
+     * @return the value at the pixel
+     */
+    public double yPixelTopToValue(int pixelValue) {
+        return yValueScale.invScaleValue(pixelValue - 1, yBottomValue, yTopValue, yBottomPixel, yTopPixel);
+    }
+    
+    /**
+     * Converts the center of given pixel position to the actual value.
+     * 
+     * @param pixelValue the pixel
+     * @return the value at the pixel
+     */
+    public double yPixelCenterToValue(int pixelValue) {
+        return yValueScale.invScaleValue(pixelValue - 0.5, yBottomValue, yTopValue, yBottomPixel, yTopPixel);
+    }
+    
+    /**
+     * Converts the bottom side of given pixel position to the actual value.
+     * 
+     * @param pixelValue the pixel
+     * @return the value at the pixel
+     */
+    public double yPixelBottomToValue(int pixelValue) {
+        return yValueScale.invScaleValue(pixelValue, yBottomValue, yTopValue, yBottomPixel, yTopPixel);
     }
 
     void drawBackground(Color color) {

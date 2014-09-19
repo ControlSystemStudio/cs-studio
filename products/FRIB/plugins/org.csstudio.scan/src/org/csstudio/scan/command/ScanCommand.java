@@ -163,7 +163,7 @@ abstract public class ScanCommand
                 setProperty(property, value);
                 return;
             }
-        throw new UnknownScanCommandPropertyException("Unkown property ID " + property_id + " for " + getClass().getName());
+        throw new UnknownScanCommandPropertyException("Unknown property ID " + property_id + " for " + getClass().getName());
     }
 
     /** Set a command's property
@@ -216,7 +216,7 @@ abstract public class ScanCommand
         catch (Throwable ex)
         {   // Expect Exception or RuntimeException, but FindBugs complained about using Exception,
             // so using Throwable
-            throw new UnknownScanCommandPropertyException("Unkown property ID " + property.getID() +
+            throw new UnknownScanCommandPropertyException("Unknown property ID " + property.getID() +
                     " with value type " + value.getClass().getName() + " for " + getClass().getName());
         }
     }
@@ -231,7 +231,7 @@ abstract public class ScanCommand
         for (ScanCommandProperty property : getProperties())
             if (property.getID().equals(property_id))
                 return getProperty(property);
-        throw new UnknownScanCommandPropertyException("Unkown property ID " + property_id + " for " + getClass().getName());
+        throw new UnknownScanCommandPropertyException("Unknown property ID " + property_id + " for " + getClass().getName());
     }
 
     /** Get a command's property
@@ -248,7 +248,7 @@ abstract public class ScanCommand
         }
         catch (Exception ex)
         {
-            throw new UnknownScanCommandPropertyException("Unkown property ID " + property.getID() + " for " + getClass().getName());
+            throw new UnknownScanCommandPropertyException("Unknown property ID " + property.getID() + " for " + getClass().getName());
         }
     }
 

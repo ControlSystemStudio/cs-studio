@@ -46,7 +46,7 @@ public class Activator extends AbstractUIPlugin {
 			public void propertyChange(PropertyChangeEvent event) {
 				log.info("ChannelFinder clinet property Changed = creating new client");
 				
-				// Fetch the instanciated extension and reload the configuration
+				// Fetch the instantiated extension and reload the configuration
 				ChannelFinderClient client = ChannelFinder.getClient();
 				if (client instanceof ChannelFinderClientFromPreferences) {
 					((ChannelFinderClientFromPreferences) client).reloadConfiguration();

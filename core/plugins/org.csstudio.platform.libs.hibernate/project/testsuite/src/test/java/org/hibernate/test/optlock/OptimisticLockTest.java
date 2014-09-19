@@ -12,7 +12,7 @@ import org.hibernate.junit.functional.FunctionalTestCase;
 import org.hibernate.junit.functional.FunctionalTestClassTestSuite;
 
 /**
- * Tests relating to the optimisitc-lock mapping option.
+ * Tests relating to the optimistic-lock mapping option.
  *
  * @author Gavin King
  * @author Steve Ebersole

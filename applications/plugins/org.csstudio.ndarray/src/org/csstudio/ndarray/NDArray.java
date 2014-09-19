@@ -120,7 +120,7 @@ public class NDArray
     protected NDArray(final NDArray base, final NDShape shape, final int offset, final NDStrides stride)
     {
         if (shape.getSize() > base.getShape().getSize())
-            throw new IllegalArgumentException("Attemping to access array with shape " +
+            throw new IllegalArgumentException("Attempting to access array with shape " +
                     base.getShape() + " as bigger shape " + shape);
         // Better way to check stride?
         if (stride.getSize() != shape.getDimensions())

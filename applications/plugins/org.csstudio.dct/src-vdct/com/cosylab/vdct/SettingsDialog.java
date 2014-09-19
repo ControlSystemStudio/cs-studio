@@ -199,7 +199,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 		jCheckBoxDefaultVisiblity.setSelected(s.isDefaultVisibility());
 		jCheckBoxLinksVisibility.setSelected(s.isHideLinks());
 
-		jCheckBoxWireCrossingAvoidiance.setSelected(s.isWireCrossingAvoidiance());
+		jCheckBoxWireCrossingAvoidance.setSelected(s.isWireCrossingAvoidance());
 
 		//legend
 		jTextFieldLogo.setText(s.getLegendLogo());
@@ -248,7 +248,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 		s.setHideLinks(jCheckBoxLinksVisibility.isSelected());
 		Group.getRoot().updateFields();
 		
-		s.setWireCrossingAvoidiance(jCheckBoxWireCrossingAvoidiance.isSelected());
+		s.setWireCrossingAvoidance(jCheckBoxWireCrossingAvoidance.isSelected());
 		
 		// legend
 		s.setLegendLogo(jTextFieldLogo.getText());
@@ -305,7 +305,7 @@ public class SettingsDialog extends javax.swing.JDialog {
         jCheckBoxDefaultVisiblity = new javax.swing.JCheckBox();
         jCheckBoxLinksVisibility = new javax.swing.JCheckBox();
         jPanel11 = new javax.swing.JPanel();
-        jCheckBoxWireCrossingAvoidiance = new javax.swing.JCheckBox();
+        jCheckBoxWireCrossingAvoidance = new javax.swing.JCheckBox();
         jPanelPrint = new javax.swing.JPanel();
         jPanelLegend = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -629,15 +629,15 @@ public class SettingsDialog extends javax.swing.JDialog {
         jPanel11.setLayout(new java.awt.GridBagLayout());
 
         jPanel11.setBorder(new javax.swing.border.TitledBorder("Wires"));
-        jCheckBoxWireCrossingAvoidiance.setSelected(true);
-        jCheckBoxWireCrossingAvoidiance.setText("Crossing avoidiance");
+        jCheckBoxWireCrossingAvoidance.setSelected(true);
+        jCheckBoxWireCrossingAvoidance.setText("Crossing avoidance");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
-        jPanel11.add(jCheckBoxWireCrossingAvoidiance, gridBagConstraints);
+        jPanel11.add(jCheckBoxWireCrossingAvoidance, gridBagConstraints);
 
         jPanelVisual.add(jPanel11);
 
@@ -942,7 +942,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox jCheckBoxGlobalMacros;
     private javax.swing.JCheckBox jCheckBoxLinksVisibility;
     private javax.swing.JCheckBox jCheckBoxSilhouetteMoving;
-    private javax.swing.JCheckBox jCheckBoxWireCrossingAvoidiance;
+    private javax.swing.JCheckBox jCheckBoxWireCrossingAvoidance;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

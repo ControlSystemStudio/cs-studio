@@ -28,7 +28,7 @@ public abstract class ResultCheckStyleTest extends DatabaseSpecificFunctionalTes
 		s.save( e );
 		try {
 			s.flush();
-			fail( "expection flush failure!" );
+			fail( "exception flush failure!" );
 		}
 		catch( JDBCException ex ) {
 			// these should specifically be JDBCExceptions...
@@ -46,7 +46,7 @@ public abstract class ResultCheckStyleTest extends DatabaseSpecificFunctionalTes
 		s.save( e );
 		try {
 			s.flush();
-			fail( "expection flush failure!" );
+			fail( "exception flush failure!" );
 		}
 		catch( HibernateException ex ) {
 			// these should specifically be HibernateExceptions...
@@ -65,7 +65,7 @@ public abstract class ResultCheckStyleTest extends DatabaseSpecificFunctionalTes
 		s.update( e );
 		try {
 			s.flush();
-			fail( "expection flush failure!" );
+			fail( "exception flush failure!" );
 		}
 		catch( JDBCException ex ) {
 			// these should specifically be JDBCExceptions...
@@ -84,7 +84,7 @@ public abstract class ResultCheckStyleTest extends DatabaseSpecificFunctionalTes
 		s.update( e );
 		try {
 			s.flush();
-			fail( "expection flush failure!" );
+			fail( "exception flush failure!" );
 		}
 		catch( HibernateException ex ) {
 			// these should specifically be HibernateExceptions...
@@ -103,7 +103,7 @@ public abstract class ResultCheckStyleTest extends DatabaseSpecificFunctionalTes
 		s.delete( e );
 		try {
 			s.flush();
-			fail( "expection flush failure!" );
+			fail( "exception flush failure!" );
 		}
 		catch( JDBCException ex ) {
 			// these should specifically be JDBCExceptions...
@@ -122,7 +122,7 @@ public abstract class ResultCheckStyleTest extends DatabaseSpecificFunctionalTes
 		s.delete( e );
 		try {
 			s.flush();
-			fail( "expection flush failure!" );
+			fail( "exception flush failure!" );
 		}
 		catch( HibernateException ex ) {
 			// these should specifically be HibernateExceptions...

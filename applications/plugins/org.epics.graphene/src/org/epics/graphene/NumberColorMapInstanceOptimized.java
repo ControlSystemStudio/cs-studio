@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
+
 /**
  * An optimized instance of a color map, where colors are pre-calculated.
  * <p>

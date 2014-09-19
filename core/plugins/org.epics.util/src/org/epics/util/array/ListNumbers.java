@@ -182,7 +182,7 @@ public class ListNumbers {
      * that may be considered to be linear.
      * 
      * @param listNumber
-     * @return 
+     * @return true if the elements of the list are equally spaced
      */
     public static boolean isLinear(ListNumber listNumber) {
         if (listNumber instanceof LinearListDouble || listNumber instanceof LinearListDoubleFromRange) {
@@ -273,5 +273,30 @@ public class ListNumbers {
             public int size() {
                 return size;
             }
+    }
+    
+    /**
+     * Returns a view of the given list that presents only the elements
+     * at the given indexes.
+     * 
+     * @param list a numeric list
+     * @param indexes the indexes with the values to expose
+     * @return a wrapper around list
+     */
+    public static ListNumber listView(ListNumber list, ListInt indexes) {
+        if (list instanceof ListDouble) {
+            return new ListView.Double((ListDouble) list, indexes);
+        } else if (list instanceof ListFloat) {
+            return new ListView.Float((ListFloat) list, indexes);
+        } else if (list instanceof ListLong) {
+            return new ListView.Long((ListLong) list, indexes);
+        } else if (list instanceof ListInt) {
+            return new ListView.Int((ListInt) list, indexes);
+        } else if (list instanceof ListShort) {
+            return new ListView.Short((ListShort) list, indexes);
+        } else if (list instanceof ListByte) {
+            return new ListView.Byte((ListByte) list, indexes);
+        }
+        throw new UnsupportedOperationException("Not yet supported");
     }
 }

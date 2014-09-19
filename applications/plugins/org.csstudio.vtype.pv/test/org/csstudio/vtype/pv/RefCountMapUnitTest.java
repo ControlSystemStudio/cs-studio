@@ -62,7 +62,7 @@ public class RefCountMapUnitTest
     }
 
     @Test
-    public void testReleaseUnkown()
+    public void testReleaseUnknown()
     {
         final RefCountMap<String, Integer> map = new RefCountMap<>();
         map.put("one", Integer.valueOf(1));

@@ -4,7 +4,7 @@
  */
 package org.epics.pvmanager.formula;
 
-import org.epics.pvmanager.PVReaderDirector;
+import org.epics.pvmanager.PVDirector;
 import org.epics.pvmanager.ReadRecipeBuilder;
 import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
 import org.epics.pvmanager.expression.DesiredRateExpressionList;
@@ -20,9 +20,9 @@ class FormulaFunctionReadExpression extends DesiredRateExpressionImpl<Object> {
     }
 
     @Override
-    public void fillReadRecipe(PVReaderDirector director, ReadRecipeBuilder builder) {
+    public void fillReadRecipe(PVDirector director, ReadRecipeBuilder builder) {
         super.fillReadRecipe(director, builder);
-        ((FormulaReadFunction) getFunction()).setDirectory(director);
+        ((FormulaReadFunction) getFunction()).setDirector(director);
     }
     
 }

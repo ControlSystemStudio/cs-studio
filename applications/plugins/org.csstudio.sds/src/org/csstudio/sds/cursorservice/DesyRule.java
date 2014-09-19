@@ -33,8 +33,8 @@ import org.csstudio.sds.model.ActionData;
 
 /**
  * The cursor selection rule used at DESY. This rule selects a cursor based on
- * the enablement of the widget and, if the widget has any ouput channels, based
- * on write access permissions for the output channels.
+ * the enablement of the widget and, if the widget has any output channels,
+ * based on write access permissions for the output channels.
  *
  * @author swende, Joerg Rathlev
  */
@@ -65,7 +65,7 @@ public final class DesyRule extends CursorSelectionRule {
 	 * Cursor state ID for widgets with an output channel whose access
 	 * permission are unknown.
 	 */
-	private static final String ACCESS_UNKNOWN = "accessUnknwon";
+	private static final String ACCESS_UNKNOWN = "accessUnknown";
 
 	/**
 	 * Cursor state ID for widgets which are disabled by the CSS security
@@ -74,7 +74,7 @@ public final class DesyRule extends CursorSelectionRule {
 	private static final String NO_PERMISSION = "noPermission";
 
 	/**
-	 * Cursor state ID for widgets which have a configureed output channel, but
+	 * Cursor state ID for widgets which have a configured output channel, but
 	 * access to it is denied by preference.
 	 */
 	private static final String WRITE_ACCESS_DENIED = "writeAccessDenied";

@@ -44,12 +44,12 @@ public class RCPSSStyledText extends SSStyledText {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setStyle(Color color, int fontStyle, int start, int lenght) {
+	public void setStyle(Color color, int fontStyle, int start, int length) {
 		StyleRange styleRange = new StyleRange();
 		styleRange.fontStyle = fontStyle;
 		styleRange.foreground = color;
 		styleRange.start = start;
-		styleRange.length = lenght;
+		styleRange.length = length;
 		text.setStyleRange(styleRange);
 	}
 

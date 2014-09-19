@@ -61,7 +61,7 @@ public class RelatedDisplayItemTest extends TestCase {
 			fail("This should Pass");
 		}
 		try {
-			rdItem = new RelatedDisplayItem(ADLTestObjects.setupRelDispUnkownElement());
+			rdItem = new RelatedDisplayItem(ADLTestObjects.setupRelDispUnknownElement());
 			fail("This should not Pass");
 		} catch (WrongADLFormatException e) {
 			// This case should fail

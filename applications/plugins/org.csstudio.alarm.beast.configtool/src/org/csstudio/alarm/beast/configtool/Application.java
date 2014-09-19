@@ -63,7 +63,7 @@ public class Application implements IApplication
         final BooleanOption do_list = new BooleanOption(parser, "-list",
                 "List available configurations");
         final StringOption root = new StringOption(parser, "-root",
-                "Alarm configuraton name (root element)", Preferences.getAlarmTreeRoot());
+                "Alarm configuration name (root element)", Preferences.getAlarmTreeRoot());
         final BooleanOption do_export = new BooleanOption(parser, "-export",
                 "Export XML config file");
         final BooleanOption do_modify = new BooleanOption(parser, "-modify",

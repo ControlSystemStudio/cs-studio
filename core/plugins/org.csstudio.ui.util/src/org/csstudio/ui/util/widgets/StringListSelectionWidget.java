@@ -176,13 +176,13 @@ public class StringListSelectionWidget extends Composite {
 	fd_selected.left = new FormAttachment(composite, 5);
 	selected.setLayoutData(fd_selected);
 
-	Label lblAvaliableOptions = new Label(this, SWT.NONE);
-	FormData fd_lblAvaliableOptions = new FormData();
-	fd_lblAvaliableOptions.top = new FormAttachment(0, 5);
-	fd_lblAvaliableOptions.left = new FormAttachment(unselected, 0,
+	Label lblAvailableOptions = new Label(this, SWT.NONE);
+	FormData fd_lblAvailableOptions = new FormData();
+	fd_lblAvailableOptions.top = new FormAttachment(0, 5);
+	fd_lblAvailableOptions.left = new FormAttachment(unselected, 0,
 		SWT.LEFT);
-	lblAvaliableOptions.setLayoutData(fd_lblAvaliableOptions);
-	lblAvaliableOptions.setText("Avaliable:");
+	lblAvailableOptions.setLayoutData(fd_lblAvailableOptions);
+	lblAvailableOptions.setText("Available:");
 
 	Label lblSelectedOptions = new Label(this, SWT.NONE);
 	FormData fd_lblSelectedOptions = new FormData();

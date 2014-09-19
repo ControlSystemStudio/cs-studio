@@ -107,7 +107,7 @@ public class ADLObject extends WidgetPart {
                 _height=Integer.parseInt(row[1]);
             }else if(row[0].trim().toLowerCase().equals("groupid")){ //$NON-NLS-1$
                 // TODO: ADLObject->groupid
-                LOG.info("Unhandel Parameter: {}",fileLine);
+                LOG.info("Unhandled Parameter: {}",fileLine);
             }else {
                 throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Parameter_Begin+fileLine+Messages.ADLObject_WrongADLFormatException_Parameter_End);
             }

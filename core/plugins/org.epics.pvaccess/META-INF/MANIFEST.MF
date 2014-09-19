@@ -6,8 +6,9 @@ Bundle-Version: 3.1.1.qualifier
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/pvAccessJava-3.0.5.jar
+ lib/pvAccessJava-3.1.1-SNAPSHOT.jar
 Export-Package: 
+ org.epics.ca,
  org.epics.pvaccess;uses:="org.epics.pvdata.pv,org.epics.pvdata.misc,org.epics.pvaccess.client.impl.remote",
  org.epics.pvaccess.client;uses:="org.epics.pvdata.monitor,org.epics.pvdata.pv,org.epics.pvdata.misc",
  org.epics.pvaccess.client.impl.remote;
@@ -37,6 +38,9 @@ Export-Package:
    org.epics.pvaccess.impl.remote.io,
    org.epics.pvdata.misc,
    org.epics.pvaccess.impl.remote.tcp",
+ org.epics.pvaccess.client.pvds,
+ org.epics.pvaccess.client.pvds.util,
+ org.epics.pvaccess.client.pvms,
  org.epics.pvaccess.client.rpc;uses:="org.epics.pvaccess.client,org.epics.pvdata.pv",
  org.epics.pvaccess.impl.remote;
   uses:="org.epics.pvaccess.util.logging,
@@ -85,6 +89,7 @@ Export-Package:
    org.epics.pvaccess.server.impl.remote,
    org.epics.pvdata.misc",
  org.epics.pvaccess.server.impl.remote.plugins;uses:="org.epics.pvdata.pv,org.epics.pvaccess.server.impl.remote,org.epics.pvaccess.server.plugins",
+ org.epics.pvaccess.server.impl.remote.rpc,
  org.epics.pvaccess.server.impl.remote.tcp;
   uses:="org.epics.pvaccess.impl.remote.request,
    org.epics.pvaccess.impl.remote,

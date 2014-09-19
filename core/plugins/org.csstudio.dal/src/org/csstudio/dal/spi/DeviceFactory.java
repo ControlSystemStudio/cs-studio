@@ -66,7 +66,7 @@ public interface DeviceFactory extends AbstractFactory
 	 * <code>RemoteInfo</code> in order to determine actual device creation
 	 * parameters from <code>DistributedDirectory</code> service.
 	 *
-	 * @param uniqueName any name, which can be trasformed to
+	 * @param uniqueName any name, which can be transformed to
 	 *        <code>RemoteInfo</code> and refers to modelling element.
 	 *
 	 * @return new or cached device
@@ -97,7 +97,7 @@ public interface DeviceFactory extends AbstractFactory
 	 * to <code>RemoteInfo</code> in order to determine actual device
 	 * creation parameters from <code>DistributedDirectory</code> service.
 	 *
-	 * @param uniqueName any name, which can be trasformed to
+	 * @param uniqueName any name, which can be transformed to
 	 *        <code>RemoteInfo</code> and refers to modelling element.
 	 * @param type implementation type of returned device, if <code>null</code> then factory tries to
 	 *        guess type which best match the remote device

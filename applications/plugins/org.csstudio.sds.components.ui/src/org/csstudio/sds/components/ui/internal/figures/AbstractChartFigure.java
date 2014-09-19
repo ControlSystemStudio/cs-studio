@@ -1320,7 +1320,7 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 		 */
 		private boolean _isTopLeft;
 		/**
-		 * The lenght of the lines.
+		 * The length of the lines.
 		 */
 		private int _wideness = 10;
 		/**

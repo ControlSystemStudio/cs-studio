@@ -9,6 +9,7 @@ import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +21,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
+import org.epics.graphene.AxisRange;
+import org.epics.graphene.AxisRanges;
 import org.epics.graphene.BubbleGraph2DRendererUpdate;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
@@ -45,12 +48,13 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 	
 	public BubbleGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
+		final List<String> properties = Arrays.asList("highlightSelectionValue");
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
-					getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
+				if (properties.contains(evt.getPropertyName()) && getGraph() != null) {
+					updateGraph();
 				}
 				
 			}
@@ -131,10 +135,14 @@ public class BubbleGraph2DWidget extends AbstractPointDatasetGraph2DWidget<Bubbl
 				formulaArg(getYColumnFormula()),
 				formulaArg(getSizeColumnFormula()),
 				formulaArg(getColorColumnFormula()));
-		graph.update(graph.newUpdate().highlightFocusValue(isHighlightSelectionValue()));
 		return graph;
 	}
-
+	
+	@Override
+	protected BubbleGraph2DRendererUpdate createUpdate() {
+		return getGraph().newUpdate().highlightFocusValue(isHighlightSelectionValue());
+	}
+	
 	private String sizeColumnFormula;
 	private String colorColumnFormula;
 	private boolean highlightSelectionValue = false;

@@ -4,8 +4,10 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Statistics;
 import java.util.List;
 import org.epics.util.array.ListNumber;
+import org.epics.util.stats.Range;
 
 /**
  *
@@ -26,6 +28,12 @@ public interface Point3DWithLabelDataset {
     public Statistics getYStatistics();
     
     public Statistics getZStatistics();
+    
+    public Range getXDisplayRange();
+    
+    public Range getYDisplayRange();
+    
+    public Range getZDisplayRange();
     
     public int getCount();
     

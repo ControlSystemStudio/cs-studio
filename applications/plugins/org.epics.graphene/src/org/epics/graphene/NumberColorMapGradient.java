@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;

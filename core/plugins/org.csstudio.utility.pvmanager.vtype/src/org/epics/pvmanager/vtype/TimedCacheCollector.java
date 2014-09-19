@@ -20,6 +20,7 @@ class TimedCacheCollector<T extends Time> implements Collector<T, List<T>> {
     private final Deque<T> buffer = new ArrayDeque<T>();
     private final ReadFunction<T> function;
     private final TimeDuration cachedPeriod;
+    private Runnable notification;
     
     public TimedCacheCollector(ReadFunction<T> function, TimeDuration cachedPeriod) {
         this.function = function;
@@ -27,12 +28,25 @@ class TimedCacheCollector<T extends Time> implements Collector<T, List<T>> {
     }
 
     @Override
+    public void setChangeNotification(Runnable notification) {
+        synchronized (buffer) {
+            this.notification = notification;
+        }
+    }
+
+    @Override
     public void writeValue(T newValue) {
+        Runnable task;
         // Buffer is locked and updated
         if (newValue != null) {
             synchronized(buffer) {
                 buffer.add(newValue);
                 prune();
+                task = notification;
+            }
+            // Run the task without holding the lock
+            if (task != null) {
+                task.run();
             }
         }
     }

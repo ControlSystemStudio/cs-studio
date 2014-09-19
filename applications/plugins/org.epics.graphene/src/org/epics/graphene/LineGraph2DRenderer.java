@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.stats.Range;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.epics.util.array.ListNumber;
 import org.epics.util.array.SortedListView;
+import org.epics.util.stats.Ranges;
 
 /**
  * Renderer for a line graph.
@@ -116,7 +118,7 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
     public void draw(Graphics2D g, Point2DDataset data) {
         this.g = g;
         
-        calculateRanges(data.getXStatistics(), data.getYStatistics());
+        calculateRanges(data.getXStatistics(), data.getXDisplayRange(), data.getYStatistics(), data.getYDisplayRange());
         calculateLabels();
         calculateGraphArea();        
         drawBackground();
@@ -154,14 +156,14 @@ public class LineGraph2DRenderer extends Graph2DRenderer<LineGraph2DRendererUpda
         
         //Calculate range, range will end up being from the lowest point to highest in all of the given data.
         for(Point2DDataset dataPiece: data){
-          super.calculateRanges(dataPiece.getXStatistics(), dataPiece.getYStatistics());  
+          super.calculateRanges(dataPiece.getXStatistics(), dataPiece.getXDisplayRange(), dataPiece.getYStatistics(), dataPiece.getYDisplayRange());
         }
         calculateLabels();
         calculateGraphArea();
         drawBackground();
         drawGraphArea();
         
-        Range datasetRangeCheck = RangeUtil.range(0,data.size());
+        Range datasetRangeCheck = Ranges.range(0,data.size());
         
         //Set color scheme
         if(valueColorSchemeInstance == null || datasetRange == null || datasetRange != datasetRangeCheck){

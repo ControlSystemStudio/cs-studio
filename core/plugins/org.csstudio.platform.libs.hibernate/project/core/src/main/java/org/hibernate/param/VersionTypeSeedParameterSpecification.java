@@ -33,7 +33,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Parameter bind specification used for optimisitc lock version seeding (from insert statements).
+ * Parameter bind specification used for optimistic lock version seeding (from insert statements).
  *
  * @author Steve Ebersole
  */

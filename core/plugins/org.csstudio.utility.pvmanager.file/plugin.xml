@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.csstudio.utility.pvmanager.file.format" name="FileFormat" schema="schema/org.csstudio.utility.pvmanager.file.format.exsd"/>
+   <extension
+         point="org.csstudio.utility.pvmanager.file.format">
+      <fileFormat
+            FileFormat="org.epics.pvmanager.file.ListFileFormat"
+            extension="list"
+            fileFormat="org.epics.pvmanager.file.ListFileFormat"
+            name="list File Format">
+      </fileFormat>
+      <fileFormat
+            FileFormat="org.epics.pvmanager.file.ImageFileFormat"
+            extension="bmp"
+            fileFormat="org.epics.pvmanager.file.ImageFileFormat"
+            name="bmp File Format">
+      </fileFormat>
+      <fileFormat
+            FileFormat="org.epics.pvmanager.file.ImageFileFormat"
+            extension="png"
+            fileFormat="org.epics.pvmanager.file.ImageFileFormat"
+            name="png File Format">
+      </fileFormat>
+      <fileFormat
+            FileFormat="org.epics.pvmanager.file.CSVFileFormat"
+            extension="csv"
+            fileFormat="org.epics.pvmanager.file.CSVFileFormat"
+            name="csv File Format">
+      </fileFormat>
+   </extension>
    <extension
          point="org.csstudio.utility.pvmanager.datasource">
       <datasource

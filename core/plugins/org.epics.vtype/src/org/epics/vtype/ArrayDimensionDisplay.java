@@ -32,4 +32,12 @@ public interface ArrayDimensionDisplay {
      */
     String getUnits();
     
+    /**
+     * Whether the values for this dimension are organized in the
+     * opposite order.
+     * 
+     * @return true if values are stored in the array in the reverse order
+     */
+    boolean isReversed();
+    
 }

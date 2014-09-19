@@ -134,7 +134,7 @@ public class PlotDataModelHeadlessTest
                 {
                     if (changed.getSize() <= 0)
                     {
-                        System.out.println("Reveived update with no data");
+                        System.out.println("Received update with no data");
                         return;
                     }
                     final int update = updates.incrementAndGet();

@@ -23,6 +23,7 @@ public class CacheCollector<T> implements Collector<T, List<T>> {
     private final List<T> readBuffer = new ArrayList<>();
     private final List<T> writeBuffer = new LinkedList<>();
     private int maxSize;
+    private Runnable notification;
 
     /**
      * A new cache collector with max size for the cache.
@@ -36,12 +37,25 @@ public class CacheCollector<T> implements Collector<T, List<T>> {
     }
 
     @Override
+    public void setChangeNotification(Runnable notification) {
+        synchronized (lock) {
+            this.notification = notification;
+        }
+    }
+
+    @Override
     public void writeValue(T newValue) {
+        Runnable task;
         synchronized(lock) {
             writeBuffer.add(newValue);
             if (writeBuffer.size() > maxSize) {
                 writeBuffer.remove(0);
             }
+            task = notification;
+        }
+        // Run the task without holding the lock
+        if (task != null) {
+            task.run();
         }
     }
 
