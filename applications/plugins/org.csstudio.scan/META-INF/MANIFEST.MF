@@ -13,6 +13,6 @@ Export-Package: org.csstudio.scan,
  org.csstudio.scan.util
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.java;bundle-version="3.1.0",
- org.csstudio.ndarray;bundle-version="1.0.0";visibility:=reexport
+ org.csstudio.ndarray;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.scan.Activator

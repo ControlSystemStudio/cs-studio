@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.junit-dep
 Bundle-Version: 4.10.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: junit-dep-4.10.jar
-Require-Bundle: org.hamcrest;bundle-version="1.3.0";visibility:=reexport
+Require-Bundle: org.hamcrest;bundle-version="1.3.0"
 Export-Package: org.junit,
  org.junit.matchers
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS

@@ -6,7 +6,7 @@ Bundle-Version: 2.5.0.qualifier
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: pvManager integration with the vType data structures
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager;visibility:=reexport,
- org.epics.vtype;visibility:=reexport
+ org.csstudio.utility.pvmanager,
+ org.epics.vtype
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.epics.pvmanager.vtype

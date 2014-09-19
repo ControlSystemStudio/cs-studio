@@ -8,4 +8,4 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.archive.config
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
- org.csstudio.archive.vtype;bundle-version="1.0.0";visibility:=reexport
+ org.csstudio.archive.vtype;bundle-version="1.0.0"

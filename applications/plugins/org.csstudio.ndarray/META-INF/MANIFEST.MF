@@ -7,6 +7,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.python.jython;bundle-version="2.5.2",
- org.epics.util;bundle-version="0.1.0";visibility:=reexport
+ org.epics.util;bundle-version="0.1.0"
 Bundle-ClassPath: .
 Export-Package: org.csstudio.ndarray
