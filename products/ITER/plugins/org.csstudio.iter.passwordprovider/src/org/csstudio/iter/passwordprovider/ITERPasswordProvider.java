@@ -19,10 +19,15 @@ import org.eclipse.equinox.security.storage.provider.PasswordProvider;
 
 public class ITERPasswordProvider extends PasswordProvider {
 
+	private static String CODAC_CONF_PATH_KEY = "CODAC_CONF";
+
 	@Override
 	public PBEKeySpec getPassword(final IPreferencesContainer container,
 			final int passwordType) {
-		File keyFile = new File("/etc/opt/codac/css/css.key");
+		String path = Preferences.getCSSKeyPath();
+		if (path == null)
+			path = System.getenv(CODAC_CONF_PATH_KEY) + "/css/css.key";
+		File keyFile = new File(path);
 		BufferedReader reader = null;
 		String key = "";
 		try {
@@ -35,4 +40,5 @@ public class ITERPasswordProvider extends PasswordProvider {
 		}
 		return new PBEKeySpec(key.toCharArray());
 	}
+
 }
