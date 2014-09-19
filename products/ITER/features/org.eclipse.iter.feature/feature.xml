@@ -95,21 +95,21 @@ of the distribution package.
          id="org.apache.batik.css"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.util"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.util.gui"
          download-size="0"
          install-size="0"
-         version="1.7.0.v200903091627"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
@@ -508,7 +508,7 @@ of the distribution package.
          id="org.w3c.dom.smil"
          download-size="0"
          install-size="0"
-         version="1.0.1.v200903091627"
+         version="1.0.0.v200806040011"
          unpack="false"/>
 
    <plugin
@@ -590,13 +590,6 @@ of the distribution package.
 
    <plugin
          id="org.eclipse.core.runtime.compatibility.auth"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.dom.events"
          download-size="0"
          install-size="0"
          version="0.0.0"

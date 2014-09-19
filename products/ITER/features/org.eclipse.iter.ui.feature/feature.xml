@@ -381,56 +381,56 @@ of the distribution package.
          id="org.apache.batik.bridge"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.dom"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.dom.svg"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.transcoder"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.ext.awt"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.parser"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.svggen"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.xml"
          download-size="0"
          install-size="0"
-         version="1.7.0.v201011041433"
+         version="1.6.0.v201011041432"
          unpack="false"/>
 
    <plugin
