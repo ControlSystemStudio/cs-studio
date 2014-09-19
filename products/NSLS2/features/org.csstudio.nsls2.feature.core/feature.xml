@@ -176,13 +176,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.servicelocator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.pvmanager.formula.channelfinder"
          download-size="0"
          install-size="0"
