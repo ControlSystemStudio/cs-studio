@@ -55,7 +55,6 @@ of the distribution package.
       <import plugin="org.epics.util"/>
       <import plugin="org.jdom"/>
       <import plugin="org.junit"/>
-      <import plugin="org.python.jython"/>
    </requires>
 
    <plugin
@@ -165,12 +164,6 @@ of the distribution package.
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.python.jython"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.apache.commons.lang"
