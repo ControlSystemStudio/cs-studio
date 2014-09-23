@@ -5,7 +5,7 @@
          point="org.csstudio.utility.pvmanager.file.format">
       <fileFormat
             extension="jvtype"
-            fileFormat="org.epics.pvmanager.file.ListFileFormat"
+            fileFormat="org.epics.pvmanager.file.json.JVTypeFileFormat"
             name="JSON-vType File Format">
       </fileFormat>
    </extension>
