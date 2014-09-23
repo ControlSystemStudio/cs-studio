@@ -37,6 +37,11 @@ sync_dir vtype $HGDIR/epics-vtype/src/main/java/org/epics ../core/plugins/org.ep
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "org.epics.vtype: update to current SNAPSHOT" ../core/plugins/org.epics.vtype
 echo Done epics-vtype
 
+echo Synching vtype-json
+sync_dir vtype $HGDIR/vtype-json/src/main/java/org/epics ../core/plugins/org.epics.vtype.json/src/org/epics/
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "org.epics.vtype.json: update to current SNAPSHOT" ../core/plugins/org.epics.vtype.json
+echo Done vtype-json
+
 echo Synching pvmanager-core
 sync_dir pvmanager $HGDIR/pvmanager-core/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager/src/org/epics/
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanager: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager
@@ -53,6 +58,11 @@ sync_dir pvmanager $HGDIR/pvmanager-file/src/main/java/org/epics ../core/plugins
 sync_dir . $HGDIR/pvmanager-file/src/main/javadoc/org/epics/pvmanager/file/doc-files ../core/plugins/org.csstudio.utility.pvmanager.file/html
 git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanager.file: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.file
 echo Done pvmanager-file
+
+echo Synching pvmanager-file-json
+sync_dir pvmanager $HGDIR/pvmanager-file-json/src/main/java/org/epics ../core/plugins/org.csstudio.utility.pvmanager.file.json/src/org/epics/
+git commit --author="Gabriele Carcassi <gabriele.carcassi@gmail.com>" -m "o.c.u.pvmanager.file.json: update to current SNAPSHOT" ../core/plugins/org.csstudio.utility.pvmanager.file.json
+echo Done pvmanager-file-json
 
 echo Synching pvmanager-extra
 cd $HGDIR/pvmanager-extra
