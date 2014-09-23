@@ -20,3 +20,4 @@ Export-Package: org.csstudio.alarm.beast,
  org.csstudio.alarm.beast.client,
  org.csstudio.alarm.beast.ui.clientmodel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: javax.jms

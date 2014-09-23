@@ -17,7 +17,13 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.scan.log;bundle-version="3.2.2",
  org.csstudio.vtype.pv;bundle-version="1.0.0",
  org.epics.pvaccess;bundle-version="3.0.1",
- org.epics.pvdata;bundle-version="3.0.1"
+ org.epics.pvdata;bundle-version="3.0.1",
+ org.epics.util;bundle-version="0.3.2",
+ org.epics.vtype;bundle-version="2.7.1",
+ org.csstudio.ndarray;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.scan.device,
  org.csstudio.scan.server
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ org.osgi.service.http

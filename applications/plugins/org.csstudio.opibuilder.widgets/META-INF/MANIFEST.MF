@@ -7,22 +7,24 @@ Bundle-Version: 3.4.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.Activator
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.ui;resolution:=optional,
- org.eclipse.core.runtime,
+ org.eclipse.ui.views;bundle-version="3.7.0";resolution:=optional,
+ org.eclipse.rap.ui;bundle-version="1.4.0";resolution:=optional,
+ org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
+ org.eclipse.rap.ui.views;bundle-version="2.3.0";resolution:=optional,
+ org.csstudio.ui.util;bundle-version="3.0.0";resolution:=optional,
  org.csstudio.opibuilder;bundle-version="3.2.16",
  org.csstudio.swt.xygraph;bundle-version="2.0.3",
- org.eclipse.core.resources;resolution:=optional,
- org.eclipse.ui.browser;resolution:=optional,
  org.csstudio.swt.widgets,
- org.eclipse.ui.views;resolution:=optional,
- org.csstudio.ui.util;bundle-version="3.0.0";resolution:=optional,
- org.jdom;bundle-version="1.1.0",
- org.eclipse.rap.ui;bundle-version="1.4.0";resolution:=optional,
- org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.epics.vtype;bundle-version="2.7.1",
+ org.csstudio.simplepv;bundle-version="1.0.0",
+ org.epics.util;bundle-version="0.3.2",
+ org.csstudio.csdata;bundle-version="3.2.0",
+ org.eclipse.gef;bundle-version="3.9.100",
+ org.jdom
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder.widgets.actions,
  org.csstudio.opibuilder.widgets.editparts,
  org.csstudio.opibuilder.widgets.feedback,
  org.csstudio.opibuilder.widgets.figures,
  org.csstudio.opibuilder.widgets.model
-Import-Package: org.eclipse.gef

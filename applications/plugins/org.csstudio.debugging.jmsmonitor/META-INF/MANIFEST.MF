@@ -15,5 +15,6 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.platform.libs.jms,
  org.csstudio.platform.utility.jms;bundle-version="1.1.2",
  org.csstudio.security.ui;bundle-version="1.0.0",
- org.csstudio.apputil
+ org.csstudio.apputil,
+ org.csstudio.security;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
