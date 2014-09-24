@@ -168,7 +168,8 @@
 									<instructions>
 										<Bundle-Name>org.python.jython</Bundle-Name>
 										<Bundle-SymbolicName>org.python.jython</Bundle-SymbolicName>
-										<Bundle-Version>2.5.3.v1</Bundle-Version>
+										<Bundle-Version>2.5.3.v2</Bundle-Version>
+										<Export-Package>!org.w3c.dom.*,!com.google.*,*</Export-Package>
 									</instructions>	
 								</artifact>
 								<artifact>
