@@ -2,8 +2,6 @@
  * Copyright (C) 2010-14 pvmanager developers. See COPYRIGHT.TXT
  * All rights reserved. Use is subject to license terms. See LICENSE.TXT
  */
-
-
 package org.epics.vtype.json;
 
 import java.util.ArrayList;
@@ -31,6 +29,7 @@ import org.epics.vtype.Display;
 import org.epics.vtype.Time;
 import org.epics.vtype.ValueFactory;
 import static org.epics.vtype.json.JsonArrays.*;
+
 /**
  *
  * @author carcassi
