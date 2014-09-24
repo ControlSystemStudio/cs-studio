@@ -23,6 +23,12 @@ public class FileFormatRegistry {
     private static final Map<String, FileFormat> fileFormatRegistry = new ConcurrentHashMap<>();
     private static final Logger log = Logger.getLogger(FileFormatRegistry.class.getName());
     
+    /**
+     * The default registry. This registry is the one used by the framework
+     * to look for currently supported file format.
+     * 
+     * @return the default registry; not null
+     */
     public static FileFormatRegistry getDefault() {
         return registry;
     }
@@ -61,7 +67,7 @@ public class FileFormatRegistry {
     /**
      * Find the registered FileFormat for the given file extension
      * 
-     * @param extension
+     * @param extension the file extension to register the file format for
      * @return the FileFormat registered for this extension
      */
     public FileFormat getFileFormatFor(String extension) {
@@ -71,7 +77,7 @@ public class FileFormatRegistry {
     /**
      * Returns true if there is a FileFormat registered for the given file extension
      * 
-     * @param extension
+     * @param extension the file extension to register the file format for
      * @return true if there is a FileFormat registered for this file extension
      */
     public boolean contains(String extension) {
