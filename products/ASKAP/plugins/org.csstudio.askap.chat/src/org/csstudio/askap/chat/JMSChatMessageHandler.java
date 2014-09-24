@@ -1,13 +1,16 @@
 package org.csstudio.askap.chat;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jms.Connection;
-import javax.jms.InvalidClientIDException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -16,11 +19,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.apache.activemq.command.ActiveMQMessage;
-import org.apache.activemq.command.ConsumerId;
-import org.apache.activemq.command.ConsumerInfo;
-import org.apache.activemq.command.DataStructure;
-import org.apache.activemq.command.RemoveInfo;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 
 public class JMSChatMessageHandler implements ChatMessageHandler {
@@ -29,19 +27,15 @@ public class JMSChatMessageHandler implements ChatMessageHandler {
 
     private Connection connection;
     private MessageProducer sender;
+    private MessageProducer heartBeatProducer;
     private Session senderSession;
 	private String userName;
-
-	// if the same person logs on from multiple CSS, only the first instance is
-	// a durable subscriber. Since the message only needs to be delivered to the
-	// user once.
-	private boolean isDurableSubscriber = true;	
-	private boolean isRetreiveHistoryMsg = true;
 	
 	private ChatListener chatMessageListener;
 	
-	private Map<ConsumerId, String> subscriptionNameMap = new Hashtable<ConsumerId, String>();
+	private Map<String, Date> subscriptionNameMap = new Hashtable<String, Date>();
 	
+	private HeartBeatThread heartBeatThread;
 
     private class ChatMessageListener implements MessageListener {
     	
@@ -61,64 +55,83 @@ public class JMSChatMessageHandler implements ChatMessageHandler {
 		} 	
     }
     
-    private class AdvisoryMessageListener implements MessageListener {
+    private class HeartBeatMessageListener implements MessageListener {
 
 		@Override
 		public void onMessage(Message msg) {
-			ActiveMQMessage aMsg =  (ActiveMQMessage)msg;
-			DataStructure data = aMsg.getDataStructure();
-			logger.log(Level.INFO, "Got advisory message- " + data.toString());
-			
-			if (data instanceof RemoveInfo) {
-				RemoveInfo removeData = (RemoveInfo) data;
-				String subscriber = subscriptionNameMap.get(removeData.getObjectId());
-//				logger.log(Level.INFO, "Remove consumer " + subscriber);
+			try {				
+				MapMessage heartBeat = (MapMessage) msg;
+	
+				String from = heartBeat.getString("FROM");
+				long timestamp = heartBeat.getJMSTimestamp();
 				
-				if (subscriber!=null) {
-					if (userName.equals(subscriber)) {
-						logger.log(Level.INFO, "Taking over chat durable subscriber");
-						
-						// since this is inside receive thread, need to stop and start connection
-						// in another thread
-						
-						Thread chatThread = new Thread(new Runnable() {						
-							@Override
-							public void run() {
-								try {
-									stopChat();
-									isRetreiveHistoryMsg = false;
-									startChat();
-								} catch (Exception e) {
-									logger.log(Level.WARNING, "Having problem taking over as durable subscriber.", e);
-								}
-							}
-						});
-						
-						chatThread.start();
-					} else {
-						chatMessageListener.removeParticiparnt(subscriber);
-					}
+				
+				if (subscriptionNameMap.get(from) == null) {
+					if (!userName.equals(from))
+						chatMessageListener.addParticipant(from);
 				}
 				
-			} else if (data instanceof ConsumerInfo) {
-				ConsumerInfo consumerData = (ConsumerInfo) data;
-				String subscriber = consumerData.getSubscriptionName();
-//				logger.log(Level.INFO, "Add consumer " + subscriber);
-				
-				if (subscriber!=null) {
-					subscriptionNameMap.put(consumerData.getConsumerId(), subscriber);					
-					// skip self
-					if (userName.equals(subscriber))
-						return;
-					
-					chatMessageListener.addParticipant(subscriber);
-				}
-			}
- 			
+				subscriptionNameMap.put(from, new Date(timestamp));				
+			} catch (Exception e) {
+				logger.log(Level.WARNING, "Could not process heartbeat msg: ", e);
+			}			
 		}
     	
     }
 
+    // start the thread to send heartbeat and check if all the users have sent heart beat
+    private class HeartBeatThread implements Runnable {
+    	
+    	boolean keepRunning = true;
+		
+		@Override
+		public void run() {
+			
+			while (keepRunning) {
+				
+				try {
+					// first send a heart beat message
+					MapMessage heartBeatMsg = senderSession.createMapMessage();
+					heartBeatMsg.setJMSTimestamp(System.currentTimeMillis());
+					heartBeatMsg.setString("FROM", userName);
+					
+					heartBeatProducer.send(heartBeatMsg);
+				} catch (Exception e) {
+					logger.log(Level.WARNING, "Could not send heartbeat message", e);
+				}
+				
+				// then check heart beats of the other users
+				long timeLimit = System.currentTimeMillis() - Preferences.getHeartBeatMinPeriod();
+				
+				Set<String> userList = subscriptionNameMap.keySet();
+				List<String> removeList = new ArrayList<String>();
+				
+				for (String user : userList) {
+					long timestamp = subscriptionNameMap.get(user).getTime();
+					if (timestamp < timeLimit) {
+						removeList.add(user);
+					}							
+				}
+				
+				for (String user : removeList) {
+					subscriptionNameMap.remove(user);
+					chatMessageListener.removeParticiparnt(user);
+				}
+				
+				try {
+					Thread.sleep(Preferences.getHeartBeatPeriod());
+				} catch (InterruptedException e) {
+					// no need to do anything
+				}
+			}
+		}
+		
+		public void stopThread() {
+			keepRunning = false;
+		}
+	};
+
+    
     
     public JMSChatMessageHandler(String userName, ChatListener listener) {
     	this.userName = userName;
@@ -132,63 +145,49 @@ public class JMSChatMessageHandler implements ChatMessageHandler {
 
 		subscriptionNameMap.clear();
 		
-//			String url = "failover:(tcp://mtos1.atnf.csiro.au:61616)";
 		String url = Preferences.getServerURL();
         connection = JMSConnectionFactory.connect(url);
-        
-        try {
-        	connection.setClientID(userName);
-        	isDurableSubscriber = true;
-        } catch (InvalidClientIDException e) {
-        	// this client is already connected from another CSS, so this user will be non-durable
-        	connection.setClientID(null);
-        	isDurableSubscriber = false;
-        }
         
         Session session = connection.createSession(false,
                                            Session.AUTO_ACKNOWLEDGE);
         
-        String topicName = Preferences.getTopicName();
-        
-        if (isRetreiveHistoryMsg)
-        	topicName = topicName + "?consumer.retroactive=true";
+        String topicName = Preferences.getMessageTopicName() + "?consumer.retroactive=true";
         
 		logger.log(Level.INFO, "Create consumer for " + topicName);
         Topic chatTopic = session.createTopic(topicName); 
         
-        MessageConsumer chatSubscriber = null;
-        
-        if (isDurableSubscriber) {
-        	chatSubscriber = session.createDurableSubscriber(chatTopic, userName);
-			logger.log(Level.INFO, "Create durable subscriber as " + userName);
-        } else {
-        	chatSubscriber = session.createConsumer(chatTopic);
-			logger.log(Level.INFO, "Create subscriber");
-        }
-        
+        MessageConsumer chatSubscriber = session.createConsumer(chatTopic);        
         chatSubscriber.setMessageListener(new ChatMessageListener());
                 
-        chatTopic = session.createTopic(Preferences.getTopicName()); 
+        chatTopic = session.createTopic(Preferences.getMessageTopicName()); 
 		senderSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		sender = senderSession.createProducer(chatTopic);
 
-        Session advisorySession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Topic advisoryTopic = advisorySession.createTopic("ActiveMQ.Advisory.Consumer.Topic." + Preferences.getTopicName());
-        MessageConsumer consumer = advisorySession.createConsumer(advisoryTopic);
-        consumer.setMessageListener(new AdvisoryMessageListener());
 		
-        isRetreiveHistoryMsg = true;
-		connection.start();
+        Session heartBeatSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Topic heartBeatTopic = heartBeatSession.createTopic(Preferences.getHeasrtBeatTopicName());
+        MessageConsumer consumer = heartBeatSession.createConsumer(heartBeatTopic);
+        consumer.setMessageListener(new HeartBeatMessageListener());
+        
+        heartBeatProducer = senderSession.createProducer(heartBeatTopic);
+        
+        
+        heartBeatThread = new HeartBeatThread();
+		new Thread(heartBeatThread).start();
+
+ 		connection.start();
 	}
 
 
 	@Override
 	public void stopChat() throws Exception {
 		logger.log(Level.INFO, "Stop chat session");
+		
+		heartBeatThread.stopThread();
+		
+		// close connection
 		connection.close();
 	}
-
-
 
 	@Override
 	public void sendChatMessage(String message) throws Exception {
@@ -203,6 +202,12 @@ public class JMSChatMessageHandler implements ChatMessageHandler {
 
 	@Override
 	public Collection<String> getParticipants() throws Exception {
-		return subscriptionNameMap.values();
+		return subscriptionNameMap.keySet();
+	}
+
+
+	@Override
+	public void changeUserName(String newName) {
+		this.userName = newName;
 	}
 }

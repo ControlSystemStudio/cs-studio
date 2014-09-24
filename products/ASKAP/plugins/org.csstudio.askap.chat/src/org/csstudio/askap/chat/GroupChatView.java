@@ -237,6 +237,16 @@ public class GroupChatView extends ViewPart implements ChatListener, SecurityLis
 			userName = SecuritySupport.getSubjectName(subject);
 		}
 		
+		parent.getDisplay().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (parent.isDisposed())
+					return;
+				messagesTable.clear();
+				groupMembers.refresh();
+			}
+		});
 		startChat();
 	}
 

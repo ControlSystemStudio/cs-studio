@@ -30,7 +30,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 		setMessage("Log Viewer Settings");
 		final Composite parent = getFieldEditorParent();
 		addField(new StringFieldEditor(Preferences.CHAT_JMS_SERVER_URL, "Chat JMS server URL:", parent));
-		addField(new StringFieldEditor(Preferences.CHAT_JMS_TOPIC, "Chat JMS Topic Name:", parent));
+		addField(new StringFieldEditor(Preferences.CHAT_JMS_MESSAGE_TOPIC, "Chat JMS Messagee Topic Name:", parent));
+		addField(new StringFieldEditor(Preferences.CHAT_JMS_HEART_BEAT_TOPIC, "Chat JMS Heartbeat Topic Name:", parent));
+		addField(new StringFieldEditor(Preferences.CHAT_HEART_BEAT_PERIOD, "Chat JMS Heartbeat check period:", parent));
+		addField(new StringFieldEditor(Preferences.CHAT_HEART_BEAT_MIN_PERIOD, "Chat JMS Heartbeat min period:", parent));
 		addField(new IntegerFieldEditor(Preferences.CHAT_MESSAGE_TIME_TO_LIVE, "Chat Message Time to Live (ms):", parent));
 	}
 
