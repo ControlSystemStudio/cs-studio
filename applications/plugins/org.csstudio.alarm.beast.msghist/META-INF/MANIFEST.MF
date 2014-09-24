@@ -21,7 +21,8 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.apputil.ui;bundle-version="1.1.8",
  org.csstudio.platform.utility.rdb,
  org.csstudio.security.ui;bundle-version="1.0.0",
- org.csstudio.utility.singlesource;bundle-version="1.0.0"
+ org.csstudio.utility.singlesource;bundle-version="1.0.0",
+ org.csstudio.security
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.alarm.beast.msghist.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

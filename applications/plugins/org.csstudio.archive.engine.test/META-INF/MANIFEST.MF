@@ -6,4 +6,6 @@ Bundle-ManifestVersion: 2
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.2",
- org.csstudio.utility.test
+ org.csstudio.utility.test,
+ org.epics.vtype,
+ org.csstudio.archive.vtype

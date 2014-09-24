@@ -17,3 +17,4 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.vtype.pv;bundle-version="1.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Import-Package: javax.jms

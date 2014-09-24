@@ -10,9 +10,9 @@ Require-Bundle: org.eclipse.core.resources,
  org.csstudio.ui.util,
  org.csstudio.opibuilder,
  org.csstudio.opibuilder.editor,
- org.csstudio.utility.batik;bundle-version="0.0.1"
+ org.csstudio.utility.batik;bundle-version="0.0.1",
+ org.eclipse.ui.views;bundle-version="3.7.0",
+ org.jdom
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.opibuilder.tools.filebrowser
-Import-Package: org.apache.batik,
- org.apache.batik.util

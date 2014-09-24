@@ -8,5 +8,8 @@ Require-Bundle: org.csstudio.archive.reader;bundle-version="3.2.0",
  org.csstudio.apputil;bundle-version="3.0.2",
  org.junit;bundle-version="4.8.1",
  org.epics.pvaccess;bundle-version="3.0.0",
- org.epics.pvdata;bundle-version="3.0.0"
+ org.epics.pvdata;bundle-version="3.0.0",
+ org.csstudio.archive.vtype,
+ org.epics.vtype,
+ org.epics.util
 Bundle-Vendor: Nikolay Malitsky <malitsky@bnl.gov>
