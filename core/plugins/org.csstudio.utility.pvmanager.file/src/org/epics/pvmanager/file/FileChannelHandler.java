@@ -11,6 +11,8 @@ import java.io.OutputStream;
 
 import org.epics.pvmanager.ChannelWriteCallback;
 import org.epics.pvmanager.MultiplexedChannelHandler;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /**
  * Implementation for channels of a {@link LocalDataSource}.
@@ -87,6 +89,15 @@ class FileChannelHandler extends MultiplexedChannelHandler<File, Object> {
         
         if (format == null || !format.isWriteSupported()) {
             callback.channelWritten(new RuntimeException("Format does not support write"));
+        }
+        
+        // If the new value is not a VType, try to convert it using
+        // the standard conversions
+        if (!(newValue instanceof VType)) {
+            Object converted = ValueFactory.toVType(newValue);
+            if (converted != null) {
+                newValue = converted;
+            }
         }
         
         try (OutputStream out = new FileOutputStream(file)) {
