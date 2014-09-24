@@ -7,7 +7,6 @@ package org.epics.vtype.json;
 
 import java.util.List;
 import javax.json.JsonObject;
-import org.epics.util.array.ListDouble;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VBoolean;
 import org.epics.vtype.VBooleanArray;
@@ -19,7 +18,6 @@ import org.epics.vtype.VString;
 import org.epics.vtype.VStringArray;
 import org.epics.vtype.VTable;
 import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
 import static org.epics.vtype.ValueFactory.*;
 import org.epics.vtype.table.VTableFactory;
 
