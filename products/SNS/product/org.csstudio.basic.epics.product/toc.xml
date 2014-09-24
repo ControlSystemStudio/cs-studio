@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
-
-<toc label="CSS for EPICS">
-	<topic label="CSS Overview"  href="intro/css.html">
-	</topic>
-</toc>
