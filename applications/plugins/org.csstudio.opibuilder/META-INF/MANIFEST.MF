@@ -8,9 +8,11 @@ Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;resolution:=optional,
+ org.eclipse.core.runtime,
  org.eclipse.gef;resolution:=optional,
  org.eclipse.ui.views;bundle-version="3.3.0";resolution:=optional,
  org.csstudio.apputil;bundle-version="1.0.11",
+ org.eclipse.help;bundle-version="3.6.0",
  org.csstudio.ui.util;bundle-version="3.0.0";resolution:=optional,
  org.csstudio.openfile;bundle-version="3.0.0",
  org.csstudio.java;bundle-version="3.0.0",
@@ -19,7 +21,6 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;bundle-version="1.4.1";resolution:=optional,
  org.eclipse.rap.ui.views;bundle-version="1.4.1";resolution:=optional,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
- org.python.jython;bundle-version="2.5.2",
  org.eclipse.rap.gef;resolution:=optional,
  org.eclipse.rap.draw2d;resolution:=optional,
  org.epics.util;bundle-version="0.1.0",
@@ -28,7 +29,7 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.csstudio.simplepv;bundle-version="1.0.0",
  org.csstudio.utility.singlesource;bundle-version="4.0.0",
  org.epics.vtype;bundle-version="2.7.1",
- org.eclipse.core.runtime
+ org.python.jython;bundle-version="2.5.2"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.actions,
