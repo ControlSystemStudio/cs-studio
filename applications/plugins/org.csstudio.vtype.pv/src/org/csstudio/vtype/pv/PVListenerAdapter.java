@@ -18,20 +18,20 @@ import org.epics.vtype.VType;
 public class PVListenerAdapter implements PVListener
 {
     @Override
-    public void permissionsChanged(PV pv, boolean readonly)
+    public void permissionsChanged(final PV pv, final boolean readonly)
     {
         // NOP
     }
 
     @Override
-    public void valueChanged(PV pv, VType value)
+    public void valueChanged(final PV pv, final VType value)
     {
-        Logger.getLogger(getClass().getName()).log(Level.WARNING, pv.getName() + " value changed to " + value);
+        Logger.getLogger(getClass().getName()).log(Level.INFO, pv.getName() + " value changed to " + value);
     }
 
     @Override
-    public void disconnected(PV pv)
+    public void disconnected(final PV pv)
     {
-        Logger.getLogger(getClass().getName()).log(Level.WARNING, pv.getName() + " disconnected");
+        Logger.getLogger(getClass().getName()).log(Level.INFO, pv.getName() + " disconnected");
     }
 }

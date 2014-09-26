@@ -9,7 +9,9 @@ Require-Bundle: org.junit;bundle-version="4.8.2";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.epics.vtype;bundle-version="2.1.0";visibility:=reexport,
  org.csstudio.platform.libs.epics;bundle-version="3.2.0",
- org.epics.util
+ org.epics.util,
+ org.epics.pvdata;bundle-version="3.0.3",
+ org.epics.pvaccess;bundle-version="3.0.5"
 Export-Package: org.csstudio.vtype.pv,
  org.csstudio.vtype.pv.jca,
  org.csstudio.vtype.pv.local
