@@ -6,6 +6,8 @@ import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
@@ -78,14 +80,17 @@ public class ServiceButton extends Composite {
 			}, new WriteFunction<Exception>() {
 
 			    @Override
-			    public void writeValue(final Exception newValue) {
+			    public void writeValue(final Exception error) {
 				SWTUtil.swtThread(ServiceButton.this)
 					.execute(new Runnable() {
 
 					    @Override
 					    public void run() {
-						errorBar.setException(newValue);
-						// TODO Display exception
+						errorBar.setException(error);
+						Logger.getLogger(ServiceButton.class.getName())
+                        	.log(Level.WARNING,
+                               "Service invocation error for '" + serviceName +
+                               "', '" + serviceMethod + "'", error);
 					    }
 					});
 
