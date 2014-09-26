@@ -193,11 +193,6 @@ It's a product of the collaboration between different laboratories and universit
     		activityId="org.csstudio.iter.css.product.disablextensions"
     		pattern=".*org.eclipse.wst.xml.ui.XMLExampleProjectCreationWizard"
     	/>
-    	<!-- Disable Help -> Cheat Sheet... from showView -->
-    	<activityPatternBinding
-    		activityId="org.csstudio.iter.css.product.disablextensions"
-    		pattern="org.csstudio.ui.menu.app/org.eclipse.ui.views.showView"
-    	/>
     	<!-- Hide JDT coming with Jython -->
     	<activityPatternBinding
     		activityId="org.csstudio.iter.css.product.disablextensions"
