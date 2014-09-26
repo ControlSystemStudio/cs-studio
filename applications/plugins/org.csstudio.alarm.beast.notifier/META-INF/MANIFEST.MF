@@ -11,7 +11,8 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.apputil,
  org.csstudio.email;bundle-version="1.2.0",
  org.csstudio.java,
- org.csstudio.logging
+ org.csstudio.logging,
+ org.csstudio.security
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.alarm.beast.notifier,
  org.csstudio.alarm.beast.notifier.actions,
