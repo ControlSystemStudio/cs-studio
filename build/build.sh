@@ -131,11 +131,11 @@ then
   if [[ ! -d eclipse/dropins/subclipse ]]
   then
     # Download and install subclipse in dropins directory
-    if [[ ! -f subclipse-site-1.10.5.zip ]]
+    if [[ ! -f subclipse-site-1.6.18.zip ]]
     then
-      wget -O subclipse-site-1.10.5.zip http://subclipse.tigris.org/files/documents/906/49382/site-1.10.5.zip
+      wget -O subclipse-site-1.6.18.zip http://subclipse.tigris.org/files/documents/906/49028/site-1.6.18.zip
     fi
-    unzip -o subclipse-site-1.10.5.zip -d eclipse/dropins/subclipse
+    unzip -o subclipse-site-1.6.18.zip -d eclipse/dropins/subclipse
   fi
   if [[ ! -d eclipse/dropins/pydev ]]
   then
