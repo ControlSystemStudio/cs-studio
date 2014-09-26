@@ -27,6 +27,7 @@ public class Messages extends NLS {
 	public static String Status_EXECUTED;
 	public static String Status_FORCED;
 	public static String Status_CANCELED;
+	public static String Status_CANCELED_NO_DELAY;
 	public static String Status_FAILED;
 
 	public static String Reason_Recovered;

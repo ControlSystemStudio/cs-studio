@@ -30,7 +30,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
     final protected static Pattern IMPPattern = Pattern.compile("^\\ *\\*?\\!.*");
 	
 	final int id;
-	final private String name, path, description;
+	final private String name, path, parentPath, description;
 	final private boolean enabled, latching;
 	
     final private SeverityLevel current_severity, severity;
@@ -46,7 +46,8 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
 	{
 		final int id = pv.getID();
 		final String name = pv.getName();
-		final String path = pv.getParent().getPathName();
+		final String path = pv.getPathName();
+		final String parentPath = pv.getParent().getPathName();
 		final String description = pv.getDescription();
 		final boolean enabled = pv.isEnabled();
 		final boolean latching = pv.isLatching();
@@ -58,7 +59,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
 		final String value = pv.getValue();
 		final Timestamp timestamp = pv.getTimestamp();
 		
-		return new PVSnapshot(id, name, path, description, enabled, latching,
+		return new PVSnapshot(id, name, path, parentPath, description, enabled, latching,
 				current_severity, current_message, severity, status, value,
 				timestamp);
 	}
@@ -66,6 +67,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
     public PVSnapshot(final int id,
 			final String name,
 			final String path,
+			final String parentPath,
             final String description,
             final boolean enabled,
             final boolean latching,
@@ -79,6 +81,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
 		this.id = id;
 		this.name = name;
 		this.path = path;
+		this.parentPath = parentPath;
 		this.description = description;
 		this.enabled = enabled;
 		this.latching = latching;
@@ -135,6 +138,11 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
 	/** @return PV path */
 	public String getPath() {
 		return path;
+	}
+
+	/** @return PV Parent path */
+	public String getParentPath() {
+		return parentPath;
 	}
 
 	/** @return PV description */

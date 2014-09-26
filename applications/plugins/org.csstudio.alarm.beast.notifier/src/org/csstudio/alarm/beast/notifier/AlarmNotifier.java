@@ -33,7 +33,9 @@ import org.csstudio.logging.JMSLogMessage;
  * 
  */
 public class AlarmNotifier {
-	
+
+	private boolean debug = false;
+
 	/** Name of alarm tree root element */
 	final String rootName = Preferences.getAlarmTreeRoot();
 
@@ -90,7 +92,7 @@ public class AlarmNotifier {
 	 * 
 	 * @param pvItem
 	 */
-	public void handleAlarmUpdate(AlarmTreePV pvItem) {
+	public synchronized void handleAlarmUpdate(AlarmTreePV pvItem) {
 		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
 		if (!pvItem.isEnabled()) {
 			// Ignore PV, it's disabled
@@ -143,6 +145,10 @@ public class AlarmNotifier {
 					actionTask.setStatus(EActionStatus.FORCED);
 					workQueue.schedule(actionTask, true);
 				}
+			} else if (actionTask.getStatus().equals(
+					EActionStatus.CANCELED_NO_DELAY)) {
+				workQueue.interrupt(actionTask);
+				if (debug) AlarmNotifierHistory.getInstance().addAction(actionTask);
 			}
 			// Pending action updated => no need to create a new one
 			return;
@@ -156,6 +162,12 @@ public class AlarmNotifier {
 			return;
 		final AlarmHandler newTask = new AlarmHandler(naID, info, newAction, aa.getDelay());
 		newTask.updateAlarms(snapshot);
+		if (newTask.getStatus().equals(EActionStatus.CANCELED)
+				|| newTask.getStatus().equals(EActionStatus.CANCELED_NO_DELAY)) {
+			// Do not schedule canceled actions
+			if (debug) AlarmNotifierHistory.getInstance().addAction(newTask);
+			return;
+		}
 		if (!maintenanceMode
 				|| (maintenanceMode && newTask.getPriority().equals(
 						EActionPriority.IMPORTANT))) {
@@ -208,6 +220,10 @@ public class AlarmNotifier {
 
 	public WorkQueue getWorkQueue() {
 		return workQueue;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 }
