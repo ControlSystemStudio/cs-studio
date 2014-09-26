@@ -108,13 +108,6 @@ public class SecurePreferences
     {
     	try
     	{
-			if (SecurityPreferences.isSecureReadOnly()) {
-				// Check if preference have been overwritten in workspace
-				final String localValue = getSecurePreferences(Type.Instance)
-						.node(plugin_id).get(key, null);
-				if (localValue != null)
-					return localValue;
-			}
 	    	// Check secure preferences
 	    	final String value = getSecurePreferences().node(plugin_id).get(key, null);
 	    	if (value != null)
@@ -141,15 +134,9 @@ public class SecurePreferences
      */
     public static void set(final String plugin_id, final String key, final String value) throws Exception
     {
-		if (SecurityPreferences.isSecureReadOnly()) {
-			final ISecurePreferences prefs = getSecurePreferences(Type.Instance);
-			prefs.node(plugin_id).put(key, value, true);
-			prefs.flush();
-		} else {
-			final ISecurePreferences prefs = getSecurePreferences();
-			prefs.node(plugin_id).put(key, value, true);
-			prefs.flush();
-		}
+    	final ISecurePreferences prefs = getSecurePreferences();
+        prefs.node(plugin_id).put(key, value, true);
+        prefs.flush();
     }
 
     /** Set preference setting in secure storage
