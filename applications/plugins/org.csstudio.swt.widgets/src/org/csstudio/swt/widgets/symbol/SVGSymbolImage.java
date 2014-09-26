@@ -18,6 +18,8 @@ import org.csstudio.utility.batik.SVGUtils;
 import org.csstudio.utility.batik.SimpleImageTranscoder;
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -185,8 +187,12 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
 		try {
+			IPath workSpacePath = ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
+			String uri = "file://"
+					+ (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$ 
+					+ imagePath.toString();
 			final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
-			svgDocument = factory.createDocument(imagePath.toOSString(), inputStream);
+			svgDocument = factory.createDocument(uri, inputStream);
 			transcoder = new SimpleImageTranscoder(svgDocument);
 			initRenderingHints();
 			BufferedImage awtImage = transcoder.getBufferedImage();
