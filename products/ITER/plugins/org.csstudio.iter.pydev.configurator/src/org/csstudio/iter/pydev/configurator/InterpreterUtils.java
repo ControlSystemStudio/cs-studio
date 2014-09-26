@@ -149,14 +149,6 @@ public class InterpreterUtils {
 			info.libs.add(pydevLibDir.getCanonicalPath());
 		}
 
-		// Add PyDev Jython Lib dir
-		File pydevjythondir = BundleUtils
-				.getBundleLocation("org.python.pydev.jython");
-		final File pydevjythonLibDir = new File(pydevjythondir, "Lib");
-		if (pydevjythonLibDir.exists()) {
-			info.libs.add(pydevjythonLibDir.getCanonicalPath());
-		}
-
 		// Add Scan Jython Lib dir
 		File scanPluginDir = BundleUtils.getBundleLocation("org.csstudio.scan");
 		final File scanJythonLibDir = new File(scanPluginDir, "jython");
