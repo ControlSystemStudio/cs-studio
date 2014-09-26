@@ -25,7 +25,7 @@ public class ITERPasswordProvider extends PasswordProvider {
 	public PBEKeySpec getPassword(final IPreferencesContainer container,
 			final int passwordType) {
 		String path = Preferences.getCSSKeyPath();
-		if (path == null)
+		if (path == null || path.isEmpty())
 			path = System.getenv(CODAC_CONF_PATH_KEY) + "/css/css.key";
 		File keyFile = new File(path);
 		BufferedReader reader = null;
