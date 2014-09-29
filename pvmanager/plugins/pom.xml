@@ -16,6 +16,7 @@
     <module>org.csstudio.utility.pvmanager.vtype</module>
     <module>org.csstudio.utility.pvmanager.exec</module>
     <module>org.csstudio.utility.pvmanager.file</module>
+    <module>org.csstudio.utility.pvmanager.file.json</module>
     <module>org.csstudio.utility.pvmanager.jdbc</module>
     <module>org.csstudio.utility.pvmanager.loc</module>
     <module>org.csstudio.utility.pvmanager.pva</module>

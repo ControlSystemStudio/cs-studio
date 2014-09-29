@@ -84,6 +84,11 @@
 									<transitive>false</transitive>
 								</artifact>
 								<artifact>
+									<id>org.epics:vtype-json:${pvmanager.version}</id>
+									<source>true</source>
+									<transitive>false</transitive>
+								</artifact>
+								<artifact>
 									<id>org.epics:epics-util:${epics.util.version}</id>
 									<source>true</source>
 									<transitive>false</transitive>
@@ -133,7 +138,6 @@
 								<artifact>
 									<id>org.antlr:antlr-runtime:3.4</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.hamcrest:hamcrest-library:1.2</id>
@@ -195,67 +199,58 @@
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.epics:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.vtype:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.exec:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.file:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
+								</artifact>
+								<artifact>
+									<id>org.csstudio:org.csstudio.utility.pvmanager.file.json:${csstudio.version}</id>
+									<source>true</source>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.jdbc:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.loc:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.pva:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.sim:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.sys:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.extra:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.graphene:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 							</artifacts>
 						</configuration>

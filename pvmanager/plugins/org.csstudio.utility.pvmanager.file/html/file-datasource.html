@@ -14,25 +14,34 @@
         </p>
         <p>
             This datasource allows to read files and treat the contents as a
-            source of data.
+            source of data. Whenever a file is updated, the file is reparsed
+            and a notification is sent with the new value.
         </p>
         <ul>
             <li>On Windows: <code>file:///C:/Users/carcassi/mydata.csv</code> will open the file located at <code>C:\Users\carcassi\mydata.csv</code></li>
             <li>On Unix: <code>file:///home/foo/mydata.csv</code> will open the file located at <code>/home/foo/mydata.csv</code></li>
         </ul>
-        <h2>Current limitations</h2>
+        
+        <h2>Supported formats</h2>
         <p>
-            It currently does not detect when the file content changes, and there is
-            no way to "refresh" except connecting and disconnecting.
+            This package provides support for:
         </p>
+        <ul>
+            <li>Comma separated values (.csv) - The first line represents the column names and the subsequent lines
+            represents rows of the table. Each element is separated by a comma.
+            Strings must be quoted with a double quote. They are parsed into VTable.</li>
+            <li>Images (.bmp, .jpg, .png) - They are parsed into VImage. </li>
+            <li>List (.list) - Each line represents an element of the list.
+                If all elements can be parsed to a number, it is treated as a list
+                of numbers. They are parsed into VStringArray or VNumberArray. </li>
+        </ul>
+        
+        <h2>Limitations</h2>
         <p>
-            The only supported format is CSV and the data is read as a table.
-            The first line represents the column names and the subsequent lines
-            represents rows of the table. Each element is separated by a space.
-            Strings must be quoted with a double quote.
+            Changes are detected through OS callback if available and supported
+            by the Java JDK. This gives very good performance (no extra load on
+            CPU or disk) but is not available for all systems. In particular,
+            is not available through network file systems (such as NFS).
         </p>
-            
-            
-
     </body>
 </html>
