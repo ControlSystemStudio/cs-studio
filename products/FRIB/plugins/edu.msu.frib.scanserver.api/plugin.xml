@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-<plugin>
-   <extension-point id="edu.msu.frib.scanserver.api.client" name="Scan Server Client" schema="schema/edu.msu.frib.scanserver.api.client.exsd"/>
-
-</plugin>

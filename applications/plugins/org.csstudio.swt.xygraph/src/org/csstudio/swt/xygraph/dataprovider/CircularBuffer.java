@@ -8,6 +8,7 @@
 package org.csstudio.swt.xygraph.dataprovider;
 
 import java.util.AbstractCollection;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -84,9 +85,12 @@ public class CircularBuffer<T> extends AbstractCollection<T> {
 	 * clear the buffer;
 	 */
 	public synchronized void clear(){
+		// Configure buffer to appear empty
 		head = 0;
 		tail = 0;
 		count = 0;
+		// Keep the actual buffer, but release its elements
+		Arrays.fill(buffer, 0, buffer.length, null);
 	}
 
 	/**Set the buffer size.

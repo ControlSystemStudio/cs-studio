@@ -26,6 +26,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<baselineMode>fail</baselineMode>
+		<skipTests>false</skipTests>
 
 		<!-- SonarQube configuration -->
 		<sonar.language>java</sonar.language>
@@ -108,9 +109,9 @@
 		<profile>
 			<id>csstudio-local-repo-enable</id>
 			<activation>
-				<property>
-					<name>csstudio.local.repo</name>
-				</property>
+				<file>
+					<exists>${csstudio.local.repo}/artifacts.jar</exists>
+				</file>
 			</activation>
 			<repositories>
 				<repository>
@@ -352,7 +353,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<configuration>
-					<skipTests>false</skipTests>
+					<skipTests>${skipTests}</skipTests>
 					<!--Some tests fail right now -->
 					<testFailureIgnore>true</testFailureIgnore>
 					<failIfNoTests>false</failIfNoTests>

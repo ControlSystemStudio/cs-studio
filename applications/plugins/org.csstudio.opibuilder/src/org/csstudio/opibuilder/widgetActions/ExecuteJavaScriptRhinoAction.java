@@ -47,7 +47,7 @@ public class ExecuteJavaScriptRhinoAction extends AbstractExecuteScriptAction {
 	public void run() {
 		if(scriptContext == null){
 			try {
-				scriptContext = ScriptStoreFactory.getJavaScriptContext();
+				scriptContext = ScriptStoreFactory.getRhinoContext();
 			} catch (Exception exception) {
 				ErrorHandlerUtil.handleError("Failed to get Script Context", exception);
 				return;
