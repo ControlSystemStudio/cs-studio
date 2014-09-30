@@ -24,7 +24,7 @@ import org.epics.util.time.TimeDuration;
  *
  * @author carcassi
  */
-public class FileWatcherFileSystemService implements FileWatcherService {
+class FileWatcherFileSystemService implements FileWatcherService {
     
     private static final Logger log = Logger.getLogger(FileWatcherService.class.getName());
     

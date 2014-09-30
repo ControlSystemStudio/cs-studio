@@ -7,6 +7,7 @@ package org.epics.pvmanager.file;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 
 /**
  * A way to read and write an object with a particular file format.
@@ -39,4 +40,11 @@ public interface FileFormat {
      * @return true if can serialize objects
      */
     public boolean isWriteSupported();
+    
+    /**
+     * The file extensions supported by this file format.
+     * 
+     * @return a non-empty set of file extensions
+     */
+    public Collection<String> getFileExtensions();
 }

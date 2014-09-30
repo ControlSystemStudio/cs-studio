@@ -43,7 +43,8 @@ public class Activator extends Plugin {
 			    final Object o = iConfigurationElement.createExecutableExtension("fileFormat");
 			    final String extension = iConfigurationElement.getAttribute("extension");
 			    if (extension!= null && !extension.isEmpty() && o instanceof FileFormat) {
-			        FileFormatRegistry.getDefault().registerFileFormat(extension, (FileFormat) o);			    
+			        FileFormatRegistry.getDefault().registerFileFormat(extension, (FileFormat) o);		
+				    log.log(Level.INFO, "file: adding support for " + extension);
 			    }
 			} catch (Exception e) {
 			    log.log(Level.INFO, "Failed to registed FileFormat : Cause " + e.getMessage());

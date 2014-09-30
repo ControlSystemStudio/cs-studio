@@ -625,6 +625,20 @@ public class ValueFactory {
     public static VIntArray newVIntArray(final ListInt values, Alarm alarm, Time time, Display display) {
         return new IVIntArray(values, new ArrayInt(values.size()), alarm, time, display);
     }
+    
+    /**
+     * Creates a new VShortArray.
+     * 
+     * @param values array values
+     * @param alarm the alarm
+     * @param time the time
+     * @param display the display
+     * @return the new value
+     */
+    public static VShortArray newVShortArray(final ListShort values, Alarm alarm, Time time, Display display) {
+        ListInt sizes = new ArrayInt(values.size());
+        return new IVShortArray(values, sizes, ValueUtil.defaultArrayDisplay(sizes), alarm, time, display);
+    }
 
     /**
      * Create a new VEnumArray.

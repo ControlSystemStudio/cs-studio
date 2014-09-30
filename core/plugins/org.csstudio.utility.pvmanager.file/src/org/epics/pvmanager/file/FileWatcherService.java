@@ -12,7 +12,7 @@ import java.io.File;
  *
  * @author carcassi
  */
-public interface FileWatcherService {
+interface FileWatcherService {
     /**
      * Registers a file for updates.
      * 

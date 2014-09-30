@@ -145,6 +145,10 @@ public class VTypeValueEquals {
     public static boolean valueEquals(VBoolean bool1, VBoolean bool2) {
         return bool1.getValue().equals(bool2.getValue());
     }
+    
+    public static boolean valueEquals(VBooleanArray bool1, VBooleanArray bool2) {
+        return bool1.getData().equals(bool2.getData());
+    }
 
     public static boolean valueEquals(VString str1, VString str2) {
         return str1.getValue().equals(str2.getValue());
@@ -152,6 +156,10 @@ public class VTypeValueEquals {
 
     public static boolean valueEquals(VEnum enum1, VEnum enum2) {
         return enum1.getValue().equals(enum2.getValue()) && enum1.getLabels().equals(enum2.getLabels());
+    }
+
+    public static boolean valueEquals(VEnumArray enum1, VEnumArray enum2) {
+        return enum1.getIndexes().equals(enum2.getIndexes()) && enum1.getLabels().equals(enum2.getLabels());
     }
 
     public static boolean valueEquals(VStringArray array1, VStringArray array2) {
@@ -182,6 +190,10 @@ public class VTypeValueEquals {
 	if ((obj1 instanceof VEnum) && (obj2 instanceof VEnum)) {
 	    return valueEquals((VEnum) obj1, (VEnum) obj2);
 	}
+
+	if ((obj1 instanceof VEnumArray) && (obj2 instanceof VEnumArray)) {
+	    return valueEquals((VEnumArray) obj1, (VEnumArray) obj2);
+	}
 	
 	if((obj1 instanceof VNumber) && (obj2 instanceof VNumber)) {
 	    return valueEquals((VNumber) obj1, (VNumber) obj2);
@@ -189,6 +201,10 @@ public class VTypeValueEquals {
 	
 	if((obj1 instanceof VBoolean) && (obj2 instanceof VBoolean)) {
 	    return valueEquals((VBoolean) obj1, (VBoolean) obj2);
+	}
+
+	if ((obj1 instanceof VBooleanArray) && (obj2 instanceof VBooleanArray)) {
+	    return valueEquals((VBooleanArray) obj1, (VBooleanArray) obj2);
 	}
 	
 	if((obj1 instanceof VTable) && (obj2 instanceof VTable)) {
