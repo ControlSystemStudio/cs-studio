@@ -85,10 +85,6 @@
 								</artifact>
 								<artifact>
 									<id>org.epics:vtype-json:${pvmanager.version}</id>
-									<instructions>
-										<Bundle-Name>org.epics.vtype.json</Bundle-Name>
-										<Bundle-SymbolicName>org.epics.vtype.json</Bundle-SymbolicName>
-									</instructions>
 									<source>true</source>
 									<transitive>false</transitive>
 								</artifact>
