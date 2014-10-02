@@ -16,8 +16,10 @@ import org.csstudio.opibuilder.properties.MacrosProperty;
 
 /**The value type definition for {@link MacrosProperty}, which describes the input
  * for a Macros Property.
+ * TODO Combine with MacroTable
+ * TODO Hide the actual map implementation
+ * TODO Why does the order of macros matter? For environment vars, the order doesn't matter. Can still replace macros recursively as in $($(M))
  * @author Xihui Chen
- *
  */
 public class MacrosInput {
 
@@ -128,6 +130,7 @@ public class MacrosInput {
 		return result.toString();
 	}
 	
+	// TODO Offer a parser just for "macro1 = hello", "macro2 = hello2" without the inital "true", "false
 	/**Parse MacrosInput from persistence string.
 	 * @param s
 	 * @return
