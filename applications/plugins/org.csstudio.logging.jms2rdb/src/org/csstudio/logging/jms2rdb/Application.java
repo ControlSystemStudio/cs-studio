@@ -11,11 +11,14 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
+import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.JMSLogMessage;
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.logging.jms2rdb.httpd.MainServlet;
 import org.csstudio.logging.jms2rdb.httpd.StopServlet;
 import org.csstudio.platform.httpd.HttpServiceHelper;
+import org.csstudio.security.PasswordInput;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -94,6 +97,8 @@ public class Application implements IApplication
         final ArgParser parser = new ArgParser();
         final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
         final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
+        final StringOption set_password = new StringOption(parser,
+				"-set_password", "plugin/key=value", "Set secure preferences", null);
         parser.addEclipseParameters();
 		try {
 			parser.parse(args);
@@ -107,6 +112,20 @@ public class Application implements IApplication
 		}
 		if (version_opt.get()) {
 			System.out.println(app_info);
+			return IApplication.EXIT_OK;
+		}
+		final String option = set_password.get();
+		if (option != null) { // Split "plugin/key=value"
+			final String pref, value;
+			final int sep = option.indexOf("=");
+			if (sep >= 0) {
+				pref = option.substring(0, sep);
+				value = option.substring(sep + 1);
+			} else {
+				pref = option;
+				value = PasswordInput.readPassword("Value for " + pref + ":");
+			}
+			SecurePreferences.set(pref, value);
 			return IApplication.EXIT_OK;
 		}
     	
@@ -124,7 +143,7 @@ public class Application implements IApplication
         rdb_user =
                 service.getString(Activator.ID, "rdb_user", rdb_user, null);
         rdb_password =
-                service.getString(Activator.ID, "rdb_password", rdb_password, null);
+                SecurePreferences.get(Activator.ID, "rdb_password", null);
         rdb_schema =
             service.getString(Activator.ID, "rdb_schema", rdb_schema, null);
 
