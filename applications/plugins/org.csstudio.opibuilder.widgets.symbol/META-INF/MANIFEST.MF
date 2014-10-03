@@ -7,13 +7,16 @@ Bundle-Version: 4.4.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.symbol.Activator
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
- org.eclipse.ui.views,
+ org.eclipse.ui.views;resolution:=optional,
+ org.eclipse.rap.ui.views;resolution:=optional,
  org.csstudio.opibuilder,
  org.csstudio.opibuilder.widgets,
  org.csstudio.swt.widgets,
  org.apache.commons.lang,
- org.csstudio.ui.util,
- org.eclipse.gef
+ org.csstudio.ui.util;resolution:=optional,
+ org.csstudio.rap.ui.util;resolution:=optional,
+ org.eclipse.gef;resolution:=optional,
+ org.eclipse.rap.gef;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BuddyPolicy: registered
