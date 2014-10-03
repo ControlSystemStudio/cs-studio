@@ -53,7 +53,7 @@ def ifNoneReturnDefault(object, default):
 if __name__ == '__main__':
     repoDir = 'C:\git\cs-studio-organization-master\cs-studio'
     
-    usage = 'usage: %prog -r C:\git\cs-studio -p C:\git\cs-studio\products\NSLS2 -b C:\git\cs-studio\build'
+    usage = 'usage: %prog -r C:\git\cs-studio'
     parser = OptionParser(usage=usage)
     parser.add_option('-r', '--repoDir', \
                       action='store', type='string', dest='repoDir', \
