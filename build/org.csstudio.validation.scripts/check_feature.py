@@ -1,7 +1,11 @@
 '''
 Created on Sep 17, 2014
 
-A simple script which scans all feature.xml files under the directory it was invoked from to ensure that none of them explicitly define JRE container  
+A simple script which scans all feature.xml files under the directory it was invoked from to ensure 
+1. that none of them explicitly define JRE container
+2. All features have a provider
+3. All features have a description or description URL
+4. No features have required plugins, tycho should take care of dependency resolution.  
 
 @author: Kunal Shroff
 '''
