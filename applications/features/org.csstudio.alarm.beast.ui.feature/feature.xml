@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.alarm.beast.ui.feature"
       label="Alarm Handler UI"
-      version="3.2.2.qualifier"
+      version="4.0.101.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -29,8 +29,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <url>
       <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates/"/>
    </url>
-
-   
 
    <plugin
          id="org.csstudio.utility.speech"
