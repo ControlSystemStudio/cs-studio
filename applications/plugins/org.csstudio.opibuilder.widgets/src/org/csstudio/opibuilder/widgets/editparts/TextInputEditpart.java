@@ -444,7 +444,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	private int parseHEX(final String text, final boolean coerce) {
 		String valueText = text.trim();
 		if (text.startsWith(TextUpdateEditPart.HEX_PREFIX)) {
-			valueText = text.substring(2);
+			valueText = text.substring(TextUpdateEditPart.HEX_PREFIX.length());
 		}
 		if (valueText.contains(" ")) { //$NON-NLS-1$
 			valueText = valueText.substring(0, valueText.indexOf(SPACE));
