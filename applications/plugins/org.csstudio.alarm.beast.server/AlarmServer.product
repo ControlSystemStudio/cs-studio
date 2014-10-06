@@ -82,6 +82,8 @@
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.epics.pvaccess"/>
+      <plugin id="org.epics.pvdata"/>
       <plugin id="org.epics.util"/>
       <plugin id="org.epics.vtype"/>
       <plugin id="org.hamcrest.core"/>
