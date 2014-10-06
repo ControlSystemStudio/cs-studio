@@ -625,6 +625,7 @@ public class Axis extends LinearScale{
 	public void setXyGraph(final XYGraph xyGraph) {
 		this.xyGraph = xyGraph;
 		xyGraph.getPlotArea().addMouseMotionListener(mousePositionLabel);
+		xyGraph.getPlotArea().addMouseListener(mousePositionLabel);
 	}
 	@Override
 	public String toString() {

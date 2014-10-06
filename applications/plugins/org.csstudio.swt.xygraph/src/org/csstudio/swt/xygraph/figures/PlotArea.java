@@ -74,9 +74,11 @@ public class PlotArea extends Figure {
 		addMouseMotionListener(zoomer);
 		hoverLabels = new HoverLabels(this);
 		addMouseMotionListener(hoverLabels);
+		addMouseListener(hoverLabels);
 		add(hoverLabels);
 		axisTrace = new AxisTrace(this);
 		addMouseMotionListener(axisTrace);
+		addMouseListener(axisTrace);
 		add(axisTrace);
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);
 		zoomType = ZoomType.NONE;
