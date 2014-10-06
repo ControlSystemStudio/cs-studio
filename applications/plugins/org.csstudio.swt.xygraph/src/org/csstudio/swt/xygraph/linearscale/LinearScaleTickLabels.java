@@ -381,19 +381,26 @@ public class LinearScaleTickLabels extends Figure {
 			}
 			tickLabelPositions.add(scale.getMargin());
 		}
-
-		for (double b = firstPosition; max >= min ? b < max : b > max; b = b + tickStep) {
-			if (scale.isDateEnabled()) {
-				Date date = new Date((long) b);
-				tickLabels.add(scale.format(date, b == firstPosition && !minDateAdded));
+		
+		double b = firstPosition;
+		double previousB = Double.NaN;
+		int i = 0;
+		while (max >= min ? b < max : b > max) {
+		    if(Double.isNaN(previousB) || b != previousB){
+		        if (scale.isDateEnabled()) {
+			    Date date = new Date((long) b);
+			    tickLabels.add(scale.format(date, b == firstPosition && !minDateAdded));
 			} else {
-				tickLabels.add(scale.format(b));
-			}
-			tickLabelValues.add(b);
-
-			int tickLabelPosition = (int) ((b - min) / (max - min) * length) + scale.getMargin();
-			// - LINE_WIDTH;
-			tickLabelPositions.add(tickLabelPosition);
+			    tickLabels.add(scale.format(b));
+			}		    
+		        tickLabelValues.add(b);
+		        int tickLabelPosition = (int) ((b - min) / (max - min) * length) + scale.getMargin();
+		        // - LINE_WIDTH;
+		        tickLabelPositions.add(tickLabelPosition);
+		    }
+		    previousB = b;
+		    i++;
+		    b = firstPosition + (i * tickStep);
 		}
 
 		// always add max

@@ -8,6 +8,7 @@ import java.util.Properties;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.script.ScriptService.ScriptType;
@@ -17,6 +18,7 @@ import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.swt.widgets.Display;
 import org.mozilla.javascript.Context;
 import org.osgi.framework.Bundle;
@@ -25,7 +27,15 @@ import org.python.util.PythonInterpreter;
 
 /**The factory to return the corresponding script store according to the script type.
  * @author Xihui Chen
- *
+ * 
+ * TODO Cleanup
+ * This has getJavaScriptEngine() and getRhinoContext().
+ * Callers invoke one or the other depending on defaultJsEngine = ..RHINO or JDK.
+ * 
+ * A true factory should just have one "getJava..()" call which internally decides
+ * to return the Rhino from lib/, or the one bundled in Java 7, or Nashorn from Java 8.
+ * After fixing the Java 7 Rhino issues (https://github.com/ControlSystemStudio/cs-studio/issues/723),
+ * remove lib/rhino/js.jar
  */
 public class ScriptStoreFactory {
 	
@@ -34,13 +44,30 @@ public class ScriptStoreFactory {
 		JDK;
 	}
 	
-	private static volatile JavaScriptEngine defaultJsEngine = JavaScriptEngine.JDK;
+	final private static JavaScriptEngine defaultJsEngine;
 	
 	private static boolean pythonInterpreterInitialized = false;
 	
 	private static Map<Display, Context> displayContextMap = 
 			new HashMap<Display, Context>();
 	private static Map<Display, ScriptEngine> displayScriptEngineMap = new HashMap<>();
+	
+	
+	static
+	{
+		String option = JavaScriptEngine.RHINO.name(); // Default
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	if (service != null)
+    		option = service.getString(OPIBuilderPlugin.PLUGIN_ID, "java_script_engine", option, null);
+    	try
+    	{
+    		defaultJsEngine = JavaScriptEngine.valueOf(option);
+    	}
+    	catch (Throwable ex)
+    	{	// Create more obvious exception
+    		throw new RuntimeException("Invalid preference setting " + OPIBuilderPlugin.PLUGIN_ID + "/java_script_engine=" + option);
+    	}
+	}
 	
 	@SuppressWarnings("nls")
     public static void initPythonInterpreter() throws Exception{
@@ -166,10 +193,12 @@ public class ScriptStoreFactory {
 	}
 	
 	/**This method must be executed in UI Thread!
-	 * @return the script context.
-	 * @throws Exception 
+	 * @return the Rhino script context.
+	 * @throws Exception on error, including invocation when not using <code>JavaScriptEngine.RHINO</code>
 	 */
-	public static Context getJavaScriptContext() throws Exception {
+	public static Context getRhinoContext() throws Exception {
+		if (defaultJsEngine != JavaScriptEngine.RHINO)
+			throw new RuntimeException("Fetching Rhino context while not using Rhino?");
 		Display display = Display.getCurrent();
 		boolean jsEngineInitialized = displayContextMap.containsKey(display);
 		if(!jsEngineInitialized)
@@ -188,10 +217,12 @@ public class ScriptStoreFactory {
 	}
 	
 	/**This method must be executed in UI Thread!
-	 * @return the script engine.
-	 * @throws Exception 
+	 * @return the JDK's Javascript script engine.
+	 * @throws Exception on error, including invocation when not using <code>JavaScriptEngine.JDK</code>
 	 */
 	public static ScriptEngine getJavaScriptEngine() throws Exception {
+		if (defaultJsEngine != JavaScriptEngine.JDK)
+			throw new RuntimeException("Fetching JDK script engine context while not using JDK");
 		Display display = Display.getCurrent();
 		boolean jsEngineInitialized = displayScriptEngineMap.containsKey(display);
 		if(!jsEngineInitialized)

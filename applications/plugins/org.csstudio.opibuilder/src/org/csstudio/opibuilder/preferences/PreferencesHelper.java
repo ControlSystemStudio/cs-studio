@@ -60,6 +60,8 @@ public class PreferencesHelper {
 	public static final String SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG = "show_opi_runtime_perspective_dialog";//$NON-NLS-1$
 	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
+	public static final String PULSING_ALARM_MINOR_PERIOD = "pulsing_alarm_minor_period";//$NON-NLS-1$
+	public static final String PULSING_ALARM_MAJOR_PERIOD = "pulsing_alarm_major_period";//$NON-NLS-1$		
 	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
 	public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
     public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style";
@@ -167,12 +169,22 @@ public class PreferencesHelper {
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DISABLE_ADVANCED_GRAPHICS, false, null);
     }
-
+    
     public static Integer getGUIRefreshCycle(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, OPI_GUI_REFRESH_CYCLE, 100, null);
     }
+    
+    public static Integer getPulsingAlarmMinorPeriod(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, PULSING_ALARM_MINOR_PERIOD, 3000, null);
+    }    
 
+    public static Integer getPulsingAlarmMajorPeriod(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, PULSING_ALARM_MAJOR_PERIOD, 1500, null);
+    }    
+    
     /**Get the macros map from preference store.
      * @return the macros map. null if failed to get macros from preference store.
      */
