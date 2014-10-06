@@ -38,6 +38,8 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
 				"ForeColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
 		model.addProperty(new BooleanProperty(PROP_BACKCOLOR_ALARMSENSITIVE, 
 				"BackColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
+		model.addProperty(new BooleanProperty(PROP_ALARM_PULSING, 
+				"Alarm Pulsing", WidgetPropertyCategory.Display, false));		
 		
 		model.setTooltip("$(" + PROP_PVNAME + ")\n" + "$(" + PROP_PVVALUE + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
@@ -59,6 +61,12 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
 			return false;
 		return (Boolean)model.getCastedPropertyValue(PROP_BACKCOLOR_ALARMSENSITIVE);
 	}
+	
+	public boolean isAlarmPulsing(){
+		if(model.getProperty(PROP_ALARM_PULSING) == null)
+			return false;
+		return (Boolean)model.getCastedPropertyValue(PROP_ALARM_PULSING);
+	}	
 	
 	public String getPVName(){
 		return (String)model.getCastedPropertyValue(PROP_PVNAME);

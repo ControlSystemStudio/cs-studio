@@ -182,6 +182,8 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				isDraw2DButton);
 		getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_BACKCOLOR_ALARMSENSITIVE, 
 				isDraw2DButton);
+		getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_ALARM_PULSING, 
+				isDraw2DButton);		
 	}
 
 	@Override

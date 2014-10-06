@@ -95,7 +95,8 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 			AbstractWidgetModel.PROP_TOOLTIP,
 			IPVWidgetModel.PROP_BACKCOLOR_ALARMSENSITIVE,
 			IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE,
-			IPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE);
+			IPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE,
+			IPVWidgetModel.PROP_ALARM_PULSING);
 
 	private List<String> unSyncablePropIDsFromChild;
 	private PropertyChangeListener syncPropertiesListener = new PropertyChangeListener() {
