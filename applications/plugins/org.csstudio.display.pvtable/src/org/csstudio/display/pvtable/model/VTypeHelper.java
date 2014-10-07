@@ -10,11 +10,15 @@ package org.csstudio.display.pvtable.model;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Time;
+import org.epics.vtype.VDoubleArray;
 import org.epics.vtype.VEnum;
+import org.epics.vtype.VFloatArray;
 import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueUtil;
+import org.epics.util.array.IteratorNumber;
 import org.epics.util.time.Timestamp;
 
 /** Helper for handling {@link VType} data
@@ -72,7 +76,7 @@ public class VTypeHelper
                 + "/" + alarm.getAlarmName();
     }
     
-    /** Format value as string
+    /** Format value as string for display
      *  @param value {@link VType}
      *  @return String representation
      */
@@ -94,6 +98,26 @@ public class VTypeHelper
         }
         if (value instanceof VString)
             return ((VString)value).getValue();
+        if (value instanceof VDoubleArray  ||  value instanceof VFloatArray)
+        {   // Show double arrays as floating point
+            final StringBuilder buf = new StringBuilder();
+            final IteratorNumber numbers =  ((VNumberArray)value).getData().iterator();
+            if (numbers.hasNext())
+                buf.append(numbers.nextDouble());
+            while (numbers.hasNext())
+                buf.append(", ").append(numbers.nextDouble());
+            return buf.toString();
+        }
+        if (value instanceof VNumberArray)
+        {   // Show other number arrays as integer
+            final StringBuilder buf = new StringBuilder();
+            final IteratorNumber numbers =  ((VNumberArray)value).getData().iterator();
+            if (numbers.hasNext())
+                buf.append(numbers.nextLong());
+            while (numbers.hasNext())
+                buf.append(", ").append(numbers.nextLong());
+            return buf.toString();
+        }
         if (value == null)
             return "null";
         return value.toString();
