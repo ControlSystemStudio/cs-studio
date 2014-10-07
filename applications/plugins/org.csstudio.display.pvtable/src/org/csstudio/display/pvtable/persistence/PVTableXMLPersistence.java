@@ -19,8 +19,7 @@ import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
-import org.csstudio.display.pvtable.model.VTypeHelper;
-import org.epics.vtype.VType;
+import org.csstudio.display.pvtable.model.SavedValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -101,7 +100,7 @@ public class PVTableXMLPersistence extends PVTablePersistence
                 {
                     final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
                     final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
-                    VType saved = createValue(DOMHelper.getSubelementString(pv, SAVED));
+                    SavedValue saved = createValue(DOMHelper.getSubelementString(pv, SAVED));
                     PVTableItem item = model.addItem(pv_name, tolerance, saved);
                     item.setSelected(selected);
                     
@@ -140,9 +139,10 @@ public class PVTableXMLPersistence extends PVTablePersistence
             XMLWriter.XML(out, 3, SELECTED, true);
             XMLWriter.XML(out, 3, NAME, item.getName());
             XMLWriter.XML(out, 3, TOLERANCE, item.getTolerance());
-            final VType saved = item.getSavedValue();
+            final SavedValue saved = item.getSavedValue();
+            // TODO Handle arrays
             if (saved != null)
-                XMLWriter.XML(out, 3, SAVED, VTypeHelper.toString(saved));
+                XMLWriter.XML(out, 3, SAVED, saved.toString());
             XMLWriter.end(out, 2, PV);
             out.println();
         }

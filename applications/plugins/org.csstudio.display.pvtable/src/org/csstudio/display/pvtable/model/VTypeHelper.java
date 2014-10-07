@@ -113,21 +113,6 @@ public class VTypeHelper
         return Double.NaN;
     }
 
-    
-    /** Compare the values of to {@link VType}s
-     *  @param value {@link VType}
-     *  @param other {@link VType}
-     *  @param tolerance Numeric tolerance. Values must be within that tolerance. 0 for 'exactly equal'.
-     *  @return <code>true</code> if their value (not timestamp, not alarm state) are equal
-     */
-    final public static boolean equalValue(final VType value, final VType other, final double tolerance)
-    {
-        if (value instanceof VString)
-            return toString(value).equals(toString(other));
-        final double v1 = toDouble(value);
-        final double v2 = toDouble(other);
-        return Math.abs(v2 - v1) <= tolerance;
-    }
 
     /** Extract basic value
      *  @param value {@link VType}

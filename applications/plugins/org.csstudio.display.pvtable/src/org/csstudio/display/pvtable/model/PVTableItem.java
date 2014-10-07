@@ -40,7 +40,7 @@ public class PVTableItem implements PVReaderListener<VType>
     
     private volatile VType value = null;
 
-    private volatile VType saved = null;
+    private volatile SavedValue saved = null;
     
     private volatile boolean has_changed;
     
@@ -55,7 +55,7 @@ public class PVTableItem implements PVReaderListener<VType>
      *  @param saved
      *  @param listener
      */
-    public PVTableItem(final String name, final double tolerance, final VType saved, final PVTableItemListener listener)
+    public PVTableItem(final String name, final double tolerance, final SavedValue saved, final PVTableItemListener listener)
     {
         this.listener = listener;
         this.tolerance = tolerance;
@@ -149,7 +149,7 @@ public class PVTableItem implements PVReaderListener<VType>
     /** Save current value as saved value */
     public void save()
     {
-        saved = value;
+        saved = new SavedValue(value);
         determineIfChanged();
     }
 
@@ -158,14 +158,11 @@ public class PVTableItem implements PVReaderListener<VType>
     {
         if (! isSelected())
             return;
-        final Object basic_value = VTypeHelper.getValue(saved);
-        if (basic_value == null)
-            return;
-        pv.write(basic_value);
+        saved.restore(pv);
     }
 
     /** @return Returns the saved_value. */
-    public VType getSavedValue()
+    public SavedValue getSavedValue()
     {
         return saved;
     }
@@ -193,13 +190,13 @@ public class PVTableItem implements PVReaderListener<VType>
     /** Update <code>has_changed</code> based on current and saved value */
     private void determineIfChanged()
     {
-        final VType saved_value = saved;
+        final SavedValue saved_value = saved;
         if (saved_value == null)
         {
             has_changed = false;
             return;
         }
-        has_changed = ! VTypeHelper.equalValue(value, saved_value, tolerance);
+        has_changed = ! saved_value.isEqualTo(value, tolerance);
     }
     
     /** Must be called to release resources when item no longer in use */
@@ -221,7 +218,7 @@ public class PVTableItem implements PVReaderListener<VType>
                 buf.append(" ( != ");
             else
                 buf.append(" ( == ");
-            buf.append(VTypeHelper.toString(saved)).append(" +- ").append(tolerance).append(")");
+            buf.append(saved.toString()).append(" +- ").append(tolerance).append(")");
         }
         return buf.toString();
     }

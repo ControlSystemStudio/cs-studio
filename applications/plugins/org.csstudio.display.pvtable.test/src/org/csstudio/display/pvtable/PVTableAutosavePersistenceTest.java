@@ -11,7 +11,8 @@ import static org.csstudio.display.pvtable.FileTestUtil.matchLinesIn;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-
+import static org.junit.Assert.fail;
+import static org.csstudio.utility.test.HamcrestMatchers.containsString;
 import java.io.FileInputStream;
 
 import org.csstudio.display.pvtable.model.PVTableItem;
@@ -19,6 +20,7 @@ import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.display.pvtable.persistence.PVTableAutosavePersistence;
 import org.csstudio.display.pvtable.persistence.PVTablePersistence;
+import org.epics.vtype.VType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,11 +44,11 @@ public class PVTableAutosavePersistenceTest
         for (int i=0; i<model.getItemCount(); ++i)
         {
             PVTableItem item = model.getItem(i);
-            System.out.println(item.getName() + " = " + VTypeHelper.getValue(item.getSavedValue()));
+            System.out.println(item.getName() + " = " + item.getSavedValue());
         }
         assertThat(model.getItemCount(), equalTo(255));
         assertThat(model.getItem(0).getName(), equalTo("DTL_LLRF:IOC1:vxiRead0.A"));
-        assertThat(VTypeHelper.toDouble(model.getItem(0).getSavedValue()), equalTo(212.0));
+        assertThat(model.getItem(0).getSavedValue().toString(), equalTo("212"));
         model.dispose();
     }
 
@@ -67,4 +69,27 @@ public class PVTableAutosavePersistenceTest
         copy[0] = original[0];
         assertThat(original, matchLinesIn(copy));
     }
+
+//    @Test
+//    public void testArrayValueParser() throws Exception
+//    {
+//        final PVTableAutosavePersistence persistence = new PVTableAutosavePersistence();
+//        VType value = persistence.parseValue("3.14");
+//        assertThat(VTypeHelper.toDouble(value), equalTo(3.14));
+//        value = persistence.parseValue("@array@ { \"72\" \"101\" \"10\\8\" \"108\" \"111\" \"0\" }");
+//
+//        value = persistence.parseValue("@array@ { \"Fred\" \"Jane\" \"2 \\\"Guys\\\"\" \"108\" \"111\" \"0\" }");
+//
+//        value = persistence.parseValue("@array@ {  }");
+//
+//        try
+//        {
+//            persistence.parseValue("@array@ { \" }");
+//            fail("Did not catch missing item end marker");
+//        }
+//        catch (Exception ex)
+//        {
+//            assertThat(ex.getMessage(), containsString("Missing end"));
+//        }
+//    }
 }

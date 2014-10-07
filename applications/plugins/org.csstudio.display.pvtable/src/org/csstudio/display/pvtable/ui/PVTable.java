@@ -18,6 +18,7 @@ import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
+import org.csstudio.display.pvtable.model.SavedValue;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
@@ -263,11 +264,11 @@ public class PVTable implements PVTableModelListener
                 public void update(final ViewerCell cell)
                 {
                     final PVTableItem item = (PVTableItem) cell.getElement();
-                    final VType value = item.getSavedValue();
+                    final SavedValue value = item.getSavedValue();
                     if (value == null)
                         cell.setText(""); //$NON-NLS-1$
                     else
-                        cell.setText(VTypeHelper.toString(value));
+                        cell.setText(value.toString());
                     updateCommonCellSettings(cell, item);
                 }
             });

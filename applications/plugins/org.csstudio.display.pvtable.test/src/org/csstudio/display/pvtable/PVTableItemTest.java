@@ -88,7 +88,7 @@ public class PVTableItemTest implements PVTableItemListener
         assertThat(VTypeHelper.toDouble(item.getValue()), equalTo(6.28));        
         
         // Current no longer matches saved value
-        System.out.println("Saved: " + VTypeHelper.toString(item.getSavedValue()));
+        System.out.println("Saved: " + item.getSavedValue());
         assertThat(item.isChanged(), equalTo(true));
         
         // Value changes back on its own
@@ -112,7 +112,7 @@ public class PVTableItemTest implements PVTableItemListener
         assertThat(item.isChanged(), equalTo(true));
 
         // Restore the saved value
-        assertThat(VTypeHelper.toDouble(item.getSavedValue()), equalTo(3.14));        
+        assertThat(item.getSavedValue().toString(), equalTo("3.14"));        
         item.restore();
         System.out.println("Waiting for restore...");
         synchronized (item)

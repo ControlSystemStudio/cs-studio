@@ -12,12 +12,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.model.SavedValue;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VLong;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
 
 /** Base for persisting PVTableModel to/from file
  *  @author Kay Kasemir
@@ -78,22 +78,11 @@ abstract public class PVTablePersistence
      *  @param value_text Text of a value
      *  @return VType for that text, either {@link VNumber} ({@link VDouble}) or {@link VString}, or <code>null</code>
      */
-    protected VType createValue(final String value_text)
+    protected SavedValue createValue(final String value_text)
     {
         if (value_text.isEmpty())
             return null;
-        try
-        {   // Try to parse as number
-            final double value = Double.parseDouble(value_text);
-            if (value == (long) value)
-                return ValueFactory.newVLong((long) value, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
-            return ValueFactory.newVDouble(value);
-        }
-        catch (NumberFormatException ex)
-        {
-            // Not a number, fall through to return VString
-        }
-        return ValueFactory.newVString(value_text, ValueFactory.alarmNone(), ValueFactory.timeNow());
+        return new SavedValue(value_text);
     }
 
     /** Format the value (without alarm, timestamp) as a string

@@ -12,12 +12,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.model.SavedValue;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.VType;
@@ -36,6 +39,9 @@ public class PVTableAutosavePersistence extends PVTablePersistence
     /** File extension used for autosave files */
     final public static String FILE_EXTENSION = "sav";
 
+    final private static String ARRAY_START = "@array@ { ";
+    final private static String ARRAY_END = " }";
+    
     final private static String END_MARKER = "<END>";
     
     /** {@inheritDoc} */
@@ -64,7 +70,7 @@ public class PVTableAutosavePersistence extends PVTablePersistence
             if (line.startsWith(END_MARKER))
                 break;
             
-            // Parse "PV Value"
+            // Parse "PV Value" based on first space
             final int sep = line.indexOf(' ');
             if (sep < 0)
             {
@@ -72,12 +78,87 @@ public class PVTableAutosavePersistence extends PVTablePersistence
                 continue;
             }
             final String pv_name = line.substring(0, sep);
-            final String value = line.substring(sep + 1);
-            model.addItem(pv_name, Preferences.getTolerance(), createValue(value));
+            final String value_text = line.substring(sep + 1);
+            final SavedValue value;
+            try
+            {
+                value = parseValue(value_text);
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error parsing value in line " + line_no, ex);
+                continue;
+            }
+            model.addItem(pv_name, Preferences.getTolerance(), value);
         }
         input.close();
         
         return model;
+    }
+    
+    /** Parse a channel's value from the file
+     * 
+     *  <p>Example values are
+     *  3.14
+     *  10
+     *  @array@ { "72" "101" "108" "108" "111" "0" }
+     * 
+     * @param text Value text
+     * @return VType
+     * @throws Exception on error
+     */
+    public SavedValue parseValue(String text) throws Exception
+    {
+        if (text.startsWith(ARRAY_START))
+            return parseArray(text);
+        else
+            return createValue(text);
+    }
+
+    /** Parse array value from the file
+     * 
+     *  <p>Example values are
+     *  @array@ { "72" "101" "108" "108" "111" "0" }
+     * 
+     * @param text Value text
+     * @return VType
+     * @throws Exception on error
+     */
+    private SavedValue parseArray(String text) throws Exception
+    {
+        final int end = text.lastIndexOf(ARRAY_END);
+        if (end < 0)
+            throw new Exception("Missing end-of-array marker");
+        
+        final List<String> items = new ArrayList<>();
+        int i = ARRAY_START.length();
+        while (i < end)
+        {
+            // locate start & end of next item
+            final int item_start = text.indexOf('"', i) + 1;
+            if (item_start <= 0)
+                break;
+            int item_end = item_start + 1;
+            while (item_end < end)
+            {
+                char c = text.charAt(item_end);
+                if (c == '"')
+                    break;
+                // Skip escaped character
+                if (c == '\\')
+                    ++item_end;
+                ++item_end;
+            }
+            if (item_end >= end)
+                throw new Exception("Missing end of item");
+
+            // Remove escape markers from item
+            final String item = text.substring(item_start, item_end).replaceAll("\\\\", "");
+            items.add(item);
+            i = item_end + 1;
+        }
+        System.out.println(items);
+        return createValue(items.toString());
     }
     
     /** {@inheritDoc} */
@@ -91,11 +172,11 @@ public class PVTableAutosavePersistence extends PVTablePersistence
         for (int row=0; row<n; ++row)
         {
             final PVTableItem item = model.getItem(row);
-            final VType saved = item.getSavedValue();
+            final SavedValue saved = item.getSavedValue();
             if (saved == null)
                 out.println("# " + item.getName() + " - No saved value");
             else
-                out.println(item.getName() + " " + formatValue(saved));
+                out.println(item.getName() + " " + saved.toString());
         }
         out.println(END_MARKER);
         out.close();

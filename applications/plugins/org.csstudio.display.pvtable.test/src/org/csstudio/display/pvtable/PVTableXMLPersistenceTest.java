@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
 import org.csstudio.display.pvtable.model.PVTableModel;
-import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.display.pvtable.persistence.PVTablePersistence;
 import org.csstudio.display.pvtable.persistence.PVTableXMLPersistence;
 import org.junit.Before;
@@ -41,7 +40,7 @@ public class PVTableXMLPersistenceTest
         final PVTableModel model = persistence.read(new FileInputStream("lib/example.pvs"));
         assertThat(model.getItemCount(), equalTo(52));
         assertThat(model.getItem(0).getName(), equalTo(TestSettings.NAME));
-        assertThat(VTypeHelper.toString(model.getItem(0).getSavedValue()), equalTo("3.14"));
+        assertThat(model.getItem(0).getSavedValue().toString(), equalTo("3.14"));
         model.dispose();
     }
 
