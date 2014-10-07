@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import org.csstudio.display.pvtable.Plugin;
 import org.epics.pvmanager.PV;
 import org.epics.vtype.VDouble;
+import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
@@ -61,17 +62,21 @@ public class SavedValue
         {
             if (current_value instanceof VNumber)
             {
-                final double v1 = ((VDouble)current_value).getValue();
+                final double v1 = ((VNumber)current_value).getValue().doubleValue();
                 final double v2 = Double.parseDouble(saved_value);
                 return Math.abs(v2 - v1) <= tolerance;
             }
             if (current_value instanceof VString)
             {
-                final long v1 = ((VNumber)current_value).getValue().longValue();
-                final long v2 = Long.parseLong(saved_value);
+                final String v1 = ((VString)current_value).getValue();
+                return v1.equals(saved_value);
+            }
+            if (current_value instanceof VEnum)
+            {
+                final int v1 = ((VEnum)current_value).getIndex();
+                final int v2 = Integer.parseInt(saved_value);
                 return Math.abs(v2 - v1) <= tolerance;
             }
-            // TODO VEnum
             // TODO Array classes
             throw new Exception("Cannot compare against unhandled type " + current_value.getClass().getName());
         }
