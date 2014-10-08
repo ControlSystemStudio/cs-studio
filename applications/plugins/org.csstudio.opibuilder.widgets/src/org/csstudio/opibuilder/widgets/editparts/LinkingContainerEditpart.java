@@ -93,8 +93,6 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	public LinkingContainerModel getWidgetModel() {
 		return (LinkingContainerModel)getModel();
 	}
-	
-
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
@@ -124,7 +122,6 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 				return false;
 			}
 		};
-
 		setPropertyChangeHandler(LinkingContainerModel.PROP_GROUP_NAME, handler);
 
 
@@ -148,8 +145,14 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		};
 		setPropertyChangeHandler(LinkingContainerModel.PROP_AUTO_SIZE, handler);
 		
-
-
+		handler = new IWidgetPropertyChangeHandler() {
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				loadWidgets(getWidgetModel().getOPIFilePath(), true);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LinkingContainerModel.PROP_MACROS, handler);
 	}
 
 
