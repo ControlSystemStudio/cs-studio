@@ -80,11 +80,11 @@ public class VTypeHelper
             final VEnum ev = (VEnum) value;
             try
             {
-                return ev.getIndex() + " '" + ev.getValue() + "'";
+                return ev.getIndex() + " = " + ev.getValue();
             }
             catch (ArrayIndexOutOfBoundsException ex)
             {    // PVManager doesn't handle enums that have no label
-                return "<enum " + ((VEnum)value).getIndex() + ">";
+                return ev.getIndex() + " = ?";
             }
         }
         if (value instanceof VString)
