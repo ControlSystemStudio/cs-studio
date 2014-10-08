@@ -14,16 +14,7 @@ import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 
-/** Saved value of a table item
- * 
- *  <p>Values are always saved as String.
- *  When reading autosave-files, the PV's data type
- *  is unknown until the channel connects,
- *  and a channel may never connect.
- *  To allow reading and writing files without
- *  changing the exact value format, the text
- *  is kept.
- *
+/** Saved value of a scalar table item
  *  @author Kay Kasemir
  */
 public class SavedScalarValue extends SavedValue
@@ -60,7 +51,6 @@ public class SavedScalarValue extends SavedValue
             final int v2 = Integer.parseInt(saved_value);
             return Math.abs(v2 - v1) <= tolerance;
         }
-        // TODO Array classes
         throw new Exception("Cannot compare against unhandled type " + current_value.getClass().getName());
     }
     

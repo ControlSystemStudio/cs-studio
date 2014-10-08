@@ -23,7 +23,6 @@ import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.SavedValue;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
 
 /** Persist PVTableModel as EPICS Autosave file
  *  <p>

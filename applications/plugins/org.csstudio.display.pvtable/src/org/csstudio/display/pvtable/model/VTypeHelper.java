@@ -136,20 +136,4 @@ public class VTypeHelper
             return ((VEnum)value).getIndex();
         return Double.NaN;
     }
-
-
-    /** Extract basic value
-     *  @param value {@link VType}
-     *  @return {@link Number} or {@link String} of the {@link VType}'s value
-     */
-    public static Object getValue(final VType value)
-    {
-        if (value instanceof VNumber)
-            return ((VNumber)value).getValue();
-        if (value instanceof VEnum)
-            return ((VEnum)value).getIndex();
-        if (value instanceof VString)
-            return ((VString)value).getValue();
-        return null;
-    }
 }

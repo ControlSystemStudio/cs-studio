@@ -12,10 +12,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.csstudio.display.pvtable.model.PVTableModel;
-import org.csstudio.display.pvtable.model.SavedValue;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VLong;
-import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 

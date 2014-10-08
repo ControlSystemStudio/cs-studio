@@ -7,8 +7,18 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.epics.pvmanager.PV;
-import org.epics.vtype.Scalar;
+import org.epics.util.array.IteratorDouble;
+import org.epics.util.array.IteratorNumber;
+import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
+import org.epics.vtype.VStringArray;
 import org.epics.vtype.VType;
 
 /** Base for saved values of a table item
@@ -32,12 +42,36 @@ abstract public class SavedValue
      *  @return {@link SavedValue} that contains current value
      *  @throws Exception on error
      */
-    public static SavedValue forCurrentValue(VType current_value) throws Exception
+    public static SavedValue forCurrentValue(final VType value) throws Exception
     {
-        if (current_value instanceof Scalar)
-            return new SavedScalarValue(VTypeHelper.getValue(current_value).toString());
-        // TODO Handle arrays
-        throw new Exception("Cannot handle " + current_value);
+        // Scalars
+        if (value instanceof VNumber)
+            return new SavedScalarValue(((VNumber)value).getValue().toString());
+        if (value instanceof VEnum)
+            return new SavedScalarValue(Integer.toString(((VEnum)value).getIndex()));
+        if (value instanceof VString)
+            return new SavedScalarValue(((VString)value).getValue());
+        // Arrays
+        final List<String> texts = new ArrayList<>();
+        if (value instanceof VDoubleArray)
+        {   // Format double as double
+            final IteratorDouble values = ((VDoubleArray)value).getData().iterator();
+            while (values.hasNext())
+                texts.add(Double.toString(values.nextDouble()));
+            return new SavedArrayValue(texts);
+        }
+        if (value instanceof VNumberArray)
+        {   // Format other numbers as integer
+            final IteratorNumber values = ((VNumberArray)value).getData().iterator();
+            while (values.hasNext())
+                texts.add(Long.toString(values.nextLong()));
+            return new SavedArrayValue(texts);
+        }
+        if (value instanceof VStringArray)
+            return new SavedArrayValue(((VStringArray)value).getData());
+        // No VEnumArray support at this time..
+        else
+            throw new Exception("Cannot handle " + value);
     }
 
     /** @param value_text Text for a scalar value
