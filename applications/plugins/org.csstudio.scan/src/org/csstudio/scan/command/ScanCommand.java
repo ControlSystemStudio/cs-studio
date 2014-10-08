@@ -95,13 +95,16 @@ abstract public class ScanCommand
      */
     final public String getCommandID()
     {
-        // Split "DoSomeThingCommand" into [ "", "Do", "Some", "Thing", "Command" ] 
+        // Detected by Frederic Arnaud:
+        // Java 7 will split "DoSomeThingCommand" into [ "", "Do", "Some", "Thing", "Command" ] 
+        // Java 8 will instead return  [  "Do", "Some", "Thing", "Command" ] 
         final String[] sections = getCommandName().split("(?=[A-Z][a-z])");
+        final int start = (sections.length > 0  &&  sections[0].isEmpty()) ? 1 : 0;
         final StringBuilder buf = new StringBuilder();
         final int N = sections.length;
-        for (int i=1; i<N-1; ++i)
+        for (int i=start; i<N-1; ++i)
         {
-            if (i > 1)
+            if (i > start)
                 buf.append("_");
             buf.append(sections[i].toLowerCase());
         }

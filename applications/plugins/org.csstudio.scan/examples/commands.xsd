@@ -25,6 +25,7 @@ Or run standalone validation  (use double'-', can't show that in XML comment):
 <xs:complexType name="command_sequence">
   <xs:sequence>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="config_log" type="config_log_command"/>
       <xs:element name="comment" type="comment_command"/>
       <xs:element name="delay" type="delay_command"/>
       <xs:element name="log" type="log_command"/>
@@ -32,7 +33,15 @@ Or run standalone validation  (use double'-', can't show that in XML comment):
       <xs:element name="script" type="script_command"/>
       <xs:element name="set" type="set_command"/>
       <xs:element name="wait" type="wait_command"/>
+      <xs:element name="include" type="include_command"/>
     </xs:choice>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="config_log_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="automatic" type="xs:boolean" />
   </xs:sequence>
 </xs:complexType>
 
@@ -120,6 +129,14 @@ Or run standalone validation  (use double'-', can't show that in XML comment):
     <xs:element name="tolerance" type="xs:string" minOccurs="0"/>
     <xs:element name="timeout" type="xs:string" minOccurs="0"/>
     <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="include_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="scan_file" type="xs:string"/>
+    <xs:element name="macros" type="xs:string" minOccurs="0"/>
   </xs:sequence>
 </xs:complexType>
 
