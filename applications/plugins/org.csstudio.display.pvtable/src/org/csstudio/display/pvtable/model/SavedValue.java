@@ -84,8 +84,9 @@ abstract public class SavedValue
     
     /** Restore saved value to PV
      *  @param pv PV to write
+     *  @throws Exception on error
      */
-    abstract public void restore(final PV<VType, Object> pv);
+    abstract public void restore(final PV<VType, Object> pv) throws Exception;
     
     /** @return String representation for display purpose */
     @Override

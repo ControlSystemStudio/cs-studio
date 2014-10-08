@@ -166,7 +166,14 @@ public class PVTableItem implements PVReaderListener<VType>
     {
         if (! isSelected())
             return;
-        saved.restore(pv);
+        try
+        {
+            saved.restore(pv);
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Error restoring " + getName(), ex);
+        }
     }
 
     /** @return Returns the saved_value. */

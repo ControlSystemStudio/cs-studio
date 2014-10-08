@@ -10,6 +10,7 @@ package org.csstudio.display.pvtable.model;
 import org.epics.pvmanager.PV;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VEnum;
+import org.epics.vtype.VFloat;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
@@ -55,14 +56,16 @@ public class SavedScalarValue extends SavedValue
     }
     
     /** {@inheritDoc} */
-    public void restore(final PV<VType, Object> pv)
+    public void restore(final PV<VType, Object> pv) throws Exception
     {
         // Determine what type to write based on current value of the PV
         final VType pv_type = pv.getValue();
-        if (pv_type instanceof VDouble)
+        if ((pv_type instanceof VDouble) || (pv_type instanceof VFloat))
             pv.write(Double.parseDouble(saved_value));
         else if (pv_type instanceof VNumber)
-            pv.write(Long.parseLong(saved_value));
+            // Parse as double to allow "1e10" or "100.0"
+            // If it's "3.14", only "3" will of course be restored.
+            pv.write((long)Double.parseDouble(saved_value));
         else // Write as text
             pv.write(saved_value);
     }
