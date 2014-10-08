@@ -63,24 +63,6 @@ public class PVTableAutosavePersistenceTest
     }
 
     @Test
-    public void compareFiles() throws Exception
-    {
-        final PVTablePersistence persistence = new PVTableAutosavePersistence();
-        final PVTableModel model = persistence.read(new FileInputStream("lib/auto.sav"));
-        persistence.write(model, "/tmp/compare.sav");
-        model.dispose();
-        
-        String[] original = linesInFile("lib/auto.sav");
-        String[] copy = linesInFile("/tmp/compare.sav");
-        // We know that the initial comment is different
-        assertThat(original[0], not(equalTo(copy[0])));
-        
-        // Correct that, and rest should match
-        copy[0] = original[0];
-        assertThat(original, matchLinesIn(copy));
-    }
-
-    @Test
     public void testArrayValueParser() throws Exception
     {
         final PVTableAutosavePersistence persistence = new PVTableAutosavePersistence();
@@ -105,5 +87,23 @@ public class PVTableAutosavePersistenceTest
         {
             assertThat(ex.getMessage(), containsString("Missing end"));
         }
+    }
+
+    @Test
+    public void compareFiles() throws Exception
+    {
+        final PVTablePersistence persistence = new PVTableAutosavePersistence();
+        final PVTableModel model = persistence.read(new FileInputStream("lib/test.sav"));
+        persistence.write(model, "/tmp/compare.sav");
+        model.dispose();
+        
+        String[] original = linesInFile("lib/test.sav");
+        String[] copy = linesInFile("/tmp/compare.sav");
+        // We know that the initial comment is different
+        assertThat(original[0], not(equalTo(copy[0])));
+        
+        // Correct that, and rest should match
+        copy[0] = original[0];
+        assertThat(original, matchLinesIn(copy));
     }
 }
