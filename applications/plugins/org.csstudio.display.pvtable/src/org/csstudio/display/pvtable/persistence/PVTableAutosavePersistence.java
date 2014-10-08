@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.model.SavedArrayValue;
 import org.csstudio.display.pvtable.model.SavedScalarValue;
 import org.csstudio.display.pvtable.model.SavedValue;
 import org.csstudio.display.pvtable.model.TimestampHelper;
@@ -39,9 +40,13 @@ public class PVTableAutosavePersistence extends PVTablePersistence
     /** File extension used for autosave files */
     final public static String FILE_EXTENSION = "sav";
 
+    /** Start of array, includes final ' ' */
     final private static String ARRAY_START = "@array@ { ";
-    final private static String ARRAY_END = " }";
     
+    /** End of array, not including initial ' ' */
+    final private static String ARRAY_END = "}";
+    
+    /** End-of-file marker */
     final private static String END_MARKER = "<END>";
     
     /** {@inheritDoc} */
@@ -157,9 +162,7 @@ public class PVTableAutosavePersistence extends PVTablePersistence
             items.add(item);
             i = item_end + 1;
         }
-        System.out.println(items);
-        // TODO Handle array
-        return new SavedScalarValue(items.toString());
+        return new SavedArrayValue(items);
     }
     
     /** {@inheritDoc} */
@@ -177,7 +180,25 @@ public class PVTableAutosavePersistence extends PVTablePersistence
             if (saved == null)
                 out.println("# " + item.getName() + " - No saved value");
             else
-                out.println(item.getName() + " " + saved.toString());
+            {
+                if (saved instanceof SavedScalarValue)
+                    out.println(item.getName() + " " + saved.toString());
+                else if (saved instanceof SavedArrayValue)
+                {
+                    final SavedArrayValue array = (SavedArrayValue) saved;
+                    out.print(item.getName() + " ");
+                    out.print(ARRAY_START);
+                    for (int e=0; e<array.size(); ++e)
+                    {
+                        out.print('"');
+                        out.print(array.get(e).replace("\"", "\\\""));
+                        out.print("\" ");
+                    }
+                    out.println(ARRAY_END);
+                }
+                else
+                    throw new Exception("Cannot persist saved value of type " + saved.getClass().getName());
+            }
         }
         out.println(END_MARKER);
         out.close();
