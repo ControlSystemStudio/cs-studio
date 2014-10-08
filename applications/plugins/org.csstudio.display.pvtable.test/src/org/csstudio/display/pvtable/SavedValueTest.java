@@ -9,6 +9,7 @@ package org.csstudio.display.pvtable;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.csstudio.display.pvtable.model.SavedScalarValue;
 import org.csstudio.display.pvtable.model.SavedValue;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.ValueFactory;
@@ -21,19 +22,19 @@ import org.junit.Test;
 public class SavedValueTest
 {
     @Test
-    public void testSavedValue() throws Exception
+    public void testSavedScalarValue() throws Exception
     {
-        SavedValue saved = new SavedValue("3.14");
+        SavedValue saved = new SavedScalarValue("3.14");
         System.out.println(saved);
         assertThat(saved.toString(), equalTo("3.14"));
         
         VDouble value = ValueFactory.newVDouble(42.1);
-        saved = new SavedValue(value);
+        saved = SavedValue.forCurrentValue(value);
         System.out.println(saved);
         assertThat(saved.toString(), equalTo("42.1"));
         assertThat(saved.isEqualTo(value, 0.1), equalTo(true));
 
-        saved = new SavedValue("42.2");
+        saved = new SavedScalarValue("42.2");
         System.out.println(saved);
         assertThat(saved.isEqualTo(value, 0.2), equalTo(true));
         assertThat(saved.isEqualTo(value, 0.1), equalTo(false));

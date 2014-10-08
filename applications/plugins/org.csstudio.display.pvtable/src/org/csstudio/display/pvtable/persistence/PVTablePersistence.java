@@ -74,17 +74,6 @@ abstract public class PVTablePersistence
      */
     abstract public void write(final PVTableModel model, final OutputStream stream) throws Exception;
     
-    /** Helper for creating {@link VType} from a saved value
-     *  @param value_text Text of a value
-     *  @return VType for that text, either {@link VNumber} ({@link VDouble}) or {@link VString}, or <code>null</code>
-     */
-    protected SavedValue createValue(final String value_text)
-    {
-        if (value_text.isEmpty())
-            return null;
-        return new SavedValue(value_text);
-    }
-
     /** Format the value (without alarm, timestamp) as a string
      *  @param value VType returned by <code>createValue</code>
      *  @return Text for the value

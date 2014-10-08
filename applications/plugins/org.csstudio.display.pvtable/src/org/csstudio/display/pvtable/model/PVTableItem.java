@@ -14,6 +14,7 @@ import static org.epics.util.time.TimeDuration.ofSeconds;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.display.pvtable.Plugin;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
@@ -149,7 +150,14 @@ public class PVTableItem implements PVReaderListener<VType>
     /** Save current value as saved value */
     public void save()
     {
-        saved = new SavedValue(value);
+        try
+        {
+            saved = SavedValue.forCurrentValue(value);
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Cannot save value of " + getName(), ex);
+        }
         determineIfChanged();
     }
 
@@ -196,7 +204,14 @@ public class PVTableItem implements PVReaderListener<VType>
             has_changed = false;
             return;
         }
-        has_changed = ! saved_value.isEqualTo(value, tolerance);
+        try
+        {
+            has_changed = ! saved_value.isEqualTo(value, tolerance);
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Change test failed for " + getName(), ex);
+        }
     }
     
     /** Must be called to release resources when item no longer in use */

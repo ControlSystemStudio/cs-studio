@@ -7,17 +7,11 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
-import java.util.logging.Level;
-
-import org.csstudio.display.pvtable.Plugin;
 import org.epics.pvmanager.PV;
-import org.epics.vtype.VDouble;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VString;
+import org.epics.vtype.Scalar;
 import org.epics.vtype.VType;
 
-/** Saved value of a table item
+/** Base for saved values of a table item
  * 
  *  <p>Values are always saved as String.
  *  When reading autosave-files, the PV's data type
@@ -26,87 +20,48 @@ import org.epics.vtype.VType;
  *  To allow reading and writing files without
  *  changing the exact value format, the text
  *  is kept.
+ *  
+ *  <p>Derived implementations provide support for
+ *  scalar (String) and array (List<String>)
  *
  *  @author Kay Kasemir
  */
-public class SavedValue
+abstract public class SavedValue
 {
-    final private String saved_value;
-    
-    /** Initialize from text
-     *  @param value_text
+    /** @param current_value Current value of PV
+     *  @return {@link SavedValue} that contains current value
+     *  @throws Exception on error
      */
-    public SavedValue(final String value_text)
+    public static SavedValue forCurrentValue(VType current_value) throws Exception
     {
-        saved_value = value_text;
+        if (current_value instanceof Scalar)
+            return new SavedScalarValue(VTypeHelper.getValue(current_value).toString());
+        // TODO Handle arrays
+        throw new Exception("Cannot handle " + current_value);
     }
-    
-    /** Initialize from value
-     *  @param current_value
+
+    /** @param value_text Text for a scalar value
+     *  @return {@link SavedValue}
      */
-    public SavedValue(final VType current_value)
+    public static SavedValue forScalar(final String value_text)
     {
-        saved_value = VTypeHelper.getValue(current_value).toString();
+        return new SavedScalarValue(value_text);
     }
 
     /** Compare saved value against current value of a PV
      *  @param current_value Value to compare against
      *  @param tolerance Tolerance to use for numeric values
-     *  @return
+     *  @return <code>true</code> if values match within tolerance
+     *  @throws Exception on error
      */
-    public boolean isEqualTo(final VType current_value, final double tolerance)
-    {
-        if (current_value == null)
-            return true;
-        try
-        {
-            if (current_value instanceof VNumber)
-            {
-                final double v1 = ((VNumber)current_value).getValue().doubleValue();
-                final double v2 = Double.parseDouble(saved_value);
-                return Math.abs(v2 - v1) <= tolerance;
-            }
-            if (current_value instanceof VString)
-            {
-                final String v1 = ((VString)current_value).getValue();
-                return v1.equals(saved_value);
-            }
-            if (current_value instanceof VEnum)
-            {
-                final int v1 = ((VEnum)current_value).getIndex();
-                final int v2 = Integer.parseInt(saved_value);
-                return Math.abs(v2 - v1) <= tolerance;
-            }
-            // TODO Array classes
-            throw new Exception("Cannot compare against unhandled type " + current_value.getClass().getName());
-        }
-        catch (Throwable ex)
-        {
-            Plugin.getLogger().log(Level.WARNING,
-                "Comparison error for saved value " + saved_value + " and " + current_value, ex);
-        }
-        return false;
-    }
+    abstract public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception;
     
     /** Restore saved value to PV
      *  @param pv PV to write
      */
-    public void restore(final PV<VType, Object> pv)
-    {
-        // Determine what type to write based on current value of the PV
-        final VType pv_type = pv.getValue();
-        if (pv_type instanceof VDouble)
-            pv.write(Double.parseDouble(saved_value));
-        else if (pv_type instanceof VNumber)
-            pv.write(Long.parseLong(saved_value));
-        else // Write as text
-            pv.write(saved_value);
-    }
+    abstract public void restore(final PV<VType, Object> pv);
     
     /** @return String representation for display purpose */
     @Override
-    public String toString()
-    {
-        return saved_value;
-    }
+    abstract public String toString();
 }

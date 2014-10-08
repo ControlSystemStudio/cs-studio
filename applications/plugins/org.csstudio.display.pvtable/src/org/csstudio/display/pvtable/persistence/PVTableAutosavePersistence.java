@@ -107,12 +107,12 @@ public class PVTableAutosavePersistence extends PVTablePersistence
      * @return VType
      * @throws Exception on error
      */
-    public SavedValue parseValue(String text) throws Exception
+    public SavedValue parseValue(final String text) throws Exception
     {
         if (text.startsWith(ARRAY_START))
             return parseArray(text);
         else
-            return createValue(text);
+            return SavedValue.forScalar(text);
     }
 
     /** Parse array value from the file
@@ -124,7 +124,7 @@ public class PVTableAutosavePersistence extends PVTablePersistence
      * @return VType
      * @throws Exception on error
      */
-    private SavedValue parseArray(String text) throws Exception
+    private SavedValue parseArray(final String text) throws Exception
     {
         final int end = text.lastIndexOf(ARRAY_END);
         if (end < 0)
@@ -158,7 +158,8 @@ public class PVTableAutosavePersistence extends PVTablePersistence
             i = item_end + 1;
         }
         System.out.println(items);
-        return createValue(items.toString());
+        // TODO Handle array
+        return SavedValue.forScalar(items.toString());
     }
     
     /** {@inheritDoc} */

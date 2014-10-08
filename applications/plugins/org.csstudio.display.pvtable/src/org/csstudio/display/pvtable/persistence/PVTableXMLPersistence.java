@@ -100,13 +100,17 @@ public class PVTableXMLPersistence extends PVTablePersistence
                 {
                     final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
                     final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
-                    SavedValue saved = createValue(DOMHelper.getSubelementString(pv, SAVED));
+                    
+                    // TODO Handle array
+                    SavedValue saved = SavedValue.forScalar(DOMHelper.getSubelementString(pv, SAVED));
+                    
                     PVTableItem item = model.addItem(pv_name, tolerance, saved);
                     item.setSelected(selected);
                     
                     // Legacy files may contain a separate readback PV and value for this entry
                     pv_name = DOMHelper.getSubelementString(pv, READBACK_NAME);
-                    saved = createValue(DOMHelper.getSubelementString(pv, READBACK_SAVED));
+                    // This legacy entry never supported arrays..
+                    saved = SavedValue.forScalar(DOMHelper.getSubelementString(pv, READBACK_SAVED));
                     if (! pv_name.isEmpty())
                     {   // If found, add as separate PV, not selected to be restored
                         item = model.addItem(pv_name, tolerance, saved);

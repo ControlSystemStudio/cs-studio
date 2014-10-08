@@ -11,16 +11,13 @@ import static org.csstudio.display.pvtable.FileTestUtil.matchLinesIn;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.csstudio.utility.test.HamcrestMatchers.containsString;
+
 import java.io.FileInputStream;
 
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
-import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.display.pvtable.persistence.PVTableAutosavePersistence;
 import org.csstudio.display.pvtable.persistence.PVTablePersistence;
-import org.epics.vtype.VType;
 import org.junit.Before;
 import org.junit.Test;
 
