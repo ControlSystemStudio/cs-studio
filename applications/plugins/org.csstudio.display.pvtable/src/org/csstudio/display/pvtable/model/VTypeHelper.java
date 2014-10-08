@@ -7,9 +7,13 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
+import org.epics.util.array.IteratorNumber;
+import org.epics.util.array.ListByte;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Time;
+import org.epics.vtype.VByteArray;
 import org.epics.vtype.VDoubleArray;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VFloatArray;
@@ -18,8 +22,6 @@ import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueUtil;
-import org.epics.util.array.IteratorNumber;
-import org.epics.util.time.Timestamp;
 
 /** Helper for handling {@link VType} data
  *  @author Kay Kasemir
@@ -87,6 +89,29 @@ public class VTypeHelper
         }
         if (value instanceof VString)
             return ((VString)value).getValue();
+        if (value instanceof VByteArray)
+        {   // Check if byte array can be displayed as ASCII text
+            final ListByte data = ((VByteArray)value).getData();
+            byte[] bytes = new byte[data.size()];
+            // Copy bytes until end or '\0'
+            int len = 0;
+            while (len < bytes.length)
+            {
+                final byte b = data.getByte(len);
+                if (b == 0)
+                    break;
+                else if (b >= 32  &&  b < 127)
+                    bytes[len++] = b;
+                else
+                {   // Not ASCII
+                    bytes = null;
+                    break;
+                }
+            }
+            if (bytes != null)
+                return new String(bytes, 0, len);
+            // else: Treat as array of numbers
+        }
         if (value instanceof VDoubleArray  ||  value instanceof VFloatArray)
         {   // Show double arrays as floating point
             final StringBuilder buf = new StringBuilder();
