@@ -13,8 +13,11 @@ import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.util.Arrays;
 
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.model.SavedArrayValue;
+import org.csstudio.display.pvtable.model.SavedScalarValue;
 import org.csstudio.display.pvtable.persistence.PVTablePersistence;
 import org.csstudio.display.pvtable.persistence.PVTableXMLPersistence;
 import org.junit.Before;
@@ -38,9 +41,15 @@ public class PVTableXMLPersistenceTest
     {
         final PVTablePersistence persistence = new PVTableXMLPersistence();
         final PVTableModel model = persistence.read(new FileInputStream("lib/example.pvs"));
-        assertThat(model.getItemCount(), equalTo(52));
+        
+        assertThat(model.getItemCount(), equalTo(53));
+        
         assertThat(model.getItem(0).getName(), equalTo(TestSettings.NAME));
         assertThat(model.getItem(0).getSavedValue().toString(), equalTo("3.14"));
+
+        assertThat(model.getItem(1).getName(), equalTo("loc://array(1.0, 2.0, 3.0)"));
+        assertThat(model.getItem(1).getSavedValue().toString(), equalTo("1.0, 2.0, 3.0"));
+        
         model.dispose();
     }
 
@@ -50,7 +59,8 @@ public class PVTableXMLPersistenceTest
     {
         final PVTablePersistence persistence = new PVTableXMLPersistence();
         final PVTableModel model = new PVTableModel();
-        model.addItem(TestSettings.NAME);
+        model.addItem(TestSettings.NAME, 0.1, new SavedScalarValue("3.14"));
+        model.addItem("test_array", 0.1, new SavedArrayValue(Arrays.asList("3.14", "314")));
         
         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
         persistence.write(model, buf);
@@ -61,5 +71,7 @@ public class PVTableXMLPersistenceTest
         assertThat(xml, containsString("<pvtable"));
         assertThat(xml, containsString("<pv>"));
         assertThat(xml, containsString("<name>"+TestSettings.NAME+"</name>"));
+        assertThat(xml, containsString("<saved_value>3.14</saved_value>"));
+        assertThat(xml, containsString("<item>314</item>"));
     }
 }

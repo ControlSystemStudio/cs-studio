@@ -30,6 +30,20 @@ public class SavedArrayValue extends SavedValue
         saved_value = value_texts;
     }
     
+    /** @return Number of array elements */
+    public int size()
+    {
+        return saved_value.size();
+    }
+    
+    /** @param index Array index, <code>0 .. size()-1</code>
+     *  @return Array element
+     */
+    public String get(final int index)
+    {
+        return saved_value.get(index);
+    }
+    
     /** {@inheritDoc} */
     public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception
     {

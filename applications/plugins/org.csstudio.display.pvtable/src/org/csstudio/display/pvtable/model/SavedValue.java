@@ -74,14 +74,6 @@ abstract public class SavedValue
             throw new Exception("Cannot handle " + value);
     }
 
-    /** @param value_text Text for a scalar value
-     *  @return {@link SavedValue}
-     */
-    public static SavedValue forScalar(final String value_text)
-    {
-        return new SavedScalarValue(value_text);
-    }
-
     /** Compare saved value against current value of a PV
      *  @param current_value Value to compare against
      *  @param tolerance Tolerance to use for numeric values

@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.model.SavedScalarValue;
 import org.csstudio.display.pvtable.model.SavedValue;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.epics.util.time.Timestamp;
@@ -111,7 +112,7 @@ public class PVTableAutosavePersistence extends PVTablePersistence
         if (text.startsWith(ARRAY_START))
             return parseArray(text);
         else
-            return SavedValue.forScalar(text);
+            return new SavedScalarValue(text);
     }
 
     /** Parse array value from the file
@@ -158,7 +159,7 @@ public class PVTableAutosavePersistence extends PVTablePersistence
         }
         System.out.println(items);
         // TODO Handle array
-        return SavedValue.forScalar(items.toString());
+        return new SavedScalarValue(items.toString());
     }
     
     /** {@inheritDoc} */

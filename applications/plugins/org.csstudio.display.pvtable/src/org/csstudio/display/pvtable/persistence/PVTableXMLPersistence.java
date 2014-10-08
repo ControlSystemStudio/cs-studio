@@ -10,6 +10,8 @@ package org.csstudio.display.pvtable.persistence;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,6 +21,8 @@ import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
+import org.csstudio.display.pvtable.model.SavedArrayValue;
+import org.csstudio.display.pvtable.model.SavedScalarValue;
 import org.csstudio.display.pvtable.model.SavedValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,7 +36,7 @@ public class PVTableXMLPersistence extends PVTablePersistence
     /** File extension used for XML files */
     final public static String FILE_EXTENSION = "pvs";
     
-    final private static String XML_HEADER = "<?xml version=\"1.0\"?>\n<pvtable version=\"2.0\">";
+    final private static String XML_HEADER = "<?xml version=\"1.0\"?>\n<pvtable version=\"3.0\">";
     final private static String XML_TAIL = "</pvtable>\n";
     final private static String ROOT = "pvtable";
     final private static String TOLERANCE = "tolerance";
@@ -41,6 +45,8 @@ public class PVTableXMLPersistence extends PVTablePersistence
     final private static String SELECTED = "selected";
     final private static String NAME = "name";
     final private static String SAVED = "saved_value";
+    final private static String SAVED_ARRAY = "saved_array_value";
+    final private static String ITEM = "item";
     final private static String READBACK_NAME = "readback";
     final private static String READBACK_SAVED = "readback_value";
 
@@ -91,8 +97,7 @@ public class PVTableXMLPersistence extends PVTablePersistence
                 .getFirstChild(), PVLIST);
         if (pvlist != null)
         {
-            Element pv = DOMHelper.findFirstElementNode(pvlist.getFirstChild(),
-                    PV);
+            Element pv = DOMHelper.findFirstElementNode(pvlist.getFirstChild(), PV);
             while (pv != null)
             {
                 String pv_name = DOMHelper.getSubelementString(pv, NAME);
@@ -100,9 +105,7 @@ public class PVTableXMLPersistence extends PVTablePersistence
                 {
                     final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
                     final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
-                    
-                    // TODO Handle array
-                    SavedValue saved = SavedValue.forScalar(DOMHelper.getSubelementString(pv, SAVED));
+                    SavedValue saved = readSavedValue(pv);
                     
                     PVTableItem item = model.addItem(pv_name, tolerance, saved);
                     item.setSelected(selected);
@@ -110,7 +113,7 @@ public class PVTableXMLPersistence extends PVTablePersistence
                     // Legacy files may contain a separate readback PV and value for this entry
                     pv_name = DOMHelper.getSubelementString(pv, READBACK_NAME);
                     // This legacy entry never supported arrays..
-                    saved = SavedValue.forScalar(DOMHelper.getSubelementString(pv, READBACK_SAVED));
+                    saved = new SavedScalarValue(DOMHelper.getSubelementString(pv, READBACK_SAVED));
                     if (! pv_name.isEmpty())
                     {   // If found, add as separate PV, not selected to be restored
                         item = model.addItem(pv_name, tolerance, saved);
@@ -121,6 +124,30 @@ public class PVTableXMLPersistence extends PVTablePersistence
             }
         }
         return model;
+    }
+
+    /** @param pv PV element that might contain saved value, scalar or array
+     *  @return {@link SavedValue} or <code>null</code>
+     */
+    private SavedValue readSavedValue(final Element pv)
+    {
+        final String saved_scalar = DOMHelper.getSubelementString(pv, SAVED, null);
+        if (saved_scalar != null)
+            return new SavedScalarValue(saved_scalar);
+        
+        final Element saved_array = DOMHelper.findFirstElementNode(pv.getFirstChild(), SAVED_ARRAY);
+        if (saved_array != null)
+        {
+            final List<String> items = new ArrayList<>();
+            Element item = DOMHelper.findFirstElementNode(saved_array.getFirstChild(), ITEM);
+            while (item != null)
+            {
+                items.add(item.getFirstChild().getNodeValue());
+                item = DOMHelper.findNextElementNode(item, ITEM);
+            }
+            return new SavedArrayValue(items);
+        }
+        return null;
     }
 
     /** {@inheritDoc} */
@@ -144,9 +171,19 @@ public class PVTableXMLPersistence extends PVTablePersistence
             XMLWriter.XML(out, 3, NAME, item.getName());
             XMLWriter.XML(out, 3, TOLERANCE, item.getTolerance());
             final SavedValue saved = item.getSavedValue();
-            // TODO Handle arrays
-            if (saved != null)
+            if (saved instanceof SavedScalarValue)
                 XMLWriter.XML(out, 3, SAVED, saved.toString());
+            else if (saved instanceof SavedArrayValue)
+            {
+                XMLWriter.start(out, 3, SAVED_ARRAY);
+                out.println();
+                final SavedArrayValue array = (SavedArrayValue)saved;
+                final int AN = array.size();
+                for (int el=0; el<AN; ++el)
+                    XMLWriter.XML(out, 4, ITEM, array.get(el));
+                XMLWriter.end(out, 3, SAVED_ARRAY);
+                out.println();
+            }
             XMLWriter.end(out, 2, PV);
             out.println();
         }

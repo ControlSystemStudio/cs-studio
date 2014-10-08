@@ -53,17 +53,6 @@ public class VTypeHelper
         return alarm.getAlarmSeverity();
     }
 
-    /** @param value {@link VType} value
-     *  @return Alarm message
-     */
-    final public static String getMessage(final VType value)
-    {
-        final Alarm alarm = ValueUtil.alarmOf(value);
-        if (alarm == null)
-            return "";
-        return alarm.getAlarmName();
-    }
-    
     /** @param value {@link VType}
      *  @return Alarm text or ""
      */
@@ -121,19 +110,5 @@ public class VTypeHelper
         if (value == null)
             return "null";
         return value.toString();
-    }
-    
-
-    /** Get VType as double or NaN if not possible
-     *  @param value {@link VType}
-     *  @return double or NaN
-     */
-    final public static double toDouble(final VType value)
-    {
-        if (value instanceof VNumber)
-            return ((VNumber)value).getValue().doubleValue();
-        if (value instanceof VEnum)
-            return ((VEnum)value).getIndex();
-        return Double.NaN;
     }
 }
