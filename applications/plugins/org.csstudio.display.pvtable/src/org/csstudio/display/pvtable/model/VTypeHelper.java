@@ -7,15 +7,21 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
+import org.epics.util.array.IteratorNumber;
+import org.epics.util.array.ListByte;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Time;
+import org.epics.vtype.VByteArray;
+import org.epics.vtype.VDoubleArray;
 import org.epics.vtype.VEnum;
+import org.epics.vtype.VFloatArray;
 import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueUtil;
-import org.epics.util.time.Timestamp;
 
 /** Helper for handling {@link VType} data
  *  @author Kay Kasemir
@@ -49,17 +55,6 @@ public class VTypeHelper
         return alarm.getAlarmSeverity();
     }
 
-    /** @param value {@link VType} value
-     *  @return Alarm message
-     */
-    final public static String getMessage(final VType value)
-    {
-        final Alarm alarm = ValueUtil.alarmOf(value);
-        if (alarm == null)
-            return "";
-        return alarm.getAlarmName();
-    }
-    
     /** @param value {@link VType}
      *  @return Alarm text or ""
      */
@@ -72,7 +67,7 @@ public class VTypeHelper
                 + "/" + alarm.getAlarmName();
     }
     
-    /** Format value as string
+    /** Format value as string for display
      *  @param value {@link VType}
      *  @return String representation
      */
@@ -85,62 +80,60 @@ public class VTypeHelper
             final VEnum ev = (VEnum) value;
             try
             {
-                return ev.getIndex() + " '" + ev.getValue() + "'";
+                return ev.getIndex() + " = " + ev.getValue();
             }
             catch (ArrayIndexOutOfBoundsException ex)
             {    // PVManager doesn't handle enums that have no label
-                return "<enum " + ((VEnum)value).getIndex() + ">";
+                return ev.getIndex() + " = ?";
             }
         }
         if (value instanceof VString)
             return ((VString)value).getValue();
+        if (value instanceof VByteArray)
+        {   // Check if byte array can be displayed as ASCII text
+            final ListByte data = ((VByteArray)value).getData();
+            byte[] bytes = new byte[data.size()];
+            // Copy bytes until end or '\0'
+            int len = 0;
+            while (len < bytes.length)
+            {
+                final byte b = data.getByte(len);
+                if (b == 0)
+                    break;
+                else if (b >= 32  &&  b < 127)
+                    bytes[len++] = b;
+                else
+                {   // Not ASCII
+                    bytes = null;
+                    break;
+                }
+            }
+            if (bytes != null)
+                return new String(bytes, 0, len);
+            // else: Treat as array of numbers
+        }
+        if (value instanceof VDoubleArray  ||  value instanceof VFloatArray)
+        {   // Show double arrays as floating point
+            final StringBuilder buf = new StringBuilder();
+            final IteratorNumber numbers =  ((VNumberArray)value).getData().iterator();
+            if (numbers.hasNext())
+                buf.append(numbers.nextDouble());
+            while (numbers.hasNext())
+                buf.append(", ").append(numbers.nextDouble());
+            return buf.toString();
+        }
+        if (value instanceof VNumberArray)
+        {   // Show other number arrays as integer
+            final StringBuilder buf = new StringBuilder();
+            final IteratorNumber numbers =  ((VNumberArray)value).getData().iterator();
+            if (numbers.hasNext())
+                buf.append(numbers.nextLong());
+            while (numbers.hasNext())
+                buf.append(", ").append(numbers.nextLong());
+            return buf.toString();
+        }
         if (value == null)
             return "null";
         return value.toString();
-    }
-    
-
-    /** Get VType as double or NaN if not possible
-     *  @param value {@link VType}
-     *  @return double or NaN
-     */
-    final public static double toDouble(final VType value)
-    {
-        if (value instanceof VNumber)
-            return ((VNumber)value).getValue().doubleValue();
-        if (value instanceof VEnum)
-            return ((VEnum)value).getIndex();
-        return Double.NaN;
-    }
-
-    
-    /** Compare the values of to {@link VType}s
-     *  @param value {@link VType}
-     *  @param other {@link VType}
-     *  @param tolerance Numeric tolerance. Values must be within that tolerance. 0 for 'exactly equal'.
-     *  @return <code>true</code> if their value (not timestamp, not alarm state) are equal
-     */
-    final public static boolean equalValue(final VType value, final VType other, final double tolerance)
-    {
-        if (value instanceof VString)
-            return toString(value).equals(toString(other));
-        final double v1 = toDouble(value);
-        final double v2 = toDouble(other);
-        return Math.abs(v2 - v1) <= tolerance;
-    }
-
-    /** Extract basic value
-     *  @param value {@link VType}
-     *  @return {@link Number} or {@link String} of the {@link VType}'s value
-     */
-    public static Object getValue(final VType value)
-    {
-        if (value instanceof VNumber)
-            return ((VNumber)value).getValue();
-        if (value instanceof VEnum)
-            return ((VEnum)value).getIndex();
-        if (value instanceof VString)
-            return ((VString)value).getValue();
-        return null;
     }
 }

@@ -18,7 +18,7 @@ import org.epics.pvmanager.sim.SimulationDataSource;
 @SuppressWarnings("nls")
 public class TestSettings
 {
-    final public static String NAME = "loc://x";
+    final public static String NAME = "loc://x(0)";
 
     public static void setup()
     {

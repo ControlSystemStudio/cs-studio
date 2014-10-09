@@ -15,10 +15,16 @@ import org.eclipse.jface.viewers.CellLabelProvider;
  */
 abstract public class PVTableCellLabelProvider extends CellLabelProvider
 {
+    private static final int TOOL_TIP_MAX = 100;
+
     @Override
     public String getToolTipText(final Object element)
     {
         final PVTableItem item = (PVTableItem) element;
-        return item.toString();
+        final String text = item.toString();
+        // Limit size of tool tip (in case of array data)
+        if (text.length() > TOOL_TIP_MAX)
+            return text.substring(0, TOOL_TIP_MAX) + "...";
+        return text;
     }
 }

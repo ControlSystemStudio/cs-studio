@@ -22,6 +22,7 @@ public class Messages extends NLS
     public static String EnterPositiveTolerance;
     public static String EnterTolerance;
     public static String Error;
+    public static String InvalidFileExtension;
     public static String PV;
     public static String Restore;
     public static String Restore_TT;
