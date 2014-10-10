@@ -101,6 +101,9 @@
       <import plugin="org.epics.pvdata" version="3.0.3" match="greaterOrEqual"/>
       <import plugin="org.epics.pvaccess" version="3.0.5" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.epics" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.opibuilder.widgets.edm" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.reader.fastarchiver" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.pva" version="3.2.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
