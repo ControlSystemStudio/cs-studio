@@ -51,9 +51,15 @@ public class EdmSymbolEditpart extends AbstractPVWidgetEditPart {
 		// changes to PV value
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				if(newValue == null || !(newValue instanceof VType)) return false;
+				if(newValue == null) return false;
+				int selection = 0;
+				if(newValue instanceof org.epics.vtype.VNumber) {
+					selection = ((org.epics.vtype.VNumber) newValue).getValue().intValue();
+				} else {
+					selection = (int) newValue;
+				}
 				EdmSymbolFigure edmFigure = (EdmSymbolFigure) figure;
-				edmFigure.setSubImageSelection((int) VTypeHelper.getDouble((VType)newValue));
+				edmFigure.setSubImageSelection(selection);
 				return false;
 			}
 		};
