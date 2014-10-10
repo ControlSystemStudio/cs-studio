@@ -53,7 +53,6 @@
    <features>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
-      <feature id="org.csstudio.libs.feature"/>
       <feature id="org.csstudio.core.feature"/>
       <feature id="org.csstudio.pvmanager.ca.feature"/>
       <feature id="org.csstudio.pvmanager.jdbc.feature"/>
