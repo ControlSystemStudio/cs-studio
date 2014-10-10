@@ -15,7 +15,9 @@ import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
+import org.csstudio.display.pvtable.persistence.PVTableAutosavePersistence;
 import org.csstudio.display.pvtable.persistence.PVTablePersistence;
+import org.csstudio.display.pvtable.persistence.PVTableXMLPersistence;
 import org.csstudio.display.pvtable.ui.PVTable;
 import org.csstudio.ui.util.EmptyEditorInput;
 import org.csstudio.ui.util.NoResourceEditorInput;
@@ -25,6 +27,7 @@ import org.csstudio.utility.singlesource.ResourceHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -206,10 +209,21 @@ public class PVTableEditor extends EditorPart
         
         // If there is an original file name, try to display it
         final IPath original = resources.getPath(getEditorInput());
-        final IPath path = SingleSourcePlugin.getUIHelper()
-            .openSaveDialog(getEditorSite().getShell(), original, null);
-        if (path == null)
-            return;
+        IPath path = null;
+        boolean valid = false;
+        while (! valid)
+        {
+            path = SingleSourcePlugin.getUIHelper()
+                    .openSaveDialog(getEditorSite().getShell(), original, null);
+            if (path == null)
+                return;
+            final String ext = path.getFileExtension();
+            valid = ext != null  &&
+                    (ext.equals(PVTableXMLPersistence.FILE_EXTENSION)  ||
+                     ext.equals(PVTableAutosavePersistence.FILE_EXTENSION));
+            if (! valid)
+                MessageDialog.openError(getSite().getShell(), Messages.Error, Messages.InvalidFileExtension);
+        }
         
         // Get file for the new resource's path.
         final IEditorInput new_input = new PathEditorInput(path);

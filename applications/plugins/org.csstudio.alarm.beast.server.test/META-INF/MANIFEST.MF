@@ -3,11 +3,11 @@ Bundle-SymbolicName: org.csstudio.alarm.beast.server.test
 Fragment-Host: org.csstudio.alarm.beast.server
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 4.0.101.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.2",
- org.csstudio.utility.test,
- org.csstudio.utility.pvmanager.epics,
- org.csstudio.utility.pvmanager.loc,
- org.csstudio.utility.pvmanager
-Import-Package: org.epics.pvmanager.jca, org.epics.pvmanager.loc
+ org.csstudio.utility.test
+Import-Package: org.csstudio.vtype.pv,
+ org.epics.pvmanager.jca,
+ org.epics.pvmanager.loc
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS

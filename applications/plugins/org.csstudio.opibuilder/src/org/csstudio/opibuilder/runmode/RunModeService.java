@@ -182,7 +182,7 @@ public class RunModeService {
 
 	public static void runOPIInView(final IPath path, 
 			final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Position position){
-		OPIView.setOpenFromUser(true);
+		OPIView.setOpenedByUser(true);
 		final RunnerInput runnerInput = new RunnerInput(path, displayOpenManager, macrosInput);
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 			
@@ -213,7 +213,7 @@ public class RunModeService {
 						}
 					}
 					
-					//Open a new view					
+					// Open a new view					
 					if(position != Position.DETACHED && position != Position.DEFAULT_VIEW &&
 							!(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
 						int openCode=0;
@@ -229,18 +229,22 @@ public class RunModeService {
 						if(openCode==0 ||openCode==Window.OK)
 							PerspectiveHelper.showPerspective(OPIRunnerPerspective.ID, window.getActivePage());						
 					}
-					
-					
-					String secondID =  OPIView.createNewInstance() + position.name();
-					IViewPart opiView = page.showView(
-							OPIView.ID,secondID, IWorkbenchPage.VIEW_ACTIVATE);					
-					if(opiView instanceof OPIView){
-						((OPIView)opiView).setOPIInput(runnerInput);
-						
-						if(position == Position.DETACHED)
-							SingleSourcePlugin.getUIHelper().detachView(opiView);
-					}
-				} catch (PartInitException e) {
+
+					// View will receive input from us, should ignore previous memento
+					OPIView.ignoreMemento();
+					// TODO Opening in selected location does not work this way
+					//      See https://bugs.eclipse.org/bugs/show_bug.cgi?id=408891, https://github.com/ControlSystemStudio/cs-studio/issues/142
+					final String secondID =  OPIView.createSecondaryID() + position.name();
+					final IViewPart view = page.showView(OPIView.ID, secondID, IWorkbenchPage.VIEW_ACTIVATE);					
+					if (! (view instanceof OPIView))
+					    throw new PartInitException("Expected OPIView, got " + view);
+					final OPIView opiView = (OPIView)view;
+					opiView.setOPIInput(runnerInput);
+					if (position == Position.DETACHED)
+						SingleSourcePlugin.getUIHelper().detachView(opiView);
+				}
+				catch (PartInitException e)
+				{
 					ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", path), e);
 				}
 			}
@@ -248,11 +252,8 @@ public class RunModeService {
 	}
 	
 	
-	
-	
-	
 	/**
-	 * @param displayModel
+	 * @param windowBounds
 	 */
 	private IWorkbenchWindow createNewWindow(Rectangle windowBounds) {
 		IWorkbenchWindow newWindow = null;
@@ -270,7 +271,4 @@ public class RunModeService {
 		}
 		return newWindow;
 	}
-
-
-
 }

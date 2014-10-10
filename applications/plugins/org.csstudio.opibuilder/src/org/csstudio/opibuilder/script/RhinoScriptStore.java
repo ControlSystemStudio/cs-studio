@@ -43,7 +43,7 @@ public class RhinoScriptStore extends AbstractScriptStore{
 	}
 
 	protected void initScriptEngine() throws Exception {
-		scriptContext = ScriptStoreFactory.getJavaScriptContext();
+		scriptContext = ScriptStoreFactory.getRhinoContext();
 		scriptScope = new ImporterTopLevel(scriptContext);
 		Object widgetController = Context.javaToJS(getEditPart(), scriptScope);
 		Object pvArrayObject = Context.javaToJS(getPvArray(), scriptScope);

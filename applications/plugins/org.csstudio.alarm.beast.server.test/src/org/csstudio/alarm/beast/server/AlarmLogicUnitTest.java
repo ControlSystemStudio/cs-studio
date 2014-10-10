@@ -258,6 +258,50 @@ public class AlarmLogicUnitTest
     }
 
     @Test
+    public void testLatchedAnnunciatedAlarmUndefined()
+    {
+        System.out.println("* Latched, annunciated: Major, Ack, Undefined, Ack, Major, OK");
+        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true);
+        logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+
+        // Follow into MAJOR alarm
+        logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
+        logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
+
+        // Ack'
+        logic.acknowledge(true);
+        logic.check(true, false, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR_ACK, "very high");
+
+        // Follow into INVALID alarm
+        logic.computeNewState("b", SeverityLevel.INVALID, "LINK");
+        logic.check(true, true, SeverityLevel.INVALID, "LINK", SeverityLevel.INVALID, "LINK");
+
+        // MAJOR is less severe, alarm severity stays at INVALID
+        logic.computeNewState("c", SeverityLevel.MAJOR, "very high");
+        logic.check(true, false, SeverityLevel.MAJOR, "very high", SeverityLevel.INVALID, "LINK");
+
+        // Acknowledge what's there right now, i.e. the MAJOR alarm, not the one that was latched
+        logic.acknowledge(true);
+        logic.check(true, false, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR_ACK, "very high");
+
+        // Follow into UNDEFINED alarm
+        logic.computeNewState("d", SeverityLevel.UNDEFINED, "Disconnected");
+        logic.check(true, true, SeverityLevel.UNDEFINED, "Disconnected", SeverityLevel.UNDEFINED, "Disconnected");
+
+        // Ack'
+        logic.acknowledge(true);
+        logic.check(true, false, SeverityLevel.UNDEFINED, "Disconnected", SeverityLevel.UNDEFINED_ACK, "Disconnected");
+
+        // MAJOR is less severe, stays UNDEFINED_ACK
+        logic.computeNewState("e", SeverityLevel.MAJOR, "very high");
+        logic.check(true, false, SeverityLevel.MAJOR, "very high", SeverityLevel.UNDEFINED_ACK, "Disconnected");
+
+        // OK
+        logic.computeNewState("f", SeverityLevel.OK, "OK");
+        logic.check(true, false, SeverityLevel.OK, "OK", SeverityLevel.OK, "OK");
+    }
+    
+    @Test
     public void testLatchedAnnunciatedMajMinMajAckMinOK()
     {
         System.out.println("* Latched, annunciated: Major, Minor, Major, Ack, Minor, OK.");

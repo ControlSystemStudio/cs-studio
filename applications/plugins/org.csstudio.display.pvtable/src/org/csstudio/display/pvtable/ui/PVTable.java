@@ -11,13 +11,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
+import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
+import org.csstudio.display.pvtable.model.SavedValue;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
@@ -29,10 +30,12 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -51,6 +54,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VEnum;
 import org.epics.vtype.VType;
 
 /** PV Table GUI
@@ -208,8 +212,7 @@ public class PVTable implements PVTableModelListener
                 tab_item.setChecked(item.isSelected());
             }
         });
-        
-        // Remaining columns are read-only
+        // Read-only time stamp
         createColumn(viewer, layout, Messages.Time, 50, 100,
             new PVTableCellLabelProvider()
             {
@@ -225,7 +228,8 @@ public class PVTable implements PVTableModelListener
                     updateCommonCellSettings(cell, item);
                 }
             });
-        createColumn(viewer, layout, Messages.Value, 100, 50,
+        // Editable value
+        final TableViewerColumn value_column = createColumn(viewer, layout, Messages.Value, 100, 50,
             new PVTableCellLabelProvider()
             {
                 @Override
@@ -240,6 +244,55 @@ public class PVTable implements PVTableModelListener
                     updateCommonCellSettings(cell, item);
                 }
             });
+        value_column.setEditingSupport(new EditingSupport(viewer)
+        {
+            /** When a combo box editor is created, its value must be the integer index */
+            boolean need_index = false;
+            
+            @Override
+            protected boolean canEdit(final Object element)
+            {
+                final PVTableItem item = (PVTableItem) element;
+                return item.isWritable();
+            }
+            
+            @Override
+            protected CellEditor getCellEditor(final Object element) 
+            {
+                final PVTableItem item = (PVTableItem) element;
+                final String[] options = item.getValueOptions();
+                if (options != null)
+                {
+                    need_index = true;
+                    return new ComboBoxCellEditor(table, options, SWT.READ_ONLY);
+                }
+                return new TextCellEditor(table);
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final PVTableItem item = (PVTableItem) element;
+                item.setValue(value.toString());
+            }
+            
+            @Override
+            protected Object getValue(final Object element)
+            {
+                final PVTableItem item = (PVTableItem) element;
+                final VType value = item.getValue();
+                if (need_index)
+                {
+                    if (value == null  ||  ! (value instanceof VEnum))
+                        return 0;
+                    return ((VEnum)value).getIndex();
+                }
+                if (value == null)
+                    return ""; //$NON-NLS-1$
+                return VTypeHelper.toString(value);
+            }
+        });
+        // Remaining columns are read-only
         createColumn(viewer, layout, Messages.Alarm, 100, 50,
             new PVTableCellLabelProvider()
             {
@@ -263,11 +316,11 @@ public class PVTable implements PVTableModelListener
                 public void update(final ViewerCell cell)
                 {
                     final PVTableItem item = (PVTableItem) cell.getElement();
-                    final VType value = item.getSavedValue();
+                    final SavedValue value = item.getSavedValue();
                     if (value == null)
                         cell.setText(""); //$NON-NLS-1$
                     else
-                        cell.setText(VTypeHelper.toString(value));
+                        cell.setText(value.toString());
                     updateCommonCellSettings(cell, item);
                 }
             });

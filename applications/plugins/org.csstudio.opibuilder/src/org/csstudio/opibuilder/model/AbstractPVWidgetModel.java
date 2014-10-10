@@ -53,6 +53,10 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel implemen
 		return getDelegate().isBackColorAlarmSensitve();
 	}
 	
+	public boolean isAlarmPulsing(){
+		return getDelegate().isAlarmPulsing();
+	}	
+	
 	public String getPVName(){
 		return getDelegate().getPVName();
 	}
