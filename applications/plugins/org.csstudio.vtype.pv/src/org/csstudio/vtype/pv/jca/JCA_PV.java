@@ -81,6 +81,8 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     {
         super(name);
         logger.fine("JCA PV " + base_name);
+        // Read-only until connected and we learn otherwise
+        notifyListenersOfPermissions(true);
         // .RTYP does not provide meta data
         plain_dbr = base_name.endsWith(".RTYP");
         channel = JCAContext.getInstance().getContext().createChannel(base_name, this);
@@ -94,6 +96,8 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         if (ev.isConnected())
         {
             logger.fine(getName() + " connected");
+            final boolean is_readonly = ! channel.getWriteAccess();
+            notifyListenersOfPermissions(is_readonly);
             getMetaData(); // .. and start subscription
         }
         else
