@@ -7,14 +7,13 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableItemListener;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVPool;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VType;
@@ -46,7 +45,12 @@ public class PVTableItemTest implements PVTableItemListener
         TestSettings.setup();
     }
 
-    
+    @Override
+    public void tableItemSelectionChanged(final PVTableItem item)
+    {
+        System.out.println(item.getName() + (item.isSelected() ? " is selected" : " is not selected"));
+    }
+
     @Override
     public void tableItemChanged(final PVTableItem item)
     {
@@ -61,7 +65,8 @@ public class PVTableItemTest implements PVTableItemListener
     @Test(timeout=8000)
     public void testPVTableItem() throws Exception
     {
-        final PVWriter<Object> pv = PVManager.write(channel(TestSettings.NAME)).async();
+        
+        final PV pv = PVPool.getPV(TestSettings.NAME);
         pv.write(3.14);
         
         final PVTableItem item = new PVTableItem(TestSettings.NAME, Preferences.getTolerance(), null, this);

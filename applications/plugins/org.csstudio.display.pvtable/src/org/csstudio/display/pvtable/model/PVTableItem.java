@@ -7,23 +7,19 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
-import static org.epics.util.time.TimeDuration.ofSeconds;
-
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.display.pvtable.Plugin;
-import org.epics.pvmanager.PV;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
+import org.csstudio.display.pvtable.Preferences;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListener;
+import org.csstudio.vtype.pv.PVPool;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VByteArray;
 import org.epics.vtype.VEnum;
+import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VType;
@@ -33,18 +29,15 @@ import org.epics.vtype.ValueFactory;
  *
  *  @author Kay Kasemir
  */
-public class PVTableItem implements PVReaderListener<VType>
+public class PVTableItem implements PVListener
 {
-    /** Period for throttling updates from individual PV, i.e. PV attached to this item */
-    private static final double READ_PERIOD_SECS = 0.2;
-
     final private PVTableItemListener listener;
 
     private boolean selected = true;
 
     private String name;
     
-    private volatile VType value = null;
+    private volatile VType value;
 
     private volatile SavedValue saved = null;
     
@@ -52,7 +45,7 @@ public class PVTableItem implements PVReaderListener<VType>
     
     private double tolerance;
     
-    private PV<VType, Object> pv;
+    final private AtomicReference<PV> pv = new AtomicReference<PV>(null);
 
     /** Initialize
      * 
@@ -63,23 +56,46 @@ public class PVTableItem implements PVReaderListener<VType>
      */
     public PVTableItem(final String name, final double tolerance, final SavedValue saved, final PVTableItemListener listener)
     {
+        this(name, tolerance, saved, listener, ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
+    }
+
+    /** Initialize
+     * 
+     *  @param name
+     *  @param tolerance
+     *  @param saved
+     *  @param listener
+     */
+    public PVTableItem(final String name, final double tolerance, final SavedValue saved, final PVTableItemListener listener, final VType initial_value)
+    {
         this.listener = listener;
         this.tolerance = tolerance;
         this.saved = saved;
+        this.value = initial_value;
         determineIfChanged();
         createPV(name);
     }
-
+    
     /** Set PV name and create reader/writer
      *  @param name PV name
      */
     private void createPV(final String name)
     {
         this.name = name;
-        if (name.isEmpty())
-            pv = null;
-        else
-            pv = PVManager.readAndWrite(latestValueOf(vType(name))).readListener(this).timeout(ofSeconds(30.0)).synchWriteAndMaxReadRate(ofSeconds(READ_PERIOD_SECS));
+        if (! name.isEmpty())
+        {
+            try
+            {
+                PV new_pv = PVPool.getPV(name);
+                new_pv.addListener(this);
+                pv.set(new_pv);
+            }
+            catch (Exception ex)
+            {
+                Plugin.getLogger().log(Level.WARNING, "Cannot create PV " + name, ex);
+                updateValue(ValueFactory.newVString("PV Error", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
+            }
+        }
     }
 
     /** @return <code>true</code> if item is selected to be restored */
@@ -92,6 +108,7 @@ public class PVTableItem implements PVReaderListener<VType>
     public void setSelected(final boolean selected)
     {
         this.selected = selected;
+        listener.tableItemSelectionChanged(this);
     }
 
     /** @return Returns the name of the 'main' PV. */
@@ -111,31 +128,39 @@ public class PVTableItem implements PVReaderListener<VType>
     {
         if (name.equals(new_name))
             return false;
-        if (pv != null)
-            pv.close();
+        dispose();
         saved = null;
         value = null;
         has_changed = false;
         createPV(new_name);
         return true;
     }
-
-    /** PVReaderListener
+    
+    /** PVListener
      *  {@inheritDoc}
      */
     @Override
-    public void pvChanged(final PVReaderEvent<VType> event)
+    public void permissionsChanged(final PV pv, final boolean readonly)
     {
-        final PVReader<VType> pv = event.getPvReader();
-        
-        final Exception error = pv.lastException();
-        if (error != null)
-        {
-            Logger.getLogger(PVTableItem.class.getName()).log(Level.WARNING, "Error from " + name, error); //$NON-NLS-1$
-            updateValue(ValueFactory.newVString(error.getMessage(), ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "PV Error"), ValueFactory.timeNow())); //$NON-NLS-1$
-            return;
-        }
-        updateValue(pv.getValue());
+        listener.tableItemChanged(this);
+    }
+
+    /** PVListener
+     *  {@inheritDoc}
+     */
+    @Override
+    public void valueChanged(final PV pv, final VType value)
+    {
+        updateValue(value);
+    }
+
+    /** PVListener
+     *  {@inheritDoc}
+     */
+    @Override
+    public void disconnected(final PV pv)
+    {
+        updateValue(ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"), ValueFactory.timeNow())); //$NON-NLS-1$        
     }
 
     /** @param new_value New value of item */
@@ -165,7 +190,8 @@ public class PVTableItem implements PVReaderListener<VType>
     /** @return <code>true</code> when PV is writable */
     public boolean isWritable()
     {
-        return pv != null  &&  pv.isWriteConnected();
+        final PV the_pv = pv.get();
+        return the_pv != null  &&  the_pv.isReadonly() == false;
     }
 
     /** @param new_value Value to write to the item's PV */
@@ -174,9 +200,12 @@ public class PVTableItem implements PVReaderListener<VType>
         new_value = new_value.trim();
         try
         {
-            final VType pv_type = pv.getValue();
+            final PV the_pv = pv.get();
+            if (the_pv == null)
+                throw new Exception("Not connected");
+            final VType pv_type = the_pv.read();
             if (pv_type instanceof VNumber)
-                pv.write(Double.parseDouble(new_value));
+                the_pv.write(Double.parseDouble(new_value));
             else if (pv_type instanceof VEnum)
             {   // Value is displayed as "6 = 1 second"
                 // Locate the initial index, ignore following text
@@ -184,14 +213,14 @@ public class PVTableItem implements PVReaderListener<VType>
                 final int index = end > 0
                     ? Integer.valueOf(new_value.substring(0, end))
                     : Integer.valueOf(new_value);
-                pv.write(index);
+                    the_pv.write(index);
             }
-            else if (pv_type instanceof VByteArray)
+            else if (pv_type instanceof VByteArray  &&  Preferences.treatByteArrayAsString())
             {   // Write string as byte array WITH '\0' TERMINATION!
                 final byte[] bytes = new byte[new_value.length() + 1];
                 System.arraycopy(new_value.getBytes(), 0, bytes, 0, new_value.length());
                 bytes[new_value.length()] = '\0';
-                pv.write(bytes);
+                the_pv.write(bytes);
             }
             else if (pv_type instanceof VNumberArray)
             {
@@ -200,10 +229,19 @@ public class PVTableItem implements PVReaderListener<VType>
                 final double[] data = new double[N];
                 for (int i=0; i<N; ++i)
                     data[i] = Double.parseDouble(elements[i]);
-                pv.write(data);
+                the_pv.write(data);
+            }
+            else if (pv_type instanceof VEnumArray)
+            {
+                final String[] elements = new_value.split("\\s*,\\s*");
+                final int N = elements.length;
+                final int[] data = new int[N];
+                for (int i=0; i<N; ++i)
+                    data[i] = (int) Double.parseDouble(elements[i]);
+                the_pv.write(data);
             }
             else // Write other types as string
-                pv.write(new_value);
+                the_pv.write(new_value);
         }
         catch (Throwable ex)
         {
@@ -229,11 +267,12 @@ public class PVTableItem implements PVReaderListener<VType>
     /** Write saved value back to PV (if item is selected) */
     public void restore()
     {
-        if (! isSelected()  ||  ! isWritable())
+        final PV the_pv = pv.get();
+        if (the_pv == null  ||  ! isSelected()  ||  ! isWritable())
             return;
         try
         {
-            saved.restore(pv);
+            saved.restore(the_pv);
         }
         catch (Exception ex)
         {
@@ -289,8 +328,12 @@ public class PVTableItem implements PVReaderListener<VType>
     /** Must be called to release resources when item no longer in use */
     public void dispose()
     {
-        if (pv != null)
-            pv.close();
+        final PV the_pv = pv.getAndSet(null);
+        if (the_pv != null)
+        {
+            the_pv.removeListener(this);
+            PVPool.releasePV(the_pv);
+        }
     }
     
     @SuppressWarnings("nls")

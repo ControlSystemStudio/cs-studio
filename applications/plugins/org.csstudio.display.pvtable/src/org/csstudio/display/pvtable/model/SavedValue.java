@@ -10,11 +10,12 @@ package org.csstudio.display.pvtable.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.epics.pvmanager.PV;
+import org.csstudio.vtype.pv.PV;
 import org.epics.util.array.IteratorDouble;
 import org.epics.util.array.IteratorNumber;
 import org.epics.vtype.VDoubleArray;
 import org.epics.vtype.VEnum;
+import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
@@ -69,9 +70,14 @@ abstract public class SavedValue
         }
         if (value instanceof VStringArray)
             return new SavedArrayValue(((VStringArray)value).getData());
-        // No VEnumArray support at this time..
-        else
-            throw new Exception("Cannot handle " + value);
+        if (value instanceof VEnumArray)
+        {   // Save indices
+            final IteratorNumber values = ((VEnumArray)value).getIndexes().iterator();
+            while (values.hasNext())
+                texts.add(Long.toString(values.nextLong()));
+            return new SavedArrayValue(texts);
+        }
+        throw new Exception("Cannot handle " + value);
     }
 
     /** Compare saved value against current value of a PV
@@ -86,7 +92,7 @@ abstract public class SavedValue
      *  @param pv PV to write
      *  @throws Exception on error
      */
-    abstract public void restore(final PV<VType, Object> pv) throws Exception;
+    abstract public void restore(final PV pv) throws Exception;
     
     /** @return String representation for display purpose */
     @Override

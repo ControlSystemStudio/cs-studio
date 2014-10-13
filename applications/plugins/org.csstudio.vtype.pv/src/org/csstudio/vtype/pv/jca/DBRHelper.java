@@ -75,11 +75,16 @@ public class DBRHelper
         }
 
         if (dbr instanceof DBR_String)
-            return new VTypeForString((DBR_String) dbr);
+            if (dbr.getCount() > 1)
+                return new VTypeForStringArray((DBR_String) dbr);
+            else
+                return new VTypeForString((DBR_String) dbr);
 
         if (dbr instanceof DBR_TIME_Enum)
         {
             final LABELS enum_meta = (metadata instanceof LABELS) ? (LABELS) metadata : null;
+            if (dbr.getCount() > 1)
+                return new VTypeForEnumArray(enum_meta, (DBR_TIME_Enum) dbr);
             return new VTypeForEnum(enum_meta, (DBR_TIME_Enum) dbr);
         }
 

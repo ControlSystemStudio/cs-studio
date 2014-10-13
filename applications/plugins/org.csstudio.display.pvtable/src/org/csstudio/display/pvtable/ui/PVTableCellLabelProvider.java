@@ -21,6 +21,8 @@ abstract public class PVTableCellLabelProvider extends CellLabelProvider
     public String getToolTipText(final Object element)
     {
         final PVTableItem item = (PVTableItem) element;
+        if (item == PVTableModelContentProvider.NEW_ITEM)
+            return "Add new PV to table by adding its name";
         final String text = item.toString();
         // Limit size of tool tip (in case of array data)
         if (text.length() > TOOL_TIP_MAX)

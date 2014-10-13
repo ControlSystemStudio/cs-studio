@@ -81,6 +81,8 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     {
         super(name);
         logger.fine("JCA PV " + base_name);
+        // Read-only until connected and we learn otherwise
+        notifyListenersOfPermissions(true);
         // .RTYP does not provide meta data
         plain_dbr = base_name.endsWith(".RTYP");
         channel = JCAContext.getInstance().getContext().createChannel(base_name, this);
@@ -94,6 +96,8 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         if (ev.isConnected())
         {
             logger.fine(getName() + " connected");
+            final boolean is_readonly = ! channel.getWriteAccess();
+            notifyListenersOfPermissions(is_readonly);
             getMetaData(); // .. and start subscription
         }
         else
@@ -456,6 +460,13 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
                 channel.put((float[])new_value, put_listener);
             else
                 channel.put((float[])new_value);
+        }
+        else if (new_value instanceof String[])
+        {
+            if (put_listener != null)
+                channel.put((String[])new_value, put_listener);
+            else
+                channel.put((String[])new_value);
         }
         else
             throw new Exception("Cannot handle type "

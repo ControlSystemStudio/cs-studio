@@ -167,7 +167,7 @@ public class PVTableXMLPersistence extends PVTablePersistence
             final PVTableItem item = model.getItem(i);
             XMLWriter.start(out, 2, PV);
             out.println();
-            XMLWriter.XML(out, 3, SELECTED, true);
+            XMLWriter.XML(out, 3, SELECTED, item.isSelected());
             XMLWriter.XML(out, 3, NAME, item.getName());
             XMLWriter.XML(out, 3, TOLERANCE, item.getTolerance());
             final SavedValue saved = item.getSavedValue();
