@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.logbook.viewer.feature"
-      label="Log Viewer Feature"
-      version="1.0.0.qualifier">
+      id="org.csstudio.channelfinder.feature"
+      label="Channelfinder feature"
+      version="1.1.2.qualifier"
+      provider-name="Gabriele Carcassi &lt;carcassi@bnl.gov&gt;, Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -16,29 +17,26 @@
       [Enter License Description here.]
    </license>
 
+   <url>
+      <update label="CS-Studio update site" url="http://controlsystemstudio.org/applications/4.0/updates"/>
+   </url>
+
    <plugin
-         id="org.csstudio.logbook.viewer"
+         id="org.csstudio.autocomplete.channelfinder"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.logbook.ui.extra"
+         id="org.csstudio.service.channelfinder"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.nebula.widgets.grid"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete.logbook"
+         id="org.csstudio.utility.channelfinder.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

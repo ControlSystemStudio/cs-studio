@@ -21,6 +21,7 @@
     <module>org.csstudio.boy.feature</module>
     <module>org.csstudio.alarm.beast.ui.feature</module>
     <module>org.csstudio.channel.feature</module>
+    <module>org.csstudio.channelfinder.feature</module>
     <module>org.csstudio.email.feature</module>
     <module>org.csstudio.logbook.viewer.feature</module>
     <module>org.csstudio.olog.feature</module>
