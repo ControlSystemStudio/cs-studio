@@ -33,7 +33,7 @@ public class PVTableModelContentProvider implements ILazyContentProvider
 		{
 			// NOP
 		}
-	});
+	}, null);
 	
 	static
 	{
