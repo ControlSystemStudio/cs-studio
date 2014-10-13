@@ -15,7 +15,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.csstudio.display.pvtable.Preferences;
-import org.epics.vtype.VType;
 
 /** A PV table model, i.e. list of {@link PVTableItem}s
  *
@@ -104,7 +103,7 @@ public class PVTableModel implements PVTableItemListener
 	 *  @param saved Saved value, may be <code>null</code>
 	 *  @return Added item
 	 */
-	public PVTableItem addItem(final String pv_name, final double tolerance, final VType saved)
+	public PVTableItem addItem(final String pv_name, final double tolerance, final SavedValue saved)
 	{
 		final PVTableItem item = new PVTableItem(pv_name, tolerance, saved, this);
 		items.add(item);

@@ -56,9 +56,10 @@ public class ConsoleCommands implements CommandProvider
     public String getHelp()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append("---ScanServer commands---\n");
+        buf.append("---Alarm Server commands---\n");
         buf.append("\tdump                - Dump complete alarm tree\n");
         buf.append("\tpvs                 - List PVs\n");
+        buf.append("\tpvs -a              - List PVs in alarm\n");
         buf.append("\tpvs -d              - List disconnected PVs\n");
         buf.append("\tpvs 'partial_name'  - List PVs where part the name matches\n");
         buf.append("\tlsa '/path/to/item' - List alarm tree based on path\n");
@@ -94,9 +95,18 @@ public class ConsoleCommands implements CommandProvider
     /** 'pvs' command */
     public Object _pvs(final CommandInterpreter intp)
     {
-        final String arg = intp.nextArgument();
-        final boolean only_disconnected = "-d".equals(arg);
-        final String partial_match = only_disconnected ? null : arg;
+    	boolean only_alarm = false;
+    	boolean only_disconnected = false;
+    	String partial_match = null;
+        for (String arg = intp.nextArgument(); arg != null; arg = intp.nextArgument())
+        {
+        	if ("-a".equals(arg))
+        		only_alarm = true;
+        	else if ("-d".equals(arg))
+        		only_disconnected = true;
+        	else
+        		partial_match = arg;
+        }
         try
         {
             final AlarmPV[] pvs = server.getPVs();
@@ -104,6 +114,8 @@ public class ConsoleCommands implements CommandProvider
             {
                 if (only_disconnected  &&  pv.isConnected())
                     continue;
+                if (only_alarm && ! pv.getAlarmLogic().getAlarmState().getSeverity().isActive())
+                	continue;
                 if (partial_match == null   ||   pv.getName().contains(partial_match))
                     intp.println(pv.toString());
             }

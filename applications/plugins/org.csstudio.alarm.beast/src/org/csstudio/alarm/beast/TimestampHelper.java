@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 @SuppressWarnings("nls")
 public class TimestampHelper
 {
-    final private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:SS");
+    final private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
    
     /** Format EPICS time stamp as string
      *  @param timestamp {@link org.epics.util.time.Timestamp}

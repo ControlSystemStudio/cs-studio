@@ -108,7 +108,25 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
 		guiRefreshCycleEditor.getTextControl(parent).setToolTipText(
 				"The fastest refresh cycle for OPI GUI in millisecond");
 		addField(guiRefreshCycleEditor);	
-	
+			
+		IntegerFieldEditor pulsingMinorPeriodFieldEditor = 
+				new IntegerFieldEditor(PreferencesHelper.PULSING_ALARM_MINOR_PERIOD, 
+						"Time period of MINOR alarm if pulsing alarm selected (ms)", parent);
+		pulsingMinorPeriodFieldEditor.setValidRange(100, 10000);
+		pulsingMinorPeriodFieldEditor.getTextControl(parent).setToolTipText(
+					"If the pulsing alarm box is checked for a widget that monitors a PV, " +
+					"then what is the time period of the pulse with the PV is in MINOR alarm severity");
+		addField(pulsingMinorPeriodFieldEditor);		
+		
+		IntegerFieldEditor pulsingMajorPeriodFieldEditor = 
+				new IntegerFieldEditor(PreferencesHelper.PULSING_ALARM_MAJOR_PERIOD, 
+						"Time period of MINOR alarm if pulsing alarm selected (ms)", parent);
+		pulsingMajorPeriodFieldEditor.setValidRange(100, 10000);		
+		pulsingMajorPeriodFieldEditor.getTextControl(parent).setToolTipText(
+					"If the pulsing alarm box is checked for a widget that monitors a PV, " +
+					"then what is the time period of the pulse with the PV is in MINOR alarm severity");
+		addField(pulsingMajorPeriodFieldEditor);		
+		
 		String[] allPVFactories = SimplePVLayer.getAllPVFactoryExtensions();
 		String[][] entries = new String[allPVFactories.length][2];
 		for(int i=0; i<allPVFactories.length; i++){

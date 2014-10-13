@@ -247,6 +247,11 @@ public class ArrayModel extends AbstractContainerModel implements IPVWidgetModel
 	public String getPVName(){
 		return getDelegate().getPVName();
 	}
+	
+	public boolean isAlarmPulsing(){
+		return getDelegate().isAlarmPulsing();
+	}	
+	
 		
 	public void setArrayLength(int length){
 		getProperty(PROP_ARRAY_LENGTH).setPropertyValue(length);

@@ -30,38 +30,11 @@
             file="toc.xml"
             primary="true">
       </toc>
+      <toc
+            file="tocChangelog.xml"
+            primary="false">
+      </toc>
    </extension>
-   <!-- extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.display.pvtable"
-            label="CSS Action Set"
-            visible="true">
-         <menu
-               id="org.csstudio"
-               label="CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <menu
-               id="org.csstudio.display"
-               label="Display"
-               path="org.csstudio/additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               id="org.csstudio.display.pvtable.NewPVTableAction"
-               class="org.csstudio.display.pvtable.NewPVTableAction"
-               icon="icons/table.gif"
-               label="PV Table"
-               menubarPath="org.csstudio/org.csstudio.display/content"
-               style="push"
-               tooltip="Open a new PV Table"/>
-      </actionSet>
-   </extension -->
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution

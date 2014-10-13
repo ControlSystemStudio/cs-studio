@@ -23,6 +23,13 @@ public interface IPVWidgetModel {
 	 * The alarm colors can be redefined in color macro file.   
 	 */
 	public static final String PROP_BACKCOLOR_ALARMSENSITIVE= "backcolor_alarm_sensitive"; //$NON-NLS-1$
+	
+	/**
+	 * If this is true, the any alarm sensitive change will be pulsed instead of static
+	 * MAJOR pulses once every 1.5s, MINOR every 3s, DISCONNECTED doesn't pulse.   
+	 */
+	public static final String PROP_ALARM_PULSING= "alarm_pulsing"; //$NON-NLS-1$	
+		
 	/**
 	 * The property which hold the value of input PV.
 	 */
@@ -38,6 +45,8 @@ public interface IPVWidgetModel {
 	public boolean isForeColorAlarmSensitve();
 	
 	public boolean isBackColorAlarmSensitve();
+	
+	public boolean isAlarmPulsing();
 	
 	public String getPVName();
 	

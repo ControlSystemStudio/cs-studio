@@ -11,15 +11,21 @@ import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
 import static org.epics.util.time.TimeDuration.ofSeconds;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.display.pvtable.Plugin;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VByteArray;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
@@ -40,7 +46,7 @@ public class PVTableItem implements PVReaderListener<VType>
     
     private volatile VType value = null;
 
-    private volatile VType saved = null;
+    private volatile SavedValue saved = null;
     
     private volatile boolean has_changed;
     
@@ -55,7 +61,7 @@ public class PVTableItem implements PVReaderListener<VType>
      *  @param saved
      *  @param listener
      */
-    public PVTableItem(final String name, final double tolerance, final VType saved, final PVTableItemListener listener)
+    public PVTableItem(final String name, final double tolerance, final SavedValue saved, final PVTableItemListener listener)
     {
         this.listener = listener;
         this.tolerance = tolerance;
@@ -145,27 +151,98 @@ public class PVTableItem implements PVReaderListener<VType>
     {
         return value;
     }
-        
+    
+    /** @return Options for current value, not <code>null</code> if not enumerated */
+    public String[] getValueOptions()
+    {
+        final VType copy = value;
+        if (! (copy instanceof VEnum))
+            return null;
+        final List<String> options = ((VEnum)copy).getLabels();
+        return options.toArray(new String[options.size()]);
+    }
+
+    /** @return <code>true</code> when PV is writable */
+    public boolean isWritable()
+    {
+        return pv != null  &&  pv.isWriteConnected();
+    }
+
+    /** @param new_value Value to write to the item's PV */
+    public void setValue(String new_value)
+    {
+        new_value = new_value.trim();
+        try
+        {
+            final VType pv_type = pv.getValue();
+            if (pv_type instanceof VNumber)
+                pv.write(Double.parseDouble(new_value));
+            else if (pv_type instanceof VEnum)
+            {   // Value is displayed as "6 = 1 second"
+                // Locate the initial index, ignore following text
+                final int end = new_value.indexOf(' ');
+                final int index = end > 0
+                    ? Integer.valueOf(new_value.substring(0, end))
+                    : Integer.valueOf(new_value);
+                pv.write(index);
+            }
+            else if (pv_type instanceof VByteArray)
+            {   // Write string as byte array WITH '\0' TERMINATION!
+                final byte[] bytes = new byte[new_value.length() + 1];
+                System.arraycopy(new_value.getBytes(), 0, bytes, 0, new_value.length());
+                bytes[new_value.length()] = '\0';
+                pv.write(bytes);
+            }
+            else if (pv_type instanceof VNumberArray)
+            {
+                final String[] elements = new_value.split("\\s*,\\s*");
+                final int N = elements.length;
+                final double[] data = new double[N];
+                for (int i=0; i<N; ++i)
+                    data[i] = Double.parseDouble(elements[i]);
+                pv.write(data);
+            }
+            else // Write other types as string
+                pv.write(new_value);
+        }
+        catch (Throwable ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Cannot set " + getName() + " = " + new_value, ex);
+        }
+    }
+   
+    
     /** Save current value as saved value */
     public void save()
     {
-        saved = value;
+        try
+        {
+            saved = SavedValue.forCurrentValue(value);
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Cannot save value of " + getName(), ex);
+        }
         determineIfChanged();
     }
 
     /** Write saved value back to PV (if item is selected) */
     public void restore()
     {
-        if (! isSelected())
+        if (! isSelected()  ||  ! isWritable())
             return;
-        final Object basic_value = VTypeHelper.getValue(saved);
-        if (basic_value == null)
-            return;
-        pv.write(basic_value);
+        try
+        {
+            saved.restore(pv);
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Error restoring " + getName(), ex);
+        }
     }
 
     /** @return Returns the saved_value. */
-    public VType getSavedValue()
+    public SavedValue getSavedValue()
     {
         return saved;
     }
@@ -193,13 +270,20 @@ public class PVTableItem implements PVReaderListener<VType>
     /** Update <code>has_changed</code> based on current and saved value */
     private void determineIfChanged()
     {
-        final VType saved_value = saved;
+        final SavedValue saved_value = saved;
         if (saved_value == null)
         {
             has_changed = false;
             return;
         }
-        has_changed = ! VTypeHelper.equalValue(value, saved_value, tolerance);
+        try
+        {
+            has_changed = ! saved_value.isEqualTo(value, tolerance);
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Change test failed for " + getName(), ex);
+        }
     }
     
     /** Must be called to release resources when item no longer in use */
@@ -214,14 +298,17 @@ public class PVTableItem implements PVReaderListener<VType>
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append(name).append(" = ").append(VTypeHelper.toString(value));
+        buf.append(name);
+        if (! isWritable())
+            buf.append(" (read-only)");
+        buf.append(" = ").append(VTypeHelper.toString(value));
         if (saved != null)
         {
             if (has_changed)
                 buf.append(" ( != ");
             else
                 buf.append(" ( == ");
-            buf.append(VTypeHelper.toString(saved)).append(" +- ").append(tolerance).append(")");
+            buf.append(saved.toString()).append(" +- ").append(tolerance).append(")");
         }
         return buf.toString();
     }
