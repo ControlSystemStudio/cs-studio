@@ -152,6 +152,9 @@
 									<id>org.hibernate:hibernate-validator:4.3.0.Final</id>
 								</artifact>
 								<artifact>
+									<id>org.glassfish:javax.json:1.0.4</id>
+								</artifact>
+								<artifact>
 									<id>org.jdom:jdom:1.1</id>
 								</artifact>
 								<artifact>
@@ -264,7 +267,6 @@
 								<artifact>
 									<id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 							</artifacts>
 						</configuration>
