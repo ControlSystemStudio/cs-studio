@@ -7,10 +7,8 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable;
 
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.loc.LocalDataSource;
-import org.epics.pvmanager.sim.SimulationDataSource;
+import org.csstudio.vtype.pv.PVPool;
+import org.csstudio.vtype.pv.local.LocalPVFactory;
 
 /** Test settings
  *  @author Kay Kasemir
@@ -22,10 +20,7 @@ public class TestSettings
 
     public static void setup()
     {
-        final CompositeDataSource sources = new CompositeDataSource();
-        sources.putDataSource("loc", new LocalDataSource());
-        sources.putDataSource("sim", new SimulationDataSource());
-        sources.setDefaultDataSource("loc");
-        PVManager.setDefaultDataSource(sources);
+        PVPool.addPVFactory(new LocalPVFactory());
+        PVPool.setDefaultType(LocalPVFactory.TYPE);
     }
 }

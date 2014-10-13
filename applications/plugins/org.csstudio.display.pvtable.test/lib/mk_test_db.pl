@@ -1,6 +1,6 @@
 
 
-for ($i=1; $i<2000; ++$i)
+for ($i=1; $i<10000; ++$i)
 {
     print <<END
 record(calc, "test$i")

@@ -6,7 +6,7 @@ print <<END
 END
 ;
 
-for ($i=1; $i<1000; ++$i)
+for ($i=1; $i<10000; ++$i)
 {
     print <<END
         <pv> <name>test$i</name> </pv>
