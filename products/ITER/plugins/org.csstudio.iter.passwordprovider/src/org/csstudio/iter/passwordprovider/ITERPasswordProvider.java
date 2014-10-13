@@ -10,28 +10,27 @@ package org.csstudio.iter.passwordprovider;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.net.URI;
 import java.util.logging.Level;
 
 import javax.crypto.spec.PBEKeySpec;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.security.storage.provider.IPreferencesContainer;
 import org.eclipse.equinox.security.storage.provider.PasswordProvider;
 
 public class ITERPasswordProvider extends PasswordProvider {
 
-	private static String CODAC_CONF_PATH_KEY = "CODAC_CONF";
+	final public static String FILENAME = "css.key";
 
 	@Override
 	public PBEKeySpec getPassword(final IPreferencesContainer container,
 			final int passwordType) {
-		String path = Preferences.getCSSKeyPath();
-		if (path == null || path.isEmpty())
-			path = System.getenv(CODAC_CONF_PATH_KEY) + "/css/css.key";
-		File keyFile = new File(path);
-		BufferedReader reader = null;
 		String key = "";
 		try {
-			reader = new BufferedReader(new FileReader(keyFile));
+			URI path = Platform.getInstallLocation().getDataArea(FILENAME).toURI();
+			File keyFile = new File(path);
+			BufferedReader reader = new BufferedReader(new FileReader(keyFile));
 			key = reader.readLine();
 			reader.close();
 		} catch (Exception e) {
