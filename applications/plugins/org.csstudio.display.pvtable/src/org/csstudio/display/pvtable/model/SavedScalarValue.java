@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
-import org.epics.pvmanager.PV;
+import org.csstudio.vtype.pv.PV;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VFloat;
@@ -56,10 +56,10 @@ public class SavedScalarValue extends SavedValue
     }
     
     /** {@inheritDoc} */
-    public void restore(final PV<VType, Object> pv) throws Exception
+    public void restore(final PV pv) throws Exception
     {
         // Determine what type to write based on current value of the PV
-        final VType pv_type = pv.getValue();
+        final VType pv_type = pv.read();
         if ((pv_type instanceof VDouble) || (pv_type instanceof VFloat))
             pv.write(Double.parseDouble(saved_value));
         else if (pv_type instanceof VNumber)
