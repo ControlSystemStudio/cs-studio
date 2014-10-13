@@ -143,7 +143,6 @@ public class PVTableItem implements PVListener
     @Override
     public void permissionsChanged(final PV pv, final boolean readonly)
     {
-        System.out.println(pv.getName() + (readonly ? " is read-only" : " can be written"));
         listener.tableItemChanged(this);
     }
 
