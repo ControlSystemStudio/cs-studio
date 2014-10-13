@@ -22,6 +22,7 @@ import org.csstudio.vtype.pv.PVPool;
 import org.csstudio.vtype.pv.jca.JCA_PV;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
 import org.epics.vtype.VEnumArray;
+import org.epics.vtype.VStringArray;
 import org.epics.vtype.VType;
 import org.junit.Before;
 import org.junit.Test;
@@ -153,7 +154,7 @@ public class JCAPVTest implements PVListener
         System.out.println("Done.");
     }
 
-    @Test//(timeout=5000)
+    @Test(timeout=5000)
     public void testEnumArray() throws Exception
     {
         final PV pv = PVPool.getPV("TestEnumArray");
@@ -178,7 +179,31 @@ public class JCAPVTest implements PVListener
         System.out.println("Done.");
     }
 
-    
+    @Test//(timeout=5000)
+    public void testStringArray() throws Exception
+    {
+        final PV pv = PVPool.getPV("TestStringArray");
+        pv.addListener(this);
+        updates.await();
+        
+        // Write known value
+        pv.asyncWrite(new String[] { "Hi", "there" }).get(5, TimeUnit.SECONDS);
+        // Check readback
+        final VType value = pv.asyncRead().get(5, TimeUnit.SECONDS);
+        assertThat(value, instanceOf(VStringArray.class));
+        final VStringArray str_val = (VStringArray) value;
+        System.out.println(str_val);
+        assertThat(str_val.getData().size(), equalTo(10));
+        assertThat(str_val.getData().get(0), equalTo("Hi"));
+        assertThat(str_val.getData().get(1), equalTo("there"));
+        // Write other value, so next time the test runs it'll start with this
+        pv.asyncWrite(new String[] { "Bye", "for", "now" }).get(5, TimeUnit.SECONDS);
+        
+        pv.removeListener(this);
+        PVPool.releasePV(pv);
+        System.out.println("Done.");
+    }
+
     @Test(timeout=5000)
     public void testReadWithCallback() throws Exception
     {

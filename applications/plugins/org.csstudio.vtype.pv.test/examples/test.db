@@ -5,3 +5,9 @@ record(waveform, "TestEnumArray")
     field(FTVL, "ENUM")
     field(NELM, "10")
 }
+
+record(waveform, "TestStringArray")
+{
+    field(FTVL, "STRING")
+    field(NELM, "10")
+}

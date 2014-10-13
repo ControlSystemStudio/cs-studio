@@ -457,6 +457,13 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             else
                 channel.put((float[])new_value);
         }
+        else if (new_value instanceof String[])
+        {
+            if (put_listener != null)
+                channel.put((String[])new_value, put_listener);
+            else
+                channel.put((String[])new_value);
+        }
         else
             throw new Exception("Cannot handle type "
                                     + new_value.getClass().getName());
