@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
+import org.csstudio.display.pvtable.Preferences;
 import org.epics.util.array.IteratorInt;
 import org.epics.util.array.IteratorNumber;
 import org.epics.util.array.ListByte;
@@ -91,7 +92,7 @@ public class VTypeHelper
         }
         if (value instanceof VString)
             return ((VString)value).getValue();
-        if (value instanceof VByteArray)
+        if (value instanceof VByteArray  &&  Preferences.treatByteArrayAsString())
         {   // Check if byte array can be displayed as ASCII text
             final ListByte data = ((VByteArray)value).getData();
             byte[] bytes = new byte[data.size()];

@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.csstudio.display.pvtable.Plugin;
+import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
@@ -30,9 +31,6 @@ import org.epics.vtype.ValueFactory;
  */
 public class PVTableItem implements PVListener
 {
-    /** Period for throttling updates from individual PV, i.e. PV attached to this item */
-    private static final double READ_PERIOD_SECS = 0.2;
-
     final private PVTableItemListener listener;
 
     private boolean selected = true;
@@ -216,7 +214,7 @@ public class PVTableItem implements PVListener
                     : Integer.valueOf(new_value);
                     the_pv.write(index);
             }
-            else if (pv_type instanceof VByteArray)
+            else if (pv_type instanceof VByteArray  &&  Preferences.treatByteArrayAsString())
             {   // Write string as byte array WITH '\0' TERMINATION!
                 final byte[] bytes = new byte[new_value.length() + 1];
                 System.arraycopy(new_value.getBytes(), 0, bytes, 0, new_value.length());
