@@ -412,20 +412,23 @@ public class PVTable implements PVTableModelListener
         };
     
         // Allow 'dropping' PV names
-        new ControlSystemDropTarget(viewer.getTable(), ProcessVariable.class, String.class)
+        new ControlSystemDropTarget(viewer.getTable(), ProcessVariable[].class, ProcessVariable.class, String.class)
         {
             @Override
             public void handleDrop(final Object item)
             {
-                final String name;
                 if (item instanceof ProcessVariable)
-                    name = ((ProcessVariable)item).getName();
+                    model.addItem(((ProcessVariable)item).getName());
                 else if (item instanceof String)
-                    name = (String) item;
+                    model.addItem((String)item);
+                else if (item instanceof ProcessVariable[])
+                {
+                    for (ProcessVariable pv : (ProcessVariable[]) item)
+                        model.addItem(pv.getName());
+                }
                 else
                     return;
                 
-                model.addItem(name);
                 viewer.setInput(model);
             }
         };
