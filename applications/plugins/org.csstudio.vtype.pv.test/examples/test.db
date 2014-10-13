@@ -1,0 +1,7 @@
+# softIoc -d test.db
+
+record(waveform, "TestEnumArray")
+{
+    field(FTVL, "ENUM")
+    field(NELM, "10")
+}

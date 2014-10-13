@@ -21,6 +21,7 @@ import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
 import org.csstudio.vtype.pv.jca.JCA_PV;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
+import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VType;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +32,14 @@ import static org.hamcrest.CoreMatchers.*;
 /** JUnit tests
  * 
  *  <p>These require a softIoc with
- *  org.csstudio.scan/examples/*.db 
+ *  org.csstudio.scan/examples/*.db
+ *  and org.csstudio.vtype.pv.test/examples/test.db
  *  @author Kay Kasemir
  */
 public class JCAPVTest implements PVListener
 {
+    private static final String NETWORK = "127.0.0.1 webopi.sns.gov:5066";
+    private static final int MAX_ARRAY = 20000;
     final private CountDownLatch updates = new CountDownLatch(1);
     
     @Before
@@ -49,6 +53,15 @@ public class JCAPVTest implements PVListener
             handler.setLevel(Level.FINE);
             handler.setFormatter(new SimpleFormatter());
         }
+        
+        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", NETWORK);
+        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "false");
+
+        System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", NETWORK);
+        System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list", "false");
+
+        System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", Integer.toString(MAX_ARRAY));
+        System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", Integer.toString(MAX_ARRAY));
         
         final PVFactory factory = new JCA_PVFactory();
         PVPool.addPVFactory(factory);
@@ -140,6 +153,32 @@ public class JCAPVTest implements PVListener
         System.out.println("Done.");
     }
 
+    @Test//(timeout=5000)
+    public void testEnumArray() throws Exception
+    {
+        final PV pv = PVPool.getPV("TestEnumArray");
+        pv.addListener(this);
+        updates.await();
+        
+        // Write known value
+        pv.asyncWrite(new short[] { 4, 3, 2, 1 }).get(5, TimeUnit.SECONDS);
+        // Check readback
+        final VType value = pv.asyncRead().get(5, TimeUnit.SECONDS);
+        assertThat(value, instanceOf(VEnumArray.class));
+        final VEnumArray enum_val = (VEnumArray) value;
+        System.out.println(enum_val);
+        assertThat(enum_val.getData().size(), equalTo(10));
+        assertThat(enum_val.getIndexes().getInt(0), equalTo(4));
+        assertThat(enum_val.getIndexes().getInt(3), equalTo(1));
+        // Write other value, so next time the test runs it'll start with this
+        pv.asyncWrite(new short[] { 10, 20, 30, 40 }).get(5, TimeUnit.SECONDS);
+        
+        pv.removeListener(this);
+        PVPool.releasePV(pv);
+        System.out.println("Done.");
+    }
+
+    
     @Test(timeout=5000)
     public void testReadWithCallback() throws Exception
     {

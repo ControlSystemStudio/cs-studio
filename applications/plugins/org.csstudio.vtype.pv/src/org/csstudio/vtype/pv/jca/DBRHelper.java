@@ -80,6 +80,8 @@ public class DBRHelper
         if (dbr instanceof DBR_TIME_Enum)
         {
             final LABELS enum_meta = (metadata instanceof LABELS) ? (LABELS) metadata : null;
+            if (dbr.getCount() > 1)
+                return new VTypeForEnumArray(enum_meta, (DBR_TIME_Enum) dbr);
             return new VTypeForEnum(enum_meta, (DBR_TIME_Enum) dbr);
         }
 
