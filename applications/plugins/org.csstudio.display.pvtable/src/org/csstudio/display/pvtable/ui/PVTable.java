@@ -456,6 +456,13 @@ public class PVTable implements PVTableModelListener
 
     /** {@inheritDoc} */
     @Override
+    public void tableItemSelectionChanged(final PVTableItem item)
+    {
+        // Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void tableItemChanged(final PVTableItem item)
     {
         final Table table = viewer.getTable();

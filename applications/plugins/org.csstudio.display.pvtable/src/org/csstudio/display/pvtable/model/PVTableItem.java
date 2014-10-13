@@ -108,6 +108,7 @@ public class PVTableItem implements PVListener
     public void setSelected(final boolean selected)
     {
         this.selected = selected;
+        listener.tableItemSelectionChanged(this);
     }
 
     /** @return Returns the name of the 'main' PV. */

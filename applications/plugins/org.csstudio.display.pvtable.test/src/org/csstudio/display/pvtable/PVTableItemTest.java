@@ -45,7 +45,12 @@ public class PVTableItemTest implements PVTableItemListener
         TestSettings.setup();
     }
 
-    
+    @Override
+    public void tableItemSelectionChanged(final PVTableItem item)
+    {
+        System.out.println(item.getName() + (item.isSelected() ? " is selected" : " is not selected"));
+    }
+
     @Override
     public void tableItemChanged(final PVTableItem item)
     {

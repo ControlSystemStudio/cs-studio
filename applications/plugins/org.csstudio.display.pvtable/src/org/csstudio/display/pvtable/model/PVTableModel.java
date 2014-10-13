@@ -160,8 +160,16 @@ public class PVTableModel implements PVTableItemListener
                     listener.tableItemChanged(item);
         }
     }
-	
-	/** {@inheritDoc} */
+    
+    /** {@inheritDoc} */
+	@Override
+    public void tableItemSelectionChanged(final PVTableItem item)
+	{   // Model receives this from item. Forward to listeners of model
+        for (PVTableModelListener listener : listeners)
+            listener.tableItemSelectionChanged(item);
+    }
+
+    /** {@inheritDoc} */
 	@Override
 	public void tableItemChanged(final PVTableItem item)
 	{

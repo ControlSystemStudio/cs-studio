@@ -29,6 +29,12 @@ public class PVTableModelContentProvider implements ILazyContentProvider
 			new PVTableItem("", 0.0, null, new PVTableItemListener()
 	{
 		@Override
+        public void tableItemSelectionChanged(PVTableItem item)
+		{
+            // NOP            
+        }
+
+        @Override
 		public void tableItemChanged(PVTableItem item)
 		{
 			// NOP
