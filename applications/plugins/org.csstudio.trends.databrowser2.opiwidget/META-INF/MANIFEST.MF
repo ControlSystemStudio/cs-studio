@@ -7,17 +7,22 @@ Bundle-Vendor: Kay Kasemir, <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui;bundle-version="3.6.1";resolution:=optional,
- org.eclipse.rap.ui;bundle-version="1.4.1";resolution:=optional,
  org.eclipse.ui.views;bundle-version="3.5.0";resolution:=optional,
+ org.eclipse.gef;bundle-version="3.9.100";resolution:=optional,
+ org.eclipse.draw2d;resolution:=optional,
+ org.eclipse.rap.ui;bundle-version="1.4.1";resolution:=optional,
+ org.csstudio.rap.ui.util;resolution:=optional,
  org.eclipse.rap.ui.views;bundle-version="1.4.1";resolution:=optional,
+ org.eclipse.rap.gef;bundle-version="0.1.0";resolution:=optional,
+ org.eclipse.rap.draw2d;bundle-version="0.1.0";resolution:=optional,
+ org.csstudio.ui.util;resolution:=optional,
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
- org.csstudio.apputil.ui;bundle-version="1.1.7",
+ org.csstudio.apputil,
  org.csstudio.opibuilder;bundle-version="1.0.6",
  org.csstudio.opibuilder.widgets;bundle-version="1.0.5",
  org.csstudio.trends.databrowser2;bundle-version="3.1.1",
  org.csstudio.swt.xygraph;bundle-version="1.1.1",
- org.csstudio.utility.pvmanager;bundle-version="3.2.0",
- org.csstudio.ui.util;resolution:=optional
+ org.csstudio.utility.pvmanager;bundle-version="3.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Description: BOY widget that displays Data Browser plot

@@ -5,9 +5,9 @@ Bundle-SymbolicName: org.csstudio.utility.httpd;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.osgi.services;visibility:=reexport,
+ org.eclipse.osgi.services,
  org.eclipse.equinox.http.jetty,
- javax.servlet;visibility:=reexport
+ javax.servlet
 Bundle-Activator: org.csstudio.platform.httpd.Activator
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.platform.httpd,

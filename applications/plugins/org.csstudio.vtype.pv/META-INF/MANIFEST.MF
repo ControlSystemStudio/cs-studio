@@ -7,7 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>
 Require-Bundle: org.junit;bundle-version="4.8.2";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.7.0",
- org.epics.vtype;bundle-version="2.1.0";visibility:=reexport,
+ org.epics.vtype;bundle-version="2.1.0",
  org.csstudio.platform.libs.epics;bundle-version="3.2.0",
  org.epics.util,
  org.epics.pvdata;bundle-version="3.0.3",

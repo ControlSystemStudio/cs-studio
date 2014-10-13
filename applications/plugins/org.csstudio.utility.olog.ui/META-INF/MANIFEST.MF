@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.ui,
  edu.msu.nscl.olog.api;bundle-version="1.0.0",
  org.csstudio.security.ui;bundle-version="1.0.0",
  org.csstudio.utility.olog,
- org.eclipse.help;bundle-version="3.5.100"
+ org.eclipse.help;bundle-version="3.5.100",
+ org.csstudio.security;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL

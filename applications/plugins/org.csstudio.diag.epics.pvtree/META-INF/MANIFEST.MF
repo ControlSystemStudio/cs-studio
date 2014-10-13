@@ -16,6 +16,7 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.apputil,
  org.csstudio.apputil.ui,
  org.csstudio.autocomplete.ui,
- org.csstudio.vtype.pv
+ org.csstudio.vtype.pv,
+ org.epics.vtype;bundle-version="2.7.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

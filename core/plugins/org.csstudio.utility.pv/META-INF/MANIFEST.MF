@@ -6,7 +6,7 @@ Bundle-Version: 3.1.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
- org.csstudio.data;bundle-version="1.0.0";visibility:=reexport
+ org.csstudio.data;bundle-version="1.0.0"
 Export-Package: org.csstudio.utility.pv
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
