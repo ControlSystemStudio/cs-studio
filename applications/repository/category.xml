@@ -34,6 +34,9 @@
    <feature id="org.csstudio.channel.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.channelfinder.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.csstudio.email.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
