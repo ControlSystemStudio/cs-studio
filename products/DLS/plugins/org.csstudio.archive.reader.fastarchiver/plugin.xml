@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.archive.reader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.archive.reader.fastarchiver.FastArchiveReaderFactory"
+            name="org.csstudio.archive.reader.fastarchiver.ArchiveReader1"
+            prefix="fads">
+      </ArchiveReader>
+   </extension>
+   <extension
+         point="org.csstudio.utility.pvmanager.datasource">
+      <datasource
+            datasource="org.csstudio.utility.pvmanager.fa.FADataSource"
+            name="FADataSource"
+            prefix="fa">
+      </datasource>
+   </extension>
+
+</plugin>

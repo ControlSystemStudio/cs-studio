@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Monitors"
+            description="Edm style symbol widget"
+            editpart_class="org.csstudio.opibuilder.widgets.edm.editparts.EdmSymbolEditpart"
+            icon="icon/symbol.png"
+            model_class="org.csstudio.opibuilder.widgets.edm.model.EdmSymbolModel"
+            name="Edm Symbol Widget"
+            onlineHelpHtml="html/firststeps/imagebooleansymbolwidget.html"
+            typeId="org.csstudio.opibuilder.widgets.edm.symbolwidget">
+      </widget>
+   </extension>
+
+</plugin>
