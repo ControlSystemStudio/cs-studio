@@ -87,31 +87,18 @@ public class Application implements IApplication {
     /** {@inheritDoc} */
     public Object start(final IApplicationContext context) throws Exception
 	{
-		// Display configuration info
-		final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
-		final String app_info = context.getBrandingName() + " " + version;
-
-		// Create parser for arguments and run it.
-		final String args[] = (String[]) context.getArguments().get("application.args");
-
-		int pos = 0;
-		while (pos < args.length) {
-			if (args[pos].equals("-help")) {
-				System.out
-						.println(app_info + "\n\nOptions:\n"
-								+ "  -help                         : Display help\n"
-								+ "  -version                      : Display version info\n"
-								+ "  -data /home/fred/Workspace    : Eclipse workspace location\n"
-								+ "  -pluginCustomization /path/to/my/settings.ini: Eclipse plugin defaults\n"
-								+ "  -share_link /absolute/system/path=relative/workspace/path[,another_link]*: Set shared links\n");
-				return IApplication.EXIT_OK;
-			}
-			if (args[pos].equals("-version")) {
+		// Check for '-version' argument.
+        // In general, command-line options are handled via
+        // the extension point org.csstudio.startup.module, entry 'startupParameters'
+        final String args[] = (String[]) context.getArguments().get("application.args");
+		for (String arg : args)
+			if (arg.equals("-version"))
+			{   // Display configuration info
+			    final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+			    final String app_info = context.getBrandingName() + " " + version;
 				System.out.println(app_info);
 				return IApplication.EXIT_OK;
 			}
-			pos++;
-		}
     	
     	// Create the display
 	    final Display display = PlatformUI.createDisplay();
@@ -325,7 +312,23 @@ public class Application implements IApplication {
 		{
 			parameters.putAll(p.readStartupParameters(display, context));
 		}
-		return parameters;
+		
+		// Extension point should have handled command line arguments.
+		// For "-help", it should have displayed all accepted options, then quit.
+        final String args[] = (String[]) context.getArguments().get("application.args");
+        for (String arg : args)
+            if (arg.equals("-help"))
+            {   // If we reach this point, "-help" was requested but not handled.
+                // Display the generic options.
+                System.out.println("Options:\n"
+                        + "  -help                                        : Display help\n"
+                        + "  -version                                     : Display version info\n"
+                        + "  -data /home/fred/Workspace                   : Eclipse workspace location\n"
+                        + "  -pluginCustomization /path/to/my/settings.ini: Eclipse plugin defaults\n");
+                System.exit(0);
+            }
+		
+        return parameters;
 	}
 
 	/**

@@ -208,6 +208,13 @@ public class StartupParameters implements StartupParametersExtPoint
                 sec_prefs.flush();
                 System.exit(0);
             }
+            // The "comment below" that was mentioned several times above
+            // .. has unfortunately been lost.
+            // Could be related in not continuing further with the product startup,
+            // because as soon as the product looks for preferences, it will use or
+            // even create(!) a workspace. Calling the product with "-help" is not
+            // supposed to create directories and files on the disk,
+            // so best to call System.exit() and NOT allow RCP to continue.
         }
 
         parameters.put(LOGIN_PROMPT_PARAM, login);
@@ -227,24 +234,25 @@ public class StartupParameters implements StartupParametersExtPoint
     private void showHelp()
     {
         System.out.println("Command-line options:");
-        System.out.format("  %-35s : This help\n", HELP);
-        System.out.format("  %-35s : Always present workspace dialog, with preconfigured default\n",
+        System.out.format("  %-40s : This help\n", HELP);
+        System.out.format("  %-40s : Version info\n", "-version");
+        System.out.format("  %-40s : Always present workspace dialog, with preconfigured default\n",
                 WORKSPACE_PROMPT);
-        System.out.format("  %-35s : Present workspace dialog with given default\n",
+        System.out.format("  %-40s : Present workspace dialog with given default\n",
                 WORKSPACE_PROMPT + " /some/workspace");
-        System.out.format("  %-35s : Log all messages to the console\n",
+        System.out.format("  %-40s : Log all messages to the console\n",
                 "-consoleLog");
-        System.out.format("  %-35s : Select workspace on command-line, no prompt\n",
+        System.out.format("  %-40s : Select workspace on command-line, no prompt\n",
                 "-data /some/workspace");
-        System.out.format("  %-35s : Create links to shared folder\n",
+        System.out.format("  %-40s : Create links to shared folder\n",
                 SHARE_LINK + " /path/to/folder=/CSS/Share");
-        System.out.format("  %-35s : Present login dialog (user, password)\n",
+        System.out.format("  %-40s : Present login dialog (user, password)\n",
                 LOGIN_PROMPT);
-        System.out.format("  %-35s : provide the default user in login dialog\n",
+        System.out.format("  %-40s : provide the default user in login dialog\n",
                 USER + " username");
-        System.out.format("  %-35s : provide the password of default user in login dialog\n",
+        System.out.format("  %-40s : provide the password of default user in login dialog\n",
                 PASSWORD + " username");
-        System.out.format("  %-35s : set a password preferences (need to follow with -p)\n",
+        System.out.format("  %-40s : set a password preferences (will prompt for password or use previous -p {password} option)\n",
                 "-set_password preference_name");
     }
 }
