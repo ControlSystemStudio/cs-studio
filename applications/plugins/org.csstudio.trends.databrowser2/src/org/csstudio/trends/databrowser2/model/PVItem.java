@@ -43,6 +43,8 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PVItem to handle waveform index.
+ *  @author FJohlinger changed PVItem to handle different error types 
+
  */
 public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, Cloneable
 {
@@ -114,17 +116,12 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
 
 //        fireItemLookChanged();
     }
-    /**
-     * @return Error Type
-     * @author Friederike Johlinger
-     */
+    /** @return Error Type */
     public ErrorType getErrorType(){
     	return errorType;
     }
     
-    /**
-     * @param errorType
-     */
+    /** @param errorType */
     public void setErrorType(ErrorType errorType){
     	this.errorType = errorType;
     	samples.setErrorType(errorType);

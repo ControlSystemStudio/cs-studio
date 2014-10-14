@@ -28,6 +28,7 @@ import org.epics.vtype.VType;
  *
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed HistoricSamples to handle waveform index.
+ *  @author FJohlinger changed HistoricSamples to handle different error types 
  */
 public class HistoricSamples extends PlotSamples
 {
@@ -57,18 +58,14 @@ public class HistoricSamples extends PlotSamples
     		sample.setWaveformIndex(waveform_index);
     }
     
-    /**
-     * @param errorType
-     * @author Friederike Johlinger
-     */
+    /** @param errorType */
     public void setErrorType(ErrorType errorType){
     	this.errorType = errorType;
     	for (PlotSample sample: samples)
     		sample.setErrorType(errorType);
     }
     
-    /** @return ErrorType 
-     *  @author Friederike Johlinger */
+    /** @return ErrorType */
     public ErrorType getErrorType(){
     	return errorType;
     }

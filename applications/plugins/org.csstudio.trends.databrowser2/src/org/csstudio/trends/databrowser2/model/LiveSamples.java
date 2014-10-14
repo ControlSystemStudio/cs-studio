@@ -16,6 +16,7 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
  * 
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed LiveSamples to handle waveform index.
+ *  @author FJohlinger changed LiveSamples to handle different error types 
  */
 public class LiveSamples extends PlotSamples
 {
@@ -39,16 +40,12 @@ public class LiveSamples extends PlotSamples
     	}
     }
     
-    /** @return ErrorType 
-     *  @author Friederike Johlinger */
+    /** @return ErrorType */
     public ErrorType getErrorType(){
     	return errorType;
     }
     
-    /**
-     * @param errorType
-     * @author Friederike Johlinger
-     */
+    /** @param errorType */
     public void setErrorType(ErrorType errorType){
     	this.errorType = errorType;
     	for (int i=0; i<samples.size(); i++) {

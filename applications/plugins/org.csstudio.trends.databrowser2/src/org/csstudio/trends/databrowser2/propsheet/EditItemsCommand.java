@@ -10,6 +10,9 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 /**
  * Undo-able command for edit item properties. 
  * @author Takashi Nakamoto
+ * 
+ * @author FJohlinger added option to choose either min/max or stdDev for the
+ *         error bars
  */
 public class EditItemsCommand implements IUndoableCommand {
     final private ModelItem[] items;

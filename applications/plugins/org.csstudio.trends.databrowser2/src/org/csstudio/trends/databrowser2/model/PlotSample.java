@@ -20,6 +20,7 @@ import org.epics.vtype.ValueFactory;
  *  with interface for XYGraph ({@link ISample})
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PlotSample to handle waveform index.
+ *  @author FJohlinger changed PlotSample to handle different error types 
  */
 public class PlotSample implements ISample
 {
@@ -80,14 +81,12 @@ public class PlotSample implements ISample
     	this.waveform_index = index;
     }
     
-    /** @return ErrorType 
-     * @author Friederike Johlinger */
+    /** @return ErrorType */
     public ErrorType getErrorType(){
     	return errorType;
     }
     
-    /** @param errorType either stdDev or min_max (i.e. range) 
-     * @author Friederike Johlinger */
+    /** @param errorType either stdDev or min_max (i.e. range) */
     public void setErrorType(ErrorType errorType){
     	this.errorType = errorType;
     }

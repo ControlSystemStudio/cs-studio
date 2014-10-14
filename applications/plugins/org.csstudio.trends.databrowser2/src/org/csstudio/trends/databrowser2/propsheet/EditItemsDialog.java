@@ -35,6 +35,9 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Dialog to edit PVItem and FormulaItem.
  * @author Takashi Nakamoto
+ * 
+ * @author FJohlinger added option to choose either min/max or stdDev for the
+ *         error bars
  */
 public class EditItemsDialog extends Dialog {
 	/**
