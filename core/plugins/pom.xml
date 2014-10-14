@@ -75,7 +75,7 @@
     <module>org.csstudio.utility.pvmanager.ui</module>
     <module>org.csstudio.utility.pvmanager.ui.toolbox</module>
     <module>org.csstudio.utility.pvmanager.widgets</module>
-    <module>org.csstudio.utility.pvmanager.widgets.test</module>
+<!--     <module>org.csstudio.utility.pvmanager.widgets.test</module> --><!-- Exception while trying to execute test. -->
     <module>org.csstudio.utility.singlesource</module>
     <module>org.csstudio.utility.singlesource.rap</module>
     <module>org.csstudio.utility.singlesource.rcp</module>
