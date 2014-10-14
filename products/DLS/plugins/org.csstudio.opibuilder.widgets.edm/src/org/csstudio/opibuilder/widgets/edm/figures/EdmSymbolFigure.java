@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.widgets.edmsymbol.ui;
+package org.csstudio.opibuilder.widgets.edm.figures;
 
 import java.io.InputStream;
 import java.util.HashMap;

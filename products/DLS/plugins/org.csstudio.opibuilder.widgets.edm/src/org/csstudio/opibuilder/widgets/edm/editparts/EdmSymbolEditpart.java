@@ -1,13 +1,13 @@
-package org.csstudio.opibuilder.widgets.edmsymbol.ui;
+package org.csstudio.opibuilder.widgets.edm.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.simplepv.VTypeHelper;
+import org.csstudio.opibuilder.widgets.edm.figures.EdmSymbolFigure;
+import org.csstudio.opibuilder.widgets.edm.model.EdmSymbolModel;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.VType;
 
 
 public class EdmSymbolEditpart extends AbstractPVWidgetEditPart {

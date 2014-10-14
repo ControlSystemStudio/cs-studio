@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.widgets.edmsymbol;
+package org.csstudio.opibuilder.widgets.edm;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.opibuilder.widgets.edmsymbol"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.csstudio.opibuilder.widgets.edm"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;

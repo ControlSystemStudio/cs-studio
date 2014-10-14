@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.widgets.edmsymbol.ui;
+package org.csstudio.opibuilder.widgets.edm.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.DoubleProperty;
@@ -30,7 +30,7 @@ public class EdmSymbolModel extends AbstractPVWidgetModel {
 
 	@Override
 	public String getTypeID() {
-		return "org.csstudio.opibuilder.widgets.edmsymbol.widget"; // Must match extension point typeId
+		return "org.csstudio.opibuilder.widgets.edm.symbolwidget"; // Must match extension point typeId
 	}
 
 	public IPath getFilename() {
