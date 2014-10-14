@@ -50,10 +50,10 @@ public class Opi_activeRectangleClass extends OpiWidget {
 			// line color alarm rule.
 			if(r.isLineAlarm())
 				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
-					"lineColorAlarmRule", true);
+					"lineColorAlarmRule", false);
 			if(r.isFillAlarm())
 				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
-					"backColorAlarmRule", true);
+					"backColorAlarmRule", false);
 		}
 
 		int line_width = 1;
