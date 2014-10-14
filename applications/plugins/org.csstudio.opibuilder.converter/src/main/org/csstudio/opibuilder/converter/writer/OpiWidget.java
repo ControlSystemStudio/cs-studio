@@ -139,36 +139,24 @@ public class OpiWidget {
 			valueNode = widgetContext.getDocument().createElement("value");
 			colorNode = widgetContext.getDocument().createElement("color");
 			colorNode.setAttribute("name", "OK");
-			colorNode.setAttribute("red", "0");
-			colorNode.setAttribute("green", "255");
-			colorNode.setAttribute("blue", "0");
 			valueNode.appendChild(colorNode);
 			expressions.put("pvSev0==0", valueNode);
 		}
 		valueNode = widgetContext.getDocument().createElement("value");
 		colorNode = widgetContext.getDocument().createElement("color");
 		colorNode.setAttribute("name", "Invalid");
-		colorNode.setAttribute("red", "255");
-		colorNode.setAttribute("green", "0");
-		colorNode.setAttribute("blue", "255");
 		valueNode.appendChild(colorNode);
 		expressions.put("pvSev0==-1", valueNode);
 
 		valueNode = widgetContext.getDocument().createElement("value");
 		colorNode = widgetContext.getDocument().createElement("color");
 		colorNode.setAttribute("name", "Major");
-		colorNode.setAttribute("red", "255");
-		colorNode.setAttribute("green", "0");
-		colorNode.setAttribute("blue", "0");
 		valueNode.appendChild(colorNode);
 		expressions.put("pvSev0==1", valueNode);
 
 		valueNode = widgetContext.getDocument().createElement("value");
 		colorNode = widgetContext.getDocument().createElement("color");
 		colorNode.setAttribute("name", "Minor");
-		colorNode.setAttribute("red", "255");
-		colorNode.setAttribute("green", "255");
-		colorNode.setAttribute("blue", "0");
 		valueNode.appendChild(colorNode);
 		expressions.put("pvSev0==2", valueNode);
 
