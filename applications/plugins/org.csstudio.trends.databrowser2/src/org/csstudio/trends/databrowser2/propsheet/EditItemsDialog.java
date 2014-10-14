@@ -493,18 +493,18 @@ public class EditItemsDialog extends Dialog {
 				chkApplyIndex.setSelection(true);
 			}
 		});
-		
-		// Error type property (might want to change name)
+
+		// Error type property
 		chkApplyErrorType = new Button(composite, SWT.CHECK);
 		gridData = new GridData();
 		gridData.horizontalAlignment = SWT.CENTER;
-		chkApplyIndex.setLayoutData(gridData);
-		
+		chkApplyErrorType.setLayoutData(gridData);
+
 		Label labelErrorType = new Label(composite, SWT.NONE);
-		labelErrorType.setText(Messages.ErrorTypeTrace); //need to add string to Messages !!!
-		
+		labelErrorType.setText(Messages.ErrorTypeTrace);
+
 		cmbErrorType = new Combo(composite, SWT.READ_ONLY);
-		ErrorType defaultErrorType = ErrorType.MIN_MAX; //need to add enum for ErrorType
+		ErrorType defaultErrorType = ErrorType.MIN_MAX;
 		boolean enableErrorType = false;
 		for (ModelItem item : items) {
 			if (item instanceof PVItem) {
@@ -515,7 +515,7 @@ public class EditItemsDialog extends Dialog {
 		} 
 		
 		chkApplyErrorType.setEnabled(enableErrorType);
-		cmbRequest.setEnabled(enableErrorType);
+		cmbErrorType.setEnabled(enableErrorType);
 		if (enableErrorType) {
 			for (int i = 0; i<ErrorType.values().length; i++) {
 				ErrorType errorType = ErrorType.values()[i];

@@ -78,7 +78,9 @@ public class EditItemsCommand implements IUndoableCommand {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				((PVItem)item).setRequestType(((PVItem)oldItem).getRequestType());
+				((PVItem) item).setRequestType(((PVItem) oldItem)
+						.getRequestType());
+				((PVItem) item).setErrorType(((PVItem) oldItem).getErrorType());
 			}
 		}
 	}

@@ -96,14 +96,13 @@ public class PVSamples extends PlotSamples
     	{
     		for (IDataProviderListener listener : listeners)
     		{
-    			// Notify listeners of the change of the waveform index
+    			// Notify listeners of the change of the error type
     			// mainly in order to update the position of snapped
     			// annotations. For more details, see the comment in
     			// Annotation.dataChanged(IDataProviderListener).
     			listener.dataChanged(this);
     		}
-    	} //! Not sure if needed
-    	//samples.setErrorType(errorType);
+    	} 
     }
     
     /** @return ErrorType 
