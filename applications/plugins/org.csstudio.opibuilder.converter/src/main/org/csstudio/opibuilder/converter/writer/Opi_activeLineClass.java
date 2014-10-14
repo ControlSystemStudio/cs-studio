@@ -78,6 +78,12 @@ public class Opi_activeLineClass extends OpiWidget {
 
 		new OpiString(widgetContext, "name", name);
 
+		// Add the first point to the end of the list to emulate EDMs 'closed polygon'
+		if(r.isClosePolygon() && !r.isFill()) {
+			r.getXPoints().addPoint(r.getXPoints().get()[0]);
+			r.getYPoints().addPoint(r.getYPoints().get()[0]);
+		}
+
 		new OpiPointsList(widgetContext, "points", r.getXPoints(), r.getYPoints());
 			
 		new OpiInt(widgetContext, "line_width", r.getLineWidth() == 0 ? 1 : r.getLineWidth());
