@@ -1,2 +1,0 @@
-VERSION=1.8.2
-DATE=December 20 2010
