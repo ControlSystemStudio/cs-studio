@@ -17,10 +17,6 @@
       [Enter License Description here.]
    </license>
 
-   <url>
-      <update label="CS-Studio update site" url="http://controlsystemstudio.org/applications/4.0/updates"/>
-   </url>
-
    <plugin
          id="org.csstudio.autocomplete.channelfinder"
          download-size="0"
