@@ -9,6 +9,8 @@ package org.csstudio.opibuilder.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
 
 import org.csstudio.opibuilder.datadefinition.LineStyle;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
@@ -132,9 +134,21 @@ public class ConnectionModel extends AbstractWidgetModel {
 	public static final String PROP_SRC_WUID = "src_wuid"; //$NON-NLS-1$
 
 	/**
+	 * The source widget Path
+	 */
+	public static final String PROP_SRC_PATH = "src_path"; 
+
+	/**
 	 * The target widget UID
 	 */
 	public static final String PROP_TGT_WUID = "tgt_wuid"; //$NON-NLS-1$
+
+	/**
+	 * The target widget Path
+	 */
+	public static final String PROP_TGT_PATH = "tgt_path"; 
+	
+	public static final String PATH_DELIMITER = "_";
 	
 	/**
 	 * All points of this connection except start and end anchor.
@@ -144,6 +158,9 @@ public class ConnectionModel extends AbstractWidgetModel {
 
 	/** True, if the connection is attached to its endpoints. */
 	private boolean isConnected;
+	
+	/** True, if the connection was loaded from linked opi in LinkingContainer. */
+	private boolean loadedFromLinkedOpi;
 
 	/** Connection's source endpoint. */
 	private AbstractWidgetModel source;
@@ -199,13 +216,20 @@ public class ConnectionModel extends AbstractWidgetModel {
 				if(displayModel == null)
 					return;
 				String wuid = evt.getNewValue().toString();
-				AbstractWidgetModel w = displayModel.getWidgetFromWUID(wuid);
+				String path = getPropertyValue(PROP_SRC_PATH).toString();
+
+				AbstractWidgetModel w = null; 
+				if(path == null || path.equals("")){
+					w = getTerminal(displayModel, null, wuid);
+				}else {
+					List<String> paths = Arrays.asList(path.split(PATH_DELIMITER));
+					w = getTerminal(displayModel, paths, wuid);
+				}
 				if(w != null){
 					source = w;
 					reconnect();
-				}
-				else
-					throw new IllegalArgumentException("Non exist widget UID " + wuid);
+				} else
+					throw new IllegalArgumentException("Non exist widget PATH:[" + path + "],\nWUID:[" + wuid + "]");
 			}
 		});
 		AbstractWidgetProperty tgtWUIDProp = new StringProperty(PROP_TGT_WUID,
@@ -217,18 +241,34 @@ public class ConnectionModel extends AbstractWidgetModel {
 				if(displayModel == null)
 					return;
 				String wuid = evt.getNewValue().toString();
-				AbstractWidgetModel w = displayModel.getWidgetFromWUID(wuid);
-				if(w != null){					
+				String path = getPropertyValue(PROP_TGT_PATH).toString();
+				AbstractWidgetModel w = null; 
+				if(path == null || path.equals("")){
+					w = getTerminal(displayModel, null, wuid);
+				}else {
+					List<String> paths = Arrays.asList(path.split(PATH_DELIMITER));
+					w = getTerminal(displayModel, paths, wuid);
+				}
+				if(w != null){
 					target = w;
 					reconnect();
-				}
-				else
-					throw new IllegalArgumentException("Non exist widget UID " + wuid);
+				} else
+					throw new IllegalArgumentException("Non exist widget PATH:[" + path + "],\nWUID:[" + wuid + "]");
 			}
 		});		
 
+		AbstractWidgetProperty srcPathProp = new StringProperty(PROP_SRC_PATH,
+				"Source Path", WidgetPropertyCategory.Display, "");
+		addProperty(srcPathProp);
+
+		AbstractWidgetProperty tgtPathProp = new StringProperty(PROP_TGT_PATH,
+				"Target Path", WidgetPropertyCategory.Display, "");
+		addProperty(tgtPathProp);
+		
 		setPropertyVisibleAndSavable(PROP_SRC_WUID, false, true);
 		setPropertyVisibleAndSavable(PROP_TGT_WUID, false, true);
+		setPropertyVisibleAndSavable(PROP_SRC_PATH, false, true);
+		setPropertyVisibleAndSavable(PROP_TGT_PATH, false, true);
 		setPropertyVisibleAndSavable(PROP_SRC_TERM, false, true);
 		setPropertyVisibleAndSavable(PROP_TGT_TERM, false, true);
 
@@ -251,6 +291,30 @@ public class ConnectionModel extends AbstractWidgetModel {
 		removeProperty(PROP_COLOR_FOREGROUND);
 		removeProperty(PROP_SCALE_OPTIONS);
 
+	}
+	
+	private AbstractWidgetModel getTerminal(AbstractContainerModel root, List<String> paths, String wuid) {
+		if(root == null) return null;
+
+		if(paths == null || paths.isEmpty()) {
+			for(AbstractWidgetModel w : root.getChildren()) 
+				if(w.getWUID().equals(wuid)) 
+					return w;
+
+			return null;
+		}
+
+		AbstractContainerModel widget = root;
+		String tempId = paths.get(0);
+		for(AbstractWidgetModel w : widget.getChildren()) {
+			if(w instanceof AbstractContainerModel && w.getWUID().equals(tempId)) {
+				AbstractWidgetModel tempResult = 
+						getTerminal((AbstractContainerModel)w, paths.subList(1, paths.size()), wuid);
+				if(tempResult != null) return tempResult;
+			}
+		}
+
+		return null;
 	}
 
 	@Override
@@ -337,11 +401,13 @@ public class ConnectionModel extends AbstractWidgetModel {
 	public void setSource(AbstractWidgetModel source) {
 		this.source = source;
 		setPropertyValue(PROP_SRC_WUID, source.getWUID(), false);
+		setPropertyValue(PROP_SRC_PATH, buildTerminalPathFromModel(source), false);
 	}
 
 	public void setTarget(AbstractWidgetModel target) {
 		this.target = target;
 		setPropertyValue(PROP_TGT_WUID, target.getWUID(), false);
+		setPropertyValue(PROP_TGT_PATH, buildTerminalPathFromModel(target), false);
 	}
 
 	public void setTargetTerminal(String terminal) {
@@ -416,6 +482,36 @@ public class ConnectionModel extends AbstractWidgetModel {
 		if(originPoints == null)
 			originPoints = getPoints();
 		return originPoints;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setLoadedFromLinkedOpi(boolean loadedFromLinkedOpi) {
+		this.loadedFromLinkedOpi = loadedFromLinkedOpi;
+	}
+
+	/**
+	 * @return true if the connection was loaded from linked opi file in LinkingContainer
+	 */
+	public boolean isLoadedFromLinkedOpi() {
+		return this.loadedFromLinkedOpi;
+	}
+	
+	private String buildTerminalPathFromModel(AbstractWidgetModel model) {
+		if(model == null) return "";
+
+		AbstractWidgetModel parent = model.getParent();
+		String result = "";
+		while(parent != null && parent.getWUID() != null && !(parent instanceof DisplayModel)) {
+			result = parent.getWUID() + PATH_DELIMITER + result;
+			parent = parent.getParent();
+		}
+
+		if(result.endsWith(PATH_DELIMITER))
+			return result.substring(0, result.length() - 1);
+		else 
+			return result;
 	}
 
 }

@@ -171,7 +171,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
 
 	@Override
 	protected void createEditPolicies() {
-		if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
+		if (getExecutionMode() == ExecutionMode.EDIT_MODE && !getWidgetModel().isLoadedFromLinkedOpi()) {
 			// Selection handle edit policy.
 			// Makes the connection show a feedback, when selected by the user.
 			installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,

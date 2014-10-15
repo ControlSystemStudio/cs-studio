@@ -13,8 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -22,12 +25,14 @@ import javax.security.auth.login.FailedLoginException;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
@@ -36,6 +41,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -55,12 +61,16 @@ public class XMLUtil {
 	
 	public static String XMLTAG_CONNECTION = "connection"; //$NON-NLS-1$
 	
+	public static Set<String> WIDGET_TAGS = 
+			new HashSet<String>(Arrays.asList(XMLTAG_DISPLAY, XMLTAG_WIDGET, XMLTAG_CONNECTION));
+	
 	public static String XMLATTR_TYPEID = "typeId"; //$NON-NLS-1$
 
 	public static String XMLATTR_PROPID = "id"; //$NON-NLS-1$
 	public static String XMLATTR_VERSION = "version"; //$NON-NLS-1$
 
 	public static String XMLTAG_WIDGET_UID = AbstractWidgetModel.PROP_WIDGET_UID; //$NON-NLS-1$
+	public static String XMLTAG_OPI_FILE = AbstractLinkingContainerModel.PROP_OPI_FILE;
 	
 	/**Flatten a widget to XML element.
 	 * @param widgetModel model of the widget
@@ -80,7 +90,7 @@ public class XMLUtil {
 			}
 		}
 
-		if(widgetModel instanceof AbstractContainerModel){
+		if(widgetModel instanceof AbstractContainerModel && !(widgetModel instanceof AbstractLinkingContainerModel)){
 			AbstractContainerModel containerModel = (AbstractContainerModel)widgetModel;
 			for(AbstractWidgetModel child : containerModel.getChildren()){
 				result.addContent(widgetToXMLElement(child));
@@ -91,8 +101,10 @@ public class XMLUtil {
 		if(widgetModel instanceof DisplayModel && 
 				((DisplayModel)widgetModel).getConnectionList() != null){			
 			for(ConnectionModel connectionModel : ((DisplayModel)widgetModel).getConnectionList()){
-				Element connElement = widgetToXMLElement(connectionModel);
-				result.addContent(connElement);
+				if(!connectionModel.isLoadedFromLinkedOpi()) {
+					Element connElement = widgetToXMLElement(connectionModel);
+					result.addContent(connElement);
+				}
 			}		
 		}
 
@@ -136,11 +148,7 @@ public class XMLUtil {
 	 * @throws Exception
 	 */
 	public static AbstractWidgetModel XMLStringToWidget(String xmlString) throws Exception{
-		SAXBuilder saxBuilder = new SAXBuilder();	
-		InputStream stream= new ByteArrayInputStream(xmlString.getBytes("UTF-8")); //$NON-NLS-1$
-		Document doc = saxBuilder.build(stream);
-		Element root = doc.getRootElement();
-		return XMLElementToWidget(root);
+		return XMLElementToWidget(stringToXML(xmlString));
 	}
 
 	/**Convert an XML element to widget.
@@ -160,6 +168,12 @@ public class XMLUtil {
 	 */
 	public static void fillDisplayModelFromInputStream(
 			final InputStream inputStream, final DisplayModel displayModel, Display display) throws Exception{
+		fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>());
+	}
+
+	private static void fillDisplayModelFromInputStreamSub(
+			final InputStream inputStream, final DisplayModel displayModel, Display display, List<IPath> trace) throws Exception{
+	
 		if(display == null){
 			display = Display.getCurrent();
 		}
@@ -200,11 +214,9 @@ public class XMLUtil {
 			
 		}
 		
-		SAXBuilder saxBuilder = new SAXBuilder();
-		Document doc = saxBuilder.build(inputStream);
-		Element root = doc.getRootElement();
+		Element root = inputStreamToXML(inputStream);
 		if(root != null){
-			 XMLElementToWidget(root, displayModel);
+			 XMLElementToWidgetSub(root, displayModel, trace);
 			 
 			 //check version
 			 if(compareVersion(displayModel.getBOYVersion(),
@@ -248,15 +260,57 @@ public class XMLUtil {
 	}
 
 
-	/**Convert XML Element to a widget model.
+	/**Construct widget model from XML element. Sometimes it includes filling LinkingContainer and/or construct Connection model between widgets.
 	 * @param element
 	 * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
 	 * instead of creating a new one. If this is null, a new one will be created. 
 	 * @return the root widget model
 	 * @throws Exception
 	 */
-	@SuppressWarnings("rawtypes")
 	public static AbstractWidgetModel XMLElementToWidget(Element element, DisplayModel displayModel) throws Exception{
+		return XMLElementToWidgetSub(element, displayModel, new ArrayList<IPath> ());
+	}
+
+	private static AbstractWidgetModel XMLElementToWidgetSub(Element element, DisplayModel displayModel, List<IPath> trace) throws Exception{
+		if(element == null) return null;
+
+		AbstractWidgetModel result = null;
+
+		if(WIDGET_TAGS.contains(element.getName())) {
+			result = fillWidgets(element, displayModel);
+			
+			if(result instanceof AbstractContainerModel)
+				fillLinkingContainersSub((AbstractContainerModel)result, trace);
+			fillConnections(element, displayModel);
+
+			return result;
+		} else {
+			String errorMessage = "Unknown Tag: " + element.getName();
+			ConsoleService.getInstance().writeError(errorMessage);
+			return null;
+		}
+	}
+
+	/**Convert XML String to a widget model.
+	 * @param xmlString
+	 * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
+	 * instead of creating a new one. If this is null, a new one will be created. 
+	 * @throws Exception
+	 */
+	public static AbstractWidgetModel fillWidgetsFromXMLString(String xmlString, DisplayModel displayModel) throws Exception {
+		return fillWidgets(stringToXML(xmlString), displayModel);
+	}
+
+	/**Convert XML Element to a widget model.
+	 * @param element
+	 * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
+	 * instead of creating a new one. If this is null, a new one will be created. 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("rawtypes")
+	public static AbstractWidgetModel fillWidgets(Element element, DisplayModel displayModel) throws Exception{
+		if(element == null) return null;
+		
 		AbstractWidgetModel rootWidgetModel = null;
 		
 		//Determine root widget model
@@ -283,46 +337,155 @@ public class XMLUtil {
 			ConsoleService.getInstance().writeError(errorMessage);
 			return null;
 		}
+
+		setPropertiesFromXML(element, rootWidgetModel); 
+
+		if(rootWidgetModel instanceof AbstractContainerModel) {
+			AbstractContainerModel container = (AbstractContainerModel)rootWidgetModel;
+			List children = element.getChildren();
+			Iterator iterator = children.iterator();
+			while (iterator.hasNext()) {
+				Element subElement = (Element) iterator.next();
+				if(subElement.getName().equals(XMLTAG_WIDGET)) 
+					container.addChild(fillWidgets(subElement, displayModel));
+			}
+		}
+		
+		
+		if(displayModel !=null)
+			rootWidgetModel.processVersionDifference(displayModel.getBOYVersion());
+		
+		return rootWidgetModel;
+	}
+	
+	/**
+	 * Fill all LinkingContainers under the model.
+	 * 
+	 * @param container LinkingContainer to be filled.
+	 * @throws Exception
+	 */
+	public static void fillLinkingContainers(AbstractContainerModel container) throws Exception {
+		fillLinkingContainersSub(container, new ArrayList<IPath>());
+	}
+	
+	private static void fillLinkingContainersSub(AbstractContainerModel container, List<IPath> trace) throws Exception{
+		if(container instanceof AbstractLinkingContainerModel) {
+			AbstractLinkingContainerModel linkingContainer = (AbstractLinkingContainerModel)container;
+			List<IPath> tempTrace = new ArrayList<IPath>();
+			tempTrace.addAll(trace);
+			fillLinkingContainerSub(linkingContainer, tempTrace);
+		}
+
+		for(AbstractWidgetModel w : container.getAllDescendants()) {
+			if(w instanceof AbstractLinkingContainerModel) {
+				AbstractLinkingContainerModel linkingContainer = (AbstractLinkingContainerModel)w;
+				List<IPath> tempTrace = new ArrayList<IPath>();
+				tempTrace.addAll(trace);
+				fillLinkingContainerSub(linkingContainer, tempTrace);
+			}
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private static void fillConnections(Element element, DisplayModel displayModel) throws Exception {
+		if(element.getName().equals(XMLTAG_CONNECTION)) {
+			ConnectionModel result = new ConnectionModel(displayModel);
+			setPropertiesFromXML(element, result); 
+		} else if(element.getName().equals(XMLTAG_DISPLAY)){
+			List children = element.getChildren();
+			Iterator iterator = children.iterator();
+			while (iterator.hasNext()) {
+				Element subElement = (Element) iterator.next();
+				if(subElement.getName().equals(XMLTAG_CONNECTION))  {
+					fillConnections(subElement, displayModel);
+				}
+			}
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static void setPropertiesFromXML(Element element, AbstractWidgetModel model) {
+		if(model == null || element == null) return;
 		
 		String versionOnFile = element.getAttributeValue(XMLATTR_VERSION);
-		rootWidgetModel.setVersionOnFile(Version.parseVersion(versionOnFile));
-		//fill root widget model
+		model.setVersionOnFile(Version.parseVersion(versionOnFile));
+		
 		List children = element.getChildren();
 		Iterator iterator = children.iterator();
-		Set<String> propIdSet = rootWidgetModel.getAllPropertyIDs();
+		Set<String> propIdSet = model.getAllPropertyIDs();
 		while (iterator.hasNext()) {
 			Element subElement = (Element) iterator.next();
 			//handle property
 			if(propIdSet.contains(subElement.getName())){
 				String propId = subElement.getName();
 				try {				
-					rootWidgetModel.setPropertyValue(propId,
-							rootWidgetModel.getProperty(propId).readValueFromXML(subElement));
+					model.setPropertyValue(propId,
+							model.getProperty(propId).readValueFromXML(subElement));
 				} catch (Exception e) {
-					String errorMessage = "Failed to read the " + propId + " property for " + rootWidgetModel.getName() +". " +
+					String errorMessage = "Failed to read the " + propId + " property for " + model.getName() +". " +
 							"The default property value will be setted instead. \n" + e;
 					//MessageDialog.openError(null, "OPI File format error", errorMessage + "\n" + e.getMessage());
 					OPIBuilderPlugin.getLogger().log(Level.WARNING, errorMessage, e);
 					ConsoleService.getInstance().writeWarning(errorMessage);
 				}
-			}else if(subElement.getName().equals(XMLTAG_WIDGET)){
-				if(rootWidgetModel instanceof AbstractContainerModel){
-					AbstractWidgetModel child =XMLElementToWidget(subElement, displayModel);
-					if(child != null)
-						((AbstractContainerModel) rootWidgetModel).addChild(child);
-				}
-			}else if(subElement.getName().equals(XMLTAG_CONNECTION)){
-				//fill connection model, widgetModel will be connected when
-				//connection model is created.
-				if(rootWidgetModel instanceof DisplayModel){					
-						XMLElementToWidget(subElement,(DisplayModel)rootWidgetModel);
-				}				
 			}
 		}
-		if(displayModel !=null)
-			rootWidgetModel.processVersionDifference(displayModel.getBOYVersion());
-		
-		return rootWidgetModel;
+	}
+	
+	/**
+	 * Load opi file attached to LinkingContainer widget. 
+	 * 
+	 * @param container LinkingContainer to be filled.
+	 * @throws Exception
+	 */
+	public static void fillLinkingContainer(final AbstractLinkingContainerModel container) 
+			throws Exception {
+		fillLinkingContainerSub(container, new ArrayList<IPath>());
+	}
+
+	public static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)  
+		throws Exception {
+
+		if(container == null) return;
+
+		if(container.getRootDisplayModel() != null && 
+				container.getRootDisplayModel().getOpiFilePath() != null) {
+			if(trace.contains(container.getRootDisplayModel().getOpiFilePath())) {
+				container.setOPIFilePath("");
+				throw new Exception("Opi link contains some loops.\n" + trace.toString());
+			} else {
+				trace.add(container.getRootDisplayModel().getOpiFilePath());
+			}
+
+			IPath path = container.getOPIFilePath();
+			if(path != null && !path.isEmpty()) {
+				final DisplayModel inside = new DisplayModel(path);
+
+				fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(), trace);
+				
+				// mark connection as it is loaded from linked opi
+				for(AbstractWidgetModel w : inside.getAllDescendants()) 
+					for(ConnectionModel conn : w.getSourceConnections()) 
+						conn.setLoadedFromLinkedOpi(true);
+
+
+				AbstractContainerModel loadTarget = inside;
+
+				if(!container.getGroupName().trim().equals("")){ //$NON-NLS-1$
+					AbstractWidgetModel group =
+							inside.getChildByName(container.getGroupName());
+					if(group != null && group instanceof AbstractContainerModel){
+						loadTarget = (AbstractContainerModel) group;
+					}
+				}
+
+				for (AbstractWidgetModel w : loadTarget.getChildren()) 
+					container.addChild(w, true);
+
+				container.setDisplayModel(inside);
+				container.setBackgroundColor(inside.getBackgroundColor());
+			}
+		}
 	}
 	
 	
@@ -442,4 +605,15 @@ public class XMLUtil {
 		return potentialTag.equals(xmlTag);
 	}
 
+	private static Element inputStreamToXML(InputStream stream) throws JDOMException, IOException {
+		SAXBuilder saxBuilder = new SAXBuilder();	
+		Document doc = saxBuilder.build(stream);
+		Element root = doc.getRootElement();
+		return root;
+	}
+
+	private static Element stringToXML(String xmlString) throws JDOMException, IOException {
+		InputStream stream= new ByteArrayInputStream(xmlString.getBytes("UTF-8")); //$NON-NLS-1$
+		return inputStreamToXML(stream);
+	}
 }
