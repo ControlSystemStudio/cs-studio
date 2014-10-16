@@ -5,7 +5,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit;bundle-version="4.8.2"
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.csstudio.platform.utility.jms
 Export-Package: org.csstudio.alarm.beast.notifier,
  org.csstudio.alarm.beast.notifier.actions,
  org.csstudio.alarm.beast.notifier.util
+Import-Package: javax.jms

@@ -14,5 +14,7 @@
   <modules>
     <module>org.csstudio.product</module>
     <module>org.csstudio.startup.intro</module>
+    <module>org.csstudio.archive.reader.fastarchiver</module>
+    <module>org.csstudio.opibuilder.widgets.edm</module>
   </modules>
 </project>

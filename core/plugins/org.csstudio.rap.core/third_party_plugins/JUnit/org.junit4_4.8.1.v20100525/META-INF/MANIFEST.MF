@@ -7,7 +7,7 @@ Bundle-SymbolicName: org.junit4
 Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/ecl
  ipse:org.junit4;tag=v20100525
 Require-Bundle: org.hamcrest.core;bundle-version="1.1.0";visibility:=r
- eexport,org.junit;bundle-version="4.8.1";visibility:=reexport
+ eexport,org.junit;bundle-version="4.8.1"
 Bundle-Version: 4.8.1.v20100525
 Bundle-ManifestVersion: 2
 

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
+import org.csstudio.display.pvtable.Preferences;
+import org.epics.util.array.IteratorInt;
 import org.epics.util.array.IteratorNumber;
 import org.epics.util.array.ListByte;
 import org.epics.util.time.Timestamp;
@@ -16,6 +18,7 @@ import org.epics.vtype.Time;
 import org.epics.vtype.VByteArray;
 import org.epics.vtype.VDoubleArray;
 import org.epics.vtype.VEnum;
+import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VFloatArray;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
@@ -89,7 +92,7 @@ public class VTypeHelper
         }
         if (value instanceof VString)
             return ((VString)value).getValue();
-        if (value instanceof VByteArray)
+        if (value instanceof VByteArray  &&  Preferences.treatByteArrayAsString())
         {   // Check if byte array can be displayed as ASCII text
             final ListByte data = ((VByteArray)value).getData();
             byte[] bytes = new byte[data.size()];
@@ -130,6 +133,16 @@ public class VTypeHelper
                 buf.append(numbers.nextLong());
             while (numbers.hasNext())
                 buf.append(", ").append(numbers.nextLong());
+            return buf.toString();
+        }
+        if (value instanceof VEnumArray)
+        {
+            final StringBuilder buf = new StringBuilder();
+            IteratorInt indices = ((VEnumArray)value).getIndexes().iterator();
+            if (indices.hasNext())
+                buf.append(indices.nextInt());
+            while (indices.hasNext())
+                buf.append(", ").append(indices.nextInt());
             return buf.toString();
         }
         if (value == null)

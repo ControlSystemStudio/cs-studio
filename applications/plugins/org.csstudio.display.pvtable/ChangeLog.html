@@ -9,6 +9,20 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.display.pvtable.</p>
 
+<h2>Version 4.0.102 - 2014-10-13</h2>
+<ul>
+  <li>'Selected' column state was not saved to XML file.</li>
+  <li>Allow 'dropping' multiple PVs.</li>
+  <li>Support Enum arrays.</li>
+  <li>Add preference 'treat_byte_array_as_string'.</li>
+  <li>Use vtype PV. Profiled for database and table created by org.csstudio.display.pvtable.test/lib/mk_test_*.pl.
+      With 1000 10Hz PVs, CPU use splits into 50% in CAJ code down to PVTableModel adding item to changed set of PVs, other 50% in main UI thread updating the table.
+      With 10000 10Hz PVs, CPU use is 78% in CAJ, 22% in UI updating the table.
+      Overall, non-UI threads that handle the data use more CPU, UI remains responsive.
+  </li>
+</ul>
+
+
 <h2>Version 4.0.101 - 2014-10-08</h2>
 <ul>
   <li>Support for entering new values, written to PV.</li>

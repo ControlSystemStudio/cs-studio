@@ -107,6 +107,16 @@ public class PVTableEditor extends EditorPart
         model.addListener(new PVTableModelListener()
         {
             @Override
+            public void tableItemSelectionChanged(final PVTableItem item)
+            {
+                if (!is_dirty)
+                {
+                    is_dirty = true;
+                    firePropertyChange(IEditorPart.PROP_DIRTY);
+                }
+            }
+
+            @Override
             public void tableItemChanged(final PVTableItem item)
             {
                 // Ignore

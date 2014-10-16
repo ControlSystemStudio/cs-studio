@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.boy.feature"
       label="CS-Studio Operator Interface (BOY)"
-      version="3.2.1.qualifier"
+      version="3.2.2.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">

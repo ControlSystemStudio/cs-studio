@@ -17,3 +17,7 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
 Bundle-Activator: org.csstudio.logging.jms2rdb.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: javax.jms,
+ javax.servlet,
+ javax.servlet.http,
+ org.osgi.service.http

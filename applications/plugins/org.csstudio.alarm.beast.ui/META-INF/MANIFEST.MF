@@ -29,10 +29,13 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.email.ui;bundle-version="1.0.2",
  org.csstudio.logging;bundle-version="3.1.0",
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
- org.csstudio.apputil
+ org.csstudio.apputil,
+ org.epics.util,
+ org.csstudio.security
 Export-Package: org.csstudio.alarm.beast.ui,
  org.csstudio.alarm.beast.ui.actions,
  org.csstudio.alarm.beast.ui.globalclientmodel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.csstudio.alarm.beast.ui.Activator
 Bundle-ActivationPolicy: lazy
+Import-Package: javax.jms

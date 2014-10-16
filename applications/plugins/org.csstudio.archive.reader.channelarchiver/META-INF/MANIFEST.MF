@@ -7,7 +7,10 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.archive.reader;bundle-version="3.2.0",
- org.csstudio.apputil;bundle-version="1.0.11"
+ org.csstudio.apputil;bundle-version="1.0.11",
+ org.csstudio.archive.vtype,
+ org.epics.util,
+ org.epics.vtype
 Bundle-ClassPath: lib/commons-codec/commons-codec-1.3.jar,
  lib/xmlrpc-2.0.1/xmlrpc-2.0.1.jar,
  .

@@ -17,6 +17,10 @@ import java.util.TimerTask;
 import org.csstudio.display.pvtable.Preferences;
 
 /** A PV table model, i.e. list of {@link PVTableItem}s
+ *  <p>
+ *  Updates are throttled:
+ *  Changed items are accumulated, and depending on how many changed,
+ *  just those items are notified, or the whole table is marked for update.
  *
  *  @author Kay Kasemir
  */
@@ -130,24 +134,42 @@ public class PVTableModel implements PVTableItemListener
 	 */
     private void performUpdates()
     {
+        final List<PVTableItem> to_update = new ArrayList<>();
         synchronized (changed_items)
-        {
-            if (changed_items.size() < updateItemThreshold)
-            {   // Update exactly the changed items
-                for (PVTableItem item : changed_items)
-                    for (PVTableModelListener listener : listeners)
-                        listener.tableItemChanged(item);
-                changed_items.clear();
+        {   // Lock changed_items as briefly as possible to check what changed
+            final int changed = changed_items.size();
+            // Anything?
+            if (changed <= 0)
                 return;
-            }
+            // Limited number, update those items?
+            if (changed < updateItemThreshold)
+                to_update.addAll(changed_items);
+            // else: Many items, update whole table
             changed_items.clear();
         }
-        // Too many items changed, update the whole table
-        for (PVTableModelListener listener : listeners)
-            listener.tableItemsChanged();
+
+        if (to_update.isEmpty())
+        {   // Too many items changed, update the whole table
+            for (PVTableModelListener listener : listeners)
+                listener.tableItemsChanged();
+        }
+        else
+        {   // Update exactly the changed items
+            for (PVTableItem item : to_update)
+                for (PVTableModelListener listener : listeners)
+                    listener.tableItemChanged(item);
+        }
     }
-	
-	/** {@inheritDoc} */
+    
+    /** {@inheritDoc} */
+	@Override
+    public void tableItemSelectionChanged(final PVTableItem item)
+	{   // Model receives this from item. Forward to listeners of model
+        for (PVTableModelListener listener : listeners)
+            listener.tableItemSelectionChanged(item);
+    }
+
+    /** {@inheritDoc} */
 	@Override
 	public void tableItemChanged(final PVTableItem item)
 	{

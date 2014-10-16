@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.core.feature"
       label="CS-Studio Core"
-      version="3.3.1.qualifier"
+      version="3.3.2.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">

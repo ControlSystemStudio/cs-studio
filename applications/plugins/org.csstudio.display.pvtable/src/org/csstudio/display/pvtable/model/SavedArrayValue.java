@@ -9,9 +9,11 @@ package org.csstudio.display.pvtable.model;
 
 import java.util.List;
 
-import org.epics.pvmanager.PV;
+import org.csstudio.vtype.pv.PV;
+import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VFloatArray;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VString;
@@ -69,19 +71,33 @@ public class SavedArrayValue extends SavedValue
         }
         if (current_value instanceof VStringArray)
             return ((VStringArray)current_value).getData().equals(saved_value);
+        if (current_value instanceof VEnumArray)
+        {
+            final ListInt indices = ((VEnumArray)current_value).getIndexes();
+            final int N = indices.size();
+            if (N != saved_value.size())
+                return false;
+            for (int i=0; i<N; ++i)
+            {   // Treat saved value as double to allow for "1e2"
+                final int v1 = indices.getInt(i);
+                final double v2 = Double.parseDouble(saved_value.get(i));
+                if (Math.abs(v2 - v1) > tolerance)
+                    return false;
+            }
+            return true;
+        }
         // PVManager reports VString as current value for _disconnected_ channels?!
         // Disconnected -> Can't match, VString no array, overall "not equal"
         if (current_value instanceof VString)
             return false;
-        // No VEnumArray support at this time..
         throw new Exception("Cannot compare against unhandled type " + current_value.getClass().getName());
     }
     
     /** {@inheritDoc} */
-    public void restore(final PV<VType, Object> pv) throws Exception
+    public void restore(final PV pv) throws Exception
     {
         // Determine what type to write based on current value of the PV
-        final VType pv_type = pv.getValue();
+        final VType pv_type = pv.read();
         if ((pv_type instanceof VDoubleArray) || (pv_type instanceof VFloatArray))
         {   // Write any floating point as double
             final int N = saved_value.size();
@@ -90,10 +106,10 @@ public class SavedArrayValue extends SavedValue
                 data[i] = Double.parseDouble(saved_value.get(i));
             pv.write(data);
         }
-        else if (pv_type instanceof VNumberArray)
+        else if (pv_type instanceof VNumberArray  ||  pv_type instanceof VEnumArray)
         {   // Write any non-floating number as int
-            // PVManager JCAChannelHandler doesn't handle long[],
-            // so int[] is widest type
+            // JCA_PV doesn't handle long[],
+            // so int[] is the widest type
             final int N = saved_value.size();
             final int[] data = new int[N];
             // Parse as double to allow "1e10" or "100.0"
