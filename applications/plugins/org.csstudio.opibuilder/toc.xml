@@ -7,18 +7,18 @@
    </topic>
    <topic href="html/ChangeLog.html" label="What&apos;s new">
    </topic> 
-  <topic label="Install Examples" href="html/Install Examples.html"></topic>
-  <topic href="html/Getting Started.html" label="Getting Started">
+  <topic label="Install Examples" href="html/Install_Examples.html"></topic>
+  <topic href="html/Getting_Started.html" label="Getting Started">
   </topic>
-  <topic label="OPI Editor Perspective" href="html/OPI Editor Perspective.html" ></topic>
-  <topic href="html/OPI Editor.html" label="OPI Editor">
+  <topic label="OPI Editor Perspective" href="html/OPI_Editor_Perspective.html" ></topic>
+  <topic href="html/OPI_Editor.html" label="OPI Editor">
       </topic>
-    <topic href="html/OPI Runtime.html" label="OPI Runtime">
+    <topic href="html/OPI_Runtime.html" label="OPI Runtime">
     </topic>
       <topic href="html/PreferencePage.html" label="Setting Preferences">
       </topic>
   <topic href="html/Widgets_Overview.html" label="Widgets">
-     <topic label="Widget Properties" href="html/Widget Properties.html"> </topic>
+     <topic label="Widget Properties" href="html/Widget_Properties.html"> </topic>
      <topic href="html/widgets/PVWidgets.html" label="PV Widgets"> </topic>
      
      <topic href="html/widgets/ShapeWidgets.html" label="Shape Widgets">
@@ -84,7 +84,7 @@
      
   </topic>
   <topic label="Color and Font" href="html/ColorFont.html"></topic>
-  <topic label="PV Connectivity" href="html/PV Connectivity.html"></topic>
+  <topic label="PV Connectivity" href="html/PV_Connectivity.html"></topic>
   <topic href="html/Actions.html" label="Action">
   </topic>
   <topic label="Macro" href="html/Macro.html"></topic>
@@ -123,7 +123,7 @@
   </topic>
   <topic href="html/Schema.html" label="Schema">
   </topic>
-    <topic href="html/OPI Probe.html" label="OPI Probe">
+    <topic href="html/OPI_Probe.html" label="OPI Probe">
     </topic>
     
     <topic href="html/CreateWidgets.html" label="Creating Customized Widget">

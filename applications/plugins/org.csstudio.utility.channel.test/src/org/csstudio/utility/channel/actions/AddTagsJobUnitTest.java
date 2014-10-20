@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
-import gov.bnl.channelfinder.api.Tag;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +31,6 @@ public class AddTagsJobUnitTest {
 	private ChannelFinderClient client;
 	private Channel.Builder ch1;
 	private Channel.Builder ch2;
-	private Tag tag;
 
 	/**
 	 * @throws java.lang.Exception

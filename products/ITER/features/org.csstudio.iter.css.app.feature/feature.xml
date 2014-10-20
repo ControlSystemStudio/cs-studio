@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.css.app.feature"
       label="CSS Apps Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <description>
@@ -28,32 +28,41 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
-      <import plugin="javax.servlet"/>
-      <import plugin="org.csstudio.apputil.ui"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="org.csstudio.logging"/>
-      <import plugin="org.csstudio.logging.ui"/>
-      <import plugin="org.csstudio.security"/>
-      <import plugin="org.csstudio.security.ui"/>
-      <import plugin="org.csstudio.startup"/>
-      <import plugin="org.csstudio.ui.menu"/>
-      <import plugin="org.csstudio.ui.menu.app"/>
-      <import plugin="org.csstudio.utility.product"/>
-      <import plugin="org.csstudio.workspace"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.equinox.security"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.cheatsheets"/>
-      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.intro"/>
       <import plugin="org.eclipse.ui.intro.universal"/>
-      <import plugin="org.hamcrest"/>
+      <import plugin="org.eclipse.ui.cheatsheets"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.csstudio.logging"/>
+      <import plugin="org.csstudio.logging.ui"/>
+      <import plugin="org.csstudio.workspace"/>
+      <import plugin="org.csstudio.startup"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup.helper" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
+      <import plugin="org.csstudio.utility.product" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="javax.servlet" version="3.0.0" match="equivalent"/>
    </requires>
 
    <plugin
@@ -108,13 +117,6 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.utility.httpd"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.mockito"
          download-size="0"
          install-size="0"
          version="0.0.0"

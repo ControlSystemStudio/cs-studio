@@ -28,7 +28,8 @@ public class LogViewerModel implements IEditorInput {
      * 
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public Object getAdapter(Class adapter) {
 	return null;
     }

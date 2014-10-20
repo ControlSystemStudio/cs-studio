@@ -3,7 +3,6 @@ package org.csstudio.utility.pvmanager.ui.toolbox;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -42,6 +41,7 @@ public class DataSourceSummaryContentProvider implements IStructuredContentProvi
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void addChannels(List<DataSourceChannel> channels, String dataSourceName, DataSource dataSource) {
 		for (ChannelHandler channelHandler : dataSource.getChannels().values()) {
 			channels.add(new DataSourceChannel(dataSourceName, channelHandler));

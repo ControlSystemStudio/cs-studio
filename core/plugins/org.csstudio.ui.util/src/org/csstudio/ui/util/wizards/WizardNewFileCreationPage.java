@@ -362,7 +362,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 		if (_initialContainerFullPath != null) {
 			_resourceGroup.setContainerFullPath(_initialContainerFullPath);
 		} else {
-			Iterator it = _currentSelection.iterator();
+			Iterator<?> it = _currentSelection.iterator();
 			if (it.hasNext()) {
 				Object object = it.next();
 				IResource selectedResource = null;

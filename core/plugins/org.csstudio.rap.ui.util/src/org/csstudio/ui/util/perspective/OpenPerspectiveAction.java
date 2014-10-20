@@ -19,7 +19,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class OpenPerspectiveAction extends Action
 {
-    /** ID of the Perspective to open */
+	private static final long serialVersionUID = -8811523514428926759L;
+	/** ID of the Perspective to open */
     final private String ID;
     
     /** Construct the action for opening a perspective.

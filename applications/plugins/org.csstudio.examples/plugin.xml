@@ -9,8 +9,8 @@
             locationURI="menu:utility">
          <command
                commandId="org.csstudio.opibuilder.samples.install"
-               label="Install Samples"
                icon="icons/samples-16.png"
+               label="Install Samples"
                style="push">
          </command>
       </menuContribution>
@@ -20,7 +20,6 @@
       <command
             defaultHandler="org.csstudio.examples.Install"
             id="org.csstudio.opibuilder.samples.install"
-            icon="icons/samples-16.png"
             name="Install Examples">
       </command>
    </extension>

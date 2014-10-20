@@ -19,7 +19,6 @@ public class ServerTest extends HttpServlet
     
     private int visitor = 1;
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
                     throws ServletException, IOException

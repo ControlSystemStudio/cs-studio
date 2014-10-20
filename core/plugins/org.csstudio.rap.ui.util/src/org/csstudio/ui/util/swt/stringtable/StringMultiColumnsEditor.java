@@ -25,7 +25,9 @@ import org.eclipse.swt.widgets.Table;
  *  @author Xihui Chen
  */
 class StringMultiColumnsEditor extends EditingSupport {
-    final private TableViewer table_viewer;
+
+	private static final long serialVersionUID = 5729798308622621422L;
+	final private TableViewer table_viewer;
 	final private int columnNo;
 	final private int numOfColumns;
 	private CellEditorType cellEditorType;
@@ -56,6 +58,10 @@ class StringMultiColumnsEditor extends EditingSupport {
 		switch (cellEditorType) {
 		case CHECKBOX:
 			return new CheckboxCellEditor(parent){
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 3284307131124279645L;
 				protected Object doGetValue() {
 					return (Boolean) super.doGetValue()?((String[])cellEditorData)[1]:((String[])cellEditorData)[0];
 				};
@@ -70,6 +76,11 @@ class StringMultiColumnsEditor extends EditingSupport {
 		case DROPDOWN: 
 			return new ComboBoxCellEditor(parent,
 					(String[])cellEditorData,SWT.NONE){
+				/**
+						 * 
+						 */
+						private static final long serialVersionUID = 4196165158838137091L;
+
 				@Override
 				protected Object doGetValue() {
 					return ((CCombo)getControl()).getText();

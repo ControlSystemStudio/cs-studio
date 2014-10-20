@@ -3,6 +3,14 @@
  */
 package org.csstudio.logbook.ui;
 
+import static org.csstudio.logbook.util.LogEntrySearchUtil.SEARCH_KEYWORD_END;
+import static org.csstudio.logbook.util.LogEntrySearchUtil.SEARCH_KEYWORD_LOGBOOKS;
+import static org.csstudio.logbook.util.LogEntrySearchUtil.SEARCH_KEYWORD_START;
+import static org.csstudio.logbook.util.LogEntrySearchUtil.SEARCH_KEYWORD_TAGS;
+import static org.csstudio.logbook.util.LogEntrySearchUtil.SEARCH_KEYWORD_TEXT;
+import static org.csstudio.logbook.util.LogEntrySearchUtil.parseSearchMap;
+import static org.csstudio.logbook.util.LogEntrySearchUtil.parseSearchString;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -12,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.logbook.util.LogEntrySearchUtil;
 import org.csstudio.ui.util.DelayedNotificator;
 import org.csstudio.ui.util.widgets.MultipleSelectionCombo;
 import org.eclipse.jface.dialogs.Dialog;
@@ -28,8 +35,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.google.common.base.Joiner;
-
-import static org.csstudio.logbook.util.LogEntrySearchUtil.*;
 /**
  * @author shroffk
  * 
@@ -257,7 +262,8 @@ public class LogEntrySearchDialog extends Dialog {
     /**
      * @return the searchParameters
      */
-    private synchronized Map<String, String> getSearchParameters() {
+    @SuppressWarnings("unused")
+	private synchronized Map<String, String> getSearchParameters() {
 	return searchParameters;
     }
 

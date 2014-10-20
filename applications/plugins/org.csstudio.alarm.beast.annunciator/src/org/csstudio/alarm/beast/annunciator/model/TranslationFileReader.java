@@ -68,9 +68,11 @@ class TranslationFileReader
 				
 				// Expect some_regular_expression_pattern = translation
 				final int separator = strLine.indexOf("=");
-				if (separator < 0)
+				if (separator < 0) {
+					br.close();
 					throw new Exception("Missing separator in line "
 							+ countLines);
+				}
 				// Add pattern & replacement to array of translations
 				final String pattern = strLine.substring(0, separator);
 				final String replacement = strLine.substring(separator + 1,

@@ -1,10 +1,7 @@
 package org.csstudio.archive.reader.aapi;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.reader.aapi.AapiArchiveReader;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;

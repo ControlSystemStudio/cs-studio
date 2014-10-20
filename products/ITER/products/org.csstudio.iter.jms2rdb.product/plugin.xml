@@ -6,10 +6,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.logging.jms2rdb.application"
-            name="JMS2RDB">
+            name="JMS-to-RDB">
          <property
                name="appName"
-               value="JMS2RDB">
+               value="JMS-to-RDB">
          </property>
       </product>
    </extension>

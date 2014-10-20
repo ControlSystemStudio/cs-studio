@@ -17,6 +17,7 @@
     <module>org.csstudio.alarm.beast.configtool</module>
     <module>org.csstudio.alarm.beast.msghist</module>
     <module>org.csstudio.alarm.beast.notifier</module>
+    <module>org.csstudio.alarm.beast.notifier.logbook</module>
     <module>org.csstudio.alarm.beast.notifier.intro</module>
     <module>org.csstudio.alarm.beast.server</module>
     <module>org.csstudio.alarm.beast.ui</module>

@@ -9,8 +9,6 @@ package org.csstudio.iter.pydev.configurator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;

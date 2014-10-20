@@ -78,7 +78,7 @@ public class WorkspaceInfo
     @SuppressWarnings("nls")
     private void readPersistedData()
     {
-    	final Preferences node = new ConfigurationScope().getNode(PREF_QUALIFIER);
+    	final Preferences node = ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
     //    final IPreferenceStore store = new ScopedPreferenceStore(
     //            new ConfigurationScope(), PREF_QUALIFIER);
         
@@ -94,7 +94,7 @@ public class WorkspaceInfo
         // Decode the workspaces
         final StringTokenizer tokenizer =
             new StringTokenizer(recent, WORKSPACE_SEPARATOR);
-        for (int i = 0; tokenizer.hasMoreTokens(); ++i)
+        while(tokenizer.hasMoreTokens())
             recent_workspaces.add(tokenizer.nextToken());
     }
 
@@ -178,7 +178,7 @@ public class WorkspaceInfo
     public void writePersistedData()
     {
         final Preferences node =
-            new ConfigurationScope().getNode(PREF_QUALIFIER);
+            ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
     
         node.put(SHOW_DIALOG, Boolean.toString(show_dialog));
         

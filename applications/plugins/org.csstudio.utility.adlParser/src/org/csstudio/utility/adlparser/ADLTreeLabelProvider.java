@@ -2,10 +2,6 @@ package org.csstudio.utility.adlparser;
 
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
-import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
-import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLControl;
-import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
-import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.WidgetPart;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
 import org.eclipse.jface.resource.ImageDescriptor;

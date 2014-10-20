@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.Viewer;
  */
 class StringTableContentProvider<T> implements IStructuredContentProvider
 {
+	private static final long serialVersionUID = 8338633557950338463L;
 	/** Magic number for the final 'add' element */
 	final public static Integer ADD_ELEMENT = new Integer(-1);
 	private List<T> items;

@@ -41,7 +41,7 @@ public class WorkspaceIndependentStore
      * @return value associated with preferenceID. return "" if no value got.
      */
     protected static String getString(final String preferenceID) {
-    	Preferences configurationNode = new ConfigurationScope().getNode(PREF_QUALIFIER);
+    	Preferences configurationNode = ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
     	String value = configurationNode.get(preferenceID, "");
     	return value;    
     }
@@ -52,7 +52,7 @@ public class WorkspaceIndependentStore
      */
     protected static void writeString(final String preferenceID, final String value) {
     	 final Preferences node =
-            new ConfigurationScope().getNode(PREF_QUALIFIER);
+            ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
     	 node.put(preferenceID, value);    
     	 try {
 			node.flush();

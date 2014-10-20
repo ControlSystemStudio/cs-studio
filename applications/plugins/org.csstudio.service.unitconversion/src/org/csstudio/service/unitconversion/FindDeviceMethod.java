@@ -3,7 +3,6 @@
  */
 package org.csstudio.service.unitconversion;
 
-import gov.bnl.unitconversion.Conversion;
 import gov.bnl.unitconversion.ConversionClient;
 import gov.bnl.unitconversion.Device;
 

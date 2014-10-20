@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ViewerCell;
  *  @author Xihui Chen
  */
 class StringMultiColumnsLabelProvider extends CellLabelProvider {
+	private static final long serialVersionUID = 4446281839503966653L;
 	final private TableViewer tableViewer;
 	final private boolean editable;
 

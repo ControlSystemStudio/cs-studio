@@ -5,11 +5,7 @@ package org.csstudio.logbook.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
-import org.csstudio.logbook.LogEntry;
-import org.csstudio.logbook.Property;
-import org.csstudio.logbook.PropertyBuilder;
 import org.eclipse.swt.widgets.Composite;
 
 /**

@@ -1,21 +1,18 @@
 package org.csstudio.utility.channel.actions;
 
+import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelNames;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
-import gov.bnl.channelfinder.api.ChannelFinderClient;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 import gov.bnl.channelfinder.api.Tag;
 
 import java.util.Collection;
-
-import javax.print.attribute.standard.Severity;
 
 import org.csstudio.utility.channelfinder.Activator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import static org.csstudio.utility.channel.CSSChannelUtils.*;
 
 public class AddTag2ChannelsJob extends Job {
 

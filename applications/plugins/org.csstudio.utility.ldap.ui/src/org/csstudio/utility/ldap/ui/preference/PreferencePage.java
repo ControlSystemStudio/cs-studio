@@ -35,7 +35,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 
 	public PreferencePage() {
 		super(GRID);
-		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
 				Activator.getDefault().getBundle().getSymbolicName()));
 		
 		String string = Messages.getString("PreferencePage.LDAP");

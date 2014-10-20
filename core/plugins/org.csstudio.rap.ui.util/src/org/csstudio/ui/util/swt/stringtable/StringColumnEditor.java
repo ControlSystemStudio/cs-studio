@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Table;
  */
 class StringColumnEditor extends EditingSupport
 {
+	private static final long serialVersionUID = 8770877944484115961L;
 	final private TableViewer table_viewer;
 
     public StringColumnEditor(final TableViewer viewer)

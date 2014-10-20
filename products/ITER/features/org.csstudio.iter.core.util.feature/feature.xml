@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.core.util.feature"
       label="CSS Core Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -19,33 +19,50 @@ refer to the file ITER-LICENSE.TXT located in the top level directory
 of the distribution package.
    </license>
 
+   <includes
+         id="org.csstudio.pvmanager.autocomplete.feature"
+         version="0.0.0"/>
+
    <requires>
-      <import plugin="org.csstudio.data"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="org.csstudio.platform.libs.epics"/>
-      <import plugin="org.csstudio.platform.libs.jdbc"/>
-      <import plugin="org.csstudio.platform.libs.jms"/>
-      <import plugin="org.csstudio.servicelocator"/>
-      <import plugin="org.csstudio.simplepv"/>
-      <import plugin="org.csstudio.utility.jms"/>
-      <import plugin="org.csstudio.utility.pv"/>
-      <import plugin="org.csstudio.utility.pvmanager"/>
-      <import plugin="org.csstudio.utility.pvmanager.extra"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
-      <import plugin="org.csstudio.workspace"/>
+      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.equinox.ds"/>
-      <import plugin="org.eclipse.equinox.security"/>
-      <import plugin="org.eclipse.equinox.util"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.epics.util"/>
-      <import plugin="org.epics.vtype"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.slf4j"/>
+      <import plugin="org.eclipse.equinox.security" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.workspace" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jms" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.epics" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.epics" version="1.1.6" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jdbc" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jms" version="5.4.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.servicelocator" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.jms" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.util" version="1.0.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.ds" version="1.3.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.simplepv" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.epics" version="3.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="com.google.common"
+         id="com.google.guava"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -59,7 +76,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.slf4j"
+         id="org.slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -70,6 +87,7 @@ of the distribution package.
          download-size="0"
          install-size="0"
          version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
    <plugin
@@ -91,7 +109,6 @@ of the distribution package.
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin
@@ -164,6 +181,7 @@ of the distribution package.
    <plugin
          id="org.csstudio.platform.libs.epics.macosx"
          os="macosx"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -269,56 +287,7 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.pvmanager.epics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.extra"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.file"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.loc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.sim"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.sys"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pvmanager.vtype"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -340,6 +309,76 @@ of the distribution package.
 
    <plugin
          id="org.csstudio.workspace"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.vtype.pv"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.iter.passwordprovider"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.annotation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.file"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.sys"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.sim"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.loc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.extra"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -368,48 +407,6 @@ of the distribution package.
 
    <plugin
          id="org.epics.pvdata"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete.pvmanager.formula"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete.pvmanager.loc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete.pvmanager.sim"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete.pvmanager.sys"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.vtype.pv"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.iter.passwordprovider"
          download-size="0"
          install-size="0"
          version="0.0.0"

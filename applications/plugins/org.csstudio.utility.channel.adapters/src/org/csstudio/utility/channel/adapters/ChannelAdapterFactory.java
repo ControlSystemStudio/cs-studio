@@ -21,6 +21,7 @@ public class ChannelAdapterFactory implements IAdapterFactory {
 	 * org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
 	 * java.lang.Class)
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		Channel channel = ((Channel) adaptableObject);
@@ -38,6 +39,7 @@ public class ChannelAdapterFactory implements IAdapterFactory {
 	 * 
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getAdapterList() {
 		return new Class[] { String.class, ProcessVariable.class };

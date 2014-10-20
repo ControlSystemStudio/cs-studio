@@ -2,7 +2,6 @@ package org.csstudio.archive.reader.aapi;
 
 import java.util.List;
 
-import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;

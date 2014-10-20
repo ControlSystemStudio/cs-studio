@@ -40,7 +40,7 @@ public class SecurityVariables extends AbstractSourceProvider implements Securit
         final Boolean authenticated = SecuritySupport.getSubject() != null;
         variables.put(AUTHENTICATED, authenticated);
         variables.put(CURRENT_USER, SecuritySupport.isCurrentUser());        
-        variables.put(CURRENT_AUTHORIZATION, SecuritySupport.getAuthorizations().getAuthorizations());
+        variables.put(CURRENT_AUTHORIZATION, SecuritySupport.getAuthorizations() == null ? null : SecuritySupport.getAuthorizations().getAuthorizations());
         SecuritySupport.addListener(this);
     }
 

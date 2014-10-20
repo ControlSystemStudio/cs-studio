@@ -7,16 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.epics.pvmanager.formula.FormulaFunction;
 import org.epics.pvmanager.formula.FormulaFunctionSet;
-import org.epics.pvmanager.service.Service;
-import org.epics.pvmanager.service.ServiceMethod;
 
 /**
  * @author carcassi

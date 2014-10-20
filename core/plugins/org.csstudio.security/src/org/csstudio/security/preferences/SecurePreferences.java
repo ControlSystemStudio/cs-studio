@@ -9,14 +9,13 @@ package org.csstudio.security.preferences;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.security.SecurityPreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
-
-import com.sun.istack.internal.logging.Logger;
 
 /** Wrapper for Eclipse {@link ISecurePreferences}
  *  
@@ -119,7 +118,7 @@ public class SecurePreferences
     	}
     	catch (Exception ex)
     	{
-    		Logger.getLogger(SecurePreferences.class.getClass())
+    		Logger.getLogger(SecurePreferences.class.getClass().getName())
     			.log(Level.WARNING, "Cannot read " + plugin_id + "/" + key, ex);
     	}
     	// Give up

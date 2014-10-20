@@ -2,6 +2,8 @@ package org.csstudio.utility.speech;
 
 public class NoSoundCardAvailableException extends Exception {
 
+	private static final long serialVersionUID = 6255602883792510511L;
+
 	public NoSoundCardAvailableException() {
 	}
 

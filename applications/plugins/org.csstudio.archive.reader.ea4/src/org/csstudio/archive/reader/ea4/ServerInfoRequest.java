@@ -48,7 +48,6 @@ final class ServerInfoRequest {
     }
 
     /** Read info from data server */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void read(RPCClientImpl client, double REQUEST_TIMEOUT) 
             throws Exception {
         

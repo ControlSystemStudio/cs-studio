@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.svn.feature"
       label="CSS SVN Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -20,23 +20,29 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.compare"/>
-      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.tigris.subversion.clientadapter" version="1.10.0" match="equivalent"/>
+      <import plugin="org.tmatesoft.svnkit" version="1.8.0" match="equivalent"/>
+      <import plugin="org.eclipse.core.resources" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.core" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.eclipse.team.ui"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.tigris.subversion.subclipse.core" version="1.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.tigris.subversion.clientadapter"/>
-      <import plugin="org.tmatesoft.svnkit"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.team.ui"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="com.trilead.ssh2" version="1.0.0" match="compatible"/>
+      <import plugin="org.tmatesoft.sqljet" version="1.0.5" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.0.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -81,4 +87,26 @@ of the distribution package.
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="com.trilead.ssh2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.java.dev.jna"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tmatesoft.sqljet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
+

@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.archive.engine.app.feature"
       label="CSS Archive Engine Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -20,15 +20,26 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="javax.servlet"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="org.csstudio.security"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.vtype" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.config" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.rdb" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
+      <import plugin="javax.servlet" version="3.0.0" match="equivalent"/>
+      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.httpd" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.writer" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.vtype.pv"/>
       <import plugin="org.eclipse.help"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.rdb" version="3.1.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.epics.util"/>
-      <import plugin="org.epics.vtype"/>
+      <import plugin="org.eclipse.equinox.http.jetty"/>
    </requires>
 
    <plugin
@@ -95,3 +106,4 @@ of the distribution package.
          unpack="false"/>
 
 </feature>
+

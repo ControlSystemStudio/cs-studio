@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.diag.pvfields.feature"
       label="ITER PV Fields Viewer"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -20,22 +20,24 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.csstudio.autocomplete"/>
-      <import plugin="org.csstudio.autocomplete.ui"/>
-      <import plugin="org.csstudio.csdata"/>
-      <import plugin="org.csstudio.diag.pvfields"/>
-      <import plugin="org.csstudio.platform.utility.rdb"/>
-      <import plugin="org.csstudio.ui.util"/>
-      <import plugin="org.csstudio.utility.pvmanager"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.epics.util"/>
-      <import plugin="org.epics.vtype"/>
       <import plugin="org.junit"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete.ui"/>
+      <import plugin="org.csstudio.autocomplete"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.diag.pvfields" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
    </requires>
 
    <plugin
@@ -74,3 +76,4 @@ of the distribution package.
          unpack="false"/>
 
 </feature>
+

@@ -736,26 +736,20 @@ public class Trace extends Figure implements IDataProviderListener,
 									plPolyline.removeAllPoints();
 									plPolyline.addPoint(predpPos);
 									
-									switch (traceType) {
-									case STEP_HORIZONTALLY:
+									if (traceType == TraceType.STEP_HORIZONTALLY) {
 										plPolyline.addPoint(dpPos.x, predpPos.y);
-										break;
-									case STEP_VERTICALLY:
+									} else if (traceType == TraceType.STEP_VERTICALLY) {
 										plPolyline.addPoint(predpPos.x, dpPos.y);
-										break;
 									}
 									
 									plPolyline.addPoint(dpPos);
 								} else {
 									if (predpPos.x != dpPos.x) {
 										if (lastInRegion == null) {
-											switch (traceType) {
-											case STEP_HORIZONTALLY:
+											if (traceType == TraceType.STEP_HORIZONTALLY) {
 												plPolyline.addPoint(dpPos.x, predpPos.y);
-												break;
-											case STEP_VERTICALLY:
+											} else if (traceType == TraceType.STEP_VERTICALLY) {
 												plPolyline.addPoint(predpPos.x, dpPos.y);
-												break;
 											}
 											
 											plPolyline.addPoint(dpPos);
@@ -769,13 +763,10 @@ public class Trace extends Figure implements IDataProviderListener,
 
 											plPolyline.addPoint(lastInRegion);
 											
-											switch (traceType) {
-											case STEP_HORIZONTALLY:
+											if (traceType == TraceType.STEP_HORIZONTALLY) {
 												plPolyline.addPoint(dpPos.x, lastInRegion.y);
-												break;
-											case STEP_VERTICALLY:
+											} else if (traceType == TraceType.STEP_VERTICALLY) {
 												plPolyline.addPoint(lastInRegion.x, dpPos.y);
-												break;
 											}
 
 											// The first point of the next region is drawn anyway.
@@ -828,13 +819,10 @@ public class Trace extends Figure implements IDataProviderListener,
 									plPolyline.addPoint(predpPos);
 								}
 								
-								switch (traceType) {
-								case STEP_HORIZONTALLY:
+								if (traceType == TraceType.STEP_HORIZONTALLY) {
 									plPolyline.addPoint(dpPos.x, predpPos.y);
-									break;
-								case STEP_VERTICALLY:
+								} else if (traceType == TraceType.STEP_VERTICALLY) {
 									plPolyline.addPoint(predpPos.x, dpPos.y);
-									break;
 								}
 								
 								plPolyline.addPoint(dpPos);

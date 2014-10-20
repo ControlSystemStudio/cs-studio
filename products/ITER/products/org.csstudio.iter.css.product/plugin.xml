@@ -19,7 +19,7 @@
                name="aboutText"
                value="&#x0A; &#x0A;&#x0A;
 Control System Studio is an Eclipse-based collection of tools &#x0A;
-to monitor and operate large scale control systems, &#x0A;such as the ones in the fusion community.&#x0A; &#x0A; &#x0A;
+to monitor and operate large scale control systems,&#x0A;such as the ones in the fusion community.&#x0A; &#x0A; &#x0A;
 It's a product of the collaboration between different laboratories and universities.">
          </property>
          <property

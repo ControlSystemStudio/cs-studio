@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.display.pvtable.feature"
       label="CSS PV Table Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -20,19 +20,19 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.csstudio.apputil"/>
-      <import plugin="org.csstudio.autocomplete.ui"/>
-      <import plugin="org.csstudio.csdata"/>
-      <import plugin="org.csstudio.ui.util"/>
-      <import plugin="org.csstudio.utility.pvmanager"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
-      <import plugin="org.csstudio.utility.singlesource"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.epics.util"/>
-      <import plugin="org.epics.vtype"/>
+      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.autocomplete.ui"/>
    </requires>
 
    <plugin
@@ -43,3 +43,4 @@ of the distribution package.
          unpack="false"/>
 
 </feature>
+

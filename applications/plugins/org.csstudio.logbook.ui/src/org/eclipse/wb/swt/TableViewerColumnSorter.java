@@ -108,7 +108,7 @@ public class TableViewerColumnSorter extends ViewerComparator {
 	 * Compares to elements of viewer. By default tries to compare values extracted from these elements using
 	 * {@link #getValue(Object)}, because usually you want to compare value of some attribute.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected int doCompare(Viewer viewer, Object e1, Object e2) {
 		Object o1 = getValue(e1);
 		Object o2 = getValue(e2);

@@ -23,7 +23,6 @@ import org.epics.pvdata.pv.MessageType;
 import org.epics.pvdata.pv.PVDataCreate;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Scalar;
-import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.Structure;
 
 public class PVTopStructure implements Lockable

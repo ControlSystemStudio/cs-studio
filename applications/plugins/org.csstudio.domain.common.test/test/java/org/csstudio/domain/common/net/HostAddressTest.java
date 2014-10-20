@@ -21,8 +21,7 @@
  */
 package org.csstudio.domain.common.net;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -31,7 +30,6 @@ import org.junit.Test;
  * @author bknerr
  * @since 26.04.2011
  */
-@SuppressWarnings("unused")
 public class HostAddressTest {
 
     @Test(expected=IllegalArgumentException.class)

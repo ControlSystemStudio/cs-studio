@@ -25,6 +25,7 @@ import org.csstudio.csdata.ProcessVariable;
 
 public class ProcessVariableItem extends ProcessVariable {
 
+	private static final long serialVersionUID = 39208429632981409L;
 	private String[] path;
 
 	public ProcessVariableItem(String name, String[] path) {

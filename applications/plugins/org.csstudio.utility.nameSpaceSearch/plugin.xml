@@ -33,6 +33,7 @@
                id="org.csstudio.utility.nameSpaceSearch.PVpopupAction"
                label="Name Space Search"
                menubarPath="org.csstudio.popmenu/content"
+               style="push"
                tooltip="Send selected PV to the Name Space Search"/>
       </objectContribution>
    </extension>
@@ -57,7 +58,7 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective">
+            targetID="org.csstudio.utility.product.CSStudioPerspective">
          <viewShortcut
                id="org.csstudio.utility.nameSpaceSearch.ui.MainView">
          </viewShortcut>

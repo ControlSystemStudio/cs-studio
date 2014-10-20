@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.swt.chart.axes;
 
+import org.junit.Assert;
 import junit.framework.TestCase;
-import junit.framework.Assert;
 
 /** Test of the linear transformation.
  * 

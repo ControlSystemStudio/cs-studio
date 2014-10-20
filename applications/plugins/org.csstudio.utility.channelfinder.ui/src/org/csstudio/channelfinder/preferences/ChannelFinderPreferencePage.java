@@ -32,7 +32,7 @@ public class ChannelFinderPreferencePage extends FieldEditorPreferencePage
 
     public ChannelFinderPreferencePage() {
 	super(GRID);
-	setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+	setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
 		Activator.PLUGIN_ID));
 	setMessage("ChannelFinderAPI Client Preferences");
 	setDescription("ChannelFinder preference page");

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>iter</artifactId>
+    <version>${global-version}</version>
+  </parent>
+
+  <groupId>org.csstudio</groupId>
+  <artifactId>iter-repository</artifactId>
+  <packaging>eclipse-repository</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <configuration>
+              <failOnError>true</failOnError>
+              <target>
+                <echo message="Copying icons into tycho target directory ${project.build.directory}" />
+                <copy verbose="false"
+                  todir="${project.build.directory}/products/org.csstudio.iter.product.css.product">
+                  <fileset dir="${project.build.directory}/../../products">
+                    <include name="org.csstudio.iter.css.product/icons/**" />
+                  </fileset>
+                </copy>
+				<copy verbose="false"
+                  todir="${project.build.directory}/products/org.csstudio.iter.product.css.product">
+                  <fileset dir="${project.build.directory}/../../products">
+                    <include name="splash.bmp" />
+                  </fileset>
+                </copy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>${tycho-groupid}</groupId>
+        <artifactId>tycho-p2-director-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+	<formats>
+  	  <linux>tar.gz</linux>
+	</formats>
+          <products>
+            <product>
+              <id>org.csstudio.iter.product.css.product</id>
+              <rootFolder>iter-css-${project.version}</rootFolder>
+              <archiveFileName>iter-css-${project.version}</archiveFileName>
+              <attachId>iter-css</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.alarm.beast.configtool.product</id>
+              <rootFolder>alarm-configtool-${project.version}</rootFolder>
+              <archiveFileName>alarm-configtool-${project.version}</archiveFileName>
+              <attachId>alarm-configtool</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.alarm.beast.server.product</id>
+              <rootFolder>alarm-server-${project.version}</rootFolder>
+              <archiveFileName>alarm-server-${project.version}</archiveFileName>
+              <attachId>alarm-server</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.alarm.beast.notifier.product</id>
+              <rootFolder>alarm-notifier-${project.version}</rootFolder>
+              <archiveFileName>alarm-notifier-${project.version}</archiveFileName>
+              <attachId>alarm-notifier</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.alarm.beast.annunciator.product</id>
+              <rootFolder>alarm-annunciator-${project.version}</rootFolder>
+              <archiveFileName>alarm-annunciator-${project.version}</archiveFileName>
+              <attachId>alarm-annunciator</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.archive.engine.product</id>
+              <rootFolder>archive-engine-${project.version}</rootFolder>
+              <archiveFileName>archive-engine-${project.version}</archiveFileName>
+              <attachId>archive-engine</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.archive.config.rdb.product</id>
+              <rootFolder>archive-configtool-${project.version}</rootFolder>
+              <archiveFileName>archive-configtool-${project.version}</archiveFileName>
+              <attachId>archive-configtool</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.jms2rdb.product</id>
+              <rootFolder>jms2rdb-${project.version}</rootFolder>
+              <archiveFileName>jms2rdb-${project.version}</archiveFileName>
+              <attachId>jms2rdb</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.scan.server.product</id>
+              <rootFolder>scan-server-${project.version}</rootFolder>
+              <archiveFileName>scan-server-${project.version}</archiveFileName>
+              <attachId>scan-server</attachId>
+            </product>
+            <product>
+              <id>org.csstudio.iter.product.utility.jmssendcmd.product</id>
+              <rootFolder>jms-send-${project.version}</rootFolder>
+              <archiveFileName>jms-send-${project.version}</archiveFileName>
+              <attachId>jms-send</attachId>
+            </product>
+          </products>
+        </configuration>
+        <executions>
+          <!-- Create products listed above.
+               In addition, features listed in category.xml
+               turn into installable features.
+            -->
+          <execution>
+            <id>materialize-products</id>
+            <goals>
+              <goal>materialize-products</goal>
+            </goals>
+          </execution>
+          <!-- Zip the products -->
+          <execution>
+            <id>archive-products</id>
+            <goals>
+              <goal>archive-products</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>${tycho-groupid}</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <includeAllDependencies>true</includeAllDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

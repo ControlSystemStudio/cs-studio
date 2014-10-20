@@ -220,7 +220,6 @@ public class ValueRequest {
 	 *  @param meta_hash Hash with meta data to decode
 	 *  @return {@link Display} or List of {@link String}[] depending on data type
 	 */
-	@SuppressWarnings({ "rawtypes" })
     private Object decodeMetaData(final ScalarType value_type, 
     		PVStructure pvMeta) throws Exception {
 		
@@ -289,7 +288,6 @@ public class ValueRequest {
 	}
 
 	/** Parse the values from the received XML-RPC response. */
-	@SuppressWarnings({ "rawtypes" })
     private VType[] decodeValues(final int type, 
     			final int count, 
     			final Display display,

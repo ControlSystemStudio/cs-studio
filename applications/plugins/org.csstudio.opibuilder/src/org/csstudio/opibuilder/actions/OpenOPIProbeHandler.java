@@ -14,7 +14,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 
@@ -27,7 +26,7 @@ public class OpenOPIProbeHandler extends AbstractHandler {
 			HandlerUtil.getActiveMenuSelection(event);
 		final ProcessVariable[] pvs =
 			AdapterUtil.convert(selection, ProcessVariable.class);
-		final Shell shell = HandlerUtil.getActiveShell(event);
+//		final Shell shell = HandlerUtil.getActiveShell(event);
 		IPath probeOPIPath = PreferencesHelper.getProbeOPIPath();
 
 		// When not defined, try built-in probe opi example

@@ -30,7 +30,6 @@ import javax.jms.MessageListener;
 import org.csstudio.platform.utility.jms.Activator;
 import org.csstudio.platform.utility.jms.IConnectionMonitor;
 import org.csstudio.platform.utility.jms.preferences.PreferenceConstants;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 

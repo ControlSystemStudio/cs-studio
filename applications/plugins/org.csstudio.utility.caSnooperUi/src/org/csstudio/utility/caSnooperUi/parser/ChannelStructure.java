@@ -7,6 +7,8 @@ import org.eclipse.core.runtime.PlatformObject;
 //TODO jhatje: implement new datatypes
 
 public class ChannelStructure extends PlatformObject implements Serializable { //IProcessVariable,Serializable	{
+
+	private static final long serialVersionUID = -5471768348532494404L;
 	private int repeats;
 	private String clientAddress;
 	private String aliasName;

@@ -62,7 +62,6 @@ import org.eclipse.ui.PartInitException;
  * @author Takashi Nakamoto @ Cosylab (Enhanced to calculate frame rate)
  * 
  */
-@SuppressWarnings("restriction")
 public class OPIRuntimeDelegate implements IAdaptable{
 
     private DisplayModel displayModel;

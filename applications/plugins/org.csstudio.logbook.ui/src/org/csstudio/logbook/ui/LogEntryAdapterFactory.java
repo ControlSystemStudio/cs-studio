@@ -22,7 +22,8 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
      * org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
      * java.lang.Class)
      */
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
 	LogEntry logEntry = ((LogEntry) adaptableObject);
 	if (adapterType == LogEntryBuilder.class) {
@@ -41,6 +42,7 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
      * 
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
      */
+    @SuppressWarnings("rawtypes")
     @Override
     public Class[] getAdapterList() {
 	return new Class[] { LogEntryBuilder.class };

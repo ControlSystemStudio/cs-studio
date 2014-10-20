@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.Viewer;
 public class allTagsContentProvider implements IStructuredContentProvider {
 
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof Object[]) {

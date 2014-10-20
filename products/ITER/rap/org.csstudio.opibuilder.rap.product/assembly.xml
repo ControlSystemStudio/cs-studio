@@ -1,0 +1,25 @@
+<assembly>
+  <id>org.csstudio.opibuilder.rap.war</id>
+  <formats>
+    <format>war</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}/target/products/${artifactId}/linux/gtk/x86_64</directory>
+      <outputDirectory>/WEB-INF</outputDirectory>
+      <excludes>
+        <exclude>plugins/javax.servlet*.jar</exclude>
+        <!--exclude>plugins/org.hamcrest*.jar</exclude>
+        <exclude>plugins/**junit*/</exclude-->
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/target/products/${artifactId}/linux/gtk/x86_64/plugins</directory>
+      <outputDirectory>/WEB-INF/lib</outputDirectory>
+      <includes>
+        <include>org.eclipse.equinox.servletbridge_*.jar</include>
+      </includes>
+      </fileSet>
+  </fileSets>
+</assembly>

@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.alarm.beast.notifier.app.feature"
       label="CSS Alarm Notifier Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -28,33 +28,29 @@ of the distribution package.
          version="0.0.0"/>
 
    <requires>
-      <import plugin="com.google.common"/>
-      <import plugin="edu.msu.nscl.olog.api"/>
-      <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.apache.commons.collections"/>
-      <import plugin="org.apache.commons.httpclient"/>
-      <import plugin="org.apache.commons.logging"/>
-      <import plugin="org.apache.xerces"/>
-      <import plugin="org.csstudio.alarm.beast"/>
-      <import plugin="org.csstudio.alarm.beast.notifier.logbook"/>
-      <import plugin="org.csstudio.apputil"/>
-      <import plugin="org.csstudio.csdata"/>
-      <import plugin="org.csstudio.email"/>
-      <import plugin="org.csstudio.java"/>
-      <import plugin="org.csstudio.logbook"/>
-      <import plugin="org.csstudio.logging"/>
-      <import plugin="org.csstudio.platform.utility.jms"/>
-      <import plugin="org.csstudio.platform.utility.rdb"/>
-      <import plugin="org.csstudio.security"/>
-      <import plugin="org.csstudio.utility.olog"/>
-      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="1.1.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.jms"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.email" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java"/>
+      <import plugin="edu.msu.nscl.olog.api" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.olog" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.100" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.2" match="greaterOrEqual"/>
+      <import plugin="com.google.guava"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.epics.util"/>
-      <import plugin="org.epics.vtype"/>
-      <import plugin="org.hamcrest.core"/>
-      <import plugin="org.junit"/>
+      <import plugin="org.hamcrest.core" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.httpcomponents.httpclient" version="4.1.3" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -83,14 +79,6 @@ of the distribution package.
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.iter.notifier.ologauthentication"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin
@@ -129,21 +117,14 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="net.coobird.thumbnailator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.jackrabbit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.commons.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.iter.notifier.ologauthentication"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -156,4 +137,19 @@ of the distribution package.
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.apache.httpcomponents.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.httpcomponents.httpcore"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
+
