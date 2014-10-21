@@ -28,7 +28,7 @@
 
    <features>
       <feature id="org.csstudio.trends.databrowser2.rap.feature"/>
-      <feature id="org.csstudio.iter.trends.databrowser2.rap.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.iter.trends.databrowser2.rap.feature"/>
    </features>
 
    <configurations>

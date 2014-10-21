@@ -262,6 +262,11 @@
         <groupId>${tycho-groupid}</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
         <version>${tycho.version}</version>
+        <configuration>
+            <timestampProvider>jgit</timestampProvider>
+            <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
+            <jgit.ignore>pom.xml</jgit.ignore>
+	</configuration>
       </plugin>
       <plugin>
         <groupId>${tycho-groupid}</groupId>
