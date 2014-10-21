@@ -42,6 +42,7 @@
     <module>org.csstudio.iter.svn.feature</module>
     <module>org.csstudio.iter.test.feature</module>
     <module>org.csstudio.iter.trends.databrowser2.feature</module>
+    <module>org.csstudio.iter.trends.databrowser2.rap.feature</module>
     <module>org.csstudio.iter.utility.clock.feature</module>
     <module>org.csstudio.iter.utility.eliza.feature</module>
     <module>org.csstudio.iter.utility.jmssendcmd.app.feature</module>

@@ -109,13 +109,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archive.reader.rdb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.archive.vtype"
          download-size="0"
          install-size="0"
@@ -165,13 +158,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archive.rdb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.security"
          download-size="0"
          install-size="0"
@@ -180,20 +166,6 @@
 
    <plugin
          id="org.csstudio.security.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.jdbc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.utility.rdb"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -495,13 +467,6 @@
 
    <plugin
          id="org.csstudio.autocomplete.pvmanager.sim"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete.archive"
          download-size="0"
          install-size="0"
          version="0.0.0"
