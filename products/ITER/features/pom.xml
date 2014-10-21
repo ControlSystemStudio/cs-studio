@@ -36,6 +36,7 @@
     <module>org.csstudio.iter.jms2rdb.app.feature</module>
     <module>org.csstudio.iter.logbook.feature</module>
     <module>org.csstudio.iter.opibuilder.feature</module>
+    <module>org.csstudio.iter.opibuilder.rap.feature</module>
     <module>org.csstudio.iter.scan.server.app.feature</module>
     <module>org.csstudio.iter.scan.ui.feature</module>
     <module>org.csstudio.iter.snl.feature</module>

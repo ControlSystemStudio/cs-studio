@@ -28,6 +28,7 @@
 
    <features>
       <feature id="org.csstudio.opibuilder.rap.feature"/>
+      <feature id="org.csstudio.iter.opibuilder.rap.feature"/>
    </features>
 
    <configurations>
