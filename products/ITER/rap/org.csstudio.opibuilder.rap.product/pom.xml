@@ -61,7 +61,7 @@
             </replacement>
             <replacement>
               <token>osgi.bundles=</token>
-              <value>osgi.bundles=org.eclipse.equinox.servletbridge.extensionbundle,</value>
+              <value>osgi.bundles=org.eclipse.equinox.servletbridge.extensionbundle@start,</value>
             </replacement>
             <replacement>
               <token>osgi\.framework=.*jar</token>
