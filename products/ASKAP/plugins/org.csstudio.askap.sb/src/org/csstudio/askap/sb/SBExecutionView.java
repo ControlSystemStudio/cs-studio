@@ -54,6 +54,7 @@ import org.eclipse.ui.part.EditorPart;
 import org.mihalis.opal.multiChoice.MultiChoice;
 import org.mihalis.opal.multiChoice.MultiChoiceSelectionListener;
 
+import askap.interfaces.TypedValueBool;
 import askap.interfaces.monitoring.MonitorPoint;
 
 public class SBExecutionView extends EditorPart {
@@ -77,13 +78,7 @@ public class SBExecutionView extends EditorPart {
 	Label status = null;	
 	Label sbidLabel = null;
 	Button stopCaptureButton = null;
-	
-	private static Image RED_LED_IMAGE = null;
-	private static Image GREEN_LED_IMAGE = null;
-	private static Image GREY_LED_IMAGE = null;
-	private static Image WAIT_IMAGE = null;
-	private static Image RUN_IMAGE = null;
-		
+			
 	Label waitLabel = null;
 	
 	private static final Map<SBState, Integer> STATE_COLOR_MAP = new HashMap<SBState, Integer>();
@@ -99,15 +94,7 @@ public class SBExecutionView extends EditorPart {
 	
 	static {
 		STATE_COLOR_MAP.put(SBState.ERRORED, SWT.COLOR_RED);
-		STATE_COLOR_MAP.put(SBState.EXECUTING, SWT.COLOR_DARK_GREEN);
-		
-		RED_LED_IMAGE = Activator.getDefault().getImage("icons/red_round_button.png");        	
-		GREEN_LED_IMAGE = Activator.getDefault().getImage("icons/green_round_button.png");
-		GREY_LED_IMAGE = Activator.getDefault().getImage("icons/grey_round_button.png");
-
-		WAIT_IMAGE = Activator.getDefault().getImage("icons/time-machine-icon.png");
-		RUN_IMAGE = Activator.getDefault().getImage("icons/Animals-Running-Rabbit-icon.png");
-		
+		STATE_COLOR_MAP.put(SBState.EXECUTING, SWT.COLOR_DARK_GREEN);		
 	}
 	
 
@@ -186,7 +173,7 @@ public class SBExecutionView extends EditorPart {
 		g4.grabExcessHorizontalSpace = false;
 		g4.horizontalAlignment = SWT.LEFT;
 		status.setLayoutData(g4);
-		status.setImage(GREY_LED_IMAGE);
+		status.setImage(Activator.GREY_LED_IMAGE);
 
 		Label dummy = new Label(page, 0);
 		GridData g5 = new GridData();
@@ -282,7 +269,8 @@ public class SBExecutionView extends EditorPart {
 		g6.horizontalAlignment = GridData.FILL;	
 		g6.verticalAlignment = GridData.FILL;	
 		g6.grabExcessHorizontalSpace = true;
-		g6.grabExcessVerticalSpace = true;
+		g6.grabExcessVerticalSpace = false;
+		g6.heightHint = 60;
 		g6.horizontalSpan = NUM_OF_COLUMNS;
 		scheduleTable.setLayoutData(g6);
 		
@@ -301,7 +289,7 @@ public class SBExecutionView extends EditorPart {
 					
 					if (state != null) {
 						if (SBState.EXECUTING.equals(state)) {
-							item.setImage(4, RUN_IMAGE);
+							item.setImage(4, Activator.RUN_IMAGE);
 							item.setForeground(getParent().getDisplay().getSystemColor(STATE_COLOR_MAP.get(sb.getState())));
 						} else {
 							item.setText(new String[]{"" + sb.getId(), sb.getAliasName(), sb.getTemplateName(), 
@@ -341,7 +329,7 @@ public class SBExecutionView extends EditorPart {
 		});
 		
 		waitLabel = new Label(page, SWT.NONE);
-		waitLabel.setImage(WAIT_IMAGE);		
+		waitLabel.setImage(Activator.WAIT_IMAGE);		
 				
 		executedTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		executedTable.setLinesVisible (true);
@@ -508,10 +496,25 @@ public class SBExecutionView extends EditorPart {
 		dataModel.addPointListener(new String[]{Preferences.getExecutiveMonitorPointName()},				
 			new MonitorPointListener() {
 				@Override
-				public void onUpdate(MonitorPoint point) {
+				public void onUpdate(final MonitorPoint point) {
 					getParent().getDisplay().asyncExec(new Runnable() {					
 						public void run() {
-							setupButtons(true);
+							if (point.value instanceof TypedValueBool) {
+								boolean running = ((TypedValueBool) point.value).value;
+								if (running) {
+									// set up the icon
+									status.setImage(Activator.GREEN_LED_IMAGE);
+									setupButtons(true);
+								} else {
+									// set up the icon
+									status.setImage(Activator.RED_LED_IMAGE);
+									setupButtons(false);
+								}
+							} else {
+								setupButtons(true);
+								status.setImage(Activator.GREY_LED_IMAGE);
+							}
+							ExecutiveSummaryHelper.getInstance().updateValue(point);
 						}
 					});
 				}
@@ -521,7 +524,7 @@ public class SBExecutionView extends EditorPart {
 					getParent().getDisplay().asyncExec(new Runnable() {					
 						public void run() {
 //							disableAllButtons();
-							status.setImage(GREY_LED_IMAGE);
+							status.setImage(Activator.GREY_LED_IMAGE);
 						}
 					});
 				}});

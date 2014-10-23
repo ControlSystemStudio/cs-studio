@@ -23,7 +23,7 @@ public class MonitoringPointManager {
 	private Map<String, MonitorPointUpdater> pointUpdaters = new HashMap<String, MonitorPointUpdater>();
 	private MonitoringProviderPrx monitorProxy = null;
 	
-	private boolean keepPolling = false;
+	private boolean keepPolling = true;
 	private String myAdaptorName = "";
 	
 	
@@ -41,7 +41,7 @@ public class MonitoringPointManager {
 							if (monitorProxy == null) 
 								monitorProxy = IceManager.getMonitoringProvider(myAdaptorName);
 								
-							MonitorPoint[] pointValues = monitorProxy.get(pointNames);
+							MonitorPoint[] pointValues = monitorProxy.get(pointNames);							
 							update(pointValues);
 							
 						} catch (Exception e) {

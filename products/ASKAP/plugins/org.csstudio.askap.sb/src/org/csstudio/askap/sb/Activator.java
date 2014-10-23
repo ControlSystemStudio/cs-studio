@@ -16,10 +16,23 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 	
+	public static Image RED_LED_IMAGE = null;
+	public static Image GREEN_LED_IMAGE = null;
+	public static Image GREY_LED_IMAGE = null;
+	public static Image WAIT_IMAGE = null;
+	public static Image RUN_IMAGE = null;
+
+	
 	/**
 	 * The constructor
 	 */
 	public Activator() {
+		RED_LED_IMAGE = getImage("icons/red_round_button.png");        	
+		GREEN_LED_IMAGE = getImage("icons/green_round_button.png");
+		GREY_LED_IMAGE = getImage("icons/grey_round_button.png");
+
+		WAIT_IMAGE = getImage("icons/time-machine-icon.png");
+		RUN_IMAGE = getImage("icons/Animals-Running-Rabbit-icon.png");
 	}
 
 	/*
