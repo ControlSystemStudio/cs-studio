@@ -19,14 +19,14 @@
         <global-version>4.0.0-SNAPSHOT</global-version>
         <assembly-version>2.4</assembly-version>
         <replacer-version>1.4.1</replacer-version>
-        <tycho.version>0.20.0</tycho.version>
-        <tycho-extras.version>0.20.0</tycho-extras.version>
+        <tycho.version>0.21.0</tycho.version>
+        <tycho-extras.version>0.21.0</tycho-extras.version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
         <baselineMode>fail</baselineMode>
 	<pydev-site>http://update-production-pydev.s3.amazonaws.com/pydev/updates</pydev-site>
-        <svn-site>http://subclipse.tigris.org/update_1.10.x</svn-site>
+        <svn-site>http://subclipse.tigris.org/update_1.8.x</svn-site>
         <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
     </properties>
 

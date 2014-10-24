@@ -21,12 +21,13 @@ of the distribution package.
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.tigris.subversion.clientadapter" version="1.10.0" match="equivalent"/>
-      <import plugin="org.tmatesoft.svnkit" version="1.8.0" match="equivalent"/>
+      <import plugin="org.tigris.subversion.clientadapter" version="1.8.5" match="equivalent"/>
+      <import plugin="org.tmatesoft.svnkit" version="1.7.0" match="equivalent"/>
       <import plugin="org.eclipse.core.resources" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.team.core" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.tigris.subversion.clientadapter" version="1.8.0" match="equivalent"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.tigris.subversion.subclipse.core" version="1.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide"/>
@@ -109,4 +110,3 @@ of the distribution package.
          unpack="false"/>
 
 </feature>
-
