@@ -102,7 +102,7 @@
          </adapter>
       </factory>
    </extension>
-   <extension
+   <!--extension
          point="org.eclipse.ui.editorActions">
       <editorContribution
             id="de.desy.language.snl.ui.SNLEditorContribution"
@@ -128,7 +128,7 @@
                tooltip="Compiles the .st file">
          </action>
       </editorContribution>
-   </extension>
+   </extension-->
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -137,6 +137,15 @@
             id="de.desy.language.snl.ui.SNLDEvelopment"
             name="SNL Development">
       </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.edit"
+            defaultHandler="de.desy.language.snl.ui.editor.RefreshHandler"
+            id="de.desy.language.snl.ui.editor.refresh"
+            name="&amp;Refresh Highlighting">
+      </command>
    </extension>
    <!--
    <extension
@@ -158,7 +167,7 @@
       </key>
    </extension>
    -->
-   <extension
+   <!--extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="false"
@@ -171,13 +180,60 @@
                label="Open SNL Editor">
          </action>
       </objectContribution>
-   </extension>
+   </extension-->
    <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
             primary="true">
       </toc>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="de.desy.language.snl.ui.SNLDEvelopment">
+         <view
+               id="org.eclipse.ui.views.ResourceNavigator"
+               minimized="false"
+               ratio="0.25f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss">
+         </view>
+         <view
+               id="org.eclipse.ui.views.ContentOutline"
+               minimized="false"
+               ratio="0.75f"
+               relationship="right"
+               relative="org.eclipse.ui.editorss">
+         </view>
+         <view
+               id="org.eclipse.ui.views.ProblemView"
+               minimized="false"
+               ratio="0.75f"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss">
+         </view>
+         <view
+               id="de.desy.language.editor.details.views.DetailsView"
+               minimized="false"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ContentOutline">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:edit?after=additions">
+         <command
+               commandId="de.desy.language.snl.ui.editor.refresh"
+               icon="icons/nav_refresh.gif"
+               label="SNL Refresh Highlighting"
+               mnemonic="R"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>

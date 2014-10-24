@@ -7,6 +7,7 @@ import org.eclipse.ui.IEditorPart;
 
 import de.desy.language.editor.ui.eventing.UIEvent;
 
+@Deprecated
 public class RefreshAction implements IEditorActionDelegate {
 
 
