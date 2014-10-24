@@ -251,7 +251,7 @@ $(pv_value)</tooltip>
     <wuid>6cc102d7:13895a319f6:-6487</wuid>
     <scripts />
     <height>44</height>
-    <name>Widget Properties.html</name>
+    <name>Widget_Properties.html</name>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>

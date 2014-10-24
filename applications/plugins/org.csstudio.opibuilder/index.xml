@@ -5,7 +5,7 @@
 	   <entry keyword="Widgets">		   
 		   		<topic href="html/Widgets_Overview.html" />
 		   		
-		   		<topic href="html/Widget Properties.html"/>
+		   		<topic href="html/Widget_Properties.html"/>
      			<topic href="html/widgets/PVWidgets.html" label="PV Widgets"/>
      
 	     		<topic href="html/widgets/ShapeWidgets.html" label="Shape Widgets"/>
