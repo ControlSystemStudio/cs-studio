@@ -24,18 +24,6 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.python.pydev" version="2.7.6" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ltk.core.refactoring"/>
-      <import plugin="org.eclipse.ltk.ui.refactoring"/>
       <import plugin="org.eclipse.ui.intro" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.cheatsheets" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
@@ -82,8 +70,6 @@ of the distribution package.
       <import plugin="org.eclipse.jdt.core.manipulation" version="1.4.0" match="compatible"/>
       <import plugin="com.ibm.icu" version="4.4.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.bidi" version="0.10.0"/>
-      <import plugin="org.eclipse.core.filebuffers"/>
-      <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.core.resources" version="3.9.0" match="compatible"/>
       <import plugin="org.eclipse.core.variables" version="3.2.800" match="compatible"/>
       <import plugin="org.eclipse.ui.console" version="3.5.300" match="compatible"/>
@@ -94,6 +80,7 @@ of the distribution package.
       <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.3.2" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
       <import plugin="org.python.jython" version="2.5.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
@@ -120,42 +107,6 @@ of the distribution package.
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
    </requires>
-
-   <plugin
-         id="com.python.pydev"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.python.pydev.analysis"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.python.pydev.codecompletion"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.python.pydev.debug"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.python.pydev.fastparser"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.python.pydev.refactoring"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.jdt"
@@ -208,91 +159,11 @@ of the distribution package.
          version="0.0.0"/>
 
    <plugin
-         id="org.csstudio.iter.pydev.configurator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.python.jython"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.python.pydev"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="true"/>
-
-   <plugin
-         id="org.python.pydev.ast"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.customizations"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.debug"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.help"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.jython"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="true"/>
-
-   <plugin
-         id="org.python.pydev.parser"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.refactoring"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.shared_core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.shared_interactive_console"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.python.pydev.shared_ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.debug.core"
@@ -319,8 +190,7 @@ of the distribution package.
          id="org.csstudio.scan"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.csstudio.scan.client"
@@ -368,8 +238,7 @@ of the distribution package.
          id="org.csstudio.numjy"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.csstudio.ndarray"
@@ -379,4 +248,3 @@ of the distribution package.
          unpack="false"/>
 
 </feature>
-

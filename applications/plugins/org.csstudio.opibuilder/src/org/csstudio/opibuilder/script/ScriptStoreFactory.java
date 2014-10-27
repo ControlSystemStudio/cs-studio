@@ -83,6 +83,10 @@ public class ScriptStoreFactory {
 			pythonPath = FileLocator.resolve(fileURL).getPath() + "/Lib";
 		} else {
 			pythonPath = FileLocator.resolve(new URL("platform:/plugin/org.python.jython/Lib/")).getPath();
+			if (pythonPath.startsWith("file:/")) {
+				pythonPath = pythonPath.substring(5);
+			}
+			pythonPath = pythonPath.replace(".jar!", ".jar");
 		}
 			
 		
