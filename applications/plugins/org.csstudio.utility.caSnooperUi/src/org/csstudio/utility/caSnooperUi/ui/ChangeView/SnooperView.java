@@ -346,6 +346,7 @@ public class SnooperView extends ViewPart{
 	
 	public void setMessage(final Object param){
 		Display.getDefault().asyncExec(new Runnable() {
+			@SuppressWarnings("unchecked")
 			@Override
             public void run() {
 				if(!snooperActive){
@@ -379,6 +380,7 @@ public class SnooperView extends ViewPart{
 			@Override
             public void run() {
 				final ArrayList<ChannelStructure> entries = msg.getSnoops();
+				if (tableViewer.getTable().isDisposed() || text.isDisposed()) return;
 				if(entries!=null){
 					tableViewer.setInput(entries);
 					text.setText(msg.getStatistics(entries));
