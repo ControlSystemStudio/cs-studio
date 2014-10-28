@@ -1,5 +1,6 @@
 package de.desy.language.snl.configuration.linux.configurations;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -41,7 +42,10 @@ public class CCompilerConfiguration extends AbstractCompilerConfiguration {
 		result.add("-I" + getCompilerOptionService().getSeqFolder() + "/include");
 		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include/os/Linux");
 		result.add("-I/scratch/EpicsR3.14.10/DesyBase/include");
-		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include/compiler/gcc");
+		String s = getCompilerOptionService().getEpicsFolder() + "/include/compiler/gcc";
+		if (new File(s).exists()) {
+			result.add("-I" + s);
+		}
 		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include");
 		result.add(sourceFile);
 		return result;
