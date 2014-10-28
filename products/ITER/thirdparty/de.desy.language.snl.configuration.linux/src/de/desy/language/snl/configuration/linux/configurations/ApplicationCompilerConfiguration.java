@@ -33,10 +33,8 @@ public class ApplicationCompilerConfiguration extends
 		result.add("-o");
 		result.add(targetFile);
 		result.add("-L"+getCompilerOptionService().getSeqFolder() + libdir);
-//		result.add("-L/scratch/EpicsR3.14.10/DesyBase" + libdir);
 		result.add("-L"+getCompilerOptionService().getEpicsFolder() + libdir);
 		result.add("-Wl,-rpath,"+getCompilerOptionService().getSeqFolder() + libdir);
-//		result.add("-Wl,-rpath,/scratch/EpicsR3.14.10/DesyBase" + libdir);
 		result.add("-Wl,-rpath,"+getCompilerOptionService().getEpicsFolder() + libdir);
 		result.add(arch64 ? "-m64" : "-m32");
 		result.add(sourceFile);
@@ -45,9 +43,9 @@ public class ApplicationCompilerConfiguration extends
 //		result.add("-liocLogClient");
 		result.add("-lcas");
 		result.add("-lgdd");
-		result.add("-lasHost");
-		result.add("-ldbStaticHost");
-		result.add("-lregistryIoc");
+		//result.add("-lasHost");
+		//result.add("-ldbStaticHost");
+		//result.add("-lregistryIoc");
 		result.add("-lca");
 		result.add("-lCom");
 		return result;
