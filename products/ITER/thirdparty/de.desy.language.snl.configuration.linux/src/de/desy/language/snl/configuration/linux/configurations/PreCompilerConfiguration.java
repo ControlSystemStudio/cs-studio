@@ -39,6 +39,7 @@ public class PreCompilerConfiguration extends AbstractCompilerConfiguration {
 		result.add("-D_REENTRANT");
 		result.add("-I" + getCompilerOptionService().getSeqFolder() + "/include");
 		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include/os/Linux");
+		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include/compiler/gcc");
 		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include");
 		result.add(sourceFile);
 		return result;
