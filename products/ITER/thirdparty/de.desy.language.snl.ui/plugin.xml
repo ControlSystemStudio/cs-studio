@@ -7,9 +7,10 @@
             class="de.desy.language.snl.ui.editor.SNLEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
             default="true"
+            extensions="st, stt"
             icon="icons/nodes/program.gif"
             id="de.desy.language.snl.ui.SNLEditor"
-            name="SNL source editor">
+            name="SNL Source Editor">
          <contentTypeBinding
                contentTypeId="de.desy.language.snl.source">
          </contentTypeBinding>
