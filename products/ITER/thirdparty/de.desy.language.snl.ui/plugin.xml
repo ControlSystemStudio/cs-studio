@@ -148,7 +148,6 @@
             name="&amp;Refresh Highlighting">
       </command>
    </extension>
-   <!--
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -158,6 +157,7 @@
             name="Compile *.st">
       </command>
    </extension>
+   <!--
    <extension
          point="org.eclipse.ui.bindings">
       <key
@@ -226,15 +226,49 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:edit?after=additions">
+            locationURI="menu:edit?before=preferences">
          <command
                commandId="de.desy.language.snl.ui.editor.refresh"
                icon="icons/nav_refresh.gif"
                label="SNL Refresh Highlighting"
                mnemonic="R"
                style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <reference
+                     definitionId="de.desy.language.snl.ui.activeEditor">
+               </reference>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:edit?before=preferences">
+         <command
+               commandId="de.desy.language.snl.ui.CompileST"
+               icon="icons/compileST.gif"
+               label="Compile"
+               mnemonic="C"
+               style="push">
+               <visibleWhen
+                  checkEnabled="true">
+               <reference
+                     definitionId="de.desy.language.snl.ui.activeEditor">
+               </reference>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>
-
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="de.desy.language.snl.ui.activeEditor">
+        <with
+               variable="activeEditorId">
+            <equals
+                  value="de.desy.language.snl.ui.SNLEditor">
+            </equals>
+         </with>
+      </definition>
+   </extension>
 </plugin>
