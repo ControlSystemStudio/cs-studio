@@ -388,8 +388,10 @@ public class SnooperView extends ViewPart{
 					text.setText("No broadcasts were received");
 		}
 	});
-		Thread t = new Thread(new DataTimer());
-		t.start();
+		if (snooperActive) {
+			Thread t = new Thread(new DataTimer());
+			t.start();
+		}
 	}
 	
 	@Override
