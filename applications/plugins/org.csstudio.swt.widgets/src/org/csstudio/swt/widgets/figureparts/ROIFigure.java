@@ -63,7 +63,11 @@ public class ROIFigure extends Figure {
 			@Override
 			public void mouseDragged(MouseEvent me) {
 				armed = true;
-				updateROIBounds(me);
+				if (start != null) {
+					updateROIBounds(me);
+				} else {
+					start = me.getLocation();
+				}
 				me.consume();
 			}
 			
