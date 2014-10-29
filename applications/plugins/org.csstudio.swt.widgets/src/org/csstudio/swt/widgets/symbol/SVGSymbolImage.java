@@ -9,15 +9,18 @@ package org.csstudio.swt.widgets.symbol;
 
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.csstudio.swt.widgets.Activator;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
+import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.csstudio.utility.batik.SVGUtils;
 import org.csstudio.utility.batik.SimpleImageTranscoder;
-import org.csstudio.swt.widgets.Activator;
-import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Graphics;
@@ -151,21 +154,27 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 	public void syncLoadImage() {
 		transcoder = null;
 		failedToLoadDocument = false;
-		loadDocument();
+		try {
+			final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
+			loadDocument(inputStream);
+		} catch (Exception e) {
+			Activator.getLogger().log(Level.WARNING,
+					"Error loading SVG image " + imagePath, e);
+		}
 	}
 
 	public void asyncLoadImage() {
+		if (imagePath == null)
+			return;
 		loadingImage = true;
-		Display.getDefault().asyncExec(new Runnable() {
-			private int maxAttempts = 6;
+		loadImage(new IJobErrorHandler() {
+			private int maxAttempts = 5;
 
-			public void run() {
+			public void handleError(Exception exception) {
 				if (maxAttempts-- > 0) {
 					try {
 						Thread.sleep(100);
-						syncLoadImage();
-						loadingImage = false;
-						fireSymbolImageLoaded();
+						loadImage(this);
 						return;
 					} catch (InterruptedException e) {
 					}
@@ -173,12 +182,40 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 				loadingImage = false;
 				// fireSymbolImageLoaded();
 				Activator.getLogger().log(Level.WARNING,
-						"ERROR in loading SVG image " + imagePath);
+						"ERROR in loading SVG image " + imagePath, exception);
 			}
 		});
 	}
 
-	private void loadDocument() {
+	private void loadImage(IJobErrorHandler errorHandler) {
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+			@Override
+			public void runWithInputStream(InputStream stream) {
+				synchronized (SVGSymbolImage.this) {
+					try {
+						loadDocument(stream);
+					} finally {
+						try {
+							stream.close();
+						} catch (IOException e) {
+							Activator.getLogger().log(Level.WARNING,
+									"ERROR in closing SVG image stream ", e);
+						}
+					}
+					loadingImage = false;
+					Display.getDefault().syncExec(new Runnable() {
+						public void run() {
+							fireSymbolImageLoaded();
+						}
+					});
+				}
+			}
+		};
+		ResourceUtil.pathToInputStreamInJob(imagePath, uiTask,
+				"Loading SVG Image...", errorHandler);
+	}
+
+	private void loadDocument(final InputStream inputStream) {
 		transcoder = null;
 		failedToLoadDocument = true;
 		if (imagePath == null || imagePath.isEmpty()) {
@@ -191,7 +228,6 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 			String uri = "file://"
 					+ (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$ 
 					+ imagePath.toString();
-			final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
 			svgDocument = factory.createDocument(uri, inputStream);
 			transcoder = new SimpleImageTranscoder(svgDocument);
 			initRenderingHints();
@@ -212,7 +248,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 			return null;
 		}
 		if (transcoder == null) {
-			loadDocument();
+			syncLoadImage();
 		}
 		return transcoder == null ? null : transcoder.getDocument();
 	}
