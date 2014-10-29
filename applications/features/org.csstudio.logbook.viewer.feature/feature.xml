@@ -2,7 +2,8 @@
 <feature
       id="org.csstudio.logbook.viewer.feature"
       label="Log Viewer Feature"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -32,13 +33,6 @@
 
    <plugin
          id="org.eclipse.nebula.widgets.grid"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.autocomplete.logbook"
          download-size="0"
          install-size="0"
          version="0.0.0"
