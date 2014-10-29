@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.csstudio.utility.dbparser.test
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.csstudio.utility.dbparser;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.utility.dbparser.util
+Require-Bundle: org.junit

@@ -1,0 +1,10 @@
+field(VAL,DBF_USHORT) {
+		prompt("Event Number To Post")
+		promptgroup(GUI_INPUTS)
+		asl(ASL0)
+	}
+	field(VAL,DBF_USHORT) {
+		prompt("Event Number To Post")
+		promptgroup(GUI_INPUTS)
+		asl(ASL0)
+	}
