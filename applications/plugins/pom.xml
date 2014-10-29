@@ -200,29 +200,30 @@
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
     <module>org.csstudio.vtype.pv</module>
-	
-	<!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
-	<module>org.csstudio.alarm.beast.annunciator.test</module>
-	<module>org.csstudio.alarm.beast.msghist.test</module>
-	<module>org.csstudio.alarm.beast.notifier.test</module>
-	<module>org.csstudio.alarm.beast.server.test</module>
-	<module>org.csstudio.alarm.beast.ui.test</module>
-	<module>org.csstudio.archive.engine.test</module>
-	<module>org.csstudio.archive.reader.test</module>
-	<module>org.csstudio.archive.reader.appliance.test</module>
-	<module>org.csstudio.archive.vtype.test</module>
-	<module>org.csstudio.diag.postanalyser.test</module>
-	<!--module>org.csstudio.diag.pvfields.test</module--> <!--Tests do not end.-->
-	<module>org.csstudio.ndarray.test</module>
-	<module>org.csstudio.scan.test</module>
-	<!--module>org.csstudio.scan.server.test</module--> <!--Error at runtime.-->
-	<!--module>org.csstudio.trends.databrowser2.test</module--> <!--Error at runtime.-->
-	<!--module>org.csstudio.vtype.pv.test</module-->
-	<module>org.csstudio.utility.channel.test</module>
-	<module>org.csstudio.display.pace.test</module>
-	<module>org.csstudio.alarm.beast.configtool.test</module>
-	<!--module>org.csstudio.apputil.ui.test</module--> <!--UI tests - wrong naming.-->
-	<module>org.csstudio.archive.reader.aapi.test</module>
-	
+    <!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
+    <module>org.csstudio.alarm.beast.annunciator.test</module>
+    <module>org.csstudio.alarm.beast.msghist.test</module>
+    <module>org.csstudio.alarm.beast.notifier.test</module>
+    <module>org.csstudio.alarm.beast.server.test</module>
+    <module>org.csstudio.alarm.beast.ui.test</module>
+    <module>org.csstudio.archive.engine.test</module>
+    <module>org.csstudio.archive.reader.test</module>
+    <module>org.csstudio.archive.reader.appliance.test</module>
+    <module>org.csstudio.archive.vtype.test</module>
+    <module>org.csstudio.diag.epics.pvmanager.pvtree.test</module>
+    <module>org.csstudio.diag.epics.pvtree.test</module>    
+    <module>org.csstudio.diag.postanalyser.test</module>
+    <!--module>org.csstudio.diag.pvfields.test</module--> <!--Tests do not end.-->
+    <module>org.csstudio.logbook.test</module>
+    <module>org.csstudio.ndarray.test</module>
+    <module>org.csstudio.scan.test</module>
+    <!--module>org.csstudio.scan.server.test</module--> <!--Error at runtime.-->
+    <!--module>org.csstudio.trends.databrowser2.test</module--> <!--Error at runtime.-->
+    <!--module>org.csstudio.vtype.pv.test</module-->
+    <module>org.csstudio.utility.channel.test</module>
+    <module>org.csstudio.display.pace.test</module>
+    <module>org.csstudio.alarm.beast.configtool.test</module>
+    <!--module>org.csstudio.apputil.ui.test</module--> <!--UI tests - wrong naming.-->
+    <module>org.csstudio.archive.reader.aapi.test</module>
   </modules>
 </project>

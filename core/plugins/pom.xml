@@ -16,9 +16,13 @@
     <module>org.csstudio.auth.ui</module>
     <module>org.csstudio.autocomplete</module>
     <module>org.csstudio.autocomplete.pvmanager.formula</module>
+    <module>org.csstudio.autocomplete.pvmanager.formula.test</module>
     <module>org.csstudio.autocomplete.pvmanager.loc</module>
+    <module>org.csstudio.autocomplete.pvmanager.loc.test</module>
     <module>org.csstudio.autocomplete.pvmanager.sim</module>
+    <module>org.csstudio.autocomplete.pvmanager.sim.test</module>
     <module>org.csstudio.autocomplete.pvmanager.sys</module>
+    <module>org.csstudio.autocomplete.pvmanager.sys.test</module>
     <module>org.csstudio.autocomplete.ui</module>
     <module>org.csstudio.autocomplete.ui.rap</module>
     <module>org.csstudio.autocomplete.ui.rcp</module>
@@ -46,14 +50,14 @@
     <module>org.csstudio.platform.libs.hibernate.ui</module>
     <!--<module>org.csstudio.platform.simpledal</module>-->
     <module>org.csstudio.platform.utility.jms</module>
-	<module>org.csstudio.platform.utility.jms.test</module>
+    <module>org.csstudio.platform.utility.jms.test</module>
     <module>org.csstudio.platform.utility.jms.ui</module>
     <module>org.csstudio.platform.utility.rdb</module>
-	<module>org.csstudio.platform.utility.rdb.test</module>
+    <module>org.csstudio.platform.utility.rdb.test</module>
     <module>org.csstudio.rap.core</module>
     <module>org.csstudio.rap.ui.util</module>
     <module>org.csstudio.security</module>
-	<module>org.csstudio.security.test</module>
+    <module>org.csstudio.security.test</module>
     <module>org.csstudio.security.ui</module>
     <module>org.csstudio.simplepv</module>
     <module>org.csstudio.simplepv.pvmanager</module>
@@ -79,7 +83,7 @@
     <module>org.csstudio.utility.singlesource</module>
     <module>org.csstudio.utility.singlesource.rap</module>
     <module>org.csstudio.utility.singlesource.rcp</module>
-	<module>org.csstudio.utility.singlesource.test</module>
+    <module>org.csstudio.utility.singlesource.test</module>
     <module>org.csstudio.utility.test</module>
     <module>org.csstudio.workspace</module>
   </modules>

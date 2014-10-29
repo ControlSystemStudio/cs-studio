@@ -20,7 +20,9 @@
     <module>org.csstudio.iter.utility.ologauthentication</module>
     <module>org.csstudio.iter.utility.sddreader</module>
     <module>org.csstudio.utility.dbdparser</module>
+    <module>org.csstudio.utility.dbdparser.test</module>
     <module>org.csstudio.utility.dbparser</module>
+    <module>org.csstudio.utility.dbparser.test</module>
     <module>org.slf4j.slf4j-jdk14</module>
   </modules>
 </project>

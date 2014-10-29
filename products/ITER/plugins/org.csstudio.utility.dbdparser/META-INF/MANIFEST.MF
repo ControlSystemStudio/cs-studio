@@ -5,13 +5,11 @@ Bundle-SymbolicName: org.csstudio.utility.dbdparser;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.utility.dbdparser.Activator
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.junit,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.antlr.runtime
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.utility.dbdparser,
  org.csstudio.utility.dbdparser.antlr,
  org.csstudio.utility.dbdparser.data,
- org.csstudio.utility.dbdparser.exception,
- org.csstudio.utility.dbdparser.util
+ org.csstudio.utility.dbdparser.exception
