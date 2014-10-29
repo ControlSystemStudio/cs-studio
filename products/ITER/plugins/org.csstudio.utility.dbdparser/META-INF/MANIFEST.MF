@@ -12,4 +12,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.utility.dbdparser,
  org.csstudio.utility.dbdparser.antlr,
  org.csstudio.utility.dbdparser.data,
- org.csstudio.utility.dbdparser.exception
+ org.csstudio.utility.dbdparser.exception,
+ org.csstudio.utility.dbdparser.util
