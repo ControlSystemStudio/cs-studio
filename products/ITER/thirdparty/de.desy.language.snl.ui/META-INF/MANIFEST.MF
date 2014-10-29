@@ -15,9 +15,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  de.desy.language.libraries,
  de.desy.language.editor.ui,
- org.eclipse.help,
- org.csstudio.platform.libs.easymock;bundle-version="3.0.0",
- org.junit,
- org.csstudio.platform.libs.jmock;bundle-version="1.1.0"
+ org.eclipse.help
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
