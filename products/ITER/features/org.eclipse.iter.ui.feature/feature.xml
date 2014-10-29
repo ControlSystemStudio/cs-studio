@@ -117,6 +117,7 @@ of the distribution package.
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.e4.ui.css.swt.theme"/>
    </requires>
 
    <plugin
@@ -482,5 +483,11 @@ of the distribution package.
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.themes"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
