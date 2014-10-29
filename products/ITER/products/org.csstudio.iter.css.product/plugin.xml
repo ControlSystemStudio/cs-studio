@@ -208,5 +208,12 @@ It's a product of the collaboration between different laboratories and universit
     	/>
     	
     </extension>
+    <extension
+          point="org.eclipse.ui.ide.resourceFilters">
+       <filter
+             pattern="*.svn"
+             selected="true">
+       </filter>
+    </extension>
    
 </plugin>
