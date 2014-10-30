@@ -6,6 +6,7 @@ Bundle-SymbolicName: org.csstudio.opibuilder.widgets.symbol;singleton:=true
 Bundle-Version: 4.4.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.symbol.Activator
 Require-Bundle: org.eclipse.ui;resolution:=optional,
+ org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.core.runtime,
  org.eclipse.ui.views;resolution:=optional,
  org.eclipse.rap.ui.views;resolution:=optional,
