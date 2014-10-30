@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.iter.css.product;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +23,7 @@ public class EarlyStartup implements IStartup {
 			"com.sun.jersey.core.spi.component",
 			"com.sun.jersey.core.spi.component.ProviderServices",
 			"com.sun.jersey.spi.service.ServiceFinder" };
+	private final List<Logger> strongRefLoggers = new ArrayList<>();
 
 	@Override
 	public void earlyStartup() {
@@ -37,6 +40,8 @@ public class EarlyStartup implements IStartup {
 			for (Handler handler : logger.getHandlers()) {
 				handler.setLevel(verboseLogLevel);
 			}
+			//keep strong references to all loggers. Otherwise the LogMaager will flush them out
+			strongRefLoggers.add(logger);
 		}
 
 		// Remove Perspectives coming with XML Editor
