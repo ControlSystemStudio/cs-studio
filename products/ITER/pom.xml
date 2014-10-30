@@ -62,47 +62,6 @@
             </properties>
         </profile>
         <profile>
-            <id>csstudio-local-repo-enable</id>
-            <activation>
-                <property>
-                    <name>csstudio.local.repo</name>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>csstudio-local-repo</id>
-                    <url>file:${csstudio.local.repo}</url>
-                    <layout>p2</layout>
-                </repository>
-            </repositories>
-        </profile>
-        <profile>
-            <id>csstudio-composite-repo-enable</id>
-            <activation>
-                <property>
-                    <name>csstudio.composite.repo</name>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>csstudio-composite-repo</id>
-                    <url>file:${csstudio.composite.repo}</url>
-                    <layout>p2</layout>
-                </repository>
-            </repositories>
-        </profile>
-        <profile>
-            <id>local-dev</id>
-            <properties>
-                <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
-                <baselineMode>warn</baselineMode>
-            </properties>
-            <repositories>
-            </repositories>
-            <pluginRepositories>
-            </pluginRepositories>
-        </profile>
-        <profile>
             <id>cs-studio</id>
             <activation>
                 <property>
@@ -187,8 +146,9 @@
               pom.xml
               .gitignore
               *.target
+              .metadata
             </jgit.ignore>
-            <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+            <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
           </configuration>
         </plugin>
       </plugins> 

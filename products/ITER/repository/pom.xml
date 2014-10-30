@@ -22,21 +22,37 @@
         <version>1.7</version>
         <executions>
           <execution>
+            <id>icons</id>
             <phase>process-resources</phase>
             <configuration>
               <failOnError>true</failOnError>
               <target>
                 <echo message="Copying icons into tycho target directory ${project.build.directory}" />
-                <copy verbose="false"
-                  todir="${project.build.directory}/products/org.csstudio.iter.product.css.product">
+                <copy verbose="false" todir="${project.build.directory}/products/org.csstudio.iter.product.css.product">
                   <fileset dir="${project.build.directory}/../../products">
                     <include name="org.csstudio.iter.css.product/icons/**" />
                   </fileset>
                 </copy>
-				<copy verbose="false"
-                  todir="${project.build.directory}/products/org.csstudio.iter.product.css.product">
-                  <fileset dir="${project.build.directory}/../../products">
-                    <include name="splash.bmp" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>configuration</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <failOnError>false</failOnError>
+              <target>
+                <echo message="Copying configuration files into tycho target directory ${project.build.directory}/rootfiles" />
+                <!-- Create the directory so that p2.inf will be able to complete without issues -->
+                <mkdir dir="${project.build.directory}/rootfiles"/>
+                <!-- Copy the files if they exist. If they don't no problem, they won't be included, which is standard for the official release -->
+                <copy verbose="false" todir="${project.build.directory}/rootfiles">
+                  <fileset dir="${project.build.directory}/../../../../../m-css-common/src/main/conf">
+                    <include name="css.key"/>
+                    <include name="secure_store.dat"/>
                   </fileset>
                 </copy>
               </target>
