@@ -71,7 +71,6 @@
 				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
 				<rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
 				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>
-				<platform-version>[4.3,4.4)</platform-version>
 				<swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
 			</properties>
 		</profile>
@@ -88,7 +87,6 @@
 				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
 				<rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
 				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>
-				<platform-version>[4.3,4.4)</platform-version>
 				<swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
 			</properties>
 		</profile>
@@ -105,7 +103,6 @@
 				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.3</eclipse-update-site>
 				<rap-site>http://download.eclipse.org/rt/rap/2.2</rap-site>
 				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/2.2/gef</rap-incubator-site>
-				<platform-version>[4.2,4.3)</platform-version>
 				<swtbot-site>http://download.eclipse.org/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
 			</properties>
 		</profile>
