@@ -9,14 +9,13 @@ package org.csstudio.security.preferences;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.security.SecurityPreferences;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
-
-import com.sun.istack.internal.logging.Logger;
 
 /** Wrapper for Eclipse {@link ISecurePreferences}
  *  
@@ -108,13 +107,6 @@ public class SecurePreferences
     {
     	try
     	{
-			if (SecurityPreferences.isSecureReadOnly()) {
-				// Check if preference have been overwritten in workspace
-				final String localValue = getSecurePreferences(Type.Instance)
-						.node(plugin_id).get(key, null);
-				if (localValue != null)
-					return localValue;
-			}
 	    	// Check secure preferences
 	    	final String value = getSecurePreferences().node(plugin_id).get(key, null);
 	    	if (value != null)
@@ -126,7 +118,7 @@ public class SecurePreferences
     	}
     	catch (Exception ex)
     	{
-    		Logger.getLogger(SecurePreferences.class.getClass())
+    		Logger.getLogger(SecurePreferences.class.getClass().getName())
     			.log(Level.WARNING, "Cannot read " + plugin_id + "/" + key, ex);
     	}
     	// Give up
@@ -141,15 +133,9 @@ public class SecurePreferences
      */
     public static void set(final String plugin_id, final String key, final String value) throws Exception
     {
-		if (SecurityPreferences.isSecureReadOnly()) {
-			final ISecurePreferences prefs = getSecurePreferences(Type.Instance);
-			prefs.node(plugin_id).put(key, value, true);
-			prefs.flush();
-		} else {
-			final ISecurePreferences prefs = getSecurePreferences();
-			prefs.node(plugin_id).put(key, value, true);
-			prefs.flush();
-		}
+    	final ISecurePreferences prefs = getSecurePreferences();
+        prefs.node(plugin_id).put(key, value, true);
+        prefs.flush();
     }
 
     /** Set preference setting in secure storage

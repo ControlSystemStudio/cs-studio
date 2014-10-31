@@ -25,6 +25,7 @@ import org.eclipse.ui.internal.UIPlugin;
  * @author Xihui Chen
  *
  */
+@SuppressWarnings({ "restriction" })
 public class AboutWebOPIAction extends Action {
 
 	
@@ -55,7 +56,6 @@ public class AboutWebOPIAction extends Action {
 		 * Create contents of the dialog.
 		 * @param parent
 		 */
-		@SuppressWarnings({ "restriction", "serial" })
 		@Override
 		protected Control createDialogArea(Composite parent) {
 			getShell().setText("About WebOPI");

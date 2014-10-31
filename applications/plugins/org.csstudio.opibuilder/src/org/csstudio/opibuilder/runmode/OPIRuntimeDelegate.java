@@ -20,6 +20,7 @@ import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -61,7 +62,6 @@ import org.eclipse.ui.PartInitException;
  * @author Takashi Nakamoto @ Cosylab (Enhanced to calculate frame rate)
  * 
  */
-@SuppressWarnings("restriction")
 public class OPIRuntimeDelegate implements IAdaptable{
 
     private DisplayModel displayModel;
@@ -243,9 +243,9 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
         if (zoomManager != null) {
             List<String> zoomLevels = new ArrayList<String>(3);
-            zoomLevels.add(ZoomManager.FIT_ALL);
-            zoomLevels.add(ZoomManager.FIT_WIDTH);
-            zoomLevels.add(ZoomManager.FIT_HEIGHT);
+			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
+			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_WIDTH);
+			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_HEIGHT);
             zoomManager.setZoomLevelContributions(zoomLevels);
 
             zoomManager.setZoomLevels(createZoomLevels());

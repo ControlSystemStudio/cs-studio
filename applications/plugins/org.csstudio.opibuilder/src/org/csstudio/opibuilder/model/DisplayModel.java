@@ -10,7 +10,6 @@ package org.csstudio.opibuilder.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.DisplayScaleData;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;

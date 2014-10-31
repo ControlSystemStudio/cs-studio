@@ -27,8 +27,8 @@ public class ElizaApplet extends Applet
 
     public void init()
     {
-        w = size().width;
-        h = size().height;
+        w = getSize().width;
+        h = getSize().height;
         setBackground(Color.black);
         setForeground(Color.green);
         setLayout(new BorderLayout());
@@ -93,11 +93,11 @@ public class ElizaApplet extends Applet
         {
             double part = (double) width / (double) (w - 27);
             int n = (int) (s.length() / part);
-            list.addItem(s.substring(0, n));
+            list.add(s.substring(0, n));
             addText(s.substring(n));
             return;
         }
-        list.addItem(s);
+        list.add(s);
         list.makeVisible(list.getItemCount() - 1);
     }
 

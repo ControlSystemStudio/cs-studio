@@ -18,12 +18,14 @@ import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.figures.Trace.ErrorBarType;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
+import org.csstudio.swt.xygraph.util.GraphicsUtil;
 import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.PointList;
@@ -37,7 +39,7 @@ import org.eclipse.swt.graphics.Font;
  * @author Davy Dequidt
  * 
  */
-public class HoverLabels extends Figure implements MouseMotionListener {
+public class HoverLabels extends Figure implements MouseMotionListener, MouseListener {
 
 	private static final int TEXT_MARGIN = 3;
 	private static final int GAP_BEETWEEN_LABEL = 1;
@@ -254,6 +256,21 @@ public class HoverLabels extends Figure implements MouseMotionListener {
 			cursor_x = me.getLocation().x;
 			repaint();
 		}
+	}
+
+	public void mousePressed(MouseEvent me) {
+		if (GraphicsUtil.isRAP() && isVisible()) {
+			cursor_x = me.getLocation().x;
+			repaint();
+		}
+	}
+
+	public void mouseReleased(MouseEvent me) {
+		// NOP
+	}
+
+	public void mouseDoubleClicked(MouseEvent me) {
+		// NOP
 	}
 
 	private void computeHoverLabels() {

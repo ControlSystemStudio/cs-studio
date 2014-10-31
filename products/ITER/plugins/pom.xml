@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>iter</artifactId>
+    <version>${global-version}</version>
+  </parent>
+  <groupId>org.csstudio</groupId>
+  <artifactId>iter-plugins</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>org.csstudio.autocomplete.archive</module>
+    <module>org.csstudio.diag.pvfields.dbfiles</module>
+    <module>org.csstudio.iter.authorizationprovider</module>
+    <module>org.csstudio.iter.notifier.ologauthentication</module>
+    <module>org.csstudio.iter.passwordprovider</module>
+    <module>org.csstudio.iter.pydev.configurator</module>
+    <module>org.csstudio.iter.utility.ologauthentication</module>
+    <module>org.csstudio.iter.utility.sddreader</module>
+    <module>org.csstudio.utility.dbdparser</module>
+    <module>org.csstudio.utility.dbdparser.test</module>
+    <module>org.csstudio.utility.dbparser</module>
+    <module>org.csstudio.utility.dbparser.test</module>
+    <module>org.slf4j.slf4j-jdk14</module>
+  </modules>
+</project>

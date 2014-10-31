@@ -22,6 +22,8 @@ import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.LogConfigurator;
+import org.csstudio.security.PasswordInput;
+import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -29,6 +31,7 @@ public class Application implements IApplication {
 
 	private static final String[] VERBOSE_PACKAGES = new String[] {
 			"com.sun.jersey.core.spi.component",
+			"com.sun.jersey.core.spi.component.ProviderServices",
 			"com.sun.jersey.spi.service.ServiceFinder" };
 
 	final public static String APPLICATION_NAME = "AlarmNotifier";
@@ -59,6 +62,8 @@ public class Application implements IApplication {
         final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
         final StringOption config_name = new StringOption(parser,
     		"-root", "Alarm Configuration root", Preferences.getAlarmTreeRoot());
+		final StringOption set_password = new StringOption(parser,
+				"-set_password", "plugin/key=value", "Set secure preferences", null);
 		parser.addEclipseParameters();
 		try {
 			parser.parse(args);
@@ -74,8 +79,22 @@ public class Application implements IApplication {
 			System.out.println(app_info);
 			return IApplication.EXIT_OK;
 		}
+		final String option = set_password.get();
+		if (option != null) { // Split "plugin/key=value"
+			final String pref, value;
+			final int sep = option.indexOf("=");
+			if (sep >= 0) {
+				pref = option.substring(0, sep);
+				value = option.substring(sep + 1);
+			} else {
+				pref = option;
+				value = PasswordInput.readPassword("Value for " + pref + ":");
+			}
+			SecurePreferences.set(pref, value);
+			return IApplication.EXIT_OK;
+		}
 
-        // Initialize logging
+		// Initialize logging
         LogConfigurator.configureFromPreferences();
         Activator.getLogger().info(app_info + " started for '" + config_name.get() + "' configuration");
         System.out.println(app_info);

@@ -9,7 +9,7 @@ package org.csstudio.email;
 
 import java.io.File;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.csstudio.domain.common.resource.CssResourceLocator;
 import org.csstudio.domain.common.resource.CssResourceLocator.RepoDomain;

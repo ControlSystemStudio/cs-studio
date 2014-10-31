@@ -8,6 +8,8 @@ Bundle-Description: BEAST Alarm Notification Action to create a log entry
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.alarm.beast.notifier,
  org.csstudio.alarm.beast,
- org.csstudio.logbook
+ org.csstudio.logbook,
+ org.epics.util,
+ org.epics.vtype
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

@@ -48,6 +48,8 @@ import org.eclipse.swt.widgets.Text;
  * @see org.eclipse.core.runtime.IStatus
  */
 public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
+	private static final long serialVersionUID = 3861568723116045136L;
+
 	/**
 	 * Static to prevent opening of error dialogs for automated testing.
 	 */

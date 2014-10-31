@@ -21,8 +21,7 @@
  */
 package org.csstudio.domain.common.codec;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

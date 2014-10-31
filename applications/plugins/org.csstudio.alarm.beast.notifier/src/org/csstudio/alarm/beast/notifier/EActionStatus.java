@@ -19,7 +19,8 @@ public enum EActionStatus {
 	EXECUTED(Messages.Status_EXECUTED, 2),
 	FORCED(Messages.Status_FORCED, 3),
 	CANCELED(Messages.Status_CANCELED, 4),
-	FAILED(Messages.Status_FAILED, 5);
+	CANCELED_NO_DELAY(Messages.Status_CANCELED_NO_DELAY, 5),
+	FAILED(Messages.Status_FAILED, 6);
 
 	final private String display_name;
     final private int priority;
@@ -39,7 +40,6 @@ public enum EActionStatus {
 
 	@Override
 	public String toString() {
-		return "EActionStatus " + name() + " (" + display_name + ",  " + ordinal()
-				+ ")";
+		return display_name;
 	}
 }

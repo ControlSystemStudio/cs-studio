@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -343,7 +342,7 @@ public class ToolboxView extends ViewPart {
 			Collections.sort(dataSourceNames);
 			
 			for (String dataSourceName : dataSourceNames) {
-				MenuItem dataSourceItem = createDataSourceMenuItem(datasourceSelectionMenu, dataSourceName);
+				createDataSourceMenuItem(datasourceSelectionMenu, dataSourceName);
 			}
 			
 			selectDataSourceAction = new Action("Select Data Source", SWT.DROP_DOWN) {
@@ -405,8 +404,7 @@ public class ToolboxView extends ViewPart {
 	 * Initialize the menu.
 	 */
 	private void initializeMenu() {
-		IMenuManager menuManager = getViewSite().getActionBars()
-				.getMenuManager();
+		getViewSite().getActionBars().getMenuManager();
 	}
 
 	@Override

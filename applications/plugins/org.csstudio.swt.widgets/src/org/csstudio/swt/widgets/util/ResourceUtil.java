@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 /**Utility functions for resources.
@@ -28,9 +29,25 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class ResourceUtil {
-	
-	
-	
+
+	private static final ResourceUtilSSHelper IMPL;
+
+	static {
+		IMPL = (ResourceUtilSSHelper) ImplementationLoader
+				.newInstance(ResourceUtilSSHelper.class);
+	}
+
+	/**
+	 * Convert workspace path to OS system path.
+	 * @param path the workspace path
+	 * @return the corresponding system path. null if it is not exist.
+	 */
+	public static IPath workspacePathToSysPath(IPath path) {
+		if (SWT.getPlatform().startsWith("rap"))
+			return null;
+		return IMPL.workspacePathToSysPath(path);
+	}
+
 	/**Get inputstream from path. Run in a Job. The uiTask is responsible for closing the inputstream
 	 * @param path the path to load
 	 * @param uiTask the task to be executed in UI thread after path is loaded.

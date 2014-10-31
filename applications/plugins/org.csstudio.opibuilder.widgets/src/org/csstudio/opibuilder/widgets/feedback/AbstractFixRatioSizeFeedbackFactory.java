@@ -66,7 +66,7 @@ public abstract class AbstractFixRatioSizeFeedbackFactory implements IGraphicalF
 		return getSizeOnDropFeedback();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Class getCreationTool() {
 		return null;
 	}

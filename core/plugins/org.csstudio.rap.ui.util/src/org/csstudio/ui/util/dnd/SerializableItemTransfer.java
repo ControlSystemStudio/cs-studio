@@ -34,7 +34,9 @@ import org.eclipse.swt.dnd.TransferData;
 @SuppressWarnings("nls")
 public class SerializableItemTransfer extends ByteArrayTransfer
 {
-    /** Type handled by this Transfer */
+	private static final long serialVersionUID = 3949214963066488960L;
+
+	/** Type handled by this Transfer */
 	final private String className;
 
 	/** Name of the type handled by this Transfer ('java:' + class name) */

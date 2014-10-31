@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
@@ -119,6 +120,7 @@ public class AlarmNotifierUnitTest {
 	
 	private static WorkQueue init(final MockAlarmRDBHandler rdbHandler)
 			throws Exception {
+		Activator.getLogger().setLevel(Level.FINE);
 		actionMap = new ConcurrentHashMap<Integer, Boolean>();
 		final AutomatedActionFactory factory = AutomatedActionFactory.getInstance();
 		factory.init(buildExtensionPoints());
@@ -126,6 +128,7 @@ public class AlarmNotifierUnitTest {
 				UnitTestConstants.CONFIG_ROOT, rdbHandler, factory,
 				UnitTestConstants.TIMER_THRESHOLD);
 		rdbHandler.init(notifier);
+		notifier.setDebug(true);
 		notifier.start();
 		final WorkQueue workQueue = notifier.getWorkQueue();
 		workQueue.setDebug(true); // turn on action history
@@ -365,6 +368,44 @@ public class AlarmNotifierUnitTest {
 			Assert.assertEquals(EActionStatus.CANCELED,
 					history.getAction(actionId).getStatus());
 
+			AlarmNotifierHistory.getInstance().clearAll();
+
+			// PV1 Minor & Major & ACK + PV2 Major & Minor => EXECUTED AFTER DELAY
+			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
+			rdbHandler.updatePV(pv2.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
+			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
+			rdbHandler.updatePV(pv2.getName(), SeverityLevel.MINOR, SeverityLevel.MAJOR);
+			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.EXECUTED,
+					history.getAction(actionId).getStatus());
+
+			AlarmNotifierHistory.getInstance().clearAll();
+
+			// PV1 Minor & Major & ACK + PV2 Major & OK => CANCELED
+			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
+			rdbHandler.updatePV(pv2.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
+			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
+			rdbHandler.updatePV(pv2.getName(), SeverityLevel.OK, SeverityLevel.MAJOR);
+			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
+					history.getAction(actionId).getStatus());
+
+			AlarmNotifierHistory.getInstance().clearAll();
+
+			// PV1 Minor & ACK + PV2 Major & ACK => CANCELED NO DELAY
+			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR);
+			rdbHandler.updatePV(pv2.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR);
+			rdbHandler.updatePV(pv1.getName(), SeverityLevel.MINOR, SeverityLevel.MINOR_ACK);
+			rdbHandler.updatePV(pv2.getName(), SeverityLevel.MAJOR, SeverityLevel.MAJOR_ACK);
+			wait(workQueue); // wait delay
+			Assert.assertNotNull(history.getAction(actionId));
+			Assert.assertEquals(EActionStatus.CANCELED,
+					history.getAction(actionId).getStatus());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

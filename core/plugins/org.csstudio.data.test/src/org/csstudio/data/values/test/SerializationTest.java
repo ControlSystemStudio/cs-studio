@@ -88,5 +88,6 @@ public class SerializationTest
         assertTrue(received_obj instanceof IDoubleValue);
         assertNotSame(received_obj, sent_obj);
         assertEquals(received_obj, sent_obj);
+        in.close();
     }
 }

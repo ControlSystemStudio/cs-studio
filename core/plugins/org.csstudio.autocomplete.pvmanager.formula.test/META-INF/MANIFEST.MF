@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.csstudio.autocomplete.pvmanager.formula.test
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.csstudio.autocomplete.pvmanager.formula;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit,
+ org.epics.vtype;bundle-version="2.8.0",
+ org.epics.util;bundle-version="0.3.2"

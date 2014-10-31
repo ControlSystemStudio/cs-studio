@@ -29,7 +29,6 @@ import org.junit.Test;
  * @author bknerr
  * @since 26.04.2011
  */
-@SuppressWarnings("unused")
 public class IpAddressTest {
 
     @Test(expected=IllegalArgumentException.class)

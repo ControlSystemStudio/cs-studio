@@ -258,7 +258,7 @@ $(pv_value)</tooltip>
     <wuid>6d4582ac:1389581a6f9:-7fe2</wuid>
     <scripts />
     <height>44</height>
-    <name>OPI Editor Perspective.html</name>
+    <name>OPI_Editor_Perspective.html</name>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>

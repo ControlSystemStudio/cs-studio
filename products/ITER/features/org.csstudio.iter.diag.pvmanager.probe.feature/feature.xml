@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.diag.pvmanager.probe.feature"
       label="CSS PV Manager Probe Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -20,17 +20,20 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.csstudio.csdata"/>
-      <import plugin="org.csstudio.ui.util"/>
-      <import plugin="org.csstudio.utility.pvmanager.extra"/>
-      <import plugin="org.csstudio.utility.pvmanager.ui"/>
-      <import plugin="org.csstudio.utility.pvmanager.vtype"/>
-      <import plugin="org.csstudio.utility.pvmanager.widgets"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui"/>
+      <import plugin="org.csstudio.csdata" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro"/>
       <import plugin="org.eclipse.ui.intro.universal"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.utility.pvmanager.vtype" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.extra" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.widgets" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.2.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.vtype" version="2.5.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -41,3 +44,4 @@ of the distribution package.
          unpack="false"/>
 
 </feature>
+

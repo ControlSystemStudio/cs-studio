@@ -122,6 +122,11 @@ public class Application implements IApplication {
 			Logger.getLogger(Plugin.ID).log(Level.SEVERE, "Application Main Loop Error", ex); //$NON-NLS-1$
 			if (ex instanceof Exception)
 				throw (Exception) ex;
+		} finally {
+			//She who creates the display needs to dispose it. Otherwise the application throws up on shutdown.
+			if (display != null) {
+				display.dispose();
+			}
 		}
 		return EXIT_OK;
 	}

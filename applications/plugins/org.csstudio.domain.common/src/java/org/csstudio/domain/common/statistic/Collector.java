@@ -27,7 +27,6 @@ import java.util.GregorianCalendar;
 
 
 public class Collector {
-	private static 	Collector 	thisCollector = null;
 
 	private AlarmHandler alarmHandler = null;
 	private BackgroundCollector	dummyBackgroundCollector = null;

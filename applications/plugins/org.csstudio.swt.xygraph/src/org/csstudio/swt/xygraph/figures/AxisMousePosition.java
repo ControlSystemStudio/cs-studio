@@ -9,10 +9,12 @@ package org.csstudio.swt.xygraph.figures;
 
 import org.csstudio.swt.xygraph.Preferences;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
+import org.csstudio.swt.xygraph.util.GraphicsUtil;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.PointList;
@@ -23,7 +25,7 @@ import org.eclipse.swt.SWT;
  * 
  * @author Xihui Chen
  */
-public class AxisMousePosition extends Figure implements MouseMotionListener {
+public class AxisMousePosition extends Figure implements MouseMotionListener, MouseListener {
 
 	private static final String MINUS = "-";
 
@@ -175,6 +177,23 @@ public class AxisMousePosition extends Figure implements MouseMotionListener {
 	}
 
 	public void mouseMoved(MouseEvent me) {
+		handleMouseEvent(me);
+	}
+
+	public void mousePressed(MouseEvent me) {
+		if (GraphicsUtil.isRAP())
+			handleMouseEvent(me);
+	}
+
+	public void mouseReleased(MouseEvent me) {
+		// NOP
+	}
+
+	public void mouseDoubleClicked(MouseEvent me) {
+		// NOP
+	}
+
+	private void handleMouseEvent(MouseEvent me) {
 		if (isVisible()) {
 			if (scale.isHorizontal()) {
 				mousePosition = me.getLocation().x;

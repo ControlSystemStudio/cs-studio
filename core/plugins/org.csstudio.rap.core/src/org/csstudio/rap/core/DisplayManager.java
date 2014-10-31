@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.UICallBack;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 
@@ -27,8 +27,6 @@ public class DisplayManager {
 	private static List<Object> objectList =new ArrayList<Object>();
 
 	private long beatCount;
-	
-	private static long uiCallbackID = 0;
 
 	private static long displayCounter=0;
 	
@@ -110,15 +108,17 @@ public class DisplayManager {
 		displayCounter++;
 		
 		if(enableCallback){
-			display.asyncExec(new Runnable() {
+			
+			final ServerPushSession pushSession = new ServerPushSession();
+			Runnable rnbl =  new Runnable() {
 				
 				@Override
 				public void run() {
-					String callbackID = generateNewUICallbackID();
-					UICallBack.deactivate(callbackID);
-					UICallBack.activate(callbackID);				
+					pushSession.stop();
+					pushSession.start();				
 				}
-			});		
+			};	
+			display.asyncExec(rnbl);
 		}
 		StringBuilder sb = new StringBuilder("DisplayManger: "); //$NON-NLS-1$
 		sb.append(display + " on " + request.getRemoteHost());
@@ -147,10 +147,6 @@ public class DisplayManager {
 		return sb.toString();
 	}
 	
-	private String generateNewUICallbackID(){
-		uiCallbackID++;
-		return "CSS_RAP_" + uiCallbackID; //$NON-NLS-1$
-	}
 	
 	/**Add a listener which will be executed after the display is disposed.
 	 *

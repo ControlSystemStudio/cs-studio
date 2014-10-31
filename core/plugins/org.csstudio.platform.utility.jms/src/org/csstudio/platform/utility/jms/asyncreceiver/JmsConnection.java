@@ -197,6 +197,7 @@ final class JmsConnection implements TransportListener {
 	 * @throws JmsConnectionException
 	 *             if the connection factory cannot be looked up.
 	 */
+	@SuppressWarnings("unused")
 	private ConnectionFactory lookupConnectionFactory() throws JmsConnectionException {
 //		_log.debug(this, "Looking up JMS connection factory.");
 		Hashtable<String, String> properties = new Hashtable<String, String>();

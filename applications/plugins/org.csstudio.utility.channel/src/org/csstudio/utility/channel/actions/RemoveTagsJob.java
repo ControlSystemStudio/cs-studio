@@ -4,10 +4,9 @@
 package org.csstudio.utility.channel.actions;
 
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
-import static org.csstudio.utility.channel.CSSChannelUtils.*;
+import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelNames;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
-import gov.bnl.channelfinder.api.ChannelFinderClient;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 
 import java.util.Collection;

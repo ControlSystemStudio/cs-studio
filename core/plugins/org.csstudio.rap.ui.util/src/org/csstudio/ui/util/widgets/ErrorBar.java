@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public class ErrorBar extends Composite {
 
+	private static final long serialVersionUID = 8658264722988906023L;
 	private Label errorImage;
 	private CLabel errorLabel;
 	private Exception exception;
@@ -47,6 +48,7 @@ public class ErrorBar extends Composite {
 		
 		Cursor handCursor = new Cursor(getDisplay(), SWT.CURSOR_HAND);
 		MouseListener listener = new MouseAdapter() {
+			private static final long serialVersionUID = 8277072064588985041L;
 			@Override
 			public void mouseUp(MouseEvent e) {
 				if (e.button == 1) {

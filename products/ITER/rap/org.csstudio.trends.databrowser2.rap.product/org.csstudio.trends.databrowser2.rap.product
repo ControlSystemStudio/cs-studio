@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Web OPI product" uid="org.csstudio.trends.databrowser2.rap.product" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="false">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.csstudio.trends.databrowser2.rap.feature"/>
+      <feature id="org.csstudio.iter.trends.databrowser2.rap.feature"/>
+   </features>
+
+   <configurations>
+      <plugin id="com.ibm.icu.base" autoStart="true" startLevel="0" />
+      <plugin id="javax.activation" autoStart="true" startLevel="0" />
+      <plugin id="javax.mail" autoStart="true" startLevel="0" />
+      <plugin id="javax.xml" autoStart="true" startLevel="0" />
+      <plugin id="org.antlr.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.apputil" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.apputil.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.archive.rdb" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.archive.reader" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.archive.reader.rdb" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.archive.vtype" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.archive" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.formula" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.loc" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.pvmanager.sim" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.autocomplete.ui.rap" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.csdata" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.data" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.email" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.email.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.java" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.logbook" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.openfile" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.epics" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.libs.jdbc" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.platform.utility.rdb" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.rap.core" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.rap.ui.util" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.security" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.security.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.swt.xygraph" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.trends.databrowser2" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pvmanager" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pvmanager.epics" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pvmanager.extra" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pvmanager.loc" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pvmanager.sim" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.pvmanager.vtype" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.singlesource" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.utility.singlesource.rap" autoStart="true" startLevel="0" />
+      <plugin id="org.csstudio.workspace" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.commands" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.contenttype" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.databinding" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.databinding.beans" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.databinding.observable" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.databinding.property" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.expressions" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.jobs" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.preferences" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.security" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.servletbridge" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.draw2d" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.draw2d.compatibility" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.gef" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.jface" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.jface.databinding" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.rwt" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.rwt.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.cheatsheets" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.forms" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.views" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.workbench" autoStart="true" startLevel="0" />
+      <plugin id="org.epics.util" autoStart="true" startLevel="0" />
+      <plugin id="org.epics.vtype" autoStart="true" startLevel="0" />
+      <plugin id="org.hamcrest.core" autoStart="true" startLevel="0" />
+      <plugin id="org.junit" autoStart="true" startLevel="0" />
+      <plugin id="org.w3c.css.sac" autoStart="true" startLevel="0" />
+      <plugin id="org.w3c.dom.smil" autoStart="true" startLevel="0" />
+      <plugin id="org.w3c.dom.svg" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>

@@ -36,9 +36,11 @@ public class EarlyStartup implements IStartup {
 			"Info: Rebuilding internal caches:",
 			"Plug-in 'org.python.pydev' contributed an invalid Menu Extension" };
 
+	//Fix by jbobnar: use the OS default SEPARATOR instead of /. Take care of \ differently, because that is an escape character for regex.
+	private static String SEPARATOR = File.separatorChar == '\\' ? "\\\\" : String.valueOf(File.separatorChar);
 	private static Pattern SCAN_JYTHON_PLUGIN_PATH_PATTERN = Pattern
-			.compile(".*/org\\.csstudio\\.scan(_[^/]*)?/jython");
-
+//			.compile(".*/org\\.csstudio\\.scan(_[^/]*)?/jython");
+			.compile(".*" + SEPARATOR + "org\\.csstudio\\.scan(_[^" + SEPARATOR + "]*)?" + SEPARATOR + "jython");
 	private static class HideUnWantedLogFilter implements Filter {
 
 		private Filter previousFilter;

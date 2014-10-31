@@ -26,9 +26,10 @@ import java.util.HashMap;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.rap.rwt.graphics.Graphics;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -114,7 +115,7 @@ public final class CustomMediaFactory {
 	 * @return The <code>Color</code> for the given color information.
 	 */
 	public Color getColor(final int r, final int g, final int b) {
-		return getColor(new RGB(r, g, b));
+		return new Color((Device)null,r, g, b);
 	}
 
 	/**
@@ -125,8 +126,7 @@ public final class CustomMediaFactory {
 	 * @return The <code>Color</code> for the given <code>RGB</code>.
 	 */
 	public Color getColor(final RGB rgb) {
-		assert rgb != null : "rgb!=null"; //$NON-NLS-1$
-		return Graphics.getColor(rgb);
+		return new Color((Device)null, rgb);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public final class CustomMediaFactory {
 	 */
 	public Font getFont(final FontData[] fontData) {
 		FontData f = fontData[0];
-		return Graphics.getFont(f);
+		return new Font((Device) null,f);
 	}
 
 	/**
@@ -184,7 +184,7 @@ public final class CustomMediaFactory {
 	 *         given style code.
 	 */
 	public Font getFont(final FontData fontData) {
-		return Graphics.getFont(fontData);
+		return new Font((Device) null,fontData);
 	}
 
 	/**

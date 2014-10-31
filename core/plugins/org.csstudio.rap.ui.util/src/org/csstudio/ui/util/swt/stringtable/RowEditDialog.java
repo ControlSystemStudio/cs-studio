@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public abstract class RowEditDialog extends Dialog {
 
+	private static final long serialVersionUID = 4588630288423871309L;
 	protected String[] rowData;
 
 	/** Initialize Dialog */

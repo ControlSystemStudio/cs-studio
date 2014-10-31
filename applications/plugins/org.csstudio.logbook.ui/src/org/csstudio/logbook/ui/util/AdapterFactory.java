@@ -17,7 +17,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class AdapterFactory implements IAdapterFactory {
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
 	LogEntry logEntry = ((LogEntry) adaptableObject);
 	final IPreferencesService prefs = Platform.getPreferencesService();
@@ -39,6 +40,7 @@ public class AdapterFactory implements IAdapterFactory {
 	}
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Class[] getAdapterList() {
 	return new Class[] { String.class, URL.class };

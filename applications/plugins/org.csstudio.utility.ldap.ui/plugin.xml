@@ -9,8 +9,5 @@
             id="org.csstudio.utility.ldap.preference.PreferencePage"
             name="LDAP"/>
    </extension>
-   <extension
-         point="org.eclipse.help.toc">
-   </extension>
 
 </plugin>

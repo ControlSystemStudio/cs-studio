@@ -68,7 +68,6 @@ public class ADLDynamicAttribute extends WidgetPart{
      * If the Dynamic Attribute a color Attribute.
      */
     private boolean _color;
-    private boolean _isColorDefined;
 
     /**
      * The default constructor.

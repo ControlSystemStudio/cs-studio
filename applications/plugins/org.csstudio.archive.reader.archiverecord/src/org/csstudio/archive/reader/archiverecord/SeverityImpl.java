@@ -8,6 +8,7 @@ import org.csstudio.data.values.ISeverity;
 @SuppressWarnings("nls")
 public class SeverityImpl implements ISeverity
 {
+	private static final long serialVersionUID = -9180698095444733842L;
 	final private String text;
 	final private boolean has_value;
 	final private boolean txt_stat;

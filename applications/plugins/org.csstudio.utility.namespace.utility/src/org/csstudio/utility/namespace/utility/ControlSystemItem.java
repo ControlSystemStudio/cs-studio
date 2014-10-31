@@ -28,6 +28,7 @@ import org.csstudio.csdata.ProcessVariable;
 
 public class ControlSystemItem extends ProcessVariable {
 
+	private static final long serialVersionUID = 7560030613315777768L;
 	private final String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
 	private final String _path;
     private boolean _redundant;

@@ -8,7 +8,6 @@
 package org.csstudio.alarm.beast.ui.actions;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
@@ -16,14 +15,10 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.security.SecuritySupport;
 import org.csstudio.security.ui.SecuritySupportUI;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that configures an alarm tree item

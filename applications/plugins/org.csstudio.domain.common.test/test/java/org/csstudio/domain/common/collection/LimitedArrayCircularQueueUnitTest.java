@@ -37,12 +37,10 @@ import com.google.common.collect.Lists;
  */
 public class LimitedArrayCircularQueueUnitTest {
 
-    @SuppressWarnings("unused")
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidConstruction1() {
         new LimitedArrayCircularQueue<Object>(0);
     }
-    @SuppressWarnings("unused")
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidConstruction2() {
         new LimitedArrayCircularQueue<Object>(-1);

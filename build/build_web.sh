@@ -63,6 +63,8 @@ else
   fi
   tar -xzvf eclipse-rcp-luna*.tar.gz
   unzip -o eclipse-*-delta-pack.zip
+  #https://bugs.eclipse.org/bugs/show_bug.cgi?id=438652
+  cp ../org.eclipse.osgi.compatibility.state_1.0.0.v20140403-1907.jar eclipse/plugins/
   cd ..
 fi
 
@@ -74,15 +76,16 @@ else
   mkdir -p ext/eclipse-rap
   cd ext
 
-  if [[ ! -f rap-runtime-1.5.2-R-20130205-2012.zip ]]
+  if [[ ! -f rap-2.3.0-R-20140610-0925.zip ]]
   then
-     wget http://download.eclipse.org/rt/rap/1.5/rap-runtime-1.5.2-R-20130205-2012.zip
+     wget http://download.eclipse.org/rt/rap/2.3/rap-2.3.0-R-20140610-0925.zip
   fi
-  unzip -o rap-runtime-1.5.2-R-20130205-2012.zip -d eclipse-rap
+  unzip -o rap-2.3.0-R-20140610-0925.zip -d eclipse-rap
   find eclipse-rap -name 'org.eclipse.rap.rwt.testfixture*.jar' -exec rm -f {} \;
-  cp -r ../../core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0/* eclipse-rap/plugins/
+  cp -r ../../core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_2.3_GEF/* eclipse-rap/plugins/
   cp -r ../../core/plugins/org.csstudio.rap.core/third_party_plugins/JUnit/* eclipse-rap/plugins/
-
+  # Install BATIK in plugins directory
+  unzip -o ../batik-1.7.zip -d eclipse-rap/
   cd ..
 fi
 
@@ -115,7 +118,7 @@ pluginlistwithunpack=$pluginlistwithunpack";unpack=false"
 
 osgibundles=`echo $pluginlist | sed -e 's, ,@start\,,g'`
 osgibundles=`echo $osgibundles | sed -e 's,org.eclipse.osgi[^@]*@start\,,,g'`
-osgibundles=$osgibundles"@start,org.eclipse.osgi.services@start"
+osgibundles=$osgibundles"@start,org.eclipse.osgi.services@start,org.eclipse.equinox.servletbridge.extensionbundle@start"
 #echo $osgibundles
 
 cp -r rap-build-template/* "$BUILD/"

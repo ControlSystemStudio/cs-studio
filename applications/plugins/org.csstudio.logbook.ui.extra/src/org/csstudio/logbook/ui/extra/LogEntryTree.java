@@ -124,7 +124,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 		    return new StructuredSelection(element.logEntry);
 		} else if (!selection.isEmpty()) {
 		    List<LogEntry> selectedEntries = new ArrayList<LogEntry>();
-		    for (Iterator<LogEntryTreeModel> iterator = selection.iterator(); iterator.hasNext();) {
+		    for (Iterator<?> iterator = selection.iterator(); iterator.hasNext();) {
 			LogEntryTreeModel domain = (LogEntryTreeModel) iterator.next();
 			selectedEntries.add(domain.logEntry);
 		    }

@@ -38,7 +38,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         // Note: "org.csstudio.utility.pv" is a common setting between pv, pv.ui, pvmanager and pvmanager.ui
     	//       They need to be kept synchronized.
         final IPreferenceStore store =
-            new ScopedPreferenceStore(new InstanceScope(),
+            new ScopedPreferenceStore(InstanceScope.INSTANCE,
             		"org.csstudio.utility.pv");
         setPreferenceStore(store);
         setMessage(Messages.PreferencePage_Message);

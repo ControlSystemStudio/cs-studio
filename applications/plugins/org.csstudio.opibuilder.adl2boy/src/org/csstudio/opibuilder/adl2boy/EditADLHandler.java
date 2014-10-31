@@ -57,7 +57,7 @@ public class EditADLHandler implements IHandler {
 		ISelection selection = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().getSelection();
 		if (selection != null & selection instanceof IStructuredSelection){
 			IStructuredSelection strucSelection = (IStructuredSelection)selection;
-			for (Iterator<Object> iterator = strucSelection.iterator(); iterator.hasNext(); ){
+			for (Iterator<?> iterator = strucSelection.iterator(); iterator.hasNext(); ){
 				Object element = iterator.next();
 				String adlFileName = element.toString().substring(1);
 				String outfileName = adlFileName.substring(0, element.toString().length()-4);

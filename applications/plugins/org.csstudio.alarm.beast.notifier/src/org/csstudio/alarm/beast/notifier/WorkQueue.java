@@ -229,8 +229,7 @@ public class WorkQueue {
 	public void execute(final AlarmHandler alarmHandler) {
 		new ExecuteActionThread(alarmHandler.getScheduledAction(),
 				alarmHandler.getInfos(), alarmHandler.getCurrentSnapshots()).start();
-		if (debug)
-			AlarmNotifierHistory.getInstance().addAction(alarmHandler);
+		if (debug) AlarmNotifierHistory.getInstance().addAction(alarmHandler);
 	}
 
 	/** Interrupt an automated action. */

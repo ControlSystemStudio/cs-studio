@@ -107,16 +107,16 @@ public class PVAlarmHandler {
 				this.reason = Messages.Reason_Recovered;
 			} else {
 				if (acknowledged) {
-					// Alarm raised & acknowledged within the delay => CANCEL
-					this.status = EActionStatus.CANCELED;
+					// Alarm raised & acknowledged within the delay => CANCEL NO DELAY
+					this.status = EActionStatus.CANCELED_NO_DELAY;
 					this.reason = Messages.Reason_Acknowledged;
 				} else {
 					PVSnapshot previous_snapshot = snapshots.get(snapshots.size() - 2);
 					if (pv_history != null
 							&& pv_history.isAcknowledged()
 							&& !unACK(previous_snapshot.getSeverity(), current_snapshot.getSeverity())) {
-						// Acknowledged alarm state change with lower/higher or OK priority => CANCEL
-						this.status = EActionStatus.CANCELED;
+						// Acknowledged alarm state change with lower/higher or OK priority => CANCEL NO DELAY
+						this.status = EActionStatus.CANCELED_NO_DELAY;
 						this.reason = Messages.Reason_Acknowledged;
 					} else {
 						// Default: we wait for the delay

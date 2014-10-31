@@ -2,7 +2,7 @@
 <contexts>
    <context id="opi_editor" title="OPI Editor">
       <description>A graphical editor for OPI editing.</description>
-      <topic href="html/OPI Editor.html" label="OPI Editor"/>
+      <topic href="html/OPI_Editor.html" label="OPI Editor"/>
    </context>
    <context id="rule" title="Rule">
       <description>Attaching rules to a widget can make its properties dynamic with PV value changes.</description>

@@ -2,7 +2,7 @@
 
 #+======================================================================
 # $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-css/trunk/products/ITER/products/org.csstudio.iter.css.product/css.sh $
-# $Id: css.sh 49232 2014-08-25 15:17:45Z zagara $
+# $Id: css.sh 50265 2014-09-30 11:32:47Z zagara $
 #
 # Project       : CODAC Core System
 #
@@ -30,15 +30,22 @@ CODAC_ROOT=$(readlink -f "$0" | sed -n -e 's|^\(/[^/]*/[^/]*\)/.*|\1|p')
 # add --launcher.openFile before to interpret them as files to open
 OPEN_FILES=()
 USER_ARGS=()
+FILELIST=true
 while [ -n "$1" ]; do
   case $1 in
     --launcher.openFile)
+      FILELIST=true
       ;;
     -*)
       USER_ARGS=("${USER_ARGS[@]}" "$1")
+      FILELIST=false
       ;;
     *)
-      OPEN_FILES=("${OPEN_FILES[@]}" "$(readlink -fm "$1")")
+      if $FILELIST; then
+        OPEN_FILES=("${OPEN_FILES[@]}" "$(readlink -fm "$1")")
+      else 
+        USER_ARGS=("${USER_ARGS[@]}" "$1")
+      fi
       ;;
   esac
   shift 1

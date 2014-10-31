@@ -16,7 +16,6 @@ import java.util.TimerTask;
 
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
-import org.eclipse.draw2d.ButtonGroup;
 import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
@@ -147,7 +146,7 @@ public class RapButtonModel extends ButtonModel{
 	 */
 	protected void fireActionPerformed() {
 		super.fireActionPerformed();
-		Iterator iter = eventListeners.getListeners(ActionListener.class);
+		Iterator<?> iter = eventListeners.getListeners(ActionListener.class);
 		ActionEvent action = new ActionEvent(this);
 		while (iter.hasNext())
 			((ActionListener) iter.next()).actionPerformed(action);
@@ -174,7 +173,7 @@ public class RapButtonModel extends ButtonModel{
 	 */
 	protected void firePressed() {
 		super.firePressed();
-		Iterator iter = eventListeners
+		Iterator<?> iter = eventListeners
 				.getListeners(ButtonStateTransitionListener.class);
 		while (iter.hasNext())
 			((ButtonStateTransitionListener) iter.next()).pressed();
@@ -188,7 +187,7 @@ public class RapButtonModel extends ButtonModel{
 	 */
 	protected void fireReleased() {
 		super.fireReleased();
-		Iterator iter = eventListeners
+		Iterator<?> iter = eventListeners
 				.getListeners(ButtonStateTransitionListener.class);
 		while (iter.hasNext())
 			((ButtonStateTransitionListener) iter.next()).released();
@@ -202,7 +201,7 @@ public class RapButtonModel extends ButtonModel{
 	 */
 	protected void fireCanceled() {
 		super.fireCanceled();
-		Iterator iter = eventListeners
+		Iterator<?> iter = eventListeners
 				.getListeners(ButtonStateTransitionListener.class);
 		while (iter.hasNext())
 			((ButtonStateTransitionListener) iter.next()).canceled();
@@ -232,7 +231,7 @@ public class RapButtonModel extends ButtonModel{
 	 */
 	protected void fireStateChanged(String property) {
 		super.fireStateChanged(property);
-		Iterator iter = eventListeners.getListeners(ChangeListener.class);
+		Iterator<?> iter = eventListeners.getListeners(ChangeListener.class);
 		ChangeEvent change = new ChangeEvent(this, property);
 		while (iter.hasNext())
 			((ChangeListener) iter.next()).handleStateChanged(change);

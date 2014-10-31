@@ -92,7 +92,7 @@ public final class ImageUtil {
 
 		if (descriptor == null) {
 			try {
-				descriptor = ImageDescriptor.createFromURL(new File(fullPath).toURL());
+				descriptor = ImageDescriptor.createFromURL(new File(fullPath).toURI().toURL());
 			} catch (MalformedURLException e) {
 				descriptor = null;
 			}
@@ -202,9 +202,6 @@ public final class ImageUtil {
 			}
 		}
 
-		if (fullPathString == null) {
-			return null;
-		}
 		return ImageDescriptor.createFromURL(fullPathString);
 	}
 

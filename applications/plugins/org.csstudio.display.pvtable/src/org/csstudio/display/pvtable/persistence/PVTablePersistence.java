@@ -29,7 +29,7 @@ abstract public class PVTablePersistence
     public static PVTablePersistence forFilename(final String filename)
     {
         // Use Autosave for *.sav files
-        if (filename.endsWith(PVTableAutosavePersistence.FILE_EXTENSION))
+        if (filename != null && filename.endsWith(PVTableAutosavePersistence.FILE_EXTENSION))
             return new PVTableAutosavePersistence();
         // Use XML for anything else, because at some time "css-pvtable" was used
         return new PVTableXMLPersistence();

@@ -86,7 +86,6 @@ final class WorkspaceResourceContentProvider implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	public Object[] getChildren(final Object element) {
 		if (element instanceof IWorkspace) {
 			// check if closed projects should be shown
@@ -96,7 +95,7 @@ final class WorkspaceResourceContentProvider implements
 				return allProjects;
 			}
 
-			ArrayList accessibleProjects = new ArrayList();
+			ArrayList<IProject> accessibleProjects = new ArrayList<IProject>();
 			for (int i = 0; i < allProjects.length; i++) {
 				if (allProjects[i].isOpen()) {
 					accessibleProjects.add(allProjects[i]);

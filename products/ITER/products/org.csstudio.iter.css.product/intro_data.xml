@@ -32,6 +32,7 @@
 			<extension id="org.csstudio.alarm.beast.notifier"
 				importance="medium" />
 			<extension id="org.csstudio.diag.pvfields.dbfiles" importance="medium" />
+			<extension id="org.csstudio.diag.pvmanager.probe.intro" importance="medium" />
 		</group>
 		<group path="page-content/top-right">
 			<extension id="org.csstudio.trends.databrowser" importance="medium" />

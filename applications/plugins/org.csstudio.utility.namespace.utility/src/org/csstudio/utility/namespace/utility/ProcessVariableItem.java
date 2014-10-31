@@ -25,6 +25,8 @@ package org.csstudio.utility.namespace.utility;
 //public class ProcessVariable implements IProcessVariable {
 public class ProcessVariableItem extends ControlSystemItem {
 
+	private static final long serialVersionUID = 1760336186257589556L;
+
 	public ProcessVariableItem(String name, String path) {
 		super(name, path);
 	}

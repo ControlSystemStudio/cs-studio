@@ -28,8 +28,6 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import junit.framework.Assert;
-
 import org.csstudio.domain.common.junit.ConditionalClassRunner;
 import org.csstudio.domain.common.junit.OsCondition;
 import org.csstudio.domain.common.junit.RunIf;
@@ -37,6 +35,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,7 +64,7 @@ public class SoftIocHeadlessTest {
 
      // ATTENTION: dont use EpicsPlugin.ID, since then that bundle is activated and the default prefs
         // are read immediately into the EpicsPlugin singleton.
-        final IEclipsePreferences prefs = new DefaultScope().getNode("org.csstudio.platform.libs.epics");
+        final IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode("org.csstudio.platform.libs.epics");
         // Then this
         prefs.put("use_pure_java", "false");
     }

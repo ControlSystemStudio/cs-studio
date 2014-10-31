@@ -331,7 +331,7 @@
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<configuration>
-					<!-- Without this argument I get an error in the plugin 'org.csstudio.rap.core' -->
+					<!-- This is to avoid errors when using restricted API from org.ecpics.vtype, and sun.* -->
 					<compilerArgument>-err:-forbidden</compilerArgument>
 				</configuration>
 			</plugin>

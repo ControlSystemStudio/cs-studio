@@ -54,7 +54,7 @@ public abstract class AapiValueIterator implements ValueIterator {
 	public VType next() throws Exception {
 //		System.out.println(">>>>> AapiValueIterator.next");
 		if (_result.size() > 0) {
-			IValue val = _result.remove(0);
+			_result.remove(0);
 //			IMinMaxDoubleValue mmval = (IMinMaxDoubleValue) val;
 //			System.out.println(">>>>> " + mmval.getTime() + " " + mmval.getValue());
 			//TODO (jhatje): implement vType

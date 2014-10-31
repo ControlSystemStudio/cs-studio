@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.debugging.jmsmonitor.feature"
       label="CSS JMS Monitor Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>
@@ -20,15 +20,16 @@ of the distribution package.
    </license>
 
    <requires>
-      <import plugin="org.csstudio.apputil.ui"/>
-      <import plugin="org.csstudio.logging"/>
-      <import plugin="org.csstudio.platform.libs.jms"/>
-      <import plugin="org.csstudio.platform.utility.jms"/>
-      <import plugin="org.csstudio.security.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.junit"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jms"/>
+      <import plugin="org.csstudio.platform.utility.jms" version="1.1.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil"/>
    </requires>
 
    <plugin
@@ -39,3 +40,4 @@ of the distribution package.
          unpack="false"/>
 
 </feature>
+

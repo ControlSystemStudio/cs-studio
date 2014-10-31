@@ -12,6 +12,7 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
@@ -108,7 +109,7 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
 	public void updateZoom() {		
 
 		if (zoomToFitAll) {
-			zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
+			zoomManager.setZoomAsText(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
 		}else
 			zoomManager.setZoom(1.0);
 	}

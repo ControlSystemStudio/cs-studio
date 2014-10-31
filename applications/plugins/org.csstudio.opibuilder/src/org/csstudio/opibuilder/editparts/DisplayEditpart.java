@@ -14,6 +14,7 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.csstudio.ui.util.SWTConstants;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.ColorConstants;
@@ -130,7 +131,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 							return;
 						if (size.x * size.y > 0)
 							((ScalableFreeformRootEditPart)getRoot()).getZoomManager().setZoomAsText(
-									ZoomManager.FIT_ALL);
+									Draw2dSingletonUtil.ZoomManager_FIT_ALL);
 						oldSize = size;
 
 					}

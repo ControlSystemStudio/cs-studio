@@ -19,6 +19,7 @@ public class EarlyStartup implements IStartup {
 
 	private static final String[] VERBOSE_PACKAGES = new String[] {
 			"com.sun.jersey.core.spi.component",
+			"com.sun.jersey.core.spi.component.ProviderServices",
 			"com.sun.jersey.spi.service.ServiceFinder" };
 
 	@Override

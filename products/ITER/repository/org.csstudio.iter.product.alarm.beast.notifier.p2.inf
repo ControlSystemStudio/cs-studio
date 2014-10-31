@@ -1,0 +1,5 @@
+instructions.configure=\
+  org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/logs);
+  
+instructions.install = \
+  setProgramProperty(propName:osgi.instance.area.default,propValue:workspace); 

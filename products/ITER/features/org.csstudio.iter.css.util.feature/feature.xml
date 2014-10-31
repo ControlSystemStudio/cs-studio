@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.iter.css.util.feature"
       label="CSS Utils Component"
-      version="3.2.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="ITER">
 
    <copyright>

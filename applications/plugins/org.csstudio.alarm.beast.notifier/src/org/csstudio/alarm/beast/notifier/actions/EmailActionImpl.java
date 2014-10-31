@@ -48,8 +48,7 @@ public class EmailActionImpl extends AbstractMailActionImpl {
 		this.pvs = pvs;
 		mailSender.setSubject(buildSubject());
 		mailSender.setBody(buildBody());
-		if (mailSender.checkContent())
-			mailSender.send();
+		mailSender.send();
 	}
 
 	public void dump() {

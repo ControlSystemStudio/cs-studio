@@ -5,9 +5,10 @@
    <plugins>
       <plugin id="com.ibm.icu.base"/>
       <plugin id="javax.mail"/>
-      <plugin id="org.apache.felix.gogo.command"/>
-      <plugin id="org.apache.felix.gogo.runtime"/>
-      <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="javax.xml"/>
+<!--      <plugin id="org.apache.felix.gogo.command"/>-->
+<!--      <plugin id="org.apache.felix.gogo.runtime"/>-->
+<!--      <plugin id="org.apache.felix.gogo.shell"/>-->
       <plugin id="org.csstudio.alarm.beast"/>
       <plugin id="org.csstudio.alarm.beast.msghist"/>
       <plugin id="org.csstudio.alarm.beast.notifier"/>
@@ -50,7 +51,7 @@
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
-      <plugin id="org.eclipse.equinox.console"/>
+<!--      <plugin id="org.eclipse.equinox.console"/>-->
       <plugin id="org.eclipse.equinox.ds"/>
       <plugin id="org.eclipse.equinox.http.registry"/>
       <plugin id="org.eclipse.equinox.http.servlet"/>
@@ -59,7 +60,6 @@
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.servletbridge"/>
-      <plugin id="org.eclipse.equinox.servletbridge.extensionbundle" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.jdt.junit.runtime"/>
@@ -87,6 +87,7 @@
    <configurations>
       <plugin id="com.ibm.icu.base" autoStart="true" startLevel="0" />
       <plugin id="javax.mail" autoStart="true" startLevel="0" />
+      <plugin id="javax.xml" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
@@ -166,7 +167,7 @@
 
    <warConfiguration webXml="/org.csstudio.alarm.beast.ui.rap/WEB-INF/web.xml" launchIni="/org.csstudio.alarm.beast.ui.rap/WEB-INF/launch.ini">
    <libraries>
-      <library path="org.eclipse.equinox.servletbridge_1.2.200.v20120522-2049.jar" fromTarget="true"/>
+      <library path="org.eclipse.equinox.servletbridge_1.3.0.v20140430-1556.jar" fromTarget="true"/>
    </libraries>
    </warConfiguration>
 </product>

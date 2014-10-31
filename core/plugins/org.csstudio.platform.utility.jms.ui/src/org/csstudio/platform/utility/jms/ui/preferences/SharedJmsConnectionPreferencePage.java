@@ -43,7 +43,7 @@ public class SharedJmsConnectionPreferencePage
 	public SharedJmsConnectionPreferencePage() {
 		super(GRID);
 
-		_prefStore = new ScopedPreferenceStore(new InstanceScope(),
+		_prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE,
 				Activator.getDefault().getBundle().getSymbolicName());
 		setPreferenceStore(_prefStore);
 		

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: The core Plug-in of editor support for diffrent languages supported at DESY
+Bundle-SymbolicName: de.desy.language.editor.core;singleton:=true
+Bundle-Version: 1.3.0.qualifier
+Bundle-Activator: de.desy.language.editor.core.Activator
+Bundle-Vendor: C1 WPS mbH / DESy (Deutsches Elektronen Syncroton)
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ de.desy.language.libraries;bundle-version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: de.desy.language.editor.core,
+ de.desy.language.editor.core.measurement,
+ de.desy.language.editor.core.parser
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

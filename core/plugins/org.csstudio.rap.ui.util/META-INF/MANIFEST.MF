@@ -6,6 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.csstudio.autocomplete.ui,
  org.eclipse.core.runtime,
  org.eclipse.rap.jface,
+ org.eclipse.rap.draw2d,
+ org.eclipse.rap.gef,
  org.eclipse.rap.ui,
  org.csstudio.rap.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

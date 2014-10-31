@@ -118,31 +118,45 @@ else
   fi
   tar -xzvf eclipse-rcp-luna*.tar.gz
   unzip -o eclipse-*-delta-pack.zip
+  #https://bugs.eclipse.org/bugs/show_bug.cgi?id=438652
+  cp ../org.eclipse.osgi.compatibility.state_1.0.0.v20140403-1907.jar eclipse/plugins/
+  # Install BATIK in plugins directory
+  unzip -o ../batik-1.7.zip -d eclipse/
   cd ..
 fi
+
 if [ "$ORGANIZATION" = "ITER" ]
 then
   cd ext
   if [[ ! -d eclipse/dropins/subclipse ]]
   then
     # Download and install subclipse in dropins directory
-    if [[ ! -f subclipse-site-1.10.5.zip ]]
+    if [[ ! -f subclipse-site-1.6.18.zip ]]
     then
-      wget -O subclipse-site-1.10.5.zip http://subclipse.tigris.org/files/documents/906/49382/site-1.10.5.zip
+      wget -O subclipse-site-1.6.18.zip http://subclipse.tigris.org/files/documents/906/49028/site-1.6.18.zip
     fi
-    unzip -o subclipse-site-1.10.5.zip -d eclipse/dropins/subclipse
+    unzip -o subclipse-site-1.6.18.zip -d eclipse/dropins/subclipse
   fi
   if [[ ! -d eclipse/dropins/pydev ]]
   then
     # Download and install pydev in dropins directory
-    if [[ ! -f PyDev_3.6.0.zip ]]
+    if [[ ! -f PyDev_3.7.0.zip ]]
     then
-      wget -O PyDev_3.6.0.zip http://sourceforge.net/projects/pydev/files/pydev/PyDev%203.6.0/PyDev%203.6.0.zip/download
+      wget -O PyDev_3.7.0.zip http://sourceforge.net/projects/pydev/files/pydev/PyDev%203.7.0/PyDev%203.7.0.zip/download
     fi
-    unzip -o PyDev_3.6.0.zip -d eclipse/dropins/pydev
+    unzip -o PyDev_3.7.0.zip -d eclipse/dropins/pydev
     # Remove signature from pydev jars
     find eclipse/dropins/pydev -name '*.DSA' -exec rm -f {} \;
     find eclipse/dropins/pydev -name '*.SF' -exec rm -f {} \;
+  fi
+  if [[ ! -d eclipse/dropins/mylyn ]]
+  then
+    # Download and install mylyn in dropins directory (https://bugs.eclipse.org/bugs/show_bug.cgi?id=336129)
+    if [[ ! -f mylyn-3.12.0.zip ]]
+    then
+      wget -O mylyn-3.12.0.zip http://download.eclipse.org/mylyn/drops/3.12.0/v20140609-1648/mylyn-3.12.0.v20140609-1648.zip
+    fi
+    unzip -o mylyn-3.12.0.zip -d eclipse/dropins/mylyn
   fi
   cd ..
 fi

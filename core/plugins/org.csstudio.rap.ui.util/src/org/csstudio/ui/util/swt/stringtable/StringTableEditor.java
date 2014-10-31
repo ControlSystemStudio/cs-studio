@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class StringTableEditor extends Composite
 {
+	private static final long serialVersionUID = -7440267189939110089L;
+
 	public enum CellEditorType{
 		TEXT,
 		CHECKBOX,
@@ -245,6 +247,7 @@ public class StringTableEditor extends Composite
 		edit.setLayoutData(new GridData());
 		edit.setEnabled(false);
 		edit.addSelectionListener(new SelectionAdapter() {
+			private static final long serialVersionUID = 1820830514746452412L;
 			@SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -283,6 +286,7 @@ public class StringTableEditor extends Composite
 		up.setEnabled(false);
 		up.addSelectionListener(new SelectionAdapter()
 		{
+			private static final long serialVersionUID = -7086745745124520226L;
 			@Override
 		    @SuppressWarnings({ "unchecked", "rawtypes" })
 			public void widgetSelected(SelectionEvent e)
@@ -311,7 +315,8 @@ public class StringTableEditor extends Composite
 		down.setEnabled(false);
 		down.addSelectionListener(new SelectionAdapter()
 		{
-		    @SuppressWarnings({ "unchecked", "rawtypes" })
+			private static final long serialVersionUID = 4240164068142772908L;
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
@@ -338,7 +343,9 @@ public class StringTableEditor extends Composite
 		delete.setEnabled(false);
 		delete.addSelectionListener(new SelectionAdapter()
 		{
-		    @SuppressWarnings({ "rawtypes" })
+			private static final long serialVersionUID = -3346828370520627291L;
+
+			@SuppressWarnings({ "rawtypes" })
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{

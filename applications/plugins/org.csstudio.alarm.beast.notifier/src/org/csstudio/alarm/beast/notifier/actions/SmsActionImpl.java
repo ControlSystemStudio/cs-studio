@@ -46,6 +46,7 @@ public class SmsActionImpl extends AbstractMailActionImpl {
 		phoneNumbers.clear();
 		phoneNumbers.add(sb.toString());
 		mailSender.setTo(phoneNumbers);
+		mailSender.setSubject("<NONE>");
 		mailSender.setBody(smsCmdHandler.getBody());
 	}
 
@@ -54,8 +55,7 @@ public class SmsActionImpl extends AbstractMailActionImpl {
 	public void execute(List<PVSnapshot> pvs) throws Exception {
 		this.pvs = pvs;
 		mailSender.setBody(buildBody());
-		if (mailSender.checkContent())
-			mailSender.send();
+		mailSender.send();
 	}
 	
 	public void dump() {

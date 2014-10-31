@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public void initializeDefaultPreferences() {
-		IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+		IEclipsePreferences prefs = DefaultScope.INSTANCE.getNode(Activator.PLUGIN_ID);
 
 		prefs.put(PreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
 		prefs.put(PreferenceConstants.URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000"); //$NON-NLS-1$

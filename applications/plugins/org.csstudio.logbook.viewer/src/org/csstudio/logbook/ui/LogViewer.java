@@ -3,12 +3,10 @@
  */
 package org.csstudio.logbook.ui;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.logbook.LogEntry;
-import org.csstudio.logbook.LogEntryBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;

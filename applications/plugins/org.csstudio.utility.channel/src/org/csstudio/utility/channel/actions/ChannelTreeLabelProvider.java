@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.LabelProvider;
  * 
  */
 public class ChannelTreeLabelProvider extends LabelProvider {
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public String getText(Object element) {
 		if (element instanceof ChannelTreeModel) {

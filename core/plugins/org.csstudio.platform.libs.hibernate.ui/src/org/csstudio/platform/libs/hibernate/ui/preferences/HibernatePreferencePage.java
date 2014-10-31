@@ -38,7 +38,8 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 public class HibernatePreferencePage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
 
-    private final class ListEditorExtension extends ListEditor {
+    @SuppressWarnings("unused")
+	private final class ListEditorExtension extends ListEditor {
         private final String _titel;
         private final String _desc;
 
@@ -76,7 +77,7 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
 
     public HibernatePreferencePage() {
         super(GRID);
-        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(), 
+        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, 
                 Activator.PLUGIN_ID);
         setPreferenceStore(prefStore);
         setDescription("Settings for the IO Configurator.");

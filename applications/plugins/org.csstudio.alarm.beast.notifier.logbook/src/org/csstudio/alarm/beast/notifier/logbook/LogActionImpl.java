@@ -71,7 +71,7 @@ public class LogActionImpl implements IAutomatedAction {
 		if (body.isEmpty()) {
 			for (PVSnapshot pv : pvs) {
 				PVLogSummary summary = PVLogSummary.buildFromSnapshot(pv);
-				builder.append(pv.getPath());
+				builder.append(pv.getParentPath());
 				builder.append(":\n");
 				if (!manuallyExecuted && pv.isAcknowledge())
 					builder.append("ACK: ");
@@ -88,7 +88,7 @@ public class LogActionImpl implements IAutomatedAction {
 				body = prefixMatcher.group(1).trim();
 				for (PVSnapshot pv : pvs) {
 					PVLogSummary summary = PVLogSummary.buildFromSnapshot(pv);
-					builder.append(pv.getPath());
+					builder.append(pv.getParentPath());
 					builder.append(":\n");
 					if (!manuallyExecuted && pv.isAcknowledge())
 						builder.append("ACK: ");
@@ -100,7 +100,7 @@ public class LogActionImpl implements IAutomatedAction {
 			} else {
 				for (PVSnapshot pv : pvs) {
 					PVLogSummary summary = PVLogSummary.buildFromSnapshot(pv);
-					builder.append(pv.getPath());
+					builder.append(pv.getParentPath());
 					builder.append(":\n");
 					if (!manuallyExecuted && pv.isAcknowledge())
 						builder.append("ACK: ");

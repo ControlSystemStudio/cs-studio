@@ -25,6 +25,13 @@
             <goals>
               <goal>source-feature</goal>
             </goals>
+			<configuration>
+              <excludes>
+                <!-- ID of the non-source bundle(s) to exclude from the generated source feature, because they have none -->
+                <plugin id="org.csstudio.alarm.beast.notifier.intro"/>
+				<plugin id="org.csstudio.numjy"/>
+              </excludes>
+            </configuration>
           </execution>
         </executions>
       </plugin>

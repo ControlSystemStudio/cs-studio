@@ -5,11 +5,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.swt.xygraph.Preferences;
+import org.csstudio.swt.xygraph.util.GraphicsUtil;
 import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -22,7 +24,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Jaka Bobnar
  * 
  */
-public class AxisTrace extends Figure implements MouseMotionListener,
+public class AxisTrace extends Figure implements MouseMotionListener, MouseListener,
 		PropertyChangeListener {
 
 	/** Use advanced graphics? */
@@ -88,7 +90,23 @@ public class AxisTrace extends Figure implements MouseMotionListener,
 			repaint();
 		}
 	}
-		
+
+	public void mousePressed(MouseEvent me) {
+		if (GraphicsUtil.isRAP() && isVisible()) {
+			cursor_x = me.getLocation().x;
+			cursor_y = me.getLocation().y;
+			repaint();
+		}
+	}
+
+	public void mouseReleased(MouseEvent me) {
+		// NOP
+	}
+
+	public void mouseDoubleClicked(MouseEvent me) {
+		// NOP
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)

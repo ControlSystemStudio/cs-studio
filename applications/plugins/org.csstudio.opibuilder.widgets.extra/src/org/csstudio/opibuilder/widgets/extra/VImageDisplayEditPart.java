@@ -37,7 +37,6 @@ public class VImageDisplayEditPart extends AbstractSelectionWidgetEditpart<VImag
 	protected void registerPropertyChangeHandlers() {
 		// The handler when PV value changed.
 		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
-			@SuppressWarnings("unchecked")
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				configure(

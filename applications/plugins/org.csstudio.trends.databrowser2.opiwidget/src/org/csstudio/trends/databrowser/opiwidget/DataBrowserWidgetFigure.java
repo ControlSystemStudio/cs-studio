@@ -9,9 +9,9 @@ package org.csstudio.trends.databrowser.opiwidget;
 
 import org.csstudio.trends.databrowser2.ui.Plot;
 import org.csstudio.trends.databrowser2.ui.SelectionValueExporter;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -104,7 +104,7 @@ public class DataBrowserWidgetFigure extends Figure
 
         // Display filename on top of figure, centered
         final Rectangle client = getClientArea();
-        final Dimension dim = TextUtilities.INSTANCE.getStringExtents(text, getFont());
+        final Dimension dim = Draw2dSingletonUtil.getTextUtilities().getStringExtents(text, getFont());
         final Rectangle rect =
             new Rectangle(client.x + (client.width - dim.width)/2,
                           client.y + (client.height - dim.height)/2,

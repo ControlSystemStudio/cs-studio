@@ -119,7 +119,12 @@ public class InterpreterUtils {
 		// Code copies from Pydev when the user chooses a Jython interpreter
 		// - these are the defaults.
 		final File jydir = BundleUtils.getBundleLocation("org.python.jython");
-		final File exeFile = new File(jydir, "jython.jar");
+		File exeFile = new File(jydir, "jython.jar");
+		if (!exeFile.exists()) {
+			//by jbobnar: the latest org.python.jython no longer includes the jython.jar. Instead the contents
+			//of jython.jar are unpacked, so the bundle works like the jython jar
+			exeFile = jydir;
+		}
 
 		if (info != null
 				&& exeFile.getAbsolutePath().equals(info.getExecutableOrJar())) {
@@ -147,14 +152,6 @@ public class InterpreterUtils {
 		final File pydevLibDir = new File(pydevdir, "libs");
 		if (pydevLibDir.exists()) {
 			info.libs.add(pydevLibDir.getCanonicalPath());
-		}
-
-		// Add PyDev Jython Lib dir
-		File pydevjythondir = BundleUtils
-				.getBundleLocation("org.python.pydev.jython");
-		final File pydevjythonLibDir = new File(pydevjythondir, "Lib");
-		if (pydevjythonLibDir.exists()) {
-			info.libs.add(pydevjythonLibDir.getCanonicalPath());
 		}
 
 		// Add Scan Jython Lib dir

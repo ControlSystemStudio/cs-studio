@@ -14,7 +14,6 @@ import org.csstudio.logging.ui.ConsoleViewHandler;
 import org.csstudio.ui.menu.app.ApplicationActionBarAdvisor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css" uid="org.csstudio.iter.product.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="3.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css" uid="org.csstudio.iter.product.css.product" id="org.csstudio.iter.css.product.product" application="org.csstudio.iter.application" version="4.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.iter.css.product/icons/about.png"/>
@@ -29,8 +29,6 @@ It's a product of the collaboration between different laboratories and universit
 openFile</programArgs>
       <vmArgs>-Xmx1024m
 -Xms128m
--XX:MaxPermSize=256M
--XX:PermSize=128m
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
 -Dpython.cachedir.skip=true</vmArgs>

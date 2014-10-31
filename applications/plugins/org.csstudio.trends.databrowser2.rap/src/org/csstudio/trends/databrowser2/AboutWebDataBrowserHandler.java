@@ -48,7 +48,7 @@ public class AboutWebDataBrowserHandler extends AbstractHandler {
 		 * 
 		 * @param parent
 		 */
-		@SuppressWarnings({ "restriction", "serial" })
+		@SuppressWarnings({ "restriction" })
 		@Override
 		protected Control createDialogArea(Composite parent) {
 			getShell().setText("About WebDataBrowser");

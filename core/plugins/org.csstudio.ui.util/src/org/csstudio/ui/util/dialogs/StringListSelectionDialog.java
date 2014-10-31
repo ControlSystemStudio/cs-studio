@@ -4,7 +4,6 @@
 package org.csstudio.ui.util.dialogs;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.ui.util.widgets.StringListSelectionWidget;

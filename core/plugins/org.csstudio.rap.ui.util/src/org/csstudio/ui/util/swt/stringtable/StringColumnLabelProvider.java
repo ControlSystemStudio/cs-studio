@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ViewerCell;
  */
 class StringColumnLabelProvider extends CellLabelProvider
 {
+	private static final long serialVersionUID = -1213331960584407244L;
 	final private TableViewer viewer;
 
 	/** Initialize
