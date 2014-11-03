@@ -42,4 +42,9 @@ public class UnitTestUtils {
 		writer.write(content);
 		writer.close();
 	}
+
+	public static boolean isEPICS315(String basePath) {
+		return new File(basePath + "/printfRecord.dbd").exists();
+	}
+
 }
