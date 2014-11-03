@@ -22,4 +22,44 @@ record (calc,"UTIL-S15-BG91:BUSBAR1Validity")
 	field(INPE, "UTIL-S15-BG91:MUT5-ET4.SEVR CP")
 	field(INPF, "UTIL-S15-BG91:MUT5-ET5.SEVR CP")
 	field(INPG, "UTIL-S15-BG91:MUT5-ET6.SEVR CP")
+	field(UDFS, "INVALID")
+	field(AFTC, "1.0")
+	field(AFVL, "1.0")
+}
+
+record (lso,"TEST-LSO")
+{
+	field(SIZV, "41")
+}
+
+record (lsi,"TEST-LSI")
+{
+	field(SIZV, "41")
+}
+
+record (printf,"TEST-PRINTF")
+{
+	field(SIZV, "41")
+	field(IVLS, "LNK")
+}
+
+record (histogram,"TEST-HISTO")
+{
+	field(NELM, "1")
+	field(CSTA, "1")
+}
+
+record (seq,"TEST-SEQ")
+{
+	field(DOF, "1.0")
+	field(DOLF, "TEST-BOY0:BI")
+	field(DLYF, "1.0")
+	field(OFFS, "0")
+	field(SHFT, "-1")
+}
+
+record (fanout,"TEST-FAN")
+{
+	field(OFFS, "0")
+	field(SHFT, "-1")
 }
