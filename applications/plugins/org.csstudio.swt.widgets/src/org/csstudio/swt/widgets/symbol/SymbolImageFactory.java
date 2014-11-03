@@ -17,7 +17,7 @@ public class SymbolImageFactory {
 	public static SymbolImage asynCreateSymbolImage(IPath imagePath,
 			boolean runMode, SymbolImageProperties sip,
 			SymbolImageListener listener) {
-		if (imagePath == null)
+		if (imagePath == null || imagePath.isEmpty())
 			return createEmptyImage(runMode);
 		SymbolImage symbolImage = createImageFromPath(imagePath, sip, runMode);
 		symbolImage.setListener(listener);
@@ -27,7 +27,7 @@ public class SymbolImageFactory {
 
 	public static SymbolImage synCreateSymbolImage(IPath imagePath,
 			boolean runMode, SymbolImageProperties sip) {
-		if (imagePath == null)
+		if (imagePath == null || imagePath.isEmpty())
 			return createEmptyImage(runMode);
 		SymbolImage symbolImage = createImageFromPath(imagePath, sip, runMode);
 		symbolImage.syncLoadImage();
