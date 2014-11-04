@@ -31,6 +31,7 @@ import org.epics.vtype.ValueUtil;
  *
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PVSamples to handle waveform index.
+ *  @author FJohlinger changed PVSamples to handle different error types
  */
 public class PVSamples extends PlotSamples
 {
@@ -83,6 +84,31 @@ public class PVSamples extends PlotSamples
     		}
     	}
     }
+    
+    /** @param errorType */
+    public void setErrorType(ErrorType errorType){
+    	live.setErrorType(errorType);
+    	history.setErrorType(errorType);
+
+    	synchronized (listeners)
+    	{
+    		for (IDataProviderListener listener : listeners)
+    		{
+    			// Notify listeners of the change of the error type
+    			// mainly in order to update the position of snapped
+    			// annotations. For more details, see the comment in
+    			// Annotation.dataChanged(IDataProviderListener).
+    			listener.dataChanged(this);
+    		}
+    	} 
+    }
+    
+    /** @return ErrorType */
+    public ErrorType getErrorType(){
+    	if (history.getErrorType() == ErrorType.STD_DEV || live.getErrorType() == ErrorType.STD_DEV)
+    		return ErrorType.STD_DEV;
+    	return ErrorType.MIN_MAX; 
+    }    
 
     /** @return Maximum number of live samples in ring buffer */
     public int getLiveCapacity()

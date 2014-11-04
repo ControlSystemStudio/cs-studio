@@ -16,6 +16,7 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
  * 
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed LiveSamples to handle waveform index.
+ *  @author FJohlinger changed LiveSamples to handle different error types 
  */
 public class LiveSamples extends PlotSamples
 {
@@ -25,6 +26,9 @@ public class LiveSamples extends PlotSamples
     /** Waveform index */
     private int waveform_index = 0;
     
+    /** Error Type */
+    private ErrorType errorType = ErrorType.MIN_MAX;
+    
     /** @param index Waveform index to show */
     synchronized public void setWaveformIndex(int index)
     {
@@ -33,6 +37,19 @@ public class LiveSamples extends PlotSamples
     	// Change the index of all samples in this instance
     	for (int i=0; i<samples.size(); i++) {
     		samples.get(i).setWaveformIndex(waveform_index);
+    	}
+    }
+    
+    /** @return ErrorType */
+    public ErrorType getErrorType(){
+    	return errorType;
+    }
+    
+    /** @param errorType */
+    public void setErrorType(ErrorType errorType){
+    	this.errorType = errorType;
+    	for (int i=0; i<samples.size(); i++) {
+    		samples.get(i).setErrorType(errorType);
     	}
     }
     
@@ -59,6 +76,9 @@ public class LiveSamples extends PlotSamples
     synchronized void add(final PlotSample sample)
     {
     	sample.setWaveformIndex(waveform_index);
+    	sample.setErrorType(errorType);
+
+    	
         samples.add(sample);
         have_new_samples = true;
     }

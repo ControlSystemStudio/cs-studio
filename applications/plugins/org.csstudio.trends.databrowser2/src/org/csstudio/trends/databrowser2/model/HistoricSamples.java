@@ -28,6 +28,7 @@ import org.epics.vtype.VType;
  *
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed HistoricSamples to handle waveform index.
+ *  @author FJohlinger changed HistoricSamples to handle different error types 
  */
 public class HistoricSamples extends PlotSamples
 {
@@ -44,6 +45,9 @@ public class HistoricSamples extends PlotSamples
 
     /** Waveform index */
     private int waveform_index = 0;
+    
+    /** Error Type */
+    private ErrorType errorType = ErrorType.MIN_MAX;
 
     /** @param index Waveform index to show */
     public synchronized void setWaveformIndex(int index)
@@ -52,6 +56,18 @@ public class HistoricSamples extends PlotSamples
     	// change the index of all samples in this instance
     	for (PlotSample sample: samples)
     		sample.setWaveformIndex(waveform_index);
+    }
+    
+    /** @param errorType */
+    public void setErrorType(ErrorType errorType){
+    	this.errorType = errorType;
+    	for (PlotSample sample: samples)
+    		sample.setErrorType(errorType);
+    }
+    
+    /** @return ErrorType */
+    public ErrorType getErrorType(){
+    	return errorType;
     }
 
     /** Define a new 'border' time beyond which no samples
@@ -136,7 +152,8 @@ public class HistoricSamples extends PlotSamples
         final PlotSample new_samples[] = new PlotSample[result.size()];
         for (int i=0; i<new_samples.length; ++i) {
             new_samples[i] = new PlotSample(source, result.get(i));
-            new_samples[i].setWaveformIndex(waveform_index);
+            new_samples[i].setWaveformIndex(waveform_index); 
+            new_samples[i].setErrorType(errorType);
         }
         // Merge with existing samples
         final PlotSample merged[] = PlotSampleMerger.merge(samples, new_samples);

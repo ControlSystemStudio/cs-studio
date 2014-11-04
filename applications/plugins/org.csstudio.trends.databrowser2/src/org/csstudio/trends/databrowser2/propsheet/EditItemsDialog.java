@@ -2,6 +2,7 @@ package org.csstudio.trends.databrowser2.propsheet;
 
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
+import org.csstudio.trends.databrowser2.model.ErrorType;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -34,6 +35,9 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Dialog to edit PVItem and FormulaItem.
  * @author Takashi Nakamoto
+ * 
+ * @author FJohlinger added option to choose either min/max or stdDev for the
+ *         error bars
  */
 public class EditItemsDialog extends Dialog {
 	/**
@@ -52,6 +56,7 @@ public class EditItemsDialog extends Dialog {
 		private TraceType traceType;
 		private RequestType request;
 		private int index;
+		private ErrorType errorType;
 		
 		private boolean applyVisible = false;
 		private boolean applyItem = false;
@@ -64,6 +69,7 @@ public class EditItemsDialog extends Dialog {
 		private boolean applyTraceType = false;
 		private boolean applyRequest = false;
 		private boolean applyIndex = false;
+		private boolean applyErrorType = false;
 		
 		public boolean isVisible() { return visible; }
 		public String getItem() { return item; }
@@ -76,6 +82,7 @@ public class EditItemsDialog extends Dialog {
 		public TraceType getTraceType() { return traceType; }
 		public RequestType getRequest() { return request; }
 		public int getIndex() { return index; }
+		public ErrorType getErrorType() { return errorType; }
 		
 		public boolean appliedVisible() { return applyVisible; }
 		public boolean appliedItem() { return applyItem; }
@@ -88,6 +95,7 @@ public class EditItemsDialog extends Dialog {
 		public boolean appliedTraceType() { return applyTraceType; }
 		public boolean appliedRequest() { return applyRequest; }
 		public boolean appliedIndex() { return applyIndex; }
+		public boolean appliedErrorType() { return applyErrorType; }
 	}
 	
 	/**
@@ -151,6 +159,7 @@ public class EditItemsDialog extends Dialog {
 	private Button chkApplyTraceType = null;
 	private Button chkApplyRequest = null;
 	private Button chkApplyIndex = null;
+	private Button chkApplyErrorType = null;
 	
 	private Button chkShow = null;
 	private Text textItem = null;
@@ -162,6 +171,7 @@ public class EditItemsDialog extends Dialog {
 	private Combo cmbAxis = null;
 	private Combo cmbTraceType = null;
 	private Combo cmbRequest = null;
+	private Combo cmbErrorType = null;
 	private Text textIndex = null;
 	
 	/**
@@ -486,6 +496,47 @@ public class EditItemsDialog extends Dialog {
 				chkApplyIndex.setSelection(true);
 			}
 		});
+
+		// Error type property
+		chkApplyErrorType = new Button(composite, SWT.CHECK);
+		gridData = new GridData();
+		gridData.horizontalAlignment = SWT.CENTER;
+		chkApplyErrorType.setLayoutData(gridData);
+
+		Label labelErrorType = new Label(composite, SWT.NONE);
+		labelErrorType.setText(Messages.ErrorTypeTrace);
+
+		cmbErrorType = new Combo(composite, SWT.READ_ONLY);
+		ErrorType defaultErrorType = ErrorType.MIN_MAX;
+		boolean enableErrorType = false;
+		for (ModelItem item : items) {
+			if (item instanceof PVItem) {
+				defaultErrorType = ((PVItem)item).getErrorType();
+				enableErrorType = true;
+				break;
+			}
+		} 
+		
+		chkApplyErrorType.setEnabled(enableErrorType);
+		cmbErrorType.setEnabled(enableErrorType);
+		if (enableErrorType) {
+			for (int i = 0; i<ErrorType.values().length; i++) {
+				ErrorType errorType = ErrorType.values()[i];
+				cmbErrorType.add(errorType.toString());
+				if (errorType == defaultErrorType)
+					cmbErrorType.select(i);
+			}
+		}
+		cmbErrorType.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				chkApplyErrorType.setSelection(true);
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {}
+		});
+		
 		
 		return composite;
 	}
@@ -507,6 +558,7 @@ public class EditItemsDialog extends Dialog {
 			result.applyTraceType = chkApplyTraceType.getSelection();
 			result.applyRequest = chkApplyRequest.getSelection();
 			result.applyIndex = chkApplyIndex.getSelection();
+			result.applyErrorType = chkApplyErrorType.getSelection();
 			
 			result.visible = chkShow.getSelection();
 			result.item = textItem.getText();
@@ -535,6 +587,7 @@ public class EditItemsDialog extends Dialog {
 			} catch (NumberFormatException ex) {
 				result.applyIndex = false;
 			}
+			result.errorType = ErrorType.values()[cmbErrorType.getSelectionIndex()];
 		}
 		
 		super.buttonPressed(buttonId);

@@ -43,6 +43,8 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PVItem to handle waveform index.
+ *  @author FJohlinger changed PVItem to handle different error types 
+
  */
 public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, Cloneable
 {
@@ -73,6 +75,9 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
 
     /** Waveform Index */
     private int waveform_index = 0;
+    
+    /** ErrorType */
+    private ErrorType errorType = ErrorType.MIN_MAX;
     
     /** Indicating if the history data is automatically refreshed, whenever
      * the live buffer is too small to show all the data */
@@ -110,6 +115,16 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
         samples.setWaveformIndex(waveform_index);
 
 //        fireItemLookChanged();
+    }
+    /** @return Error Type */
+    public ErrorType getErrorType(){
+    	return errorType;
+    }
+    
+    /** @param errorType */
+    public void setErrorType(ErrorType errorType){
+    	this.errorType = errorType;
+    	samples.setErrorType(errorType);
     }
 
     /** Set new item name, which changes the underlying PV name
