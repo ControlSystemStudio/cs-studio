@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import java.util.ArrayList;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -19,7 +22,7 @@ public class EdmPointsList extends EdmAttribute {
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmPointsList");
 
-	private int[] val;
+	private ArrayList<Integer> val;
 
 	/**
 	 * Constructor, which parses int property from EdmAttribute general interface.
@@ -44,9 +47,9 @@ public class EdmPointsList extends EdmAttribute {
 		}
 
 		try {
-			val = new int[getValueCount()];
+			val = new ArrayList<Integer>(getValueCount());
 			for(int i=0; i<getValueCount(); i++){
-				val[i] = Integer.parseInt(getValue(i).split("\\s")[1]);
+				val.add(Integer.parseInt(getValue(i).split("\\s")[1]));
 			}
 			setInitialized(true);
 			log.debug("Parsed " + this.getClass().getName() + 
@@ -64,6 +67,14 @@ public class EdmPointsList extends EdmAttribute {
 	 * @return	Value of EdmInt instance.
 	 */
 	public int[] get() {
-		return val;
+		return ArrayUtils.toPrimitive(val.toArray(new Integer[0]));
+	}
+
+	/**
+	 * Add a point to the end of the points list.
+	 * @param Point to be added.
+	 */
+	public void addPoint(int e) {
+		val.add(e);
 	}
 }

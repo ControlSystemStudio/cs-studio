@@ -49,6 +49,8 @@ public class Opi_activeXTextClass extends OpiWidget {
 		}
 		
 		new OpiColor(widgetContext, "border_color", t.getFgColor(), t);
+		new OpiColor(widgetContext, "background_color", t.getBgColor(), t);
+		new OpiColor(widgetContext, "foreground_color", t.getFgColor(), t);
 				
 		boolean useDisplayBg = t.getAttribute("useDisplayBg").isExistInEDL() && t.isUseDisplayBg();  
 		new OpiBoolean(widgetContext, "transparent", useDisplayBg);
@@ -65,10 +67,10 @@ public class Opi_activeXTextClass extends OpiWidget {
 		if(t.getAlarmPv()!=null){
 			if(t.isBgAlarm())
 				createColorAlarmRule(t, convertPVName(t.getAlarmPv()),
-					"background_color", "backcolor_alarm", true);
+					"background_color", "backcolor_alarm", false);
 			if(t.isFgAlarm())
 				createColorAlarmRule(t, convertPVName(t.getAlarmPv()),
-					"foreground_color", "backcolor_alarm", true);
+					"foreground_color", "backcolor_alarm", false);
 		}
 		
 		
