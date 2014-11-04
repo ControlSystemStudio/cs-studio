@@ -222,6 +222,13 @@
 	<module>org.csstudio.alarm.beast.configtool.test</module>
 	<!--module>org.csstudio.apputil.ui.test</module--> <!--UI tests - wrong naming.-->
 	<module>org.csstudio.archive.reader.aapi.test</module>
-	
+
+	<module>org.csstudio.autocomplete.shift</module>
+	<module>org.csstudio.shift</module>
+	<module>org.csstudio.shift.ui</module>
+	<module>org.csstudio.shift.viewer</module>
+	<module>org.csstudio.utility.shift</module>
+	<module>org.csstudio.utility.shift.ui</module>
+	<module>org.csstudio.logbook.olog.property.shift</module>
   </modules>
 </project>

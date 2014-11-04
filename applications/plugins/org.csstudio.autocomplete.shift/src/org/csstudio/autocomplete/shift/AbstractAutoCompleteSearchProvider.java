@@ -22,6 +22,7 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
 import com.google.common.base.Joiner;
 
 
+
 public abstract class AbstractAutoCompleteSearchProvider implements IAutoCompleteProvider {
 
 // The keys represent the supported keywords and the values represent
