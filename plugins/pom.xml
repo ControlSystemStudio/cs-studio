@@ -25,5 +25,6 @@
     <module>org.csstudio.platform.libs.tine</module>
     <module>org.eclipse.nebula.jface.gridviewer</module>
     <module>org.eclipse.nebula.widgets.grid</module>
+    <module>gov.bnl.shiftClient</module>
   </modules>
 </project>
