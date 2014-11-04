@@ -187,7 +187,7 @@ public class SBMaintenanceView extends EditorPart {
 		scriptText.setLayoutData(g1);
 				
 		scriptExpandItem = new ExpandItem (bar, SWT.V_SCROLL, 0);
-		scriptExpandItem.setText("Python script");
+		scriptExpandItem.setText("Observation Procedure");
 		scriptExpandItem.setHeight(EXPAND_ITEM_HEIGHT);
 		scriptExpandItem.setControl(script);
 		
