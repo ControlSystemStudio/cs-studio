@@ -702,13 +702,6 @@ of the distribution package.
          unpack="false"/>
 
    <plugin
-         id="org.w3c.dom.events"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.platform"
          download-size="0"
          install-size="0"
