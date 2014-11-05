@@ -49,6 +49,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -82,6 +83,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.swt.dnd.ImageTransfer;
+import org.eclipse.swt.dnd.TransferData;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -132,6 +135,7 @@ public class LogEntryWidget extends Composite {
     private Button btnAddImage;
     private Button btnAddScreenshot;
     private Button btnCSSWindow;
+    private Button btnClipboard;
     private Label lblTags;
     private Composite composite;
     private ErrorBar errorBar;
@@ -489,7 +493,7 @@ public class LogEntryWidget extends Composite {
 	FormData fd_btnAddImage = new FormData();
 	fd_btnAddImage.left = new FormAttachment(1);
 	fd_btnAddImage.bottom = new FormAttachment(100, -2);
-	fd_btnAddImage.right = new FormAttachment(32);
+	fd_btnAddImage.right = new FormAttachment(24);
 	btnAddImage.setLayoutData(fd_btnAddImage);
 	btnAddImage.setText("Add Image");
 
@@ -502,9 +506,9 @@ public class LogEntryWidget extends Composite {
 	    }
 	});
 	FormData fd_btnAddScreenshot = new FormData();
-	fd_btnAddScreenshot.left = new FormAttachment(33);
+	fd_btnAddScreenshot.left = new FormAttachment(25);
 	fd_btnAddScreenshot.bottom = new FormAttachment(100, -2);
-	fd_btnAddScreenshot.right = new FormAttachment(65);
+	fd_btnAddScreenshot.right = new FormAttachment(49);
 	btnAddScreenshot.setLayoutData(fd_btnAddScreenshot);
 	btnAddScreenshot.setText("Screenshot");
 
@@ -517,12 +521,57 @@ public class LogEntryWidget extends Composite {
 	    }
 	});
 	FormData fd_btnCSSWindow = new FormData();
-	fd_btnCSSWindow.left = new FormAttachment(66);
+	fd_btnCSSWindow.left = new FormAttachment(50);
 	fd_btnCSSWindow.bottom = new FormAttachment(100, -2);
-	fd_btnCSSWindow.right = new FormAttachment(99);
+	fd_btnCSSWindow.right = new FormAttachment(74);
 	btnCSSWindow.setLayoutData(fd_btnCSSWindow);
 	btnCSSWindow.setText("CSS Window");
 
+	btnClipboard = new Button(tbtmImgAttachmentsComposite, SWT.NONE);
+	btnClipboard.setVisible(editable);
+	btnClipboard.addSelectionListener(new SelectionAdapter() {
+	    @Override
+            public void widgetSelected(SelectionEvent e) {
+                Clipboard clipboard = new Clipboard(e.display);
+                List<TransferData> availableTypes = Arrays.asList(clipboard
+                        .getAvailableTypes());
+
+                for (TransferData transferData : availableTypes) {
+                    File screenshot_file;
+                    try {
+                        ImageTransfer transfer = ImageTransfer.getInstance();
+                        if (transfer.isSupportedType(transferData)) {
+                            ImageData data = (ImageData) clipboard
+                                    .getContents(transfer);
+
+                            final ImageLoader loader = new ImageLoader();
+                            loader.data = new ImageData[] { data };
+                            screenshot_file = File.createTempFile("screenshot",".png");
+                            screenshot_file.deleteOnExit();
+                            // Save
+                            loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
+                            imageToSelect = screenshot_file.getName();
+                            LogEntryBuilder logEntryBuilder = logEntry(
+                                    logEntryChangeset.getLogEntry())
+                                    .attach(AttachmentBuilder
+                                            .attachment(screenshot_file.getName())
+                                            .inputStream(new FileInputStream(screenshot_file.getPath())));
+                            logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+                        }
+                    } catch (IOException e1) {
+                        errorBar.setException(e1);
+                    }
+                }
+            }
+	});
+	FormData fd_btnClipboard = new FormData();
+	fd_btnClipboard.left = new FormAttachment(75);
+	fd_btnClipboard.bottom = new FormAttachment(100, -2);
+	fd_btnClipboard.right = new FormAttachment(99);
+	btnClipboard.setLayoutData(fd_btnClipboard);
+	btnClipboard.setText("Clipboard Image");
+	btnClipboard.setToolTipText("Add the image from the current clipboard");
+	
 	imageStackWidget = new ImageStackWidget(tbtmImgAttachmentsComposite,
 		SWT.NONE);
 	imageStackWidget.setEditable(editable);
