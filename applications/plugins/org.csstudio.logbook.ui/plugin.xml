@@ -41,9 +41,11 @@
                <with
                      variable="activeMenuSelection">
                   <iterate>
-                     <adapt
-                           type="org.csstudio.logbook.LogEntryBuilder">
-                     </adapt>
+                     <and>
+                        <adapt
+                              type="org.csstudio.logbook.LogEntryBuilder">
+                        </adapt>
+                     </and>
                   </iterate>
                   <and>
                      <with
@@ -66,7 +68,7 @@
                      variable="activeMenuSelection">
                   <iterate>
                      <adapt
-                           type="org.csstudio.logbook.LogEntryBuilder">
+                           type="org.csstudio.logbook.ui.util.UpdateLogEntryBuilder">
                      </adapt>
                   </iterate>
                   <and>
@@ -175,14 +177,10 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.csstudio.logbook.LogEntry"
-            class="org.csstudio.logbook.ui.LogEntryAdapterFactory">
+            class="org.csstudio.logbook.ui.util.LogEntryAdapterFactory">
          <adapter
-               type="org.csstudio.logbook.LogEntryBuilder">
+               type="org.csstudio.logbook.ui.util.UpdateLogEntryBuilder">
          </adapter>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.logbook.LogEntry"
-            class="org.csstudio.logbook.ui.util.AdapterFactory">
          <adapter
                type="java.net.URL">
          </adapter>
