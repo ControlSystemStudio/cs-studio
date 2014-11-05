@@ -231,6 +231,6 @@
     <module>org.csstudio.shift.viewer</module>
     <module>org.csstudio.utility.shift</module>
     <module>org.csstudio.utility.shift.ui</module>
-    <module>plugins/org.csstudio.autocomplete.shift</module>
+    <module>org.csstudio.autocomplete.shift</module>
   </modules>
 </project>
