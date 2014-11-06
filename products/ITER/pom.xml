@@ -23,7 +23,7 @@
         <tycho-extras.version>0.20.0</tycho-extras.version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+        <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
         <baselineMode>warn</baselineMode>
 	<pydev-site>http://update-production-pydev.s3.amazonaws.com/pydev/updates</pydev-site>
         <svn-site>http://subclipse.tigris.org/update_1.8.x</svn-site>
