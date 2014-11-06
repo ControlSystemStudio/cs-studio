@@ -602,8 +602,7 @@ public class SNLEditor extends LanguageEditor {
         if (targetPlatform == null || targetPlatform.trim().length() < 1) {
             String errorDetail = "Target Platform not valid";
             errorMessages.add(errorDetail);
-        }
-        if (!targetPlatform.equals("none")) {
+        } else if (!targetPlatform.equals("none")) {
             errorMessages.addAll(checkPreferenceConfiguration(_compilerOptionService));
             errorMessages.addAll(checkDirectories(baseDirectory, progressMonitor));
             if (!errorMessages.isEmpty()) {
@@ -612,6 +611,12 @@ public class SNLEditor extends LanguageEditor {
         }
 
         return error;
+    }
+    
+    @Override
+    public void dispose() {
+    	_preferenceStore = null;
+    	super.dispose();
     }
 
 //    private String extractFileName(IFile sourceRessource) {

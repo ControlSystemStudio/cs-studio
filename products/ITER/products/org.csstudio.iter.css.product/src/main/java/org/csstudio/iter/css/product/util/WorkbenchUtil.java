@@ -8,14 +8,17 @@
 package org.csstudio.iter.css.product.util;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Filter;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.csstudio.iter.css.product.preferences.Preferences;
 import org.eclipse.core.commands.CommandManager;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.commands.contexts.ContextManager;
@@ -40,6 +43,13 @@ public class WorkbenchUtil {
 	public static final String[] IGNORE_PERSPECTIVES = new String[] {
 	// "org.eclipse.debug.ui.DebugPerspective", // Used by Pydev
 	"org.eclipse.wst.xml.ui.perspective" };
+	
+	private static final String[] VERBOSE_PACKAGES = new String[] {
+	        "com.sun.jersey.core.spi.component",
+	        "com.sun.jersey.core.spi.component.ProviderServices",
+	        "com.sun.jersey.spi.service.ServiceFinder" };
+	
+	private static final List<Logger> strongRefLoggers = new ArrayList<>();
 
 	private static class HideUnWantedLogFilter implements Filter {
 
@@ -72,6 +82,23 @@ public class WorkbenchUtil {
 		for (Handler handler : rootLogger.getHandlers()) {
 			handler.setFilter(new HideUnWantedLogFilter(handler.getFilter()));
 		}
+		
+		// Set upper log level on too verbose packages
+        Level verboseLogLevel;
+        try {
+            verboseLogLevel = Preferences.getVerboseLogLevel();
+        } catch (Exception e) {
+            verboseLogLevel = Level.SEVERE;
+        }
+        for (String verbosePackage : VERBOSE_PACKAGES) {
+            Logger logger = Logger.getLogger(verbosePackage);
+            logger.setLevel(verboseLogLevel);
+            for (Handler handler : logger.getHandlers()) {
+                handler.setLevel(verboseLogLevel);
+            }
+            //keep strong references to all loggers. Otherwise the LogMaager will flush them out
+            strongRefLoggers.add(logger);
+        }
 	}
 
 	/**
@@ -91,9 +118,24 @@ public class WorkbenchUtil {
 		for (IPerspectiveDescriptor perspectiveDescriptor : perspectiveDescriptors) {
 			if (ignoredPerspectives.contains(perspectiveDescriptor.getId())) {
 				removePerspectiveDesc.add(perspectiveDescriptor);
+				//fix for RCP 4, where IExtensionChangeHandler#removeExtension is not implemented
+				//we could create a new PerspectiveDescriptor, but that would require access to the restricted
+				//eclipse code, which some compilers might not like. Instead use reflection to force deletion 
+				//of a perspective
+				if ("org.eclipse.ui.internal.registry.PerspectiveDescriptor".equals(perspectiveDescriptor.getClass().getName())) {
+				    try {
+    				    Field f = perspectiveDescriptor.getClass().getDeclaredField("configElement");
+    				    f.setAccessible(true);
+    				    f.set(perspectiveDescriptor, null);
+				    } catch (NoSuchFieldException | IllegalAccessException e) {
+				        //ignore: we don't care this will happen only if the Eclipse internals change
+				    } 				    
+				}
+				perspectiveRegistry.deletePerspective(perspectiveDescriptor);
 			}
 		}
 
+		//just in case for any backward compatibility reasons, do the RCP 3 magic
 		// If the list is non-empty then remove all such perspectives from the
 		// IExtensionChangeHandler
 		if (perspectiveRegistry instanceof IExtensionChangeHandler
@@ -101,6 +143,7 @@ public class WorkbenchUtil {
 			IExtensionChangeHandler extChgHandler = (IExtensionChangeHandler) perspectiveRegistry;
 			extChgHandler
 					.removeExtension(null, removePerspectiveDesc.toArray());
+			
 		}
 	}
 
@@ -108,12 +151,12 @@ public class WorkbenchUtil {
 	 * Unbind F11 KeyBinding of org.eclipse.debug.ui to avoid conflict with
 	 * org.csstudio.opibuilder plugin
 	 */
-	public static void unbindDebugLast() {
+	public static void unbindDuplicateBindings() {
 		IBindingService bindingService = (IBindingService) PlatformUI
 				.getWorkbench().getAdapter(IBindingService.class);
 		BindingManager localChangeManager = new BindingManager(
 				new ContextManager(), new CommandManager());
-
+		
 		final Scheme[] definedSchemes = bindingService.getDefinedSchemes();
 		try {
 			for (int i = 0; i < definedSchemes.length; i++) {
@@ -131,7 +174,7 @@ public class WorkbenchUtil {
 		localChangeManager.setLocale(bindingService.getLocale());
 		localChangeManager.setPlatform(bindingService.getPlatform());
 		localChangeManager.setBindings(bindingService.getBindings());
-
+		
 		KeyBinding opiFullScreenBinding = null;
 		int nbBinding = 0;
 
@@ -142,9 +185,9 @@ public class WorkbenchUtil {
 					KeyBinding kBind = (KeyBinding) binding;
 					if (kBind.getParameterizedCommand() != null
 							&& kBind.getParameterizedCommand().getCommand() != null) {
-						if ("org.eclipse.debug.ui.commands.DebugLast"
-								.equals(kBind.getParameterizedCommand()
-										.getCommand().getId())) {
+						String id = kBind.getParameterizedCommand().getCommand().getId();
+						if ("org.eclipse.debug.ui.commands.DebugLast".equals(id)
+								|| "org.eclipse.jdt.ui.edit.text.java.search.declarations.in.workspace".equals(id)) {
 							KeySequence triggerSequence = kBind
 									.getKeySequence();
 							String contextId = kBind.getContextId();

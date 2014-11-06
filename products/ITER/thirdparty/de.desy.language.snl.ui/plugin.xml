@@ -119,7 +119,7 @@
             categoryId="org.eclipse.ui.category.edit"
             defaultHandler="de.desy.language.snl.ui.editor.RefreshHandler"
             id="de.desy.language.snl.ui.editor.refresh"
-            name="&amp;Refresh Highlighting">
+            name="Refresh Highlighting">
       </command>
       <command
             categoryId="org.eclipse.ui.category.edit"

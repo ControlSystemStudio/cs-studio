@@ -28,7 +28,7 @@ It's a product of the collaboration between different laboratories and universit
       <programArgs>--launcher.defaultAction
 openFile</programArgs>
       <vmArgs>-Xmx1024m
--Xms128m
+-Xms512m
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
 -Dpython.cachedir.skip=true</vmArgs>

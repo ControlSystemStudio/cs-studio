@@ -21,6 +21,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.application.WorkbenchAdvisor;
 
 /** Example implementation of {@link WorkbenchExtPoint}
  *
@@ -62,6 +63,21 @@ public class Workbench implements WorkbenchExtPoint
 		}
 		return null;
 	}
+    
+
+    /**
+     * Creates a workbench advisor to be used by the created workbench. This methods allows
+     * to provide your own advisor and keep the rest of the logic intact.
+     * 
+     * @param parameters the parameters that may give hints on how to create the advisor
+     * @return a new advisor instance
+     */
+    protected WorkbenchAdvisor createWorkbenchAdvisor(final Map<String, Object> parameters) {
+    	final OpenDocumentEventProcessor openDocProcessor =
+    	    	  (OpenDocumentEventProcessor) parameters.get(
+    	    			  OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
+    	return new ApplicationWorkbenchAdvisor(openDocProcessor);
+    }
 
 	/** {@inheritDoc} */
 	@Override
@@ -83,13 +99,9 @@ public class Workbench implements WorkbenchExtPoint
         //authenticate user
 	    LoginJob.forCurrentUser().schedule();
 
-        final OpenDocumentEventProcessor openDocProcessor =
-    	  (OpenDocumentEventProcessor) parameters.get(
-    			  OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
-
         // Run the workbench
         final int returnCode = PlatformUI.createAndRunWorkbench(display,
-                        new ApplicationWorkbenchAdvisor(openDocProcessor));
+        		createWorkbenchAdvisor(parameters));
 
         // Plain exit from IWorkbench.close()
         if (returnCode != PlatformUI.RETURN_RESTART)

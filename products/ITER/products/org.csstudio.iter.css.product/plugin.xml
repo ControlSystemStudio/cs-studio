@@ -135,11 +135,6 @@ It's a product of the collaboration between different laboratories and universit
       </toc>
    </extension>
 
-   <extension
-         point="org.eclipse.ui.startup">
-      <startup
-            class="org.csstudio.iter.css.product.EarlyStartup"/>
-   </extension>
 
     <extension
           point="org.eclipse.ui.cheatsheets.cheatSheetContent">

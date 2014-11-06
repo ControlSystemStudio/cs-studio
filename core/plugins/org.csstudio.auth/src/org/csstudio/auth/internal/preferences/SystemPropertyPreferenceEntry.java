@@ -165,7 +165,7 @@ public final class SystemPropertyPreferenceEntry {
 	 * @return the platform prefernces.
 	 */
     private static IEclipsePreferences getPlatformPreferences() {
-        return new InstanceScope().getNode(
+        return InstanceScope.INSTANCE.getNode(
                 AuthActivator.ID);
     }
     
@@ -175,7 +175,7 @@ public final class SystemPropertyPreferenceEntry {
      * @return the platform preference defaults.
      */
     private static IEclipsePreferences getDefaultPlatformPreferences() {
-    	return new DefaultScope().getNode(
+    	return DefaultScope.INSTANCE.getNode(
     			AuthActivator.ID);
     }
 }

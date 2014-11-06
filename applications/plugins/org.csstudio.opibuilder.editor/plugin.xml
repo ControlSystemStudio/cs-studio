@@ -32,35 +32,48 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
+            categoryId="org.eclipse.ui.category.edit"
             description="Run the OPI file currently in the editor"
             id="org.csstudio.opibuilder.runopi"
             name="Run OPI">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.edit"
             description="Change the widget order to front"
             id="org.csstudio.opibuilder.actions.TO_FRONT"
             name="To Front">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.edit"
             description="Change the widget order a step front"
             id="org.csstudio.opibuilder.actions.STEP_FRONT"
             name="Step Front">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.edit"
             description="Change the widget order to back"
             id="org.csstudio.opibuilder.actions.TO_BACK"
             name="To Back">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.edit"
             description="Change the widget order a step back"
             id="org.csstudio.opibuilder.actions.STEP_BACK"
             name="Step Back">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.edit"
             defaultHandler="org.csstudio.opibuilder.actions.SelectParentHandler"
             description="Select Parent Container"
             id="org.csstudio.opibuilder.actions.selectParent"
             name="Select Parent">
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.edit"
+            defaultHandler="org.csstudio.opibuilder.actions.LayoutWidgetsHandler"
+            description="Layout Widgets"
+            id="org.csstudio.opibuilder.actions.layoutWidgets"
+            name="Layout Widgets">
       </command>
    </extension>
    <extension

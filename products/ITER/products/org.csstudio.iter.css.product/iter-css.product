@@ -6,7 +6,7 @@
    <aboutInfo>
       <image path="/org.csstudio.iter.css.product/icons/about.png"/>
       <text>
-\n\n
+         \n\n
 
 Control System Studio is an Eclipse-based collection of tools\n\
  
@@ -16,8 +16,7 @@ such as the ones in the fusion community.\n\
 
 
 
-It's a product of the collaboration between different laboratories and universities.
-
+It&apos;s a product of the collaboration between different laboratories and universities.
       </text>
    </aboutInfo>
 
@@ -26,12 +25,14 @@ It's a product of the collaboration between different laboratories and universit
 
    <launcherArgs>
       <programArgs>--launcher.defaultAction
-openFile</programArgs>
+openFile
+      </programArgs>
       <vmArgs>-Xmx1024m
--Xms128m
+-Xms512m
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
--Dpython.cachedir.skip=true</vmArgs>
+-Dpython.cachedir.skip=true
+      </vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.csstudio.iter.css.product/icons/css16.png" i32="/org.csstudio.iter.css.product/icons/css32.png" i48="/org.csstudio.iter.css.product/icons/css48.png" i64="/org.csstudio.iter.css.product/icons/css64.png" i128="/org.csstudio.iter.css.product/icons/css128.png"/>
