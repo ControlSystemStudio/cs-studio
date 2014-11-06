@@ -49,9 +49,11 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
 		IPath layoutDataPath = getLayoutDataPath(originalFilePath);
 
-		try (FileOutputStream outputStream = new FileOutputStream(layoutDataPath
-					.toFile())) {
+		try  {
+			FileOutputStream outputStream = new FileOutputStream(layoutDataPath
+					.toFile());
 			outputter.output(diagramElement, outputStream);
+			outputStream.close();
 		} catch (Exception e) {
 			throw new Exception("Exception occurred while storing layout data",
 					e);
