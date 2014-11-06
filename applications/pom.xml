@@ -24,7 +24,7 @@
 		<tycho-extras.version>0.20.0</tycho-extras.version>
 		<cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.0</cs-studio-central.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<baselineMode>fail</baselineMode>
 		<skipTests>false</skipTests>
 
