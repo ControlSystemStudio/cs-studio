@@ -7,6 +7,8 @@
 ******************************************************************************/
 package org.csstudio.swt.widgets.symbol.util;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 /**
@@ -17,17 +19,20 @@ import java.util.Arrays;
 public class PermutationMatrix {
 
 	private final double[][] matrix;
-	
+
 	public PermutationMatrix(double x1, double y1, double x2, double y2) {
 		matrix = new double[2][2];
-		matrix[0][0] = x1;
-		matrix[0][1] = y1;
-		matrix[1][0] = x2;
-		matrix[1][1] = y2;
+		matrix[0][0] = round(x1);
+		matrix[0][1] = round(y1);
+		matrix[1][0] = round(x2);
+		matrix[1][1] = round(y2);
 	}
-	
+
 	public PermutationMatrix(double[][] matrix) {
 		this.matrix = matrix;
+		for (int i = 0; i < matrix.length; i++)
+			for (int j = 0; j < matrix[i].length; j++)
+				matrix[i][j] = round(matrix[i][j]);
 	}
 	
 	/**
@@ -93,6 +98,12 @@ public class PermutationMatrix {
 		matrix[0][1] = Math.round(matrix[0][1]);
 		matrix[1][0] = Math.round(matrix[1][0]);
 		matrix[1][1] = Math.round(matrix[1][1]);
+	}
+
+	private double round(double x) {
+		DecimalFormat df = new DecimalFormat("#.##");
+		df.setRoundingMode(RoundingMode.HALF_UP);
+		return Double.valueOf(df.format(x));
 	}
 
 	@Override
