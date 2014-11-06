@@ -21,8 +21,6 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * The image boolean button figure.
@@ -46,9 +44,6 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	private IPath offImagePath;
 
 	private int remainingImagesToLoad = 0;
-
-	private Color foregroundColor;
-	private boolean useForegroundColor = false;
 
 	private boolean animationDisabled = false;
 
@@ -175,10 +170,6 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 		} else {
 			symbolImage.setBackgroundColor(getBackgroundColor());
 		}
-		Color currentcolor = null;
-		if (useForegroundColor) currentcolor = getForegroundColor();
-		else currentcolor = new Color(Display.getCurrent(), new RGB(0, 0, 0));
-		symbolImage.setCurrentColor(currentcolor);
 		symbolImage.paintFigure(graphics);
 		super.paintClientArea(graphics);
 	}
@@ -231,24 +222,6 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	public void setValue(double value) {
 		super.setValue(value);
 		revalidate();
-	}
-
-	public void setUseForegroundColor(boolean useForegroundColor) {
-		this.useForegroundColor = useForegroundColor;
-		repaint();
-	}
-
-	@Override
-	public Color getForegroundColor() {
-		return foregroundColor;
-	}
-
-	@Override
-	public void setForegroundColor(Color foregroundColor) {
-		this.foregroundColor = foregroundColor;
-		if (foregroundColor != null)
-			this.boolLabel.setForegroundColor(foregroundColor);
-		repaint();
 	}
 
 	@Override

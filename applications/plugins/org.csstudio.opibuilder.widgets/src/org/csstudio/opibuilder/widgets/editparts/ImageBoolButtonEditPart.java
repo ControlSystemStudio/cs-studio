@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 
-import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -24,7 +23,6 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.epics.vtype.AlarmSeverity;
 
 /**
  * EditPart controller for the image widget.
@@ -106,23 +104,6 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 //			}
 //		};
 //		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
-
-		// ForeColor Alarm Sensitive
-		getPVWidgetEditpartDelegate().addAlarmSeverityListener(new AlarmSeverityListener() {
-			@Override
-			public boolean severityChanged(AlarmSeverity severity,
-					IFigure refreshableFigure) {
-				ImageBoolButtonFigure figure = (ImageBoolButtonFigure) refreshableFigure;
-				if (!getWidgetModel().isForeColorAlarmSensitve()) {
-					figure.setUseForegroundColor(false);
-				} else {
-					if (severity.equals(AlarmSeverity.NONE))
-						figure.setUseForegroundColor(false);
-					else figure.setUseForegroundColor(true);
-				}
-				return true;
-			}
-		});
 
 		// changes to the on image property
 		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
