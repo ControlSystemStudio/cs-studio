@@ -6,8 +6,8 @@
   <modelVersion>4.0.0</modelVersion>
     <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>applications-features</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <artifactId>iter-features</artifactId>
+    <version>${global-version}</version>
     </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.iter.trends.databrowser2.rap.feature</artifactId>
