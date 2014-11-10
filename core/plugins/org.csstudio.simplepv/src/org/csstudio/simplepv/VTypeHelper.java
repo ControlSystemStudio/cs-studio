@@ -481,6 +481,13 @@ public class VTypeHelper {
 				if (precision == -1)
 					return formatScalarNumber(FormatEnum.COMPACT, numValue, precision);
 				else {
+					// Sun's implementation of the JDK returns the Unicode replacement
+					// character, U+FFFD, when asked to parse a NaN. This is more
+					// consistent with the rest of CSS.
+					if(Double.isNaN(numValue.doubleValue())) {
+						return Double.toString(Double.NaN);
+					}
+
 					NumberFormat numberFormat = formatCacheMap.get(precision);
 					if (numberFormat == null) {
 						numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
