@@ -7,21 +7,20 @@
  ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
 
-import org.csstudio.swt.widgets.symbol.SymbolImage;
-import org.csstudio.swt.widgets.symbol.SymbolImageFactory;
-import org.csstudio.swt.widgets.symbol.SymbolImageListener;
-import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
-import org.csstudio.swt.widgets.symbol.util.IImageListener;
+import org.csstudio.swt.widgets.Activator;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
+import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -30,116 +29,84 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  * 
  */
-public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
-		SymbolImageListener {
+public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 
 	/**
 	 * The image itself.
 	 */
-	private SymbolImage onImage, offImage;
-	private SymbolImageProperties symbolProperties;
+	private Image onImage, offImage;
 
+	private boolean stretch;
+	
 	private boolean indicatorMode = false;
 
 	private IPath onImagePath;
 
 	private IPath offImagePath;
+	
+	private volatile boolean loadingImage;
 
-	private int remainingImagesToLoad = 0;
-
-	private Color foregroundColor;
-	private boolean useForegroundColor = false;
-
-	private boolean animationDisabled = false;
-
-	private IImageListener imageListener;
-
-	public ImageBoolButtonFigure() {
+	public ImageBoolButtonFigure(){
 		this(false);
 	}
-
-	@Override
-	protected void updateBoolValue() {
-		super.updateBoolValue();
-		if (onImage == null || offImage == null)
-			return;
-		if (booleanValue) {
-			onImage.setVisible(true);
-			offImage.setVisible(false);
-		} else {
-			onImage.setVisible(false);
-			offImage.setVisible(true);
-		}
-		sizeChanged();
-	}
-
+	
 	/**
-	 * @param indicatorMode
+	 * @param indicatorMode 
 	 */
 	public ImageBoolButtonFigure(boolean indicatorMode) {
 		this.indicatorMode = indicatorMode;
-		if (!indicatorMode)
+		if(!indicatorMode)
 			addMouseListener(buttonPresser);
 		add(boolLabel);
 	}
 
-	/**
-	 * Return the current displayed image. If null, returns an empty image.
-	 */
-	public SymbolImage getCurrentImage() {
-		SymbolImage image = booleanValue ? onImage : offImage;
-		if (image == null) {
-			image = SymbolImageFactory.createEmptyImage(true);
-		}
-		return image;
-	}
-
-	/**
-	 * Return all mapped images.
-	 */
-	public Collection<SymbolImage> getAllImages() {
-		Collection<SymbolImage> list = new ArrayList<SymbolImage>();
-		if (onImage != null) list.add(onImage);
-		if (offImage != null) list.add(offImage);
-		return list;
-	}
-
-	/**
-	 * Dispose the image resources used by this figure.
-	 */
-	public synchronized void dispose() {
-		if (onImage != null && !onImage.isDisposed()) {
+	public void dispose() {
+		if (onImage != null) {
 			onImage.dispose();
 			onImage = null;
 		}
-		if (offImage != null && !offImage.isDisposed()) {
+
+		if (offImage != null) {
 			offImage.dispose();
 			offImage = null;
 		}
-	}
 
-	public void setSymbolProperties(SymbolImageProperties symbolProperties) {
-		this.symbolProperties = symbolProperties;
 	}
 
 	public Dimension getAutoSizedDimension() {
-		SymbolImage temp = booleanValue ? onImage : offImage;
-		if (temp != null) {
-			Dimension dim = temp.getAutoSizedDimension();
-			if (dim != null)
-				return new Dimension(dim.width + getInsets().left
-						+ getInsets().right, dim.height + getInsets().bottom
-						+ getInsets().top);
-		}
+		Image temp = booleanValue ? onImage : offImage;
+
+		if (temp != null)
+			return new Dimension(temp.getBounds().width + getInsets().left
+					+ getInsets().right, temp.getBounds().height
+					+ getInsets().bottom + getInsets().top);
 		return null;
+
+	}
+
+	/**
+	 * @return the offImagePath
+	 */
+	public IPath getOffImagePath() {
+		return offImagePath;
+	}
+
+	/**
+	 * @return the onImagePath
+	 */
+	public IPath getOnImagePath() {
+		return onImagePath;
 	}
 
 	public boolean isLoadingImage() {
-		return remainingImagesToLoad > 0;
+		return loadingImage;
 	}
-
-	public synchronized void decrementLoadingCounter() {
-		remainingImagesToLoad--;
+	
+	/**
+	 * @return the stretch
+	 */
+	public boolean isStretch() {
+		return stretch;
 	}
 
 	@Override
@@ -155,75 +122,125 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 		super.layout();
 	}
 
+	private void loadImageFromIPath(final IPath path,
+			AbstractInputStreamRunnable uiTask) {
+		if (path == null || path.isEmpty())
+			return;
+
+		ResourceUtil.pathToInputStreamInJob(path, uiTask, "Loading Image...",
+				new IJobErrorHandler() {
+
+					public void handleError(Exception exception) {
+						Activator.getLogger().log(Level.WARNING,
+								"Failed to load image " + path, exception);
+						loadingImage = false;
+					}
+				});
+
+		return;
+
+	}
+
 	@Override
 	protected void paintClientArea(Graphics graphics) {
-		if (isLoadingImage())
+		if(loadingImage)
 			return;
 		Rectangle clientArea = getClientArea();
-		if (clientArea.width <= 0 || clientArea.height <= 0)
+		if(clientArea.width <=0 || clientArea.height <=0)
 			return;
+		Image temp;
+		if (booleanValue)
+			temp = onImage;
+		else
+			temp = offImage;
+		if (temp != null)
+			if (stretch)
+				graphics.drawImage(temp, new Rectangle(temp.getBounds()),
+						clientArea);
+			else
+				graphics.drawImage(temp, clientArea.getLocation());
 		if (!isEnabled() && !indicatorMode) {
 			graphics.setAlpha(DISABLED_ALPHA);
 			graphics.setBackgroundColor(DISABLE_COLOR);
 			graphics.fillRectangle(bounds);
 		}
-		SymbolImage symbolImage = getCurrentImage();
-		symbolImage.setBounds(clientArea);
-		symbolImage.setAbsoluteScale(graphics.getAbsoluteScale());
-		if (!isEnabled() && !indicatorMode) {
-			symbolImage.setBackgroundColor(DISABLE_COLOR);
-		} else {
-			symbolImage.setBackgroundColor(getBackgroundColor());
-		}
-		Color currentcolor = null;
-		if (useForegroundColor) currentcolor = getForegroundColor();
-		else currentcolor = new Color(Display.getCurrent(), new RGB(0, 0, 0));
-		symbolImage.setCurrentColor(currentcolor);
-		symbolImage.paintFigure(graphics);
 		super.paintClientArea(graphics);
 	}
 
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		if (!indicatorMode && runMode && value)
-			setCursor(Cursors.HAND);
+		if (!indicatorMode && runMode && value) 			
+			setCursor(Cursors.HAND);	
 	}
 
 	public synchronized void setOffImagePath(IPath offImagePath) {
-		remainingImagesToLoad++;
+		loadingImage = true;
 		this.offImagePath = offImagePath;
 		if (offImage != null) {
 			offImage.dispose();
 			offImage = null;
 		}
-		offImage = SymbolImageFactory.asynCreateSymbolImage(this.offImagePath,
-				true, symbolProperties, this);
+
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+
+			@Override
+			public void runWithInputStream(InputStream inputStream) {
+				try {
+					offImage = new Image(Display.getDefault(), inputStream);
+				} finally {
+					try {
+						inputStream.close();
+					} catch (IOException e) {						
+					}
+				}
+				loadingImage = false;
+				revalidate();
+				repaint();				
+			}
+		};
+
+		loadImageFromIPath(offImagePath, uiTask);
+
 	}
 
 	public synchronized void setOnImagePath(IPath onImagePath) {
-		remainingImagesToLoad++;
+		loadingImage = true;
 		this.onImagePath = onImagePath;
 		if (onImage != null) {
 			onImage.dispose();
 			onImage = null;
 		}
-		onImage = SymbolImageFactory.asynCreateSymbolImage(this.onImagePath, 
-				true, symbolProperties, this);
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+
+			@Override
+			public void runWithInputStream(InputStream inputStream) {
+				try {
+					onImage = new Image(Display.getDefault(), inputStream);
+				} finally {
+					try {
+						inputStream.close();
+					} catch (IOException e) {						
+					}
+				}
+				loadingImage = false;
+				revalidate();
+				repaint();
+			}
+		};
+
+		loadImageFromIPath(onImagePath, uiTask);
 	}
 
 	@Override
 	public void setRunMode(boolean runMode) {
 		super.setRunMode(runMode);
+		
 		setCursor((runMode && !indicatorMode) ? Cursors.HAND : null);
 	}
 
 	public void setStretch(boolean strech) {
-		if (symbolProperties != null) {
-			symbolProperties.setStretch(strech);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setStretch(strech);
+		this.stretch = strech;
 		repaint();
 	}
 
@@ -231,90 +248,6 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	public void setValue(double value) {
 		super.setValue(value);
 		revalidate();
-	}
-
-	public void setUseForegroundColor(boolean useForegroundColor) {
-		this.useForegroundColor = useForegroundColor;
-		repaint();
-	}
-
-	@Override
-	public Color getForegroundColor() {
-		return foregroundColor;
-	}
-
-	@Override
-	public void setForegroundColor(Color foregroundColor) {
-		this.foregroundColor = foregroundColor;
-		if (foregroundColor != null)
-			this.boolLabel.setForegroundColor(foregroundColor);
-		repaint();
-	}
-
-	@Override
-	public void setBackgroundColor(Color backgroundColor) {
-		super.setBackgroundColor(backgroundColor);
-		if (symbolProperties != null) {
-			symbolProperties.setBackgroundColor(backgroundColor);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setBackgroundColor(backgroundColor);
-		repaint();
-	}
-
-	// ************************************************************
-	// Animated images
-	// ************************************************************
-
-	/**
-	 * @return the animationDisabled
-	 */
-	public synchronized boolean isAnimationDisabled() {
-		return animationDisabled;
-	}
-
-	public synchronized void setAnimationDisabled(final boolean stop) {
-		if (animationDisabled == stop)
-			return;
-		animationDisabled = stop;
-		if (symbolProperties != null) {
-			symbolProperties.setAnimationDisabled(stop);
-		}
-		for (SymbolImage asi : getAllImages())
-			asi.setAnimationDisabled(stop);
-		repaint();
-	}
-
-	public synchronized void setAlignedToNearestSecond(final boolean aligned) {
-		if (symbolProperties != null) {
-			symbolProperties.setAlignedToNearestSecond(aligned);
-		}
-		for (SymbolImage asi : getAllImages())
-			asi.setAlignedToNearestSecond(aligned);
-		repaint();
-	}
-
-	// ************************************************************
-	// Symbol Image Listener
-	// ************************************************************
-
-	public void setImageLoadedListener(IImageListener listener) {
-		this.imageListener = listener;
-	}
-
-	public void symbolImageLoaded() {
-		decrementLoadingCounter();
-		sizeChanged();
-		repaint();
-		revalidate();
-	}
-
-	public void repaintRequested() {
-		repaint();
-	}
-
-	public void sizeChanged() {
-		imageListener.imageResized(this);
 	}
 
 }
