@@ -488,6 +488,11 @@ public class VTypeHelper {
 						return Double.toString(Double.NaN);
 					}
 
+					// Also check for positive and negative infinity.
+					if(Double.isInfinite(numValue.doubleValue())) {
+						return Double.toString(numValue.doubleValue());
+					}
+
 					NumberFormat numberFormat = formatCacheMap.get(precision);
 					if (numberFormat == null) {
 						numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
