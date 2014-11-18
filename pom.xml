@@ -44,11 +44,6 @@
 			<name>EPICS Repository</name>
 			<url>http://epics.sourceforge.net/maven2/</url>
 		</repository>
-		<repository>
-			<id>controlsystemstudio</id>
-			<name>CS-Studio Maven Repository</name>
-			<url>http://maven.controlsystemstudio.org/</url>
-		</repository>
 	</repositories>
 
 	<modules>
