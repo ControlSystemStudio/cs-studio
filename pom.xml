@@ -40,6 +40,11 @@
 	
 	<repositories>
 		<repository>
+			<id>pvmanager-snapshots</id>
+			<name>sonatype snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
 			<id>epics</id>
 			<name>EPICS Repository</name>
 			<url>http://epics.sourceforge.net/maven2/</url>

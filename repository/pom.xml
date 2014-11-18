@@ -242,7 +242,6 @@
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.pva:${csstudio.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.sim:${csstudio.version}</id>
