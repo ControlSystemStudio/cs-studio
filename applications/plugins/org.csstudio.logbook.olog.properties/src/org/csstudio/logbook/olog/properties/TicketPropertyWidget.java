@@ -40,8 +40,8 @@ class TicketPropertyWidget extends AbstractPropertyWidget {
     private Label lblAttached;
 
     public TicketPropertyWidget(Composite parent, int style,
-	    LogEntryChangeset logEntryChangeset) {
-	super(parent, style, logEntryChangeset);
+	    LogEntryChangeset logEntryChangeset, boolean editable) {
+	super(parent, style, logEntryChangeset, editable);
 	setLayout(new FormLayout());
 
 	Label lblNewLabel = new Label(this, SWT.NONE);
