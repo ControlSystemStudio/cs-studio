@@ -101,7 +101,7 @@ public class PermutationMatrix {
 	}
 
 	private double round(double x) {
-		DecimalFormat df = new DecimalFormat("#.##");
+		DecimalFormat df = new DecimalFormat("#.####");
 		df.setRoundingMode(RoundingMode.HALF_UP);
 		return Double.valueOf(df.format(x));
 	}
