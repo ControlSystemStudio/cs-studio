@@ -621,7 +621,6 @@ public class LogEntryWidget extends Composite {
 
 	tbtmFileAttachments = new CTabItem(tabFolder, SWT.NONE);
 	tbtmFileAttachments.setText("Files");
-	tabFolder.setSelection(tbtmFileAttachments);
 
 	tbtmFileAttachmentsComposite = new Composite(tabFolder, SWT.NONE);
 	tbtmFileAttachments.setControl(tbtmFileAttachmentsComposite);
@@ -787,7 +786,6 @@ public class LogEntryWidget extends Composite {
 
 	tbtmPropertyTree = new CTabItem(tabFolder, SWT.NONE);
 	tbtmPropertyTree.setText("Properties");
-	tabFolder.setSelection(tbtmPropertyTree);
 
 	tbtmPropertyTreeComposite = new Composite(tabFolder, SWT.NONE);
 	tbtmPropertyTree.setControl(tbtmPropertyTreeComposite);
@@ -842,8 +840,7 @@ public class LogEntryWidget extends Composite {
 	});
 
 	try {
-	    logbookClient = LogbookClientManager.getLogbookClientFactory()
-		    .getClient();
+	    logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
 	} catch (Exception e1) {
 	    setLastException(e1);
 	}
@@ -916,6 +913,7 @@ public class LogEntryWidget extends Composite {
 	    propertyWidgetFactories = Collections.emptyMap();
 	    setLastException(e);
 	}
+	
     }
 
     private void init() {
@@ -965,7 +963,33 @@ public class LogEntryWidget extends Composite {
 		    };
 		    Executors.newCachedThreadPool().execute(retriveAttachments);
 		}
-		this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+                // Dispose the contributed tabs, only keep the default
+                // attachments tab
+                for (CTabItem cTabItem : tabFolder.getItems()) {
+                    if (!cTabItem.equals(tbtmAttachments)
+                            && !cTabItem.equals(tbtmFileAttachments)
+                            && !cTabItem.equals(tbtmPropertyTree)) {
+                        cTabItem.dispose();
+                    }
+                }
+                this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+                if (propertyWidgetFactories != null) {
+	            for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
+	                    .entrySet()) {
+	                if (editable
+	                        || LogEntryUtil.getPropertyNames(logEntry).contains(
+	                                propertyFactoryEntry.getKey())) {
+	                    CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
+	                    tbtmProperty.setText(propertyFactoryEntry.getKey());
+	                    AbstractPropertyWidget abstractPropertyWidget = propertyFactoryEntry
+	                            .getValue().create(tabFolder, SWT.NONE,
+	                                    logEntryChangeset, editable);
+	                    tbtmProperty.setControl(abstractPropertyWidget);
+	                    //abstractPropertyWidget.setEditable(editable);
+	                }
+	            }
+	        }
+		
 	    }
 	} catch (Exception ex) {
 	    // Failed to get a client to the logbook
@@ -977,14 +1001,6 @@ public class LogEntryWidget extends Composite {
     private void updateUI() {
 	if (isDisposed()) {
 	    return;
-	}
-	// Dispose the contributed tabs, only keep the default attachments tab
-	for (CTabItem cTabItem : tabFolder.getItems()) {
-	    if (!cTabItem.equals(tbtmAttachments)
-		    && !cTabItem.equals(tbtmFileAttachments)
-		    && !cTabItem.equals(tbtmPropertyTree)) {
-		cTabItem.dispose();
-	    }
 	}
 	LogEntry logEntry = null;
 	try {
@@ -1065,22 +1081,14 @@ public class LogEntryWidget extends Composite {
 	    imageStackWidget.setSelectedImageName(null);
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
 	}
-	if (propertyWidgetFactories != null) {
-	    for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
-		    .entrySet()) {
-		if (editable
-			|| LogEntryUtil.getPropertyNames(logEntry).contains(
-				propertyFactoryEntry.getKey())) {
-		    CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
-		    tbtmProperty.setText(propertyFactoryEntry.getKey());
-		    AbstractPropertyWidget abstractPropertyWidget = propertyFactoryEntry
-			    .getValue().create(tabFolder, SWT.NONE,
-				    logEntryChangeset);
-		    tbtmProperty.setControl(abstractPropertyWidget);
-		    abstractPropertyWidget.setEditable(editable);
-		}
-	    }
-	}
+	
+	for (CTabItem cTabItem : tabFolder.getItems()) {
+            if (!cTabItem.equals(tbtmAttachments)
+                    && !cTabItem.equals(tbtmFileAttachments)
+                    && !cTabItem.equals(tbtmPropertyTree)) {
+                ((AbstractPropertyWidget)cTabItem.getControl()).updateUI();
+            }
+        }
 	composite.layout();
     }
 
