@@ -19,6 +19,6 @@ public class StartupLauncher implements IStartup {
 
 	@Override
 	public void earlyStartup() {
-		new OlogAuthAdapter();
+		//new OlogAuthAdapter();
 	}
 }
