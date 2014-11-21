@@ -9,7 +9,8 @@ package org.csstudio.trends.databrowser2.editor;
 
 import java.util.logging.Logger;
 
-import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.rtplot.RTTimePlot;
+import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -31,7 +32,7 @@ import org.eclipse.ui.PlatformUI;
 public class PrintAction extends Action
 {
     final private Shell shell;
-    final private XYGraph graph;
+    final private RTTimePlot graph;
 
     /** Snapshot of the chart at time of print command */
     private Image snapshot;
@@ -43,7 +44,7 @@ public class PrintAction extends Action
      *  @param shell Parent shell
      *  @param graph Graph to print
      */
-    public PrintAction(final Shell shell, final XYGraph graph)
+    public PrintAction(final Shell shell, final RTTimePlot graph)
     {
         super(Messages.PrintSnapshot,
             PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT));
@@ -103,15 +104,7 @@ public class PrintAction extends Action
         }
         printer = new Printer(data);
         // Print in background thread
-        final Thread print_thread = new Thread("Print Thread")
-        {
-            @Override
-            public void run()
-            {
-                print();
-            }
-        };
-        print_thread.start();
+        Activator.getThreadPool().execute(this::print);
     }
 
     /** Print the <code>snapshot</code> to the <code>printer</code> */

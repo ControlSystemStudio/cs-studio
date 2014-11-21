@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AddArchiveAction extends Action
 {
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
     final private Shell shell;
     final private PVItem pvs[];
 
@@ -29,7 +29,7 @@ public class AddArchiveAction extends Action
      *  @param shell Parent shell for dialog
      *  @param pvs PVs to which to add archives
      */
-    public AddArchiveAction(final OperationsManager operations_manager,
+    public AddArchiveAction(final UndoableActionManager operations_manager,
             final Shell shell, final PVItem pvs[])
     {
         super(Messages.AddArchive,

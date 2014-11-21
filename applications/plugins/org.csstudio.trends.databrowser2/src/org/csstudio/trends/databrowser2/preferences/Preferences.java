@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.preferences;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
-import org.csstudio.trends.databrowser2.model.TraceType;
+import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -38,7 +40,7 @@ public class Preferences
 
     /** Separator between components within an item */
     static final String COMPONENT_SEPARATOR = "|";
-    
+
 	public static final String PLT_REPOSITORY = "plt_repository"; //$NON-NLS-1$
 
     /** Preference tags.
@@ -56,7 +58,7 @@ public class Preferences
 			USE_AUTO_SCALE = "use_auto_scale",
 			EMAIL_DEFAULT_SENDER = "email_default_sender",
 			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view",
-			RAP_HIDE_PROPERTIES_VIEW = "rap.hide_properties_view",		
+			RAP_HIDE_PROPERTIES_VIEW = "rap.hide_properties_view",
 			SECURE_DATA_BROWSER = "secure_data_browser",
 			AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh",
 			FUTURE_BUFFER = "future_buffer";
@@ -67,15 +69,15 @@ public class Preferences
             return Boolean.FALSE;
         return prefs.getBoolean(Activator.PLUGIN_ID, AUTOMATIC_HISTORY_REFRESH, Boolean.FALSE, null);
 	}
-	
-    public static double getTimeSpan()
+
+    public static Duration getTimeSpan()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null) // Allow some JUnit tests without prefs
-            return 60.0;
-        return prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null);
+            return Duration.ofSeconds(60);
+        return TimeHelper.durationOfSeconds(prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null));
     }
-    
+
     public static int getFutureBuffer()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
@@ -134,8 +136,11 @@ public class Preferences
 
     public static long getArchiveFetchDelay()
     {
+        long delay = 1000;
         final IPreferencesService prefs = Platform.getPreferencesService();
-        return prefs.getLong(Activator.PLUGIN_ID, ARCHIVE_FETCH_DELAY, 1000, null);
+        if (prefs != null)
+            delay = prefs.getLong(Activator.PLUGIN_ID, ARCHIVE_FETCH_DELAY, delay, null);
+        return delay;
     }
 
     public static int getPlotBins()
@@ -150,8 +155,8 @@ public class Preferences
         final String urls = prefs.getString(Activator.PLUGIN_ID, URLS, "", null).trim();
         if (urls.length() <= 0)
             return new ArchiveServerURL[0];
-        
-        ArrayList<ArchiveServerURL> list = new ArrayList<ArchiveServerURL>(); 
+
+        ArrayList<ArchiveServerURL> list = new ArrayList<ArchiveServerURL>();
         for (String fragment : urls.split("\\*")) {
         	String[] strs = fragment.split("\\|");
         	if (strs.length == 1) {
@@ -201,7 +206,7 @@ public class Preferences
             return false;
         return prefs.getBoolean(Activator.PLUGIN_ID, USE_DEFAULT_ARCHIVES, false, null);
     }
-    
+
     /** @return <code>true</code> to use auto scale by default.
      */
     static public boolean useAutoScale()
@@ -250,16 +255,15 @@ public class Preferences
 			return null;
 		return SingleSourcePlugin.getResourceHelper().newPath(pltRepo);
 	}
-	
+
 	public static String getEmailDefaultSender() {
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs == null)
 			return null;
 		return prefs.getString(Activator.PLUGIN_ID, EMAIL_DEFAULT_SENDER, null, null);
 	}
-    
-    /** @return <code>true</code> to hide search view on rap version.
-     */
+
+    /** @return <code>true</code> to hide search view on rap version. */
     public static boolean hideSearchView()
     {
 		final IPreferencesService prefs = Platform.getPreferencesService();
@@ -267,11 +271,8 @@ public class Preferences
 			return false;
 		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_SEARCH_VIEW, false, null);
     }
-    
-    
 
-    /** @return <code>true</code> to hide properties view on rap version.
-     */
+    /** @return <code>true</code> to hide properties view on rap version */
     public static boolean hidePropertiesView()
     {
 		final IPreferencesService prefs = Platform.getPreferencesService();
@@ -279,9 +280,8 @@ public class Preferences
 			return false;
 		return prefs.getBoolean(Activator.PLUGIN_ID, RAP_HIDE_PROPERTIES_VIEW, false, null);
     }
-    
-    /** @return <code>true</code> to authentication is required to open data browser in rap.
-     */
+
+    /** @return <code>true</code> to authentication is required to open data browser in rap. */
     public static boolean isDataBrowserSecured()
     {
 		final IPreferencesService prefs = Platform.getPreferencesService();
@@ -289,6 +289,6 @@ public class Preferences
 			return false;
 		return prefs.getBoolean(Activator.PLUGIN_ID, SECURE_DATA_BROWSER, false, null);
     }
-    
-    
+
+
 }

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -36,7 +36,7 @@ public class ArchivesTableHandler implements ILazyContentProvider
      *  @param operations_manager
      *  @param archives_table
      */
-    public void createColumns(TableColumnLayout table_layout, final OperationsManager operations_manager,
+    public void createColumns(TableColumnLayout table_layout, final UndoableActionManager operations_manager,
             final TableViewer archives_table)
     {
         table_viewer = archives_table;

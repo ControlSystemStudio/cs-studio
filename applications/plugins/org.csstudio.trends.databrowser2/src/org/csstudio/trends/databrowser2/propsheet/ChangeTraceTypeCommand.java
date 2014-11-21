@@ -7,16 +7,16 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.TraceType;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ModelItem;
-import org.csstudio.trends.databrowser2.model.TraceType;
 
 /** Undo-able command to change item's trace type
  *  @author Kay Kasemir
  */
-public class ChangeTraceTypeCommand implements IUndoableCommand
+public class ChangeTraceTypeCommand implements UndoableAction
 {
     final private ModelItem item;
     final private TraceType old_trace_type, new_trace_type;
@@ -26,19 +26,18 @@ public class ChangeTraceTypeCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_trace_type New value
      */
-    public ChangeTraceTypeCommand(final OperationsManager operations_manager,
+    public ChangeTraceTypeCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final TraceType new_trace_type)
     {
         this.item = item;
         this.old_trace_type = item.getTraceType();
         this.new_trace_type = new_trace_type;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         item.setTraceType(new_trace_type);
     }

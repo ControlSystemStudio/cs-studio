@@ -50,6 +50,7 @@ import org.eclipse.ui.IPersistableElement;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DataBrowserModelEditorInput implements IEditorInput, IPersistableElement
 {
 	final private IEditorInput input;
@@ -100,6 +101,15 @@ public class DataBrowserModelEditorInput implements IEditorInput, IPersistableEl
     @Override
     public Object getAdapter(final Class adapter)
     {
+	    // See NoResourceEditorInput:
+	    // Do NOT adapt to IResource, because that will result
+	    // in context menu containing "Compare With.." and other
+	    // file related entries.
+	    //
+        // Compare name as string to compile with RAP,
+        // where the RCP IResource class is not available
+        if ("org.eclipse.core.resources.IResource".equals(adapter.getName()))
+            return null;
 	    return input.getAdapter(adapter);
     }
 

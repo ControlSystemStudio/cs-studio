@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.eclipse.swt.graphics.RGB;
@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.RGB;
 /** Undo-able command to change plot background color
  *  @author Kay Kasemir
  */
-public class ChangePlotBackgroundCommand implements IUndoableCommand
+public class ChangePlotBackgroundCommand implements UndoableAction
 {
     final private Model model;
     final private RGB old_color, new_color;
@@ -27,19 +27,18 @@ public class ChangePlotBackgroundCommand implements IUndoableCommand
      *  @param new_color New value
      */
     public ChangePlotBackgroundCommand(final Model model,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final RGB new_color)
     {
         this.model = model;
         this.old_color = model.getPlotBackground();
         this.new_color = new_color;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         model.setPlotBackground(new_color);
     }

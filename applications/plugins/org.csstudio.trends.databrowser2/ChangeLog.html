@@ -9,10 +9,34 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.trends.databrowser2.</p>
 
+<h2>Version 4.1.0 - 2014-12-01</h2>
+Replaced plot package.
+<ul>
+  <li>Most drawing performed in background threads, no longer delaying the UI thread.</li>
+  <li>'Autoscale' performed in parallel background threads, using all CPUs to determine range of traces.</li>
+  <li>Cursor values determined in background thread via binary search (Not in UI thread, not via linear search. Also fixes #536).</li>
+  <li>All configuration options now in 'Properties' view, no plot config that allows corrupting time axis settings.</li>
+  <li>All configurable plot options now saved/restored (#428, #632).</li>
+  <li>Consistently persisting configuration of 'Model', instead of separating and then diverging the 'Model' and 'XYGraph' settings (#694, #755).</li>  
+  <li>Provide DataBrowserSchema.xsd for current *.plt file format.</li>
+  <li>Using Java 8 'Instant' for all time operations.</li>
+  <li>"Edit Items" dialog (for multiple items) has icon, consistent layout.</li>
+  <li>Plot can show VStatistics std. deviation as well as min/max (#764).</li>
+  <li>Each added trace starts with a new color, reducing likelyhood of plots where users cannot determine which trace corresponds to what item (#213).</li>
+  <li>Annotation content with placeholders for name, position, value.</li>
+  <li>Annotation removal dialog right away lists annotations to remove.</li>
+  <li>Streamlined zoom/pan options with better visual feedback.</li>
+  <li>After editing 'Color' property of trace or axis, that line in the properties table is de-selected so user can see the color.</li>
+  <li>Toolbar more compact.</li>
+  <li>Dropping of several PVs works (used to drop "[PV1", "PV2,", "LastPV]")</li>
+  <li>Can "Remove Archive Data Source" even if source has no name (just Key and URL)</li>
+  <li>Tables no longer have "vanishing columns" on Linux; enforcing minimum column width.</li>
+</ul>
+
 <h2>Version 4.0.0 - 2014-06-20</h2>
 <ul>
   <li>Bugfix: Option "When archived data arrives: Perform auto-zoom", in addition to the value axes, also zoomed the time axis. This prevented any time range adjustments.</li>
-  <li>Bugfix: NullPointerException when remoginv an item.</li>
+  <li>Bugfix: NullPointerException when removing an item.</li>
 </ul>
 
 <h2>Version 3.2.17 - 2014-03-06</h2>

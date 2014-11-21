@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.model.RequestType;
@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.RequestType;
 /** Undo-able command to change a PV item's request type
  *  @author Kay Kasemir
  */
-public class ChangeRequestTypeCommand implements IUndoableCommand
+public class ChangeRequestTypeCommand implements UndoableAction
 {
     final private PVItem item;
     final private RequestType old_request_type, new_request_type;
@@ -26,19 +26,18 @@ public class ChangeRequestTypeCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_trace_type New value
      */
-    public ChangeRequestTypeCommand(final OperationsManager operations_manager,
+    public ChangeRequestTypeCommand(final UndoableActionManager operations_manager,
             final PVItem item, final RequestType new_request_type)
     {
         this.item = item;
         this.old_request_type = item.getRequestType();
         this.new_request_type = new_request_type;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         item.setRequestType(new_request_type);
     }

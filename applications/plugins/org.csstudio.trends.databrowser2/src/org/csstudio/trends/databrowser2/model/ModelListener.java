@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.util.Optional;
 
 /** Listener interface for the Model
  *  @author Kay Kasemir
@@ -28,7 +29,7 @@ public interface ModelListener
     /** @param axis Axis that changed its color, range, ....
      *              If <code>null</code>, an axis was added or removed
      */
-    void changedAxis(AxisConfig axis);
+    void changedAxis(Optional<AxisConfig> axis);
 
     /** @param item Item that was added to the model */
     void itemAdded(ModelItem item);
@@ -52,17 +53,14 @@ public interface ModelListener
     /** @param scroll_enabled <code>true</code> when scrolling was turned 'on' */
     void scrollEnabled(boolean scroll_enabled);
 
-
 	/** The annotation list changed*/
 	void changedAnnotations();
 
-	void changedXYGraphConfig();
-	
 	/** The item requested to refresh its history.
-	 * @param item the item to refresh the history data for
+	 *  @param item the item to refresh the history data for
 	 */
 	void itemRefreshRequested(PVItem item);
-	
-	void cursorDataChanged();
-	
+
+	/** ModelItems have new selected sample */
+	void selectedSamplesChanged();
 }

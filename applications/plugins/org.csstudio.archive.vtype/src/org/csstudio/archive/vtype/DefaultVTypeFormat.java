@@ -16,6 +16,13 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class DefaultVTypeFormat extends VTypeFormat
 {
+    final private static VTypeFormat instance = new DefaultVTypeFormat();
+
+    final public static VTypeFormat get()
+    {
+        return instance;
+    }
+
     /** {@inheritDoc} */
     @Override
     public StringBuilder format(final Number number,
@@ -26,7 +33,7 @@ public class DefaultVTypeFormat extends VTypeFormat
         else
             return buf.append(number);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString()

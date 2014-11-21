@@ -7,8 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.time.Instant;
+
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.csstudio.swt.xygraph.dataprovider.ISample;
+import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Time;
@@ -21,7 +23,7 @@ import org.epics.vtype.ValueFactory;
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PlotSample to handle waveform index.
  */
-public class PlotSample implements ISample
+public class PlotSample implements PlotDataItem<Instant>
 {
     /** Value contained in this sample */
     final private VType value;
@@ -33,7 +35,7 @@ public class PlotSample implements ISample
      *  @see #getInfo()
      */
     private String info;
-    
+
     /** Waveform index */
     private int waveform_index = 0;
 
@@ -64,13 +66,13 @@ public class PlotSample implements ISample
         this("Test",
              ValueFactory.newVDouble(y, ValueFactory.newTime(Timestamp.of((long) x, 0))));
     }
-    
+
     /** @return Waveform index */
     public int getWaveformIndex()
     {
     	return waveform_index;
     }
-    
+
     /** @param index Waveform index to plot */
     public void setWaveformIndex(int index)
     {
@@ -84,13 +86,13 @@ public class PlotSample implements ISample
     }
 
     /** @return Control system value */
-    public VType getValue()
+    public VType getVType()
     {
         return value;
     }
 
     /** @return Control system time stamp */
-    public Timestamp getTime()
+    private Timestamp getTime()
     {
         // NOT checking if time.isValid()
         // because that actually takes quite some time.
@@ -101,57 +103,24 @@ public class PlotSample implements ISample
         return Timestamp.now();
     }
 
-    /** Since the 'X' axis is used as a 'Time' axis, this
-     *  returns the time stamp of the control system sample.
-     *  The XYGraph expects it to be milliseconds(!) since 1970.
-     *  @return Time as milliseconds since 1970
-     */
+    /** {@inheritDoc} */
     @Override
-    public double getXValue()
+    public Instant getPosition()
     {
         final Timestamp time = getTime();
-        return time.getSec() * 1000.0 + time.getNanoSec() / 1e6;
+        return Instant.ofEpochSecond(time.getSec(), time.getNanoSec());
     }
 
     /** {@inheritDoc} */
     @Override
-    public double getYValue()
+    public double getValue()
     {
         return VTypeHelper.toDouble(value, waveform_index);
     }
 
-    /** Get sample's info text.
-     *  If not set on construction, the value's text is used.
-     *  @return Sample's info text. */
-    @Override
-    public String getInfo()
+    /** @return {@link VStatistics} or <code>null</code> */
+    private VStatistics getStats()
     {
-        if (info == null)
-            return toString();
-        return info;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public double getXMinusError()
-    {
-        return 0;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public double getXPlusError()
-    {
-        return 0;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public double getYMinusError()
-    {
-        if (!(value instanceof VStatistics))
-            return 0;
-        
         // Although the behavior of getMinimum() method depends on archive
         // readers' implementation, at least, RDB and kblog archive readers
         // return the minimum value of the first element. This minimum value
@@ -159,30 +128,43 @@ public class PlotSample implements ISample
         // elements. Therefore, this method returns 0 if the waveform index
         // is not 0.
         if (waveform_index != 0)
-        	return 0;
-
-        final VStatistics minmax = (VStatistics)value;
-        return minmax.getAverage() - minmax.getMin();
+            return null;
+        if (value instanceof VStatistics)
+            return (VStatistics) value;
+        return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public double getYPlusError()
+    public double getStdDev()
     {
-        if (!(value instanceof VStatistics))
-            return 0;
- 
-        // Although the behavior of getMaximum() method depends on archive
-        // readers' implementation, at least, RDB and kblog archive readers
-        // return the maximum value of the first element. This maximum value
-        // does not make sense to plot error bars when the chart shows other
-        // elements. Therefore, this method returns 0 if the waveform index
-        // is not 0.
-        if (waveform_index != 0)
-        	return 0;
-        
-        final VStatistics minmax = (VStatistics)value;
-        return minmax.getMax() - minmax.getAverage();
+        final VStatistics stats = getStats();
+        return (stats != null) ? stats.getStdDev() : Double.NaN;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double getMin()
+    {
+        final VStatistics stats = getStats();
+        return (stats != null) ? stats.getMin() : Double.NaN;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double getMax()
+    {
+        final VStatistics stats = getStats();
+        return (stats != null) ? stats.getMax() : Double.NaN;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getInfo()
+    {
+        if (info == null)
+            return toString();
+        return info;
     }
 
     @Override

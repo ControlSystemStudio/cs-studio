@@ -10,15 +10,15 @@ package org.csstudio.trends.databrowser2.propsheet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 
 /** Undo-able command to change time axis
  *  @author Kay Kasemir
  */
-public class ChangeTimerangeCommand implements IUndoableCommand
+public class ChangeTimerangeCommand implements UndoableAction
 {
     final private Model model;
     final private boolean old_scroll, new_scroll;
@@ -31,7 +31,7 @@ public class ChangeTimerangeCommand implements IUndoableCommand
      *  @param start
      *  @param end
      */
-    public ChangeTimerangeCommand(final Model model, final OperationsManager operationsManager,
+    public ChangeTimerangeCommand(final Model model, final UndoableActionManager operationsManager,
             final boolean scroll, final String start, final String end)
     {
         this.model = model;
@@ -41,13 +41,13 @@ public class ChangeTimerangeCommand implements IUndoableCommand
         this.new_scroll = scroll;
         this.new_start = start;
         this.new_end = end;
-        operationsManager.addCommand(this);
-        redo();
+        operationsManager.add(this);
+        perform();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         apply(new_scroll, new_start, new_end);
     }

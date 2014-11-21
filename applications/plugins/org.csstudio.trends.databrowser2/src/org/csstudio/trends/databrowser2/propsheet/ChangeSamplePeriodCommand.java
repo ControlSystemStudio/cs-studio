@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to change item's line width
  *  @author Kay Kasemir
  */
-public class ChangeSamplePeriodCommand implements IUndoableCommand
+public class ChangeSamplePeriodCommand implements UndoableAction
 {
     final private Shell shell;
     final private PVItem item;
@@ -31,7 +31,7 @@ public class ChangeSamplePeriodCommand implements IUndoableCommand
      *  @param new_period New value
      */
     public ChangeSamplePeriodCommand(final Shell shell,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final PVItem item, final double new_period)
     {
         this.shell = shell;
@@ -49,13 +49,12 @@ public class ChangeSamplePeriodCommand implements IUndoableCommand
             // Exit before registering for undo because there's nothing to undo
             return;
         }
-        operations_manager.addCommand(this);
+        operations_manager.add(this);
     }
-
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         try
         {

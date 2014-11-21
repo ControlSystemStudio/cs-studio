@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 
 /** Undo-able command to change item's line width
  *  @author Kay Kasemir
  */
-public class ChangeLineWidthCommand implements IUndoableCommand
+public class ChangeLineWidthCommand implements UndoableAction
 {
     final private ModelItem item;
     final private int old_width, new_width;
@@ -25,19 +25,18 @@ public class ChangeLineWidthCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_width New value
      */
-    public ChangeLineWidthCommand(final OperationsManager operations_manager,
+    public ChangeLineWidthCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final int new_width)
     {
         this.item = item;
         this.old_width = item.getLineWidth();
         this.new_width = new_width;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         item.setLineWidth(new_width);
     }

@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.sampleview;
 
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -34,20 +35,27 @@ public class SampleTableContentProvider implements ILazyContentProvider
             return;
         }
         samples = ((ModelItem)model_item).getSamples();
-        synchronized (samples)
-        {
-            sample_table.setItemCount(samples.getSize());
-        }
+        sample_table.setItemCount(samples.size());
     }
 
     /** Called by 'lazy' table, needs to 'replace' entry of given row. */
     @Override
     public void updateElement(final int row)
     {
-        synchronized (samples)
+        PlotSample sample;
+        samples.getLock().lock();
+        try
         {
-            sample_table.replace(samples.getSample(row), row);
+            if (row < samples.size())
+                sample = samples.get(row);
+            else // Sample count has changed.. Hack to avoid null
+                sample = samples.get(samples.size()-1);
         }
+        finally
+        {
+            samples.getLock().unlock();
+        }
+        sample_table.replace(sample, row);
     }
 
     @Override

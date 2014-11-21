@@ -11,34 +11,34 @@ import org.eclipse.core.runtime.IPath;
 
 /**The path hosting an URL String.
  * @author Xihui Chen
- *
+ * TODO Remove URLPath, use from SingleSource plugin
  */
 public class URLPath implements IPath {
 	private static final String ELLIPSIS = ".."; //$NON-NLS-1$
 	private String url = null;
 	/** The path segments */
 	private String[] segments;
-	
+
 	/** The device id string. May be null if there is no device. */
 	private String device = null;
-	
+
 	/**
 	 * Path separator character constant "/" used in paths.
 	 */
 	public static final String SEPARATOR = "/"; //$NON-NLS-1$
-	
+
 	/**
 	 * @param url
 	 */
 	public URLPath(String url){
-		this.url = url;	
+		this.url = url;
 		int i = url.indexOf(DEVICE_SEPARATOR);
 		if(i != -1){
 			device = url.substring(0, i+1);
 			url = url.substring(i+1);
 		}
-		segments = url.split(SEPARATOR);	
-		
+		segments = url.split(SEPARATOR);
+
 	}
 
 	public URLPath(String device, String[] segments, boolean hasTrailing){
@@ -47,7 +47,7 @@ public class URLPath implements IPath {
 		StringBuilder sb;
 		if(device == null)
 			sb = new StringBuilder();
-		else 
+		else
 			sb = new StringBuilder(device); //$NON-NLS-1$
 		for (String s : segments) {
 			sb.append(s);
@@ -58,23 +58,27 @@ public class URLPath implements IPath {
 		else
 			this.url = sb.deleteCharAt(sb.length()-1).toString();
 	}
-	
-	public IPath addFileExtension(String extension) {
+
+	@Override
+    public IPath addFileExtension(String extension) {
 		return new URLPath(url.concat(extension));
 	}
 
-	public IPath addTrailingSeparator() {
+	@Override
+    public IPath addTrailingSeparator() {
 		if (hasTrailingSeparator() || isRoot()) {
 			return this;
 		}
 		return new URLPath(url.concat(SEPARATOR));
 	}
 
-	public IPath append(String path) {
+	@Override
+    public IPath append(String path) {
 		return append(new URLPath(path));
 	}
 
-	public IPath append(IPath path) {
+	@Override
+    public IPath append(IPath path) {
 		String[] inputSegs = path.segments();
 		List<String>resultSegs = new ArrayList<String>(Arrays.asList(segments));
 		for (String s : inputSegs) {
@@ -83,10 +87,10 @@ public class URLPath implements IPath {
 			else{
 				resultSegs.add(s);
 			}
-		}		
+		}
 		return new URLPath(device, resultSegs.toArray(new String[0]), path.hasTrailingSeparator());
 	}
-	
+
 
 	/* (Intentionally not included in javadoc)
 	 * Clones this object.
@@ -100,11 +104,13 @@ public class URLPath implements IPath {
 		}
 	}
 
-	public String getDevice() {
+	@Override
+    public String getDevice() {
 		return device;
 	}
 
-	public String getFileExtension() {
+	@Override
+    public String getFileExtension() {
 		if (hasTrailingSeparator()) {
 			return null;
 		}
@@ -119,17 +125,19 @@ public class URLPath implements IPath {
 		return lastSegment.substring(index + 1);
 	}
 
-	public boolean hasTrailingSeparator() {
+	@Override
+    public boolean hasTrailingSeparator() {
 		String lastSegment = lastSegment();
 		if (lastSegment == null) {
 			return false;
 		}
-		boolean hasTrailing = 
+		boolean hasTrailing =
 			Character.valueOf(url.charAt(url.length()-1)).equals(IPath.SEPARATOR);
 		return hasTrailing;
 	}
 
-	public boolean isAbsolute() {
+	@Override
+    public boolean isAbsolute() {
 		if(device != null)
 			return true;
 		if(!isEmpty())
@@ -137,11 +145,13 @@ public class URLPath implements IPath {
 		return false;
 	}
 
-	public boolean isEmpty() {		
+	@Override
+    public boolean isEmpty() {
 		return url.length() <= 0;
 	}
 
-	public boolean isPrefixOf(IPath anotherPath) {
+	@Override
+    public boolean isPrefixOf(IPath anotherPath) {
 		if(anotherPath.getDevice().equals(device)){
 			if(segmentCount() <= anotherPath.segmentCount()){
 				int i=0;
@@ -150,23 +160,26 @@ public class URLPath implements IPath {
 						return false;
 				}
 				return true;
-			}				
+			}
 		}
-			
+
 		return false;
 	}
 
-	public boolean isRoot() {
+	@Override
+    public boolean isRoot() {
 		if(device != null && segmentCount()==0)
 			return true;
 		return false;
 	}
 
-	public boolean isUNC() {
+	@Override
+    public boolean isUNC() {
 		return false;
 	}
 
-	public boolean isValidPath(String path) {
+	@Override
+    public boolean isValidPath(String path) {
 		URLPath test = new URLPath(path);
 		for (int i = 0, max = test.segmentCount(); i < max; i++)
 			if (!isValidSegment(test.segment(i)))
@@ -174,7 +187,8 @@ public class URLPath implements IPath {
 		return true;
 	}
 
-	public boolean isValidSegment(String segment) {
+	@Override
+    public boolean isValidSegment(String segment) {
 		int size = segment.length();
 		if (size == 0)
 			return false;
@@ -188,13 +202,15 @@ public class URLPath implements IPath {
 		return true;
 	}
 
-	public String lastSegment() {
+	@Override
+    public String lastSegment() {
 		if(segmentCount() == 0)
 			return null;
 		return segment(segmentCount()-1);
 	}
 
-	public IPath makeAbsolute() {
+	@Override
+    public IPath makeAbsolute() {
 		if (isAbsolute()) {
 			return this;
 		}
@@ -202,23 +218,25 @@ public class URLPath implements IPath {
 		for (String s : segList) {
 			if(s.equals(ELLIPSIS) || s.equals(".")) //$NON-NLS-1$
 				segList.remove(s);
-		}	
+		}
 		URLPath result = new URLPath(device, segList.toArray(new String[0]),
 				hasTrailingSeparator());
 		return result;
 	}
 
-	public IPath makeRelative() {
+	@Override
+    public IPath makeRelative() {
 		return this;
 	}
 
-	public IPath makeRelativeTo(IPath base) {
+	@Override
+    public IPath makeRelativeTo(IPath base) {
 		int i=0;
 		String[] absolutePathSegs = segments();
 		for(String seg : base.segments()){
 			if(!seg.equals(segment(i)))
-				break;			
-			i++;			
+				break;
+			i++;
 		}
 		int ellipsisCount = base.segmentCount() - i;
 		int remainedSegsCount = segmentCount() -i;
@@ -233,11 +251,13 @@ public class URLPath implements IPath {
 		return new URLPath(sb.toString());
 	}
 
-	public IPath makeUNC(boolean toUNC) {
+	@Override
+    public IPath makeUNC(boolean toUNC) {
 		return this;
 	}
 
-	public int matchingFirstSegments(IPath anotherPath) {
+	@Override
+    public int matchingFirstSegments(IPath anotherPath) {
 		Assert.isNotNull(anotherPath);
 		int anotherPathLen = anotherPath.segmentCount();
 		int max = Math.min(segments.length, anotherPathLen);
@@ -251,7 +271,8 @@ public class URLPath implements IPath {
 		return count;
 	}
 
-	public IPath removeFileExtension() {
+	@Override
+    public IPath removeFileExtension() {
 		String extension = getFileExtension();
 		if (extension == null || extension.equals("")) { //$NON-NLS-1$
 			return this;
@@ -261,7 +282,8 @@ public class URLPath implements IPath {
 		return removeLastSegments(1).append(lastSegment.substring(0, index));
 	}
 
-	public IPath removeFirstSegments(int count) {
+	@Override
+    public IPath removeFirstSegments(int count) {
 		if (count == 0)
 			return this;
 		if (count >= segments.length) {
@@ -276,7 +298,8 @@ public class URLPath implements IPath {
 		return new URLPath(device, newSegments, hasTrailingSeparator());
 	}
 
-	public IPath removeLastSegments(int count) {
+	@Override
+    public IPath removeLastSegments(int count) {
 		if (count == 0)
 			return this;
 		if (count >= segments.length) {
@@ -290,43 +313,52 @@ public class URLPath implements IPath {
 		return new URLPath(device, newSegments, hasTrailingSeparator());
 	}
 
-	public IPath removeTrailingSeparator() {
+	@Override
+    public IPath removeTrailingSeparator() {
 		if(hasTrailingSeparator())
 			return new URLPath(device, segments, false);
 		return null;
 	}
 
-	public String segment(int index) {
+	@Override
+    public String segment(int index) {
 		if (index >= segments.length)
 			return null;
 		return segments[index];
 	}
 
-	public int segmentCount() {
+	@Override
+    public int segmentCount() {
 		return segments.length;
 	}
 
-	public String[] segments() {
+	@Override
+    public String[] segments() {
 		return segments;
 	}
 
-	public IPath setDevice(String device) {
+	@Override
+    public IPath setDevice(String device) {
 		return new URLPath(device, segments, hasTrailingSeparator());
 	}
 
-	public File toFile() {
+	@Override
+    public File toFile() {
 		return new File(toOSString());
 	}
 
-	public String toOSString() {
+	@Override
+    public String toOSString() {
 		return url;
 	}
 
-	public String toPortableString() {
+	@Override
+    public String toPortableString() {
 		return url;
 	}
 
-	public IPath uptoSegment(int count) {
+	@Override
+    public IPath uptoSegment(int count) {
 		if (count == 0)
 			return new URLPath(device, new String[0], false);
 		if (count >= segments.length)

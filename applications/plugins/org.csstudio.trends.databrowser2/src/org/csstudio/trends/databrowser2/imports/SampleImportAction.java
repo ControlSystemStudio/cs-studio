@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.imports;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -29,13 +29,13 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class SampleImportAction extends Action
 {
-    final private OperationsManager op_manager;
+    final private UndoableActionManager op_manager;
     final private Shell shell;
     final private Model model;
     final private String type;
     final private String description;
 
-    public SampleImportAction(final OperationsManager op_manager, final Shell shell, final Model model, final String type, final String description)
+    public SampleImportAction(final UndoableActionManager op_manager, final Shell shell, final Model model, final String type, final String description)
     {
         super(NLS.bind(Messages.ImportActionLabelFmt, description),
             Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/import.gif")); //$NON-NLS-1$
@@ -58,9 +58,7 @@ public class SampleImportAction extends Action
         try
         {
             // Add to first empty axis, or create new axis
-            AxisConfig axis = model.getEmptyAxis();
-            if (axis == null)
-                axis = new AddAxisCommand(op_manager, model).getAxis();
+            final AxisConfig axis = model.getEmptyAxis().orElseGet(() -> new AddAxisCommand(op_manager, model).getAxis());
 
             // Add archivedatasource for "import:..." and let that load the file
             final String url = ImportArchiveReaderFactory.createURL(type, path.toString());

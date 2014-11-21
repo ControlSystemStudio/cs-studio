@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 
 /** Undo-able command to change plot update period
  *  @author Kay Kasemir
  */
-public class ChangeUpdatePeriodCommand implements IUndoableCommand
+public class ChangeUpdatePeriodCommand implements UndoableAction
 {
     final private Model model;
     final private double old_period, new_period;
@@ -26,19 +26,18 @@ public class ChangeUpdatePeriodCommand implements IUndoableCommand
      *  @param period New value
      */
     public ChangeUpdatePeriodCommand(final Model model,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final double period)
     {
         this.model = model;
         this.old_period = model.getUpdatePeriod();
         this.new_period = period;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         model.setUpdatePeriod(new_period);
     }

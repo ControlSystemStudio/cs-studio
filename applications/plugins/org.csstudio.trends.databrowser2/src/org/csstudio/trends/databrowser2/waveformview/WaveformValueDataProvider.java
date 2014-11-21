@@ -7,26 +7,34 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.waveformview;
 
-import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
-import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
-import org.csstudio.swt.xygraph.dataprovider.ISample;
-import org.csstudio.swt.xygraph.dataprovider.Sample;
-import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.archive.vtype.VTypeHelper;
+import org.csstudio.swt.rtplot.data.PlotDataItem;
+import org.csstudio.swt.rtplot.data.PlotDataProvider;
+import org.csstudio.swt.rtplot.data.SimpleDataItem;
+import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListNumber;
 import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VType;
 
-/** Data provider for the XYGraph that shows waveform elements of an IValue
+/** Data provider for the plot that shows waveform elements of a VNumberArray
  *  @author Kay Kasemir
  */
-public class WaveformValueDataProvider implements IDataProvider
+public class WaveformValueDataProvider implements PlotDataProvider<Double>
 {
-    final private ArrayList<IDataProviderListener> listeners =
-        new ArrayList<IDataProviderListener>();
+    final private ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private ListNumber numbers = null;
+
+    /** {@inheritDoc} */
+    @Override
+    public Lock getLock()
+    {
+        return lock.readLock();
+    }
 
     /** Update the waveform value.
      *  @param value New value
@@ -34,74 +42,28 @@ public class WaveformValueDataProvider implements IDataProvider
      */
     public void setValue(final VType value)
     {
+        final ListNumber new_numbers;
         if (value instanceof VNumberArray)
-            numbers = ((VNumberArray) value).getData();
+            new_numbers = ((VNumberArray) value).getData();
         else
-            numbers = null;
-        for (IDataProviderListener listener : listeners)
-            listener.dataChanged(this);
+            new_numbers = new ArrayDouble(VTypeHelper.toDouble(value));
+
+        lock.writeLock().lock();
+        numbers = new_numbers;
+        lock.writeLock().unlock();
     }
 
      /** {@inheritDoc} */
     @Override
-    public int getSize()
+    public int size()
     {
         return numbers == null ? 0 : numbers.size();
     }
 
     /** {@inheritDoc} */
     @Override
-    public ISample getSample(final int index)
+    public PlotDataItem<Double> get(final int index)
     {
-        return new Sample(index, numbers.getDouble(index));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Range getXDataMinMax()
-    {
-        if (numbers == null)
-            return null;
-        return new Range(0, getSize()-1);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Range getYDataMinMax()
-    {
-        if (numbers == null)
-            return null;
-        double min, max;
-        min = max = numbers.getDouble(0);
-        for (int i=getSize()-1; i>=1; --i)
-        {
-            final double num = numbers.getDouble(i);
-            if (num < min)
-                min = num;
-            if (num > max)
-                max = num;
-        }
-        return new Range(min, max);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isChronological()
-    {   // x range is [0..waveform size]
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void addDataProviderListener(final IDataProviderListener listener)
-    {
-        listeners.add(listener);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean removeDataProviderListener(final IDataProviderListener listener)
-    {
-        return listeners.remove(listener);
+        return new SimpleDataItem<Double>((double)index, numbers.getDouble(index));
     }
 }

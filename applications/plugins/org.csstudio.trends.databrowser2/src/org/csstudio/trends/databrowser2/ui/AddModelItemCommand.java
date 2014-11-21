@@ -7,8 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.ui;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import java.util.Optional;
+
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
@@ -24,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to add a ModelItem to the Model
  *  @author Kay Kasemir
  */
-public class AddModelItemCommand implements IUndoableCommand
+public class AddModelItemCommand implements UndoableAction
 {
     final private Shell shell;
     final private Model model;
@@ -41,8 +43,8 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @param archive Archive data source
      *  @return AddModelItemCommand or <code>null</code> on error
      */
-    public static AddModelItemCommand forPV(final Shell shell,
-            final OperationsManager operations_manager,
+    public static Optional<AddModelItemCommand> forPV(final Shell shell,
+            final UndoableActionManager operations_manager,
             final Model model,
             final String pv_name,
             final double period,
@@ -58,20 +60,18 @@ public class AddModelItemCommand implements IUndoableCommand
                 item.addArchiveDataSource(archive);
             else
                 item.useDefaultArchiveDataSources();
-            axis.setName(item.getDisplayName());
             axis.setVisible(true);
             item.setAxis(axis);
-            item.setColor(axis.getColor());
         }
         catch (Exception ex)
         {
             MessageDialog.openError(shell,
                     Messages.Error,
                     NLS.bind(Messages.AddItemErrorFmt, pv_name, ex.getMessage()));
-            return null;
+            return Optional.empty();
         }
         // Add to model via undo-able command
-        return new AddModelItemCommand(shell, operations_manager, model, item);
+        return Optional.of(new AddModelItemCommand(shell, operations_manager, model, item));
     }
 
     /** Create PV via undo-able AddModelItemCommand,
@@ -82,8 +82,8 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @param axis Axis
      *  @return AddModelItemCommand or <code>null</code> on error
      */
-    public static AddModelItemCommand forFormula(final Shell shell,
-            final OperationsManager operations_manager,
+    public static Optional<AddModelItemCommand> forFormula(final Shell shell,
+            final UndoableActionManager operations_manager,
             final Model model,
             final String formula_name,
             final AxisConfig axis)
@@ -93,20 +93,18 @@ public class AddModelItemCommand implements IUndoableCommand
         try
         {
             item = new FormulaItem(formula_name, "0", new FormulaInput[0]); //$NON-NLS-1$
-            axis.setName(item.getDisplayName());
             axis.setVisible(true);
             item.setAxis(axis);
-            item.setColor(axis.getColor());
         }
         catch (Exception ex)
         {
             MessageDialog.openError(shell,
                     Messages.Error,
                     NLS.bind(Messages.AddItemErrorFmt, formula_name, ex.getMessage()));
-            return null;
+            return Optional.empty();
         }
         // Add to model via undo-able command
-        return new AddModelItemCommand(shell, operations_manager, model, item);
+        return Optional.of(new AddModelItemCommand(shell, operations_manager, model, item));
     }
 
 
@@ -117,7 +115,7 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @param item Item to add
      */
     public AddModelItemCommand(final Shell shell,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final Model model,
             final ModelItem item)
     {
@@ -136,7 +134,7 @@ public class AddModelItemCommand implements IUndoableCommand
             // Exit before registering for undo because there's nothing to undo
             return;
         }
-        operations_manager.addCommand(this);
+        operations_manager.add(this);
     }
 
     /** @return {@link ModelItem} (PV, Formula) that this command added */
@@ -147,7 +145,7 @@ public class AddModelItemCommand implements IUndoableCommand
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         try
         {

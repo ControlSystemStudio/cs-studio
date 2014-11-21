@@ -10,15 +10,15 @@ package org.csstudio.trends.databrowser2.propsheet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
-import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
+import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.StartEndTimeAction;
@@ -90,13 +90,13 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  @author Kay Kasemir
  */
 public class DataBrowserPropertySheetPage extends Page
-    implements IPropertySheetPage, ModelListener
+    implements IPropertySheetPage
 {
     /** Model to display/edit in property sheet */
     final private Model model;
 
     /** Undo/redo operations manager */
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
 
     /** Top-level control for the property sheet */
     private Composite control;
@@ -121,11 +121,72 @@ public class DataBrowserPropertySheetPage extends Page
 
     private Text update_period;
 
+    final private ModelListener model_listener = new ModelListenerAdapter()
+    {
+        /** {@inheritDoc} */
+        @Override
+        public void changedUpdatePeriod()
+        {
+            update_period.setText(Double.toString(model.getUpdatePeriod()));
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedArchiveRescale()
+        {
+            final int selected = model.getArchiveRescale().ordinal();
+            for (int i=0; i<rescales.length; ++i)
+            {
+                boolean desired = i == selected;
+                if (rescales[i].getSelection() != desired)
+                    rescales[i].setSelection(desired);
+            }
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedColors()
+        {
+            background.setColor(model.getPlotBackground());
+        }
+
+        /** Update the start/end time in the Time axis panel when model changes
+         *  {@inheritDoc}
+         */
+        @Override
+        public void changedTimerange()
+        {
+            start_time.setText(model.getStartSpecification());
+            end_time.setText(model.getEndSpecification());
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedItemLook(final ModelItem item)
+        {
+            updateTracesTabDetailPanel();
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedItemDataConfig(final PVItem item)
+        {
+            updateTracesTabDetailPanel();
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void scrollEnabled(final boolean scroll_enabled)
+        {
+            changedTimerange();
+        }
+    };
+
     /** Initialize
      *  @param model Model to display/edit
      */
     public DataBrowserPropertySheetPage(final Model model,
-            final OperationsManager operations_manager)
+            final UndoableActionManager operations_manager)
     {
         this.model = model;
         this.operations_manager = operations_manager;
@@ -159,14 +220,14 @@ public class DataBrowserPropertySheetPage extends Page
         createValueAxesTab(tab_folder);
         createMiscTab(tab_folder);
 
-        model.addListener(this);
+        model.addListener(model_listener);
     }
 
     /** {@inheritDoc} */
     @Override
     public void dispose()
     {
-        model.removeListener(this);
+        model.removeListener(model_listener);
         super.dispose();
     }
 
@@ -208,10 +269,10 @@ public class DataBrowserPropertySheetPage extends Page
     {
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite model_item_top = new Composite(sashform, SWT.BORDER);
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout();
         model_item_top.setLayout(table_layout);
         trace_table = new TableViewer(model_item_top ,
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
         final Table table = trace_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -260,7 +321,7 @@ public class DataBrowserPropertySheetPage extends Page
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite table_parent = new Composite(archive_panel, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout();
         table_parent.setLayout(table_layout);
         archive_table = new TableViewer(table_parent ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
@@ -488,7 +549,7 @@ public class DataBrowserPropertySheetPage extends Page
         time_tab.setControl(parent);
 
         // Initialize with model's current start/end time
-        changedTimerange();
+        model_listener.changedTimerange();
 
         // Allow entry of start/end times in text boxes
         final SelectionAdapter times_entered = new SelectionAdapter()
@@ -506,7 +567,7 @@ public class DataBrowserPropertySheetPage extends Page
                     MessageDialog.openError(parent.getShell(), Messages.Error,
                             Messages.InvalidStartEndTimeError);
                     // Restore unchanged model time range
-                    changedTimerange();
+                    model_listener.changedTimerange();
                 }
             }
         };
@@ -573,7 +634,7 @@ public class DataBrowserPropertySheetPage extends Page
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite table_parent = new Composite(parent, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout();
         table_parent.setLayout(table_layout);
         final AxesTableHandler ath = new AxesTableHandler(table_parent, table_layout, operations_manager);
         ath.getAxesTable().setInput(model);
@@ -650,116 +711,6 @@ public class DataBrowserPropertySheetPage extends Page
     @Override
     public void setFocus()
     {
-        // NOP
+        trace_table.getTable().setFocus();
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedUpdatePeriod()
-    {
-        update_period.setText(Double.toString(model.getUpdatePeriod()));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedArchiveRescale()
-    {
-        final int selected = model.getArchiveRescale().ordinal();
-        for (int i=0; i<rescales.length; ++i)
-        {
-            boolean desired = i == selected;
-            if (rescales[i].getSelection() != desired)
-                rescales[i].setSelection(desired);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedColors()
-    {
-        background.setColor(model.getPlotBackground());
-    }
-
-    /** Update the start/end time in the Time axis panel when model changes
-     *  {@inheritDoc}
-     */
-    @Override
-    public void changedTimerange()
-    {
-        start_time.setText(model.getStartSpecification());
-        end_time.setText(model.getEndSpecification());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedAxis(final AxisConfig axis)
-    {
-        // Axes Table handles this
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void itemAdded(final ModelItem item)
-    {
-        // Trace Table handles it
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void itemRemoved(final ModelItem item)
-    {
-        // Trace Table handles it
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedItemVisibility(final ModelItem item)
-    {
-        // Trace Table handles it
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedItemLook(final ModelItem item)
-    {
-        updateTracesTabDetailPanel();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedItemDataConfig(final PVItem item)
-    {
-        updateTracesTabDetailPanel();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollEnabled(final boolean scroll_enabled)
-    {
-        changedTimerange();
-    }
-
-	@Override
-	public void changedAnnotations() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void changedXYGraphConfig() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void itemRefreshRequested(PVItem item) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void cursorDataChanged() {
-		// TODO Auto-generated method stub
-		
-	}
 }

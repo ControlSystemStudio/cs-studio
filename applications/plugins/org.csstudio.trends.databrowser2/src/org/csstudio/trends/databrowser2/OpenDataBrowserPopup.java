@@ -39,9 +39,9 @@ public class OpenDataBrowserPopup extends AbstractHandler
         final DataBrowserEditor editor = DataBrowserEditor.createInstance();
         if (editor == null)
             return null;
-        
+
         // Add received items
-        final Model model = editor.getModel();       
+        final Model model = editor.getModel();
         try
         {
             if (selection.getFirstElement() instanceof ChannelInfo)
@@ -84,8 +84,8 @@ public class OpenDataBrowserPopup extends AbstractHandler
             item.useDefaultArchiveDataSources();
         else
             item.addArchiveDataSource(archive);
-        // Add item to new axes
-        item.setAxis(model.addAxis(item.getDisplayName()));
+        // Add item to new axis
+        item.setAxis(model.addAxis());
         model.addItem(item);
     }
 }

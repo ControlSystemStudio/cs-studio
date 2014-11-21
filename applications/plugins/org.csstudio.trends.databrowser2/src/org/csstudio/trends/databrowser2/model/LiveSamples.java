@@ -13,7 +13,7 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 /** Ring buffer for 'live' samples.
  *  <p>
  *  New samples are always added to the end of a ring buffer.
- * 
+ *
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed LiveSamples to handle waveform index.
  */
@@ -21,13 +21,14 @@ public class LiveSamples extends PlotSamples
 {
     private RingBuffer<PlotSample> samples =
         new RingBuffer<PlotSample>(Preferences.getLiveSampleBufferSize());
-    
+
     /** Waveform index */
     private int waveform_index = 0;
-    
+
     /** @param index Waveform index to show */
-    synchronized public void setWaveformIndex(int index)
-    {
+    public void setWaveformIndex(int index)
+    {   // TODO Don't duplicate the waveform_index from PVSamples in LiveSamples and HistoricSamples
+        //      Just assert that the samples have correct index as they're added
     	waveform_index = index;
 
     	// Change the index of all samples in this instance
@@ -35,20 +36,20 @@ public class LiveSamples extends PlotSamples
     		samples.get(i).setWaveformIndex(waveform_index);
     	}
     }
-    
+
     /** @return Maximum number of samples in ring buffer */
-    synchronized public int getCapacity()
+    public int getCapacity()
     {
         return samples.getCapacity();
     }
-    
+
     /** Set new capacity.
      *  <p>
      *  Tries to preserve the newest samples.
      *  @param new_capacity New sample count capacity
      *  @throws Exception on out-of-memory error
      */
-    synchronized public void setCapacity(int new_capacity) throws Exception
+    public void setCapacity(int new_capacity) throws Exception
     {
         if (new_capacity < 10)
             new_capacity = 10;
@@ -56,28 +57,29 @@ public class LiveSamples extends PlotSamples
     }
 
     /** @param sample Sample to add to ring buffer */
-    synchronized void add(final PlotSample sample)
+    void add(final PlotSample sample)
     {
     	sample.setWaveformIndex(waveform_index);
         samples.add(sample);
-        have_new_samples = true;
+        have_new_samples.set(true);
     }
 
     @Override
-    synchronized public int getSize()
+    public int size()
     {
         return samples.size();
     }
 
     @Override
-    synchronized public PlotSample getSample(final int i)
+    public PlotSample get(final int i)
     {
         return samples.get(i);
     }
 
     /** Delete all samples */
-    synchronized public void clear()
+    public void clear()
     {
         samples.clear();
+        have_new_samples.set(true);
     }
 }

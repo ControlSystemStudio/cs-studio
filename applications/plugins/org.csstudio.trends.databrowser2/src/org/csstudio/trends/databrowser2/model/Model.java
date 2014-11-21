@@ -7,44 +7,33 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.csstudio.apputil.macros.IMacroTableProvider;
 import org.csstudio.apputil.macros.InfiniteLoopException;
+import org.csstudio.apputil.macros.MacroTable;
 import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.StartEndTimeParser;
-import org.csstudio.apputil.xml.DOMHelper;
-import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
+import org.csstudio.swt.rtplot.util.RGBFactory;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
-import org.csstudio.trends.databrowser2.persistence.AnnotationSettings;
-import org.csstudio.trends.databrowser2.persistence.AxisSettings;
-import org.csstudio.trends.databrowser2.persistence.ColorSettings;
-import org.csstudio.trends.databrowser2.persistence.XYGraphSettings;
-import org.csstudio.trends.databrowser2.persistence.XYGraphSettingsXMLUtil;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VTable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /** Data Browser model
  *  <p>
@@ -67,113 +56,20 @@ public class Model
     /** Previously used file extension */
     final public static String FILE_EXTENSION_OLD = "css-plt"; //$NON-NLS-1$
 
-    // XML file tags
-    final public static String TAG_DATABROWSER = "databrowser";
-    final public static String TAG_SCROLL = "scroll";
-    final public static String TAG_UPDATE_PERIOD = "update_period";
-    final public static String TAG_LIVE_SAMPLE_BUFFER_SIZE = "ring_size";
-    final public static String TAG_PVLIST = "pvlist";
-    final public static String TAG_PV = "pv";
-    final public static String TAG_NAME = "name";
-    final public static String TAG_DISPLAYNAME = "display_name";
-    final public static String TAG_FORMULA = "formula";
-    final public static String TAG_AXES = "axes";
-    final public static String TAG_AXIS = "axis";
-    final public static String TAG_LINEWIDTH = "linewidth";
-    final public static String TAG_COLOR = "color";
-    final public static String TAG_RED = "red";
-    final public static String TAG_GREEN = "green";
-    final public static String TAG_BLUE = "blue";
-    final public static String TAG_TRACE_TYPE = "trace_type";
-    final public static String TAG_SCAN_PERIOD = "period";
-    final public static String TAG_INPUT = "input";
-    final public static String TAG_ARCHIVE = "archive";
-    final public static String TAG_URL = "url";
-    final public static String TAG_KEY = "key";
-    final public static String TAG_START = "start";
-    final public static String TAG_END = "end";
-    final public static String TAG_LOG_SCALE = "log_scale";
-    final public static String TAG_AUTO_SCALE = "autoscale";
-    final public static String TAG_MAX = "max";
-    final public static String TAG_MIN = "min";
-    final public static String TAG_BACKGROUND = "background";
-    final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
-    final public static String TAG_REQUEST = "request";
-    final public static String TAG_VISIBLE = "visible";
-
-    final public static String TAG_ANNOTATIONS = "annotations";
-    final public static String TAG_ANNOTATION = "annotation";
-	public static final String TAG_ANNOTATION_CURSOR_LINE_STYLE = "line_style";
-	public static final String TAG_ANNOTATION_SHOW_NAME = "show_name";
-	public static final String TAG_ANNOTATION_SHOW_POSITION = "show_position";
-	public static final String TAG_ANNOTATION_COLOR = "color";
-	public static final String TAG_ANNOTATION_FONT = "font";
-
-    final public static String TAG_TIME = "time";
-    final public static String TAG_VALUE = "value";
-    final public static String TAG_WAVEFORM_INDEX = "waveform_index";
-
-
-    public static final String TAG_FONT = "font";
-	public static final String TAG_SCALE_FONT = "scale_font";
-
-	final public static String TAG_TIME_AXIS = "time_axis";
-
-
-	//GRID LINE
-	public static final String TAG_GRID_LINE = "grid_line";
-	public static final String TAG_SHOW_GRID_LINE = "show_grid_line";
-	public static final String TAG_DASH_GRID_LINE = "dash_grid_line";
-
-	//FORMAT
-	public static final String TAG_FORMAT = "format";
-	public static final String TAG_AUTO_FORMAT = "auto_format";
-	public static final String TAG_TIME_FORMAT = "time_format";
-	public static final String TAG_FORMAT_PATTERN = "format_pattern";
-
-
-    /** Default colors for newly added item, used over when reaching the end.
-     *  <p>
-     *  Very hard to find a long list of distinct colors.
-     *  This list is definitely too short...
-     */
-    final private static RGB[] default_colors =
-    {
-        new RGB( 21,  21, 196), // blue
-        new RGB(242,  26,  26), // red
-        new RGB( 33, 179,  33), // green
-        new RGB(  0,   0,   0), // black
-        new RGB(128,   0, 255), // violet
-        new RGB(255, 170,   0), // (darkish) yellow
-        new RGB(255,   0, 240), // pink
-        new RGB(243, 132, 132), // peachy
-        new RGB(  0, 255,  11), // neon green
-        new RGB(  0, 214, 255), // neon blue
-        new RGB(114,  40,   3), // brown
-        new RGB(219, 128,   4), // orange
-    };
+    /** Default colors for newly added item */
+    final private RGBFactory default_colors = new RGBFactory();
 
     /** Macros */
-    private IMacroTableProvider macros = null;
+    private IMacroTableProvider macros = new MacroTable(Collections.emptyMap());
 
     /** Listeners to model changes */
-    final private ArrayList<ModelListener> listeners = new ArrayList<ModelListener>();
+    final private List<ModelListener> listeners = new CopyOnWriteArrayList<>();
 
     /** Axes configurations */
-    final private ArrayList<AxisConfig> axes = new ArrayList<AxisConfig>();
-
-    /**
-     * Time Axes configurations
-     * Ignore MIN-MAX part because the range is set by start & end properties
-     */
-    private  AxisConfig timeAxis;
-
-    public AxisConfig getTimeAxis() {
-		return timeAxis;
-	}
+    final private List<AxisConfig> axes = new CopyOnWriteArrayList<AxisConfig>();
 
 	/** All the items in this model */
-    final private ArrayList<ModelItem> items = new ArrayList<ModelItem>();
+    final private List<ModelItem> items = new CopyOnWriteArrayList<ModelItem>();
 
     /** 'run' flag
      *  @see #start()
@@ -184,78 +80,41 @@ public class Model
     /** Period in seconds for scrolling or refreshing */
     private double update_period = Preferences.getUpdatePeriod();
 
-    /** Timer used to scan PVItems */
-    final private Timer scanner = new Timer("ScanTimer", true);
-
     /** <code>true</code> if scrolling is enabled */
-    private boolean scroll_enabled = true;
+    private volatile boolean scroll_enabled = true;
 
     /** Start and end time specification */
     private String start_spec, end_spec;
-    
+
     /** Time span of data in seconds */
-    private double time_span = Preferences.getTimeSpan();
+    private Duration time_span = Preferences.getTimeSpan();
 
     /** End time of the data range */
-    private Timestamp end_time = Timestamp.now();
-    
+    private Instant end_time = Instant.now();
+
     private final int futureBufferInSeconds = Preferences.getFutureBuffer();
-    
+
     private final boolean automaticHistoryRefresh = Preferences.isAutomaticHistoryRefresh();
 
     /** Background color */
     private RGB background = new RGB(255, 255, 255);
 
     /** Annotations */
-	private AnnotationInfo[] annotations = new AnnotationInfo[0];
+	private List<AnnotationInfo> annotations = Collections.emptyList();
 
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
-    private VTable cursorData;
-
-    /**
-     *  Manage XYGraph Configuration Settings
-     *  @author L.PHILIPPE GANIL
-     */
-	private XYGraphSettings graphSettings = null;
-
 	public Model()
 	{
-		start_spec = "-" + PeriodFormat.formatSeconds(time_span);
+		start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
 		end_spec = RelativeTime.NOW;
-	}
-	
-	
-    public XYGraphSettings getGraphSettings() {
-		return graphSettings;
-	}
-
-	public void setGraphSettings(XYGraphSettings xYGraphMem) {
-		graphSettings = xYGraphMem;
-		//fireXYGraphMemChanged(settings);
-	}
-
-	public void fireGraphConfigChanged() {
-
-		for (ModelListener listener : listeners)
-	            listener.changedXYGraphConfig();
-	}
-	
-	public void setCursorData(VTable table) {
-		this.cursorData = table;
-		for (ModelListener listener : listeners)
-            listener.cursorDataChanged();
-	}
-	
-	public VTable getCursorData() {
-		return cursorData;
 	}
 
     /** @param macros Macros to use in this model */
     public void setMacros(final IMacroTableProvider macros)
     {
-    	this.macros = macros;
+    	this.macros = Objects.requireNonNull(macros);
     }
 
     /** Resolve macros
@@ -264,8 +123,6 @@ public class Model
      */
     public String resolveMacros(final String text)
     {
-    	if (macros == null)
-    		return text;
     	try
         {
 	        return MacroUtil.replaceMacros(text, macros);
@@ -281,43 +138,42 @@ public class Model
 	/** @param listener New listener to notify */
     public void addListener(final ModelListener listener)
     {
-        listeners.add(listener);
+        listeners.add(Objects.requireNonNull(listener));
     }
 
     /** @param listener Listener to remove */
     public void removeListener(final ModelListener listener)
     {
-        listeners.remove(listener);
+        listeners.remove(Objects.requireNonNull(listener));
     }
 
-    /** @return Number of axes in model */
+    /** @return Read-only, thread safe {@link AxisConfig}s */
+    public Iterable<AxisConfig> getAxes()
+    {
+        return axes;
+    }
+
+    /** Get number of axes
+     *
+     *  <p>Thread-safe access to multiple axes should use <code>getAxes()</code>
+     *
+     *  @return Number of axes
+     */
     public int getAxisCount()
     {
         return axes.size();
     }
 
-    /** @param axis_index Index of axis, 0 ... <code>getAxisCount()-1</code>
+    /** Get specific axis
+     *
+     *  <p>Thread-safe access to multiple axes should use <code>getAxes()</code>
+     *
+     *  @param index Axis index
      *  @return {@link AxisConfig}
      */
-    public AxisConfig getAxis(final int axis_index)
+    public AxisConfig getAxis(final int index)
     {
-        return axes.get(axis_index);
-    }
-
-    /**
-     *  Return the AxisConfig with the specifc name or null
-     *  @param axis_index Index of axis, 0 ... <code>getAxisCount()-1</code>
-     *  @return {@link AxisConfig}
-     */
-    public AxisConfig getAxis(final String name)
-    {
-        for(AxisConfig axis : axes){
-        	//System.err.println(axis.getName() + " == " + name + "=" + (axis.getName().equals(name)));
-        	if(axis.getName().equals(name))
-        		return axis;
-        }
-
-        return null;
+        return axes.get(index);
     }
 
     /** Locate index of value axis
@@ -326,53 +182,51 @@ public class Model
      */
     public int getAxisIndex(final AxisConfig axis)
     {
-        return axes.indexOf(axis);
+        return axes.indexOf(Objects.requireNonNull(axis));
     }
 
     /** @param axis Axis to test
-     *  @return First ModelItem that uses the axis, <code>null</code> if
-     *          axis is empty
+     *  @return First ModelItem that uses the axis, visible or not.
+     *          <code>null</code> if axis is empty
      */
     public ModelItem getFirstItemOnAxis(final AxisConfig axis)
     {
+        Objects.requireNonNull(axis);
         for (ModelItem item : items)
             if (item.getAxis() == axis)
                 return item;
         return null;
     }
-    
+
     /** @param axis Axis to test
-     *  @return ModelItem linked to this axis count
+     *  @return <code>true</code> if there is any visible item on the axis
      */
-    public int countActiveItemsOnAxis(final AxisConfig axis)
+    public boolean hasAxisActiveItems(final AxisConfig axis)
     {
-		int count = 0;
-		for (ModelItem item : items)
-			if (item.getAxis() == axis && item.isVisible())
-				count++;
-		return count;
+        Objects.requireNonNull(axis);
+        for (ModelItem item : items)
+            if (item.getAxis() == axis && item.isVisible())
+                return true;
+        return false;
     }
 
-    /** @return First unused axis (no items on axis),
-     *          <code>null</code> if none found
-     */
-    public AxisConfig getEmptyAxis()
+    /** @return First unused axis (no items on axis) */
+    public Optional<AxisConfig> getEmptyAxis()
     {
         for (AxisConfig axis : axes)
             if (getFirstItemOnAxis(axis) == null)
-                return axis;
-        return null;
+                return Optional.of(axis);
+        return Optional.empty();
     }
 
     /** Add value axis with default settings
      *  @return Newly added axis configuration
      */
-    public AxisConfig addAxis(String name)
+    public AxisConfig addAxis()
     {
-		if (name == null)
-			name = NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount() + 1);
+		final String name = NLS.bind(Messages.Plot_ValueAxisNameFMT, axes.size() + 1);
 		final AxisConfig axis = new AxisConfig(name);
-		axis.setColor(getNextItemColor());
+		axis.setColor(new RGB(0, 0, 0));
 		addAxis(axis);
 		return axis;
     }
@@ -380,9 +234,9 @@ public class Model
     /** @param axis New axis to add */
     public void addAxis(final AxisConfig axis)
     {
-        axes.add(axis);
+        axes.add(Objects.requireNonNull(axis));
         axis.setModel(this);
-        fireAxisChangedEvent(null);
+        fireAxisChangedEvent(Optional.empty());
     }
 
     /** Add axis at given index.
@@ -393,9 +247,9 @@ public class Model
      */
     public void addAxis(final int index, final AxisConfig axis)
     {
-        axes.add(index, axis);
+        axes.add(index, Objects.requireNonNull(axis));
         axis.setModel(this);
-        fireAxisChangedEvent(null);
+        fireAxisChangedEvent(Optional.empty());
     }
 
     /** @param axis Axis to remove
@@ -403,14 +257,14 @@ public class Model
      */
     public void removeAxis(final AxisConfig axis)
     {
-        if (! axes.contains(axis))
+        if (! axes.contains(Objects.requireNonNull(axis)))
             throw new Error("Unknown AxisConfig");
         for (ModelItem item : items)
             if (item.getAxis() == axis)
                 throw new Error("Cannot removed AxisConfig while in use");
         axis.setModel(null);
         axes.remove(axis);
-        fireAxisChangedEvent(null);
+        fireAxisChangedEvent(Optional.empty());
     }
 
     /** @return How should plot rescale after archived data arrived? */
@@ -429,30 +283,21 @@ public class Model
             listener.changedArchiveRescale();
     }
 
-    /** @return {@link ModelItem} count in model */
-    public int getItemCount()
+    /** @return {@link ModelItem}s as thread-safe read-only {@link Iterable} */
+    public Iterable<ModelItem> getItems()
     {
-        return items.size();
-    }
-
-    /** Get one {@link ModelItem}
-     *  @param i 0... getItemCount()-1
-     *  @return {@link ModelItem}
-     */
-    public ModelItem getItem(final int i)
-    {
-        return items.get(i);
+        return items;
     }
 
     /** Locate item by name.
-     *  If different items with the same exist in this model, the first
-     *  occurrence will be returned. If no item is found with the given
+     *
+     *  <p>Note that the model may contain multiple items for the same
+     *  name. The first occurrence will be returned.
+     *  If no item is found with the given
      *  name, <code>null</code> will be returned.
      *  Now that this model may have different items with the same name,
      *  this method is not recommended to locate an item. This method
      *  just returns an item which just happens to have the given name.
-     *  Use {@link #indexOf(ModelItem)} or {@link #getItem(int)} to locate
-     *  an item in this model.
      *  @param name
      *  @return ModelItem by that name or <code>null</code>
      */
@@ -464,22 +309,28 @@ public class Model
         return null;
     }
 
-    /** Returns the index of the specified item, or -1 if this list does not contain
-     *  the item.
-     *  @param item
-     *  @return ModelItem
-     */
-    public int indexOf(final ModelItem item)
-    {
-    	return items.indexOf(item);
-    }
-
     /** Called by items to set their initial color
      *  @return 'Next' suggested item color
      */
     private RGB getNextItemColor()
     {
-        return default_colors[items.size() % default_colors.length];
+        boolean already_used;
+        RGB color;
+        int attempts = 10;
+        do
+        {
+            -- attempts;
+            color = default_colors.next();
+            already_used = false;
+            for (ModelItem item : items)
+                if (color.equals(item.getColor()))
+                {
+                    already_used = true;
+                    break;
+                }
+        }
+        while (attempts > 0  &&  already_used);
+        return color;
     }
 
     /** Add item to the model.
@@ -491,21 +342,16 @@ public class Model
      *
      *  @param item {@link ModelItem} to add
      *  @throws RuntimeException if item is already in model
-     *  @throws Exception on error trying to start a PV Item that's added to a
-     *          running model
      */
     public void addItem(final ModelItem item) throws Exception
     {
+        Objects.requireNonNull(item);
     	// A new item with the same PV name are allowed to be added in the
     	// model. This way Data Browser can show the trend of the same PV
     	// in different axes or with different waveform indexes. For example,
     	// one may want to show the first element of epics://aaa:bbb in axis 1
     	// while showing the third element of the same PV in axis 2 to compare
     	// their trends in one chart.
-    	//
-        // if (getItem(item.getName()) != null)
-        //        throw new RuntimeException("Item " + item.getName() + " already in Model");
-
     	// But, if exactly the same instance of the given ModelItem already exists in this
     	// model, it will not be added.
     	if (items.indexOf(item) != -1)
@@ -517,11 +363,7 @@ public class Model
 
         // Force item to be on an axis
         if (item.getAxis() == null)
-        {
-            if (axes.size() == 0)
-                addAxis(item.getDisplayName());
             item.setAxis(axes.get(0));
-        }
         // Check item axis
         if (! axes.contains(item.getAxis()))
             throw new Exception("Item " + item.getName() + " added with invalid axis " + item.getAxis());
@@ -530,7 +372,7 @@ public class Model
         items.add(item);
         item.setModel(this);
         if (is_running  &&  item instanceof PVItem)
-            ((PVItem)item).start(scanner);
+            ((PVItem)item).start();
         // Notify listeners of new item
         for (ModelListener listener : listeners)
             listener.itemAdded(item);
@@ -545,6 +387,7 @@ public class Model
      */
     public void removeItem(final ModelItem item)
     {
+        Objects.requireNonNull(item);
         if (is_running  &&  item instanceof PVItem)
         {
             final PVItem pv = (PVItem)item;
@@ -563,14 +406,6 @@ public class Model
         // Notify listeners of removed item
         for (ModelListener listener : listeners)
             listener.itemRemoved(item);
-        		
-        // Remove axis if unused
-		AxisConfig axis = item.getAxis();
-		item.setAxis(null);
-		if (countActiveItemsOnAxis(axis) == 0) {
-			removeAxis(axis);
-	        fireAxisChangedEvent(null);
-		}
     }
 
     /** @return Period in seconds for scrolling or refreshing */
@@ -602,7 +437,7 @@ public class Model
      *      return a fixed start/end time.
      *  </ol>
      *  @return <code>true</code> if scrolling is enabled */
-    synchronized public boolean isScrollEnabled()
+    public boolean isScrollEnabled()
     {
         return scroll_enabled;
     }
@@ -610,26 +445,48 @@ public class Model
     /** @param scroll_enabled Should scrolling be enabled? */
     public void enableScrolling(final boolean scroll_enabled)
     {
-        synchronized (this)
-        {
-            if (this.scroll_enabled == scroll_enabled)
-                return;
-            this.scroll_enabled = scroll_enabled;
-        }
+        if (this.scroll_enabled == scroll_enabled)
+            return;
+        this.scroll_enabled = scroll_enabled;
         // Notify listeners
         for (ModelListener listener : listeners)
             listener.scrollEnabled(scroll_enabled);
     }
 
-    /** @return time span of data in seconds
+    /** @return time span of data
      *  @see #isScrollEnabled()
      */
-    synchronized public double getTimespan()
+    synchronized public Duration getTimespan()
     {
         return time_span;
     }
 
-    /** Set time range.
+    /** Set absolute time range
+     *  @param start Start time
+     *  @param end End time
+     */
+    public void setTimerange(final Instant start, final Instant end)
+    {
+        final Duration new_span = Duration.between(Objects.requireNonNull(start), Objects.requireNonNull(end));
+        if (new_span.isZero() || new_span.isNegative())
+            return;
+
+        synchronized (this)
+        {
+            // Format that's understood by StartEndTimeParser
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
+            this.start_spec = formatter.format(ZonedDateTime.ofInstant(start, ZoneId.systemDefault()));
+            this.end_spec = formatter.format(ZonedDateTime.ofInstant(end, ZoneId.systemDefault()));
+            this.end_time = end;
+            time_span = new_span;
+            scroll_enabled = false;
+        }
+        // Notify listeners
+        for (ModelListener listener : listeners)
+            listener.changedTimerange();
+    }
+
+    /** Set absolute or relative time range.
      *  <p>In 'scroll' mode, this determines the displayed time range.
      *  Otherwise, it determines the absolute start and end times
      *  @param start_spec Start and ..
@@ -638,11 +495,12 @@ public class Model
      */
     public void setTimerange(final String start_spec, final String end_spec) throws Exception
     {
-        final StartEndTimeParser times = new StartEndTimeParser(start_spec, end_spec);
-        final Timestamp start_time = TimestampHelper.fromCalendar(times.getStart());
-        final Timestamp end_time = TimestampHelper.fromCalendar(times.getEnd());
-        final double new_span = end_time.durationFrom(start_time).toSeconds();
-        if (new_span > 0)
+        final StartEndTimeParser times =
+                new StartEndTimeParser(Objects.requireNonNull(start_spec), Objects.requireNonNull(end_spec));
+        final Instant start_time = times.getStart().toInstant();
+        final Instant end_time = times.getEnd().toInstant();
+        final Duration new_span = Duration.between(start_time, end_time);
+        if (! (new_span.isZero() || new_span.isNegative()))
         {
             synchronized (this)
             {
@@ -653,6 +511,7 @@ public class Model
             	this.end_spec = end_spec;
                 this.end_time = end_time;
                 time_span = new_span;
+                scroll_enabled = times.isEndNow();
             }
             // Notify listeners
             for (ModelListener listener : listeners)
@@ -671,58 +530,58 @@ public class Model
     {
         return end_spec;
     }
-    
+
     /** @return Start time of the data range
      *  @see #isScrollEnabled()
      */
-    synchronized public Timestamp getStartTime()
+    synchronized public Instant getStartTime()
     {
-    	if (scroll_enabled && futureBufferInSeconds > 0) {
-    		return getEndTime().minus(TimeDuration.ofSeconds(time_span+2*futureBufferInSeconds));
-    	} else {
-    		return getEndTime().minus(TimeDuration.ofSeconds(time_span));
-    	}
-        
+    	if (scroll_enabled && futureBufferInSeconds > 0)
+    		return getEndTime().minus(time_span).minus(Duration.ofNanos(2*futureBufferInSeconds));
+    	else
+    		return getEndTime().minus(time_span);
     }
 
     /** @return End time of the data range
      *  @see #isScrollEnabled()
      */
-    synchronized public Timestamp getEndTime()
+    synchronized public Instant getEndTime()
     {
-        if (scroll_enabled) {
-        	Timestamp t = Timestamp.now();
-        	if (futureBufferInSeconds > 0) {
-        		if (end_time.compareTo(t) < 0) 
+        if (scroll_enabled)
+        {
+            final Instant t = Instant.now();
+        	if (futureBufferInSeconds > 0)
+        	{
+        		if (end_time.compareTo(t) < 0)
         			end_time = t;
-        		return end_time.plus(TimeDuration.ofSeconds(futureBufferInSeconds));
-        	} else {
-        		end_time = t;
+        		return end_time.plus(Duration.ofSeconds(futureBufferInSeconds));
         	}
+        	else
+        		end_time = t;
         }
         return end_time;
     }
-    
-    /**
-     * Future buffer in seconds is the amount of time given in seconds from the current time to 
-     * the right border of the chart when auto scroll is enabled.
-     *  
-     * @return the future buffer in seconds
+
+    /** Future buffer in seconds is the amount of time given in seconds from the current time to
+     *  the right border of the chart when auto scroll is enabled.
+     *
+     *  @return the future buffer in seconds
      */
-    public int getFutureBufferInSeconds() {
+    public int getFutureBufferInSeconds()
+    {
 		return futureBufferInSeconds;
 	}
-    
-    /**
-     * Returns true if the automatic history refresh is turned on for this model.
-     * The property is read from the preferences at the construction of the model.
-     * After the construction, the property is locked and all items that are added
-     * to this model have the same value as the model (which might be different
-     * to the current preferences).
-     * 
-     * @return true if automatic history refresh is on or false if it is off
+
+    /** Returns true if the automatic history refresh is turned on for this model.
+     *  The property is read from the preferences at the construction of the model.
+     *  After the construction, the property is locked and all items that are added
+     *  to this model have the same value as the model (which might be different
+     *  to the current preferences).
+     *
+     *  @return true if automatic history refresh is on or false if it is off
      */
-    public boolean isAutomaticHistoryRefresh() {
+    public boolean isAutomaticHistoryRefresh()
+    {
 		return automaticHistoryRefresh;
 	}
 
@@ -732,9 +591,9 @@ public class Model
     synchronized public String getStartSpecification()
     {
         if (scroll_enabled)
-            return new RelativeTime(-time_span).toString();
+            return new RelativeTime(-TimeHelper.toSeconds(time_span)).toString();
         else
-            return TimestampHelper.format(getStartTime());
+            return TimestampHelper.format(TimeHelper.toTimestamp(getStartTime()));
     }
 
     /** @return String representation of end time. While scrolling, this is
@@ -745,7 +604,7 @@ public class Model
         if (scroll_enabled)
             return RelativeTime.NOW;
         else
-            return TimestampHelper.format(end_time);
+            return TimestampHelper.format(TimeHelper.toTimestamp(end_time));
     }
 
     /** @return Background color */
@@ -757,37 +616,23 @@ public class Model
     /** @param rgb New background color */
     public void setPlotBackground(final RGB rgb)
     {
-        if (background.equals(rgb))
+        if (background.equals(Objects.requireNonNull(rgb)))
             return;
         background = rgb;
-        // Notify listeners
-        System.out.println("**** Model.setPlotBackground() ****");
-
         for (ModelListener listener : listeners)
             listener.changedColors();
     }
 
     /** @param annotations Annotations to keep in model */
-    public void setAnnotations(final AnnotationInfo[] annotations)
+    public void setAnnotations(final List<AnnotationInfo> annotations)
     {
-    	setAnnotations(annotations, true);
-    }
-
-    public void setAnnotations(final AnnotationInfo[] annotations, final boolean fireChanged)
-    {
-    	this.annotations = annotations;
-    	if (fireChanged)
-    		fireAnnotationsChanged();
+    	this.annotations = Objects.requireNonNull(annotations);
+        for (ModelListener listener : listeners)
+            listener.changedAnnotations();
 	}
 
-    protected void fireAnnotationsChanged()
-    {
-    	for (ModelListener listener : listeners)
-            listener.changedAnnotations();
-    }
-
     /** @return Annotation infos of model */
-	public AnnotationInfo[] getAnnotations()
+	public List<AnnotationInfo> getAnnotations()
     {
     	return annotations;
     }
@@ -804,7 +649,7 @@ public class Model
             if (!(item instanceof PVItem))
                 continue;
             final PVItem pv_item = (PVItem) item;
-            pv_item.start(scanner);
+            pv_item.start();
         }
         is_running = true;
     }
@@ -851,9 +696,9 @@ public class Model
     }
 
     /** Notify listeners of changed axis configuration
-     *  @param axis Axis that changed
+     *  @param axis Axis that changed, empty to add/remove
      */
-    public void fireAxisChangedEvent(final AxisConfig axis)
+    public void fireAxisChangedEvent(final Optional<AxisConfig> axis)
     {
         for (ModelListener listener : listeners)
             listener.changedAxis(axis);
@@ -885,18 +730,26 @@ public class Model
         for (ModelListener listener : listeners)
             listener.changedItemDataConfig(item);
     }
-    
-    void fireItemRefreshRequested(final PVItem item) {
+
+    void fireItemRefreshRequested(final PVItem item)
+    {
     	for (ModelListener listener : listeners)
             listener.itemRefreshRequested(item);
+    }
+
+    public void fireSelectedSamplesChanged()
+    {
+        for (ModelListener listener : listeners)
+            listener.selectedSamplesChanged();
     }
 
     /** Find a formula that uses a model item as an input.
      *  @param item Item that's potentially used in a formula
      *  @return First Formula found that uses this item, or <code>null</code> if none found
      */
-    public FormulaItem getFormulaWithInput(final ModelItem item)
+    public Optional<FormulaItem> getFormulaWithInput(final ModelItem item)
     {
+        Objects.requireNonNull(item);
         // Update any formulas
         for (ModelItem i : items)
         {
@@ -904,319 +757,8 @@ public class Model
                 continue;
             final FormulaItem formula = (FormulaItem) i;
             if (formula.usesInput(item))
-                return formula;
+                return Optional.of(formula);
         }
-        return null;
-    }
-
-    /** Write RGB color to XML document
-     *  @param writer
-     *  @param level Indentation level
-     *  @param tag_name
-     *  @param color
-     */
-    static void writeColor(final PrintWriter writer, final int level,
-            final String tag_name, final RGB color)
-    {
-        XMLWriter.start(writer, level, tag_name);
-        writer.println();
-        XMLWriter.XML(writer, level+1, Model.TAG_RED, color.red);
-        XMLWriter.XML(writer, level+1, Model.TAG_GREEN, color.green);
-        XMLWriter.XML(writer, level+1, Model.TAG_BLUE, color.blue);
-        XMLWriter.end(writer, level, tag_name);
-        writer.println();
-    }
-
-    /** Load RGB color from XML document
-     *  @param node Parent node of the color
-     *  @param color_tag Name of tag that contains the color
-     *  @return RGB or <code>null</code> if no color found
-     */
-    public static RGB loadColorFromDocument(final Element node, final String color_tag)
-    {
-    	if (node == null)
-    		return new RGB(0, 0, 0);
-        final Element color =
-            DOMHelper.findFirstElementNode(node.getFirstChild(), color_tag);
-        if (color == null)
-            return null;
-        final int red = DOMHelper.getSubelementInt(color, Model.TAG_RED, 0);
-        final int green = DOMHelper.getSubelementInt(color, Model.TAG_GREEN, 0);
-        final int blue = DOMHelper.getSubelementInt(color, Model.TAG_BLUE, 0);
-        return new RGB(red, green, blue);
-    }
-
-    /** Load RGB color from XML document
-     *  @param node Parent node of the color
-     *  @return RGB or <code>null</code> if no color found
-     */
-    static RGB loadColorFromDocument(final Element node)
-    {
-        return loadColorFromDocument(node, Model.TAG_COLOR);
-    }
-
-    /** Write XML formatted Model content.
-     *  @param out OutputStream, will be closed when done.
-     */
-    public void write(final OutputStream out)
-    {
-        final PrintWriter writer = new PrintWriter(out);
-
-        XMLWriter.header(writer);
-        XMLWriter.start(writer, 0, TAG_DATABROWSER);
-        writer.println();
-
-        // Save XYGraph settings
-        XYGraphSettingsXMLUtil.write(graphSettings, writer);
-        writer.println();
-
-        // Time axis
-        XMLWriter.XML(writer, 1, TAG_SCROLL, isScrollEnabled());
-        XMLWriter.XML(writer, 1, TAG_UPDATE_PERIOD, getUpdatePeriod());
-        synchronized (this)
-        {
-        	XMLWriter.XML(writer, 1, TAG_START, start_spec);
-        	XMLWriter.XML(writer, 1, TAG_END, end_spec);			
-		}
-
-        XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
-        
-        //all other settings are already included in the graphsettings
-//        // Time axis config
-//        if (timeAxis != null)
-//        {
-//            XMLWriter.start(writer, 1, TAG_TIME_AXIS);
-//            writer.println();
-//            timeAxis.write(writer);
-//            XMLWriter.end(writer, 1, TAG_TIME_AXIS);
-//            writer.println();
-//        }
-//        // Value axes
-//        XMLWriter.start(writer, 1, TAG_AXES);
-//        writer.println();
-//        for (AxisConfig axis : axes)
-//            axis.write(writer);
-//        XMLWriter.end(writer, 1, TAG_AXES);
-//        writer.println();
-//
-//        // Annotations
-//        XMLWriter.start(writer, 1, TAG_ANNOTATIONS);
-//        writer.println();
-//        for (AnnotationInfo annotation : annotations)
-//        	annotation.write(writer);
-//        XMLWriter.end(writer, 1, TAG_ANNOTATIONS);
-//        writer.println();
-//        // Misc.
-//        writeColor(writer, 1, TAG_BACKGROUND, background);
-        
-        // PVs (Formulas)
-        XMLWriter.start(writer, 1, TAG_PVLIST);
-        writer.println();
-        for (ModelItem item : items)
-            item.write(writer);
-        XMLWriter.end(writer, 1, TAG_PVLIST);
-        writer.println();
-        XMLWriter.end(writer, 0, TAG_DATABROWSER);
-        writer.close();
-    }
-
-    public void setTimeAxis(AxisConfig timeAxis) {
-		this.timeAxis = timeAxis;
-	}
-
-	/** Read XML formatted Model content.
-     *  @param stream InputStream, will be closed when done.
-     *  @throws Exception on error
-     *  @throws RuntimeException if model was already in use
-     */
-    public void read(final InputStream stream) throws Exception
-    {
-        final DocumentBuilder docBuilder =
-            DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        final Document doc = docBuilder.parse(stream);
-        loadFromDocument(doc);
-    }
-
-    /** Load model
-     *  @param doc DOM document
-     *  @throws Exception on error
-     *  @throws RuntimeException if model was already in use
-     */
-    private void loadFromDocument(final Document doc) throws Exception
-    {
-        if (is_running || items.size() > 0)
-            throw new RuntimeException("Model was already in use");
-
-        // Check if it's a <databrowser/>.
-        doc.getDocumentElement().normalize();
-        final Element root_node = doc.getDocumentElement();
-        if (!root_node.getNodeName().equals(TAG_DATABROWSER))
-            throw new Exception("Wrong document type");
-
-        synchronized (this)
-        {
-            scroll_enabled = DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, scroll_enabled);
-        }
-        update_period = DOMHelper.getSubelementDouble(root_node, TAG_UPDATE_PERIOD, update_period);
-
-        final String start = DOMHelper.getSubelementString(root_node, TAG_START);
-        final String end = DOMHelper.getSubelementString(root_node, TAG_END);
-        if (start.length() > 0  &&  end.length() > 0)
-            setTimerange(start, end);
-        RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
-        if (color != null)
-            background = color;
-
-        try
-        {
-            archive_rescale = ArchiveRescale.valueOf(
-                    DOMHelper.getSubelementString(root_node, TAG_ARCHIVE_RESCALE));
-        }
-        catch (Throwable ex)
-        {
-            archive_rescale = ArchiveRescale.STAGGER;
-        }
-        
-        // Load Time Axis
-        final Element timeAxisNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);
-        if (timeAxisNode != null)
-        {
-            // Load PV items
-           Element axisNode = DOMHelper.findFirstElementNode(timeAxisNode.getFirstChild(), TAG_AXIS);
-           timeAxis = AxisConfig.fromDocument(axisNode);
-        }
-
-        // Load value Axes
-        Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
-        if (list != null)
-        {
-            // Load PV items
-            Element item = DOMHelper.findFirstElementNode(
-                    list.getFirstChild(), TAG_AXIS);
-            while (item != null)
-            {
-                addAxis(AxisConfig.fromDocument(item));
-                item = DOMHelper.findNextElementNode(item, TAG_AXIS);
-            }
-        }
-
-        // Load Annotations
-        list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_ANNOTATIONS);
-        if (list != null)
-        {
-            // Load PV items
-            Element item = DOMHelper.findFirstElementNode(
-                    list.getFirstChild(), TAG_ANNOTATION);
-            final List<AnnotationInfo> infos = new ArrayList<AnnotationInfo>();
-            try
-            {
-	            while (item != null)
-	            {
-	            	final AnnotationInfo annotation = AnnotationInfo.fromDocument(item);
-	            	infos.add(annotation);
-	                item = DOMHelper.findNextElementNode(item, TAG_ANNOTATION);
-	            }
-            }
-            catch (Throwable ex)
-            {
-            	Activator.getLogger().log(Level.INFO, "XML error in Annotation", ex);
-            }
-            // Add to document
-            annotations = infos.toArray(new AnnotationInfo[infos.size()]);
-        }
-
-		// Load XYGraph settings
-		try {
-			NodeList nodeList = root_node.getElementsByTagName(XYGraphSettings.TAG_NAME);
-			if (nodeList.getLength() > 0) {
-				graphSettings = XYGraphSettingsXMLUtil.read(nodeList.item(0));
-			} else { // retro-compatibility
-				graphSettings = XYGraphSettingsXMLUtil
-						.readOldSettings(root_node.getFirstChild());
-			}
-		} catch (Throwable ex) {
-			Activator.getLogger().log(Level.INFO,
-					"XML error in XYGraph settings", ex);
-		}
-		
-		if (graphSettings != null) {
-			//backward compatibility for those plts created with duplicated info (axis 
-			//tag and axis settings both describing the same axis)
-			if (graphSettings.getAxisSettingsList().size() == axes.size() + 1 || axes.size() == 0) {
-				timeAxis = null;
-				axes.clear();
-				for (AxisSettings s : graphSettings.getAxisSettingsList()) {
-					ColorSettings fc = s.getForegroundColor();
-					ColorSettings gc = s.getMajorGridColor();
-					AxisConfig config = new AxisConfig(true, s.getTitle(), 
-							FontDataUtil.getFontData(s.getTitleFont()), 
-							FontDataUtil.getFontData(s.getScaleFont()), 
-							new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()), 
-							s.getRange().getLower(), s.getRange().getUpper(),
-							s.isAutoScale(), s.isLogScale(), s.isShowMajorGrid(),
-							s.isDashGridLine(),new RGB(gc.getRed(),gc.getGreen(),gc.getBlue()),
-							s.isAutoFormat(), s.isDateEnabled(), s.getFormatPattern());
-					if (timeAxis == null) {
-						timeAxis = config;
-					} else {
-						addAxis(config);
-					}
-				}
-			}
-		
-			ArrayList<AnnotationInfo> infos = new ArrayList<AnnotationInfo>();
-			for (AnnotationSettings s : graphSettings.getAnnotationSettingsList()) {
-				ColorSettings fc = s.getAnnotationColor();
-				RGB rgb = fc != null ? new RGB(fc.getRed(),fc.getGreen(),fc.getBlue()) : null;
-				infos.add(new AnnotationInfo(
-						TimestampHelper.fromMillisecs((long)s.getXValue()), s.getYValue(), s.getxAxis(), 
-						s.getName(), CursorLineStyle.valueOf(s.getCursorLineStyle()), s.isShowName(), 
-						s.isShowPosition(), s.isShowSampleInfo(), FontDataUtil.getFontData(s.getFont()),rgb));
-			}
-			setAnnotations(infos.toArray(new AnnotationInfo[infos.size()]));
-		}
-		
-		// Backwards compatibility with previous data browser which
-        // used global buffer size for all PVs
-        final int buffer_size = DOMHelper.getSubelementInt(root_node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, -1);
-
-        // Load PVs/Formulas
-        list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_PVLIST);
-        if (list != null)
-        {
-            // Load PV items
-            Element item = DOMHelper.findFirstElementNode(
-                    list.getFirstChild(), TAG_PV);
-            while (item != null)
-            {
-                final PVItem model_item = PVItem.fromDocument(this, item);
-                if (buffer_size > 0)
-                    model_item.setLiveCapacity(buffer_size);
-                // Adding item creates the axis for it if not already there
-                addItem(model_item);
-                // Backwards compatibility with previous data browser which
-                // stored axis configuration with each item: Update axis from that.
-                final AxisConfig axis = model_item.getAxis();
-                String s = DOMHelper.getSubelementString(item, TAG_AUTO_SCALE);
-                if (s.equalsIgnoreCase("true"))
-                    axis.setAutoScale(true);
-                s = DOMHelper.getSubelementString(item, TAG_LOG_SCALE);
-                if (s.equalsIgnoreCase("true"))
-                    axis.setLogScale(true);
-                final double min = DOMHelper.getSubelementDouble(item, Model.TAG_MIN, axis.getMin());
-                final double max = DOMHelper.getSubelementDouble(item, Model.TAG_MAX, axis.getMax());
-                axis.setRange(min, max);
-
-                item = DOMHelper.findNextElementNode(item, TAG_PV);
-            }
-            // Load Formulas
-            item = DOMHelper.findFirstElementNode(
-                    list.getFirstChild(), TAG_FORMULA);
-            while (item != null)
-            {
-                addItem(FormulaItem.fromDocument(this, item));
-                item = DOMHelper.findNextElementNode(item, TAG_FORMULA);
-            }
-        }
+        return Optional.empty();
     }
 }

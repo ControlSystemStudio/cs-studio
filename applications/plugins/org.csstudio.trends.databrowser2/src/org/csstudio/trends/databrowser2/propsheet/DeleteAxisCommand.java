@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to delete value axis from Model.
  *  @author Kay Kasemir
  */
-public class DeleteAxisCommand implements IUndoableCommand
+public class DeleteAxisCommand implements UndoableAction
 {
     /** Model to which axis is added */
     final private Model model;
@@ -32,20 +32,19 @@ public class DeleteAxisCommand implements IUndoableCommand
      *  @param model
      *  @param axis
      */
-    public DeleteAxisCommand(final OperationsManager operationsManager,
+    public DeleteAxisCommand(final UndoableActionManager operationsManager,
             final Model model, final AxisConfig axis)
     {
         this.model = model;
         this.axis = axis;
         // Remember axis locations
         this.index = model.getAxisIndex(axis);
-        operationsManager.addCommand(this);
-        redo();
+        operationsManager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         model.removeAxis(axis);
     }

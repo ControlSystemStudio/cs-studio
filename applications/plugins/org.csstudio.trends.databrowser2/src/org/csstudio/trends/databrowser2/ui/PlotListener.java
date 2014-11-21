@@ -7,13 +7,12 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.ui;
 
+import java.time.Instant;
+import java.util.List;
+
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.swt.xygraph.figures.Annotation;
-import org.csstudio.swt.xygraph.figures.Trace.TraceType;
-import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
-import org.csstudio.trends.databrowser2.model.AxisConfig;
-import org.eclipse.swt.graphics.Color;
 
 /** Interface used by Plot to send events in response to user input:
  *  Zoom changed, scrolling turned on/off
@@ -25,19 +24,15 @@ import org.eclipse.swt.graphics.Color;
  */
 public interface PlotListener
 {
-    /** Called when the user enables/disables scrolling
-     *  @param enable_scrolling true when user requested scrolling via GUI
-     */
-    public void scrollRequested(boolean enable_scrolling);
-
     /** Called when the user requests time config dialog. */
     public void timeConfigRequested();
 
-    /** Called when the user enables/disables scrolling
-     *  @param start_ms New time axis start time in ms since 1970
-     *  @param end_ms ... end time ...
+    /** Called when the user changes time axis, includes turning scrolling on/off
+     *  @param scroll Scrolling?
+     *  @param start New time axis start time
+     *  @param end ... end time ...
      */
-    public void timeAxisChanged(long start_ms, long end_ms);
+    public void timeAxisChanged(boolean scroll, Instant start, Instant end);
 
     /** Called when the user changed a value (Y) axis
      *  @param index Value axis index 0, 1, ...
@@ -60,120 +55,9 @@ public interface PlotListener
     /** Received a file name */
     public void droppedFilename(String file_name);
 
-    /**
-	 * Called when the user changed graph settings
-	 * @param newValue
-	 *            The new graph settings
-	 */
-	public void xyGraphConfigChanged(XYGraph newValue);
+    /** Received updated annotations */
+    public void changedAnnotations(List<AnnotationInfo> annotations);
 
-	/**
-	 * Called when the user remove an annotation
-	 * @param oldValue
-	 *            The annotation removed
-	 */
-	public void removeAnnotationChanged(Annotation oldValue);
-
-	/**
-	 * Called when the user add an annotation
-	 * @param newValue
-	 *            The annotation added
-	 */
-	public void addAnnotationChanged(Annotation newValue);
-
-	/**
-	 * Called when the user changed the plot background color
-	 *
-	 * @param newValue
-	 *            New background color
-	 */
-	public void backgroundColorChanged(Color newValue);
-
-	/**
-	 * Called when the user changed time axis foreground color
-	 *
-	 * @param oldColor
-	 *            Old foreground color
-	 * @param newColor
-	 *            New foreground color
-	 */
-	public void timeAxisForegroundColorChanged(Color oldColor, Color newColor);
-
-	/**
-	 * Called when the user changed value axis foreground color
-	 *
-	 * @param index
-	 *            Value axis index 0, 1, ...
-	 * @param oldColor
-	 *            Old foreground color
-	 * @param newColor
-	 *            New foreground color
-	 */
-	public void valueAxisForegroundColorChanged(int index, Color oldColor,
-			Color newColor);
-
-	/**
-	 * Called when the user changed value axis title
-	 *
-	 * @param index
-	 *            Value axis index 0, 1, ...
-	 * @param oldTitle
-	 *            Old title
-	 * @param newTitle
-	 *            New title
-	 */
-	public void valueAxisTitleChanged(int index, String oldTitle,
-			String newTitle);
-
-	/**
-	 * Called when the user changed value axis autoscale mode
-	 *
-	 * @param index
-	 *            Value axis index 0, 1, ...
-	 * @param oldAutoScale
-	 *            Old autoscale mode
-	 * @param newAutoScale
-	 *            New autoscale mode
-	 */
-	public void valueAxisAutoScaleChanged(int index, boolean oldAutoScale,
-			boolean newAutoScale);
-
-
-
-	/**
-	 * Called when the user changed trace display name
-	 * @param index		trace index 0, 1, ...
-	 * @param oldName	Old name
-	 * @param newName	New name
-	 */
-	public void traceNameChanged(int index, String oldName, String newName);
-
-	/**
-	 * Called when the user changed trace YAxis
-	 * @param index		trace index 0, 1, ...
-	 * @param oldConfig	old trace config
-	 * @param config	new trace config
-	 */
-	public void traceYAxisChanged(int index, AxisConfig oldConfig, AxisConfig config);
-
-
-	/**
-	 * Called when the user changed trace type
-	 * @param index		trace index 0, 1, ...
-	 * @param old	old trace type
-	 * @param newTraceType	new trace type
-	 */
-	public void traceTypeChanged(int index, TraceType old,
-			TraceType newTraceType);
-
-	/**
-	 * Called when the user changed trace color
-	 * @param index		trace index 0, 1, ...
-	 * @param old	old trace color
-	 * @param newColor	new trace color
-	 */
-	public void traceColorChanged(int index, Color old, Color newColor);
-
-	public void valueAxisLogScaleChanged(int index, boolean old,
-			boolean logScale);
+    /** ModelItems have new selected sample */
+    public void selectedSamplesChanged();
 }

@@ -52,7 +52,7 @@ public class FormulaInput
      */
     public VType first()
     {
-        if (item.getSamples().getSize() > 0)
+        if (item.getSamples().size() > 0)
             index = 0;
         else
             index = -1;
@@ -68,15 +68,20 @@ public class FormulaInput
             return null;
         final VType result;
         final PlotSamples samples = item.getSamples();
-        synchronized (samples)
+        samples.getLock().lock();
+        try
         {
-            if (index < samples.getSize())
-                result = samples.getSample(index++).getValue();
+            if (index < samples.size())
+                result = samples.get(index++).getVType();
             else
             {
                 result = null;
                 index = -1;
             }
+        }
+        finally
+        {
+            samples.getLock().unlock();
         }
         return result;
     }

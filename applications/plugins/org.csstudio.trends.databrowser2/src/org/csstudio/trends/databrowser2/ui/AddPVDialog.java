@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.ui;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
@@ -41,13 +42,13 @@ import org.eclipse.swt.widgets.Text;
  *                           dialog message, and to accept an existing name for
  *                           the name of newly created PV item.
  */
-public class AddPVDialog  extends TitleAreaDialog
+public class AddPVDialog extends TitleAreaDialog
 {
     /** Existing names */
-    final private HashMap<String, Object> existing_names;
+    final private Set<String> existing_names;
 
     /** Value axis names */
-    final private String[] axes;
+    final private List<String> axes;
 
     /** Add formula, not PV? */
     final private boolean formula;
@@ -75,17 +76,11 @@ public class AddPVDialog  extends TitleAreaDialog
      *  @param axes Value axis names
      *  @param formula Add formula, not PV?
      */
-    public AddPVDialog(final Shell shell, final String existing_names[],
-            final String axes[], final boolean formula)
+    public AddPVDialog(final Shell shell, final Set<String> existing_names,
+            final List<String> axes, final boolean formula)
     {
         super(shell);
-
-        // Push the existing names into the hash map so that it becomes
-        // fast to judge whether the user input name already exists.
-        this.existing_names = new HashMap<String, Object>(existing_names.length);
-        for (String existing_name: existing_names)
-        	this.existing_names.put(existing_name, null);
-
+        this.existing_names = existing_names;
         this.axes = axes;
         this.formula = formula;
         setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -166,7 +161,8 @@ public class AddPVDialog  extends TitleAreaDialog
             txt_period.addModifyListener(new ModifyListener()
             {
                 @Override
-                public void modifyText(ModifyEvent e) {
+                public void modifyText(ModifyEvent e)
+                {
                     updateAndValidate();
                 }
             });
@@ -185,7 +181,7 @@ public class AddPVDialog  extends TitleAreaDialog
 
         // Value Axis:            _____
         // If there are axes to select, add related GUI
-        if (axes.length > 0)
+        if (axes.size() > 0)
         {
             l = new Label(box, 0);
             l.setText(Messages.AddPV_Axis);
@@ -212,7 +208,8 @@ public class AddPVDialog  extends TitleAreaDialog
         txt_name.addModifyListener(new ModifyListener()
         {
             @Override
-            public void modifyText(ModifyEvent e) {
+            public void modifyText(ModifyEvent e)
+            {
                 updateAndValidate();
             }
         });
@@ -309,7 +306,7 @@ public class AddPVDialog  extends TitleAreaDialog
         // there is no need to prohibit from adding a new item with the
         // existing name, but this dialog just warns that the model has
         // at least one item with the given name.
-        if (existing_names.containsKey(name))
+        if (existing_names.contains(name))
         {
             setMessage(NLS.bind(Messages.DuplicateItemFmt, name),
             		IMessageProvider.WARNING);

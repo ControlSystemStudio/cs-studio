@@ -8,9 +8,11 @@
 package org.csstudio.trends.databrowser2.export;
 
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,18 +22,17 @@ import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.archive.reader.LinearValueIterator;
 import org.csstudio.archive.reader.MergingValueIterator;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
 
 /** Base for Eclipse Job for exporting data from Model to file
  *  @author Kay Kasemir
@@ -42,7 +43,7 @@ abstract public class ExportJob extends Job
     final protected static int PROGRESS_UPDATE_LINES = 1000;
     final protected String comment;
     final protected Model model;
-    final protected Timestamp start, end;
+    final protected Instant start, end;
     final protected Source source;
     final protected double optimize_parameter;
     final protected String filename;
@@ -53,14 +54,13 @@ abstract public class ExportJob extends Job
     /** Thread that polls a progress monitor and cancels active archive readers
      *  if the user requests the export job to end via the progress monitor
      */
-    class CancellationPoll extends Thread
+    class CancellationPoll implements Runnable
     {
         final private IProgressMonitor monitor;
         volatile boolean exit = false;
 
         public CancellationPoll(final IProgressMonitor monitor)
         {
-            super("DataExportCancellation");
             this.monitor = monitor;
         }
 
@@ -76,7 +76,7 @@ abstract public class ExportJob extends Job
                 }
                 try
                 {
-                    sleep(1000);
+                    Thread.sleep(1000);
                 }
                 catch (InterruptedException e)
                 {
@@ -98,7 +98,7 @@ abstract public class ExportJob extends Job
      *  @param error_handler Callback for errors
      */
     public ExportJob(final String comment, final Model model,
-        final Timestamp start, final Timestamp end, final Source source,
+        final Instant start, final Instant end, final Source source,
         final double optimize_parameter,
         final String filename,
         final ExportErrorHandler error_handler)
@@ -134,7 +134,7 @@ abstract public class ExportJob extends Job
             // Start thread that checks monitor to cancels readers when
             // user tries to abort the export job
             final CancellationPoll cancel_poll = new CancellationPoll(monitor);
-            cancel_poll.start();
+            final Future<?> done = Activator.getThreadPool().submit(cancel_poll);
             performExport(monitor, out);
             // ask thread to exit
             cancel_poll.exit = true;
@@ -143,7 +143,7 @@ abstract public class ExportJob extends Job
             if (out != null)
                 out.close();
             // Wait for poller to quit
-            cancel_poll.join();
+            done.get();
         }
         catch (final Exception ex)
         {
@@ -158,8 +158,8 @@ abstract public class ExportJob extends Job
     {
         out.println(comment + "Created by CSS Data Browser Version " + Activator.getDefault().getVersion());
         out.println(comment);
-        out.println(comment + "Start Time : " + TimestampHelper.format(start));
-        out.println(comment + "End Time   : " + TimestampHelper.format(end));
+        out.println(comment + "Start Time : " + TimeHelper.format(start));
+        out.println(comment + "End Time   : " + TimeHelper.format(end));
         out.println(comment + "Source     : " + source.toString());
         if (source == Source.OPTIMIZED_ARCHIVE)
             out.println(comment + "Desired Value Count: " + optimize_parameter);
@@ -222,14 +222,14 @@ abstract public class ExportJob extends Job
                 ValueIterator iter;
                 if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_parameter > 1)
                     iter = reader.getOptimizedValues(archive.getKey(),
-                            item.getName(), start, end, (int)optimize_parameter);
+                            item.getName(), TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), (int)optimize_parameter);
                 else
                 {
-                    iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
+                    iter = reader.getRawValues(archive.getKey(), item.getName(), TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end));
                     if (source == Source.LINEAR_INTERPOLATION && optimize_parameter >= 1)
                         iter = new LinearValueIterator(iter, TimeDuration.ofSeconds(optimize_parameter));
                 }
-                
+
                 iters.add(iter);
             }
             catch (Exception ex)

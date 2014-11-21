@@ -38,8 +38,8 @@ public class EditFormulaDialogDemo
         final FormulaItem formula = new FormulaItem("demo", "2*x2",
         new FormulaInput[]
         {
-            new FormulaInput(model.getItem(0), "x2"),
-            new FormulaInput(model.getItem(3), "jj")
+            new FormulaInput(model.getItem("fred"), "x2"),
+            new FormulaInput(model.getItem("janet"), "jj")
         });
         model.addItem(formula);
 

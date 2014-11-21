@@ -8,9 +8,14 @@
 package org.csstudio.trends.databrowser2.model;
 
 import java.io.PrintWriter;
+import java.time.Instant;
+import java.util.Optional;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.swt.rtplot.TraceType;
+import org.csstudio.swt.rtplot.data.PlotDataItem;
+import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Element;
@@ -20,21 +25,21 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class ModelItem implements Cloneable
-{	
+{
     /** Name by which the item is identified: PV name, formula */
-    private String name;
+    private volatile String name;
 
-    /** Model that contains this item or <code>null</code> while not
-     *  assigned to a model
+    /** Model that contains this item. Empty while not assigned to a model
      */
-    protected Model model = null;
+    protected Optional<Model> model = Optional.empty();
 
     /** Preferred display name, used in plot legend */
-    private String display_name;
+    private volatile String display_name;
 
     /** Show item's samples? */
-    private boolean visible = true;
+    private volatile boolean visible = true;
 
     /** RGB for item's color
      *  <p>
@@ -42,16 +47,19 @@ abstract public class ModelItem implements Cloneable
      *  As long as the Model can still run without a Display
      *  or Shell, this might be OK.
      */
-    private RGB rgb = null;
+    private volatile RGB rgb = null;
 
     /** Line width [pixel] */
-    private int line_width = Preferences.getLineWidths();
+    private volatile int line_width = Preferences.getLineWidths();
 
     /** How to display the trace */
-    private TraceType trace_type = Preferences.getTraceType();
+    private volatile TraceType trace_type = Preferences.getTraceType();
 
     /** Y-Axis */
-    private AxisConfig axis = null;
+    private volatile AxisConfig axis = null;
+
+    /** Sample that is currently selected, for example via cursor */
+    private volatile Optional<PlotDataItem<Instant>> selected_sample = Optional.empty();
 
     /** Initialize
      *  @param name Name of the PV or the formula
@@ -63,7 +71,7 @@ abstract public class ModelItem implements Cloneable
     }
 
     /** @return Model that contains this item */
-    public Model getModel()
+    public Optional<Model> getModel()
     {
         return model;
     }
@@ -74,9 +82,9 @@ abstract public class ModelItem implements Cloneable
      */
     void setModel(final Model model)
     {
-        if (this.model == model)
-            throw new RuntimeException("Item re-assigned to same model: " + name); //$NON-NLS-1$
-        this.model = model;
+        if (this.model.equals(model))
+            throw new RuntimeException("Item re-assigned to same model: " + name);
+        this.model = Optional.ofNullable(model);
     }
 
     /** @return Name of this item (PV, Formula, ...), may contain macros */
@@ -88,9 +96,10 @@ abstract public class ModelItem implements Cloneable
     /** @return Name of this item (PV, Formula, ...) with all macros resolved */
     public String getResolvedName()
     {
-    	if (model == null)
+    	if (model.isPresent())
+    	    return model.get().resolveMacros(name);
+    	else
     		return name;
-        return model.resolveMacros(name);
     }
 
     /** @param new_name New item name
@@ -122,9 +131,10 @@ abstract public class ModelItem implements Cloneable
      */
     public String getResolvedDisplayName()
     {
-    	if (model == null)
+    	if (model.isPresent())
+    	    return model.get().resolveMacros(display_name);
+    	else
     		return display_name;
-    	return model.resolveMacros(display_name);
     }
 
     /** @param new_display_name New display name
@@ -151,15 +161,15 @@ abstract public class ModelItem implements Cloneable
         if (this.visible == visible)
             return;
         this.visible = visible;
-        if (model != null)
-            model.fireItemVisibilityChanged(this);
+        if (model.isPresent())
+            model.get().fireItemVisibilityChanged(this);
     }
 
     /** If (!) assigned to a model, inform it about a configuration change */
     protected void fireItemLookChanged()
     {
-    	if (model != null)
-            model.fireItemLookChanged(this);
+        if (model.isPresent())
+            model.get().fireItemLookChanged(this);
     }
 
     /** Get item's color.
@@ -223,9 +233,10 @@ abstract public class ModelItem implements Cloneable
     /** @return Index of Y-Axis in model */
     public int getAxisIndex()
     {   // Allow this to work in Tests w/o model
-        if (model == null)
+        if (model.isPresent())
+            return model.get().getAxisIndex(axis);
+        else
             return 0;
-        return model.getAxisIndex(axis);
     }
 
     /** @param axis New X-Axis index */
@@ -259,10 +270,16 @@ abstract public class ModelItem implements Cloneable
     /** @return Samples held by this item */
     abstract public PlotSamples getSamples();
 
-    @Override
-    public String toString()
+    /** @param selected_sample Sample that is currently selected, for example via cursor */
+    public void setSelectedSample(final Optional<PlotDataItem<Instant>> selected_sample)
     {
-        return name;
+        this.selected_sample = selected_sample;
+    }
+
+    /** @return Sample that is currently selected, for example via cursor */
+    public Optional<PlotDataItem<Instant>> getSelectedSample()
+    {
+        return selected_sample;
     }
 
     /** Write XML formatted item configuration
@@ -274,16 +291,15 @@ abstract public class ModelItem implements Cloneable
      *  @param writer PrintWriter
      */
     protected void writeCommonConfig(final PrintWriter writer)
-    { 
-    	XMLWriter.XML(writer, 3, Model.TAG_NAME, getName());
-        XMLWriter.XML(writer, 3, Model.TAG_VISIBLE, Boolean.toString(isVisible()));
-        XMLWriter.XML(writer, 3, Model.TAG_AXIS, model.getAxisIndex(getAxis()));
-        XMLWriter.XML(writer, 3, Model.TAG_WAVEFORM_INDEX, getWaveformIndex());
-    	//other settings are included in the graph settings   
-//        XMLWriter.XML(writer, 3, Model.TAG_DISPLAYNAME, getDisplayName());
-//        XMLWriter.XML(writer, 3, Model.TAG_VISIBLE, Boolean.toString(isVisible()));
-//        XMLWriter.XML(writer, 3, Model.TAG_AXIS, model.getAxisIndex(getAxis()));
-//        XMLWriter.XML(writer, 3, Model.TAG_WAVEFORM_INDEX, getWaveformIndex());
+    {
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_DISPLAYNAME, getDisplayName());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_VISIBLE, Boolean.toString(isVisible()));
+    	XMLWriter.XML(writer, 3, XMLPersistence.TAG_NAME, getName());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_AXIS, getAxisIndex());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_LINEWIDTH, getLineWidth());
+        XMLPersistence.writeColor(writer, 3, XMLPersistence.TAG_COLOR, getColor());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_TRACE_TYPE, getTraceType().name());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_WAVEFORM_INDEX, getWaveformIndex());
     }
 
     /** Load common XML configuration elements into this item
@@ -292,37 +308,38 @@ abstract public class ModelItem implements Cloneable
      */
     protected void configureFromDocument(final Model model, final Element node)
     {
-        display_name = DOMHelper.getSubelementString(node, Model.TAG_DISPLAYNAME, display_name);
-        visible = DOMHelper.getSubelementBoolean(node, Model.TAG_VISIBLE, true);
+        display_name = DOMHelper.getSubelementString(node, XMLPersistence.TAG_DISPLAYNAME, display_name);
+        visible = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_VISIBLE, true);
         // Ideally, configuration should define all axes before they're used,
         // but as a fall-back create missing axes
-        final int axis_index = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
+        final int axis_index = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_AXIS, 0);
         while (model.getAxisCount() <= axis_index)
-            model.addAxis(display_name);
+            model.addAxis();
         axis = model.getAxis(axis_index);
-        line_width = DOMHelper.getSubelementInt(node, Model.TAG_LINEWIDTH, line_width);
-        rgb = Model.loadColorFromDocument(node);
-        final String type = DOMHelper.getSubelementString(node, Model.TAG_TRACE_TYPE, TraceType.AREA.name());
+        line_width = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_LINEWIDTH, line_width);
+        rgb = XMLPersistence.loadColorFromDocument(node);
+        String type = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TRACE_TYPE, TraceType.AREA.name());
         try
-        {
+        {   // Replace XYGraph types with currently supported types
+            if (type.equals("ERROR_BARS"))
+                type = TraceType.AREA.name();
+            else if (type.equals("CROSSES"))
+                type = TraceType.XMARKS.name();
             trace_type = TraceType.valueOf(type);
         }
         catch (Throwable ex)
         {
             trace_type = TraceType.AREA;
         }
-
-        final int waveform_index = DOMHelper.getSubelementInt(node, Model.TAG_WAVEFORM_INDEX, 0);
-
-        // If this method is overridden by the child class, the child's method will be called
-        // to set the waveform index. If it is not overridden, ModelItem's method will be called,
-        // which does nothing.
-        setWaveformIndex(waveform_index);
+        setWaveformIndex(DOMHelper.getSubelementInt(node, XMLPersistence.TAG_WAVEFORM_INDEX, 0));
     }
-        
-	public ModelItem clone() {
-		try {
-			ModelItem ret = (ModelItem)super.clone();
+
+	@Override
+    public ModelItem clone()
+	{
+		try
+		{
+		    final ModelItem ret = (ModelItem)super.clone();
 			ret.name = name;
 			ret.model = model;
 			ret.display_name = display_name;
@@ -332,8 +349,17 @@ abstract public class ModelItem implements Cloneable
 			ret.trace_type = trace_type;
 			ret.axis = axis;
 			return ret;
-		} catch (CloneNotSupportedException ex) {
+		}
+		catch (CloneNotSupportedException ex)
+		{
 			throw new RuntimeException(ex);
 		}
 	}
+
+    /** @return Debug representation */
+    @Override
+    public String toString()
+    {
+        return name;
+    }
 }

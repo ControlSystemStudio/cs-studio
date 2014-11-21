@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser2.editor;
 
 import java.io.File;
 
-import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.rtplot.RTTimePlot;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -28,7 +28,7 @@ public class Screenshot
      *  @param graph XYGraph from which to create the screen-shot
      *  @throws Exception on I/O error
      */
-    public Screenshot(final XYGraph graph) throws Exception
+    public Screenshot(final RTTimePlot graph) throws Exception
     {
         // Get name for snapshot file
         try
@@ -40,7 +40,7 @@ public class Screenshot
         {
             throw new Exception("Cannot create tmp. file:\n" + ex.getMessage());
         }
-        
+
         // Create snapshot file
         try
         {
@@ -63,7 +63,7 @@ public class Screenshot
     {
         return file;
     }
-    
+
     /** @return Name of file that contains the screenshot */
     public String getFilename()
     {

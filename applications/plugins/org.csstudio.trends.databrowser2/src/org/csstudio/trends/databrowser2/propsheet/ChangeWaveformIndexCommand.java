@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 
 /** Undo-able command to change item's waveform index
  *  @author Takashi Nakamoto (Cosylab)
  */
-public class ChangeWaveformIndexCommand implements IUndoableCommand
+public class ChangeWaveformIndexCommand implements UndoableAction
 {
     final private ModelItem item;
     final private int old_index, new_index;
@@ -25,19 +25,18 @@ public class ChangeWaveformIndexCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_index New value
      */
-    public ChangeWaveformIndexCommand(final OperationsManager operations_manager,
+    public ChangeWaveformIndexCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final int new_index)
     {
         this.item = item;
         this.old_index = item.getWaveformIndex();
         this.new_index = new_index;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         item.setWaveformIndex(new_index);
     }

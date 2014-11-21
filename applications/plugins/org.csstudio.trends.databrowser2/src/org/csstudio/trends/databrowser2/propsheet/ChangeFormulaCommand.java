@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.FormulaInput;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to change a FormulaItem's expression and inputs
  *  @author Kay Kasemir
  */
-public class ChangeFormulaCommand implements IUndoableCommand
+public class ChangeFormulaCommand implements UndoableAction
 {
     final private Shell shell;
     final private FormulaItem formula;
@@ -33,7 +33,7 @@ public class ChangeFormulaCommand implements IUndoableCommand
      *  @param inputs Inputs to formula
      */
     public ChangeFormulaCommand(final Shell shell,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final FormulaItem formula, final String expression,
             final FormulaInput inputs[])
     {
@@ -54,12 +54,12 @@ public class ChangeFormulaCommand implements IUndoableCommand
             return;
         }
         if (operations_manager != null)
-            operations_manager.addCommand(this);
+            operations_manager.add(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         try
         {

@@ -7,16 +7,19 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import java.util.Optional;
+
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
+import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 
 /** Undo-able command to change item's axis
  *  @author Kay Kasemir
  */
-public class ChangeAxisCommand implements IUndoableCommand
+public class ChangeAxisCommand implements UndoableAction
 {
     final private ModelItem item;
     final private AxisConfig old_axis, new_axis;
@@ -26,24 +29,24 @@ public class ChangeAxisCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param axis New value
      */
-    public ChangeAxisCommand(final OperationsManager operations_manager,
+    public ChangeAxisCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final AxisConfig axis)
     {
         this.item = item;
         this.old_axis = item.getAxis();
         this.new_axis = axis;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
 		if (!new_axis.isVisible())
 			new_axis.setVisible(true);
 		item.setAxis(new_axis);
-		if (item.getModel().countActiveItemsOnAxis(old_axis) == 0)
+		final Optional<Model> model = item.getModel();
+		if (model.isPresent()  &&  !model.get().hasAxisActiveItems(old_axis))
 			old_axis.setVisible(false);
     }
 
@@ -54,8 +57,9 @@ public class ChangeAxisCommand implements IUndoableCommand
 		if (!old_axis.isVisible())
 			old_axis.setVisible(true);
 		item.setAxis(old_axis);
-		if (item.getModel().countActiveItemsOnAxis(new_axis) == 0)
-			new_axis.setVisible(false);
+        final Optional<Model> model = item.getModel();
+        if (model.isPresent()  &&  !model.get().hasAxisActiveItems(new_axis))
+            new_axis.setVisible(false);
     }
 
     /** @return Command name that appears in undo/redo menu */

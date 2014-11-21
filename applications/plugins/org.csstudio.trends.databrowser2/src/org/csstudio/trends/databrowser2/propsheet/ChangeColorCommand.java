@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.swt.graphics.RGB;
@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.RGB;
 /** Undo-able command to change item's color
  *  @author Kay Kasemir
  */
-public class ChangeColorCommand implements IUndoableCommand
+public class ChangeColorCommand implements UndoableAction
 {
     final private ModelItem item;
     final private RGB old_color, new_color;
@@ -26,19 +26,18 @@ public class ChangeColorCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_color New value
      */
-    public ChangeColorCommand(final OperationsManager operations_manager,
+    public ChangeColorCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final RGB new_color)
     {
         this.item = item;
         this.old_color = item.getColor();
         this.new_color = new_color;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.perform(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void perform()
     {
         item.setColor(new_color);
     }

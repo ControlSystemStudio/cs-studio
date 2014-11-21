@@ -7,13 +7,20 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.ui;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
 import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.trends.databrowser2.propsheet.EditFormulaDialog;
 import org.eclipse.jface.action.Action;
@@ -25,7 +32,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AddPVAction extends Action
 {
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
     final private Shell shell;
     final private Model model;
     final private boolean formula;
@@ -36,7 +43,7 @@ public class AddPVAction extends Action
      *  @param model Model were PVs will be added
      */
     @SuppressWarnings("nls")
-    public AddPVAction(final OperationsManager operations_manager,
+    public AddPVAction(final UndoableActionManager operations_manager,
             final Shell shell, final Model model, final boolean formula)
     {
         super(formula ? Messages.AddFormula : Messages.AddPV,
@@ -62,40 +69,37 @@ public class AddPVAction extends Action
     public boolean runWithSuggestedName(final String name, final ArchiveDataSource archive)
     {
         // Prompt for PV name
-        final String existing_names[] = new String[model.getItemCount()];
-        for (int i=0; i<existing_names.length; ++i)
-            existing_names[i] = model.getItem(i).getName();
-        final String axes[] = new String[model.getAxisCount()];
-        for (int i=0; i<axes.length; ++i)
+        final Set<String> existing_names = new HashSet<>();
+        for (ModelItem item : model.getItems())
+            existing_names.add(item.getName());
+        final List<AxisConfig> axes = new ArrayList<>();
+        final List<String> axes_names = new ArrayList<>();
+        for (AxisConfig axis : model.getAxes())
         {
-            final AxisConfig axis = model.getAxis(i);
-            axes[i] = axis.getName();
+            axes.add(axis);
+            axes_names.add(axis.getName());
         }
-        final AddPVDialog dlg = new AddPVDialog(shell, existing_names, axes, formula);
+        final AddPVDialog dlg = new AddPVDialog(shell, existing_names, axes_names, formula);
         dlg.setName(name);
         if (dlg.open() != Window.OK)
             return false;
 
         // Did user select axis?
-        AxisConfig axis;
+        final AxisConfig axis;
         if (dlg.getAxisIndex() >= 0)
-            axis = model.getAxis(dlg.getAxisIndex());
-        else
-        {   // Use first empty axis, or create a new one
-            axis = model.getEmptyAxis();
-            if (axis == null)
-                axis = new AddAxisCommand(operations_manager, model).getAxis();
-        }
+            axis = axes.get(dlg.getAxisIndex());
+        else // Use first empty axis, or create a new one
+            axis = model.getEmptyAxis().orElseGet(() -> new AddAxisCommand(operations_manager, model).getAxis());
 
         // Create item
         if (formula)
         {
-            final AddModelItemCommand command = AddModelItemCommand.forFormula(
+            final Optional<AddModelItemCommand> command = AddModelItemCommand.forFormula(
                         shell, operations_manager, model, dlg.getName(), axis);
-            if (command == null)
+            if (! command.isPresent())
                 return false;
             // Open configuration dialog
-            final FormulaItem formula = (FormulaItem) command.getItem();
+            final FormulaItem formula = (FormulaItem) command.get().getItem();
             final EditFormulaDialog edit =
                 new EditFormulaDialog(operations_manager, shell, formula);
             edit.open();

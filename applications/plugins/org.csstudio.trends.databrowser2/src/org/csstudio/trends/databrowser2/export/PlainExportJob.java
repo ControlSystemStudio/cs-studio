@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.export;
 
 import java.io.PrintStream;
+import java.time.Instant;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
@@ -17,7 +18,6 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.Timestamp;
 import org.epics.vtype.VType;
 
 /** Eclipse Job for exporting data from Model to file
@@ -29,7 +29,7 @@ public class PlainExportJob extends ExportJob
     final protected ValueFormatter formatter;
 
     public PlainExportJob(final Model model,
-            final Timestamp start, final Timestamp end, final Source source,
+            final Instant start, final Instant end, final Source source,
             final double optimize_parameter, final ValueFormatter formatter,
             final String filename,
             final ExportErrorHandler error_handler)
@@ -54,11 +54,10 @@ public class PlainExportJob extends ExportJob
     protected void performExport(final IProgressMonitor monitor,
                                  final PrintStream out) throws Exception
     {
-        for (int i=0; i<model.getItemCount(); ++i)
-        {
-            final ModelItem item = model.getItem(i);
-            // Item header
-            if (i > 0)
+        int count = 0;
+        for (ModelItem item : model.getItems())
+        {   // Item header
+            if (count > 0)
                 out.println();
             printItemInfo(out, item);
             // Get data
@@ -70,13 +69,14 @@ public class PlainExportJob extends ExportJob
             while (values.hasNext()  &&  !monitor.isCanceled())
             {
                 final VType value = values.next();
-                
+
                 final String time = TimestampHelper.format(VTypeHelper.getTimestamp(value));
                 out.println(time + Messages.Export_Delimiter + formatter.format(value));
                 ++line_count;
                 if (++line_count % PROGRESS_UPDATE_LINES == 0)
                     monitor.subTask(NLS.bind("{0}: Wrote {1} samples", item.getName(), line_count));
             }
+            ++count;
         }
     }
 }

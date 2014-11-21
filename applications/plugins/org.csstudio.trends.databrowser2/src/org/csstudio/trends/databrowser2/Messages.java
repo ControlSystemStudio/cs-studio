@@ -16,6 +16,9 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser2.messages"; //$NON-NLS-1$
 
+    // ---
+    // --- Keep alphabetically sorted and 'in sync' with messages.properties!
+    // ---
     public static String AddArchive;
     public static String AddArchiveMsg;
     public static String AddAxis;
@@ -26,27 +29,26 @@ public class Messages extends NLS
     public static String AddPV;
     public static String AddPV_Axis;
     public static String AddPV_AxisTT;
+    public static String AddPVMsg;
     public static String AddPV_NameTT;
     public static String AddPV_NewOrEmptyAxis;
     public static String AddPV_OnChange;
     public static String AddPV_OnChangeTT;
     public static String AddPV_Period;
     public static String AddPV_PeriodTT;
-    public static String AddPVMsg;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
     public static String ApplyChanges;
     public static String ArchiveAccessMessageFmt;
     public static String ArchiveDataSources;
     public static String ArchiveDescription;
-    public static String ArchiveFetchJobFmt;
-    public static String ArchiveFetchStart;
-    public static String ArchiveFetchProgressFmt;
     public static String ArchiveFetchDetailFmt;
+    public static String ArchiveFetchJobFmt;
+    public static String ArchiveFetchProgressFmt;
+    public static String ArchiveFetchStart;
     public static String ArchiveKey;
     public static String ArchiveListGUI_NoArchives;
     public static String ArchiveName;
-    public static String ArchiveRescale_AUTOZOOM;
     public static String ArchiveRescale_Label;
     public static String ArchiveRescale_NONE;
     public static String ArchiveRescale_STAGGER;
@@ -58,6 +60,7 @@ public class Messages extends NLS
     public static String Axis;
     public static String AxisMax;
     public static String AxisMin;
+    public static String AxisOnRight;
     public static String AxisTT;
     public static String AxisVisibility;
     public static String BackgroundColorLbl;
@@ -66,33 +69,31 @@ public class Messages extends NLS
     public static String ChangeNameErrorFmt;
     public static String Color;
     public static String ColorTT;
-    public static String Connecting;
     public static String ConfigFileErrorFmt;
-    public static String ControllerStartErrorFmt;
-    public static String CursorValue;
-    public static String CursorValueTT;
+    public static String Connecting;
     public static String CursorTimestamp;
     public static String CursorTimestampTT;
+    public static String CursorValue;
+    public static String CursorValueTT;
     public static String DeleteArchive;
     public static String DeleteAxis;
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
-    public static String EditItem;
+    public static String EditItems;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
     public static String Error;
     public static String ErrorFmt;
-    public static String Export_Delimiter;
-    public static String Export_NoValueMarker;
     public static String ExportBrowse;
     public static String ExportBrowseTT;
+    public static String ExportDefaultDigits;
+    public static String ExportDefaultFilename;
     public static String ExportDefaultLinearInterpolation;
     public static String ExportDefaultLinearInterpolationTT;
     public static String ExportDefaultOptimization;
-    public static String ExportDefaultDigits;
-    public static String ExportDefaultFilename;
+    public static String Export_Delimiter;
     public static String ExportDigits;
     public static String ExportDigitsError;
     public static String ExportDigitsTT;
@@ -111,15 +112,16 @@ public class Messages extends NLS
     public static String ExportMatlabFilenameError;
     public static String ExportMinMaxCol;
     public static String ExportMinMaxColTT;
-    public static String ExportOptimizeCountError;
+    public static String Export_NoValueMarker;
     public static String ExportOptimizationTT;
+    public static String ExportOptimizeCountError;
     public static String ExportPlotStartEnd;
     public static String ExportPlotStartEndTT;
+    public static String ExportSource;
     public static String ExportSource_Linear;
     public static String ExportSource_LinearTT;
     public static String ExportSource_OptimizedArchive;
     public static String ExportSource_OptimizedArchiveTT;
-    public static String ExportSource;
     public static String ExportSource_Plot;
     public static String ExportSource_PlotTT;
     public static String ExportSource_RawArchive;
@@ -170,8 +172,8 @@ public class Messages extends NLS
     public static String NotApplicable;
     public static String OpenDataBrowserPerspective;
     public static String OpenExportView;
-    public static String OpenSearchView;
     public static String OpenPropertiesView;
+    public static String OpenSearchView;
     public static String OpenWaveformView;
     public static String Plot_TimeAxisName;
     public static String Plot_ValueAxisName;
@@ -195,14 +197,13 @@ public class Messages extends NLS
     public static String PVName;
     public static String PVUsedInFormulaFmt;
     public static String Refresh;
-
     public static String RegularExpression;
     public static String RegularExpressionTT;
     public static String RemoveEmptyAxes;
     public static String ReplaceSearchResults;
     public static String ReplaceSearchResultsTT;
-    public static String Request_raw;
     public static String Request_optimized;
+    public static String Request_raw;
     public static String RequestType;
     public static String RequestTypeTT;
     public static String RequestTypeWarning;
@@ -222,12 +223,12 @@ public class Messages extends NLS
     public static String Search;
     public static String SearchArchiveConfirmFmt;
     public static String SearchChannelFmt;
-    public static String SearchPatternEmptyMessage;
-    public static String Search_URL;
-    public static String Search_URL_TT;
     public static String SearchPattern;
+    public static String SearchPatternEmptyMessage;
     public static String SearchPatternTT;
     public static String SearchTT;
+    public static String Search_URL;
+    public static String Search_URL_TT;
     public static String SendToElog;
     public static String ServerAlias;
     public static String SeverityColumn;
@@ -239,45 +240,37 @@ public class Messages extends NLS
     public static String StatusColumn;
     public static String TimeAxis;
     public static String TimeColumn;
-    public static String Toolbar_Hide;
-    public static String Toolbar_Show;
     public static String TraceDisplayName;
     public static String TraceDisplayNameTT;
     public static String TraceLineWidth;
     public static String TraceLineWidthTT;
-    public static String TraceType;
-    public static String TraceType_Area;
-    public static String TraceType_AreaDirect;
-    public static String TraceType_ErrorBars;
-    public static String TraceType_Squares;
-    public static String TraceType_SingleLine;
-    public static String TraceType_SingleLineDirect;
-    public static String TraceType_Circles;
-    public static String TraceType_Diamonds;
-    public static String TraceType_Crosses;
-    public static String TraceType_Triangles;
-    public static String TraceTypeTT;
-    public static String TraceTypes_Label;    
     public static String TracesTab;
+    public static String TraceType;
+    public static String TraceTypes_Label;
+    public static String TraceTypeTT;
     public static String TraceVisibility;
     public static String TraceVisibilityTT;
     public static String UpdatePeriodLbl;
     public static String UpdatePeriodTT;
     public static String URL;
     public static String URL_Lbl;
+    public static String UseAutoScale_Label;
     public static String UseDefaultArchives;
     public static String UseDefaultArchives_Label;
-    public static String UseAutoScale_Label;
+    public static String UseTraceName;
     public static String ValueAxes;
     public static String ValueAxisName;
     public static String ValueColumn;
     public static String WaveformAmplitude;
+    public static String WaveformIndex;
     public static String WaveformIndexCol;
     public static String WaveformIndexColTT;
-    public static String WaveformIndex;
     public static String WaveformStatus;
     public static String WaveformTimeSelector;
     public static String WaveformTimestamp;
+    // ---
+    // --- Keep alphabetically sorted and 'in sync' with messages.properties!
+    // ---
 
     static
     {

@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.time.Instant;
 import java.util.List;
 
-import org.epics.util.time.Timestamp;
 import org.epics.vtype.VType;
 
 /** Holder for 'historic' samples.
@@ -35,7 +35,7 @@ public class HistoricSamples extends PlotSamples
     private PlotSample samples[] = new PlotSample[0];
 
     /** If non-null, samples beyond this time are hidden from access */
-    private Timestamp border_time = null;
+    private Instant border_time = null;
 
     /** Subset of samples.length that's below border_time
      *  @see #computeVisibleSize()
@@ -46,7 +46,7 @@ public class HistoricSamples extends PlotSamples
     private int waveform_index = 0;
 
     /** @param index Waveform index to show */
-    public synchronized void setWaveformIndex(int index)
+    public void setWaveformIndex(int index)
     {
     	waveform_index = index;
     	// change the index of all samples in this instance
@@ -58,7 +58,7 @@ public class HistoricSamples extends PlotSamples
      *  are returned from the history
      *  @param border_time New time or <code>null</code> to access all samples
      */
-    public void setBorderTime(final Timestamp border_time)
+    public void setBorderTime(final Instant border_time)
     {   // Anything new?
         if (border_time == null)
         {
@@ -70,14 +70,10 @@ public class HistoricSamples extends PlotSamples
         // New border, recompute, mark as 'new data'
         this.border_time = border_time;
         computeVisibleSize();
-        synchronized (this)
-        {
-            have_new_samples = true;
-        }
     }
 
     /** Update visible size */
-    synchronized private void computeVisibleSize()
+    private void computeVisibleSize()
     {
         if (border_time == null)
             visible_size = samples.length;
@@ -92,7 +88,7 @@ public class HistoricSamples extends PlotSamples
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
-    synchronized public PlotSample getSample(final int i)
+    public PlotSample get(final int i)
     {
         if (i >= visible_size)
             throw new IndexOutOfBoundsException("Index " + i + " exceeds visible size " + visible_size);
@@ -101,25 +97,25 @@ public class HistoricSamples extends PlotSamples
 
     /** {@inheritDoc} */
     @Override
-    synchronized public int getSize()
+    public int size()
     {
         return visible_size;
     }
-    
+
     /**
      * @return the number of samples, ignoring the border time
      */
-    public synchronized int getRawSize() {
+    public int getRawSize() {
     	return samples.length;
     }
-    
+
     /**
      * Returns the sample at the specified index, ignoring the border time.
-     * 
+     *
      * @param i the index of the requested sample
      * @return the plot sample
      */
-    public synchronized PlotSample getRawSample(int i) {
+    public PlotSample getRawSample(int i) {
     	return samples[i];
     }
 
@@ -127,7 +123,7 @@ public class HistoricSamples extends PlotSamples
      *  @param source Info about data source
      *  @param result Samples to add/merge
      */
-    synchronized public void mergeArchivedData(final String source, final List<VType> result)
+    public void mergeArchivedData(final String source, final List<VType> result)
     {
         // Anything new at all?
         if (result.size() <= 0)
@@ -144,14 +140,12 @@ public class HistoricSamples extends PlotSamples
             return;
         samples = merged;
         computeVisibleSize();
-        have_new_samples = true;
     }
 
     /** Delete all samples */
-    synchronized public void clear()
+    public void clear()
     {
         visible_size = 0;
         samples = new PlotSample[0];
-        have_new_samples = true;
     }
 }

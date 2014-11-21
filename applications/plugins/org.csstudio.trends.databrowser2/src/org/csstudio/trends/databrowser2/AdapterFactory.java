@@ -61,12 +61,17 @@ public class AdapterFactory implements IAdapterFactory
     {
         final PlotSamples plot_samples = item.getSamples();
         final VType[] samples;
-        synchronized (plot_samples)
+        plot_samples.getLock().lock();
+        try
         {
-            final int size = plot_samples.getSize();
+            final int size = plot_samples.size();
             samples = new VType[size];
             for (int i=0; i<size; ++i)
-                samples[i] = plot_samples.getSample(i).getValue();
+                samples[i] = plot_samples.get(i).getVType();
+        }
+        finally
+        {
+            plot_samples.getLock().unlock();
         }
         return new ProcessVariableWithSamples(new ProcessVariable(item.getName()), samples);
     }

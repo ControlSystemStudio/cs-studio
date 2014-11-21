@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.preferences;
 
+import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
-import org.csstudio.trends.databrowser2.model.TraceType;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ComboFieldEditor;
@@ -141,7 +141,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         final ComboFieldEditor trace_types = new ComboFieldEditor(Preferences.TRACE_TYPE,
                 Messages.TraceTypes_Label, trace_labels_and_values, parent);
         addField(trace_types);
-        
+
         // Archive fetch delay:  0.1 .. 10 seconds
         final IntegerFieldEditor fetch_delay = new IntegerFieldEditor(Preferences.ARCHIVE_FETCH_DELAY,
                 Messages.PrefPage_ArchiveFetchDelay, parent);
@@ -153,7 +153,7 @@ public class PreferencePage extends FieldEditorPreferencePage
                 Messages.PrefPage_PlotBins, parent);
         plotbins.setValidRange(10, 365*24*60*60);
         addField(plotbins);
-        
+
         // Future Buffer: 10 ...
         final IntegerFieldEditor futureBuffer = new IntegerFieldEditor(Preferences.FUTURE_BUFFER,
                 Messages.PrefPage_FutureBuffer, parent);
@@ -172,8 +172,6 @@ public class PreferencePage extends FieldEditorPreferencePage
         final RadioGroupFieldEditor rescale = new RadioGroupFieldEditor(Preferences.ARCHIVE_RESCALE,
                 Messages.ArchiveRescale_Label, 1,
                 labels_and_values, parent, false);
-//        final ComboFieldEditor rescale = new ComboFieldEditor(Preferences.ARCHIVE_RESCALE,
-//                Messages.ArchiveRescale_Label, labels_and_values, parent);
         addField(rescale);
 
         // Server URLs
@@ -199,10 +197,10 @@ public class PreferencePage extends FieldEditorPreferencePage
 
         addField(new BooleanFieldEditor(Preferences.USE_DEFAULT_ARCHIVES,
                 Messages.UseDefaultArchives_Label, parent));
-        
+
 		addField(new BooleanFieldEditor(Preferences.USE_AUTO_SCALE,
 				Messages.UseAutoScale_Label, parent));
-		
+
 		addField(new BooleanFieldEditor(Preferences.AUTOMATIC_HISTORY_REFRESH,
 				Messages.PrefPage_AutomaticHistoryRefresh, parent));
     }
