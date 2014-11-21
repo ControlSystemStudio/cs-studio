@@ -73,6 +73,8 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         else
             throw new IllegalArgumentException("Cannot handle " + type.getName());
 
+        toolbar.addContextMenu(toggle_toolbar);
+        
         FormData fd = new FormData();
         fd.top = new FormAttachment(toolbar.getControl());
         fd.left = new FormAttachment(0);

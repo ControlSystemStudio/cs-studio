@@ -13,6 +13,8 @@ import org.csstudio.swt.rtplot.PlotListenerAdapter;
 import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osgi.util.NLS;
@@ -22,8 +24,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -44,8 +44,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
         PAN,
         POINTER,
         UNDO,
-        REDO,
-        CLOSE,
+        REDO
     };
 
     final private RTPlot<XTYPE> plot;
@@ -67,8 +66,20 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
         this.plot = plot;
         toolbar = new ToolBar(plot, SWT.BORDER | SWT.WRAP);
         initToolItemImages(plot.getDisplay());
-        makeGUI();
+        makeGUI();        
     }
+    
+    /** {@link RTPlot} creates {@link ToolbarHandler} in two stages:
+     *  Construct, then call init, so that tool bar can refer back to the
+     *  {@link ToggleToolbarAction}
+     */
+    public void addContextMenu(final Action toggle_action)
+    {
+        final MenuManager mm = new MenuManager();
+        mm.add(toggle_action);
+        toolbar.setMenu(mm.createContextMenu(toolbar));
+    }
+
 
     /** @return The actual toolbar {@link Control} for {@link RTPlot} to handle its layout */
     public Control getControl()
@@ -116,7 +127,6 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
         additions_index = -toolbar.getItemCount();
         new ToolItem(toolbar, SWT.SEPARATOR);
         addUndo();
-        addClose();
 
         // Initially, panning is selected
         selectMouseMode(pan);
@@ -312,42 +322,6 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
                     redo.setToolTipText(NLS.bind(Messages.Redo_Fmt_TT, to_redo));
                 }
             });
-        });
-    }
-
-    private void addClose()
-    {
-        final ToolItem filler = new ToolItem(toolbar, SWT.SEPARATOR);
-
-        final ToolItem close = newToolItem(SWT.PUSH, ToolIcons.CLOSE, Messages.Toolbar_Close);
-        close.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                plot.showToolbar(false);
-            }
-        });
-
-        // Determine decorator space
-        toolbar.pack();
-        int space = toolbar.getSize().x;
-        for (ToolItem item : toolbar.getItems())
-            space -= item.getWidth();
-        final int trim_space = space;
-
-        // Resize 'filler' to right-align 'close' button
-        toolbar.addListener(SWT.Resize, new Listener()
-        {
-            @Override
-            public void handleEvent(Event event)
-            {
-                int width = toolbar.getSize().x - trim_space;
-                for (ToolItem item : toolbar.getItems())
-                    if (item != filler)
-                        width -= item.getWidth();
-                filler.setWidth(width);
-            }
         });
     }
 
