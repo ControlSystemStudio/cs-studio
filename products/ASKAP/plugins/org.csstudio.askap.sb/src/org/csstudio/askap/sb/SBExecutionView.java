@@ -1,7 +1,6 @@
 package org.csstudio.askap.sb;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import org.csstudio.askap.sb.util.SBDataModel;
 import org.csstudio.askap.sb.util.SchedulingBlock;
 import org.csstudio.askap.sb.util.SchedulingBlock.SBState;
 import org.csstudio.askap.utility.AskapEditorInput;
-import org.csstudio.askap.utility.AskapHelper;
 import org.csstudio.askap.utility.icemanager.LogObject;
 import org.csstudio.askap.utility.icemanager.MonitorPointListener;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -25,16 +23,14 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
@@ -83,9 +79,10 @@ public class SBExecutionView extends EditorPart {
 	
 	private static final Map<SBState, Integer> STATE_COLOR_MAP = new HashMap<SBState, Integer>();
 	
-	private Composite parent = null;
-	
 	SBDataModel dataModel = new SBDataModel();
+	SBListener sbListener = new SBListener();
+	ExecutiveStatusListener executiveStatusListener = new ExecutiveStatusListener();
+	ExecutiveSummaryListener executiveSummaryListener = new ExecutiveSummaryListener();
 	
 	private String STATES[] = {SBState.COMPLETED.name(), SBState.ERRORED.name(), SBState.PENDINGTRANSFER.name(),
 			SBState.POSTPROCESSING.name()};
@@ -97,22 +94,167 @@ public class SBExecutionView extends EditorPart {
 		STATE_COLOR_MAP.put(SBState.EXECUTING, SWT.COLOR_DARK_GREEN);		
 	}
 	
-
-	public class SBListener implements DataChangeListener {
-		@Override
-		public void dataChanged(DataChangeEvent e) {
-			getParent().getDisplay().asyncExec(new Runnable() {					
+	
+	public class ExecutiveSummaryListener implements MonitorPointListener {
+		public void onUpdate(final MonitorPoint point) {
+			Display.getDefault().asyncExec(new Runnable() {					
 				public void run() {
-					executedTable.clearAll();
-					executedTable.setItemCount(dataModel.getExecutedSBCount());
-					scheduleTable.clearAll();
-					scheduleTable.setItemCount(dataModel.getScheduledSBCount());
+					ExecutiveSummaryHelper.getInstance().updateValue(point);
+				}
+			});
+		}
+
+		@Override
+		public void disconnected(final String pointName) {
+			Display.getDefault().asyncExec(new Runnable() {					
+				public void run() {
+					ExecutiveSummaryHelper.getInstance().disconnected(pointName);
+				}
+			});
+		}
+	}
+	
+	public class ExecutiveStatusListener implements MonitorPointListener {
+		@Override
+		public void onUpdate(final MonitorPoint point) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					if (point.value instanceof TypedValueBool) {
+						boolean running = ((TypedValueBool) point.value).value;
+						if (running) {
+							// set up the icon
+							status.setImage(Activator.GREEN_LED_IMAGE);
+							setupButtons(true);
+						} else {
+							// set up the icon
+							status.setImage(Activator.RED_LED_IMAGE);
+							setupButtons(false);
+						}
+					} else {
+						setupButtons(true);
+						status.setImage(Activator.GREY_LED_IMAGE);
+					}
+					ExecutiveSummaryHelper.getInstance().updateValue(point);
+				}
+			});
+		}
+		
+		@Override
+		public void disconnected(String pointName) {
+			Display.getDefault().asyncExec(new Runnable() {					
+				public void run() {
+//					disableAllButtons();
+					status.setImage(Activator.GREY_LED_IMAGE);
+				}
+			});
+		}
+	}
+	
+	public class SBListener {
+		
+		List<SchedulingBlock> executedList = new ArrayList<SchedulingBlock>();
+		List<SchedulingBlock> scheduledList = new ArrayList<SchedulingBlock>();
+		
+		public void updateScheduledTable(final List<SchedulingBlock> newScheduledList) {
+			Display.getDefault().asyncExec(new Runnable() {					
+				public void run() {
+					boolean needToUpdate = false;
+					if (newScheduledList.size()==scheduledList.size()) {
+						for (int i=0; i<newScheduledList.size(); i++) {
+							if (newScheduledList.get(i).getId() != scheduledList.get(i).getId()) {
+								scheduledList = newScheduledList;
+								needToUpdate = true;
+								break;
+							}
+						}
+					} else {
+						scheduledList = newScheduledList;
+						needToUpdate = true;
+					}
+
+					if (!needToUpdate)
+						return;
 					
-					executedTable.redraw();
-					scheduleTable.redraw();
+					scheduleTable.removeAll();
 					
+					for (int i=0; i<newScheduledList.size(); i++) {
+						SchedulingBlock sb = newScheduledList.get(i);
+		
+						SBState state = sb.getState();
+						TableItem item = new TableItem(scheduleTable, 0);
+						item.setText(new String[]{"" + sb.getId(), sb.getAliasName(), sb.getTemplateName(), 
+								"" + sb.getMajorVersion(), "" });
+						item.setData(sb.getId());
+						
+						if (state != null) {
+							if (SBState.EXECUTING.equals(state)) {
+								item.setImage(4, Activator.RUN_IMAGE);
+								item.setForeground(Display.getDefault().getSystemColor(STATE_COLOR_MAP.get(sb.getState())));
+							} else {
+								item.setText(new String[]{"" + sb.getId(), sb.getAliasName(), sb.getTemplateName(), 
+										"" + sb.getMajorVersion(), sb.getScheduledTime() });
+							}
+						}
+					}
+					
+					scheduleTable.redraw();		
+				}});
+		}
+		
+		public void updateExecutedTable(final List<SchedulingBlock> newExecutedList) {
+			Display.getDefault().asyncExec(new Runnable() {					
+				public void run() {
+					
+					boolean needToUpdate = false;
+					if (newExecutedList.size()==executedList.size()) {
+						for (int i=0; i<newExecutedList.size(); i++) {
+							if ((executedList.get(i))==null) {
+								executedList = newExecutedList;
+								needToUpdate = true;
+								break;
+							}
+							if (!newExecutedList.get(i).equals(executedList.get(i))) {
+								executedList = newExecutedList;
+								needToUpdate = true;
+								break;
+							}
+						}					
+					} else {
+						executedList = newExecutedList;
+						needToUpdate = true;
+					}
+					
+					if (!needToUpdate)
+						return;
+					
+					executedTable.removeAll();
+					long totalItems = Preferences.getSBExecutionMaxNumberSB();
+					if (Preferences.getSBExecutionMaxNumberSB() > executedList.size())
+						totalItems = executedList.size();
+					
+					
+					for (int i=0; i<totalItems; i++) {
+						SchedulingBlock sb = executedList.get(i);
+						TableItem item = new TableItem(executedTable, 0);
+		
+						String executeTime = "";
+						if (sb.getLastExecutedDate()!=null)
+							executeTime = sb.getLastExecutedDate();
+						
+						String duration = getStringDuration(sb.getLastExecutionDuration());
+						
+						item.setText(new String[]{"" + sb.getId(),  sb.getAliasName(), sb.getState().toString(), sb.getTemplateName(), sb.getExecutedVersion(), 
+								executeTime, duration, sb.getErrorMessageSummary()});
+						item.setData(sb.getId());
+						
+						if (STATE_COLOR_MAP.get(sb.getState())!=null)
+							item.setForeground(Display.getDefault().getSystemColor(STATE_COLOR_MAP.get(sb.getState())));
+						else
+							item.setBackground(null);						
+					}
+		
 					if (waitLabel.isVisible())
-						waitLabel.setVisible(false);
+						waitLabel.setVisible(false);	
 				}
 			});
 		}
@@ -151,15 +293,10 @@ public class SBExecutionView extends EditorPart {
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
-
-	private Composite getParent() {
-		return parent;
-	}
 	
 	@Override
 	public void createPartControl(Composite parent) {
 		setupExecutiveListener();
-		this.parent = parent;
 		
 		Composite page = new Composite(parent, SWT.NONE);
 		GridLayout gridLayout = new GridLayout(NUM_OF_COLUMNS, false);
@@ -225,7 +362,10 @@ public class SBExecutionView extends EditorPart {
 					reschedule();
 				} catch (Exception e) {
 					logger.log(Level.WARNING, "Could not reschedule", e);
-		            ExceptionDetailsErrorDialog.openError(getParent().getShell(),
+			        final IWorkbench workbench = PlatformUI.getWorkbench();
+			        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+
+		            ExceptionDetailsErrorDialog.openError(window.getShell(),
 		                    "ERROR",
 		                    "Could not reschedule",
 		                    e);
@@ -243,7 +383,7 @@ public class SBExecutionView extends EditorPart {
 		gd1.horizontalSpan = NUM_OF_COLUMNS;
 		scheduleTitle.setLayoutData(gd1);
 		
-		scheduleTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
+		scheduleTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER);
 		scheduleTable.setLinesVisible (true);
 		scheduleTable.setHeaderVisible (true);
 
@@ -261,10 +401,7 @@ public class SBExecutionView extends EditorPart {
 		
 		column = new TableColumn (scheduleTable, SWT.NONE);
 		column.setText ("Scheduled Time");
-		
-		scheduleTable.setItemCount(dataModel.getScheduledSBCount());
-		setTableSize(scheduleTable);
-		
+				
 		GridData g6 = new GridData();
 		g6.horizontalAlignment = GridData.FILL;	
 		g6.verticalAlignment = GridData.FILL;	
@@ -274,32 +411,6 @@ public class SBExecutionView extends EditorPart {
 		g6.horizontalSpan = NUM_OF_COLUMNS;
 		scheduleTable.setLayoutData(g6);
 		
-		scheduleTable.addListener(SWT.SetData, new Listener() {
-			public void handleEvent(Event event) {
-				TableItem item = (TableItem)event.item;
-				int index = event.index;
-				SchedulingBlock sb = dataModel.getScheduledSBAt(index);
-				long scheduledTime = sb.getScheduledTime();
-
-				if (sb != null) {
-					SBState state = sb.getState();
-					item.setText(new String[]{"" + sb.getId(), sb.getAliasName(), sb.getTemplateName(), 
-							"" + sb.getMajorVersion(), "" });
-					item.setData(sb.getId());
-					
-					if (state != null) {
-						if (SBState.EXECUTING.equals(state)) {
-							item.setImage(4, Activator.RUN_IMAGE);
-							item.setForeground(getParent().getDisplay().getSystemColor(STATE_COLOR_MAP.get(sb.getState())));
-						} else {
-							item.setText(new String[]{"" + sb.getId(), sb.getAliasName(), sb.getTemplateName(), 
-									"" + sb.getMajorVersion(), AskapHelper.getFormatedData(new Date(scheduledTime), null) });
-						}
-					}
-				}
-			}
-		});
-
 		scheduleTable.setToolTipText("You have to stop the Executive to enable '" + editButton.getText() + "' button to reschedule SB");
 
 		Label executedTitle = new Label(page, SWT.NONE);
@@ -331,7 +442,7 @@ public class SBExecutionView extends EditorPart {
 		waitLabel = new Label(page, SWT.NONE);
 		waitLabel.setImage(Activator.WAIT_IMAGE);		
 				
-		executedTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
+		executedTable = new Table(page, SWT.MULTI | SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER);
 		executedTable.setLinesVisible (true);
 		executedTable.setHeaderVisible (true);
 		
@@ -370,33 +481,6 @@ public class SBExecutionView extends EditorPart {
 		g3.horizontalSpan = NUM_OF_COLUMNS;
 		executedTable.setLayoutData(g3);
 		
-		executedTable.addListener(SWT.SetData, new Listener() {
-			public void handleEvent(Event event) {
-				TableItem item = (TableItem)event.item;
-				int index = event.index;
-				SchedulingBlock sb = dataModel.getExecutedSBAt(index);
-				if (sb != null) {
-					String executeTime = "";
-					if (sb.getLastExecutedDate()!=null)
-						executeTime = sb.getLastExecutedDate();
-					
-					String duration = getStringDuration(sb.getLastExecutionDuration());
-					
-					item.setText(new String[]{"" + sb.getId(),  sb.getAliasName(), sb.getState().toString(), sb.getTemplateName(), sb.getExecutedVersion(), 
-							executeTime, duration, sb.getErrorMessageSummary()});
-					item.setData(sb.getId());
-					
-					if (STATE_COLOR_MAP.get(sb.getState())!=null)
-						item.setForeground(getParent().getDisplay().getSystemColor(STATE_COLOR_MAP.get(sb.getState())));
-					else
-						item.setBackground(null);						
-					
-				}				
-			}
-		});
-	
-		
-
 		page.addControlListener(new ControlAdapter() {
 			public void controlResized(ControlEvent e) {
 				setTableSize(executedTable);
@@ -431,6 +515,7 @@ public class SBExecutionView extends EditorPart {
 		page.pack();
 		
 		setupListener();
+		start();
 //		disableAllButtons();
 	}
 
@@ -448,8 +533,6 @@ public class SBExecutionView extends EditorPart {
 			
 			@Override
 			public void partOpened(IWorkbenchPartReference partRef) {
-				if (isThisEditor(partRef))
-					start();
 			}
 			
 			@Override
@@ -491,63 +574,10 @@ public class SBExecutionView extends EditorPart {
 	}
 	
 	protected void start() {
-		dataModel.startSBPollingThread(new SBListener());
-
-		dataModel.addPointListener(new String[]{Preferences.getExecutiveMonitorPointName()},				
-			new MonitorPointListener() {
-				@Override
-				public void onUpdate(final MonitorPoint point) {
-					getParent().getDisplay().asyncExec(new Runnable() {					
-						public void run() {
-							if (point.value instanceof TypedValueBool) {
-								boolean running = ((TypedValueBool) point.value).value;
-								if (running) {
-									// set up the icon
-									status.setImage(Activator.GREEN_LED_IMAGE);
-									setupButtons(true);
-								} else {
-									// set up the icon
-									status.setImage(Activator.RED_LED_IMAGE);
-									setupButtons(false);
-								}
-							} else {
-								setupButtons(true);
-								status.setImage(Activator.GREY_LED_IMAGE);
-							}
-							ExecutiveSummaryHelper.getInstance().updateValue(point);
-						}
-					});
-				}
-				
-				@Override
-				public void disconnected(String pointName) {
-					getParent().getDisplay().asyncExec(new Runnable() {					
-						public void run() {
-//							disableAllButtons();
-							status.setImage(Activator.GREY_LED_IMAGE);
-						}
-					});
-				}});
+		dataModel.startSBPollingThread(sbListener);
+		dataModel.addPointListener(new String[]{Preferences.getExecutiveMonitorPointName()}, executiveStatusListener);
 		
-		dataModel.addPointListener(ExecutiveSummaryView.POINT_NAMES,				
-				new MonitorPointListener() {
-					public void onUpdate(final MonitorPoint point) {
-						getParent().getDisplay().asyncExec(new Runnable() {					
-							public void run() {
-								ExecutiveSummaryHelper.getInstance().updateValue(point);
-							}
-						});
-					}
-
-					@Override
-					public void disconnected(final String pointName) {
-						getParent().getDisplay().asyncExec(new Runnable() {					
-							public void run() {
-								ExecutiveSummaryHelper.getInstance().disconnected(pointName);
-							}
-						});
-					}
-			});	
+		dataModel.addPointListener(ExecutiveSummaryView.POINT_NAMES, executiveSummaryListener);	
 			
 		dataModel.startExecutiveLogSubscriber(new DataChangeListener() {
 			
@@ -580,12 +610,14 @@ public class SBExecutionView extends EditorPart {
 	protected void setupExecutiveListener() {
 		dataModel.setDataChangeListener(new DataChangeListener() {			
 			public void dataChanged(final DataChangeEvent event) {
-				getParent().getDisplay().asyncExec(new Runnable() {		
+				Display.getDefault().asyncExec(new Runnable() {		
 					public void run() {
 						Exception e = (Exception) event.getChange();				
 						if (e !=null ) {
 							logger.log(Level.WARNING, "Could not stop/abort Executive Service", e);
-				            ExceptionDetailsErrorDialog.openError(getParent().getShell(),
+					        final IWorkbench workbench = PlatformUI.getWorkbench();
+					        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+				            ExceptionDetailsErrorDialog.openError(window.getShell(),
 				                    "ERROR",
 				                    "Could not stop/abort Executive Service",
 				                    e);
@@ -636,7 +668,10 @@ public class SBExecutionView extends EditorPart {
 //			disableAllButtons();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not stop 'Executive Service'", e);
-            ExceptionDetailsErrorDialog.openError(getParent().getShell(),
+	        final IWorkbench workbench = PlatformUI.getWorkbench();
+	        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+
+            ExceptionDetailsErrorDialog.openError(window.getShell(),
                     "ERROR",
                     "Could not stop Executive Service",
                     e);
@@ -645,12 +680,14 @@ public class SBExecutionView extends EditorPart {
 	}
 
 	protected void startExecutive() {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		try {
 			dataModel.start();
 
 //			disableAllButtons();
 
-	        MessageBox messageBox = new MessageBox(getParent().getShell(), SWT.ICON_INFORMATION | SWT.OK);
+	        MessageBox messageBox = new MessageBox(window.getShell(), SWT.ICON_INFORMATION | SWT.OK);
 	        messageBox.setMessage("Executive service started");
 	        messageBox.open();
 	        
@@ -658,7 +695,7 @@ public class SBExecutionView extends EditorPart {
 	        
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not start 'Executive Service'", e);
-            ExceptionDetailsErrorDialog.openError(getParent().getShell(),
+            ExceptionDetailsErrorDialog.openError(window.getShell(),
                     "ERROR",
                     "Could not start Executive Service",
                     e);
@@ -671,7 +708,10 @@ public class SBExecutionView extends EditorPart {
 //			disableAllButtons();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not abort 'Executive Service'", e);
-            ExceptionDetailsErrorDialog.openError(getParent().getShell(),
+	        final IWorkbench workbench = PlatformUI.getWorkbench();
+	        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+
+            ExceptionDetailsErrorDialog.openError(window.getShell(),
                     "ERROR",
                     "Could not abot Executive Service",
                     e);
@@ -679,13 +719,16 @@ public class SBExecutionView extends EditorPart {
 	}
 	
 	protected void reschedule() throws Exception {
-		List<SchedulingBlock> toList = dataModel.getSBByState(new SBState[]{SchedulingBlock.SBState.SCHEDULED});
-		List<SchedulingBlock> fromList = dataModel.getSBByState(new SBState[]{SchedulingBlock.SBState.SUBMITTED});
+		List<SchedulingBlock> toList = dataModel.getSBByState(new SBState[]{SchedulingBlock.SBState.SCHEDULED}, "");
+		List<SchedulingBlock> fromList = dataModel.getSBByState(new SBState[]{SchedulingBlock.SBState.SUBMITTED}, "");
 		List<SchedulingBlock> allList = new ArrayList<SchedulingBlock>();
 		allList.addAll(fromList);
 		allList.addAll(toList);
 		
-		SchedulerDialog dialog = new SchedulerDialog(getParent().getShell(), fromList, toList);
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+
+		SchedulerDialog dialog = new SchedulerDialog(window.getShell(), fromList, toList);
 		toList = dialog.open();		
 		
 		// since the order in which the scheduling block are set to SCHEDULED, we need to change all the status 

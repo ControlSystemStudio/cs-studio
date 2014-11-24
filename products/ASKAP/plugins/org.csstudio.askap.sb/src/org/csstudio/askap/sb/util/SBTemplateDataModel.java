@@ -162,7 +162,9 @@ public class SBTemplateDataModel {
 	
 	
 	public SchedulingBlock getSB(long id) throws Exception {
-		return controller.getSchedulingBlock(id);
+		SchedulingBlock sb = controller.getSchedulingBlock(id);
+		controller.getObsVar(sb);
+		return sb;
 	}
 	/**
 	 * return all Scheduling Block for a particular template

@@ -20,8 +20,13 @@
 
 package org.csstudio.askap.sb.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.askap.sb.Preferences;
 
@@ -37,6 +42,8 @@ import org.csstudio.askap.sb.Preferences;
  */
 public class SchedulingBlock {
 	
+	private static final Logger logger = Logger.getLogger(SchedulingBlock.class.getName());
+
 	String aliasName;
 	long id = 0;
 	SBState state = null;
@@ -54,7 +61,7 @@ public class SchedulingBlock {
 	String errorMessageSummary = "";
 	String errorMessageFull = "";
 	
-	long scheduledTime = -1;
+	String scheduledTime = null;
 	
 	public enum SBState {
 	    DRAFT,	    
@@ -69,22 +76,70 @@ public class SchedulingBlock {
 	}
 	
 	
-	static public class SBComparator implements Comparator<SchedulingBlock> {
+	static public class SBNameComparator implements Comparator<SchedulingBlock> {
 
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
 		public int compare(SchedulingBlock o1, SchedulingBlock o2) {
 			return o1.aliasName.compareTo(o2.aliasName);
-		}
-		
+		}		
 	}
 
-	public long getScheduledTime() {
+	static public class SBExecutionTimeComparator implements Comparator<SchedulingBlock> {
+		private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		public int compare(SchedulingBlock o1, SchedulingBlock o2) {
+			Date d1 = getExecutionDate(o1);
+			Date d2 = getExecutionDate(o2);
+			
+			if (d1==null&&d2==null) {
+				return o1.aliasName.compareTo(o2.aliasName);
+			} else if (d1==null&&d2!=null) {
+				return -1;
+			} else if (d1!=null&&d2==null) {
+				return 1;
+			} else {
+				return d1.compareTo(d2);
+			}
+		}
+		
+		private Date getExecutionDate(SchedulingBlock s) {
+			// use last execution date if there one, otherwise use scheduled date
+			String lastDateStr = s.getLastExecutedDate();
+			Date lastExecutedDate = null;
+			if (lastDateStr!=null && !lastDateStr.trim().isEmpty()) {
+				try {
+					lastExecutedDate = formatter.parse(lastDateStr);
+				} catch (ParseException e) {
+					logger.log(Level.WARNING, "Could not parse date for " + s.getId() 
+							+ " " + s.getAliasName() + " " + lastDateStr, e);
+				}
+			} else {
+				if (s.getScheduledTime()!=null && !s.getScheduledTime().isEmpty()) {
+					try {
+						lastExecutedDate = formatter.parse(s.getScheduledTime());
+					} catch (ParseException e) {
+						logger.log(Level.WARNING, "Could not parse date for " + s.getId() + " " 
+								+ s.getAliasName() + " " + s.getScheduledTime(), e);
+					}
+				}
+			}
+			
+			return lastExecutedDate;
+		}
+	}
+
+	
+	public String getScheduledTime() {
 		return scheduledTime;
 	}
 
-	public void setScheduledTime(long scheduledTime) {
+	public void setScheduledTime(String scheduledTime) {
 		this.scheduledTime = scheduledTime;
 	}
 
@@ -297,8 +352,20 @@ public class SchedulingBlock {
 		if (obj instanceof SchedulingBlock) {
 			SchedulingBlock sb = (SchedulingBlock) obj;
 			
-			if (sb.id == this.id)
-				return true;
+			if (sb.id != this.id)
+				return false;
+			
+			if (!sb.aliasName.equals(aliasName))
+				return false;
+			
+			if (sb.lastExecutionDuration != lastExecutionDuration)
+				return false;			
+			
+			if (!sb.lastExecutedDate.equals(lastExecutedDate))
+				return false;
+			
+			if (!sb.state.equals(state))
+				return false;
 		}
 		
 		return super.equals(obj);

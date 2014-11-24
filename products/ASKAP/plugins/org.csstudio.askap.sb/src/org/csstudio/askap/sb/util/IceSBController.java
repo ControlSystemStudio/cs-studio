@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.csstudio.askap.sb.Preferences;
@@ -35,8 +35,6 @@ import org.csstudio.askap.utility.icemanager.IceManager;
 import askap.interfaces.schedblock.IObsProgramServicePrx;
 import askap.interfaces.schedblock.ISBTemplateServicePrx;
 import askap.interfaces.schedblock.ISchedulingBlockServicePrx;
-import askap.interfaces.schedblock.NoSuchObsProgramException;
-import askap.interfaces.schedblock.ObsProgram;
 import askap.interfaces.schedblock.ObsState;
 import askap.interfaces.schedblock.SBTemplateStatus;
 import askap.interfaces.schedblock.SchedulingBlockInfo;
@@ -130,13 +128,7 @@ public class IceSBController {
 			sbProxy = IceManager.getSBServiceProxy(Preferences.getSBIceName());
 		
 		long idList[] = sbProxy.getByTemplate(templateName, (int) majorVersion);
-		List<SchedulingBlock> sbList = getSchedulingBlocks(idList);
-
-		return sbList;
-	}
-
-	public List<SchedulingBlock> getSchedulingBlocks(long ids[]) throws Exception {
-		return getSchedulingBlocks(ids, -1);
+		return getSchedulingBlocks(idList);
 	}
 
 	public SchedulingBlock getSchedulingBlock(long id) throws Exception {
@@ -159,39 +151,41 @@ public class IceSBController {
 		sb.setState(getObsState(sbInfo.state));
 		sb.setTemplateName(sbInfo.templateName);
 		sb.setMajorVersion(sbInfo.templateVersion);
-
 		
 		sb.setParameterMap(sbProxy.getObsParameters(id));
-		sb.setScheduledTime((long) Math.floor(sbProxy.getScheduledTime(id)*1000));
-		
+		sb.setScheduledTime(sbInfo.scheduledTime);
+
+/*		
 		Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");
 		sb.setObsVariable(obsVarMap);
-		sbList.add(sb);
-			
+*/
+		sbList.add(sb);			
 		
 		return sb;
 
 	}
 
+	public void getObsVar(SchedulingBlock sb) throws Exception {		
+		Map<String, String> obsVarMap = sbProxy.getObsVariables(sb.id, "");
+		sb.setObsVariable(obsVarMap);
+	}
+
 	
-	/* (non-Javadoc)
-	 * @see askap.ui.operatordisplay.controller.SBController#getSchedulingBlock(long[], long)
-	 * if maxNumber >=0 return at most maxNumber of SB
-	 * if maxNumber == -1, return all
-	 */
-		public List<SchedulingBlock> getSchedulingBlocks(long ids[], long maxNumber) throws Exception {
+	public void getObsVar(List<SchedulingBlock> sbList) throws Exception {		
+		for (SchedulingBlock sb : sbList) {
+			Map<String, String> obsVarMap = sbProxy.getObsVariables(sb.id, "");
+			sb.setObsVariable(obsVarMap);
+		}
+	}
+	
+	public List<SchedulingBlock> getSchedulingBlocks(long ids[]) throws Exception {
 		if (sbProxy==null)
 			sbProxy = IceManager.getSBServiceProxy(Preferences.getSBIceName());
 		
 		
-		List<SchedulingBlock> sbList = new ArrayList<SchedulingBlock>();		
+		List<SchedulingBlock> sbList = new ArrayList<SchedulingBlock>();
 		List<SchedulingBlockInfo> sbInfos = sbProxy.getMany(ids);
-		Collections.reverse(sbInfos);
-		
-		long size = sbInfos.size();
-		if (maxNumber>0 && maxNumber<size)
-			size = maxNumber;
-		
+				
 		for (SchedulingBlockInfo sbInfo : sbInfos) {
 			
 			long id = sbInfo.id;
@@ -202,22 +196,16 @@ public class IceSBController {
 			sb.setState(getObsState(sbInfo.state));
 			sb.setTemplateName(sbInfo.templateName);
 			sb.setMajorVersion(sbInfo.templateVersion);
+			
+			sb.setScheduledTime(sbInfo.scheduledTime);
+			sb.setLastExecutedDate(sbInfo.startTime);
 
-			
-			sb.setScheduledTime((long) Math.floor(sbProxy.getScheduledTime(id)*1000));
-			
-			Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");
-			sb.setObsVariable(obsVarMap);
 			sbList.add(sb);
-			
-			if (sbList.size()==maxNumber)
-				break;
 		}
 		
 		return sbList;
 	}
 	
-
 	/* (non-Javadoc)
 	 * @see askap.ui.operatordisplay.controller.SBController#getTemplate(long)
 	 */
@@ -294,7 +282,7 @@ public class IceSBController {
 		return newid;
 	}
 
-	public List<SchedulingBlock> getSBByState(SBState states[], long maxNumber) throws Exception {
+	public List<SchedulingBlock> getSBByState(SBState states[], String lastUpdate) throws Exception {
 		if (sbProxy==null)
 			sbProxy = IceManager.getSBServiceProxy(Preferences.getSBIceName());
 		
@@ -305,16 +293,11 @@ public class IceSBController {
 				obsStates[i] = STATE_MAP.get(states[i]);
 			
 			long idList[] = sbProxy.getByState(obsStates);
-			sbList = getSchedulingBlocks(idList, maxNumber);
+			if (idList!=null && idList.length>0)
+				sbList = getSchedulingBlocks(idList);
 		}
 		
 		return sbList;		
-	}
-	/* (non-Javadoc)
-	 * @see askap.ui.operatordisplay.controller.SBController#getSBByState(askap.ui.operatordisplay.util.SchedulingBlock.SBState)
-	 */
-	public List<SchedulingBlock> getSBByState(SBState states[]) throws Exception {
-		return getSBByState(states, -1);
 	}
 
 	/* (non-Javadoc)

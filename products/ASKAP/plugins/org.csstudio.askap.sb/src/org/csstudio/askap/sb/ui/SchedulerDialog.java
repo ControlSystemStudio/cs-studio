@@ -72,7 +72,7 @@ public class SchedulerDialog extends Dialog {
 	
 	private static final String DND_DELIMITER = ":";
 	
-	TreeSet<SchedulingBlock> fromList = new TreeSet<SchedulingBlock>(new SchedulingBlock.SBComparator());
+	TreeSet<SchedulingBlock> fromList = new TreeSet<SchedulingBlock>(new SchedulingBlock.SBNameComparator());
 	List<SchedulingBlock> toList = new ArrayList<SchedulingBlock>();
 	
 	Map<Long, SchedulingBlock> allList = new HashMap<Long, SchedulingBlock>();

@@ -20,8 +20,13 @@
 
 package org.csstudio.askap.sb.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,12 +43,12 @@ import org.csstudio.askap.utility.icemanager.MonitorPointListener;
 public class SBDataModel {
 	
 	private static final Logger logger = Logger.getLogger(SBDataModel.class.getName());
+	private static final SimpleDateFormat ISO8601 = new SimpleDateFormat("YYYY-MM-dd'T'hh:mm:ss'Z'");
+
 	
-	// first element is the SB that's currently running
-	List<SchedulingBlock> executedSBList = new ArrayList<SchedulingBlock>();
-	
-	// list SB in the scheduling queue
-	List<SchedulingBlock> scheduledList = new ArrayList<SchedulingBlock>();
+	// a cached list of all SB
+	private static TreeSet<SchedulingBlock> sbList = new TreeSet<SchedulingBlock>(new SchedulingBlock.SBExecutionTimeComparator());;
+	private static Date lastUpdate = null;
 
 	IceSBController sbController = new IceSBController();
 	IceExecutiveController executiveController = new IceExecutiveController();
@@ -61,39 +66,30 @@ public class SBDataModel {
 		executivelogController = new IceExecutiveLogController(Preferences.getExecutiveLogSubscriberName(),
 										Preferences.getExecutiveLogTopicName(),
 										Preferences.getExecutiveLogOrigin());
+		
+		ISO8601.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		// no need to refresh the sbList if it's not empty
+		if (!sbList.isEmpty())
+			return;
+		
+		List<SchedulingBlock> updatedList = null;
+		try {
+			updatedList = getSBByState(getStates(), "");
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Could not retrieve all the scheduling blocks");
+		}
+		
+		if (updatedList!=null) {
+			for (SchedulingBlock sb : updatedList) {
+				sbList.add(sb);
+			}		
+		}
 	}
 
 	public void setDataChangeListener(DataChangeListener listener) {
 		this.dataChangeListener = listener;
 		executiveController.setDataChangedListener(dataChangeListener);
-	}
-	
-	public int getExecutedSBCount() {
-		if (executedSBList==null)
-			return 0;
-		
-		return executedSBList.size();
-	}
-	
-	public int getScheduledSBCount() {
-		if (scheduledList==null)
-			return 0;
-		
-		return scheduledList.size();
-	}
-	
-	public SchedulingBlock getExecutedSBAt(int index) {
-		if (index<0 || index>executedSBList.size())
-			return null;
-		
-		return executedSBList.get(index);
-	}
-	
-	public SchedulingBlock getScheduledSBAt(int index) {
-		if (index<0 || index>scheduledList.size())
-			return null;
-		
-		return scheduledList.get(index);
 	}
 	
 	public void startSBPollingThread(final SBListener pollingThreadListener) {
@@ -102,16 +98,15 @@ public class SBDataModel {
 				synchronized (pollingThreadLock) {
 					while (keepRunning) {				
 						try {
+							pollingThreadListener.updateScheduledTable(processScheduledList());
 							String states[] = pollingThreadListener.getStates();
-							
-							boolean b1 = processScheduledList();
-							boolean b2 = processFinishedList(states);
-							if (b1 || b2) {
-								DataChangeEvent event = new DataChangeEvent();
-								pollingThreadListener.dataChanged(event);
-							}
+							pollingThreadListener.updateExecutedTable(processFinishedList(states));
+
+							refreshSBList();							
+
 							numberOfRetries = 1;
 							pollingThreadLock.wait(Preferences.getSBExecutionStatePollingPeriod());
+							
 						} catch (Exception e) {
 							try {
 								pollingThreadLock.wait(Preferences.getSBExecutionStatePollingPeriod()*numberOfRetries);
@@ -176,62 +171,84 @@ public class SBDataModel {
 		}
 	}
 	
-	protected boolean processFinishedList(String stateStr[]) throws Exception {
-		SBState states[] = new SBState[stateStr.length];
-		for (int i=0; i<stateStr.length; i++)
-			states[i] = SBState.valueOf(stateStr[i]);
-		
-		// if scheduled list has changed, notify the listener
-		// also only display the given max number of sb
-		List<SchedulingBlock> finishedSB = getSBByState(states, Preferences.getSBExecutionMaxNumberSB());
-		
-		if (finishedSB!=null) {
-			if (finishedSB.size()==executedSBList.size()) {
-				for (int i=0; i<finishedSB.size(); i++) {
-					if (!finishedSB.get(i).equals(executedSBList.get(i))) {
-						executedSBList = finishedSB;
-						return true;
-					}
-				}					
-			} else {
-				executedSBList = finishedSB;
-				return true;
+	private void refreshSBList() {
+		String lastUpdateStr = "";
+		Date beforeUpdate = new Date();
+
+		if (lastUpdate!=null)
+			lastUpdateStr = ISO8601.format(lastUpdate);
+
+		try {
+			List<SchedulingBlock> updatedList = getSBByState(getStates(), lastUpdateStr);
+			sbController.getObsVar(updatedList);
+			
+			lastUpdate = beforeUpdate;
+
+			if (updatedList==null || updatedList.isEmpty())
+				return;
+			
+			// remove all the SchedulingBlock in the updatedList first
+			// then add them all again to make sure order and info are correct
+			List<Long> sbIdList = new ArrayList<Long>();
+			for (SchedulingBlock sb : updatedList) {
+				sbIdList.add(sb.id);
 			}
-		} else {
-			executedSBList = finishedSB;
-			return true;
+			
+			SchedulingBlock tempList[] = sbList.toArray(new SchedulingBlock[]{});
+			for (SchedulingBlock sb : tempList) {
+				if (sbIdList.contains(sb.id))
+					sbList.remove(sb);
+			}
+			
+			for (SchedulingBlock sb : updatedList) {
+				sbList.add(sb);
+			}		
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Could not retrieve SB: ", e);
+		}
+	}
+	 
+	/*
+	 * works out if the given state is in the list of stateStr
+	 */
+	private boolean inState(String stateList[], SBState state) {
+		for (String s : stateList) {
+			if (s.equals(state.name()))
+				return true;
 		}
 		
 		return false;
 	}
-
-	protected boolean processScheduledList() throws Exception {
-		// if scheduled list has changed, notify the listener
-		List<SchedulingBlock> newScheduledList = getSBByState(new SBState[]{SBState.SCHEDULED});
+	
+	protected List<SchedulingBlock> processFinishedList(String stateList[]) throws Exception {
+		// cull by states
+		List<SchedulingBlock> finishedList = new ArrayList<SchedulingBlock>();
 		
-		List<SchedulingBlock> runningList = getSBByState(new SBState[] {SBState.EXECUTING});
-		
-		if (newScheduledList!=null) {
-			// add currently running one at the beginning
-			newScheduledList.addAll(0, runningList);
-			if (newScheduledList.size()==scheduledList.size()) {
-				for (int i=0; i<newScheduledList.size(); i++) {
-					if (newScheduledList.get(i).getId() != scheduledList.get(i).getId()) {
-						scheduledList = newScheduledList;
-						return true;
-					}
-				}
-			} else {
-				scheduledList = newScheduledList;
-				return true;
-			}
-		} else {
-			if (scheduledList!=null)
-				scheduledList = runningList;
-			return true;
+		for (Iterator<SchedulingBlock> iter = sbList.descendingIterator(); iter.hasNext();) {
+			SchedulingBlock sb = iter.next();
+			if (inState(stateList, sb.state))
+				finishedList.add(sb);
 		}
 		
-		return false;
+		return finishedList;
+	}
+
+	protected List<SchedulingBlock> processScheduledList() throws Exception {
+
+		List<SchedulingBlock> scheduledList = new ArrayList<SchedulingBlock>();
+		List<SchedulingBlock> runningList = new ArrayList<SchedulingBlock>();
+
+		for (Iterator<SchedulingBlock> iter = sbList.iterator(); iter.hasNext();) {
+			SchedulingBlock sb = iter.next();
+			if (sb.state.equals(SBState.SCHEDULED))
+				scheduledList.add(sb);
+			
+			if (sb.state.equals(SBState.EXECUTING))
+				runningList.add(sb);
+		}
+		scheduledList.addAll(0, runningList);
+
+		return scheduledList;
 	}
 
 	/**
@@ -259,16 +276,8 @@ public class SBDataModel {
 	 * @param 
 	 * @return sbs for the given list of sbstates
 	 */
-	public List<SchedulingBlock> getSBByState(SBState states[]) throws Exception {
-		return sbController.getSBByState(states);
-	}
-
-	/**
-	 * @param 
-	 * @return maxNumber of sbs for the given list of sbstates
-	 */
-	public List<SchedulingBlock> getSBByState(SBState states[], long maxNumber) throws Exception {
-		return sbController.getSBByState(states, maxNumber);
+	public List<SchedulingBlock> getSBByState(SBState states[], String lastUpdate) throws Exception {
+		return sbController.getSBByState(states, lastUpdate);
 	}
 
 	/**
@@ -277,5 +286,24 @@ public class SBDataModel {
 	 */
 	public void setSBState(long id, SBState state) throws Exception {
 		sbController.setSBState(id, state);
+	}
+	
+	private SBState[] getStates() {
+		// get all the states except 	DRAFT and RETIRED
+		SBState[] allStates = SBState.values();
+		SBState[] states = new SBState[allStates.length-2];
+		int i = 0;
+		for (SBState state : allStates) {
+			if (SBState.RETIRED.equals(state) || 
+					SBState.DRAFT.equals(state)) {
+				// skip
+				continue;
+			}
+			
+			states[i] = state;
+			i++;
+		}
+		
+		return states;
 	}
 }

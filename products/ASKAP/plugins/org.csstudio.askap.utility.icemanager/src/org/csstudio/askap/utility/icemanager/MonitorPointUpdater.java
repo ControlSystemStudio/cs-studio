@@ -50,7 +50,8 @@ public class MonitorPointUpdater {
 			}
 		});
 		
-		updateThread.start();
+		if (!listeners.isEmpty())
+			updateThread.start();
 	}
 
 }
