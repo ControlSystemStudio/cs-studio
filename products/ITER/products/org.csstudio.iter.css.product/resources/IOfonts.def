@@ -1,26 +1,23 @@
-IO Normal = arial-regular-10
-IO Title = arial-bold-14
-IO SubTitle = arial-bold-12
+# HMI Design Guide Styles
+IO Title = DejaVu Sans Mono-regular-36
+IO SubTitle = DejaVu Sans Mono-regular-32
+IO Label = DejaVu Sans Mono-regular-26
+IO Label bold = DejaVu Sans Mono-bold-26
+IO Scale = DejaVu Sans Mono-regular-20
 
-IO Label 1 = arial-regular-10
-IO Label 2 = arial-regular-9
-IO Label 3 = arial-regular-8
+# Default Style
+IO Normal = DejaVu Sans Mono-regular-26
 
-IO Input 1 = arial-bold-10
-IO Input 2 = arial-bold-9
-IO Output 1 = arial-bold-10
-IO Output 2 = arial-bold-9
+# Supported Font Sizes
+IO Label 1 = DejaVu Sans Mono-regular-24
+IO Label 2 = DejaVu Sans Mono-regular-22
+IO Label 3 = DejaVu Sans Mono-regular-20
 
-IO Scale 1 = arial-regular-10
-IO Scale 2 = arial-regular-9
-IO Scale 3 = arial-regular-8
+IO Input 1 = DejaVu Sans Mono-regular-26
+IO Input 2 = DejaVu Sans Mono-regular-24
+IO Output 1 = DejaVu Sans Mono-regular-26
+IO Output 2 = DejaVu Sans Mono-regular-24
 
-
-Header = arial-bold-12
-Header2 = arial-bold-10
-Header3 = arial-regular-10
-Text = arial-regular-10
-Msg = arial-regular-8
-Msg2 = carial-bold-7
-LinkText = arial-italic-10
-
+IO Scale 1 = DejaVu Sans Mono-regular-24
+IO Scale 2 = DejaVu Sans Mono-regular-22
+IO Scale 3 = DejaVu Sans Mono-regular-20
