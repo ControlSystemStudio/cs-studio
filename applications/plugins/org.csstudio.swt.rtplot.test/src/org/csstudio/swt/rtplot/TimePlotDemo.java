@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 
 import org.csstudio.swt.rtplot.util.RGBFactory;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -37,12 +39,16 @@ public class TimePlotDemo
         for (Handler handler : logger.getHandlers())
             handler.setLevel(logger.getLevel());
 
-        Display display = new Display();
-        Shell shell = new Shell(display);
+        final Display display = new Display();
+        final Shell shell = new Shell(display);
         shell.setLayout(new FillLayout());
         shell.setSize(600, 700);
 
         final RTTimePlot plot = new RTTimePlot(shell);
+
+        final String font_name = shell.getFont().getFontData()[0].getName();
+        plot.setLabelFont(new FontData(font_name, 12, SWT.BOLD));
+        plot.setScaleFont(new FontData(font_name, 8, SWT.ITALIC));
 
         plot.setUpdateThrottle(200, TimeUnit.MILLISECONDS);
 
@@ -62,7 +68,7 @@ public class TimePlotDemo
 
         final AtomicBoolean run = new AtomicBoolean(true);
         // Update data at 50Hz
-        Thread update_data = new Thread(() ->
+        final Thread update_data = new Thread(() ->
         {
             while (run.get())
             {

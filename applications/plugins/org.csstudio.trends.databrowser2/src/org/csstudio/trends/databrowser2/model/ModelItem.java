@@ -317,7 +317,7 @@ abstract public class ModelItem implements Cloneable
             model.addAxis();
         axis = model.getAxis(axis_index);
         line_width = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_LINEWIDTH, line_width);
-        rgb = XMLPersistence.loadColorFromDocument(node);
+        rgb = XMLPersistence.loadColorFromDocument(node).orElse(null);
         String type = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TRACE_TYPE, TraceType.AREA.name());
         try
         {   // Replace XYGraph types with currently supported types

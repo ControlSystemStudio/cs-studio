@@ -33,7 +33,10 @@ import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /** Data Browser model
  *  <p>
@@ -60,7 +63,7 @@ public class Model
     final private RGBFactory default_colors = new RGBFactory();
 
     /** Macros */
-    private IMacroTableProvider macros = new MacroTable(Collections.emptyMap());
+    private volatile IMacroTableProvider macros = new MacroTable(Collections.emptyMap());
 
     /** Listeners to model changes */
     final private List<ModelListener> listeners = new CopyOnWriteArrayList<>();
@@ -75,38 +78,50 @@ public class Model
      *  @see #start()
      *  @see #stop()
      */
-    private boolean is_running = false;
+    private volatile boolean is_running = false;
 
     /** Period in seconds for scrolling or refreshing */
-    private double update_period = Preferences.getUpdatePeriod();
+    private volatile double update_period = Preferences.getUpdatePeriod();
 
     /** <code>true</code> if scrolling is enabled */
     private volatile boolean scroll_enabled = true;
 
     /** Start and end time specification */
-    private String start_spec, end_spec;
+    private volatile String start_spec, end_spec;
 
     /** Time span of data in seconds */
-    private Duration time_span = Preferences.getTimeSpan();
+    private volatile Duration time_span = Preferences.getTimeSpan();
 
     /** End time of the data range */
-    private Instant end_time = Instant.now();
+    private volatile Instant end_time = Instant.now();
 
     private final int futureBufferInSeconds = Preferences.getFutureBuffer();
 
     private final boolean automaticHistoryRefresh = Preferences.isAutomaticHistoryRefresh();
 
     /** Background color */
-    private RGB background = new RGB(255, 255, 255);
+    private volatile RGB background = new RGB(255, 255, 255);
+
+    /** Label font */
+    private volatile FontData label_font = new FontData("", 10, 0);
+
+    /** Scale font */
+    private volatile FontData scale_font = new FontData("", 10, 0);
 
     /** Annotations */
-	private List<AnnotationInfo> annotations = Collections.emptyList();
+	private volatile List<AnnotationInfo> annotations = Collections.emptyList();
 
     /** How should plot rescale when archived data arrives? */
-    private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
+    private volatile ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
 	public Model()
 	{
+	    final Display display = Display.getCurrent();
+	    if (display != null)
+	    {
+	        label_font = display.getSystemFont().getFontData()[0];
+	        scale_font = new FontData(label_font.getName(), label_font.getHeight()-1, SWT.NORMAL);
+	    }
 		start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
 		end_spec = RelativeTime.NOW;
 	}
@@ -620,7 +635,35 @@ public class Model
             return;
         background = rgb;
         for (ModelListener listener : listeners)
-            listener.changedColors();
+            listener.changedColorsOrFonts();
+    }
+
+    /** @return Label font */
+    public FontData getLabelFont()
+    {
+        return label_font;
+    }
+
+    /** @param font Label font */
+    public void setLabelFont(final FontData font)
+    {
+        label_font = font;
+        for (ModelListener listener : listeners)
+            listener.changedColorsOrFonts();
+    }
+
+    /** @return Scale font */
+    public FontData getScaleFont()
+    {
+        return scale_font;
+    }
+
+    /** @param font Scale font */
+    public void setScaleFont(final FontData font)
+    {
+        scale_font = font;
+        for (ModelListener listener : listeners)
+            listener.changedColorsOrFonts();
     }
 
     /** @param annotations Annotations to keep in model */

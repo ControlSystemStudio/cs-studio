@@ -207,7 +207,7 @@ public class DataBrowserEditor extends EditorPart
             {   setDirty(true);   }
 
             @Override
-            public void changedColors()
+            public void changedColorsOrFonts()
             {   setDirty(true);   }
 
             @Override

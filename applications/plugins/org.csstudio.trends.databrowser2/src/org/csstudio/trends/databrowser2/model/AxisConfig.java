@@ -273,9 +273,7 @@ public class AxisConfig
 	    final String name = DOMHelper.getSubelementString(node, XMLPersistence.TAG_NAME);
 	    final boolean use_trace_names = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_USE_TRACE_NAMES, true);
 	    final boolean right = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_RIGHT, false);
-	    RGB rgb = XMLPersistence.loadColorFromDocument(node);
-	    if (rgb == null)
-	        rgb = new RGB(0, 0, 0);
+	    final RGB rgb = XMLPersistence.loadColorFromDocument(node).orElse(new RGB(0, 0, 0));
 	    final double min = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_MIN, 0.0);
 	    final double max = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_MAX, 10.0);
 	    final boolean auto_scale = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_AUTO_SCALE, false);

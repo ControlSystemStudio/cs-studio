@@ -21,6 +21,7 @@ import org.csstudio.swt.rtplot.internal.util.GraphicsUtils;
 import org.csstudio.swt.rtplot.internal.util.IntList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -167,19 +168,20 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
 
     /** {@inheritDoc */
     @Override
-    public int getDesiredPixelSize(final Rectangle region, final GC gc)
+    public int getDesiredPixelSize(final Rectangle region, final GC gc, final Font label_font, final Font scale_font)
     {
         Activator.getLogger().log(Level.FINE, "YAxis({0}) layout for {1}", new Object[] { getName(),  region });
 
         if (! isVisible())
             return 0;
 
+        gc.setFont(label_font);
         final int x_sep = gc.getFontMetrics().getHeight();
         // Start layout of labels at x=0, 'left',
         // to determine how many fit into one line.
         // Later update these relative x positions based on 'left' or 'right' axis.
         int x = 0;
-        int lines = 1;
+        int lines = 0;
         label_provider.start();
         label_x.clear();
         label_y.clear();
@@ -188,6 +190,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
             final int label_length = gc.textExtent(getName()).x;
             label_x.add(x);
             label_y.add(region.y + (region.height - label_length)/2);
+            ++lines;
         }
         else
         {   // Compute layout of labels
@@ -236,12 +239,15 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
             }
         }
 
-        final int x_correction = is_right ? region.x + region.width - (lines-1)*x_sep : region.x;
+        final int x_correction = is_right ? region.x + region.width - lines*x_sep : region.x;
         for (int i=label_x.size()-1; i>=0; --i)
             label_x.set(i, label_x.get(i) + x_correction);
 
+        gc.setFont(scale_font);
+        final int scale_size = gc.getFontMetrics().getHeight();
+
         // Width of labels, width of axis text, tick markers.
-        return lines *x_sep + TICK_LENGTH;
+        return lines * x_sep + scale_size + TICK_LENGTH;
     }
 
     /** Paint the axis.
@@ -250,7 +256,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
      *  @param event Clipping information from the paint event is used for optimization)
      */
     @Override
-    public void paint(final GC gc, final SWTMediaPool media)
+    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font)
     {
         if (! isVisible())
             return;
@@ -280,6 +286,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         gc.drawLine(line_x, region.y, line_x, region.y + region.height-1);
         computeTicks(gc);
 
+        gc.setFont(scale_font);
         final double low_value = range.getLow();
         final double high_value = range.getHigh();
         final int minor_ticks = ticks.getMinorTicks();
@@ -323,6 +330,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         gc.setForeground(old_fg);
         gc.setBackground(old_bg);
 
+        gc.setFont(label_font);
         paintLabel(gc, media);
     }
 

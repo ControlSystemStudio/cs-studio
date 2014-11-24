@@ -366,9 +366,11 @@ public class Controller
             }
 
             @Override
-            public void changedColors()
+            public void changedColorsOrFonts()
             {
                 plot.getPlot().setBackground(model.getPlotBackground());
+                plot.getPlot().setLabelFont(model.getLabelFont());
+                plot.getPlot().setScaleFont(model.getScaleFont());
             }
 
             @Override
@@ -485,6 +487,8 @@ public class Controller
         createUpdateTask();
 
         plot.getPlot().setBackground(model.getPlotBackground());
+        plot.getPlot().setLabelFont(model.getLabelFont());
+        plot.getPlot().setScaleFont(model.getScaleFont());
         plot.getPlot().setScrollPeriod(Math.round(model.getUpdatePeriod() * 1000));
 
         final List<Trace<Instant>> traces = new ArrayList<>();

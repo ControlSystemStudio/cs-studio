@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,6 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
@@ -29,6 +31,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -73,6 +76,8 @@ public class XMLPersistence
     final public static String TAG_MAX = "max";
     final public static String TAG_MIN = "min";
     final public static String TAG_BACKGROUND = "background";
+    final public static String TAG_LABEL_FONT = "label_font";
+    final public static String TAG_SCALE_FONT = "scale_font";
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
@@ -84,10 +89,6 @@ public class XMLPersistence
     final public static String TAG_TIME = "time";
     final public static String TAG_VALUE = "value";
     final public static String TAG_WAVEFORM_INDEX = "waveform_index";
-
-
-    public static final String TAG_FONT = "font";
-    public static final String TAG_SCALE_FONT = "scale_font";
 
     final public static String TAG_TIME_AXIS = "time_axis";
 
@@ -136,9 +137,9 @@ public class XMLPersistence
             // Ignore
         }
 
-        RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
-        if (color != null)
-            model.setPlotBackground(color);
+        loadColorFromDocument(root_node, TAG_BACKGROUND).ifPresent(model::setPlotBackground);
+        loadFontFromDocument(root_node, TAG_LABEL_FONT).ifPresent(model::setLabelFont);
+        loadFontFromDocument(root_node, TAG_SCALE_FONT).ifPresent(model::setScaleFont);
 
         // Value Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
@@ -167,7 +168,7 @@ public class XMLPersistence
                     {
                         final String name = DOMHelper.getSubelementString(item, "title", null);
                         final AxisConfig axis = new AxisConfig(name);
-                        axis.setColor(loadColorFromDocument(item, "foregroundColor"));
+                        loadColorFromDocument(item, "foregroundColor").ifPresent(axis::setColor);
                         axis.setLogScale(DOMHelper.getSubelementBoolean(item, "logScale", false));
                         axis.setAutoScale(DOMHelper.getSubelementBoolean(item, "autoScale", false));
                         final Element range = DOMHelper.findFirstElementNode(item.getFirstChild(), "range");
@@ -253,9 +254,7 @@ public class XMLPersistence
                 if (! model_items.hasNext())
                     break;
                 final ModelItem pv = model_items.next();
-                color = loadColorFromDocument(item, "traceColor");
-                if (color != null)
-                    pv.setColor(color);
+                loadColorFromDocument(item, "traceColor").ifPresent(pv::setColor);
                 pv.setLineWidth(DOMHelper.getSubelementInt(item, "lineWidth", pv.getLineWidth()));
                 pv.setDisplayName(DOMHelper.getSubelementString(item, "name", pv.getDisplayName()));
                 item = DOMHelper.findNextElementNode(item, "traceSettingsList");
@@ -265,9 +264,9 @@ public class XMLPersistence
 
     /** Load RGB color from XML document
      *  @param node Parent node of the color
-     *  @return RGB or <code>null</code> if no color found
+     *  @return RGB
      */
-    public static RGB loadColorFromDocument(final Element node)
+    public static Optional<RGB> loadColorFromDocument(final Element node)
     {
         return loadColorFromDocument(node, TAG_COLOR);
     }
@@ -275,20 +274,33 @@ public class XMLPersistence
     /** Load RGB color from XML document
      *  @param node Parent node of the color
      *  @param color_tag Name of tag that contains the color
-     *  @return RGB or <code>null</code> if no color found
+     *  @return RGB
      */
-    public static RGB loadColorFromDocument(final Element node, final String color_tag)
+    public static Optional<RGB> loadColorFromDocument(final Element node, final String color_tag)
     {
         if (node == null)
-            return new RGB(0, 0, 0);
+            return Optional.of(new RGB(0, 0, 0));
         final Element color =
             DOMHelper.findFirstElementNode(node.getFirstChild(), color_tag);
         if (color == null)
-            return null;
+            return Optional.empty();
         final int red = DOMHelper.getSubelementInt(color, TAG_RED, 0);
         final int green = DOMHelper.getSubelementInt(color, TAG_GREEN, 0);
         final int blue = DOMHelper.getSubelementInt(color, TAG_BLUE, 0);
-        return new RGB(red, green, blue);
+        return Optional.of(new RGB(red, green, blue));
+    }
+
+    /** Load font from XML document
+     *  @param node Parent node of the color
+     *  @param font_tag Name of tag that contains the font
+     *  @return FontData or <code>null</code> if no color found
+     */
+    public static Optional<FontData> loadFontFromDocument(final Element node, final String font_tag)
+    {
+        final String desc = DOMHelper.getSubelementString(node, font_tag);
+        if (desc == null)
+            return Optional.empty();
+        return Optional.of(SWTMediaPool.getFontFromDescription(desc));
     }
 
     /** Write XML formatted Model content.
@@ -312,6 +324,8 @@ public class XMLPersistence
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, model.getArchiveRescale().name());
 
         writeColor(writer, 1, TAG_BACKGROUND, model.getPlotBackground());
+        XMLWriter.XML(writer, 1, TAG_LABEL_FONT, SWTMediaPool.getFontDescription(model.getLabelFont()));
+        XMLWriter.XML(writer, 1, TAG_SCALE_FONT, SWTMediaPool.getFontDescription(model.getScaleFont()));
 
         // Value axes
         XMLWriter.start(writer, 1, TAG_AXES);

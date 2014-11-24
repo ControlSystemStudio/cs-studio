@@ -16,6 +16,7 @@ import org.csstudio.swt.rtplot.AxisRange;
 import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.internal.util.ScreenTransform;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -102,10 +103,12 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
      *                For horizontal axis, x, y and width are set, and height is tentative.
      *                For vertical axis, x, y and height are set, and width is tentative.
      *  @param gc {@link GC} that can be used to determine font measurements
+     *  @param label_font Font for labels
+     *  @param scale_font Font for scale
      *  @return For horizontal axis, desired height in pixels.
      *          For vertical axis, desired width in pixels.
      */
-    abstract public int getDesiredPixelSize(Rectangle region, GC gc);
+    abstract public int getDesiredPixelSize(Rectangle region, GC gc, Font label_font, Font scale_font);
 
     /** {@inheritDoc} */
     @Override

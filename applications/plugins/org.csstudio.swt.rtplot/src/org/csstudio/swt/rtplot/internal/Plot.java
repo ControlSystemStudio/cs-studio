@@ -45,6 +45,8 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -74,7 +76,13 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     final private Display display;
 
     /** Background color */
-    private RGB background = new RGB(255, 255, 255);
+    private volatile RGB background = new RGB(255, 255, 255);
+
+    /** Font to use for labels */
+    private volatile Font label_font;
+
+    /** Font to use for scale */
+    private volatile Font scale_font;
 
     /** Area of this canvas */
     private volatile Rectangle area = new Rectangle(0, 0, 0, 0);
@@ -176,6 +184,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         super(parent, SWT.NO_BACKGROUND);
 
+        label_font = parent.getFont();
+        scale_font = parent.getFont();
+
         media = new SWTMediaPool(parent);
         display = parent.getDisplay();
 
@@ -247,6 +258,20 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     public void setBackground(final RGB color)
     {
         background = color;
+    }
+
+    /** @param font Font to use for labels */
+    public void setLabelFont(final FontData font)
+    {
+        label_font = media.get(font);
+        need_layout.set(true);
+    }
+
+    /** @param font Font to use for scale */
+    public void setScaleFont(final FontData font)
+    {
+        scale_font = media.get(font);
+        need_layout.set(true);
     }
 
     /** @return X/Time axis */
@@ -437,7 +462,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Compute layout of plot components */
     private void computeLayout(final GC gc, final Rectangle bounds)
     {
-        final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc);
+        final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc, label_font, scale_font);
         final int y_axis_height = bounds.height - x_axis_height;
 
         // Ask each Y Axis for its widths, which changes based on number of labels
@@ -451,7 +476,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (! axis.isOnRight())
             {
                 final Rectangle axis_region = new Rectangle(total_left_axes_width, 0, plot_width, y_axis_height);
-                axis_region.width = axis.getDesiredPixelSize(axis_region, gc);
+                axis_region.width = axis.getDesiredPixelSize(axis_region, gc, label_font, scale_font);
                 axis.setBounds(axis_region);
                 total_left_axes_width += axis_region.width;
                 plot_width -= axis_region.width;
@@ -461,7 +486,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (axis.isOnRight())
             {
                 final Rectangle axis_region = new Rectangle(total_left_axes_width, 0, plot_width, y_axis_height);
-                axis_region.width = axis.getDesiredPixelSize(axis_region, gc);
+                axis_region.width = axis.getDesiredPixelSize(axis_region, gc, label_font, scale_font);
                 total_right_axes_width += axis_region.width;
                 axis_region.x = bounds.width - total_right_axes_width;
                 axis.setBounds(axis_region);
@@ -492,10 +517,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         // Fetch x_axis transformation and use that to paint all traces,
         // because X Axis tends to change from scrolling
         // while we're painting traces
-        x_axis.paint(gc, media);
+        x_axis.paint(gc, media, label_font, scale_font);
         final ScreenTransform<XTYPE> x_transform = x_axis.getScreenTransform();
         for (PlotPart y_axis : y_axes)
-            y_axis.paint(gc, media);
+            y_axis.paint(gc, media, label_font, scale_font);
 
         gc.setClipping((Rectangle) plot_area.getBounds());
         plot_area.paint(gc, media);
@@ -503,6 +528,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         for (YAxisImpl<XTYPE> y_axis : y_axes)
             for (Trace<XTYPE> trace : y_axis.getTraces())
                 trace_painter.paint(gc, media, plot_area.getBounds(), x_transform, y_axis, trace);
+
+        // Annotations use label font
+        gc.setFont(label_font);
         for (AnnotationImpl<XTYPE> annotation : annotations)
             annotation.paint(gc, media, x_axis, y_axes.get(annotation.getTrace().getYAxis()));
 

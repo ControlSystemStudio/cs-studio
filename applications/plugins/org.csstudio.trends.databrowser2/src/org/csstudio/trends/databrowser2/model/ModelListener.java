@@ -20,8 +20,8 @@ public interface ModelListener
     /** The archive-rescale configuration has changed */
     void changedArchiveRescale();
 
-    /** One of the colors (background, ...) changed */
-    void changedColors();
+    /** One of the colors (background, ...) or overall fonts changed */
+    void changedColorsOrFonts();
 
     /** The time range (start/end time or span) was changed */
     void changedTimerange();

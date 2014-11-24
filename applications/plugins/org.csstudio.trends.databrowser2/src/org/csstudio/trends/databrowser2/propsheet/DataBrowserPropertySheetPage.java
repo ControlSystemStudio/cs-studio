@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.propsheet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -43,6 +44,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -55,6 +57,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
@@ -119,6 +122,8 @@ public class DataBrowserPropertySheetPage extends Page
 
     private ColorBlob background;
 
+    private Button label_font, scale_font;
+
     private Text update_period;
 
     final private ModelListener model_listener = new ModelListenerAdapter()
@@ -145,9 +150,11 @@ public class DataBrowserPropertySheetPage extends Page
 
         /** {@inheritDoc} */
         @Override
-        public void changedColors()
+        public void changedColorsOrFonts()
         {
             background.setColor(model.getPlotBackground());
+            label_font.setText(SWTMediaPool.getFontDescription(model.getLabelFont()));
+            scale_font.setText(SWTMediaPool.getFontDescription(model.getScaleFont()));
         }
 
         /** Update the start/end time in the Time axis panel when model changes
@@ -651,7 +658,7 @@ public class DataBrowserPropertySheetPage extends Page
         misc_tab.setText("Misc."); //$NON-NLS-1$
 
         final Composite parent = new Composite(tab_folder, 0);
-        parent.setLayout(new GridLayout(2, false));
+        parent.setLayout(new GridLayout(4, false));
 
         // Redraw period: ______
         Label label = new Label(parent, 0);
@@ -661,7 +668,7 @@ public class DataBrowserPropertySheetPage extends Page
         update_period = new Text(parent, SWT.BORDER);
         update_period.setText(Double.toString(model.getUpdatePeriod()));
         update_period.setToolTipText(Messages.UpdatePeriodTT);
-        update_period.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        update_period.setLayoutData(new GridData(SWT.FILL, 0, false, false, 3, 1));
         update_period.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -690,6 +697,7 @@ public class DataBrowserPropertySheetPage extends Page
         gd.minimumWidth = 80;
         gd.widthHint = 80;
         gd.heightHint = 15;
+        gd.horizontalSpan = 3;
         background.setLayoutData(gd);
         background.addSelectionListener(new SelectionAdapter()
         {
@@ -701,6 +709,47 @@ public class DataBrowserPropertySheetPage extends Page
                 final RGB value = dialog.open();
                 if (value != null)
                     new ChangePlotBackgroundCommand(model, operations_manager, value);
+            }
+        });
+
+        // Label Font: [Sans|14|1]      Scale Font: [Sans|10|2]
+        label = new Label(parent, 0);
+        label.setText(Messages.LabelFontLbl);
+        label.setLayoutData(new GridData());
+
+        label_font = new Button(parent, SWT.PUSH);
+        label_font.setText(SWTMediaPool.getFontDescription(model.getLabelFont()));
+        label_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        label_font.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final FontDialog dialog = new FontDialog(parent.getShell());
+                dialog.setFontList(new FontData[] { model.getLabelFont() });
+                final FontData selected = dialog.open();
+                if (selected != null)
+                    new ChangeLabelFontCommand(model, operations_manager, selected);
+            }
+        });
+
+        label = new Label(parent, 0);
+        label.setText(Messages.ScaleFontLbl);
+        label.setLayoutData(new GridData());
+
+        scale_font = new Button(parent, SWT.PUSH);
+        scale_font.setText(SWTMediaPool.getFontDescription(model.getScaleFont()));
+        scale_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        scale_font.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final FontDialog dialog = new FontDialog(parent.getShell());
+                dialog.setFontList(new FontData[] { model.getScaleFont() });
+                final FontData selected = dialog.open();
+                if (selected != null)
+                    new ChangeScaleFontCommand(model, operations_manager, selected);
             }
         });
 

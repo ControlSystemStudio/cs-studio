@@ -21,7 +21,7 @@ public class ModelListenerAdapter implements ModelListener
     public void changedArchiveRescale() { /* NOP */}
 
     @Override
-    public void changedColors() { /* NOP */}
+    public void changedColorsOrFonts() { /* NOP */}
 
     @Override
     public void changedTimerange() { /* NOP */}

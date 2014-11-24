@@ -25,6 +25,7 @@ import org.csstudio.swt.rtplot.internal.TraceImpl;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
@@ -74,7 +75,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
             throw new IllegalArgumentException("Cannot handle " + type.getName());
 
         toolbar.addContextMenu(toggle_toolbar);
-        
+
         FormData fd = new FormData();
         fd.top = new FormAttachment(toolbar.getControl());
         fd.left = new FormAttachment(0);
@@ -117,6 +118,20 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     {
         Objects.requireNonNull(color);
         plot.setBackground(color);
+    }
+
+    /** @param font Font to use for labels */
+    public void setLabelFont(final FontData font)
+    {
+        Objects.requireNonNull(font);
+        plot.setLabelFont(font);
+    }
+
+    /** @param font  Font to use for scale */
+    public void setScaleFont(final FontData font)
+    {
+        Objects.requireNonNull(font);
+        plot.setScaleFont(font);
     }
 
     /** @return {@link Image} of current plot */

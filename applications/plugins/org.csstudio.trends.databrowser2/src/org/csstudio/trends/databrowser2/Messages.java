@@ -157,6 +157,7 @@ public class Messages extends NLS
     public static String ItemName;
     public static String ItemNameTT;
     public static String KeyLbl;
+    public static String LabelFontLbl;
     public static String LinacScale;
     public static String LinLogScaleType;
     public static String LiveBufferSizeInfoFmt;
@@ -216,6 +217,7 @@ public class Messages extends NLS
     public static String SampleView_SelectItem;
     public static String SampleView_Source;
     public static String Save;
+    public static String ScaleFontLbl;
     public static String ScanPeriod;
     public static String ScanPeriodChangeErrorFmt;
     public static String ScanPeriodTT;
