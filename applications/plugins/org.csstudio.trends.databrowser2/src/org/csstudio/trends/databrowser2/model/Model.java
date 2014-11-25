@@ -118,9 +118,10 @@ public class Model
 	{
 	    final Display display = Display.getCurrent();
 	    if (display != null)
-	    {
-	        label_font = display.getSystemFont().getFontData()[0];
-	        scale_font = new FontData(label_font.getName(), label_font.getHeight()-1, SWT.NORMAL);
+	    {   // Based on system font, use BOLD for labels, and smaller version for scales
+	        final FontData default_font = display.getSystemFont().getFontData()[0];
+	        label_font = new FontData(default_font.getName(), default_font.getHeight(), SWT.BOLD);
+	        scale_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
 	    }
 		start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
 		end_spec = RelativeTime.NOW;

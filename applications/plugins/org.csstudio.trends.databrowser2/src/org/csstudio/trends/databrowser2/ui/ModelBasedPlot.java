@@ -36,8 +36,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolItem;
@@ -49,6 +47,7 @@ import org.eclipse.swt.widgets.ToolItem;
  *  @author Kay Kasemir
  *  @author Laurent PHILIPPE Modify addListener method to add property changed event capability
  */
+@SuppressWarnings("nls")
 public class ModelBasedPlot
 {
 	/** Plot Listener */
@@ -56,15 +55,6 @@ public class ModelBasedPlot
 
 	/** {@link Display} used by this plot */
 	final private Display display;
-
-	/** Color, Font, ... registry */
-//	final private XYGraphMediaFactory media_registry = XYGraphMediaFactory.getInstance();
-
-	/** Font applied to axes */
-	final private Font axis_font;
-
-	/** Font applied to axes' titles */
-//	final private Font axis_title_font;
 
 	/** Plot widget/figure */
 	final private RTTimePlot plot;
@@ -91,24 +81,11 @@ public class ModelBasedPlot
             }
         });
 
-		// Use system font for axis labels
-		axis_font = display.getSystemFont();
-
-		// Use BOLD version for axis title
-		final FontData fds[] = axis_font.getFontData();
-		for (FontData fd : fds)
-			fd.setStyle(SWT.BOLD);
-		//axis_title_font = media_registry.getFont(fds);
-
 		// Configure axes
 		final Axis<Instant> time_axis = plot.getXAxis();
 		time_axis.setName(Messages.Plot_TimeAxisName);
-//		time_axis.setFont(axis_font);
-//		time_axis.setTitleFont(axis_title_font);
         final YAxis<Instant> value_axis = plot.getYAxes().get(0);
         value_axis.setName(Messages.Plot_ValueAxisName);
-//        value_axis.setFont(axis_font);
-//        value_axis.setTitleFont(axis_title_font);
 
 		// Forward user changes to plot to model
         plot.addListener(new PlotListenerAdapter<Instant>()
@@ -250,8 +227,6 @@ public class ModelBasedPlot
 		while (N <= index)
 		{
 			plot.addYAxis(NLS.bind(Messages.Plot_ValueAxisNameFMT, N));
-//			axis.setFont(axis_font);
-//			axis.setTitleFont(axis_title_font);
 			N = plot.getYAxes().size();
 		}
 		return plot.getYAxes().get(index);
@@ -271,7 +246,6 @@ public class ModelBasedPlot
 		axis.setName(config.getResolvedName());
 		axis.useTraceNames(config.isUsingTraceNames());
 		axis.setColor(config.getColor());
-		// TODO font
 		axis.setLogarithmic(config.isLogScale());
 		axis.setAutoscale(config.isAutoScale());
 		axis.setValueRange(config.getMin(), config.getMax());
@@ -325,7 +299,7 @@ public class ModelBasedPlot
 	 *  @return Trace
 	 *  @throws RuntimeException When trace not found
 	 */
-	private Trace<Instant> findTrace(final ModelItem item)
+    private Trace<Instant> findTrace(final ModelItem item)
 	{
 		for (Trace<Instant> trace : plot.getTraces())
 			if (trace.getData() == item.getSamples())
