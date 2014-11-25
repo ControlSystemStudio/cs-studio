@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.model;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.epics.vtype.VType;
 
@@ -34,8 +35,8 @@ public class HistoricSamples extends PlotSamples
     /** "All" historic samples */
     private PlotSample samples[] = new PlotSample[0];
 
-    /** If non-null, samples beyond this time are hidden from access */
-    private Instant border_time = null;
+    /** If set, samples beyond this time are hidden from access */
+    private Optional<Instant> border_time = Optional.empty();
 
     /** Subset of samples.length that's below border_time
      *  @see #computeVisibleSize()
@@ -56,17 +57,12 @@ public class HistoricSamples extends PlotSamples
 
     /** Define a new 'border' time beyond which no samples
      *  are returned from the history
-     *  @param border_time New time or <code>null</code> to access all samples
+     *  @param border_time New time or <code>empty</code> to access all samples
      */
-    public void setBorderTime(final Instant border_time)
+    public void setBorderTime(final Optional<Instant> border_time)
     {   // Anything new?
-        if (border_time == null)
-        {
-            if (this.border_time == null)
-                return;
-        }
-        else if (border_time.equals(this.border_time))
-                return;
+        if (this.border_time.equals(border_time))
+            return;
         // New border, recompute, mark as 'new data'
         this.border_time = border_time;
         computeVisibleSize();
@@ -75,14 +71,14 @@ public class HistoricSamples extends PlotSamples
     /** Update visible size */
     private void computeVisibleSize()
     {
-        if (border_time == null)
-            visible_size = samples.length;
-        else
+        if (border_time.isPresent())
         {
             final int last_index = PlotSampleSearch.findSampleLessThan(
-                                        samples, border_time);
+                    samples, border_time.get());
             visible_size = (last_index < 0)   ?   0   :   last_index + 1;
         }
+        else
+            visible_size = samples.length;
     }
 
     /** {@inheritDoc} */

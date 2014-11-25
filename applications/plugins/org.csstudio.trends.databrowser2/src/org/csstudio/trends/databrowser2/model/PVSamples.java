@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.model;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
@@ -171,11 +172,15 @@ public class PVSamples extends PlotSamples
         lockForWriting();
         try
         {
+            // Skip the initial UNDEFINED/Disconnected sample sent by PVManager
+            if (live.size() == 0  &&
+                VTypeHelper.getSeverity(sample.getVType()) == AlarmSeverity.UNDEFINED)
+                return;
             live.add(sample);
             // History ends before the start of 'live' samples.
             // Adding a live sample might have moved the ring buffer,
             // so need to update whenever live data is extended.
-            history.setBorderTime(live.get(0).getPosition());
+            history.setBorderTime(Optional.of(live.get(0).getPosition()));
         }
         finally
         {

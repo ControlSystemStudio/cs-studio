@@ -48,6 +48,7 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PVItem to handle waveform index.
  */
+@SuppressWarnings("nls")
 public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, Cloneable
 {
     /** Historic and 'live' samples for this PV */
@@ -219,7 +220,6 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     /** @param archive Archive to add as a source to this item
      *  @throws Error when archive is already used
      */
-    @SuppressWarnings("nls")
     public void addArchiveDataSource(final ArchiveDataSource archive)
     {
         if (hasArchiveDataSource(archive))
@@ -324,7 +324,6 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     }
 
     /** Disconnect from control system PV, stop scanning, ... */
-    @SuppressWarnings("nls")
     public void stop()
     {
         if (pv == null)
@@ -346,11 +345,9 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("nls")
     @Override
     public void pvChanged(final PVReaderEvent<List<VType>> event)
     {
-        // TODO Suppress the initial 'disconnected' sample
         final PVReader<List<VType>> pv = event.getPvReader();
         // Check for error
         final Exception error = pv.lastException();
