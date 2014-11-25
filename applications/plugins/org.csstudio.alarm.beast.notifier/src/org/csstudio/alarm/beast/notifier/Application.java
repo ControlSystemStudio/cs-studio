@@ -7,6 +7,7 @@
 ******************************************************************************/
 package org.csstudio.alarm.beast.notifier;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -33,6 +34,7 @@ public class Application implements IApplication {
 			"com.sun.jersey.core.spi.component",
 			"com.sun.jersey.core.spi.component.ProviderServices",
 			"com.sun.jersey.spi.service.ServiceFinder" };
+	private final List<Logger> strongRefLoggers = new ArrayList<>();
 
 	final public static String APPLICATION_NAME = "AlarmNotifier";
 	private boolean run = true;
@@ -46,8 +48,11 @@ public class Application implements IApplication {
 		for (String verbosePackage : VERBOSE_PACKAGES) {
 			Logger logger = Logger.getLogger(verbosePackage);
 			logger.setLevel(verboseLogLevel);
-			for (Handler handler : logger.getHandlers())
+			for (Handler handler : logger.getHandlers()) {
 				handler.setLevel(verboseLogLevel);
+			}
+			//keep strong references so log manager doesn't release and recreate the loggers with default level
+			strongRefLoggers.add(logger); 
 		}
 
 		// Display configuration info

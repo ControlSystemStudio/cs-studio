@@ -8,8 +8,6 @@
 
 package org.csstudio.iter.css.product;
 
-import org.csstudio.iter.css.product.util.WorkbenchUtil;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -27,12 +25,6 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				WorkbenchUtil.unbindDebugLast();
-			}
-		});
 	}
 
 	@Override

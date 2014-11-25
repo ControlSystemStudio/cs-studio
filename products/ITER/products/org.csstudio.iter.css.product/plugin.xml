@@ -82,7 +82,7 @@ It's a product of the collaboration between different laboratories and universit
    <extension point="org.csstudio.startup.module">
       <startupParameters class="org.csstudio.utility.product.StartupParameters"/>
       <workspace class="org.csstudio.utility.product.WorkspacePrompt"/>
-      <workbench class="org.csstudio.utility.product.Workbench"/>
+      <workbench class="org.csstudio.iter.css.product.ITERWorkbench"/>
       <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
    </extension>
 

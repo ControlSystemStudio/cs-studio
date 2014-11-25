@@ -114,8 +114,8 @@ LANGUAGE PLPGSQL;
 
 -- ******************************************************************************
 --      NAME:       get_actual_start_time
---      PURPOSE:    Since the start time chosen by the user most likely does not
---                  exist find the actual timestamp preceding the start time.
+--      PURPOSE:    Find the actual timestamp preceding the start time if existing
+-- 		    		otherwise return the start time chosen by the user.
 -- ******************************************************************************
 CREATE OR REPLACE FUNCTION public.get_actual_start_time (
 	p_chan_id  	IN bigint,
@@ -131,7 +131,11 @@ BEGIN
       	EXECUTE l_sql_stmt
             	INTO l_time
            	USING p_chan_id, p_start_time;
-      	RETURN l_time;
+      	IF(l_time IS NOT NULL) THEN
+			RETURN l_time;
+		ELSE
+			RETURN p_start_time;
+		END IF;
 END;
 
 $body$

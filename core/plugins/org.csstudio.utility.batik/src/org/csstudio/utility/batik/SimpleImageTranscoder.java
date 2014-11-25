@@ -45,6 +45,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGLength;
 import org.w3c.dom.svg.SVGSVGElement;
 
 public class SimpleImageTranscoder extends SVGAbstractTranscoder {
@@ -346,9 +347,24 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		
 		// get the original document size
 		SVGSVGElement svgElmt = ((SVGOMDocument) originalDocument).getRootElement();
-		double width = svgElmt.getWidth().getBaseVal().getValue();
-		double height = svgElmt.getHeight().getBaseVal().getValue();
-
+		double width = 30;
+		double height = 30;
+		try {
+			width = svgElmt.getWidth().getBaseVal().getValue();
+			height = svgElmt.getHeight().getBaseVal().getValue();
+		} catch (NullPointerException e) {
+			//FIXME
+			//this is a dirty workaround for the RAP problem, which doesn't know how to
+			//transform between units and pixels. Here we assume that all units are inches
+			//and 96 dpi is used.
+			SVGLength length = svgElmt.getWidth().getBaseVal();
+			double value = length.getValueInSpecifiedUnits();
+			width = value * 25.4/0.26458333333333333333333333333333;
+			length = svgElmt.getHeight().getBaseVal();
+			value = length.getValueInSpecifiedUnits();
+			height = value * 25.4/0.26458333333333333333333333333333;
+		}
+				
 		// current Transformation Matrix
 		double[][] CTM = { 
 				{ matrix[0][0], matrix[0][1], 0 }, 
