@@ -341,14 +341,4 @@ public class FormulaItem extends ModelItem
         formula.configureFromDocument(model, node);
         return formula;
     }
-
-	@Override
-    public FormulaItem clone() {
-		FormulaItem ret = (FormulaItem)super.clone();
-		ret.formula = formula;
-		ret.inputs = inputs;
-		ret.variables = variables;
-		ret.samples = samples;
-		return ret;
-	}
 }

@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class ModelItem implements Cloneable
+abstract public class ModelItem
 {
     /** Name by which the item is identified: PV name, formula */
     private volatile String name;
@@ -106,7 +106,6 @@ abstract public class ModelItem implements Cloneable
      *  @see #getName()
      *  @return <code>true</code> if name was actually changed
      *  @throws Exception on error (cannot create PV for new name, ...)
-     *
      */
     public boolean setName(String new_name) throws Exception
     {
@@ -248,20 +247,20 @@ abstract public class ModelItem implements Cloneable
         fireItemLookChanged();
     }
 
-    /**
-     * This method should be overridden if the instance needs
-     * to change its behavior according to waveform index.
-     * If it is not overridden, this method always return 0.
-     * @return Waveform index */
+    /** This method should be overridden if the instance needs
+     *  to change its behavior according to waveform index.
+     *  If it is not overridden, this method always return 0.
+     *  @return Waveform index
+     */
     public int getWaveformIndex()
     {
         return 0;
     }
 
-    /**
-     * This method should be overridden if the instance needs
-     * to change its behavior according to waveform index.
-     * @param index New waveform index */
+    /** This method should be overridden if the instance needs
+     *  to change its behavior according to waveform index.
+     *  @param index New waveform index
+     */
     public void setWaveformIndex(int index)
     {
     	// Do nothing.
@@ -333,28 +332,6 @@ abstract public class ModelItem implements Cloneable
         }
         setWaveformIndex(DOMHelper.getSubelementInt(node, XMLPersistence.TAG_WAVEFORM_INDEX, 0));
     }
-
-	@Override
-    public ModelItem clone()
-	{
-		try
-		{
-		    final ModelItem ret = (ModelItem)super.clone();
-			ret.name = name;
-			ret.model = model;
-			ret.display_name = display_name;
-			ret.visible = visible;
-			ret.rgb = rgb;
-			ret.line_width = line_width;
-			ret.trace_type = trace_type;
-			ret.axis = axis;
-			return ret;
-		}
-		catch (CloneNotSupportedException ex)
-		{
-			throw new RuntimeException(ex);
-		}
-	}
 
     /** @return Debug representation */
     @Override
