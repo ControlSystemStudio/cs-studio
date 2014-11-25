@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 
@@ -23,18 +25,11 @@ public class LiveSamples extends PlotSamples
         new RingBuffer<PlotSample>(Preferences.getLiveSampleBufferSize());
 
     /** Waveform index */
-    private int waveform_index = 0;
+    final private AtomicInteger waveform_index;
 
-    /** @param index Waveform index to show */
-    public void setWaveformIndex(int index)
-    {   // TODO Don't duplicate the waveform_index from PVSamples in LiveSamples and HistoricSamples
-        //      Just assert that the samples have correct index as they're added
-    	waveform_index = index;
-
-    	// Change the index of all samples in this instance
-    	for (int i=0; i<samples.size(); i++) {
-    		samples.get(i).setWaveformIndex(waveform_index);
-    	}
+    LiveSamples(final AtomicInteger waveform_index)
+    {
+        this.waveform_index = waveform_index;
     }
 
     /** @return Maximum number of samples in ring buffer */

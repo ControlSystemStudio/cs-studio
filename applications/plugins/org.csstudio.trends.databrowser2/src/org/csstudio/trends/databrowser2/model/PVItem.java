@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.xml.DOMHelper;
@@ -49,10 +50,13 @@ import org.w3c.dom.Element;
  *  @author Takashi Nakamoto changed PVItem to handle waveform index.
  */
 @SuppressWarnings("nls")
-public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, Cloneable
+public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
 {
+    /** Waveform Index */
+    final private AtomicInteger waveform_index = new AtomicInteger(0);
+
     /** Historic and 'live' samples for this PV */
-    private PVSamples samples = new PVSamples();
+    private PVSamples samples = new PVSamples(waveform_index);
 
     /** Where to get archived data for this item. */
     private ArrayList<ArchiveDataSource> archives
@@ -77,9 +81,6 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     /** Archive data request type */
     private RequestType request_type = RequestType.OPTIMIZED;
 
-    /** Waveform Index */
-    private int waveform_index = 0;
-
     /** Indicating if the history data is automatically refreshed, whenever
      * the live buffer is too small to show all the data */
     private boolean automaticRefresh = Preferences.isAutomaticHistoryRefresh();
@@ -99,7 +100,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     @Override
     public int getWaveformIndex()
     {
-        return waveform_index;
+        return waveform_index.get();
     }
 
     /** @param index New waveform index */
@@ -108,13 +109,8 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
     {
         if (index < 0)
             index = 0;
-        if (index == waveform_index)
-            return;
-        waveform_index = index;
-
-        // change all the index of samples in this instance
-        samples.setWaveformIndex(waveform_index);
-        fireItemDataConfigChanged();
+        if (waveform_index.getAndSet(index) != index)
+            fireItemDataConfigChanged();
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -520,19 +516,5 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>, 
             item.useDefaultArchiveDataSources();
 
         return item;
-    }
-
-    @Override
-    public PVItem clone()
-    {
-        PVItem ret = (PVItem)super.clone();
-        ret.samples = samples;
-        ret.archives = archives;
-        ret.pv = pv;
-        ret.current_value = current_value;
-        ret.period = period;
-        ret.request_type = request_type;
-        ret.waveform_index = waveform_index;
-        return ret;
     }
 }

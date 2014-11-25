@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.model;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.epics.vtype.VType;
 
@@ -44,15 +45,11 @@ public class HistoricSamples extends PlotSamples
     private int visible_size = 0;
 
     /** Waveform index */
-    private int waveform_index = 0;
+    final private AtomicInteger waveform_index;
 
-    /** @param index Waveform index to show */
-    public void setWaveformIndex(int index)
+    HistoricSamples(final AtomicInteger waveform_index)
     {
-    	waveform_index = index;
-    	// change the index of all samples in this instance
-    	for (PlotSample sample: samples)
-    		sample.setWaveformIndex(waveform_index);
+        this.waveform_index = waveform_index;
     }
 
     /** Define a new 'border' time beyond which no samples
@@ -126,10 +123,8 @@ public class HistoricSamples extends PlotSamples
             return;
         // Turn IValues into PlotSamples
         final PlotSample new_samples[] = new PlotSample[result.size()];
-        for (int i=0; i<new_samples.length; ++i) {
-            new_samples[i] = new PlotSample(source, result.get(i));
-            new_samples[i].setWaveformIndex(waveform_index);
-        }
+        for (int i=0; i<new_samples.length; ++i)
+            new_samples[i] = new PlotSample(waveform_index, source, result.get(i));
         // Merge with existing samples
         final PlotSample merged[] = PlotSampleMerger.merge(samples, new_samples);
         if (merged == samples)

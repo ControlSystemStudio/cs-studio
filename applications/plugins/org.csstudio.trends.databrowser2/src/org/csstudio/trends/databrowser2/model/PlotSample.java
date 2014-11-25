@@ -8,6 +8,8 @@
 package org.csstudio.trends.databrowser2.model;
 
 import java.time.Instant;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
@@ -23,8 +25,11 @@ import org.epics.vtype.ValueFactory;
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed PlotSample to handle waveform index.
  */
+@SuppressWarnings("nls")
 public class PlotSample implements PlotDataItem<Instant>
 {
+    final private static AtomicInteger default_waveform_index = new AtomicInteger(0);
+
     /** Value contained in this sample */
     final private VType value;
 
@@ -34,10 +39,34 @@ public class PlotSample implements PlotDataItem<Instant>
     /** Info string.
      *  @see #getInfo()
      */
-    private String info;
+    private Optional<String> info;
 
     /** Waveform index */
-    private int waveform_index = 0;
+    private AtomicInteger waveform_index;
+
+    /** Initialize with valid control system value
+     *  @param waveform_index Waveform index
+     *  @param source Info about the source of this sample
+     *  @param value
+     *  @param info Info text
+     */
+    PlotSample(final AtomicInteger waveform_index, final  String source, final VType value, final String info)
+    {
+        this.waveform_index = waveform_index;
+        this.value = value;
+        this.source = source;
+        this.info = Optional.ofNullable(info);
+    }
+
+    /** Initialize with valid control system value
+     *  @param waveform_index Waveform index
+     *  @param source Info about the source of this sample
+     *  @param value
+     */
+    PlotSample(final AtomicInteger waveform_index, final  String source, final VType value)
+    {
+        this(waveform_index, source, value, null);
+    }
 
     /** Initialize with valid control system value
      *  @param source Info about the source of this sample
@@ -45,9 +74,7 @@ public class PlotSample implements PlotDataItem<Instant>
      */
     public PlotSample(final String source, final VType value)
     {
-        this.value = value;
-        this.source = source;
-        info = null;
+        this(default_waveform_index, source, value);
     }
 
     /** Initialize with (error) info, creating a non-plottable sample 'now'
@@ -55,26 +82,20 @@ public class PlotSample implements PlotDataItem<Instant>
      */
     public PlotSample(final String source, final String info)
     {
-        this(source, ValueFactory.newVString(info, ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, info), ValueFactory.timeNow()));
-        this.info = info;
+        this(default_waveform_index, source,
+             ValueFactory.newVString(info, ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, info), ValueFactory.timeNow()),
+             info);
     }
 
     /** Package-level constructor, only used in unit tests */
-    @SuppressWarnings("nls")
     PlotSample(final double x, final double y)
     {
         this("Test",
              ValueFactory.newVDouble(y, ValueFactory.newTime(Timestamp.of((long) x, 0))));
     }
 
-    /** @return Waveform index */
-    public int getWaveformIndex()
-    {
-    	return waveform_index;
-    }
-
     /** @param index Waveform index to plot */
-    public void setWaveformIndex(int index)
+    void setWaveformIndex(final AtomicInteger index)
     {
     	this.waveform_index = index;
     }
@@ -115,7 +136,7 @@ public class PlotSample implements PlotDataItem<Instant>
     @Override
     public double getValue()
     {
-        return VTypeHelper.toDouble(value, waveform_index);
+        return VTypeHelper.toDouble(value, waveform_index.get());
     }
 
     /** @return {@link VStatistics} or <code>null</code> */
@@ -127,7 +148,7 @@ public class PlotSample implements PlotDataItem<Instant>
         // does not make sense to plot error bars when the chart shows other
         // elements. Therefore, this method returns 0 if the waveform index
         // is not 0.
-        if (waveform_index != 0)
+        if (waveform_index.get() != 0)
             return null;
         if (value instanceof VStatistics)
             return (VStatistics) value;
@@ -162,9 +183,7 @@ public class PlotSample implements PlotDataItem<Instant>
     @Override
     public String getInfo()
     {
-        if (info == null)
-            return toString();
-        return info;
+        return info.orElseGet(this::toString);
     }
 
     @Override

@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.model;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
@@ -33,19 +34,18 @@ import org.epics.vtype.ValueUtil;
 public class PVSamples extends PlotSamples
 {
     /** Historic samples */
-    final private HistoricSamples history = new HistoricSamples();
+    final private HistoricSamples history;
 
     /** Live samples. Should start after end of historic samples */
-    final private LiveSamples live = new LiveSamples();
+    final private LiveSamples live;
 
     private boolean emptyHistoryOnAdd = false;
     private int samplesAddedSinceLastRefresh = 0;
 
-    /** @param index Waveform index to show */
-    public void setWaveformIndex(final int index)
+    PVSamples(final AtomicInteger waveform_index)
     {
-    	live.setWaveformIndex(index);
-    	history.setWaveformIndex(index);
+        history = new HistoricSamples(waveform_index);
+        live = new LiveSamples(waveform_index);
     }
 
     /** @return Maximum number of live samples in ring buffer */
@@ -97,11 +97,10 @@ public class PVSamples extends PlotSamples
             return getRawSample(index);
         // Last sample is valid, so it should still apply 'now'
         final PlotSample sample = getRawSample(raw_count-1);
-        if (Instant.now().compareTo(sample.getPosition()) < 0) {
+        if (Instant.now().compareTo(sample.getPosition()) < 0)
         	return sample;
-        } else {
+        else
         	return new PlotSample(sample.getSource(), VTypeHelper.transformTimestampToNow(sample.getVType()));
-        }
     }
 
     /** Get 'raw' sample, no continuation until 'now'
