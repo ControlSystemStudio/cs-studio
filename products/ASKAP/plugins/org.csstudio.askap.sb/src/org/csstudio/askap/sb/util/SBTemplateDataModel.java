@@ -163,7 +163,7 @@ public class SBTemplateDataModel {
 	
 	public SchedulingBlock getSB(long id) throws Exception {
 		SchedulingBlock sb = controller.getSchedulingBlock(id);
-		controller.getObsVar(sb);
+		controller.getObsVars(sb);
 		return sb;
 	}
 	/**

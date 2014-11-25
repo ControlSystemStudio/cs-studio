@@ -165,7 +165,7 @@ public class IceSBController {
 
 	}
 
-	public void getObsVar(SchedulingBlock sb) throws Exception {		
+	public void getObsVars(SchedulingBlock sb) throws Exception {		
 		Map<String, String> obsVarMap = sbProxy.getObsVariables(sb.id, "");
 		sb.setObsVariable(obsVarMap);
 	}
@@ -292,7 +292,7 @@ public class IceSBController {
 			for (int i=0; i<states.length; i++)
 				obsStates[i] = STATE_MAP.get(states[i]);
 			
-			long idList[] = sbProxy.getByState(obsStates);
+			long idList[] = sbProxy.getByState(obsStates, lastUpdate);
 			if (idList!=null && idList.length>0)
 				sbList = getSchedulingBlocks(idList);
 		}
