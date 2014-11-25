@@ -484,9 +484,11 @@ public class EditItemsDialog extends Dialog
 	}
 
 	@Override
-	protected void buttonPressed(int buttonId) {
+	protected void buttonPressed(final int buttonId)
+	{
 		// Save the result for later use.
-		if (IDialogConstants.OK_ID == buttonId) {
+		if (IDialogConstants.OK_ID == buttonId)
+		{
 			result = new Result();
 
 			result.applyVisible = chkApplyShow.getSelection();
@@ -505,27 +507,39 @@ public class EditItemsDialog extends Dialog
 			result.item = textItem.getText();
 			result.displayName = textDisplayName.getText();
 			result.color = blobColor.getColor();
-			try {
+			try
+			{
 				result.scan = Double.parseDouble(textScan.getText());
-			} catch (NumberFormatException ex) {
+			}
+			catch (NumberFormatException ex)
+			{
 				result.applyScan = false;
 			}
-			try {
+			try
+			{
 				result.bufferSize = Integer.parseInt(textBufferSize.getText());
-			} catch (NumberFormatException ex) {
+			}
+			catch (NumberFormatException ex)
+			{
 				result.applyBufferSize = false;
 			}
-			try {
-				result.width = Integer.parseInt(textBufferSize.getText());
-			} catch (NumberFormatException ex) {
+			try
+			{
+				result.width = Integer.parseInt(textWidth.getText());
+			}
+			catch (NumberFormatException ex)
+			{
 				result.applyWidth = false;
 			}
 			result.axis = axes.get(cmbAxis.getSelectionIndex());
 			result.traceType = TraceType.values()[cmbTraceType.getSelectionIndex()];
 			result.request = RequestType.values()[cmbRequest.getSelectionIndex()];
-			try {
+			try
+			{
 				result.index = Integer.parseInt(textIndex.getText());
-			} catch (NumberFormatException ex) {
+			}
+			catch (NumberFormatException ex)
+			{
 				result.applyIndex = false;
 			}
 		}
@@ -538,7 +552,8 @@ public class EditItemsDialog extends Dialog
 	 * or if the dialog is closed with "Cancel" button.
 	 * @return The instance of result.
 	 */
-	public Result getResult() {
+	public Result getResult()
+	{
 		return result;
 	}
 }

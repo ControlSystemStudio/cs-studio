@@ -3,27 +3,42 @@ package org.csstudio.trends.databrowser2.propsheet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.swt.rtplot.undo.UndoableAction;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
+import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.model.RequestType;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.swt.graphics.RGB;
 
 /** Undo-able command for edit item properties.
- *  @author Takashi Nakamoto
+ *  @author Takashi Nakamoto - Original implementation that 'cloned' ModelItem
+ *  @author Kay Kasemir - without 'clone', since data cannot be cloned
  */
 public class EditItemsCommand implements UndoableAction
 {
     final private List<ModelItem> items;
-    final private List<ModelItem> oldItems;
-    final private List<Integer> oldBufferSizes;
     final private EditItemsDialog.Result result;
+    final private List<Boolean> wasVisible = new ArrayList<>();
+    final private List<String> oldName = new ArrayList<>();
+    final private List<String> oldDisplayName = new ArrayList<>();
+    final private List<RGB> oldColor = new ArrayList<>();
+    final private List<Integer> oldLineWidth = new ArrayList<>();
+    final private List<AxisConfig> oldAxis = new ArrayList<>();
+    final private List<TraceType> oldTraceType = new ArrayList<>();
+    final private List<Integer> oldWaveformIndex = new ArrayList<>();
+    final private List<Double> oldScanPeriod = new ArrayList<>();
+    final private List<Integer> oldBufferSizes = new ArrayList<>();
+    final private List<RequestType> oldRequestType = new ArrayList<>();
 
-    /**
-     * Initialize command.
-     * @param shell Shell for error message dialogs.
-     * @param operations_manager Operations manager which manages undo/redo commands.
-     * @param items Array of ModelItem instances subjected to editing.
-     * @param result Result instance returned by EditItemsDialog.
+    /** Initialize command.
+     *  @param shell Shell for error message dialogs.
+     *  @param operations_manager Operations manager which manages undo/redo commands.
+     *  @param items Array of ModelItem instances subjected to editing.
+     *  @param result Result instance returned by EditItemsDialog.
      */
     public EditItemsCommand(
     		final UndoableActionManager operations_manager,
@@ -34,95 +49,105 @@ public class EditItemsCommand implements UndoableAction
     	this.result = result;
 
     	// Save old values so that this operation can be undone later.
-    	oldItems = new ArrayList<ModelItem>();
-    	oldBufferSizes = new ArrayList<Integer>();
     	for (ModelItem item : items)
     	{
-    		oldItems.add(item.clone());
+    	    wasVisible.add(item.isVisible());
+    	    oldName.add(item.getName());
+    	    oldDisplayName.add(item.getDisplayName());
+    	    oldColor.add(item.getColor());
+    	    oldLineWidth.add(item.getLineWidth());
+    	    oldAxis.add(item.getAxis());
+    	    oldTraceType.add(item.getTraceType());
+    	    oldWaveformIndex.add(item.getWaveformIndex());
     		if (item instanceof PVItem)
+    		{
+    		    oldScanPeriod.add(((PVItem) item).getScanPeriod());
     			oldBufferSizes.add(((PVItem)item).getLiveCapacity());
+    			oldRequestType.add(((PVItem) item).getRequestType());
+    		}
     		else
-    			oldBufferSizes.add(0);
+    		{
+                oldScanPeriod.add(0.0);
+                oldBufferSizes.add(0);
+                oldRequestType.add(RequestType.RAW);
+    		}
     	}
-
     	operations_manager.perform(this);
     }
 
     @Override
     public void perform()
     {
-        for (ModelItem item : items) {
-            if (result.appliedVisible())
-                item.setVisible(result.isVisible());
-            if (result.appliedItem()) {
-                try {
+        for (ModelItem item : items)
+        {
+            try
+            {
+                if (result.appliedVisible())
+                    item.setVisible(result.isVisible());
+                if (result.appliedItem())
                     item.setName(result.getItem());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (result.appliedDisplayName())
+                    item.setDisplayName(result.getDisplayName());
+                if (result.appliedColor())
+                    item.setColor(result.getColor());
+                if (result.appliedWidth())
+                    item.setLineWidth(result.getWidth());
+                if (result.appliedAxis())
+                    item.setAxis(result.getAxis());
+                if (result.appliedTraceType())
+                    item.setTraceType(result.getTraceType());
+                if (result.appliedIndex())
+                    item.setWaveformIndex(result.getIndex());
+                if (item instanceof PVItem)
+                {
+                    if (result.appliedScan())
+                        ((PVItem)item).setScanPeriod(result.getScan());
+                    if (result.appliedBufferSize())
+                        ((PVItem)item).setLiveCapacity(result.getBufferSize());
+                    if (result.appliedRequest())
+                        ((PVItem)item).setRequestType(result.getRequest());
                 }
             }
-            if (result.appliedDisplayName())
-                item.setDisplayName(result.getDisplayName());
-            if (result.appliedColor())
-                item.setColor(result.getColor());
-            if (result.appliedScan() && item instanceof PVItem) {
-                try {
-                    ((PVItem)item).setScanPeriod(result.getScan());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            catch (Exception ex)
+            {
+                ExceptionDetailsErrorDialog.openError(null, Messages.Error, ex);
             }
-            if (result.appliedBufferSize() && item instanceof PVItem) {
-                try {
-                    ((PVItem)item).setLiveCapacity(result.getBufferSize());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (result.appliedWidth())
-                item.setLineWidth(result.getWidth());
-            if (result.appliedAxis())
-                item.setAxis(result.getAxis());
-            if (result.appliedTraceType())
-                item.setTraceType(result.getTraceType());
-            if (result.appliedRequest() && item instanceof PVItem)
-                ((PVItem)item).setRequestType(result.getRequest());
-            if (result.appliedIndex())
-                item.setWaveformIndex(result.getIndex());
         }
     }
 
 	@Override
-	public void undo() {
-		for (int i=0; i<items.size(); i++) {
-			ModelItem item = items.get(i);
-			ModelItem oldItem = oldItems.get(i);
-
-			item.setVisible(oldItem.isVisible());
-			try {
-				item.setName(oldItem.getName());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			item.setDisplayName(oldItem.getDisplayName());
-			item.setColor(oldItem.getColor());
-			item.setLineWidth(oldItem.getLineWidth());
-			item.setAxis(oldItem.getAxis());
-			item.setTraceType(oldItem.getTraceType());
-			item.setWaveformIndex(oldItem.getWaveformIndex());
-			if (item instanceof PVItem) {
-				try {
-					((PVItem)item).setScanPeriod(((PVItem)oldItem).getScanPeriod());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				try {
-					((PVItem)item).setLiveCapacity(oldBufferSizes.get(i));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				((PVItem)item).setRequestType(((PVItem)oldItem).getRequestType());
-			}
+	public void undo()
+	{
+		for (int i=0; i<items.size(); ++i)
+		{
+			final ModelItem item = items.get(i);
+			try
+			{
+    			item.setVisible(wasVisible.get(i));
+    			item.setName(oldName.get(i));
+    			item.setDisplayName(oldDisplayName.get(i));
+    			item.setColor(oldColor.get(i));
+    			item.setLineWidth(oldLineWidth.get(i));
+    			item.setAxis(oldAxis.get(i));
+    			item.setTraceType(oldTraceType.get(i));
+    			item.setWaveformIndex(oldWaveformIndex.get(i));
+    			if (item instanceof PVItem)
+    			{
+    			    ((PVItem)item).setScanPeriod(oldScanPeriod.get(i));
+    			    ((PVItem)item).setLiveCapacity(oldBufferSizes.get(i));
+    				((PVItem)item).setRequestType(oldRequestType.get(i));
+    			}
+            }
+            catch (Exception ex)
+            {
+                ExceptionDetailsErrorDialog.openError(null, Messages.Error, ex);
+            }
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+	    return Messages.EditItems;
 	}
 }
