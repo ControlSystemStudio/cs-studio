@@ -45,7 +45,7 @@ public class MonitoringPointManager {
 							update(pointValues);
 							
 						} catch (Exception e) {
-							logger.log(Level.WARNING, "Adaptor " + myAdaptorName + " disconnected: " + e.getMessage());						
+							logger.log(Level.WARNING, "Adaptor " + myAdaptorName + " disconnected: " + e.getMessage());
 							monitorProxy = null;
 							IceManager.removeMonitoringPointManager(myAdaptorName);
 							// notify all listeners

@@ -23,8 +23,10 @@ package org.csstudio.askap.sb.util;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -52,7 +54,10 @@ public class SBDataModel {
 
 	IceSBController sbController = new IceSBController();
 	IceExecutiveController executiveController = new IceExecutiveController();
-	IceMonitoringController executiveMonitorController = null;
+	
+	// map of adaptor name to their monitorController
+	Map<String, IceMonitoringController> monitorControllerMap = new HashMap<String, IceMonitoringController>();
+	
 	IceExecutiveLogController executivelogController = null;
 	DataChangeListener dataChangeListener = null;
 	
@@ -62,7 +67,6 @@ public class SBDataModel {
 	int numberOfRetries = 1;
 	
 	public SBDataModel() {
-		executiveMonitorController = new IceMonitoringController(Preferences.getExecutiveMonitorIceName());
 		executivelogController = new IceExecutiveLogController(Preferences.getExecutiveLogSubscriberName(),
 										Preferences.getExecutiveLogTopicName(),
 										Preferences.getExecutiveLogOrigin());
@@ -127,17 +131,25 @@ public class SBDataModel {
 		sbPollingThread.start();		
 	}
 
-	public void addPointListener(final String pointNames[], final MonitorPointListener listener) {		
+	public void addPointListener(String adapterName, String pointNames[], final MonitorPointListener listener) {		
 		try {
-			executiveMonitorController.addMonitorPointListener(pointNames, listener);
+			IceMonitoringController monitorController = monitorControllerMap.get(adapterName);
+			if (monitorController==null) {
+				monitorController = new IceMonitoringController(adapterName);
+				monitorControllerMap.put(adapterName, monitorController);
+			}
+			monitorController.addMonitorPointListener(pointNames, listener);
+			
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not get executive monitoring points " + e.getMessage());
 		}		
 	}
 	
-	public void removePointListener(final String pointNames[], final MonitorPointListener listener) {		
+	public void removePointListener(String adapterName, final String pointNames[], final MonitorPointListener listener) {		
 		try {
-			executiveMonitorController.removeMonitorPointListener(pointNames, listener);
+			IceMonitoringController monitorController = monitorControllerMap.get(adapterName);
+			if(monitorController!=null)
+				monitorController.removeMonitorPointListener(pointNames, listener);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Could not get executive monitoring points " + e.getMessage());
 		}		
@@ -162,7 +174,8 @@ public class SBDataModel {
 		}
 		
 		// remove listeners to all monitor points
-		executiveMonitorController.removeAllListeners();
+		for (IceMonitoringController monitorController : monitorControllerMap.values())
+			monitorController.removeAllListeners();
 	}
 
 	public void interruptPollingThread() {

@@ -17,7 +17,7 @@ public class Preferences {
 	
     public static final String ICE_PROPERTIES = "ice_properties";
     public static final String ICESTORM_TOPICMANAGER_NAME = "icestorm_topicmanager_name";
-	static final String MONITOR_POINT_POLLING_PERIOD = "MONITOR_POINT_pollingPeriod";		
+	static final String MONITOR_POINT_POLLING_PERIOD = "monitor_point_pollingPeriod";		
 
 
     public static String getIceStormTopicManagerName(){

@@ -1,9 +1,12 @@
 package org.csstudio.askap.sb;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.askap.sb.util.SBDataModel;
+import org.csstudio.askap.sb.util.TypedValueConverter;
+import org.csstudio.askap.utility.icemanager.MonitorPointListener;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ControlAdapter;
@@ -13,11 +16,16 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import askap.interfaces.TypedValueBool;
@@ -44,15 +52,34 @@ public class ExecutiveSummaryView extends ViewPart {
 												"target.roll_angle",
 												"target.phase_direction"};
 	
-	// keep a map of pointName and its corresponding tableItem, so when an point value is updated,
-	// its corresponding table cell is also updated
-	private Map<String, TableItem> pointItemTable = new HashMap<String, TableItem>();
-	
     Table table = null;
     
     private ProgressBar bar = null;
     private TableItem isExecutiveRunningItem = null;	
 
+	SBDataModel dataModel = new SBDataModel();
+
+	ExecutiveSummaryListener executiveSummaryListener = new ExecutiveSummaryListener();
+
+	public class ExecutiveSummaryListener implements MonitorPointListener {
+		public void onUpdate(final MonitorPoint point) {
+			Display.getDefault().asyncExec(new Runnable() {					
+				public void run() {
+					update(point);
+				}
+			});
+		}
+
+		@Override
+		public void disconnected(final String pointName) {
+			Display.getDefault().asyncExec(new Runnable() {					
+				public void run() {
+					disconnected(pointName);
+				}
+			});
+		}
+	}
+	
 
 	public ExecutiveSummaryView() {
 	}
@@ -88,25 +115,25 @@ public class ExecutiveSummaryView extends ViewPart {
 
 	    item = new TableItem(table, SWT.NULL);	    
 	    item.setText(0, "Scheduling Block ID");
-	    pointItemTable.put("schedblock.id", item);	    
+	    item.setData("schedblock.id");
 	    
 	    item = new TableItem(table, SWT.NULL);	    
 	    item.setText(0, "Scheduling Block Alias");
-	    pointItemTable.put("schedblock.alias", item);	    
+	    item.setData("schedblock.alias");	    
 	    
 	    item = new TableItem(table, SWT.NULL);	    
 	    item.setText(0, "Scheduling Block Template");
-	    pointItemTable.put("schedblock.template", item);	    
+	    item.setData("schedblock.template");	    
 	    
 	    item = new TableItem(table, SWT.NULL);
 	    
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Scan Number");
-	    pointItemTable.put("scan", item);
+	    item.setData("scan");
 	    
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Scan Duration");
-	    pointItemTable.put("duration", item);
+	    item.setData("duration");
 
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Scan Progress");
@@ -116,44 +143,45 @@ public class ExecutiveSummaryView extends ViewPart {
         TableEditor editor = new TableEditor(table);
         editor.grabHorizontal = editor.grabVertical = true;
         editor.setEditor(bar, item, 1);
+        bar.setVisible(false);
 
 	    item = new TableItem(table, SWT.NULL);
 	    
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Name");
-	    pointItemTable.put("target.name", item);
+	    item.setData("target.name");
 
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Frequency");
-	    pointItemTable.put("target.frequency", item);
+	    item.setData("target.frequency");
 
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Direction");
-	    pointItemTable.put("target.direction", item);
+	    item.setData("target.direction");
 
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Position 1 (eg: RA or Az)");
-	    pointItemTable.put("target.pos1", item);
+	    item.setData("target.pos1");
 
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Position 2 (eg: Dec or El)");
-	    pointItemTable.put("target.pos2", item);
+	    item.setData("target.pos2");
 	    
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Frame");
-	    pointItemTable.put("target.farme", item);
+	    item.setData("target.frame");
 
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Roll Mode");
-	    pointItemTable.put("target.roll_mode", item);
+	    item.setData("target.roll_mode");
 
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Roll Angle");
-	    pointItemTable.put("target.roll_angle", item);
+	    item.setData("target.roll_angle");
 
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Target Phase Direction");
-	    pointItemTable.put("target.phase_direction", item);
+	    item.setData("target.phase_direction");
 	    
 		parent.addControlListener(new ControlAdapter() {
 			public void controlResized(ControlEvent e) {
@@ -163,6 +191,14 @@ public class ExecutiveSummaryView extends ViewPart {
 
 	    setTableSize();
 	    parent.pack();
+	    
+	    setupListener();
+	    
+		dataModel.addPointListener(Preferences.getExecutiveMonitorIceName(), 
+				new String[]{Preferences.getExecutiveMonitorPointName()}, executiveSummaryListener);
+		
+		dataModel.addPointListener(Preferences.getOPLMonitorIceName(),
+				ExecutiveSummaryView.POINT_NAMES, executiveSummaryListener);	
 	}
 
 	public void setTableSize() {
@@ -222,10 +258,84 @@ public class ExecutiveSummaryView extends ViewPart {
 		} else if (point.name.equals("progress")) {
 			
 		} else {
-			TableItem item = pointItemTable.get(point.name);
-			if (item != null) {
-				item.setText(1, point.value.toString());
+			for (TableItem item : table.getItems()) {
+				if (point.name.equals(item.getData())) {
+					String value = TypedValueConverter.convert(point.value);
+					item.setText(1, value);
+				}
 			}
 		}
 	}
+	
+	public static void popSummaryView() {
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			public void run() {
+				try {
+					if (PlatformUI.getWorkbench() != null
+							&& PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null
+							&& PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+									.getActivePage() != null) {
+												
+						PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow()
+								.getActivePage().showView(ExecutiveSummaryView.ID);	
+					}
+				} catch (PartInitException e) {
+					logger.log(Level.WARNING, "ExecutiveSummaryView activation error", e);
+				}
+			}
+		});
+	}
+
+	
+	private void setupListener() {
+        getSite().getPage().addPartListener(new IPartListener2() {
+        	
+            private boolean isThisView(final IWorkbenchPartReference part) {
+                return (part.getPart(false) instanceof ExecutiveSummaryView);
+            }
+
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+			}
+			
+			@Override
+			public void partOpened(IWorkbenchPartReference partRef) {
+				// Open Summary view as well
+				ExecutiveSummaryView.popSummaryView();
+			}
+			
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				if (isThisView(partRef))
+					dataModel.stopUpdates();
+			}
+
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+			}
+			
+
+			@Override
+			public void partInputChanged(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub			
+			}
+			
+			@Override
+			public void partDeactivated(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub				
+			}
+			
+			@Override
+			public void partBroughtToTop(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void partActivated(IWorkbenchPartReference partRef) {
+			}
+		});
+	}
+		
 }

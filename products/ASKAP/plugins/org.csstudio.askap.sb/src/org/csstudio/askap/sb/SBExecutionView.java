@@ -82,7 +82,6 @@ public class SBExecutionView extends EditorPart {
 	SBDataModel dataModel = new SBDataModel();
 	SBListener sbListener = new SBListener();
 	ExecutiveStatusListener executiveStatusListener = new ExecutiveStatusListener();
-	ExecutiveSummaryListener executiveSummaryListener = new ExecutiveSummaryListener();
 	
 	private String STATES[] = {SBState.COMPLETED.name(), SBState.ERRORED.name(), SBState.PENDINGTRANSFER.name(),
 			SBState.POSTPROCESSING.name()};
@@ -92,27 +91,7 @@ public class SBExecutionView extends EditorPart {
 	static {
 		STATE_COLOR_MAP.put(SBState.ERRORED, SWT.COLOR_RED);
 		STATE_COLOR_MAP.put(SBState.EXECUTING, SWT.COLOR_DARK_GREEN);		
-	}
-	
-	
-	public class ExecutiveSummaryListener implements MonitorPointListener {
-		public void onUpdate(final MonitorPoint point) {
-			Display.getDefault().asyncExec(new Runnable() {					
-				public void run() {
-					ExecutiveSummaryHelper.getInstance().updateValue(point);
-				}
-			});
-		}
-
-		@Override
-		public void disconnected(final String pointName) {
-			Display.getDefault().asyncExec(new Runnable() {					
-				public void run() {
-					ExecutiveSummaryHelper.getInstance().disconnected(pointName);
-				}
-			});
-		}
-	}
+	}	
 	
 	public class ExecutiveStatusListener implements MonitorPointListener {
 		@Override
@@ -134,7 +113,6 @@ public class SBExecutionView extends EditorPart {
 						setupButtons(true);
 						status.setImage(Activator.GREY_LED_IMAGE);
 					}
-					ExecutiveSummaryHelper.getInstance().updateValue(point);
 				}
 			});
 		}
@@ -533,6 +511,8 @@ public class SBExecutionView extends EditorPart {
 			
 			@Override
 			public void partOpened(IWorkbenchPartReference partRef) {
+				// Open Summary view as well
+				ExecutiveSummaryView.popSummaryView();
 			}
 			
 			@Override
@@ -575,9 +555,7 @@ public class SBExecutionView extends EditorPart {
 	
 	protected void start() {
 		dataModel.startSBPollingThread(sbListener);
-		dataModel.addPointListener(new String[]{Preferences.getExecutiveMonitorPointName()}, executiveStatusListener);
-		
-		dataModel.addPointListener(ExecutiveSummaryView.POINT_NAMES, executiveSummaryListener);	
+		dataModel.addPointListener(Preferences.getExecutiveMonitorIceName(), new String[]{Preferences.getExecutiveMonitorPointName()}, executiveStatusListener);
 			
 		dataModel.startExecutiveLogSubscriber(new DataChangeListener() {
 			
@@ -587,7 +565,6 @@ public class SBExecutionView extends EditorPart {
 				if (logObj!=null)
 					ExecutiveLogHelper.getInstance().writeLog(logObj);
 			}
-			
 		});
 	}
 

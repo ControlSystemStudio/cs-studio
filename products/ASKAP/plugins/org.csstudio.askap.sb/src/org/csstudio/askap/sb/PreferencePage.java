@@ -34,6 +34,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 		addField(new StringFieldEditor(Preferences.EXECUTIVE_MONITOR_ICE_NAME, "Executive Status Monitor Ice Name:", parent));
 		addField(new StringFieldEditor(Preferences.EXECUTIVE_MONITOR_POINT_NAME, "Executive Status Monitor Point Name:", parent));
 
+		addField(new StringFieldEditor(Preferences.OPL_MONITOR_ICE_NAME, "OPL Status Monitor Ice Name:", parent));
+
 		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_SUBSCRIBER_NAME, "Executive Log Subscriber Name:", parent));
 		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_TOPIC_NAME, "Executive Log Topic Name:", parent));
 		addField(new StringFieldEditor(Preferences.EXECUTIVE_LOG_ORIGIN, "Executive Log origin:", parent));

@@ -29,6 +29,7 @@ public class Preferences {
 	static final String OBS_DEFAULT_PROGRAM_NAME = "schedulingblock_default_obsprogram";
 
 	static final String EXECUTIVE_MONITOR_ICE_NAME = "executive_monitor_icename";
+	static final String OPL_MONITOR_ICE_NAME ="opl_monitor_icename";
 	static final String EXECUTIVE_MONITOR_POINT_NAME = "executive_monitor_pointname";
 
 	static final String EXECUTIVE_LOG_TOPIC_NAME = "executive_log_topic_name";
@@ -66,6 +67,10 @@ public class Preferences {
 		return getString(EXECUTIVE_MONITOR_ICE_NAME, "");
 	}
 
+	public static final String getOPLMonitorIceName() {
+		return getString(OPL_MONITOR_ICE_NAME, "");
+	}
+	
 	public static final String getExecutiveMonitorPointName() {
 		return getString(EXECUTIVE_MONITOR_POINT_NAME, "");
 	}
