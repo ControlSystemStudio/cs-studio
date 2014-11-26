@@ -15,6 +15,9 @@ import java.util.Optional;
 public class ModelListenerAdapter implements ModelListener
 {
     @Override
+    public void changedSaveChangesBehavior(final boolean save_changes)  { /* NOP */}
+
+    @Override
     public void changedUpdatePeriod() { /* NOP */}
 
     @Override

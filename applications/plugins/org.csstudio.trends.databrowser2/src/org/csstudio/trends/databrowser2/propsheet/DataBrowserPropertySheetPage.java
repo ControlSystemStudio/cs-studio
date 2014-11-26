@@ -126,8 +126,17 @@ public class DataBrowserPropertySheetPage extends Page
 
     private Text update_period;
 
+    private Button save_changes;
+
     final private ModelListener model_listener = new ModelListenerAdapter()
     {
+        /** {@inheritDoc} */
+        @Override
+        public void changedSaveChangesBehavior(boolean save)
+        {
+            save_changes.setEnabled(save);
+        }
+
         /** {@inheritDoc} */
         @Override
         public void changedUpdatePeriod()
@@ -562,7 +571,7 @@ public class DataBrowserPropertySheetPage extends Page
         final SelectionAdapter times_entered = new SelectionAdapter()
         {
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
+            public void widgetDefaultSelected(final SelectionEvent e)
             {
                 try
                 {
@@ -585,7 +594,7 @@ public class DataBrowserPropertySheetPage extends Page
         final SelectionListener start_end_action = new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 StartEndTimeAction.run(parent.getShell(), model, operations_manager);
             }
@@ -626,7 +635,7 @@ public class DataBrowserPropertySheetPage extends Page
             rescales[i].addSelectionListener(new SelectionAdapter()
             {
                 @Override
-                public void widgetSelected(SelectionEvent e)
+                public void widgetSelected(final SelectionEvent e)
                 {
                     // Called for both the newly selected radio button
                     // and the one that's not de-selected.
@@ -672,7 +681,7 @@ public class DataBrowserPropertySheetPage extends Page
         update_period.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
+            public void widgetDefaultSelected(final SelectionEvent e)
             {
                 try
                 {
@@ -702,7 +711,7 @@ public class DataBrowserPropertySheetPage extends Page
         background.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 final ColorDialog dialog = new ColorDialog(parent.getShell());
                 dialog.setRGB(model.getPlotBackground());
@@ -723,7 +732,7 @@ public class DataBrowserPropertySheetPage extends Page
         label_font.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 final FontDialog dialog = new FontDialog(parent.getShell());
                 dialog.setFontList(new FontData[] { model.getLabelFont() });
@@ -743,13 +752,31 @@ public class DataBrowserPropertySheetPage extends Page
         scale_font.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 final FontDialog dialog = new FontDialog(parent.getShell());
                 dialog.setFontList(new FontData[] { model.getScaleFont() });
                 final FontData selected = dialog.open();
                 if (selected != null)
                     new ChangeScaleFontCommand(model, operations_manager, selected);
+            }
+        });
+
+
+        // Save Changes: [x]
+        label = new Label(parent, 0);
+        label.setText(Messages.SaveChangesLbl);
+        label.setLayoutData(new GridData());
+
+        save_changes = new Button(parent, SWT.CHECK);
+        save_changes.setLayoutData(new GridData(SWT.LEFT, 0, true, false, 3, 1));
+        save_changes.setSelection(model.shouldSaveChanges());
+        save_changes.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                new ChangeSaveChangesCommand(model, operations_manager, save_changes.getSelection());
             }
         });
 

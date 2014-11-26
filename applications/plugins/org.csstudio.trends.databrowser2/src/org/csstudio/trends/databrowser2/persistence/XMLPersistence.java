@@ -82,6 +82,7 @@ public class XMLPersistence
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
     final public static String TAG_RIGHT = "right";
+    final public static String TAG_SAVE_CHANGES = "save_changes";
 
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_ANNOTATION = "annotation";
@@ -120,6 +121,7 @@ public class XMLPersistence
             throw new Exception("Expected " + TAG_DATABROWSER + " but got " + root_node.getNodeName());
 
         // Global settings
+        model.setSaveChanges(DOMHelper.getSubelementBoolean(root_node, TAG_SAVE_CHANGES, true));
         model.enableScrolling(DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, true));
         model.setUpdatePeriod(DOMHelper.getSubelementDouble(root_node, TAG_UPDATE_PERIOD, Preferences.getUpdatePeriod()));
         final String start = DOMHelper.getSubelementString(root_node, TAG_START);
@@ -314,6 +316,8 @@ public class XMLPersistence
         XMLWriter.header(writer);
         XMLWriter.start(writer, 0, TAG_DATABROWSER);
         writer.println();
+
+        XMLWriter.XML(writer, 1, TAG_SAVE_CHANGES, model.shouldSaveChanges());
 
         // Time axis
         XMLWriter.XML(writer, 1, TAG_SCROLL, model.isScrollEnabled());

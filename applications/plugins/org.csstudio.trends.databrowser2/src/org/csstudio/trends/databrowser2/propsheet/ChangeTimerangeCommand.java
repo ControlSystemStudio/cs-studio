@@ -18,6 +18,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to change time axis
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ChangeTimerangeCommand implements UndoableAction
 {
     final private Model model;

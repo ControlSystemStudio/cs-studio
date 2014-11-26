@@ -199,6 +199,13 @@ public class DataBrowserEditor extends EditorPart
         model_listener = new ModelListenerAdapter()
         {
             @Override
+            public void changedSaveChangesBehavior(final boolean save_changes)
+            {
+                is_dirty = save_changes;
+                firePropertyChange(IEditorPart.PROP_DIRTY);
+            }
+
+            @Override
             public void changedUpdatePeriod()
             {   setDirty(true);   }
 
@@ -434,8 +441,8 @@ public class DataBrowserEditor extends EditorPart
      *  @param dirty <code>true</code> if model changed and needs to be saved
      */
     protected void setDirty(final boolean dirty)
-    {   // No 'save', never 'dirty' in RAP
-        if (SingleSourcePlugin.isRAP())
+    {   // No 'save', never 'dirty' based on model or when running as RAP
+        if (!model.shouldSaveChanges()  ||  SingleSourcePlugin.isRAP())
             return;
         is_dirty = dirty;
         firePropertyChange(IEditorPart.PROP_DIRTY);

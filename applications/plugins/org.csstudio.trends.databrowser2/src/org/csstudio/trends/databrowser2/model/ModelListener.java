@@ -14,6 +14,9 @@ import java.util.Optional;
  */
 public interface ModelListener
 {
+    /** @param save_changes Should UI ask to save changes to the model? */
+    void changedSaveChangesBehavior(final boolean save_changes);
+
     /** The update period changed */
     void changedUpdatePeriod();
 

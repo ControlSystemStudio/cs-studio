@@ -10,28 +10,27 @@ package org.csstudio.trends.databrowser2.propsheet;
 import org.csstudio.swt.rtplot.undo.UndoableAction;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
-import org.csstudio.trends.databrowser2.model.PVItem;
-import org.csstudio.trends.databrowser2.model.RequestType;
+import org.csstudio.trends.databrowser2.model.Model;
 
-/** Undo-able command to change a PV item's request type
+/** Undo-able command to change save-on-change behavior
  *  @author Kay Kasemir
  */
-public class ChangeRequestTypeCommand implements UndoableAction
+public class ChangeSaveChangesCommand implements UndoableAction
 {
-    final private PVItem item;
-    final private RequestType old_request_type, new_request_type;
+    final private Model model;
+    final private boolean save_changes;
 
     /** Register and perform the command
+     *  @param model Model
      *  @param operations_manager OperationsManager where command will be reg'ed
-     *  @param item Model item to configure
-     *  @param new_request_type New value
+     *  @param new_trace_type New value
      */
-    public ChangeRequestTypeCommand(final UndoableActionManager operations_manager,
-            final PVItem item, final RequestType new_request_type)
+    public ChangeSaveChangesCommand(final Model model,
+            final UndoableActionManager operations_manager,
+            final boolean save_changes)
     {
-        this.item = item;
-        this.old_request_type = item.getRequestType();
-        this.new_request_type = new_request_type;
+        this.model = model;
+        this.save_changes = save_changes;
         operations_manager.perform(this);
     }
 
@@ -39,20 +38,20 @@ public class ChangeRequestTypeCommand implements UndoableAction
     @Override
     public void perform()
     {
-        item.setRequestType(new_request_type);
+        model.setSaveChanges(save_changes);
     }
 
     /** {@inheritDoc} */
     @Override
     public void undo()
     {
-        item.setRequestType(old_request_type);
+        model.setSaveChanges(! save_changes);
     }
 
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()
     {
-        return Messages.RequestType;
+        return Messages.SaveChangesLbl;
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.macros.IMacroTableProvider;
@@ -58,6 +59,9 @@ public class Model
 
     /** Previously used file extension */
     final public static String FILE_EXTENSION_OLD = "css-plt"; //$NON-NLS-1$
+
+    /** Should UI ask to save changes to the model? */
+    final private AtomicBoolean save_changes = new AtomicBoolean(true);
 
     /** Default colors for newly added item */
     final private RGBFactory default_colors = new RGBFactory();
@@ -126,6 +130,20 @@ public class Model
 		start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
 		end_spec = RelativeTime.NOW;
 	}
+
+    /** @return Should UI ask to save changes to the model? */
+	public boolean shouldSaveChanges()
+    {
+        return save_changes.get();
+    }
+
+    /** @param save_changes Should UI ask to save changes to the model? */
+    public void setSaveChanges(final boolean save_changes)
+    {
+        if (this.save_changes.getAndSet(save_changes) != save_changes)
+            for (ModelListener listener : listeners)
+                listener.changedSaveChangesBehavior(save_changes);
+    }
 
     /** @param macros Macros to use in this model */
     public void setMacros(final IMacroTableProvider macros)
