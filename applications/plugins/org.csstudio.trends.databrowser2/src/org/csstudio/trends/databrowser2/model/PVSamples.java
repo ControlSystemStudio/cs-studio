@@ -33,6 +33,17 @@ import org.epics.vtype.ValueUtil;
  */
 public class PVSamples extends PlotSamples
 {
+    /* history and live are each PlotSamples, i.e. they
+     * have a read/write lock, but those are never used.
+     *
+     * Instead, all read accesses to them goes via
+     * PVSamples.size(), PVSamples.get()
+     * and caller should take the PVSamples lock.
+     *
+     * Write access goes via
+     * PVSamples.add*(), PVSamples.mergeArchivedData(),
+     * which take the write lock.
+     */
     /** Historic samples */
     final private HistoricSamples history;
 
@@ -66,7 +77,7 @@ public class PVSamples extends PlotSamples
 
     /** @return Combined count of historic and live samples */
     @Override
-    synchronized public int size()
+    public int size()
     {
         final int raw = getRawSize();
         if (raw <= 0)
@@ -90,7 +101,7 @@ public class PVSamples extends PlotSamples
      *  @return Sample from historic or live sample subsection
      */
     @Override
-    synchronized public PlotSample get(final int index)
+    public PlotSample get(final int index)
     {
         final int raw_count = getRawSize();
         if (index < raw_count)
@@ -146,11 +157,20 @@ public class PVSamples extends PlotSamples
     public void mergeArchivedData(final String source,
             final List<VType> result)
     {
-    	if (emptyHistoryOnAdd) {
-    		emptyHistoryOnAdd = false;
-    		history.clear();
-    	}
-        history.mergeArchivedData(source, result);
+        lockForWriting();
+        try
+        {
+        	if (emptyHistoryOnAdd)
+        	{
+        		emptyHistoryOnAdd = false;
+        		history.clear();
+        	}
+            history.mergeArchivedData(source, result);
+        }
+        finally
+        {
+            unlockForWriting();
+        }
     }
 
     /** Add another 'live' sample
@@ -189,10 +209,18 @@ public class PVSamples extends PlotSamples
     }
 
     /** Delete all samples */
-    synchronized public void clear()
+    public void clear()
     {
-        history.clear();
-        live.clear();
+        lockForWriting();
+        try
+        {
+            history.clear();
+            live.clear();
+        }
+        finally
+        {
+            unlockForWriting();
+        }
     }
 
     /**

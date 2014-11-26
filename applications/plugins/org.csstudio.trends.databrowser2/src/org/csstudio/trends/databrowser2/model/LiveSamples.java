@@ -21,6 +21,8 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
  */
 public class LiveSamples extends PlotSamples
 {
+    // No locking in here, all access is via PVSamples
+
     private RingBuffer<PlotSample> samples =
         new RingBuffer<PlotSample>(Preferences.getLiveSampleBufferSize());
 

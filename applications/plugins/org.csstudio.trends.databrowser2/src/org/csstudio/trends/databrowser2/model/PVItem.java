@@ -386,34 +386,34 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
     {
         final VType value = current_value;
         Activator.getLogger().log(Level.FINE, "PV {0} scans {1}", new Object[] { getName(), value });
-        samples.lockForWriting();
-        try
-        {
-            if (value == null)
-                logDisconnected();
-            else
-                // Transform value to have 'now' as time stamp
-                samples.addLiveSample(VTypeHelper.transformTimestampToNow(value));
-        }
-        finally
-        {
-            samples.unlockForWriting();
-        }
+        if (value == null)
+            logDisconnected();
+        else
+            // Transform value to have 'now' as time stamp
+            samples.addLiveSample(VTypeHelper.transformTimestampToNow(value));
     }
 
     /** Add one(!) 'disconnected' sample */
     private void logDisconnected()
     {
-        final int size = samples.size();
-        if (size > 0)
+        samples.lockForWriting();
+        try
         {
-            final String last =
-                VTypeHelper.getMessage(samples.get(size - 1).getVType());
-            // Does last sample already have 'disconnected' status?
-            if (Messages.Model_Disconnected.equals(last))
-                return;
+            final int size = samples.size();
+            if (size > 0)
+            {
+                final String last =
+                    VTypeHelper.getMessage(samples.get(size - 1).getVType());
+                // Does last sample already have 'disconnected' status?
+                if (Messages.Model_Disconnected.equals(last))
+                    return;
+            }
+            samples.addLiveSample(new PlotSample(Messages.LiveData, Messages.Model_Disconnected));
         }
-        samples.addLiveSample(new PlotSample(Messages.LiveData, Messages.Model_Disconnected));
+        finally
+        {
+            samples.unlockForWriting();
+        }
     }
 
     /** Add data retrieved from an archive to the 'historic' section

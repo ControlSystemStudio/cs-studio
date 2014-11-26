@@ -33,6 +33,8 @@ import org.epics.vtype.VType;
  */
 public class HistoricSamples extends PlotSamples
 {
+    // No locking in here, all access is via PVSamples
+
     /** "All" historic samples */
     private PlotSample samples[] = new PlotSample[0];
 

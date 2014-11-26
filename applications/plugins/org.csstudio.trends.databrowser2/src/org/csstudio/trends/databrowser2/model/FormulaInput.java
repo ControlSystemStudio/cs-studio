@@ -52,11 +52,20 @@ public class FormulaInput
      */
     public VType first()
     {
-        if (item.getSamples().size() > 0)
-            index = 0;
-        else
-            index = -1;
-        return next();
+        final PlotSamples samples = item.getSamples();
+        samples.getLock().lock();
+        try
+        {
+            if (samples.size() > 0)
+                index = 0;
+            else
+                index = -1;
+            return next();
+        }
+        finally
+        {
+            samples.getLock().unlock();
+        }
     }
 
     /** Iterate over the samples of the input's ModelItem

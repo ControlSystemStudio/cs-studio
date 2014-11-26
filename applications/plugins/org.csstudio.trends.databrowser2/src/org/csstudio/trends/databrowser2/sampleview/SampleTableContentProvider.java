@@ -35,6 +35,7 @@ public class SampleTableContentProvider implements ILazyContentProvider
             return;
         }
         samples = ((ModelItem)model_item).getSamples();
+        // Not locking for read access to just size(), since never using that to get() sample
         sample_table.setItemCount(samples.size());
     }
 

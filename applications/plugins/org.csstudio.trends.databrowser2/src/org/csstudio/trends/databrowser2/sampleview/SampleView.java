@@ -336,7 +336,7 @@ public class SampleView extends DataBrowserAwareView
         			items.setItems(names);
         			items.select(model_items.indexOf(selected_item) + 1);
         			items.setEnabled(true);
-        			// Update sample table size
+        			// Update sample table size. Not locking for size()
         			sample_table.setItemCount(selected_item.getSamples().size());
         			sample_table.refresh();
         			return;
