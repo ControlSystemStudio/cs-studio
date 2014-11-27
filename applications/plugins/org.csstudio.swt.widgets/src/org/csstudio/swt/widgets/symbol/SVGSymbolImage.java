@@ -62,7 +62,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 			image = new Image(Display.getDefault(), imageData);
 		}
 		// Calculate areas
-		if (bounds == null)
+		if (bounds == null || imgDimension == null)
 			return;
 		int cropedWidth = imageData.width - (int) Math.round(scale * (leftCrop + rightCrop));
 		int cropedHeight = imageData.height - (int) Math.round(scale * (bottomCrop + topCrop));

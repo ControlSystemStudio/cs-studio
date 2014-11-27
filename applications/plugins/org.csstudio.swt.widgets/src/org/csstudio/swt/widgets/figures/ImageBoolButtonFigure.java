@@ -182,24 +182,26 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	}
 
 	public synchronized void setOffImagePath(IPath offImagePath) {
-		remainingImagesToLoad++;
 		this.offImagePath = offImagePath;
 		if (offImage != null) {
 			offImage.dispose();
 			offImage = null;
 		}
+		if (offImagePath != null && !offImagePath.isEmpty())
+			remainingImagesToLoad++;
 		offImage = SymbolImageFactory.asynCreateSymbolImage(this.offImagePath,
 				true, symbolProperties, this);
 	}
 
 	public synchronized void setOnImagePath(IPath onImagePath) {
-		remainingImagesToLoad++;
 		this.onImagePath = onImagePath;
 		if (onImage != null) {
 			onImage.dispose();
 			onImage = null;
 		}
-		onImage = SymbolImageFactory.asynCreateSymbolImage(this.onImagePath, 
+		if (onImagePath != null && !onImagePath.isEmpty())
+			remainingImagesToLoad++;
+		onImage = SymbolImageFactory.asynCreateSymbolImage(this.onImagePath,
 				true, symbolProperties, this);
 	}
 
@@ -278,8 +280,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	public void symbolImageLoaded() {
 		decrementLoadingCounter();
 		sizeChanged();
-		repaint();
 		revalidate();
+		repaint();
 	}
 
 	public void repaintRequested() {
@@ -287,7 +289,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	}
 
 	public void sizeChanged() {
-		imageListener.imageResized(this);
+		if (imageListener != null)
+			imageListener.imageResized(this);
 	}
 
 }
