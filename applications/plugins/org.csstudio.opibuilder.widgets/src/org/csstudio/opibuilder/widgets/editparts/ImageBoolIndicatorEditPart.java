@@ -11,7 +11,6 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel;
 import org.csstudio.opibuilder.widgets.model.ImageBoolIndicatorModel;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
@@ -112,7 +111,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
 			
 		};
-		setPropertyChangeHandler(ImageBoolButtonModel.PROP_ON_IMAGE, handle);
+		setPropertyChangeHandler(ImageBoolIndicatorModel.PROP_ON_IMAGE, handle);
 		
 		// changes to the off image property
 		handle = new IWidgetPropertyChangeHandler() {
@@ -130,7 +129,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
 			
 		};
-		setPropertyChangeHandler(ImageBoolButtonModel.PROP_OFF_IMAGE, handle);
+		setPropertyChangeHandler(ImageBoolIndicatorModel.PROP_OFF_IMAGE, handle);
 		
 		// changes to the stretch property
 		handle = new IWidgetPropertyChangeHandler() {
@@ -142,7 +141,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ImageBoolButtonModel.PROP_STRETCH, handle);
+		setPropertyChangeHandler(ImageBoolIndicatorModel.PROP_STRETCH, handle);
 	
 		// changes to the autosize property
 		handle = new IWidgetPropertyChangeHandler() {
@@ -153,7 +152,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ImageBoolButtonModel.PROP_AUTOSIZE, handle);
+		setPropertyChangeHandler(ImageBoolIndicatorModel.PROP_AUTOSIZE, handle);
 
 		// changes to the stop animation property
 		handle = new IWidgetPropertyChangeHandler() {

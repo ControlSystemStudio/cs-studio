@@ -126,7 +126,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 			}
 		}
 		// Calculate areas
-		if (bounds == null)
+		if (bounds == null || imgDimension == null)
 			return;
 		Rectangle srcArea = new Rectangle(leftCrop, topCrop, imgDimension.width, imgDimension.height);
 		Rectangle destArea = new Rectangle(bounds.x, bounds.y, imgDimension.width, imgDimension.height);
