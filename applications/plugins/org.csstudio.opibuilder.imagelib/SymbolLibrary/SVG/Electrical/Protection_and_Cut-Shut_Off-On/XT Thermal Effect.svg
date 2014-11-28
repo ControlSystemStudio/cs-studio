@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE0111.svg Page 1 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,42 +9,12 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.260109in"
-		height="0.261186in" viewBox="0 0 18.7279 18.8054" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="group1-1" transform="translate(0.72,-1)" v:mID="1" v:groupContext="group">
-			<title>Feuille.1</title>
-			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(0,-16.9972)">
-				<title>Feuille.2</title>
-				<rect x="0" y="18.7948" width="0.0106299" height="0.0106299" class="st1"/>
-			</g>
-			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(16.9972,0)">
-				<title>Feuille.3</title>
-				<rect x="0" y="18.7948" width="0.0106299" height="0.0106299" class="st1"/>
-			</g>
-		</g>
-		<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(9.22394,-4.9685)">
-			<title>Feuille.4</title>
-			<path d="M0 10.3 L8.5 10.3 L8.5 18.81 L0 18.81" class="st2"/>
-		</g>
-		<g id="shape5-9" v:mID="5" v:groupContext="shape" transform="translate(28.0293,1) rotate(90)">
-			<title>Feuille.5</title>
-			<path d="M0 18.81 L4.05 18.81" class="st2"/>
-		</g>
-		<g id="shape6-12" v:mID="6" v:groupContext="shape" transform="translate(28.0293,14.1609) rotate(90)">
-			<title>Feuille.6</title>
-			<path d="M0 18.81 L3.64 18.81" class="st2"/>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35pt" height="36pt" viewBox="0 0 35 36" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.371094 1.496094 L 1.390625 1.496094 L 1.390625 1.515625 L 1.371094 1.515625 Z M 1.371094 1.496094 "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 33.699219 33.363281 L 33.722656 33.363281 L 33.722656 33.386719 L 33.699219 33.386719 Z M 33.699219 33.363281 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00072847 10.299743 L 8.500484 10.299743 L 8.500484 18.810183 L 0.00072847 18.810183 " transform="matrix(1.902169,0,0,1.874995,17.545489,-9.31587)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000019331 18.810792 L 4.049992 18.810792 " transform="matrix(0.000000000000000116,1.874995,-1.902169,0.000000000000000115,53.316455,1.875036)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000466123 18.810792 L 3.639127 18.810792 " transform="matrix(0.000000000000000116,1.874995,-1.902169,0.000000000000000115,53.316455,26.551655)"/>
+</g>
 </svg>

@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF0314.svg FL_EF0201 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,42 +9,20 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="1.2011in"
-		height="0.964882in" viewBox="0 0 86.4794 69.4715" xml:space="preserve" color-interpolation-filters="sRGB" class="st1">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-	]]>
-	</style>
-	<defs id="Masters">
-		<symbol id="master75" v:mID="75" class="st1">
-			<title>FL_EF0314</title>
-			<g id="master-shape5-2" v:mID="5" v:groupContext="shape">
-				<title>Feuille.5</title>
-				<path d="M8.5 1.44 L76.54 1.44" class="st2"/>
-				<path d="M17.01 18.45 L25.51 1.44" class="st2"/>
-				<path d="M34.02 18.45 L25.51 1.44" class="st2"/>
-				<path d="M25.51 18.45 L25.51 1.44" class="st2"/>
-				<path d="M51.02 18.45 L59.53 1.44" class="st2"/>
-				<path d="M68.03 18.45 L59.53 1.44 L59.53 18.45" class="st2"/>
-				<path d="M0 26.95 L72.28 26.95" class="st2"/>
-				<path d="M12.76 43.96 A4.25197 4.25197 0 0 1 8.5 39.71 A4.25197 4.25197 0 0 1 12.76 35.46" class="st2"/>
-				<path d="M12.76 43.96 L85.04 43.96" class="st2"/>
-				<path d="M72.28 35.46 L12.76 35.46" class="st2"/>
-				<path d="M72.28 26.95 A4.25197 4.25197 0 0 1 76.54 31.2 A4.25197 4.25197 90 0 1 72.28 35.46" class="st2"/>
-				<path d="M76.54 52.46 L76.54 69.47 L8.5 69.47" class="st2"/>
-				<path d="M8.5 69.47 L8.5 52.46" class="st2"/>
-			</g>
-		</symbol>
-	</defs>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>FL_EF0201</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="9"
-				v:shadowOffsetY="-9"/>
-		<use id="shape31-1" v:mID="31" xlink:href="#master75" transform="translate(0.72,-0.72)">
-			<title>FL_EF0314</title>
-		</use>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="162pt" height="131pt" viewBox="0 0 162 131" version="1.1">
+<g id="surface1">
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 8.500855 1.440077 L 76.540595 1.440077 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 17.009208 18.449944 L 25.509227 1.440077 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 34.019664 18.449944 L 25.509227 1.440077 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 25.509227 18.449944 L 25.509227 1.440077 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 51.019703 18.449944 L 59.530139 1.440077 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 68.030159 18.449944 L 59.530139 1.440077 L 59.530139 18.449944 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000835 26.950727 L 72.280169 26.950727 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 12.759198 43.960595 C 11.632112 43.96267 10.548776 43.514387 9.748774 42.717438 C 8.950856 41.92049 8.500855 40.839214 8.500855 39.710203 C 8.500855 38.581193 8.950856 37.499917 9.748774 36.700893 C 10.548776 35.903945 11.632112 35.457737 12.759198 35.459812 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 12.759198 43.960595 L 85.040615 43.960595 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 72.280169 35.459812 L 12.759198 35.459812 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 72.280169 26.950727 C 73.409338 26.948652 74.492674 27.39486 75.290592 28.191808 C 76.090594 28.988757 76.538512 30.072109 76.540595 31.199043 C 76.542679 32.330129 76.094761 33.415556 75.294759 34.21458 C 74.494757 35.013604 73.411421 35.461887 72.280169 35.459812 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 76.540595 52.459303 L 76.540595 69.46917 L 8.500855 69.46917 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 8.500855 69.46917 L 8.500855 52.459303 " transform="matrix(1.874996,0,0,1.88218,1.349997,-1.355014)"/>
+</g>
 </svg>

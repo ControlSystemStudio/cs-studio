@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE0608.svg Page 1 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,32 +9,22 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.500219in"
-		height="0.736439in" viewBox="0 0 36.0157 53.0236" xml:space="preserve" color-interpolation-filters="sRGB" class="st4">
-	<title>document de base</title>
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st2 {fill:#000000;font-family:Arial;font-size:1.00001em}
-		.st3 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st4 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="shape1223-1" v:mID="1223" v:groupContext="shape" transform="translate(1,-1)">
-			<title>Feuille.1223</title>
-			<desc>h</desc>
-			<v:textBlock v:margins="rect(4,4,8,4)" v:tabSpace="42.5197" v:verticalAlign="2"/>
-			<v:textRect cx="17.0079" cy="27.5118" width="34.02" height="51.0236"/>
-			<rect x="0" y="2" width="34.0157" height="51.0236" class="st1"/>
-			<text x="13.67" y="41.42" class="st2" v:langID="1036"><v:paragraph v:horizAlign="1"/><v:tabList/>h</text>		</g>
-		<g id="shape1569-4" v:mID="1569" v:groupContext="shape" transform="translate(1,-35.0157)">
-			<title>Feuille.1569</title>
-			<path d="M0 53.02 L34.02 53.02" class="st3"/>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68pt" height="99pt" viewBox="0 0 68 99" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d="M 0.765625 0 L 0.765625 -15.328125 L 6.875 -15.328125 L 6.875 0 Z M 1.53125 -0.765625 L 6.109375 -0.765625 L 6.109375 -14.5625 L 1.53125 -14.5625 Z M 1.53125 -0.765625 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M 3.5625 -10.078125 C 3.78125 -10.484375 4.019531 -10.832031 4.28125 -11.125 C 4.550781 -11.414062 4.84375 -11.65625 5.15625 -11.84375 C 5.46875 -12.03125 5.8125 -12.164062 6.1875 -12.25 C 6.5625 -12.332031 6.984375 -12.375 7.453125 -12.375 C 8.222656 -12.375 8.859375 -12.269531 9.359375 -12.0625 C 9.859375 -11.851562 10.25 -11.554688 10.53125 -11.171875 C 10.820312 -10.796875 11.019531 -10.347656 11.125 -9.828125 C 11.238281 -9.304688 11.296875 -8.726562 11.296875 -8.09375 L 11.296875 0 L 9.265625 0 L 9.265625 -7.703125 C 9.265625 -8.222656 9.234375 -8.675781 9.171875 -9.0625 C 9.109375 -9.445312 8.984375 -9.769531 8.796875 -10.03125 C 8.617188 -10.289062 8.363281 -10.484375 8.03125 -10.609375 C 7.707031 -10.742188 7.285156 -10.8125 6.765625 -10.8125 C 6.285156 -10.8125 5.851562 -10.722656 5.46875 -10.546875 C 5.082031 -10.378906 4.75 -10.140625 4.46875 -9.828125 C 4.195312 -9.515625 3.984375 -9.128906 3.828125 -8.671875 C 3.679688 -8.222656 3.609375 -7.722656 3.609375 -7.171875 L 3.609375 0 L 1.59375 0 L 1.59375 -16.671875 L 3.609375 -16.671875 L 3.609375 -12.328125 C 3.609375 -12.078125 3.601562 -11.828125 3.59375 -11.578125 C 3.59375 -11.335938 3.585938 -11.113281 3.578125 -10.90625 C 3.566406 -10.695312 3.554688 -10.519531 3.546875 -10.375 C 3.535156 -10.226562 3.53125 -10.128906 3.53125 -10.078125 Z M 3.5625 -10.078125 "/>
+</symbol>
+</g>
+</defs>
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000887684 2 L 34.015588 2 L 34.015588 53.022909 L 0.000887684 53.022909 Z M 0.000887684 2 " transform="matrix(1.888889,0,0,1.875,1.888948,-1.875)"/>
+<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
+  <use xlink:href="#glyph0-1" x="27.710937" y="77.407718"/>
+</g>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000887684 53.019864 L 34.019724 53.019864 " transform="matrix(1.888889,0,0,1.875,1.888948,-65.654447)"/>
+</g>
 </svg>

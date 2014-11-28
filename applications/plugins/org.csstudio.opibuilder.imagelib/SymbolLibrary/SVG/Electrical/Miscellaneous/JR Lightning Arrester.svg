@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE0705.svg Page 1 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,54 +9,13 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.25622in"
-		height="0.829716in" viewBox="0 0 18.4479 59.7396" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-		.st2 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st3 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st4 {marker-end:url(#mrkr13-16);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st5 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.40983606557377}
-		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<defs id="Markers">
-		<g id="lend13">
-			<path d="M 3 1 L -0 0 L 3 -1 L 3 1 " style="stroke:none"/>
-		</g>
-		<marker id="mrkr13-16" class="st5" v:arrowType="13" v:arrowSize="0" v:setback="7.32" refX="-7.32" orient="auto"
-				markerUnits="strokeWidth">
-			<use xlink:href="#lend13" transform="scale(-2.44,-2.44) "/>
-		</marker>
-	</defs>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="group1-1" transform="translate(0.72,-1)" v:mID="1" v:groupContext="group">
-			<title>Feuille.1</title>
-			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(0,-50.9917)">
-				<title>Feuille.2</title>
-				<rect x="0" y="59.7077" width="0.0106299" height="0.0318898" class="st1"/>
-			</g>
-			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(16.9972,0)">
-				<title>Feuille.3</title>
-				<rect x="0" y="59.7077" width="0.0106299" height="0.0318898" class="st1"/>
-			</g>
-		</g>
-		<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(4.97197,-13.7559)">
-			<title>Feuille.4</title>
-			<rect x="0" y="34.2278" width="8.50394" height="25.5118" class="st2"/>
-		</g>
-		<g id="shape5-8" v:mID="5" v:groupContext="shape" transform="translate(68.9635,46.1861) rotate(90)">
-			<title>Feuille.5</title>
-			<path d="M0 59.74 L12.55 59.74" class="st3"/>
-		</g>
-		<g id="shape6-11" v:mID="6" v:groupContext="shape" transform="translate(68.9635,7.71596) rotate(90)">
-			<title>Feuille.6</title>
-			<path d="M0 59.74 L16.92 59.74" class="st4"/>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35pt" height="114pt" viewBox="0 0 35 114" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.371094 14.660156 L 1.390625 14.660156 L 1.390625 14.722656 L 1.371094 14.722656 Z M 1.371094 14.660156 "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 33.699219 111.542969 L 33.722656 111.542969 L 33.722656 111.605469 L 33.699219 111.605469 Z M 33.699219 111.542969 "/>
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000257401 34.228755 L 8.50361 34.228755 L 8.50361 59.738707 L -0.000257401 59.738707 Z M -0.000257401 34.228755 " transform="matrix(1.902168,0,0,1.899994,9.457521,-26.135986)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000243515 59.740881 L 12.549626 59.740881 " transform="matrix(0.000000000000000116,1.899994,-1.902168,0.000000000000000116,131.180144,87.753444)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000136343 59.740881 L 16.920149 59.740881 " transform="matrix(0.000000000000000116,1.899994,-1.902168,0.000000000000000116,131.180144,14.660415)"/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 22.1875 46.808594 L 17.542969 60.714844 L 12.902344 46.808594 L 22.1875 46.808594 "/>
+</g>
 </svg>

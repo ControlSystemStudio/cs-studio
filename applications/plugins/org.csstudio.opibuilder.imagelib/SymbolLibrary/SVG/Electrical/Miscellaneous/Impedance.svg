@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE0742.svg Page 1 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,51 +9,25 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.256219in"
-		height="0.500162in" viewBox="0 0 18.4478 36.0116" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.719998}
-		.st2 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st3 {fill:#000000;font-family:Arial;font-size:0.75em}
-		.st4 {fill:none}
-		.st5 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50391"
-				v:shadowOffsetY="-8.50391"/>
-		<g id="group1-1" transform="translate(0.719998,-0.99801)" v:mID="1" v:groupContext="group">
-			<title>Feuille.1</title>
-			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(0,-33.9944)">
-				<title>Feuille.2</title>
-				<rect x="0" y="35.9904" width="0.0106299" height="0.0212597" class="st1"/>
-			</g>
-			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(16.9971,0)">
-				<title>Feuille.3</title>
-				<rect x="0" y="35.9904" width="0.0106299" height="0.0212597" class="st1"/>
-			</g>
-		</g>
-		<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(4.25198,-5.24993)">
-			<title>Feuille.4</title>
-			<desc>Z</desc>
-			<v:userDefs/>
-			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,1.5)" v:tabSpace="42.5196"/>
-			<v:textRect cx="4.25196" cy="23.2557" width="8.56" height="25.5117"/>
-			<rect x="0" y="10.4999" width="8.50391" height="25.5117" class="st2"/>
-			<text x="1.47" y="25.96" class="st3" v:langID="1036"><v:paragraph v:horizAlign="1"/><v:tabList/>Z</text>		</g>
-		<g id="shape5-9" v:mID="5" v:groupContext="shape" transform="translate(-27.5077,5.24999) rotate(-90)">
-			<title>Feuille.5</title>
-			<path d="M0 36.01 L4.25 36.01 L0 36.01 Z" class="st4"/>
-			<path d="M0 36.01 L4.25 36.01" class="st5"/>
-		</g>
-		<g id="shape6-12" v:mID="6" v:groupContext="shape" transform="translate(44.7991,30.7617) rotate(90)">
-			<title>Feuille.6</title>
-			<path d="M0 36.01 L4.25 36.01 L0 36.01 Z" class="st4"/>
-			<path d="M0 36.01 L4.25 36.01" class="st5"/>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35pt" height="68pt" viewBox="0 0 35 68" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d="M 0.5625 0 L 0.5625 -11.328125 L 5.078125 -11.328125 L 5.078125 0 Z M 1.125 -0.5625 L 4.515625 -0.5625 L 4.515625 -10.765625 L 1.125 -10.765625 Z M 1.125 -0.5625 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M 9.859375 0 L 0.546875 0 L 0.546875 -1.1875 L 7.65625 -10.40625 L 1.140625 -10.40625 L 1.140625 -11.703125 L 9.46875 -11.703125 L 9.46875 -10.546875 L 2.34375 -1.296875 L 9.859375 -1.296875 Z M 9.859375 0 "/>
+</symbol>
+</g>
+</defs>
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.371094 1.886719 L 1.390625 1.886719 L 1.390625 1.925781 L 1.371094 1.925781 Z M 1.371094 1.886719 "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 33.699219 66.097656 L 33.722656 66.097656 L 33.722656 66.136719 L 33.699219 66.136719 Z M 33.699219 66.097656 "/>
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000973806 10.500565 L 8.504828 10.500565 L 8.504828 36.011639 L 0.000973806 36.011639 Z M 0.000973806 10.500565 " transform="matrix(1.902171,0,0,1.888886,8.087991,-9.916398)"/>
+<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
+  <use xlink:href="#glyph0-1" x="10.882812" y="39.39559"/>
+</g>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000645213 36.0095 L 4.249132 36.0095 " transform="matrix(0.000000000000000116,-1.888886,1.902171,0.000000000000000116,-52.324339,9.91675)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00000887671 36.009799 L 4.249786 36.009799 " transform="matrix(0.000000000000000116,1.888886,-1.902171,0.000000000000000116,85.215532,58.105452)"/>
+</g>
 </svg>
