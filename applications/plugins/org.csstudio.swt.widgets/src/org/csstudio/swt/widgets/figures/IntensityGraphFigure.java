@@ -344,6 +344,22 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			}
 		}
 		
+		private synchronized IPrimaryArrayWrapper convertFromUnsignedArray(IPrimaryArrayWrapper data, int bits) {
+			if(bits == 0) {
+				return data;
+			}
+			double[] result = new double[data.getSize()];
+			double offset = Math.pow(2, bits);
+			for(int i=0; i<data.getSize(); i++) {
+				if(data.get(i) < 0) {
+					result[i] = data.get(i) + offset;
+				} else {
+					result[i] = data.get(i);
+				}
+			}
+			return new DoubleArrayWrapper(result);
+		}
+
 		
 		private synchronized IPrimaryArrayWrapper cropDataArray(int left, int right, int top, int bottom){
 			if((left != 0 || right != 0 || top != 0 || bottom != 0) &&
@@ -443,7 +459,10 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 					return;
 				
 				croppedDataArray = cropDataArray(cropLeft, cropRight, cropTop, cropBottom);
-				
+				if(unsigned) {
+					croppedDataArray = convertFromUnsignedArray(croppedDataArray, unsignedBits);
+				}
+
 				fireProfileDataChanged(croppedDataArray, croppedDataWidth, croppedDataHeight);
 //				for(ROIFigure roiFigure : roiMap.values()){
 //					roiFigure.fireROIUpdated();
@@ -676,6 +695,8 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 
 	private int dataWidth, dataHeight;
 	private int cropLeft, cropRight, cropTop, cropBottom;
+	private int unsignedBits;
+	private boolean unsigned;
 //	private double[] dataArray;
 	private IPrimaryArrayWrapper dataArray;
 	
@@ -1057,6 +1078,14 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		return dataWidth;
 	}
 
+	public boolean isUnsigned() {
+		return unsigned;
+	}
+
+	public int getUnsignedBits() {
+		return unsignedBits;
+	}
+
 	public GraphArea getGraphArea() {
 		return graphArea;
 	}
@@ -1419,6 +1448,17 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		updateCroppedDataSize();
 		dataDirty = true;
 		repaint();
+	}
+
+	public void setUnsigned(boolean unsigned) {
+		this.unsigned = unsigned;
+	}
+
+	/**
+	 * @param bits the number of bits in the unsigned data, or zero
+	 */
+	public final void setUnsignedBits(int bits) {
+		this.unsignedBits = bits;
 	}
 
 	/**Set if the input data is in RGB mode. For example, the input data is a 1D array of
