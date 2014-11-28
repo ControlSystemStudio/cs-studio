@@ -273,7 +273,16 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		Pattern strokePattern = Pattern.compile("(?i)" + CSSConstants.CSS_STROKE_PROPERTY + ":" + svgOldColor);
 		String fillReplace = CSSConstants.CSS_FILL_PROPERTY + ":" + svgNewColor;
 		String strokeReplace = CSSConstants.CSS_STROKE_PROPERTY + ":" + svgNewColor;
-		
+
+		Pattern rgbPattern = Pattern.compile("(?i)rgb\\("
+				+ Math.round(oldColor.getRed() / 255f * 100) + "%,"
+				+ Math.round(oldColor.getGreen() / 255f * 100) + "%,"
+				+ Math.round(oldColor.getBlue() / 255f * 100) + "%\\)");
+		String rgbReplace = "rgb(" 
+				+ Math.round(newColor.getRed() / 255f * 100)+ "%," 
+				+ Math.round(newColor.getGreen() / 255f * 100) + "%,"
+				+ Math.round(newColor.getBlue() / 255f * 100) + "%)";
+
 		// Search for global style element <style type="text/css"></style>
 		NodeList styleList = doc.getElementsByTagName("style");
 		for (int i = 0; i < styleList.getLength(); i++) {
@@ -290,17 +299,20 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 						data = matcher.replaceAll(fillReplace);
 						matcher = strokePattern.matcher(data);
 						data = matcher.replaceAll(strokeReplace);
+						matcher = rgbPattern.matcher(data);
+						data = matcher.replaceAll(rgbReplace);
 						cdata.setData(data);
 					}
 				}
 			}
 		}
 		recursiveCC(doc.getDocumentElement(), fillPattern, strokePattern,
-				fillReplace, strokeReplace);
+				fillReplace, strokeReplace, rgbPattern, rgbReplace);
 	}
 	
 	private void recursiveCC(Element elmt, Pattern fillPattern,
-			Pattern strokePattern, String fillReplace, String strokeReplace) {
+			Pattern strokePattern, String fillReplace, String strokeReplace,
+			Pattern rgbPattern, String rgbReplace) {
 		if (elmt == null)
 			return;
 		Matcher matcher = null;
@@ -310,7 +322,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 				Node child = styleList.item(i);
 				if (child instanceof SVGStylableElement) {
 					recursiveCC((Element) child, fillPattern, strokePattern,
-							fillReplace, strokeReplace);
+							fillReplace, strokeReplace, rgbPattern, rgbReplace);
 				}
 			}
 		}
@@ -320,6 +332,8 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 			style = matcher.replaceAll(fillReplace);
 			matcher = strokePattern.matcher(style);
 			style = matcher.replaceAll(strokeReplace);
+			matcher = rgbPattern.matcher(style);
+			style = matcher.replaceAll(rgbReplace);
 			elmt.setAttribute("style", style);
 		}
 	}
