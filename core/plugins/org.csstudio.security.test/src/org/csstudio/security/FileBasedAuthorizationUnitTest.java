@@ -28,7 +28,7 @@ public class FileBasedAuthorizationUnitTest
     @Test
     public void testFileBasedAuthorization() throws Exception
     {
-        final AuthorizationProvider auth = new FileBasedAuthorizationProvider("authorization.conf");
+        final AuthorizationProvider auth = new FileBasedAuthorizationProvider("../org.csstudio.security/authorization.conf");
         
         // "fred" is listed for full alarm access
         Subject user = new Subject();
@@ -36,7 +36,7 @@ public class FileBasedAuthorizationUnitTest
         Authorizations authorizations = auth.getAuthorizations(user);
         System.out.println(user);
         System.out.println(authorizations);
-        assertThat(authorizations.haveAuthorization("alarm_acknowledge"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("alarm_ack"), equalTo(true));
         assertThat(authorizations.haveAuthorization("alarm_config"), equalTo(true));
 
         // "linux-admin" is one of the ".*-admin". May do anything
@@ -54,7 +54,7 @@ public class FileBasedAuthorizationUnitTest
         authorizations = auth.getAuthorizations(user);
         System.out.println(user);
         System.out.println(authorizations);
-        assertThat(authorizations.haveAuthorization("alarm_acknowledge"), equalTo(true));
+        assertThat(authorizations.haveAuthorization("alarm_ack"), equalTo(true));
         assertThat(authorizations.haveAuthorization("alarm_config"), equalTo(false));
     }
 }

@@ -2,14 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Shiftui
 Bundle-SymbolicName: org.csstudio.shift.ui;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.3.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.help,
  org.eclipse.core.resources,
  org.eclipse.ui.ide,
  org.csstudio.ui.util,
- com.google.common,
  gov.bnl.shiftClient,
  org.csstudio.shift,
  org.eclipse.swt,
@@ -19,5 +18,6 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.shift.ui
 Bundle-Vendor: Shift GUI
-Import-Package: org.eclipse.ui.part
+Import-Package: com.google.common.base,
+ org.eclipse.ui.part
 Bundle-ActivationPolicy: lazy

@@ -39,9 +39,9 @@ public class Opi_activeSliderClass extends OpiWidget {
 		new OpiColor(widgetContext, "thumb_color", r.getControlColor(), r);
 		if(r.isControlAlarm() && r.getControlPv()!=null){
 			createColorAlarmRule(r, convertPVName(r.getControlPv()), "fill_color", 
-					"FillColorAlarmRule", true);
+					"FillColorAlarmRule", false);
 			createColorAlarmRule(r, r.getControlPv(), "color_fillbackground", 
-					"FillbackgroundColorAlarmRule", true);
+					"FillbackgroundColorAlarmRule", false);
 		}
 		
 		new OpiDouble(widgetContext, "page_increment", r.getIncrement());

@@ -41,7 +41,25 @@ public class AdapterFactory implements IAdapterFactory {
 		}
 		
 		for (int columnIndex = 0; columnIndex < value.getColumnCount(); columnIndex++) {
-		    columnNames.add(value.getColumnName(columnIndex));
+		    String columnName = value.getColumnName(columnIndex);
+		    switch (columnName) {
+            case PreTuneEditor.SetPointPVLabel:
+                columnName = PreTuneEditor.SetPointPVLabel+"_Value";
+                break;
+            case PreTuneEditor.ReadbackPointPVLabel:
+                columnName = PreTuneEditor.ReadbackPointPVLabel+"_Value";
+                break;
+            case PreTuneEditor.SetPointPVLabel+"_name":
+                columnName = PreTuneEditor.SetPointPVLabel;
+                break;
+            case PreTuneEditor.ReadbackPointPVLabel+"_name":
+                columnName = PreTuneEditor.ReadbackPointPVLabel;
+                break;
+            default:
+                break;
+            }
+		    
+		    columnNames.add(columnName);
 		    Object data = value.getColumnData(columnIndex);
 		    if (data instanceof List){
 			for (int rowIndex = 0; rowIndex < value.getRowCount(); rowIndex++) {

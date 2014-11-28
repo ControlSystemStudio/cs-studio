@@ -7,7 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+
+import org.csstudio.apputil.time.AbsoluteTimeParser;
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.csdata.TimestampedPV;
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
@@ -29,6 +37,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class OpenDataBrowserPopup extends AbstractHandler
 {
+
+    final double period = Preferences.getScanPeriod();
+    
     /** {@inheritDoc} */
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
@@ -41,7 +52,8 @@ public class OpenDataBrowserPopup extends AbstractHandler
             return null;
         
         // Add received items
-        final Model model = editor.getModel();       
+        final Model model = editor.getModel(); 
+        
         try
         {
             if (selection.getFirstElement() instanceof ChannelInfo)
@@ -52,12 +64,37 @@ public class OpenDataBrowserPopup extends AbstractHandler
                     final ChannelInfo info = (ChannelInfo) channel;
                     add(model, info.getProcessVariable(), info.getArchiveDataSource());
                 }
-            }
-            else
-            {   // Add received PVs with default archive data sources
-                final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
-                for (ProcessVariable pv : pvs)
-                    add(model, pv, null);
+            }else {
+                // Add received PVs with default archive data sources
+                final List<TimestampedPV> timestampedPVs = Arrays
+                        .asList(AdapterUtil.convert(selection,
+                                TimestampedPV.class));
+                if (!timestampedPVs.isEmpty()) {
+
+                    // Add received items
+                    List<Long> timeStamps = new ArrayList<Long>();
+
+                    for (TimestampedPV timestampedPV : timestampedPVs) {
+                        timeStamps.add(timestampedPV.getTime());
+                        PVItem item = new PVItem(timestampedPV.getName().trim(), period);
+                        item.setAxis(model.addAxis(item.getDisplayName()));
+                        item.useDefaultArchiveDataSources();
+                        model.addItem(item);
+                    }
+
+                    Calendar c = Calendar.getInstance();
+                    c.setTimeInMillis(Collections.min(timeStamps) - (30 * 60 * 1000));
+                    String start_spec = AbsoluteTimeParser.format(c);
+                    c.setTimeInMillis(Collections.max(timeStamps) + (30 * 60 * 1000));
+                    String end_spec = AbsoluteTimeParser.format(c);
+                    model.enableScrolling(false);
+                    model.setTimerange(start_spec, end_spec);
+                } else {
+                    final ProcessVariable[] pvs = AdapterUtil.convert(
+                            selection, ProcessVariable.class);
+                    for (ProcessVariable pv : pvs)
+                        add(model, pv, null);
+                }
             }
         }
         catch (Exception ex)
@@ -78,7 +115,6 @@ public class OpenDataBrowserPopup extends AbstractHandler
     private void add(final Model model, final ProcessVariable pv,
             final ArchiveDataSource archive) throws Exception
     {
-        final double period = Preferences.getScanPeriod();
         final PVItem item = new PVItem(pv.getName(), period);
         if (archive == null)
             item.useDefaultArchiveDataSources();

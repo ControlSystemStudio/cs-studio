@@ -12,6 +12,5 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.shift;bundle-version="1.0.0",
  org.csstudio.logbook.viewer;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.csstudio.ui.util.dialogs,
  org.eclipse.wb.swt

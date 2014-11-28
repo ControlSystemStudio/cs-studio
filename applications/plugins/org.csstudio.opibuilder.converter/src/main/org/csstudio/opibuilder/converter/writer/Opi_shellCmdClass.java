@@ -29,8 +29,14 @@ public class Opi_shellCmdClass extends OpiWidget {
 	 */
 	public Opi_shellCmdClass(Context con, Edm_shellCmdClass r) {
 		super(con, r);
-		if (r.getNumCmds() == 1)
-			setTypeId(typeId);
+		if (r.getNumCmds() == 1) {
+			if (r.isInvisible()) {
+				setTypeId("Rectangle");
+				new OpiBoolean(widgetContext, "transparent", true);
+			} else {
+				setTypeId(typeId);
+			}
+		}
 		else {
 			setTypeId("MenuButton");
 			new OpiBoolean(widgetContext, "actions_from_pv", false);
@@ -51,8 +57,9 @@ public class Opi_shellCmdClass extends OpiWidget {
 			EdmString menuLabel = r.getCommandLabel().getEdmAttributesMap().get(""+i);
 			descElement.setTextContent(menuLabel!=null?menuLabel.get():"");
 			
+			// Hook the first action when invisible, as we'll be using a rectangle instead of action button
 			new OpiAction(widgetContext, "EXECUTE_CMD", Arrays.asList(cmdNode, dirNode, descElement),
-					false, false);
+					r.isInvisible(), false);
 		}
 		if (r.getButtonLabel() != null){
 			new OpiString(widgetContext, r.getNumCmds()==1?"text":"label", r.getButtonLabel());
