@@ -184,7 +184,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 			new OpiInt(widgetContext, "trace_"+i+"_update_delay", r.getUpdateTimerMs());
 			if(r.getPlotMode()==null && r.getnPts()<5){//assume it is a waveform
 				new OpiBoolean(widgetContext, "trace_"+i+"_concatenate_data", false);
-				new OpiInt(widgetContext, "trace_"+i+"_buffer_size", 2000);
+				new OpiInt(widgetContext, "trace_"+i+"_buffer_size", 5000);
 			}
 		}
 		
@@ -208,6 +208,9 @@ public class Opi_xyGraphClass extends OpiWidget {
 					new OpiInt(widgetContext, "trace_"+entry.getKey() + "_trace_type", 3);
 				}else if (entry.getValue().get().equals("point")){
 					new OpiInt(widgetContext, "trace_"+entry.getKey() + "_trace_type", 2);
+					new OpiInt(widgetContext, "trace_"+entry.getKey() + "_point_style", 1);
+					// EDM point graphs are always one pixel
+					new OpiInt(widgetContext, "trace_"+entry.getKey() + "_point_size", 1);
 				}else if (entry.getValue().get().equals("single point")){
 					new OpiInt(widgetContext, "trace_"+entry.getKey() + "_trace_type", 2);
 					new OpiInt(widgetContext, "trace_"+entry.getKey() + "_buffer_size", 1);

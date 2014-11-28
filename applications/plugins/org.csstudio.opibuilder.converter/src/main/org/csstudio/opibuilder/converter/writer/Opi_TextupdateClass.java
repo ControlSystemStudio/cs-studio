@@ -42,33 +42,35 @@ public class Opi_TextupdateClass extends OpiWidget {
 		}
 		new OpiInt(widgetContext, "horizontal_alignment", align);
 
-			
-		
 		new OpiInt(widgetContext, "border_width", t.getLineWidth());
 		new OpiInt(widgetContext, "border_style", t.isLineAlarm()?0:1);
 		new OpiColor(widgetContext, "border_color", t.getFgColor(), t);
 		new OpiBoolean(widgetContext, "border_alarm_sensitive", t.isLineAlarm());
-		new OpiBoolean(widgetContext, "precision_from_pv", true);
-		if(t.getDisplayMode()!=null){
-			int mode = 0;
-			boolean showUnits = false;
+
+		// Handle format and units
+		boolean precisionFromPV = true;
+		boolean showUnits = true;
+		int mode = 0; // show default display
+		if(t.getDisplayMode() == null){ // default mode in EDM; ignores precision field and shows units
+			mode = 0;
+			precisionFromPV = true;
+			showUnits = true;
+		} else { // not default mode in EDM
+			// these modes specify precision and not units
+			precisionFromPV = false;
+			showUnits = false;
 			if(t.getDisplayMode().equals("decimal")){
-				mode =1;
-				new OpiBoolean(widgetContext, "precision_from_pv", false);
-			}
-			else if(t.getDisplayMode().equals("hex"))
-				mode = 3;
-			else if(t.getDisplayMode().equals("engineer") || t.getDisplayMode().equals("exp"))
+				mode = 1;
+			} else if(t.getDisplayMode().equals("engineer") || t.getDisplayMode().equals("exp")) {
 				mode = 2;
-			else{
-				mode=0;
-				showUnits = true;
+			} else if(t.getDisplayMode().equals("hex")) {
+				mode = 3;
 			}
-			new OpiBoolean(widgetContext, "show_units", showUnits);
-			new OpiInt(widgetContext, "format_type", mode);
 		}
 		
-		
+		new OpiBoolean(widgetContext, "precision_from_pv", precisionFromPV);
+		new OpiBoolean(widgetContext, "show_units", showUnits);
+		new OpiInt(widgetContext, "format_type", mode);
 		new OpiInt(widgetContext, "precision", t.getPrecision());
 		
 		new OpiColor(widgetContext, "foreground_color", t.getFgColor(), t);

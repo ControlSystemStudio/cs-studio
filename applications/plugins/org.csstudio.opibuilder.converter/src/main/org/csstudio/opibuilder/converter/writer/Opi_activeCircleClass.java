@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
-import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeCircleClass;
 
@@ -38,18 +37,17 @@ public class Opi_activeCircleClass extends OpiWidget {
 		new OpiBoolean(widgetContext, "transparent", !r.isFill());
 		
 		if (r.getFillColor().isExistInEDL()) {
-			new OpiColor(widgetContext, "background_color",
-					r.isFillAlarm()? new EdmColor(null, 0, 255,0): r.getFillColor(), r);
+			new OpiColor(widgetContext, "background_color", r.getFillColor(), r);
 		}
 		
 		if (r.getAlarmPv() != null) {
 			// line color alarm rule.
 			if (r.isLineAlarm())
 				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
-						"lineColorAlarmRule", true);
+						"lineColorAlarmRule", false);
 			if (r.isFillAlarm())
 				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
-						"backColorAlarmRule", true);
+						"backColorAlarmRule", false);
 		}
 				
 		int line_width = 1;

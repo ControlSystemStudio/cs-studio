@@ -39,13 +39,13 @@ public class OpenLogEntryBuilderDialog extends
 		}
 	}
 	if (data == null || data.isEmpty()) {
-	    LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(shell,
+	    LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(null,
 		    LogEntryBuilder.withText(""));
 	    dialog.setBlockOnOpen(true);
 	    if (dialog.open() == Window.OK) {
 	    }
 	} else if (data.size() == 1) {
-	    LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(shell,
+	    LogEntryBuilderDialog dialog = new LogEntryBuilderDialog(null,
 		    data.iterator().next());
 	    dialog.setBlockOnOpen(true);
 	    if (dialog.open() == Window.OK) {

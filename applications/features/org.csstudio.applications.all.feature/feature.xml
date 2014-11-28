@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.applications.all.feature"
       label="CS-Studio Applications All"
-      version="1.0.5.qualifier"
+      version="1.0.6.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
@@ -12,8 +12,6 @@
    <license url="http://www.eclipse.org/legal/epl-v10.html">
       Eclipse public license.
    </license>
-
-   
 
    <plugin
          id="org.csstudio.alarm.beast"

@@ -17,6 +17,7 @@ public class Edm_shellCmdClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private int numCmds;
 	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings commandLabel;
 	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings command;
+	@EdmAttributeAn private boolean invisible;
 
 	
 
@@ -49,6 +50,8 @@ public class Edm_shellCmdClass extends EdmWidget {
 	}
 
 
-
+	public boolean isInvisible() {
+		return invisible;
+	}
 
 }

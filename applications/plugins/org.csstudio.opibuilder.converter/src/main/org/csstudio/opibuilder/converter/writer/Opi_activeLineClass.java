@@ -45,10 +45,10 @@ public class Opi_activeLineClass extends OpiWidget {
 				// line color alarm rule.
 				if(r.isLineAlarm())
 					createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
-						"lineColorAlarmRule", true);
+						"lineColorAlarmRule", false);
 				if(r.isFillAlarm())
 					createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
-						"backColorAlarmRule", true);
+						"backColorAlarmRule", false);
 			}
 			
 		} else{
@@ -70,13 +70,19 @@ public class Opi_activeLineClass extends OpiWidget {
 			if (r.getAlarmPv() != null) {
 				if(r.isLineAlarm())
 					createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
-						"backColorAlarmRule", true);
+						"backColorAlarmRule", false);
 			}
 		}
 		
 		widgetContext.getElement().setAttribute("version", version);
 
 		new OpiString(widgetContext, "name", name);
+
+		// Add the first point to the end of the list to emulate EDMs 'closed polygon'
+		if(r.isClosePolygon() && !r.isFill()) {
+			r.getXPoints().addPoint(r.getXPoints().get()[0]);
+			r.getYPoints().addPoint(r.getYPoints().get()[0]);
+		}
 
 		new OpiPointsList(widgetContext, "points", r.getXPoints(), r.getYPoints());
 			

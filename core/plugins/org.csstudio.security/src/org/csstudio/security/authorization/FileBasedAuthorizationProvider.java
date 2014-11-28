@@ -35,7 +35,7 @@ import org.csstudio.security.SecurityPreferences;
 @SuppressWarnings("nls")
 public class FileBasedAuthorizationProvider implements AuthorizationProvider
 {
-    final private Map<String, List<Pattern>> rules = new HashMap<>();
+    final private String config_file_path;
     
     /** Initialize from preferences
      *  @throws Exception on error
@@ -51,19 +51,22 @@ public class FileBasedAuthorizationProvider implements AuthorizationProvider
      */
     public FileBasedAuthorizationProvider(final String config_file_path) throws Exception
     {
-        this(getInputStream(config_file_path));
+        this.config_file_path = config_file_path;
     }
 
-    /** Initialize
-     *  @param config_stream Stream of authentication file
+    /** Read authentication file
+     *  @return Map from authorization to patterns of user names who hold that authorization
      *  @throws Exception on error
      */
-    public FileBasedAuthorizationProvider(final InputStream config_stream) throws Exception
+    private Map<String, List<Pattern>> readConfigurationFile() throws Exception
     {
+        final InputStream config_stream = getInputStream(config_file_path);
+        
         final Logger logger = Logger.getLogger(getClass().getName());
         final Properties settings = new Properties();
         settings.load(config_stream);
         
+        final Map<String, List<Pattern>> rules = new HashMap<>();
         for (String authorization : settings.stringPropertyNames())
         {
             final String auth_setting_cfg = settings.getProperty(authorization);
@@ -74,6 +77,7 @@ public class FileBasedAuthorizationProvider implements AuthorizationProvider
                 patterns.add(Pattern.compile(setting));
             rules.put(authorization, patterns);
         }
+        return rules;
     }
 
     /** @param path Plain file or "platform:.." path
@@ -115,6 +119,7 @@ public class FileBasedAuthorizationProvider implements AuthorizationProvider
     @Override
     public Authorizations getAuthorizations(final Subject user) throws Exception
     {
+        final Map<String, List<Pattern>> rules = readConfigurationFile();
         final Set<String> authorizations = new HashSet<>();
         for (Entry<String, List<Pattern>> rule : rules.entrySet())
         {
