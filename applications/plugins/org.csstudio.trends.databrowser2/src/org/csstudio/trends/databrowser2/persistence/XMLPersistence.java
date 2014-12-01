@@ -140,8 +140,6 @@ public class XMLPersistence
         }
 
         loadColorFromDocument(root_node, TAG_BACKGROUND).ifPresent(model::setPlotBackground);
-        loadFontFromDocument(root_node, TAG_LABEL_FONT).ifPresent(model::setLabelFont);
-        loadFontFromDocument(root_node, TAG_SCALE_FONT).ifPresent(model::setScaleFont);
 
         // Value Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
@@ -181,11 +179,20 @@ public class XMLPersistence
                             axis.setRange(min, max);
                         }
                         model.addAxis(axis);
+
+                        // Using legacy settings from _last_ axis for fonts
+                        loadFontFromDocument(item, "scaleFont").ifPresent(model::setScaleFont);
+                        loadFontFromDocument(item, "titleFont").ifPresent(model::setLabelFont);
+
                         item = DOMHelper.findNextElementNode(item, "axisSettingsList");
                     }
                 }
             }
         }
+
+        // Font settings, possibly replacing settings from legacy <xyGraphSettings> <axisSettingsList>
+        loadFontFromDocument(root_node, TAG_LABEL_FONT).ifPresent(model::setLabelFont);
+        loadFontFromDocument(root_node, TAG_SCALE_FONT).ifPresent(model::setScaleFont);
 
         // Load Annotations
         list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_ANNOTATIONS);
