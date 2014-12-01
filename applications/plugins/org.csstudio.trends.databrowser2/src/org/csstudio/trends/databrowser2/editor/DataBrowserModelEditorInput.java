@@ -81,8 +81,8 @@ public class DataBrowserModelEditorInput implements IEditorInput, IPersistableEl
 
 	@Override
     public String getName()
-    {
-	    return input.getName();
+    {   // Use title of model, falling back to file name
+	    return model.getTitle().orElse(input.getName());
     }
 
 	@Override

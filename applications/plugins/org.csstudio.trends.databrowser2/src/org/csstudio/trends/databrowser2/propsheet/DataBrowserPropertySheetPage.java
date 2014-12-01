@@ -124,6 +124,8 @@ public class DataBrowserPropertySheetPage extends Page
 
     private Button label_font, scale_font;
 
+    private Text title;
+
     private Text update_period;
 
     private Button save_changes;
@@ -135,6 +137,12 @@ public class DataBrowserPropertySheetPage extends Page
         public void changedSaveChangesBehavior(boolean save)
         {
             save_changes.setEnabled(save);
+        }
+
+        @Override
+        public void changedTitle()
+        {
+            title.setText(model.getTitle().orElse("")); //$NON-NLS-1$
         }
 
         /** {@inheritDoc} */
@@ -664,20 +672,59 @@ public class DataBrowserPropertySheetPage extends Page
     private void createMiscTab(final TabFolder tab_folder)
     {
         final TabItem misc_tab = new TabItem(tab_folder, 0);
-        misc_tab.setText("Misc."); //$NON-NLS-1$
+        misc_tab.setText(Messages.Miscellaneous);
 
         final Composite parent = new Composite(tab_folder, 0);
         parent.setLayout(new GridLayout(4, false));
 
-        // Redraw period: ______
+        // Title:         ______   Label Font: [Sans|14|1]
         Label label = new Label(parent, 0);
+        label.setText(Messages.TitleLbl);
+        label.setLayoutData(new GridData());
+
+        title = new Text(parent, SWT.BORDER);
+        title.setText(model.getTitle().orElse("")); //$NON-NLS-1$
+        title.setToolTipText(Messages.TitleTT);
+        title.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        title.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetDefaultSelected(final SelectionEvent e)
+            {
+                new ChangeTitleCommand(model, operations_manager, title.getText());
+            }
+        });
+
+        label = new Label(parent, 0);
+        label.setText(Messages.LabelFontLbl);
+        label.setLayoutData(new GridData());
+
+        label_font = new Button(parent, SWT.PUSH);
+        label_font.setText(SWTMediaPool.getFontDescription(model.getLabelFont()));
+        label_font.setToolTipText(Messages.LabelFontTT);
+        label_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        label_font.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                final FontDialog dialog = new FontDialog(parent.getShell());
+                dialog.setFontList(new FontData[] { model.getLabelFont() });
+                final FontData selected = dialog.open();
+                if (selected != null)
+                    new ChangeLabelFontCommand(model, operations_manager, selected);
+            }
+        });
+
+        // Redraw period: ______   Scale Font: [Sans|10|2]
+        label = new Label(parent, 0);
         label.setText(Messages.UpdatePeriodLbl);
         label.setLayoutData(new GridData());
 
         update_period = new Text(parent, SWT.BORDER);
         update_period.setText(Double.toString(model.getUpdatePeriod()));
         update_period.setToolTipText(Messages.UpdatePeriodTT);
-        update_period.setLayoutData(new GridData(SWT.FILL, 0, false, false, 3, 1));
+        update_period.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         update_period.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -692,6 +739,27 @@ public class DataBrowserPropertySheetPage extends Page
                 {
                     update_period.setText(Double.toString(model.getUpdatePeriod()));
                 }
+            }
+        });
+
+        label = new Label(parent, 0);
+        label.setText(Messages.ScaleFontLbl);
+        label.setLayoutData(new GridData());
+
+        scale_font = new Button(parent, SWT.PUSH);
+        scale_font.setText(SWTMediaPool.getFontDescription(model.getScaleFont()));
+        scale_font.setToolTipText(Messages.AxesFontTT);
+        scale_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        scale_font.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                final FontDialog dialog = new FontDialog(parent.getShell());
+                dialog.setFontList(new FontData[] { model.getScaleFont() });
+                final FontData selected = dialog.open();
+                if (selected != null)
+                    new ChangeScaleFontCommand(model, operations_manager, selected);
             }
         });
 
@@ -721,54 +789,13 @@ public class DataBrowserPropertySheetPage extends Page
             }
         });
 
-        // Label Font: [Sans|14|1]      Scale Font: [Sans|10|2]
-        label = new Label(parent, 0);
-        label.setText(Messages.LabelFontLbl);
-        label.setLayoutData(new GridData());
-
-        label_font = new Button(parent, SWT.PUSH);
-        label_font.setText(SWTMediaPool.getFontDescription(model.getLabelFont()));
-        label_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        label_font.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(final SelectionEvent e)
-            {
-                final FontDialog dialog = new FontDialog(parent.getShell());
-                dialog.setFontList(new FontData[] { model.getLabelFont() });
-                final FontData selected = dialog.open();
-                if (selected != null)
-                    new ChangeLabelFontCommand(model, operations_manager, selected);
-            }
-        });
-
-        label = new Label(parent, 0);
-        label.setText(Messages.ScaleFontLbl);
-        label.setLayoutData(new GridData());
-
-        scale_font = new Button(parent, SWT.PUSH);
-        scale_font.setText(SWTMediaPool.getFontDescription(model.getScaleFont()));
-        scale_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        scale_font.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(final SelectionEvent e)
-            {
-                final FontDialog dialog = new FontDialog(parent.getShell());
-                dialog.setFontList(new FontData[] { model.getScaleFont() });
-                final FontData selected = dialog.open();
-                if (selected != null)
-                    new ChangeScaleFontCommand(model, operations_manager, selected);
-            }
-        });
-
-
         // Save Changes: [x]
         label = new Label(parent, 0);
         label.setText(Messages.SaveChangesLbl);
         label.setLayoutData(new GridData());
 
         save_changes = new Button(parent, SWT.CHECK);
+        save_changes.setToolTipText(Messages.SaveChangesTT);
         save_changes.setLayoutData(new GridData(SWT.LEFT, 0, true, false, 3, 1));
         save_changes.setSelection(model.shouldSaveChanges());
         save_changes.addSelectionListener(new SelectionAdapter()

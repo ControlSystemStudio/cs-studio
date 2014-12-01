@@ -57,6 +57,7 @@ public class Messages extends NLS
     public static String ArchiveServerInfoTT;
     public static String ArchiveURLDialogTitle;
     public static String AutoScale;
+    public static String AxesFontTT;
     public static String Axis;
     public static String AxisMax;
     public static String AxisMin;
@@ -158,6 +159,7 @@ public class Messages extends NLS
     public static String ItemNameTT;
     public static String KeyLbl;
     public static String LabelFontLbl;
+    public static String LabelFontTT;
     public static String LinacScale;
     public static String LinLogScaleType;
     public static String LiveBufferSizeInfoFmt;
@@ -166,6 +168,7 @@ public class Messages extends NLS
     public static String LogentryDefaultBody;
     public static String LogentryDefaultTitle;
     public static String LogScale;
+    public static String Miscellaneous;
     public static String Model_Disconnected;
     public static String Name;
     public static String NameLbl;
@@ -218,6 +221,7 @@ public class Messages extends NLS
     public static String SampleView_Source;
     public static String Save;
     public static String SaveChangesLbl;
+    public static String SaveChangesTT;
     public static String ScaleFontLbl;
     public static String ScanPeriod;
     public static String ScanPeriodChangeErrorFmt;
@@ -243,6 +247,8 @@ public class Messages extends NLS
     public static String StatusColumn;
     public static String TimeAxis;
     public static String TimeColumn;
+    public static String TitleLbl;
+    public static String TitleTT;
     public static String TraceDisplayName;
     public static String TraceDisplayNameTT;
     public static String TraceLineWidth;

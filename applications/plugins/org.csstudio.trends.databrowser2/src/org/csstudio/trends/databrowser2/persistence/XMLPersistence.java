@@ -48,6 +48,7 @@ public class XMLPersistence
 {
     // XML file tags
     final public static String TAG_DATABROWSER = "databrowser";
+    final public static String TAG_TITLE = "title";
     final public static String TAG_SCROLL = "scroll";
     final public static String TAG_UPDATE_PERIOD = "update_period";
     final public static String TAG_LIVE_SAMPLE_BUFFER_SIZE = "ring_size";
@@ -121,6 +122,9 @@ public class XMLPersistence
             throw new Exception("Expected " + TAG_DATABROWSER + " but got " + root_node.getNodeName());
 
         // Global settings
+        String title = DOMHelper.getSubelementString(root_node, TAG_TITLE);
+        if (! title.isEmpty())
+            model.setTitle(title);
         model.setSaveChanges(DOMHelper.getSubelementBoolean(root_node, TAG_SAVE_CHANGES, true));
         model.enableScrolling(DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, true));
         model.setUpdatePeriod(DOMHelper.getSubelementDouble(root_node, TAG_UPDATE_PERIOD, Preferences.getUpdatePeriod()));
@@ -256,6 +260,10 @@ public class XMLPersistence
         list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_OLD_XYGRAPH_SETTINGS);
         if (list != null)
         {
+            title = DOMHelper.getSubelementString(list, TAG_TITLE);
+            if (! title.isEmpty())
+                model.setTitle(title);
+
             final Iterator<ModelItem> model_items = model.getItems().iterator();
             Element item = DOMHelper.findFirstElementNode(list.getFirstChild(), "traceSettingsList");
             while (item != null)
@@ -325,6 +333,7 @@ public class XMLPersistence
         writer.println();
 
         XMLWriter.XML(writer, 1, TAG_SAVE_CHANGES, model.shouldSaveChanges());
+        XMLWriter.XML(writer, 1, TAG_TITLE, model.getTitle().orElse(""));
 
         // Time axis
         XMLWriter.XML(writer, 1, TAG_SCROLL, model.isScrollEnabled());

@@ -17,6 +17,9 @@ public interface ModelListener
     /** @param save_changes Should UI ask to save changes to the model? */
     void changedSaveChangesBehavior(final boolean save_changes);
 
+    /** Title changed */
+    void changedTitle();
+
     /** The update period changed */
     void changedUpdatePeriod();
 

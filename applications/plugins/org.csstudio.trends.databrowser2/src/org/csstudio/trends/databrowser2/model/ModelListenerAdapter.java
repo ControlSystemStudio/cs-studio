@@ -18,6 +18,9 @@ public class ModelListenerAdapter implements ModelListener
     public void changedSaveChangesBehavior(final boolean save_changes)  { /* NOP */}
 
     @Override
+    public void changedTitle()  { /* NOP */}
+
+    @Override
     public void changedUpdatePeriod() { /* NOP */}
 
     @Override

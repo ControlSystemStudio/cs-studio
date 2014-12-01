@@ -167,8 +167,6 @@ public class DataBrowserEditor extends EditorPart
             throws PartInitException
     {
         setSite(site);
-        // Update the editor's name from "Data Browser" to file name
-        setPartName(input.getName());
 
         if (input instanceof DataBrowserModelEditorInput)
         {   // Received model with input
@@ -196,6 +194,10 @@ public class DataBrowserEditor extends EditorPart
 			}
         }
 
+        // Update the editor's name from "Data Browser" to title of model or file name
+        // See DataBrowserModelEditorInput.getName()
+        setPartName(getEditorInput().getName());
+
         model_listener = new ModelListenerAdapter()
         {
             @Override
@@ -203,6 +205,12 @@ public class DataBrowserEditor extends EditorPart
             {
                 is_dirty = save_changes;
                 firePropertyChange(IEditorPart.PROP_DIRTY);
+            }
+
+            @Override
+            public void changedTitle()
+            {
+                setPartName(getEditorInput().getName());
             }
 
             @Override
@@ -504,8 +512,10 @@ public class DataBrowserEditor extends EditorPart
             }
             // Set that file as editor's input, so that just 'save' instead of
             // 'save as' is possible from now on
-            setInput(new DataBrowserModelEditorInput(new_input, model));
-            setPartName(file.lastSegment());
+            final DataBrowserModelEditorInput db_input = new DataBrowserModelEditorInput(new_input, model);
+            setInput(db_input);
+            setPartName(db_input.getName());
+            setTitleToolTip(db_input.getToolTipText());
         }
         catch (Exception ex)
         {

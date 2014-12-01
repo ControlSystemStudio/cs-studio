@@ -72,6 +72,9 @@ public class Model
     /** Listeners to model changes */
     final private List<ModelListener> listeners = new CopyOnWriteArrayList<>();
 
+    /** Title */
+    private volatile Optional<String> title = Optional.empty();
+
     /** Axes configurations */
     final private List<AxisConfig> axes = new CopyOnWriteArrayList<AxisConfig>();
 
@@ -179,6 +182,23 @@ public class Model
     public void removeListener(final ModelListener listener)
     {
         listeners.remove(Objects.requireNonNull(listener));
+    }
+
+    /** @param title Title, may be <code>null</code> or empty */
+    public void setTitle(final String title)
+    {
+        if (title == null  ||   title.isEmpty())
+            this.title = Optional.empty();
+        else
+            this.title = Optional.of(title);
+        for (ModelListener listener : listeners)
+            listener.changedTitle();
+    }
+
+    /** @return Title */
+    public Optional<String> getTitle()
+    {
+        return title;
     }
 
     /** @return Read-only, thread safe {@link AxisConfig}s */
