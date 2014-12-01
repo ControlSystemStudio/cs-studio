@@ -168,7 +168,6 @@ public class TimeTicks implements Ticks<Instant>
         if (range.isNegative())
             throw new Error("Tick range is not ordered, " + low + " > " + high);
 
-        System.out.println("Axis font: " + gc.getFont().getFontData()[0]);
         // Estimate number of labels that fits on screen
         final int label_width = gc.textExtent("yyyy-MM-dd").x;
         final int num_that_fits = Math.max(1,  screen_width/label_width*FILL_PERCENTAGE/100);
