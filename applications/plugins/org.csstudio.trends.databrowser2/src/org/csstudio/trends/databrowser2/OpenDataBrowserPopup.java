@@ -7,7 +7,13 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.csdata.TimestampedPV;
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
@@ -29,6 +35,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class OpenDataBrowserPopup extends AbstractHandler
 {
+
+    final double period = Preferences.getScanPeriod();
+
     /** {@inheritDoc} */
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
@@ -54,10 +63,40 @@ public class OpenDataBrowserPopup extends AbstractHandler
                 }
             }
             else
-            {   // Add received PVs with default archive data sources
-                final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
-                for (ProcessVariable pv : pvs)
-                    add(model, pv, null);
+            {
+                // Add received PVs with default archive data sources
+                final List<TimestampedPV> timestampedPVs = Arrays
+                        .asList(AdapterUtil.convert(selection,
+                                TimestampedPV.class));
+                if (!timestampedPVs.isEmpty())
+                {
+                    // Add received items, tracking their start..end time
+                    long start_ms = Long.MAX_VALUE,  end_ms = 0;
+                    for (TimestampedPV timestampedPV : timestampedPVs)
+                    {
+                        final long time = timestampedPV.getTime();
+                        if (time < start_ms)
+                            start_ms = time;
+                        if (time > end_ms)
+                            end_ms = time;
+                        final PVItem item = new PVItem(timestampedPV.getName().trim(), period);
+                        item.setAxis(model.addAxis());
+                        item.useDefaultArchiveDataSources();
+                        model.addItem(item);
+                    }
+
+                    final Instant start = Instant.ofEpochMilli(start_ms).minus(Duration.ofMinutes(30));
+                    final Instant end = Instant.ofEpochMilli(end_ms).plus(Duration.ofMinutes(30));
+                    model.enableScrolling(false);
+                    model.setTimerange(start, end);
+                }
+                else
+                {
+                    final ProcessVariable[] pvs = AdapterUtil.convert(
+                            selection, ProcessVariable.class);
+                    for (ProcessVariable pv : pvs)
+                        add(model, pv, null);
+                }
             }
         }
         catch (Exception ex)
@@ -78,7 +117,6 @@ public class OpenDataBrowserPopup extends AbstractHandler
     private void add(final Model model, final ProcessVariable pv,
             final ArchiveDataSource archive) throws Exception
     {
-        final double period = Preferences.getScanPeriod();
         final PVItem item = new PVItem(pv.getName(), period);
         if (archive == null)
             item.useDefaultArchiveDataSources();

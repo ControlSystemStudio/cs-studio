@@ -11,6 +11,7 @@ public class Messages extends NLS {
     public static String properties;
     public static String to;
     public static String from;
+    public static String owner;
 
     public static String history;
     public static String page;

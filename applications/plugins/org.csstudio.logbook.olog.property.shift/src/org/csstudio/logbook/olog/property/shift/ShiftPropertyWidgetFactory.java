@@ -21,7 +21,7 @@ public class ShiftPropertyWidgetFactory implements PropertyWidgetFactory {
 
     @Override
     public AbstractPropertyWidget create(Composite parent, int SWT,
-	    LogEntryChangeset logEntryChangeset) {
-	return new ShiftPropertyWidget(parent, SWT, logEntryChangeset);
+	    LogEntryChangeset logEntryChangeset, boolean editable) {
+	return new ShiftPropertyWidget(parent, SWT, logEntryChangeset, editable);
     }
 }

@@ -20,8 +20,6 @@ public abstract class AbstractPropertyWidget extends Composite {
     private boolean editable;
     private LogEntryChangeset logEntryChangeset;
 
-    // property that this widget is intended to be used with
-
     /**
      * A constructor which creates the composite, registers the appropriate
      * listeners and initializes it with the logEntryChangeset
@@ -31,7 +29,7 @@ public abstract class AbstractPropertyWidget extends Composite {
      * @param logEntryChangeset
      */
     public AbstractPropertyWidget(Composite parent, int style,
-	    LogEntryChangeset logEntryChangeset) {
+	    LogEntryChangeset logEntryChangeset, boolean editable) {
 	super(parent, style);
 	if (logEntryChangeset != null) {
 	    this.logEntryChangeset = logEntryChangeset;
@@ -44,6 +42,7 @@ public abstract class AbstractPropertyWidget extends Composite {
 			}
 		    });
 	}
+	this.editable = editable;
     }
 
     public boolean isEditable() {

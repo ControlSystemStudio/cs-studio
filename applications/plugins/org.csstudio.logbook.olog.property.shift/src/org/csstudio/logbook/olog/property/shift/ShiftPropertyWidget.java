@@ -47,7 +47,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
  */
 class ShiftPropertyWidget extends AbstractPropertyWidget {
     
-    private final IPreferencesService service = Platform.getPreferencesService();
+    private final IPreferencesService prefService = Platform.getPreferencesService();
     
     public static final String propertyName = "Shift";
     public static final String attrTypeName = "Type";
@@ -74,11 +74,10 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 
     private Button btnRemove;
 
-    private static boolean autoAttach = true;
+    private static boolean attach = false;
 
-    public ShiftPropertyWidget(Composite parent, int style,
-	    LogEntryChangeset logEntryChangeset) {
-	super(parent, style, logEntryChangeset);
+    public ShiftPropertyWidget(Composite parent, int style, LogEntryChangeset logEntryChangeset, boolean editable) {        
+	super(parent, style, logEntryChangeset, editable);
 	setLayout(new FormLayout());	
 	
 	container = new Composite(this, style);
@@ -125,7 +124,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 			    .attribute(attrIdName, shift.getId().toString())
 			    .attribute(
 				    attrURLName,
-				    service.getString(
+				    prefService.getString(
 					    "org.csstudio.utility.shift",
 					    "shift_url",
 					    "https://localhost:8181/Shift/resources",
@@ -152,32 +151,31 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 	lblURL.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 	lblURL.setText(attrURLName+": ");
 
-	textURL = new Text(container, SWT.BORDER);
-	textURL.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textURL = new Text(container, SWT.BORDER);
+        textURL.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        link = new Link(container, SWT.NONE);
+        link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        link.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                String url = link.getText();
+                url = url.substring("<a>".length(),
+                        url.length() - "</a>".length());
+                Program.launch(url);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
 	
-	link = new Link(container, SWT.NONE);
-	link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-	link.addSelectionListener(new SelectionListener() {
-		
-		@Override
-		public void widgetSelected(SelectionEvent event) {
-			String url = link.getText();
-			url = url.substring("<a>".length(), url.length() - "</a>".length());
-			Program.launch(url);
-		}
-		
-		@Override
-		public void widgetDefaultSelected(SelectionEvent arg0) {
-		}
-	});
-	
-	btnRemove = new Button(container, SWT.CHECK);
-	btnRemove.setSelection(autoAttach);
+	btnRemove = new Button(container, SWT.CHECK);	
 	btnRemove.addSelectionListener(new SelectionAdapter() {
 	    @Override
 	    public void widgetSelected(SelectionEvent e) {
-		autoAttach = btnRemove.getSelection();
-		if(autoAttach){
+		attach = btnRemove.getSelection();
+		if(attach){
 		    attachProperty();		    
 		}else{
 		    removeProperty();
@@ -201,7 +199,7 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     }
 
     public void init(){
-	try {
+	try {	    
 	    if(shiftClient == null){
 		shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
 	    }
@@ -211,18 +209,25 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
 		types.add(type.getName());
 	    }
 	    comboType.setItems(types.toArray(new String[types.size()]));
-	    defaultType = service.getString("org.csstudio.shift.ui", "Default.type", "", null);	   
+	    defaultType = prefService.getString("org.csstudio.shift.ui", "Default.type", "", null);	   
 	    shift = shiftClient.getShiftByType(defaultType);
 	    if (types.contains(defaultType) && shift.getStatus().equals("Active")) {
 		widgetProperty.attribute(attrTypeName, defaultType);
 		widgetProperty.attribute(attrIdName, shift.getId().toString());
-		widgetProperty.attribute(attrURLName, service
+		widgetProperty.attribute(attrURLName, prefService
 			    .getString("org.csstudio.utility.shift", "shift_url",
 				    "https://localhost:8181/Shift/resources", null)
 			    + "/shift/" + defaultType + "/" + shift.getId().toString());
 	    } else {
 		widgetProperty = null;
-	    }    
+	    }
+	    
+	    attach = prefService.getBoolean("org.csstudio.logbook.olog.property.shift", "auto.attach", false, null);
+            btnRemove.setSelection(attach);
+            if (attach) {
+                attachProperty();
+            }
+            updateUI();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -264,7 +269,6 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
    		    getLogEntryChangeset().setLogEntryBuilder(logEntryBuilder);
    		}
    	} catch (IOException e1) {
-   	    // TODO Auto-generated catch block
    	    e1.printStackTrace();
    	}
        }
@@ -273,19 +277,17 @@ class ShiftPropertyWidget extends AbstractPropertyWidget {
     public void updateUI() {
 	this.lblAttached.setVisible(!isEditable());
 	this.comboType.setEnabled(isEditable());
-	this.textId.setEditable(isEditable());	
-//	this.textURL.setVisible(isEditable());
+	this.textId.setEditable(isEditable());
+	this.btnRemove.setSelection(attach);
 	GridData textURLGridData= (GridData) this.textURL.getLayoutData();
-	textURLGridData.exclude = !isEditable();
-	this.textURL.setLayoutData(textURLGridData);
-	this.link.setVisible(!isEditable());	
-	GridData linkGridData = (GridData) this.link.getLayoutData();	    
-	linkGridData.exclude = isEditable();
-	this.link.setLayoutData(linkGridData);	
-	this.btnAttach.setVisible(isEditable());
-	if(isEditable() && autoAttach){
-	    attachProperty();
-	}
+        textURLGridData.exclude = !isEditable();
+        this.textURL.setLayoutData(textURLGridData);
+        this.link.setVisible(!isEditable());
+        GridData linkGridData = (GridData) this.link.getLayoutData();
+        linkGridData.exclude = isEditable();
+        this.link.setLayoutData(linkGridData);
+        this.btnAttach.setVisible(isEditable());
+        
 	Property property = null;
 	try {
 	    property = LogEntryUtil.getProperty(getLogEntryChangeset().getLogEntry(), propertyName);

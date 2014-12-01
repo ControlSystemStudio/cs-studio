@@ -22,6 +22,7 @@ public class LogEntrySearchUtil {
     public static final String SEARCH_KEYWORD_PROPERTIES = Messages.properties;
     public static final String SEARCH_KEYWORD_START = Messages.from;
     public static final String SEARCH_KEYWORD_END = Messages.to;
+    public static final String SEARCH_KEYWORD_OWNER = Messages.owner;
     
     public static final String SEARCH_KEYWORD_HISTORY = Messages.history;
     public static final String SEARCH_KEYWORD_PAGE = Messages.page;
@@ -31,6 +32,7 @@ public class LogEntrySearchUtil {
 	    Arrays.asList(SEARCH_KEYWORD_TEXT, SEARCH_KEYWORD_LOGBOOKS,
 		    SEARCH_KEYWORD_TAGS, SEARCH_KEYWORD_PROPERTIES,
 		    SEARCH_KEYWORD_START, SEARCH_KEYWORD_END,
+		    SEARCH_KEYWORD_OWNER,
 		    SEARCH_KEYWORD_HISTORY, SEARCH_KEYWORD_PAGE, SEARCH_KEYWORD_COUNT));
 
     public static Map<String, String> parseSearchString(String search) {

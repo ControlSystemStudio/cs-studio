@@ -48,8 +48,8 @@ class ContextPropertyWidget extends AbstractPropertyWidget {
 	    .attribute("FileDescription").build();
 
     public ContextPropertyWidget(Composite parent, int style,
-	    LogEntryChangeset logEntryChangeset) {
-	super(parent, style, logEntryChangeset);
+	    LogEntryChangeset logEntryChangeset, boolean editable) {
+	super(parent, style, logEntryChangeset, editable);
 	setLayout(new FormLayout());
 
 	Label lblNewLabel = new Label(this, SWT.NONE);
