@@ -9,6 +9,8 @@ package org.csstudio.trends.databrowser2.preferences;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.swt.rtplot.TraceType;
@@ -55,6 +57,7 @@ public class Preferences
 			USE_DEFAULT_ARCHIVES = "use_default_archives",
 			PROMPT_FOR_ERRORS = "prompt_for_errors",
 			ARCHIVE_RESCALE = "archive_rescale",
+	        TIME_SPAN_SHORTCUTS = "time_span_shortcuts",
 			USE_AUTO_SCALE = "use_auto_scale",
 			EMAIL_DEFAULT_SENDER = "email_default_sender",
 			RAP_HIDE_SEARCH_VIEW = "rap.hide_search_view",
@@ -245,6 +248,33 @@ public class Preferences
         return ArchiveRescale.STAGGER;
 	}
 
+    /** @return Array where [N][0] is display text and [N][1] is the 'start' time */
+    static public String[][] getTimespanShortcuts()
+    {
+        String shortcuts = "1 Day,-1 days|7 Days,-7 days";
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs != null)
+            shortcuts = prefs.getString(Activator.PLUGIN_ID, TIME_SPAN_SHORTCUTS, shortcuts, null);
+        final List<List<String>> items = new ArrayList<>();
+        for (String item : shortcuts.split("\\|"))
+        {
+            final String[] display_start = item.split(", *");
+            if (display_start.length != 2)
+            {
+                Activator.getLogger().log(Level.WARNING, "Invalid " + TIME_SPAN_SHORTCUTS + " value " + item);
+                continue;
+            }
+            items.add(Arrays.asList(display_start));
+        }
+        final String[][] result = new String[items.size()][2];
+        for (int i=0; i<items.size(); ++i)
+        {
+            result[i][0] = items.get(i).get(0);
+            result[i][1] = items.get(i).get(1);
+        }
+        return result;
+    }
+
 	public static IPath getPltRepository() {
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs == null)
@@ -289,6 +319,4 @@ public class Preferences
 			return false;
 		return prefs.getBoolean(Activator.PLUGIN_ID, SECURE_DATA_BROWSER, false, null);
     }
-
-
 }

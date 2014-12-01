@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.propsheet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
@@ -21,6 +22,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.StartEndTimeAction;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
@@ -609,6 +611,34 @@ public class DataBrowserPropertySheetPage extends Page
         };
         start_end.addSelectionListener(start_end_action);
         start_end2.addSelectionListener(start_end_action);
+
+        // Time span shortcut buttons, with filler to align under start/end time text fields
+        label = new Label(parent, 0);
+        label.setText(""); //$NON-NLS-1$
+        label.setLayoutData(new GridData());
+
+        final Composite shortcut_bar = new Composite(parent, 0);
+        shortcut_bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+        final RowLayout row_layout = new RowLayout();
+        row_layout.marginLeft = 0;
+        row_layout.marginTop = 0;
+        shortcut_bar.setLayout(row_layout);
+        final String[][] shortcuts = Preferences.getTimespanShortcuts();
+        for (String[] title_start : shortcuts)
+        {
+            final String start_spec = title_start[1];
+            Button shortcut = new Button(shortcut_bar, SWT.PUSH);
+            shortcut.setText(title_start[0]);
+            shortcut.addSelectionListener(new SelectionAdapter()
+            {
+                @Override
+                public void widgetSelected(SelectionEvent e)
+                {
+                    new ChangeTimerangeCommand(model, operations_manager,
+                            true, start_spec, RelativeTime.NOW);
+                }
+            });
+        }
     }
 
     /** Create tab for traces (PVs, Formulas)
