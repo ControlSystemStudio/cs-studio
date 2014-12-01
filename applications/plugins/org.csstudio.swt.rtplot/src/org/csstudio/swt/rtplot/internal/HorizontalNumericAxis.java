@@ -55,10 +55,10 @@ public class HorizontalNumericAxis extends NumericAxis
 
         final Color old_fg = gc.getForeground();
         gc.setForeground(media.get(getColor()));
+        gc.setFont(scale_font);
 
         // Axis and Tick marks
         computeTicks(gc);
-        gc.setFont(scale_font);
         gc.drawLine(region.x, region.y, region.x + region.width-1, region.y);
         final double high_value = range.getHigh();
         for (double tick = ticks.getStart();

@@ -112,13 +112,13 @@ public class TimeAxis extends AxisPart<Instant>
         final int old_width = gc.getLineWidth();
         final Color old_fg = gc.getForeground();
         gc.setForeground(media.get(getColor()));
+        gc.setFont(scale_font);
 
         // Simple line for the axis
         gc.drawLine(region.x, region.y, region.x + region.width-1, region.y);
 
         // Axis and Tick marks
         computeTicks(gc);
-        gc.setFont(scale_font);
         final int minor_ticks = ticks.getMinorTicks();
         Instant tick = ticks.getStart();
         int x = getScreenCoord(tick);

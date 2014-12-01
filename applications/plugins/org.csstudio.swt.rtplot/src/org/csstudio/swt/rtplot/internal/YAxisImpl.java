@@ -268,6 +268,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         final Color old_bg = gc.getBackground();
         final Color old_fg = gc.getForeground();
         gc.setForeground(media.get(getColor()));
+        gc.setFont(scale_font);
 
         // Simple line for the axis
         final int line_x, tick_x, minor_x;
@@ -286,7 +287,6 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         gc.drawLine(line_x, region.y, line_x, region.y + region.height-1);
         computeTicks(gc);
 
-        gc.setFont(scale_font);
         final double low_value = range.getLow();
         final double high_value = range.getHigh();
         final int minor_ticks = ticks.getMinorTicks();
