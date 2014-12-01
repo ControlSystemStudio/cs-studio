@@ -143,8 +143,6 @@ public class XMLPersistence
             // Ignore
         }
 
-        loadColorFromDocument(root_node, TAG_BACKGROUND).ifPresent(model::setPlotBackground);
-
         // Value Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
         if (list != null)
@@ -162,6 +160,8 @@ public class XMLPersistence
             list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_OLD_XYGRAPH_SETTINGS);
             if (list != null)
             {
+                loadColorFromDocument(list, "plotAreaBackColor").ifPresent(model::setPlotBackground);
+
                 Element item = DOMHelper.findFirstElementNode(list.getFirstChild(), "axisSettingsList");
                 if (item != null)
                 {
@@ -194,7 +194,8 @@ public class XMLPersistence
             }
         }
 
-        // Font settings, possibly replacing settings from legacy <xyGraphSettings> <axisSettingsList>
+        // New settings, possibly replacing settings from legacy <xyGraphSettings> <axisSettingsList>
+        loadColorFromDocument(root_node, TAG_BACKGROUND).ifPresent(model::setPlotBackground);
         loadFontFromDocument(root_node, TAG_LABEL_FONT).ifPresent(model::setLabelFont);
         loadFontFromDocument(root_node, TAG_SCALE_FONT).ifPresent(model::setScaleFont);
 
