@@ -374,6 +374,12 @@ public class Controller
             }
 
             @Override
+            public void scrollEnabled(boolean scroll_enabled)
+            {
+                plot.getPlot().setScrolling(scroll_enabled);
+            }
+
+            @Override
             public void changedTimerange()
             {
                 // Update plot's time range
