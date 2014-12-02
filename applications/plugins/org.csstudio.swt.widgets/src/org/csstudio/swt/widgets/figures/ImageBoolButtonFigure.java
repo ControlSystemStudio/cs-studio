@@ -129,12 +129,16 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 		return null;
 	}
 
-	public boolean isLoadingImage() {
+	public synchronized boolean isLoadingImage() {
 		return remainingImagesToLoad > 0;
 	}
 
 	public synchronized void decrementLoadingCounter() {
 		remainingImagesToLoad--;
+	}
+	
+	public synchronized void incrementLoadingCounter() {
+		remainingImagesToLoad++;
 	}
 
 	@Override
@@ -188,7 +192,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 			offImage = null;
 		}
 		if (offImagePath != null && !offImagePath.isEmpty())
-			remainingImagesToLoad++;
+			incrementLoadingCounter();
 		offImage = SymbolImageFactory.asynCreateSymbolImage(this.offImagePath,
 				true, symbolProperties, this);
 	}
@@ -200,7 +204,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 			onImage = null;
 		}
 		if (onImagePath != null && !onImagePath.isEmpty())
-			remainingImagesToLoad++;
+			incrementLoadingCounter();
 		onImage = SymbolImageFactory.asynCreateSymbolImage(this.onImagePath,
 				true, symbolProperties, this);
 	}
