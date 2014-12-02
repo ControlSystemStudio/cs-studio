@@ -360,7 +360,7 @@ public class Controller
             @Override
             public void changedUpdatePeriod()
             {
-                plot.getPlot().setScrollPeriod(Math.round(model.getUpdatePeriod() * 1000));
+                plot.getPlot().setScrollStep(model.getScrollStep());
                 if (update_task != null)
                     createUpdateTask();
             }
@@ -495,7 +495,7 @@ public class Controller
         plot.getPlot().setBackground(model.getPlotBackground());
         plot.getPlot().setLabelFont(model.getLabelFont());
         plot.getPlot().setScaleFont(model.getScaleFont());
-        plot.getPlot().setScrollPeriod(Math.round(model.getUpdatePeriod() * 1000));
+        plot.getPlot().setScrollStep(model.getScrollStep());
 
         final List<Trace<Instant>> traces = new ArrayList<>();
         for (Trace<Instant> trace : plot.getPlot().getTraces())

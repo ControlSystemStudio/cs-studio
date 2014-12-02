@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.preferences;
 
+import java.time.Duration;
+
 import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -155,11 +157,11 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(plotbins);
 
         // Future Buffer: 10 ...
-        final IntegerFieldEditor futureBuffer = new IntegerFieldEditor(Preferences.FUTURE_BUFFER,
-                Messages.PrefPage_FutureBuffer, parent);
-        futureBuffer.setValidRange(0, 365*24*60*60);
-        ((Text)futureBuffer.getTextControl(parent)).setToolTipText(Messages.PrefPage_FutureBufferTT);
-        addField(futureBuffer);
+        final IntegerFieldEditor scroll_steps = new IntegerFieldEditor(Preferences.SCROLL_STEPS,
+                Messages.PrefPage_ScrollSteps, parent);
+        scroll_steps.setValidRange(1, (int)Duration.ofDays(1).getSeconds());
+        ((Text)scroll_steps.getTextControl(parent)).setToolTipText(Messages.PrefPage_ScrollStepsTT);
+        addField(scroll_steps);
 
         // Archive rescale options
         final ArchiveRescale values[] = ArchiveRescale.values();

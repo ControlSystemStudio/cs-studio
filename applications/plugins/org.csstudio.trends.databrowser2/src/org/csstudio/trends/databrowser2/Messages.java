@@ -187,11 +187,11 @@ public class Messages extends NLS
     public static String PrefPage_Archives;
     public static String PrefPage_AutomaticHistoryRefresh;
     public static String PrefPage_DataServerURLs;
-    public static String PrefPage_FutureBuffer;
-    public static String PrefPage_FutureBufferTT;
     public static String PrefPage_LiveBufferSize;
     public static String PrefPage_PlotBins;
     public static String PrefPage_ScanPeriod;
+    public static String PrefPage_ScrollSteps;
+    public static String PrefPage_ScrollStepsTT;
     public static String PrefPage_TimeRange;
     public static String PrefPage_Title;
     public static String PrefPage_TraceLineWidth;

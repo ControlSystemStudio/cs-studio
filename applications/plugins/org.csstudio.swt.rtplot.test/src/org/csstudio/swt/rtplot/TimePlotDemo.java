@@ -41,6 +41,7 @@ public class TimePlotDemo
 
         final Display display = new Display();
         final Shell shell = new Shell(display);
+        shell.setText("Time Plot Demo");
         shell.setLayout(new FillLayout());
         shell.setSize(600, 700);
 
@@ -113,7 +114,7 @@ public class TimePlotDemo
             @Override
             public void changedCursors()
             {
-                System.out.println("Cursors changed");
+                // System.out.println("Cursors changed");
             }
         });
 

@@ -45,8 +45,8 @@ public class RTTimePlot extends RTPlot<Instant>
     }
     private static ImageRegistry images = null;
 
-    /** Scroll period in millisecs */
-    private volatile long scroll_period = 500;
+    /** Steps to use when scrolling */
+    private volatile Duration scroll_step = Duration.ofSeconds(10);
 
     /** When scrolling, holds Future for canceling the scheduled scroll calls. Otherwise <code>null</code> */
     private AtomicReference<ScheduledFuture<?>> scrolling = new AtomicReference<>();
@@ -79,16 +79,16 @@ public class RTTimePlot extends RTPlot<Instant>
             {
                 if (! isScrolling())
                     return;
-                final long time = Instant.now().getEpochSecond();
+                final long now = Instant.now().getEpochSecond();
                 final AxisRange<Instant> value_range = x_axis.getValueRange();
                 final long range = value_range.getHigh().getEpochSecond() - value_range.getLow().getEpochSecond();
                 // Iffy range?
                 if (range <= 0)
                     return;
-                final long dist = Math.abs(value_range.getHigh().getEpochSecond() - time);
+                final long dist = Math.abs(value_range.getHigh().getEpochSecond() - now);
                 // In scroll mode, if the end time selected by the user via
-                // the GUI is 10 % away from 'now', stop scrolling
-                if (dist * 100 / range > 10)
+                // the GUI is 25 % away from 'now', stop scrolling
+                if (dist * 100 / (range + scroll_step.getSeconds()) > 25)
                     getUndoableActionManager().perform(new UpdateScrolling(RTTimePlot.this, false));
             }
         });
@@ -121,11 +121,12 @@ public class RTTimePlot extends RTPlot<Instant>
         {   // Show that scrolling is 'on', and tool tip explains that it can be turned off
             scroll.setImage(images.get(Icons.SCROLL_ON.name()));
             scroll.setToolTipText(Messages.Scroll_Off_TT);
-            was_scrolling = scrolling.getAndSet(scroll_timer.scheduleAtFixedRate(RTTimePlot.this::scroll, scroll_period, scroll_period, TimeUnit.MILLISECONDS));
             // Scroll once so that end of axis == 'now',
             // because otherwise one of the listeners might right away
             // disable scrolling
             scroll();
+            final long scroll_period = scroll_step.toMillis();
+            was_scrolling = scrolling.getAndSet(scroll_timer.scheduleAtFixedRate(RTTimePlot.this::scroll, scroll_period, scroll_period, TimeUnit.MILLISECONDS));
         }
         else
         {   // Other way around
@@ -137,10 +138,10 @@ public class RTTimePlot extends RTPlot<Instant>
             was_scrolling.cancel(false);
     }
 
-    /** @param millisecs Desired scroll period */
-    public void setScrollPeriod(final long millisecs)
+    /** @param scroll_step Step size to use when scrolling */
+    public void setScrollStep(final Duration scroll_step)
     {
-        scroll_period = millisecs;
+        this.scroll_step = scroll_step;
         setScrolling(isScrolling());
     }
 
@@ -151,6 +152,6 @@ public class RTTimePlot extends RTPlot<Instant>
         final AxisRange<Instant> range = x_axis.getValueRange();
         final Duration duration = Duration.between(range.getLow(), range.getHigh());
         final Instant now = Instant.now();
-        x_axis.setValueRange(now.minus(duration), now);
+        x_axis.setValueRange(now.minus(duration), now.plus(scroll_step));
     }
 }

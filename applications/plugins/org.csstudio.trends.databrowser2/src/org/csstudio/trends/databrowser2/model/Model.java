@@ -93,6 +93,9 @@ public class Model
     /** <code>true</code> if scrolling is enabled */
     private volatile boolean scroll_enabled = true;
 
+    /** Scroll steps */
+    private volatile Duration scroll_step = Preferences.getScrollSteps();
+
     /** Start and end time specification */
     private volatile String start_spec, end_spec;
 
@@ -101,8 +104,6 @@ public class Model
 
     /** End time of the data range */
     private volatile Instant end_time = Instant.now();
-
-    private final int futureBufferInSeconds = Preferences.getFutureBuffer();
 
     private final boolean automaticHistoryRefresh = Preferences.isAutomaticHistoryRefresh();
 
@@ -121,7 +122,7 @@ public class Model
     /** How should plot rescale when archived data arrives? */
     private volatile ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
-	public Model()
+    public Model()
 	{
 	    final Display display = Display.getCurrent();
 	    if (display != null)
@@ -507,6 +508,12 @@ public class Model
             listener.scrollEnabled(scroll_enabled);
     }
 
+    /** @return Scroll step size */
+    public Duration getScrollStep()
+    {
+        return scroll_step;
+    }
+
     /** @return time span of data
      *  @see #isScrollEnabled()
      */
@@ -590,10 +597,7 @@ public class Model
      */
     synchronized public Instant getStartTime()
     {
-    	if (scroll_enabled && futureBufferInSeconds > 0)
-    		return getEndTime().minus(time_span).minus(Duration.ofNanos(2*futureBufferInSeconds));
-    	else
-    		return getEndTime().minus(time_span);
+		return getEndTime().minus(time_span);
     }
 
     /** @return End time of the data range
@@ -602,29 +606,9 @@ public class Model
     synchronized public Instant getEndTime()
     {
         if (scroll_enabled)
-        {
-            final Instant t = Instant.now();
-        	if (futureBufferInSeconds > 0)
-        	{
-        		if (end_time.compareTo(t) < 0)
-        			end_time = t;
-        		return end_time.plus(Duration.ofSeconds(futureBufferInSeconds));
-        	}
-        	else
-        		end_time = t;
-        }
+            end_time = Instant.now();
         return end_time;
     }
-
-    /** Future buffer in seconds is the amount of time given in seconds from the current time to
-     *  the right border of the chart when auto scroll is enabled.
-     *
-     *  @return the future buffer in seconds
-     */
-    public int getFutureBufferInSeconds()
-    {
-		return futureBufferInSeconds;
-	}
 
     /** Returns true if the automatic history refresh is turned on for this model.
      *  The property is read from the preferences at the construction of the model.

@@ -64,7 +64,7 @@ public class Preferences
 			RAP_HIDE_PROPERTIES_VIEW = "rap.hide_properties_view",
 			SECURE_DATA_BROWSER = "secure_data_browser",
 			AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh",
-			FUTURE_BUFFER = "future_buffer";
+			SCROLL_STEPS = "scroll_steps";
 
 	public static boolean isAutomaticHistoryRefresh() {
 		final IPreferencesService prefs = Platform.getPreferencesService();
@@ -81,18 +81,22 @@ public class Preferences
         return TimeHelper.durationOfSeconds(prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null));
     }
 
-    public static int getFutureBuffer()
-    {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        if (prefs == null) // Allow some JUnit tests without prefs
-            return 120;
-        return prefs.getInt(Activator.PLUGIN_ID, FUTURE_BUFFER, 120, null);
-    }
-
     public static double getScanPeriod()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         return prefs.getDouble(Activator.PLUGIN_ID, SCAN_PERIOD, 1.0, null);
+    }
+
+    public static Duration getScrollSteps()
+    {
+        int scroll_steps = 5;
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs != null)
+        {   // Check legacy preference of simular use, then the current one
+            scroll_steps = prefs.getInt(Activator.PLUGIN_ID, "future_buffer", scroll_steps, null);
+            scroll_steps = prefs.getInt(Activator.PLUGIN_ID, SCROLL_STEPS, scroll_steps, null);
+        }
+        return Duration.ofSeconds(scroll_steps);
     }
 
     public static int getLiveSampleBufferSize()
