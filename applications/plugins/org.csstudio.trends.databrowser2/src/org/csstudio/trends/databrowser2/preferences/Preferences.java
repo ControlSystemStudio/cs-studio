@@ -64,9 +64,10 @@ public class Preferences
 			RAP_HIDE_PROPERTIES_VIEW = "rap.hide_properties_view",
 			SECURE_DATA_BROWSER = "secure_data_browser",
 			AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh",
-			SCROLL_STEPS = "scroll_steps";
+			SCROLL_STEP = "scroll_step";
 
-	public static boolean isAutomaticHistoryRefresh() {
+	public static boolean isAutomaticHistoryRefresh()
+	{
 		final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null) // Allow some JUnit tests without prefs
             return Boolean.FALSE;
@@ -87,16 +88,16 @@ public class Preferences
         return prefs.getDouble(Activator.PLUGIN_ID, SCAN_PERIOD, 1.0, null);
     }
 
-    public static Duration getScrollSteps()
+    public static Duration getScrollStep()
     {
-        int scroll_steps = 5;
+        int scroll_step = 5;
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs != null)
-        {   // Check legacy preference of simular use, then the current one
-            scroll_steps = prefs.getInt(Activator.PLUGIN_ID, "future_buffer", scroll_steps, null);
-            scroll_steps = prefs.getInt(Activator.PLUGIN_ID, SCROLL_STEPS, scroll_steps, null);
+        {   // Check related legacy preference, then current one
+            scroll_step = prefs.getInt(Activator.PLUGIN_ID, "future_buffer", scroll_step, null);
+            scroll_step = prefs.getInt(Activator.PLUGIN_ID, SCROLL_STEP, scroll_step, null);
         }
-        return Duration.ofSeconds(scroll_steps);
+        return Duration.ofSeconds(scroll_step);
     }
 
     public static int getLiveSampleBufferSize()
@@ -164,13 +165,13 @@ public class Preferences
             return new ArchiveServerURL[0];
 
         ArrayList<ArchiveServerURL> list = new ArrayList<ArchiveServerURL>();
-        for (String fragment : urls.split("\\*")) {
+        for (String fragment : urls.split("\\*"))
+        {
         	String[] strs = fragment.split("\\|");
-        	if (strs.length == 1) {
+        	if (strs.length == 1)
         		list.add(new ArchiveServerURL(strs[0], null));
-        	} else if (strs.length >= 2) {
+        	else if (strs.length >= 2)
         		list.add(new ArchiveServerURL(strs[0], strs[1]));
-        	}
         }
         return list.toArray(new ArchiveServerURL[list.size()]);
     }
@@ -279,7 +280,8 @@ public class Preferences
         return result;
     }
 
-	public static IPath getPltRepository() {
+	public static IPath getPltRepository()
+	{
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs == null)
 			return null;
@@ -290,7 +292,8 @@ public class Preferences
 		return SingleSourcePlugin.getResourceHelper().newPath(pltRepo);
 	}
 
-	public static String getEmailDefaultSender() {
+	public static String getEmailDefaultSender()
+	{
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs == null)
 			return null;

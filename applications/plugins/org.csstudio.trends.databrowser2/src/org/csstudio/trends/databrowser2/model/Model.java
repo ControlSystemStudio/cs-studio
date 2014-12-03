@@ -94,7 +94,7 @@ public class Model
     private volatile boolean scroll_enabled = true;
 
     /** Scroll steps */
-    private volatile Duration scroll_step = Preferences.getScrollSteps();
+    private volatile Duration scroll_step = Preferences.getScrollStep();
 
     /** Start and end time specification */
     private volatile String start_spec, end_spec;
@@ -479,7 +479,7 @@ public class Model
             update_period = period_secs;
         // Notify listeners
         for (ModelListener listener : listeners)
-            listener.changedUpdatePeriod();
+            listener.changedUpdatePeriods();
     }
 
     /** The model supports two types of start/end time handling:
@@ -512,6 +512,20 @@ public class Model
     public Duration getScrollStep()
     {
         return scroll_step;
+    }
+
+    /** @param step New scroll step
+     *  @throws Exception if step size cannot be used
+     */
+    public void setScrollStep(final Duration step) throws Exception
+    {
+        if (step.compareTo(Duration.ofSeconds(1)) < 0)
+            throw new Exception("Scroll steps are too small: " + step);
+        if (step.compareTo(scroll_step) == 0)
+            return;
+       scroll_step = step;
+       for (ModelListener listener : listeners) // TODO Update the event
+           listener.changedUpdatePeriods();
     }
 
     /** @return time span of data

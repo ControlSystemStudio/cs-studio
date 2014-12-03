@@ -190,8 +190,6 @@ public class Messages extends NLS
     public static String PrefPage_LiveBufferSize;
     public static String PrefPage_PlotBins;
     public static String PrefPage_ScanPeriod;
-    public static String PrefPage_ScrollSteps;
-    public static String PrefPage_ScrollStepsTT;
     public static String PrefPage_TimeRange;
     public static String PrefPage_Title;
     public static String PrefPage_TraceLineWidth;
@@ -227,6 +225,8 @@ public class Messages extends NLS
     public static String ScanPeriodChangeErrorFmt;
     public static String ScanPeriodTT;
     public static String ScrollButtonTT;
+    public static String ScrollStepLbl;
+    public static String ScrollStepTT;
     public static String Search;
     public static String SearchArchiveConfirmFmt;
     public static String SearchChannelFmt;

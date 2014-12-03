@@ -157,11 +157,11 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(plotbins);
 
         // Future Buffer: 10 ...
-        final IntegerFieldEditor scroll_steps = new IntegerFieldEditor(Preferences.SCROLL_STEPS,
-                Messages.PrefPage_ScrollSteps, parent);
-        scroll_steps.setValidRange(1, (int)Duration.ofDays(1).getSeconds());
-        ((Text)scroll_steps.getTextControl(parent)).setToolTipText(Messages.PrefPage_ScrollStepsTT);
-        addField(scroll_steps);
+        final IntegerFieldEditor scroll_step = new IntegerFieldEditor(Preferences.SCROLL_STEP,
+                Messages.ScrollStepLbl, parent);
+        scroll_step.setValidRange(1, (int)Duration.ofDays(1).getSeconds());
+        ((Text)scroll_step.getTextControl(parent)).setToolTipText(Messages.ScrollStepTT);
+        addField(scroll_step);
 
         // Archive rescale options
         final ArchiveRescale values[] = ArchiveRescale.values();

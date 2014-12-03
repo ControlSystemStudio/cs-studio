@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.persistence;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +52,7 @@ public class XMLPersistence
     final public static String TAG_TITLE = "title";
     final public static String TAG_SCROLL = "scroll";
     final public static String TAG_UPDATE_PERIOD = "update_period";
+    final public static String TAG_SCROLL_STEP = "scroll_step";
     final public static String TAG_LIVE_SAMPLE_BUFFER_SIZE = "ring_size";
     final public static String TAG_PVLIST = "pvlist";
     final public static String TAG_PV = "pv";
@@ -128,6 +130,16 @@ public class XMLPersistence
         model.setSaveChanges(DOMHelper.getSubelementBoolean(root_node, TAG_SAVE_CHANGES, true));
         model.enableScrolling(DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, true));
         model.setUpdatePeriod(DOMHelper.getSubelementDouble(root_node, TAG_UPDATE_PERIOD, Preferences.getUpdatePeriod()));
+        try
+        {
+            model.setScrollStep( Duration.ofSeconds(
+                    DOMHelper.getSubelementInt(root_node, TAG_SCROLL_STEP, (int) Preferences.getScrollStep().getSeconds())));
+        }
+        catch (Throwable ex)
+        {
+            // Ignore
+        }
+
         final String start = DOMHelper.getSubelementString(root_node, TAG_START);
         final String end = DOMHelper.getSubelementString(root_node, TAG_END);
         if (start.length() > 0  &&  end.length() > 0)
@@ -339,6 +351,7 @@ public class XMLPersistence
         // Time axis
         XMLWriter.XML(writer, 1, TAG_SCROLL, model.isScrollEnabled());
         XMLWriter.XML(writer, 1, TAG_UPDATE_PERIOD, model.getUpdatePeriod());
+        XMLWriter.XML(writer, 1, TAG_SCROLL_STEP, model.getScrollStep().getSeconds());
         XMLWriter.XML(writer, 1, TAG_START, model.getStartSpec());
         XMLWriter.XML(writer, 1, TAG_END, model.getEndSpec());
 

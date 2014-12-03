@@ -20,8 +20,8 @@ public interface ModelListener
     /** Title changed */
     void changedTitle();
 
-    /** The update period changed */
-    void changedUpdatePeriod();
+    /** The update period or scroll step changed */
+    void changedUpdatePeriods();
 
     /** The archive-rescale configuration has changed */
     void changedArchiveRescale();

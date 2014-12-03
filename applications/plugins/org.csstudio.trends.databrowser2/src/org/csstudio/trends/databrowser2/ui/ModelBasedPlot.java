@@ -323,7 +323,6 @@ public class ModelBasedPlot
         }
     }
 
-
 	/** Update plot to given time range.
 	 *  Can be called from any thread.
 	 *  @param start

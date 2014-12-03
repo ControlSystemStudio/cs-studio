@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -128,7 +129,7 @@ public class DataBrowserPropertySheetPage extends Page
 
     private Text title;
 
-    private Text update_period;
+    private Text update_period, scroll_step;
 
     private Button save_changes;
 
@@ -149,7 +150,7 @@ public class DataBrowserPropertySheetPage extends Page
 
         /** {@inheritDoc} */
         @Override
-        public void changedUpdatePeriod()
+        public void changedUpdatePeriods()
         {
             update_period.setText(Double.toString(model.getUpdatePeriod()));
         }
@@ -792,6 +793,37 @@ public class DataBrowserPropertySheetPage extends Page
                     new ChangeScaleFontCommand(model, operations_manager, selected);
             }
         });
+
+        // Scroll Step [secs]: ______
+        label = new Label(parent, 0);
+        label.setText(Messages.ScrollStepLbl);
+        label.setLayoutData(new GridData());
+
+        scroll_step = new Text(parent, SWT.BORDER);
+        scroll_step.setText(Double.toString(model.getScrollStep().toMillis() / 1000.0));
+        scroll_step.setToolTipText(Messages.ScrollStepTT);
+        scroll_step.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        scroll_step.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetDefaultSelected(final SelectionEvent e)
+            {
+                try
+                {
+                    final Duration step = Duration.ofMillis(
+                        Math.round( Double.parseDouble(scroll_step.getText().trim()) * 1000.0 ) );
+                    new ChangeScrollStepCommand(model, operations_manager, step);
+                }
+                catch (Exception ex)
+                {
+                    scroll_step.setText(Double.toString(model.getScrollStep().toMillis() / 1000.0));
+                }
+            }
+        });
+
+        // Filler for currently unused right 2 columns
+        label = new Label(parent, 0);
+        label.setLayoutData(new GridData(0, 0, true, false, 2, 1));
 
         // Background Color: ______
         label = new Label(parent, 0);

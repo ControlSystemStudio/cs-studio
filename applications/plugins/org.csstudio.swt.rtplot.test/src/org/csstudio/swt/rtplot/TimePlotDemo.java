@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,6 +53,7 @@ public class TimePlotDemo
         plot.setScaleFont(new FontData(font_name, 8, SWT.ITALIC));
 
         plot.setUpdateThrottle(200, TimeUnit.MILLISECONDS);
+        plot.setScrollStep(Duration.ofSeconds(30));
 
         plot.addYAxis("y2");
         plot.getYAxes().get(0).setValueRange(-2.2, 3.2);

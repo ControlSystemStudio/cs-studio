@@ -90,7 +90,9 @@ public class Controller
     final private static ScheduledExecutorService update_timer =
             Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("DataBrowserUpdates"));
 
-    /** Task executed by update_timer */
+    /** Task executed by update_timer.
+     *  Only changed on UI thread
+     */
     private ScheduledFuture<?> update_task = null;
 
     /** Delay to avoid flurry of archive requests */
@@ -358,7 +360,7 @@ public class Controller
         model_listener = new ModelListenerAdapter()
         {
             @Override
-            public void changedUpdatePeriod()
+            public void changedUpdatePeriods()
             {
                 plot.getPlot().setScrollStep(model.getScrollStep());
                 if (update_task != null)
@@ -383,7 +385,11 @@ public class Controller
             public void changedTimerange()
             {
                 // Update plot's time range
-                plot.setTimeRange(model.getStartTime(), model.getEndTime());
+                if (model.isScrollEnabled())
+                    plot.setTimeRange(model.getStartTime(), model.getEndTime().plus(model.getScrollStep()));
+                else
+                    plot.setTimeRange(model.getStartTime(), model.getEndTime());
+
                 // Get matching archived data
                 scheduleArchiveRetrieval();
             }
@@ -490,7 +496,6 @@ public class Controller
     {
         if (isRunning())
             throw new IllegalStateException("Already started");
-        createUpdateTask();
 
         plot.getPlot().setBackground(model.getPlotBackground());
         plot.getPlot().setLabelFont(model.getLabelFont());
@@ -506,15 +511,14 @@ public class Controller
             final Annotation<Instant> annotation = new Annotation<Instant>(trace , info.getTime(), info.getValue(), info.getText());
             plot.getPlot().addAnnotation(annotation);
         }
+        createUpdateTask();
 
         model.start();
 
-        if (! model.isScrollEnabled())
-        {   // In non-scroll mode, initialize plot's time range
+        // Initial time range setup, schedule archive fetch
+        if (!model.isScrollEnabled())
             plot.getPlot().setScrolling(false);
-            plot.setTimeRange(model.getStartTime(), model.getEndTime());
-        }
-        getArchivedData();
+        model_listener.changedTimerange();
     }
 
     /** @return <code>true</code> while running
