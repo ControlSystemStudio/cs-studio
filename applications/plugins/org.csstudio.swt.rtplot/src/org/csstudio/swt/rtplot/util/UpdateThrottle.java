@@ -12,6 +12,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+
+import org.csstudio.swt.rtplot.Activator;
 
 /** Throttle for updates.
  *
@@ -54,7 +57,14 @@ public class UpdateThrottle
         setDormantTime(dormant_time, unit);
         this.update_then_wake = () ->
         {   // Perform the update
-            update.run();
+            try
+            {
+                update.run();
+            }
+            catch (Throwable ex)
+            {
+                Activator.getLogger().log(Level.WARNING, "Update failed", ex);
+            }
             // Schedule wakeup
             scheduled_wakeup = timer.schedule(this::wakeUp, dormant_ms, TimeUnit.MILLISECONDS);
         };
