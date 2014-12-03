@@ -10,7 +10,6 @@ package org.csstudio.trends.databrowser2.editor;
 import java.util.logging.Logger;
 
 import org.csstudio.swt.rtplot.RTTimePlot;
-import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -33,12 +32,6 @@ public class PrintAction extends Action
 {
     final private Shell shell;
     final private RTTimePlot graph;
-
-    /** Snapshot of the chart at time of print command */
-    private Image snapshot;
-
-    /** Printer */
-    private Printer printer;
 
     /** Initialize
      *  @param shell Parent shell
@@ -80,7 +73,7 @@ public class PrintAction extends Action
     public void run()
     {
         // Get snapshot. Disposed at end of printing
-        snapshot = graph.getImage();
+        final Image snapshot = graph.getImage();
         if (snapshot == null)
         {
         	Logger.getLogger(getClass().getName()).fine("Cannot obtain image");
@@ -96,20 +89,9 @@ public class PrintAction extends Action
             snapshot.dispose();
             return;
         }
-        // Get filename
-        if (data.printToFile == true)
-        {
-            // Inconsistent: On the Mac, the file name was already set?
-            // data.fileName = ImageFileName.get(chart.getShell());
-        }
-        printer = new Printer(data);
-        // Print in background thread
-        Activator.getThreadPool().execute(this::print);
-    }
-
-    /** Print the <code>snapshot</code> to the <code>printer</code> */
-    private void print()
-    {
+        // At least on Linux, access to SWT Printer must be on UI thread.
+        // Printing in other thread can deadlock with UI thread.
+        final Printer printer = new Printer(data);
         try
         {
             if (!printer.startJob("Data Browser"))
@@ -117,36 +99,40 @@ public class PrintAction extends Action
             	Logger.getLogger(getClass().getName()).fine("Cannot start print job");
                 return;
             }
-            // Printer page info
-            final Rectangle area = printer.getClientArea();
-            final Rectangle trim = printer.computeTrim(0, 0, 0, 0);
-            final Point dpi = printer.getDPI();
+            try
+            {   // Printer page info
+                final Rectangle area = printer.getClientArea();
+                final Rectangle trim = printer.computeTrim(0, 0, 0, 0);
+                final Point dpi = printer.getDPI();
 
-            // Compute layout
-            final Rectangle image_rect = snapshot.getBounds();
-            // Leave one inch on each border.
-            // (copied the computeTrim stuff from an SWT example.
-            //  Really no clue...)
-            final int left_right = dpi.x + trim.x;
-            final int top_bottom = dpi.y + trim.y;
-            final int printed_width = area.width - 2*left_right;
-            // Try to scale height according to on-screen aspect ratio.
-            final int max_height = area.height - 2*top_bottom;
-            final int printed_height = Math.min(max_height,
-               image_rect.height * printed_width / image_rect.width);
+                // Compute layout
+                final Rectangle image_rect = snapshot.getBounds();
+                // Leave one inch on each border.
+                // (copied the computeTrim stuff from an SWT example.
+                //  Really no clue...)
+                final int left_right = dpi.x + trim.x;
+                final int top_bottom = dpi.y + trim.y;
+                final int printed_width = area.width - 2*left_right;
+                // Try to scale height according to on-screen aspect ratio.
+                final int max_height = area.height - 2*top_bottom;
+                final int printed_height = Math.min(max_height,
+                   image_rect.height * printed_width / image_rect.width);
 
-            // Print one page
-            printer.startPage();
-            final GC gc = new GC(printer);
-            gc.drawImage(snapshot, 0, 0, image_rect.width, image_rect.height,
-                        left_right, top_bottom, printed_width, printed_height);
-            printer.endPage();
-            // Done
-            printer.endJob();
-            printer.dispose();
+                // Print one page
+                printer.startPage();
+                final GC gc = new GC(printer);
+                gc.drawImage(snapshot, 0, 0, image_rect.width, image_rect.height,
+                            left_right, top_bottom, printed_width, printed_height);
+                printer.endPage();
+            }
+            finally
+            {
+                printer.endJob();
+            }
         }
         finally
         {
+            printer.dispose();
             snapshot.dispose();
         }
     }

@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.csstudio.swt.rtplot.Activator;
@@ -90,17 +90,17 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Does layout need to be re-computed? */
     final private AtomicBoolean need_layout = new AtomicBoolean(true);
 
-    /** Buffer for complete plot.
+    /** Buffer for image of axes, plot area, but not mouse feedback.
      *
      *  <p>UpdateThrottle calls updateImageBuffer() to set the image
-     *  in its thread, PaintListener draws it in UI thread.
+     *  in its thread, PaintListener draws it in UI thread,
+     *  and getImage() may hand a safe copy for printing, saving, e-mailing.
      *
      *  <p>Synchronizing to access one and the same image
      *  deadlocks on Linux, so a new image is created for updates.
-     *  To avoid access to disposed image,
-     *  SYNC on the image object while using it.
+     *  To avoid access to disposed image, SYNC on plot_image during access.
      */
-    private AtomicReference<Image> plot_image = new AtomicReference<>();
+    private volatile Optional<Image> plot_image = Optional.empty();
 
     final private UpdateThrottle update_throttle;
 
@@ -343,10 +343,15 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         y_axes.get(trace.getYAxis()).removeTrace(trace);
     }
 
-    /** @return {@link Image} of current plot */
+    /** @return {@link Image} of current plot. Caller must dispose */
     public Image getImage()
     {
-        return plot_image.get();
+        synchronized (plot_image)
+        {
+            if (plot_image.isPresent())
+                return new Image(display, plot_image.get(), SWT.IMAGE_COPY);
+        }
+        return new Image(display, 10, 10);
     }
 
     /** Update the dormant time between updates
@@ -537,12 +542,19 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         gc.dispose();
 
         // Update image
-        final Image old_image = plot_image.getAndSet(image);
+        final Image old_image;
+        synchronized (plot_image)
+        {
+            old_image = plot_image.orElse(null);
+        }
+        plot_image = Optional.of(image);
         if (old_image != null)
-        	synchronized (old_image)
-        	{
-        		old_image.dispose();
-			}
+        {
+            synchronized (old_image)
+            {
+                old_image.dispose();
+            }
+        }
     }
 
     /** PaintListener: {@inheritDoc} */
@@ -551,17 +563,15 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         Activator.getLogger().finer("paint");
         final GC gc = e.gc;
-        final Image image = plot_image.get();
-        if (image != null)
-            synchronized (image)
-            {
-                gc.drawImage(image, 0, 0);
-            }
-
+        synchronized (plot_image)
+        {
+            if (plot_image.isPresent())
+                gc.drawImage(plot_image.get(), 0, 0);
+        }
         drawMouseModeFeedback(gc);
     }
 
-    /** Draw visual feedback (rubber band regtangle etc.)
+    /** Draw visual feedback (rubber band rectangle etc.)
      *  for current mouse mode
      *  @param gc GC
      */
@@ -694,12 +704,14 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         x_axis.dispose();
         plot_area.dispose();
 
-        final Image old_image = plot_image.getAndSet(null);
+        final Image old_image;
+        synchronized (plot_image)
+        {
+            old_image = plot_image.orElse(null);
+            plot_image = Optional.of(null);
+        }
         if (old_image != null)
-        	synchronized (old_image)
-        	{
-        		old_image.dispose();
-			}
+            old_image.dispose();
     }
 
     /** @param show Show the cross-hair cursor? */

@@ -134,7 +134,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         plot.setScaleFont(font);
     }
 
-    /** @return {@link Image} of current plot */
+    /** @return {@link Image} of current plot. Caller must dispose */
     public Image getImage()
     {
         return plot.getImage();
