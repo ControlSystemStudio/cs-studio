@@ -45,6 +45,16 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
     /** Computed in getPixelWidth:
      *  Location of labels, and Y-separation between labels,
      *  used to show SEPARATOR.
+     *
+     *  Calls to getPixelWidth and paint will come from the same
+     *  thread which updates the plot.
+     *
+     *  Number of label_provider entries should match the size of
+     *  label_x and label_y entries after they're set in getDesiredPixelSize,
+     *  but note that label_provider could change at any time:
+     *  getPixelWidth ran with N labels,
+     *  labels change, requesting new layout and thus call to getDesiredPixelSize,
+     *  but paint() is called before that happened.
      */
     final private IntList label_x = new IntList(2), label_y = new IntList(2);
     private int label_y_separation;
@@ -360,10 +370,13 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         label_provider.start();
         if (! label_provider.hasNext())
         {   // Use axis name
-            gc.setForeground(media.get(getColor()));
-            GraphicsUtils.drawVerticalText(gc,
-                    label_x.get(0), label_y.get(0), getName(), SWT.UP);
-            gc.setForeground(old_fg);
+            if (label_x.size() > 0)
+            {
+                gc.setForeground(media.get(getColor()));
+                GraphicsUtils.drawVerticalText(gc,
+                        label_x.get(0), label_y.get(0), getName(), SWT.UP);
+                gc.setForeground(old_fg);
+            }
         }
         else
         {   // Draw labels at pre-computed locations
@@ -378,7 +391,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
                 gc.setForeground(old_fg);
                 ++i;
             }
-            while (label_provider.hasNext());
+            while (label_provider.hasNext()  &&  i < label_x.size());
         }
     }
 }
