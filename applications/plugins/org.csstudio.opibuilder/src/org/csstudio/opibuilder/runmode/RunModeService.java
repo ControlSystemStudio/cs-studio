@@ -216,18 +216,21 @@ public class RunModeService {
 					// Open a new view					
 					if(position != Position.DETACHED && position != Position.DEFAULT_VIEW &&
 							!(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
-						int openCode=0;
-						if(!OPIBuilderPlugin.isRAP() && PreferencesHelper.isShowOpiRuntimePerspectiveDialog()){
-							TipDialog dialog = new TipDialog(window.getShell(), MessageDialog.QUESTION, 
-									"Switch to OPI Runtime Perspective", 
-									"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
-								"\nDo you want to switch to it now?");
-							openCode=dialog.open();								
-							if(!dialog.isShowThisDialogAgain())
-								PreferencesHelper.setShowOpiRuntimePerspectiveDialog(false);
+						if(!OPIBuilderPlugin.isRAP()) {
+							if(PreferencesHelper.isShowOpiRuntimePerspectiveDialog()) {
+								TipDialog dialog = new TipDialog(window.getShell(), MessageDialog.QUESTION, 
+										"Switch to OPI Runtime Perspective", 
+										"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
+										"\nDo you want to switch to it now?");
+								PreferencesHelper.setSwitchToOpiRuntimePerspective(dialog.open() == Window.OK);
+								if(!dialog.isShowThisDialogAgain()) {
+									PreferencesHelper.setShowOpiRuntimePerspectiveDialog(false);
+								}
+							}
+							if(PreferencesHelper.isSwitchToOpiRuntimePerspective()) {
+								PerspectiveHelper.showPerspective(OPIRunnerPerspective.ID, window.getActivePage());
+							}
 						}
-						if(openCode==0 ||openCode==Window.OK)
-							PerspectiveHelper.showPerspective(OPIRunnerPerspective.ID, window.getActivePage());						
 					}
 
 					// View will receive input from us, should ignore previous memento
