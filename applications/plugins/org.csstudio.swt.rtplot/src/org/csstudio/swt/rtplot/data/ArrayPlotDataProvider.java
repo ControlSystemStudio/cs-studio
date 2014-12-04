@@ -42,8 +42,14 @@ public class ArrayPlotDataProvider<XTYPE extends Comparable<XTYPE>> implements P
     public void add(final PlotDataItem<XTYPE> item)
     {
         lock.writeLock().lock();
-        data.add(item);
-        lock.writeLock().unlock();
+        try
+        {
+            data.add(item);
+        }
+        finally
+        {
+            lock.writeLock().unlock();
+        }
     }
 
     @Override

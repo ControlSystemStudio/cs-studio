@@ -67,7 +67,7 @@ public class LinearTicks implements Ticks<Double>
         // Determine range of values on axis
         if (! isSupportedRange(low, high))
             throw new Error("Unsupported range " + low + " .. " + high);
-        if (low == high)
+        if (low.equals(high))
         {
             low = high - 1;
             high += 1;

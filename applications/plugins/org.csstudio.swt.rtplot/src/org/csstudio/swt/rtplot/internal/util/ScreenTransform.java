@@ -41,5 +41,5 @@ public interface ScreenTransform<T>
     public abstract T inverse(double y);
 
     /** @return Copy of this transformation */
-    public abstract ScreenTransform<T> clone();
+    public abstract ScreenTransform<T> copy();
 }

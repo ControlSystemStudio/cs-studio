@@ -47,7 +47,7 @@ public class LinearScreenTransform implements ScreenTransform<Double>
 
     /** {@inheritDoc} */
     @Override
-    public synchronized LinearScreenTransform clone()
+    public synchronized LinearScreenTransform copy()
     {
         final LinearScreenTransform result = new LinearScreenTransform();
         result.a = a;

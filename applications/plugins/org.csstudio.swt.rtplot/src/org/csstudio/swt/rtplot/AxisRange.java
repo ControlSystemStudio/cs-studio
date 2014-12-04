@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot;
 
+import java.util.Objects;
+
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 
 /** Value range of an {@link Axis}
@@ -27,8 +29,8 @@ public class AxisRange<XTYPE extends Comparable<XTYPE>>
      */
     public AxisRange(final XTYPE low, final XTYPE high)
     {
-        this.low = low;
-        this.high = high;
+        this.low = Objects.requireNonNull(low);
+        this.high = Objects.requireNonNull(high);
     }
 
     /** @return Returns low end of axis value range. */
@@ -60,6 +62,14 @@ public class AxisRange<XTYPE extends Comparable<XTYPE>>
         final AxisRange<XTYPE> other = (AxisRange) obj;
         return other.low.equals(low)  &&
                other.high.equals(high);
+    }
+
+    // Should have hashCode() when implementing equals()
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        return (prime * high.hashCode()) + low.hashCode();
     }
 
     @Override

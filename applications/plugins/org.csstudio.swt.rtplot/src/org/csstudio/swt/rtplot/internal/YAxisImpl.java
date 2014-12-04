@@ -145,12 +145,13 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
     void addTrace(final TraceImpl<XTYPE> trace)
     {
         Objects.requireNonNull(trace);
-        synchronized (traces)
-        {
-            if (traces.contains(trace))
-                throw new IllegalArgumentException("Trace " + trace.getName() + " already on Y Axis " + getName());
-            traces.add(trace);
-        }
+        // CopyOnWriteArrayList is thread-safe, but race between 2 threads
+        // could still end up with duplicate.
+        // Could synchronized here, but then FindBugs complains.
+        traces.add(trace);
+        // So checking afterwards if there are more than the one expected entries
+        if (traces.stream().filter((existing) -> existing == trace).count() > 1)
+            throw new IllegalArgumentException("Trace " + trace.getName() + " already on Y Axis " + getName());
         requestLayout();
     }
 

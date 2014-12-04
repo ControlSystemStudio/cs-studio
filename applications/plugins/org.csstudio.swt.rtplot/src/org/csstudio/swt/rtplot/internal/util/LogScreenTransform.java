@@ -47,8 +47,8 @@ public class LogScreenTransform implements ScreenTransform<Double>
 
     /** {@inheritDoc} */
     @Override
-    public LogScreenTransform clone()
+    public LogScreenTransform copy()
     {
-        return new LogScreenTransform(linear.clone());
+        return new LogScreenTransform(linear.copy());
     }
 }

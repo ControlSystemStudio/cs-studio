@@ -58,7 +58,7 @@ public class TimeScreenTransform implements ScreenTransform<Instant>
 
     /** {@inheritDoc} */
     @Override
-    public synchronized TimeScreenTransform clone()
+    public synchronized TimeScreenTransform copy()
     {
         final TimeScreenTransform result = new TimeScreenTransform();
         result.a = a;

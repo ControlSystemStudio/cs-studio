@@ -98,7 +98,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
      *
      *  <p>Synchronizing to access one and the same image
      *  deadlocks on Linux, so a new image is created for updates.
-     *  To avoid access to disposed image, SYNC on plot_image during access.
+     *  To avoid access to disposed image, SYNC on the actual image during access.
      */
     private volatile Optional<Image> plot_image = Optional.empty();
 
@@ -346,11 +346,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** @return {@link Image} of current plot. Caller must dispose */
     public Image getImage()
     {
-        synchronized (plot_image)
-        {
-            if (plot_image.isPresent())
-                return new Image(display, plot_image.get(), SWT.IMAGE_COPY);
-        }
+        Image image = plot_image.orElse(null);
+        if (image != null)
+            synchronized (image)
+            {
+                return new Image(display, image, SWT.IMAGE_COPY);
+            }
         return new Image(display, 10, 10);
     }
 
@@ -542,11 +543,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         gc.dispose();
 
         // Update image
-        final Image old_image;
-        synchronized (plot_image)
-        {
-            old_image = plot_image.orElse(null);
-        }
+        final Image old_image = plot_image.orElse(null);
         plot_image = Optional.of(image);
         if (old_image != null)
         {
@@ -563,11 +560,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         Activator.getLogger().finer("paint");
         final GC gc = e.gc;
-        synchronized (plot_image)
-        {
-            if (plot_image.isPresent())
-                gc.drawImage(plot_image.get(), 0, 0);
-        }
+        final Image image = plot_image.orElse(null);
+        if (image != null)
+            synchronized (image)
+            {
+                gc.drawImage(image, 0, 0);
+            }
         drawMouseModeFeedback(gc);
     }
 
@@ -704,14 +702,13 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         x_axis.dispose();
         plot_area.dispose();
 
-        final Image old_image;
-        synchronized (plot_image)
-        {
-            old_image = plot_image.orElse(null);
-            plot_image = Optional.of(null);
-        }
+        final Image old_image = plot_image.orElse(null);
+        plot_image = Optional.of(null);
         if (old_image != null)
-            old_image.dispose();
+            synchronized (old_image)
+            {
+                old_image.dispose();
+            }
     }
 
     /** @param show Show the cross-hair cursor? */

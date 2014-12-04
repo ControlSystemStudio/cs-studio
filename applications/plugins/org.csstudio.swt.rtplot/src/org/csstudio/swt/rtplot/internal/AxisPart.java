@@ -137,7 +137,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     /** @return Transformation between values and pixels */
     final public ScreenTransform<T> getScreenTransform()
     {
-        return transform.clone();
+        return transform.copy();
     }
 
     /** {@inheritDoc} */

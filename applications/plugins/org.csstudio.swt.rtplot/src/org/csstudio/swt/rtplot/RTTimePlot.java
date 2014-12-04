@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.swt.rtplot.undo.UpdateScrolling;
 import org.csstudio.swt.rtplot.util.NamedThreadFactory;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -96,13 +95,14 @@ public class RTTimePlot extends RTPlot<Instant>
 
     private void initToolItemImages(final Display display)
     {
-        if (images != null)
-            return;
-        images = new ImageRegistry(display);
-        for (Icons icon : Icons.values())
+        synchronized (RTTimePlot.class)
         {
-            final ImageDescriptor image = Activator.getIcon(icon.name().toLowerCase());
-            images.put(icon.name(), image);
+            if (images != null)
+                return;
+            final ImageRegistry image_reg = new ImageRegistry(display);
+            for (Icons icon : Icons.values())
+                image_reg.put(icon.name(), Activator.getIcon(icon.name().toLowerCase()));
+            images = image_reg;
         }
     }
 
