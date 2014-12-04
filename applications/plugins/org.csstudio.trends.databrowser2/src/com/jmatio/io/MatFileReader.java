@@ -265,7 +265,7 @@ public class MatFileReader
                         ByteBuffer tempByteBuffer = ByteBuffer.allocateDirect(DIRECT_BUFFER_LIMIT);
                         for (int block=0; block<numberOfBlocks; block++) {
                             tempByteBuffer.clear();
-                            roChannel.read(tempByteBuffer, block*DIRECT_BUFFER_LIMIT);
+                            roChannel.read(tempByteBuffer, ((long)block)*DIRECT_BUFFER_LIMIT);
                             tempByteBuffer.flip();
                             buf.put(tempByteBuffer);
                         }

@@ -49,8 +49,14 @@ public class WaveformValueDataProvider implements PlotDataProvider<Double>
             new_numbers = new ArrayDouble(VTypeHelper.toDouble(value));
 
         lock.writeLock().lock();
-        numbers = new_numbers;
-        lock.writeLock().unlock();
+        try
+        {
+            numbers = new_numbers;
+        }
+        finally
+        {
+            lock.writeLock().unlock();
+        }
     }
 
      /** {@inheritDoc} */

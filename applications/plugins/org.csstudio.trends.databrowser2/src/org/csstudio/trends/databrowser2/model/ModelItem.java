@@ -82,9 +82,10 @@ abstract public class ModelItem
      */
     void setModel(final Model model)
     {
-        if (this.model.equals(model))
+        final Optional<Model> new_model = Optional.ofNullable(model);
+        if (this.model.equals(new_model))
             throw new RuntimeException("Item re-assigned to same model: " + name);
-        this.model = Optional.ofNullable(model);
+        this.model = new_model;
     }
 
     /** @return Name of this item (PV, Formula, ...), may contain macros */

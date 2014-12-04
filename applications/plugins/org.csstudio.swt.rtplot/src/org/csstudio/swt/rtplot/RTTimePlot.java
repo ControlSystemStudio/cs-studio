@@ -154,6 +154,8 @@ public class RTTimePlot extends RTPlot<Instant>
         final Axis<Instant> x_axis = plot.getXAxis();
         final AxisRange<Instant> range = x_axis.getValueRange();
         final Duration duration = Duration.between(range.getLow(), range.getHigh());
+// TODO Remove
+System.out.println("Scroll: Duration " + duration);
         final Instant now = Instant.now();
         x_axis.setValueRange(now.minus(duration), now.plus(scroll_step));
     }

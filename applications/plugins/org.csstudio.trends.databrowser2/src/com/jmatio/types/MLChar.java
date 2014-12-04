@@ -5,11 +5,11 @@ import java.util.Arrays;
 public class MLChar extends MLArray implements GenericArrayCreator<Character>
 {
     Character[] chars;
-    
+
     /**
      * Creates the 1 x {@link String#length()} {@link MLChar} from the given
      * String.
-     * 
+     *
      * @param name the {@link MLArray} name
      * @param value the String
      */
@@ -18,31 +18,31 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
         this( name, new int[] { 1, value.length() } , MLArray.mxCHAR_CLASS, 0);
         set(value);
     }
-    
+
     /**
-     * Create the {@link MLChar} from array of {@link String}s. 
-     * 
+     * Create the {@link MLChar} from array of {@link String}s.
+     *
      * @param name the {@link MLArray} name
      * @param values the array of {@link String}s
      */
     public MLChar(String name, String[] values )
     {
         this( name, new int[] { values.length, values.length > 0 ? getMaxLength(values) : 0} , MLArray.mxCHAR_CLASS, 0);
-        
+
         for ( int i = 0; i < values.length; i++ )
         {
             set( values[i], i );
         }
     }
     /**
-     * Returns the maximum {@link String} length of array of {@link String}s. 
+     * Returns the maximum {@link String} length of array of {@link String}s.
      * @param values the array of {@link String}s
      * @return the maximum {@link String} length of array of {@link String}s
      */
     private static int getMaxLength( String[] values )
     {
         int result = 0;
-        
+
         for ( int i = 0, curr = 0; i < values.length; i++ )
         {
             if ( ( curr = values[i].length() ) > result )
@@ -52,11 +52,11 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
         }
         return result;
     }
-    
+
     /**
-     * Added method to allow initialization of a char array representing 
+     * Added method to allow initialization of a char array representing
      * an array of strings.
-     * 
+     *
      * @param name
      * @param values
      * @param maxlen
@@ -71,13 +71,14 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
     		idx++;
     	}
     }
-    
+
     public MLChar(String name, int[] dims, int type, int attributes)
     {
         super(name, dims, type, attributes);
         chars = createArray(getM(), getN());
     }
 
+    @Override
     public Character[] createArray(int m, int n)
     {
         return new Character[m*n];
@@ -98,10 +99,10 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
             setChar(cha[i], i);
         }
     }
-    
-    /** 
+
+    /**
      * Set one row, specifying the row.
-     * 
+     *
      * @param value
      * @param idx
      */
@@ -115,13 +116,13 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
         	{
         		setChar(cha[i], idx + (rowOffset * i));
         	}
-        	else 
+        	else
         	{
         		setChar(' ',  idx + (rowOffset * i));
         	}
         }
     }
-    
+
     public Character getChar(int m, int n)
     {
         return chars[getIndex(m,n)];
@@ -130,7 +131,7 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
     {
         return chars;
     }
-    
+
     @Override
     public boolean equals(Object o)
     {
@@ -140,30 +141,38 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
         }
         return super.equals( o );
     }
-    
+
+    // hashCode() to please FindBugs
+    @Override
+    public int hashCode()
+    {
+        return Arrays.hashCode(chars);
+    }
+
     /**
      * Gets the m-th character matrix's row as <code>String</code>.
-     * 
+     *
      * @param m - row number
      * @return - <code>String</code>
      */
     public String getString( int m )
     {
         StringBuffer charbuff = new StringBuffer();
-        
+
         for (int n = 0; n < getN(); n++)
         {
             charbuff.append(getChar(m, n));
         }
-        
+
         return charbuff.toString().trim();
     }
-    
+
+    @Override
     public String contentToString()
     {
         StringBuffer sb = new StringBuffer();
         sb.append(name + " = \n");
-        
+
         for ( int m = 0; m < getM(); m++ )
         {
            sb.append("\t");
@@ -178,6 +187,6 @@ public class MLChar extends MLArray implements GenericArrayCreator<Character>
            sb.append("\n");
         }
         return sb.toString();
-        
+
     }
 }
