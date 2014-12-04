@@ -19,6 +19,7 @@ import org.csstudio.swt.rtplot.undo.UpdateScrolling;
 import org.csstudio.swt.rtplot.util.NamedThreadFactory;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -91,7 +92,9 @@ public class RTTimePlot extends RTPlot<Instant>
                     getUndoableActionManager().perform(new UpdateScrolling(RTTimePlot.this, false));
             }
         });
-    }
+
+        parent.addDisposeListener((final DisposeEvent e) -> handleDisposal());
+   }
 
     private void initToolItemImages(final Display display)
     {
@@ -153,5 +156,12 @@ public class RTTimePlot extends RTPlot<Instant>
         final Duration duration = Duration.between(range.getLow(), range.getHigh());
         final Instant now = Instant.now();
         x_axis.setValueRange(now.minus(duration), now.plus(scroll_step));
+    }
+
+    private void handleDisposal()
+    {
+        final ScheduledFuture<?> was_scrolling = scrolling.getAndSet(null);
+        if (was_scrolling != null)
+            was_scrolling.cancel(false);
     }
 }

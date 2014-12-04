@@ -703,7 +703,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         plot_area.dispose();
 
         final Image old_image = plot_image.orElse(null);
-        plot_image = Optional.of(null);
+        plot_image = Optional.empty();
         if (old_image != null)
             synchronized (old_image)
             {
