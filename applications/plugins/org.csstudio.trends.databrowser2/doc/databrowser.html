@@ -127,7 +127,7 @@ If it is not visible, right-click on the plot to open the context menu,
 then select "Show Toolbar".
 </p>
 <div class='figure'>
-   <img src="toolbar.png" width="463" height="27"/>
+   <img src="toolbar.png" width="397" height="32"/>
    <p>
    Fig. 2: Data Browser Plot Toolbar
    </p>
@@ -136,72 +136,56 @@ then select "Show Toolbar".
 Tool tips with brief explanations will appear if you hover the mouse pointer
 over a toolbar button for a few seconds. Explanation of toolbar buttons:
 <ul class="plain_icons">
-<li><img src="Configure.png" width=16 height=16/> Configure Settings:
-    Opens dialog for configuring the plot.<br>
-    Note that these are runtime settings which include things like font settings
-    that will not be saved as part of the Data Browser configuration.
-<li><img src="Add_Annotation.png" width=16 height=16/> Add <a href="#annotate">Annotation</a>:
-    After configuring the annotation to for example 'snap' to a selected trace,
-    the next mouse click into the plot will add an annotation.
-<li><img src="Del_Annotation.png" width=16 height=16/> Remove <a href="#annotate">Annotation</a>:
-    Prompts for an annotation to remove from the plot.
+<li><img src="add_annotation.png" width=16 height=16/> Add <a href="#annotate">Annotation</a>.
+    An annotation 'snaps' to a trace, highlighting a selected sample on the trace.
+    Clicking the "Add Annotation" button opens a dialog to select the trace,
+    and optionally to adjust the text that will be displayed in the annotation.
+    By default, the text will show the name of the trace, the current position of the annotation
+    and the value of the trace at that position.
+    <br/>
+    Once an annotation has been added, it can be moved along the trace by using the mouse.
+<li><img src="remove_annotation.png" width=16 height=16/> Remove <a href="#annotate">Annotation</a>:
+    Opens a dialog that allows removing one or more annotations.
 </ul>
 </p>
 <p>
 <ul class="plain_icons">
+<li><img src="crosshair.png" width=16 height=16/> Cross-hair Cursor:
+    Enables a cross-hair cursor, highlighting the values of traces at the cursor position.
 <li><img src="stagger.png" width=16 height=16/> Stagger Axes:
     Arranges the value axes such that the traces on different axes don't
     overlap.
-<li><img src="HoverLabels.png" width=16 height=16/> Hover Labels:
-    Display a value label for all the traces on previous real point.
-    For optimized data, the Min and Max value are also displayed.
-    If there are too much tooltips, the Min and Max values won't be displayed.
-<li><img src="RubberbandZoom.png" width=16 height=16/> Rubberband Zoom:
+<li><img src="zoom_in.png" width=16 height=16/> Zoom In ...:
+    Allows zooming 'in' to see more detail.<br>
     Click into plot, hold mouse pointer to drag a 'rubberband' rectangle,
     release to zoom into that area.<br>
     Can also be used on a value axis or the time axis to select a start/end
-    range on the axis.
-<li><img src="HorizontalZoom.png" width=16 height=16/> Horizontal Zoom:
-    Click into plot at desired start time, hold mouse pointer to drag a
-    'rubberband' rectangle to the desired end time,
-    release to zoom into that area.<br>
-    Can also be used on the time axis to select a start/end time.
-<li><img src="VerticalZoom.png" width=16 height=16/> Vertical Zoom:
-    Like Vertical Zoom for vertical (value) axes.<br>
-    Can also be used on a value axis to select a start/end range for that axis.
-<li><img src="ZoomInHoriz.png" width=16 height=16/> Zoom In Horizontally:
-    Click and hold mouse pointer to zoom into time axis.
-<li><img src="ZoomOutHoriz.png" width=16 height=16/> Zoom Out ...:
-    Click and hold mouse pointer to zoom out of time axis.
-<li><img src="ZoomInVert.png" width=16 height=16/> Zoom In Vertically:
-    Click and hold mouse pointer to zoom into value axes.<br>
-    Can also be used on a particular value axis zoom into that value axis.
-<li><img src="ZoomOutVert.png" width=16 height=16/> Zoom Out ...:
-    Click and hold mouse pointer to zoom out of value axes.
-<li><img src="Panning.png" width=16 height=16/> Panning:
+    range on that axis.
+<li><img src="zoom_out.png" width=16 height=16/> Zoom Out ...:
+    Click on the time axis or a value axes to zoom 'out', centered at the clicked point.
+    May also click inside the plot region to zoom 'out' all value axes and in time.
+<li><img src="pan.png" width=16 height=16/> Panning:
     Click into plot or axes, hold and drag to desired position, release mouse button.
-<li><img src="MouseArrow.png" width=16 height=16/> None:
-    For most of the other toolbar buttons, clicking or holding the (left) mouse
-    button will for example activate a zoom operation.
-    The "None" option returns the mouse pointer to an inactive state so that
-    clicking into the plot has no effect.
+<li><img src="pointer.png" width=16 height=16/> Pointer:
+    End zoom or pan operations.
+    Returns the mouse pointer to an inactive state so that clicking into the plot has no effect.
 </ul>
 </p>
 <p>
 <ul class="plain_icons">
-<li><img src="Undo.png" width=16 height=16/> Undo:
-    Undo the last operation. Click again to undo the previous operation, the one
-    before that and so on.
-<li><img src="Redo.png" width=16 height=16/> Redo:
-    Un-do the last undo, i.e. re-do.
-</ul>
-<ul class="plain_icons">
-<li><img src="Camera.png" width=16 height=16/> Save Snapshot:
-    Prompts for file name under which an image of the current plot is saved.
-<li><img src="../icons/scroll_on.gif" width=16 height=16/> Enable/Disable Scrolling:
+<li><img src="scroll_on.png" width=16 height=16/> Enable/Disable Scrolling:
     Turns the strip-chart behavior of the Data Browser on or off:
     Scroll such that the right end of the time axis is always "now", or
     freeze the time axis.
+<li><img src="../icons/time_range.png" width=16 height=16/> Time Range:
+    Opens a dialog to configure the time range.
+    While the time range can be adjusted by zooming or panning the time axis with the mouse,
+    it is sometimes more convenient to enter a specific time range via this dialog.
+<li><img src="undo.png" width=16 height=16/> Undo:
+    Undo the last operation. Click again to undo the previous operation, the one
+    before that and so on.
+<li><img src="redo.png" width=16 height=16/> Redo:
+    Un-do the last undo, i.e. re-do.
 </ul>
 </p>
 
@@ -239,13 +223,15 @@ Configure the individual traces in the plot via the table of traces.
 Right-click in the table to open a context menu for adding PVs or Formulas,
 deleting selected items, or adding archive data sources to PVs.
 <ul>
-<li>Trace: Allows to <i>temporarily</i> hide a trace from the plot.
+<li>Show: Allows to <i>temporarily</i> hide a trace from the plot.
     If the trace is really not needed any more, consider deleting it.
 <li>Item: Edit the item's name. For a PV, this would be the control system
     process variable. For a formula, this is the name under which the formula
     can appear as an input to other formulas.
 <li>Display Name: The name shown in the plot legend.
 <li>Color: Click to select the trace color
+<li>Cursor Timestamp, Cursor Value: Display the time stamp and value
+    of the sample for this trace at the cursor position.
 <li>Scan Period: Control system PVs can be scanned at some periodic rate,
     specified in second, to collect 'live' samples in addition to the data
     received from an archive.
@@ -362,36 +348,55 @@ Configure the start and end time of the time (horizontal) axis.
 Add/remove value ('Y', vertical) axes, change their label or color.
 </p>
 
+<p>
+Allows enabling 'Auto-Scale', causing an axis to automatically adjust its range to match
+the data.
+Note that this overrides manual zoom or pan operations on this axis.
+</p>
+
+
 <h3>Subsection 'Misc.'</h3>
 <p>
 General plot settings: Background color, refresh rate.
 </p>
+<ul>
+<li>Plot redraw period [seconds]:
+    Configures how often the plot is updated to reflect changes of the data.
+    Longer periods can lower CPU usage.
+<li>Scroll Step [seconds]:
+    When the plot is scolling, this configures how often respectively in which steps
+    the plot is moved.
+    For example, a scroll step of 10 seconds will result in the plot moving 'left' every
+    10 seconds.
+<li>Save Changes:
+    Fundamentally, each time you zoom into the plot, adjust the time axis, this changes
+    the configuration of the plot, and you will be asked if these changes should be saved
+    when closing the plot.
+    If you prepare *.plt configurations, it may be more convenient to open them, then
+    zoom/pan around to inspect some detail, and finally close the plot without saving
+    these adjustments because they are inconsequential.
+    When "Save Changes" is de-selected, users can simply close the plot at any time.
+    If you still want to save changes, use File/Save As to save the settings into a new
+    or even the original *.plt file.
+<li>
+</ul>
 
 
 <h2><a name=annotate>Annotations</a></h2>
 <p>
 The <a href="#toolbar">Toolbar</a> contains buttons to 
-<img src="Add_Annotation.png" width=16 height=16/> add and
-<img src="Del_Annotation.png" width=16 height=16/> remove Annotations.
+<img src="add_annotation.png" width=16 height=16/> add and
+<img src="remove_annotation.png" width=16 height=16/> remove Annotations.
 </p>
 <p>
-When you <img src="Add_Annotation.png" width=16 height=16/> add an Annotation,
-you select if and to which trace it should "snap".
+When you <img src="add_annotation.png" width=16 height=16/> add an Annotation,
+you select to which trace it should "snap".
 You can enter an arbitrary annotation text ("Name") and show that with the
 Annotation, and/or have it display the plotposition or Sample Information.
 </p>
 <p>
-Move Annotation around the plot in the 
-<img src="Panning.png" width=16 height=16/> Panning or 
-<img src="MouseArrow.png" width=16 height=16/> inactive zoom modes.
+Move Annotation around the plot by dragging it with the mouse along the trace.
 </p>
-<p>
-Change the Name, color, "snap" behavior of existing Annotations
-via the 
-<img src="Configure.png" width=16 height=16/> Configure Settings button
-in the toolbar.
-</p>
-
 
 
 <h2><a name=search>Archive Search Panel</a></h2>
@@ -749,55 +754,13 @@ Optimized request type.
 
 
 <a name=transition><h2>Transition from older Data Browser</a></h2>
-<div align='center'><img src="OldSnapshot.png" width="90%"/></div>
 <p>
-Even though this Data Browser code is quite different from the original code,
-you will notice a very similar look and overall behavior.
-The data browser also loads old "*.css-plt" configuration files.
-</p>
-<p>
-When you first open the new Data Browser, you should reset the perspective.
-</p>
-<p>
-The main differences:
-<ul>
-<li>The <a href="#toolbar">plot's Toolbar</a> has different options
-<li>The "Data Browser Config" panel has been replaced by the standard
-    Eclipse <a href="#config">"Properties" Panel</a>
-</ul>
+The Data Browser code has undergone several changes, but the overall look
+and behavior remained similar.
+Older configuration files should still be loaded, preserving their essential
+Axis, Trace and Archive settings.
 </p>
 
-
-<h2><a name=history>Product History</a></h2>
-<p>
-At LANL, Craig McChesney and Sergei Chevtsov with contributions by Peregrine
-McGehee implemented the Java Archive Viewer for displaying Channel Archiver
-data (2004).
-</p>
-<p>
-The first CSS Data Browser was based on Archive Viewer ideas but added
-live data handling as well as CSS integration and pluggable support for more than
-one type of historic data source (2007)
-</p>
-<p>
-After many changes to the code, a rework was required (2010):
-<ul>
-<li>Code cleanup using UML diagrams, 'Model' with standalone Unit tests...
-<li>New XY Chart:
-    <ul>
-    <li>Pan axes or whole plot via mouse
-    <li>More zoom in/out options
-    <li>Annotations can 'snap' to trace or be freely positioned 
-    </ul>
-<li>Undo/redo support for almost everything
-<li>PVs can scan at individual rates, or log every received change.
-<li>Formula handles min/max samples
-<li>Export supports spreadsheet as well as MatLab file format
-<li>Use of "Properties" View allows shared as well as multiple configuration panels
-<li>New archive reader API that is 'smaller', with  better support for cancellation,
-    and support for faster Oracle data readout via 'stored procedure'.
-</ul>
-</p>
 
 <address>
 Kay Kasemir, kasemirk@ornl.gov
