@@ -15,6 +15,7 @@ import org.csstudio.display.pace.model.Column;
 import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -184,7 +185,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     {
         // Note: TableColumnLayout requires the TableViewer to be in its
         // own Composite!
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         parent.setLayout(table_layout);
 
         // Create TableViewer that displays Model in Table

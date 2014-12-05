@@ -22,6 +22,7 @@ import org.csstudio.alarm.beast.msghist.model.Model;
 import org.csstudio.alarm.beast.msghist.model.ModelListener;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -72,62 +73,62 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 @SuppressWarnings("nls")
 public class GUI implements ModelListener, DisposeListener
 {
-	
+
 	/** The model. */
 	final private Model model;
 
     /** Properties for the table columns. */
     private String properties[];
-    
+
     /** The table_viewer. */
     private TableViewer table_viewer;
-    
+
     /** The end. */
     private Text start, end;
-    
+
     /** The auto refresh. */
     private Button times, filter, refresh, autoRefresh;
 
     /** The time unit. */
     private TimeUnit timeUnit = TimeUnit.SECONDS;
-    
+
     /** The image refresh button */
     private Image imageAutoRefreshRun, imageManualRefresh = null;
-    
+
     /** The current auto refresh period (milliseconds). */
     private long autoRefreshCurrentPeriod = 0;
-    
+
     /** The auto refresh current start.  */
     private AutoRefreshCurrentState autoRefreshStatus = AutoRefreshCurrentState.STOPPED;
-    
+
     /** The auto refresh enable msg. */
     private String autoRefreshEnableMsg = "auto-refresh is stopped";
 
     /** The auto refresh disable msg. */
     private String autoRefreshDisableMsg = "automatic refresh at ";
-    
+
     /** The end time. */
     private String endTime = "now";
-    
+
     /** The log info msg auto refresh started. */
     private String LOG_INFO_MSG_AUTO_REFRESH_STARTED = "auto refresh at " ;
-    
+
     /** The log info msg auto refresh stopped. */
     private String LOG_INFO_MSG_AUTO_REFRESH_STOPPED = "auto refresh is stopped ";
-    
+
     /** The log info msg auto refresh condition not verified. */
     @SuppressWarnings("unused")
 	private String LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED = "cannot start auto refresh one of conditions are not verified ";
-    
+
     /** The timer auto refresh. */
     private Timer timerAutoRefresh = new Timer("");
-    
+
     /** The property change listener. */
     private IPropertyChangeListener iPropertyChangeListener = null;
-    
+
     /** The archive rdb store. */
     private IPreferenceStore archiveRDBStore = null;
-    
+
     /**
      * Construct GUI.
      *
@@ -157,12 +158,12 @@ public class GUI implements ModelListener, DisposeListener
         connectGUIActions();
 
         connectContextMenu(site);
-        
+
 		iPropertyChangeListener = new IPropertyChangeListener() {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see
 			 * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
 			 * (org.eclipse.jface.util.PropertyChangeEvent)
@@ -200,7 +201,7 @@ public class GUI implements ModelListener, DisposeListener
         // (to allow context menu extensions based on the selection)
         if (site != null)
         	site.setSelectionProvider(table_viewer);
-        
+
     }
 
     /**
@@ -301,12 +302,12 @@ public class GUI implements ModelListener, DisposeListener
         filter.setText("Filter");
         filter.setToolTipText("Configure filters");
         filter.setLayoutData(new GridData());
-        
+
         refresh = new Button(parent, SWT.PUSH | SWT.NO_FOCUS);
         refresh.setImage(imageManualRefresh);
         refresh.setToolTipText("Manual refresh");
         refresh.setLayoutData(new GridData());
-        
+
         autoRefresh = new Button(parent, SWT.TOGGLE);
         autoRefresh.setImage(imageAutoRefreshRun);
         autoRefresh.setSelection(true);
@@ -319,7 +320,7 @@ public class GUI implements ModelListener, DisposeListener
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         // Auto-size table columns
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
 
         table_viewer = new TableViewer(table_parent,
@@ -379,7 +380,7 @@ public class GUI implements ModelListener, DisposeListener
         }
 
         table_viewer.setInput(model);
-        
+
         parent.addDisposeListener(this);
     }
 
@@ -403,7 +404,7 @@ public class GUI implements ModelListener, DisposeListener
             }
         });
 
-        
+
         final SelectionListener start_end_handler = new SelectionAdapter()
         {
             @Override
@@ -412,7 +413,7 @@ public class GUI implements ModelListener, DisposeListener
                 updateTimeRange(start.getText(), end.getText());
             }
         };
-        
+
         start.addSelectionListener(start_end_handler);
         end.addSelectionListener(start_end_handler);
 
@@ -434,7 +435,7 @@ public class GUI implements ModelListener, DisposeListener
             	new OpenViewAction(IPageLayout.ID_PROP_SHEET).run();
             }
         });
-        
+
         refresh.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -444,7 +445,7 @@ public class GUI implements ModelListener, DisposeListener
                 updateTimeRange(start.getText(), end.getText());
             }
         });
-        
+
         initializeAutoRefresh(autoRefreshCurrentPeriod, true);
         autoRefresh.addSelectionListener(new SelectionAdapter()
         {
@@ -452,7 +453,7 @@ public class GUI implements ModelListener, DisposeListener
             public void widgetSelected(final SelectionEvent e)
             {
 				if (!autoRefresh.getSelection()) {
-					startAutoRefresh();	
+					startAutoRefresh();
 				} else {
 					stopAutoRefresh();
 				}
@@ -502,25 +503,25 @@ public class GUI implements ModelListener, DisposeListener
                     return;
                 if (!start.isFocusControl())
                 	start.setText(model.getStartSpec());
-                if (!end.isFocusControl()) 
+                if (!end.isFocusControl())
                 	end.setText(model.getEndSpec());
-                
+
                 //refresh table and keep selections
                 int[] tableSelectionIndices = table_viewer.getTable().getSelectionIndices();
                 Message[] messages = new Message[tableSelectionIndices.length];
-                
+
                 for (int i = 0; i < tableSelectionIndices.length; i++) {
 					int index = tableSelectionIndices[i];
 					messages[i] = (Message) table_viewer.getElementAt(index);
 				}
                 table_viewer.refresh();
-                
+
                 if (messages.length != 0) {
                 	List<Message> listMsgSelect = new ArrayList<Message>();
                 	Message[] msgModel = model.getMessages();
                 	for (int i = 0; i < msgModel.length; i++) {
                 		for (int j = 0; j < messages.length; j++) {
-                			if (msgModel[i].getId() == messages[j].getId()) 
+                			if (msgModel[i].getId() == messages[j].getId())
     							listMsgSelect.add(msgModel[i]);
                 		} // FOR messages
 					} // FOR msgModel
@@ -529,9 +530,9 @@ public class GUI implements ModelListener, DisposeListener
                 restartAutoRefresh(autoRefreshCurrentPeriod, false);
             }
         });
-    	
+
     }
-    
+
 
     /**
      * Initialize auto refresh.
@@ -545,24 +546,24 @@ public class GUI implements ModelListener, DisposeListener
     	autoRefreshStatus = AutoRefreshCurrentState.STARTED;
     	timerAutoRefresh = new Timer("Timer auto-refresh");
     	timerAutoRefresh.schedule(new StartAutoRefreshTask(), delay);
-    
+
     	this.autoRefreshCurrentPeriod = delay;
     	if (isPeriodUpdated) {
     		activateAutoRefresh();
-    		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STARTED 
-        			+ TimeUnit.MILLISECONDS.toSeconds(this.autoRefreshCurrentPeriod) 
+    		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STARTED
+        			+ TimeUnit.MILLISECONDS.toSeconds(this.autoRefreshCurrentPeriod)
         			+ " " + TimeUnit.SECONDS.toString().toLowerCase());
     	}
     }
-    
+
     /**
      * Start auto refresh.
      */
     private void startAutoRefresh() {
     	initializeAutoRefresh(autoRefreshCurrentPeriod, true);
     }
-    
-    
+
+
     /**
      * Restart auto refresh.
      *
@@ -577,29 +578,29 @@ public class GUI implements ModelListener, DisposeListener
 		case STARTED:
 			timerAutoRefresh.cancel();
 	    	timerAutoRefresh = null;
-	    	initializeAutoRefresh(delay, isPeriodUpdated);	
+	    	initializeAutoRefresh(delay, isPeriodUpdated);
 			break;
 		case STOPPED:
 		default:
 			break;
 		}
     }
-    
+
     /**
      * Stop auto refresh.
      */
     private void stopAutoRefresh() {
-    	if (AutoRefreshCurrentState.STOPPED.equals(autoRefreshStatus) || timerAutoRefresh == null) 
+    	if (AutoRefreshCurrentState.STOPPED.equals(autoRefreshStatus) || timerAutoRefresh == null)
     		return;
-    	   	
+
 		timerAutoRefresh.cancel();
 	    timerAutoRefresh = null;
 	    deactivateAutoRefresh(true);
 	    autoRefreshStatus = AutoRefreshCurrentState.STOPPED;
 	    Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_STOPPED);
     }
-    
-    
+
+
 	/**
 	 * The Class StartAutoRefreshTask.
 	 */
@@ -619,19 +620,19 @@ public class GUI implements ModelListener, DisposeListener
 		}
     }
 
-    
+
 	/**
 	 * Activate auto refresh.
 	 */
 	private synchronized void activateAutoRefresh() {
 		if (autoRefresh.isDisposed()) return;
-		autoRefresh.setToolTipText(autoRefreshDisableMsg 
-				+ TimeUnit.MILLISECONDS.toSeconds(this.autoRefreshCurrentPeriod) 
-				+ " " + timeUnit.toString().toLowerCase());	
+		autoRefresh.setToolTipText(autoRefreshDisableMsg
+				+ TimeUnit.MILLISECONDS.toSeconds(this.autoRefreshCurrentPeriod)
+				+ " " + timeUnit.toString().toLowerCase());
 		autoRefresh.setSelection(false);
 	}
-	
-	
+
+
 	/**
 	 * Deactivate auto refresh.
 	 *
@@ -641,7 +642,7 @@ public class GUI implements ModelListener, DisposeListener
 		if (autoRefresh.isDisposed()) return;
 		// ---- set selection
 		autoRefresh.setSelection(true);
-		
+
 		// ---- set tooltip text
 		// if conditions are not verified set overview of values tooltip
 		if (!checkCondition) {
@@ -649,7 +650,7 @@ public class GUI implements ModelListener, DisposeListener
 			s.append(autoRefreshEnableMsg);
 			if (Preferences.getAutoRefreshPeriod() == 0) {
 				s.append("\n \t").append("period set to 0");
-			} 
+			}
 			if (!this.endTime.equals(this.model.getEndSpec())) {
 				s.append("\n \t").append("end time not set to \"now\" ");
 			}
@@ -668,16 +669,16 @@ public class GUI implements ModelListener, DisposeListener
 	 * @return true, if conditions are verified
 	 */
 	private boolean checkAutoRefreshConditions() {
-		if (Preferences.getAutoRefreshPeriod() != 0 && this.endTime.equals(this.model.getEndSpec()))  
+		if (Preferences.getAutoRefreshPeriod() != 0 && this.endTime.equals(this.model.getEndSpec()))
 			return true;
-		// conditions are not verified: 
+		// conditions are not verified:
 		deactivateAutoRefresh(false);
 		autoRefreshStatus = AutoRefreshCurrentState.ERROR;
 //		Activator.getLogger().log(Level.INFO, LOG_INFO_MSG_AUTO_REFRESH_CONDITION_NOT_VERIFIED);
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -703,15 +704,15 @@ public class GUI implements ModelListener, DisposeListener
 		});
 		Activator.getLogger().log(Level.WARNING, errorMsg);
 	}
-	
-	
+
+
 	/**
 	 * The Enum AutoRefreshCurrentState.
 	 */
 	public enum AutoRefreshCurrentState {
-		STARTED, 
-		STOPPED, 
+		STARTED,
+		STOPPED,
 		ERROR // auto-refresh stopped and can not start because one of conditions are not validated
 	}
-	
+
 }

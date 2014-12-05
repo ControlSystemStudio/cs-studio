@@ -10,9 +10,10 @@ package org.csstudio.scan.ui.scandata;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
+import org.csstudio.scan.data.ScanSampleFormatter;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -118,7 +119,7 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
     {
 	    // TableColumnLayout requires the table to be the only
 		// child of it's parent.
-		final TableColumnLayout layout = new TableColumnLayout();
+		final TableColumnLayout layout = new MinSizeTableColumnLayout(10);
 		parent.setLayout(layout);
 
 		// Create table
