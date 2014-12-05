@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.ui.util.Activator;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.swt.stringtable.RowEditDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -68,7 +69,7 @@ public class ActionTableEditor extends Composite {
 		final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4);
 		gd.heightHint = 150;
 		table_parent.setLayoutData(gd);
-		final TableColumnLayout table_layout = new TableColumnLayout();
+		final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
 		table_parent.setLayout(table_layout);
 
 		tableViewer = new TableViewer(table_parent, SWT.BORDER
@@ -93,7 +94,7 @@ public class ActionTableEditor extends Composite {
 		col2.setResizable(true);
 		table_layout.setColumnData(col2, new ColumnWeightData(100, columnsMinWidth[1]));
 		view_col2.setLabelProvider(new StringMultiColumnsLabelProvider(tableViewer));
-		
+
 		tableViewer.setContentProvider(new ActionTableContentProvider<String[]>());
 		updateInput(items);
 		if (rowEditDialog != null) {
@@ -250,7 +251,7 @@ public class ActionTableEditor extends Composite {
 						.getSelection()).toArray();
 				for (Object s : sel) {
 					final int index = (Integer) s;
-					((String[]) items.get(index))[1] = "";
+					((String[]) items.get(index))[1] = ""; //$NON-NLS-1$
 				}
 				tableViewer.refresh();
 			}
@@ -283,7 +284,7 @@ public class ActionTableEditor extends Composite {
 	public TableViewer getTableViewer() {
 		return tableViewer;
 	}
-	
+
 	private static class ActionTableContentProvider<T> implements IStructuredContentProvider {
 		/** Magic number for the final 'add' element */
 		final public static Integer ADD_ELEMENT = new Integer(-1);
@@ -296,7 +297,7 @@ public class ActionTableEditor extends Composite {
 				final Object new_input) {
 			items = (List<T>) new_input;
 		}
-		
+
 		/** {@inheritDoc} */
 		@Override
 		public Object[] getElements(Object arg0) {
@@ -307,12 +308,12 @@ public class ActionTableEditor extends Composite {
 			}
 			return result;
 		}
-		
+
 		/** {@inheritDoc} */
 		@Override
 		public void dispose() { }
 	}
-	
+
 	private static class StringMultiColumnsLabelProvider extends CellLabelProvider {
 		final private TableViewer tableViewer;
 
