@@ -19,8 +19,8 @@ import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.SearchJob;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
-import org.csstudio.trends.databrowser2.propsheet.MinSizeTableColumnLayout;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -205,7 +205,7 @@ public class SearchView extends ViewPart
         // Table for channel names, displaying array of ChannelInfo entries
         // TableColumnLayout requires table in its own composite
         final Composite table_parent = new Composite(parent, 0);
-        final TableColumnLayout table_layout = new MinSizeTableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 

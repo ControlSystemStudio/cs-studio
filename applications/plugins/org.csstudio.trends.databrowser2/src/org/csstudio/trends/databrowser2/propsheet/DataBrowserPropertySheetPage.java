@@ -26,6 +26,7 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.StartEndTimeAction;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
@@ -296,7 +297,7 @@ public class DataBrowserPropertySheetPage extends Page
     {
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite model_item_top = new Composite(sashform, SWT.BORDER);
-        final TableColumnLayout table_layout = new MinSizeTableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         model_item_top.setLayout(table_layout);
         trace_table = new TableViewer(model_item_top ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
@@ -348,7 +349,7 @@ public class DataBrowserPropertySheetPage extends Page
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite table_parent = new Composite(archive_panel, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        final TableColumnLayout table_layout = new MinSizeTableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
         archive_table = new TableViewer(table_parent ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
@@ -689,7 +690,7 @@ public class DataBrowserPropertySheetPage extends Page
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite table_parent = new Composite(parent, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        final TableColumnLayout table_layout = new MinSizeTableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
         final AxesTableHandler ath = new AxesTableHandler(table_parent, table_layout, operations_manager);
         ath.getAxesTable().setInput(model);

@@ -19,8 +19,8 @@ import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.preferences.ArchiveServerURL;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveAction;
-import org.csstudio.trends.databrowser2.propsheet.MinSizeTableColumnLayout;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -169,7 +169,7 @@ public abstract class ArchiveListGUI
         // TableColumnLayout requires table in its own container
         final Composite table_parent = new Composite(parent, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        final TableColumnLayout table_layout = new MinSizeTableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
         archive_table = new TableViewer(table_parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         archive_table.setContentProvider(new ArrayContentProvider());
