@@ -14,6 +14,7 @@ import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModel;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModelListener;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.jface.action.GroupMarker;
@@ -148,7 +149,7 @@ public class GlobalAlarmTableView extends ViewPart
         // own Composite! For now, the 'parent' is used because there is
         // no other widget in the view.
         parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         parent.setLayout(table_layout);
 
         final TableViewer table_viewer = new TableViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
