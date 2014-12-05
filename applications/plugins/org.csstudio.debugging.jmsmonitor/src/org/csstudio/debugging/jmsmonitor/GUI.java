@@ -8,6 +8,7 @@
 package org.csstudio.debugging.jmsmonitor;
 
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -148,7 +149,7 @@ public class GUI implements ModelListener
         // TableColumnLayout requires table to be only child of its parent
         final Composite table_parent = new Composite(parent, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
 
         table_viewer = new TableViewer(table_parent,
