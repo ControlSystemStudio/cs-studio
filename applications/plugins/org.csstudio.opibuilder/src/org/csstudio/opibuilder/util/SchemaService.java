@@ -96,7 +96,13 @@ public final class SchemaService {
 	
 	private void loadModelFromContainer(AbstractContainerModel containerModel) {
 		for(AbstractWidgetModel model : containerModel.getChildren()){
-			schemaWidgetsMap.put(model.getTypeID(), model);
+			//always add only the first model of its type that is found
+			//the main container might contain several instances of the same widget 
+			//(e.g. GroupingContainer can appear multiple times; it is by default the base 
+			//layer of a tab and sash - we don't want the tab to override our container settings)
+			if (!schemaWidgetsMap.containsKey(model.getTypeID())) {
+				schemaWidgetsMap.put(model.getTypeID(), model);
+			}
 			if(model instanceof AbstractContainerModel)
 					loadModelFromContainer((AbstractContainerModel) model);
 		}
@@ -109,8 +115,7 @@ public final class SchemaService {
 			AbstractWidgetModel schemaWidgetModel = schemaWidgetsMap
 					.get(widgetModel.getTypeID());
 			for (String id : schemaWidgetModel.getAllPropertyIDs()) {
-				widgetModel.setPropertyValue(id,
-						schemaWidgetModel.getPropertyValue(id), false);
+				widgetModel.setPropertyValue(id,schemaWidgetModel.getPropertyValue(id), false);
 			}
 		}
 	}

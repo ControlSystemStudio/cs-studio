@@ -138,6 +138,7 @@ class SecurePreferences implements Serializable {
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename));
 		// write this to the oos
 		oos.writeObject(this);
+		oos.close();
 	}
 	
 	public static SecurePreferences load(String username) throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -151,6 +152,7 @@ class SecurePreferences implements Serializable {
 		SecurePreferences prefs = (SecurePreferences)ois.readObject();
 		// set the username
 		prefs.setFilename(fileName);
+		ois.close();
 		// return the element
 		return prefs;
 	}

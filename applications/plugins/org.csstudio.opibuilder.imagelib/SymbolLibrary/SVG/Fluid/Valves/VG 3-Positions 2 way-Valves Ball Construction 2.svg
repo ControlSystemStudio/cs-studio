@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,81 +9,11 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg
-   xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   version="1.1"
-   width="0.374331in"
-   height="0.374331in"
-   viewBox="0 0 26.9518 26.9518"
-   id="svg2"
-   xml:space="preserve"
-   style="font-size:12px;fill:none;stroke-linecap:square;stroke-miterlimit:3;overflow:visible"><metadata
-   id="metadata32"><rdf:RDF><cc:Work
-       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
-   id="defs30">
-		
-		<v:pageProperties
-   v:drawingScale="0.0393701"
-   v:pageScale="0.0393701"
-   v:drawingUnits="24"
-   v:shadowOffsetX="8.50394"
-   v:shadowOffsetY="-8.50394" />
-		
-		
-	
-			
-			
-		</defs>
-	<v:documentProperties
-   v:viewMarkup="false"
-   v:metric="true"
-   v:langID="1036" />
-	<style
-   type="text/css"
-   id="style4" />
-	<g
-   id="g3796"><g
-     transform="translate(0.72,-0.72)"
-     id="group1-1"><title
-   id="title11">Feuille.1</title>
-			
-			<g
-   transform="translate(0,-25.4959)"
-   id="shape2-2"><title
-   id="title14">Feuille.2</title>
-				
-				<rect
-   width="0.0159449"
-   height="0.0159449"
-   x="0"
-   y="26.9359"
-   id="rect16"
-   style="fill:#ffffff;stroke:none" />
-			</g>
-			<g
-   transform="translate(25.4959,0)"
-   id="shape3-4"><title
-   id="title19">Feuille.3</title>
-				
-				<rect
-   width="0.0159449"
-   height="0.0159449"
-   x="0"
-   y="26.9359"
-   id="rect21"
-   style="fill:#ffffff;stroke:none" />
-			</g>
-		</g><path
-     d="m 9.67197,11.57606 -4.7,-2.35 0,8.5 4.7,-2.35 a 4.25197,4.25197 0 0 1 0,-3.8 z"
-     id="path3025"
-     style="fill:#a6a6a6;stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /><path
-     d="m 17.28197,11.57606 a 4.25197,4.25197 0 0 1 0,3.8 l 4.7,2.35 0,-8.5 -4.7,2.35 z m 0.45,1.9 a 4.255,4.255 0 1 0 -8.51,0 4.255,4.255 0 0 0 8.51,0 z"
-     id="path26"
-     style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.72000003;stroke-linecap:round;stroke-linejoin:round" /></g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="51pt" viewBox="0 0 51 51" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351562 1.351562 L 1.378906 1.351562 L 1.378906 1.378906 L 1.351562 1.378906 Z M 1.351562 1.351562 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.15625 49.15625 L 49.183594 49.15625 L 49.183594 49.183594 L 49.15625 49.183594 Z M 49.15625 49.15625 "/>
+<path style="fill-rule:nonzero;fill:rgb(65.098039%,65.098039%,65.098039%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 9.672905 11.57707 L 4.972911 9.227072 L 4.972911 17.727062 L 9.672905 15.377065 C 9.074989 14.17915 9.074989 12.772902 9.672905 11.57707 Z M 9.672905 11.57707 " transform="matrix(1.875002,0,0,1.875002,0,0)"/>
+<path style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 17.281229 11.57707 C 17.879145 12.772902 17.879145 14.17915 17.281229 15.377065 L 21.981224 17.727062 L 21.981224 9.227072 Z M 17.731229 13.477067 C 17.731229 11.12707 15.827065 9.220822 13.477067 9.220822 C 11.12707 9.220822 9.222906 11.12707 9.222906 13.477067 C 9.222906 15.827065 11.12707 17.731229 13.477067 17.731229 C 15.827065 17.731229 17.731229 15.827065 17.731229 13.477067 Z M 17.731229 13.477067 " transform="matrix(1.875002,0,0,1.875002,0,0)"/>
+</g>
 </svg>

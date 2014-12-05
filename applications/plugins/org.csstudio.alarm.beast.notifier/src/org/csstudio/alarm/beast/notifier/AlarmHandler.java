@@ -90,38 +90,42 @@ public class AlarmHandler {
 								+ " has changed status from " + previous_status
 								+ " to " + alarmHandler.getStatus());
 			}
-			for (PVAlarmHandler ah : pvs.values()) {
-				if (ah.getStatus().equals(EActionStatus.NO_DELAY)) {
+			if(item.isPV()) {
+				this.status = alarmHandler.getStatus();
+				this.reason = alarmHandler.getReason();
+			} else {
+				if (alarmHandler.getStatus().equals(EActionStatus.NO_DELAY)) {
 					this.status = EActionStatus.NO_DELAY;
 					this.reason = Messages.Reason_NoDelay;
+				} else if (alarmHandler.getStatus().equals(EActionStatus.CANCELED_NO_DELAY)) {
+					pvs.remove(pv.getName());
+					Activator.getLogger().log(Level.INFO,
+							"UPDATED " + getInfos() + ": " + pv.getName()
+									+ " has been removed because " + alarmHandler.getReason());
+					if (pvs.isEmpty()) {
+						this.status = EActionStatus.CANCELED_NO_DELAY;
+						this.reason = buildReason();
+					}
 				}
-			}
-			if (!this.status.equals(EActionStatus.NO_DELAY)) {
-				boolean allCanceledNoDelay = true;
-				for (PVAlarmHandler ah : pvs.values())
-					if (!ah.getStatus().equals(EActionStatus.CANCELED_NO_DELAY))
-						allCanceledNoDelay = false;
-				boolean allCanceled = true;
-				for (PVAlarmHandler ah : pvs.values())
-					if (ah.getStatus().equals(EActionStatus.PENDING))
-						allCanceled = false;
-				if (allCanceledNoDelay) {
-					this.status = EActionStatus.CANCELED_NO_DELAY;
-					this.reason = buildReason();
-				} else if (allCanceled) {
-					this.status = EActionStatus.CANCELED;
-					this.reason = buildReason();
-				} else {
-					this.status = EActionStatus.PENDING;
-					this.reason = Messages.Empty;
+				if (!(this.status.equals(EActionStatus.NO_DELAY) 
+						|| this.status.equals(EActionStatus.CANCELED_NO_DELAY))) {
+					boolean allCanceled = true;
+					for (PVAlarmHandler ah : pvs.values())
+						if (ah.getStatus().equals(EActionStatus.PENDING))
+							allCanceled = false;
+					if (allCanceled) {
+						this.status = EActionStatus.CANCELED;
+						this.reason = buildReason();
+					} else {
+						this.status = EActionStatus.PENDING;
+						this.reason = Messages.Empty;
+					}
 				}
 			}
 		}
 	}
 
 	private String buildReason() {
-		if (item.isPV())
-			return pvs.get(item.getName()).getReason();
 		StringBuilder sb = new StringBuilder();
 		sb.append(Messages.Reason_SubActionsCanceled);
 		sb.append(":\n");
