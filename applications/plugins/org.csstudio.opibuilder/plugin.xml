@@ -32,21 +32,25 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
+            categoryId="org.eclipse.ui.category.views"
             description="Enter/Exit compact mode"
             id="org.csstudio.opibuilder.actions.compactMode"
             name="Compact Mode">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.views"
             description="Enter/Exit Full Screen"
             id="org.csstudio.opibuilder.actions.fullscreen"
             name="Full Screen">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.views"
             description="Send PV name to OPI Probe "
             id="org.csstudio.opibuilder.commands.openopiprobe"
             name="Open OPI Probe">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.views"
             defaultHandler="org.csstudio.opibuilder.actions.OpenOPIProbeHandler"
             id="org.csstudio.opibuilder.openProbeOPI"
             name="OPI Probe">

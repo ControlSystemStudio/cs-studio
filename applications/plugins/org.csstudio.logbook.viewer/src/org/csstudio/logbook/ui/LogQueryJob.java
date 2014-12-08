@@ -56,7 +56,7 @@ public class LogQueryJob extends Job {
 	    });
 	    result = new LogResult(logs, null);
 	} catch (Exception e) {
-	    result = new LogResult(null, e);
+	    result = new LogResult(new ArrayList<LogEntry>(0), e);
 	} finally {
 	    if (!monitor.isCanceled()) {
 		completedQuery(result);

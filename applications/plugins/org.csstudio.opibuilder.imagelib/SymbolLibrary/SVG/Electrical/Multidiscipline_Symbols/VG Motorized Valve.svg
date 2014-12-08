@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EF0103.svg Page 1 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,101 +9,23 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.728731in"
-		height="0.376492in" viewBox="0 0 52.4687 27.1075" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:butt;stroke-width:0.720001}
-		.st2 {fill:none}
-		.st3 {stroke:#000000;stroke-dasharray:1.44,0.720001;stroke-linecap:butt;stroke-width:0.720001}
-		.st4 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.720001}
-		.st5 {fill:#000000;font-family:Arial;font-size:0.499992em}
-		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50395"
-				v:shadowOffsetY="-8.50395"/>
-		<g id="group1-1" transform="translate(0.720901,-0.720001)" v:mID="1" v:groupContext="group">
-			<v:custProps>
-				<v:cp v:nameU="MOTEUR" v:lbl="MOTEUR" v:prompt="Moteur" v:type="1" v:format="Continu;Monophasé;Triphasé"
-						v:sortKey="A06" v:langID="1036" v:val="VT4(Monophasé)"/>
-				<v:cp v:nameU="TYPE_MESURE" v:lbl="TYPE MESURE" v:prompt="Type de mesure" v:type="1" v:format="CONTINU;SEUIL"
-						v:sortKey="A07" v:langID="1036" v:val="VT4(CONTINU)"/>
-				<v:cp v:nameU="PREFIXE" v:lbl="PREFIXE" v:prompt="PREFIXE" v:type="0" v:format="@" v:sortKey="A1" v:invis="false"
-						v:ask="false" v:langID="1036" v:val="VT4(PRE)"/>
-				<v:cp v:nameU="CODE" v:lbl="CODE" v:prompt="CODE" v:type="0" v:format="@" v:sortKey="A2" v:invis="false"
-						v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="ITEM" v:lbl="ITEM" v:prompt="ITEM" v:type="0" v:format="@" v:sortKey="A3" v:invis="false"
-						v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="SUFFIXE" v:lbl="SUFFIXE" v:prompt="SUFFIXE" v:type="0" v:format="@" v:sortKey="A4" v:invis="false"
-						v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="LOC" v:lbl="LOCAL" v:prompt="Nom du Local" v:type="0" v:format="@" v:sortKey="A5" v:invis="false"
-						v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="REMPLISSAGE" v:lbl="REMPLISSAGE" v:prompt="REMPLISSAGE" v:type="0" v:format="@" v:sortKey="G1"
-						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="COULEUR" v:lbl="COULEUR" v:prompt="COULEUR" v:type="0" v:format="@" v:sortKey="G2" v:invis="false"
-						v:ask="false" v:langID="1036" v:val="VT4(1)"/>
-				<v:cp v:nameU="EPAISSEUR" v:lbl="EPAISSEUR" v:prompt="EPAISSEUR" v:type="0" v:format="@" v:sortKey="G3"
-						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="GISEMENT_" v:lbl="GISEMENT_" v:prompt="Sous Localisation" v:type="0" v:format="@" v:sortKey="A5b"
-						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="DESCRIPTION" v:lbl="DESCRIPTION" v:prompt="DESCRIPTION" v:type="0" v:format="@" v:sortKey="A4b"
-						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="TYPE_ACTIONNEUR" v:lbl="TYPE_ACTIONNEUR" v:prompt="Type de l&#39;Actionneur" v:type="0" v:format="@"
-						v:sortKey="A7" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="SOUS_TYPE_ACTIONNEUR" v:lbl="SOUS_TYPE_ACTIONNEUR" v:prompt="Sous Type de l&#39;Actionneur"
-						v:type="0" v:format="@" v:sortKey="A8" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="TENSION_ALIM" v:lbl="TENSION_ALIM" v:prompt="Niveau de tension d&#39;alimentation" v:type="0"
-						v:format="@" v:sortKey="C1" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="NATURE_ALIM" v:lbl="NATURE_ALIM" v:prompt="Nature réseau d&#39;alimentation" v:type="0" v:format="@"
-						v:sortKey="C2" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="PUISSANCE" v:lbl="PUISSANCE" v:prompt="Puissance électrique nominale" v:type="0" v:format="@"
-						v:sortKey="C3" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="CCDE" v:lbl="CCDE" v:prompt="Contrôle-Commande d&#39;appartenance" v:type="0" v:format="@"
-						v:sortKey="D1" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="REDONDANCE" v:lbl="REDONDANCE" v:prompt="Niveau de redondance du contrôle-commande" v:type="0"
-						v:format="@" v:sortKey="D2" v:invis="false" v:ask="false" v:langID="1036" v:val="VT0(1):26"/>
-				<v:cp v:nameU="FILE_" v:lbl="FILE_" v:prompt="File du contrôle-commande" v:type="0" v:format="@" v:sortKey="D3"
-						v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="CLASSE_ALIMENTATION" v:lbl="CLASSE_ALIMENTATION" v:prompt="Classe de l&#39;alimentation" v:type="0"
-						v:format="@" v:sortKey="D4" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="BORD_SERVITUDE" v:lbl="BORD_SERVITUDE" v:prompt="Bord de servitudes d&#39;appartenance" v:type="0"
-						v:format="@" v:sortKey="D5" v:invis="false" v:ask="false" v:langID="1036" v:val="VT4()"/>
-				<v:cp v:nameU="A_CITER" v:lbl="A_CITER" v:prompt="Objet à Citer (en cas de copie)" v:type="3" v:format="@"
-						v:sortKey="X1" v:invis="false" v:ask="false" v:langID="1036" v:val="VT0(0):26"/>
-			</v:custProps>
-			<v:userDefs>
-				<v:ud v:nameU="guid" v:val="VT4({533CE869-FE13-11D2-B36C-00AA0012CC3E})"/>
-				<v:ud v:nameU="GUID_M" v:val="VT4({533CE869-FE13-11D2-B36C-00AA0012CC3E})"/>
-				<v:ud v:nameU="Repere" v:val="VT4(PRE)"/>
-				<v:ud v:nameU="VersionApplication" v:val="VT4(102A)"/>
-				<v:ud v:nameU="VersionClient" v:val="VT4( )"/>
-			</v:userDefs>
-			<title>E_AC_VM.468</title>
-			<g id="shape2-2" v:mID="2" v:groupContext="shape">
-				<title>forme1</title>
-				<path d="M0 14.2 A12.7559 12.7559 0 0 1 25.51 14.2 A12.7559 12.7559 0 1 1 -0 14.2 Z" class="st1"/>
-			</g>
-			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(38.2677,-0.157425)">
-				<title>forme6</title>
-				<path d="M0 1.6 L12.76 1.6 L0 27.11 L12.76 27.11 L0 1.6 Z" class="st1"/>
-			</g>
-			<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(25.5118,-12.9133)">
-				<title>forme5</title>
-				<path d="M0 27.11 L18.88 27.11 L0 27.11 Z" class="st2"/>
-				<path d="M0 27.11 L18.88 27.11" class="st3"/>
-			</g>
-			<g id="shape5-9" v:mID="5" v:groupContext="shape" transform="translate(7.14332,-14.9526)">
-				<title>forme2</title>
-				<desc>M</desc>
-				<v:userDefs/>
-				<v:textBlock v:margins="rect(4,0,4,0)" v:tabSpace="42.5197"/>
-				<v:textRect cx="5.61261" cy="23.6634" width="11.29" height="6.8882"/>
-				<rect x="0" y="20.2193" width="11.2252" height="6.8882" class="st4"/>
-				<text x="3.11" y="25.46" class="st5" v:langID="1036"><v:paragraph v:horizAlign="1"/><v:tabList/>M</text>			</g>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="99pt" height="51pt" viewBox="0 0 99 51" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d="M 0.359375 0 L 0.359375 -7.328125 L 3.28125 -7.328125 L 3.28125 0 Z M 0.734375 -0.359375 L 2.921875 -0.359375 L 2.921875 -6.96875 L 0.734375 -6.96875 Z M 0.734375 -0.359375 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M 7.34375 0 L 7.34375 -5.046875 C 7.34375 -5.234375 7.34375 -5.421875 7.34375 -5.609375 C 7.34375 -5.796875 7.347656 -5.96875 7.359375 -6.125 C 7.367188 -6.3125 7.378906 -6.488281 7.390625 -6.65625 C 7.335938 -6.476562 7.285156 -6.300781 7.234375 -6.125 C 7.179688 -5.96875 7.128906 -5.800781 7.078125 -5.625 C 7.023438 -5.445312 6.96875 -5.289062 6.90625 -5.15625 L 4.953125 0 L 4.234375 0 L 2.25 -5.15625 C 2.226562 -5.207031 2.207031 -5.269531 2.1875 -5.34375 C 2.164062 -5.414062 2.140625 -5.488281 2.109375 -5.5625 C 2.085938 -5.644531 2.0625 -5.726562 2.03125 -5.8125 C 2.007812 -5.90625 1.984375 -5.988281 1.953125 -6.0625 C 1.890625 -6.257812 1.832031 -6.457031 1.78125 -6.65625 C 1.78125 -6.457031 1.785156 -6.257812 1.796875 -6.0625 C 1.804688 -5.894531 1.8125 -5.71875 1.8125 -5.53125 C 1.8125 -5.351562 1.8125 -5.191406 1.8125 -5.046875 L 1.8125 0 L 0.90625 0 L 0.90625 -7.5625 L 2.25 -7.5625 L 4.265625 -2.328125 C 4.285156 -2.253906 4.3125 -2.160156 4.34375 -2.046875 C 4.382812 -1.929688 4.421875 -1.8125 4.453125 -1.6875 C 4.484375 -1.570312 4.515625 -1.460938 4.546875 -1.359375 C 4.578125 -1.253906 4.597656 -1.175781 4.609375 -1.125 C 4.617188 -1.175781 4.632812 -1.253906 4.65625 -1.359375 C 4.6875 -1.472656 4.71875 -1.585938 4.75 -1.703125 C 4.789062 -1.816406 4.828125 -1.929688 4.859375 -2.046875 C 4.898438 -2.160156 4.9375 -2.253906 4.96875 -2.328125 L 6.9375 -7.5625 L 8.265625 -7.5625 L 8.265625 0 Z M 7.34375 0 "/>
+</symbol>
+</g>
+</defs>
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.720001;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000105198 14.199205 C 0.0832284 7.213769 5.768661 1.595003 12.754097 1.595003 C 19.741617 1.595003 25.427049 7.213769 25.510383 14.199205 C 25.56455 18.792968 23.145793 23.06173 19.177032 25.372153 C 15.208271 27.68466 10.302007 27.68466 6.333246 25.372153 C 2.364485 23.06173 -0.054272 18.792968 -0.000105198 14.199205 Z M -0.000105198 14.199205 " transform="matrix(1.874995,0,0,1.874995,1.35176,-1.349998)"/>
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.720001;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.00103124 1.600345 L 12.759421 1.600345 L -0.00103124 27.110833 L 12.759421 27.110833 Z M -0.00103124 1.600345 " transform="matrix(1.874995,0,0,1.874995,73.103496,-1.645169)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-dasharray:1.44,0.720001;stroke-miterlimit:3;" d="M 0.000666331 27.110422 L 18.879886 27.110422 " transform="matrix(1.874995,0,0,1.874995,49.186251,-25.562368)"/>
+<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
+  <use xlink:href="#glyph0-1" x="20.578125" y="19.16086"/>
+</g>
+</g>
 </svg>

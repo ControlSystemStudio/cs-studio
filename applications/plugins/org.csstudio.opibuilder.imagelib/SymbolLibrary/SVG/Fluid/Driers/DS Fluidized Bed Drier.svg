@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF1904.svg FL_EF0201 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,55 +9,15 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.492441in"
-		height="0.728661in" viewBox="0 0 35.4557 52.4636" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-		.st2 {fill:#000000;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>FL_EF0201</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="9"
-				v:shadowOffsetY="-9"/>
-		<g id="group12-1" transform="translate(0.72,-0.72)" v:mID="12" v:groupContext="group">
-			<title>FL_EF1904</title>
-			<g id="shape13-2" v:mID="13" v:groupContext="shape">
-				<title>Feuille.13</title>
-				<path d="M0 14.2 L34.02 14.2 L34.02 9.94 L29.76 1.44 L4.25 1.44 L0 9.94 L0 14.2 Z M0 26.95 L34.02 26.95 L34.02 14.2
-							 L0 14.2 L0 26.95 Z M0 26.95 L0 52.46 L34.02 52.46 L34.02 26.95 L0 26.95 Z" class="st1"/>
-			</g>
-			<g id="shape14-4" v:mID="14" v:groupContext="shape" transform="translate(8.04837,-33.5602)">
-				<title>Feuille.14</title>
-				<ellipse cx="0.455568" cy="52.0081" rx="0.455568" ry="0.455568" class="st2"/>
-			</g>
-			<g id="shape15-6" v:mID="15" v:groupContext="shape" transform="translate(12.3003,-29.3082)">
-				<title>Feuille.15</title>
-				<ellipse cx="0.455568" cy="52.0081" rx="0.455568" ry="0.455568" class="st2"/>
-			</g>
-			<g id="shape16-8" v:mID="16" v:groupContext="shape" transform="translate(25.0562,-33.5602)">
-				<title>Feuille.16</title>
-				<ellipse cx="0.455568" cy="52.0081" rx="0.455568" ry="0.455568" class="st2"/>
-			</g>
-			<g id="shape17-10" v:mID="17" v:groupContext="shape" transform="translate(3.7964,-29.3082)">
-				<title>Feuille.17</title>
-				<ellipse cx="0.455568" cy="52.0081" rx="0.455568" ry="0.455568" class="st2"/>
-			</g>
-			<g id="shape18-12" v:mID="18" v:groupContext="shape" transform="translate(20.8043,-29.3082)">
-				<title>Feuille.18</title>
-				<ellipse cx="0.455568" cy="52.0081" rx="0.455568" ry="0.455568" class="st2"/>
-			</g>
-			<g id="shape19-14" v:mID="19" v:groupContext="shape" transform="translate(16.5523,-33.5602)">
-				<title>Feuille.19</title>
-				<ellipse cx="0.455568" cy="52.0081" rx="0.455568" ry="0.455568" class="st2"/>
-			</g>
-			<g id="shape20-16" v:mID="20" v:groupContext="shape" transform="translate(29.3082,-29.3082)">
-				<title>Feuille.20</title>
-				<ellipse cx="0.455568" cy="52.0081" rx="0.455568" ry="0.455568" class="st2"/>
-			</g>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="66pt" height="99pt" viewBox="0 0 66 99" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00080474 14.199169 L 34.01956 14.199169 L 34.01956 9.940835 L 29.759143 1.440833 L 4.250805 1.440833 L 0.00080474 9.940835 Z M 0.00080474 26.949171 L 34.01956 26.949171 L 34.01956 14.199169 L 0.00080474 14.199169 Z M 0.00080474 26.949171 L 0.00080474 52.459591 L 34.01956 52.459591 L 34.01956 26.949171 Z M 0.00080474 26.949171 " transform="matrix(1.875,0,0,1.875,1.350054,-1.35)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.910769 52.007286 C 0.910769 51.757286 0.706603 51.553119 0.456603 51.553119 C 0.204519 51.553119 0.000352634 51.757286 0.000352634 52.007286 C 0.000352634 52.259369 0.204519 52.463536 0.456603 52.463536 C 0.706603 52.463536 0.910769 52.259369 0.910769 52.007286 Z M 0.910769 52.007286 " transform="matrix(1.875,0,0,1.875,16.440745,-64.275365)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.910923 52.00737 C 0.910923 51.75737 0.706757 51.553203 0.454673 51.553203 C 0.204673 51.553203 0.000506616 51.75737 0.000506616 52.00737 C 0.000506616 52.259453 0.204673 52.46362 0.454673 52.46362 C 0.706757 52.46362 0.910923 52.259453 0.910923 52.00737 Z M 0.910923 52.00737 " transform="matrix(1.875,0,0,1.875,24.413113,-56.302866)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.911275 52.007286 C 0.911275 51.757286 0.707109 51.553119 0.455025 51.553119 C 0.202942 51.553119 0.000858561 51.757286 0.000858561 52.007286 C 0.000858561 52.259369 0.202942 52.463536 0.455025 52.463536 C 0.707109 52.463536 0.911275 52.259369 0.911275 52.007286 Z M 0.911275 52.007286 " transform="matrix(1.875,0,0,1.875,48.330421,-64.275365)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.910655 52.00737 C 0.910655 51.75737 0.706489 51.553203 0.456489 51.553203 C 0.204405 51.553203 0.000238652 51.75737 0.000238652 52.00737 C 0.000238652 52.259453 0.204405 52.46362 0.456489 52.46362 C 0.706489 52.46362 0.910655 52.259453 0.910655 52.00737 Z M 0.910655 52.00737 " transform="matrix(1.875,0,0,1.875,8.468303,-56.302866)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.911091 52.00737 C 0.911091 51.75737 0.706925 51.553203 0.454841 51.553203 C 0.204841 51.553203 0.000674579 51.75737 0.000674579 52.00737 C 0.000674579 52.259453 0.204841 52.46362 0.454841 52.46362 C 0.706925 52.46362 0.911091 52.259453 0.911091 52.00737 Z M 0.911091 52.00737 " transform="matrix(1.875,0,0,1.875,40.35811,-56.302866)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.911007 52.007286 C 0.911007 51.757286 0.706841 51.553119 0.454757 51.553119 C 0.204757 51.553119 0.000590597 51.757286 0.000590597 52.007286 C 0.000590597 52.259369 0.204757 52.463536 0.454757 52.463536 C 0.706841 52.463536 0.911007 52.259369 0.911007 52.007286 Z M 0.911007 52.007286 " transform="matrix(1.875,0,0,1.875,32.385611,-64.275365)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.911359 52.00737 C 0.911359 51.75737 0.707193 51.553203 0.455109 51.553203 C 0.203026 51.553203 0.000942542 51.75737 0.000942542 52.00737 C 0.000942542 52.259453 0.203026 52.46362 0.455109 52.46362 C 0.707193 52.46362 0.911359 52.259453 0.911359 52.00737 Z M 0.911359 52.00737 " transform="matrix(1.875,0,0,1.875,56.30292,-56.302866)"/>
+</g>
 </svg>

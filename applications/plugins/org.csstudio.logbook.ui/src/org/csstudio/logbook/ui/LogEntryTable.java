@@ -252,11 +252,12 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntry) element);
+		if (item == null) return "";
 		StringBuilder logbooks = new StringBuilder();
 		for (Logbook logbook : item.getLogbooks()) {
-		    logbooks.append(logbook.getName() + "\n");
+		    logbooks.append(logbook.getName()).append('\n');
 		}
-		return item == null ? "" : logbooks.toString();
+		return logbooks.toString();
 	    }
 	});
 	TableColumn tblclmnLogbooks = tableViewerColumnLogbooks.getColumn();
@@ -272,11 +273,12 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
 
 	    public String getText(Object element) {
 		LogEntry item = ((LogEntry) element);
+		if (item == null) return "";
 		StringBuilder tags = new StringBuilder();
 		for (Tag tag : item.getTags()) {
-		    tags.append(tag.getName() + "\n");
+		    tags.append(tag.getName()).append('\n');
 		}
-		return item == null ? "" : tags.toString();
+		return tags.toString();
 	    }
 	});
 	TableColumn tblclmnTags = tableViewerColumnTags.getColumn();

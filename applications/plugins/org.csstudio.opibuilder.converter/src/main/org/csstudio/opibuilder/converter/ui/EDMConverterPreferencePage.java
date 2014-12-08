@@ -34,7 +34,7 @@ public class EDMConverterPreferencePage extends FieldEditorPreferencePage implem
 	
 	public EDMConverterPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
-		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), PREF_QUALIFIER_ID));
+		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, PREF_QUALIFIER_ID));
 		setMessage("EDM2OPI Converter Preferences");
 	}
 	

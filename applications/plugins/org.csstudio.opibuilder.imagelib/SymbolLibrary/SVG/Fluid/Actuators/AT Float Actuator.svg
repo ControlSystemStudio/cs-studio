@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF0610.svg Page-1 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,47 +9,12 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.48258in"
-		height="0.599815in" viewBox="0 0 34.7457 43.1867" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.01}
-		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-		.st3 {fill:#ffffff}
-		.st4 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-	]]>
-	</style>
-	<defs id="Masters">
-		<symbol id="master10" v:mID="10" class="st2">
-			<title>FL_EF0610</title>
-			<g id="master-shape5-7" v:mID="5" v:groupContext="shape">
-				<title>Feuille.5</title>
-				<path d="M17.01 40.98 A4.39833 4.39833 -180 0 0 13.19 38.79 A4.39833 4.39833 -180 0 0 9.39 40.99 A4.39833 4.39833
-							 -180 0 0 17.01 40.98 Z" class="st3"/>
-				<path d="M9.39 40.99 L0 38.79 L0 29.99" class="st4"/>
-				<path d="M17.01 40.98 A4.39833 4.39833 -180 0 0 13.19 38.79 A4.39833 4.39833 -180 0 0 9.39 40.99 A4.39833 4.39833
-							 -180 0 0 17.01 40.98" class="st4"/>
-			</g>
-		</symbol>
-	</defs>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page-1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="group3-1" transform="translate(0.01,-0.01)" v:mID="3" v:groupContext="group">
-			<title>Feuille.3</title>
-			<g id="shape1-2" v:mID="1" v:groupContext="shape" transform="translate(0,-42.4283)">
-				<title>Feuille.1</title>
-				<rect x="0" y="43.1583" width="0.0283465" height="0.0283465" class="st1"/>
-			</g>
-			<g id="shape2-4" v:mID="2" v:groupContext="shape" transform="translate(33.9874,0)">
-				<title>Feuille.2</title>
-				<rect x="0" y="43.1583" width="0.0283465" height="0.0283465" class="st1"/>
-			</g>
-		</g>
-		<use id="shape4-6" v:mID="4" xlink:href="#master10" transform="translate(17.0179,-29.2717)">
-			<title>FL_EF0610</title>
-		</use>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="65pt" height="81pt" viewBox="0 0 65 81" version="1.1">
+<g id="surface1">
+<path style="fill:none;stroke-width:0.01;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000298498 43.159134 L 0.0292408 43.159134 L 0.0292408 43.186217 L 0.000298498 43.186217 Z M 0.000298498 43.159134 " transform="matrix(1.889534,0,0,1.874999,0.0189672,-79.571776)"/>
+<path style="fill:none;stroke-width:0.01;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000547301 43.157937 L 0.028395 43.157937 L 0.028395 43.187103 L -0.000547301 43.187103 Z M -0.000547301 43.157937 " transform="matrix(1.889534,0,0,1.874999,64.239315,-0.01875)"/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 64.296875 21.953125 C 62.804688 19.402344 60.050781 17.835938 57.078125 17.847656 C 54.117188 17.851562 51.378906 19.425781 49.898438 21.972656 C 51.386719 24.523438 54.132812 26.09375 57.101562 26.089844 C 60.074219 26.085938 62.816406 24.507812 64.296875 21.953125 Z M 64.296875 21.953125 "/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 9.389863 40.990455 L 0.000146759 38.790454 L 0.000146759 29.99045 " transform="matrix(1.889534,0,0,1.874999,32.155973,-54.884412)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 17.009962 40.980039 C 16.22025 39.619621 14.762798 38.784204 13.189576 38.790454 C 11.622556 38.792538 10.173373 39.632121 9.389863 40.990455 C 10.177507 42.350873 11.630825 43.188373 13.20198 43.18629 C 14.775202 43.184206 16.226452 42.342539 17.009962 40.980039 " transform="matrix(1.889534,0,0,1.874999,32.155973,-54.884412)"/>
+</g>
 </svg>

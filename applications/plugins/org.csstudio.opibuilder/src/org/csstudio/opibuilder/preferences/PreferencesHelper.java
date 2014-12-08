@@ -65,6 +65,8 @@ public class PreferencesHelper {
 	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
 	public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
     public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style";
+	public static final String OPEN_OPI_RUNTIME_PERSPECTIVE="open_opi_runtime_perspective"; //$NON-NLS-1$
+
 	//The widgets that are hidden from palette.
 	public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
 	
@@ -466,6 +468,23 @@ public class PreferencesHelper {
     public static boolean isAboutShowLinks(){
       	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, ABOUT_SHOW_LINKS, true, null);
+    }
+
+    /**
+     * Set if the OPI Runtime Perspective should be opened when a new view is requested.
+     * @param if the OPI Runtime Perspective should be opened.
+     */
+    public static void setSwitchToOpiRuntimePerspective(boolean b) {
+        putBoolean(OPEN_OPI_RUNTIME_PERSPECTIVE, b);
+    }
+
+    /**
+     * Should the OPI Runtime Perspective be opened when a new view is requested.
+     * @return if the OPI Runtime Perspective should be opened.
+     */
+    public static boolean isSwitchToOpiRuntimePerspective() {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, OPEN_OPI_RUNTIME_PERSPECTIVE, false, null);
     }
 
 }

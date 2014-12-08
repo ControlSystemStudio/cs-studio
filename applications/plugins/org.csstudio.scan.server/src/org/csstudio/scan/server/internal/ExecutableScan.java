@@ -594,12 +594,14 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
         	if (state == ScanState.Paused)
         	{
-            	ScanCommandUtil.write(this, device_state, ScanState.Paused.ordinal(), 0.1, timeout);
+        		if (device_state != null)
+        			ScanCommandUtil.write(this, device_state, ScanState.Paused.ordinal(), 0.1, timeout);
 	            while (state == ScanState.Paused)
 	            {
 	                wait();
 	            }
-            	ScanCommandUtil.write(this, device_state, ScanState.Running.ordinal(), 0.1, timeout);
+	            if (device_state != null)
+	            	ScanCommandUtil.write(this, device_state, ScanState.Running.ordinal(), 0.1, timeout);
         	}
         }
         

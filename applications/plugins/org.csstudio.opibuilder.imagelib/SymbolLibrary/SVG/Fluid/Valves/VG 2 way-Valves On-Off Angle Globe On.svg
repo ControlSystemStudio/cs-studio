@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF010122C.svg Page 1 -->
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,43 +9,11 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.374331in"
-		height="0.374331in" viewBox="0 0 26.9518 26.9518" xml:space="preserve" color-interpolation-filters="sRGB" class="st4">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-		.st2 {fill:#a6a6a6;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-		.st3 {fill:#000000;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-		.st4 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="group1-1" transform="translate(0.72,-0.72)" v:mID="1" v:groupContext="group">
-			<title>Feuille.1</title>
-			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(0,-25.4959)">
-				<title>Feuille.2</title>
-				<rect x="0" y="26.9359" width="0.0159449" height="0.0159449" class="st1"/>
-			</g>
-			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(25.4959,0)">
-				<title>Feuille.3</title>
-				<rect x="0" y="26.9359" width="0.0159449" height="0.0159449" class="st1"/>
-			</g>
-		</g>
-		<g id="group27-6" transform="translate(9.22394,-4.97197)" v:mID="27" v:groupContext="group">
-			<title>FL_EF010122C</title>
-			<g id="shape28-7" v:mID="28" v:groupContext="shape">
-				<title>Feuille.28</title>
-				<path d="M3.41 20.14 L0 26.95 L8.5 26.95 L5.1 20.14 A1.88976 1.88976 -180 0 0 5.94 19.29 L12.76 22.7 L12.76 14.2
-							 L5.94 17.6 A1.88976 1.88976 -180 1 0 3.41 20.14 Z" class="st2"/>
-			</g>
-			<g id="shape29-9" v:mID="29" v:groupContext="shape" transform="translate(2.36268,-6.63591)">
-				<title>Feuille.29</title>
-				<ellipse cx="1.87795" cy="25.0739" rx="1.87795" ry="1.87795" class="st3"/>
-			</g>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="51pt" viewBox="0 0 51 51" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351562 1.351562 L 1.378906 1.351562 L 1.378906 1.378906 L 1.351562 1.378906 Z M 1.351562 1.351562 "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.15625 49.15625 L 49.183594 49.15625 L 49.183594 49.183594 L 49.15625 49.183594 Z M 49.15625 49.15625 "/>
+<path style="fill-rule:evenodd;fill:rgb(65.098039%,65.098039%,65.098039%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 3.409378 20.140702 L -0.00103428 26.949027 L 8.501039 26.949027 L 5.09896 20.140702 C 5.463543 19.955286 5.759376 19.657369 5.940625 19.290703 L 12.759367 22.699032 L 12.759367 14.199042 L 5.940625 17.599038 C 5.571876 16.865706 4.769793 16.453206 3.957294 16.58029 C 3.144795 16.709456 2.507296 17.346955 2.382296 18.161538 C 2.257296 18.974037 2.673963 19.774036 3.409378 20.140702 Z M 3.409378 20.140702 " transform="matrix(1.875002,0,0,1.875002,17.294908,-9.322455)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 3.755028 25.074531 C 3.755028 24.037032 2.915446 23.195366 1.877947 23.195366 C 0.840449 23.195366 0.000866242 24.037032 0.000866242 25.074531 C 0.000866242 26.112029 0.840449 26.951612 1.877947 26.951612 C 2.915446 26.951612 3.755028 26.112029 3.755028 25.074531 Z M 3.755028 25.074531 " transform="matrix(1.875002,0,0,1.875002,21.724938,-21.764801)"/>
+</g>
 </svg>
