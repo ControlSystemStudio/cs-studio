@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
+import org.csstudio.swt.rtplot.PointType;
 import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
@@ -49,11 +50,17 @@ abstract public class ModelItem
      */
     private volatile RGB rgb = null;
 
+    /** How to display the trace */
+    private volatile TraceType trace_type = Preferences.getTraceType();
+
     /** Line width [pixel] */
     private volatile int line_width = Preferences.getLineWidths();
 
-    /** How to display the trace */
-    private volatile TraceType trace_type = Preferences.getTraceType();
+    /** How to display the points of the trace */
+    private volatile PointType point_type = PointType.NONE;
+
+    /** Point size [pixel] */
+    private volatile int point_size = Preferences.getLineWidths();
 
     /** Y-Axis */
     private volatile AxisConfig axis = null;
@@ -192,6 +199,21 @@ abstract public class ModelItem
         fireItemLookChanged();
     }
 
+    /** @return {@link TraceType} for displaying the trace */
+    public TraceType getTraceType()
+    {
+        return trace_type;
+    }
+
+    /** @param trace_type New {@link TraceType} for displaying the trace */
+    public void setTraceType(final TraceType trace_type)
+    {
+        if (this.trace_type == trace_type)
+            return;
+        this.trace_type = trace_type;
+        fireItemLookChanged();
+    }
+
     /** @return Line width */
     public int getLineWidth()
     {
@@ -209,18 +231,35 @@ abstract public class ModelItem
         fireItemLookChanged();
     }
 
-    /** @return {@link TraceType} for displaying the trace */
-    public TraceType getTraceType()
+    /** @return {@link PointType} for displaying the trace */
+    public PointType getPointType()
     {
-        return trace_type;
+        return point_type;
     }
 
-    /** @param trace_type New {@link TraceType} for displaying the trace */
-    public void setTraceType(final TraceType trace_type)
+    /** @param point_type New {@link PointType} for displaying the trace */
+    public void setPointType(final PointType point_type)
     {
-        if (this.trace_type == trace_type)
+        if (this.point_type == point_type)
             return;
-        this.trace_type = trace_type;
+        this.point_type = point_type;
+        fireItemLookChanged();
+    }
+
+    /** @return Point size */
+    public int getPointSize()
+    {
+        return point_size;
+    }
+
+    /** @param size New point size */
+    public void setPointSize(int size)
+    {
+        if (size < 0)
+            size = 0;
+        if (size == this.point_size)
+            return;
+        point_size = size;
         fireItemLookChanged();
     }
 
@@ -296,9 +335,11 @@ abstract public class ModelItem
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_VISIBLE, Boolean.toString(isVisible()));
     	XMLWriter.XML(writer, 3, XMLPersistence.TAG_NAME, getName());
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_AXIS, getAxisIndex());
-        XMLWriter.XML(writer, 3, XMLPersistence.TAG_LINEWIDTH, getLineWidth());
         XMLPersistence.writeColor(writer, 3, XMLPersistence.TAG_COLOR, getColor());
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_TRACE_TYPE, getTraceType().name());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_LINEWIDTH, getLineWidth());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_POINT_TYPE, getPointType().name());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_POINT_SIZE, getPointSize());
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_WAVEFORM_INDEX, getWaveformIndex());
     }
 
@@ -317,19 +358,40 @@ abstract public class ModelItem
             model.addAxis();
         axis = model.getAxis(axis_index);
         line_width = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_LINEWIDTH, line_width);
+        point_size = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_POINT_SIZE, point_size);
         rgb = XMLPersistence.loadColorFromDocument(node).orElse(null);
+
+        // First load PointType, which may be replaced by legacy point-in-TraceType below
+        try
+        {
+            point_type = PointType.valueOf(DOMHelper.getSubelementString(node, XMLPersistence.TAG_POINT_TYPE, PointType.NONE.name()));
+        }
+        catch (Throwable ex)
+        {
+            point_type = PointType.NONE;
+        }
+
         String type = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TRACE_TYPE, TraceType.AREA.name());
         try
         {   // Replace XYGraph types with currently supported types
             if (type.equals("ERROR_BARS"))
                 type = TraceType.AREA.name();
             else if (type.equals("CROSSES"))
-                type = TraceType.XMARKS.name();
+                type = PointType.XMARKS.name();
             trace_type = TraceType.valueOf(type);
         }
         catch (Throwable ex)
-        {
-            trace_type = TraceType.AREA;
+        {   // Check if older config file used what is now a PointType for the TraceType
+            try
+            {
+                point_type = PointType.valueOf(type);
+                // If that succeeded, clear trace type
+                trace_type = TraceType.NONE;
+            }
+            catch (Throwable ex2)
+            {   // Never mind, leave PointType as is, and use default TraceType
+                trace_type = TraceType.AREA;
+            }
         }
         setWaveformIndex(DOMHelper.getSubelementInt(node, XMLPersistence.TAG_WAVEFORM_INDEX, 0));
     }

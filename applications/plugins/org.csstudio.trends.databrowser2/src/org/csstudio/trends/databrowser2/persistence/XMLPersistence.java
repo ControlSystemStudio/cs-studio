@@ -67,6 +67,8 @@ public class XMLPersistence
     final public static String TAG_GREEN = "green";
     final public static String TAG_BLUE = "blue";
     final public static String TAG_TRACE_TYPE = "trace_type";
+    final public static String TAG_POINT_TYPE = "point_type";
+    final public static String TAG_POINT_SIZE = "point_size";
     final public static String TAG_SCAN_PERIOD = "period";
     final public static String TAG_INPUT = "input";
     final public static String TAG_ARCHIVE = "archive";

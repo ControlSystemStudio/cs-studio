@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
+import org.csstudio.swt.rtplot.PointType;
 import org.csstudio.swt.rtplot.RTValuePlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
@@ -277,7 +278,7 @@ public class WaveformView extends DataBrowserAwareView
         waveform = new WaveformValueDataProvider();
 
         // Create trace for waveform
-        plot.addTrace(model_item.getDisplayName(), waveform, model_item.getColor(), TraceType.CIRCLES, 5, 0);
+        plot.addTrace(model_item.getDisplayName(), waveform, model_item.getColor(), TraceType.NONE, 1, PointType.CIRCLES, 5, 0);
         // Enable waveform selection and update slider's range
         sample_index.setEnabled(true);
         showSelectedSample();

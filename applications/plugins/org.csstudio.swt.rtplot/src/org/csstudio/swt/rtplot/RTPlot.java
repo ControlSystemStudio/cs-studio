@@ -247,9 +247,12 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
      *  @return {@link Trace} that was added
      */
     public Trace<XTYPE> addTrace(final String name, final PlotDataProvider<XTYPE> data,
-            final RGB color, final TraceType type, final int width, final int y_axis)
+            final RGB color,
+            final TraceType type, final int width,
+            final PointType point_type, final int size,
+            final int y_axis)
     {
-        final TraceImpl<XTYPE> trace = new TraceImpl<XTYPE>(name, data, color, type, width, y_axis);
+        final TraceImpl<XTYPE> trace = new TraceImpl<XTYPE>(name, data, color, type, width, point_type, size, y_axis);
         plot.addTrace(trace);
         return trace;
     }

@@ -185,6 +185,10 @@ public class Messages extends NLS
     public static String Plot_TimeAxisName;
     public static String Plot_ValueAxisName;
     public static String Plot_ValueAxisNameFMT;
+    public static String PointSize;
+    public static String PointSizeTT;
+    public static String PointType;
+    public static String PointTypeTT;
     public static String PosErrColumn;
     public static String PrefPage_ArchiveFetchDelay;
     public static String PrefPage_Archives;

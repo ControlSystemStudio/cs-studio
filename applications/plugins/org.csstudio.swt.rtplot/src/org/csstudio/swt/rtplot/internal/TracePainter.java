@@ -8,6 +8,7 @@
 package org.csstudio.swt.rtplot.internal;
 
 import org.csstudio.swt.rtplot.Axis;
+import org.csstudio.swt.rtplot.PointType;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
@@ -106,6 +107,8 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
             final TraceType type = trace.getType();
             switch (type)
             {
+            case NONE:
+                break;
             case AREA:
                 gc.setAlpha(50);
             	drawMinMaxArea(gc, x_transform, y_axis, data);
@@ -140,12 +143,19 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
             case SINGLE_LINE_DIRECT:
                 drawValueLines(gc, x_transform, y_axis, data, trace.getWidth());
                 break;
+            }
+
+            final PointType point_type = trace.getPointType();
+            switch (point_type)
+            {
+            case NONE:
+                break;
             case SQUARES:
             case CIRCLES:
             case DIAMONDS:
             case XMARKS:
             case TRIANGLES:
-                drawPoints(gc, x_transform, y_axis, data, type, trace.getWidth());
+                drawPoints(gc, x_transform, y_axis, data, point_type, trace.getPointSize());
                 break;
             }
         }
@@ -363,12 +373,12 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
      *  @param x_transform Horizontal axis
      *  @param y_axis Value axis
      *  @param data Data
-     *  @param type
+     *  @param point_type
      *  @param size
      */
     final private void drawPoints(final GC gc,
             final ScreenTransform<XTYPE> x_transform, final YAxisImpl<XTYPE> y_axis,
-            final PlotDataProvider<XTYPE> data, TraceType type, final int size)
+            final PlotDataProvider<XTYPE> data, PointType point_type, final int size)
     {
         final int N = data.size();
         int last_x = -1, last_y = -1;
@@ -382,7 +392,7 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
                 final int y = clipY(y_axis.getScreenCoord(value));
                 if (x == last_x  &&  y == last_y)
                     continue;
-                switch (type)
+                switch (point_type)
                 {
                 case SQUARES:
                     gc.fillRectangle(x-size/2, y-size/2, size, size);

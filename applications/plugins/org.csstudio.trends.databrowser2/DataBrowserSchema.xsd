@@ -16,12 +16,18 @@
     <xs:element name="databrowser">
         <xs:complexType>
 			<xs:sequence>
+                <xs:element name="title" type="xs:string" minOccurs="0"/>
+                <xs:element name="save_changes" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="grid" type="xs:boolean" minOccurs="0"/>
 				<xs:element name="scroll" type="xs:boolean" minOccurs="0"/>
                 <xs:element name="update_period" type="xs:double" minOccurs="0"/>
+                <xs:element name="scroll_step" type="xs:double" minOccurs="0"/>
                 <xs:element name="start" type="xs:string" minOccurs="0"/>
                 <xs:element name="end" type="xs:string" minOccurs="0"/>
                 <xs:element name="archive_rescale" type="xs:string" minOccurs="0"/>
                 <xs:element name="background" type="color" minOccurs="0"/>
+                <xs:element name="label_font" type="xs:string" minOccurs="0"/>
+                <xs:element name="scale_font" type="xs:string" minOccurs="0"/>
                 <xs:element ref="axes" minOccurs="0"/>
                 <xs:element ref="annotations" minOccurs="0"/>
                 <xs:element ref="pvlist" minOccurs="0"/>
@@ -55,6 +61,7 @@
                 <xs:element name="color" type="color" minOccurs="0"/>
                 <xs:element name="min" type="xs:double"/>
                 <xs:element name="max" type="xs:double"/>
+                <xs:element name="grid" type="xs:boolean" minOccurs="0"/>
                 <xs:element name="autoscale" type="xs:boolean"/>
                 <xs:element name="log_scale" type="xs:boolean"/>
             </xs:sequence>
@@ -72,10 +79,10 @@
     <xs:element name="annotation">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="pv" type="xs:boolean"/>
+                <xs:element name="pv" type="xs:int"/>
                 <xs:element name="time" type="xs:string"/>
                 <xs:element name="value" type="xs:string"/>
-                <xs:element name="text" type="xs:boolean"/>
+                <xs:element name="text" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -95,9 +102,11 @@
                 <xs:element name="visible" type="xs:boolean"/>
                 <xs:element name="name" type="xs:string"/>
                 <xs:element name="axis" type="xs:decimal"/>
-                <xs:element name="linewidth" type="xs:decimal"/>
                 <xs:element name="color" type="color" minOccurs="0"/>
                 <xs:element name="trace_type" type="xs:string"/>
+                <xs:element name="linewidth" type="xs:decimal"/>
+                <xs:element name="point_type" type="xs:string"/>
+                <xs:element name="point_size" type="xs:decimal"/>
                 <xs:element name="waveform_index" type="xs:decimal"/>
                 <xs:element name="period" type="xs:string"/>
                 <xs:element name="ring_size" type="xs:decimal"/>

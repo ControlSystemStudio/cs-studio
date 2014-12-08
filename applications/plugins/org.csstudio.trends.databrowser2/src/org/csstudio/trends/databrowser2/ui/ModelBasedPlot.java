@@ -257,7 +257,10 @@ public class ModelBasedPlot
 	public void addTrace(final ModelItem item)
 	{
 	    final Trace<Instant> trace = plot.addTrace(item.getResolvedDisplayName(), item.getSamples(),
-                item.getColor(), item.getTraceType(), item.getLineWidth(), item.getAxisIndex());
+                item.getColor(),
+                item.getTraceType(), item.getLineWidth(),
+                item.getPointType(), item.getPointSize(),
+                item.getAxisIndex());
         items_by_trace.put(trace, item);
 	}
 
@@ -281,8 +284,10 @@ public class ModelBasedPlot
 		// These happen to not cause an immediate redraw, so
 		// set even if no change
 		trace.setColor(item.getColor());
-		trace.setWidth(item.getLineWidth());
 		trace.setType(item.getTraceType());
+		trace.setWidth(item.getLineWidth());
+        trace.setPointType(item.getPointType());
+        trace.setPointSize(item.getPointSize());
 
 		// Locate index of current Y Axis
 		if (trace.getYAxis() != item.getAxisIndex())

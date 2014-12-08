@@ -10,6 +10,7 @@ package org.csstudio.swt.rtplot.internal;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.csstudio.swt.rtplot.PointType;
 import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
@@ -34,19 +35,28 @@ public class TraceImpl<XTYPE extends Comparable<XTYPE>> implements Trace<XTYPE>
 
     private volatile int width;
 
+    private volatile PointType point_type;
+
+    private volatile int size;
+
     private volatile int y_axis;
 
     private volatile Optional<PlotDataItem<XTYPE>> selected_sample = Optional.empty();
 
 
     public TraceImpl(final String name, final PlotDataProvider<XTYPE> data,
-            final RGB color, final TraceType type, final int width, final int y_axis)
+            final RGB color,
+            final TraceType type, final int width,
+            final PointType point_type, final int size,
+            final int y_axis)
     {
         this.name = Objects.requireNonNull(name);
         this.data = Objects.requireNonNull(data);
         this.color = Objects.requireNonNull(color);
         this.type = Objects.requireNonNull(type);
         this.width = width;
+        this.point_type = Objects.requireNonNull(point_type);
+        this.size = size;
         this.y_axis = y_axis;
     }
 
@@ -111,6 +121,34 @@ public class TraceImpl<XTYPE extends Comparable<XTYPE>> implements Trace<XTYPE>
     public void setWidth(final int width)
     {
         this.width = width;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PointType getPointType()
+    {
+        return point_type;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPointType(final PointType type)
+    {
+        this.point_type = Objects.requireNonNull(type);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getPointSize()
+    {
+        return size;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPointSize(final int size)
+    {
+        this.size = size;
     }
 
     /** {@inheritDoc} */

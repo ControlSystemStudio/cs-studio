@@ -46,6 +46,18 @@ public interface Trace<XTYPE extends Comparable<XTYPE>>
     /** @param width Width of line or marker used to draw this trace */
     public void setWidth(final int width);
 
+    /** @return How to draw points of this trace */
+    public PointType getPointType();
+
+    /** @param type How to draw points of this trace */
+    public void setPointType(final PointType type);
+
+    /** @return Size of points */
+    public int getPointSize();
+
+    /** @param size Size of points */
+    public void setPointSize(final int size);
+
     /** @return Y axis index */
     public int getYAxis();
 

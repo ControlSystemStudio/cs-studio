@@ -7,35 +7,32 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot;
 
-/** How a {@link Trace} is drawn sample to sample
+/** How points of a {@link Trace} are drawn
  *  @author Kay Kasemir
  */
-public enum TraceType
+public enum PointType
 {
     /** No line/area between points */
     NONE(Messages.Type_None),
 
-    /** Trace with area for min/max */
-    AREA(Messages.TraceType_Area),
+    /** Square Markers */
+    SQUARES(Messages.PointType_Squares),
 
-    /** Trace with area for min/max, using direct line */
-    AREA_DIRECT(Messages.TraceType_AreaDirect),
+    /** Circle Markers */
+    CIRCLES(Messages.PointType_Circles),
 
-    /** Lines for value, min/max */
-    LINES(Messages.TraceType_Lines),
+    /** Diamond Markers */
+    DIAMONDS(Messages.PointType_Diamonds),
 
-    /** Lines for value, min/max, using direct line */
-    LINES_DIRECT(Messages.TraceType_LinesDirect),
+    /** Cross Markers */
+    XMARKS(Messages.PointType_XMarks),
 
-    /** Single line, no min/max */
-    SINGLE_LINE(Messages.TraceType_SingleLine),
-
-    /** Single line, no min/max, using direct line */
-    SINGLE_LINE_DIRECT(Messages.TraceType_SingleLineDirect);
+    /** Triangle Markers */
+    TRIANGLES(Messages.PointType_Triangles);
 
     final private String name;
 
-    private TraceType(final String name)
+    private PointType(final String name)
     {
         this.name = name;
     }
@@ -45,18 +42,18 @@ public enum TraceType
      *  @return TraceType
      *  @throws RuntimeException on invalid ordinal
      */
-    public static TraceType fromOrdinal(final int ordinal)
+    public static PointType fromOrdinal(final int ordinal)
     {
-        for (TraceType type : TraceType.values())
+        for (PointType type : PointType.values())
             if (type.ordinal() == ordinal)
                 return type;
-        throw new RuntimeException("Invalid Trace Type " + ordinal); //$NON-NLS-1$
+        throw new RuntimeException("Invalid Point Type " + ordinal); //$NON-NLS-1$
     }
 
     /** @return Array of display names for all trace types */
     public static String[] getDisplayNames()
     {
-        final TraceType types[] = TraceType.values();
+        final PointType types[] = PointType.values();
         final String names[] = new String[types.length];
         for (int i=0; i<names.length; ++i)
             names[i] = types[i].name;

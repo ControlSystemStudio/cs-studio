@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.vtype.DefaultVTypeFormat;
+import org.csstudio.swt.rtplot.PointType;
 import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
@@ -529,57 +530,6 @@ public class TraceTableHandler implements IStructuredContentProvider
             }
         });
 
-        // Line Width Column ----------
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceLineWidth, 40, 10);
-        view_col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final ModelItem item = (ModelItem) cell.getElement();
-                cell.setText(Integer.toString(item.getLineWidth()));
-            }
-
-            @Override
-            public String getToolTipText(Object element)
-            {
-                return Messages.TraceLineWidthTT;
-            }
-
-        });
-        view_col.setEditingSupport(new EditSupportBase(table_viewer)
-        {
-            @Override
-            protected Object getValue(final Object element)
-            {
-                return Integer.toString(((ModelItem) element).getLineWidth());
-            }
-
-            @Override
-            protected CellEditor getCellEditor(Object element) {
-            	editing = true;
-            	return super.getCellEditor(element);
-            }
-
-            @Override
-            protected void setValue(final Object element, final Object value)
-            {
-                int width;
-                try
-                {
-                    width = Integer.parseInt(value.toString().trim());
-                }
-                catch (NumberFormatException ex)
-                {
-                    width = 0;
-                }
-                final ModelItem item = (ModelItem)element;
-                if (width != item.getLineWidth())
-                    new ChangeLineWidthCommand(operations_manager, item, width);
-                editing = false;
-            }
-        });
-
         // Axis Column ----------
         view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.Axis, 60, 30);
         view_col.setLabelProvider(new CellLabelProvider()
@@ -686,6 +636,153 @@ public class TraceTableHandler implements IStructuredContentProvider
                 final ModelItem item = (ModelItem)element;
                 if (trace_type != item.getTraceType())
                     new ChangeTraceTypeCommand(operations_manager, item, trace_type);
+                editing = false;
+            }
+        });
+
+        // Line Width Column ----------
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceLineWidth, 40, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setText(Integer.toString(item.getLineWidth()));
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceLineWidthTT;
+            }
+
+        });
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return Integer.toString(((ModelItem) element).getLineWidth());
+            }
+
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+                editing = true;
+                return super.getCellEditor(element);
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                int width;
+                try
+                {
+                    width = Integer.parseInt(value.toString().trim());
+                }
+                catch (NumberFormatException ex)
+                {
+                    width = 0;
+                }
+                final ModelItem item = (ModelItem)element;
+                if (width != item.getLineWidth())
+                    new ChangeLineWidthCommand(operations_manager, item, width);
+                editing = false;
+            }
+        });
+
+        // Point Type Column ----------
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.PointType, 75, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setText(item.getPointType().toString());
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.PointTypeTT;
+            }
+        });
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                editing = true;
+                final ComboBoxCellEditor combo = new ComboBoxCellEditor(table_viewer.getTable(),
+                        PointType.getDisplayNames(), SWT.READ_ONLY);
+                combo.setValue(getValue(element));
+                return combo;
+            }
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((ModelItem) element).getPointType().ordinal();
+            }
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final PointType point_type =
+                        PointType.fromOrdinal(((Integer)value).intValue());
+                final ModelItem item = (ModelItem)element;
+                if (point_type != item.getPointType())
+                    new ChangePointTypeCommand(operations_manager, item, point_type);
+                editing = false;
+            }
+        });
+
+        // Point Size Column ----------
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.PointSize, 40, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setText(Integer.toString(item.getPointSize()));
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.PointSizeTT;
+            }
+
+        });
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return Integer.toString(((ModelItem) element).getPointSize());
+            }
+
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+                editing = true;
+                return super.getCellEditor(element);
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                int size;
+                try
+                {
+                    size = Integer.parseInt(value.toString().trim());
+                }
+                catch (NumberFormatException ex)
+                {
+                    size = 0;
+                }
+                final ModelItem item = (ModelItem)element;
+                if (size != item.getPointSize())
+                    new ChangePointSizeCommand(operations_manager, item, size);
                 editing = false;
             }
         });
