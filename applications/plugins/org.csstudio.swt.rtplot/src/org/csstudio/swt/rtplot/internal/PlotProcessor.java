@@ -329,6 +329,14 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
             {
                 final ValueRange new_range = ranges.get(i).get();
                 double low = new_range.getLow(), high = new_range.getHigh();
+                if (low > high)
+                    continue;
+                if (low == high)
+                {   // Center trace with constant value (empty range)
+                    final double half = Math.abs(low/2);
+                    low -= half;
+                    high += half;
+                }
                 if (axis.isLogarithmic())
                 {   // Perform adjustment in log space.
                     // But first, refuse to deal with <= 0

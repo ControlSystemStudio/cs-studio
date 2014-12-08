@@ -131,7 +131,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
             transform.config(range.getLow(), range.getHigh(), low_screen, high_screen);
         }
         dirty_ticks = true;
-        requestRefresh();
+        requestLayout();
     }
 
     /** @return Transformation between values and pixels */
@@ -174,7 +174,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
             transform.config(low, high, low_screen, high_screen);
         }
         dirty_ticks = true;
-        requestRefresh();
+        requestLayout();
         return true;
     }
 

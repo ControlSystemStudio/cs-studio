@@ -114,6 +114,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
     public void setAutoscale(boolean do_autoscale)
     {
         autoscale = do_autoscale;
+        requestLayout();
     }
 
     /** {@inheritDoc} */
