@@ -95,7 +95,9 @@ public class ValuePlotDemo
 
         final RTValuePlot plot = new RTValuePlot(shell);
         plot.getXAxis().setValueRange(0.0, Double.valueOf(MAX_SIZE));
+        plot.getXAxis().setGridVisible(true);
         plot.getYAxes().get(0).setValueRange(-12.0, 12.0);
+        plot.getYAxes().get(0).setGridVisible(true);
 
         plot.setUpdateThrottle(20, TimeUnit.MILLISECONDS);
 

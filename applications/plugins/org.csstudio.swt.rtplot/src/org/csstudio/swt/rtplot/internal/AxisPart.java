@@ -37,6 +37,8 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
 
     protected static final int MINOR_TICK_LENGTH = 5;
 
+    protected volatile boolean show_grid = false;
+
     private boolean visible = true;
 
     /** Is this a horizontal axis? Otherwise: Vertical. */
@@ -78,6 +80,20 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
         this.transform = Objects.requireNonNull(transform);
         this.range = new AxisRange<T>(low_value, high_value);
         this.ticks = Objects.requireNonNull(ticks);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isGridVisible()
+    {
+        return show_grid;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setGridVisible(final boolean grid)
+    {
+        show_grid = grid;
     }
 
     /** {@inheritDoc} */
@@ -241,6 +257,20 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
             ticks.compute(safe_range.getLow(), safe_range.getHigh(), gc, getBounds().height);
         dirty_ticks = false;
     }
+
+    /** Invoked to paint the part.
+     *
+     *  <p>Is invoked on background thread.
+     *  <p>Derived part can override, should invoke super.
+     *
+     *  @param gc {@link GC} for painting in background thread
+     *  @param media {@link SWTMediaPool}
+     *  @param label_font Font for labels
+     *  @param scale_font Font for scale
+     *  @param plot_bounds Bounds of the plot, the area used for grid lines and traces
+     */
+    abstract public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font,
+                               final Rectangle plot_bounds);
 
     /** Draw a tick label, used both to paint the normal axis labels
      *  and for special, cursor-related tick locations.

@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import org.csstudio.swt.rtplot.Activator;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -140,21 +139,6 @@ public class PlotPart
     protected void requestRefresh()
     {
         listener.refreshPlotPart(this);
-    }
-
-    /** Invoked to paint the part.
-     *
-     *  <p>Is invoked on background thread.
-     *  <p>Derived part can override, should invoke super.
-     *
-     *  @param gc {@link GC} for painting in background thread
-     *  @param media {@link SWTMediaPool}
-     *  @param label_font Font for labels
-     *  @param scale_font Font for scale
-     */
-    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font)
-    {
-        paint(gc, media);
     }
 
     /** Invoked to paint the part.

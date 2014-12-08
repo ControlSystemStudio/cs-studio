@@ -12,47 +12,47 @@ import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 
-/** Undo-able command to change plot update period
+/** Undo-able command to change time axis configuration
  *  @author Kay Kasemir
  */
-public class ChangeUpdatePeriodCommand implements UndoableAction
+public class ChangeTimeAxisConfigCommand implements UndoableAction
 {
     final private Model model;
-    final private double old_period, new_period;
+    final private boolean show_grid;
 
-    /** Register and perform the command
-     *  @param item Model item to configure
-     *  @param operations_manager OperationsManager where command will be reg'ed
-     *  @param period New value
+    /** Register the command and perform
+     *  @param model
+     *  @param operations_manager
+     *  @param show_grid
      */
-    public ChangeUpdatePeriodCommand(final Model model,
+    public ChangeTimeAxisConfigCommand(final Model model,
             final UndoableActionManager operations_manager,
-            final double period)
+            final boolean show_grid)
     {
         this.model = model;
-        this.old_period = model.getUpdatePeriod();
-        this.new_period = period;
-        operations_manager.execute(this);
+        this.show_grid = show_grid;
+        operations_manager.add(this);
+        run();
     }
 
     /** {@inheritDoc} */
     @Override
     public void run()
     {
-        model.setUpdatePeriod(new_period);
+        model.setGridVisible(show_grid);
     }
 
     /** {@inheritDoc} */
     @Override
     public void undo()
     {
-        model.setUpdatePeriod(old_period);
+        model.setGridVisible(! show_grid);
     }
 
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()
     {
-        return Messages.UpdatePeriodLbl;
+        return Messages.TimeAxis;
     }
 }

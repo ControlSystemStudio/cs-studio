@@ -33,12 +33,12 @@ public class ChangeLabelFontCommand implements UndoableAction
         this.model = model;
         this.old_font = model.getLabelFont();
         this.new_font = new_font;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         model.setLabelFont(new_font);
     }

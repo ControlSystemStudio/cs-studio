@@ -220,6 +220,45 @@ public class AxesTableHandler implements IStructuredContentProvider
             }
         });
 
+        // Show Grid? ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.Grid, 50, 5);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final AxisConfig axis = (AxisConfig) cell.getElement();
+                if (axis.isGridVisible())
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
+                else
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).isGridVisible();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.setGridVisible(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
+            }
+        });
+
         // Use Right Side? ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisOnRight, 80, 10);
         col.setLabelProvider(new CellLabelProvider()

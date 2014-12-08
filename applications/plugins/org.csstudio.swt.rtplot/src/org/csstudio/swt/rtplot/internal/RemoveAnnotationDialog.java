@@ -101,7 +101,7 @@ public class RemoveAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dia
             to_remove.add(annotations.get(i));
         for (Annotation<XTYPE> annotation : to_remove)
         {
-            plot.getUndoableActionManager().perform(
+            plot.getUndoableActionManager().execute(
                 new RemoveAnnotationAction<XTYPE>(plot, annotation));
         }
         super.okPressed();

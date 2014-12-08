@@ -39,12 +39,12 @@ public class DeleteItemsCommand implements UndoableAction
         this.shell = shell;
         this.model = model;
         this.items = items;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         for (ModelItem item : items)
             model.removeItem(item);

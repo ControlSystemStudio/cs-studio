@@ -107,6 +107,9 @@ public class Model
 
     private final boolean automaticHistoryRefresh = Preferences.isAutomaticHistoryRefresh();
 
+    /** Show time axis grid line? */
+    private volatile boolean show_grid = false;
+
     /** Background color */
     private volatile RGB background = new RGB(255, 255, 255);
 
@@ -673,6 +676,22 @@ public class Model
         background = rgb;
         for (ModelListener listener : listeners)
             listener.changedColorsOrFonts();
+    }
+
+    /** @return <code>true</code> if grid lines are drawn */
+    public boolean isGridVisible()
+    {
+        return show_grid;
+    }
+
+    /** @param visible Should grid be visible? */
+    public void setGridVisible(final boolean grid)
+    {
+        if (show_grid == grid)
+            return;
+        show_grid = grid;
+        for (ModelListener listener : listeners)
+            listener.changeTimeAxisConfig();
     }
 
     /** @return Label font */

@@ -199,7 +199,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                    new_ranges.set(i, new AxisRange<Double>(low, high));
             }
 
-            plot.getUndoableActionManager().perform(new ChangeAxisRanges<>(plot, Messages.Zoom_Stagger, y_axes, original_ranges, new_ranges));
+            plot.getUndoableActionManager().execute(new ChangeAxisRanges<>(plot, Messages.Zoom_Stagger, y_axes, original_ranges, new_ranges));
         });
     }
 
@@ -278,7 +278,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                 data.getLock().unlock();
             }
             if (location != null)
-                plot.getUndoableActionManager().perform(
+                plot.getUndoableActionManager().execute(
                     new AddAnnotationAction<XTYPE>(plot, new AnnotationImpl<XTYPE>(trace, location, value, text)));
         });
     }

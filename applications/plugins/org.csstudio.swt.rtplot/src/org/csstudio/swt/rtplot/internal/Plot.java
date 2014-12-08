@@ -517,18 +517,20 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         if (need_layout.getAndSet(false))
             computeLayout(gc, area_copy);
 
+        final Rectangle plot_bounds = plot_area.getBounds();
+
         gc.setBackground(media.get(background));
         gc.fillRectangle(area_copy);
 
         // Fetch x_axis transformation and use that to paint all traces,
         // because X Axis tends to change from scrolling
         // while we're painting traces
-        x_axis.paint(gc, media, label_font, scale_font);
+        x_axis.paint(gc, media, label_font, scale_font, plot_bounds);
         final ScreenTransform<XTYPE> x_transform = x_axis.getScreenTransform();
-        for (PlotPart y_axis : y_axes)
-            y_axis.paint(gc, media, label_font, scale_font);
+        for (YAxisImpl<XTYPE> y_axis : y_axes)
+            y_axis.paint(gc, media, label_font, scale_font, plot_bounds);
 
-        gc.setClipping((Rectangle) plot_area.getBounds());
+        gc.setClipping(plot_bounds);
         plot_area.paint(gc, media);
 
         for (YAxisImpl<XTYPE> y_axis : y_axes)
@@ -818,7 +820,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                       new_range.add(axis.getValueRange());
                       fireYAxisChange(axis);
                 }
-                undo.perform(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_Out,
+                undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_Out,
                         x_axis, orig_x, x_axis.getValueRange(), y_axes, old_range, new_range));
             }
             else
@@ -934,7 +936,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 int high = Math.max(mouse_start.x, mouse_current.x);
                 final AxisRange<XTYPE> original_x_range = x_axis.getValueRange();
                 final AxisRange<XTYPE> new_x_range = new AxisRange<>(x_axis.getValue(low), x_axis.getValue(high));
-                undo.perform(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In_X, x_axis, original_x_range, new_x_range));
+                undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In_X, x_axis, original_x_range, new_x_range));
             }
             mouse_mode = MouseMode.ZOOM_IN;
         }
@@ -945,7 +947,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 final int high = Math.min(mouse_start.y, mouse_current.y);
                 final int low = Math.max(mouse_start.y, mouse_current.y);
                 final YAxisImpl<XTYPE> axis = y_axes.get(mouse_y_axis);
-                undo.perform(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In_Y,
+                undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In_Y,
                         Arrays.asList(axis),
                         Arrays.asList(axis.getValueRange()),
                         Arrays.asList(new AxisRange<Double>(axis.getValue(low), axis.getValue(high)))));
@@ -971,7 +973,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                     original_y_ranges.add(axis.getValueRange());
                     new_y_ranges.add(new AxisRange<Double>(axis.getValue(low), axis.getValue(high)));
                 }
-                undo.perform(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In, x_axis, original_x_range, new_x_range, y_axes, original_y_ranges, new_y_ranges));
+                undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In, x_axis, original_x_range, new_x_range, y_axes, original_y_ranges, new_y_ranges));
             }
             mouse_mode = MouseMode.ZOOM_IN;
         }

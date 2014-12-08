@@ -262,13 +262,10 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         return lines * x_sep + scale_size + TICK_LENGTH;
     }
 
-    /** Paint the axis.
-     *  <p>
-     *  Does not paint any series data, only the axis (labels, ticks, ...)
-     *  @param event Clipping information from the paint event is used for optimization)
-     */
+    /** {@inheritDoc} */
     @Override
-    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font)
+    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font,
+                      final Rectangle plot_bounds)
     {
         if (! isVisible())
             return;
@@ -322,9 +319,18 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
             gc.setLineWidth(TICK_WIDTH);
             int y = getScreenCoord(tick);
             gc.drawLine(tick_x, y, line_x, y);
+            gc.setLineWidth(old_width);
+
+            // Grid line
+            if (show_grid)
+            {
+                gc.setLineStyle(SWT.LINE_DOT);
+                gc.drawLine(plot_bounds.x, y, plot_bounds.x + plot_bounds.width-1, y);
+                gc.setLineStyle(SWT.LINE_SOLID);
+            }
+
             // Tick Label
             drawTickLabel(gc, media, tick, false);
-            gc.setLineWidth(old_width);
 
             prev = tick;
         }
@@ -334,7 +340,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
             {
                 final double minor = prev + ((tick - prev)*i)/minor_ticks;
                 if (minor > high_value)
-                    continue;
+                    break;
                 final int y = getScreenCoord(minor);
                 gc.drawLine(minor_x, y, line_x, y);
             }

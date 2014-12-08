@@ -31,6 +31,12 @@ public interface Axis<T extends Comparable<T>>
     /** @param color Color to use for this axis */
     public void setColor(final RGB color);
 
+    /** @return <code>true</code> if grid lines are drawn */
+    public boolean isGridVisible();
+
+    /** @param visible Should grid be visible? */
+    public void setGridVisible(final boolean grid);
+
     /** @return <code>true</code> if axis is visible */
     public boolean isVisible();
 

@@ -26,7 +26,7 @@ public class RemoveAnnotationAction<XTYPE extends Comparable<XTYPE>> implements 
     }
 
     @Override
-    public void perform()
+    public void run()
     {
         plot.removeAnnotation(annotation);
     }

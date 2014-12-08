@@ -47,7 +47,7 @@ public class ChangeLiveCapacityCommand implements UndoableAction
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         apply(new_size);
     }

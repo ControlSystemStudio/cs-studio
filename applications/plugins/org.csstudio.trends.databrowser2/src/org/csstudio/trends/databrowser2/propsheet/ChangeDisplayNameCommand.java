@@ -31,12 +31,12 @@ public class ChangeDisplayNameCommand implements UndoableAction
         this.item = item;
         this.old_name = item.getDisplayName();
         this.new_name = new_name;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         item.setDisplayName(new_name);
     }

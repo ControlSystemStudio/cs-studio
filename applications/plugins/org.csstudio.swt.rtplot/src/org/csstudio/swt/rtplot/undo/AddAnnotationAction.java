@@ -26,7 +26,7 @@ public class AddAnnotationAction<XTYPE extends Comparable<XTYPE>> implements Und
     }
 
     @Override
-    public void perform()
+    public void run()
     {
         plot.addAnnotation(annotation);
     }

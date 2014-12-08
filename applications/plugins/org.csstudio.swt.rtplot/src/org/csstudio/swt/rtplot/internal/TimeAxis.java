@@ -15,6 +15,7 @@ import org.csstudio.swt.rtplot.Activator;
 import org.csstudio.swt.rtplot.AxisRange;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.internal.util.TimeScreenTransform;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -100,7 +101,8 @@ public class TimeAxis extends AxisPart<Instant>
 
     /** {@inheritDoc} */
     @Override
-    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font)
+    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font,
+                      final Rectangle plot_bounds)
     {
         if (! isVisible())
             return;
@@ -137,6 +139,15 @@ public class TimeAxis extends AxisPart<Instant>
             gc.setLineWidth(TICK_WIDTH);
             gc.drawLine(x, region.y, x, region.y + TICK_LENGTH);
             gc.setLineWidth(old_width);
+
+            // Grid line
+            if (show_grid)
+            {
+                gc.setLineStyle(SWT.LINE_DOT);
+                gc.drawLine(x, plot_bounds.y, x, region.y-1);
+                gc.setLineStyle(SWT.LINE_SOLID);
+            }
+
             // Tick Label
             drawTickLabel(gc, media, tick, false);
 

@@ -143,6 +143,9 @@ public class Messages extends NLS
     public static String Formula;
     public static String FormulaLabel;
     public static String FormulaLabelEditTT;
+    public static String Grid;
+    public static String GridLbl;
+    public static String GridTT;
     public static String HideTraceWarning;
     public static String HideTraceWarningDetail;
     public static String ImportActionFileSelectorTitleFmt;

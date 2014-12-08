@@ -37,12 +37,12 @@ public class ChangeScrollStepCommand implements UndoableAction
         this.model = model;
         this.old_step = model.getScrollStep();
         this.new_step = step;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         set(new_step);
     }

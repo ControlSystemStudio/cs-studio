@@ -35,12 +35,12 @@ public class ChangeAxisCommand implements UndoableAction
         this.item = item;
         this.old_axis = item.getAxis();
         this.new_axis = axis;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
 		if (!new_axis.isVisible())
 			new_axis.setVisible(true);

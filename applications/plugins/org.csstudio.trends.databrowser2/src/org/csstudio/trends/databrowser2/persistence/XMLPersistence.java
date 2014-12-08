@@ -75,6 +75,7 @@ public class XMLPersistence
     final public static String TAG_START = "start";
     final public static String TAG_END = "end";
     final public static String TAG_LOG_SCALE = "log_scale";
+    final public static String TAG_GRID = "grid";
     final public static String TAG_AUTO_SCALE = "autoscale";
     final public static String TAG_MAX = "max";
     final public static String TAG_MIN = "min";
@@ -128,6 +129,7 @@ public class XMLPersistence
         if (! title.isEmpty())
             model.setTitle(title);
         model.setSaveChanges(DOMHelper.getSubelementBoolean(root_node, TAG_SAVE_CHANGES, true));
+        model.setGridVisible(DOMHelper.getSubelementBoolean(root_node, TAG_GRID, false));
         model.enableScrolling(DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, true));
         model.setUpdatePeriod(DOMHelper.getSubelementDouble(root_node, TAG_UPDATE_PERIOD, Preferences.getUpdatePeriod()));
         try
@@ -177,14 +179,17 @@ public class XMLPersistence
                 Element item = DOMHelper.findFirstElementNode(list.getFirstChild(), "axisSettingsList");
                 if (item != null)
                 {
-                    // Skip 'X' axis entry
-                    item = DOMHelper.findNextElementNode(item, "axisSettingsList");
+                    // First axis is 'X'
+                    model.setGridVisible(DOMHelper.getSubelementBoolean(item, "showMajorGrid", false));
+
                     // Read 'Y' axes
+                    item = DOMHelper.findNextElementNode(item, "axisSettingsList");
                     while (item != null)
                     {
                         final String name = DOMHelper.getSubelementString(item, "title", null);
                         final AxisConfig axis = new AxisConfig(name);
                         loadColorFromDocument(item, "foregroundColor").ifPresent(axis::setColor);
+                        axis.setGridVisible(DOMHelper.getSubelementBoolean(item, "showMajorGrid", false));
                         axis.setLogScale(DOMHelper.getSubelementBoolean(item, "logScale", false));
                         axis.setAutoScale(DOMHelper.getSubelementBoolean(item, "autoScale", false));
                         final Element range = DOMHelper.findFirstElementNode(item.getFirstChild(), "range");
@@ -345,10 +350,11 @@ public class XMLPersistence
         XMLWriter.start(writer, 0, TAG_DATABROWSER);
         writer.println();
 
-        XMLWriter.XML(writer, 1, TAG_SAVE_CHANGES, model.shouldSaveChanges());
         XMLWriter.XML(writer, 1, TAG_TITLE, model.getTitle().orElse(""));
+        XMLWriter.XML(writer, 1, TAG_SAVE_CHANGES, model.shouldSaveChanges());
 
         // Time axis
+        XMLWriter.XML(writer, 1, TAG_GRID, model.isGridVisible());
         XMLWriter.XML(writer, 1, TAG_SCROLL, model.isScrollEnabled());
         XMLWriter.XML(writer, 1, TAG_UPDATE_PERIOD, model.getUpdatePeriod());
         XMLWriter.XML(writer, 1, TAG_SCROLL_STEP, model.getScrollStep().getSeconds());

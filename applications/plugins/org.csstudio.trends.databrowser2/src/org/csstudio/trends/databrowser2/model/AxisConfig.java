@@ -44,6 +44,9 @@ public class AxisConfig
 	/** Axis range */
 	private double min, max;
 
+	/** Show grid line? */
+	private boolean show_grid;
+
 	/** Auto-scale? */
 	private boolean auto_scale;
 
@@ -55,7 +58,7 @@ public class AxisConfig
 	 */
 	public AxisConfig(final String name)
 	{
-	    this(true, name, true, false, new RGB(0, 0, 0), 0.0, 10.0, Preferences.useAutoScale(), false);
+	    this(true, name, true, false, new RGB(0, 0, 0), 0.0, 10.0, false, Preferences.useAutoScale(), false);
 	}
 
 	/** Initialize
@@ -75,6 +78,7 @@ public class AxisConfig
 	        final RGB rgb,
 	        final double min,
 	        final double max,
+	        final boolean show_grid,
 	        final boolean auto_scale,
 	        final boolean log_scale)
 	{
@@ -85,6 +89,7 @@ public class AxisConfig
 	    this.color = Objects.requireNonNull(rgb);
 		this.min = min;
 		this.max = max;
+		this.show_grid = show_grid;
 		this.auto_scale = auto_scale;
 		this.log_scale = log_scale;
 	}
@@ -202,6 +207,19 @@ public class AxisConfig
 		fireAxisChangeEvent();
 	}
 
+    /** @return <code>true</code> if grid lines are drawn */
+    public boolean isGridVisible()
+    {
+        return show_grid;
+    }
+
+    /** @param visible Should grid be visible? */
+    public void setGridVisible(final boolean grid)
+    {
+        show_grid = grid;
+        fireAxisChangeEvent();
+    }
+
 	/** @return Auto-scale? */
 	public boolean isAutoScale()
 	{
@@ -235,10 +253,8 @@ public class AxisConfig
 		    model.get().fireAxisChangedEvent(Optional.of(this));
 	}
 
-	/**
-	 * Write XML formatted axis configuration
-	 *
-	 * @param writer PrintWriter
+	/** Write XML formatted axis configuration
+	 *  @param writer PrintWriter
 	 */
 	public void write(final PrintWriter writer)
 	{
@@ -252,6 +268,7 @@ public class AxisConfig
 		    XMLPersistence.writeColor(writer, 3, XMLPersistence.TAG_COLOR, color);
 		XMLWriter.XML(writer, 3, XMLPersistence.TAG_MIN, min);
 		XMLWriter.XML(writer, 3, XMLPersistence.TAG_MAX, max);
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_GRID, Boolean.toString(show_grid));
 		XMLWriter.XML(writer, 3, XMLPersistence.TAG_AUTO_SCALE, Boolean.toString(auto_scale));
 		XMLWriter.XML(writer, 3, XMLPersistence.TAG_LOG_SCALE, Boolean.toString(log_scale));
 
@@ -259,13 +276,10 @@ public class AxisConfig
 		writer.println();
 	}
 
-	/**
-	 * Create Axis info from XML document
-	 *
-	 * @param node
-	 * @return AxisConfig
-	 * @throws Exception
-	 *             on error
+	/** Create Axis info from XML document
+	 *  @param node
+	 *  @return AxisConfig
+	 *  @throws Exception on error
 	 */
 	public static AxisConfig fromDocument(final Element node) throws Exception
 	{
@@ -276,15 +290,16 @@ public class AxisConfig
 	    final RGB rgb = XMLPersistence.loadColorFromDocument(node).orElse(new RGB(0, 0, 0));
 	    final double min = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_MIN, 0.0);
 	    final double max = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_MAX, 10.0);
+        final boolean show_grid = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_GRID, false);
 	    final boolean auto_scale = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_AUTO_SCALE, false);
 	    final boolean log_scale = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_LOG_SCALE, false);
-		return new AxisConfig(visible, name, use_trace_names, right, rgb, min, max, auto_scale, log_scale);
+		return new AxisConfig(visible, name, use_trace_names, right, rgb, min, max, show_grid, auto_scale, log_scale);
 	}
 
 	/** @return Copied axis configuration. Not associated with a model */
 	public AxisConfig copy()
 	{
-	    return new AxisConfig(visible, name, use_trace_names, is_right, color, min, max, auto_scale, log_scale);
+	    return new AxisConfig(visible, name, use_trace_names, is_right, color, min, max, show_grid, auto_scale, log_scale);
 	}
 
 	/** @return String representation for debugging */

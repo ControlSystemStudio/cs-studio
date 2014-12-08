@@ -66,7 +66,7 @@ public class RTTimePlot extends RTPlot<Instant>
             @Override
             public void widgetSelected(final SelectionEvent e)
             {
-                getUndoableActionManager().perform(new UpdateScrolling(RTTimePlot.this, scroll.getSelection()));
+                getUndoableActionManager().execute(new UpdateScrolling(RTTimePlot.this, scroll.getSelection()));
                 plot.fireXAxisChange();
             }
         });
@@ -89,7 +89,7 @@ public class RTTimePlot extends RTPlot<Instant>
                 // In scroll mode, if the end time selected by the user via
                 // the GUI is 25 % away from 'now', stop scrolling
                 if (dist * 100 / (range + scroll_step.getSeconds()) > 25)
-                    getUndoableActionManager().perform(new UpdateScrolling(RTTimePlot.this, false));
+                    getUndoableActionManager().execute(new UpdateScrolling(RTTimePlot.this, false));
             }
         });
 

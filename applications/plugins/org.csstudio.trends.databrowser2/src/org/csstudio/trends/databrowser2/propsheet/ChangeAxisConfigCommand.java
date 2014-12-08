@@ -41,7 +41,7 @@ public class ChangeAxisConfigCommand implements UndoableAction
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         apply(new_config);
     }
@@ -71,6 +71,8 @@ public class ChangeAxisConfigCommand implements UndoableAction
         if (axis.getMin() != config.getMin()  ||
             axis.getMax() != config.getMax())
             axis.setRange(config.getMin(), config.getMax());
+        if (axis.isGridVisible() != config.isGridVisible())
+            axis.setGridVisible(config.isGridVisible());
         if (axis.isAutoScale() != config.isAutoScale())
             axis.setAutoScale(config.isAutoScale());
         if (axis.isLogScale() != config.isLogScale())

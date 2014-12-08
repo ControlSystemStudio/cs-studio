@@ -108,31 +108,15 @@ public class DataBrowserPropertySheetPage extends Page
     /** Top-level control for the property sheet */
     private Composite control;
 
-    private Text formula_txt;
+    private TableViewer trace_table, archive_table;
 
-    private TableViewer trace_table;
+    private Composite archive_panel, formula_panel;
 
-    private TableViewer archive_table;
-
-    private Composite archive_panel;
-
-    private Composite formula_panel;
-
-    private Text start_time;
-
-    private Text end_time;
-
-    private Button rescales[];
+    private Text formula_txt, start_time, end_time, title, update_period, scroll_step;
 
     private ColorBlob background;
 
-    private Button label_font, scale_font;
-
-    private Text title;
-
-    private Text update_period, scroll_step;
-
-    private Button save_changes;
+    private Button label_font, scale_font, save_changes, show_grid, rescales[];
 
     final private ModelListener model_listener = new ModelListenerAdapter()
     {
@@ -186,6 +170,13 @@ public class DataBrowserPropertySheetPage extends Page
         {
             start_time.setText(model.getStartSpecification());
             end_time.setText(model.getEndSpecification());
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changeTimeAxisConfig()
+        {
+            show_grid.setSelection(model.isGridVisible());
         }
 
         /** {@inheritDoc} */
@@ -620,7 +611,7 @@ public class DataBrowserPropertySheetPage extends Page
         label.setLayoutData(new GridData());
 
         final Composite shortcut_bar = new Composite(parent, 0);
-        shortcut_bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+        shortcut_bar.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
         final RowLayout row_layout = new RowLayout();
         row_layout.marginLeft = 0;
         row_layout.marginTop = 0;
@@ -634,13 +625,30 @@ public class DataBrowserPropertySheetPage extends Page
             shortcut.addSelectionListener(new SelectionAdapter()
             {
                 @Override
-                public void widgetSelected(SelectionEvent e)
+                public void widgetSelected(final SelectionEvent e)
                 {
                     new ChangeTimerangeCommand(model, operations_manager,
                             true, start_spec, RelativeTime.NOW);
                 }
             });
         }
+
+        label = new Label(parent, 0);
+        label.setText(Messages.GridLbl);
+        label.setLayoutData(new GridData());
+
+        show_grid = new Button(parent, SWT.CHECK);
+        show_grid.setToolTipText(Messages.GridTT);
+        show_grid.setLayoutData(new GridData(0, 0, false, false, 2, 1));
+        show_grid.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                new ChangeTimeAxisConfigCommand(model, operations_manager, show_grid.getSelection());
+            }
+        });
+        model_listener.changeTimeAxisConfig();
     }
 
     /** Create tab for traces (PVs, Formulas)

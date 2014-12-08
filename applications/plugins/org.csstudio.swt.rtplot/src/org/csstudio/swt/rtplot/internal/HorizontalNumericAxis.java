@@ -11,6 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.swt.rtplot.Activator;
 import org.csstudio.swt.rtplot.SWTMediaPool;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -48,7 +49,8 @@ public class HorizontalNumericAxis extends NumericAxis
 
     /** {@inheritDoc} */
     @Override
-    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font)
+    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font,
+                      final Rectangle plot_bounds)
     {
         super.paint(gc, media);
         final Rectangle region = getBounds();
@@ -58,13 +60,48 @@ public class HorizontalNumericAxis extends NumericAxis
         gc.setFont(scale_font);
 
         // Axis and Tick marks
-        computeTicks(gc);
         gc.drawLine(region.x, region.y, region.x + region.width-1, region.y);
+        computeTicks(gc);
+
         final double high_value = range.getHigh();
-        for (double tick = ticks.getStart();
-            tick <= high_value;
+        final int minor_ticks = ticks.getMinorTicks();
+        double tick = ticks.getStart();
+        double prev = ticks.getPrevious(tick);
+        for (/**/;
+            tick <= high_value  &&  Double.isFinite(tick);
             tick = ticks.getNext(tick))
+        {
+            // Minor ticks?
+            for (int i=1; i<minor_ticks; ++i)
+            {
+                final double minor = prev + ((tick - prev)*i)/minor_ticks;
+                final int x = getScreenCoord(minor);
+                if (x < region.x)
+                    continue;
+                gc.drawLine(x, region.y, x, region.y + MINOR_TICK_LENGTH);
+            }
+
             drawTickLabel(gc, media, tick, false);
+            if (show_grid)
+            {
+                final int x = getScreenCoord(tick);
+                gc.setLineStyle(SWT.LINE_DOT);
+                gc.drawLine(x, plot_bounds.y, x, plot_bounds.y + plot_bounds.height-1);
+                gc.setLineStyle(SWT.LINE_SOLID);
+            }
+
+            prev = tick;
+        }
+        // Minor ticks after last major tick?
+        if (Double.isFinite(tick))
+            for (int i=1; i<minor_ticks; ++i)
+            {
+                final double minor = prev + ((tick - prev)*i)/minor_ticks;
+                if (minor > high_value)
+                    break;
+                final int x = getScreenCoord(minor);
+                gc.drawLine(x, region.y, x, region.y + MINOR_TICK_LENGTH);
+            }
 
         // Label: centered at bottom of region
         gc.setFont(label_font);

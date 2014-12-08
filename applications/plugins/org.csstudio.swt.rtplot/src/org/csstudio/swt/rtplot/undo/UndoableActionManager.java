@@ -49,12 +49,12 @@ public class UndoableActionManager
         return ! redoStack.isEmpty();
     }
 
-	/** @param action Action to perform and add to the un-do stack */ // TODO Change into 'run'
-	public void perform(final UndoableAction action)
+	/** @param action Action to perform and add to the un-do stack */
+	public void execute(final UndoableAction action)
 	{
 	    try
 	    {
-	        action.perform();
+	        action.run();
 	    }
 	    catch (Throwable ex)
 	    {
@@ -97,7 +97,7 @@ public class UndoableActionManager
 	    if (redoStack.isEmpty())
 	        return;
         final UndoableAction action = redoStack.pop();
-        action.perform();
+        action.run();
         undoStack.push(action);
         fireOperationsHistoryChanged();
 	}

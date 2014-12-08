@@ -33,12 +33,12 @@ public class ChangePlotBackgroundCommand implements UndoableAction
         this.model = model;
         this.old_color = model.getPlotBackground();
         this.new_color = new_color;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         model.setPlotBackground(new_color);
     }

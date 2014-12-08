@@ -54,7 +54,7 @@ public class ChangeSamplePeriodCommand implements UndoableAction
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         try
         {

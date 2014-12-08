@@ -32,12 +32,12 @@ public class ChangeColorCommand implements UndoableAction
         this.item = item;
         this.old_color = item.getColor();
         this.new_color = new_color;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         item.setColor(new_color);
     }

@@ -31,12 +31,12 @@ public class ChangeWaveformIndexCommand implements UndoableAction
         this.item = item;
         this.old_index = item.getWaveformIndex();
         this.new_index = new_index;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         item.setWaveformIndex(new_index);
     }

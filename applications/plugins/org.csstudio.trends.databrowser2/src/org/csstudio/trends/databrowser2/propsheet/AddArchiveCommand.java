@@ -58,12 +58,12 @@ public class AddArchiveCommand implements UndoableAction
         for (int i=0; i<original.length; ++i)
             original[i] = pvs[i].getArchiveDataSources();
         this.replace = replace;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         if (replace)
             for (PVItem pv : pvs)

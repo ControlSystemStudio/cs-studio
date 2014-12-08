@@ -43,12 +43,12 @@ public class ChangeTimerangeCommand implements UndoableAction
         this.new_start = start;
         this.new_end = end;
         operationsManager.add(this);
-        perform();
+        run();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         apply(new_scroll, new_start, new_end);
     }

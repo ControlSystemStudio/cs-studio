@@ -232,13 +232,9 @@ public class ModelBasedPlot
 		return plot.getYAxes().get(index);
 	}
 
-	/**
-	 * Update configuration of value axis
-	 *
-	 * @param index
-	 *            Axis index. Y axes will be created as needed.
-	 * @param config
-	 *            Desired axis configuration
+	/** Update value axis from model
+	 *  @param index Axis index. Y axes will be created as needed.
+	 *  @param config Desired axis configuration
 	 */
 	public void updateAxis(final int index, final AxisConfig config)
 	{
@@ -247,6 +243,7 @@ public class ModelBasedPlot
 		axis.useTraceNames(config.isUsingTraceNames());
 		axis.setColor(config.getColor());
 		axis.setLogarithmic(config.isLogScale());
+        axis.setGridVisible(config.isGridVisible());
 		axis.setAutoscale(config.isAutoScale());
 		axis.setValueRange(config.getMin(), config.getMax());
 		axis.setVisible(config.isVisible());
@@ -272,11 +269,8 @@ public class ModelBasedPlot
 		items_by_trace.remove(trace);
 	}
 
-	/**
-	 * Update the configuration of a trace from Model Item
-	 *
-	 * @param item
-	 *            Item that was previously added to the Plot
+	/** Update the configuration of a trace from Model Item
+	 *  @param item Item that was previously added to the Plot
 	 */
 	public void updateTrace(final ModelItem item)
 	{

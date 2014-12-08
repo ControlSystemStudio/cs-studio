@@ -33,6 +33,9 @@ public class ModelListenerAdapter implements ModelListener
     public void changedTimerange() { /* NOP */}
 
     @Override
+    public void changeTimeAxisConfig() { /* NOP */}
+
+    @Override
     public void changedAxis(Optional<AxisConfig> axis) { /* NOP */}
 
     @Override

@@ -39,12 +39,12 @@ public class DeleteAxisCommand implements UndoableAction
         this.axis = axis;
         // Remember axis locations
         this.index = model.getAxisIndex(axis);
-        operationsManager.perform(this);
+        operationsManager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         model.removeAxis(axis);
     }

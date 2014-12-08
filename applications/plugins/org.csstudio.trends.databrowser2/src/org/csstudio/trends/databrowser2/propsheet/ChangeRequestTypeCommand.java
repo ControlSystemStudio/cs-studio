@@ -32,12 +32,12 @@ public class ChangeRequestTypeCommand implements UndoableAction
         this.item = item;
         this.old_request_type = item.getRequestType();
         this.new_request_type = new_request_type;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         item.setRequestType(new_request_type);
     }

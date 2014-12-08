@@ -25,7 +25,7 @@ public class UpdateScrolling implements UndoableAction
     }
 
     @Override
-    public void perform()
+    public void run()
     {
         plot.setScrolling(enable);
     }

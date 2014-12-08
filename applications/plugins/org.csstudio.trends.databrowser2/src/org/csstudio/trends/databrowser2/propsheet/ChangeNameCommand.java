@@ -55,7 +55,7 @@ public class ChangeNameCommand implements UndoableAction
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         try
         {

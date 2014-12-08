@@ -12,7 +12,7 @@ package org.csstudio.swt.rtplot.undo;
  *  @author Xihui Chen original org.csstudio.swt.xygraph.undo.IUndoableCommand
  *  @author Kay Kasemir
  */
-public interface UndoableAction
+public interface UndoableAction extends Runnable
 {
     /** Perform the action.
      *
@@ -20,7 +20,8 @@ public interface UndoableAction
      *  perform the action.
      *  Might be called again after an 'un-do' to re-perform the action.
      */
-    public void perform(); // change into run()
+    @Override
+    public void run();
 
     /** Called by the {@link UndoableActionManager} to un-do the action. */
 	public void undo();

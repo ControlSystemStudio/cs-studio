@@ -32,12 +32,12 @@ public class ChangeTitleCommand implements UndoableAction
         this.model = model;
         this.old_title = model.getTitle().orElse(null);
         this.new_title = title;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         model.setTitle(new_title);
     }

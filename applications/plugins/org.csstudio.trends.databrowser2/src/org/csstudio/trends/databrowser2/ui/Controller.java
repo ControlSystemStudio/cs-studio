@@ -395,6 +395,12 @@ public class Controller
             }
 
             @Override
+            public void changeTimeAxisConfig()
+            {
+                plot.getPlot().getXAxis().setGridVisible(model.isGridVisible());
+            }
+
+            @Override
             public void changedAxis(final Optional<AxisConfig> axis)
             {
                 if (axis.isPresent())
@@ -498,6 +504,7 @@ public class Controller
             throw new IllegalStateException("Already started");
 
         plot.getPlot().setBackground(model.getPlotBackground());
+        plot.getPlot().getXAxis().setGridVisible(model.isGridVisible());
         plot.getPlot().setLabelFont(model.getLabelFont());
         plot.getPlot().setScaleFont(model.getScaleFont());
         plot.getPlot().setScrollStep(model.getScrollStep());

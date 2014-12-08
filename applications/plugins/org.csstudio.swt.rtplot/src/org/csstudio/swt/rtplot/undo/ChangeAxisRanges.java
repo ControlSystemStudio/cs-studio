@@ -93,7 +93,7 @@ public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> implements Undoab
 
 
     @Override
-    public void perform()
+    public void run()
     {
         if (x_axis != null)
         {

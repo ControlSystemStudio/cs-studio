@@ -31,12 +31,12 @@ public class ChangeSaveChangesCommand implements UndoableAction
     {
         this.model = model;
         this.save_changes = save_changes;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         model.setSaveChanges(save_changes);
     }

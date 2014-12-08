@@ -32,6 +32,9 @@ public interface ModelListener
     /** The time range (start/end time or span) was changed */
     void changedTimerange();
 
+    /** Time axis grid, .. changed */
+    void changeTimeAxisConfig();
+
     /** @param axis Axis that changed its color, range, ....
      *              If <code>null</code>, an axis was added or removed
      */

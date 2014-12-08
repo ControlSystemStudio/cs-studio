@@ -33,12 +33,12 @@ public class DeleteArchiveCommand implements UndoableAction
         this.pv = pv;
         this.archives = archives;
         original = pv.getArchiveDataSources();
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         pv.removeArchiveDataSource(archives);
     }

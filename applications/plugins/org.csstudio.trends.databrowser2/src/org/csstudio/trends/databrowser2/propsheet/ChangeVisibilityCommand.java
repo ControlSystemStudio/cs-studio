@@ -32,12 +32,12 @@ public class ChangeVisibilityCommand implements UndoableAction
         this.item = item;
         this.old_visibility = item.isVisible();
         this.new_visibility = visible;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
 		final AxisConfig axis = item.getAxis();
 		item.setVisible(new_visibility);

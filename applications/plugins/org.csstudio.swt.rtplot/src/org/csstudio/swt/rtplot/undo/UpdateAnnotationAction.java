@@ -34,7 +34,7 @@ public class UpdateAnnotationAction<XTYPE extends Comparable<XTYPE>> implements 
     }
 
     @Override
-    public void perform()
+    public void run()
     {
         plot.updateAnnotation(annotation, end_pos, end_val);
     }

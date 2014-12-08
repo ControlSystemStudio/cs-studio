@@ -230,6 +230,10 @@ public class DataBrowserEditor extends EditorPart
             {   setDirty(true);   }
 
             @Override
+            public void changeTimeAxisConfig()
+            {   setDirty(true);   }
+
+            @Override
             public void changedAxis(final Optional<AxisConfig> axis)
             {   setDirty(true);   }
 

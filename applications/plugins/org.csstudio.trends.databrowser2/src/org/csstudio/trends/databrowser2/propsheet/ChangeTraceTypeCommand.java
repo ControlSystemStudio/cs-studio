@@ -32,12 +32,12 @@ public class ChangeTraceTypeCommand implements UndoableAction
         this.item = item;
         this.old_trace_type = item.getTraceType();
         this.new_trace_type = new_trace_type;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         item.setTraceType(new_trace_type);
     }

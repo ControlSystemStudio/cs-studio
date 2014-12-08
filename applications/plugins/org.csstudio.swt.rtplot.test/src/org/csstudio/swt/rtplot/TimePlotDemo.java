@@ -55,8 +55,11 @@ public class TimePlotDemo
         plot.setUpdateThrottle(200, TimeUnit.MILLISECONDS);
         plot.setScrollStep(Duration.ofSeconds(30));
 
+        plot.getXAxis().setGridVisible(true);
+
         plot.addYAxis("y2");
         plot.getYAxes().get(0).setValueRange(-2.2, 3.2);
+        plot.getYAxes().get(0).setGridVisible(true);
         plot.getYAxes().get(1).setValueRange(1.2, 6.2);
         plot.getYAxes().get(1).setLogarithmic(true);
 

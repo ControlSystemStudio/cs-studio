@@ -45,7 +45,7 @@ public class AddAxisCommand implements UndoableAction
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         model.addAxis(axis);
     }

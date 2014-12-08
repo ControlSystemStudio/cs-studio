@@ -31,12 +31,12 @@ public class ChangeLineWidthCommand implements UndoableAction
         this.item = item;
         this.old_width = item.getLineWidth();
         this.new_width = new_width;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         item.setLineWidth(new_width);
     }

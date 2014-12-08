@@ -72,11 +72,11 @@ public class EditItemsCommand implements UndoableAction
                 oldRequestType.add(RequestType.RAW);
     		}
     	}
-    	operations_manager.perform(this);
+    	operations_manager.execute(this);
     }
 
     @Override
-    public void perform()
+    public void run()
     {
         for (ModelItem item : items)
         {

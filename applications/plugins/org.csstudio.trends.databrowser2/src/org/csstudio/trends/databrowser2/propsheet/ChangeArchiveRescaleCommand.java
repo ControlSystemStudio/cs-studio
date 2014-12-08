@@ -33,12 +33,12 @@ public class ChangeArchiveRescaleCommand implements UndoableAction
         this.model = model;
         this.old_rescale = model.getArchiveRescale();
         this.new_rescale = rescale;
-        operations_manager.perform(this);
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void perform()
+    public void run()
     {
         model.setArchiveRescale(new_rescale);
     }
