@@ -82,7 +82,17 @@
                 <xs:element name="pv" type="xs:int"/>
                 <xs:element name="time" type="xs:string"/>
                 <xs:element name="value" type="xs:string"/>
+                <xs:element ref="offset" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="text" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="offset">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="x" type="xs:int"/>
+                <xs:element name="y" type="xs:int"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

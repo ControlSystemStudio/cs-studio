@@ -115,7 +115,9 @@ public class ModelBasedPlot
                 for (Annotation<Instant> annotation : plot.getAnnotations())
                 {
                     final int item_index = traces.indexOf(annotation.getTrace());
-                    annotations.add(new AnnotationInfo(item_index, annotation.getPosition(), annotation.getValue(), annotation.getText()));
+                    annotations.add(new AnnotationInfo(item_index,
+                                                       annotation.getPosition(), annotation.getValue(),
+                                                       annotation.getOffset(), annotation.getText()));
                 }
                 listener.changedAnnotations(annotations);
             }

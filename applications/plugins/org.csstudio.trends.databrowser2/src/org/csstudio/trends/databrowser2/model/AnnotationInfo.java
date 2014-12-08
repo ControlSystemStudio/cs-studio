@@ -14,6 +14,7 @@ import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.ui.ModelBasedPlot;
+import org.eclipse.swt.graphics.Point;
 import org.w3c.dom.Element;
 
 /** Information about a Plot Annotation
@@ -33,14 +34,16 @@ public class AnnotationInfo
     final int item_index;
 	final private Instant time;
 	final private double value;
+	final private Point offset;
 	final private String text;
 
-	public AnnotationInfo(final int item_index, final Instant time, final double value, final String text)
+	public AnnotationInfo(final int item_index, final Instant time, final double value, final Point offset, final String text)
 	{
 
 	    this.item_index = item_index;
 		this.time = time;
 		this.value = value;
+		this.offset = offset;
 		this.text = text;
     }
 
@@ -60,6 +63,12 @@ public class AnnotationInfo
     public double getValue()
     {
         return value;
+    }
+
+    /** @return Offset */
+    public Point getOffset()
+    {
+        return offset;
     }
 
     /** @return Text */
@@ -85,6 +94,12 @@ public class AnnotationInfo
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_PV, item_index);
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_TIME, TimeHelper.format(time));
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_VALUE, value);
+        XMLWriter.start(writer, 3, XMLPersistence.TAG_OFFSET);
+        writer.println();
+        XMLWriter.XML(writer, 4, XMLPersistence.TAG_X, offset.x);
+        XMLWriter.XML(writer, 4, XMLPersistence.TAG_Y, offset.y);
+        XMLWriter.end(writer, 3, XMLPersistence.TAG_OFFSET);
+        writer.println();
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_TEXT, text);
         XMLWriter.end(writer, 2, XMLPersistence.TAG_ANNOTATION);
         writer.println();
@@ -102,6 +117,15 @@ public class AnnotationInfo
         final Instant time = TimeHelper.parse(timetext);
         final double value = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_VALUE, 0.0);
 		final String text = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TEXT);
-        return new AnnotationInfo(item_index, time, value, text);
+
+		int x = 20;
+		int y = 20;
+		Element offset = DOMHelper.findFirstElementNode(node.getFirstChild(), XMLPersistence.TAG_OFFSET);
+		if (offset != null)
+		{
+		    x = DOMHelper.getSubelementInt(offset, XMLPersistence.TAG_X, x);
+            y = DOMHelper.getSubelementInt(offset, XMLPersistence.TAG_Y, y);
+		}
+		return new AnnotationInfo(item_index, time, value, new Point(x, y), text);
     }
 }

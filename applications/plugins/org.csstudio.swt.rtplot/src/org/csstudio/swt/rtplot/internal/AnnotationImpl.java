@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.internal;
 
+import java.util.Optional;
+
 import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.Trace;
@@ -24,12 +26,26 @@ import org.eclipse.swt.graphics.Rectangle;
  */
 public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<XTYPE>
 {
-    private boolean selected = false;
+    /** 'X' marks the spot, and this is it's radius. */
+    final private static int X_RADIUS = 4;
 
-    /** The screen coordinates.
-     *  Only updated when painted !
-     */
-    private Rectangle screen_pos = null;
+    /** What part of this annotation has been selected by the mouse? */
+    public static enum Selection
+    {   /** Nothing */
+        None,
+        /** The reference point, i.e. the location on the trace */
+        Reference,
+        /** The body of the annotation */
+        Body
+    };
+
+    private Selection selected = Selection.None;
+
+    /** Screen location of reference point, set when painted */
+    private Optional<Point> screen_pos = Optional.empty();
+
+    /** Screen location of annotation body, set when painted */
+    private Optional<Rectangle> screen_box = Optional.empty();
 
     /** Constructor */
     public AnnotationImpl(final Trace<XTYPE> trace, final XTYPE position, final double value, final String text)
@@ -47,46 +63,68 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
         this.value = value;
     }
 
+    /** @param offset New offset from reference point to body of annotation */
+    public void setOffset(final Point offset)
+    {
+        this.offset = offset;
+    }
+
     /** @param text New annotation text, may include '\n' */
     public void setText(final String text)
     {
         this.text = text;
     }
 
-    /** @return <code>true</code> if currently selected */
-    public boolean isSelected()
+    /** Check if the provided mouse location would select the annotation
+     *  @param screen_location Location of mouse on screen
+     *  @return <code>true</code> if this annotation gets selected at that mouse location
+     */
+    boolean isSelected(final Point screen_location)
+    {
+        final Optional<Rectangle> rect = screen_box;
+        if (rect.isPresent()  &&  rect.get().contains(screen_location))
+        {
+            selected = Selection.Body;
+            return true;
+        }
+
+        if (areWithinDistance(screen_pos, screen_location))
+        {
+            selected = Selection.Reference;
+            return true;
+        }
+
+        return false;
+    }
+
+    /** @return Current selection state */
+    Selection getSelection()
     {
         return selected;
     }
 
-    /** Set the selection state */
-    void select(boolean selected)
+    void deselect()
     {
-        this.selected = selected;
+        selected = Selection.None;
     }
 
-    /** @return On-screen coordinates or <code>null</code> if never displayed. */
-    Rectangle getScreenCoords()
+    private boolean areWithinDistance(final Optional<Point> pos, final Point pos2)
     {
-        return screen_pos;
+        if (pos.isPresent())
+        {
+            final int dx = Math.abs(pos.get().x - pos2.x);
+            final int dy = Math.abs(pos.get().y - pos2.y);
+            return dx*dx + dy*dy <= X_RADIUS*X_RADIUS;
+        }
+        return false;
     }
-
-    /** 'X' marks the spot, and this is it's radius. */
-    final private static int X_RADIUS = 2;
 
     /** Paint the annotation on given gc and axes. */
     void paint(final GC gc, final SWTMediaPool media, final AxisPart<XTYPE> xaxis, final YAxisImpl<XTYPE> yaxis)
     {
-        // Somewhat like this:
-        //
-        //    Text
-        //    Blabla
-        //    Yaddi yaddi
-        //    ___________
-        //   /
-        //  O
         final int x = xaxis.getScreenCoord(position);
         final int y = Double.isFinite(value) ? yaxis.getScreenCoord(value) : yaxis.getScreenRange().getLow();
+        screen_pos = Optional.of(new Point(x, y));
 
         final String label = NLS.bind(text,
                 new Object[]
@@ -96,27 +134,44 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
                     yaxis.getTicks().format(value)
                 });
 
-        final Color o_col = gc.getForeground();
+        // Layout like this:
+        //
+        //    Text
+        //    Blabla
+        //    Yaddi yaddi
+        //    ___________
+        //   /
+        //  O
         final Point text_size = gc.textExtent(label, SWT.DRAW_DELIMITER);
-        final int label_dist = gc.getAdvanceWidth('X');
-        final int tx = x+label_dist, ty = y-label_dist;
-        // Marker 'O' around the actual x/y point
-        gc.drawOval(x-X_RADIUS, y-X_RADIUS, 2*X_RADIUS, 2*X_RADIUS);
-        // '/'
-        gc.drawLine(x+X_RADIUS, y-X_RADIUS, tx, ty);
-        // Text
+        final int tx = x + offset.x, ty = y + offset.y;
         final int txt_top = ty-text_size.y;
         // Update the screen position so that we can later 'select' this annotation.
-        screen_pos = new Rectangle(tx, txt_top, text_size.x, text_size.y);
+        final Rectangle rect = new Rectangle(tx, txt_top, text_size.x, text_size.y);
+        screen_box = Optional.of(rect);
+
+        // Marker 'O' around the actual x/y point, line to annotation.
+        // Line first from actual point, will then paint the 'O' over it
+        final int line_x = (x <= tx + text_size.x/2) ? tx : tx+text_size.x;
+        final int line_y = (y > ty - text_size.y/2) ? ty : ty-text_size.y;
+        gc.drawLine(x, y, line_x, line_y);
+
+        // Fill with background (white), then draw around to get higher-contrast 'O'
+        gc.fillOval(x-X_RADIUS, y-X_RADIUS, 2*X_RADIUS, 2*X_RADIUS);
+        gc.drawOval(x-X_RADIUS, y-X_RADIUS, 2*X_RADIUS, 2*X_RADIUS);
+
+        // Text
+        final Color o_col = gc.getForeground();
         gc.setForeground(media.get(trace.getColor()));
         gc.setAlpha(170);
-        gc.fillRectangle(screen_pos);
+        gc.fillRectangle(rect);
         gc.setAlpha(255);
         gc.drawText(label, tx, txt_top, SWT.DRAW_DELIMITER | SWT.DRAW_TRANSPARENT);
+
+        // Line over or under the text
         gc.setForeground(o_col);
-        if (selected)
-            gc.drawRectangle(screen_pos);
+        if (selected != Selection.None)
+            gc.drawRectangle(rect);
         else // '___________'
-            gc.drawLine(tx, ty, tx+text_size.x, ty);
+            gc.drawLine(tx, line_y, tx+text_size.x, line_y);
     }
 }

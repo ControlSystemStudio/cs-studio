@@ -191,6 +191,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
         }
         dirty_ticks = true;
         requestLayout();
+        requestRefresh();
         return true;
     }
 

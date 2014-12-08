@@ -130,14 +130,18 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     private boolean show_crosshair = false;
     private MouseMode mouse_mode = MouseMode.NONE;
-    private Point mouse_start = null;
-    private volatile Point mouse_current = null;
-    private AnnotationImpl<XTYPE> mouse_annotation = null;
-    private XTYPE mouse_annotation_start_position;
-    private double mouse_annotation_start_value;
+    private Optional<Point> mouse_start = Optional.empty();
+    private volatile Optional<Point> mouse_current = Optional.empty();
     private AxisRange<XTYPE> mouse_start_x_range;
     private List<AxisRange<Double>> mouse_start_y_ranges = new ArrayList<>();
     private int mouse_y_axis = -1;
+
+    // Annotation-related info. If mouse_annotation is set, the rest should be set.
+    private Optional<AnnotationImpl<XTYPE>> mouse_annotation = Optional.empty();
+    private Point mouse_annotation_start_offset;
+    private XTYPE mouse_annotation_start_position;
+    private double mouse_annotation_start_value;
+
 
     /** Listener to X Axis {@link PlotPart} */
     final PlotPartListener x_axis_listener = new PlotPartListener()
@@ -173,7 +177,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     final private List<PlotListener<XTYPE>> listeners = new CopyOnWriteArrayList<>();
 
-    private volatile List<CursorMarker> cursor_markers = null;
+    private volatile Optional<List<CursorMarker>> cursor_markers = Optional.empty();
 
     /** Constructor
      *  @param parent Parent widget
@@ -418,9 +422,11 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
      *  @param position New position
      *  @param value New value
      */
-    public void updateAnnotation(final AnnotationImpl<XTYPE> annotation, final XTYPE position, final double value)
+    public void updateAnnotation(final AnnotationImpl<XTYPE> annotation, final XTYPE position, final double value,
+                                 final Point offset)
     {
         annotation.setLocation(position, value);
+        annotation.setOffset(offset);
         requestUpdate();
         fireAnnotationsChanged();
     }
@@ -438,29 +444,33 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
      */
     private boolean selectMouseAnnotation()
     {
-        for (AnnotationImpl<XTYPE> annotation : annotations)
-            if (annotation.getScreenCoords().contains(mouse_start))
-            {
-                mouse_annotation = annotation;
-                mouse_annotation_start_position = annotation.getPosition();
-                mouse_annotation_start_value = annotation.getValue();
-                annotation.select(true);
-                requestUpdate();
-                return true;
-            }
+        if (mouse_start.isPresent())
+            for (AnnotationImpl<XTYPE> annotation : annotations)
+                if (annotation.isSelected(mouse_start.get()))
+                {
+                    mouse_annotation_start_offset = annotation.getOffset();
+                    mouse_annotation_start_position = annotation.getPosition();
+                    mouse_annotation_start_value = annotation.getValue();
+                    mouse_annotation = Optional.of(annotation);
+                    requestUpdate();
+                    return true;
+                }
         return false;
     }
 
     /** De-select an Annotation */
     private void deselectMouseAnnotation()
     {
-        if (mouse_annotation != null)
+        if (mouse_annotation.isPresent())
         {
-            undo.add(new UpdateAnnotationAction<XTYPE>(this, mouse_annotation,
+            AnnotationImpl<XTYPE> anno = mouse_annotation.get();
+            undo.add(new UpdateAnnotationAction<XTYPE>(this, anno,
                     mouse_annotation_start_position, mouse_annotation_start_value,
-                    mouse_annotation.getPosition(), mouse_annotation.getValue()));
-            mouse_annotation.select(false);
-            mouse_annotation = null;
+                    mouse_annotation_start_offset,
+                    anno.getPosition(), anno.getValue(),
+                    anno.getOffset()));
+            anno.deselect();
+            mouse_annotation = Optional.empty();
             requestUpdate();
         }
     }
@@ -576,40 +586,44 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
      *  @param gc GC
      */
     private void drawMouseModeFeedback(final GC gc)
-    {
-        if (mouse_current == null)
+    {   // Safe copy, then check null (== isPresent())
+        final Point current = mouse_current.orElse(null);
+        if (current == null)
             return;
+
+        final Point start = mouse_start.orElse(null);
+
         final Rectangle plot_bounds = plot_area.getBounds();
 
         if (mouse_mode == MouseMode.PAN_X  ||  mouse_mode == MouseMode.PAN_Y || mouse_mode == MouseMode.PAN_PLOT)
         {
             // NOP, minimize additional UI thread drawing to allow better 'pan' updates
         }
-        else if (show_crosshair  &&  mouse_current != null  &&  plot_bounds.contains(mouse_current))
+        else if (show_crosshair  &&  plot_bounds.contains(current))
         {   // Cross-hair Cursor
-            gc.drawLine(area.x, mouse_current.y, area.x + area.width, mouse_current.y);
-            gc.drawLine(mouse_current.x, area.y, mouse_current.x, area.y + area.height);
+            gc.drawLine(area.x, current.y, area.x + area.width, current.y);
+            gc.drawLine(current.x, area.y, current.x, area.y + area.height);
             // Corresponding axis ticks
             gc.setBackground(media.get(background));
-            x_axis.drawTickLabel(gc, media, x_axis.getValue(mouse_current.x), true);
+            x_axis.drawTickLabel(gc, media, x_axis.getValue(current.x), true);
             for (YAxisImpl<XTYPE> axis : y_axes)
-                axis.drawTickLabel(gc, media, axis.getValue(mouse_current.y), true);
+                axis.drawTickLabel(gc, media, axis.getValue(current.y), true);
             // Trace markers
-            final List<CursorMarker> safe_markers = cursor_markers;
+            final List<CursorMarker> safe_markers = cursor_markers.orElse(null);
             if (safe_markers != null)
                 CursorMarker.drawMarkers(gc, media, safe_markers, area);
         }
 
         if (mouse_mode == MouseMode.ZOOM_IN  ||  mouse_mode == MouseMode.ZOOM_OUT)
         {   // Update mouse pointer in read-to-zoom mode
-            if (plot_bounds.contains(mouse_current))
+            if (plot_bounds.contains(current))
                 setCursor(display.getSystemCursor(SWT.CURSOR_SIZEALL));
-            else if (x_axis.getBounds().contains(mouse_current))
+            else if (x_axis.getBounds().contains(current))
                 setCursor(display.getSystemCursor(SWT.CURSOR_SIZEWE));
             else
             {
                 for (YAxisImpl<XTYPE> axis : y_axes)
-                    if (axis.getBounds().contains(mouse_current))
+                    if (axis.getBounds().contains(current))
                     {
                         setCursor(display.getSystemCursor(SWT.CURSOR_SIZENS));
                         return;
@@ -617,14 +631,14 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 setCursor(display.getSystemCursor(SWT.CURSOR_NO));
             }
         }
-        else if (mouse_mode == MouseMode.ZOOM_IN_X)
+        else if (mouse_mode == MouseMode.ZOOM_IN_X  &&  start != null)
         {
-            final int left = Math.min(mouse_start.x, mouse_current.x);
-            final int right = Math.max(mouse_start.x, mouse_current.x);
+            final int left = Math.min(start.x, current.x);
+            final int right = Math.max(start.x, current.x);
             final int width = right - left;
             final int mid_y = plot_bounds.y + plot_bounds.height / 2;
             // Range on axis
-            gc.drawRectangle(left, mouse_start.y, width, 1);
+            gc.drawRectangle(left, start.y, width, 1);
             // Left, right vertical bar
             gc.drawLine(left, plot_bounds.y, left, plot_bounds.y + plot_bounds.height);
             gc.drawLine(right, plot_bounds.y, right, plot_bounds.y + plot_bounds.height);
@@ -639,14 +653,14 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 gc.drawLine(right-ARROW_SIZE, mid_y+ARROW_SIZE, right - 2*ARROW_SIZE, mid_y);
             }
         }
-        else if (mouse_mode == MouseMode.ZOOM_IN_Y)
+        else if (mouse_mode == MouseMode.ZOOM_IN_Y  &&  start != null)
         {
-            final int top = Math.min(mouse_start.y, mouse_current.y);
-            final int bottom = Math.max(mouse_start.y, mouse_current.y);
+            final int top = Math.min(start.y, current.y);
+            final int bottom = Math.max(start.y, current.y);
             final int height = bottom - top;
             final int mid_x = plot_bounds.x + plot_bounds.width / 2;
             // Range on axis
-            gc.drawRectangle(mouse_start.x, top, 1, height);
+            gc.drawRectangle(start.x, top, 1, height);
             // Top, bottom horizontal bar
             gc.drawLine(plot_bounds.x, top, plot_bounds.x + plot_bounds.width, top);
             gc.drawLine(plot_bounds.x, bottom, plot_bounds.x + plot_bounds.width, bottom);
@@ -661,12 +675,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 gc.drawLine(mid_x, bottom - 2*ARROW_SIZE, mid_x+ARROW_SIZE, bottom - ARROW_SIZE);
             }
         }
-        else if (mouse_mode == MouseMode.ZOOM_IN_PLOT)
+        else if (mouse_mode == MouseMode.ZOOM_IN_PLOT  &&  start != null)
         {
-            final int left = Math.min(mouse_start.x, mouse_current.x);
-            final int right = Math.max(mouse_start.x, mouse_current.x);
-            final int top = Math.min(mouse_start.y, mouse_current.y);
-            final int bottom = Math.max(mouse_start.y, mouse_current.y);
+            final int left = Math.min(start.x, current.x);
+            final int right = Math.max(start.x, current.x);
+            final int top = Math.min(start.y, current.y);
+            final int bottom = Math.max(start.y, current.y);
             final int width = right - left;
             final int height = bottom - top;
             final int mid_x = left + width / 2;
@@ -750,7 +764,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         // Don't start mouse actions when user invokes context menu
         if (e.button != 1  ||  e.stateMask != 0)
             return;
-        mouse_start = mouse_current = new Point(e.x, e.y);
+        final Point current = new Point(e.x, e.y);
+        mouse_start = mouse_current = Optional.of(current);
 
         if (selectMouseAnnotation())
             return;
@@ -762,35 +777,35 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             {
                 final YAxisImpl<XTYPE> axis = y_axes.get(i);
                 mouse_start_y_ranges.add(axis.getValueRange());
-                if (axis.getBounds().contains(mouse_start))
+                if (axis.getBounds().contains(current))
                 {
                     mouse_y_axis = i;
                     mouse_mode = MouseMode.PAN_Y;
                     return;
                 }
             }
-            if (plot_area.getBounds().contains(mouse_start))
+            if (plot_area.getBounds().contains(current))
                 mouse_mode = MouseMode.PAN_PLOT;
-            else if (x_axis.getBounds().contains(mouse_start))
+            else if (x_axis.getBounds().contains(current))
                 mouse_mode = MouseMode.PAN_X;
         }
         else if (mouse_mode == MouseMode.ZOOM_IN)
         {   // Determine start of 'rubberband' zoom.
             // Reset cursor from SIZE* to CROSS.
             for (int i=0; i<y_axes.size(); ++i)
-                if (y_axes.get(i).getBounds().contains(mouse_start))
+                if (y_axes.get(i).getBounds().contains(current))
                 {
                     mouse_y_axis = i;
                     mouse_mode = MouseMode.ZOOM_IN_Y;
                     setCursor(display.getSystemCursor(SWT.CURSOR_CROSS));
                     return;
                 }
-            if (plot_area.getBounds().contains(mouse_start))
+            if (plot_area.getBounds().contains(current))
             {
                 mouse_mode = MouseMode.ZOOM_IN_PLOT;
                 setCursor(display.getSystemCursor(SWT.CURSOR_CROSS));
             }
-            else if (x_axis.getBounds().contains(mouse_start))
+            else if (x_axis.getBounds().contains(current))
             {
                 mouse_mode = MouseMode.ZOOM_IN_X;
                 setCursor(display.getSystemCursor(SWT.CURSOR_CROSS));
@@ -798,17 +813,17 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         }
         else if (mouse_mode == MouseMode.ZOOM_OUT)
         {   // Zoom 'out' from where the mouse was clicked
-            if (x_axis.getBounds().contains(mouse_current))
+            if (x_axis.getBounds().contains(current))
             {   // Zoom out of X axis
                 final AxisRange<XTYPE> orig = x_axis.getValueRange();
-                x_axis.zoom(mouse_current.x, ZOOM_FACTOR);
+                x_axis.zoom(current.x, ZOOM_FACTOR);
                 undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_Out_X, x_axis, orig, x_axis.getValueRange()));
                 fireXAxisChange();
             }
-            else if (plot_area.getBounds().contains(mouse_current))
+            else if (plot_area.getBounds().contains(current))
             {   // Zoom out of X..
                 final AxisRange<XTYPE> orig_x = x_axis.getValueRange();
-                x_axis.zoom(mouse_current.x, ZOOM_FACTOR);
+                x_axis.zoom(current.x, ZOOM_FACTOR);
                 fireXAxisChange();
                 // .. and Y axes
                 final List<AxisRange<Double>> old_range = new ArrayList<>(y_axes.size()),
@@ -816,7 +831,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 for (YAxisImpl<XTYPE> axis : y_axes)
                 {
                       old_range.add(axis.getValueRange());
-                      axis.zoom(mouse_current.y, ZOOM_FACTOR);
+                      axis.zoom(current.y, ZOOM_FACTOR);
                       new_range.add(axis.getValueRange());
                       fireYAxisChange(axis);
                 }
@@ -826,10 +841,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             else
             {
                 for (YAxisImpl<XTYPE> axis : y_axes)
-                    if (axis.getBounds().contains(mouse_current))
+                    if (axis.getBounds().contains(current))
                     {
                         final AxisRange<Double> orig = axis.getValueRange();
-                        axis.zoom(mouse_current.y, ZOOM_FACTOR);
+                        axis.zoom(current.y, ZOOM_FACTOR);
                         fireYAxisChange(axis);
                         undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_Out_Y,
                                 Arrays.asList(axis),
@@ -845,38 +860,51 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     @Override
     public void mouseMove(final MouseEvent e)
     {
-        mouse_current = new Point(e.x, e.y);
+        final Point current = new Point(e.x, e.y);
+        mouse_current = Optional.of(current);
 
-        if (mouse_annotation != null)
-            plot_processor.updateAnnotation(mouse_annotation, x_axis.getValue(mouse_current.x));
-        else if (mouse_mode == MouseMode.PAN_X)
-            x_axis.pan(mouse_start_x_range, x_axis.getValue(mouse_start.x), x_axis.getValue(mouse_current.x));
-        else if (mouse_mode == MouseMode.PAN_Y)
+        final Point start = mouse_start.orElse(null);
+
+        if (mouse_annotation.isPresent()  &&  start != null)
+        {
+            final AnnotationImpl<XTYPE> anno = mouse_annotation.get();
+            if (anno.getSelection() == AnnotationImpl.Selection.Body)
+            {
+                anno.setOffset(
+                        new Point(mouse_annotation_start_offset.x + current.x - start.x,
+                                  mouse_annotation_start_offset.y + current.y - start.y));
+                requestUpdate();
+            }
+            else
+                plot_processor.updateAnnotation(anno, x_axis.getValue(current.x));
+        }
+        else if (mouse_mode == MouseMode.PAN_X  &&  start != null)
+            x_axis.pan(mouse_start_x_range, x_axis.getValue(start.x), x_axis.getValue(current.x));
+        else if (mouse_mode == MouseMode.PAN_Y  &&  start != null)
         {
             final YAxisImpl<XTYPE> axis = y_axes.get(mouse_y_axis);
-            axis.pan(mouse_start_y_ranges.get(mouse_y_axis), axis.getValue(mouse_start.y), axis.getValue(mouse_current.y));
+            axis.pan(mouse_start_y_ranges.get(mouse_y_axis), axis.getValue(start.y), axis.getValue(current.y));
         }
-        else if (mouse_mode == MouseMode.PAN_PLOT)
+        else if (mouse_mode == MouseMode.PAN_PLOT  &&  start != null)
         {
-            x_axis.pan(mouse_start_x_range, x_axis.getValue(mouse_start.x), x_axis.getValue(mouse_current.x));
+            x_axis.pan(mouse_start_x_range, x_axis.getValue(start.x), x_axis.getValue(current.x));
             for (int i=0; i<y_axes.size(); ++i)
             {
                 final YAxisImpl<XTYPE> axis = y_axes.get(i);
-                axis.pan(mouse_start_y_ranges.get(i), axis.getValue(mouse_start.y), axis.getValue(mouse_current.y));
+                axis.pan(mouse_start_y_ranges.get(i), axis.getValue(start.y), axis.getValue(current.y));
             }
         }
         else
             updateCursor();
-        redraw();
     }
 
     /** Request update of cursor markers */
     private void updateCursor()
     {
-        final Point mouse_pos = mouse_current;
-        if (mouse_pos == null)
+        final Point current = mouse_current.orElse(null);
+        if (current == null)
             return;
-        final int x = mouse_pos.x;
+        final int x = current.x;
         final XTYPE location = x_axis.getValue(x);
         plot_processor.updateCursorMarkers(x, location, this::updateCursors);
     }
@@ -886,7 +914,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
      */
     private void updateCursors(final List<CursorMarker> markers)
     {
-        cursor_markers  = markers;
+        cursor_markers  = Optional.ofNullable(markers);
         redrawSafely();
         fireCursorsChanged();
     }
@@ -896,6 +924,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     public void mouseUp(final MouseEvent e)
     {
         deselectMouseAnnotation();
+
+        final Point start = mouse_start.orElse(null);
+        final Point current = mouse_current.orElse(null);
+        if (start == null  ||  current == null)
+            return;
+
         if (mouse_mode == MouseMode.PAN_X)
         {
             mouseMove(e);
@@ -930,10 +964,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         }
         else if (mouse_mode == MouseMode.ZOOM_IN_X)
         {   // X axis increases going _right_ just like mouse 'x' coordinate
-            if (mouse_start.x != mouse_current.x)
+            if (start.x != current.x)
             {
-                int low = Math.min(mouse_start.x, mouse_current.x);
-                int high = Math.max(mouse_start.x, mouse_current.x);
+                int low = Math.min(start.x, current.x);
+                int high = Math.max(start.x, current.x);
                 final AxisRange<XTYPE> original_x_range = x_axis.getValueRange();
                 final AxisRange<XTYPE> new_x_range = new AxisRange<>(x_axis.getValue(low), x_axis.getValue(high));
                 undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In_X, x_axis, original_x_range, new_x_range));
@@ -942,10 +976,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         }
         else if (mouse_mode == MouseMode.ZOOM_IN_Y)
         {   // Mouse 'y' increases going _down_ the screen
-            if (mouse_start.y != mouse_current.y)
+            if (start.y != current.y)
             {
-                final int high = Math.min(mouse_start.y, mouse_current.y);
-                final int low = Math.max(mouse_start.y, mouse_current.y);
+                final int high = Math.min(start.y, current.y);
+                final int low = Math.max(start.y, current.y);
                 final YAxisImpl<XTYPE> axis = y_axes.get(mouse_y_axis);
                 undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In_Y,
                         Arrays.asList(axis),
@@ -956,18 +990,18 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         }
         else if (mouse_mode == MouseMode.ZOOM_IN_PLOT)
         {
-            if (mouse_start.x != mouse_current.x  ||  mouse_start.y != mouse_current.y)
+            if (start.x != current.x  ||  start.y != current.y)
             {   // X axis increases going _right_ just like mouse 'x' coordinate
-                int low = Math.min(mouse_start.x, mouse_current.x);
-                int high = Math.max(mouse_start.x, mouse_current.x);
+                int low = Math.min(start.x, current.x);
+                int high = Math.max(start.x, current.x);
                 final AxisRange<XTYPE> original_x_range = x_axis.getValueRange();
                 final AxisRange<XTYPE> new_x_range = new AxisRange<>(x_axis.getValue(low), x_axis.getValue(high));
 
                 // Mouse 'y' increases going _down_ the screen
                 final List<AxisRange<Double>> original_y_ranges = new ArrayList<>();
                 final List<AxisRange<Double>> new_y_ranges = new ArrayList<>();
-                high = Math.min(mouse_start.y, mouse_current.y);
-                low = Math.max(mouse_start.y, mouse_current.y);
+                high = Math.min(start.y, current.y);
+                low = Math.max(start.y, current.y);
                 for (YAxisImpl<XTYPE> axis : y_axes)
                 {
                     original_y_ranges.add(axis.getValueRange());

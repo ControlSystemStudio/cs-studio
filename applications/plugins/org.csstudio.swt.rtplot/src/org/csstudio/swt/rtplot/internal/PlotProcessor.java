@@ -305,7 +305,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
             {
                 data.getLock().unlock();
             }
-            plot.updateAnnotation(annotation, position, value);
+            plot.updateAnnotation(annotation, position, value, annotation.getOffset());
         });
     }
 

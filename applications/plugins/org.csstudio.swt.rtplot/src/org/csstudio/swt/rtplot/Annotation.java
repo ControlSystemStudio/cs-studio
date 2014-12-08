@@ -10,6 +10,7 @@ package org.csstudio.swt.rtplot;
 import java.util.Objects;
 
 import org.csstudio.swt.rtplot.data.PlotDataItem;
+import org.eclipse.swt.graphics.Point;
 
 /** Annotation that's displayed on a YAxis
  *  @param <XTYPE> Data type used for the {@link PlotDataItem}
@@ -23,6 +24,9 @@ public class Annotation<XTYPE extends Comparable<XTYPE>>
     /** The position and value, i.e. x/y in value space */
     protected volatile XTYPE position;
     protected volatile double value;
+
+    /** Offset of annotation from the referenced position */
+    protected volatile Point offset = new Point(10, -50);
 
     /** The (multi-line) text to display */
     protected String text;
@@ -46,6 +50,12 @@ public class Annotation<XTYPE extends Comparable<XTYPE>>
     public XTYPE getPosition()
     {
         return position;
+    }
+
+    /** @return Offset of annotation from the referenced position */
+    public Point getOffset()
+    {
+        return offset;
     }
 
     /** @return Value (on the Y axis) of this annotation */

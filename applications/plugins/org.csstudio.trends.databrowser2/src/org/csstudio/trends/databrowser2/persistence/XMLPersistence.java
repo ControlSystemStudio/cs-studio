@@ -99,9 +99,13 @@ public class XMLPersistence
 
     final public static String TAG_TIME_AXIS = "time_axis";
 
-    final private static String TAG_OLD_XYGRAPH_SETTINGS = "xyGraphSettings";
     final public static String TAG_USE_TRACE_NAMES = "use_trace_names";
-    public static final String TAG_TEXT = "text";
+    final public static String TAG_TEXT = "text";
+    final public static String TAG_OFFSET = "offset";
+    final public static String TAG_X = "x";
+    final public static String TAG_Y = "y";
+
+    final private static String TAG_OLD_XYGRAPH_SETTINGS = "xyGraphSettings";
 
     /** @param model Model to load
      *  @param stream XML stream
