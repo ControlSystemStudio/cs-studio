@@ -37,10 +37,8 @@ import org.eclipse.swt.graphics.Rectangle;
 @SuppressWarnings("nls")
 public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis implements YAxis<XTYPE>
 {
-    private static final String SEPARATOR = ", ";
-
     /** How to label the axis */
-    private volatile AxisLabelProvider label_provider;
+    final private AxisLabelProvider<XTYPE> label_provider;
 
     /** Computed in getPixelWidth:
      *  Location of labels, and Y-separation between labels,
@@ -86,26 +84,35 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         super(name, listener,
               false,      // vertical
               0.0, 10.0); // Initial range
-        label_provider = new TraceLabelProvider<XTYPE>(this);
+        label_provider = new AxisLabelProvider<XTYPE>(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isUsingAxisName()
+    {
+        return label_provider.isUsingAxisName();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void useAxisName(final boolean use_axis_name)
+    {
+        label_provider.useAxisName(use_axis_name);
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean isUsingTraceNames()
     {
-        return label_provider instanceof TraceLabelProvider;
+        return label_provider.isUsingTraceNames();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void useTraceNames(boolean use_trace_names)
+    public void useTraceNames(final boolean use_trace_names)
     {
-        if (use_trace_names == isUsingTraceNames())
-            return;
-        if (use_trace_names)
-            label_provider = new TraceLabelProvider<XTYPE>(this);
-        else
-            label_provider = new AxisNameLabelProvider<XTYPE>(this);
+        label_provider.useTraceNames(use_trace_names);
         requestLayout();
     }
 
@@ -194,61 +201,55 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         // Later update these relative x positions based on 'left' or 'right' axis.
         int x = 0;
         int lines = 0;
+
+        // Compute layout of labels
         label_provider.start();
         label_x.clear();
         label_y.clear();
-        if (! label_provider.hasNext())
-        {   // Only axis name
-            final int label_length = gc.textExtent(getName()).x;
-            label_x.add(x);
-            label_y.add(region.y + (region.height - label_length)/2);
-            ++lines;
+        final IntList label_length = new IntList(2);
+        while (label_provider.hasNext())
+        {
+            label_y_separation = gc.textExtent(label_provider.getSeparator()).x;
+            label_length.add(gc.textExtent(label_provider.getLabel()).x);
         }
-        else
-        {   // Compute layout of labels
-            label_y_separation = gc.textExtent(SEPARATOR).x;
-            final IntList label_length = new IntList(2);
-            do
-                label_length.add(gc.textExtent(label_provider.getLabel()).x);
-            while (label_provider.hasNext());
+        while (label_provider.hasNext());
 
-            // Compute location of each label
-            int next = 0;
-            final int N = label_length.size();
-            while (next < N)
-            {   // Determine how many can fit on one line
-                int many = 0;
-                int height = 0;
-                for (int i=next; i<N; ++i)
-                    if (height + label_length.get(i) < region.height)
-                    {
-                        ++many;
-                        height += label_length.get(i);
-                        if (i > 0)
-                            height += label_y_separation;
-                    }
-                    else
-                        break;
-                // Can't fit any? Show one, will be clipped
-                if (many == 0)
+        // Compute location of each label
+        int next = 0;
+        final int N = label_length.size();
+        while (next < N)
+        {   // Determine how many can fit on one line
+            int many = 0;
+            int height = 0;
+            for (int i=next; i<N; ++i)
+                if (height + label_length.get(i) < region.height)
                 {
-                    many = 1;
-                    height = region.height;
+                    ++many;
+                    height += label_length.get(i);
+                    if (i > 0)
+                        height += label_y_separation;
                 }
-                // Draw one line
-                int y = region.y + (region.height+height)/2;
-                for (int i=next; i<next+many; ++i)
-                {
-                    y -= label_length.get(i);
-                    label_x.add(x);
-                    label_y.add(y);
-                    if (i < N-1)
-                        y -= label_y_separation;
-                }
-                x += x_sep;
-                next += many;
-                ++lines;
+                else
+                    break;
+            // Can't fit any? Show one, will be clipped
+            if (many == 0)
+            {
+                many = 1;
+                height = region.height;
             }
+            // Draw one line
+            int y = region.y + (region.height+height)/2;
+            for (int i=next; i<next+many; ++i)
+            {
+                y -= label_length.get(i);
+                label_x.add(x);
+                label_y.add(y);
+                if (i < N-1)
+                    y -= label_y_separation;
+            }
+            x += x_sep;
+            next += many;
+            ++lines;
         }
 
         final int x_correction = is_right ? region.x + region.width - lines*x_sep : region.x;
@@ -349,7 +350,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         gc.setBackground(old_bg);
 
         gc.setFont(label_font);
-        paintLabel(gc, media);
+        paintLabels(gc, media);
     }
 
     /** {@inheritDoc} */
@@ -370,36 +371,23 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         GraphicsUtils.drawVerticalText(gc, x, y, mark, SWT.UP);
     }
 
-    protected void paintLabel(final GC gc, final SWTMediaPool media)
+    protected void paintLabels(final GC gc, final SWTMediaPool media)
     {
         if (label_y == null)
             return;
         final Color old_fg = gc.getForeground();
         label_provider.start();
-        if (! label_provider.hasNext())
-        {   // Use axis name
-            if (label_x.size() > 0)
-            {
-                gc.setForeground(media.get(getColor()));
-                GraphicsUtils.drawVerticalText(gc,
-                        label_x.get(0), label_y.get(0), getName(), SWT.UP);
-                gc.setForeground(old_fg);
-            }
-        }
-        else
+        int i = 0;
+        while (label_provider.hasNext()  &&  i < label_x.size())
         {   // Draw labels at pre-computed locations
-            int i = 0;
-            do
-            {
-                if (i > 0)
-                    GraphicsUtils.drawVerticalText(gc, label_x.get(i-1), label_y.get(i-1) - label_y_separation, SEPARATOR, SWT.UP);
-                gc.setForeground(media.get(label_provider.getColor()));
-                GraphicsUtils.drawVerticalText(gc,
-                        label_x.get(i), label_y.get(i), label_provider.getLabel(), SWT.UP);
-                gc.setForeground(old_fg);
-                ++i;
-            }
-            while (label_provider.hasNext()  &&  i < label_x.size());
+            if (i > 0)
+                GraphicsUtils.drawVerticalText(gc, label_x.get(i-1), label_y.get(i-1) - label_y_separation,
+                                               label_provider.getSeparator(), SWT.UP);
+            gc.setForeground(media.get(label_provider.getColor()));
+            GraphicsUtils.drawVerticalText(gc,
+                label_x.get(i), label_y.get(i), label_provider.getLabel(), SWT.UP);
+            gc.setForeground(old_fg);
+            ++i;
         }
     }
 }

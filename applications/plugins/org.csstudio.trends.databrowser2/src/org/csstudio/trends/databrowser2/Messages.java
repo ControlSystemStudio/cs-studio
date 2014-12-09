@@ -271,9 +271,10 @@ public class Messages extends NLS
     public static String URL;
     public static String URL_Lbl;
     public static String UseAutoScale_Label;
+    public static String UseAxisName;
     public static String UseDefaultArchives;
     public static String UseDefaultArchives_Label;
-    public static String UseTraceName;
+    public static String UseTraceNames;
     public static String ValueAxes;
     public static String ValueAxisName;
     public static String ValueColumn;

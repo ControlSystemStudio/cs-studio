@@ -110,7 +110,7 @@ public class AxesTableHandler implements IStructuredContentProvider
         TableViewerColumn col;
 
         // Visible? Column ----------
-        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisVisibility, 80, 10);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisVisibility, 45, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -181,8 +181,47 @@ public class AxesTableHandler implements IStructuredContentProvider
             }
         });
 
+        // Use Axis Name ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.UseAxisName, 95, 10);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final AxisConfig axis = (AxisConfig) cell.getElement();
+                if (axis.isUsingAxisName())
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
+                else
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).isUsingAxisName();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.useAxisName(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
+            }
+        });
+
         // Use Trace Names ----------
-        col = TableHelper.createColumn(table_layout, axes_table, Messages.UseTraceName, 130, 10);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.UseTraceNames, 110, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override

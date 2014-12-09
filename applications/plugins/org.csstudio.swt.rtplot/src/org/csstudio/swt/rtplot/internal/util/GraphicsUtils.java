@@ -46,6 +46,8 @@ public class GraphicsUtils
 
         // Determine string's dimensions
         final Point pt = gc.textExtent(string);
+        if (pt.x <= 0  ||  pt.y <= 0)
+            return;
 
         // Create an image the same size as the string
         final Image string_image = new Image(display, pt.x, pt.y);

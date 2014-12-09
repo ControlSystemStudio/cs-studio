@@ -54,16 +54,17 @@
     <xs:element name="axis">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="visible" type="xs:boolean"/>
+                <xs:element name="visible" type="xs:boolean" minOccurs="0"/>
                 <xs:element name="name" type="xs:string"/>
-                <xs:element name="use_trace_names" type="xs:string"/>
-                <xs:element name="right" type="xs:boolean"/>
+                <xs:element name="use_axis_name" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="use_trace_names" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="right" type="xs:boolean" minOccurs="0"/>
                 <xs:element name="color" type="color" minOccurs="0"/>
-                <xs:element name="min" type="xs:double"/>
-                <xs:element name="max" type="xs:double"/>
+                <xs:element name="min" type="xs:double" minOccurs="0"/>
+                <xs:element name="max" type="xs:double" minOccurs="0"/>
                 <xs:element name="grid" type="xs:boolean" minOccurs="0"/>
-                <xs:element name="autoscale" type="xs:boolean"/>
-                <xs:element name="log_scale" type="xs:boolean"/>
+                <xs:element name="autoscale" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="log_scale" type="xs:boolean" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -99,29 +100,49 @@
 
     <xs:element name="pvlist">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element ref="pv" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+	            <xs:element ref="pv"/>
+	            <xs:element ref="formula"/>
+            </xs:choice>
         </xs:complexType>
     </xs:element>
 
     <xs:element name="pv">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="display_name" type="xs:string"/>
-                <xs:element name="visible" type="xs:boolean"/>
+                <xs:element name="display_name" type="xs:string" minOccurs="0"/>
+                <xs:element name="visible" type="xs:boolean" minOccurs="0"/>
                 <xs:element name="name" type="xs:string"/>
-                <xs:element name="axis" type="xs:decimal"/>
+                <xs:element name="axis" type="xs:decimal" minOccurs="0"/>
                 <xs:element name="color" type="color" minOccurs="0"/>
-                <xs:element name="trace_type" type="xs:string"/>
-                <xs:element name="linewidth" type="xs:decimal"/>
-                <xs:element name="point_type" type="xs:string"/>
-                <xs:element name="point_size" type="xs:decimal"/>
-                <xs:element name="waveform_index" type="xs:decimal"/>
-                <xs:element name="period" type="xs:string"/>
-                <xs:element name="ring_size" type="xs:decimal"/>
-                <xs:element name="request" type="xs:string"/>
+                <xs:element name="trace_type" type="xs:string" minOccurs="0"/>
+                <xs:element name="linewidth" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="point_type" type="xs:string" minOccurs="0"/>
+                <xs:element name="point_size" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="waveform_index" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="period" type="xs:string" minOccurs="0"/>
+                <xs:element name="ring_size" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="request" type="xs:string" minOccurs="0"/>
                 <xs:element ref="archive" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="formula">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="display_name" type="xs:string" minOccurs="0"/>
+                <xs:element name="visible" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="axis" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="color" type="color" minOccurs="0"/>
+                <xs:element name="trace_type" type="xs:string" minOccurs="0"/>
+                <xs:element name="linewidth" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="point_type" type="xs:string" minOccurs="0"/>
+                <xs:element name="point_size" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="waveform_index" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="formula" type="xs:string"/>
+                <xs:element ref="input" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -132,6 +153,15 @@
                 <xs:element name="name" type="xs:string" minOccurs="0"/>
                 <xs:element name="url" type="xs:string"/>
                 <xs:element name="key" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="input">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="pv" type="xs:string"/>
+                <xs:element name="name" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

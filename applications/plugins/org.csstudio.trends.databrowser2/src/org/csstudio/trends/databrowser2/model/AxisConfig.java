@@ -32,6 +32,9 @@ public class AxisConfig
     /** Name, axis label */
     private String name;
 
+    /** Use axis name as axis label? */
+    private boolean use_axis_name = true;
+
     /** Use trace names as axis label? */
     private boolean use_trace_names = true;
 
@@ -58,12 +61,13 @@ public class AxisConfig
 	 */
 	public AxisConfig(final String name)
 	{
-	    this(true, name, true, false, new RGB(0, 0, 0), 0.0, 10.0, false, Preferences.useAutoScale(), false);
+	    this(true, name, true, true, false, new RGB(0, 0, 0), 0.0, 10.0, false, Preferences.useAutoScale(), false);
 	}
 
 	/** Initialize
 	 *  @param visible
 	 *  @param name
+     *  @param use_axis_name
 	 *  @param use_trace_names
 	 *  @param is_right
 	 *  @param rgb
@@ -73,6 +77,7 @@ public class AxisConfig
 	 *  @param log_scale
 	 */
 	public AxisConfig(final boolean visible, final String name,
+	        final boolean use_axis_name,
 	        final boolean use_trace_names,
 	        final boolean is_right,
 	        final RGB rgb,
@@ -84,6 +89,7 @@ public class AxisConfig
 	{
 	    this.visible = visible;
 	    this.name = Objects.requireNonNull(name);
+        this.use_axis_name = use_axis_name;
 	    this.use_trace_names = use_trace_names;
 	    this.is_right = is_right;
 	    this.color = Objects.requireNonNull(rgb);
@@ -134,6 +140,19 @@ public class AxisConfig
 		this.name = name;
 		fireAxisChangeEvent();
 	}
+
+    /** @return <code>true</code>if axis name is used */
+    public boolean isUsingAxisName()
+    {
+        return use_axis_name;
+    }
+
+    /** @param use_axis_name If <code>true</code>, show axis name */
+    public void useAxisName(final boolean use_axis_name)
+    {
+        this.use_axis_name = use_axis_name;
+        fireAxisChangeEvent();
+    }
 
 	/** @return <code>true</code> if using trace names as axis label */
 	public boolean isUsingTraceNames()
@@ -262,6 +281,7 @@ public class AxisConfig
 		writer.println();
 		XMLWriter.XML(writer, 3, XMLPersistence.TAG_VISIBLE, Boolean.toString(visible));
 		XMLWriter.XML(writer, 3, XMLPersistence.TAG_NAME, name);
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_USE_AXIS_NAME, Boolean.toString(use_axis_name));
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_USE_TRACE_NAMES, Boolean.toString(use_trace_names));
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_RIGHT, Boolean.toString(is_right));
 		if (color != null)
@@ -285,6 +305,7 @@ public class AxisConfig
 	{
 	    final boolean visible = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_VISIBLE, true);
 	    final String name = DOMHelper.getSubelementString(node, XMLPersistence.TAG_NAME);
+        final boolean use_axis_name = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_USE_AXIS_NAME, true);
 	    final boolean use_trace_names = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_USE_TRACE_NAMES, true);
 	    final boolean right = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_RIGHT, false);
 	    final RGB rgb = XMLPersistence.loadColorFromDocument(node).orElse(new RGB(0, 0, 0));
@@ -293,13 +314,14 @@ public class AxisConfig
         final boolean show_grid = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_GRID, false);
 	    final boolean auto_scale = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_AUTO_SCALE, false);
 	    final boolean log_scale = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_LOG_SCALE, false);
-		return new AxisConfig(visible, name, use_trace_names, right, rgb, min, max, show_grid, auto_scale, log_scale);
+		return new AxisConfig(visible, name, use_axis_name, use_trace_names, right, rgb, min, max, show_grid, auto_scale, log_scale);
 	}
 
 	/** @return Copied axis configuration. Not associated with a model */
 	public AxisConfig copy()
 	{
-	    return new AxisConfig(visible, name, use_trace_names, is_right, color, min, max, show_grid, auto_scale, log_scale);
+	    return new AxisConfig(visible, name, use_axis_name, use_trace_names,
+	                          is_right, color, min, max, show_grid, auto_scale, log_scale);
 	}
 
 	/** @return String representation for debugging */

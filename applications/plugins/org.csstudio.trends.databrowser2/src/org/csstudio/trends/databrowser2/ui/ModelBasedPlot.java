@@ -242,6 +242,7 @@ public class ModelBasedPlot
 	{
 		final YAxis<Instant> axis = getYAxis(index);
 		axis.setName(config.getResolvedName());
+        axis.useAxisName(config.isUsingAxisName());
 		axis.useTraceNames(config.isUsingTraceNames());
 		axis.setColor(config.getColor());
 		axis.setLogarithmic(config.isLogScale());

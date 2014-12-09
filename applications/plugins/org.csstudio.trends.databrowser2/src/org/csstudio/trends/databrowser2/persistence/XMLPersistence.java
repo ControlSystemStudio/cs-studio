@@ -49,61 +49,65 @@ public class XMLPersistence
 {
     // XML file tags
     final public static String TAG_DATABROWSER = "databrowser";
+
     final public static String TAG_TITLE = "title";
+    final public static String TAG_SAVE_CHANGES = "save_changes";
+    final public static String TAG_GRID = "grid";
     final public static String TAG_SCROLL = "scroll";
     final public static String TAG_UPDATE_PERIOD = "update_period";
     final public static String TAG_SCROLL_STEP = "scroll_step";
-    final public static String TAG_LIVE_SAMPLE_BUFFER_SIZE = "ring_size";
-    final public static String TAG_PVLIST = "pvlist";
-    final public static String TAG_PV = "pv";
-    final public static String TAG_NAME = "name";
-    final public static String TAG_DISPLAYNAME = "display_name";
-    final public static String TAG_FORMULA = "formula";
+    final public static String TAG_START = "start";
+    final public static String TAG_END = "end";
+    final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
+    final public static String TAG_BACKGROUND = "background";
+    final public static String TAG_LABEL_FONT = "label_font";
+    final public static String TAG_SCALE_FONT = "scale_font";
     final public static String TAG_AXES = "axes";
-    final public static String TAG_AXIS = "axis";
-    final public static String TAG_LINEWIDTH = "linewidth";
+    final public static String TAG_ANNOTATIONS = "annotations";
+    final public static String TAG_PVLIST = "pvlist";
+
     final public static String TAG_COLOR = "color";
     final public static String TAG_RED = "red";
     final public static String TAG_GREEN = "green";
     final public static String TAG_BLUE = "blue";
-    final public static String TAG_TRACE_TYPE = "trace_type";
-    final public static String TAG_POINT_TYPE = "point_type";
-    final public static String TAG_POINT_SIZE = "point_size";
-    final public static String TAG_SCAN_PERIOD = "period";
-    final public static String TAG_INPUT = "input";
-    final public static String TAG_ARCHIVE = "archive";
-    final public static String TAG_URL = "url";
-    final public static String TAG_KEY = "key";
-    final public static String TAG_START = "start";
-    final public static String TAG_END = "end";
-    final public static String TAG_LOG_SCALE = "log_scale";
-    final public static String TAG_GRID = "grid";
-    final public static String TAG_AUTO_SCALE = "autoscale";
+
+    final public static String TAG_AXIS = "axis";
+    final public static String TAG_VISIBLE = "visible";
+    final public static String TAG_NAME = "name";
+    final public static String TAG_USE_AXIS_NAME = "use_axis_name";
+    final public static String TAG_USE_TRACE_NAMES = "use_trace_names";
+    final public static String TAG_RIGHT = "right";
     final public static String TAG_MAX = "max";
     final public static String TAG_MIN = "min";
-    final public static String TAG_BACKGROUND = "background";
-    final public static String TAG_LABEL_FONT = "label_font";
-    final public static String TAG_SCALE_FONT = "scale_font";
-    final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
-    final public static String TAG_REQUEST = "request";
-    final public static String TAG_VISIBLE = "visible";
-    final public static String TAG_RIGHT = "right";
-    final public static String TAG_SAVE_CHANGES = "save_changes";
+    final public static String TAG_AUTO_SCALE = "autoscale";
+    final public static String TAG_LOG_SCALE = "log_scale";
 
-    final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_ANNOTATION = "annotation";
-
+    final public static String TAG_PV = "pv";
     final public static String TAG_TIME = "time";
     final public static String TAG_VALUE = "value";
-    final public static String TAG_WAVEFORM_INDEX = "waveform_index";
-
-    final public static String TAG_TIME_AXIS = "time_axis";
-
-    final public static String TAG_USE_TRACE_NAMES = "use_trace_names";
-    final public static String TAG_TEXT = "text";
     final public static String TAG_OFFSET = "offset";
+    final public static String TAG_TEXT = "text";
+
     final public static String TAG_X = "x";
     final public static String TAG_Y = "y";
+
+    final public static String TAG_DISPLAYNAME = "display_name";
+    final public static String TAG_TRACE_TYPE = "trace_type";
+    final public static String TAG_LINEWIDTH = "linewidth";
+    final public static String TAG_POINT_TYPE = "point_type";
+    final public static String TAG_POINT_SIZE = "point_size";
+    final public static String TAG_WAVEFORM_INDEX = "waveform_index";
+    final public static String TAG_SCAN_PERIOD = "period";
+    final public static String TAG_LIVE_SAMPLE_BUFFER_SIZE = "ring_size";
+    final public static String TAG_REQUEST = "request";
+    final public static String TAG_ARCHIVE = "archive";
+
+    final public static String TAG_URL = "url";
+    final public static String TAG_KEY = "key";
+
+    final public static String TAG_FORMULA = "formula";
+    final public static String TAG_INPUT = "input";
 
     final private static String TAG_OLD_XYGRAPH_SETTINGS = "xyGraphSettings";
 

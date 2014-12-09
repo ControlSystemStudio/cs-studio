@@ -12,6 +12,8 @@
 <h2>Version 4.1.0 - 2014-12-01</h2>
 Replaced plot package.
 <ul>
+  <li>Plot more compact, replacing legend with trace names on axes.</li>
+  <li>Toolbar more compact.</li>
   <li>Most drawing performed in background threads, no longer delaying the UI thread.</li>
   <li>'Autoscale' performed in parallel background threads, using all CPUs to determine range of traces.</li>
   <li>Cursor values determined in background thread via binary search (Not in UI thread, not via linear search. Also fixes #536).</li>
@@ -22,12 +24,11 @@ Replaced plot package.
   <li>Using Java 8 'Instant' for all time operations.</li>
   <li>"Edit Items" dialog (for multiple items) has icon, consistent layout.</li>
   <li>Plot can show VStatistics std. deviation as well as min/max (#764).</li>
-  <li>Each added trace starts with a new color, reducing likelyhood of plots where users cannot determine which trace corresponds to what item (#213).</li>
-  <li>Annotation content with placeholders for name, position, value.</li>
+  <li>Each added trace starts with a new color, reducing likelihood of plots where users cannot determine which trace corresponds to what item (#213).</li>
+  <li>Annotation content with place holders for name, position, value.</li>
   <li>Annotation removal dialog right away lists annotations to remove.</li>
   <li>Streamlined zoom/pan options with better visual feedback.</li>
   <li>After editing 'Color' property of trace or axis, that line in the properties table is de-selected so user can see the color.</li>
-  <li>Toolbar more compact.</li>
   <li>Dropping of several PVs works (used to drop "[PV1", "PV2,", "LastPV]")</li>
   <li>Can "Remove Archive Data Source" even if source has no name (just Key and URL)</li>
   <li>Tables no longer have "vanishing columns" on Linux; enforcing minimum column width.</li>

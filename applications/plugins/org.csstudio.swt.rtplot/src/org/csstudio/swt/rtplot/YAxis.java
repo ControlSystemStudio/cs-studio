@@ -16,6 +16,12 @@ import org.csstudio.swt.rtplot.data.PlotDataItem;
  */
 public interface YAxis<XTYPE extends Comparable<XTYPE>> extends Axis<Double>
 {
+    /** @return <code>true</code>if axis name is used */
+    public boolean isUsingAxisName();
+
+    /** @param use_axis_name If <code>true</code>, show axis name */
+    public void useAxisName(boolean use_axis_name);
+
     /** @return <code>true</code>if axis uses
      *          the names of traces instead of its
      *          own name for a label

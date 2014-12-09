@@ -62,6 +62,8 @@ public class ChangeAxisConfigCommand implements UndoableAction
     		axis.setVisible(config.isVisible());
         if (! axis.getName().equals(config.getName()))
             axis.setName(config.getName());
+        if (axis.isUsingAxisName() != config.isUsingAxisName())
+            axis.useAxisName(config.isUsingAxisName());
         if (axis.isUsingTraceNames() != config.isUsingTraceNames())
             axis.useTraceNames(config.isUsingTraceNames());
         if (axis.isOnRight() != config.isOnRight())
