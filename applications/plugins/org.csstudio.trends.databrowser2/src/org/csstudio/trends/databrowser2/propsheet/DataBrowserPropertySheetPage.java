@@ -290,8 +290,14 @@ public class DataBrowserPropertySheetPage extends Page
         final Composite model_item_top = new Composite(sashform, SWT.BORDER);
         final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         model_item_top.setLayout(table_layout);
+        // Would like to _not_ use FULL_SELECTION so that only the currently selected
+        // cell gets highlighted, allowing the 'color' to still be visible
+        // -> On Linux, you only get FULL_SELECTION behavior.
+        // -> On Windows, editing is really odd, need to select a column before anything
+        //    can be edited, plus color still invisible
+        // ---> Using FULL_SELECTION
         trace_table = new TableViewer(model_item_top ,
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         final Table table = trace_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
