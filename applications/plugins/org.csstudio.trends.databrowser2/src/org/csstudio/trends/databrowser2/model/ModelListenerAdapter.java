@@ -21,7 +21,7 @@ public class ModelListenerAdapter implements ModelListener
     public void changedTitle()  { /* NOP */}
 
     @Override
-    public void changedUpdatePeriods() { /* NOP */}
+    public void changedTiming() { /* NOP */}
 
     @Override
     public void changedArchiveRescale() { /* NOP */}

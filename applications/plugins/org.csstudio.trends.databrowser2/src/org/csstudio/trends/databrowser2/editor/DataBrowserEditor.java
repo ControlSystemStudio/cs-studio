@@ -214,7 +214,7 @@ public class DataBrowserEditor extends EditorPart
             }
 
             @Override
-            public void changedUpdatePeriods()
+            public void changedTiming()
             {   setDirty(true);   }
 
             @Override

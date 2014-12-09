@@ -21,7 +21,7 @@ public interface ModelListener
     void changedTitle();
 
     /** The update period or scroll step changed */
-    void changedUpdatePeriods();
+    void changedTiming();
 
     /** The archive-rescale configuration has changed */
     void changedArchiveRescale();

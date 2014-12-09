@@ -360,7 +360,7 @@ public class Controller
         model_listener = new ModelListenerAdapter()
         {
             @Override
-            public void changedUpdatePeriods()
+            public void changedTiming()
             {
                 plot.getPlot().setScrollStep(model.getScrollStep());
                 if (update_task != null)

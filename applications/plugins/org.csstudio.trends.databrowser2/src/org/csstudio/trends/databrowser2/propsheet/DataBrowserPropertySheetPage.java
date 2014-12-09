@@ -135,7 +135,7 @@ public class DataBrowserPropertySheetPage extends Page
 
         /** {@inheritDoc} */
         @Override
-        public void changedUpdatePeriods()
+        public void changedTiming()
         {
             update_period.setText(Double.toString(model.getUpdatePeriod()));
         }

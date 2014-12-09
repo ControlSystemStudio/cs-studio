@@ -482,7 +482,7 @@ public class Model
             update_period = period_secs;
         // Notify listeners
         for (ModelListener listener : listeners)
-            listener.changedUpdatePeriods();
+            listener.changedTiming();
     }
 
     /** The model supports two types of start/end time handling:
@@ -527,8 +527,8 @@ public class Model
         if (step.compareTo(scroll_step) == 0)
             return;
        scroll_step = step;
-       for (ModelListener listener : listeners) // TODO Update the event
-           listener.changedUpdatePeriods();
+       for (ModelListener listener : listeners)
+           listener.changedTiming();
     }
 
     /** @return time span of data
