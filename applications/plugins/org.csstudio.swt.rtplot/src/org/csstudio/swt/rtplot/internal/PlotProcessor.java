@@ -29,6 +29,7 @@ import org.csstudio.swt.rtplot.data.ValueRange;
 import org.csstudio.swt.rtplot.internal.util.Log10;
 import org.csstudio.swt.rtplot.undo.AddAnnotationAction;
 import org.csstudio.swt.rtplot.undo.ChangeAxisRanges;
+import org.eclipse.swt.graphics.Point;
 
 /** Helper for processing traces of a plot
  *  in a thread pool to avoid blocking UI thread.
@@ -279,7 +280,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
             }
             if (location != null)
                 plot.getUndoableActionManager().execute(
-                    new AddAnnotationAction<XTYPE>(plot, new AnnotationImpl<XTYPE>(trace, location, value, text)));
+                    new AddAnnotationAction<XTYPE>(plot, new AnnotationImpl<XTYPE>(trace, location, value, new Point(20, -20), text)));
         });
     }
 

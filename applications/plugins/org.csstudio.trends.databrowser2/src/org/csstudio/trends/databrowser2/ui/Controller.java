@@ -515,7 +515,8 @@ public class Controller
         for (AnnotationInfo info : model.getAnnotations())
         {
             final Trace<Instant> trace = traces.get(info.getItemIndex());
-            final Annotation<Instant> annotation = new Annotation<Instant>(trace , info.getTime(), info.getValue(), info.getText());
+            final Annotation<Instant> annotation =
+                new Annotation<Instant>(trace , info.getTime(), info.getValue(), info.getOffset(), info.getText());
             plot.getPlot().addAnnotation(annotation);
         }
         createUpdateTask();

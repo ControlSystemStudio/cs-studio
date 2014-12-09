@@ -26,17 +26,18 @@ public class Annotation<XTYPE extends Comparable<XTYPE>>
     protected volatile double value;
 
     /** Offset of annotation from the referenced position */
-    protected volatile Point offset = new Point(10, -50);
+    protected volatile Point offset;
 
     /** The (multi-line) text to display */
     protected String text;
 
     /** Constructor */
-    public Annotation(final Trace<XTYPE> trace, final XTYPE position, final double value, final String text)
+    public Annotation(final Trace<XTYPE> trace, final XTYPE position, final double value, final Point offset, final String text)
     {
         this.trace = Objects.requireNonNull(trace);
         this.position = Objects.requireNonNull(position);
         this.value = value;
+        this.offset = Objects.requireNonNull(offset);
         this.text = Objects.requireNonNull(text);
     }
 

@@ -406,7 +406,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             annotations.add((AnnotationImpl)annotation);
         else
             annotations.add(new AnnotationImpl<XTYPE>(annotation.getTrace(), annotation.getPosition(),
-                                                      annotation.getValue(), annotation.getText()));
+                                                      annotation.getValue(), annotation.getOffset(),
+                                                      annotation.getText()));
         requestUpdate();
         fireAnnotationsChanged();
     }
@@ -874,6 +875,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                         new Point(mouse_annotation_start_offset.x + current.x - start.x,
                                   mouse_annotation_start_offset.y + current.y - start.y));
                 requestUpdate();
+                fireAnnotationsChanged();
             }
             else
                 plot_processor.updateAnnotation(anno, x_axis.getValue(current.x));
