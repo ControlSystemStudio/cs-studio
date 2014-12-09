@@ -124,7 +124,7 @@ public class DataBrowserPropertySheetPage extends Page
         @Override
         public void changedSaveChangesBehavior(boolean save)
         {
-            save_changes.setEnabled(save);
+            save_changes.setSelection(save);
         }
 
         @Override
