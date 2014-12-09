@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -339,13 +340,12 @@ public class AxesTableHandler implements IStructuredContentProvider
 
         // Color Column ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.Color, 40, 5);
-        col.setLabelProvider(new CellLabelProvider()
+        col.setLabelProvider(new ColorCellLabelProvider<AxisConfig>()
         {
             @Override
-            public void update(final ViewerCell cell)
+            protected Color getColor(final AxisConfig axis)
             {
-                final AxisConfig axis = (AxisConfig) cell.getElement();
-                cell.setBackground(color_registry.createColor(axis.getColor()));
+                return color_registry.createColor(axis.getColor());
             }
         });
         col.setEditingSupport(new EditSupportBase(axes_table)
@@ -370,9 +370,6 @@ public class AxesTableHandler implements IStructuredContentProvider
                     new ChangeAxisConfigCommand(operations_manager, axis);
                 axis.setColor((RGB)value);
                 command.rememberNewConfig();
-                // After changing the color, that color cannot be 'seen'
-                // as long as the line is still selected, so clear the selection.
-                axes_table.setSelection(null);
             }
         });
 

@@ -47,6 +47,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 
@@ -308,19 +309,12 @@ public class TraceTableHandler implements IStructuredContentProvider
 
         // Color Column ----------
         view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.Color, 40, 10);
-        view_col.setLabelProvider(new CellLabelProvider()
+        view_col.setLabelProvider(new ColorCellLabelProvider<ModelItem>()
         {
             @Override
-            public void update(final ViewerCell cell)
+            protected Color getColor(ModelItem item)
             {
-                final ModelItem item = (ModelItem) cell.getElement();
-                cell.setBackground(color_registry.createColor(item.getColor()));
-            }
-
-            @Override
-            public String getToolTipText(Object element)
-            {
-                return Messages.ColorTT;
+                return color_registry.createColor(item.getColor());
             }
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -344,9 +338,6 @@ public class TraceTableHandler implements IStructuredContentProvider
                 new ChangeColorCommand(operations_manager,
                         (ModelItem) element, (RGB)value);
                 editing = false;
-                // After changing the color, that color cannot be 'seen'
-                // as long as the line is still selected, so clear the selection.
-                table_viewer.setSelection(null);
             }
         });
 
