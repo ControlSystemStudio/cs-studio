@@ -137,8 +137,10 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 
 	@Override
 	public void setAbsoluteScale(double newScale) {
+		double oldScale = scale;
 		super.setAbsoluteScale(newScale);
-		resizeImage();
+		if (oldScale != newScale) 
+		    resizeImage();
 	}
 
 	public synchronized Dimension getAutoSizedDimension() {
