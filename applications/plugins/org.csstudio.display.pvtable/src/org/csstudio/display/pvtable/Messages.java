@@ -15,6 +15,7 @@ public class Messages extends NLS
 
 
     public static String Alarm;
+    public static String Description;
     public static String Delete;
     public static String Delete_TT;
     public static String DeSelectAll;

@@ -212,6 +212,28 @@ public class PVTable implements PVTableModelListener
                 tab_item.setChecked(item.isSelected());
             }
         });
+        
+        // TODO Add column to display item.getDescription()
+        createColumn(viewer, layout, Messages.Description, 50, 40,
+                new PVTableCellLabelProvider()
+                {
+                    @Override
+                    public void update(final ViewerCell cell)
+                    {
+                        final PVTableItem item = (PVTableItem) cell.getElement();
+                        final String strDescr = item.getDescription();
+                        if (strDescr == null)
+                            cell.setText(""); //$NON-NLS-1$
+                        else
+                        {
+                        	//String	value.
+                            cell.setText( strDescr );
+                        	
+                        }
+                        updateCommonCellSettings(cell, item);
+                    }
+                });
+       
         // Read-only time stamp
         createColumn(viewer, layout, Messages.Time, 50, 100,
             new PVTableCellLabelProvider()
