@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to change a FormulaItem's expression and inputs
  *  @author Kay Kasemir
  */
-public class ChangeFormulaCommand implements UndoableAction
+public class ChangeFormulaCommand extends UndoableAction
 {
     final private Shell shell;
     final private FormulaItem formula;
@@ -37,6 +37,7 @@ public class ChangeFormulaCommand implements UndoableAction
             final FormulaItem formula, final String expression,
             final FormulaInput inputs[])
     {
+        super(Messages.Formula);
         this.shell = shell;
         this.formula = formula;
         this.old_expression = formula.getExpression();
@@ -83,12 +84,5 @@ public class ChangeFormulaCommand implements UndoableAction
         {
             ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
         }
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.Formula;
     }
 }

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to change item's name
  *  @author Kay Kasemir
  */
-public class ChangeNameCommand implements UndoableAction
+public class ChangeNameCommand extends UndoableAction
 {
     final private Shell shell;
     final private ModelItem item;
@@ -34,6 +34,7 @@ public class ChangeNameCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final ModelItem item, final String new_name)
     {
+        super(Messages.ItemName);
         this.shell = shell;
         this.item = item;
         this.old_name = item.getName();
@@ -83,12 +84,5 @@ public class ChangeNameCommand implements UndoableAction
                     NLS.bind(Messages.ChangeNameErrorFmt,
                             new Object[] { new_name, old_name, ex.getMessage()}));
         }
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.ItemName;
     }
 }

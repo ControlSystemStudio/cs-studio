@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change a PV item's request type
  *  @author Kay Kasemir
  */
-public class ChangeVisibilityCommand implements UndoableAction
+public class ChangeVisibilityCommand extends UndoableAction
 {
     final private ModelItem item;
     final private boolean old_visibility, new_visibility;
@@ -29,6 +29,7 @@ public class ChangeVisibilityCommand implements UndoableAction
     public ChangeVisibilityCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final boolean visible)
     {
+        super(Messages.TraceVisibility);
         this.item = item;
         this.old_visibility = item.isVisible();
         this.new_visibility = visible;
@@ -51,12 +52,5 @@ public class ChangeVisibilityCommand implements UndoableAction
 		final AxisConfig axis = item.getAxis();
 		item.setVisible(old_visibility);
         axis.setVisible(item.getModel().get().hasAxisActiveItems(axis));
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TraceVisibility;
     }
 }

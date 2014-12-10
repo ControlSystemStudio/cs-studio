@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.Point;
 /** Action to update Annotation
  *  @author Kay Kasemir
  */
-public class UpdateAnnotationAction<XTYPE extends Comparable<XTYPE>> implements UndoableAction
+public class UpdateAnnotationAction<XTYPE extends Comparable<XTYPE>> extends UndoableAction
 {
     final private Plot<XTYPE> plot;
     final AnnotationImpl<XTYPE> annotation;
@@ -27,6 +27,7 @@ public class UpdateAnnotationAction<XTYPE extends Comparable<XTYPE>> implements 
             final XTYPE start_pos, final double start_val, final Point start_offset,
             final XTYPE end_pos, final double end_val, final Point end_offset)
     {
+        super(Messages.UpdateAnnotation);
         this.plot = plot;
         this.annotation = annotation;
         this.start_pos = start_pos;
@@ -47,11 +48,5 @@ public class UpdateAnnotationAction<XTYPE extends Comparable<XTYPE>> implements 
     public void undo()
     {
         plot.updateAnnotation(annotation, start_pos, start_val, start_offset);
-    }
-
-    @Override
-    public String toString()
-    {
-        return Messages.UpdateAnnotation;
     }
 }

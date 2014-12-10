@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to change item's Live Sample Buffer Size
  *  @author Kay Kasemir
  */
-public class ChangeLiveCapacityCommand implements UndoableAction
+public class ChangeLiveCapacityCommand extends UndoableAction
 {
     final private Shell shell;
     final private PVItem item;
@@ -34,6 +34,7 @@ public class ChangeLiveCapacityCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final PVItem item, final int new_size)
     {
+        super(Messages.LiveSampleBufferSize);
         this.shell = shell;
         this.item = item;
         this.old_size = item.getLiveCapacity();
@@ -77,12 +78,5 @@ public class ChangeLiveCapacityCommand implements UndoableAction
             return false;
         }
         return true;
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.LiveSampleBufferSize;
     }
 }

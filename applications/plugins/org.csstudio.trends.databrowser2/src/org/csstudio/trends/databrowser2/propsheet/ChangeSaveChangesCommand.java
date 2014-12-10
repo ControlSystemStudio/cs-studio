@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to change save-on-change behavior
  *  @author Kay Kasemir
  */
-public class ChangeSaveChangesCommand implements UndoableAction
+public class ChangeSaveChangesCommand extends UndoableAction
 {
     final private Model model;
     final private boolean save_changes;
@@ -29,6 +29,7 @@ public class ChangeSaveChangesCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final boolean save_changes)
     {
+        super(Messages.SaveChangesLbl);
         this.model = model;
         this.save_changes = save_changes;
         operations_manager.execute(this);
@@ -46,12 +47,5 @@ public class ChangeSaveChangesCommand implements UndoableAction
     public void undo()
     {
         model.setSaveChanges(! save_changes);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.SaveChangesLbl;
     }
 }

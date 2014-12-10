@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 /** Undo-able command to add or replace archive data sources.
  *  @author Kay Kasemir
  */
-public class AddArchiveCommand implements UndoableAction
+public class AddArchiveCommand extends UndoableAction
 {
     /** PVs on which to set archive data sources */
     final private PVItem pvs[];
@@ -51,6 +51,7 @@ public class AddArchiveCommand implements UndoableAction
     public AddArchiveCommand(final UndoableActionManager operations_manager,
             final PVItem pvs[], final ArchiveDataSource archives[], final boolean replace)
     {
+        super(Messages.AddArchive);
         this.pvs = pvs;
         this.archives = archives;
         // Remember original archives
@@ -79,12 +80,5 @@ public class AddArchiveCommand implements UndoableAction
     {
         for (int i=0; i<original.length; ++i)
             pvs[i].setArchiveDataSource(original[i]);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.AddArchive;
     }
 }

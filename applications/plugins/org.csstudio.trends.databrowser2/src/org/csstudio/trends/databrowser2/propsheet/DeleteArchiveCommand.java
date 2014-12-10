@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 /** Undo-able command to delete archive data sources from a PVItem
  *  @author Kay Kasemir
  */
-public class DeleteArchiveCommand implements UndoableAction
+public class DeleteArchiveCommand extends UndoableAction
 {
     final private PVItem pv;
     final private ArchiveDataSource archives[];
@@ -30,6 +30,7 @@ public class DeleteArchiveCommand implements UndoableAction
     public DeleteArchiveCommand(final UndoableActionManager operations_manager,
             final PVItem pv, final ArchiveDataSource archives[])
     {
+        super(Messages.DeleteArchive);
         this.pv = pv;
         this.archives = archives;
         original = pv.getArchiveDataSources();
@@ -48,12 +49,5 @@ public class DeleteArchiveCommand implements UndoableAction
     public void undo()
     {
         pv.setArchiveDataSource(original);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.DeleteArchive;
     }
 }

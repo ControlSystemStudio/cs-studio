@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.RGB;
  *  @author Takashi Nakamoto - Original implementation that 'cloned' ModelItem
  *  @author Kay Kasemir - without 'clone', since data cannot be cloned
  */
-public class EditItemsCommand implements UndoableAction
+public class EditItemsCommand extends UndoableAction
 {
     final private List<ModelItem> items;
     final private EditItemsDialog.Result result;
@@ -45,6 +45,7 @@ public class EditItemsCommand implements UndoableAction
             final List<ModelItem> items,
             final EditItemsDialog.Result result)
     {
+        super(Messages.EditItems);
     	this.items = items;
     	this.result = result;
 
@@ -143,11 +144,5 @@ public class EditItemsCommand implements UndoableAction
                 ExceptionDetailsErrorDialog.openError(null, Messages.Error, ex);
             }
 		}
-	}
-
-	@Override
-	public String toString()
-	{
-	    return Messages.EditItems;
 	}
 }

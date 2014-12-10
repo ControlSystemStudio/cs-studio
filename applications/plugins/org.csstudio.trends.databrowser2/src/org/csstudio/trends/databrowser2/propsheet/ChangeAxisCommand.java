@@ -19,7 +19,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change item's axis
  *  @author Kay Kasemir
  */
-public class ChangeAxisCommand implements UndoableAction
+public class ChangeAxisCommand extends UndoableAction
 {
     final private ModelItem item;
     final private AxisConfig old_axis, new_axis;
@@ -32,6 +32,7 @@ public class ChangeAxisCommand implements UndoableAction
     public ChangeAxisCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final AxisConfig axis)
     {
+        super(Messages.Axis);
         this.item = item;
         this.old_axis = item.getAxis();
         this.new_axis = axis;
@@ -60,12 +61,5 @@ public class ChangeAxisCommand implements UndoableAction
         final Optional<Model> model = item.getModel();
         if (model.isPresent()  &&  !model.get().hasAxisActiveItems(new_axis))
             new_axis.setVisible(false);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.Axis;
     }
 }

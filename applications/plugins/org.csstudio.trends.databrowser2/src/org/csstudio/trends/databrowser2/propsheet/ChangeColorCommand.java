@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.RGB;
 /** Undo-able command to change item's color
  *  @author Kay Kasemir
  */
-public class ChangeColorCommand implements UndoableAction
+public class ChangeColorCommand extends UndoableAction
 {
     final private ModelItem item;
     final private RGB old_color, new_color;
@@ -29,6 +29,7 @@ public class ChangeColorCommand implements UndoableAction
     public ChangeColorCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final RGB new_color)
     {
+        super(Messages.Color);
         this.item = item;
         this.old_color = item.getColor();
         this.new_color = new_color;
@@ -47,12 +48,5 @@ public class ChangeColorCommand implements UndoableAction
     public void undo()
     {
         item.setColor(old_color);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.Color;
     }
 }

@@ -12,8 +12,16 @@ package org.csstudio.swt.rtplot.undo;
  *  @author Xihui Chen original org.csstudio.swt.xygraph.undo.IUndoableCommand
  *  @author Kay Kasemir
  */
-public interface UndoableAction extends Runnable
+abstract public class UndoableAction implements Runnable
 {
+    final private String name;
+
+    /** @param name Name used to show action in undo/redo UI */
+    public UndoableAction(final String name)
+    {
+        this.name = name;
+    }
+
     /** Perform the action.
      *
      *  <p>Will be called by the {@link UndoableActionManager} to first
@@ -21,11 +29,15 @@ public interface UndoableAction extends Runnable
      *  Might be called again after an 'un-do' to re-perform the action.
      */
     @Override
-    public void run();
+    abstract public void run();
 
     /** Called by the {@link UndoableActionManager} to un-do the action. */
-	public void undo();
+    abstract public void undo();
 
-	// Should implement toString(),
-	// which it used to display this action in the GUI
+    /** @return Name used to show action in undo/redo UI */
+    @Override
+    final public String toString()
+    {
+        return name;
+    }
 }

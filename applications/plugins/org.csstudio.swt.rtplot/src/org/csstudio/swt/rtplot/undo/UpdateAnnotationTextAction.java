@@ -14,7 +14,7 @@ import org.csstudio.swt.rtplot.RTPlot;
 /** Action to update Annotation text
  *  @author Kay Kasemir
  */
-public class UpdateAnnotationTextAction<XTYPE extends Comparable<XTYPE>> implements UndoableAction
+public class UpdateAnnotationTextAction<XTYPE extends Comparable<XTYPE>> extends UndoableAction
 {
     final private RTPlot<XTYPE> plot;
     final Annotation<XTYPE> annotation;
@@ -23,6 +23,7 @@ public class UpdateAnnotationTextAction<XTYPE extends Comparable<XTYPE>> impleme
     public UpdateAnnotationTextAction(final RTPlot<XTYPE> plot, final Annotation<XTYPE> annotation,
             final String end_text)
     {
+        super(Messages.UpdateAnnotation);
         this.plot = plot;
         this.annotation = annotation;
         this.start_text = annotation.getText();
@@ -39,11 +40,5 @@ public class UpdateAnnotationTextAction<XTYPE extends Comparable<XTYPE>> impleme
     public void undo()
     {
         plot.updateAnnotation(annotation, start_text);
-    }
-
-    @Override
-    public String toString()
-    {
-        return Messages.UpdateAnnotation;
     }
 }

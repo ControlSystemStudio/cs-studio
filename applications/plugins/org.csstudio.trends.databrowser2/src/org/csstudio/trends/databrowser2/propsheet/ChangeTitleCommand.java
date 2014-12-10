@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to change plot title
  *  @author Kay Kasemir
  */
-public class ChangeTitleCommand implements UndoableAction
+public class ChangeTitleCommand extends UndoableAction
 {
     final private Model model;
     final private String old_title, new_title;
@@ -29,6 +29,7 @@ public class ChangeTitleCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final String title)
     {
+        super(Messages.TitleLbl);
         this.model = model;
         this.old_title = model.getTitle().orElse(null);
         this.new_title = title;
@@ -47,12 +48,5 @@ public class ChangeTitleCommand implements UndoableAction
     public void undo()
     {
         model.setTitle(old_title);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TitleLbl;
     }
 }

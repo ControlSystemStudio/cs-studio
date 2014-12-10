@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change item's line width
  *  @author Kay Kasemir
  */
-public class ChangeLineWidthCommand implements UndoableAction
+public class ChangeLineWidthCommand extends UndoableAction
 {
     final private ModelItem item;
     final private int old_width, new_width;
@@ -28,6 +28,7 @@ public class ChangeLineWidthCommand implements UndoableAction
     public ChangeLineWidthCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final int new_width)
     {
+        super(Messages.TraceLineWidth);
         this.item = item;
         this.old_width = item.getLineWidth();
         this.new_width = new_width;
@@ -46,12 +47,5 @@ public class ChangeLineWidthCommand implements UndoableAction
     public void undo()
     {
         item.setLineWidth(old_width);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TraceLineWidth;
     }
 }

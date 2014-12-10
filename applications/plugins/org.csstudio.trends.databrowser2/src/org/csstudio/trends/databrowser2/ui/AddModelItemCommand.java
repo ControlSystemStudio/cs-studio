@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to add a ModelItem to the Model
  *  @author Kay Kasemir
  */
-public class AddModelItemCommand implements UndoableAction
+public class AddModelItemCommand extends UndoableAction
 {
     final private Shell shell;
     final private Model model;
@@ -119,6 +119,7 @@ public class AddModelItemCommand implements UndoableAction
             final Model model,
             final ModelItem item)
     {
+        super(Messages.AddPV);
         this.shell = shell;
         this.model = model;
         this.item = item;
@@ -164,12 +165,5 @@ public class AddModelItemCommand implements UndoableAction
     public void undo()
     {
         model.removeItem(item);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.AddPV;
     }
 }

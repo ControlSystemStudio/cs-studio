@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to delete value axis from Model.
  *  @author Kay Kasemir
  */
-public class DeleteAxisCommand implements UndoableAction
+public class DeleteAxisCommand extends UndoableAction
 {
     /** Model to which axis is added */
     final private Model model;
@@ -35,6 +35,7 @@ public class DeleteAxisCommand implements UndoableAction
     public DeleteAxisCommand(final UndoableActionManager operationsManager,
             final Model model, final AxisConfig axis)
     {
+        super(Messages.DeleteAxis);
         this.model = model;
         this.axis = axis;
         // Remember axis locations
@@ -54,12 +55,5 @@ public class DeleteAxisCommand implements UndoableAction
     public void undo()
     {
         model.addAxis(index, axis);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.DeleteAxis;
     }
 }

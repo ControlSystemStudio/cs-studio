@@ -18,10 +18,9 @@ import org.csstudio.swt.rtplot.internal.YAxisImpl;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> implements UndoableAction
+public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> extends UndoableAction
 {
     final private Plot<XTYPE> plot;
-    final private String name;
     final private Axis<XTYPE> x_axis;
     final private AxisRange<XTYPE> original_x_range, new_x_range;
     final private List<YAxisImpl<XTYPE>> yaxes;
@@ -46,8 +45,8 @@ public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> implements Undoab
             final List<AxisRange<Double>> original_y_ranges,
             final List<AxisRange<Double>> new_y_ranges)
     {
+        super(name);
         this.plot = plot;
-        this.name = name;
         this.x_axis = x_axis;
         this.original_x_range = original_x_range;
         this.new_x_range = new_x_range;
@@ -125,11 +124,5 @@ public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> implements Undoab
             if (axis.setValueRange(range.getLow(), range.getHigh()))
                 plot.fireYAxisChange(axis);
         }
-    }
-
-    @Override
-    public String toString()
-    {
-        return name;
     }
 }

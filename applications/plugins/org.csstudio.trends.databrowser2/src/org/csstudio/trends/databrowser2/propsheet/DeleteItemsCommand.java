@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to delete items
  *  @author Kay Kasemir
  */
-public class DeleteItemsCommand implements UndoableAction
+public class DeleteItemsCommand extends UndoableAction
 {
     final private Shell shell;
     final private Model model;
@@ -36,6 +36,7 @@ public class DeleteItemsCommand implements UndoableAction
             final Model model,
             final ModelItem items[])
     {
+        super(Messages.DeleteItem);
         this.shell = shell;
         this.model = model;
         this.items = items;
@@ -67,12 +68,5 @@ public class DeleteItemsCommand implements UndoableAction
                         NLS.bind(Messages.AddItemErrorFmt, item.getName(), ex.getMessage()));
             }
         }
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.DeleteItem;
     }
 }

@@ -13,13 +13,14 @@ import org.csstudio.swt.rtplot.RTTimePlot;
 /** Enable/disable scrolling
  *  @author Kay Kasemir
  */
-public class UpdateScrolling implements UndoableAction
+public class UpdateScrolling extends UndoableAction
 {
     final private RTTimePlot plot;
     final private boolean enable;
 
     public UpdateScrolling(final RTTimePlot plot, final boolean enable)
     {
+        super(Messages.Scroll_OnOff);
         this.plot = plot;
         this.enable = enable;
     }
@@ -34,11 +35,5 @@ public class UpdateScrolling implements UndoableAction
     public void undo()
     {
         plot.setScrolling(!enable);
-    }
-
-    @Override
-    public String toString()
-    {
-        return enable ? Messages.Scroll_On_TT : Messages.Scroll_Off_TT;
     }
 }

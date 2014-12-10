@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to change plot update period
  *  @author Kay Kasemir
  */
-public class ChangeUpdatePeriodCommand implements UndoableAction
+public class ChangeUpdatePeriodCommand extends UndoableAction
 {
     final private Model model;
     final private double old_period, new_period;
@@ -29,6 +29,7 @@ public class ChangeUpdatePeriodCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final double period)
     {
+        super(Messages.UpdatePeriodLbl);
         this.model = model;
         this.old_period = model.getUpdatePeriod();
         this.new_period = period;
@@ -47,12 +48,5 @@ public class ChangeUpdatePeriodCommand implements UndoableAction
     public void undo()
     {
         model.setUpdatePeriod(old_period);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.UpdatePeriodLbl;
     }
 }

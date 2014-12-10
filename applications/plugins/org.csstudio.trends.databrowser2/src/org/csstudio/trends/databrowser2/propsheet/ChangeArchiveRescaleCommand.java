@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to change archive rescale behavior
  *  @author Kay Kasemir
  */
-public class ChangeArchiveRescaleCommand implements UndoableAction
+public class ChangeArchiveRescaleCommand extends UndoableAction
 {
     final private Model model;
     final private ArchiveRescale old_rescale, new_rescale;
@@ -30,6 +30,7 @@ public class ChangeArchiveRescaleCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final ArchiveRescale rescale)
     {
+        super(Messages.ArchiveRescale_Label);
         this.model = model;
         this.old_rescale = model.getArchiveRescale();
         this.new_rescale = rescale;
@@ -48,12 +49,5 @@ public class ChangeArchiveRescaleCommand implements UndoableAction
     public void undo()
     {
         model.setArchiveRescale(old_rescale);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.ArchiveRescale_Label;
     }
 }

@@ -14,13 +14,14 @@ import org.csstudio.swt.rtplot.RTPlot;
 /** Action to remove annotation
  *  @author Kay Kasemir
  */
-public class RemoveAnnotationAction<XTYPE extends Comparable<XTYPE>> implements UndoableAction
+public class RemoveAnnotationAction<XTYPE extends Comparable<XTYPE>> extends UndoableAction
 {
     final private RTPlot<XTYPE> plot;
     final private Annotation<XTYPE> annotation;
 
     public RemoveAnnotationAction(final RTPlot<XTYPE> plot, final Annotation<XTYPE> annotation)
     {
+        super(Messages.EditAnnotation);
         this.plot = plot;
         this.annotation = annotation;
     }
@@ -36,10 +37,4 @@ public class RemoveAnnotationAction<XTYPE extends Comparable<XTYPE>> implements 
     {
 	    plot.addAnnotation(annotation);
     }
-
-    @Override
-	public String toString()
-	{
-	    return Messages.EditAnnotation;
-	}
 }

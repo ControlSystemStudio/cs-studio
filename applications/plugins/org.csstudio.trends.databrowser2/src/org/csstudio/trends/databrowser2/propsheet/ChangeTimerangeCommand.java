@@ -19,7 +19,7 @@ import org.csstudio.trends.databrowser2.model.Model;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ChangeTimerangeCommand implements UndoableAction
+public class ChangeTimerangeCommand extends UndoableAction
 {
     final private Model model;
     final private boolean old_scroll, new_scroll;
@@ -35,6 +35,7 @@ public class ChangeTimerangeCommand implements UndoableAction
     public ChangeTimerangeCommand(final Model model, final UndoableActionManager operationsManager,
             final boolean scroll, final String start, final String end)
     {
+        super(Messages.TimeAxis);
         this.model = model;
         this.old_scroll = model.isScrollEnabled();
         this.old_start = model.getStartSpec();
@@ -77,12 +78,5 @@ public class ChangeTimerangeCommand implements UndoableAction
     		Logger.getLogger(getClass().getName()).log(Level.WARNING,
 				"Cannot update time range to " + start + " .. " + end, ex);
     	}
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TimeAxis;
     }
 }

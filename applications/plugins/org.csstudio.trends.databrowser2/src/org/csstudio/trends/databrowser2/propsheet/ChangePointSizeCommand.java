@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change item's point size
  *  @author Kay Kasemir
  */
-public class ChangePointSizeCommand implements UndoableAction
+public class ChangePointSizeCommand extends UndoableAction
 {
     final private ModelItem item;
     final private int old_size, new_size;
@@ -28,6 +28,7 @@ public class ChangePointSizeCommand implements UndoableAction
     public ChangePointSizeCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final int new_size)
     {
+        super(Messages.PointSize);
         this.item = item;
         this.old_size = item.getPointSize();
         this.new_size = new_size;
@@ -46,12 +47,5 @@ public class ChangePointSizeCommand implements UndoableAction
     public void undo()
     {
         item.setPointSize(old_size);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.PointSize;
     }
 }

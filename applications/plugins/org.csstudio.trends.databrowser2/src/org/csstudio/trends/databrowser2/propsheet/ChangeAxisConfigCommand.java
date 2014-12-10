@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.AxisConfig;
 /** Undo-able command to change axis configuration
  *  @author Kay Kasemir
  */
-public class ChangeAxisConfigCommand implements UndoableAction
+public class ChangeAxisConfigCommand extends UndoableAction
 {
     final private AxisConfig axis;
     final private AxisConfig old_config;
@@ -28,6 +28,7 @@ public class ChangeAxisConfigCommand implements UndoableAction
     public ChangeAxisConfigCommand(final UndoableActionManager operations_manager,
             final AxisConfig axis)
     {
+        super(Messages.Axis);
         this.axis = axis;
         this.old_config = axis.copy();
         operations_manager.add(this);
@@ -79,12 +80,5 @@ public class ChangeAxisConfigCommand implements UndoableAction
             axis.setAutoScale(config.isAutoScale());
         if (axis.isLogScale() != config.isLogScale())
             axis.setLogScale(config.isLogScale());
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.Axis;
     }
 }

@@ -20,7 +20,7 @@ import org.csstudio.trends.databrowser2.model.Model;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ChangeScrollStepCommand implements UndoableAction
+public class ChangeScrollStepCommand extends UndoableAction
 {
     final private Model model;
     final private Duration old_step, new_step;
@@ -34,6 +34,7 @@ public class ChangeScrollStepCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final Duration step)
     {
+        super(Messages.ScrollStepLbl);
         this.model = model;
         this.old_step = model.getScrollStep();
         this.new_step = step;
@@ -64,12 +65,5 @@ public class ChangeScrollStepCommand implements UndoableAction
         {
             Activator.getLogger().log(Level.WARNING, "Failed to update scroll step", ex);
         }
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.ScrollStepLbl;
     }
 }

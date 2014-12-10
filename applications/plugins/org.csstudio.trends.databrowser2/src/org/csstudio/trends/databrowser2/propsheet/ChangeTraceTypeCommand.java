@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change item's trace type
  *  @author Kay Kasemir
  */
-public class ChangeTraceTypeCommand implements UndoableAction
+public class ChangeTraceTypeCommand extends UndoableAction
 {
     final private ModelItem item;
     final private TraceType old_trace_type, new_trace_type;
@@ -29,6 +29,7 @@ public class ChangeTraceTypeCommand implements UndoableAction
     public ChangeTraceTypeCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final TraceType new_trace_type)
     {
+        super(Messages.TraceType);
         this.item = item;
         this.old_trace_type = item.getTraceType();
         this.new_trace_type = new_trace_type;
@@ -47,12 +48,5 @@ public class ChangeTraceTypeCommand implements UndoableAction
     public void undo()
     {
         item.setTraceType(old_trace_type);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TraceType;
     }
 }

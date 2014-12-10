@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change item's waveform index
  *  @author Takashi Nakamoto (Cosylab)
  */
-public class ChangeWaveformIndexCommand implements UndoableAction
+public class ChangeWaveformIndexCommand extends UndoableAction
 {
     final private ModelItem item;
     final private int old_index, new_index;
@@ -28,6 +28,7 @@ public class ChangeWaveformIndexCommand implements UndoableAction
     public ChangeWaveformIndexCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final int new_index)
     {
+        super(Messages.WaveformIndexColTT);
         this.item = item;
         this.old_index = item.getWaveformIndex();
         this.new_index = new_index;
@@ -46,12 +47,5 @@ public class ChangeWaveformIndexCommand implements UndoableAction
     public void undo()
     {
         item.setWaveformIndex(old_index);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.WaveformIndexColTT;
     }
 }

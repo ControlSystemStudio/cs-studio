@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to change item's line width
  *  @author Kay Kasemir
  */
-public class ChangeSamplePeriodCommand implements UndoableAction
+public class ChangeSamplePeriodCommand extends UndoableAction
 {
     final private Shell shell;
     final private PVItem item;
@@ -34,6 +34,7 @@ public class ChangeSamplePeriodCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final PVItem item, final double new_period)
     {
+        super(Messages.ScanPeriod);
         this.shell = shell;
         this.item = item;
         this.old_period = item.getScanPeriod();
@@ -80,12 +81,5 @@ public class ChangeSamplePeriodCommand implements UndoableAction
             MessageDialog.openError(shell, Messages.Error,
                 NLS.bind(Messages.ScanPeriodChangeErrorFmt, item.getName(), ex.getMessage()));
         }
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.ScanPeriod;
     }
 }

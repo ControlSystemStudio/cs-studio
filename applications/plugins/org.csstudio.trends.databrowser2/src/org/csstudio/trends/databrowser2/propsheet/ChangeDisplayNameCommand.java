@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change item's display name
  *  @author Kay Kasemir
  */
-public class ChangeDisplayNameCommand implements UndoableAction
+public class ChangeDisplayNameCommand extends UndoableAction
 {
     final private ModelItem item;
     final private String old_name, new_name;
@@ -28,6 +28,7 @@ public class ChangeDisplayNameCommand implements UndoableAction
     public ChangeDisplayNameCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final String new_name)
     {
+        super(Messages.TraceDisplayName);
         this.item = item;
         this.old_name = item.getDisplayName();
         this.new_name = new_name;
@@ -46,12 +47,5 @@ public class ChangeDisplayNameCommand implements UndoableAction
     public void undo()
     {
         item.setDisplayName(old_name);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TraceDisplayName;
     }
 }

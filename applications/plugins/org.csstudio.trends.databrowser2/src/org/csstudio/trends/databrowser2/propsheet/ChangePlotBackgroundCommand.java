@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.RGB;
 /** Undo-able command to change plot background color
  *  @author Kay Kasemir
  */
-public class ChangePlotBackgroundCommand implements UndoableAction
+public class ChangePlotBackgroundCommand extends UndoableAction
 {
     final private Model model;
     final private RGB old_color, new_color;
@@ -30,6 +30,7 @@ public class ChangePlotBackgroundCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final RGB new_color)
     {
+        super(Messages.Color);
         this.model = model;
         this.old_color = model.getPlotBackground();
         this.new_color = new_color;
@@ -48,12 +49,5 @@ public class ChangePlotBackgroundCommand implements UndoableAction
     public void undo()
     {
         model.setPlotBackground(old_color);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.Color;
     }
 }

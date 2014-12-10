@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.FontData;
 /** Undo-able command to change plot fonts
  *  @author Kay Kasemir
  */
-public class ChangeLabelFontCommand implements UndoableAction
+public class ChangeLabelFontCommand extends UndoableAction
 {
     final private Model model;
     final private FontData old_font, new_font;
@@ -30,6 +30,7 @@ public class ChangeLabelFontCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final FontData new_font)
     {
+        super(Messages.LabelFontLbl);
         this.model = model;
         this.old_font = model.getLabelFont();
         this.new_font = new_font;
@@ -48,12 +49,5 @@ public class ChangeLabelFontCommand implements UndoableAction
     public void undo()
     {
         model.setLabelFont(old_font);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.LabelFontLbl;
     }
 }

@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change item's point type
  *  @author Kay Kasemir
  */
-public class ChangePointTypeCommand implements UndoableAction
+public class ChangePointTypeCommand extends UndoableAction
 {
     final private ModelItem item;
     final private PointType old_point_type, new_point_type;
@@ -29,6 +29,7 @@ public class ChangePointTypeCommand implements UndoableAction
     public ChangePointTypeCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final PointType new_point_type)
     {
+        super(Messages.PointType);
         this.item = item;
         this.old_point_type = item.getPointType();
         this.new_point_type = new_point_type;
@@ -47,12 +48,5 @@ public class ChangePointTypeCommand implements UndoableAction
     public void undo()
     {
         item.setPointType(old_point_type);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.PointType;
     }
 }

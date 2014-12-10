@@ -15,7 +15,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to change time axis configuration
  *  @author Kay Kasemir
  */
-public class ChangeTimeAxisConfigCommand implements UndoableAction
+public class ChangeTimeAxisConfigCommand extends UndoableAction
 {
     final private Model model;
     final private boolean show_grid;
@@ -29,6 +29,7 @@ public class ChangeTimeAxisConfigCommand implements UndoableAction
             final UndoableActionManager operations_manager,
             final boolean show_grid)
     {
+        super(Messages.TimeAxis);
         this.model = model;
         this.show_grid = show_grid;
         operations_manager.add(this);
@@ -47,12 +48,5 @@ public class ChangeTimeAxisConfigCommand implements UndoableAction
     public void undo()
     {
         model.setGridVisible(! show_grid);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TimeAxis;
     }
 }

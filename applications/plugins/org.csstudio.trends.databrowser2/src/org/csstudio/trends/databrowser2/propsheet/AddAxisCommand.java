@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to add value axis to Model
  *  @author Kay Kasemir
  */
-public class AddAxisCommand implements UndoableAction
+public class AddAxisCommand extends UndoableAction
 {
     /** Model to which axis is added */
     final private Model model;
@@ -32,6 +32,7 @@ public class AddAxisCommand implements UndoableAction
     public AddAxisCommand(final UndoableActionManager operations_manager,
             final Model model)
     {
+        super(Messages.AddAxis);
         this.model = model;
         operations_manager.add(this);
 		axis = model.addAxis();
@@ -55,12 +56,5 @@ public class AddAxisCommand implements UndoableAction
     public void undo()
     {
         model.removeAxis(axis);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.AddAxis;
     }
 }
