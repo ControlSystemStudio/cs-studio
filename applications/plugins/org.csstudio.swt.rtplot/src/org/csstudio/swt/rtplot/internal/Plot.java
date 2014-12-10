@@ -191,7 +191,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         label_font = parent.getFont();
         scale_font = parent.getFont();
 
-        media = new SWTMediaPool(parent);
+        media = new SWTMediaPool(parent.getDisplay());
         display = parent.getDisplay();
 
         plot_processor = new PlotProcessor<XTYPE>(this);
@@ -728,8 +728,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     /** Invoked as {@link DisposeListener} */
     private void handleDisposal()
-    {
+    {   // Stop updates which could otherwise still use
+        // what's about to be disposed
         update_throttle.dispose();
+        // .. then release resources
         for (PlotPart y_axis : y_axes)
             y_axis.dispose();
         x_axis.dispose();
@@ -742,6 +744,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             {
                 old_image.dispose();
             }
+        media.dispose();
     }
 
     /** @param show Show the cross-hair cursor? */

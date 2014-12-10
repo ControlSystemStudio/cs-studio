@@ -28,7 +28,7 @@ import org.csstudio.swt.rtplot.Activator;
 @SuppressWarnings("nls")
 public class UpdateThrottle
 {
-    final private static ScheduledExecutorService timer =
+    final private ScheduledExecutorService timer =
             Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("RTPlotUpdateThrottle"));
 
     /** How long to stay dormant after an update */
@@ -110,6 +110,17 @@ public class UpdateThrottle
     /** Call to cancel scheduled updates */
     public void dispose()
     {
+        // In case an update is running right now, wait for that to finish
+        timer.shutdown();
+        try
+        {
+            timer.awaitTermination(1, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e)
+        {
+            // Ignore
+        }
+
         pending_trigger.set(false);
         if (scheduled_wakeup != null)
             scheduled_wakeup.cancel(false);
