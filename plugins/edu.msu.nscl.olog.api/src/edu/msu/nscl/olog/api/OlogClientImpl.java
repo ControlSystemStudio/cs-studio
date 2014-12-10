@@ -384,6 +384,18 @@ public class OlogClientImpl implements OlogClient {
 		}
 		return null;
 	}
+	
+	@Override
+        public InputStream getAttachment(final Long logId, String attachmentName) {
+                try {
+                        ClientResponse response = service.path("attachments")
+                                        .path(logId.toString()).path(attachmentName)
+                                        .get(ClientResponse.class);
+                        return response.getEntity(InputStream.class);
+                } catch (Exception e) {
+                }
+                return null;
+        }
 
 	@Override
 	public Property getProperty(String property) throws OlogException {

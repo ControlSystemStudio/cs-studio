@@ -99,6 +99,14 @@ public interface OlogClient {
 	public InputStream getAttachment(Long logId, Attachment attachment);
 	
 	/**
+         * 
+         * @param logId
+         * @param attachment
+         * @return {@link InputStream} to the attachment file
+         */
+        public InputStream getAttachment(Long logId, String attachmentName);
+	
+	/**
 	 * return the complete property <tt>property</tt>
 	 * 
 	 * @param property
