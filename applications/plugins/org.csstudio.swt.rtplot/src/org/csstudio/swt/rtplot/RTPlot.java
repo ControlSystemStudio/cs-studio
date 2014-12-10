@@ -312,6 +312,17 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         return Collections.unmodifiableList(plot.getAnnotations());
     }
 
+    /** Update text of annotation
+     *  @param annotation {@link Annotation} to update.
+     *         Must be an existing annotation obtained from <code>getAnnotations()</code>
+     *  @param text New text
+     *  @throws IllegalArgumentException if annotation is unknown
+     */
+    public void updateAnnotation(final Annotation<XTYPE> annotation, final String text)
+    {
+        plot.updateAnnotation(annotation, text);
+    }
+
     /** @param annotation Annotation to remove */
     public void removeAnnotation(final Annotation<XTYPE> annotation)
     {

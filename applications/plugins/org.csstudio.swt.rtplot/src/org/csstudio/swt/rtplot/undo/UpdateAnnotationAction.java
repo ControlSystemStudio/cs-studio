@@ -52,6 +52,6 @@ public class UpdateAnnotationAction<XTYPE extends Comparable<XTYPE>> implements 
     @Override
     public String toString()
     {
-        return Messages.MoveAnnotation;
+        return Messages.UpdateAnnotation;
     }
 }

@@ -432,6 +432,22 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         fireAnnotationsChanged();
     }
 
+    /** Update text of annotation
+     *  @param annotation {@link Annotation} to update.
+     *         Must be an existing annotation obtained from <code>getAnnotations()</code>
+     *  @param text New text
+     *  @throws IllegalArgumentException if annotation is unknown
+     */
+    public void updateAnnotation(final Annotation<XTYPE> annotation, final String text)
+    {
+        final int index = annotations.indexOf(annotation);
+        if (index < 0)
+            throw new IllegalArgumentException("Unknown annotation " + annotation);
+        annotations.get(index).setText(text);
+        requestUpdate();
+        fireAnnotationsChanged();
+    }
+
     /** @param annotation Annotation to remove */
     public void removeAnnotation(final Annotation<XTYPE> annotation)
     {

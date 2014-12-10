@@ -145,13 +145,13 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
             }
         });
 
-        remove_annotation = newToolItem(SWT.PUSH, ToolIcons.REMOVE_ANNOTATION, Messages.RemoveAnnotation);
+        remove_annotation = newToolItem(SWT.PUSH, ToolIcons.REMOVE_ANNOTATION, Messages.EditAnnotation);
         remove_annotation.addSelectionListener(new SelectionAdapter()
         {
             @Override
             public void widgetSelected(final SelectionEvent e)
             {
-                new RemoveAnnotationDialog<XTYPE>(toolbar.getShell(), plot).open();
+                new EditAnnotationDialog<XTYPE>(toolbar.getShell(), plot).open();
                 remove_annotation.setEnabled(! plot.getAnnotations().isEmpty());
             }
         });

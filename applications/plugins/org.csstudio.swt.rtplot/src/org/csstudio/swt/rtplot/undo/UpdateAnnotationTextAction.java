@@ -11,35 +11,39 @@ import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.Messages;
 import org.csstudio.swt.rtplot.RTPlot;
 
-/** Action to remove annotation
+/** Action to update Annotation text
  *  @author Kay Kasemir
  */
-public class RemoveAnnotationAction<XTYPE extends Comparable<XTYPE>> implements UndoableAction
+public class UpdateAnnotationTextAction<XTYPE extends Comparable<XTYPE>> implements UndoableAction
 {
     final private RTPlot<XTYPE> plot;
-    final private Annotation<XTYPE> annotation;
+    final Annotation<XTYPE> annotation;
+    final private String start_text, end_text;
 
-    public RemoveAnnotationAction(final RTPlot<XTYPE> plot, final Annotation<XTYPE> annotation)
+    public UpdateAnnotationTextAction(final RTPlot<XTYPE> plot, final Annotation<XTYPE> annotation,
+            final String end_text)
     {
         this.plot = plot;
         this.annotation = annotation;
+        this.start_text = annotation.getText();
+        this.end_text = end_text;
     }
 
     @Override
     public void run()
     {
-        plot.removeAnnotation(annotation);
-    }
-
-	@Override
-    public void undo()
-    {
-	    plot.addAnnotation(annotation);
+        plot.updateAnnotation(annotation, end_text);
     }
 
     @Override
-	public String toString()
-	{
-	    return Messages.EditAnnotation;
-	}
+    public void undo()
+    {
+        plot.updateAnnotation(annotation, start_text);
+    }
+
+    @Override
+    public String toString()
+    {
+        return Messages.UpdateAnnotation;
+    }
 }

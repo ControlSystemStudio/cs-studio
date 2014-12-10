@@ -23,7 +23,10 @@ public class Messages extends NLS
     public static String AddAnnotation_Trace;
     public static String AddAnnotation_Trace_TT;
     public static String Crosshair_Cursor;
-    public static String MoveAnnotation;
+    public static String EditAnnotation;
+    public static String EditAnnotation_Text;
+    public static String EditAnnotation_Trace;
+    public static String EditAnnotation_Info;
     public static String Pan;
     public static String Pan_TT;
     public static String Pan_X;
@@ -36,10 +39,6 @@ public class Messages extends NLS
     public static String PointType_XMarks;
     public static String Redo_Fmt_TT;
     public static String Redo_TT;
-    public static String RemoveAnnotation;
-    public static String RemoveAnnotation_Text;
-    public static String RemoveAnnotation_Trace;
-    public static String RemoveAnnotation_TT;
     public static String Scroll_Off_TT;
     public static String Scroll_On_TT;
     public static String Toolbar_Close;
@@ -55,6 +54,7 @@ public class Messages extends NLS
     public static String Type_None;
     public static String Undo_Fmt_TT;
     public static String Undo_TT;
+    public static String UpdateAnnotation;
     public static String Zoom_In;
     public static String Zoom_In_TT;
     public static String Zoom_In_X;
