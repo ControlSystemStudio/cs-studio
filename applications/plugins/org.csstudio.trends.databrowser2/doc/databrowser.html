@@ -144,8 +144,8 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
     and the value of the trace at that position.
     <br/>
     Once an annotation has been added, it can be moved along the trace by using the mouse.
-<li><img src="remove_annotation.png" width=16 height=16/> Remove <a href="#annotate">Annotation</a>:
-    Opens a dialog that allows removing one or more annotations.
+<li><img src="edit_annotation.png" width=16 height=16/> Edit or Remove <a href="#annotate">Annotation</a>:
+    Opens a dialog that allows editing the text of an annotation or removing one or more annotations.
 </ul>
 </p>
 <p>
@@ -386,16 +386,34 @@ General plot settings: Background color, refresh rate.
 <p>
 The <a href="#toolbar">Toolbar</a> contains buttons to 
 <img src="add_annotation.png" width=16 height=16/> add and
-<img src="remove_annotation.png" width=16 height=16/> remove Annotations.
+<img src="edit_annotation.png" width=16 height=16/> edit or remove Annotations.
 </p>
 <p>
 When you <img src="add_annotation.png" width=16 height=16/> add an Annotation,
 you select to which trace it should "snap".
-You can enter an arbitrary annotation text ("Name") and show that with the
-Annotation, and/or have it display the plotposition or Sample Information.
+You can enter an arbitrary annotation text ("Content").
+Within that text, the placeholder "{0}"  will be replaced with the name of the trace.
+Similarly, the placeholder "{1}" is replaced with the position (time) of the annotation
+and "{2}" with the value of the trace at the location of the annotation.
 </p>
 <p>
-Move Annotation around the plot by dragging it with the mouse along the trace.
+Move the annotation around the plot by dragging its reference point with the mouse
+along the trace.
+Note that the reference point is comparably small.
+When selecting the plain <img src="pointer.png" width=16 height=16/> pointer in the toolbar,
+it is easier to move annotations because otherwise each mouse click that misses the
+reference point might start a zoom or pan operation, depending on what is enabled in the toolbar.
+</p>
+<p>
+In addition to the reference point you can also move the content of an annotation by dragging it
+around the reference point.
+</p>
+
+<img src="annotation.png" width=284 height=229/>
+
+<p>
+To edit the content of an annotation or to remove it,
+click <img src="edit_annotation.png" width=16 height=16/> in the toolbar.
 </p>
 
 

@@ -9,11 +9,18 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.trends.databrowser2.</p>
 
-<h2>Version 4.1.0 - 2014-12-01</h2>
-Replaced plot package.
+<h2>Version 4.1.0 - 2014-15-01</h2>
+Replaced plot package, updated configuration save/load, fixing several bugs.
 <ul>
   <li>Plot more compact, replacing legend with trace names on axes.</li>
   <li>Toolbar more compact.</li>
+  <li>Streamlined zoom/pan options with better visual feedback.</li>
+  <li>Each added trace starts with a new color, reducing likelihood of plots where users cannot determine which trace corresponds to what item (#213).</li>
+  <li>Annotation content with place holders for name, position, value.</li>
+  <li>Annotation removal dialog right away lists annotations to remove.</li>
+  <li>'Color' property of trace or axis is always visible, even if that 'row' of the table is selected.</li>
+  <li>Tables no longer have "vanishing columns" on Linux; enforcing minimum column width (#838).</li>
+  <li>Dropping of several PVs works (used to drop "[PV1", "PV2,", "LastPV]")</li>
   <li>Most drawing performed in background threads, no longer delaying the UI thread.</li>
   <li>'Autoscale' performed in parallel background threads, using all CPUs to determine range of traces.</li>
   <li>Cursor values determined in background thread via binary search (Not in UI thread, not via linear search. Also fixes #536).</li>
@@ -24,15 +31,8 @@ Replaced plot package.
   <li>Using Java 8 'Instant' for all time operations.</li>
   <li>"Edit Items" dialog (for multiple items) has icon, consistent layout.</li>
   <li>Plot can show VStatistics std. deviation as well as min/max (#764).</li>
-  <li>Each added trace starts with a new color, reducing likelihood of plots where users cannot determine which trace corresponds to what item (#213).</li>
-  <li>Annotation content with place holders for name, position, value.</li>
-  <li>Annotation removal dialog right away lists annotations to remove.</li>
-  <li>Streamlined zoom/pan options with better visual feedback.</li>
-  <li>'Color' property of trace or axis is always visible, even if that 'row' of the table is selected.</li>
-  <li>Dropping of several PVs works (used to drop "[PV1", "PV2,", "LastPV]")</li>
   <li>Can "Remove Archive Data Source" even if source has no name (just Key and URL)</li>
-  <li>Tables no longer have "vanishing columns" on Linux; enforcing minimum column width.</li>
-  <li>Time Axis tab offers shortcuts to select common time ranges, configurable via preferences.</li>
+  <li>Time Axis tab offers shortcuts to select common time ranges, configurable via preferences (#512).</li>
   <li>"Save Changes" option: If de-selected, changes will not mark the config as 'dirty', so no Do-you-want-to-save prompt.
       Allows users to zoom, pan, then simply close *.plt. Can still "Save As".
   </li>

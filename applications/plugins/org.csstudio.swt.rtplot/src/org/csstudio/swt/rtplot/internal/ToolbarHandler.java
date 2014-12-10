@@ -36,7 +36,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
     private enum ToolIcons
     {
         ADD_ANNOTATION,
-        REMOVE_ANNOTATION,
+        EDIT_ANNOTATION,
         CROSSHAIR,
         STAGGER,
         ZOOM_IN,
@@ -52,7 +52,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
 
     final private ToolBar toolbar;
     private ToolItem rubber, zoom_out, pan, pointer;
-    private ToolItem remove_annotation;
+    private ToolItem edit_annotation;
 
     /** Index where 'additions' can be added
      *  <p>Initially negative to indicate first user item, requiring another separator */
@@ -66,9 +66,9 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
         this.plot = plot;
         toolbar = new ToolBar(plot, SWT.BORDER | SWT.WRAP);
         initToolItemImages(plot.getDisplay());
-        makeGUI();        
+        makeGUI();
     }
-    
+
     /** {@link RTPlot} creates {@link ToolbarHandler} in two stages:
      *  Construct, then call init, so that tool bar can refer back to the
      *  {@link ToggleToolbarAction}
@@ -141,28 +141,28 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
             public void widgetSelected(final SelectionEvent e)
             {
                 new AddAnnotationDialog<XTYPE>(toolbar.getShell(), plot).open();
-                remove_annotation.setEnabled(! plot.getAnnotations().isEmpty());
+                edit_annotation.setEnabled(! plot.getAnnotations().isEmpty());
             }
         });
 
-        remove_annotation = newToolItem(SWT.PUSH, ToolIcons.REMOVE_ANNOTATION, Messages.EditAnnotation);
-        remove_annotation.addSelectionListener(new SelectionAdapter()
+        edit_annotation = newToolItem(SWT.PUSH, ToolIcons.EDIT_ANNOTATION, Messages.EditAnnotation);
+        edit_annotation.addSelectionListener(new SelectionAdapter()
         {
             @Override
             public void widgetSelected(final SelectionEvent e)
             {
                 new EditAnnotationDialog<XTYPE>(toolbar.getShell(), plot).open();
-                remove_annotation.setEnabled(! plot.getAnnotations().isEmpty());
+                edit_annotation.setEnabled(! plot.getAnnotations().isEmpty());
             }
         });
         // Enable if there are annotations to remove
-        remove_annotation.setEnabled(! plot.getAnnotations().isEmpty());
+        edit_annotation.setEnabled(! plot.getAnnotations().isEmpty());
         plot.addListener(new PlotListenerAdapter<XTYPE>()
         {
             @Override
             public void changedAnnotations()
             {
-                remove_annotation.getDisplay().asyncExec(() -> remove_annotation.setEnabled(! plot.getAnnotations().isEmpty()));
+                edit_annotation.getDisplay().asyncExec(() -> edit_annotation.setEnabled(! plot.getAnnotations().isEmpty()));
             }
         });
 
