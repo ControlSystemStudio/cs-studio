@@ -90,6 +90,12 @@ public interface OlogClient {
 	public Collection<Attachment> listAttachments(Long logId) throws OlogException;
 
 
+	/**
+	 * 
+	 * @param logId
+	 * @param attachment
+	 * @return {@link InputStream} to the attachment file
+	 */
 	public InputStream getAttachment(Long logId, Attachment attachment);
 	
 	/**
