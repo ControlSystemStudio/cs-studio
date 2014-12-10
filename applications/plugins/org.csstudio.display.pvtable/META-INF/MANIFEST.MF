@@ -17,5 +17,5 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.autocomplete.ui,
  org.csstudio.vtype.pv;bundle-version="1.2.101"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Basic PV snapshot/compare table
