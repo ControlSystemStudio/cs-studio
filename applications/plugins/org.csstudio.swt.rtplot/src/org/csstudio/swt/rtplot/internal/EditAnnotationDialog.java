@@ -81,7 +81,7 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
         for (Annotation<XTYPE> annotation : annotations)
         {
             final TableItem item = new TableItem(annotation_list, SWT.NONE);
-            item.setText(new String[] { annotation.getTrace().getName(), annotation.getText().replaceAll("\n", "\\n") });
+            item.setText(new String[] { annotation.getTrace().getName(), annotation.getText().replaceAll("\n", "\\\\n") });
             item.setForeground(media.get(annotation.getTrace().getColor()));
             item.setChecked(true);
         }

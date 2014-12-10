@@ -122,7 +122,6 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
     {
         addOptions();
         addZoom();
-        new ToolItem(toolbar, SWT.SEPARATOR);
         addMouseModes();
         additions_index = -toolbar.getItemCount();
         new ToolItem(toolbar, SWT.SEPARATOR);
@@ -195,7 +194,6 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
         rubber = newToolItem(SWT.CHECK, ToolIcons.ZOOM_IN, Messages.Zoom_In_TT);
         zoom_out = newToolItem(SWT.CHECK, ToolIcons.ZOOM_OUT, Messages.Zoom_Out_TT);
         pan = newToolItem(SWT.CHECK, ToolIcons.PAN, Messages.Pan_TT);
-        new ToolItem(toolbar, SWT.SEPARATOR);
         pointer = newToolItem(SWT.CHECK, ToolIcons.POINTER, Messages.Plain_Pointer);
 
         zoom_out.addSelectionListener(new SelectionAdapter()
@@ -274,7 +272,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
 
     private void addUndo()
     {
-        final ToolItem undo = newToolItem(SWT.CHECK, ToolIcons.UNDO, Messages.Undo_TT);
+        final ToolItem undo = newToolItem(SWT.PUSH, ToolIcons.UNDO, Messages.Undo_TT);
         undo.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -284,7 +282,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
             }
         });
 
-        final ToolItem redo = newToolItem(SWT.CHECK, ToolIcons.REDO, Messages.Redo_TT);
+        final ToolItem redo = newToolItem(SWT.PUSH, ToolIcons.REDO, Messages.Redo_TT);
         redo.addSelectionListener(new SelectionAdapter()
         {
             @Override
