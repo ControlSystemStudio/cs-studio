@@ -138,6 +138,7 @@ public class DataBrowserPropertySheetPage extends Page
         public void changedTiming()
         {
             update_period.setText(Double.toString(model.getUpdatePeriod()));
+            scroll_step.setText(Double.toString(model.getScrollStep().toMillis() / 1000.0));
         }
 
         /** {@inheritDoc} */
@@ -729,7 +730,6 @@ public class DataBrowserPropertySheetPage extends Page
         label.setLayoutData(new GridData());
 
         title = new Text(parent, SWT.BORDER);
-        title.setText(model.getTitle().orElse("")); //$NON-NLS-1$
         title.setToolTipText(Messages.TitleTT);
         title.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         title.addSelectionListener(new SelectionAdapter()
@@ -746,7 +746,6 @@ public class DataBrowserPropertySheetPage extends Page
         label.setLayoutData(new GridData());
 
         label_font = new Button(parent, SWT.PUSH);
-        label_font.setText(SWTMediaPool.getFontDescription(model.getLabelFont()));
         label_font.setToolTipText(Messages.LabelFontTT);
         label_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         label_font.addSelectionListener(new SelectionAdapter()
@@ -768,7 +767,6 @@ public class DataBrowserPropertySheetPage extends Page
         label.setLayoutData(new GridData());
 
         update_period = new Text(parent, SWT.BORDER);
-        update_period.setText(Double.toString(model.getUpdatePeriod()));
         update_period.setToolTipText(Messages.UpdatePeriodTT);
         update_period.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         update_period.addSelectionListener(new SelectionAdapter()
@@ -793,7 +791,6 @@ public class DataBrowserPropertySheetPage extends Page
         label.setLayoutData(new GridData());
 
         scale_font = new Button(parent, SWT.PUSH);
-        scale_font.setText(SWTMediaPool.getFontDescription(model.getScaleFont()));
         scale_font.setToolTipText(Messages.AxesFontTT);
         scale_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         scale_font.addSelectionListener(new SelectionAdapter()
@@ -815,7 +812,6 @@ public class DataBrowserPropertySheetPage extends Page
         label.setLayoutData(new GridData());
 
         scroll_step = new Text(parent, SWT.BORDER);
-        scroll_step.setText(Double.toString(model.getScrollStep().toMillis() / 1000.0));
         scroll_step.setToolTipText(Messages.ScrollStepTT);
         scroll_step.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         scroll_step.addSelectionListener(new SelectionAdapter()
@@ -874,7 +870,6 @@ public class DataBrowserPropertySheetPage extends Page
         save_changes = new Button(parent, SWT.CHECK);
         save_changes.setToolTipText(Messages.SaveChangesTT);
         save_changes.setLayoutData(new GridData(SWT.LEFT, 0, true, false, 3, 1));
-        save_changes.setSelection(model.shouldSaveChanges());
         save_changes.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -885,6 +880,11 @@ public class DataBrowserPropertySheetPage extends Page
         });
 
         misc_tab.setControl(parent);
+
+        model_listener.changedTitle();
+        model_listener.changedColorsOrFonts();
+        model_listener.changedSaveChangesBehavior(model.shouldSaveChanges());
+        model_listener.changedTiming();
     }
 
     /** {@inheritDoc} */
