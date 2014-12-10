@@ -271,7 +271,7 @@ as a line, and the min/max outline is displayed as a light-colored area.
 This not only reduces the amount of data compared to plotting every single
 raw sample from the archive. In addition it makes it obvious if a value
 was fairly stable over time, or if there was a lot of movement in the data
-as around 06:00:00 in Fig. 4a.
+as around 06:00 in Fig. 4a.
 </p>
 <p>
 The number of requested min/max/average samples is configurable in the
@@ -284,14 +284,14 @@ When you zoom into the data far enough, you will eventually get raw data.
 <div class='figure'>
    <img src="raw.png"/>
    <p>
-   Fig. 4b: Blue traces switched to 'Raw' Request.
+   Fig. 4b: Traces switched to 'Raw' Request.
    </p>
 </div>
 
 <p>
 When switching to 'Raw Data' requests as in Fig. 4b, each original sample is
-requested from the history. Not only is this usually more data, taking longer
-to receive and then plot to. It also uses more memory, and when you try to
+requested from the history. Not only is this usually a larger amount of samples, taking longer
+to receive and then to plot. It also uses more memory, and when you try to
 look at raw data for a long time range your computer will eventually ran out
 of memory.
 The 'Raw Data' requests should therefore only be used when necessary because
