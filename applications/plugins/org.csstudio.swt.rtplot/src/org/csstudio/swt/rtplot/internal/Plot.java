@@ -1052,7 +1052,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         deselectMouseAnnotation();
         if (show_crosshair)
         {
-            mouse_current = null;
+            mouse_current = Optional.empty();
             redraw();
         }
     }
