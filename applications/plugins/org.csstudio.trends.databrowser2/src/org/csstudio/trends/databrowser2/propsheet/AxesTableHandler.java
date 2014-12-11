@@ -7,15 +7,17 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
-import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
-import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
-import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
@@ -23,15 +25,18 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ILazyContentProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -41,62 +46,30 @@ import org.eclipse.ui.IWorkbenchActionConstants;
  *  Each 'row' in the table is an AxisConfig.
  *  @author Kay Kasemir
  */
-public class AxesTableHandler implements ILazyContentProvider
+public class AxesTableHandler implements IStructuredContentProvider
 {
-	final private XYGraphMediaFactory color_registry = XYGraphMediaFactory.getInstance();
-    final private OperationsManager operations_manager;
+    final private LocalResourceManager color_registry;
+    final private UndoableActionManager operations_manager;
     final private TableViewer axes_table;
-    private Model model;
+    private volatile Model model;
+    private volatile AxisConfig[] axes = new AxisConfig[0];
 
     /** Listen to model changes regarding axes.
      *  Ignore configuration of individual items.
      */
-    final private ModelListener model_listener = new ModelListener()
+    final private ModelListener model_listener = new ModelListenerAdapter()
     {
         @Override
-        public void changedUpdatePeriod()                { /* NOP */ }
-        @Override
-        public void changedArchiveRescale()              { /* NOP */ }
-        @Override
-        public void changedColors()                      { /* NOP */ }
-        @Override
-        public void changedTimerange()                   { /* NOP */ }
-
-        @Override
-        public void changedAxis(AxisConfig axis)
+        public void changedAxis(final Optional<AxisConfig> axis)
         {
-            if (axis != null)
-            {
-                axes_table.refresh(axis);
-                return;
+            if (axis.isPresent())
+                axes_table.refresh(axis.get());
+            else
+            {   // Force total refresh
+                getModelAxisCopy(model);
+                axes_table.refresh();
             }
-            // Force total refresh
-            axes_table.setItemCount(model.getAxisCount());
-            axes_table.refresh();
         }
-
-        @Override
-        public void itemAdded(ModelItem item)            { /* NOP */ }
-        @Override
-        public void itemRemoved(ModelItem item)          { /* NOP */ }
-        @Override
-        public void changedItemVisibility(ModelItem item){ /* NOP */ }
-        @Override
-        public void changedItemLook(ModelItem item)      { /* NOP */ }
-
-        @Override
-        public void changedItemDataConfig(PVItem item)   { /* NOP */ }
-        @Override
-        public void scrollEnabled(boolean scrollEnabled) { /* NOP */ }
-
-		@Override
-		public void changedAnnotations()                 { /* NOP */ }
-		@Override
-		public void changedXYGraphConfig()               { /* NOP */ }
-		@Override
-		public void itemRefreshRequested(PVItem item) 	 { /* NOP */ }
-		@Override
-		public void cursorDataChanged() 				 { /* NOP */ }
     };
 
     /** Initialize
@@ -105,8 +78,9 @@ public class AxesTableHandler implements ILazyContentProvider
      *  @param operations_manager
      */
     public AxesTableHandler(final Composite parent,
-            final TableColumnLayout table_layout, final OperationsManager operations_manager)
+            final TableColumnLayout table_layout, final UndoableActionManager operations_manager)
     {
+        color_registry = new LocalResourceManager(JFaceResources.getResources(), parent);
         this.operations_manager = operations_manager;
 
         axes_table = new TableViewer(parent,
@@ -137,7 +111,7 @@ public class AxesTableHandler implements ILazyContentProvider
         TableViewerColumn col;
 
         // Visible? Column ----------
-        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisVisibility, 80, 10);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisVisibility, 45, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -167,18 +141,11 @@ public class AxesTableHandler implements ILazyContentProvider
             @Override
             protected void setValue(final Object element, final Object value)
             {
-                try
-                {
-                    final AxisConfig axis = (AxisConfig)element;
-                    final ChangeAxisConfigCommand command =
-                        new ChangeAxisConfigCommand(operations_manager, axis);
-                    axis.setVisible(((Boolean)value).booleanValue());
-                    command.rememberNewConfig();
-                }
-                catch (NumberFormatException ex)
-                {
-                    // NOP, leave as is
-                }
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.setVisible(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
             }
         });
 
@@ -215,15 +182,170 @@ public class AxesTableHandler implements ILazyContentProvider
             }
         });
 
-        // Color Column ----------
-        col = TableHelper.createColumn(table_layout, axes_table, Messages.Color, 40, 5);
+        // Use Axis Name ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.UseAxisName, 95, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
             {
                 final AxisConfig axis = (AxisConfig) cell.getElement();
-                cell.setBackground(color_registry.getColor(axis.getColor()));
+                if (axis.isUsingAxisName())
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
+                else
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).isUsingAxisName();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.useAxisName(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
+            }
+        });
+
+        // Use Trace Names ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.UseTraceNames, 110, 10);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final AxisConfig axis = (AxisConfig) cell.getElement();
+                if (axis.isUsingTraceNames())
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
+                else
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).isUsingTraceNames();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.useTraceNames(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
+            }
+        });
+
+        // Show Grid? ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.Grid, 50, 5);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final AxisConfig axis = (AxisConfig) cell.getElement();
+                if (axis.isGridVisible())
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
+                else
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).isGridVisible();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.setGridVisible(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
+            }
+        });
+
+        // Use Right Side? ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisOnRight, 80, 10);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final AxisConfig axis = (AxisConfig) cell.getElement();
+                if (axis.isOnRight())
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
+                else
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).isOnRight();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.setOnRight(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
+            }
+        });
+
+        // Color Column ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.Color, 40, 5);
+        col.setLabelProvider(new ColorCellLabelProvider<AxisConfig>()
+        {
+            @Override
+            protected Color getColor(final AxisConfig axis)
+            {
+                return color_registry.createColor(axis.getColor());
             }
         });
         col.setEditingSupport(new EditSupportBase(axes_table)
@@ -252,7 +374,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Minimum value Column ----------
-        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisMin, 80, 100);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisMin, 70, 50);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -292,7 +414,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Maximum value Column ----------
-        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisMax, 80, 100);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisMax, 70, 50);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -362,18 +484,11 @@ public class AxesTableHandler implements ILazyContentProvider
             @Override
             protected void setValue(final Object element, final Object value)
             {
-                try
-                {
-                    final AxisConfig axis = (AxisConfig)element;
-                    final ChangeAxisConfigCommand command =
-                        new ChangeAxisConfigCommand(operations_manager, axis);
-                    axis.setAutoScale(((Boolean)value).booleanValue());
-                    command.rememberNewConfig();
-                }
-                catch (NumberFormatException ex)
-                {
-                    // NOP, leave as is
-                }
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.setAutoScale(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
             }
         });
 
@@ -408,18 +523,11 @@ public class AxesTableHandler implements ILazyContentProvider
             @Override
             protected void setValue(final Object element, final Object value)
             {
-                try
-                {
-                    final AxisConfig axis = (AxisConfig)element;
-                    final ChangeAxisConfigCommand command =
-                        new ChangeAxisConfigCommand(operations_manager, axis);
-                    axis.setLogScale(((Boolean)value).booleanValue());
-                    command.rememberNewConfig();
-                }
-                catch (NumberFormatException ex)
-                {
-                    // NOP, leave as is
-                }
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command =
+                    new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.setLogScale(((Boolean)value).booleanValue());
+                command.rememberNewConfig();
             }
         });
     }
@@ -439,17 +547,15 @@ public class AxesTableHandler implements ILazyContentProvider
                     menu.add(new DeleteAxesAction(operations_manager, axes_table, model));
                 if (model.getEmptyAxis() != null)
                     menu.add(new RemoveUnusedAxesAction(operations_manager, model));
-        		menu.add(new Separator());
-        		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+                menu.add(new Separator());
+                menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
         final Table table = axes_table.getTable();
         table.setMenu(menu.createContextMenu(table));
     }
 
-    /** Set input to a Model
-     *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)
-     */
+    /** {@inheritDoc} */
     @Override
     public void inputChanged(final Viewer viewer, final Object old_model, final Object new_model)
     {
@@ -457,20 +563,29 @@ public class AxesTableHandler implements ILazyContentProvider
             ((Model)old_model).removeListener(model_listener);
 
         model = (Model) new_model;
-        if (model == null)
-            return;
-
-        axes_table.setItemCount(model.getAxisCount());
-        model.addListener(model_listener);
+        if (model != null)
+            model.addListener(model_listener);
+        getModelAxisCopy(model);
     }
 
-    /** Called by ILazyContentProvider to get the ModelItem for a table row
-     *  {@inheritDoc}
-     */
-    @Override
-    public void updateElement(int index)
+    private void getModelAxisCopy(final Model model)
     {
-        axes_table.replace(model.getAxis(index), index);
+        if (model == null)
+        {
+            axes = new AxisConfig[0];
+            return;
+        }
+        final List<AxisConfig> new_axes = new ArrayList<>();
+        for (AxisConfig axis : model.getAxes())
+            new_axes.add(axis);
+        axes = new_axes.toArray(new AxisConfig[new_axes.size()]);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object[] getElements(final Object inputElement)
+    {
+        return axes;
     }
 
     /** {@inheritDoc} */

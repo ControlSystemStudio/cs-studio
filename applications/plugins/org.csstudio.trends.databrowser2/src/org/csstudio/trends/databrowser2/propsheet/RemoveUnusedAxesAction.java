@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import java.util.Optional;
+
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
@@ -19,10 +21,10 @@ import org.eclipse.jface.action.Action;
  */
 public class RemoveUnusedAxesAction extends Action
 {
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
     final private Model model;
 
-    public RemoveUnusedAxesAction(final OperationsManager operations_manager,
+    public RemoveUnusedAxesAction(final UndoableActionManager operations_manager,
             final Model model)
     {
         super(Messages.RemoveEmptyAxes,
@@ -34,10 +36,10 @@ public class RemoveUnusedAxesAction extends Action
     @Override
     public void run()
     {
-        AxisConfig axis = model.getEmptyAxis();
-        while (axis != null)
+        Optional<AxisConfig> axis = model.getEmptyAxis();
+        while (axis.isPresent())
         {
-            new DeleteAxisCommand(operations_manager, model, axis);
+            new DeleteAxisCommand(operations_manager, model, axis.get());
             axis = model.getEmptyAxis();
         }
     }

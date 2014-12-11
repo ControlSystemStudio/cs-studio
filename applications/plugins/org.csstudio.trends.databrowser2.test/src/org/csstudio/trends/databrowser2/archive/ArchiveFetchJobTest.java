@@ -9,12 +9,13 @@ package org.csstudio.trends.databrowser2.archive;
 
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of ArchiveFetchJob
@@ -65,8 +66,8 @@ public class ArchiveFetchJobTest implements ArchiveFetchJobListener
 
     private void runFetchJob() throws InterruptedException
     {
-        final Timestamp end = Timestamp.now();
-        final Timestamp start = end.minus(TimeDuration.ofSeconds(60.0));
+        final Instant end = Instant.now();
+        final Instant start = end.minus(Duration.ofSeconds(60));
         final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end, this);
         assertTrue(got_anything == false);
         System.out.println("Starting the job");
@@ -82,7 +83,7 @@ public class ArchiveFetchJobTest implements ArchiveFetchJobListener
         System.out.println("Completed " + job);
         final PlotSamples samples = item.getSamples();
         System.out.println(samples);
-        got_anything = samples.getSize() > 0;
+        got_anything = samples.size() > 0;
     }
 
     @Override

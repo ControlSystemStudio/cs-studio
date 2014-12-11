@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 /** Undo-able command to change archive rescale behavior
  *  @author Kay Kasemir
  */
-public class ChangeArchiveRescaleCommand implements IUndoableCommand
+public class ChangeArchiveRescaleCommand extends UndoableAction
 {
     final private Model model;
     final private ArchiveRescale old_rescale, new_rescale;
@@ -27,19 +27,19 @@ public class ChangeArchiveRescaleCommand implements IUndoableCommand
      *  @param period New value
      */
     public ChangeArchiveRescaleCommand(final Model model,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final ArchiveRescale rescale)
     {
+        super(Messages.ArchiveRescale_Label);
         this.model = model;
         this.old_rescale = model.getArchiveRescale();
         this.new_rescale = rescale;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         model.setArchiveRescale(new_rescale);
     }
@@ -49,12 +49,5 @@ public class ChangeArchiveRescaleCommand implements IUndoableCommand
     public void undo()
     {
         model.setArchiveRescale(old_rescale);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.ArchiveRescale_Label;
     }
 }

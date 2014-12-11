@@ -8,18 +8,13 @@
 package org.csstudio.trends.databrowser2.model;
 
 import java.io.PrintWriter;
-import java.util.Calendar;
+import java.time.Instant;
 
-import org.csstudio.apputil.time.AbsoluteTimeParser;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.archive.vtype.TimestampHelper;
-import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
-import org.csstudio.trends.databrowser2.persistence.XYGraphSettings;
-import org.csstudio.trends.databrowser2.ui.Plot;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
-import org.epics.util.time.Timestamp;
+import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
+import org.csstudio.trends.databrowser2.ui.ModelBasedPlot;
+import org.eclipse.swt.graphics.Point;
 import org.w3c.dom.Element;
 
 /** Information about a Plot Annotation
@@ -29,137 +24,84 @@ import org.w3c.dom.Element;
  *
  *  <p>This class is used by the model to read initial annotations
  *  from the {@link Model}'s XML file,
- *  and to later read them back from the {@link Plot} for writing
+ *  and to later read them back from the {@link ModelBasedPlot} for writing
  *  them to the XML file.
- *
- *  <p>The info keeps less detail than the actual annotation in the XYGraph
- *  to reduce dependence on the plotting library.
  *
  *  @author Kay Kasemir
  */
 public class AnnotationInfo
 {
-	final private Timestamp timestamp;
+    final int item_index;
+	final private Instant time;
 	final private double value;
-	final private int axis;
-	final private String title;
+	final private Point offset;
+	final private String text;
 
-	//ADD Laurent PHILIPPE
-	final private CursorLineStyle cursorLineStyle;
-	final private boolean showName;
-	final private boolean showPosition;
-	final private boolean showSampleInfo;
-	/**
-	 * Add because getTitleFont send a SWTERROR if the receiver is dispose.
-	 * It is the case when you save the plt file after ask to close CSS.
-	 */
-	final private FontData FontData;
-	final private RGB color;
-	
-	public FontData getFontData() {
-		return FontData;
-	}
+	public AnnotationInfo(final int item_index, final Instant time, final double value, final Point offset, final String text)
+	{
 
-	public RGB getColor() {
-		return color;
-	}
-	
-	public boolean isShowSampleInfo() {
-		return showSampleInfo;
-	}
-
-	public boolean isShowName() {
-		return showName;
-	}
-
-	public boolean isShowPosition() {
-		return showPosition;
-	}
-
-	public AnnotationInfo(final Timestamp timestamp, final double value, final int axis,
-			final String title, CursorLineStyle lineStyle, final boolean showName, final boolean showPosition,
-			final boolean showSampleInfo, final FontData fontData, final RGB color)
-    {
-
-		this.timestamp = timestamp;
+	    this.item_index = item_index;
+		this.time = time;
 		this.value = value;
-		this.axis = axis;
-		this.title = title;
-		this.cursorLineStyle = lineStyle;
-		this.showName = showName;
-		this.showSampleInfo = showSampleInfo;
-		this.showPosition = showPosition;
-		this.FontData = fontData;
-		this.color = color;
-
+		this.offset = offset;
+		this.text = text;
     }
 
-	public AnnotationInfo(final Timestamp timestamp, final double value, final int axis,
-			final String title)
+    /** @return Index of item */
+    public int getItemIndex()
     {
-		this(timestamp, value, axis, title, CursorLineStyle.NONE, false, false, false, null, null);
+        return item_index;
     }
 
 	/** @return Time stamp */
-	public Timestamp getTimestamp()
+	public Instant getTime()
 	{
-		return timestamp;
+		return time;
 	}
 
-	/** @return Title */
+	/** @return Value */
     public double getValue()
     {
         return value;
     }
 
-    /** @return Title */
-    public String getTitle()
+    /** @return Offset */
+    public Point getOffset()
     {
-        return title;
+        return offset;
     }
 
-	/** @return Axis index */
-    public int getAxis()
+    /** @return Text */
+    public String getText()
     {
-        return axis;
+        return text;
     }
 
 	@SuppressWarnings("nls")
     @Override
 	public String toString()
 	{
-		return "Annotation for axis " + axis + ": '" + title + "' @ " + timestamp + ", " + value;
+		return "Annotation for item " + item_index + ": '" + text + "' @ " + TimeHelper.format(time) + ", " + value;
 	}
 
     /** Write XML formatted annotation configuration
      *  @param writer PrintWriter
-     *  
-     *  @deprecated annotation data is stored in the {@link XYGraphSettings}
      */
-	@Deprecated
 	public void write(final PrintWriter writer)
     {
-        XMLWriter.start(writer, 2, Model.TAG_ANNOTATION);
+        XMLWriter.start(writer, 2, XMLPersistence.TAG_ANNOTATION);
         writer.println();
-        XMLWriter.XML(writer, 3, Model.TAG_TIME, timestamp);
-        XMLWriter.XML(writer, 3, Model.TAG_VALUE, value);
-
-        XMLWriter.XML(writer, 3, Model.TAG_NAME, title);
-        XMLWriter.XML(writer, 3, Model.TAG_AXIS, axis);
-        XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_CURSOR_LINE_STYLE, cursorLineStyle.name());
-        XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_SHOW_NAME, showName);
-        XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_SHOW_POSITION, showPosition);
-
-        if(color != null)
-	    	 Model.writeColor(writer, 3, Model.TAG_ANNOTATION_COLOR, color);
-
-
-	     if(FontData != null)
-	    	 XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_FONT, FontData);
-
-        XMLWriter.end(writer, 2, Model.TAG_ANNOTATION);
-
-
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_PV, item_index);
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_TIME, TimeHelper.format(time));
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_VALUE, value);
+        XMLWriter.start(writer, 3, XMLPersistence.TAG_OFFSET);
+        writer.println();
+        XMLWriter.XML(writer, 4, XMLPersistence.TAG_X, offset.x);
+        XMLWriter.XML(writer, 4, XMLPersistence.TAG_Y, offset.y);
+        XMLWriter.end(writer, 3, XMLPersistence.TAG_OFFSET);
+        writer.println();
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_TEXT, text);
+        XMLWriter.end(writer, 2, XMLPersistence.TAG_ANNOTATION);
         writer.println();
     }
 
@@ -170,28 +112,20 @@ public class AnnotationInfo
      */
 	public static AnnotationInfo fromDocument(final Element node) throws Exception
     {
-        final String timetext = DOMHelper.getSubelementString(node, Model.TAG_TIME, TimestampHelper.format(Timestamp.now()));
-        final Calendar calendar = AbsoluteTimeParser.parse(timetext);
-        final Timestamp timestamp = Timestamp.of(calendar.getTime());
-        final double value = DOMHelper.getSubelementDouble(node, Model.TAG_VALUE, 0.0);
-        final int axis = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
-		final String title = DOMHelper.getSubelementString(node, Model.TAG_NAME, "Annotation"); //$NON-NLS-1$
-		final String lineStyle = DOMHelper.getSubelementString(node, Model.TAG_ANNOTATION_CURSOR_LINE_STYLE, CursorLineStyle.NONE.name());
+	    final int item_index = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_PV, -1);
+        final String timetext = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TIME);
+        final Instant time = TimeHelper.parse(timetext);
+        final double value = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_VALUE, 0.0);
+		final String text = DOMHelper.getSubelementString(node, XMLPersistence.TAG_TEXT);
 
-		final boolean showName = DOMHelper.getSubelementBoolean(node, Model.TAG_ANNOTATION_SHOW_NAME, false);
-		final boolean showPosition = DOMHelper.getSubelementBoolean(node, Model.TAG_ANNOTATION_SHOW_POSITION, false);
-
-		final RGB Color = Model.loadColorFromDocument(node, Model.TAG_ANNOTATION_COLOR);
-		String fontInfo = DOMHelper.getSubelementString(node, Model.TAG_ANNOTATION_FONT);
-
-		FontData fontData = null;
-		if (fontInfo != null && !fontInfo.trim().isEmpty())
-			fontData = new FontData(fontInfo);
-
-        return new AnnotationInfo(timestamp, value, axis, title, CursorLineStyle.valueOf(lineStyle), showName, showPosition, false, fontData, Color);
+		int x = 20;
+		int y = 20;
+		Element offset = DOMHelper.findFirstElementNode(node.getFirstChild(), XMLPersistence.TAG_OFFSET);
+		if (offset != null)
+		{
+		    x = DOMHelper.getSubelementInt(offset, XMLPersistence.TAG_X, x);
+            y = DOMHelper.getSubelementInt(offset, XMLPersistence.TAG_Y, y);
+		}
+		return new AnnotationInfo(item_index, time, value, new Point(x, y), text);
     }
-
-	public CursorLineStyle getCursorLineStyle() {
-		return cursorLineStyle;
-	}
 }

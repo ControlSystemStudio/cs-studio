@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.trends.databrowser2.feature"
       label="Data Browser"
-      version="3.2.2.qualifier"
+      version="4.1.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -30,8 +30,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates/"/>
    </url>
 
-   
-
    <plugin
          id="org.csstudio.archive.reader.channelarchiver"
          download-size="0"
@@ -41,13 +39,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.archive.reader.rdb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.swt.xygraph"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -82,6 +73,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
+         id="org.csstudio.swt.rtplot"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.csstudio.archive.rdb"
          download-size="0"
          install-size="0"
@@ -97,14 +95,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.trends.databrowser2.rcp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.swt.xygraph.rcp"
          download-size="0"
          install-size="0"
          version="0.0.0"

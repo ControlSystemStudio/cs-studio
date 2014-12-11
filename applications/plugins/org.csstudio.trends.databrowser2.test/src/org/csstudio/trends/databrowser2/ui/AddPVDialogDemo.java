@@ -7,6 +7,11 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.ui;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
@@ -17,8 +22,8 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class AddPVDialogDemo
 {
-    final String names[] = new String[] { "Fred", "Jane" };
-    final String axes[] = new String[] { "Value", "Value 2" };
+    final Set<String> names = new HashSet<>(Arrays.asList("Fred", "Jane" ));
+    final List<String> axes = Arrays.asList( "Value", "Value 2" );
 
     @Test
     public void pvTest()
@@ -32,7 +37,6 @@ public class AddPVDialogDemo
             System.out.println("Axis  : " + dlg.getAxisIndex());
         }
     }
-
 
     @Test
     public void formulaTest()

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -20,16 +20,16 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DeleteArchiveAction extends Action
 {
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
     final private PVItem pv;
     final private ArchiveDataSource archives[];
-    
+
     /** Initialize
      *  @param operations_manager OperationsManager where command will be reg'ed
      *  @param pv PV from which to delete archives
      *  @param archives Archive data sources to remove
      */
-    public DeleteArchiveAction(final OperationsManager operations_manager,
+    public DeleteArchiveAction(final UndoableActionManager operations_manager,
             final PVItem pv, final ArchiveDataSource archives[])
     {
         super(Messages.DeleteArchive,

@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import org.epics.util.array.ListInt;
+import org.epics.util.array.ListNumber;
+import org.epics.util.time.Timestamp;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Display;
@@ -19,9 +22,6 @@ import org.epics.vtype.VStatistics;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueUtil;
-import org.epics.util.array.ListInt;
-import org.epics.util.array.ListNumber;
-import org.epics.util.time.Timestamp;
 
 /** {@link VType} helper
  *  @author Kay Kasemir
@@ -29,8 +29,6 @@ import org.epics.util.time.Timestamp;
 @SuppressWarnings("nls")
 public class VTypeHelper
 {
-	final private static VTypeFormat default_format = new DefaultVTypeFormat();
-	
 	/** Read number from a {@link VType}
      *  @param value Value
      *  @return double or NaN
@@ -80,7 +78,7 @@ public class VTypeHelper
         return Double.NaN;
     }
 
-    
+
     /** Decode a {@link VType}'s time stamp
 	 *  @param value Value to decode
 	 *  @return {@link Timestamp}
@@ -95,7 +93,7 @@ public class VTypeHelper
 		}
 	    return Timestamp.now();
 	}
-	
+
     /** @return Copy of given value with timestamp set to 'now',
      *          or <code>null</code> if value is not handled
      */
@@ -132,7 +130,7 @@ public class VTypeHelper
         }
         return null;
     }
-    
+
 	/** @param buf Buffer where value's time stamp is added
 	 *  @param value {@link VType}
 	 */
@@ -141,7 +139,7 @@ public class VTypeHelper
 		final Timestamp stamp = getTimestamp(value);
 		buf.append(TimestampHelper.format(stamp));
 	}
-    
+
 	/** @param value {@link VType} value
 	 *  @return {@link AlarmSeverity}
 	 */
@@ -163,7 +161,7 @@ public class VTypeHelper
 			return "";
 		return alarm.getAlarmName();
 	}
-	
+
 	/** @param buf Buffer where value's alarm info is added (unless OK)
 	 *  @param value {@link VType}
 	 */
@@ -176,7 +174,7 @@ public class VTypeHelper
        	   .append("/")
        	   .append(alarm.getAlarmName());
 	}
-   
+
 	/** Format value as string
      *  @param value Value
      *  @param format Format to use
@@ -207,6 +205,6 @@ public class VTypeHelper
      */
     final public static String toString(final VType value)
     {
-        return toString(value, default_format);
+        return toString(value, DefaultVTypeFormat.get());
     }
 }

@@ -8,8 +8,11 @@
 package org.csstudio.trends.databrowser2;
 
 import java.util.Dictionary;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import org.csstudio.swt.rtplot.util.NamedThreadFactory;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.core.runtime.Platform;
@@ -40,6 +43,8 @@ public class Activator extends AbstractUIPlugin
     /** Logger for this plugin */
     private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
+    final public static ExecutorService thread_pool = Executors.newCachedThreadPool(new NamedThreadFactory("DataBrowserJobs"));
+
     /** {@inheritDoc} */
     @Override
     public void start(BundleContext context) throws Exception
@@ -57,7 +62,7 @@ public class Activator extends AbstractUIPlugin
                         InstanceScope.SCOPE,
                         ConfigurationScope.SCOPE,
                         "server",
-                        DefaultScope.SCOPE   
+                        DefaultScope.SCOPE
                 });
 		}
         plugin = this;
@@ -75,6 +80,12 @@ public class Activator extends AbstractUIPlugin
     public static Activator getDefault()
     {
         return plugin;
+    }
+
+    /** @return Thread pool */
+    public static ExecutorService getThreadPool()
+    {
+        return thread_pool;
     }
 
     /** Obtain image descriptor from file within plugin.

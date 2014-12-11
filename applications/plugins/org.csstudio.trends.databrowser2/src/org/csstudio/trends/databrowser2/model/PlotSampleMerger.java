@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import org.epics.util.time.Timestamp;
+import java.time.Instant;
 
 /** Helper for merging archived samples.
  *  <p>
@@ -34,10 +34,10 @@ public class PlotSampleMerger
         final int Na = add.length;
         // Both lists have at least one sample.
         // Determine start/end times.
-        Timestamp old_start = old[0].getTime();
+        Instant old_start = old[0].getPosition();
         // ITimestamp old_end = old[No-1].getTime();
-        Timestamp add_start = add[0].getTime();
-        Timestamp add_end = add[Na-1].getTime();
+        Instant add_start = add[0].getPosition();
+        Instant add_end = add[Na-1].getPosition();
 
         //        System.out.print("Have samples " + old_start.toString());
         //        System.out.print(" to " + old_end.toString());

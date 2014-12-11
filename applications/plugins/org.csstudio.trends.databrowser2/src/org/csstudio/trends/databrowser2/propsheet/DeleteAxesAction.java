@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -25,11 +25,11 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DeleteAxesAction extends Action
 {
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
     final private Model model;
     final private TableViewer axes_table;
 
-    public DeleteAxesAction(final OperationsManager operations_manager,
+    public DeleteAxesAction(final UndoableActionManager operations_manager,
             final TableViewer axes_table, final Model model)
     {
         super(Messages.DeleteAxis,
@@ -44,7 +44,7 @@ public class DeleteAxesAction extends Action
     public void run()
     {
         // Get selected axis items
-        final Object sel[] = 
+        final Object sel[] =
             ((IStructuredSelection)axes_table.getSelection()).toArray();
         if (sel.length <= 0)
             return;

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -19,14 +19,14 @@ import org.eclipse.jface.action.Action;
  */
 public class UseDefaultArchivesAction extends Action
 {
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
     final private PVItem pvs[];
 
     /** Initialize
      *  @param shell Parent shell for dialog
      *  @param pvs PVs that should use default archives
      */
-    public UseDefaultArchivesAction(final OperationsManager operations_manager,
+    public UseDefaultArchivesAction(final UndoableActionManager operations_manager,
             final PVItem pvs[])
     {
         super(Messages.UseDefaultArchives,

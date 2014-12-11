@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+     XML schema as used by the DataBrowser
+     
+     Command-line check of XML file against this schema:
+     
+     xmllint -schema DataBrowserSchema.xsd demo.plt
+
+      .. but using two '-' for the -schema arg, yet cannot have double- in this file
+         because that's confused with end of comment
+
+     kasemirk@ornl.gov     
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="databrowser">
+        <xs:complexType>
+			<xs:sequence>
+                <xs:element name="title" type="xs:string" minOccurs="0"/>
+                <xs:element name="save_changes" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="grid" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="scroll" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="update_period" type="xs:double" minOccurs="0"/>
+                <xs:element name="scroll_step" type="xs:double" minOccurs="0"/>
+                <xs:element name="start" type="xs:string" minOccurs="0"/>
+                <xs:element name="end" type="xs:string" minOccurs="0"/>
+                <xs:element name="archive_rescale" type="xs:string" minOccurs="0"/>
+                <xs:element name="background" type="color" minOccurs="0"/>
+                <xs:element name="label_font" type="xs:string" minOccurs="0"/>
+                <xs:element name="scale_font" type="xs:string" minOccurs="0"/>
+                <xs:element ref="axes" minOccurs="0"/>
+                <xs:element ref="annotations" minOccurs="0"/>
+                <xs:element ref="pvlist" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+    <xs:complexType name="color">
+        <xs:sequence>
+            <xs:element name="red" type="xs:decimal"/>
+            <xs:element name="green" type="xs:decimal"/>
+            <xs:element name="blue" type="xs:decimal"/>
+        </xs:sequence>
+    </xs:complexType>
+
+	<xs:element name="axes">
+		<xs:complexType>
+			<xs:sequence>
+                <xs:element ref="axis" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+    <xs:element name="axis">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="visible" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="use_axis_name" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="use_trace_names" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="right" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="color" type="color" minOccurs="0"/>
+                <xs:element name="min" type="xs:double" minOccurs="0"/>
+                <xs:element name="max" type="xs:double" minOccurs="0"/>
+                <xs:element name="grid" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="autoscale" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="log_scale" type="xs:boolean" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="annotations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="annotation" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="annotation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="pv" type="xs:int"/>
+                <xs:element name="time" type="xs:string"/>
+                <xs:element name="value" type="xs:string"/>
+                <xs:element ref="offset" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="text" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="offset">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="x" type="xs:int"/>
+                <xs:element name="y" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="pvlist">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+	            <xs:element ref="pv"/>
+	            <xs:element ref="formula"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="pv">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="display_name" type="xs:string" minOccurs="0"/>
+                <xs:element name="visible" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="axis" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="color" type="color" minOccurs="0"/>
+                <xs:element name="trace_type" type="xs:string" minOccurs="0"/>
+                <xs:element name="linewidth" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="point_type" type="xs:string" minOccurs="0"/>
+                <xs:element name="point_size" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="waveform_index" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="period" type="xs:string" minOccurs="0"/>
+                <xs:element name="ring_size" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="request" type="xs:string" minOccurs="0"/>
+                <xs:element ref="archive" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="formula">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="display_name" type="xs:string" minOccurs="0"/>
+                <xs:element name="visible" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="axis" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="color" type="color" minOccurs="0"/>
+                <xs:element name="trace_type" type="xs:string" minOccurs="0"/>
+                <xs:element name="linewidth" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="point_type" type="xs:string" minOccurs="0"/>
+                <xs:element name="point_size" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="waveform_index" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="formula" type="xs:string"/>
+                <xs:element ref="input" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="archive">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string" minOccurs="0"/>
+                <xs:element name="url" type="xs:string"/>
+                <xs:element name="key" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="input">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="pv" type="xs:string"/>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

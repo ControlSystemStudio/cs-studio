@@ -7,28 +7,38 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.util.Optional;
 
 /** Listener interface for the Model
  *  @author Kay Kasemir
  */
 public interface ModelListener
 {
-    /** The update period changed */
-    void changedUpdatePeriod();
+    /** @param save_changes Should UI ask to save changes to the model? */
+    void changedSaveChangesBehavior(final boolean save_changes);
+
+    /** Title changed */
+    void changedTitle();
+
+    /** The update period or scroll step changed */
+    void changedTiming();
 
     /** The archive-rescale configuration has changed */
     void changedArchiveRescale();
 
-    /** One of the colors (background, ...) changed */
-    void changedColors();
+    /** One of the colors (background, ...) or overall fonts changed */
+    void changedColorsOrFonts();
 
     /** The time range (start/end time or span) was changed */
     void changedTimerange();
 
+    /** Time axis grid, .. changed */
+    void changeTimeAxisConfig();
+
     /** @param axis Axis that changed its color, range, ....
      *              If <code>null</code>, an axis was added or removed
      */
-    void changedAxis(AxisConfig axis);
+    void changedAxis(Optional<AxisConfig> axis);
 
     /** @param item Item that was added to the model */
     void itemAdded(ModelItem item);
@@ -52,17 +62,14 @@ public interface ModelListener
     /** @param scroll_enabled <code>true</code> when scrolling was turned 'on' */
     void scrollEnabled(boolean scroll_enabled);
 
-
 	/** The annotation list changed*/
 	void changedAnnotations();
 
-	void changedXYGraphConfig();
-	
 	/** The item requested to refresh its history.
-	 * @param item the item to refresh the history data for
+	 *  @param item the item to refresh the history data for
 	 */
 	void itemRefreshRequested(PVItem item);
-	
-	void cursorDataChanged();
-	
+
+	/** ModelItems have new selected sample */
+	void selectedSamplesChanged();
 }
