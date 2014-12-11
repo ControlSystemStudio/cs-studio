@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Shiftui
 Bundle-SymbolicName: org.csstudio.shift.ui;singleton:=true
-Bundle-Version: 1.0.5.qualifier
+Bundle-Version: 1.0.6.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.help,

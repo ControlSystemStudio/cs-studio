@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: View
 Bundle-SymbolicName: org.csstudio.shift.viewer;singleton:=true
-Bundle-Version: 1.0.3.qualifier
+Bundle-Version: 1.0.4.qualifier
 Bundle-Activator: org.csstudio.shift.view.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.shift,
