@@ -25,6 +25,7 @@
     <module>org.csstudio.channelfinder.feature</module>
     <module>org.csstudio.email.feature</module>
     <module>org.csstudio.logbook.viewer.feature</module>
+    <module>org.csstudio.logbook.shift.feature</module>
     <module>org.csstudio.olog.feature</module>
     <module>org.csstudio.opibuilder.feature</module>
     <module>org.csstudio.opibuilder.rap.feature</module>
