@@ -38,7 +38,7 @@ import java.io.FileWriter;
 public class ExportLogsDialog extends Dialog {
 
     private ErrorBar errorBar;
-    private final Collection<LogEntryBuilder> data;
+    private final Collection<LogEntry> data;
 	private Button btnAddFields;
 	private Button btnAddPath;
 	private Text filePath;
@@ -47,7 +47,7 @@ public class ExportLogsDialog extends Dialog {
 	private final List<String> fields = Arrays.asList("id", "date", "modifyDate", "description", "owner", "logbooks", "tags", "level");
 	private final String separator = "\t";
  
-    protected ExportLogsDialog(Shell parentShell, Collection<LogEntryBuilder> data) {
+    protected ExportLogsDialog(Shell parentShell, List<LogEntry> data) {
 		super(parentShell);
 		setBlockOnOpen(false);
 		setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
@@ -121,9 +121,9 @@ public class ExportLogsDialog extends Dialog {
 	        final BufferedWriter bw = new BufferedWriter(new FileWriter(new File(filePath.getText())));
 	        try {
 	        	bw.append(Joiner.on(separator).join(getHeader()));
-				for (final LogEntryBuilder log : data) {
+				for (final LogEntry log : data) {
 					bw.newLine();
-					bw.append(Joiner.on(separator).join(getLine(log.build())));	
+					bw.append(Joiner.on(separator).join(getLine(log)));	
 				}
 				getShell().setCursor(originalCursor);
 				setReturnCode(OK);
