@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.trends.databrowser2.opiwidget.feature"
+      label="Data Browser OPI Widget"
+      version="3.2.0.qualifier"
+      provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
+
+   <description>
+      Data Browser OPI widget
+   </description>
+
+   <copyright>
+      Copyright (c) 2010 Oak Ridge National Laboratory,
+OAK RIDGE, TN, USA.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      You must accept this license agreement in order to install and
+use this
+software.
+THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot;
+BASIS. 
+WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+For details, see http://www.eclipse.org/legal/epl-v10.html
+   </license>
+
+   <plugin
+         id="org.csstudio.trends.databrowser2.opiwidget"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
