@@ -25,6 +25,7 @@
     <module>org.csstudio.channelfinder.feature</module>
     <module>org.csstudio.email.feature</module>
     <module>org.csstudio.logbook.viewer.feature</module>
+    <module>org.csstudio.logbook.shift.feature</module>
     <module>org.csstudio.olog.feature</module>
     <module>org.csstudio.opibuilder.feature</module>
     <module>org.csstudio.opibuilder.rap.feature</module>
@@ -32,6 +33,7 @@
     <module>org.csstudio.scan.ui.feature</module>
     <!--<module>org.csstudio.sds.feature</module>--><!-- depends on org.csstudio.sds -->
     <module>org.csstudio.trends.databrowser2.feature</module>
+    <module>org.csstudio.trends.databrowser2.opiwidget.feature</module>
     <module>org.csstudio.trends.databrowser2.rap.feature</module>
     <module>org.csstudio.utilities.feature</module>
     <module>org.eclipse.nebula.widgets.grid.feature</module>
