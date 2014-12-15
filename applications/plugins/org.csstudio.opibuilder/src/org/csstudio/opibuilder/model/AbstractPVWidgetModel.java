@@ -61,11 +61,11 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel implemen
 		return getDelegate().getPVName();
 	}
 
-	@Override
 	/**
 	 * Override to prevent unsightly unresolved macros including
 	 * $(pv_name) or $(pv_value).
 	 */
+	@Override
 	public String getTooltip() {
 		String rawTooltip = getRawTooltip();
 		if ((rawTooltip.contains(PROP_PVNAME) || rawTooltip.contains(PROP_PVVALUE))
