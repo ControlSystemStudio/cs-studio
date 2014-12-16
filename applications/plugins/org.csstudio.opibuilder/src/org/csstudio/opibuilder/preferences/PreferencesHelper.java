@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.preferences;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.csstudio.java.string.StringSplitter;
@@ -36,7 +37,7 @@ public class PreferencesHelper {
 		ONLY_INFO,
 		ALL;
 	}
-	
+
 	public enum PVConnectionLayer {
 		PV_MANAGER,
 		UTILITY_PV;
@@ -61,7 +62,7 @@ public class PreferencesHelper {
 	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
 	public static final String PULSING_ALARM_MINOR_PERIOD = "pulsing_alarm_minor_period";//$NON-NLS-1$
-	public static final String PULSING_ALARM_MAJOR_PERIOD = "pulsing_alarm_major_period";//$NON-NLS-1$		
+	public static final String PULSING_ALARM_MAJOR_PERIOD = "pulsing_alarm_major_period";//$NON-NLS-1$
 	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
 	public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
     public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style";
@@ -69,23 +70,23 @@ public class PreferencesHelper {
 
 	//The widgets that are hidden from palette.
 	public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
-	
+
 //WebOPI preferences
-	
+
 	public static final String OPI_REPOSITORY = "opi_repository"; //$NON-NLS-1$
-	public static final String SECURE_WHOLE_SITE = "secure_whole_site"; //$NON-NLS-1$	
+	public static final String SECURE_WHOLE_SITE = "secure_whole_site"; //$NON-NLS-1$
 	public static final String UNSECURED_OPI_PATHS = "unsecured_opi_paths"; //$NON-NLS-1$
 	public static final String SECURED_OPI_PATHS = "secured_opi_paths"; //$NON-NLS-1$
-	
+
 	public static final String STARTUP_OPI = "startup_opi"; //$NON-NLS-1$
 	public static final String MOBILE_STARTUP_OPI = "mobile_startup_opi"; //$NON-NLS-1$
-	
-	private static final char ROW_SEPARATOR = '|'; 
-	private static final char ITEM_SEPARATOR = ','; 
-	private static final char MACRO_SEPARATOR = '='; 
-	
+
+	private static final char ROW_SEPARATOR = '|';
+	private static final char ITEM_SEPARATOR = ',';
+	private static final char MACRO_SEPARATOR = '=';
+
 	final public static String DEFAULT_EMAIL_SENDER="default_email_sender"; //$NON-NLS-1$
-	
+
 	final public static String ABOUT_SHOW_LINKS="about_show_links"; //$NON-NLS-1$
 
 	 /** @param preferenceName Preference identifier
@@ -105,7 +106,7 @@ public class PreferencesHelper {
     	if(colorFilePath == null || colorFilePath.trim().isEmpty())
     		return null;
     	return getAbsolutePathOnRepo(colorFilePath);
-    }  
+    }
 
     /**Get the font file path from preference store.
      * @return the color file path. null if not specified.
@@ -127,7 +128,7 @@ public class PreferencesHelper {
     		return null;
     	return getExistFileInRepoAndSearchPath(probeOPIPath);
     }
-    
+
     /**Get the schema OPI path from preference store.
      * @return the schema OPI path. null if not specified.
      */
@@ -166,27 +167,27 @@ public class PreferencesHelper {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DEFAULT_TO_CLASSIC_STYLE, true, null);
     }
-    
+
     public static boolean isAdvancedGraphicsDisabled(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DISABLE_ADVANCED_GRAPHICS, false, null);
     }
-    
+
     public static Integer getGUIRefreshCycle(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, OPI_GUI_REFRESH_CYCLE, 100, null);
     }
-    
+
     public static Integer getPulsingAlarmMinorPeriod(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, PULSING_ALARM_MINOR_PERIOD, 3000, null);
-    }    
+    }
 
     public static Integer getPulsingAlarmMajorPeriod(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, PULSING_ALARM_MAJOR_PERIOD, 1500, null);
-    }    
-    
+    }
+
     /**Get the macros map from preference store.
      * @return the macros map. null if failed to get macros from preference store.
      */
@@ -236,7 +237,7 @@ public class PreferencesHelper {
 		}
 		return result;
     }
-    
+
     /**
      * @return the OPI search paths preference. null if no such preference was set.
      * @throws Exception
@@ -253,54 +254,53 @@ public class PreferencesHelper {
     	}
     	return result;
     }
-    
+
     /**
      * @return typeId of widgets that should be hidden from palette.
      * @throws Exception
      */
-    public static String[] getHiddenWidgets(){    	
+    public static String[] getHiddenWidgets(){
     	String rawString = getString(HIDDEN_WIDGETS);
-    	
+
     	if(rawString == null || rawString.trim().isEmpty())
     		rawString = "";
-    	else rawString = "|"+rawString;    	
+    	else rawString = "|"+rawString;
     	//a hack to hide deprecated native widgets
     	rawString = "org.csstudio.opibuilder.widgets.NativeButton|org.csstudio.opibuilder.widgets.NativeText"+ rawString; //$NON-NLS-1$
-    				
+
     	try {
 			return StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
 		} catch (Exception e) {
 			ErrorHandlerUtil.handleError("Failed to parse hidden_widgets preference", e);
 			return null;
 		}
-    	
+
     }
-    
-    /**Get python path preferences.
-     * @return the python path, null if this preference is not setted.
-     * @throws Exception
+
+    /** @return the python path, null if this preference is not setted.
+     *  @throws Exception
      */
-    public static String getPythonPath() throws Exception {
-    	String rawString = getString(PYTHON_PATH);
-    	if(rawString == null || rawString.isEmpty())
-    		return null;
-    	String[] rawPaths = StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
-    	StringBuilder sb = new StringBuilder();
-    	for(String rawPath : rawPaths){
-    		IPath path = new Path(rawPath);
-    		IPath location = ResourceUtil.workspacePathToSysPath(path);
-    		if(location != null){
+    public static Optional<String> getPythonPath() throws Exception
+    {
+    	final String rawString = getString(PYTHON_PATH);
+    	if (rawString == null || rawString.isEmpty())
+    		return Optional.empty();
+    	final String[] rawPaths = StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
+    	final StringBuilder sb = new StringBuilder();
+    	for (String rawPath : rawPaths)
+    	{
+    	    if (sb.length() > 0)
+    	        sb.append(System.getProperty("path.separator"));	//$NON-NLS-1$
+    	    final IPath path = new Path(rawPath);
+    		final IPath location = ResourceUtil.workspacePathToSysPath(path);
+    		if (location != null)
     			sb.append(location.toOSString());
-    		}else{
+    		else
     			sb.append(rawPath);
-    		}    		
-			sb.append(System.getProperty("path.separator"));	//$NON-NLS-1$	
     	}
-    	sb.deleteCharAt(sb.length()-1);
-    	return sb.toString();
-    	
+    	return Optional.of(sb.toString());
     }
-    
+
     public static boolean isDisplaySystemOutput(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DISPLAY_SYSTEM_OUTPUT, false, null);
@@ -310,34 +310,34 @@ public class PreferencesHelper {
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_COMPACT_MODE_DIALOG, true, null);
     }
-    
-    public static void setShowCompactModeDialog(boolean show){    	
-    	putBoolean(SHOW_COMPACT_MODE_DIALOG, show);    	
-    }   
-    
+
+    public static void setShowCompactModeDialog(boolean show){
+    	putBoolean(SHOW_COMPACT_MODE_DIALOG, show);
+    }
+
     public static boolean isShowFullScreenDialog(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_FULLSCREEN_DIALOG, true, null);
     }
-    
+
     public static void setShowFullScreenDialog(boolean show){
     	putBoolean(SHOW_FULLSCREEN_DIALOG, show);
     }
-    
+
     public static boolean isShowOpiRuntimePerspectiveDialog(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, true, null);
     }
-    
+
     public static void setShowOpiRuntimePerspectiveDialog(boolean show){
     	putBoolean(SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, show);
     }
-    
+
      public static boolean isStartWindowInCompactMode(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, START_WINDOW_IN_COMPACT_MODE, false, null);
     }
-     
+
     private static void putBoolean(String name, boolean value){
     	IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(OPIBuilderPlugin.PLUGIN_ID);
     	prefs.putBoolean(name, value);
@@ -345,14 +345,14 @@ public class PreferencesHelper {
 			prefs.flush();
 		} catch (BackingStoreException e) {
 			OPIBuilderPlugin.getLogger().log(Level.SEVERE, "Failed to store preferences.", e);
-		}	
+		}
     }
-    
+
     public static int getURLFileLoadingTimeout(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, URL_FILE_LOADING_TIMEOUT, 8000, null);
     }
-    
+
     /**
      * @return the absolute path of the startup opi. null if not configured.
      */
@@ -362,7 +362,7 @@ public class PreferencesHelper {
     		return null;
     	return getExistFileInRepoAndSearchPath(startOPI);
     }
-    
+
     /**
      * @return the absolute path of the startup opi. null if not configured.
      */
@@ -377,9 +377,9 @@ public class PreferencesHelper {
     	String opiRepo = getString(OPI_REPOSITORY);
     	if(opiRepo == null || opiRepo.trim().isEmpty())
     		return null;
-    	return ResourceUtil.getPathFromString(opiRepo);       
-    }  
-   
+    	return ResourceUtil.getPathFromString(opiRepo);
+    }
+
 
     /**Return the absolute path based on OPI Repository.
 	 * @param pathString
@@ -396,7 +396,7 @@ public class PreferencesHelper {
     		opiPath = repoPath.append(opiPath);
     	return opiPath;
 	}
-	
+
 	protected static IPath getExistFileInRepoAndSearchPath(String pathString){
 		IPath originPath = ResourceUtil.getPathFromString(pathString);
 		IPath opiPath = originPath;
@@ -413,9 +413,9 @@ public class PreferencesHelper {
     	IPath sPath = ResourceUtil.getFileOnSearchPath(originPath, true);
     	if(sPath == null)
     		return opiPath;
-    	return sPath;		
+    	return sPath;
 	}
-	
+
 	public static String getDefaultEmailSender() {
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs == null)
@@ -423,10 +423,10 @@ public class PreferencesHelper {
 		return prefs.getString(OPIBuilderPlugin.PLUGIN_ID,
 				DEFAULT_EMAIL_SENDER, null, null);
 	}
-	
+
     /**
      * @return the opi directory that needs to be secured. null if not configured.
-     * @throws Exception 
+     * @throws Exception
      */
     public static String[] getSecuredOpiPaths() throws Exception{
     	String s = getString(SECURED_OPI_PATHS);
@@ -438,10 +438,10 @@ public class PreferencesHelper {
     	}
     	return rows;
     }
-    
+
     /**
      * @return the opi directory that don't need to be secured if whole site is secured. null if not configured.
-     * @throws Exception 
+     * @throws Exception
      */
     public static String[] getUnSecuredOpiPaths() throws Exception{
     	String s = getString(UNSECURED_OPI_PATHS);
@@ -453,7 +453,7 @@ public class PreferencesHelper {
     	}
     	return rows;
     }
-    
+
     /**
      * @return true if whole site is secured.
      */
@@ -461,7 +461,7 @@ public class PreferencesHelper {
       	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SECURE_WHOLE_SITE, false, null);
     }
-    
+
     /**
      * @return true if whole site is secured.
      */
