@@ -26,6 +26,8 @@ import logging
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
+logging.basicConfig(level=logging.DEBUG)
+
 
 # -------------------------------------------------------
 # Path setup
@@ -51,10 +53,14 @@ def __getPluginPath__(plugin):
         from org.eclipse.core.runtime import FileLocator
         from org.eclipse.core.runtime import Path
         bundle = Platform.getBundle(plugin)
-        # While in the IDE, the classes are in a bin subdir
-        url = FileLocator.find(bundle, Path("bin"), None)
+        # While in the IDE, the classes are in a target subdir
+        url = FileLocator.find(bundle, Path("target/classes"), None)
         if url:
             return FileLocator.resolve(url).getPath()
+        else: # used to be 'bin' subdir
+            url = FileLocator.find(bundle, Path("bin"), None)
+            if url:
+                return FileLocator.resolve(url).getPath()
         # In an exported product, the classes are
         # at the root of the jar or the expanded
         # plugin directory
