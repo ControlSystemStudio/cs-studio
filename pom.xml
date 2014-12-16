@@ -16,7 +16,7 @@
 	<properties>
 		<tycho.version>0.20.0</tycho.version>
 		<manifest-location>META-INF</manifest-location>
-		<cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.0</cs-studio-central.url>
+		<cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</cs-studio-central.url>
 		<pvmanager.version>2.8.0</pvmanager.version>
 		<epics.util.version>0.3.2</epics.util.version>
 		<epics.caj.version>1.1.14</epics.caj.version>
