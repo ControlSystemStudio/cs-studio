@@ -57,11 +57,7 @@ public class XMLCommandWriter
     {
         final Document dom = createDOM(commands);
 
-        // Using org.python.core.SyspathJavaLoader@40ef385f
-        System.out.println("Using " + XMLCommandWriter.class.getClassLoader());
-        System.out.println("Using " + Thread.currentThread().getContextClassLoader());
-        System.out.println("Using " + Thread.currentThread().getClass().getClassLoader());
-
+        // TODO Remove?
         System.clearProperty("javax.xml.transform.TransformerFactory");
 
         // Write XML into stream

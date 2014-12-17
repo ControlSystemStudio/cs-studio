@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.csstudio.scan.PathUtil.splitPath;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-
-import static org.csstudio.scan.PathUtil.splitPath;
 
 /** Scan system preferences
  *
@@ -33,7 +33,7 @@ public class ScanSystemPreferences extends SystemSettings
 {
     private static volatile boolean warned_about_beamline_config = false;
     private static volatile boolean warned_about_simulation_config = false;
-    
+
     /** @return Path to the scan configuration file */
 	public static String getScanConfigPath()
 	{
@@ -95,7 +95,7 @@ public class ScanSystemPreferences extends SystemSettings
         final String list = service.getString(Activator.ID, "post_scan", "platform:/plugin/org.csstudio.scan/examples/post_scan.scn", null);
         return splitPath(list);
     }
-    
+
     /** @return Search paths for scan scripts and 'included' scans
      *  @throws Exception on parse error (missing end of quoted string)
      */
@@ -104,7 +104,8 @@ public class ScanSystemPreferences extends SystemSettings
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null)
             return new String[0];
-        final String pref = service.getString(Activator.ID, "script_paths", "platform:/plugin/org.csstudio.scan/examples", null);
+        final String pref = service.getString(Activator.ID, "script_paths",
+                "platform:/plugin/org.csstudio.numjy/jython,platform:/plugin/org.csstudio.scan/examples", null);
         return splitPath(pref);
     }
 
@@ -164,7 +165,7 @@ public class ScanSystemPreferences extends SystemSettings
             period = service.getDouble(Activator.ID, "pv_min_update_period", period, null);
         return period;
     }
-    
+
 	/** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools
      *  with plugin_customization or preference GUI)

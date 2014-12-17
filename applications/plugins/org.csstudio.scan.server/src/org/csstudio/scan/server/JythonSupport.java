@@ -10,7 +10,6 @@ package org.csstudio.scan.server;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -21,15 +20,16 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.python.core.Py;
 import org.python.core.PyException;
 import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
-import org.python.core.imp;
 import org.python.util.PythonInterpreter;
 
 /** Helper for obtaining Jython interpreter
+ *
+ *  TODO Join with org.csstudio.opibuilder.script.ScriptStoreFactory into a new org.csstudio.jython
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -37,7 +37,6 @@ public class JythonSupport
 {
     private static boolean initialized = false;
     private static List<String> paths = new ArrayList<String>();
-    private static ClassLoader plugin_class_loader;
 
 	final private PythonInterpreter interpreter;
 
@@ -76,52 +75,17 @@ public class JythonSupport
 	{
 	    if (!initialized)
 	    {
-	        // Add org.python.jython/jython.jar/Lib to Python path
-	        String path = getPluginPath("org.python.jython", "jython.jar");
-	        if (path != null)
-	        {
-	            paths.add(path + "/Lib");
-
-	            // TODO Can this class loader be removed because of Eclipse-RegisterBuddy: org.python.jython?
-
-	            // Have Platform support, so create combined class loader that
-	            // first uses this plugin's class loader and has thus access
-	            // to everything that the plugin can reach.
-	            // Fall back to the original Jython class loaded.
-	            plugin_class_loader = new ClassLoader()
-                {
-	                @Override
-	                public Class<?> loadClass(final String name) throws ClassNotFoundException
-	                {
-	                    // Temporarily set class loader to null,
-	                    // which is the original status of SystemState.
-	                    final ClassLoader saveClassLoader = Py.getSystemState().getClassLoader();
-	                    Py.getSystemState().setClassLoader(null);
-	                    try
-	                    {
-	                        return JythonSupport.class.getClassLoader().loadClass(name);
-	                    }
-	                    catch (Exception e)
-	                    {
-	                        return imp.getSyspathJavaLoader().loadClass(name);
-	                    }
-	                    finally {
-	                        Py.getSystemState().setClassLoader(saveClassLoader);
-	                    }
-	                }
-
-	                @Override
-	                public Enumeration<URL> getResources(final String name) throws IOException
-	                {
-	                    return JythonSupport.class.getClassLoader().getResources(name);
-	                }
-                };
-	        }
-
-	        // Add numji
-	        path = getPluginPath("org.csstudio.numjy", "jython");
-	        if (path != null)
-                paths.add(path);
+	        // Add Jython's /Lib to path
+	        final Bundle bundle = Platform.getBundle("org.python.jython");
+	        if (bundle == null)
+	            throw new Exception("Cannot locate jython bundle");
+	        // Different packaging where jython.jar is expanded, /Lib at plugin root
+	        String home = FileLocator.resolve(new URL("platform:/plugin/org.python.jython")).getPath();
+	        // Turn politically correct URL path digestible by jython
+	        if (home.startsWith("file:/"))
+	            home = home.substring(5);
+	        home = home.replace(".jar!", ".jar");
+	        paths.add(home + "Lib/");
 
 	        // Add scan script paths
 	        final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
@@ -132,18 +96,18 @@ public class JythonSupport
 	                final String plugin_path = pref_path.substring(17);
 	                // Locate name of plugin and path within plugin
 	                final int sep = plugin_path.indexOf('/');
-	                final String plugin;
+	                final String plugin, path_within;
 	                if (sep < 0)
 	                {
 	                    plugin = plugin_path;
-	                    path = "/";
+	                    path_within = "/";
 	                }
 	                else
 	                {
 	                    plugin = plugin_path.substring(0, sep);
-	                    path = plugin_path.substring(sep + 1);
+	                    path_within = plugin_path.substring(sep + 1);
 	                }
-	                path = getPluginPath(plugin, path);
+	                final String path = getPluginPath(plugin, path_within);
 	                if (path == null)
 	                    throw new Exception("Error in scan script path " + pref_path);
 	                else
@@ -166,7 +130,7 @@ public class JythonSupport
 	        // If left undefined, initialization of Lib/site.py fails with
 	        // posixpath.py", line 394, in normpath AttributeError:
 	        // 'NoneType' object has no attribute 'startswith'
-	        props.setProperty("python.home", ".");
+	        props.setProperty("python.home", home);
 	        props.setProperty("python.executable", "css");
 
 	        PythonInterpreter.initialize(System.getProperties(), props,
@@ -183,8 +147,6 @@ public class JythonSupport
 	{
 	    init();
 		final PySystemState state = new PySystemState();
-		if (plugin_class_loader != null)
-		    state.setClassLoader(plugin_class_loader);
 
 		// Path to Python standard lib, numjy, scan system
         for (String path : paths)
