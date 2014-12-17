@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,8 +82,10 @@ public class JythonSupport
 	        {
 	            paths.add(path + "/Lib");
 
+	            // TODO Can this class loader be removed because of Eclipse-RegisterBuddy: org.python.jython?
+
 	            // Have Platform support, so create combined class loader that
-	            // first uses this plugin's class loaded and has thus access
+	            // first uses this plugin's class loader and has thus access
 	            // to everything that the plugin can reach.
 	            // Fall back to the original Jython class loaded.
 	            plugin_class_loader = new ClassLoader()
@@ -149,6 +152,25 @@ public class JythonSupport
 	            else // Add as-is
 	                paths.add(pref_path);
 	        }
+
+	        final Properties props = new Properties();
+
+	        // TODO Use this to set path, once?        props.setProperty("python.path", pythonPath);
+
+	        // Disable cachedir to avoid creation of cachedir folder.
+	        // See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
+	        // and http://wiki.python.org/jython/PackageScanning
+	        props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true");
+
+	        // Jython 2.7(b2, b3) need these to set sys.prefix and sys.executable.
+	        // If left undefined, initialization of Lib/site.py fails with
+	        // posixpath.py", line 394, in normpath AttributeError:
+	        // 'NoneType' object has no attribute 'startswith'
+	        props.setProperty("python.home", ".");
+	        props.setProperty("python.executable", "css");
+
+	        PythonInterpreter.initialize(System.getProperties(), props,
+	                 new String[] {""});
 
 	        initialized = true;
 	    }
