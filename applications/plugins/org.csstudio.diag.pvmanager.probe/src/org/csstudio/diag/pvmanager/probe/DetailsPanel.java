@@ -208,23 +208,30 @@ public class DetailsPanel extends Composite {
 	private int nRows = 0;
 	private void setChannelProperties(ChannelHandler handler) {
 		if (handler != null) {
-
+			//if any widget is disposed, the channelHandlerName is disposed as well. In such case, just return
+			if (channelHandlerNameField.isDisposed()) return;
 			SortedMap<String, Object> sortedProperties = new TreeMap<String, Object>(
 					handler.getProperties());
-			StringBuilder builder = new StringBuilder();
+			StringBuilder builder = new StringBuilder(sortedProperties.size() * 100);
 			for (Map.Entry<String, Object> entry : sortedProperties
 					.entrySet()) {
 				builder.append(entry.getKey())
 						.append(" = ").append(entry.getValue()) //$NON-NLS-1$
-						.append("\n"); //$NON-NLS-1$
+						.append('\n'); //$NON-NLS-1$
 			}
 			channelHandlerNameField.setText(handler.getChannelName());
-			usageCountField.setText(handler.getUsageCounter() + " (" + handler.getReadUsageCounter() + "+" + handler.getWriteUsageCounter() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			usageCountField.setText(new StringBuilder(30)
+					.append(handler.getUsageCounter())
+					.append(" (") //$NON-NLS-1$
+					.append(handler.getReadUsageCounter())
+					.append('+') //$NON-NLS-1$
+					.append(handler.getWriteUsageCounter())
+					.append(')').toString()); //$NON-NLS-1$ 
 			boolean writeConnected = false;
 			if (handler instanceof MultiplexedChannelHandler) {
 				writeConnected = ((MultiplexedChannelHandler<?, ?>) handler).isWriteConnected();
 			}
-			connectionField.setText(handler.isConnected() + " - " + writeConnected); //$NON-NLS-1$
+			connectionField.setText(new StringBuilder(13).append(handler.isConnected()).append(" - ").append(writeConnected).toString()); //$NON-NLS-1$
 			channelPropertiesField.setText(builder.toString());
 			showSection(channelSection);
 			if (nRows != sortedProperties.size()) {
