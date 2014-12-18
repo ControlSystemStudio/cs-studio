@@ -2,6 +2,10 @@
 <!-- Ant file for building a scan system client
      library that Jython, Matlab or other plain java,
      i.e. non-Eclipse tools can use.
+     
+     Depends on cs-studio/applications already having been built
+     via the maven command line, so that ../../repository/target/repository/plugins
+     contains external dependencies.
 
      Kay Kasemir
   -->
@@ -14,11 +18,9 @@
 
     <property name="classes" value="${build_dir}/classes" />
     <path id="build.classpath">
-    	<!--
-        <fileset dir="lib">
-          <include name="*.jar"/>
+        <fileset dir="../../repository/target/repository/plugins">
+          <include name="org.epics.util_*.jar"/>
         </fileset>
-        -->
     </path>
 	
     <!-- Remove all that might have been built previously -->
@@ -36,11 +38,6 @@
     <target name="compile" depends="prepare">
         <!-- org.csstudio.java -->
         <javac srcdir="../../../core/plugins/org.csstudio.java/src" destdir="${classes}"
-               includeantruntime="true" deprecation="on" debug="on">
-            <classpath><path refid="build.classpath"/></classpath>
-        </javac>
-        <!-- org.epics.util -->
-        <javac srcdir="../../../core/plugins/org.epics.util/src" destdir="${classes}"
                includeantruntime="true" deprecation="on" debug="on">
             <classpath><path refid="build.classpath"/></classpath>
         </javac>
