@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Channelfinder formula
 Bundle-SymbolicName: org.csstudio.pvmanager.formula.channelfinder;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: org.csstudio.pvmanager.formula.channelfinder.Activator
 Bundle-Vendor: Kunal Shroff <shroffk@bnl.gov>
 Require-Bundle: org.eclipse.core.runtime,
