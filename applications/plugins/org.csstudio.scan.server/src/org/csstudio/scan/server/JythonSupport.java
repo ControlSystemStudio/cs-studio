@@ -35,117 +35,113 @@ import org.python.util.PythonInterpreter;
 @SuppressWarnings("nls")
 public class JythonSupport
 {
-    private static boolean initialized = false;
-    private static List<String> paths = new ArrayList<String>();
+    private static List<String> paths = init();
 
 	final private PythonInterpreter interpreter;
 
-	/** Locate a path inside a bundle.
-	 *
-	 *  <p>If the bundle is JAR-ed up, the {@link FileLocator} will
-	 *  return a location with "file:" and "..jar!/path".
-	 *  This method patches the location such that it can be used
-	 *  on the Jython path.
-	 *
-	 *  @param bundle_name Name of bundle
-	 *  @param path_in_bundle Path within bundle
-	 *  @return Location of that path within bundle, or <code>null</code> if not found or no bundle support
-	 *  @throws IOException on error
-	 */
-	private static String getPluginPath(final String bundle_name, final String path_in_bundle) throws IOException
+	/** Perform static, one-time initialization */
+	private static List<String> init()
 	{
-	    final Bundle bundle = Platform.getBundle(bundle_name);
-        if (bundle == null)
-            return null;
-        final URL url = FileLocator.find(bundle, new Path(path_in_bundle), null);
-        if (url == null)
-            return null;
-        String path = FileLocator.resolve(url).getPath();
+        final List<String> paths = new ArrayList<String>();
+        try
+        {   // Add Jython's /Lib to path
+            final Bundle bundle = Platform.getBundle("org.python.jython");
+            if (bundle == null)
+                throw new Exception("Cannot locate jython bundle");
+            // Different packaging where jython.jar is expanded, /Lib at plugin root
+            String home = FileLocator.resolve(new URL("platform:/plugin/org.python.jython")).getPath();
+            // Turn politically correct URL path digestible by jython
+            if (home.startsWith("file:/"))
+                home = home.substring(5);
+            home = home.replace(".jar!", ".jar");
+            paths.add(home + "Lib/");
 
-        path = path.replace("file:/", "/");
-        path = path.replace(".jar!/", ".jar/");
+            // Add scan script paths
+            final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
+            for (String pref_path : pref_paths)
+            {   // Resolve platform:/plugin/...
+                if (pref_path.startsWith("platform:/plugin/"))
+                {
+                    final String plugin_path = pref_path.substring(17);
+                    // Locate name of plugin and path within plugin
+                    final int sep = plugin_path.indexOf('/');
+                    final String plugin, path_within;
+                    if (sep < 0)
+                    {
+                        plugin = plugin_path;
+                        path_within = "/";
+                    }
+                    else
+                    {
+                        plugin = plugin_path.substring(0, sep);
+                        path_within = plugin_path.substring(sep + 1);
+                    }
+                    final String path = getPluginPath(plugin, path_within);
+                    if (path == null)
+                        throw new Exception("Error in scan script path " + pref_path);
+                    else
+                        paths.add(path);
+                }
+                else // Add as-is
+                    paths.add(pref_path);
+            }
 
-        return path;
+            // Disable cachedir to avoid creation of cachedir folder.
+            // See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
+            // and http://wiki.python.org/jython/PackageScanning
+            final Properties props = new Properties();
+            props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true");
+
+            // Jython 2.7(b3) needs these to set sys.prefix and sys.executable.
+            // If left undefined, initialization of Lib/site.py fails with
+            // posixpath.py", line 394, in normpath AttributeError:
+            // 'NoneType' object has no attribute 'startswith'
+            props.setProperty("python.home", home);
+            props.setProperty("python.executable", "css");
+
+            PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(JythonSupport.class.getName()).
+                log(Level.SEVERE, "Once this worked OK, but now the Jython initialization failed. Don't you hate computers?", ex);
+        }
+        return paths;
 	}
 
-	/** Perform static, one-time initialization
-	 *  @throws Exception on error
-	 */
-	private static synchronized void init() throws Exception
-	{
-	    if (!initialized)
-	    {
-	        // Add Jython's /Lib to path
-	        final Bundle bundle = Platform.getBundle("org.python.jython");
-	        if (bundle == null)
-	            throw new Exception("Cannot locate jython bundle");
-	        // Different packaging where jython.jar is expanded, /Lib at plugin root
-	        String home = FileLocator.resolve(new URL("platform:/plugin/org.python.jython")).getPath();
-	        // Turn politically correct URL path digestible by jython
-	        if (home.startsWith("file:/"))
-	            home = home.substring(5);
-	        home = home.replace(".jar!", ".jar");
-	        paths.add(home + "Lib/");
+    /** Locate a path inside a bundle.
+    *
+    *  <p>If the bundle is JAR-ed up, the {@link FileLocator} will
+    *  return a location with "file:" and "..jar!/path".
+    *  This method patches the location such that it can be used
+    *  on the Jython path.
+    *
+    *  @param bundle_name Name of bundle
+    *  @param path_in_bundle Path within bundle
+    *  @return Location of that path within bundle, or <code>null</code> if not found or no bundle support
+    *  @throws IOException on error
+    */
+   private static String getPluginPath(final String bundle_name, final String path_in_bundle) throws IOException
+   {
+       final Bundle bundle = Platform.getBundle(bundle_name);
+       if (bundle == null)
+           return null;
+       final URL url = FileLocator.find(bundle, new Path(path_in_bundle), null);
+       if (url == null)
+           return null;
+       String path = FileLocator.resolve(url).getPath();
 
-	        // Add scan script paths
-	        final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
-	        for (String pref_path : pref_paths)
-	        {   // Resolve platform:/plugin/...
-	            if (pref_path.startsWith("platform:/plugin/"))
-	            {
-	                final String plugin_path = pref_path.substring(17);
-	                // Locate name of plugin and path within plugin
-	                final int sep = plugin_path.indexOf('/');
-	                final String plugin, path_within;
-	                if (sep < 0)
-	                {
-	                    plugin = plugin_path;
-	                    path_within = "/";
-	                }
-	                else
-	                {
-	                    plugin = plugin_path.substring(0, sep);
-	                    path_within = plugin_path.substring(sep + 1);
-	                }
-	                final String path = getPluginPath(plugin, path_within);
-	                if (path == null)
-	                    throw new Exception("Error in scan script path " + pref_path);
-	                else
-	                    paths.add(path);
-	            }
-	            else // Add as-is
-	                paths.add(pref_path);
-	        }
+       path = path.replace("file:/", "/");
+       path = path.replace(".jar!/", ".jar/");
 
-	        final Properties props = new Properties();
-
-	        // TODO Use this to set path, once?        props.setProperty("python.path", pythonPath);
-
-	        // Disable cachedir to avoid creation of cachedir folder.
-	        // See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
-	        // and http://wiki.python.org/jython/PackageScanning
-	        props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true");
-
-	        // Jython 2.7(b2, b3) need these to set sys.prefix and sys.executable.
-	        // If left undefined, initialization of Lib/site.py fails with
-	        // posixpath.py", line 394, in normpath AttributeError:
-	        // 'NoneType' object has no attribute 'startswith'
-	        props.setProperty("python.home", home);
-	        props.setProperty("python.executable", "css");
-
-	        PythonInterpreter.initialize(System.getProperties(), props,
-	                 new String[] {""});
-
-	        initialized = true;
-	    }
-	}
+       return path;
+   }
 
     /** Initialize
      *  @throws Exception on error
      */
 	public JythonSupport() throws Exception
 	{
-	    init();
 		final PySystemState state = new PySystemState();
 
 		// Path to Python standard lib, numjy, scan system
