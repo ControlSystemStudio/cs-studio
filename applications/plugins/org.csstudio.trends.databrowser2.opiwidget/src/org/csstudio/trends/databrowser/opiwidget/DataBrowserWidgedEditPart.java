@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,11 +60,12 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     /** Data Browser controller for D.B. Model and Plot, used in run mode */
     private Controller controller = null;
 
-    /** PV for writing the selected values
-     *  SYNC on this
-     */
-    private PVWriter<Object> pv = null;
+    /** PV for writing the selected values */
+    private AtomicReference<PVWriter<Object>> pv = new AtomicReference<>();
 
+    /** Listener to plot, writing cursor data to pv.
+     *  Only listening to plot if PV is defined
+     */
     final private PlotListener<Instant> plot_listener = new PlotListenerAdapter<Instant>()
     {
         @Override
@@ -93,7 +95,9 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
                 Arrays.asList("Trace", "Timestamp", "Value"),
                 Arrays.<Object>asList(names,times, convert(values)));
 
-            writeSelectedValue(value);
+            final PVWriter<Object> safe_pv = pv.get();
+            if (safe_pv != null)
+                safe_pv.write(value);
         }
     };
 
@@ -113,22 +117,6 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     public DataBrowserWidgedModel getWidgetModel()
     {
         return (DataBrowserWidgedModel) getModel();
-    }
-
-    protected void writeSelectedValue(final VType value)
-    {
-        final String pv_name = getWidgetModel().getSelectionValuePv();
-        if (pv_name.isEmpty())
-            return;
-
-        final PVWriter<Object> safe_pv;
-        synchronized (this)
-        {
-            if (pv == null)
-                pv = PVManager.write(ExpressionLanguage.channel(pv_name)).async();
-            safe_pv = pv;
-        }
-        safe_pv.write(value);
     }
 
     /** @return Casted widget figure */
@@ -182,7 +170,14 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
                 controller = new Controller(null, getWidgetModel().createDataBrowserModel(),
                         plot_widget);
                 controller.start();
-                plot_widget.getPlot().addListener(plot_listener);
+
+                // Have PV for cursor data?
+                final String pv_name = getWidgetModel().getSelectionValuePv();
+                if (! pv_name.isEmpty())
+                {
+                    pv.set(PVManager.write(ExpressionLanguage.channel(pv_name)).async());
+                    plot_widget.getPlot().addListener(plot_listener);
+                }
 
                 final MenuManager mm = new MenuManager();
                 mm.add(plot_widget.getPlot().getToolbarAction());
@@ -206,16 +201,14 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         // In run mode, stop the controller, which will stop the model
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
         {
-            gui.getDataBrowserPlot().getPlot().removeListener(plot_listener);
             controller.stop();
 
-            final PVWriter<Object> safe_pv;
-            synchronized (this)
+            final PVWriter<Object> safe_pv = pv.getAndSet(null);
+            if (safe_pv != null)
             {
-                safe_pv = pv;
-                pv = null;
+                gui.getDataBrowserPlot().getPlot().removeListener(plot_listener);
+                safe_pv.close();
             }
-            safe_pv.close();
         }
         super.deactivate();
     }
