@@ -10,11 +10,11 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 import java.util.List;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
-import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
+import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
@@ -35,7 +35,6 @@ import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -48,8 +47,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -65,6 +62,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the alarm tree viewer
  *  @author Kay Kasemir
+ *  @author Jaka Bobnar
  */
 public class GUI implements AlarmClientModelListener
 {
@@ -86,6 +84,8 @@ public class GUI implements AlarmClientModelListener
 
     /** Show only alarms, or all items? */
     private boolean show_only_alarms;
+    
+    private GUIUpdateThrottle throttle;
 
 
     /** Initialize GUI
@@ -99,6 +99,14 @@ public class GUI implements AlarmClientModelListener
         this.model = model;
         this.display = parent.getDisplay();
         createGUI(parent);
+        
+        throttle = new GUIUpdateThrottle() {
+            @Override
+            protected void fire() {
+                display.syncExec(() -> tree_viewer.refresh());
+            }
+        };
+        throttle.start();
 
         if (model.isServerAlive()) {
             setErrorMessage(null);
@@ -108,14 +116,7 @@ public class GUI implements AlarmClientModelListener
 
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
-        parent.addDisposeListener(new DisposeListener()
-        {
-            @Override
-            public void widgetDisposed(DisposeEvent e)
-            {
-                model.removeListener(GUI.this);
-            }
-        });
+        parent.addDisposeListener(e -> {throttle.dispose(); model.removeListener(GUI.this);});
 
         connectContextMenu(site);
 
@@ -249,14 +250,7 @@ public class GUI implements AlarmClientModelListener
         final Tree tree = tree_viewer.getTree();
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new IMenuListener()
-        {
-            @Override
-            public void menuAboutToShow(IMenuManager manager)
-            {
-                fillContextMenu(manager);
-            }
-        });
+        manager.addMenuListener(m -> fillContextMenu(m));
         tree.setMenu(manager.createContextMenu(tree));
 
         // Allow extensions to add to the context menu
@@ -390,14 +384,7 @@ public class GUI implements AlarmClientModelListener
     @Override
     public void serverTimeout(final AlarmClientModel model)
     {
-        display.asyncExec(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                setErrorMessage(Messages.ServerTimeout);
-            }
-        });
+        display.asyncExec(() -> setErrorMessage(Messages.ServerTimeout));
     }
 
     /** Model changed, redo the whole tree
@@ -457,46 +444,41 @@ public class GUI implements AlarmClientModelListener
     public void newAlarmState(final AlarmClientModel model,
             final AlarmTreePV pv, final boolean parent_changed)
     {
-        display.asyncExec(new Runnable()
-        {
-            @Override
-            public void run()
+        if (show_only_alarms || pv == null) {
+            //if only alarms are shown, redo the whole tree: 
+            //some PVs might have appeared, some disappeared
+            //it is generally faster to refresh everything
+            throttle.trigger();
+        } else {
+            display.asyncExec(new Runnable()
             {
-                final Tree tree = tree_viewer.getTree();
-                if (tree.isDisposed())
-                    return;
-                if (model.isServerAlive())
-                    setErrorMessage(null);
-                // Refresh affected items to indicate new state.
-                // A complete tree_viewer.refresh() would 'work'
-                // but be quite slow, so try to determine what
-                // needs to be refreshed
-                if (pv != null)
-                {	// Update tree item for PV
-                	final boolean pv_hidden = show_only_alarms  &&
-    			                              pv.getSeverity() == SeverityLevel.OK;
-                	if (pv_hidden)
-                		tree_viewer.remove(pv);
-                	else
-                		tree_viewer.refresh(pv, true);
+                @Override
+                public void run()
+                {
+                    final Tree tree = tree_viewer.getTree();
+                    if (tree.isDisposed())
+                        return;
+                    if (model.isServerAlive())
+                        setErrorMessage(null);
+                    // Refresh affected items to indicate new state.
+                    // A complete tree_viewer.refresh() would 'work'
+                    // but be quite slow, so try to determine what
+                    // needs to be refreshed
+
+                    tree_viewer.update(pv, null);
                 	if (parent_changed)
             		{	// Update parents up to root
             			AlarmTreeItem item = pv.getParent();
             			while (! (item instanceof AlarmTreeRoot))
 	                	{
 	            			// Parent could become hidden with its PV
-            				if (pv_hidden && item.getSeverity() == SeverityLevel.OK)
-	            				tree_viewer.remove(item);
-	            			else
-	            				tree_viewer.refresh(item);
+           				    tree_viewer.update(item,null);
 	                		item = item.getParent();
 	                	}
             		}
                 }
-                else // Refresh whole tree
-                    tree_viewer.refresh();
-            }
-        });
+            });
+        }
     }
 
     /** Acknowledge currently selected alarms */
