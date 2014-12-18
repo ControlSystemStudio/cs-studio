@@ -57,9 +57,6 @@ public class XMLCommandWriter
     {
         final Document dom = createDOM(commands);
 
-        // TODO Remove?
-        System.clearProperty("javax.xml.transform.TransformerFactory");
-
         // Write XML into stream
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         final Transformer transformer = transformerFactory.newTransformer();
