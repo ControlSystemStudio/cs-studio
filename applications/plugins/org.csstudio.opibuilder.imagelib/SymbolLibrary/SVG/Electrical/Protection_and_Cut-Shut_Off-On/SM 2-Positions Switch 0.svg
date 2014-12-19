@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -11,8 +10,8 @@
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="99pt" viewBox="0 0 51 99" version="1.1">
 <g id="surface1">
-<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.890625 1.875 L 1.917969 1.875 L 1.917969 1.933594 L 1.890625 1.933594 Z M 1.890625 1.875 "/>
-<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.695312 97.484375 L 49.722656 97.484375 L 49.722656 97.542969 L 49.695312 97.542969 Z M 49.695312 97.484375 "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.890625 1.875 L 1.917969 1.875 L 1.917969 1.933594 L 1.890625 1.933594 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.695313 97.484375 L 49.722656 97.484375 L 49.722656 97.542969 L 49.695313 97.542969 Z "/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.0000000754351 53.030814 L 17.010418 53.030814 " transform="matrix(0.000000000000000115,1.875,-1.875,0.000000000000000115,117.264799,1.875)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000453972 53.030431 L 16.528989 53.030144 " transform="matrix(-0.964686,-1.607795,1.607795,-0.964686,-67.425687,116.810804)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000969308 53.030814 L 17.009304 53.030814 " transform="matrix(0.000000000000000115,1.875,-1.875,0.000000000000000115,117.264799,65.654433)"/>

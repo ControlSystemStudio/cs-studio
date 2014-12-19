@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -11,6 +10,6 @@
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68pt" height="68pt" viewBox="0 0 68 68" version="1.1">
 <g id="surface1">
-<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 34.015559 19.008238 C 34.015559 9.615333 26.401143 2.000917 17.008238 2.000917 C 7.615333 2.000917 0.000917228 9.615333 0.000917228 19.008238 C 0.000917228 28.401143 7.615333 36.015559 17.008238 36.015559 C 26.401143 36.015559 34.015559 28.401143 34.015559 19.008238 Z M 34.015559 19.008238 " transform="matrix(1.888892,0,0,1.888892,1.888892,-1.888892)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 34.015559 19.008238 C 34.015559 9.615333 26.401143 2.000917 17.008238 2.000917 C 7.615333 2.000917 0.000917228 9.615333 0.000917228 19.008238 C 0.000917228 28.401143 7.615333 36.015559 17.008238 36.015559 C 26.401143 36.015559 34.015559 28.401143 34.015559 19.008238 Z " transform="matrix(1.888892,0,0,1.888892,1.888892,-1.888892)"/>
 </g>
 </svg>

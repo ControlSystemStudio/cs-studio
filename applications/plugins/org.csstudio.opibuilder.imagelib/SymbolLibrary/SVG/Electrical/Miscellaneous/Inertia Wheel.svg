@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -11,6 +10,6 @@
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36pt" height="20pt" viewBox="0 0 36 20" version="1.1">
 <g id="surface1">
-<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00000231483 1.999347 L 17.008375 1.999347 L 17.008375 10.504211 L 0.00000231483 10.504211 Z M 0.00000231483 1.999347 " transform="matrix(1.874996,0,0,1.923072,1.874996,-1.923014)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00000231483 1.999347 L 17.008375 1.999347 L 17.008375 10.504211 L 0.00000231483 10.504211 Z " transform="matrix(1.874996,0,0,1.923072,1.874996,-1.923014)"/>
 </g>
 </svg>

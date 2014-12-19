@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -11,7 +10,7 @@
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68pt" height="68pt" viewBox="0 0 68 68" version="1.1">
 <g id="surface1">
-<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 34.019745 19.010332 L 17.010332 36.019745 L 0.000918673 19.010332 L 17.010332 2.000919 Z M 34.019745 19.010332 " transform="matrix(1.88889,0,0,1.88889,1.88889,-1.88889)"/>
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 34.019745 19.010332 L 17.010332 36.019745 L 0.000918673 19.010332 L 17.010332 2.000919 Z " transform="matrix(1.88889,0,0,1.88889,1.88889,-1.88889)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000671366 36.020128 L 17.010085 36.020128 " transform="matrix(0.000000000000000116,1.88889,-1.88889,0.000000000000000116,101.979456,17.951857)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000474348 36.020444 L 8.500011 36.020444 " transform="matrix(1.88889,0,0,1.88889,25.59676,-42.046459)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.0000514786 36.020877 L 8.499588 36.020877 " transform="matrix(1.88889,0,0,1.88889,25.917872,-28.660558)"/>
