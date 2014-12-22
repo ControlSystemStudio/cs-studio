@@ -47,8 +47,10 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	private AtomicInteger remainingImagesToLoad = new AtomicInteger(0);
 
 	private boolean animationDisabled = false;
+	private boolean disconnected = true;
 
 	private IImageListener imageListener;
+	private boolean runMode;
 
 	public ImageBoolButtonFigure() {
 		this(false);
@@ -116,6 +118,14 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 
 	public void setSymbolProperties(SymbolImageProperties symbolProperties) {
 		this.symbolProperties = symbolProperties;
+	}
+
+	public void setExecutionMode(boolean runMode) {
+		this.runMode = runMode;
+	}
+
+	public boolean isEditMode() {
+		return runMode == false;
 	}
 
 	public Dimension getAutoSizedDimension() {
@@ -284,7 +294,6 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 
 	public void symbolImageLoaded() {
 		decrementLoadingCounter();
-		sizeChanged();
 		revalidate();
 		repaint();
 	}
@@ -294,8 +303,13 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	}
 
 	public void sizeChanged() {
-		if (imageListener != null)
+		// Avoid changing the size of the model when disconnected
+		if (!disconnected || isEditMode())
 			imageListener.imageResized(this);
+	}
+
+	public void setDisconnected(boolean disconnected) {
+		this.disconnected = disconnected;
 	}
 
 }

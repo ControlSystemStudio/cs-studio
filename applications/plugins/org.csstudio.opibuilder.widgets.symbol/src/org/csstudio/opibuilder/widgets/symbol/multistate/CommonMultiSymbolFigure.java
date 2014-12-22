@@ -81,6 +81,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	private boolean useForegroundColor = false;
 
 	private boolean animationDisabled = false;
+	private boolean disconnected = true;
 
 	public CommonMultiSymbolFigure(boolean runMode) {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE : ExecutionMode.EDIT_MODE;
@@ -260,10 +261,6 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		this.imageListener = listener;
 	}
 
-	public synchronized void fireImageResized() {
-		imageListener.imageResized(this);
-	}
-
 	/**
 	 * Set user selected image path (edit mode)
 	 * 
@@ -399,9 +396,10 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	}
 
 	@Override
-	public synchronized void paintFigure(final Graphics gfx) {
+	protected void paintClientArea(Graphics gfx) {	
 		if (isLoadingImage())
 			return;
+		gfx.pushState();
 		Rectangle bounds = getBounds().getCopy();
 		ImageUtils.crop(bounds, this.getInsets());
 		if (bounds.width <= 0 || bounds.height <= 0)
@@ -426,6 +424,8 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		symbolImage.setCurrentColor(currentcolor);
 		symbolImage.setBackgroundColor(getBackgroundColor());
 		symbolImage.paintFigure(gfx);
+		gfx.popState();
+		super.paintClientArea(gfx);
 	}
 
 	// ************************************************************
@@ -691,7 +691,6 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	@Override
 	public void symbolImageLoaded() {
 		decrementLoadingCounter();
-		fireImageResized();
 		repaint();
 		revalidate();
 	}
@@ -703,7 +702,13 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 
 	@Override
 	public void sizeChanged() {
-		imageListener.imageResized(this);
+		// Avoid changing the size of the model when disconnected
+		if (!disconnected || isEditMode())
+			imageListener.imageResized(this);
+	}
+
+	public void setDisconnected(boolean disconnected) {
+		this.disconnected = disconnected;
 	}
 
 }

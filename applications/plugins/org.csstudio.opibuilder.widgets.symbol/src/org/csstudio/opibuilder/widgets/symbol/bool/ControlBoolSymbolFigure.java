@@ -77,6 +77,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	private boolean useForegroundColor = false;
 
 	private boolean animationDisabled = false;
+	private boolean disconnected = true;
 
 	/* ************************* */
 	/* Specific code for control */
@@ -206,11 +207,6 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 
 	public void setImageLoadedListener(IImageListener listener) {
 		this.imageListener = listener;
-	}
-
-	public synchronized void fireImageResized() {
-		if (imageListener != null)
-			imageListener.imageResized(this);
 	}
 
 	/**
@@ -557,7 +553,6 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	@Override
 	public void symbolImageLoaded() {
 		decrementLoadingCounter();
-		fireImageResized();
 		repaint();
 		revalidate();
 	}
@@ -569,7 +564,13 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 
 	@Override
 	public void sizeChanged() {
-		imageListener.imageResized(this);
+		// Avoid changing the size of the model when disconnected
+		if (!disconnected || isEditMode())
+			imageListener.imageResized(this);
+	}
+
+	public void setDisconnected(boolean disconnected) {
+		this.disconnected = disconnected;
 	}
 
 }

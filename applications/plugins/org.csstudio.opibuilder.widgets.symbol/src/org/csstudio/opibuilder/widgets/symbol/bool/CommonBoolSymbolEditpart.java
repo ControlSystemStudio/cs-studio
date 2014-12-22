@@ -116,6 +116,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 			if (pv != null) {
 				if (loadItemsFromPVListener == null)
 					loadItemsFromPVListener = new IPVListener.Stub() {
+						@Override
 						public void valueChanged(IPV pv) {
 							VType value = pv.getValue();
 							if (value != null && value instanceof VEnum) {
@@ -126,6 +127,12 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 											.updateImagesPathFromMeta(meta);
 								}
 							}
+						}
+
+						@Override
+						public void connectionChanged(IPV pv) {
+							CommonBoolSymbolFigure symbolFigure = (CommonBoolSymbolFigure) figure;
+							symbolFigure.setDisconnected(!pv.isConnected());
 						}
 					};
 				pv.addListener(loadItemsFromPVListener);
