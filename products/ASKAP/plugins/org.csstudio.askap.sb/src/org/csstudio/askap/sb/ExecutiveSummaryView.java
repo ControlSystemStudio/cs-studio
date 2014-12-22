@@ -54,7 +54,7 @@ public class ExecutiveSummaryView extends ViewPart {
 	
     Table table = null;
     
-    private ProgressBar bar = null;
+    private ProgressBar progressBar = null;
     private TableItem isExecutiveRunningItem = null;	
 
 	SBDataModel dataModel = new SBDataModel();
@@ -138,12 +138,12 @@ public class ExecutiveSummaryView extends ViewPart {
 	    item = new TableItem(table, SWT.NULL);
 	    item.setText(0, "Scan Progress");
 	    
-	    bar = new ProgressBar(table, SWT.NONE);
-	    bar.setSelection(5);
+	    progressBar = new ProgressBar(table, SWT.NONE);
+	    progressBar.setMaximum(100);
         TableEditor editor = new TableEditor(table);
         editor.grabHorizontal = editor.grabVertical = true;
-        editor.setEditor(bar, item, 1);
-        bar.setVisible(false);
+        editor.setEditor(progressBar, item, 1);
+        progressBar.setVisible(false);
 
 	    item = new TableItem(table, SWT.NULL);
 	    
@@ -238,7 +238,14 @@ public class ExecutiveSummaryView extends ViewPart {
 	}
 	
 	public void disconnected(String pointName) {
+        progressBar.setVisible(false);
+		isExecutiveRunningItem.setImage(1, Activator.GREY_LED_IMAGE);
 		
+		for (TableItem item : table.getItems()) {
+			if (item.getData() != null) {
+				item.setText(1, "");
+			}
+		}
 	}
 	
 	public void update(MonitorPoint point) {
@@ -256,7 +263,17 @@ public class ExecutiveSummaryView extends ViewPart {
 				isExecutiveRunningItem.setImage(1, Activator.GREY_LED_IMAGE);
 			}
 		} else if (point.name.equals("progress")) {
-			
+	        progressBar.setVisible(true);
+			String value = TypedValueConverter.convert(point.value);
+			if (!value.isEmpty()) {
+				double progress = Double.parseDouble(value);
+				if (!progressBar.getVisible())
+					progressBar.setVisible(true);
+				
+		        progressBar.setSelection((int) Math.floor(progress));
+			} else {
+				progressBar.setVisible(false);
+			}
 		} else {
 			for (TableItem item : table.getItems()) {
 				if (point.name.equals(item.getData())) {
