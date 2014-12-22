@@ -45,7 +45,7 @@ import org.csstudio.askap.utility.icemanager.MonitorPointListener;
 public class SBDataModel {
 	
 	private static final Logger logger = Logger.getLogger(SBDataModel.class.getName());
-	private static final SimpleDateFormat ISO8601 = new SimpleDateFormat("YYYY-MM-dd'T'hh:mm:ss'Z'");
+	private static final SimpleDateFormat ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
 
 	
 	// a cached list of all SB

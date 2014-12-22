@@ -74,23 +74,6 @@ public class IceSBController {
 	 */
 	public IceSBController() {
 		super();
-/*		
-		if (DEFAULT_OBS_PROGRAM.length() == 0) {
-			String programName = Preferences.getDefaultObsProgram();
-			try {
-				obsProgProxy= IceManager.getObsProgramServiceProxy(Preferences.getOBSProgramIceName());
-				try {
-					ObsProgram program = obsProgProxy.get(programName);
-					DEFAULT_OBS_PROGRAM = program.name;
-				} catch (NoSuchObsProgramException ex) {
-					obsProgProxy.create(new ObsProgram(programName, programName, programName));
-					DEFAULT_OBS_PROGRAM = programName;
-				}
-			} catch (Exception e) {
-				logger.log(Level.WARNING, "Could not create default ObjProgram: " + programName, e);
-			}
-		}
-*/		
 	}
 
 	/* (non-Javadoc)
@@ -155,10 +138,6 @@ public class IceSBController {
 		sb.setParameterMap(sbProxy.getObsParameters(id));
 		sb.setScheduledTime(sbInfo.scheduledTime);
 
-/*		
-		Map<String, String> obsVarMap = sbProxy.getObsVariables(id, "");
-		sb.setObsVariable(obsVarMap);
-*/
 		sbList.add(sb);			
 		
 		return sb;
