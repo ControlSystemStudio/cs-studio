@@ -105,7 +105,7 @@ public class View extends ViewPart implements AreaAlarmModelListener
 	        {
 				if (panel_box.isDisposed())
 					return;
-				display.asyncExec(new Runnable()
+				display.syncExec(new Runnable()
 				{
 					@Override
 		            public void run()

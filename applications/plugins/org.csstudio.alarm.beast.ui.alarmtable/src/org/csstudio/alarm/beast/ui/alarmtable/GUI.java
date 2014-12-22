@@ -115,7 +115,7 @@ public class GUI implements AlarmClientModelListener
         {
             if (display.isDisposed())
                 return;
-            display.asyncExec(new Runnable()
+            display.syncExec(new Runnable()
             {
                 @Override
                 public void run()
