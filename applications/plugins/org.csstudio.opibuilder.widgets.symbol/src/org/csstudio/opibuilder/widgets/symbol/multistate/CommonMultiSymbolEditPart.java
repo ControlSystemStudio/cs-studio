@@ -150,7 +150,6 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 				if (pv != null) {
 					if (loadItemsFromPVListener == null)
 						loadItemsFromPVListener = new IPVListener.Stub() {
-							@Override
 							public void valueChanged(IPV pv) {
 								VType value = pv.getValue();
 								if (value != null && value instanceof VEnum) {
@@ -161,12 +160,6 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 												.setPropertyValue(CommonMultiSymbolModel.PROP_ITEMS, meta);
 									}
 								}
-							}
-
-							@Override
-							public void connectionChanged(IPV pv) {
-								CommonMultiSymbolFigure symbolFigure = (CommonMultiSymbolFigure) figure;
-								symbolFigure.setDisconnected(!pv.isConnected());
 							}
 						};
 					pv.addListener(loadItemsFromPVListener);

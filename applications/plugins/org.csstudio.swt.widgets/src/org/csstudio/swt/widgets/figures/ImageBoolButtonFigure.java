@@ -17,6 +17,7 @@ import org.csstudio.swt.widgets.symbol.SymbolImageListener;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -47,10 +48,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	private AtomicInteger remainingImagesToLoad = new AtomicInteger(0);
 
 	private boolean animationDisabled = false;
-	private boolean disconnected = true;
 
 	private IImageListener imageListener;
-	private boolean runMode;
 
 	public ImageBoolButtonFigure() {
 		this(false);
@@ -120,24 +119,21 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 		this.symbolProperties = symbolProperties;
 	}
 
-	public void setExecutionMode(boolean runMode) {
-		this.runMode = runMode;
-	}
-
-	public boolean isEditMode() {
-		return runMode == false;
-	}
-
 	public Dimension getAutoSizedDimension() {
 		SymbolImage temp = booleanValue ? onImage : offImage;
 		if (temp != null) {
 			Dimension dim = temp.getAutoSizedDimension();
-			if (dim != null)
-				return new Dimension(dim.width + getInsets().left
-						+ getInsets().right, dim.height + getInsets().bottom
-						+ getInsets().top);
+			if (dim == null) return null;
+			return new Dimension(dim.width + getInsets().left + getInsets().right, 
+					dim.height + getInsets().bottom + getInsets().top);
 		}
 		return null;
+	}
+
+	@Override
+	public void setBorder(Border b) {
+		super.setBorder(b);
+		sizeChanged();
 	}
 
 	public boolean isLoadingImage() {
@@ -294,6 +290,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 
 	public void symbolImageLoaded() {
 		decrementLoadingCounter();
+		sizeChanged();
 		revalidate();
 		repaint();
 	}
@@ -303,13 +300,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	}
 
 	public void sizeChanged() {
-		// Avoid changing the size of the model when disconnected
-		if (!disconnected || isEditMode())
+		if (imageListener != null)
 			imageListener.imageResized(this);
-	}
-
-	public void setDisconnected(boolean disconnected) {
-		this.disconnected = disconnected;
 	}
 
 }

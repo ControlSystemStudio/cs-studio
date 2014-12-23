@@ -9,14 +9,11 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
-import org.csstudio.simplepv.IPV;
-import org.csstudio.simplepv.IPVListener;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
@@ -35,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 	
-	private IPVListener loadItemsFromPVListener;
+
 	private int maxAttempts;
 
 	/**
@@ -56,7 +53,6 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 		// create AND initialize the view properly
 		final ImageBoolButtonFigure figure = new ImageBoolButtonFigure();	
 		initializeCommonFigureProperties(figure, model);
-		figure.setExecutionMode(getExecutionMode() == ExecutionMode.RUN_MODE ? true : false);
 
 		SymbolImageProperties sip = new SymbolImageProperties();
 		sip.setStretch(model.isStretch());
@@ -216,38 +212,15 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 		
 
 	}
-
-	@Override
-	public void doActivate() {
-		super.doActivate();
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if (pv != null) {
-				if (loadItemsFromPVListener == null)
-					loadItemsFromPVListener = new IPVListener.Stub() {
-						@Override
-						public void connectionChanged(IPV pv) {
-							ImageBoolButtonFigure figure = (ImageBoolButtonFigure) getFigure();
-							figure.setDisconnected(!pv.isConnected());
-						}
-					};
-				pv.addListener(loadItemsFromPVListener);
-			}
-		}
-	}
-
+	
+	
+	
 	@Override
 	public void deactivate() {
 		super.deactivate();
 		((ImageBoolButtonFigure) getFigure()).dispose();
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if (pv != null && loadItemsFromPVListener != null) {
-				pv.removeListener(loadItemsFromPVListener);
-			}
-		}
 	}
-
+	
 	private void autoSizeWidget(final ImageBoolButtonFigure imageFigure) {		
 		if(!getWidgetModel().isAutoSize())
 			return;

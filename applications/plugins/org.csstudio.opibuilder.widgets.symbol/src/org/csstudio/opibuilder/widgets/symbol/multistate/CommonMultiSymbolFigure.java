@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolUtils;
@@ -29,6 +30,7 @@ import org.csstudio.swt.widgets.util.TextPainter;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
@@ -81,7 +83,6 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	private boolean useForegroundColor = false;
 
 	private boolean animationDisabled = false;
-	private boolean disconnected = true;
 
 	public CommonMultiSymbolFigure(boolean runMode) {
 		this.executionMode = runMode ? ExecutionMode.RUN_MODE : ExecutionMode.EDIT_MODE;
@@ -261,6 +262,10 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		this.imageListener = listener;
 	}
 
+	public synchronized void fireImageResized() {
+		imageListener.imageResized(this);
+	}
+
 	/**
 	 * Set user selected image path (edit mode)
 	 * 
@@ -396,12 +401,12 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	}
 
 	@Override
-	protected void paintClientArea(Graphics gfx) {	
+	public synchronized void paintFigure(final Graphics gfx) {
 		if (isLoadingImage())
 			return;
-		gfx.pushState();
 		Rectangle bounds = getBounds().getCopy();
-		ImageUtils.crop(bounds, this.getInsets());
+		if (!hasDisconnectedBorder())
+			ImageUtils.crop(bounds, this.getInsets());
 		if (bounds.width <= 0 || bounds.height <= 0)
 			return;
 		SymbolImage symbolImage = getSymbolImage();
@@ -424,8 +429,6 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 		symbolImage.setCurrentColor(currentcolor);
 		symbolImage.setBackgroundColor(getBackgroundColor());
 		symbolImage.paintFigure(gfx);
-		gfx.popState();
-		super.paintClientArea(gfx);
 	}
 
 	// ************************************************************
@@ -522,7 +525,8 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 
 	public synchronized void resizeImage() {
 		Rectangle bounds = getBounds().getCopy();
-		ImageUtils.crop(bounds, this.getInsets());
+		if (!hasDisconnectedBorder())
+			ImageUtils.crop(bounds, this.getInsets());
 		for (SymbolImage si : getAllImages())
 			si.setBounds(bounds);
 		repaint();
@@ -540,10 +544,22 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	public synchronized Dimension getAutoSizedDimension() {
 		// Widget dimension = Symbol Image + insets
 		Dimension dim = getSymbolImage().getAutoSizedDimension();
-		if (dim != null)
-			return new Dimension(dim.width + getInsets().getWidth(),
-					dim.height + getInsets().getHeight());
-		return null;
+		if (dim == null) return null;
+		if (hasDisconnectedBorder()) return dim;
+		return new Dimension(dim.width + getInsets().getWidth(), dim.height
+				+ getInsets().getHeight());
+	}
+
+	private boolean hasDisconnectedBorder() {
+		return getBorder() != null
+				&& getBorder().equals(
+						AlarmRepresentationScheme.getDisonnectedBorder());
+	}
+
+	@Override
+	public void setBorder(Border b) {
+		super.setBorder(b);
+		sizeChanged();
 	}
 
 	// ************************************************************
@@ -691,6 +707,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	@Override
 	public void symbolImageLoaded() {
 		decrementLoadingCounter();
+		fireImageResized();
 		repaint();
 		revalidate();
 	}
@@ -702,13 +719,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 
 	@Override
 	public void sizeChanged() {
-		// Avoid changing the size of the model when disconnected
-		if (!disconnected || isEditMode())
-			imageListener.imageResized(this);
-	}
-
-	public void setDisconnected(boolean disconnected) {
-		this.disconnected = disconnected;
+		imageListener.imageResized(this);
 	}
 
 }
