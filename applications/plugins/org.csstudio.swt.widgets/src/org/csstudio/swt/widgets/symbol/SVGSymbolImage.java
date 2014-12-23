@@ -66,7 +66,8 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 			return;
 		int cropedWidth = imageData.width - (int) Math.round(scale * (leftCrop + rightCrop));
 		int cropedHeight = imageData.height - (int) Math.round(scale * (bottomCrop + topCrop));
-		Rectangle srcArea = new Rectangle(leftCrop, topCrop, cropedWidth, cropedHeight);
+		Rectangle srcArea = new Rectangle((int) Math.round(scale * leftCrop),
+				(int) Math.round(scale * topCrop), cropedWidth, cropedHeight);
 		Rectangle destArea = new Rectangle(bounds.x, bounds.y, imgDimension.width, imgDimension.height);
 		if (backgroundColor != null) {
 			gfx.setBackgroundColor(backgroundColor);
