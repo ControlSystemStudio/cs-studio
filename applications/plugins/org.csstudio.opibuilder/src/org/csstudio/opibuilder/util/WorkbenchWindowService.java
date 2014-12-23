@@ -86,10 +86,18 @@ public final class WorkbenchWindowService {
 		for (Control child : window.getShell().getChildren()) {
 			if (child.isDisposed())
 				continue;
-			if (child.getClass().equals(Canvas.class))
+			else if (child.getClass().equals(Canvas.class))
 				continue;
-			if (child.getClass().equals(Composite.class))
+			else if (child.getClass().equals(Composite.class)) {
+				for (Control c : ((Composite)child).getChildren()) {
+					if (c.getClass().getSimpleName().contains("StatusLine")) {
+						child.setVisible(visible);
+						break;
+					}
+				}
 				continue;
+			}
+				
 			child.setVisible(visible);
 
 		}
