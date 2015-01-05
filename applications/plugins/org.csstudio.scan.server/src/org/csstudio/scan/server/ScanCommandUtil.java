@@ -21,7 +21,6 @@ import org.epics.vtype.VType;
  *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class ScanCommandUtil
 {
     /** Write to device with readback, waiting forever, logging if the context
@@ -39,7 +38,7 @@ public class ScanCommandUtil
     {
     	write(context, device_name, value, false, true, device_name, tolerance, timeout);
     }
-	
+
 	/** Write to device with optional completion and/or readback,
 	 *  logging if the context was configured to auto-log
      *

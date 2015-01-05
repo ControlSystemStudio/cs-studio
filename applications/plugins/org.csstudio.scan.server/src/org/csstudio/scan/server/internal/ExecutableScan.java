@@ -112,8 +112,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** {@link Future} after scan has been submitted to {@link ExecutorService} */
     private volatile Future<Object> future = null;
 
-    /** Device Names for status PVs */
-	private String device_active = null, device_status = null, device_state = null, device_progress = null, device_finish = null;
+    /** Device Names for status PVs.
+     *  They should either all be set or all be empty, so checking one is sufficient.
+     */
+	private Optional<String> device_active = Optional.empty(), device_status = Optional.empty(), device_state = Optional.empty(), device_progress = Optional.empty(), device_finish = Optional.empty();
 
 	/** Timeout for updating the status PVs */
 	final private static TimeDuration timeout = TimeDuration.ofSeconds(10);
@@ -439,20 +441,20 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         final String prefix = ScanSystemPreferences.getStatusPvPrefix();
         if (prefix != null   &&   !prefix.isEmpty())
         {
-        	device_active = prefix + "Active";
-            devices.addPVDevice(new DeviceInfo(device_active));
+        	device_active = Optional.of(prefix + "Active");
+            devices.addPVDevice(new DeviceInfo(device_active.get()));
 
-            device_status = prefix + "Status";
-            devices.addPVDevice(new DeviceInfo(device_status));
+            device_status = Optional.of(prefix + "Status");
+            devices.addPVDevice(new DeviceInfo(device_status.get()));
 
-            device_state = prefix + "State";
-            devices.addPVDevice(new DeviceInfo(device_state));
+            device_state = Optional.of(prefix + "State");
+            devices.addPVDevice(new DeviceInfo(device_state.get()));
 
-            device_progress = prefix + "Progress";
-            devices.addPVDevice(new DeviceInfo(device_progress));
+            device_progress = Optional.of(prefix + "Progress");
+            devices.addPVDevice(new DeviceInfo(device_progress.get()));
 
-            device_finish = prefix + "Finish";
-            devices.addPVDevice(new DeviceInfo(device_finish));
+            device_finish = Optional.of(prefix + "Finish");
+            devices.addPVDevice(new DeviceInfo(device_finish.get()));
         }
 
         // Add devices used by commands
@@ -469,13 +471,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices()), null));
 
             // Initialize scan status PVs. Error will prevent scan from starting.
-            if (device_active != null)
+            if (device_active.isPresent())
             {
-            	getDevice(device_status).write(getName());
-            	ScanCommandUtil.write(this, device_state, getScanState().ordinal(), 0.1, timeout);
-            	ScanCommandUtil.write(this, device_active, Double.valueOf(1.0), 0.1, timeout);
-            	ScanCommandUtil.write(this, device_progress, Double.valueOf(0.0), 0.1, timeout);
-            	getDevice(device_finish).write("Starting ...");
+            	getDevice(device_status.get()).write(getName());
+            	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+            	ScanCommandUtil.write(this, device_active.get(), Double.valueOf(1.0), 0.1, timeout);
+            	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(0.0), 0.1, timeout);
+            	getDevice(device_finish.get()).write("Starting ...");
             }
 
             try
@@ -526,13 +528,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             try
             {
                 // Final status PV update.
-                if (device_active != null)
+                if (device_active.isPresent())
                 {
-                    getDevice(device_status).write("");
-                	ScanCommandUtil.write(this, device_state, getScanState().ordinal(), 0.1, timeout);
-                    getDevice(device_finish).write(ScanSampleFormatter.format(new Date()));
-                    ScanCommandUtil.write(this, device_progress, Double.valueOf(100.0), 0.1, timeout);
-                    ScanCommandUtil.write(this, device_active, Double.valueOf(0.0), 0.1, timeout);
+                    getDevice(device_status.get()).write("");
+                	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+                    getDevice(device_finish.get()).write(ScanSampleFormatter.format(new Date()));
+                    ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(100.0), 0.1, timeout);
+                    ScanCommandUtil.write(this, device_active.get(), Double.valueOf(0.0), 0.1, timeout);
                 }
             }
             catch (Exception ex)
@@ -565,8 +567,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     {
     	if (state.get() == ScanState.Paused)
     	{
-    		if (device_state != null)
-    			ScanCommandUtil.write(this, device_state, state.get().ordinal(), 0.1, timeout);
+    		if (device_state.isPresent())
+    			ScanCommandUtil.write(this, device_state.get(), state.get().ordinal(), 0.1, timeout);
             while (state.get() == ScanState.Paused)
             {
                 synchronized (this)
@@ -574,8 +576,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                     wait();
                 }
             }
-            if (device_state != null)
-            	ScanCommandUtil.write(this, device_state, state.get().ordinal(), 0.1, timeout);
+            if (device_state.isPresent())
+            	ScanCommandUtil.write(this, device_state.get(), state.get().ordinal(), 0.1, timeout);
     	}
 
         boolean retry;
@@ -623,13 +625,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             }
 
             // Try to update Scan PVs on progress. Log errors, but continue scan
-			if (device_status != null)
+			if (device_progress.isPresent())
 	        {
 			    final ScanInfo info = getScanInfo();
 			    try
 			    {
-                	ScanCommandUtil.write(this, device_progress, Double.valueOf(info.getPercentage()), 0.1, timeout);
-                	getDevice(device_finish).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
+                	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(info.getPercentage()), 0.1, timeout);
+                	getDevice(device_finish.get()).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
 			    }
 			    catch (Exception ex)
 			    {
