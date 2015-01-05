@@ -9,6 +9,7 @@ package org.csstudio.swt.widgets.figures;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.swt.widgets.symbol.SymbolImage;
 import org.csstudio.swt.widgets.symbol.SymbolImageFactory;
@@ -43,7 +44,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 
 	private IPath offImagePath;
 
-	private int remainingImagesToLoad = 0;
+	private AtomicInteger remainingImagesToLoad = new AtomicInteger(0);
 
 	private boolean animationDisabled = false;
 
@@ -129,16 +130,16 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 		return null;
 	}
 
-	public synchronized boolean isLoadingImage() {
-		return remainingImagesToLoad > 0;
+	public boolean isLoadingImage() {
+		return remainingImagesToLoad.get() > 0;
 	}
 
-	public synchronized void decrementLoadingCounter() {
-		remainingImagesToLoad--;
+	public void decrementLoadingCounter() {
+		remainingImagesToLoad.decrementAndGet();
 	}
 	
-	public synchronized void incrementLoadingCounter() {
-		remainingImagesToLoad++;
+	public void incrementLoadingCounter() {
+		remainingImagesToLoad.incrementAndGet();
 	}
 
 	@Override

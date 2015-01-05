@@ -925,6 +925,8 @@ public class LogEntryWidget extends Composite {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
+				//attachments are still flying in, but we have already closed this widget
+				if (isDisposed()) return; 
 			    getDisplay().asyncExec(new Runnable() {
 
 				@Override
@@ -1153,6 +1155,7 @@ public class LogEntryWidget extends Composite {
     }
 
     public void setLastException(final Exception exception) {
+    if (isDisposed()) return;
 	getDisplay().asyncExec(new Runnable() {
 
 	    @Override

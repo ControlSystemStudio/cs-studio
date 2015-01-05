@@ -51,7 +51,9 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
     {
         final AlarmTreeItem item = (AlarmTreeItem) cell.getElement();
         // Text
-        cell.setText(getText(item));
+        String text = getText(item);
+        if (!text.equals(cell.getText()))
+        	cell.setText(text);
 
         // Provide icon that represents the item's severity
         if (item instanceof AlarmTreePV  &&
@@ -97,7 +99,7 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
     @SuppressWarnings("nls")
     public String getText(final AlarmTreeItem item)
     {
-        final StringBuilder buf = new StringBuilder(20);
+        final StringBuilder buf = new StringBuilder(100);
         AlarmTreePV pv = null;
         switch (item.getPosition())
         {
@@ -126,16 +128,16 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         {
             buf.append(" (");
             buf.append(item.getSeverity().getDisplayName());
-            buf.append("/");
+            buf.append('/');
             buf.append(item.getMessage());
             if (pv != null)
             {
-                buf.append(",");
+                buf.append(',');
                 buf.append(pv.getCurrentSeverity().getDisplayName());
-                buf.append("/");
+                buf.append('/');
                 buf.append(pv.getCurrentMessage());
             }
-            buf.append(")");
+            buf.append(')');
         }
         return buf.toString();
     }

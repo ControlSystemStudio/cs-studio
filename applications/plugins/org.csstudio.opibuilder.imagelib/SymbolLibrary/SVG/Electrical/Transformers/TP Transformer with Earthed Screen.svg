@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -11,10 +10,10 @@
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="162pt" height="226pt" viewBox="0 0 162 226" version="1.1">
 <g id="surface1">
-<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351562 1.871094 L 1.449219 1.871094 L 1.449219 2.011719 L 1.351562 2.011719 Z M 1.351562 1.871094 "/>
-<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 160.699219 224.46875 L 160.796875 224.46875 L 160.796875 224.605469 L 160.699219 224.605469 Z M 160.699219 224.46875 "/>
-<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 51.024342 95.542526 C 51.024342 81.453057 39.601399 70.031986 25.511783 70.031986 C 11.422167 70.031986 -0.000775669 81.453057 -0.000775669 95.542526 C -0.000775669 109.634082 11.422167 121.055154 25.511783 121.055154 C 39.601399 121.055154 51.024342 109.634082 51.024342 95.542526 Z M 51.024342 95.542526 " transform="matrix(1.874996,0,0,1.870857,33.239736,-97.328396)"/>
-<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 51.024342 95.543663 C 51.024342 81.454195 39.601399 70.031035 25.511783 70.031035 C 11.422167 70.031035 -0.000775669 81.454195 -0.000775669 95.543663 C -0.000775669 109.633132 11.422167 121.054203 25.511783 121.054203 C 39.601399 121.054203 51.024342 109.633132 51.024342 95.543663 Z M 51.024342 95.543663 " transform="matrix(1.874996,0,0,1.870857,33.239736,-33.689899)"/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351563 1.871094 L 1.449219 1.871094 L 1.449219 2.011719 L 1.351563 2.011719 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 160.699219 224.46875 L 160.796875 224.46875 L 160.796875 224.605469 L 160.699219 224.605469 Z "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 51.024342 95.542526 C 51.024342 81.453057 39.601399 70.031986 25.511783 70.031986 C 11.422167 70.031986 -0.000775669 81.453057 -0.000775669 95.542526 C -0.000775669 109.634082 11.422167 121.055154 25.511783 121.055154 C 39.601399 121.055154 51.024342 109.634082 51.024342 95.542526 Z " transform="matrix(1.874996,0,0,1.870857,33.239736,-97.328396)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 51.024342 95.543663 C 51.024342 81.454195 39.601399 70.031035 25.511783 70.031035 C 11.422167 70.031035 -0.000775669 81.454195 -0.000775669 95.543663 C -0.000775669 109.633132 11.422167 121.054203 25.511783 121.054203 C 39.601399 121.054203 51.024342 109.633132 51.024342 95.543663 Z " transform="matrix(1.874996,0,0,1.870857,33.239736,-33.689899)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000485538 121.05925 L 17.010021 121.05925 " transform="matrix(0.000000000000000115,-1.870857,1.874996,0.000000000000000115,-145.903538,33.690498)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000696557 121.059483 L 17.00981 121.059483 " transform="matrix(0.000000000000000115,1.870857,-1.874996,0.000000000000000115,308.052413,192.786459)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-dasharray:7,10;stroke-miterlimit:3;" d="M -0.000775669 121.05912 L 51.020176 121.05912 " transform="matrix(1.874996,0,0,1.870857,33.239736,-113.238161)"/>

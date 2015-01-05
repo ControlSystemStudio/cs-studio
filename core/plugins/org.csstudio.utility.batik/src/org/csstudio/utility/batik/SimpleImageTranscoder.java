@@ -274,15 +274,6 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		String fillReplace = CSSConstants.CSS_FILL_PROPERTY + ":" + svgNewColor;
 		String strokeReplace = CSSConstants.CSS_STROKE_PROPERTY + ":" + svgNewColor;
 
-		Pattern rgbPattern = Pattern.compile("(?i)rgb\\("
-				+ Math.round(oldColor.getRed() / 255f * 100) + "%,"
-				+ Math.round(oldColor.getGreen() / 255f * 100) + "%,"
-				+ Math.round(oldColor.getBlue() / 255f * 100) + "%\\)");
-		String rgbReplace = "rgb(" 
-				+ Math.round(newColor.getRed() / 255f * 100)+ "%," 
-				+ Math.round(newColor.getGreen() / 255f * 100) + "%,"
-				+ Math.round(newColor.getBlue() / 255f * 100) + "%)";
-
 		// Search for global style element <style type="text/css"></style>
 		NodeList styleList = doc.getElementsByTagName("style");
 		for (int i = 0; i < styleList.getLength(); i++) {
@@ -299,20 +290,19 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 						data = matcher.replaceAll(fillReplace);
 						matcher = strokePattern.matcher(data);
 						data = matcher.replaceAll(strokeReplace);
-						matcher = rgbPattern.matcher(data);
-						data = matcher.replaceAll(rgbReplace);
+						data = replaceRGB(oldColor, newColor, data);
 						cdata.setData(data);
 					}
 				}
 			}
 		}
-		recursiveCC(doc.getDocumentElement(), fillPattern, strokePattern,
-				fillReplace, strokeReplace, rgbPattern, rgbReplace);
+		recursiveCC(doc.getDocumentElement(), oldColor, newColor, fillPattern,
+				strokePattern, fillReplace, strokeReplace);
 	}
-	
-	private void recursiveCC(Element elmt, Pattern fillPattern,
-			Pattern strokePattern, String fillReplace, String strokeReplace,
-			Pattern rgbPattern, String rgbReplace) {
+
+	private void recursiveCC(Element elmt, Color oldColor, Color newColor,
+			Pattern fillPattern, Pattern strokePattern, String fillReplace,
+			String strokeReplace) {
 		if (elmt == null)
 			return;
 		Matcher matcher = null;
@@ -321,8 +311,8 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 			for (int i = 0; i < styleList.getLength(); i++) {
 				Node child = styleList.item(i);
 				if (child instanceof SVGStylableElement) {
-					recursiveCC((Element) child, fillPattern, strokePattern,
-							fillReplace, strokeReplace, rgbPattern, rgbReplace);
+					recursiveCC((Element) child, oldColor, newColor,
+							fillPattern, strokePattern, fillReplace, strokeReplace);
 				}
 			}
 		}
@@ -332,12 +322,34 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 			style = matcher.replaceAll(fillReplace);
 			matcher = strokePattern.matcher(style);
 			style = matcher.replaceAll(strokeReplace);
-			matcher = rgbPattern.matcher(style);
-			style = matcher.replaceAll(rgbReplace);
+			style = replaceRGB(oldColor, newColor, style);
 			elmt.setAttribute("style", style);
 		}
 	}
-	
+
+	private String replaceRGB(Color oldColor, Color newColor, String data) {
+		Pattern rgbPattern = Pattern
+				.compile("(?i)rgb\\(([0-9]+\\.?[0-9]*)%,([0-9]+\\.?[0-9]*)%,([0-9]+\\.?[0-9]*)%\\)");
+		int nr = Math.round(newColor.getRed() / 255f * 100);
+		int ng = Math.round(newColor.getGreen() / 255f * 100);
+		int nb = Math.round(newColor.getBlue() / 255f * 100);
+		String rgbReplace = "rgb(" + nr + "%," + ng + "%," + nb + "%)";
+		Matcher matcher = rgbPattern.matcher(data);
+		if (matcher.find()) {
+			int r = Math.round(Float.valueOf(matcher.group(1)) * 255 / 100);
+			int g = Math.round(Float.valueOf(matcher.group(2)) * 255 / 100);
+			int b = Math.round(Float.valueOf(matcher.group(3)) * 255 / 100);
+			if (r == oldColor.getRed() && g == oldColor.getGreen()
+					&& b == oldColor.getBlue()) {
+				int start = matcher.start();
+				int end = matcher.end();
+				return data.substring(0, start) + rgbReplace
+						+ data.substring(end, data.length());
+			}
+		}
+		return data;
+	}
+
 	private String toHexString(int r, int g, int b) {
 		return "#" + toSVGHexValue(r) + toSVGHexValue(g) + toSVGHexValue(b);
 	}
