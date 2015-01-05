@@ -39,7 +39,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
     {
 	    super(command, jython);
     }
-	
+
     /** Implement without Jython support */
     public LogCommandImpl(final LogCommand command) throws Exception
     {
@@ -61,7 +61,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 	public void execute(final ScanContext context) throws Exception
 	{
 		final Logger logger = Logger.getLogger(getClass().getName());
-		final DataLog log = context.getDataLog();
+		final DataLog log = context.getDataLog().get();
 		// Log all devices with the same serial
 		final long serial = log.getNextScanDataSerial();
 		final String[] device_names = command.getDeviceNames();

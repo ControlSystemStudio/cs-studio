@@ -165,7 +165,7 @@ public class ChannelProviderImpl implements ChannelProvider {
             String [] timestampLabel = {"Timestamp"};
             try {
             	final ScanData data = scan_server.getScanData(id);
-            	
+
 
             	labelsArray.put(0, 1, timestampLabel, 0);
             	labelsArray.put(0, data.getDevices().length, data.getDevices(), 0);
@@ -181,14 +181,14 @@ public class ChannelProviderImpl implements ChannelProvider {
             			i++;
             		}
             		valuesArrayD.put(0,samples.size(),arrD,0);
-            		pvValue.appendPVField(device, valuesArrayD);	
+            		pvValue.appendPVField(device, valuesArrayD);
             	}
-            	
+
             	retVal = new PVTopStructure(pvTop);
             	final ScanContext scan_context = scan_server.getScanContext(id);
             	if (scan_context != null)
             	{
-            	    final DataLog log = scan_context.getDataLog();
+            	    final DataLog log = scan_context.getDataLog().orElse(null);
             	    if (log != null)
             	    {
             	        // TODO: Remember 'log', remove listener when done
@@ -225,7 +225,7 @@ public class ChannelProviderImpl implements ChannelProvider {
 
         return retVal;
     }
-    
+
     private ChannelFind channelFind = new ChannelFind() {
 
         @Override
@@ -277,8 +277,8 @@ public class ChannelProviderImpl implements ChannelProvider {
         if (priority < ChannelProvider.PRIORITY_MIN ||
                 priority > ChannelProvider.PRIORITY_MAX)
             throw new IllegalArgumentException("priority out of range");
-        
-        	
+
+
         Channel channel = isSupported(channelName) ?
                 new ChannelImpl(channelName, channelRequester, getTopStructure(channelName)) :
                 null;
