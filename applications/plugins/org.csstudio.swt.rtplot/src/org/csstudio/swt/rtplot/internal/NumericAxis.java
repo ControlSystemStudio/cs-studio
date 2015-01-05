@@ -41,6 +41,19 @@ public abstract class NumericAxis extends AxisPart<Double>
         return ! (transform instanceof LinearScreenTransform);
     }
 
+    /** @param order_of_magnitude If value range exceeds this threshold, use exponential notation */
+    public void setExponentialThreshold(long order_of_magnitude)
+    {
+        final Ticks<Double> safe_ticks = ticks;
+        if (! (safe_ticks instanceof LinearTicks))
+            return;
+
+        ((LinearTicks)safe_ticks).setExponentialThreshold(order_of_magnitude);
+
+        dirty_ticks = true;
+        requestLayout();
+    }
+
     /** {@inheritDoc} */
     @Override
     public void zoom(final int center, final double factor)

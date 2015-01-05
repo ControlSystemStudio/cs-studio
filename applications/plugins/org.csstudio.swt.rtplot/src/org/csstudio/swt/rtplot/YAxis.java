@@ -52,6 +52,13 @@ public interface YAxis<XTYPE extends Comparable<XTYPE>> extends Axis<Double>
     /** @return <code>true</code> if the axis is logarithmic. */
     public boolean isLogarithmic();
 
+    /** Can only be called for non-logarithmic axis,
+     *  and value will be lost when switching to logarithmic axis.
+     *
+     *  @param order_of_magnitude If value range exceeds this threshold, use exponential notation
+     */
+    public void setExponentialThreshold(long order_of_magnitude);
+
     /** @return <code>true</code> if axis is shown on right instead of left side */
     public boolean isOnRight();
 

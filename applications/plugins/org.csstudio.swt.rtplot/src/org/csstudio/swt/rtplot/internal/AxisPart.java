@@ -8,6 +8,7 @@
 package org.csstudio.swt.rtplot.internal;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.csstudio.swt.rtplot.Activator;
@@ -39,7 +40,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
 
     protected volatile boolean show_grid = false;
 
-    private boolean visible = true;
+    private AtomicBoolean visible = new AtomicBoolean(true);
 
     /** Is this a horizontal axis? Otherwise: Vertical. */
     final private boolean horizontal;
@@ -51,7 +52,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     protected volatile Ticks<T> ticks;
 
     /** Do we need to re-compute the ticks? */
-    private volatile boolean dirty_ticks = true;
+    protected volatile boolean dirty_ticks = true;
 
     /** Low end of value range. */
     protected AxisRange<T> range;
@@ -98,19 +99,17 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
 
     /** {@inheritDoc} */
     @Override
-    public synchronized boolean isVisible()
+    public boolean isVisible()
     {
-        return visible;
+        return visible.get();
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void setVisible(final boolean visible)
+    public void setVisible(final boolean visible)
     {
-        if (this.visible == visible)
-            return;
-        this.visible = visible;
-        requestLayout();
+        if (this.visible.getAndSet(visible) != visible)
+            requestLayout();
     }
 
     /** Called by {@link RTPlot} to determine layout.
