@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,10 +86,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Commands executed so far */
     final protected AtomicLong work_performed = new AtomicLong();
 
-    /** State of this scan
-     *  SYNC on this for access
-     */
-    private ScanState state = ScanState.Idle;
+    /** State of this scan */
+    private AtomicReference<ScanState> state = new AtomicReference<>(ScanState.Idle);
 
     private volatile String error = null;
 
@@ -192,9 +191,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
     /** @return {@link ScanState} */
     @Override
-    public synchronized ScanState getScanState()
+    public ScanState getScanState()
     {
-        return state;
+        return state.get();
     }
 
     /** @return Info about current state of this scan */
@@ -400,18 +399,12 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
         catch (InterruptedException ex)
         {
-        	synchronized (this)
-        	{
-        		state = ScanState.Aborted;
-        	}
-            error = "Aborted";
+            state.set(ScanState.Aborted);
+            error = ScanState.Aborted.name();
         }
         catch (Exception ex)
         {
-        	synchronized (this)
-        	{
-        		state = ScanState.Failed;
-        	}
+            state.set(ScanState.Failed);
             error = ex.getMessage();
             log.log(Level.WARNING, "Scan " + getName() + " failed", ex);
         }
@@ -431,17 +424,14 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      */
     private void execute_or_die_trying() throws Exception
     {
-    	synchronized (this)
-    	{
-	        // Was scan aborted before it ever got to run?
-	        if (state == ScanState.Aborted)
-	            return;
-	        // Otherwise expect 'Idle'
-	        if (state != ScanState.Idle)
-	            throw new IllegalStateException("Cannot run Scan that is " + state);
-	        state = ScanState.Running;
-    	}
-    	start_ms = System.currentTimeMillis();
+        // Was scan aborted before it ever got to run?
+        if (state.get() == ScanState.Aborted)
+            return;
+        // Otherwise expect 'Idle'
+        if (! state.compareAndSet(ScanState.Idle, ScanState.Running))
+            throw new IllegalStateException("Cannot run Scan that is " + state.get());
+
+        start_ms = System.currentTimeMillis();
 
         // Locate devices for status PVs
         final String prefix = ScanSystemPreferences.getStatusPvPrefix();
@@ -498,46 +488,32 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 execute(implementations);
 
                 // Successful finish
-                synchronized (this)
-                {
-                	state = ScanState.Finished;
-                }
+            	state.set(ScanState.Finished);
             }
             finally
             {
                 // Try post-scan commands even if submitted commands ran into problems or were aborted.
             	// Save the state before going back to Running for post commands.
             	final long saved_steps = work_performed.get();
-                final ScanState saved_state;
-                synchronized (this)
-                {
-                	saved_state = state;
-                	state = ScanState.Running;
-                }
+                final ScanState saved_state = state.getAndSet(ScanState.Running);
 
                 execute(post_scan);
 
                 // Restore saved state
                 work_performed.set(saved_steps);
-                synchronized (this)
-                {
-                	state = saved_state;
-                }
+            	state.set(saved_state);
             }
         }
         catch (Exception ex)
         {
-        	synchronized (this)
-        	{
-        	    if (state == ScanState.Aborted)
-        	        error = "Aborted";
-        	    else
-        	    {
-        	        error = ex.getMessage();
-        	        state = ScanState.Failed;
-        	    }
-        	}
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan " + getName() + " failed", ex);
+    	    if (state.get() == ScanState.Aborted)
+    	        error = ScanState.Aborted.name();
+    	    else
+    	    {
+    	        error = ex.getMessage();
+    	        state.set(ScanState.Failed);
+    	        Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan " + getName() + " failed", ex);
+    	    }
         }
         finally
         {
@@ -573,12 +549,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     {
         for (ScanCommandImpl<?> command : commands)
         {
-        	synchronized (this)
-        	{
-	            if (state != ScanState.Running  &&
-	                state != ScanState.Paused)
-	                return;
-        	}
+            final ScanState current_state = state.get();
+            if (current_state != ScanState.Running  &&
+                current_state != ScanState.Paused)
+                return;
             execute(command);
         }
     }
@@ -587,20 +561,20 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public void execute(final ScanCommandImpl<?> command) throws Exception
     {
-        synchronized (this)
-        {
-        	if (state == ScanState.Paused)
-        	{
-        		if (device_state != null)
-        			ScanCommandUtil.write(this, device_state, ScanState.Paused.ordinal(), 0.1, timeout);
-	            while (state == ScanState.Paused)
-	            {
-	                wait();
-	            }
-	            if (device_state != null)
-	            	ScanCommandUtil.write(this, device_state, ScanState.Running.ordinal(), 0.1, timeout);
-        	}
-        }
+    	if (state.get() == ScanState.Paused)
+    	{
+    		if (device_state != null)
+    			ScanCommandUtil.write(this, device_state, state.get().ordinal(), 0.1, timeout);
+            while (state.get() == ScanState.Paused)
+            {
+                synchronized (this)
+                {
+                    wait();
+                }
+            }
+            if (device_state != null)
+            	ScanCommandUtil.write(this, device_state, state.get().ordinal(), 0.1, timeout);
+    	}
 
         boolean retry;
         do
@@ -622,7 +596,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 // but interrupted command might wrap that into a different type
                 // of exception
                 // -> Best way to detect an abort is via the scan state
-                if (state == ScanState.Aborted)
+                if (state.get() == ScanState.Aborted)
                 {
                     final String message = "Command aborted: " + command.toString();
                     Logger.getLogger(getClass().getName()).log(Level.INFO, message, error);
@@ -665,33 +639,35 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     }
 
     /** Pause execution of a currently executing scan */
-    public synchronized void pause()
+    public void pause()
     {
-        if (state == ScanState.Running)
-        {
-            state = ScanState.Paused;
-        }
+        state.compareAndSet(ScanState.Running, ScanState.Paused);
     }
 
     /** Resume execution of a paused scan */
-    public synchronized void resume()
+    public void resume()
     {
-        if (state == ScanState.Paused)
+        state.compareAndSet(ScanState.Paused, ScanState.Running);
+        // Notify should only be necessary if compareAndSet actually switched to Running,
+        // but doesn't hurt if called in any case
+        synchronized (this)
         {
-            state = ScanState.Running;
             notifyAll();
         }
     }
 
     /** Ask for execution to stop */
-    public synchronized void abort()
+    public void abort()
     {
-        if (! state.isDone())
-            state = ScanState.Aborted;
+        // Set state to aborted unless it is already 'done'
+        state.getAndUpdate((current_state)  ->  current_state.isDone() ? current_state : ScanState.Aborted);
 
         if (future != null)
             future.cancel(true);
-        notifyAll();
+        synchronized (this)
+        {
+            notifyAll();
+        }
     }
 
     /** {@inheritDoc} */
