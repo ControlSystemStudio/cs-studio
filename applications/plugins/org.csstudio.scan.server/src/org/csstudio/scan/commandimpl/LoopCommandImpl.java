@@ -68,7 +68,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
     {
         this(command, null);
     }
-    
+
     /** {@inheritDoc} */
 	@Override
     public long getWorkUnits()
@@ -81,7 +81,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             return iterations;
         return iterations * body_units;
     }
-	
+
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
@@ -174,14 +174,14 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         try
         {
     		final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
-    
+
     	    // Separate read-back device, or use 'set' device?
             final Device readback;
             if (command.getReadback().isEmpty())
                 readback = device;
             else
                 readback = context.getDevice(context.getMacros().resolveMacros(command.getReadback()));
-    
+
             //  Wait for the device to reach the value?
             final NumericValueCondition condition;
             if (command.getWait())
@@ -191,7 +191,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
                             TimeDuration.ofSeconds(command.getTimeout()));
             else
                 condition = null;
-    
+
     		final double start = getLoopStart();
             final double end   = getLoopEnd();
             final double step  = getLoopStep();
@@ -221,12 +221,12 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             throws Exception
     {
         step_logger.log(Level.FINE, "Loop setting {0} = {1}{2}", new Object[] { device.getAlias(), value, (condition!=null ? " (waiting)" : "") });
-        
+
         // Set device to value for current step of loop
         if (command.getCompletion())
             device.write(value, TimeDuration.ofSeconds(command.getTimeout()));
         else
-            device.write(value);            
+            device.write(value);
 
         // .. wait for device to reach value
         if (condition != null)
@@ -238,7 +238,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         // Log the device's value?
         if (context.isAutomaticLogMode())
         {
-            final DataLog log = context.getDataLog();
+            final DataLog log = context.getDataLog().get();
 	        final long serial = log.getNextScanDataSerial();
 	        log.log(readback.getAlias(), VTypeHelper.createSample(serial, readback.read()));
         }

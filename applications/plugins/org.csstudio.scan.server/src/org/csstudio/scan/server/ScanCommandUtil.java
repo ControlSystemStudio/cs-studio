@@ -101,7 +101,7 @@ public class ScanCommandUtil
         {   // If we're waiting on the readback, log the readback.
             // Otherwise readback == device, so log that one
             final VType log_value = readback.read();
-            final DataLog log = context.getDataLog();
+            final DataLog log = context.getDataLog().get();
             final long serial = log.getNextScanDataSerial();
             log.log(readback.getAlias(), VTypeHelper.createSample(serial, log_value));
         }

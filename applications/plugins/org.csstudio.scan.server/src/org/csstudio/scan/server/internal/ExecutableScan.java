@@ -76,10 +76,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Log each device access, or require specific log command? */
     private volatile boolean automatic_log_mode = false;
 
-    /** Data logger, non-null while when executing the scan
-     *  SYNC on this for access
-     */
-    private DataLog data_logger = null;
+    /** Data logger, present while executing the scan */
+    private volatile Optional<DataLog> data_logger = Optional.empty();
 
     /** Total number of commands to execute */
     final private long total_work_units;
@@ -354,27 +352,29 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 
 	/** {@inheritDoc} */
     @Override
-    public synchronized DataLog getDataLog()
+    public Optional<DataLog> getDataLog()
     {
         return data_logger;
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized long getLastScanDataSerial() throws Exception
+    public long getLastScanDataSerial() throws Exception
     {
-        if (data_logger == null)
+        final DataLog logger = data_logger.orElse(null);
+        if (logger == null)
             return super.getLastScanDataSerial();
-        return data_logger.getLastScanDataSerial();
+        return logger.getLastScanDataSerial();
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized ScanData getScanData() throws Exception
+    public ScanData getScanData() throws Exception
     {
-        if (data_logger == null)
+        final DataLog logger = data_logger.orElse(null);
+        if (logger == null)
             return super.getScanData();
-        return data_logger.getScanData();
+        return logger.getScanData();
     }
 
     /** Callable for executing all commands on the scan,
@@ -392,10 +392,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         )
         {
             // Set logger for execution of scan
-            synchronized (this)
-            {
-                data_logger = logger;
-            }
+            data_logger = Optional.of(logger);
             execute_or_die_trying();
             // Exceptions will already have been caught within execute_or_die_trying,
             // hopefully updating the status PVs, but there could be exceptions
