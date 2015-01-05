@@ -36,6 +36,15 @@ public class LinearTicks implements Ticks<Double>
     /** Format helper for the number. */
     protected NumberFormat num_fmt = createDecimalFormat(1);
 
+    /** Threshold for order-of-magnitude to use exponential notation */
+    protected long exponential_threshold = 4;
+
+    /** @param order_of_magnitude If value range exceeds this threshold, use exponential notation */
+    public void setExponentialThreshold(long order_of_magnitude)
+    {
+        exponential_threshold = order_of_magnitude;
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean isSupportedRange(final Double low, final Double high)
@@ -76,7 +85,7 @@ public class LinearTicks implements Ticks<Double>
         // Determine precision for displaying numbers in this range.
         // Precision must be set to format test entries, which
         // are then used to compute ticks.
-        if (Math.abs(order_of_magnitude) > 4)
+        if (Math.abs(order_of_magnitude) > exponential_threshold)
         {
             precision = 2;
             num_fmt = createExponentialFormat(precision);
