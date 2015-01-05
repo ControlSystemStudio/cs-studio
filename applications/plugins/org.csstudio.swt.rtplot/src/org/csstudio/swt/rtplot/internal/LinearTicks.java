@@ -7,10 +7,12 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.internal;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.logging.Level;
 
 import org.csstudio.swt.rtplot.Activator;
+import org.csstudio.swt.rtplot.internal.util.Log10;
 import org.eclipse.swt.graphics.GC;
 
 /** Helper for creating tick marks.
@@ -32,12 +34,7 @@ public class LinearTicks implements Ticks<Double>
     protected int precision = 1;
 
     /** Format helper for the number. */
-    protected NumberFormat num_fmt = NumberFormat.getNumberInstance();
-
-    public LinearTicks()
-    {
-        num_fmt.setGroupingUsed(false);
-    }
+    protected NumberFormat num_fmt = createDecimalFormat(1);
 
     /** {@inheritDoc} */
     @Override
@@ -74,12 +71,21 @@ public class LinearTicks implements Ticks<Double>
         }
         final double range = Math.abs(high-low);
 
+        final long order_of_magnitude = Math.round(Log10.log10(range));
+
         // Determine precision for displaying numbers in this range.
         // Precision must be set to format test entries, which
         // are then used to compute ticks.
-        precision = determinePrecision(range/2);
-        num_fmt.setMinimumFractionDigits(precision);
-        num_fmt.setMaximumFractionDigits(precision);
+        if (Math.abs(order_of_magnitude) > 4)
+        {
+            precision = 2;
+            num_fmt = createExponentialFormat(precision);
+        }
+        else
+        {
+            precision = determinePrecision(range/2);
+            num_fmt = createDecimalFormat(precision);
+        }
 
         // Determine minimum label distance on the screen, using some
         // percentage of the available screen space.
@@ -150,6 +156,36 @@ public class LinearTicks implements Ticks<Double>
         return step * order_of_magnitude;
     }
 
+    /** Create decimal format
+     *  @param precision
+     *  @return NumberFormat
+     */
+    protected static NumberFormat createDecimalFormat(final int precision)
+    {
+        final NumberFormat fmt = NumberFormat.getNumberInstance();
+        fmt.setGroupingUsed(false);
+        fmt.setMinimumFractionDigits(precision);
+        fmt.setMaximumFractionDigits(precision);
+        return fmt;
+    }
+
+    /** Create exponential format
+     *  @param mantissa_precision
+     *  @return NumberFormat
+     */
+    protected static NumberFormat createExponentialFormat(final int mantissa_precision)
+    {
+        // DecimalFormat needs pattern for exponential notation,
+        // there are no factory or configuration methods
+        final StringBuilder pattern = new StringBuilder("0");
+        if (mantissa_precision > 0)
+            pattern.append('.');
+        for (int i=0; i<mantissa_precision; ++i)
+            pattern.append('0');
+        pattern.append("E0");
+        return new DecimalFormat(pattern.toString());
+    }
+
     /** {@inheritDoc} */
     @Override
     public Double getStart()
@@ -190,6 +226,10 @@ public class LinearTicks implements Ticks<Double>
             return "NaN";
         if (num.isInfinite())
             return "Inf";
+        // Patch numbers that are "very close to zero"
+        // to avoid "-0.00" or "0.0e-22"
+        if (Math.abs(num) < distance/1000)
+            return num_fmt.format(0.0);
         return num_fmt.format(num);
     }
 

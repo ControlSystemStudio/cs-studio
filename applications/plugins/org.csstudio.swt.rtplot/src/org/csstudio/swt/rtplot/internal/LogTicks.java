@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.internal;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.logging.Level;
 
 import org.csstudio.swt.rtplot.Activator;
@@ -108,23 +106,6 @@ public class LogTicks extends LinearTicks
             start = Log10.pow10(Math.ceil(Log10.log10(low) / dist) * dist);
             distance = -dist; // negative to indicate that distance refers to exponent
         }
-    }
-
-    /** Create exponential format
-     *  @param mantissa_precision
-     *  @return NumberFormat
-     */
-    private NumberFormat createExponentialFormat(final int mantissa_precision)
-    {
-        // DecimalFormat needs pattern for exponential notation,
-        // there are no factory or configuration methods
-        final StringBuilder pattern = new StringBuilder("0");
-        if (mantissa_precision > 0)
-            pattern.append('.');
-        for (int i=0; i<mantissa_precision; ++i)
-            pattern.append('0');
-        pattern.append("E0");
-        return new DecimalFormat(pattern.toString());
     }
 
     /** {@inheritDoc} */
