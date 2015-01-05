@@ -276,11 +276,8 @@ public class GUI implements ScanInfoModelListener
             public String getToolTipText(final Object element)
             {
                 final ScanInfo info = (ScanInfo) element;
-                final String error = info.getError();
-                if (error != null)
-                {
-                    return NLS.bind(Messages.ErrorMsgFmt, error);
-                }
+                if (info.getError().isPresent())
+                    return NLS.bind(Messages.ErrorMsgFmt, info.getError().get());
                 else
                     return Messages.NoError;
             }
@@ -289,11 +286,7 @@ public class GUI implements ScanInfoModelListener
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                final String error = info.getError();
-                if (error == null)
-                    cell.setText(""); //$NON-NLS-1$
-                else
-                    cell.setText(error);
+                cell.setText(info.getError().orElse("")); //$NON-NLS-1$
             }
         });
 

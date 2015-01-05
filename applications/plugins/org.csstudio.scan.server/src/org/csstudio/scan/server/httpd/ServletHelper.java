@@ -37,7 +37,7 @@ import org.w3c.dom.Node;
 @SuppressWarnings("nls")
 public class ServletHelper
 {
-    /** Dump request headers 
+    /** Dump request headers
      *  @param request
      */
     public static void dumpHeaders(final HttpServletRequest request)
@@ -49,7 +49,7 @@ public class ServletHelper
             System.out.println(header + " = " + request.getHeader(header));
         }
     }
-    
+
     /** Create XML element for string
      *  @param doc Parent document
      *  @param name Name of XML element
@@ -87,7 +87,7 @@ public class ServletHelper
     {
         return createXMLElement(doc, name, date.getTime());
     }
-    
+
     /** Create XML content for scan server info
      *  @param doc XML {@link Document}
      *  @param info {@link ScanServerInfo}
@@ -102,12 +102,12 @@ public class ServletHelper
         // For older clients, also report as "beamline_config"
         server.appendChild(doc.createComment("beamline_config is deprecated, use scan_config"));
         server.appendChild(createXMLElement(doc, "beamline_config", info.getScanConfig()));
-        
+
         server.appendChild(createXMLElement(doc, "simulation_config", info.getSimulationConfig()));
-        
+
         server.appendChild(createXMLElement(doc, "script_paths", PathUtil.joinPaths(info.getScriptPaths())));
         server.appendChild(createXMLElement(doc, "macros", info.getMacros()));
-        
+
         server.appendChild(createXMLElement(doc, "used_mem", info.getUsedMem()));
         server.appendChild(createXMLElement(doc, "max_mem", info.getMaxMem()));
         server.appendChild(createXMLElement(doc, "non_heap", info.getNonHeapUsedMem()));
@@ -123,7 +123,7 @@ public class ServletHelper
     public static Element createXMLElement(final Document doc, final ScanInfo info)
     {
         final Element scan = doc.createElement("scan");
-        
+
         scan.appendChild(createXMLElement(doc, "id", info.getId()));
         scan.appendChild(createXMLElement(doc, "name", info.getName()));
         scan.appendChild(createXMLElement(doc, "created", info.getCreated()));
@@ -135,21 +135,20 @@ public class ServletHelper
             scan.appendChild(createXMLElement(doc, "total_work_units", info.getTotalWorkUnits()));
             scan.appendChild(createXMLElement(doc, "performed_work_units", info.getPerformedWorkUnits()));
         }
-        
+
         final Date finish = info.getFinishTime();
         if (finish != null)
             scan.appendChild(createXMLElement(doc, "finish", finish));
 
         scan.appendChild(createXMLElement(doc, "address", info.getCurrentAddress()));
         scan.appendChild(createXMLElement(doc, "command", info.getCurrentCommand()));
-        
-        final String error = info.getError();
-        if (error != null)
-            scan.appendChild(createXMLElement(doc, "error", error));
+
+        if (info.getError().isPresent())
+            scan.appendChild(createXMLElement(doc, "error", info.getError().get()));
 
         return scan;
     }
-    
+
     /** Create XML content for scan data
      *  @param doc XML {@link Document}
      *  @param data {@link ScanData}
@@ -158,12 +157,12 @@ public class ServletHelper
     public static Node createXMLElement(final Document doc, final ScanData data)
     {
         final Element result = doc.createElement("data");
-       
+
         for (String device_name : data.getDevices())
         {
             final Element device = doc.createElement("device");
             device.appendChild(createXMLElement(doc, "name", device_name));
-        
+
             final Element samples = doc.createElement("samples");
             for (ScanSample data_sample : data.getSamples(device_name))
             {
@@ -173,7 +172,7 @@ public class ServletHelper
                 sample.appendChild(createXMLElement(doc, "value", ScanSampleFormatter.asString(data_sample)));
                 samples.appendChild(sample);
             }
-            
+
             device.appendChild(samples);
             result.appendChild(device);
         }
@@ -188,7 +187,7 @@ public class ServletHelper
     public static Node createXMLElement(final Document doc, final DeviceInfo... devices)
     {
         final Element result = doc.createElement("devices");
-        
+
         for (DeviceInfo info : devices)
         {
             final Element device = doc.createElement("device");

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,7 +48,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Client for remotely accessing the scan server.
- * 
+ *
  *  <p>Uses the REST-based web interface of the
  *  scan server to submit new scans, monitor
  *  and control existing scans.
@@ -59,17 +60,17 @@ public class ScanClient
 {
     final private String host;
     final private int port;
-    
+
     /** Timeout in seconds */
     final private long timeout = 10;
-    
+
     /** Initialize */
     public ScanClient()
     {
         this(SystemSettings.getServerHost(),
              SystemSettings.getServerPort());
     }
-    
+
     /** Initialize
      *  @param host Scan server host
      *  @param port Scan server port
@@ -79,7 +80,7 @@ public class ScanClient
         this.host = host;
         this.port = port;
     }
-    
+
     /** Connect to "http://server:port/path"
      *  @param path Path to use in scan server REST interface
      *  @return {@link HttpURLConnection}
@@ -104,7 +105,7 @@ public class ScanClient
     private void post(final HttpURLConnection connection, final String text) throws Exception
     {
         writeData(connection, "POST", text);
-    }    
+    }
 
     /** Write data to connection
      *  @param connection {@link HttpURLConnection}
@@ -159,14 +160,14 @@ public class ScanClient
         final String name = DOMHelper.getSubelementString(node, "name");
         final Date created = new Date(DOMHelper.getSubelementLong(node, "created", 0));
         final ScanState state = ScanState.valueOf(DOMHelper.getSubelementString(node, "state"));
-        final String error = DOMHelper.getSubelementString(node, "error", null);
+        final Optional<String> error = Optional.ofNullable(DOMHelper.getSubelementString(node, "error", null));
         final long runtime_ms = DOMHelper.getSubelementLong(node, "runtime", 0);
         final long total_work_units = DOMHelper.getSubelementLong(node, "total_work_units", 0);
         final long performed_work_units = DOMHelper.getSubelementLong(node, "performed_work_units", 0);
         final long finishtime_ms = DOMHelper.getSubelementLong(node, "finish", 0);
         final long current_address = DOMHelper.getSubelementLong(node, "address", 0);
         final String current_commmand = DOMHelper.getSubelementString(node, "command", "");
-        
+
         final Scan scan = new Scan(id, name, created);
         return new ScanInfo(scan, state, error, runtime_ms, finishtime_ms,
                 performed_work_units, total_work_units, current_address, current_commmand);
@@ -185,7 +186,7 @@ public class ScanClient
             final Element root_node = parseXML(connection);
             if (! "server".equals(root_node.getNodeName()))
                 throw new Exception("Expected <server/>");
-            
+
             final String version = DOMHelper.getSubelementString(root_node, "version");
             final Date start_time = new Date(DOMHelper.getSubelementLong(root_node, "start_time", 0));
             String scan_config;
@@ -225,7 +226,7 @@ public class ScanClient
             final Element root_node = parseXML(connection);
             if (! "scans".equals(root_node.getNodeName()))
                 throw new Exception("Expected <scans/>");
-            
+
             Element node = DOMHelper.findFirstElementNode(root_node.getFirstChild(), "scan");
             final List<ScanInfo> infos = new ArrayList<>();
             while (node != null)
@@ -263,7 +264,7 @@ public class ScanClient
             connection.disconnect();
         }
     }
-    
+
     /** Obtain commands for a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return XML text for scan commands
@@ -282,7 +283,7 @@ public class ScanClient
             connection.disconnect();
         }
     }
-    
+
     /** Obtain data logged by a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return {@link ScanData}
@@ -365,7 +366,7 @@ public class ScanClient
             connection.disconnect();
         }
     }
-    
+
     /** Submit a scan for execution
      *  @param name Name of the new scan
      *  @param xml_commands XML commands of the scan to submit
@@ -436,7 +437,7 @@ public class ScanClient
             connection.disconnect();
         }
     }
-    
+
     /** Put running scan into paused state
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @throws Exception on error
@@ -492,7 +493,7 @@ public class ScanClient
         }
     }
 
-    
+
     /** Remove a completed scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @throws Exception on error
@@ -510,7 +511,7 @@ public class ScanClient
             connection.disconnect();
         }
     }
-    
+
     /** Remove all completed scans
      *  @throws Exception on error
      */

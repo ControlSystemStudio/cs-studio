@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -89,7 +90,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** State of this scan */
     private AtomicReference<ScanState> state = new AtomicReference<>(ScanState.Idle);
 
-    private volatile String error = null;
+    /** Error message */
+    private volatile Optional<String> error = Optional.empty();
 
     /** Start time, set when execution starts */
     private volatile long start_ms = 0;
@@ -400,12 +402,12 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         catch (InterruptedException ex)
         {
             state.set(ScanState.Aborted);
-            error = ScanState.Aborted.name();
+            error = Optional.of(ScanState.Aborted.name());
         }
         catch (Exception ex)
         {
             state.set(ScanState.Failed);
-            error = ex.getMessage();
+            error = Optional.of(ex.getMessage());
             log.log(Level.WARNING, "Scan " + getName() + " failed", ex);
         }
         // Set actual end time, not estimated
@@ -507,10 +509,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         catch (Exception ex)
         {
     	    if (state.get() == ScanState.Aborted)
-    	        error = ScanState.Aborted.name();
+    	        error = Optional.of(ScanState.Aborted.name());
     	    else
     	    {
-    	        error = ex.getMessage();
+    	        error = Optional.of(ex.getMessage());
     	        state.set(ScanState.Failed);
     	        Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan " + getName() + " failed", ex);
     	    }
