@@ -24,11 +24,11 @@ import org.eclipse.swt.graphics.GC;
 @SuppressWarnings("nls")
 public class LogTicks extends LinearTicks
 {
-    // TODO Need two modes of log ticks:
-    // 1) 1eN = 1e-5, 1e0, 1e10 - this works OK
-    // 2) xeN = 2e4, 4e4, 6e4 - doesn't currently pick nice locations
-
     private int minor = 2;
+
+    // 'start' is the first tick mark as in LinearTicks
+    // 'distance' is used as in LinearTicks when positive.
+    // A negative 'distance' is used when it refers to the exponent
 
     public LogTicks()
     {
@@ -48,7 +48,8 @@ public class LogTicks extends LinearTicks
 
         final double low_exp = (int) Math.floor(Log10.log10(low));
         final double high_exp = (int) Math.floor(Log10.log10(high));
-        final double low_mantissa = low / Log10.pow10(low_exp);
+        final double low_power = Log10.pow10(low_exp);
+        final double low_mantissa = low / low_power;
 
         // Test format
         num_fmt = createExponentialFormat(2);
@@ -60,27 +61,53 @@ public class LogTicks extends LinearTicks
         final String high_label = format(high);
         final int label_width = Math.max(gc.textExtent(low_label).x, gc.textExtent(high_label).x);
         final int num_that_fits = Math.max(1,  screen_width/label_width*FILL_PERCENTAGE/100);
-        double dist = (high_exp - low_exp) / num_that_fits;
 
-        // Round up to the precision used to display values
-        dist = selectNiceStep(dist);
-        if (dist <= 0.0)
-            throw new Error("Broken tickmark computation");
+        if (high_exp <= low_exp)
+        {   // Are numbers are within the same order of magnitude,
+            // i.e. same exponent xeN = 2e4, 4e4, 6e4
 
-        if (dist >= 1)
-        {
-            precision = 0;
-            minor = 10;
+            // Determine distance in terms of mantissa, relative to lower end of range
+            final double high_mantissa = high / low_power;
+            double dist = (high_mantissa - low_mantissa) / num_that_fits;
+            dist = selectNiceStep(dist);
+            if (dist <= 0.0)
+                throw new Error("Broken tickmark computation");
+
+            precision = determinePrecision(low_mantissa) + 1;
+            minor = 2;
+            num_fmt = createExponentialFormat(precision);
+
+            // Start at 'low' adjusted to a multiple of the tick distance
+            start = Math.ceil(low_mantissa / dist) * dist;
+            start = start * low_power;
+
+            distance = dist * low_power;
         }
         else
-        {
-            precision = determinePrecision(low_mantissa);
-            minor = 2;
-        }
-        num_fmt = createExponentialFormat(precision);
+        {   // Range covers different orders of magnitude,
+            // example 1eN = 1e-5, 1e0, 1e10
+            double dist = (high_exp - low_exp) / num_that_fits;
 
-        start = Log10.pow10(Math.ceil(Log10.log10(low) / dist) * dist);
-        distance = dist;
+            // Round up to the precision used to display values
+            dist = selectNiceStep(dist);
+            if (dist <= 0.0)
+                throw new Error("Broken tickmark computation");
+
+            if (dist >= 1)
+            {
+                precision = 0;
+                minor = 10;
+            }
+            else
+            {
+                precision = determinePrecision(low_mantissa);
+                minor = 2;
+            }
+            num_fmt = createExponentialFormat(precision);
+
+            start = Log10.pow10(Math.ceil(Log10.log10(low) / dist) * dist);
+            distance = -dist; // negative to indicate that distance refers to exponent
+        }
     }
 
     /** Create exponential format
@@ -104,14 +131,15 @@ public class LogTicks extends LinearTicks
     @Override
     public Double getPrevious(final Double tick)
     {
-        // distance refers to exponent
-        final double next = tick / Log10.pow10(distance);
+        final double prev = distance < 0
+            ? tick / Log10.pow10(-distance)  // distance refers to exponent of value
+            : tick - distance;               // distance refers to plain value
 
         // Rounding errors can result in a situation where
         // we don't make any progress...
-        if (next >= tick)
+        if (prev >= tick)
             return tick - 1;
-        return next;
+        return prev;
     }
 
     /** {@inheritDoc} */
@@ -119,7 +147,9 @@ public class LogTicks extends LinearTicks
     public Double getNext(final Double tick)
     {
         // distance refers to exponent
-        final double next = tick * Log10.pow10(distance);
+        final double next = distance < 0
+            ? tick * Log10.pow10(-distance)  // distance refers to exponent of value
+            : tick + distance;               // distance refers to plain value
 
         // Rounding errors can result in a situation where
         // we don't make any progress...
