@@ -107,8 +107,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Currently executed command or <code>null</code> */
     private volatile ScanCommandImpl<?> current_command = null;
 
-    /** {@link Future} after scan has been submitted to {@link ExecutorService} */
-    private volatile Future<Object> future = null;
+    /** {@link Future}, set when scan has been submitted to {@link ExecutorService}. Not reset back to empty. */
+    private volatile Optional<Future<Object>> future = Optional.empty();
 
     /** Device Names for status PVs.
      *  They should either all be set or all be empty, so checking one is sufficient.
@@ -186,9 +186,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      */
     public void submit(final ExecutorService executor)
     {
-        if (future != null)
+        if (future.isPresent())
             throw new IllegalStateException("Already submitted for execution");
-        future = executor.submit(this);
+        future = Optional.of(executor.submit(this));
     }
 
     /** @return {@link ScanState} */
@@ -412,10 +412,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         // Set actual end time, not estimated
         end_ms = System.currentTimeMillis();
         // Un-set data logger
-        synchronized (this)
-        {
-            data_logger = null;
-        }
+        data_logger = Optional.empty();
         return null;
     }
 
@@ -663,8 +660,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         // Set state to aborted unless it is already 'done'
         state.getAndUpdate((current_state)  ->  current_state.isDone() ? current_state : ScanState.Aborted);
 
-        if (future != null)
-            future.cancel(true);
+        if (future.isPresent())
+            future.get().cancel(true);
         synchronized (this)
         {
             notifyAll();
