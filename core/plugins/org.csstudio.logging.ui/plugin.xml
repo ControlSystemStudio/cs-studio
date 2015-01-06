@@ -18,6 +18,12 @@
             name="Logging Configuration"
             restorable="false">
       </view>
+      <view
+            class="org.csstudio.logging.ui.FXLogginConfiguration"
+            id="org.csstudio.logging.ui.FXLoggingConfiguration"
+            name="Logging Configuration"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -31,7 +37,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.logging.ui.LoggingConfiguration">
+                  value="org.csstudio.logging.ui.FXLoggingConfiguration">
             </parameter>
          </command>
       </menuContribution>
