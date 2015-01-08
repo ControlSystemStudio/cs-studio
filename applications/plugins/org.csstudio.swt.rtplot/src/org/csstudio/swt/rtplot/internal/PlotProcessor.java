@@ -348,10 +348,17 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                     low = Log10.log10(low);
                     high = Log10.log10(high);
                 }
-                // Add a little room above & below the exact value range
-                final double extra = (high - low) * 0.01;
-                low = low - extra;
-                high = high + extra;
+                // Round up/down to add a little room above & below the exact value range.
+                // This results in "locking" to a nice looking range for a while
+                // until a new sample outside of the rounded range is added.
+                final double size = Math.abs(high-low);
+                if (size > 0)
+                {   // Add 2 digits to the 'tight' o.o.m.
+                    final double order_of_magnitude = Math.floor(Log10.log10(size))-2;
+                    final double round = Math.pow(10, order_of_magnitude);
+                    low = Math.floor(low / round) * round;
+                    high = Math.ceil(high / round) * round;
+                }
                 if (axis.isLogarithmic())
                 {
                     low = Log10.pow10(low);
