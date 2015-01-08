@@ -18,144 +18,144 @@ import java.util.NoSuchElementException;
  * @author Xihui Chen
  */
 public class CircularBuffer<T> extends AbstractCollection<T> {
-	private int bufferSize =0;
-	private T[] buffer;
-	private int head;
-	private int tail;
-	private int count;
+    private int bufferSize =0;
+    private T[] buffer;
+    private int head;
+    private int tail;
+    private int count;
 
-	public CircularBuffer(int bufferSize) {
-		if(bufferSize <=0)
-			throw new IllegalArgumentException("Buffer size must be greater than zero.");
-		this.setBufferSize(bufferSize, true);
-	}
+    public CircularBuffer(int bufferSize) {
+        if(bufferSize <=0)
+            throw new IllegalArgumentException("Buffer size must be greater than zero.");
+        this.setBufferSize(bufferSize, true);
+    }
 
-	/** Add an element.
-	 * @param element
-	 */
-	@Override
+    /** Add an element.
+     * @param element
+     */
+    @Override
     public synchronized boolean add(T element){
-		if(tail == head && count == bufferSize) { //buffer is full
-			buffer[tail] = element;
-			head = (head + 1) % bufferSize;
-			tail = (tail + 1) % bufferSize;
-			return true;
-		}
-		else{//buffer is not full
-			buffer[tail] = element;
-			tail = (tail + 1) % bufferSize;
-			count++;
-			return true;
-		}
-	}
+        if(tail == head && count == bufferSize) { //buffer is full
+            buffer[tail] = element;
+            head = (head + 1) % bufferSize;
+            tail = (tail + 1) % bufferSize;
+            return true;
+        }
+        else{//buffer is not full
+            buffer[tail] = element;
+            tail = (tail + 1) % bufferSize;
+            count++;
+            return true;
+        }
+    }
 
-	/**Get element
-	 * @param index the index of the element in the buffer.
-	 * @return the element. null if the data at the index doesn't exist.
-	 */
-	public synchronized T getElement(int index){
-		if(index < count)
-			return buffer[(head + index) % bufferSize];
-		else
-			return null;
-	}
+    /**Get element
+     * @param index the index of the element in the buffer.
+     * @return the element. null if the data at the index doesn't exist.
+     */
+    public synchronized T getElement(int index){
+        if(index < count)
+            return buffer[(head + index) % bufferSize];
+        else
+            return null;
+    }
 
-	/**Get head element
-	 * @return the head element. null if the buffer is empty.
-	 */
-	public synchronized T getHead(){
-		if(count > 0)
-			return buffer[head];
-		else
-			return null;
-	}
+    /**Get head element
+     * @return the head element. null if the buffer is empty.
+     */
+    public synchronized T getHead(){
+        if(count > 0)
+            return buffer[head];
+        else
+            return null;
+    }
 
-	/**Get tail element
-	 * @return the tail element. null if the buffer is empty.
-	 */
-	public synchronized T getTail(){
-		if(count > 0)
-			return buffer[(head+count-1)%bufferSize];
-		else
-			return null;
-	}
+    /**Get tail element
+     * @return the tail element. null if the buffer is empty.
+     */
+    public synchronized T getTail(){
+        if(count > 0)
+            return buffer[(head+count-1)%bufferSize];
+        else
+            return null;
+    }
 
 
 
-	/**
-	 * clear the buffer;
-	 */
-	@Override
+    /**
+     * clear the buffer;
+     */
+    @Override
     public synchronized void clear(){
-		// Configure buffer to appear empty
-		head = 0;
-		tail = 0;
-		count = 0;
-		// Keep the actual buffer, but release its elements
-		Arrays.fill(buffer, 0, buffer.length, null);
-	}
+        // Configure buffer to appear empty
+        head = 0;
+        tail = 0;
+        count = 0;
+        // Keep the actual buffer, but release its elements
+        Arrays.fill(buffer, 0, buffer.length, null);
+    }
 
-	/**Set the buffer size.
-	 * @param bufferSize the bufferSize to set
-	 * @param clear clear the buffer if true. Otherwise keep the exist data;
-	 * Oldest data will be omitted if the new bufferSize is less
-	 * than the exist data count.
-	 */
-	@SuppressWarnings("unchecked")
-	public synchronized void setBufferSize(int bufferSize, boolean clear) {
-		assert bufferSize > 0;
-		if(this.bufferSize != bufferSize){
-			if(clear){//clear
-				buffer = (T[]) new Object[bufferSize];
-				clear();
-			}else{// keep the exist data
-				T[] tempBuffer = (T[]) toArray();
-				buffer = (T[]) new Object[bufferSize];
-				if (bufferSize < count) {
-				    System.arraycopy(tempBuffer, count-bufferSize, buffer, 0, bufferSize);
-				} else {
+    /**Set the buffer size.
+     * @param bufferSize the bufferSize to set
+     * @param clear clear the buffer if true. Otherwise keep the exist data;
+     * Oldest data will be omitted if the new bufferSize is less
+     * than the exist data count.
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized void setBufferSize(int bufferSize, boolean clear) {
+        assert bufferSize > 0;
+        if(this.bufferSize != bufferSize){
+            if(clear){//clear
+                buffer = (T[]) new Object[bufferSize];
+                clear();
+            }else{// keep the exist data
+                T[] tempBuffer = (T[]) toArray();
+                buffer = (T[]) new Object[bufferSize];
+                if (bufferSize < count) {
+                    System.arraycopy(tempBuffer, count-bufferSize, buffer, 0, bufferSize);
+                } else {
                     System.arraycopy(tempBuffer, 0, buffer, 0, count);
-				}
-				count = Math.min(bufferSize, count);
-				head =0;
-				tail = count%bufferSize;
-			}
-			this.bufferSize = bufferSize;
-		}
-	}
+                }
+                count = Math.min(bufferSize, count);
+                head =0;
+                tail = count%bufferSize;
+            }
+            this.bufferSize = bufferSize;
+        }
+    }
 
-	/**
-	 * @return the bufferSize
-	 */
-	public synchronized int getBufferSize() {
-		return bufferSize;
-	}
+    /**
+     * @return the bufferSize
+     */
+    public synchronized int getBufferSize() {
+        return bufferSize;
+    }
 
 
-	@Override
+    @Override
     public Iterator<T> iterator() {
-		return new Iterator<T>(){
-			private int index=0;
+        return new Iterator<T>(){
+            private int index=0;
 
-			@Override
+            @Override
             public boolean hasNext() {
-				return index < count;
-			}
-			@Override
+                return index < count;
+            }
+            @Override
             public T next() {
-				if(!hasNext())
-					throw new NoSuchElementException();
-				return buffer[(head+index++)%bufferSize];
-			}
-			@Override
+                if(!hasNext())
+                    throw new NoSuchElementException();
+                return buffer[(head+index++)%bufferSize];
+            }
+            @Override
             public void remove() {}
-		};
-	}
+        };
+    }
 
-	@Override
-	public int size() {
-		return count;
-	}
+    @Override
+    public int size() {
+        return count;
+    }
 
 
 
