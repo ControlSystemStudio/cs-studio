@@ -24,6 +24,7 @@ import org.epics.vtype.VType;
 /** Helper for handling DBR types
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DBRHelper
 {
     /** @return CTRL_... type for this channel. */
@@ -101,7 +102,7 @@ public class DBRHelper
                 return new VTypeForIntArray((GR) metadata, (DBR_TIME_Int) dbr);
             return new VTypeForInt((GR) metadata, (DBR_TIME_Int) dbr);
         }
-        
+
         if (dbr instanceof DBR_TIME_Short)
         {
             if (dbr.getCount() > 1)
@@ -115,7 +116,7 @@ public class DBRHelper
                 return new VTypeForByteArray((GR) metadata, (DBR_TIME_Byte) dbr);
            return new VTypeForByte((GR) metadata, (DBR_TIME_Byte) dbr);
         }
-        
+
         throw new Exception("Cannot handle " + dbr.getClass().getName());
     }
 }

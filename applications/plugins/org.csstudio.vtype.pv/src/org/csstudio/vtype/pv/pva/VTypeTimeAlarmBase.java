@@ -18,10 +18,11 @@ import org.epics.vtype.Time;
 import org.epics.vtype.VType;
 
 /** Base {@link VType} that decodes {@link Time} and {@link Alarm}
- * 
+ *
  *  <p>Inspired by  org.epics.pvmanager.pva.adapters.AlarmTimeExtractor
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class VTypeTimeAlarmBase implements Time, Alarm
 {
     final private static Timestamp NO_TIME = Timestamp.of(0, 0);
@@ -44,7 +45,7 @@ class VTypeTimeAlarmBase implements Time, Alarm
         }
         else
             timestamp = NO_TIME;
-        
+
         // Decode alarm_t alarm
         final PVStructure alarm = struct.getStructureField("alarm");
         if (alarm != null)
@@ -53,7 +54,7 @@ class VTypeTimeAlarmBase implements Time, Alarm
             severity = code == null
                 ? AlarmSeverity.UNDEFINED
                 : AlarmSeverity.values()[code.get()];
-            
+
             code = alarm.getIntField("status");
             message = code == null
                 ? AlarmStatus.UNDEFINED.name()
@@ -65,7 +66,7 @@ class VTypeTimeAlarmBase implements Time, Alarm
             message = AlarmStatus.UNDEFINED.name();
         }
     }
-    
+
     // Time
     @Override
     public Timestamp getTimestamp()

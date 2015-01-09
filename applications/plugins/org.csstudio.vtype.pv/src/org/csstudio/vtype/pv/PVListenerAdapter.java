@@ -15,6 +15,7 @@ import org.epics.vtype.VType;
 /** Helper (base) for implementing a {@link PVListener}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVListenerAdapter implements PVListener
 {
     @Override

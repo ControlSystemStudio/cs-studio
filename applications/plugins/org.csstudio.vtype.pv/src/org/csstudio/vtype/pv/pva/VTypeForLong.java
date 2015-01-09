@@ -16,10 +16,11 @@ import org.epics.vtype.VTypeToString;
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class VTypeForLong extends VTypeTimeAlarmDisplayBase implements VLong
 {
     final private long value;
-    
+
     public VTypeForLong(final PVStructure struct)
     {
         super(struct);

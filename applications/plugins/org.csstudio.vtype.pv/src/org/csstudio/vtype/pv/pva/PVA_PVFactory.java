@@ -13,10 +13,11 @@ import org.csstudio.vtype.pv.PVFactory;
 /** Factory for creating {@link PVA_PV}s
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVA_PVFactory implements PVFactory
 {
     final public static String TYPE = "pva";
-    
+
     @Override
     public String getType()
     {

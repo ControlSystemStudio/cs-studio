@@ -140,7 +140,6 @@ public class PVTable implements PVTableModelListener
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     tab_item.setChecked(item.isSelected());
                     cell.setText(item.getName());
-                    updateCommonCellSettings(cell, item);
                 }
             });
         pv_column.setEditingSupport(new EditingSupport(viewer)
@@ -226,12 +225,11 @@ public class PVTable implements PVTableModelListener
                         cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
-                    updateCommonCellSettings(cell, item);
                 }
             });
         // Editable value
         final TableViewerColumn value_column = createColumn(viewer, layout, Messages.Value, 100, 50,
-            new PVTableCellLabelProvider()
+            new PVTableCellLabelProviderWithChangeIndicator(changed_background)
             {
                 @Override
                 public void update(final ViewerCell cell)
@@ -242,7 +240,7 @@ public class PVTable implements PVTableModelListener
                         cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(VTypeHelper.toString(value));
-                    updateCommonCellSettings(cell, item);
+                    super.update(cell);
                 }
             });
         value_column.setEditingSupport(new EditingSupport(viewer)
@@ -307,11 +305,10 @@ public class PVTable implements PVTableModelListener
                     else
                         cell.setText(VTypeHelper.formatAlarm(value));
                     cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
-                    updateCommonCellSettings(cell, item);
                 }
             });
         createColumn(viewer, layout, Messages.Saved, 100, 50,
-            new PVTableCellLabelProvider()
+            new PVTableCellLabelProviderWithChangeIndicator(changed_background)
             {
                 @Override
                 public void update(final ViewerCell cell)
@@ -322,25 +319,13 @@ public class PVTable implements PVTableModelListener
                         cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(value.toString());
-                    updateCommonCellSettings(cell, item);
+                    super.update(cell);
                 }
             });
 
         ColumnViewerToolTipSupport.enableFor(viewer);
 
         viewer.setContentProvider(new PVTableModelContentProvider());
-    }
-
-    /** Update common cell features (background, ...)
-     *  @param cell Cell to update
-     *  @param item Item to display in cell
-     */
-    final protected void updateCommonCellSettings(final ViewerCell cell, final PVTableItem item)
-    {
-        if (item.isChanged())
-            cell.setBackground(changed_background);
-        else
-            cell.setBackground(null);
     }
 
     /** Helper for creating table column
@@ -375,12 +360,15 @@ public class PVTable implements PVTableModelListener
     private void createContextMenu(final TableViewer viewer, IWorkbenchPartSite site)
     {
         final MenuManager manager = new MenuManager();
-        manager.add(new SelectAllAction(viewer));
-        manager.add(new DeSelectAllAction(viewer));
         manager.add(new SnapshotAction(viewer));
         manager.add(new RestoreAction(viewer));
-        manager.add(new ToleranceAction(viewer));
+        manager.add(new SelectAllAction(viewer));
+        manager.add(new DeSelectAllAction(viewer));
         manager.add(new Separator());
+        manager.add(new SnapshotCurrentSelectionAction(viewer));
+        manager.add(new RestoreCurrentSelectionAction(viewer));
+        manager.add(new Separator());
+        manager.add(new ToleranceAction(viewer));
         manager.add(new DeleteAction(viewer));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 

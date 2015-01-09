@@ -19,7 +19,8 @@ import org.epics.vtype.Time;
 /** Implement VType Alarm and Time for a DBR
  *  @author Kay Kasemir
  */
-public class DBRAlarmTimeWrapper<T_DBR extends TIME> implements Alarm, Time 
+@SuppressWarnings("nls")
+public class DBRAlarmTimeWrapper<T_DBR extends TIME> implements Alarm, Time
 {
     final protected T_DBR dbr;
 

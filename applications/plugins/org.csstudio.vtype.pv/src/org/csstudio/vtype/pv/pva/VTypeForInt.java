@@ -16,10 +16,11 @@ import org.epics.vtype.VTypeToString;
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class VTypeForInt extends VTypeTimeAlarmDisplayBase implements VInt
 {
     final private int value;
-    
+
     public VTypeForInt(final PVStructure struct)
     {
         super(struct);

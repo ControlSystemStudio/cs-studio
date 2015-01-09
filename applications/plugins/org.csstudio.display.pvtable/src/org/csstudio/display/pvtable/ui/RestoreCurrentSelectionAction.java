@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * Copyright (c) 2014 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,28 +7,37 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 
 /** {@link Action} to restore value snapshots
  *  @author Kay Kasemir
  */
-public class RestoreAction extends PVTableAction
+public class RestoreCurrentSelectionAction extends PVTableAction
 {
-    public RestoreAction(final TableViewer viewer)
+    public RestoreCurrentSelectionAction(final TableViewer viewer)
     {
-        super(Messages.Restore, "icons/restore.png", viewer); //$NON-NLS-1$
-        setToolTipText(Messages.Restore_TT);
+        super(Messages.RestoreSelection, "icons/restore.png", viewer); //$NON-NLS-1$
+        setToolTipText(Messages.RestoreSelection_TT);
     }
 
     @Override
     public void run()
     {
         final PVTableModel model = (PVTableModel) viewer.getInput();
-        if (model == null)
-            return;
-        model.restore();
+        final List<PVTableItem> items = new ArrayList<>();
+        final Iterator<?> selection = ((IStructuredSelection) viewer.getSelection()).iterator();
+        while (selection.hasNext())
+            items.add((PVTableItem) selection.next());
+        if (items.size() > 0  &&  model != null)
+            model.restore(items);
     }
 }

@@ -37,18 +37,19 @@ import org.epics.vtype.VType;
 /** Channel Access {@link PV}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class JCA_PV extends PV implements ConnectionListener, MonitorListener, AccessRightsListener
 {
     final private static Logger logger = Logger.getLogger(JCA_PV.class.getName());
 
     /** Request plain DBR type or ..TIME..? */
     final private boolean plain_dbr;
-    
+
     /** JCA Channel */
     final private Channel channel;
-    
+
     private volatile Object metadata;
-    
+
     final private GetListener meta_get_listener = new GetListener()
     {
         @Override
@@ -88,7 +89,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         channel = JCAContext.getInstance().getContext().createChannel(base_name, this);
         channel.getContext().flushIO();
     }
-    
+
     /** JCA connection listener */
     @Override
     public void connectionChanged(final ConnectionEvent ev)
@@ -122,7 +123,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             logger.log(Level.WARNING, getName() + " cannot get meta data", ex);
         }
     }
-    
+
     private void subscribe()
     {
         synchronized (this)
@@ -130,13 +131,13 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             if (this.value_monitor != null)
                 return;
         }
-        
+
         try
         {
             logger.log(Level.FINE, getName() + " subscribes");
             final int mask = Preferences.monitorMask().getMask();
             final Monitor value_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), channel.getElementCount(), mask, this);
-            
+
             synchronized (this)
             {   // Not holding the lock; could have been another subscription while we established this one...
                 if (this.value_monitor != null)
@@ -156,7 +157,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             logger.log(Level.WARNING, getName() + " cannot subscribe", ex);
         }
     }
-    
+
     private void unsubscribe()
     {
         final Monitor value_monitor;
@@ -188,7 +189,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         logger.fine(getName() + (readonly ? " is read-only" : " is writeable"));
         notifyListenersOfPermissions(readonly);
     }
-    
+
     @Override
     public void monitorChanged(final MonitorEvent ev)
     {
@@ -208,7 +209,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             ex.printStackTrace();
         }
     }
-    
+
     /** {@link Future} that acts as JCA {@link GetListener}
      *  and provides the value or error to user of the {@link Future}
      */
@@ -217,7 +218,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         final private CountDownLatch updates = new CountDownLatch(1);
         private volatile VType value;
         private volatile Exception error;
-                
+
         @Override
         public void getCompleted(final GetEvent ev)
         {
@@ -240,7 +241,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
                 error = ex;
             }
             updates.countDown();
-        }        
+        }
 
         @Override
         public boolean cancel(boolean mayInterruptIfRunning)
@@ -281,7 +282,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             return value;
         }
     }
-   
+
     @Override
     public Future<VType> asyncRead() throws Exception
     {
@@ -363,7 +364,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         performWrite(new_value, result);
         return result;
     }
-    
+
     private void performWrite(final Object new_value, final PutListener put_listener) throws Exception
     {
         if (new_value instanceof String)
@@ -421,6 +422,25 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             final int val[] = new int[ival.length];
             for (int i=0; i<val.length; ++i)
                 val[i] = ival[i].intValue();
+            if (put_listener != null)
+                channel.put(val, put_listener);
+            else
+                channel.put(val);
+        }
+        else if (new_value instanceof Long)
+        {   // Channel only supports put(int), not long
+            final int val = ((Long)new_value).intValue();
+            if (put_listener != null)
+                channel.put(val, put_listener);
+            else
+                channel.put(val);
+        }
+        else if (new_value instanceof Long [])
+        {   // Channel only supports put(int[]), not long[]
+            final Long lval[] = (Long [])new_value;
+            final int val[] = new int[lval.length];
+            for (int i=0; i<val.length; ++i)
+                val[i] = lval[i].intValue();
             if (put_listener != null)
                 channel.put(val, put_listener);
             else
