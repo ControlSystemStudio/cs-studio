@@ -24,9 +24,10 @@ import org.epics.pvdata.pv.Status;
 
 /** A {@link ChannelPutRequester} for writing a value to a {@link PVA_PV},
  *  indicating completion via a {@link Future}
- * 
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Object>
 {
     final private PV pv;
@@ -57,7 +58,7 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
             updates.countDown();
             return;
         }
-        
+
         try
         {
             // Locate the value field
@@ -65,14 +66,14 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
             // It it enumerated? Write to index field
             if (field instanceof PVStructure  &&  "enum_t".equals(field.getField().getID()))
                 field = ((PVStructure)field).getSubField("index");
-            
+
             // Indicate what's changed & change it
             bitSet.set(field.getFieldOffset());
             PVStructureHelper.setField(field, new_value);
-            
+
             // Perform write
             channelPut.put(true);
-            
+
             this.channelPut = channelPut;
         }
         catch (Exception ex)

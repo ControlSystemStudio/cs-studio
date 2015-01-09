@@ -12,15 +12,16 @@ import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
 /** Local Process Variable
- *  
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LocalPV extends PV
 {
     protected LocalPV(final String name, final String base_name) throws Exception
     {
         super(name);
-        
+
         // Get initial value: Split name off the initial value
         VType value;
         final int sep = base_name.indexOf('(');
@@ -30,7 +31,7 @@ public class LocalPV extends PV
         if (end <= sep)
             throw new Exception(getName() + " missing ')' to define initial value");
         String value_text = base_name.substring(sep+1, end);
-        
+
         // Remove "quotes around string constant"
         if (value_text.startsWith("\"")  &&  value_text.endsWith("\""))
             value_text = value_text.substring(1, value_text.length()-1);

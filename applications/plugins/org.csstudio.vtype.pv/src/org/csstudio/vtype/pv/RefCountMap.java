@@ -13,15 +13,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** Map that keeps reference count for its objects
- * 
+ *
  *  <p>Caller may need to synchronize calls to this map,
  *  because there is no atomic operation to check if an item exists,
  *  and if not, create and add it to the map.
- *  
+ *
  *  @param <K> Key data type
  *  @param <E> Entry data type
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RefCountMap<K, E>
 {
     /** Wrapper for an entry with reference count */
@@ -29,24 +30,24 @@ public class RefCountMap<K, E>
     {
         final private E entry;
         private int references = 1;
-        
+
         ReferencedEntry(E entry)
         {
             this.entry = entry;
         }
-        
+
         /** @return Item */
         public E getEntry()
         {
             return entry;
         }
-        
+
         /** @return Reference count for the item */
         public int getReferences()
         {
             return references;
         }
-        
+
         void addRef()
         {
             ++references;
@@ -57,9 +58,9 @@ public class RefCountMap<K, E>
             return --references;
         }
     }
-    
+
     final private Map<K, ReferencedEntry<E>> map = new HashMap<>();
-    
+
     /** Get an item.
      *  On success, a reference count is added to the item.
      *  @param key Key for item to get
@@ -99,7 +100,7 @@ public class RefCountMap<K, E>
             map.remove(key);
         return remaining;
     }
-    
+
     /** @return Entries in map */
     public Collection<ReferencedEntry<E>> getEntries()
     {

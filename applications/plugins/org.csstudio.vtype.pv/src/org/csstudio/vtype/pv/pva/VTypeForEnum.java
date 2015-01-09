@@ -17,17 +17,18 @@ import org.epics.vtype.VTypeToString;
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class VTypeForEnum extends VTypeTimeAlarmBase implements VEnum
 {
     final private int value;
     final private List<String> labels;
-    
+
     public VTypeForEnum(final PVStructure struct) throws Exception
     {
         super(struct);
         final PVStructure section = struct.getStructureField("value");
         value = section.getIntField("index").get();
-        
+
         labels = PVStructureHelper.getStrings(section, "choices");
     }
 

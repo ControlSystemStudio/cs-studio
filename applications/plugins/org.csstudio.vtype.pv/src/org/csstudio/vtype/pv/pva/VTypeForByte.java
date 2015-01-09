@@ -16,10 +16,11 @@ import org.epics.vtype.VTypeToString;
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class VTypeForByte extends VTypeTimeAlarmDisplayBase implements VByte
 {
     final private int value;
-    
+
     public VTypeForByte(final PVStructure struct)
     {
         super(struct);

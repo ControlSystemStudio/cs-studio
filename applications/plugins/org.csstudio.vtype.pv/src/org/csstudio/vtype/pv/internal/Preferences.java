@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 /** Preference settings
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Preferences
 {
     private static String getString(final String plugin, final String setting, final String default_value)
@@ -31,12 +32,12 @@ public class Preferences
     {
         return getString(Activator.ID, "default_type", JCA_PVFactory.TYPE);
     }
-        
+
     public static boolean usePureJava()
     {
         return Boolean.parseBoolean(getString(EpicsPlugin.ID, PreferenceConstants.PURE_JAVA, Boolean.TRUE.toString()));
     }
-    
+
     public static MonitorMask monitorMask()
     {
         return MonitorMask.valueOf(getString(EpicsPlugin.ID, PreferenceConstants.MONITOR, "VALUE"));

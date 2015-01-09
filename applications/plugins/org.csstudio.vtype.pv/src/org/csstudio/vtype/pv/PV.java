@@ -17,27 +17,28 @@ import org.csstudio.vtype.pv.internal.ImmediateFuture;
 import org.epics.vtype.VType;
 
 /** Process Variable, API for accessing life control system data.
- * 
+ *
  *  <p>PVs are to be fetched from the {@link PVPool}
  *  and release to it when no longer used.
- *  
+ *
  *  <p>The name of the PV is the name by which it was created.
  *  The underlying implementation might use a slightly different name.
- *  
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class PV
 {
     final private static Logger logger = Logger.getLogger(PV.class.getName());
-    
+
     final private String name;
-    
+
     final private List<PVListener> listeners = new CopyOnWriteArrayList<>();
 
     private volatile boolean is_readonly = false;
 
     private volatile VType last_value = null;
-    
+
     /** Initialize
      *  @param name PV name
      */
@@ -45,21 +46,21 @@ abstract public class PV
     {
         this.name = name;
     }
-    
+
     /** @return PV name */
     public String getName()
     {
         return name;
     }
-    
+
     /** Request notifications of PV updates.
-     * 
+     *
      *  <p>Note that the PV is shared via the {@link PVPool}.
      *  When updates are no longer desired, caller must
      *  <code>removeListener()</code>.
      *  Simply releasing the PV back to the {@link PVPool}
      *  will <b>not</b> automatically remove listeners!
-     *  
+     *
      *  @param listener Listener that will receive value updates
      *  @see #removeListener(PVListener)
      */
@@ -77,12 +78,12 @@ abstract public class PV
     {
         listeners.remove(listener);
     }
-    
+
     /** Read current value
      *
      *  <p>Should return the most recent value
      *  that listeners have received.
-     *  
+     *
      *  @return Most recent value of the PV. <code>null</code> if no known value.
      */
     public VType read()
@@ -91,14 +92,14 @@ abstract public class PV
     }
 
     /** Issue a read request
-     * 
+     *
      *  <p>{@link Future} allows waiting for
      *  and obtaining the result, or its <code>get()</code>
      *  calls will provide an error.
-     *  
+     *
      *  <p>As a side effect, registered listeners will
      *  also receive the value obtained by this call.
-     *  
+     *
      *  @return {@link Future} for obtaining the result or Exception
      *  @exception Exception on error
      */
@@ -107,27 +108,27 @@ abstract public class PV
         // Default: Return last known value
         return new ImmediateFuture<VType>(last_value);
     }
-    
+
     /** @return <code>true</code> if PV is read-only */
     public boolean isReadonly()
     {
         return is_readonly;
     }
-    
+
     /** Write value, no confirmation
      *  @param new_value Value to write to the PV
      *  @see PV#write(Object, PVWriteListener)
      *  @exception Exception on error
      */
     abstract public void write(final Object new_value) throws Exception;
-    
+
     /** Write value with confirmation
-     * 
+     *
      *  <p>{@link Future} can be used to await completion
      *  of the write.
      *  The <code>get()</code> will not return a useful value (null),
      *  but they will throw an error if the write failed.
-     *  
+     *
      *  @param new_value Value to write to the PV
      *  @return {@link Future} for checking the result
      *  @exception Exception on error
@@ -188,12 +189,12 @@ abstract public class PV
             }
         }
     }
-    
+
     /** Close the PV, releasing underlying resources.
      *  <p>
      *  Called by {@link PVPool}.
      *  Users of this class should instead release PV from pool.
-     *  
+     *
      *  @see PVPool#releasePV(PV)
      */
     protected void close()

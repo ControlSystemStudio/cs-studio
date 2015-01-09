@@ -22,9 +22,10 @@ import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
 /** Base {@link VType} that decodes {@link Time}, {@link Alarm} and {@link Display}
- * 
+ *
  *  <p>Very similar to org.epics.pvmanager.pva.adapters.AlarmTimeDisplayExtractor
  */
+@SuppressWarnings("nls")
 class VTypeTimeAlarmDisplayBase extends VTypeTimeAlarmBase implements Display
 {
     private final static Display noDisplay = ValueFactory.displayNone();
@@ -77,7 +78,7 @@ class VTypeTimeAlarmDisplayBase extends VTypeTimeAlarmBase implements Display
             else
                 return String.valueOf(number);
         }
-        
+
         @Override
         public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos)
         {
@@ -108,19 +109,19 @@ class VTypeTimeAlarmDisplayBase extends VTypeTimeAlarmBase implements Display
     public VTypeTimeAlarmDisplayBase(final PVStructure struct)
     {
         super(struct);
-        
+
         // Decode display_t display
         PVStructure section = struct.getStructureField("display");
         if (section != null)
         {
             PVString str = section.getStringField("units");
             units = str == null ? noDisplay.getUnits() : str.get();
-            
+
             str = section.getStringField("format");
             format = str == null
                 ? noDisplay.getFormat()
                 : createNumberFormat(str.get());
-                
+
             display_low = PVStructureHelper.getDoubleValue(section, "limitLow", noDisplay.getLowerDisplayLimit());
             display_high = PVStructureHelper.getDoubleValue(section, "limitHigh", noDisplay.getUpperDisplayLimit());
         }
@@ -162,7 +163,7 @@ class VTypeTimeAlarmDisplayBase extends VTypeTimeAlarmBase implements Display
             alarm_high = noDisplay.getUpperAlarmLimit();
         }
     }
-    
+
     @Override
     public String getUnits()
     {
@@ -186,7 +187,7 @@ class VTypeTimeAlarmDisplayBase extends VTypeTimeAlarmBase implements Display
     {
         return display_high;
     }
-    
+
     @Override
     public Double getLowerCtrlLimit()
     {

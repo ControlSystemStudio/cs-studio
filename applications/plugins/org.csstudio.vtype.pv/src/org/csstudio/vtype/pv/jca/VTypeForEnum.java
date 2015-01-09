@@ -21,6 +21,7 @@ import org.epics.vtype.VTypeToString;
  *  <p>Based on ideas from org.epics.pvmanager.jca, Gabriele Carcassi
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class VTypeForEnum extends DBRAlarmTimeWrapper<DBR_TIME_Enum> implements VEnum
 {
     final private LABELS labels;
