@@ -36,19 +36,19 @@ public class PVTableItem implements PVListener
     private boolean selected = true;
 
     private String name;
-    
+
     private volatile VType value;
 
     private volatile SavedValue saved = null;
-    
+
     private volatile boolean has_changed;
-    
+
     private double tolerance;
-    
+
     final private AtomicReference<PV> pv = new AtomicReference<PV>(null);
 
     /** Initialize
-     * 
+     *
      *  @param name
      *  @param tolerance
      *  @param saved
@@ -60,7 +60,7 @@ public class PVTableItem implements PVListener
     }
 
     /** Initialize
-     * 
+     *
      *  @param name
      *  @param tolerance
      *  @param saved
@@ -75,7 +75,7 @@ public class PVTableItem implements PVListener
         determineIfChanged();
         createPV(name);
     }
-    
+
     /** Set PV name and create reader/writer
      *  @param name PV name
      */
@@ -103,7 +103,7 @@ public class PVTableItem implements PVListener
     {
         return selected;
     }
-    
+
     /** @param selected Should item be selected to be restored? */
     public void setSelected(final boolean selected)
     {
@@ -117,8 +117,8 @@ public class PVTableItem implements PVListener
         return name;
     }
 
-    /** Update PV name 
-     * 
+    /** Update PV name
+     *
      *  <p>Also resets saved and current value,
      *  since it no longer applies to the new name.
      *  @param new_name PV Name
@@ -135,7 +135,7 @@ public class PVTableItem implements PVListener
         createPV(new_name);
         return true;
     }
-    
+
     /** PVListener
      *  {@inheritDoc}
      */
@@ -160,7 +160,7 @@ public class PVTableItem implements PVListener
     @Override
     public void disconnected(final PV pv)
     {
-        updateValue(ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"), ValueFactory.timeNow())); //$NON-NLS-1$        
+        updateValue(ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"), ValueFactory.timeNow())); //$NON-NLS-1$
     }
 
     /** @param new_value New value of item */
@@ -170,13 +170,13 @@ public class PVTableItem implements PVListener
         determineIfChanged();
         listener.tableItemChanged(this);
     }
-    
+
     /** @return Value */
     public VType getValue()
     {
         return value;
     }
-    
+
     /** @return Options for current value, not <code>null</code> if not enumerated */
     public String[] getValueOptions()
     {
@@ -248,8 +248,8 @@ public class PVTableItem implements PVListener
             Plugin.getLogger().log(Level.WARNING, "Cannot set " + getName() + " = " + new_value, ex);
         }
     }
-   
-    
+
+
     /** Save current value as saved value */
     public void save()
     {
@@ -264,11 +264,11 @@ public class PVTableItem implements PVListener
         determineIfChanged();
     }
 
-    /** Write saved value back to PV (if item is selected) */
+    /** Write saved value back to PV */
     public void restore()
     {
         final PV the_pv = pv.get();
-        if (the_pv == null  ||  ! isSelected()  ||  ! isWritable())
+        if (the_pv == null  ||  ! isWritable())
             return;
         try
         {
@@ -305,7 +305,7 @@ public class PVTableItem implements PVListener
     {
         return has_changed;
     }
-    
+
     /** Update <code>has_changed</code> based on current and saved value */
     private void determineIfChanged()
     {
@@ -324,7 +324,7 @@ public class PVTableItem implements PVListener
             Plugin.getLogger().log(Level.WARNING, "Change test failed for " + getName(), ex);
         }
     }
-    
+
     /** Must be called to release resources when item no longer in use */
     public void dispose()
     {
@@ -335,7 +335,7 @@ public class PVTableItem implements PVListener
             PVPool.releasePV(the_pv);
         }
     }
-    
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

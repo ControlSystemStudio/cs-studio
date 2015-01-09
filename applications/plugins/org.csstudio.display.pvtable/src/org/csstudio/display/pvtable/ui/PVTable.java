@@ -362,7 +362,9 @@ public class PVTable implements PVTableModelListener
         manager.add(new SelectAllAction(viewer));
         manager.add(new DeSelectAllAction(viewer));
         manager.add(new SnapshotAction(viewer));
+        manager.add(new SnapshotCurrentSelectionAction(viewer));
         manager.add(new RestoreAction(viewer));
+        manager.add(new RestoreCurrentSelectionAction(viewer));
         manager.add(new ToleranceAction(viewer));
         manager.add(new Separator());
         manager.add(new DeleteAction(viewer));

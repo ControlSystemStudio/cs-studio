@@ -20,8 +20,8 @@ public class DeSelectAllAction extends PVTableAction
 {
     public DeSelectAllAction(final TableViewer viewer)
     {
-        super(Messages.DeSelectAll, "icons/unchecked.gif", viewer); //$NON-NLS-1$
-        setToolTipText(Messages.SelectAll_TT);
+        super(Messages.UncheckAll, "icons/unchecked.gif", viewer); //$NON-NLS-1$
+        setToolTipText(Messages.CheckAll_TT);
     }
     
     public void run()
