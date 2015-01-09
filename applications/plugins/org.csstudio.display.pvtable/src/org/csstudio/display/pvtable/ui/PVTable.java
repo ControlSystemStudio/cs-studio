@@ -360,14 +360,15 @@ public class PVTable implements PVTableModelListener
     private void createContextMenu(final TableViewer viewer, IWorkbenchPartSite site)
     {
         final MenuManager manager = new MenuManager();
+        manager.add(new SnapshotAction(viewer));
+        manager.add(new RestoreAction(viewer));
         manager.add(new SelectAllAction(viewer));
         manager.add(new DeSelectAllAction(viewer));
-        manager.add(new SnapshotAction(viewer));
-        manager.add(new SnapshotCurrentSelectionAction(viewer));
-        manager.add(new RestoreAction(viewer));
-        manager.add(new RestoreCurrentSelectionAction(viewer));
-        manager.add(new ToleranceAction(viewer));
         manager.add(new Separator());
+        manager.add(new SnapshotCurrentSelectionAction(viewer));
+        manager.add(new RestoreCurrentSelectionAction(viewer));
+        manager.add(new Separator());
+        manager.add(new ToleranceAction(viewer));
         manager.add(new DeleteAction(viewer));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
