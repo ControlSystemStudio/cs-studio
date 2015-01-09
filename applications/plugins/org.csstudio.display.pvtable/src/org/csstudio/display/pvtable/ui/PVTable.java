@@ -308,7 +308,7 @@ public class PVTable implements PVTableModelListener
                 }
             });
         createColumn(viewer, layout, Messages.Saved, 100, 50,
-            new PVTableCellLabelProvider()
+            new PVTableCellLabelProviderWithChangeIndicator(changed_background)
             {
                 @Override
                 public void update(final ViewerCell cell)
@@ -319,6 +319,7 @@ public class PVTable implements PVTableModelListener
                         cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(value.toString());
+                    super.update(cell);
                 }
             });
 
