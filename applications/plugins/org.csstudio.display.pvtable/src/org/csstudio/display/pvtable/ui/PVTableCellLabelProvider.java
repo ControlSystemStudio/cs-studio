@@ -17,10 +17,8 @@ abstract public class PVTableCellLabelProvider extends CellLabelProvider
 {
     private static final int TOOL_TIP_MAX = 100;
 
-    @Override
-    public String getToolTipText(final Object element)
+    public static String getTableItemTooltip(final PVTableItem item)
     {
-        final PVTableItem item = (PVTableItem) element;
         if (item == PVTableModelContentProvider.NEW_ITEM)
             return "Add new PV to table by adding its name";
         final String text = item.toString();
@@ -28,5 +26,11 @@ abstract public class PVTableCellLabelProvider extends CellLabelProvider
         if (text.length() > TOOL_TIP_MAX)
             return text.substring(0, TOOL_TIP_MAX) + "...";
         return text;
+    }
+
+    @Override
+    public String getToolTipText(final Object element)
+    {
+        return getTableItemTooltip((PVTableItem) element);
     }
 }
