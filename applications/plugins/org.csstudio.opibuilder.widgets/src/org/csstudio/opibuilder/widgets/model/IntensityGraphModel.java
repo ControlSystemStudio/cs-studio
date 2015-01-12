@@ -366,7 +366,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 					MediaService.DEFAULT_FONT));
 			break;
 		case TITLE_FONT:
-			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD)));
+			addProperty(new FontProperty(propID, axisProperty.toString(), category, MediaService.DEFAULT_BOLD_FONT));
 			break;
 		case AXIS_COLOR:
 			addProperty(new ColorProperty(propID, axisProperty.toString(), category, DEFAULT_AXIS_COLOR));
