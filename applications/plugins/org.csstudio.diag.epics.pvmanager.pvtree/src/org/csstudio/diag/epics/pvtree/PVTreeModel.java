@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.diirt.vtype.AlarmSeverity;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Tree;
-import org.epics.vtype.AlarmSeverity;
 
 /** The PV Tree Model
  *  <p>
