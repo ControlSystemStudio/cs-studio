@@ -16,4 +16,31 @@
   		../../features/org.csstudio.logbook.viewer.feature
   	</module>
   </modules>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.csstudio</groupId>
+  		<artifactId>org.csstudio.logbook</artifactId>
+  		<type>eclipse-plugin</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.csstudio</groupId>
+  		<artifactId>org.csstudio.logbook.ui</artifactId>
+  		<type>eclipse-plugin</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.csstudio</groupId>
+  		<artifactId>org.csstudio.logbook.ui.extra</artifactId>
+  		<type>eclipse-plugin</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.csstudio</groupId>
+  		<artifactId>org.csstudio.logbook.viewer</artifactId>  		
+  		<type>eclipse-plugin</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.csstudio</groupId>
+  		<artifactId>org.csstudio.logbook.viewer.feature</artifactId>
+  		<type>eclipse-feature</type>
+  	</dependency>
+  </dependencies>
 </project>
