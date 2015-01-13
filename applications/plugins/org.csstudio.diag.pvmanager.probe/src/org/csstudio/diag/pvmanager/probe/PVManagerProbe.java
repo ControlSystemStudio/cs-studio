@@ -1,9 +1,8 @@
 package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
-import static org.epics.util.time.TimeDuration.ofHertz;
-import static org.epics.util.time.TimeDuration.ofMillis;
+import static org.diirt.datasource.formula.ExpressionLanguage.*;
+import static org.diirt.util.time.TimeDuration.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -18,6 +17,12 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.PVFormulaInputBar;
+import org.diirt.datasource.PV;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.TimeoutException;
+import org.diirt.datasource.expression.DesiredRateReadWriteExpression;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
@@ -42,12 +47,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
-import org.epics.pvmanager.PV;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.TimeoutException;
-import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
 
 /**
  * Probe view.

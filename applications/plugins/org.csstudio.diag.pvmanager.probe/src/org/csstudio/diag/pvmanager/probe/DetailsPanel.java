@@ -6,17 +6,17 @@ import java.util.TreeMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.diirt.datasource.ChannelHandler;
+import org.diirt.datasource.formula.ExpressionLanguage;
+import org.diirt.datasource.MultiplexedChannelHandler;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.expression.DesiredRateReadWriteExpression;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.MultiplexedChannelHandler;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.expression.DesiredRateReadWriteExpression;
-import org.epics.pvmanager.formula.ExpressionLanguage;
 
 /**
  * Probe panel that allows to show details of the channel.
