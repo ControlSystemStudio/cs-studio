@@ -9,8 +9,8 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.PlatformUI;
-import org.epics.vtype.VType;
-import org.epics.vtype.io.CSVIO;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.io.CSVIO;
 
 /**
  * Command to copy the selected value to clipboard.

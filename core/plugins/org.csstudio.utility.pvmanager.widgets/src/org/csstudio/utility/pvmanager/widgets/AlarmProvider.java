@@ -1,6 +1,6 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import org.epics.vtype.Alarm;
+import org.diirt.vtype.Alarm;
 
 /**
  * A widget that provides an alarm to be displayed as a border.

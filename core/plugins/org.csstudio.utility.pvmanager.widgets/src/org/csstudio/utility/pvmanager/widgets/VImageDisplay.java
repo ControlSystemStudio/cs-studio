@@ -8,7 +8,7 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.epics.vtype.VImage;
+import org.diirt.vtype.VImage;
 
 /**
  * Basic ui component that can display a VImage on screen.

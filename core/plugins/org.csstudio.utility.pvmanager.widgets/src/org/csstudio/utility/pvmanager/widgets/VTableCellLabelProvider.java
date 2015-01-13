@@ -1,11 +1,10 @@
 package org.csstudio.utility.pvmanager.widgets;
 
 
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.ValueUtil;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.epics.util.time.Timestamp;
-import org.epics.util.time.TimestampFormat;
-import org.epics.vtype.ValueUtil;
 
 public class VTableCellLabelProvider extends CellLabelProvider {
 	
