@@ -205,6 +205,10 @@
 		<module>plugins</module>
 		<module>features</module>
 		<module>repository</module>
+		<module>util</module>
+		<module>diirt</module>
+		<module>base</module>
+		<module>platform</module>
 	</modules>
 
 
