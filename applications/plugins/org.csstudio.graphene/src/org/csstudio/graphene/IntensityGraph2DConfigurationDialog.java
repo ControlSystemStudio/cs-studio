@@ -5,9 +5,9 @@ package org.csstudio.graphene;
 
 import java.beans.PropertyChangeEvent;
 
+import org.diirt.graphene.NumberColorMap;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.graphene.NumberColorMap;
 
 /**
  * @author shroffk

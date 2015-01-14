@@ -1,33 +1,32 @@
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
-import static org.epics.pvmanager.graphene.ExpressionLanguage.histogramGraphOf;
+import static org.diirt.datasource.formula.ExpressionLanguage.*;
+import static org.diirt.datasource.graphene.ExpressionLanguage.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVWriter;
+import org.diirt.datasource.PVWriterEvent;
+import org.diirt.datasource.PVWriterListener;
+import org.diirt.datasource.graphene.Graph2DResult;
+import org.diirt.datasource.graphene.HistogramGraph2DExpression;
+import org.diirt.graphene.AreaGraph2DRendererUpdate;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.ValueUtil;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.AreaGraph2DRendererUpdate;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.PVWriterEvent;
-import org.epics.pvmanager.PVWriterListener;
-import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.HistogramGraph2DExpression;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.ValueUtil;
 
 public class HistogramGraph2DWidget
 		extends
