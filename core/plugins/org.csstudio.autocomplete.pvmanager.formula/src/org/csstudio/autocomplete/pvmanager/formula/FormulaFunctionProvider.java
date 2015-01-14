@@ -20,9 +20,9 @@ import org.csstudio.autocomplete.parser.FunctionDescriptor;
 import org.csstudio.autocomplete.proposals.Proposal;
 import org.csstudio.autocomplete.proposals.ProposalStyle;
 import org.csstudio.autocomplete.tooltips.TooltipData;
-import org.epics.pvmanager.formula.FormulaFunction;
-import org.epics.pvmanager.formula.FormulaFunctionSet;
-import org.epics.pvmanager.formula.FormulaRegistry;
+import org.diirt.datasource.formula.FormulaFunction;
+import org.diirt.datasource.formula.FormulaFunctionSet;
+import org.diirt.datasource.formula.FormulaRegistry;
 
 /**
  * PV formula functions provider.

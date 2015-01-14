@@ -12,7 +12,7 @@ import org.csstudio.autocomplete.AutoCompleteType;
 import org.csstudio.autocomplete.parser.ContentDescriptor;
 import org.csstudio.autocomplete.parser.ContentType;
 import org.csstudio.autocomplete.parser.FunctionDescriptor;
-import org.epics.pvmanager.formula.FormulaRegistry;
+import org.diirt.datasource.formula.FormulaRegistry;
 import org.junit.Assert;
 import org.junit.Test;
 
