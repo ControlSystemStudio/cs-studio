@@ -127,29 +127,22 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 
 		setPropertyChangeHandler(LinkingContainerModel.PROP_GROUP_NAME, handler);
 
-
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((LinkingContainerFigure)figure).setZoomToFitAll((Boolean)newValue);
-				((LinkingContainerFigure)figure).updateZoom();
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LinkingContainerModel.PROP_ZOOMTOFITALL, handler);
-
 		handler = new IWidgetPropertyChangeHandler() {
-			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				if((Boolean)newValue)
+				if((int)newValue == LinkingContainerModel.ResizeBehaviour.SIZE_OPI_TO_CONTAINER.ordinal()) {
+					((LinkingContainerFigure)figure).setZoomToFitAll(true);
+				} else {
+					((LinkingContainerFigure)figure).setZoomToFitAll(false);
+				}
+				((LinkingContainerFigure)figure).updateZoom();
+
+				if((int)newValue == LinkingContainerModel.ResizeBehaviour.SIZE_CONTAINER_TO_OPI.ordinal()) {
 					performAutosize();
+				}
 				return false;
 			}
 		};
-		setPropertyChangeHandler(LinkingContainerModel.PROP_AUTO_SIZE, handler);
-		
-
-
+		setPropertyChangeHandler(LinkingContainerModel.PROP_RESIZE_BEHAVIOUR, handler);
 	}
 
 
@@ -275,6 +268,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 						childrenRange.height +childrenRange.y+ figure.getInsets().top + figure.getInsets().bottom-1));
 					getWidgetModel().scaleChildren();
 				}
+				((LinkingContainerFigure)getFigure()).setShowScrollBars(getWidgetModel().isShowScrollBars());
 				((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
 				((LinkingContainerFigure)getFigure()).updateZoom();				
 			}
