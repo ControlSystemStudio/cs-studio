@@ -9,9 +9,7 @@
 	<artifactId>platform-plugins</artifactId>
 	<packaging>pom</packaging>
 	<modules>
-		<module>
-  		org.csstudio.platform.jaasAuthentication
-  	</module>
+		<module>org.csstudio.platform.jaasAuthentication</module>
 		<module>
   		org.csstudio.platform.jaasAuthentication.ui
   	</module>
@@ -43,4 +41,5 @@
   		org.csstudio.platform.utility.rdb.test
   	</module>
 	</modules>
+	<version>0.0.1-SNAPSHOT</version>
 </project>

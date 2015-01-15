@@ -11,4 +11,6 @@
   	<module>org.csstudio.auth</module>
   	<module>org.csstudio.auth.ui</module>
   </modules>
+  <groupId>org.csstudio</groupId>
+  <version>0.0.1-SNAPSHOT</version>
 </project>

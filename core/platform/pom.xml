@@ -10,4 +10,5 @@
   <modules>
   	<module>platform-plugins</module>
   </modules>
+  <groupId>org.csstudio</groupId>
 </project>

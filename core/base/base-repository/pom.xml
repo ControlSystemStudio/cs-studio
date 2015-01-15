@@ -7,4 +7,5 @@
   </parent>
   <artifactId>base-repository</artifactId>
   <packaging>eclipse-repository</packaging>
+  <groupId>org.csstudio</groupId>
 </project>

@@ -168,11 +168,6 @@
 					<url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</url>
 					<layout>p2</layout>
 				</repository>
-				<repository>
-					<id>diirt</id>
-					<url>http://download.controlsystemstudio.org/diirt/4.1</url>
-					<layout>p2</layout>
-				</repository>
 			</repositories>
 		</profile>
 	</profiles>
