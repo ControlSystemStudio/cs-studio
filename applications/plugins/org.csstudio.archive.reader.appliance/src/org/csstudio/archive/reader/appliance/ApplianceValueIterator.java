@@ -50,6 +50,8 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     protected final Timestamp start;
     protected final Timestamp end;
     
+    private final IteratorListener listener; 
+    
     /**
      * Constructs a new ApplianceValueIterator.
      * 
@@ -58,11 +60,13 @@ public abstract class ApplianceValueIterator implements ValueIterator {
      * @param start the start of the time window of the data
      * @param end the end of the time window of the data
      */
-    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end) {
+    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end,
+            IteratorListener listener) {
     	this.reader = reader;
     	this.name = name;
     	this.start = start;
     	this.end = end;
+    	this.listener = listener;
     }
     
     /**
@@ -145,13 +149,15 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
         	double[] val = new double[o.size()];
         	if (type == PayloadType.WAVEFORM_DOUBLE) {
-	        	for (int i = 0; i < val.length; i++) {
-	        		val[i] = (Double)o.get(i);
+        	    int i = 0;
+	        	for (Object d : o) {
+	        		val[i++] = ((Double)d).doubleValue();
 	        	}
         	} else {
-        		for (int i = 0; i < val.length; i++) {
-            		val[i] = (Float)o.get(i);
-            	}
+        	    int i = 0;
+                for (Object d : o) {
+                    val[i++] = ((Float)d).doubleValue();
+                }
         	}
         	return new ArchiveVNumberArray(
         			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
@@ -167,9 +173,11 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         	//we could load the data directly using result.getNumberAt(index), but this is faster
         	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
         	int[] val = new int[o.size()];
-        	for (int i = 0; i < val.length; i++) {
-        		val[i] = (Integer)o.get(i);
-        	}
+        	int i = 0;
+            for (Object d : o) {
+                val[i++] = ((Integer)d).intValue();
+            }
+            
         	return new ArchiveVNumberArray(
         			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
 					getSeverity(result.getSeverity()), 
@@ -221,6 +229,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+		listener.finished(this);
 	}
 			
 	/**
@@ -268,7 +277,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 	 * 
 	 * @return alarm severity
 	 */
-	protected AlarmSeverity getSeverity(int severity) {
+	protected static AlarmSeverity getSeverity(int severity) {
 	   if (severity == 0) {
 		   return AlarmSeverity.NONE;
 	   } else if (severity == 1) {
