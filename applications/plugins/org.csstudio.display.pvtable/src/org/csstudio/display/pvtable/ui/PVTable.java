@@ -316,7 +316,7 @@ public class PVTable implements PVTableModelListener
                 public void update(final ViewerCell cell)
                 {
                     final PVTableItem item = (PVTableItem) cell.getElement();
-                    final SavedValue value = item.getSavedValue();
+                    final SavedValue value = item.getSavedValue().orElse(null);
                     if (value == null)
                         cell.setText(""); //$NON-NLS-1$
                     else

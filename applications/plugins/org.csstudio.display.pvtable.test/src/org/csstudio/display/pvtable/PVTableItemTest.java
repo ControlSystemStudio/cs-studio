@@ -65,13 +65,13 @@ public class PVTableItemTest implements PVTableItemListener
     @Test(timeout=8000)
     public void testPVTableItem() throws Exception
     {
-        
+
         final PV pv = PVPool.getPV(TestSettings.NAME);
         pv.write(3.14);
-        
+
         final PVTableItem item = new PVTableItem(TestSettings.NAME, Preferences.getTolerance(), null, this);
         item.setTolerance(0.1);
-        
+
 
         // Get initial value
         synchronized (item)
@@ -87,7 +87,7 @@ public class PVTableItemTest implements PVTableItemListener
         // Current matches saved value
         item.save();
         assertThat(item.isChanged(), equalTo(false));
-        
+
         // Receive update, but within tolerance
         pv.write(3.15);
         synchronized (item)
@@ -97,7 +97,7 @@ public class PVTableItemTest implements PVTableItemListener
         }
         assertThat(toDouble(item.getValue()), equalTo(3.15));
         assertThat(item.isChanged(), equalTo(false));
-        
+
         // Receive update beyond tolerance
         pv.write(6.28);
         synchronized (item)
@@ -105,12 +105,12 @@ public class PVTableItemTest implements PVTableItemListener
             while (toDouble(item.getValue()) != 6.28)
                 item.wait(100);
         }
-        assertThat(toDouble(item.getValue()), equalTo(6.28));        
-        
+        assertThat(toDouble(item.getValue()), equalTo(6.28));
+
         // Current no longer matches saved value
         System.out.println("Saved: " + item.getSavedValue());
         assertThat(item.isChanged(), equalTo(true));
-        
+
         // Value changes back on its own
         pv.write(3.14);
         synchronized (item)
@@ -128,11 +128,11 @@ public class PVTableItemTest implements PVTableItemListener
             while (toDouble(item.getValue()) != 42.0)
                 item.wait(100);
         }
-        assertThat(toDouble(item.getValue()), equalTo(42.0));        
+        assertThat(toDouble(item.getValue()), equalTo(42.0));
         assertThat(item.isChanged(), equalTo(true));
 
         // Restore the saved value
-        assertThat(item.getSavedValue().toString(), equalTo("3.14"));        
+        assertThat(item.getSavedValue().get().toString(), equalTo("3.14"));
         item.restore();
         System.out.println("Waiting for restore...");
         synchronized (item)
@@ -140,10 +140,10 @@ public class PVTableItemTest implements PVTableItemListener
             while (toDouble(item.getValue()) != 3.14)
                 item.wait(100);
         }
-        
+
         assertThat(item.isChanged(), equalTo(false));
-        
-        
+
+
         item.dispose();
     }
 }
