@@ -161,7 +161,7 @@
     <module>org.csstudio.trends.databrowser2.opiwidget</module>
     <module>org.csstudio.trends.databrowser2.rap</module>
     <module>org.csstudio.trends.databrowser2.rcp</module>
-    <module>org.csstudio.ui.menu.app</module>
+    <!--<module>org.csstudio.ui.menu.app</module> -->
     <module>org.csstudio.ui.menu.pvscript</module>
     <module>org.csstudio.ui.menu.web</module>
     <module>org.csstudio.unitconversion.ui</module>
