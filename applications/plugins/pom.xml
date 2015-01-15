@@ -191,8 +191,8 @@
     <module>org.csstudio.utility.namespace.utility</module>
     <module>org.csstudio.utility.olog</module>
     <module>org.csstudio.utility.olog.ui</module>
-    <module>org.csstudio.utility.product</module>
-    <module>org.csstudio.utility.product.default</module>
+    <!-- <module>org.csstudio.utility.product</module>
+    <module>org.csstudio.utility.product.default</module> -->
     <module>org.csstudio.utility.pv.ui</module>
     <!--<module>org.csstudio.utility.quickstart</module>--><!-- depends on org.csstudio.sds.ui -->
     <module>org.csstudio.utility.screenshot</module>
