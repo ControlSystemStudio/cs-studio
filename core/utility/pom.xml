@@ -5,9 +5,10 @@
     <artifactId>core</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
-  <artifactId>util</artifactId>
+  <artifactId>utility</artifactId>
   <packaging>pom</packaging>
   <modules>
   	<module>utility-plugins</module>
   </modules>
+  <groupId>org.csstudio</groupId>
 </project>

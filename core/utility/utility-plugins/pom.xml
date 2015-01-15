@@ -2,9 +2,27 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>util</artifactId>
+    <artifactId>utility</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
   <artifactId>utility-plugins</artifactId>
   <packaging>pom</packaging>
+  <groupId>org.csstudio</groupId>
+  <modules>
+  	<module>org.csstudio.ui.util</module>
+  	<module>org.csstudio.utility.batik</module>
+  	<module>org.csstudio.utility.pv</module>
+  	<module>org.csstudio.utility.pv.epics</module>
+  	<module>org.csstudio.utility.pv.epics.test</module>
+  	<module>org.csstudio.utility.pv.simu</module>
+  	<module>org.csstudio.utility.pv.simu.test</module>
+  	<module>org.csstudio.utility.pvmanager.ui</module>
+  	<module>org.csstudio.utility.pvmanager.ui.toolbox</module>
+  	<module>org.csstudio.utility.pvmanager.widgets</module>
+  	<module>org.csstudio.utility.singlesource</module>
+  	<module>org.csstudio.utility.singlesource.rap</module>
+  	<module>org.csstudio.utility.singlesource.rcp</module>
+  	<module>org.csstudio.utility.singlesource.test</module>
+  	<module>org.csstudio.utility.test</module>
+  </modules>
 </project>
