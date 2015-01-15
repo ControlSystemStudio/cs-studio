@@ -23,10 +23,11 @@ import org.epics.vtype.VType;
 /** Saved value of an array table item
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SavedArrayValue extends SavedValue
 {
     final private List<String> saved_value;
-    
+
     /** Initialize from text
      *  @param value_text
      */
@@ -34,13 +35,13 @@ public class SavedArrayValue extends SavedValue
     {
         saved_value = value_texts;
     }
-    
+
     /** @return Number of array elements */
     public int size()
     {
         return saved_value.size();
     }
-    
+
     /** @param index Array index, <code>0 .. size()-1</code>
      *  @return Array element
      */
@@ -48,8 +49,9 @@ public class SavedArrayValue extends SavedValue
     {
         return saved_value.get(index);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception
     {
         if (current_value == null)
@@ -63,7 +65,7 @@ public class SavedArrayValue extends SavedValue
             for (int i=0; i<N; ++i)
             {
                 final double v1 = values.getDouble(i);
-                final double v2 = Double.parseDouble(saved_value.get(i));
+                final double v2 = getSavedNumber(saved_value.get(i)).doubleValue();
                 if (Math.abs(v2 - v1) > tolerance)
                     return false;
             }
@@ -78,9 +80,9 @@ public class SavedArrayValue extends SavedValue
             if (N != saved_value.size())
                 return false;
             for (int i=0; i<N; ++i)
-            {   // Treat saved value as double to allow for "1e2"
+            {
                 final int v1 = indices.getInt(i);
-                final double v2 = Double.parseDouble(saved_value.get(i));
+                final int v2 = getSavedNumber(saved_value.get(i)).intValue();
                 if (Math.abs(v2 - v1) > tolerance)
                     return false;
             }
@@ -92,8 +94,9 @@ public class SavedArrayValue extends SavedValue
             return false;
         throw new Exception("Cannot compare against unhandled type " + current_value.getClass().getName());
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void restore(final PV pv) throws Exception
     {
         // Determine what type to write based on current value of the PV
@@ -121,7 +124,7 @@ public class SavedArrayValue extends SavedValue
         else
             throw new Exception("Cannot write type " + pv_type.getClass().getName());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString()
