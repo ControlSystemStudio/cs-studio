@@ -22,7 +22,7 @@
 		<!-- VERSIONS -->
 		<tycho.version>0.22.0</tycho.version>
 		<tycho-extras.version>0.22.0</tycho-extras.version>
-		<cs-studio-central.url>http://download.controlsystemstudio.org/core/4.1</cs-studio-central.url>
+		<cs-studio-central.url>http://diirt.download.controlsystemstudio.org/core/master</cs-studio-central.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<baselineMode>fail</baselineMode>
@@ -166,6 +166,11 @@
 				<repository>
 					<id>csstudio-maven-osgi-bundles</id>
 					<url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>diirt-bundles</id>
+					<url>http://diirt.download.controlsystemstudio.org/diirt/master</url>
 					<layout>p2</layout>
 				</repository>
 			</repositories>
