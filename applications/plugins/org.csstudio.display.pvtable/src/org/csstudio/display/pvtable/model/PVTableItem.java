@@ -30,6 +30,7 @@ import org.epics.vtype.ValueFactory;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTableItem implements PVListener
 {
     final private PVTableItemListener listener;
@@ -338,7 +339,6 @@ public class PVTableItem implements PVListener
         }
     }
 
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {

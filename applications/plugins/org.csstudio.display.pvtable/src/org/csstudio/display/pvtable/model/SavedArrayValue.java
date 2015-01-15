@@ -9,9 +9,11 @@ package org.csstudio.display.pvtable.model;
 
 import java.util.List;
 
+import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.vtype.pv.PV;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
+import org.epics.vtype.VByteArray;
 import org.epics.vtype.VDoubleArray;
 import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VFloatArray;
@@ -56,6 +58,23 @@ public class SavedArrayValue extends SavedValue
     {
         if (current_value == null)
             return true;
+        if (current_value instanceof VByteArray  &&  Preferences.treatByteArrayAsString())
+        {
+            // Compare as text
+            final String text = VTypeHelper.toString(current_value);
+            final int N = Math.min(text.length(), saved_value.size());
+            for (int i=0; i<N; ++i)
+            {
+                final int v1 = text.charAt(i);
+                final int v2 = getSavedNumber(saved_value.get(i)).intValue();
+                if (Math.abs(v2 - v1) > tolerance)
+                    return false;
+                // End comparison when reaching end-of-string, not comparing remaining array elements
+                if (v1 == 0)
+                    break;
+            }
+            return true;
+        }
         if (current_value instanceof VNumberArray)
         {
             final ListNumber values = ((VNumberArray)current_value).getData();
