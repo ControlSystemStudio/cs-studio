@@ -7,7 +7,6 @@
   </parent>
   <artifactId>utility-plugins</artifactId>
   <packaging>pom</packaging>
-  <groupId>org.csstudio</groupId>
   <modules>
   	<module>org.csstudio.ui.util</module>
   	<module>org.csstudio.utility.batik</module>
