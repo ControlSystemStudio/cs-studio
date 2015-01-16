@@ -108,6 +108,8 @@ public class Opi_activePipClass extends OpiWidget {
 			createPVOutputRule(r, convertPVName(r.getFilePv()), "opi_file", "pvStr0", "OPIFileFromPVRule");
 		}
 		
+		new OpiString(widgetContext, "resize_behaviour", "2");
+
 		log.debug("Edm_activePipClass written.");
 
 	}
