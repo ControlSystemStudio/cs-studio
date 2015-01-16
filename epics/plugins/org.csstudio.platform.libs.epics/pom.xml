@@ -69,6 +69,7 @@
 							com.cosylab.epics.caj.impl.requests,
 							com.cosylab.epics.caj.impl.sync,
 							com.cosylab.epics.caj.util,
+							com.cosylab.epics.caj.util.nif,
 							com.cosylab.epics.caj.util.logging,
 							gov.aps.jca,
 							gov.aps.jca.cas,
