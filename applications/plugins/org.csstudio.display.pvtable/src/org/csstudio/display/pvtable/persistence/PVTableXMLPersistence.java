@@ -42,6 +42,7 @@ public class PVTableXMLPersistence extends PVTablePersistence
     final private static String TOLERANCE = "tolerance";
     final private static String PVLIST = "pvlist";
     final private static String PV = "pv";
+    final private static String DESC = "desc";
     final private static String SELECTED = "selected";
     final private static String NAME = "name";
     final private static String SAVED = "saved_value";
@@ -169,6 +170,7 @@ public class PVTableXMLPersistence extends PVTablePersistence
             out.println();
             XMLWriter.XML(out, 3, SELECTED, item.isSelected());
             XMLWriter.XML(out, 3, NAME, item.getName());
+            // TODO XMLWriter.XML(out, 3, DESC, item.getDescName());
             XMLWriter.XML(out, 3, TOLERANCE, item.getTolerance());
             final SavedValue saved = item.getSavedValue();
             if (saved instanceof SavedScalarValue)

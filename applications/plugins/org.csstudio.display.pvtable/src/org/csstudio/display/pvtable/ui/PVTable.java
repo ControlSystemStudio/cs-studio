@@ -213,7 +213,7 @@ public class PVTable implements PVTableModelListener
             }
         });
         
-        // TODO Add column to display item.getDescription()
+        // Add column to display item.getDescription()
         createColumn(viewer, layout, Messages.Description, 50, 40,
                 new PVTableCellLabelProvider()
                 {
