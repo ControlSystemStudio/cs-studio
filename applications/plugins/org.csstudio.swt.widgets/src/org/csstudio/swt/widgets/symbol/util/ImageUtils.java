@@ -247,8 +247,8 @@ public final class ImageUtils {
 			return;
 		rect.setX(rect.x + insets.left);
 		rect.setY(rect.y + insets.top);
-		rect.setWidth(rect.width - (insets.getWidth()));
-		rect.setHeight(rect.height - (insets.getHeight()));
+		rect.setWidth(rect.width - insets.left - insets.right);
+		rect.setHeight(rect.height - insets.top - insets.bottom);
 	}
 
 	/**

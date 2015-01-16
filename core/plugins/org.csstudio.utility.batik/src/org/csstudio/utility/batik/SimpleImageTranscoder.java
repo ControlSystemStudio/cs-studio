@@ -335,19 +335,23 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		int nb = Math.round(newColor.getBlue() / 255f * 100);
 		String rgbReplace = "rgb(" + nr + "%," + ng + "%," + nb + "%)";
 		Matcher matcher = rgbPattern.matcher(data);
-		if (matcher.find()) {
+		StringBuilder sb = new StringBuilder();
+		int previousEnd = 0;
+		while (matcher.find()) {
 			int r = Math.round(Float.valueOf(matcher.group(1)) * 255 / 100);
 			int g = Math.round(Float.valueOf(matcher.group(2)) * 255 / 100);
 			int b = Math.round(Float.valueOf(matcher.group(3)) * 255 / 100);
 			if (r == oldColor.getRed() && g == oldColor.getGreen()
 					&& b == oldColor.getBlue()) {
-				int start = matcher.start();
-				int end = matcher.end();
-				return data.substring(0, start) + rgbReplace
-						+ data.substring(end, data.length());
+				int newStart = matcher.start();
+				int newEnd = matcher.end();
+				sb.append(data.subSequence(previousEnd, newStart));
+				sb.append(rgbReplace);
+				previousEnd = newEnd;
 			}
 		}
-		return data;
+		sb.append(data.subSequence(previousEnd, data.length()));
+		return sb.toString();
 	}
 
 	private String toHexString(int r, int g, int b) {
