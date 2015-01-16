@@ -49,8 +49,8 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
 		public final static String[] stringValues = {
 				"Size *.opi to fit the container",
 				"Size the container to fit the linked *.opi",
-				"Don't resize anything, crop if *.opi to large for container",
-				"Don't resize anything, add scrollbars if *.opi to large for container",
+				"Don't resize anything, crop if *.opi too large for container",
+				"Don't resize anything, add scrollbars if *.opi too large for container",
 				};
 	}
 
