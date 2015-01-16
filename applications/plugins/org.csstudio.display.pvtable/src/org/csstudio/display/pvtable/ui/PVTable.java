@@ -245,7 +245,11 @@ public class PVTable implements PVTableModelListener
             });
         value_column.setEditingSupport(new EditingSupport(viewer)
         {
-            /** When a combo box editor is created, its value must be the integer index */
+            /** When a combo box editor is created, its value must be the integer index.
+             *  Note that this variable is shared for all rows.
+             *  When editing, the UI thread calls getCellEditor() for the row,
+             *  then get/setValue().
+             */
             boolean need_index = false;
 
             @Override
@@ -260,11 +264,9 @@ public class PVTable implements PVTableModelListener
             {
                 final PVTableItem item = (PVTableItem) element;
                 final String[] options = item.getValueOptions();
-                if (options != null)
-                {
-                    need_index = true;
+                need_index = options != null;
+                if (need_index)
                     return new ComboBoxCellEditor(table, options, SWT.READ_ONLY);
-                }
                 return new TextCellEditor(table);
             }
 
@@ -314,7 +316,7 @@ public class PVTable implements PVTableModelListener
                 public void update(final ViewerCell cell)
                 {
                     final PVTableItem item = (PVTableItem) cell.getElement();
-                    final SavedValue value = item.getSavedValue();
+                    final SavedValue value = item.getSavedValue().orElse(null);
                     if (value == null)
                         cell.setText(""); //$NON-NLS-1$
                     else

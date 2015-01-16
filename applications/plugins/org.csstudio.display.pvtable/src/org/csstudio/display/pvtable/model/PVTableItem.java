@@ -8,6 +8,7 @@
 package org.csstudio.display.pvtable.model;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -29,6 +30,7 @@ import org.epics.vtype.ValueFactory;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTableItem implements PVListener
 {
     final private PVTableItemListener listener;
@@ -39,7 +41,7 @@ public class PVTableItem implements PVListener
 
     private volatile VType value;
 
-    private volatile SavedValue saved = null;
+    private volatile Optional<SavedValue> saved = Optional.empty();
 
     private volatile boolean has_changed;
 
@@ -70,7 +72,7 @@ public class PVTableItem implements PVListener
     {
         this.listener = listener;
         this.tolerance = tolerance;
-        this.saved = saved;
+        this.saved = Optional.ofNullable(saved);
         this.value = initial_value;
         determineIfChanged();
         createPV(name);
@@ -129,7 +131,7 @@ public class PVTableItem implements PVListener
         if (name.equals(new_name))
             return false;
         dispose();
-        saved = null;
+        saved = Optional.empty();
         value = null;
         has_changed = false;
         createPV(new_name);
@@ -255,7 +257,7 @@ public class PVTableItem implements PVListener
     {
         try
         {
-            saved = SavedValue.forCurrentValue(value);
+            saved = Optional.of(SavedValue.forCurrentValue(value));
         }
         catch (Exception ex)
         {
@@ -268,11 +270,12 @@ public class PVTableItem implements PVListener
     public void restore()
     {
         final PV the_pv = pv.get();
-        if (the_pv == null  ||  ! isWritable())
+        final SavedValue the_value = saved.orElse(null);
+        if (the_pv == null  ||  ! isWritable()  || the_value == null)
             return;
         try
         {
-            saved.restore(the_pv);
+            the_value.restore(the_pv);
         }
         catch (Exception ex)
         {
@@ -280,8 +283,8 @@ public class PVTableItem implements PVListener
         }
     }
 
-    /** @return Returns the saved_value. */
-    public SavedValue getSavedValue()
+    /** @return Returns the saved_value */
+    public Optional<SavedValue> getSavedValue()
     {
         return saved;
     }
@@ -309,15 +312,15 @@ public class PVTableItem implements PVListener
     /** Update <code>has_changed</code> based on current and saved value */
     private void determineIfChanged()
     {
-        final SavedValue saved_value = saved;
-        if (saved_value == null)
+        final Optional<SavedValue> saved_value = saved;
+        if (! saved_value.isPresent())
         {
             has_changed = false;
             return;
         }
         try
         {
-            has_changed = ! saved_value.isEqualTo(value, tolerance);
+            has_changed = ! saved_value.get().isEqualTo(value, tolerance);
         }
         catch (Exception ex)
         {
@@ -336,7 +339,6 @@ public class PVTableItem implements PVListener
         }
     }
 
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
@@ -345,13 +347,14 @@ public class PVTableItem implements PVListener
         if (! isWritable())
             buf.append(" (read-only)");
         buf.append(" = ").append(VTypeHelper.toString(value));
-        if (saved != null)
+        final Optional<SavedValue> saved_value = saved;
+        if (saved_value.isPresent())
         {
             if (has_changed)
                 buf.append(" ( != ");
             else
                 buf.append(" ( == ");
-            buf.append(saved.toString()).append(" +- ").append(tolerance).append(")");
+            buf.append(saved_value.get().toString()).append(" +- ").append(tolerance).append(")");
         }
         return buf.toString();
     }

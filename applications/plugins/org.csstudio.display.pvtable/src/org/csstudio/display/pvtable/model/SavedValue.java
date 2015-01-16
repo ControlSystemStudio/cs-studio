@@ -9,6 +9,7 @@ package org.csstudio.display.pvtable.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.csstudio.vtype.pv.PV;
 import org.epics.util.array.IteratorDouble;
@@ -23,7 +24,7 @@ import org.epics.vtype.VStringArray;
 import org.epics.vtype.VType;
 
 /** Base for saved values of a table item
- * 
+ *
  *  <p>Values are always saved as String.
  *  When reading autosave-files, the PV's data type
  *  is unknown until the channel connects,
@@ -31,12 +32,13 @@ import org.epics.vtype.VType;
  *  To allow reading and writing files without
  *  changing the exact value format, the text
  *  is kept.
- *  
+ *
  *  <p>Derived implementations provide support for
  *  scalar (String) and array (List<String>)
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class SavedValue
 {
     /** @param current_value Current value of PV
@@ -80,6 +82,18 @@ abstract public class SavedValue
         throw new Exception("Cannot handle " + value);
     }
 
+    /** @param saved_value Saved text, must not be <code>null</code>
+     *  @return Converted to {@link Number}
+     */
+    protected Number getSavedNumber(final String saved_value)
+    {
+        Objects.requireNonNull(saved_value);
+        if (saved_value.startsWith("0x"))
+            return Long.decode(saved_value);
+        // Treat other numbers as double to allow "1e2" even for integer
+        return Double.parseDouble(saved_value);
+    }
+
     /** Compare saved value against current value of a PV
      *  @param current_value Value to compare against
      *  @param tolerance Tolerance to use for numeric values
@@ -87,13 +101,13 @@ abstract public class SavedValue
      *  @throws Exception on error
      */
     abstract public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception;
-    
+
     /** Restore saved value to PV
      *  @param pv PV to write
      *  @throws Exception on error
      */
     abstract public void restore(final PV pv) throws Exception;
-    
+
     /** @return String representation for display purpose */
     @Override
     abstract public String toString();
