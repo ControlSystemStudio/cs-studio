@@ -529,7 +529,7 @@ public class VTypeHelper {
 				final StringBuffer pattern = new StringBuffer(10);
 				pattern.append("0."); //$NON-NLS-1$
 				for (int i = 0; i < precision; ++i)
-					pattern.append('#'); //$NON-NLS-1$
+					pattern.append('0'); //$NON-NLS-1$
 				pattern.append("E0"); //$NON-NLS-1$
 				numberFormat = new DecimalFormat(pattern.toString());
 				formatCacheMap.put(-precision, numberFormat);

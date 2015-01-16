@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JMS Monitor
 Bundle-SymbolicName: org.csstudio.debugging.jmsmonitor;singleton:=true
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Bundle-Description: JMS Message Monitor/Debug tool
@@ -16,5 +16,6 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.platform.utility.jms;bundle-version="1.1.2",
  org.csstudio.security.ui;bundle-version="1.0.0",
  org.csstudio.apputil,
- org.csstudio.security;bundle-version="1.1.0"
+ org.csstudio.security;bundle-version="1.1.0",
+ org.csstudio.ui.util;bundle-version="4.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

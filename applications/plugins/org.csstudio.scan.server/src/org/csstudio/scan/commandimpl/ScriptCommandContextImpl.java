@@ -47,7 +47,7 @@ public class ScriptCommandContextImpl extends ScanScriptContext
 	@Override
 	public ScanData getScanData() throws Exception
 	{
-		return context.getDataLog().getScanData();
+		return context.getDataLog().get().getScanData();
 	}
 
     /** {@inheritDoc} */
@@ -78,7 +78,7 @@ public class ScriptCommandContextImpl extends ScanScriptContext
         {
             final ScanSample sample =
                 ScanSampleFactory.createSample(timestamp , serial++, iter.nextDouble());
-            context.getDataLog().log(device, sample);
+            context.getDataLog().get().log(device, sample);
         }
 	}
 

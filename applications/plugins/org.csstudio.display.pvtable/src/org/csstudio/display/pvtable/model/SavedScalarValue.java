@@ -18,10 +18,11 @@ import org.epics.vtype.VType;
 /** Saved value of a scalar table item
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SavedScalarValue extends SavedValue
 {
     final private String saved_value;
-    
+
     /** Initialize from text
      *  @param value_text
      */
@@ -29,8 +30,9 @@ public class SavedScalarValue extends SavedValue
     {
         saved_value = value_text;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception
     {
         if (current_value == null)
@@ -38,7 +40,7 @@ public class SavedScalarValue extends SavedValue
         if (current_value instanceof VNumber)
         {
             final double v1 = ((VNumber)current_value).getValue().doubleValue();
-            final double v2 = Double.parseDouble(saved_value);
+            final double v2 = getSavedNumber(saved_value).doubleValue();
             return Math.abs(v2 - v1) <= tolerance;
         }
         if (current_value instanceof VString)
@@ -54,8 +56,9 @@ public class SavedScalarValue extends SavedValue
         }
         throw new Exception("Cannot compare against unhandled type " + current_value.getClass().getName());
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void restore(final PV pv) throws Exception
     {
         // Determine what type to write based on current value of the PV
@@ -63,13 +66,11 @@ public class SavedScalarValue extends SavedValue
         if ((pv_type instanceof VDouble) || (pv_type instanceof VFloat))
             pv.write(Double.parseDouble(saved_value));
         else if (pv_type instanceof VNumber)
-            // Parse as double to allow "1e10" or "100.0"
-            // If it's "3.14", only "3" will of course be restored.
-            pv.write((long)Double.parseDouble(saved_value));
+            pv.write(getSavedNumber(saved_value).longValue());
         else // Write as text
             pv.write(saved_value);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString()

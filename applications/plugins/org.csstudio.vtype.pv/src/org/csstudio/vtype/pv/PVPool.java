@@ -14,9 +14,9 @@ import java.util.Map;
 import org.csstudio.vtype.pv.RefCountMap.ReferencedEntry;
 
 /** Pool of {@link PV}s
- * 
+ *
  *  <p>Maintains PVs, with a reference count.
- *  
+ *
  *  <p>A PV is referred to by different names:
  *  <ul>
  *  <li>The name provided by the user: "fred" or "ca://fred",
@@ -25,18 +25,19 @@ import org.csstudio.vtype.pv.RefCountMap.ReferencedEntry;
  *  <li>Name used by the type-dependent implementation: "fred"
  *  <li>
  *  </ul>
- *  
+ *
  *  <p>The PV and the pool use the name provided by the user,
  *  because that way <code>PV.getName()</code> will always return
  *  the expected name.
  *  On the downside, this could create the same underlying PV twice,
  *  with and without the prefix.
- *  
+ *
  *  <p>Note also that "loc://x(3.14)" and "loc://x(14)" will be treated
  *  as different PVs.
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVPool
 {
     /** Separator between PV type indicator and rest of PV name.
@@ -49,7 +50,7 @@ public class PVPool
 
     /** Map of PV type prefixes to PV factories */
     final private static Map<String, PVFactory> factories = new HashMap<>();
-    
+
     /** Default PV name type prefix */
     private static String default_type;
 
@@ -58,17 +59,17 @@ public class PVPool
      *  Otherwise, two threads concurrently looking for a new PV would both add it.
      */
     final private static RefCountMap<String, PV> pool = new RefCountMap<>();
-   
+
     /** Singleton */
     private PVPool()
     {
     }
 
     /** Set default PV name type prefix.
-     *  
+     *
      *  <p>Should be called <u>after</u> adding all factories, because
      *  factory added last will be the default.
-     *  
+     *
      *  @param type Default PV name type prefix to use if none is provided in a PV name
      */
     public static void setDefaultType(final String type)
@@ -77,9 +78,9 @@ public class PVPool
     }
 
     /** Add a PV Factory
-     * 
+     *
      *  <p>As a side effect, also makes that last added factory the default
-     *  
+     *
      *  @param factory {@link PVFactory} that the pool can use
      */
     public static void addPVFactory(final PVFactory factory)
@@ -87,12 +88,12 @@ public class PVPool
         factories.put(factory.getType(), factory);
         setDefaultType(factory.getType());
     }
-    
+
     /** Obtain a PV
-     * 
+     *
      *  <p>Obtains existing PV of that name from pool,
      *  or creates new PV if no existing PV found.
-     *  
+     *
      *  @param name PV name, where prefix might be used to determine the type
      *  @return {@link PV}
      *  @throws Exception on error
@@ -112,9 +113,9 @@ public class PVPool
         }
         return pv;
     }
-    
-    /** Create 
-     * 
+
+    /** Create
+     *
      * @param name
      * @return
      * @throws Exception
@@ -148,7 +149,7 @@ public class PVPool
         }
         return new String[] { type, base };
     }
-    
+
     /** @param pv PV to be released */
     public static void releasePV(final PV pv)
     {
@@ -160,7 +161,7 @@ public class PVPool
         if (references == 0)
             pv.close();
     }
-    
+
     /** @return PVs currently in the pool with reference count information */
     public static Collection<ReferencedEntry<PV>> getPVReferences()
     {

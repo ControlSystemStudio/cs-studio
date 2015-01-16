@@ -7,21 +7,26 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.swt.rtplot.SWTMediaPool;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
-import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
+import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.StartEndTimeAction;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
@@ -43,6 +48,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -55,6 +61,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
@@ -90,42 +97,116 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  @author Kay Kasemir
  */
 public class DataBrowserPropertySheetPage extends Page
-    implements IPropertySheetPage, ModelListener
+    implements IPropertySheetPage
 {
     /** Model to display/edit in property sheet */
     final private Model model;
 
     /** Undo/redo operations manager */
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
 
     /** Top-level control for the property sheet */
     private Composite control;
 
-    private Text formula_txt;
+    private TableViewer trace_table, archive_table;
 
-    private TableViewer trace_table;
+    private Composite archive_panel, formula_panel;
 
-    private TableViewer archive_table;
-
-    private Composite archive_panel;
-
-    private Composite formula_panel;
-
-    private Text start_time;
-
-    private Text end_time;
-
-    private Button rescales[];
+    private Text formula_txt, start_time, end_time, title, update_period, scroll_step;
 
     private ColorBlob background;
 
-    private Text update_period;
+    private Button label_font, scale_font, save_changes, show_grid, rescales[];
+
+    final private ModelListener model_listener = new ModelListenerAdapter()
+    {
+        /** {@inheritDoc} */
+        @Override
+        public void changedSaveChangesBehavior(boolean save)
+        {
+            save_changes.setSelection(save);
+        }
+
+        @Override
+        public void changedTitle()
+        {
+            title.setText(model.getTitle().orElse("")); //$NON-NLS-1$
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedTiming()
+        {
+            update_period.setText(Double.toString(model.getUpdatePeriod()));
+            scroll_step.setText(Double.toString(model.getScrollStep().toMillis() / 1000.0));
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedArchiveRescale()
+        {
+            final int selected = model.getArchiveRescale().ordinal();
+            for (int i=0; i<rescales.length; ++i)
+            {
+                boolean desired = i == selected;
+                if (rescales[i].getSelection() != desired)
+                    rescales[i].setSelection(desired);
+            }
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedColorsOrFonts()
+        {
+            background.setColor(model.getPlotBackground());
+            label_font.setText(SWTMediaPool.getFontDescription(model.getLabelFont()));
+            scale_font.setText(SWTMediaPool.getFontDescription(model.getScaleFont()));
+        }
+
+        /** Update the start/end time in the Time axis panel when model changes
+         *  {@inheritDoc}
+         */
+        @Override
+        public void changedTimerange()
+        {
+            start_time.setText(model.getStartSpecification());
+            end_time.setText(model.getEndSpecification());
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changeTimeAxisConfig()
+        {
+            show_grid.setSelection(model.isGridVisible());
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedItemLook(final ModelItem item)
+        {
+            updateTracesTabDetailPanel();
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedItemDataConfig(final PVItem item)
+        {
+            updateTracesTabDetailPanel();
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void scrollEnabled(final boolean scroll_enabled)
+        {
+            changedTimerange();
+        }
+    };
 
     /** Initialize
      *  @param model Model to display/edit
      */
     public DataBrowserPropertySheetPage(final Model model,
-            final OperationsManager operations_manager)
+            final UndoableActionManager operations_manager)
     {
         this.model = model;
         this.operations_manager = operations_manager;
@@ -159,14 +240,14 @@ public class DataBrowserPropertySheetPage extends Page
         createValueAxesTab(tab_folder);
         createMiscTab(tab_folder);
 
-        model.addListener(this);
+        model.addListener(model_listener);
     }
 
     /** {@inheritDoc} */
     @Override
     public void dispose()
     {
-        model.removeListener(this);
+        model.removeListener(model_listener);
         super.dispose();
     }
 
@@ -208,8 +289,14 @@ public class DataBrowserPropertySheetPage extends Page
     {
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite model_item_top = new Composite(sashform, SWT.BORDER);
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         model_item_top.setLayout(table_layout);
+        // Would like to _not_ use FULL_SELECTION so that only the currently selected
+        // cell gets highlighted, allowing the 'color' to still be visible
+        // -> On Linux, you only get FULL_SELECTION behavior.
+        // -> On Windows, editing is really odd, need to select a column before anything
+        //    can be edited, plus color still invisible
+        // ---> Using FULL_SELECTION
         trace_table = new TableViewer(model_item_top ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         final Table table = trace_table.getTable();
@@ -260,7 +347,7 @@ public class DataBrowserPropertySheetPage extends Page
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite table_parent = new Composite(archive_panel, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
         archive_table = new TableViewer(table_parent ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
@@ -488,13 +575,13 @@ public class DataBrowserPropertySheetPage extends Page
         time_tab.setControl(parent);
 
         // Initialize with model's current start/end time
-        changedTimerange();
+        model_listener.changedTimerange();
 
         // Allow entry of start/end times in text boxes
         final SelectionAdapter times_entered = new SelectionAdapter()
         {
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
+            public void widgetDefaultSelected(final SelectionEvent e)
             {
                 try
                 {
@@ -506,7 +593,7 @@ public class DataBrowserPropertySheetPage extends Page
                     MessageDialog.openError(parent.getShell(), Messages.Error,
                             Messages.InvalidStartEndTimeError);
                     // Restore unchanged model time range
-                    changedTimerange();
+                    model_listener.changedTimerange();
                 }
             }
         };
@@ -517,13 +604,58 @@ public class DataBrowserPropertySheetPage extends Page
         final SelectionListener start_end_action = new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 StartEndTimeAction.run(parent.getShell(), model, operations_manager);
             }
         };
         start_end.addSelectionListener(start_end_action);
         start_end2.addSelectionListener(start_end_action);
+
+        // Time span shortcut buttons, with filler to align under start/end time text fields
+        label = new Label(parent, 0);
+        label.setText(""); //$NON-NLS-1$
+        label.setLayoutData(new GridData());
+
+        final Composite shortcut_bar = new Composite(parent, 0);
+        shortcut_bar.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
+        final RowLayout row_layout = new RowLayout();
+        row_layout.marginLeft = 0;
+        row_layout.marginTop = 0;
+        shortcut_bar.setLayout(row_layout);
+        final String[][] shortcuts = Preferences.getTimespanShortcuts();
+        for (String[] title_start : shortcuts)
+        {
+            final String start_spec = title_start[1];
+            Button shortcut = new Button(shortcut_bar, SWT.PUSH);
+            shortcut.setText(title_start[0]);
+            shortcut.addSelectionListener(new SelectionAdapter()
+            {
+                @Override
+                public void widgetSelected(final SelectionEvent e)
+                {
+                    new ChangeTimerangeCommand(model, operations_manager,
+                            true, start_spec, RelativeTime.NOW);
+                }
+            });
+        }
+
+        label = new Label(parent, 0);
+        label.setText(Messages.GridLbl);
+        label.setLayoutData(new GridData());
+
+        show_grid = new Button(parent, SWT.CHECK);
+        show_grid.setToolTipText(Messages.GridTT);
+        show_grid.setLayoutData(new GridData(0, 0, false, false, 2, 1));
+        show_grid.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                new ChangeTimeAxisConfigCommand(model, operations_manager, show_grid.getSelection());
+            }
+        });
+        model_listener.changeTimeAxisConfig();
     }
 
     /** Create tab for traces (PVs, Formulas)
@@ -558,7 +690,7 @@ public class DataBrowserPropertySheetPage extends Page
             rescales[i].addSelectionListener(new SelectionAdapter()
             {
                 @Override
-                public void widgetSelected(SelectionEvent e)
+                public void widgetSelected(final SelectionEvent e)
                 {
                     // Called for both the newly selected radio button
                     // and the one that's not de-selected.
@@ -573,7 +705,7 @@ public class DataBrowserPropertySheetPage extends Page
         // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite table_parent = new Composite(parent, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
         final AxesTableHandler ath = new AxesTableHandler(table_parent, table_layout, operations_manager);
         ath.getAxesTable().setInput(model);
@@ -587,24 +719,60 @@ public class DataBrowserPropertySheetPage extends Page
     private void createMiscTab(final TabFolder tab_folder)
     {
         final TabItem misc_tab = new TabItem(tab_folder, 0);
-        misc_tab.setText("Misc."); //$NON-NLS-1$
+        misc_tab.setText(Messages.Miscellaneous);
 
         final Composite parent = new Composite(tab_folder, 0);
-        parent.setLayout(new GridLayout(2, false));
+        parent.setLayout(new GridLayout(4, false));
 
-        // Redraw period: ______
+        // Title:         ______   Label Font: [Sans|14|1]
         Label label = new Label(parent, 0);
+        label.setText(Messages.TitleLbl);
+        label.setLayoutData(new GridData());
+
+        title = new Text(parent, SWT.BORDER);
+        title.setToolTipText(Messages.TitleTT);
+        title.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        title.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetDefaultSelected(final SelectionEvent e)
+            {
+                new ChangeTitleCommand(model, operations_manager, title.getText());
+            }
+        });
+
+        label = new Label(parent, 0);
+        label.setText(Messages.LabelFontLbl);
+        label.setLayoutData(new GridData());
+
+        label_font = new Button(parent, SWT.PUSH);
+        label_font.setToolTipText(Messages.LabelFontTT);
+        label_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        label_font.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                final FontDialog dialog = new FontDialog(parent.getShell());
+                dialog.setFontList(new FontData[] { model.getLabelFont() });
+                final FontData selected = dialog.open();
+                if (selected != null)
+                    new ChangeLabelFontCommand(model, operations_manager, selected);
+            }
+        });
+
+        // Redraw period: ______   Scale Font: [Sans|10|2]
+        label = new Label(parent, 0);
         label.setText(Messages.UpdatePeriodLbl);
         label.setLayoutData(new GridData());
 
         update_period = new Text(parent, SWT.BORDER);
-        update_period.setText(Double.toString(model.getUpdatePeriod()));
         update_period.setToolTipText(Messages.UpdatePeriodTT);
         update_period.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         update_period.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
+            public void widgetDefaultSelected(final SelectionEvent e)
             {
                 try
                 {
@@ -618,6 +786,56 @@ public class DataBrowserPropertySheetPage extends Page
             }
         });
 
+        label = new Label(parent, 0);
+        label.setText(Messages.ScaleFontLbl);
+        label.setLayoutData(new GridData());
+
+        scale_font = new Button(parent, SWT.PUSH);
+        scale_font.setToolTipText(Messages.AxesFontTT);
+        scale_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        scale_font.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                final FontDialog dialog = new FontDialog(parent.getShell());
+                dialog.setFontList(new FontData[] { model.getScaleFont() });
+                final FontData selected = dialog.open();
+                if (selected != null)
+                    new ChangeScaleFontCommand(model, operations_manager, selected);
+            }
+        });
+
+        // Scroll Step [secs]: ______
+        label = new Label(parent, 0);
+        label.setText(Messages.ScrollStepLbl);
+        label.setLayoutData(new GridData());
+
+        scroll_step = new Text(parent, SWT.BORDER);
+        scroll_step.setToolTipText(Messages.ScrollStepTT);
+        scroll_step.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        scroll_step.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetDefaultSelected(final SelectionEvent e)
+            {
+                try
+                {
+                    final Duration step = Duration.ofMillis(
+                        Math.round( Double.parseDouble(scroll_step.getText().trim()) * 1000.0 ) );
+                    new ChangeScrollStepCommand(model, operations_manager, step);
+                }
+                catch (Exception ex)
+                {
+                    scroll_step.setText(Double.toString(model.getScrollStep().toMillis() / 1000.0));
+                }
+            }
+        });
+
+        // Filler for currently unused right 2 columns
+        label = new Label(parent, 0);
+        label.setLayoutData(new GridData(0, 0, true, false, 2, 1));
+
         // Background Color: ______
         label = new Label(parent, 0);
         label.setText(Messages.BackgroundColorLbl);
@@ -629,11 +847,12 @@ public class DataBrowserPropertySheetPage extends Page
         gd.minimumWidth = 80;
         gd.widthHint = 80;
         gd.heightHint = 15;
+        gd.horizontalSpan = 3;
         background.setLayoutData(gd);
         background.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 final ColorDialog dialog = new ColorDialog(parent.getShell());
                 dialog.setRGB(model.getPlotBackground());
@@ -643,123 +862,35 @@ public class DataBrowserPropertySheetPage extends Page
             }
         });
 
+        // Save Changes: [x]
+        label = new Label(parent, 0);
+        label.setText(Messages.SaveChangesLbl);
+        label.setLayoutData(new GridData());
+
+        save_changes = new Button(parent, SWT.CHECK);
+        save_changes.setToolTipText(Messages.SaveChangesTT);
+        save_changes.setLayoutData(new GridData(SWT.LEFT, 0, true, false, 3, 1));
+        save_changes.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                new ChangeSaveChangesCommand(model, operations_manager, save_changes.getSelection());
+            }
+        });
+
         misc_tab.setControl(parent);
+
+        model_listener.changedTitle();
+        model_listener.changedColorsOrFonts();
+        model_listener.changedSaveChangesBehavior(model.shouldSaveChanges());
+        model_listener.changedTiming();
     }
 
     /** {@inheritDoc} */
     @Override
     public void setFocus()
     {
-        // NOP
+        trace_table.getTable().setFocus();
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedUpdatePeriod()
-    {
-        update_period.setText(Double.toString(model.getUpdatePeriod()));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedArchiveRescale()
-    {
-        final int selected = model.getArchiveRescale().ordinal();
-        for (int i=0; i<rescales.length; ++i)
-        {
-            boolean desired = i == selected;
-            if (rescales[i].getSelection() != desired)
-                rescales[i].setSelection(desired);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedColors()
-    {
-        background.setColor(model.getPlotBackground());
-    }
-
-    /** Update the start/end time in the Time axis panel when model changes
-     *  {@inheritDoc}
-     */
-    @Override
-    public void changedTimerange()
-    {
-        start_time.setText(model.getStartSpecification());
-        end_time.setText(model.getEndSpecification());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedAxis(final AxisConfig axis)
-    {
-        // Axes Table handles this
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void itemAdded(final ModelItem item)
-    {
-        // Trace Table handles it
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void itemRemoved(final ModelItem item)
-    {
-        // Trace Table handles it
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedItemVisibility(final ModelItem item)
-    {
-        // Trace Table handles it
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedItemLook(final ModelItem item)
-    {
-        updateTracesTabDetailPanel();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedItemDataConfig(final PVItem item)
-    {
-        updateTracesTabDetailPanel();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollEnabled(final boolean scroll_enabled)
-    {
-        changedTimerange();
-    }
-
-	@Override
-	public void changedAnnotations() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void changedXYGraphConfig() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void itemRefreshRequested(PVItem item) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void cursorDataChanged() {
-		// TODO Auto-generated method stub
-		
-	}
 }

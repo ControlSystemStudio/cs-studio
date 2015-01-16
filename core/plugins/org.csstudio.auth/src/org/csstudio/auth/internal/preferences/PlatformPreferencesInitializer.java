@@ -34,7 +34,7 @@ import org.osgi.service.prefs.Preferences;
  * preferences. New preference settings should be initialized in this class,
  * too.
  *
- * @author Jan Hatje, Jörg Penning
+ * @author Jan Hatje, Jï¿½rg Penning
  */
 public final class PlatformPreferencesInitializer extends
 		AbstractPreferenceInitializer {
@@ -44,7 +44,7 @@ public final class PlatformPreferencesInitializer extends
 	 */
 	@Override
 	public void initializeDefaultPreferences() {
-		IEclipsePreferences node = new DefaultScope()
+		IEclipsePreferences node = DefaultScope.INSTANCE
 				.getNode(AuthActivator.ID);
 
 		initializeSystemPropertyPreferences(node);

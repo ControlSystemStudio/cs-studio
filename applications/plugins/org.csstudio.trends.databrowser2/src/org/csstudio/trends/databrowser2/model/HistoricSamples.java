@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.epics.util.time.Timestamp;
 import org.epics.vtype.VType;
 
 /** Holder for 'historic' samples.
@@ -31,11 +33,13 @@ import org.epics.vtype.VType;
  */
 public class HistoricSamples extends PlotSamples
 {
+    // No locking in here, all access is via PVSamples
+
     /** "All" historic samples */
     private PlotSample samples[] = new PlotSample[0];
 
-    /** If non-null, samples beyond this time are hidden from access */
-    private Timestamp border_time = null;
+    /** If set, samples beyond this time are hidden from access */
+    private Optional<Instant> border_time = Optional.empty();
 
     /** Subset of samples.length that's below border_time
      *  @see #computeVisibleSize()
@@ -43,56 +47,43 @@ public class HistoricSamples extends PlotSamples
     private int visible_size = 0;
 
     /** Waveform index */
-    private int waveform_index = 0;
+    final private AtomicInteger waveform_index;
 
-    /** @param index Waveform index to show */
-    public synchronized void setWaveformIndex(int index)
+    HistoricSamples(final AtomicInteger waveform_index)
     {
-    	waveform_index = index;
-    	// change the index of all samples in this instance
-    	for (PlotSample sample: samples)
-    		sample.setWaveformIndex(waveform_index);
+        this.waveform_index = waveform_index;
     }
 
     /** Define a new 'border' time beyond which no samples
      *  are returned from the history
-     *  @param border_time New time or <code>null</code> to access all samples
+     *  @param border_time New time or <code>empty</code> to access all samples
      */
-    public void setBorderTime(final Timestamp border_time)
+    public void setBorderTime(final Optional<Instant> border_time)
     {   // Anything new?
-        if (border_time == null)
-        {
-            if (this.border_time == null)
-                return;
-        }
-        else if (border_time.equals(this.border_time))
-                return;
+        if (this.border_time.equals(border_time))
+            return;
         // New border, recompute, mark as 'new data'
         this.border_time = border_time;
         computeVisibleSize();
-        synchronized (this)
-        {
-            have_new_samples = true;
-        }
     }
 
     /** Update visible size */
-    synchronized private void computeVisibleSize()
+    private void computeVisibleSize()
     {
-        if (border_time == null)
-            visible_size = samples.length;
-        else
+        if (border_time.isPresent())
         {
             final int last_index = PlotSampleSearch.findSampleLessThan(
-                                        samples, border_time);
+                    samples, border_time.get());
             visible_size = (last_index < 0)   ?   0   :   last_index + 1;
         }
+        else
+            visible_size = samples.length;
     }
 
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
-    synchronized public PlotSample getSample(final int i)
+    public PlotSample get(final int i)
     {
         if (i >= visible_size)
             throw new IndexOutOfBoundsException("Index " + i + " exceeds visible size " + visible_size);
@@ -101,25 +92,25 @@ public class HistoricSamples extends PlotSamples
 
     /** {@inheritDoc} */
     @Override
-    synchronized public int getSize()
+    public int size()
     {
         return visible_size;
     }
-    
+
     /**
      * @return the number of samples, ignoring the border time
      */
-    public synchronized int getRawSize() {
+    public int getRawSize() {
     	return samples.length;
     }
-    
+
     /**
      * Returns the sample at the specified index, ignoring the border time.
-     * 
+     *
      * @param i the index of the requested sample
      * @return the plot sample
      */
-    public synchronized PlotSample getRawSample(int i) {
+    public PlotSample getRawSample(int i) {
     	return samples[i];
     }
 
@@ -127,31 +118,27 @@ public class HistoricSamples extends PlotSamples
      *  @param source Info about data source
      *  @param result Samples to add/merge
      */
-    synchronized public void mergeArchivedData(final String source, final List<VType> result)
+    public void mergeArchivedData(final String source, final List<VType> result)
     {
         // Anything new at all?
         if (result.size() <= 0)
             return;
         // Turn IValues into PlotSamples
         final PlotSample new_samples[] = new PlotSample[result.size()];
-        for (int i=0; i<new_samples.length; ++i) {
-            new_samples[i] = new PlotSample(source, result.get(i));
-            new_samples[i].setWaveformIndex(waveform_index);
-        }
+        for (int i=0; i<new_samples.length; ++i)
+            new_samples[i] = new PlotSample(waveform_index, source, result.get(i));
         // Merge with existing samples
         final PlotSample merged[] = PlotSampleMerger.merge(samples, new_samples);
         if (merged == samples)
             return;
         samples = merged;
         computeVisibleSize();
-        have_new_samples = true;
     }
 
     /** Delete all samples */
-    synchronized public void clear()
+    public void clear()
     {
         visible_size = 0;
         samples = new PlotSample[0];
-        have_new_samples = true;
     }
 }

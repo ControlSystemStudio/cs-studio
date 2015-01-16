@@ -26,10 +26,11 @@ import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
 /** Helper for reading & writing PVStructure
- * 
+ *
  *  <p>Based on ideas from org.epics.pvmanager.pva
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class PVStructureHelper
 {
     final public static Convert convert = ConvertFactory.getConvert();
@@ -82,7 +83,7 @@ class PVStructureHelper
                     ValueFactory.timeNow());
         }
     }
-    
+
     /** @param structure {@link PVStructure} from which to read
      *  @param name Name of a field in that structure
      *  @param default Value Value to use if field does not exist
@@ -96,7 +97,7 @@ class PVStructureHelper
         else
             return defaultValue;
     }
-    
+
     /** @param structure {@link PVStructure} from which to read
      *  @param name Name of a field in that structure
      *  @return Array of strings

@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 /** Undo-able command to delete archive data sources from a PVItem
  *  @author Kay Kasemir
  */
-public class DeleteArchiveCommand implements IUndoableCommand
+public class DeleteArchiveCommand extends UndoableAction
 {
     final private PVItem pv;
     final private ArchiveDataSource archives[];
@@ -27,19 +27,19 @@ public class DeleteArchiveCommand implements IUndoableCommand
      *  @param pv PV from which to delete archives
      *  @param archives Archive data sources to remove
      */
-    public DeleteArchiveCommand(final OperationsManager operations_manager,
+    public DeleteArchiveCommand(final UndoableActionManager operations_manager,
             final PVItem pv, final ArchiveDataSource archives[])
     {
+        super(Messages.DeleteArchive);
         this.pv = pv;
         this.archives = archives;
         original = pv.getArchiveDataSources();
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         pv.removeArchiveDataSource(archives);
     }
@@ -49,12 +49,5 @@ public class DeleteArchiveCommand implements IUndoableCommand
     public void undo()
     {
         pv.setArchiveDataSource(original);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.DeleteArchive;
     }
 }

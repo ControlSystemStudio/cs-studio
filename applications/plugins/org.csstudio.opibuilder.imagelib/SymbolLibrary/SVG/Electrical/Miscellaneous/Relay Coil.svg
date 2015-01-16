@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE0746.svg Page 1 -->
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,32 +8,10 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.500219in"
-		height="0.736439in" viewBox="0 0 36.0157 53.0236" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
-	<title>document de base</title>
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="shape839-1" v:mID="839" v:groupContext="shape" transform="translate(1,-18.0079)">
-			<title>Feuille.839</title>
-			<rect x="0" y="36.0157" width="34.0157" height="17.0079" class="st1"/>
-		</g>
-		<g id="shape840-3" v:mID="840" v:groupContext="shape" transform="translate(71.0315,1) rotate(90)">
-			<title>Feuille.840</title>
-			<path d="M0 53.02 L17.01 53.02" class="st2"/>
-		</g>
-		<g id="shape841-6" v:mID="841" v:groupContext="shape" transform="translate(71.0315,35.0157) rotate(90)">
-			<title>Feuille.841</title>
-			<path d="M0 53.02 L17.01 53.02" class="st2"/>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68pt" height="99pt" viewBox="0 0 68 99" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000887684 36.016231 L 34.015588 36.016231 L 34.015588 53.024561 L 0.000887684 53.024561 Z " transform="matrix(1.888889,0,0,1.875,1.888948,-33.764818)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000000150876 53.019126 L 17.010414 53.019126 " transform="matrix(0.000000000000000116,1.875,-1.888889,0.000000000000000115,134.17069,1.875)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000961383 53.019126 L 17.009292 53.019126 " transform="matrix(0.000000000000000116,1.875,-1.888889,0.000000000000000115,134.17069,65.654447)"/>
+</g>
 </svg>

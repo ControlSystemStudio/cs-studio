@@ -325,9 +325,9 @@ public class RDBArchiveReader implements ArchiveReader
         }
         catch (Exception ex)
         {
-            if (ex.getMessage().startsWith("ORA-01013"))
+            if (ex.getMessage().startsWith("ORA-01013") || ex.getMessage().startsWith("ERROR: canceling statement due to user request"))
             {
-                // Ignore ORA-01013: user requested cancel of current operation
+                // Ignore Oracle/PostgreSQL error: user requested cancel of current operation
             }
             else
                 throw ex;

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 POL029.svg Page-1 -->
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,35 +8,10 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.151444in"
-		height="0.151444in" viewBox="0 0 10.9039 10.9039" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
-		.st2 {fill:none;stroke:#000000;stroke-linecap:butt;stroke-width:1.2}
-		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page-1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<v:layer v:name="GRAPH" v:index="0"/>
-		<g id="group1-1" transform="translate(1.2,-1.2)" v:mID="1" v:groupContext="group">
-			<title>Feuille.1</title>
-			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(0,-8.49862)">
-				<title>Feuille.2</title>
-				<rect x="0" y="10.8986" width="0.00531496" height="0.00531496" class="st1"/>
-			</g>
-			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(8.49862,0)">
-				<title>Feuille.3</title>
-				<rect x="0" y="10.8986" width="0.00531496" height="0.00531496" class="st1"/>
-			</g>
-		</g>
-		<g id="shape4-6" v:mID="4" v:groupContext="shape" v:layerMember="0" transform="translate(1.2,-1.2)">
-			<title>Feuille.4</title>
-			<path d="M4.25 2.4 L8.5 10.9 L0 10.9 L4.25 2.4 Z M4.25 2.4 L8.5 10.9 L0 10.9 L4.25 2.4 Z" class="st2"/>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="21pt" height="21pt" viewBox="0 0 21 21" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 2.25 2.25 L 2.261719 2.25 L 2.261719 2.261719 L 2.25 2.261719 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 18.183594 18.183594 L 18.195313 18.183594 L 18.195313 18.195313 L 18.183594 18.195313 Z "/>
+<path style="fill:none;stroke-width:1.2;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 4.249966 2.399993 L 8.49994 10.89994 L -0.00000748351 10.89994 Z M 4.249966 2.399993 L 8.49994 10.89994 L -0.00000748351 10.89994 Z " transform="matrix(1.875012,0,0,1.875012,2.250014,-2.250014)"/>
+</g>
 </svg>

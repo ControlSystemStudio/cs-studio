@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import java.util.Optional;
+
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -28,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DeleteItemsAction extends Action
 {
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
     final private TableViewer trace_table;
     final private Model model;
 
@@ -37,7 +39,7 @@ public class DeleteItemsAction extends Action
      *  @param trace_table Table of ModelItems
      *  @param model Model were PVs will be deleted
      */
-    public DeleteItemsAction(final OperationsManager operations_manager,
+    public DeleteItemsAction(final UndoableActionManager operations_manager,
             final TableViewer trace_table, final Model model)
     {
         super(Messages.DeleteItem,
@@ -70,12 +72,12 @@ public class DeleteItemsAction extends Action
         {
             items[i] = (ModelItem) objects[i];
             // Check if item is used as input for formula
-            final FormulaItem formula = model.getFormulaWithInput(items[i]);
-            if (formula != null)
+            final Optional<FormulaItem> formula = model.getFormulaWithInput(items[i]);
+            if (formula.isPresent())
             {
                 MessageDialog.openError(trace_table.getTable().getShell(),
                         Messages.Error,
-                        NLS.bind(Messages.PVUsedInFormulaFmt, items[i].getName(), formula.getName()));
+                        NLS.bind(Messages.PVUsedInFormulaFmt, items[i].getName(), formula.get().getName()));
                 return;
             }
         }

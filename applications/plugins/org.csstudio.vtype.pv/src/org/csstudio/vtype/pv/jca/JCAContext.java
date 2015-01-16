@@ -7,9 +7,6 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.jca;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
 import gov.aps.jca.event.ContextExceptionEvent;
@@ -18,6 +15,9 @@ import gov.aps.jca.event.ContextMessageEvent;
 import gov.aps.jca.event.ContextMessageListener;
 import gov.aps.jca.event.ContextVirtualCircuitExceptionEvent;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.vtype.pv.internal.Preferences;
 
 import com.cosylab.epics.caj.CAJContext;
@@ -25,12 +25,13 @@ import com.cosylab.epics.caj.CAJContext;
 /** Handler for JCA context
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class JCAContext implements ContextMessageListener, ContextExceptionListener
 {
     final private static Logger logger = Logger.getLogger(JCAContext.class.getName());
 
     private static JCAContext instance;
-    
+
     final private JCALibrary jca = JCALibrary.getInstance();
     final private Context context;
 
@@ -48,7 +49,7 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
             logger.log(Level.CONFIG, "Using JNI JCA");
         }
         context = jca.createContext(type);
-        
+
         // PVPool will try to re-use channels, but
         // if user creates the same PV with and without prefix,
         // that would result in the same CAJ channel,
@@ -56,7 +57,7 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
         // because otherwise closing one would also close the 'other'.
         if (context instanceof CAJContext)
             ((CAJContext) context).setDoNotShareChannels(true);
-        
+
         context.addContextMessageListener(this);
         context.addContextExceptionListener(this);
     }
@@ -67,9 +68,9 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
             instance = new JCAContext();
         return instance;
     }
-    
+
     // TODO Thread for periodic flushIO, to run certain JNI calls on same thread?
-    
+
     public Context getContext()
     {
         return context;
@@ -80,7 +81,7 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
     {
         //Ignore warnings for DBE_PROPERTY from old CAJ.
         if(ev != null && "event add req with mask=0X8\n".equals(ev.getMessage())){ //$NON-NLS-1$
-             logger.log(Level.FINE, "Ignored Message from {0}: {1}", 
+             logger.log(Level.FINE, "Ignored Message from {0}: {1}",
                      new Object[] { ev.getSource(), ev.getMessage()});
              return;
         }

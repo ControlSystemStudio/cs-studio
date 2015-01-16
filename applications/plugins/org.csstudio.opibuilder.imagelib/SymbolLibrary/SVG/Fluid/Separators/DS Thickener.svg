@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF1010.svg Page 1 -->
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,107 +8,17 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.382204in"
-		height="0.736336in" viewBox="0 0 27.5187 53.0162" xml:space="preserve" color-interpolation-filters="sRGB" class="st6">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:0.999999}
-		.st2 {fill:none;stroke:none;stroke-width:1}
-		.st3 {fill:none}
-		.st4 {stroke:#000000;stroke-linecap:butt;stroke-width:0.72}
-		.st5 {fill:none;stroke:#000000;stroke-linecap:butt;stroke-width:0.72}
-		.st6 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.99999"
-				v:shadowOffsetY="-8.99999"/>
-		<g id="group1-1" transform="translate(0.72,-1)" v:mID="1" v:groupContext="group">
-			<title>Feuille.1</title>
-			<g id="group2-2" transform="translate(0.283465,7.10543E-015)" v:mID="2" v:groupContext="group">
-				<title>FL_EF0201.163</title>
-				<g id="group3-3" v:mID="3" v:groupContext="group">
-					<title>FL_EF1005.3</title>
-					<g id="shape4-4" v:mID="4" v:groupContext="shape">
-						<title>Feuille.4</title>
-						<path d="M25.51 10.5 L0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26 L25.51 10.5 Z" class="st1"/>
-					</g>
-					<g id="group5-6" transform="translate(0,-42.5197)" v:mID="5" v:groupContext="group">
-						<title>Feuille.5</title>
-						<g id="shape6-7" v:mID="6" v:groupContext="shape">
-							<title>Feuille.6</title>
-							<path d="M0 53.02 L25.51 53.02 L0 53.02 Z" class="st2"/>
-						</g>
-						<g id="shape7-9" v:mID="7" v:groupContext="shape">
-							<title>Feuille.7</title>
-							<path d="M0 53.02 L25.51 53.02 L0 53.02 Z" class="st3"/>
-							<path d="M0 53.02 L25.51 53.02" class="st4"/>
-						</g>
-					</g>
-					<g id="shape8-12" v:mID="8" v:groupContext="shape">
-						<title>Feuille.8</title>
-						<path d="M25.51 10.5 L0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26 L25.51 10.5 Z" class="st5"/>
-					</g>
-					<g id="group9-14" v:mID="9" v:groupContext="group">
-						<title>Feuille.9</title>
-						<g id="shape10-15" v:mID="10" v:groupContext="shape">
-							<title>Feuille.10</title>
-							<path d="M0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26 L0 10.5 Z" class="st2"/>
-						</g>
-						<g id="shape11-17" v:mID="11" v:groupContext="shape">
-							<title>Feuille.11</title>
-							<path d="M0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26 L0 10.5 Z" class="st3"/>
-							<path d="M0 10.5 L0 40.26 L12.76 53.02 L25.51 40.26" class="st4"/>
-						</g>
-					</g>
-					<g id="group12-20" transform="translate(12.7609,-6.23622)" v:mID="12" v:groupContext="group">
-						<title>Feuille.12</title>
-						<g id="shape13-21" v:mID="13" v:groupContext="shape">
-							<title>Feuille.13</title>
-							<path d="M0 53.02 L0 8.24 L0 53.02 Z" class="st2"/>
-						</g>
-						<g id="shape14-23" v:mID="14" v:groupContext="shape">
-							<title>Feuille.14</title>
-							<path d="M0 53.02 L0 8.24 L0 53.02 Z" class="st3"/>
-							<path d="M0 53.02 L0 8.24" class="st4"/>
-						</g>
-					</g>
-					<g id="group15-26" transform="translate(25.5118,-12.7599)" v:mID="15" v:groupContext="group">
-						<title>Feuille.15</title>
-						<g id="shape16-27" v:mID="16" v:groupContext="shape">
-							<title>Feuille.16</title>
-							<path d="M0 23.26 L0 53.02 L0 23.26 Z" class="st2"/>
-						</g>
-						<g id="shape17-29" v:mID="17" v:groupContext="shape">
-							<title>Feuille.17</title>
-							<path d="M0 23.26 L0 53.02 L0 23.26 Z" class="st3"/>
-							<path d="M0 23.26 L0 53.02" class="st4"/>
-						</g>
-					</g>
-				</g>
-			</g>
-			<g id="shape18-32" v:mID="18" v:groupContext="shape" transform="translate(-24.4463,84.2743) rotate(-135)">
-				<title>Feuille.18</title>
-				<path d="M0 53.02 L12.03 53.02 L0 53.02 Z" class="st3"/>
-				<path d="M0 53.02 L12.03 53.02" class="st4"/>
-			</g>
-			<g id="shape19-35" v:mID="19" v:groupContext="shape" transform="translate(-24.4412,9.29808) rotate(-45)">
-				<title>Feuille.19</title>
-				<path d="M0 53.02 L12.03 53.02 L0 53.02 Z" class="st3"/>
-				<path d="M0 53.02 L12.03 53.02" class="st4"/>
-			</g>
-			<g id="shape20-38" v:mID="20" v:groupContext="shape" transform="translate(0,-34.0157)">
-				<title>Feuille.20</title>
-				<path d="M3.4 49.62 L3.4 53.02 L0 53.02 L3.4 49.62 Z" class="st3"/>
-				<path d="M3.4 49.62 L3.4 53.02 L0 53.02" class="st4"/>
-			</g>
-			<g id="shape21-41" v:mID="21" v:groupContext="shape" transform="translate(26.0787,-34.0157) scale(-1,1)">
-				<title>Feuille.21</title>
-				<path d="M3.4 49.62 L3.4 53.02 L0 53.02 L3.4 49.62 Z" class="st3"/>
-				<path d="M3.4 49.62 L3.4 53.02 L0 53.02" class="st4"/>
-			</g>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="99pt" viewBox="0 0 51 99" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.710938 17.8125 L 1.882813 17.8125 L 1.882813 73.613281 L 25.804688 97.539063 L 49.710938 73.613281 Z "/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000702105 53.019697 L 25.509047 53.019697 " transform="matrix(1.874999,0,0,1.874999,1.881496,-81.599388)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 25.509047 10.499997 L 0.000702105 10.499997 L 0.000702105 40.260426 L 12.759041 53.020848 L 25.509047 40.260426 Z " transform="matrix(1.874999,0,0,1.874999,1.881496,-1.874985)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000702105 10.499997 L 0.000702105 40.260426 L 12.759041 53.020848 L 25.509047 40.260426 " transform="matrix(1.874999,0,0,1.874999,1.881496,-1.874985)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000224336 53.019566 L 0.000224336 8.24038 " transform="matrix(1.874999,0,0,1.874999,25.808173,-13.567892)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000670105 23.259897 L -0.000670105 53.020326 " transform="matrix(1.874999,0,0,1.874999,49.7161,-25.799787)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.0000459094 53.02017 L 12.029705 53.02017 " transform="matrix(-1.325825,-1.325825,1.325825,-1.325825,-44.486793,156.139259)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.0011029 53.019907 L 12.03003 53.02138 " transform="matrix(1.325825,-1.325825,1.325825,1.325825,-44.477231,15.558907)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 3.400835 49.619865 L 3.400835 53.019867 L 0.000833648 53.019867 " transform="matrix(1.874999,0,0,1.874999,1.349999,-65.654395)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 3.400773 49.619865 L 3.400773 53.019867 L 0.000771648 53.019867 " transform="matrix(-1.874999,0,0,1.874999,50.247541,-65.654395)"/>
+</g>
 </svg>

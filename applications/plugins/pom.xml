@@ -106,6 +106,7 @@
     <module>org.csstudio.opibuilder.widgets.rap</module>
     <module>org.csstudio.opibuilder.widgets.rcp</module>
     <module>org.csstudio.opibuilder.widgets.symbol</module>
+    <module>org.csstudio.pvmanager.formula.channelfinder</module>
     <module>org.csstudio.remote</module>
 <!--     <module>org.csstudio.remote.test</module> -->
     <module>org.csstudio.scan</module>
@@ -142,6 +143,8 @@
     <module>org.csstudio.simplepv.utilitypv.test</module>
     <module>org.csstudio.snl.intro</module>
     <module>org.csstudio.swt.chart</module>
+    <module>org.csstudio.swt.rtplot</module>
+    <!-- <module>org.csstudio.swt.rtplot.test</module> -->
     <module>org.csstudio.swt.widgets</module>
     <module>org.csstudio.swt.widgets.rcp</module>
     <!--module>org.csstudio.swt.widgets.test</module--><!-- Graphic test that does not follow naming convention for tests-->

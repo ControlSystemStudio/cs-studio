@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE0745.svg Page 1 -->
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,40 +8,12 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.318898in"
-		height="0.49347in" viewBox="0 0 22.9606 35.5298" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
-	<title>document de base</title>
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="shape839-1" v:mID="839" v:groupContext="shape" transform="translate(2.92913,-9.018)">
-			<title>Feuille.839</title>
-			<ellipse cx="8.50394" cy="27.0259" rx="8.50394" ry="8.50394" class="st1"/>
-		</g>
-		<g id="shape840-3" v:mID="840" v:groupContext="shape" transform="translate(46.9629,26.5118) rotate(90)">
-			<title>Feuille.840</title>
-			<path d="M0 35.53 L8.02 35.53" class="st2"/>
-		</g>
-		<g id="shape841-6" v:mID="841" v:groupContext="shape" transform="translate(46.9629,1) rotate(90)">
-			<title>Feuille.841</title>
-			<path d="M0 35.53 L8.02 35.53" class="st2"/>
-		</g>
-		<g id="shape842-9" v:mID="842" v:groupContext="shape" transform="translate(31.0761,-12.6903) rotate(45)">
-			<title>Feuille.842</title>
-			<path d="M0 35.53 L15.63 35.53" class="st2"/>
-		</g>
-		<g id="shape843-12" v:mID="843" v:groupContext="shape" transform="translate(42.1312,37.6509) rotate(135)">
-			<title>Feuille.843</title>
-			<path d="M0 35.53 L15.63 35.53" class="st2"/>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="44pt" height="66pt" viewBox="0 0 44 66" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 17.008332 27.026313 C 17.008332 22.328402 13.200027 18.522156 8.50401 18.522156 C 3.807992 18.522156 -0.000313145 22.328402 -0.000313145 27.026313 C -0.000313145 31.722141 3.807992 35.53047 8.50401 35.53047 C 13.200027 35.53047 17.008332 31.722141 17.008332 27.026313 Z " transform="matrix(1.896554,0,0,1.875002,5.555281,-16.908769)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000670152 35.52976 L 8.019411 35.52976 " transform="matrix(0.000000000000000116,1.875002,-1.896554,0.000000000000000115,89.067698,49.709681)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.00000112581 35.52976 L 8.020823 35.52976 " transform="matrix(0.000000000000000116,1.875002,-1.896554,0.000000000000000115,89.067698,1.875002)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.0000619908 35.530225 L 15.62996 35.530192 " transform="matrix(1.341066,1.325827,-1.341066,1.325827,58.937526,-23.794339)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000891887 35.52957 L 15.62913 35.529604 " transform="matrix(-1.341066,1.325827,-1.341066,-1.325827,79.904119,70.595517)"/>
+</g>
 </svg>

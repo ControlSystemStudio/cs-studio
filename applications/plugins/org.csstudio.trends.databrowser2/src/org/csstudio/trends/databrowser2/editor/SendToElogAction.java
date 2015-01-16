@@ -17,7 +17,7 @@ import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.LogbookClientManager;
-import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.rtplot.RTTimePlot;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -37,12 +37,12 @@ import org.eclipse.ui.handlers.IHandlerService;
 
 /**
  * Action to send image of plot to logbook.
- * 
+ *
  * @author Davy Dequidt
  */
 public class SendToElogAction extends Action {
 	final private Shell shell;
-	final private XYGraph graph;
+	final private RTTimePlot graph;
 
 	public static final String ID = "org.csstudio.trends.databrowser2.sendToElog";
 
@@ -51,13 +51,13 @@ public class SendToElogAction extends Action {
 
 	/**
 	 * Initialize
-	 * 
+	 *
 	 * @param part
 	 *            Parent shell
 	 * @param graph
 	 *            Graph to print
 	 */
-	public SendToElogAction(final Shell shell, final XYGraph graph) {
+	public SendToElogAction(final Shell shell, final RTTimePlot graph) {
 		this.shell = shell;
 		this.graph = graph;
 		setText("Create Log Entry");
@@ -82,7 +82,7 @@ public class SendToElogAction extends Action {
 
 	/**
 	 * Make a logbook entry.
-	 * 
+	 *
 	 */
 	public void makeLogEntry() {
 		try {

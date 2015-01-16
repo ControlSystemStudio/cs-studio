@@ -43,14 +43,14 @@ public final class ImageUtils {
 		double[][] matrix = pm.getMatrix();
 
 		// point to rotate about => center of image
-		double x0 = 0.5 * srcData.width;
-		double y0 = 0.5 * srcData.height;
+		double x0 = 0;
+		double y0 = 0;
 
 		// apply permutation to 4 corners
 		double[] a = translate(0, 0, x0, y0, matrix);
-		double[] b = translate(srcData.width, 0, x0, y0, matrix);
-		double[] c = translate(srcData.width, srcData.height, x0, y0, matrix);
-		double[] d = translate(0, srcData.height, x0, y0, matrix);
+		double[] b = translate(srcData.width - 1, 0, x0, y0, matrix);
+		double[] c = translate(srcData.width - 1, srcData.height - 1, x0, y0, matrix);
+		double[] d = translate(0, srcData.height - 1, x0, y0, matrix);
 
 		// find new point
 		double minX = findMin(a[0], b[0], c[0], d[0]);
@@ -79,6 +79,8 @@ public final class ImageUtils {
 		}
 		// Re-set the lost transparency
 		newImageData.transparentPixel = srcData.transparentPixel;
+		newImageData.delayTime = srcData.delayTime;
+		newImageData.disposalMethod = srcData.disposalMethod;
 		return newImageData;
 	}
 
@@ -245,8 +247,8 @@ public final class ImageUtils {
 			return;
 		rect.setX(rect.x + insets.left);
 		rect.setY(rect.y + insets.top);
-		rect.setWidth(rect.width - (insets.getWidth()));
-		rect.setHeight(rect.height - (insets.getHeight()));
+		rect.setWidth(rect.width - insets.left - insets.right);
+		rect.setHeight(rect.height - insets.top - insets.bottom);
 	}
 
 	/**

@@ -22,13 +22,13 @@ public class RestoreAction extends PVTableAction
         super(Messages.Restore, "icons/restore.png", viewer); //$NON-NLS-1$
         setToolTipText(Messages.Restore_TT);
     }
-    
+
+    @Override
     public void run()
     {
         final PVTableModel model = (PVTableModel) viewer.getInput();
         if (model == null)
             return;
         model.restore();
-        viewer.setSelection(null);
     }
 }

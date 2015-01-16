@@ -49,6 +49,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -82,6 +83,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.swt.dnd.ImageTransfer;
+import org.eclipse.swt.dnd.TransferData;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -132,6 +135,7 @@ public class LogEntryWidget extends Composite {
     private Button btnAddImage;
     private Button btnAddScreenshot;
     private Button btnCSSWindow;
+    private Button btnClipboard;
     private Label lblTags;
     private Composite composite;
     private ErrorBar errorBar;
@@ -489,7 +493,7 @@ public class LogEntryWidget extends Composite {
 	FormData fd_btnAddImage = new FormData();
 	fd_btnAddImage.left = new FormAttachment(1);
 	fd_btnAddImage.bottom = new FormAttachment(100, -2);
-	fd_btnAddImage.right = new FormAttachment(32);
+	fd_btnAddImage.right = new FormAttachment(24);
 	btnAddImage.setLayoutData(fd_btnAddImage);
 	btnAddImage.setText("Add Image");
 
@@ -502,9 +506,9 @@ public class LogEntryWidget extends Composite {
 	    }
 	});
 	FormData fd_btnAddScreenshot = new FormData();
-	fd_btnAddScreenshot.left = new FormAttachment(33);
+	fd_btnAddScreenshot.left = new FormAttachment(25);
 	fd_btnAddScreenshot.bottom = new FormAttachment(100, -2);
-	fd_btnAddScreenshot.right = new FormAttachment(65);
+	fd_btnAddScreenshot.right = new FormAttachment(49);
 	btnAddScreenshot.setLayoutData(fd_btnAddScreenshot);
 	btnAddScreenshot.setText("Screenshot");
 
@@ -517,12 +521,57 @@ public class LogEntryWidget extends Composite {
 	    }
 	});
 	FormData fd_btnCSSWindow = new FormData();
-	fd_btnCSSWindow.left = new FormAttachment(66);
+	fd_btnCSSWindow.left = new FormAttachment(50);
 	fd_btnCSSWindow.bottom = new FormAttachment(100, -2);
-	fd_btnCSSWindow.right = new FormAttachment(99);
+	fd_btnCSSWindow.right = new FormAttachment(74);
 	btnCSSWindow.setLayoutData(fd_btnCSSWindow);
 	btnCSSWindow.setText("CSS Window");
 
+	btnClipboard = new Button(tbtmImgAttachmentsComposite, SWT.NONE);
+	btnClipboard.setVisible(editable);
+	btnClipboard.addSelectionListener(new SelectionAdapter() {
+	    @Override
+            public void widgetSelected(SelectionEvent e) {
+                Clipboard clipboard = new Clipboard(e.display);
+                List<TransferData> availableTypes = Arrays.asList(clipboard
+                        .getAvailableTypes());
+
+                for (TransferData transferData : availableTypes) {
+                    File screenshot_file;
+                    try {
+                        ImageTransfer transfer = ImageTransfer.getInstance();
+                        if (transfer.isSupportedType(transferData)) {
+                            ImageData data = (ImageData) clipboard
+                                    .getContents(transfer);
+
+                            final ImageLoader loader = new ImageLoader();
+                            loader.data = new ImageData[] { data };
+                            screenshot_file = File.createTempFile("screenshot",".png");
+                            screenshot_file.deleteOnExit();
+                            // Save
+                            loader.save(screenshot_file.getPath(), SWT.IMAGE_PNG);
+                            imageToSelect = screenshot_file.getName();
+                            LogEntryBuilder logEntryBuilder = logEntry(
+                                    logEntryChangeset.getLogEntry())
+                                    .attach(AttachmentBuilder
+                                            .attachment(screenshot_file.getName())
+                                            .inputStream(new FileInputStream(screenshot_file.getPath())));
+                            logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+                        }
+                    } catch (IOException e1) {
+                        errorBar.setException(e1);
+                    }
+                }
+            }
+	});
+	FormData fd_btnClipboard = new FormData();
+	fd_btnClipboard.left = new FormAttachment(75);
+	fd_btnClipboard.bottom = new FormAttachment(100, -2);
+	fd_btnClipboard.right = new FormAttachment(99);
+	btnClipboard.setLayoutData(fd_btnClipboard);
+	btnClipboard.setText("Clipboard Image");
+	btnClipboard.setToolTipText("Add the image from the current clipboard");
+	
 	imageStackWidget = new ImageStackWidget(tbtmImgAttachmentsComposite,
 		SWT.NONE);
 	imageStackWidget.setEditable(editable);
@@ -572,7 +621,6 @@ public class LogEntryWidget extends Composite {
 
 	tbtmFileAttachments = new CTabItem(tabFolder, SWT.NONE);
 	tbtmFileAttachments.setText("Files");
-	tabFolder.setSelection(tbtmFileAttachments);
 
 	tbtmFileAttachmentsComposite = new Composite(tabFolder, SWT.NONE);
 	tbtmFileAttachments.setControl(tbtmFileAttachmentsComposite);
@@ -738,7 +786,6 @@ public class LogEntryWidget extends Composite {
 
 	tbtmPropertyTree = new CTabItem(tabFolder, SWT.NONE);
 	tbtmPropertyTree.setText("Properties");
-	tabFolder.setSelection(tbtmPropertyTree);
 
 	tbtmPropertyTreeComposite = new Composite(tabFolder, SWT.NONE);
 	tbtmPropertyTree.setControl(tbtmPropertyTreeComposite);
@@ -793,8 +840,7 @@ public class LogEntryWidget extends Composite {
 	});
 
 	try {
-	    logbookClient = LogbookClientManager.getLogbookClientFactory()
-		    .getClient();
+	    logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
 	} catch (Exception e1) {
 	    setLastException(e1);
 	}
@@ -867,6 +913,7 @@ public class LogEntryWidget extends Composite {
 	    propertyWidgetFactories = Collections.emptyMap();
 	    setLastException(e);
 	}
+	
     }
 
     private void init() {
@@ -878,6 +925,8 @@ public class LogEntryWidget extends Composite {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
+				//attachments are still flying in, but we have already closed this widget
+				if (isDisposed()) return; 
 			    getDisplay().asyncExec(new Runnable() {
 
 				@Override
@@ -901,22 +950,45 @@ public class LogEntryWidget extends Composite {
 					.logEntry(logEntryChangeset
 						.getLogEntry());
 				Collection<AttachmentBuilder> attachments = new ArrayList<AttachmentBuilder>();
-				for (Attachment attachment : logbookClient
-					.listAttachments(logEntry.getId())) {
-				    attachments.add(AttachmentBuilder
-					    .attachment(attachment));
+				for (Attachment attachment : logbookClient.listAttachments(logEntry.getId())) {
+				    attachments.add(AttachmentBuilder.attachment(attachment));
 				}
 				logEntryBuilder.setAttachments(attachments);
-				logEntryChangeset
-					.setLogEntryBuilder(logEntryBuilder);
+				logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
 			    } catch (Exception ex) {
-
+			        setLastException(ex);
 			    }
 			}
 		    };
 		    Executors.newCachedThreadPool().execute(retriveAttachments);
 		}
-		this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+                // Dispose the contributed tabs, only keep the default
+                // attachments tab
+                for (CTabItem cTabItem : tabFolder.getItems()) {
+                    if (!cTabItem.equals(tbtmAttachments)
+                            && !cTabItem.equals(tbtmFileAttachments)
+                            && !cTabItem.equals(tbtmPropertyTree)) {
+                        cTabItem.dispose();
+                    }
+                }
+                this.logEntryChangeset.setLogEntryBuilder(logEntryBuilder);
+                if (propertyWidgetFactories != null) {
+	            for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
+	                    .entrySet()) {
+	                if (editable
+	                        || LogEntryUtil.getPropertyNames(logEntry).contains(
+	                                propertyFactoryEntry.getKey())) {
+	                    CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
+	                    tbtmProperty.setText(propertyFactoryEntry.getKey());
+	                    AbstractPropertyWidget abstractPropertyWidget = propertyFactoryEntry
+	                            .getValue().create(tabFolder, SWT.NONE,
+	                                    logEntryChangeset, editable);
+	                    tbtmProperty.setControl(abstractPropertyWidget);
+	                    //abstractPropertyWidget.setEditable(editable);
+	                }
+	            }
+	        }
+		
 	    }
 	} catch (Exception ex) {
 	    // Failed to get a client to the logbook
@@ -928,14 +1000,6 @@ public class LogEntryWidget extends Composite {
     private void updateUI() {
 	if (isDisposed()) {
 	    return;
-	}
-	// Dispose the contributed tabs, only keep the default attachments tab
-	for (CTabItem cTabItem : tabFolder.getItems()) {
-	    if (!cTabItem.equals(tbtmAttachments)
-		    && !cTabItem.equals(tbtmFileAttachments)
-		    && !cTabItem.equals(tbtmPropertyTree)) {
-		cTabItem.dispose();
-	    }
 	}
 	LogEntry logEntry = null;
 	try {
@@ -1016,22 +1080,14 @@ public class LogEntryWidget extends Composite {
 	    imageStackWidget.setSelectedImageName(null);
 	    linkTable.setFiles(Collections.<Attachment> emptyList());
 	}
-	if (propertyWidgetFactories != null) {
-	    for (Entry<String, PropertyWidgetFactory> propertyFactoryEntry : propertyWidgetFactories
-		    .entrySet()) {
-		if (editable
-			|| LogEntryUtil.getPropertyNames(logEntry).contains(
-				propertyFactoryEntry.getKey())) {
-		    CTabItem tbtmProperty = new CTabItem(tabFolder, SWT.NONE);
-		    tbtmProperty.setText(propertyFactoryEntry.getKey());
-		    AbstractPropertyWidget abstractPropertyWidget = propertyFactoryEntry
-			    .getValue().create(tabFolder, SWT.NONE,
-				    logEntryChangeset);
-		    tbtmProperty.setControl(abstractPropertyWidget);
-		    abstractPropertyWidget.setEditable(editable);
-		}
-	    }
-	}
+	
+	for (CTabItem cTabItem : tabFolder.getItems()) {
+            if (!cTabItem.equals(tbtmAttachments)
+                    && !cTabItem.equals(tbtmFileAttachments)
+                    && !cTabItem.equals(tbtmPropertyTree)) {
+                ((AbstractPropertyWidget)cTabItem.getControl()).updateUI();
+            }
+        }
 	composite.layout();
     }
 
@@ -1099,6 +1155,7 @@ public class LogEntryWidget extends Composite {
     }
 
     public void setLastException(final Exception exception) {
+    if (isDisposed()) return;
 	getDisplay().asyncExec(new Runnable() {
 
 	    @Override

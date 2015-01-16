@@ -9,10 +9,45 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.trends.databrowser2.</p>
 
+<h2>Version 4.1.1 - 2015-01-05</h2>
+<ul>
+  <li>Better tick mark selection for log axis.</li>
+  <li>Linear axis switches to exponential notation when range to large/small.</li>
+</ul>
+
+<h2>Version 4.1.0 - 2014-15-01</h2>
+Replaced plot package, updated configuration save/load, fixing several bugs.
+<ul>
+  <li>Plot more compact, replacing legend with trace names on axes.</li>
+  <li>Toolbar more compact.</li>
+  <li>Streamlined zoom/pan options with better visual feedback.</li>
+  <li>Each added trace starts with a new color, reducing likelihood of plots where users cannot determine which trace corresponds to what item (#213).</li>
+  <li>Annotation content with place holders for name, position, value.</li>
+  <li>Annotation removal dialog right away lists annotations to remove.</li>
+  <li>'Color' property of trace or axis is always visible, even if that 'row' of the table is selected.</li>
+  <li>Tables no longer have "vanishing columns" on Linux; enforcing minimum column width (#838).</li>
+  <li>Dropping of several PVs works (used to drop "[PV1", "PV2,", "LastPV]")</li>
+  <li>Most drawing performed in background threads, no longer delaying the UI thread.</li>
+  <li>'Autoscale' performed in parallel background threads, using all CPUs to determine range of traces.</li>
+  <li>Cursor values determined in background thread via binary search (Not in UI thread, not via linear search. Also fixes #536).</li>
+  <li>All configuration options now in 'Properties' view, no plot config that allows corrupting time axis settings.</li>
+  <li>All configurable plot options now saved/restored (#428, #632).</li>
+  <li>Consistently persisting configuration of 'Model', instead of separating and then diverging the 'Model' and 'XYGraph' settings (#694, #755).</li>  
+  <li>Provide DataBrowserSchema.xsd for current *.plt file format.</li>
+  <li>Using Java 8 'Instant' for all time operations.</li>
+  <li>"Edit Items" dialog (for multiple items) has icon, consistent layout.</li>
+  <li>Plot can show VStatistics std. deviation as well as min/max (#764).</li>
+  <li>Can "Remove Archive Data Source" even if source has no name (just Key and URL)</li>
+  <li>Time Axis tab offers shortcuts to select common time ranges, configurable via preferences (#512).</li>
+  <li>"Save Changes" option: If de-selected, changes will not mark the config as 'dirty', so no Do-you-want-to-save prompt.
+      Allows users to zoom, pan, then simply close *.plt. Can still "Save As".
+  </li>
+</ul>
+
 <h2>Version 4.0.0 - 2014-06-20</h2>
 <ul>
   <li>Bugfix: Option "When archived data arrives: Perform auto-zoom", in addition to the value axes, also zoomed the time axis. This prevented any time range adjustments.</li>
-  <li>Bugfix: NullPointerException when remoginv an item.</li>
+  <li>Bugfix: NullPointerException when removing an item.</li>
 </ul>
 
 <h2>Version 3.2.17 - 2014-03-06</h2>
@@ -111,9 +146,24 @@
   <li>New option to always use 'default' archive data sources, ignoring sources from (old) *.plt.</li>
   <li>New option to log archive access errors instead of prompting in dialog.</li>
 </ul>
+
 <h2>Version 3.0.2 - 2011-08-25</h2>
 <ul>
   <li>swt.xygraph - Fix for horizontal zoom that would 'invert' traces</li>
 </ul>
+
+
+<h2>Product History</h2>
+<p>
+At LANL, Craig McChesney and Sergei Chevtsov with contributions by Peregrine
+McGehee implemented the Java Archive Viewer for displaying Channel Archiver
+data (2004).
+</p>
+<p>
+The first CSS Data Browser was based on Archive Viewer ideas but added
+live data handling as well as CSS integration and pluggable support for more than
+one type of historic data source (2007)
+</p>
+
 </body>
 </html>

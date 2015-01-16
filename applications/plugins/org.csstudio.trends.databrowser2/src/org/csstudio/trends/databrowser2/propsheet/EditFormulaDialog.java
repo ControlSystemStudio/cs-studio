@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import org.csstudio.apputil.ui.formula.FormulaDialog;
 import org.csstudio.apputil.ui.formula.InputItem;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.FormulaInput;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class EditFormulaDialog
 {
-    final OperationsManager operations_manager;
+    final UndoableActionManager operations_manager;
     final private Shell shell;
     final private FormulaItem formula;
     private FormulaDialog dialog;
@@ -41,7 +41,7 @@ public class EditFormulaDialog
      *  @param shell Parent shell for formula edit dialog
      *  @param formula FormulaItem to edit
      */
-    public EditFormulaDialog(final OperationsManager operations_manager,
+    public EditFormulaDialog(final UndoableActionManager operations_manager,
             final Shell shell, final FormulaItem formula)
     {
         this.operations_manager = operations_manager;
@@ -60,19 +60,17 @@ public class EditFormulaDialog
             // Edit
             dialog = new FormulaDialog(shell,
                                     formula.getExpression(), determineInputs());
-            if (dialog.open() != Window.OK) {
+            if (dialog.open() != Window.OK)
                 return false;
-            }
 
             // Update model item with new formula from dialog
-            final Model model = formula.getModel();
+            final Model model = formula.getModel().get();
             final ArrayList<FormulaInput> new_inputs = new ArrayList<FormulaInput>();
             for (final InputItem input : dialog.getInputs())
             {
                 final ModelItem item = model.getItem(input.getInputName());
-                if (item == null) {
+                if (item == null)
                     throw new Exception("Cannot locate formula input " + input.getInputName()); //$NON-NLS-1$
-                }
                 new_inputs.add(new FormulaInput(item, input.getVariableName()));
             }
             // Update formula via undo-able command
@@ -88,10 +86,10 @@ public class EditFormulaDialog
         return true;
     }
 
-    public void close() {
-        if (dialog != null) {
+    public void close()
+    {
+        if (dialog != null)
             dialog.close();
-        }
     }
 
     /** @return List of inputs for formula: Each model item is a possible input,
@@ -102,21 +100,18 @@ public class EditFormulaDialog
     @SuppressWarnings("nls")
     private InputItem[] determineInputs()
     {
-        final Model model = formula.getModel();
+        final Model model = formula.getModel().get();
         // Create list of inputs.
         final ArrayList<InputItem> inputs = new ArrayList<InputItem>();
         // Every model item is a possible input.
-        model_loop: for (int i=0; i<model.getItemCount(); ++i)
-        {
-            final ModelItem model_item = model.getItem(i);
-            // Formula cannot be an input to itself
-            if (model_item == formula) {
+        model_loop: for (ModelItem model_item : model.getItems())
+        {   // Formula cannot be an input to itself
+            if (model_item == formula)
                 continue;
-            }
             // Create InputItem for that ModelItem
             InputItem input = null;
             // See if model item is already used in the formula
-            for (final FormulaInput existing_input : formula.getInputs())
+            for (FormulaInput existing_input : formula.getInputs())
             {
                 if (existing_input.getItem() == model_item)
                 {   // Yes, use the existing variable name
@@ -128,13 +123,11 @@ public class EditFormulaDialog
             // If input is unused, assign variable name x1, x2, ...
             if (input == null)
             {
-            	for (final InputItem existing_item : inputs)
-            	{
+            	for (InputItem existing_item : inputs)
             		if (existing_item.getInputName().equals(model_item.getName()))
-            		{	// The item with the same name was already added to the input list. 
+            		{	// The item with the same name was already added to the input list.
             			continue model_loop;
             		}
-            	}
                 // Try "x1", then "xx1", "xxx1" until an unused name is found
                 String var_name = Integer.toString(inputs.size()+1);
                 boolean name_in_use;
@@ -143,13 +136,11 @@ public class EditFormulaDialog
                     name_in_use = false;
                     var_name = "x" + var_name;
                     for (final FormulaInput existing_input : formula.getInputs())
-                    {
                         if (existing_input.getVariableName().equals(var_name))
                         {
                             name_in_use = true;
                             break;
                         }
-                    }
                 }
                 while (name_in_use);
                 input = new InputItem(model_item.getName(), var_name);

@@ -68,6 +68,11 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			
 			@Override
 			public void zoomChanged(double arg0) {
+				if (getViewer() == null) {
+					//depending on the OPI and the current zoom value, the event
+					//can happen before the parent is set.
+					return;
+				}
 				getViewer().getControl().getDisplay().timerExec(100,new Runnable() {
 					
 					@Override
@@ -80,6 +85,11 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		return f;
 	}
 
+	@Override
+	public void setParent(EditPart parent) {
+	    super.setParent(parent);
+	    updateConnectionList();
+	}
 
 	@Override
 	protected void createEditPolicies() {

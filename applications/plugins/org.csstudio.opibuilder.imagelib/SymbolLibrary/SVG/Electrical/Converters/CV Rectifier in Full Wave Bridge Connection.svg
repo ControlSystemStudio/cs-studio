@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE0302.svg Page 1 -->
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,44 +8,13 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.500219in"
-		height="0.500219in" viewBox="0 0 36.0157 36.0157" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
-	<title>document de base</title>
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<g id="shape1637-1" v:mID="1637" v:groupContext="shape" transform="translate(1,-1)">
-			<title>Feuille.1637</title>
-			<path d="M34.02 19.01 L17.01 36.02 L0 19.01 L17.01 2 L34.02 19.01 Z" class="st1"/>
-		</g>
-		<g id="shape1638-3" v:mID="1638" v:groupContext="shape" transform="translate(53.315,9.50394) rotate(90)">
-			<title>Feuille.1638</title>
-			<path d="M0 36.02 L17.01 36.02" class="st2"/>
-		</g>
-		<g id="shape1639-6" v:mID="1639" v:groupContext="shape" transform="translate(12.8772,-22.2598)">
-			<title>Feuille.1639</title>
-			<path d="M0 36.02 L8.5 36.02" class="st2"/>
-		</g>
-		<g id="shape1640-9" v:mID="1640" v:groupContext="shape" transform="translate(13.0472,-15.1732)">
-			<title>Feuille.1640</title>
-			<path d="M0 36.02 L8.5 36.02" class="st2"/>
-		</g>
-		<g id="shape1641-12" v:mID="1641" v:groupContext="shape" transform="translate(-8.16777,-4.62446) rotate(-45)">
-			<title>Feuille.1641</title>
-			<path d="M0 36.02 L8.02 34.03" class="st2"/>
-		</g>
-		<g id="shape1642-15" v:mID="1642" v:groupContext="shape" transform="translate(-7.96529,46.512) rotate(-135)">
-			<title>Feuille.1642</title>
-			<path d="M0 36.02 L8.64 37.72" class="st2"/>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68pt" height="68pt" viewBox="0 0 68 68" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 34.019695 19.010306 L 17.010306 36.019695 L 0.000917228 19.010306 L 17.010306 2.000917 Z " transform="matrix(1.888892,0,0,1.888892,1.888892,-1.888892)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000637643 36.020226 L 17.010026 36.020226 " transform="matrix(0.000000000000000116,1.888892,-1.888892,0.000000000000000116,100.706301,17.951921)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00030326 36.020344 L 8.499828 36.020344 " transform="matrix(1.888892,0,0,1.888892,24.323646,-42.046368)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000119854 36.020817 L 8.499405 36.020817 " transform="matrix(1.888892,0,0,1.888892,24.644758,-28.660543)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000570987 36.020603 L 8.019849 34.028944 " transform="matrix(1.335649,-1.335649,1.335649,1.335649,-15.428039,-8.735108)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000715123 36.020721 L 8.640042 37.721381 " transform="matrix(-1.335649,-1.335649,1.335649,-1.335649,-15.045576,87.856166)"/>
+</g>
 </svg>

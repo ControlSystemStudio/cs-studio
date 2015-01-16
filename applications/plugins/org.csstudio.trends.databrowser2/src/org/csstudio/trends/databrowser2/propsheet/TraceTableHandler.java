@@ -7,24 +7,34 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
-import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
+import org.csstudio.archive.vtype.DefaultVTypeFormat;
+import org.csstudio.swt.rtplot.PointType;
+import org.csstudio.swt.rtplot.TraceType;
+import org.csstudio.swt.rtplot.data.PlotDataItem;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
+import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.RequestType;
-import org.csstudio.trends.databrowser2.model.TraceType;
+import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -37,10 +47,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.util.array.ListNumber;
-import org.epics.vtype.VTable;
 
 /** Helper for a 'Trace' TableViewer that handles the Model's items.
  *  Each 'row' in the table is a ModelItem.
@@ -54,24 +63,15 @@ public class TraceTableHandler implements IStructuredContentProvider
     /** Prompt for the 'hide trace' warning'? */
     static private boolean prompt_for_not_visible = true;
 
-    final private XYGraphMediaFactory color_registry = XYGraphMediaFactory.getInstance();
+    private LocalResourceManager color_registry;
     private Model model;
     private TableViewer trace_table;
     private boolean editing = false;
 
-    final private ModelListener model_listener = new ModelListener()
+    final private ModelListener model_listener = new ModelListenerAdapter()
     {
         @Override
-        public void changedUpdatePeriod() { /* Ignored */ }
-        @Override
-        public void changedArchiveRescale() { /* Ignored */ }
-        @Override
-        public void changedColors() { /* Ignored */ }
-        @Override
-        public void changedTimerange() { /* Ignored */ }
-
-        @Override
-        public void changedAxis(AxisConfig axis)
+        public void changedAxis(final Optional<AxisConfig> axis)
         {
             // In case an axis _name_ changed, this needs to be shown
             // in the "Axis" column.
@@ -113,38 +113,30 @@ public class TraceTableHandler implements IStructuredContentProvider
         {
             trace_table.refresh(item);
         }
-        
+
         @Override
-        public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
-	
-		@Override
-		public void changedAnnotations() {
-			
-		}
-		@Override
-		public void changedXYGraphConfig() {
-			
-		}
-		@Override
-		public void itemRefreshRequested(PVItem item) {
-			//ignored
-		}
-		
-		@Override
-		public void cursorDataChanged() {
-			if (editing) return;
-			trace_table.refresh();
+		public void selectedSamplesChanged()
+		{
+
+			if (!editing)
+			    trace_table.getTable().getDisplay().asyncExec(() ->
+            {
+                if (!trace_table.getTable().isDisposed())
+                    trace_table.refresh();
+            });
 		}
     };
+
 
     /** Create table columns: Auto-sizable, with label provider and editor
      *  @param table_layout
      *  @param operations_manager
      *  @param table_viewer
      */
-    public void createColumns(final TableColumnLayout table_layout, final OperationsManager operations_manager,
+    public void createColumns(final TableColumnLayout table_layout, final UndoableActionManager operations_manager,
             final TableViewer table_viewer)
     {
+        color_registry = new LocalResourceManager(JFaceResources.getResources(), table_viewer.getTable());
         final Shell shell = table_viewer.getTable().getShell();
 
         // Visible Column ----------
@@ -244,7 +236,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return ((ModelItem) element).getName();
             }
-            
+
             @Override
             protected CellEditor getCellEditor(Object element) {
             	editing = true;
@@ -295,7 +287,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return ((ModelItem) element).getDisplayName();
             }
-            
+
             @Override
             protected CellEditor getCellEditor(Object element) {
             	editing = true;
@@ -314,22 +306,15 @@ public class TraceTableHandler implements IStructuredContentProvider
                 editing = false;
             }
         });
-        
+
         // Color Column ----------
         view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.Color, 40, 10);
-        view_col.setLabelProvider(new CellLabelProvider()
+        view_col.setLabelProvider(new ColorCellLabelProvider<ModelItem>()
         {
             @Override
-            public void update(final ViewerCell cell)
+            protected Color getColor(ModelItem item)
             {
-                final ModelItem item = (ModelItem) cell.getElement();
-                cell.setBackground(color_registry.getColor(item.getColor()));
-            }
-
-            @Override
-            public String getToolTipText(Object element)
-            {
-                return Messages.ColorTT;
+                return color_registry.createColor(item.getColor());
             }
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -356,51 +341,19 @@ public class TraceTableHandler implements IStructuredContentProvider
             }
         });
 
-        //live value column
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.CursorValue, 40, 30);
+        // Selected sample time stamp and value
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.CursorTimestamp, 150, 30);
         view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
             {
                 final ModelItem item = (ModelItem) cell.getElement();
-                VTable table = model.getCursorData();
-                if (table == null) {
-                	cell.setText("N/A");
-                } else {
-	                for (int i = 0; i < table.getRowCount(); i++) {
-	                	if (((List<?>)table.getColumnData(0)).get(i).equals(item.getDisplayName())) {
-	                		cell.setText(String.valueOf(((ListNumber)table.getColumnData(2)).getDouble(i)));
-	                		return;
-	                	}
-	                }
-                }
-            }
-
-            @Override
-            public String getToolTipText(Object element)
-            {
-                return Messages.CursorValueTT;
-            }
-        });
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.CursorTimestamp, 50, 30);
-        view_col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final ModelItem item = (ModelItem) cell.getElement();
-                VTable table = model.getCursorData();
-                if (table == null) {
-                	cell.setText("N/A");
-                } else {
-	                for (int i = 0; i < table.getRowCount(); i++) {
-	                	if (((List<?>)table.getColumnData(0)).get(i).equals(item.getDisplayName())) {
-	                		cell.setText(String.valueOf(((List<?>)table.getColumnData(1)).get(i)));
-	                		return;
-	                	}
-	                }
-                }
+                final Optional<PlotDataItem<Instant>> sample = item.getSelectedSample();
+                if (sample.isPresent())
+                    cell.setText(TimeHelper.format(sample.get().getPosition()));
+                else
+                    cell.setText(Messages.NotApplicable);
             }
 
             @Override
@@ -409,7 +362,30 @@ public class TraceTableHandler implements IStructuredContentProvider
                 return Messages.CursorTimestampTT;
             }
         });
-        
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.CursorValue, 40, 30);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                final Optional<PlotDataItem<Instant>> sample = item.getSelectedSample();
+                if (sample.isPresent())
+                {
+                    final PlotSample plot_sample = (PlotSample) sample.get();
+                    cell.setText(DefaultVTypeFormat.get().format(plot_sample.getVType()));
+                }
+                else
+                    cell.setText(Messages.NotApplicable);
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.CursorValueTT;
+            }
+        });
+
         // Scan Period Column (only applies to PVItems) ----------
         view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.ScanPeriod, 70, 10);
         view_col.setLabelProvider(new CellLabelProvider()
@@ -440,7 +416,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return element instanceof PVItem;
             }
-            
+
             @Override
             protected CellEditor getCellEditor(Object element) {
             	editing = true;
@@ -517,7 +493,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                 else
                     return Messages.NotApplicable;
             }
-            
+
             @Override
             protected CellEditor getCellEditor(Object element) {
             	editing = true;
@@ -542,57 +518,6 @@ public class TraceTableHandler implements IStructuredContentProvider
                     // Display will revert to original value
                     return;
                 }
-            }
-        });
-
-        // Line Width Column ----------
-        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceLineWidth, 40, 10);
-        view_col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final ModelItem item = (ModelItem) cell.getElement();
-                cell.setText(Integer.toString(item.getLineWidth()));
-            }
-
-            @Override
-            public String getToolTipText(Object element)
-            {
-                return Messages.TraceLineWidthTT;
-            }
-
-        });
-        view_col.setEditingSupport(new EditSupportBase(table_viewer)
-        {
-            @Override
-            protected Object getValue(final Object element)
-            {
-                return Integer.toString(((ModelItem) element).getLineWidth());
-            }
-            
-            @Override
-            protected CellEditor getCellEditor(Object element) {
-            	editing = true;
-            	return super.getCellEditor(element);
-            }
-
-            @Override
-            protected void setValue(final Object element, final Object value)
-            {
-                int width;
-                try
-                {
-                    width = Integer.parseInt(value.toString().trim());
-                }
-                catch (NumberFormatException ex)
-                {
-                    width = 0;
-                }
-                final ModelItem item = (ModelItem)element;
-                if (width != item.getLineWidth())
-                    new ChangeLineWidthCommand(operations_manager, item, width);
-                editing = false;
             }
         });
 
@@ -625,16 +550,22 @@ public class TraceTableHandler implements IStructuredContentProvider
             }
         };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
-        {
+        {   // Thread-safe copy of model axes as this editor is invoked
+            final List<AxisConfig> axes = new ArrayList<>();
+
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
             	editing = true;
-                final String axis_names[] = new String[model.getAxisCount()];
-                for (int i=0; i<axis_names.length; ++i)
-                    axis_names[i] = model.getAxis(i).getName();
+                final List<String> axis_names = new ArrayList<>();
+                axes.clear();
+                for (AxisConfig axis : model.getAxes())
+                {
+                    axes.add(axis);
+                    axis_names.add(axis.getName());
+                }
                 final ComboBoxCellEditor combo = new ComboBoxCellEditor(table_viewer.getTable(),
-                        axis_names, SWT.READ_ONLY);
+                        axis_names.toArray(new String[axis_names.size()]), SWT.READ_ONLY);
                 combo.setValue(getValue(element));
                 return combo;
             }
@@ -647,7 +578,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             protected void setValue(final Object element, final Object value)
             {
                 final int axis_index = ((Integer)value).intValue();
-                final AxisConfig axis = model.getAxis(axis_index);
+                final AxisConfig axis = axes.get(axis_index);
                 final ModelItem item = (ModelItem)element;
                 if (axis != item.getAxis())
                     new ChangeAxisCommand(operations_manager, item, axis);
@@ -696,6 +627,153 @@ public class TraceTableHandler implements IStructuredContentProvider
                 final ModelItem item = (ModelItem)element;
                 if (trace_type != item.getTraceType())
                     new ChangeTraceTypeCommand(operations_manager, item, trace_type);
+                editing = false;
+            }
+        });
+
+        // Line Width Column ----------
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceLineWidth, 40, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setText(Integer.toString(item.getLineWidth()));
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceLineWidthTT;
+            }
+
+        });
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return Integer.toString(((ModelItem) element).getLineWidth());
+            }
+
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+                editing = true;
+                return super.getCellEditor(element);
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                int width;
+                try
+                {
+                    width = Integer.parseInt(value.toString().trim());
+                }
+                catch (NumberFormatException ex)
+                {
+                    width = 0;
+                }
+                final ModelItem item = (ModelItem)element;
+                if (width != item.getLineWidth())
+                    new ChangeLineWidthCommand(operations_manager, item, width);
+                editing = false;
+            }
+        });
+
+        // Point Type Column ----------
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.PointType, 75, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setText(item.getPointType().toString());
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.PointTypeTT;
+            }
+        });
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                editing = true;
+                final ComboBoxCellEditor combo = new ComboBoxCellEditor(table_viewer.getTable(),
+                        PointType.getDisplayNames(), SWT.READ_ONLY);
+                combo.setValue(getValue(element));
+                return combo;
+            }
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((ModelItem) element).getPointType().ordinal();
+            }
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final PointType point_type =
+                        PointType.fromOrdinal(((Integer)value).intValue());
+                final ModelItem item = (ModelItem)element;
+                if (point_type != item.getPointType())
+                    new ChangePointTypeCommand(operations_manager, item, point_type);
+                editing = false;
+            }
+        });
+
+        // Point Size Column ----------
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.PointSize, 40, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setText(Integer.toString(item.getPointSize()));
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.PointSizeTT;
+            }
+
+        });
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return Integer.toString(((ModelItem) element).getPointSize());
+            }
+
+            @Override
+            protected CellEditor getCellEditor(Object element) {
+                editing = true;
+                return super.getCellEditor(element);
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                int size;
+                try
+                {
+                    size = Integer.parseInt(value.toString().trim());
+                }
+                catch (NumberFormatException ex)
+                {
+                    size = 0;
+                }
+                final ModelItem item = (ModelItem)element;
+                if (size != item.getPointSize())
+                    new ChangePointSizeCommand(operations_manager, item, size);
                 editing = false;
             }
         });
@@ -785,7 +863,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 return Integer.toString(((ModelItem) element).getWaveformIndex());
             }
-            
+
             @Override
             protected CellEditor getCellEditor(Object element) {
             	editing = true;
@@ -811,10 +889,10 @@ public class TraceTableHandler implements IStructuredContentProvider
                 } finally {
                 	editing = false;
                 }
-                
+
             }
         });
-        
+
         ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
 
@@ -837,10 +915,10 @@ public class TraceTableHandler implements IStructuredContentProvider
     @Override
     public Object[] getElements(final Object inputElement)
     {
-    	final ModelItem[] items = new ModelItem[model.getItemCount()];
-    	for (int i=0; i<items.length; ++i)
-    		items[i] = model.getItem(i);
-	    return items;
+    	final List<ModelItem> items = new ArrayList<>();
+    	for (ModelItem item : model.getItems())
+    	    items.add(item);
+	    return items.toArray(new ModelItem[items.size()]);
     }
 
 	/** {@inheritDoc} */

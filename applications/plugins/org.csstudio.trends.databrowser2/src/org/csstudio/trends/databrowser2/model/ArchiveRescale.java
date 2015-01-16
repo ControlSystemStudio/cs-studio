@@ -16,11 +16,9 @@ public enum ArchiveRescale
 {
     /** Keep display as is */
     NONE(Messages.ArchiveRescale_NONE),
-    /** Perform auto-zoom */
-    AUTOZOOM(Messages.ArchiveRescale_AUTOZOOM),
     /** Perform stagger */
     STAGGER(Messages.ArchiveRescale_STAGGER);
-    
+
     final private String name;
 
     private ArchiveRescale(final String name)

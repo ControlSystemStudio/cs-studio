@@ -7,12 +7,14 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.export;
 
+import java.time.Instant;
+
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
-import org.epics.util.time.Timestamp;
+import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.epics.vtype.VType;
 
 /** Iterator for the samples in a ModelItem, not fetching archived data
@@ -24,7 +26,7 @@ public class ModelSampleIterator implements ValueIterator
     final private PlotSamples samples;
 
     /** End time */
-    final private Timestamp end;
+    final private Instant end;
 
     /** The value returned by 'next' or undefined for 'index' < 0 */
     private VType value;
@@ -37,18 +39,19 @@ public class ModelSampleIterator implements ValueIterator
     /** @param start Start time
     /** @param end End time
      */
-    public ModelSampleIterator(final ModelItem item, final Timestamp start,
-            final Timestamp end)
+    public ModelSampleIterator(final ModelItem item, final Instant start,
+            final Instant end)
     {
         this.samples = item.getSamples();
         this.end = end;
-        synchronized (samples)
+        samples.getLock().lock();
+        try
         {
             // Anything?
-            if (samples.getSize() <= 0)
+            if (samples.size() <= 0)
                 index = -1;
             // All data after start time?
-            else if (samples.getSample(0).getTime().compareTo(start) >= 0)
+            else if (samples.get(0).getPosition().compareTo(start) >= 0)
                 index = 0;
             else
             {   // There is data before the start time. Find sample just before start time.
@@ -57,30 +60,34 @@ public class ModelSampleIterator implements ValueIterator
             // Is first sample already after end time?
             if (index >= 0)
             {
-                final PlotSample sample = samples.getSample(index);
-                value = sample.getValue();
-                if (sample.getTime().compareTo(end) > 0)
+                final PlotSample sample = samples.get(index);
+                value = sample.getVType();
+                if (sample.getPosition().compareTo(end) > 0)
                     index = -1;
             }
+        }
+        finally
+        {
+            samples.getLock().unlock();
         }
     }
 
     /** @param start Start time
      *  @return Index sample with time stamp at-or-before start time, or -1.
      */
-    private int findSampleLessOrEqual(final Timestamp start)
+    private int findSampleLessOrEqual(final Instant start)
     {
         // Would like to use PlotSampleSearch, but that operates on array
         // of PlotSample[]
         int low = 0;
-        int high = samples.getSize()-1;
+        int high = samples.size()-1;
         int cmp = 0;
         int mid = -1;
         while (low <= high)
         {
             mid = (low + high) / 2;
             // Compare 'mid' sample to goal
-            final Timestamp time = samples.getSample(mid).getTime();
+            final Instant time = samples.get(mid).getPosition();
             final int compare = time.compareTo(start);
             if (compare > 0)
             {   // 'mid' too big, search lower half
@@ -123,17 +130,22 @@ public class ModelSampleIterator implements ValueIterator
             throw new Exception("End of samples"); //$NON-NLS-1$
         // Remember value, prepare the next value
         final VType result = value;
-        synchronized (samples)
+        samples.getLock().lock();
+        try
         {
             ++index;
-            if (index >= samples.getSize())
+            if (index >= samples.size())
                 index = -1; // No more samples
             else
             {
-                value = samples.getSample(index).getValue();
-                if (VTypeHelper.getTimestamp(value).compareTo(end) > 0)
+                value = samples.get(index).getVType();
+                if (VTypeHelper.getTimestamp(value).compareTo(TimeHelper.toTimestamp(end)) > 0)
                     index = -1; // Beyond end time
             }
+        }
+        finally
+        {
+            samples.getLock().unlock();
         }
         return result;
     }

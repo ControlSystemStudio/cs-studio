@@ -278,7 +278,7 @@ public class AlarmTreeItem extends TreeItem
         this.message = message;
         final AlarmTreeItem parent = getParent();
         if (parent != null)
-            parent.maximizeSeverity();
+            return parent.maximizeSeverity();
         return true;
     }
 
@@ -311,9 +311,13 @@ public class AlarmTreeItem extends TreeItem
     /** Set severity/status of this item by maximizing over its child
      *  severities.
      *  Recursively updates parent items.
+     *  
+     *  @return <code>true</code> if the severity of this item or any of its parents changed after 
+     *  		this method is executed, or <code>false</code> if the severity remained the same
      */
-    public synchronized void maximizeSeverity()
+    public synchronized boolean maximizeSeverity()
     {
+    	boolean changed = false;
     	// Get maximum child severity and its status
     	SeverityLevel new_current_severity = SeverityLevel.OK;
     	SeverityLevel new_severity = SeverityLevel.OK;
@@ -345,12 +349,14 @@ public class AlarmTreeItem extends TreeItem
             current_severity = new_current_severity;
             severity = new_severity;
             message = new_message;
+            changed = true;
         }
 
         // Percolate changes towards root
         final AlarmTreeItem parent = getParent();
         if (parent != null)
-            parent.maximizeSeverity();
+            return parent.maximizeSeverity() || changed;
+        return changed;
     }
 
     /** {@inheritDoc} */

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
-<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE05.svg Page 1 -->
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
 * Copyright (c) 2010-2014 ITER Organization.
@@ -10,33 +8,22 @@
 * http://www.eclipse.org/legal/epl-v10.html
 ******************************************************************************/
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.736439in"
-		height="0.736439in" viewBox="0 0 53.0236 53.0236" xml:space="preserve" color-interpolation-filters="sRGB" class="st4">
-	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
-	<style type="text/css">
-	<![CDATA[
-		.st1 {fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st2 {fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
-		.st3 {fill:#000000;font-family:Arial;font-size:1.00001em}
-		.st4 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
-	]]>
-	</style>
-	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
-		<title>Page 1</title>
-		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
-				v:shadowOffsetY="-8.50394"/>
-		<v:layer v:name="EQ" v:index="0"/>
-		<g id="shape1-1" v:mID="1" v:groupContext="shape" transform="translate(1,-1)">
-			<title>Feuille.1</title>
-			<ellipse cx="25.5118" cy="27.5118" rx="25.5118" ry="25.5118" class="st1"/>
-		</g>
-		<g id="shape2-3" v:mID="2" v:groupContext="shape" v:layerMember="0" transform="translate(15.8819,-26.5118)">
-			<title>Feuille.6</title>
-			<desc>M</desc>
-			<v:userDefs/>
-			<v:textBlock v:margins="rect(0,0,0,0)" v:tabSpace="42.5197"/>
-			<v:textRect cx="10.6299" cy="45.9249" width="21.38" height="14.1973"/>
-			<rect x="0" y="38.8263" width="21.2598" height="14.1973" class="st2"/>
-			<text x="5.63" y="49.53" class="st3" v:langID="1036"><v:paragraph v:horizAlign="1"/><v:tabList/>M</text>		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="99pt" height="99pt" viewBox="0 0 99 99" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d="M 1.5 0 L 1.5 -7.5 L 7.5 -7.5 L 7.5 0 Z M 1.6875 -0.1875 L 7.3125 -0.1875 L 7.3125 -7.3125 L 1.6875 -7.3125 Z "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M 0.890625 0 L 0.890625 -8.589844 L 2.601563 -8.589844 L 4.632813 -2.507813 C 4.816406 -1.9375 4.953125 -1.511719 5.042969 -1.234375 C 5.140625 -1.542969 5.292969 -2.003906 5.5 -2.613281 L 7.558594 -8.589844 L 9.085938 -8.589844 L 9.085938 0 L 7.992188 0 L 7.992188 -7.1875 L 5.496094 0 L 4.46875 0 L 1.984375 -7.3125 L 1.984375 0 Z "/>
+</symbol>
+</g>
+</defs>
+<g id="surface1">
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 51.022909 27.512496 C 51.022909 13.422915 39.602077 2 25.512496 2 C 11.422915 2 -0.000000150876 13.422915 -0.000000150876 27.512496 C -0.000000150876 41.602077 11.422915 53.022909 25.512496 53.022909 C 39.602077 53.022909 51.022909 41.602077 51.022909 27.512496 Z " transform="matrix(1.875,0,0,1.875,1.875,-1.875)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000652396 38.826381 L 21.259761 38.826381 L 21.259761 53.024296 L -0.000652396 53.024296 Z " transform="matrix(1.875,0,0,1.875,29.778567,-49.709632)"/>
+<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
+  <use xlink:href="#glyph0-1" x="40.335938" y="43.91089"/>
+</g>
+</g>
 </svg>

@@ -13,10 +13,11 @@ import org.csstudio.vtype.pv.PVFactory;
 /** Factory for creating {@link LocalPV}s
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LocalPVFactory implements PVFactory
 {
     final public static String TYPE = "loc";
-    
+
     @Override
     public String getType()
     {

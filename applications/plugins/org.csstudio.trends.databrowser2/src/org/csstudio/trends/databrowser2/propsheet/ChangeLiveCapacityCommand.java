@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to change item's Live Sample Buffer Size
  *  @author Kay Kasemir
  */
-public class ChangeLiveCapacityCommand implements IUndoableCommand
+public class ChangeLiveCapacityCommand extends UndoableAction
 {
     final private Shell shell;
     final private PVItem item;
@@ -31,9 +31,10 @@ public class ChangeLiveCapacityCommand implements IUndoableCommand
      *  @param new_size New value
      */
     public ChangeLiveCapacityCommand(final Shell shell,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final PVItem item, final int new_size)
     {
+        super(Messages.LiveSampleBufferSize);
         this.shell = shell;
         this.item = item;
         this.old_size = item.getLiveCapacity();
@@ -42,12 +43,12 @@ public class ChangeLiveCapacityCommand implements IUndoableCommand
         // Exit before registering for undo because there's nothing to undo
         if (!apply(new_size))
             return;
-        operations_manager.addCommand(this);
+        operations_manager.add(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         apply(new_size);
     }
@@ -77,12 +78,5 @@ public class ChangeLiveCapacityCommand implements IUndoableCommand
             return false;
         }
         return true;
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.LiveSampleBufferSize;
     }
 }

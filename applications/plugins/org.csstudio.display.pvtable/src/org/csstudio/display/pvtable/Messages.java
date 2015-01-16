@@ -16,10 +16,10 @@ public class Messages extends NLS
 
     public static String Alarm;
     public static String Description;
+    public static String CheckAll;
+    public static String CheckAll_TT;
     public static String Delete;
     public static String Delete_TT;
-    public static String DeSelectAll;
-    public static String DeSelectAll_TT;
     public static String EnterPositiveTolerance;
     public static String EnterTolerance;
     public static String Error;
@@ -27,14 +27,18 @@ public class Messages extends NLS
     public static String PV;
     public static String Restore;
     public static String Restore_TT;
+    public static String RestoreSelection;
+    public static String RestoreSelection_TT;
     public static String Saved;
-    public static String SelectAll;
-    public static String SelectAll_TT;
     public static String Snapshot;
     public static String Snapshot_TT;
+    public static String SnapshotSelection;
+    public static String SnapshotSelection_TT;
     public static String Time;
     public static String Tolerance;
     public static String Tolerance_TT;
+    public static String UncheckAll;
+    public static String UncheckAll_TT;
     public static String Value;
 
     static

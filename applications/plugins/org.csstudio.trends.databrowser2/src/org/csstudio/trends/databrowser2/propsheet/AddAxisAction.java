@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -18,10 +18,10 @@ import org.eclipse.jface.action.Action;
  */
 public class AddAxisAction extends Action
 {
-    final private OperationsManager operations_manager;
+    final private UndoableActionManager operations_manager;
     final private Model model;
 
-    public AddAxisAction(final OperationsManager operations_manager,
+    public AddAxisAction(final UndoableActionManager operations_manager,
             final Model model)
     {
         super(Messages.AddAxis,

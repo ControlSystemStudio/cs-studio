@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.scan.ui.feature"
       label="Scan UI Feature"
-      version="4.0.203.qualifier"
+      version="4.0.204.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -103,7 +103,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          id="org.csstudio.ndarray"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>

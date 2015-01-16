@@ -31,6 +31,7 @@ import org.epics.vtype.ValueFactory;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTableItem
 {
     final private PVTableItemListener listener;
@@ -244,7 +245,8 @@ public class PVTableItem
     }
    
     /** @return  Description*/
-    public String getDescription() {
+    public String getDescription()
+    {
     	return this.desc_value;
     }
 
@@ -335,12 +337,12 @@ public class PVTableItem
         determineIfChanged();
     }
 
-    /** Write saved value back to PV (if item is selected) */
+    /** Write saved value back to PV */
     public void restore()
     {
         final PV the_pv = pv.get();
-        SavedValue the_value = saved.orElse(null);
-        if (the_pv == null  ||  ! isSelected()  ||  ! isWritable()  || the_value == null)
+        final SavedValue the_value = saved.orElse(null);
+        if (the_pv == null  ||  ! isWritable()  || the_value == null)
             return;
         try
         {
@@ -352,10 +354,10 @@ public class PVTableItem
         }
     }
 
-    /** @return Returns the saved_value or null */ // TODO Return Optional
-    public SavedValue getSavedValue()
+    /** @return Returns the saved_value */
+    public Optional<SavedValue> getSavedValue()
     {
-        return saved.orElse(null);
+        return saved;
     }
 
     /** @return Tolerance for comparing saved and current value */
@@ -408,7 +410,6 @@ public class PVTableItem
         }
     }
 
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
@@ -417,13 +418,14 @@ public class PVTableItem
         if (! isWritable())
             buf.append(" (read-only)");
         buf.append(" = ").append(VTypeHelper.toString(value));
-        if (saved.isPresent())
+        final Optional<SavedValue> saved_value = saved;
+        if (saved_value.isPresent())
         {
             if (has_changed)
                 buf.append(" ( != ");
             else
                 buf.append(" ( == ");
-            buf.append(saved.get().toString()).append(" +- ").append(tolerance).append(")");
+            buf.append(saved_value.get().toString()).append(" +- ").append(tolerance).append(")");
         }
         return buf.toString();
     }

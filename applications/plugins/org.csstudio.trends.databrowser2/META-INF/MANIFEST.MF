@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Data Browser
 Bundle-SymbolicName: org.csstudio.trends.databrowser2;singleton:=true
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.1.1.qualifier
 Bundle-Description: Strip chart type display of live and historic data
 Bundle-Activator: org.csstudio.trends.databrowser2.Activator
 Bundle-Localization: plugin
@@ -22,9 +22,9 @@ Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.csstudio.csdata;bundle-version="3.0.0",
  org.csstudio.apputil;bundle-version="3.0.2",
  org.csstudio.apputil.ui;bundle-version="3.2.0",
- org.csstudio.ui.util;bundle-version="3.1.0";resolution:=optional,
+ org.csstudio.ui.util;bundle-version="4.0.0";resolution:=optional,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
- org.csstudio.swt.xygraph;bundle-version="1.0.2",
+ org.csstudio.swt.rtplot;bundle-version="1.1.0",
  org.csstudio.archive.reader;bundle-version="2.0.1",
  org.csstudio.logbook;bundle-version="1.0.2",
  org.csstudio.email.ui;bundle-version="1.0.0",
@@ -41,19 +41,15 @@ Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.csstudio.archive.vtype;bundle-version="1.0.0",
  org.csstudio.email;bundle-version="1.2.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Eclipse-ExtensibleAPI: true
 Export-Package: org.csstudio.trends.databrowser2,
- org.csstudio.trends.databrowser2.archive,
  org.csstudio.trends.databrowser2.editor,
- org.csstudio.trends.databrowser2.export,
- org.csstudio.trends.databrowser2.exportview,
  org.csstudio.trends.databrowser2.imports,
  org.csstudio.trends.databrowser2.model,
+ org.csstudio.trends.databrowser2.persistence,
  org.csstudio.trends.databrowser2.preferences,
  org.csstudio.trends.databrowser2.propsheet,
- org.csstudio.trends.databrowser2.sampleview,
- org.csstudio.trends.databrowser2.ui,
- org.csstudio.trends.databrowser2.waveformview
+ org.csstudio.trends.databrowser2.ui
 Bundle-ClassPath: .

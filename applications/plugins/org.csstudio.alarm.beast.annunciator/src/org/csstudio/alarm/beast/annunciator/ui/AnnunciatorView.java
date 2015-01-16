@@ -17,6 +17,7 @@ import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
 import org.csstudio.alarm.beast.annunciator.model.Severity;
 import org.csstudio.apputil.ringbuffer.RingBuffer;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.utility.speech.NoSoundCardAvailableException;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -47,7 +48,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
 
     /** Table of recent annunciations */
     private TableViewer message_table;
-    
+
     private SilenceAction silenceAction;
 
     /** List of recent annunciations, shown in message_table.
@@ -71,7 +72,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         // The View is not really created, hence no annunciator is
         // running
         // -> Must always keep the annunciator view visible!
-        // 
+        //
         // When closing the AnnunciatorView while it is still part of
         // another currently loaded perspective, the annunciator will just hide
         // to allow quick re-open in this view or when switching to one
@@ -127,7 +128,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     private void createGUI(final Composite parent)
     {
         // Note: TableColumnLayout requires that Table is only one child widget
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(50);
         parent.setLayout(table_layout);
 
         // List of annunciations

@@ -22,15 +22,16 @@ import org.epics.vtype.VType;
 
 /** A {@link ChannelGetRequester} for reading a value from a {@link PVA_PV},
  *  indicating completion via a {@link Future}
- * 
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class PVGetHandler extends PVRequester implements ChannelGetRequester, Future<VType>
 {
     final private PVA_PV pv;
 
     private volatile PVStructure data; // TODO Remove in 4.4 when getDone receives the data
-    
+
     final private CountDownLatch updates = new CountDownLatch(1);
     private volatile VType value = null;
     private volatile Exception error = null;
@@ -57,7 +58,7 @@ class PVGetHandler extends PVRequester implements ChannelGetRequester, Future<VT
             channelGet.get(true);
         }
     }
-    
+
     // TODO: Update to 4.4
     // In 4.3, channelGetConnect() receives the structure which getDone() will see filled with data.
     // In 4.4., getDone() will receive the filled structure

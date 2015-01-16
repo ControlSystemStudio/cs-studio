@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 
 /** Resource Helper for RCP
- * 
+ *
  *  <p>Adds workspace file support to the basic {@link ResourceHelper}
  *  @author Kay Kasemir
  */
@@ -40,7 +40,7 @@ public class RCPResourceHelper extends ResourceHelper
             return ws_file.getFullPath();
         return super.getPath(input);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean exists(final IPath path)
@@ -52,7 +52,7 @@ public class RCPResourceHelper extends ResourceHelper
             resource.isAccessible() &&
             resource instanceof IFile)
             return true;
-        
+
         return super.exists(path);
     }
 
@@ -79,7 +79,7 @@ public class RCPResourceHelper extends ResourceHelper
             return getFileForPath(path);
         return super.adapt(path, adapter);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public InputStream getInputStream(final IPath path) throws Exception
@@ -89,7 +89,7 @@ public class RCPResourceHelper extends ResourceHelper
         final IResource ws_file = root.findMember(path);
         if (ws_file instanceof IFile)
             return ((IFile)ws_file).getContents(true);
-        
+
         return super.getInputStream(path);
     }
 
@@ -99,9 +99,9 @@ public class RCPResourceHelper extends ResourceHelper
     {
         // Try workspace file
         final IFile ws_file = (IFile) input.getAdapter(IFile.class);
-        if (ws_file != null)
+        if (ws_file != null  &&  ws_file.exists())
             return ws_file.getContents(true);
-        
+
         return super.getInputStream(input);
     }
 
@@ -113,11 +113,11 @@ public class RCPResourceHelper extends ResourceHelper
         final IFile ws_file = (IFile) input.getAdapter(IFile.class);
         if (ws_file != null)
             return !ws_file.isReadOnly();
-        
+
         // Fall back to non-workspace implementation
         return super.isWritable(input);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public OutputStream getOutputStream(final IEditorInput input) throws Exception
@@ -127,20 +127,20 @@ public class RCPResourceHelper extends ResourceHelper
         // Fall back to non-workspace implementation
         if (ws_file == null)
             return super.getOutputStream(input);
-        
+
         // Have workspace file
         if (ws_file.isReadOnly())
             throw new Exception(ws_file.getName() + " is read-only");
-        
+
         // Caller of this method receives an output stream,
         // but IFile doesn't offer an output stream API.
         // -> Create Pipe
         // Caller of this method will write to pipe output
         final PipedOutputStream pipeout = new PipedOutputStream();
-        
+
         // Data written to pipe output is read from pipe input, passed to IFile
         final PipedInputStream pipein = new PipedInputStream(pipeout);
-        
+
         // To avoid deadlock, create thread that handles the IFile
         final Thread writer = new Thread(input.getName() + " Writer")
         {
@@ -161,7 +161,7 @@ public class RCPResourceHelper extends ResourceHelper
             }
         };
         writer.start();
-        
+
         return pipeout;
     }
 }

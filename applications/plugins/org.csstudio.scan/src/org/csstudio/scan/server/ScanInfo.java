@@ -16,6 +16,7 @@
 package org.csstudio.scan.server;
 
 import java.util.Date;
+import java.util.Optional;
 
 /** Information about a Scan
  *  @author Kay Kasemir
@@ -24,7 +25,7 @@ import java.util.Date;
 public class ScanInfo extends Scan
 {
     final private ScanState state;
-    final private String error;
+    final private Optional<String> error;
     final private long runtime_ms;
     final private long finishtime_ms;
     final private long performed_work_units;
@@ -38,13 +39,13 @@ public class ScanInfo extends Scan
      */
     public ScanInfo(final Scan scan, final ScanState state)
     {
-        this(scan, state, null, 0, 0, 0, 0, 0, "");
+        this(scan, state, Optional.empty(), 0, 0, 0, 0, 0, "");
     }
 
     /** Initialize
      *  @param scan Scan
      *  @param state Scan state
-     *  @param error Error or <code>null</code>
+     *  @param error Error
      *  @param runtime_ms Runtime in millisecs
      *  @param finishtime_ms (Estimated) finish time in millisecs
      *  @param performed_work_units Work units performed so far
@@ -52,7 +53,7 @@ public class ScanInfo extends Scan
      *  @param current_commmand Description of current command
      */
     public ScanInfo(final Scan scan, final ScanState state,
-            final String error, final long runtime_ms,
+            final Optional<String> error, final long runtime_ms,
             final long finishtime_ms,
             final long performed_work_units, final long total_work_units,
             final long current_address, final String current_commmand)
@@ -74,8 +75,8 @@ public class ScanInfo extends Scan
         return state;
     }
 
-    /** @return Error (if state indicates failure) or <code>null</code> */
-    public String getError()
+    /** @return Error (if state indicates failure) */
+    public Optional<String> getError()
     {
         return error;
     }
@@ -121,7 +122,7 @@ public class ScanInfo extends Scan
             return 0;
         return (int) (performed_work_units * 100 / total_work_units);
     }
-    
+
     /** @return (Estimated) finish time or <code>null</code> */
     public Date getFinishTime()
     {
@@ -171,9 +172,7 @@ public class ScanInfo extends Scan
                performed_work_units == other.performed_work_units  &&
                total_work_units == other.total_work_units  &&
                current_commmand.equals(other.current_commmand) &&
-               ((error == null  && other.error == null) ||
-                (error != null  && error.equals(other.error))
-               );
+               error.equals(other.error);
     }
 
     /** @return String representation for GUI */
@@ -182,8 +181,8 @@ public class ScanInfo extends Scan
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("Scan '").append(getName()).append("' [").append(getId()).append("]: ").append(state);
-        if (error != null)
-            buf.append(" (").append(error).append(")");
+        if (error.isPresent())
+            buf.append(" (").append(error.get()).append(")");
         if (state.isActive())
             buf.append(", ").append(getPercentage()).append("% done");
         return buf.toString();

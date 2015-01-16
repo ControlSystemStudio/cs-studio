@@ -234,6 +234,11 @@ public class OPIColorDialog extends HelpTrayDialog {
 		
 		blueScale.addSelectionListener(new RGBEditListener(2));
 		blueSpinner.addSelectionListener(new RGBEditListener(2));
+		
+		rgbGroup.setTabList(new Control[] {
+			redScale, greenScale, blueScale,
+			redSpinner, greenSpinner, blueSpinner
+		});
 
 	}
 	

@@ -23,6 +23,7 @@ import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
@@ -69,8 +70,8 @@ public class GUI implements AlarmClientModelListener
     /** Persistence: Tags within dialog settings, actually written to
      *  WORKSPACE/.metadata/.plugins/org.csstudio.alarm.beast.ui.alarmtable/dialog_settings.xml
      */
-    final private static String ALARM_TABLE_SORT_COLUMN = "alarm_table_sort_column",
-                                ALARM_TABLE_SORT_UP = "alarm_table_sort_up";
+    final private static String ALARM_TABLE_SORT_COLUMN = "alarm_table_sort_column", //$NON-NLS-1$
+                                ALARM_TABLE_SORT_UP = "alarm_table_sort_up"; //$NON-NLS-1$
 
     /** Initial place holder for display of alarm counts
 	 *  to allocate enough screen space
@@ -86,7 +87,7 @@ public class GUI implements AlarmClientModelListener
 
     /** Labels to show alarm counts */
 	private Label current_alarms, acknowledged_alarms;
-    
+
     /** TableViewer for active alarms */
     private TableViewer active_table_viewer;
 
@@ -115,7 +116,7 @@ public class GUI implements AlarmClientModelListener
         {
             if (display.isDisposed())
                 return;
-            display.asyncExec(new Runnable()
+            display.syncExec(new Runnable()
             {
                 @Override
                 public void run()
@@ -123,9 +124,9 @@ public class GUI implements AlarmClientModelListener
                     //System.out.println("GUI Update");
                     if (current_alarms.isDisposed())
                         return;
-                    
+
                     // Display counts, update tables
-                    
+
                     // Don't use TableViewer.setInput(), it causes flicker on Linux!
                     // active_table_viewer.setInput(model.getActiveAlarms());
                     // acknowledged_table_viewer.setInput(model.getAcknowledgedAlarms());
@@ -151,7 +152,7 @@ public class GUI implements AlarmClientModelListener
      *  @param parent Parent widget
      *  @param model Alarm model
      *  @param site Workbench site or <code>null</code>
-     *  @param settings 
+     *  @param settings
      */
     public GUI(final Composite parent, final AlarmClientModel model,
             final IWorkbenchPartSite site, final IDialogSettings settings)
@@ -165,7 +166,7 @@ public class GUI implements AlarmClientModelListener
             setErrorMessage(null);
         else
             setErrorMessage(Messages.WaitingForServer);
-        
+
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
         parent.addDisposeListener(new DisposeListener()
@@ -238,7 +239,7 @@ public class GUI implements AlarmClientModelListener
                 // Ignore, use default
             }
         }
-        
+
         // TODO Sync the table's sorting
         // Tables are currently separate. Sorting one table by 'time' should
         // probably cause both tables to sort by time.
@@ -266,7 +267,7 @@ public class GUI implements AlarmClientModelListener
 			}
 		};
 		filter_history.loadSettings();
-		
+
         // Clear filter, un-select all items
         unselect.addSelectionListener(new SelectionAdapter()
         {
@@ -287,12 +288,12 @@ public class GUI implements AlarmClientModelListener
     {
         if (settings == null)
             return;
-        
+
         final Table table = active_table_viewer.getTable();
         final TableColumn sort_column = table.getSortColumn();
         if (sort_column == null)
             return;
-        
+
         final int col_count = table.getColumnCount();
         for (int column=0; column<col_count; ++column)
             if (table.getColumn(column) == sort_column)
@@ -305,8 +306,8 @@ public class GUI implements AlarmClientModelListener
 
     /** Add the sash element for active alarms
      *  @param sash SashForm
-     *  @param sort_column 
-     *  @param sort_up 
+     *  @param sort_column
+     *  @param sort_up
      */
     private void addActiveAlarmSashElement(final SashForm sash, final int sort_column, final boolean sort_up)
     {
@@ -352,8 +353,8 @@ public class GUI implements AlarmClientModelListener
 
     /** Add the sash element for acknowledged alarms
      *  @param sash SashForm
-     *  @param sort_column 
-     *  @param sort_up 
+     *  @param sort_column
+     *  @param sort_up
      */
     private void addAcknowledgedAlarmSashElement(final SashForm sash, final int sort_column, final boolean sort_up)
     {
@@ -393,8 +394,8 @@ public class GUI implements AlarmClientModelListener
 
     /** Create a table viewer for displaying alarms
      *  @param parent Parent widget, uses GridLayout
-     *  @param sort_column 
-     *  @param sort_up 
+     *  @param sort_column
+     *  @param sort_up
      *  @return TableViewer, still needs input
      */
     private TableViewer createAlarmTable(final Composite parent, final int sort_column, final boolean sort_up)
@@ -406,7 +407,7 @@ public class GUI implements AlarmClientModelListener
                 new GridData(SWT.FILL, SWT.FILL, true, true, parent_layout.numColumns, 1));
 
         // Auto-size table columns
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
 
         final TableViewer table_viewer = new TableViewer(table_parent,
@@ -577,7 +578,7 @@ public class GUI implements AlarmClientModelListener
             final AlarmTreePV pv, final boolean parent_changed)
     {
         gui_update.trigger();
-        
+
         if (model.isServerAlive() && have_error_message)
         {   // Clear error message now that we have info from the alarm server
             display.asyncExec(new Runnable()

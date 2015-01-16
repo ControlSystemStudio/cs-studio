@@ -273,7 +273,7 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 		Pattern strokePattern = Pattern.compile("(?i)" + CSSConstants.CSS_STROKE_PROPERTY + ":" + svgOldColor);
 		String fillReplace = CSSConstants.CSS_FILL_PROPERTY + ":" + svgNewColor;
 		String strokeReplace = CSSConstants.CSS_STROKE_PROPERTY + ":" + svgNewColor;
-		
+
 		// Search for global style element <style type="text/css"></style>
 		NodeList styleList = doc.getElementsByTagName("style");
 		for (int i = 0; i < styleList.getLength(); i++) {
@@ -290,17 +290,19 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 						data = matcher.replaceAll(fillReplace);
 						matcher = strokePattern.matcher(data);
 						data = matcher.replaceAll(strokeReplace);
+						data = replaceRGB(oldColor, newColor, data);
 						cdata.setData(data);
 					}
 				}
 			}
 		}
-		recursiveCC(doc.getDocumentElement(), fillPattern, strokePattern,
-				fillReplace, strokeReplace);
+		recursiveCC(doc.getDocumentElement(), oldColor, newColor, fillPattern,
+				strokePattern, fillReplace, strokeReplace);
 	}
-	
-	private void recursiveCC(Element elmt, Pattern fillPattern,
-			Pattern strokePattern, String fillReplace, String strokeReplace) {
+
+	private void recursiveCC(Element elmt, Color oldColor, Color newColor,
+			Pattern fillPattern, Pattern strokePattern, String fillReplace,
+			String strokeReplace) {
 		if (elmt == null)
 			return;
 		Matcher matcher = null;
@@ -309,8 +311,8 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 			for (int i = 0; i < styleList.getLength(); i++) {
 				Node child = styleList.item(i);
 				if (child instanceof SVGStylableElement) {
-					recursiveCC((Element) child, fillPattern, strokePattern,
-							fillReplace, strokeReplace);
+					recursiveCC((Element) child, oldColor, newColor,
+							fillPattern, strokePattern, fillReplace, strokeReplace);
 				}
 			}
 		}
@@ -320,10 +322,38 @@ public class SimpleImageTranscoder extends SVGAbstractTranscoder {
 			style = matcher.replaceAll(fillReplace);
 			matcher = strokePattern.matcher(style);
 			style = matcher.replaceAll(strokeReplace);
+			style = replaceRGB(oldColor, newColor, style);
 			elmt.setAttribute("style", style);
 		}
 	}
-	
+
+	private String replaceRGB(Color oldColor, Color newColor, String data) {
+		Pattern rgbPattern = Pattern
+				.compile("(?i)rgb\\(([0-9]+\\.?[0-9]*)%,([0-9]+\\.?[0-9]*)%,([0-9]+\\.?[0-9]*)%\\)");
+		int nr = Math.round(newColor.getRed() / 255f * 100);
+		int ng = Math.round(newColor.getGreen() / 255f * 100);
+		int nb = Math.round(newColor.getBlue() / 255f * 100);
+		String rgbReplace = "rgb(" + nr + "%," + ng + "%," + nb + "%)";
+		Matcher matcher = rgbPattern.matcher(data);
+		StringBuilder sb = new StringBuilder();
+		int previousEnd = 0;
+		while (matcher.find()) {
+			int r = Math.round(Float.valueOf(matcher.group(1)) * 255 / 100);
+			int g = Math.round(Float.valueOf(matcher.group(2)) * 255 / 100);
+			int b = Math.round(Float.valueOf(matcher.group(3)) * 255 / 100);
+			if (r == oldColor.getRed() && g == oldColor.getGreen()
+					&& b == oldColor.getBlue()) {
+				int newStart = matcher.start();
+				int newEnd = matcher.end();
+				sb.append(data.subSequence(previousEnd, newStart));
+				sb.append(rgbReplace);
+				previousEnd = newEnd;
+			}
+		}
+		sb.append(data.subSequence(previousEnd, data.length()));
+		return sb.toString();
+	}
+
 	private String toHexString(int r, int g, int b) {
 		return "#" + toSVGHexValue(r) + toSVGHexValue(g) + toSVGHexValue(b);
 	}

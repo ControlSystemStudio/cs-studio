@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 /** Undo-able command to change a PV item's request type
  *  @author Kay Kasemir
  */
-public class ChangeVisibilityCommand implements IUndoableCommand
+public class ChangeVisibilityCommand extends UndoableAction
 {
     final private ModelItem item;
     final private boolean old_visibility, new_visibility;
@@ -26,44 +26,31 @@ public class ChangeVisibilityCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_trace_type New value
      */
-    public ChangeVisibilityCommand(final OperationsManager operations_manager,
+    public ChangeVisibilityCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final boolean visible)
     {
+        super(Messages.TraceVisibility);
         this.item = item;
         this.old_visibility = item.isVisible();
         this.new_visibility = visible;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
-		AxisConfig axis = item.getAxis();
-		// check if this is the last/only visible item on the axis
-		if (item.getModel().countActiveItemsOnAxis(axis) < 2) {
-			axis.setVisible(new_visibility);
-		}
+		final AxisConfig axis = item.getAxis();
 		item.setVisible(new_visibility);
+		axis.setVisible(item.getModel().get().hasAxisActiveItems(axis));
     }
 
     /** {@inheritDoc} */
     @Override
     public void undo()
     {
-		AxisConfig axis = item.getAxis();
-		// check if this is the last/only visible item on the axis
-		if (item.getModel().countActiveItemsOnAxis(axis) < 2) {
-			axis.setVisible(old_visibility);
-		}
+		final AxisConfig axis = item.getAxis();
 		item.setVisible(old_visibility);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TraceVisibility;
+        axis.setVisible(item.getModel().get().hasAxisActiveItems(axis));
     }
 }
