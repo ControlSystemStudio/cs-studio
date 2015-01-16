@@ -66,9 +66,7 @@ public class SavedScalarValue extends SavedValue
         if ((pv_type instanceof VDouble) || (pv_type instanceof VFloat))
             pv.write(Double.parseDouble(saved_value));
         else if (pv_type instanceof VNumber)
-            // Parse as double to allow "1e10" or "100.0"
-            // If it's "3.14", only "3" will of course be restored.
-            pv.write((long)Double.parseDouble(saved_value));
+            pv.write(getSavedNumber(saved_value).longValue());
         else // Write as text
             pv.write(saved_value);
     }

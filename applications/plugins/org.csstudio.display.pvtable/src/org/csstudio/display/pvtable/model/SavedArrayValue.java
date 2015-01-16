@@ -125,7 +125,7 @@ public class SavedArrayValue extends SavedValue
             final int N = saved_value.size();
             final double[] data = new double[N];
             for (int i=0; i<N; ++i)
-                data[i] = Double.parseDouble(saved_value.get(i));
+                data[i] = getSavedNumber(saved_value.get(i)).doubleValue();
             pv.write(data);
         }
         else if (pv_type instanceof VNumberArray  ||  pv_type instanceof VEnumArray)
@@ -134,10 +134,8 @@ public class SavedArrayValue extends SavedValue
             // so int[] is the widest type
             final int N = saved_value.size();
             final int[] data = new int[N];
-            // Parse as double to allow "1e10" or "100.0"
-            // If it's "3.14", only "3" will of course be restored.
             for (int i=0; i<N; ++i)
-                data[i] = (int) Double.parseDouble(saved_value.get(i));
+                data[i] = getSavedNumber(saved_value.get(i)).intValue();
             pv.write(data);
         }
         else
