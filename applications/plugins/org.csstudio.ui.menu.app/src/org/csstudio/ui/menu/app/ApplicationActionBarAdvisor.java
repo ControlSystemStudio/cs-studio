@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.ui.menu.app;
 
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.ICoolBarManager;
@@ -21,6 +22,9 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.registry.ActionSetRegistry;
+import org.eclipse.ui.internal.registry.IActionSetDescriptor;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.CoolItemGroupMarker;
 
@@ -39,6 +43,7 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
+@SuppressWarnings("restriction")  // For removing internal actions
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
 	/** Toolbar ID of switch user and logout toolbar */
@@ -53,6 +58,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     {
         super(configurer);
         window = configurer.getWindowConfigurer().getWindow();
+
+        // Remove menu items that are not suitable in CS-Studio
+        removeActionById("org.eclipse.ui.edit.text.actionSet.navigation");
+        removeActionById("org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo");
+        removeActionById("org.eclipse.ui.edit.text.actionSet.annotationNavigation");
     }
 
     /** Create actions.
@@ -124,4 +134,23 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         coolbar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         coolbar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.GROUP_EDITOR));
     }
+
+    /**
+     * Remove the menu item specified.
+     * @param actionSetId The ID of the action to be removed.
+     */
+    private void removeActionById(String actionSetId) {
+        // Use of an internal API is required to remove actions that are provided
+        // by including Eclipse bundles.
+        ActionSetRegistry reg = WorkbenchPlugin.getDefault().getActionSetRegistry();
+        IActionSetDescriptor[] actionSets = reg.getActionSets();
+        for (int i = 0; i <actionSets.length; i++) {
+            if(actionSets[i].getId().equals(actionSetId)) {
+                IExtension ext = actionSets[i].getConfigurationElement().getDeclaringExtension();
+                reg.removeExtension(ext, new Object[] { actionSets[i] });
+                return;
+            }
+        }
+    }
+
 }
