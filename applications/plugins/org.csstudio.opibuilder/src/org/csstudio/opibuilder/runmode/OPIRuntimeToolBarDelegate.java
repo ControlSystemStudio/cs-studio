@@ -32,6 +32,8 @@ public class OPIRuntimeToolBarDelegate{
      * The workbench page; <code>null</code> until <code>init</code> is called.
      */
     private IWorkbenchPage page;
+    
+    private IToolBarManager toolbar;
 	
 	private NavigateOPIsAction backwardAction, forwardAction;
 	private PartZoomInAction partZoomInAction;
@@ -50,7 +52,7 @@ public class OPIRuntimeToolBarDelegate{
 	 }
 	
 	public void contributeToToolBar(IToolBarManager toolBarManager) {
-
+		toolbar = toolBarManager;
 		toolBarManager.add(partZoomInAction);
 		toolBarManager.add(partZoomOutAction);
 		toolBarManager.add(partZoomComboContributionItem);
@@ -104,5 +106,23 @@ public class OPIRuntimeToolBarDelegate{
      */
     public IActionBars getActionBars() {
         return bars;
+    }
+    
+    /**
+     * Disposes of the elements which are not disposed automatically.
+     */
+    public void dispose() {
+        if (toolbar != null) {
+            toolbar.remove(partZoomInAction.getId());
+            toolbar.remove(partZoomOutAction.getId());
+            toolbar.remove(partZoomComboContributionItem);
+            toolbar.remove(backwardAction.getId());
+            toolbar.remove(forwardAction.getId());
+        }
+        backwardAction.dispose();
+        forwardAction.dispose();
+        partZoomComboContributionItem.dispose();
+        partZoomInAction.dispose();
+        partZoomOutAction.dispose();
     }
 }
