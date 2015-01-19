@@ -43,7 +43,7 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings("restriction")  // For removing internal actions
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
 	/** Toolbar ID of switch user and logout toolbar */
@@ -59,7 +59,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         super(configurer);
         window = configurer.getWindowConfigurer().getWindow();
 
-        // Remove useless menu items
+        // Remove menu items that are not suitable in CS-Studio
         removeActionById("org.eclipse.ui.edit.text.actionSet.navigation");
         removeActionById("org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo");
         removeActionById("org.eclipse.ui.edit.text.actionSet.annotationNavigation");
@@ -140,6 +140,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
      * @param actionSetId The ID of the action to be removed.
      */
     private void removeActionById(String actionSetId) {
+        // Use of an internal API is required to remove actions that are provided
+        // by including Eclipse bundles.
         ActionSetRegistry reg = WorkbenchPlugin.getDefault().getActionSetRegistry();
         IActionSetDescriptor[] actionSets = reg.getActionSets();
         for (int i = 0; i <actionSets.length; i++) {
