@@ -20,15 +20,16 @@ import org.osgi.framework.BundleContext;
 /** Plugin Activator
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Activator implements BundleActivator
 {
     final public static String ID = "org.csstudio.utility.pv.vtype";
-    
+
     @Override
     public void start(final BundleContext context) throws Exception
     {
         final Logger logger = Logger.getLogger(getClass().getName());
-        
+
         // Configure PVPool from Eclipse registry
         final IConfigurationElement[] configs =
                 Platform.getExtensionRegistry().getConfigurationElementsFor(PVFactory.EXTENSION_POINT);

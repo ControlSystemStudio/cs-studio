@@ -22,6 +22,7 @@ import org.epics.vtype.Display;
  *  <p>Based on ideas from org.epics.pvmanager.jca, Gabriele Carcassi
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTimeWrapper<T_DBR> implements Display
 {
     final private GR metadata;
@@ -32,7 +33,7 @@ public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTime
         super(dbr);
         this.metadata = metadata;
     }
-    
+
     @Override
     public Double getLowerDisplayLimit()
     {

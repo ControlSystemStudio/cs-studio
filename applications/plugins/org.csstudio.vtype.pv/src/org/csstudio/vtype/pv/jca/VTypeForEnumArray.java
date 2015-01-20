@@ -24,6 +24,7 @@ import org.epics.vtype.VTypeToString;
  *  <p>Based on ideas from org.epics.pvmanager.jca, Gabriele Carcassi
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class VTypeForEnumArray extends DBRAlarmTimeWrapper<DBR_TIME_Enum> implements VEnumArray
 {
     final private LABELS labels;
@@ -74,7 +75,7 @@ public class VTypeForEnumArray extends DBRAlarmTimeWrapper<DBR_TIME_Enum> implem
             {
                 return enum_indices.length;
             }
-            
+
             @Override
             public int getInt(final int index)
             {

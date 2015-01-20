@@ -42,13 +42,14 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
 	 * @param start the start time of the data window
 	 * @param end the end time of the data window 
 	 * @param points the number of requested points
+	 * @param listener the listener that is notified when the iterator is closed
 	 * 
 	 * @throws IOException if there was an error during the data fetch process
 	 * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
 	 */
 	public ApplianceStatisticsValueIterator(ApplianceArchiveReader reader, String name, Timestamp start,
-			Timestamp end, int points) throws ArchiverApplianceException, IOException {
-		super(reader, name, start, end, points);
+			Timestamp end, int points, IteratorListener listener) throws ArchiverApplianceException, IOException {
+		super(reader, name, start, end, points, listener);
 	}
 	
 	/*

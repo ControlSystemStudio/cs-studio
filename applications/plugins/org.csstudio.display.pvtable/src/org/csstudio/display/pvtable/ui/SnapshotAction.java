@@ -22,13 +22,13 @@ public class SnapshotAction extends PVTableAction
         super(Messages.Snapshot, "icons/snapshot.png", viewer); //$NON-NLS-1$
         setToolTipText(Messages.Snapshot_TT);
     }
-    
+
+    @Override
     public void run()
     {
         final PVTableModel model = (PVTableModel) viewer.getInput();
         if (model == null)
             return;
         model.save();
-        viewer.setSelection(null);
     }
 }

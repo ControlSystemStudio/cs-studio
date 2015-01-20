@@ -20,3 +20,8 @@ record(waveform, "BL7:test_ls")
     field(FTVL, "CHAR")
     field(NELM, "10")
 }
+
+record(longin, "long")
+{
+    field(PINI, "YES")
+}

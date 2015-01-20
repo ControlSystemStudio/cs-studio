@@ -15,10 +15,11 @@ import org.epics.vtype.VTypeToString;
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class VTypeForFloat extends VTypeTimeAlarmDisplayBase implements VFloat
 {
     final private float value;
-    
+
     public VTypeForFloat(final PVStructure struct)
     {
         super(struct);

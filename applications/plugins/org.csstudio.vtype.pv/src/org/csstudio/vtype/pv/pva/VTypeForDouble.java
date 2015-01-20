@@ -15,10 +15,11 @@ import org.epics.vtype.VTypeToString;
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class VTypeForDouble extends VTypeTimeAlarmDisplayBase implements VDouble
 {
     final private double value;
-    
+
     public VTypeForDouble(final PVStructure struct)
     {
         super(struct);

@@ -13,10 +13,11 @@ import org.csstudio.vtype.pv.PVFactory;
 /** Factory for creating {@link JCA_PV}s
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class JCA_PVFactory implements PVFactory
 {
     final public static String TYPE = "ca";
-    
+
     @Override
     public String getType()
     {
