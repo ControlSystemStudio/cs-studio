@@ -36,7 +36,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
 	private final boolean useStatistics;
 	
 	private Map<ApplianceValueIterator, ApplianceArchiveReader> iterators = Collections.synchronizedMap(
-	           new WeakHashMap<>()); 
+	           new WeakHashMap<ApplianceValueIterator, ApplianceArchiveReader>()); 
 			
 	/**
 	 * Constructor that sets appliance archiver reader url.
