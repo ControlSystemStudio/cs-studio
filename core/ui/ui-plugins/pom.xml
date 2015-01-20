@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>ui</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
   <groupId>org.csstudio</groupId>
@@ -11,5 +11,8 @@
   <packaging>pom</packaging>
   <modules>
   	<module>org.csstudio.ui.util</module>
+  	<module>org.csstudio.ui.help</module>
+  	<module>org.csstudio.ui.menu</module>
+  	<module>org.csstudio.ui.preferences</module>
   </modules>
 </project>

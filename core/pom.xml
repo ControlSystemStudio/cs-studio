@@ -209,6 +209,7 @@
 		<module>diirt</module>
 		<module>base</module>
 		<module>platform</module>
+		<module>ui</module>
 	</modules>
 
 
