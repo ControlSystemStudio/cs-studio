@@ -5,11 +5,11 @@
     <artifactId>core</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
-  <artifactId>base</artifactId>
+  <groupId>org.csstudio</groupId>
+  <artifactId>ui-plugins</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-  <module>base-plugins</module>
-  <module>base-features</module>
+  	<module>org.csstudio.ui.util</module>
   </modules>
-  <groupId>org.csstudio</groupId>
 </project>

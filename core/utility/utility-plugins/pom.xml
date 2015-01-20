@@ -8,7 +8,6 @@
   <artifactId>utility-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
-  	<module>org.csstudio.ui.util</module>
   	<module>org.csstudio.utility.batik</module>
   	<module>org.csstudio.utility.pv</module>
   	<module>org.csstudio.utility.pv.epics</module>
