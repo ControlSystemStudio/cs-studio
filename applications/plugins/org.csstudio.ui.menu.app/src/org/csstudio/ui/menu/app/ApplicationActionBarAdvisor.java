@@ -42,6 +42,7 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
  *
  *  @author Kay Kasemir
  *  @author Xihui Chen
+ *  @author mfurseman Remove Eclipse menu items that don't apply
  */
 @SuppressWarnings("restriction")  // For removing internal actions
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
@@ -54,6 +55,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 	private IWorkbenchAction lock_toolbar, edit_actionsets, save;
 
 	/** Initialize */
+    @SuppressWarnings("nls")
     public ApplicationActionBarAdvisor(final IActionBarConfigurer configurer)
     {
         super(configurer);
