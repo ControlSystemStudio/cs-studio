@@ -119,6 +119,28 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
         });
     }
 
+    /** Round value range up/down to add a little room above & below the exact range.
+     *  This results in "locking" to a nice looking range for a while
+     *  until a new sample outside of the rounded range is added.
+     *
+     *  @param low Low and
+     *  @param high high end of value range
+     *  @return Adjusted range
+     */
+    public ValueRange roundValueRange(final double low, final double high)
+    {
+        final double size = Math.abs(high-low);
+        if (size > 0)
+        {   // Add 2 digits to the 'tight' order of magnitude
+            final double order_of_magnitude = Math.floor(Log10.log10(size))-2;
+            final double round = Math.pow(10, order_of_magnitude);
+            return new ValueRange(Math.floor(low / round) * round,
+                                         Math.ceil(high / round) * round);
+        }
+        else
+            return new ValueRange(low, high);
+    }
+
     /** Stagger the range of axes */
     public void stagger()
     {
@@ -188,6 +210,11 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                // using a total of N*range.
                low -= (N-i-1)*span;
                high += i*span;
+
+               final ValueRange rounded = roundValueRange(low, high);
+               low = rounded.getLow();
+               high = rounded.getHigh();
+
                if (axis.isLogarithmic())
                {   // Revert from log space
                    low = Log10.pow10(low);
@@ -200,6 +227,9 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                    new_ranges.set(i, new AxisRange<Double>(low, high));
             }
 
+            // 'Stagger' tends to be on-demand,
+            // or executed infrequently as archived data arrives after a zoom operation
+            // -> Use undo, which also notifies listeners
             plot.getUndoableActionManager().execute(new ChangeAxisRanges<>(plot, Messages.Zoom_Stagger, y_axes, original_ranges, new_ranges));
         });
     }
@@ -348,17 +378,19 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                     low = Log10.log10(low);
                     high = Log10.log10(high);
                 }
-                // Add a little room above & below the exact value range
-                final double extra = (high - low) * 0.01;
-                low = low - extra;
-                high = high + extra;
+                final ValueRange rounded = roundValueRange(low, high);
+                low = rounded.getLow();
+                high = rounded.getHigh();
                 if (axis.isLogarithmic())
                 {
                     low = Log10.pow10(low);
                     high = Log10.pow10(high);
                 }
+                // Autoscale happens 'all the time'.
+                // Do not use undo, but notify listeners.
                 if (low < high)
-                   axis.setValueRange(low, high);
+                    if (axis.setValueRange(low, high))
+                        plot.fireYAxisChange(axis);
             }
             catch (Exception ex)
             {
