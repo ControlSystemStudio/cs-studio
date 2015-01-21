@@ -17,7 +17,7 @@ import org.epics.pvaccess.client.Channel;
 import org.epics.pvaccess.client.Channel.ConnectionState;
 import org.epics.pvaccess.client.ChannelProvider;
 import org.epics.pvaccess.client.ChannelRequester;
-import org.epics.pvaccess.client.CreateRequest;
+import org.epics.pvdata.copy.CreateRequest;
 import org.epics.pvdata.monitor.Monitor;
 import org.epics.pvdata.monitor.MonitorElement;
 import org.epics.pvdata.monitor.MonitorRequester;
@@ -97,7 +97,9 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
     public void channelCreated(final Status status, final Channel channel)
     {
         if (status.isSuccess())
+        {
             logger.log(Level.FINE, "Channel {0} created", channel.getChannelName());
+        }
         else
             logger.log(Level.WARNING, "Channel {0} status {1}",
                                    new Object[] { channel.getChannelName(), status.getMessage() });

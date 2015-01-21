@@ -18,6 +18,7 @@ import org.epics.pvaccess.client.ChannelGetRequester;
 import org.epics.pvdata.misc.BitSet;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Status;
+import org.epics.pvdata.pv.Structure;
 import org.epics.vtype.VType;
 
 /** A {@link ChannelGetRequester} for reading a value from a {@link PVA_PV},
@@ -29,8 +30,6 @@ import org.epics.vtype.VType;
 class PVGetHandler extends PVRequester implements ChannelGetRequester, Future<VType>
 {
     final private PVA_PV pv;
-
-    private volatile PVStructure data; // TODO Remove in 4.4 when getDone receives the data
 
     final private CountDownLatch updates = new CountDownLatch(1);
     private volatile VType value = null;
@@ -45,7 +44,7 @@ class PVGetHandler extends PVRequester implements ChannelGetRequester, Future<VT
     // ChannelGetRequester
     @Override
     public void channelGetConnect(final Status status, final ChannelGet channelGet,
-            final PVStructure pvStructure, final BitSet bitSet)
+            final Structure structure)
     {
         if (! status.isSuccess())
         {
@@ -54,18 +53,13 @@ class PVGetHandler extends PVRequester implements ChannelGetRequester, Future<VT
         }
         else
         {
-            data = pvStructure;
-            channelGet.get(true);
+            channelGet.get();
         }
     }
 
-    // TODO: Update to 4.4
-    // In 4.3, channelGetConnect() receives the structure which getDone() will see filled with data.
-    // In 4.4., getDone() will receive the filled structure
-
     // ChannelGetRequester
     @Override
-    public void getDone(final Status status)
+    public void getDone(final Status status, final ChannelGet channelGet, final PVStructure data, final BitSet bitSet)
     {
         if (! status.isSuccess())
             error = new Exception("Get failed for " + pv.getName() + ": " + status);

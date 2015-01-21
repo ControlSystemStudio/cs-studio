@@ -42,9 +42,9 @@ class PVStructureHelper
     public static VType getVType(final PVStructure struct) throws Exception
     {
         final String type = struct.getStructure().getID();
-        if (type.equals("uri:ev4:nt/2012/pwd:NTScalar"))
+        if (type.equals("epics:nt/NTScalar:1.0"))
             return decodeNTScalar(struct);
-        if (type.equals("uri:ev4:nt/2012/pwd:NTEnum"))
+        if (type.equals("epics:nt/NTEnum:1.0"))
             return new VTypeForEnum(struct);
         return ValueFactory.newVString(type,
                 ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown type"),

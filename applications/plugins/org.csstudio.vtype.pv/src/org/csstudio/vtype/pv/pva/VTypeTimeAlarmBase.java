@@ -26,7 +26,9 @@ import org.epics.vtype.VType;
 class VTypeTimeAlarmBase implements Time, Alarm
 {
     final private static Timestamp NO_TIME = Timestamp.of(0, 0);
+    final private static Integer NO_USERTAG = Integer.valueOf(0);
     final private Timestamp timestamp;
+    final private Integer usertag;
     final private AlarmSeverity severity;
     final private String message;
 
@@ -42,9 +44,14 @@ class VTypeTimeAlarmBase implements Time, Alarm
                 timestamp = NO_TIME;
             else
                 timestamp = Timestamp.of(sec.get(), nano.get());
+            final PVInt user = time.getIntField("userTag");
+            usertag = user == null ? NO_USERTAG : user.get();
         }
         else
+        {
             timestamp = NO_TIME;
+            usertag = NO_USERTAG;
+        }
 
         // Decode alarm_t alarm
         final PVStructure alarm = struct.getStructureField("alarm");
@@ -78,8 +85,7 @@ class VTypeTimeAlarmBase implements Time, Alarm
     @Override
     public Integer getTimeUserTag()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return usertag;
     }
 
     // Time
