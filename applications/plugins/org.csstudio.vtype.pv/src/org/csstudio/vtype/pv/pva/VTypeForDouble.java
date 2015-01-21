@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
+import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.vtype.VDouble;
 import org.epics.vtype.VType;
@@ -23,7 +24,7 @@ class VTypeForDouble extends VTypeTimeAlarmDisplayBase implements VDouble
     public VTypeForDouble(final PVStructure struct)
     {
         super(struct);
-        value = struct.getDoubleField("value").get();
+        value = PVStructureHelper.convert.toDouble((PVScalar) struct.getSubField("value"));
     }
 
     @Override

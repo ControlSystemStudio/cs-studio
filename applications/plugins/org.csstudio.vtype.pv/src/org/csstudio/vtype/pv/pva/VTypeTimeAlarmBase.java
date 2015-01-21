@@ -35,16 +35,16 @@ class VTypeTimeAlarmBase implements Time, Alarm
     VTypeTimeAlarmBase(final PVStructure struct)
     {
         // Decode time_t timeStamp
-        final PVStructure time = struct.getStructureField("timeStamp");
+        final PVStructure time = struct.getSubField(PVStructure.class, "timeStamp");
         if (time != null)
         {
-            final PVLong sec = time.getLongField("secondsPastEpoch");
-            final PVInt nano = time.getIntField("nanoSeconds");
+            final PVLong sec = time.getSubField(PVLong.class, "secondsPastEpoch");
+            final PVInt nano = time.getSubField(PVInt.class, "nanoSeconds");
             if (sec == null || nano == null)
                 timestamp = NO_TIME;
             else
                 timestamp = Timestamp.of(sec.get(), nano.get());
-            final PVInt user = time.getIntField("userTag");
+            final PVInt user = time.getSubField(PVInt.class, "userTag");
             usertag = user == null ? NO_USERTAG : user.get();
         }
         else
@@ -54,15 +54,15 @@ class VTypeTimeAlarmBase implements Time, Alarm
         }
 
         // Decode alarm_t alarm
-        final PVStructure alarm = struct.getStructureField("alarm");
+        final PVStructure alarm = struct.getSubField(PVStructure.class, "alarm");
         if (alarm != null)
         {
-            PVInt code = alarm.getIntField("severity");
+            PVInt code = alarm.getSubField(PVInt.class, "severity");
             severity = code == null
                 ? AlarmSeverity.UNDEFINED
                 : AlarmSeverity.values()[code.get()];
 
-            code = alarm.getIntField("status");
+            code = alarm.getSubField(PVInt.class, "status");
             message = code == null
                 ? AlarmStatus.UNDEFINED.name()
                 : AlarmStatus.values()[code.get()].name();

@@ -9,6 +9,7 @@ package org.csstudio.vtype.pv.pva;
 
 import java.util.List;
 
+import org.epics.pvdata.pv.PVInt;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VType;
@@ -26,8 +27,8 @@ class VTypeForEnum extends VTypeTimeAlarmBase implements VEnum
     public VTypeForEnum(final PVStructure struct) throws Exception
     {
         super(struct);
-        final PVStructure section = struct.getStructureField("value");
-        value = section.getIntField("index").get();
+        final PVStructure section = struct.getSubField(PVStructure.class, "value");
+        value = section.getSubField(PVInt.class, "index").get();
 
         labels = PVStructureHelper.getStrings(section, "choices");
     }
