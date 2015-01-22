@@ -69,8 +69,8 @@ class VTypeTimeAlarmBase implements Time, Alarm
         }
         else
         {
-            severity = AlarmSeverity.UNDEFINED;
-            message = AlarmStatus.UNDEFINED.name();
+            severity = AlarmSeverity.NONE;
+            message = AlarmStatus.NONE.name();
         }
     }
 

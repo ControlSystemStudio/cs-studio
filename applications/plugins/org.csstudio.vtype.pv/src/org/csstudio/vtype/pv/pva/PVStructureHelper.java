@@ -21,7 +21,6 @@ import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
-import org.epics.pvdata.pv.StringArrayData;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
@@ -63,6 +62,13 @@ class PVStructureHelper
         if (type.equals("epics:nt/NTScalarArray:1.0"))
             return decodeNTArray(struct);
 
+        // Handle data that contains a "value", even though not marked as NT*
+        final Field value_field = struct.getStructure().getField("value");
+        if (value_field instanceof Scalar)
+            return decodeNTScalar(struct);
+        else if (value_field instanceof ScalarArray)
+            return decodeNTArray(struct);
+
         // Create string that indicates name of unknown type
         return ValueFactory.newVString(struct.getStructure().toString(),
                 ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown type"),
@@ -71,10 +77,10 @@ class PVStructureHelper
 
     private static VType decodeNTScalar(final PVStructure struct) throws Exception
     {
-        final Field field = struct.getStructure().getField("value");
-        if (! (field instanceof Scalar)) // Also handles field == null
+        final PVScalar field = struct.getSubField(PVScalar.class, "value");
+        if (field == null)
             throw new Exception("Expected struct with scalar 'value', got " + struct);
-        final ScalarType type = ((Scalar) field).getScalarType();
+        final ScalarType type = field.getScalar().getScalarType();
         switch (type)
         {
         case pvDouble:
@@ -110,24 +116,25 @@ class PVStructureHelper
         final ScalarType type = ((ScalarArray) field).getElementType();
         switch (type)
         {
-//        case pvDouble:
-//            return new VTypeForDouble(struct);
-//        case pvFloat:
+        // TODO Implement all array types
 //            return new VTypeForFloat(struct);
+//            return new VTypeForLong(struct);
+//            return new VTypeForShort(struct);
+//            return new VTypeForByte(struct);
+        case pvDouble:
+        case pvFloat:
+            return new VTypeForDouble(struct);
         case pvInt:
         case pvUInt:
+        case pvLong:
+        case pvULong:
+        case pvShort:
+        case pvUShort:
+        case pvByte:
+        case pvUByte:
             return new VTypeForIntArray(struct);
-//        case pvLong:
-//        case pvULong:
-//            return new VTypeForLong(struct);
-//        case pvString:
-//            return new VTypeForString(struct);
-//        case pvShort:
-//        case pvUShort:
-//            return new VTypeForShort(struct);
-//        case pvByte:
-//        case pvUByte:
-//            return new VTypeForByte(struct);
+        case pvString:
+            return new VTypeForStringArray(struct);
         default:
             return ValueFactory.newVString(struct.getStructure().toString(),
                     ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown scalar type"),
@@ -156,14 +163,11 @@ class PVStructureHelper
      */
     public static List<String> getStrings(final PVStructure structure, final String name) throws Exception
     {
-        // TODO
-        final PVStringArray choices = (PVStringArray)
-                structure.getScalarArrayField(name, ScalarType.pvString);
-        int i=0, left = choices.getLength();
-        StringArrayData label_text = new StringArrayData();
-        // TODO Check result, call until left == 0?
-        choices.get(i, left, label_text);
-        return Arrays.asList(label_text.data);
+        final PVStringArray choices = structure.getSubField(PVStringArray.class, name);
+        final int length = choices.getLength();
+        final String[] labels = new String[length];
+        convert.toStringArray(choices, 0, length, labels, 0);
+        return Arrays.asList(labels);
     }
 
     /** @param field {@link PVField} to write
