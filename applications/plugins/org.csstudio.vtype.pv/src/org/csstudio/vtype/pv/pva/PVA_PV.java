@@ -228,9 +228,6 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
         {
             try
             {
-                // TODO Copy only changes?
-                // System.out.println(update.getChangedBitSet());
-                // System.out.println(struct);
                 handleValueUpdate(update.getPVStructure());
             }
             catch (Exception ex)

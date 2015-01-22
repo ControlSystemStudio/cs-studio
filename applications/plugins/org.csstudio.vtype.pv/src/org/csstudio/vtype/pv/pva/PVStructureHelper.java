@@ -116,23 +116,22 @@ class PVStructureHelper
         final ScalarType type = ((ScalarArray) field).getElementType();
         switch (type)
         {
-        // TODO Implement all array types
-//            return new VTypeForFloat(struct);
-//            return new VTypeForLong(struct);
-//            return new VTypeForShort(struct);
-//            return new VTypeForByte(struct);
         case pvDouble:
-        case pvFloat:
             return new VTypeForDouble(struct);
+        case pvFloat:
+            return new VTypeForFloat(struct);
         case pvInt:
         case pvUInt:
+            return new VTypeForIntArray(struct);
         case pvLong:
         case pvULong:
+            return new VTypeForLong(struct);
         case pvShort:
         case pvUShort:
+            return new VTypeForShort(struct);
         case pvByte:
         case pvUByte:
-            return new VTypeForIntArray(struct);
+            return new VTypeForByteArray(struct);
         case pvString:
             return new VTypeForStringArray(struct);
         default:
