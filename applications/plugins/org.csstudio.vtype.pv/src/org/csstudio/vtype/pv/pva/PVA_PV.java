@@ -272,9 +272,22 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
             if (current instanceof VEnum)
             {
                 final int index = enum_labels.indexOf(new_value);
-                if (index < 0)
-                    throw new Exception("Cannot obtain label's index for enum PV " + getName());
-                new_value = index;
+                if (index >= 0)
+                    new_value = index;
+                else
+                    if (new_value instanceof String)
+                    {   // Try parsing number from string
+                        try
+                        {
+                            new_value = Integer.valueOf((String) new_value);
+                        }
+                        catch (NumberFormatException ex)
+                        {
+                            throw new Exception("Cannot obtain index for enum PV " + getName() + " from value " + new_value);
+                        }
+                    }
+                    else
+                        throw new Exception("Cannot obtain label's index for enum PV " + getName() + " from value " + new_value);
             }
         }
 
