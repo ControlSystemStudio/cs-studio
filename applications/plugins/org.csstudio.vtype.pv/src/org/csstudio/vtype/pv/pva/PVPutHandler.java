@@ -66,7 +66,7 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
             // Locate the value field
             PVField field = write_structure.getSubField("value");
 
-            // It it enumerated? Write to index field
+            // Enumerated? Write to value.index
             if (field instanceof PVStructure  &&  "enum_t".equals(field.getField().getID()))
                 field = ((PVStructure)field).getSubField("index");
 

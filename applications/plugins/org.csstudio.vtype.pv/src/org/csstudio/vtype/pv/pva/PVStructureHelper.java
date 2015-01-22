@@ -9,6 +9,7 @@ package org.csstudio.vtype.pv.pva;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.Convert;
@@ -36,11 +37,16 @@ class PVStructureHelper
     final public static Convert convert = ConvertFactory.getConvert();
 
     /** @param struct {@link PVStructure} to read
+     *  @param field Specific field to read, i.e. don't go by NT* type
      *  @return {@link VType} for data in the structure
      *  @throws Exception on error
      */
-    public static VType getVType(final PVStructure struct) throws Exception
+    public static VType getVType(final PVStructure struct, Optional<String> field) throws Exception
     {
+        // TODO
+        if (field.isPresent())
+            System.out.println("Should extract " + field.get() + " from " + struct + " ...");
+
         final String type = struct.getStructure().getID();
         if (type.equals("epics:nt/NTScalar:1.0"))
             return decodeNTScalar(struct);

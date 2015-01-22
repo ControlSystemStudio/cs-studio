@@ -8,6 +8,7 @@
 package org.csstudio.vtype.pv.pva;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +31,8 @@ import org.epics.vtype.VType;
 
 /** pvAccess {@link PV}
  *
- *  <p>Based on ideas from msekoranja org.epics.pvmanager.pva.PVAChannelHandler
+ *  <p>Based on ideas from msekoranja org.epics.pvmanager.pva.PVAChannelHandler and PVATypeAdapter
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -40,11 +42,17 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
 
     final private static short priority = ChannelProvider.PRIORITY_DEFAULT;
 
-    /** Request used for reading all fields */
-    final private static PVStructure read_request = CreateRequest.create().createRequest("field()");
+    /** Request factory */
+    final private static CreateRequest request_creater = CreateRequest.create();
 
-    /** Request used for writing 'value' field */
-    final private static PVStructure write_request = CreateRequest.create().createRequest("field(value)");
+    /** Request used for reading */
+    final private PVStructure read_request;
+
+    /** Request used for writing */
+    final private PVStructure write_request;
+
+    /** Read specific sub-field of a structure? */
+    final private Optional<String> structure_field;
 
     /** PVAccess channel, also holds the 'base_name' */
     final private Channel channel;
@@ -63,8 +71,35 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
     PVA_PV(final String name, final String base_name) throws Exception
     {
         super(name);
+
+        // Analyze base_name, determine channel and request
+        final PVNameHelper request_helper = PVNameHelper.forName(base_name);
+
+        logger.log(Level.FINE, "PV {0}: Channel \"{1}\", request \"{2}\"",
+                   new Object[] { name, request_helper.getChannel(), request_helper.getReadRequest() });
+
+        read_request = request_creater.createRequest(request_helper.getReadRequest());
+        write_request = request_creater.createRequest(request_helper.getWriteRequest());
+        structure_field = checkForStructureField(read_request);
+
         channel = PVA_Context.getInstance().getProvider()
-                             .createChannel(base_name, this, priority);
+                             .createChannel(request_helper.getChannel(), this, priority);
+    }
+
+    /** Is read request for a specific sub-field of a structure?
+     *  @param read_request Read request
+     *  @return Name of specific structure field
+     */
+    private Optional<String> checkForStructureField(final PVStructure read_request)
+    {
+        final PVStructure element = read_request.getSubField(PVStructure.class, "field");
+        if (element != null)
+        {
+            final String[] fields = element.getStructure().getFieldNames();
+            if (fields.length == 1)
+                return Optional.of(fields[0]);
+        }
+        return Optional.empty();
     }
 
     // ChannelRequester
@@ -98,7 +133,7 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
     {
         if (status.isSuccess())
         {
-            logger.log(Level.FINE, "Channel {0} created", channel.getChannelName());
+            logger.log(Level.FINER, "Channel {0} created", channel.getChannelName());
         }
         else
             logger.log(Level.WARNING, "Channel {0} status {1}",
@@ -142,13 +177,9 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
             monitor.start();
     }
 
-    VType handleValueUpdate(final PVStructure update) throws Exception
+    VType handleValueUpdate(final PVStructure update_struct) throws Exception
     {
-        // TODO Copy only changes?
-        // System.out.println(update.getChangedBitSet());
-        // System.out.println(struct);
-
-        final VType value = PVStructureHelper.getVType(update);
+        final VType value = PVStructureHelper.getVType(update_struct, structure_field);
         if (value instanceof VEnum)
         {   // Remember most recent labels, but note that
             // not all updates will include the complete labels?!
@@ -169,6 +200,9 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
         {
             try
             {
+                // TODO Copy only changes?
+                // System.out.println(update.getChangedBitSet());
+                // System.out.println(struct);
                 handleValueUpdate(update.getPVStructure());
             }
             catch (Exception ex)
