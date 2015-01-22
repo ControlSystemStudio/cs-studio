@@ -63,8 +63,26 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
             final PVStructure write_structure = PVDataFactory.getPVDataCreate().createPVStructure(structure);
             final BitSet bit_set = new BitSet(write_structure.getNumberFields());
 
-            // Locate the value field
-            PVField field = write_structure.getSubField("value");
+            // Locate the value field at deepest level in structure
+            PVField field = null;
+            PVStructure search = write_structure;
+            while (search != null)
+            {
+                final PVField[] fields = search.getPVFields();
+                if (fields.length != 1)
+                    throw new Exception("Can only write to simple struct.element.value path, got " + structure);
+                if (fields[0].getFieldName().equals("value"))
+                {
+                    field = fields[0];
+                    break;
+                }
+                else if (fields[0] instanceof PVStructure)
+                    search = (PVStructure) fields[0];
+                else
+                    search = null;
+            }
+            if (field == null)
+                throw new Exception("Cannot locate 'value' to write in " + structure);
 
             // Enumerated? Write to value.index
             if (field instanceof PVStructure  &&  "enum_t".equals(field.getField().getID()))
