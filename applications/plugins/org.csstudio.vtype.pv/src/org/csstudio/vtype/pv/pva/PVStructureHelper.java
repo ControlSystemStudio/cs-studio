@@ -9,7 +9,6 @@ package org.csstudio.vtype.pv.pva;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.Convert;
@@ -41,35 +40,39 @@ class PVStructureHelper
      *  @return {@link VType} for data in the structure
      *  @throws Exception on error
      */
-    public static VType getVType(final PVStructure struct, final Optional<String> field) throws Exception
+    public static VType getVType(final PVStructure orig_struct, final int value_offset) throws Exception
     {
-        if (field.isPresent())
+        final PVStructure struct;
+
+        if (value_offset <= 0)
+            struct = orig_struct;
+        else
         {   // Extract field from struct
-            // Check if field is a structure similar to normative type with sub-fields "value" etc.
-            final PVStructure sub_struct = struct.getSubField(PVStructure.class, field.get());
-            if (sub_struct != null)
-                return decodeNTScalar(sub_struct, "value");
-            // TODO: Read just that field
-            return decodeNTScalar(struct, field.get());
+            struct = orig_struct.getSubField(PVStructure.class, value_offset);
+            if (struct == null)
+                throw new Exception("Cannot locate field offset " + value_offset + " in " + orig_struct);
         }
+
         // Handle normative types
         final String type = struct.getStructure().getID();
         if (type.equals("epics:nt/NTScalar:1.0"))
-            return decodeNTScalar(struct, "value");
+            return decodeNTScalar(struct);
         if (type.equals("epics:nt/NTEnum:1.0"))
             return new VTypeForEnum(struct);
+// TODO        if (type.equals("epics:nt/NTScalarArray:1.0"))
+//            return decodeNTArray(struct);
 
         // Create string that indicates name of unknown type
-        return ValueFactory.newVString(type,
+        return ValueFactory.newVString(struct.getStructure().toString(),
                 ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown type"),
                 ValueFactory.timeNow());
     }
 
-    private static VType decodeNTScalar(final PVStructure struct, final String fieldname) throws Exception
+    private static VType decodeNTScalar(final PVStructure struct) throws Exception
     {
-        final Field field = struct.getStructure().getField(fieldname);
+        final Field field = struct.getStructure().getField("value");
         if (! (field instanceof Scalar)) // Also handles field == null
-            throw new Exception("Expected struct with scalar '" + fieldname + "', got " + struct);
+            throw new Exception("Expected struct with scalar 'value', got " + struct);
         final ScalarType type = ((Scalar) field).getScalarType();
         switch (type)
         {
@@ -92,7 +95,7 @@ class PVStructureHelper
         case pvUByte:
             return new VTypeForByte(struct);
         default:
-            return ValueFactory.newVString(type.name(),
+            return ValueFactory.newVString(struct.getStructure().toString(),
                     ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown scalar type"),
                     ValueFactory.timeNow());
         }

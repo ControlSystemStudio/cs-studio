@@ -8,7 +8,6 @@
 package org.csstudio.vtype.pv.pva;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,8 +50,8 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
     /** Request used for writing */
     final private PVStructure write_request;
 
-    /** Read specific sub-field of a structure? */
-    final private Optional<String> structure_field;
+    /** Offset into received data that contains values selected by read_request */
+    final private int value_offset;
 
     /** PVAccess channel, also holds the 'base_name' */
     final private Channel channel;
@@ -80,32 +79,51 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
 
         read_request = request_creater.createRequest(request_helper.getReadRequest());
         write_request = request_creater.createRequest(request_helper.getWriteRequest());
-        structure_field = checkForStructureField(read_request);
+        value_offset = getValueOffset(read_request);
 
         channel = PVA_Context.getInstance().getProvider()
                              .createChannel(request_helper.getChannel(), this, priority);
     }
 
-    /** Is read request for a specific sub-(sub-sub)-field of a structure?
+    /** Get offset to requested value.
+     *
+     *  <p>If the request is empty ("field()"),
+     *  then this is 0 to use the start of the received PVStructures.
+     *
+     *  <p>If the request is "field(some_struct.some_subfield)",
+     *  this will return the value offset to "some_subfield"
+     *
      *  @param read_request Read request
-     *  @return Name of specific structure field
+     *  @return Value offset to use when decoding received data
+     *  @throws Exception on error
      */
-    private Optional<String> checkForStructureField(final PVStructure read_request)
+    private int getValueOffset(final PVStructure read_request) throws Exception
     {
         // read_request = structure
-        //                   structure field   <-- Marks this is a request for fields
-        //                        structure some_field
+        //                   structure field   <-- Marks this as a request for fields
+        //                        structure some_struct
         //                            structure some_subfield
-        // TODO: Locate the deepest sub field? Or follow a path?
-        // This currently only goes one level down just like pvmanager.pva
+        // Start at "field", then locate the deepest subfield
         PVStructure element = read_request.getSubField(PVStructure.class, "field");
-        if (element != null)
+        while (element != null)
         {
             final String[] fields = element.getStructure().getFieldNames();
             if (fields.length == 1)
-                return Optional.of(fields[0]);
+            {   // Descend further into structure
+                element = element.getSubField(PVStructure.class, fields[0]);
+            }
+            else if (fields.length == 0)
+            {   // Found the requested field
+                // Return offset-1 because read_request contains
+                // another "structure field" level that
+                // will be absent in the received data
+                return element.getFieldOffset() - 1;
+            }
+            else
+                throw new Exception("Can only handle request to single element, not " + read_request);
         }
-        return Optional.empty();
+
+        return 0;
     }
 
     // ChannelRequester
@@ -183,9 +201,13 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
             monitor.start();
     }
 
+    /** @param update_struct {@link PVStructure} received from a get or monitor
+     *  @return {@link VType} extracted from the received data
+     *  @throws Exception on error
+     */
     VType handleValueUpdate(final PVStructure update_struct) throws Exception
     {
-        final VType value = PVStructureHelper.getVType(update_struct, structure_field);
+        final VType value = PVStructureHelper.getVType(update_struct, value_offset);
         if (value instanceof VEnum)
         {   // Remember most recent labels, but note that
             // not all updates will include the complete labels?!
