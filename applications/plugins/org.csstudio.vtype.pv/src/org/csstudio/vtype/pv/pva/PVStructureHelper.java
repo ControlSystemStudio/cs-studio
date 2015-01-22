@@ -41,27 +41,35 @@ class PVStructureHelper
      *  @return {@link VType} for data in the structure
      *  @throws Exception on error
      */
-    public static VType getVType(final PVStructure struct, Optional<String> field) throws Exception
+    public static VType getVType(final PVStructure struct, final Optional<String> field) throws Exception
     {
-        // TODO
         if (field.isPresent())
-            System.out.println("Should extract " + field.get() + " from " + struct + " ...");
-
+        {   // Extract field from struct
+            // Check if field is a structure similar to normative type with sub-fields "value" etc.
+            final PVStructure sub_struct = struct.getSubField(PVStructure.class, field.get());
+            if (sub_struct != null)
+                return decodeNTScalar(sub_struct, "value");
+            // TODO: Read just that field
+            return decodeNTScalar(struct, field.get());
+        }
+        // Handle normative types
         final String type = struct.getStructure().getID();
         if (type.equals("epics:nt/NTScalar:1.0"))
-            return decodeNTScalar(struct);
+            return decodeNTScalar(struct, "value");
         if (type.equals("epics:nt/NTEnum:1.0"))
             return new VTypeForEnum(struct);
+
+        // Create string that indicates name of unknown type
         return ValueFactory.newVString(type,
                 ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown type"),
                 ValueFactory.timeNow());
     }
 
-    private static VType decodeNTScalar(final PVStructure struct) throws Exception
+    private static VType decodeNTScalar(final PVStructure struct, final String fieldname) throws Exception
     {
-        final Field field = struct.getStructure().getField("value");
-        if (! (field instanceof Scalar))
-            throw new Exception("Expected Scalar value");
+        final Field field = struct.getStructure().getField(fieldname);
+        if (! (field instanceof Scalar)) // Also handles field == null
+            throw new Exception("Expected struct with scalar '" + fieldname + "', got " + struct);
         final ScalarType type = ((Scalar) field).getScalarType();
         switch (type)
         {

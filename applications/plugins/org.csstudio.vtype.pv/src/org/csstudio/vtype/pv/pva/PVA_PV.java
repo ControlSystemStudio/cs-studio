@@ -86,13 +86,19 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
                              .createChannel(request_helper.getChannel(), this, priority);
     }
 
-    /** Is read request for a specific sub-field of a structure?
+    /** Is read request for a specific sub-(sub-sub)-field of a structure?
      *  @param read_request Read request
      *  @return Name of specific structure field
      */
     private Optional<String> checkForStructureField(final PVStructure read_request)
     {
-        final PVStructure element = read_request.getSubField(PVStructure.class, "field");
+        // read_request = structure
+        //                   structure field   <-- Marks this is a request for fields
+        //                        structure some_field
+        //                            structure some_subfield
+        // TODO: Locate the deepest sub field? Or follow a path?
+        // This currently only goes one level down just like pvmanager.pva
+        PVStructure element = read_request.getSubField(PVStructure.class, "field");
         if (element != null)
         {
             final String[] fields = element.getStructure().getFieldNames();
