@@ -18,6 +18,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -146,6 +149,21 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
 	        	 t.printStackTrace();
 	        }
 	    }
+        if (PlatformUI.getWorkbench().getWorkbenchWindowCount() > 0 && !PlatformUI.getWorkbench().isClosing()) {
+            //This is required in order to at least partially clean up the mess that RCP leaves behind.
+            //The code below will dispose of unused actions and a few other stuff that are not disposed from the
+            //memory after the workbench window closes.
+            IWorkbenchWindow win = getWindowConfigurer().getWindow();
+            IWorkbenchPage[] pages = win.getPages();
+            for (IWorkbenchPage p : pages) {
+                try {
+                    p.close();
+                } catch (Exception e) {
+                    //ignore
+                }
+            }            
+            win.setActivePage(null);
+        }
 	}
 
 	@Override
