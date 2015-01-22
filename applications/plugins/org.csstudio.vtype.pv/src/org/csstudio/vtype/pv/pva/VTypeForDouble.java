@@ -24,7 +24,7 @@ class VTypeForDouble extends VTypeTimeAlarmDisplayBase implements VDouble
     public VTypeForDouble(final PVStructure struct)
     {
         super(struct);
-        value = PVStructureHelper.convert.toDouble((PVScalar) struct.getSubField("value"));
+        value = PVStructureHelper.convert.toDouble(struct.getSubField(PVScalar.class, "value"));
     }
 
     @Override

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
+import org.epics.pvdata.pv.PVFloat;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.vtype.VFloat;
 import org.epics.vtype.VType;
@@ -23,7 +24,7 @@ class VTypeForFloat extends VTypeTimeAlarmDisplayBase implements VFloat
     public VTypeForFloat(final PVStructure struct)
     {
         super(struct);
-        value = struct.getFloatField("value").get();
+        value = struct.getSubField(PVFloat.class, "value").get();
     }
 
     @Override

@@ -111,13 +111,13 @@ class VTypeTimeAlarmDisplayBase extends VTypeTimeAlarmBase implements Display
         super(struct);
 
         // Decode display_t display
-        PVStructure section = struct.getStructureField("display");
+        PVStructure section = struct.getSubField(PVStructure.class, "display");
         if (section != null)
         {
-            PVString str = section.getStringField("units");
+            PVString str = section.getSubField(PVString.class, "units");
             units = str == null ? noDisplay.getUnits() : str.get();
 
-            str = section.getStringField("format");
+            str = section.getSubField(PVString.class, "format");
             format = str == null
                 ? noDisplay.getFormat()
                 : createNumberFormat(str.get());
@@ -134,7 +134,7 @@ class VTypeTimeAlarmDisplayBase extends VTypeTimeAlarmBase implements Display
         }
 
         // Decode control_t control
-        section = struct.getStructureField("control");
+        section = struct.getSubField(PVStructure.class, "control");
         if (section != null)
         {
             control_low = PVStructureHelper.getDoubleValue(section, "limitLow", noDisplay.getLowerCtrlLimit());
@@ -147,7 +147,7 @@ class VTypeTimeAlarmDisplayBase extends VTypeTimeAlarmBase implements Display
         }
 
         // Decode valueAlarm_t valueAlarm
-        section = struct.getStructureField("control");
+        section = struct.getSubField(PVStructure.class, "control");
         if (section != null)
         {
             alarm_low = PVStructureHelper.getDoubleValue(section, "lowAlarmLimit", noDisplay.getLowerAlarmLimit());

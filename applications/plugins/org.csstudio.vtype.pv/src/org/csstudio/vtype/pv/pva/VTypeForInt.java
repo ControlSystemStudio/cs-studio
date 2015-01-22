@@ -24,7 +24,7 @@ class VTypeForInt extends VTypeTimeAlarmDisplayBase implements VInt
     public VTypeForInt(final PVStructure struct)
     {
         super(struct);
-        value = PVStructureHelper.convert.toInt((PVScalar) struct.getSubField("value"));
+        value = PVStructureHelper.convert.toInt(struct.getSubField(PVScalar.class, "value"));
     }
 
     @Override

@@ -29,7 +29,6 @@ class VTypeForEnum extends VTypeTimeAlarmBase implements VEnum
         super(struct);
         final PVStructure section = struct.getSubField(PVStructure.class, "value");
         value = section.getSubField(PVInt.class, "index").get();
-
         labels = PVStructureHelper.getStrings(section, "choices");
     }
 

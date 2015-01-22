@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
+import org.epics.pvdata.pv.PVString;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
@@ -23,7 +24,7 @@ class VTypeForString extends VTypeTimeAlarmBase implements VString
     public VTypeForString(final PVStructure struct)
     {
         super(struct);
-        value = struct.getStringField("value").get();
+        value = struct.getSubField(PVString.class, "value").get();
     }
 
     @Override

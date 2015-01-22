@@ -24,7 +24,7 @@ class VTypeForShort extends VTypeTimeAlarmDisplayBase implements VShort
     public VTypeForShort(final PVStructure struct)
     {
         super(struct);
-        value = PVStructureHelper.convert.toShort((PVScalar) struct.getSubField("value"));
+        value = PVStructureHelper.convert.toShort(struct.getSubField(PVScalar.class, "value"));
     }
 
     @Override
