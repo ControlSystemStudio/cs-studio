@@ -117,18 +117,18 @@ class PVStructureHelper
         switch (type)
         {
         case pvDouble:
-            return new VTypeForDouble(struct);
+            return new VTypeForDoubleArray(struct);
         case pvFloat:
-            return new VTypeForFloat(struct);
+            return new VTypeForFloatArray(struct);
         case pvInt:
         case pvUInt:
             return new VTypeForIntArray(struct);
         case pvLong:
         case pvULong:
-            return new VTypeForLong(struct);
+            return new VTypeForLongArray(struct);
         case pvShort:
         case pvUShort:
-            return new VTypeForShort(struct);
+            return new VTypeForShortArray(struct);
         case pvByte:
         case pvUByte:
             return new VTypeForByteArray(struct);
