@@ -6,33 +6,35 @@
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
+import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.epics.pvaccess.ClientFactory;
 import org.epics.pvaccess.client.ChannelProvider;
-import org.epics.pvaccess.client.impl.remote.ClientContextImpl;
+import org.epics.pvaccess.client.ChannelProviderRegistry;
+import org.epics.pvaccess.client.ChannelProviderRegistryFactory;
 
 /** Singleton context for pvAccess
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVA_Context
 {
     private static PVA_Context instance;
-    
-    final private ClientContextImpl context;
+
     final private ChannelProvider provider;
 
     private PVA_Context() throws Exception
     {
         ClientFactory.start();
-        context = new ClientContextImpl();
-        context.initialize();
-        
-        Logger.getLogger(getClass().getName()).config(context.getVersion().toString());
-
-        provider = context.getProvider();
+        final ChannelProviderRegistry registry = ChannelProviderRegistryFactory.getChannelProviderRegistry();
+        provider = registry.getProvider("pva");
+        if (provider == null)
+            throw new Exception("Tried to locate 'pva' provider, found " + Arrays.toString(registry.getProviderNames()));
+        Logger.getLogger(getClass().getName()).log(Level.CONFIG, "PVA Provider {0}", provider.getProviderName());
     }
-    
+
     /** @return Singleton instance */
     public static synchronized PVA_Context getInstance() throws Exception
     {
@@ -40,7 +42,7 @@ public class PVA_Context
             instance = new PVA_Context();
         return instance;
     }
-    
+
     /** @return {@link ChannelProvider} */
     public ChannelProvider getProvider()
     {
@@ -52,7 +54,6 @@ public class PVA_Context
      */
     public void close()
     {
-        context.destroy();
         ClientFactory.stop();
     }
 }
