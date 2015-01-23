@@ -2,14 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>platform</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
-  <artifactId>platform</artifactId>
+  <artifactId>platform-features</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-  	<module>platform-plugins</module>
-  	<module>platform-features</module>
-  	<module>platform-repository</module>
+  	<module>org.csstudio.platform.feature</module>
   </modules>
 </project>
