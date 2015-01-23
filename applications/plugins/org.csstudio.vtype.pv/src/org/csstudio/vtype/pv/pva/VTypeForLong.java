@@ -24,7 +24,7 @@ class VTypeForLong extends VTypeTimeAlarmDisplayBase implements VLong
     public VTypeForLong(final PVStructure struct)
     {
         super(struct);
-        value = PVStructureHelper.convert.toLong((PVScalar) struct.getSubField("value"));
+        value = PVStructureHelper.convert.toLong(struct.getSubField(PVScalar.class, "value"));
     }
 
     @Override

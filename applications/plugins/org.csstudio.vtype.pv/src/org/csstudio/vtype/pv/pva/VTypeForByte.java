@@ -24,7 +24,7 @@ class VTypeForByte extends VTypeTimeAlarmDisplayBase implements VByte
     public VTypeForByte(final PVStructure struct)
     {
         super(struct);
-        value = PVStructureHelper.convert.toByte((PVScalar) struct.getSubField("value"));
+        value = PVStructureHelper.convert.toByte(struct.getSubField(PVScalar.class, "value"));
     }
 
     @Override

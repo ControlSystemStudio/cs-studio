@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Oak Ridge National Laboratory.
+ * Copyright (c) 2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,9 +7,12 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
-import org.epics.pvdata.pv.PVScalar;
+import java.util.List;
+
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.vtype.VDouble;
+import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ListInt;
+import org.epics.vtype.VStringArray;
 import org.epics.vtype.VType;
 import org.epics.vtype.VTypeToString;
 
@@ -17,18 +20,24 @@ import org.epics.vtype.VTypeToString;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class VTypeForDouble extends VTypeTimeAlarmDisplayBase implements VDouble
+class VTypeForStringArray extends VTypeTimeAlarmDisplayBase implements VStringArray
 {
-    final private double value;
+    final private List<String> value;
 
-    public VTypeForDouble(final PVStructure struct)
+    public VTypeForStringArray(final PVStructure struct) throws Exception
     {
         super(struct);
-        value = PVStructureHelper.convert.toDouble(struct.getSubField(PVScalar.class, "value"));
+        value = PVStructureHelper.getStrings(struct, "value");
     }
 
     @Override
-    public Double getValue()
+    public ListInt getSizes()
+    {
+        return new ArrayInt(value.size());
+    }
+
+    @Override
+    public List<String> getData()
     {
         return value;
     }

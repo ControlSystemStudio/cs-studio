@@ -17,10 +17,12 @@ import java.util.logging.Level;
 import org.csstudio.vtype.pv.PV;
 import org.epics.pvaccess.client.ChannelPut;
 import org.epics.pvaccess.client.ChannelPutRequester;
+import org.epics.pvdata.factory.PVDataFactory;
 import org.epics.pvdata.misc.BitSet;
 import org.epics.pvdata.pv.PVField;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Status;
+import org.epics.pvdata.pv.Structure;
 
 /** A {@link ChannelPutRequester} for writing a value to a {@link PVA_PV},
  *  indicating completion via a {@link Future}
@@ -36,8 +38,6 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
     final private CountDownLatch updates = new CountDownLatch(1);
     private volatile Exception error = null;
 
-    private ChannelPut channelPut;
-
     /** @param pv PV to write
      *  @param new_value Value to write
      */
@@ -49,8 +49,7 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
 
     // ChannelPutRequester
     @Override
-    public void channelPutConnect(final Status status, final ChannelPut channelPut,
-            final PVStructure pvStructure, final BitSet bitSet)
+    public void channelPutConnect(final Status status, final ChannelPut channelPut, final Structure structure)
     {
         if (! status.isSuccess())
         {
@@ -61,20 +60,40 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
 
         try
         {
-            // Locate the value field
-            PVField field = pvStructure.getSubField("value");
-            // It it enumerated? Write to index field
+            final PVStructure write_structure = PVDataFactory.getPVDataCreate().createPVStructure(structure);
+            final BitSet bit_set = new BitSet(write_structure.getNumberFields());
+
+            // Locate the value field at deepest level in structure
+            PVField field = null;
+            PVStructure search = write_structure;
+            while (search != null)
+            {
+                final PVField[] fields = search.getPVFields();
+                if (fields.length != 1)
+                    throw new Exception("Can only write to simple struct.element.value path, got " + structure);
+                if (fields[0].getFieldName().equals("value"))
+                {
+                    field = fields[0];
+                    break;
+                }
+                else if (fields[0] instanceof PVStructure)
+                    search = (PVStructure) fields[0];
+                else
+                    search = null;
+            }
+            if (field == null)
+                throw new Exception("Cannot locate 'value' to write in " + structure);
+
+            // Enumerated? Write to value.index
             if (field instanceof PVStructure  &&  "enum_t".equals(field.getField().getID()))
                 field = ((PVStructure)field).getSubField("index");
 
             // Indicate what's changed & change it
-            bitSet.set(field.getFieldOffset());
+            bit_set.set(field.getFieldOffset());
             PVStructureHelper.setField(field, new_value);
 
             // Perform write
-            channelPut.put(true);
-
-            this.channelPut = channelPut;
+            channelPut.put(write_structure, bit_set);
         }
         catch (Exception ex)
         {
@@ -86,7 +105,7 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
 
     // ChannelPutRequester
     @Override
-    public void putDone(final Status status)
+    public void putDone(final Status status, final ChannelPut channelPut)
     {
         if (status.isSuccess())
             logger.log(Level.FINE, "Write {0} = {1} completed",
@@ -102,9 +121,10 @@ class PVPutHandler extends PVRequester implements ChannelPutRequester, Future<Ob
 
     // ChannelPutRequester
     @Override
-    public void getDone(Status status)
+    public void getDone(final Status status, final ChannelPut channelPut, final PVStructure pvStructure, final BitSet bitSet)
     {
         // Only used for createChannelPutGet
+        logger.log(Level.WARNING, "Unexpected call to ChannelPutRequester.getDone(), channel {0}", channelPut.getChannel().getChannelName());
     }
 
     // Future

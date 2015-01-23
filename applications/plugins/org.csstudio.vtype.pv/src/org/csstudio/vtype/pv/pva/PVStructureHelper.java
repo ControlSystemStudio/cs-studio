@@ -19,8 +19,8 @@ import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Scalar;
+import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
-import org.epics.pvdata.pv.StringArrayData;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
@@ -36,27 +36,51 @@ class PVStructureHelper
     final public static Convert convert = ConvertFactory.getConvert();
 
     /** @param struct {@link PVStructure} to read
+     *  @param field Specific field to read, i.e. don't go by NT* type
      *  @return {@link VType} for data in the structure
      *  @throws Exception on error
      */
-    public static VType getVType(final PVStructure struct) throws Exception
+    public static VType getVType(final PVStructure orig_struct, final int value_offset) throws Exception
     {
+        final PVStructure struct;
+
+        if (value_offset <= 0)
+            struct = orig_struct;
+        else
+        {   // Extract field from struct
+            struct = orig_struct.getSubField(PVStructure.class, value_offset);
+            if (struct == null)
+                throw new Exception("Cannot locate field offset " + value_offset + " in " + orig_struct);
+        }
+
+        // Handle normative types
         final String type = struct.getStructure().getID();
-        if (type.equals("uri:ev4:nt/2012/pwd:NTScalar"))
+        if (type.equals("epics:nt/NTScalar:1.0"))
             return decodeNTScalar(struct);
-        if (type.equals("uri:ev4:nt/2012/pwd:NTEnum"))
+        if (type.equals("epics:nt/NTEnum:1.0"))
             return new VTypeForEnum(struct);
-        return ValueFactory.newVString(type,
+        if (type.equals("epics:nt/NTScalarArray:1.0"))
+            return decodeNTArray(struct);
+
+        // Handle data that contains a "value", even though not marked as NT*
+        final Field value_field = struct.getStructure().getField("value");
+        if (value_field instanceof Scalar)
+            return decodeNTScalar(struct);
+        else if (value_field instanceof ScalarArray)
+            return decodeNTArray(struct);
+
+        // Create string that indicates name of unknown type
+        return ValueFactory.newVString(struct.getStructure().toString(),
                 ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown type"),
                 ValueFactory.timeNow());
     }
 
     private static VType decodeNTScalar(final PVStructure struct) throws Exception
     {
-        final Field field = struct.getStructure().getField("value");
-        if (! (field instanceof Scalar))
-            throw new Exception("Expected Scalar value");
-        final ScalarType type = ((Scalar) field).getScalarType();
+        final PVScalar field = struct.getSubField(PVScalar.class, "value");
+        if (field == null)
+            throw new Exception("Expected struct with scalar 'value', got " + struct);
+        final ScalarType type = field.getScalar().getScalarType();
         switch (type)
         {
         case pvDouble:
@@ -78,7 +102,40 @@ class PVStructureHelper
         case pvUByte:
             return new VTypeForByte(struct);
         default:
-            return ValueFactory.newVString(type.name(),
+            return ValueFactory.newVString(struct.getStructure().toString(),
+                    ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown scalar type"),
+                    ValueFactory.timeNow());
+        }
+    }
+
+    private static VType decodeNTArray(final PVStructure struct) throws Exception
+    {
+        final Field field = struct.getStructure().getField("value");
+        if (! (field instanceof ScalarArray)) // Also handles field == null
+            throw new Exception("Expected struct with scalar array 'value', got " + struct);
+        final ScalarType type = ((ScalarArray) field).getElementType();
+        switch (type)
+        {
+        case pvDouble:
+            return new VTypeForDoubleArray(struct);
+        case pvFloat:
+            return new VTypeForFloatArray(struct);
+        case pvInt:
+        case pvUInt:
+            return new VTypeForIntArray(struct);
+        case pvLong:
+        case pvULong:
+            return new VTypeForLongArray(struct);
+        case pvShort:
+        case pvUShort:
+            return new VTypeForShortArray(struct);
+        case pvByte:
+        case pvUByte:
+            return new VTypeForByteArray(struct);
+        case pvString:
+            return new VTypeForStringArray(struct);
+        default:
+            return ValueFactory.newVString(struct.getStructure().toString(),
                     ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown scalar type"),
                     ValueFactory.timeNow());
         }
@@ -91,9 +148,9 @@ class PVStructureHelper
      */
     public static Double getDoubleValue(final PVStructure structure, final String name, final Double defaultValue)
     {
-        final PVField field = structure.getSubField(name);
-        if (field instanceof PVScalar)
-            return convert.toDouble((PVScalar)field);
+        final PVScalar field = structure.getSubField(PVScalar.class, name);
+        if (field != null)
+            return convert.toDouble(field);
         else
             return defaultValue;
     }
@@ -105,13 +162,11 @@ class PVStructureHelper
      */
     public static List<String> getStrings(final PVStructure structure, final String name) throws Exception
     {
-        final PVStringArray choices = (PVStringArray)
-                structure.getScalarArrayField(name, ScalarType.pvString);
-        int i=0, left = choices.getLength();
-        StringArrayData label_text = new StringArrayData();
-        // TODO Check result, call until left == 0?
-        choices.get(i, left, label_text);
-        return Arrays.asList(label_text.data);
+        final PVStringArray choices = structure.getSubField(PVStringArray.class, name);
+        final int length = choices.getLength();
+        final String[] labels = new String[length];
+        convert.toStringArray(choices, 0, length, labels, 0);
+        return Arrays.asList(labels);
     }
 
     /** @param field {@link PVField} to write

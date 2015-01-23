@@ -17,7 +17,7 @@ import org.epics.pvaccess.client.Channel;
 import org.epics.pvaccess.client.Channel.ConnectionState;
 import org.epics.pvaccess.client.ChannelProvider;
 import org.epics.pvaccess.client.ChannelRequester;
-import org.epics.pvaccess.client.CreateRequest;
+import org.epics.pvdata.copy.CreateRequest;
 import org.epics.pvdata.monitor.Monitor;
 import org.epics.pvdata.monitor.MonitorElement;
 import org.epics.pvdata.monitor.MonitorRequester;
@@ -30,7 +30,8 @@ import org.epics.vtype.VType;
 
 /** pvAccess {@link PV}
  *
- *  <p>Based on ideas from msekoranja org.epics.pvmanager.pva.PVAChannelHandler
+ *  <p>Based on ideas from msekoranja org.epics.pvmanager.pva.PVAChannelHandler and PVATypeAdapter
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -40,11 +41,17 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
 
     final private static short priority = ChannelProvider.PRIORITY_DEFAULT;
 
-    /** Request used for reading all fields */
-    final private static PVStructure read_request = CreateRequest.create().createRequest("field()");
+    /** Request factory */
+    final private static CreateRequest request_creater = CreateRequest.create();
 
-    /** Request used for writing 'value' field */
-    final private static PVStructure write_request = CreateRequest.create().createRequest("field(value)");
+    /** Request used for reading */
+    final private PVStructure read_request;
+
+    /** Request used for writing */
+    final private PVStructure write_request;
+
+    /** Offset into received data that contains values selected by read_request */
+    final private int value_offset;
 
     /** PVAccess channel, also holds the 'base_name' */
     final private Channel channel;
@@ -63,8 +70,60 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
     PVA_PV(final String name, final String base_name) throws Exception
     {
         super(name);
+
+        // Analyze base_name, determine channel and request
+        final PVNameHelper request_helper = PVNameHelper.forName(base_name);
+
+        logger.log(Level.FINE, "PV {0}: Channel \"{1}\", request \"{2}\"",
+                   new Object[] { name, request_helper.getChannel(), request_helper.getReadRequest() });
+
+        read_request = request_creater.createRequest(request_helper.getReadRequest());
+        write_request = request_creater.createRequest(request_helper.getWriteRequest());
+        value_offset = getValueOffset(read_request);
+
         channel = PVA_Context.getInstance().getProvider()
-                             .createChannel(base_name, this, priority);
+                             .createChannel(request_helper.getChannel(), this, priority);
+    }
+
+    /** Get offset to requested value.
+     *
+     *  <p>If the request is empty ("field()"),
+     *  then this is 0 to use the start of the received PVStructures.
+     *
+     *  <p>If the request is "field(some_struct.some_subfield)",
+     *  this will return the value offset to "some_subfield"
+     *
+     *  @param read_request Read request
+     *  @return Value offset to use when decoding received data
+     *  @throws Exception on error
+     */
+    private int getValueOffset(final PVStructure read_request) throws Exception
+    {
+        // read_request = structure
+        //                   structure field   <-- Marks this as a request for fields
+        //                        structure some_struct
+        //                            structure some_subfield
+        // Start at "field", then locate the deepest subfield
+        PVStructure element = read_request.getSubField(PVStructure.class, "field");
+        while (element != null)
+        {
+            final String[] fields = element.getStructure().getFieldNames();
+            if (fields.length == 1)
+            {   // Descend further into structure
+                element = element.getSubField(PVStructure.class, fields[0]);
+            }
+            else if (fields.length == 0)
+            {   // Found the requested field
+                // Return offset-1 because read_request contains
+                // another "structure field" level that
+                // will be absent in the received data
+                return element.getFieldOffset() - 1;
+            }
+            else
+                throw new Exception("Can only handle request to single element, not " + read_request);
+        }
+
+        return 0;
     }
 
     // ChannelRequester
@@ -97,7 +156,9 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
     public void channelCreated(final Status status, final Channel channel)
     {
         if (status.isSuccess())
-            logger.log(Level.FINE, "Channel {0} created", channel.getChannelName());
+        {
+            logger.log(Level.FINER, "Channel {0} created", channel.getChannelName());
+        }
         else
             logger.log(Level.WARNING, "Channel {0} status {1}",
                                    new Object[] { channel.getChannelName(), status.getMessage() });
@@ -140,13 +201,13 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
             monitor.start();
     }
 
-    VType handleValueUpdate(final PVStructure update) throws Exception
+    /** @param update_struct {@link PVStructure} received from a get or monitor
+     *  @return {@link VType} extracted from the received data
+     *  @throws Exception on error
+     */
+    VType handleValueUpdate(final PVStructure update_struct) throws Exception
     {
-        // TODO Copy only changes?
-        // System.out.println(update.getChangedBitSet());
-        // System.out.println(struct);
-
-        final VType value = PVStructureHelper.getVType(update);
+        final VType value = PVStructureHelper.getVType(update_struct, value_offset);
         if (value instanceof VEnum)
         {   // Remember most recent labels, but note that
             // not all updates will include the complete labels?!
@@ -211,9 +272,22 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
             if (current instanceof VEnum)
             {
                 final int index = enum_labels.indexOf(new_value);
-                if (index < 0)
-                    throw new Exception("Cannot obtain label's index for enum PV " + getName());
-                new_value = index;
+                if (index >= 0)
+                    new_value = index;
+                else
+                    if (new_value instanceof String)
+                    {   // Try parsing number from string
+                        try
+                        {
+                            new_value = Integer.valueOf((String) new_value);
+                        }
+                        catch (NumberFormatException ex)
+                        {
+                            throw new Exception("Cannot obtain index for enum PV " + getName() + " from value " + new_value);
+                        }
+                    }
+                    else
+                        throw new Exception("Cannot obtain label's index for enum PV " + getName() + " from value " + new_value);
             }
         }
 
