@@ -4,11 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>unorganized-plugins</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
-  <groupId>org.csstudio</groupId>
-  <artifactId>core-plugins</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <artifactId>org.csstudio.startup</artifactId>
+  <version>3.2.1-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
 </project>
