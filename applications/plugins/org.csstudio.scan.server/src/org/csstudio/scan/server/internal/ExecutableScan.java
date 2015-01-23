@@ -559,20 +559,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public void execute(final ScanCommandImpl<?> command) throws Exception
     {
-    	if (state.get() == ScanState.Paused)
-    	{
-    		if (device_state.isPresent())
-    			ScanCommandUtil.write(this, device_state.get(), state.get().ordinal(), 0.1, timeout);
-            while (state.get() == ScanState.Paused)
+        while (state.get() == ScanState.Paused)
+        {   // Pause until resumed
+            synchronized (this)
             {
-                synchronized (this)
-                {
-                    wait();
-                }
+                wait();
             }
-            if (device_state.isPresent())
-            	ScanCommandUtil.write(this, device_state.get(), state.get().ordinal(), 0.1, timeout);
-    	}
+        }
 
         boolean retry;
         do
@@ -639,17 +632,42 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Pause execution of a currently executing scan */
     public void pause()
     {
-        state.compareAndSet(ScanState.Running, ScanState.Paused);
+        if (! state.compareAndSet(ScanState.Running, ScanState.Paused))
+            return;
+
+        if (device_state.isPresent())
+        {
+            try
+            {
+                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error updating state PV", ex);
+            }
+        }
     }
 
     /** Resume execution of a paused scan */
     public void resume()
     {
-        state.compareAndSet(ScanState.Paused, ScanState.Running);
-        // Notify should only be necessary if compareAndSet actually switched to Running,
-        // but doesn't hurt if called in any case
-        synchronized (this)
+        if (! state.compareAndSet(ScanState.Paused, ScanState.Running))
+            return;
+
+        if (device_state.isPresent())
         {
+            try
+            {
+                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error updating state PV", ex);
+            }
+        }
+
+        synchronized (this)
+        {   // Wake thread waiting for Paused state to end
             notifyAll();
         }
     }

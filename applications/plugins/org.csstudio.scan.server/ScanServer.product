@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ScanServer" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="ScanServer" uid="scan-server" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="4.0.3.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>--launcher.suppressErrors</programArgs>
+      <programArgs>--launcher.suppressErrors
+      </programArgs>
       <vmArgs>-Djava.awt.headless=true
 -Xms10m
 -Xmx1024m
--Declipse.exitdata=</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+-Declipse.exitdata=
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
@@ -68,6 +71,8 @@
       <plugin id="org.eclipse.jetty.util"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.epics.pvAccessJava"/>
+      <plugin id="org.epics.pvDataJava"/>
       <plugin id="org.epics.pvaccess"/>
       <plugin id="org.epics.pvdata"/>
       <plugin id="org.epics.util"/>
@@ -77,5 +82,12 @@
       <plugin id="org.python.jython"/>
    </plugins>
 
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+   </configurations>
 
 </product>
