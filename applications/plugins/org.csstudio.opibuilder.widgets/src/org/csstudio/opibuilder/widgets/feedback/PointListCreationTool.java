@@ -179,6 +179,7 @@ public final class PointListCreationTool extends TargetingTool {
 		setState(STATE_TERMINAL);
 		handleFinished();
 		updateTargetRequest();
+		setCurrentCommand(getCommand());
 		return true;
 	}
 	
@@ -237,6 +238,7 @@ public final class PointListCreationTool extends TargetingTool {
 			}
 
 		updateTargetRequest();
+		setCurrentCommand(getCommand());
 		return true;
 	}
 
