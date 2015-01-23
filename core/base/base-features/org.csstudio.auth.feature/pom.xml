@@ -2,12 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>base</artifactId>
+    <artifactId>base-features</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
-  <artifactId>base-features</artifactId>
-  <packaging>pom</packaging>
-  <modules>
-  	<module>org.csstudio.auth.feature</module>
-  </modules>
+  <groupId>org.csstudio</groupId>
+  <artifactId>org.csstudio.auth.feature</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>eclipse-feature</packaging>
 </project>

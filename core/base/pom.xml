@@ -10,6 +10,7 @@
   <modules>
   <module>base-plugins</module>
   <module>base-features</module>
+  <module>base-repository</module>
   </modules>
   <groupId>org.csstudio</groupId>
 </project>
