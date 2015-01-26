@@ -35,6 +35,9 @@ public class VTypePV implements IPV
     final private Executor notificationThread;
     final private List<IPVListener> listeners = new CopyOnWriteArrayList<>();
     private volatile Optional<PV> pv = Optional.empty();
+    /** 'Connected' means 'have received a value'.
+     *  Lock on <code>connected</this> when waiting for connection.
+     */
     final private AtomicBoolean connected = new AtomicBoolean(false);
     private volatile boolean is_long_string = false;
 
@@ -47,6 +50,11 @@ public class VTypePV implements IPV
         public void valueChanged(final PV pv, final VType value)
         {
             final boolean first_value = connected.compareAndSet(false, true);
+            if (first_value)
+                synchronized (connected)
+                {
+                    connected.notifyAll();
+                }
             for (IPVListener l : listeners)
                 notificationThread.execute(() ->
                 {
@@ -183,6 +191,32 @@ public class VTypePV implements IPV
         return connected.get();
     }
 
+    /** @param millisecs How long to wait for connection in millisecs
+     *  @return <code>true</code> if connected, <code>false</code> on timeout
+     */
+    private boolean isConnected(final long millisecs)
+    {
+        final long end = System.currentTimeMillis() + millisecs;
+        while (! isConnected())
+        {
+            final long ms_left = end - System.currentTimeMillis();
+            if (ms_left <= 0)
+                return false;
+            synchronized (connected)
+            {
+                try
+                {
+                    connected.wait(ms_left);
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean isWriteAllowed()
@@ -231,6 +265,13 @@ public class VTypePV implements IPV
         final PV safe_pv = pv.orElse(null);
         if (safe_pv == null)
             throw new Exception("Cannot write to " + name + ", not started");
+
+        // opibuilder will call this method for temporary PVs that
+        // were just created, not waiting for connection.
+        // Quirk: We use timeout once for the connection and once for the write,
+        // potentially waiting 2 * timeout ms
+        if (! isConnected(timeout))
+            throw new Exception("Cannot write to " + name + ", not connected");
 
         final Future<?> done = safe_pv.asyncWrite(value);
         try
