@@ -141,6 +141,7 @@
 <!--     <module>org.csstudio.servicelocator.test</module> -->
     <module>org.csstudio.simplepv.utilitypv</module>
     <module>org.csstudio.simplepv.utilitypv.test</module>
+    <module>org.csstudio.simplepv.vtypepv</module>
     <module>org.csstudio.snl.intro</module>
     <module>org.csstudio.swt.chart</module>
     <module>org.csstudio.swt.rtplot</module>
