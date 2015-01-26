@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.csstudio.simplepv.ExceptionHandler;
@@ -31,7 +33,6 @@ public class VTypePV implements IPV
 {
     final private String name;
     final private Executor notificationThread;
-    final private ExceptionHandler exceptionHandler;
     final private List<IPVListener> listeners = new CopyOnWriteArrayList<>();
     private volatile Optional<PV> pv = Optional.empty();
     final private AtomicBoolean connected = new AtomicBoolean(false);
@@ -50,7 +51,10 @@ public class VTypePV implements IPV
                 notificationThread.execute(() ->
                 {
                     if (first_value)
+                    {
                         l.connectionChanged(VTypePV.this);
+                        l.writePermissionChanged(VTypePV.this);
+                    }
                     l.valueChanged(VTypePV.this);
                 });
         }
@@ -71,13 +75,18 @@ public class VTypePV implements IPV
         }
     };
 
+    /** @param name PV Name
+     *  @param readOnly opibuilder always passes false, so this is ignored
+     *  @param notificationThread Thread on which to call {@link IPVListener}
+     *  @param exceptionHandler Not used
+     *  @throws Exception
+     */
     VTypePV(final String name, final boolean readOnly,
             final Executor notificationThread,
             final ExceptionHandler exceptionHandler) throws Exception
     {
         this.name = parseName(name);
         this.notificationThread = notificationThread;
-        this.exceptionHandler = exceptionHandler;
     }
 
     /** Check name for special cases used by the PVManager
@@ -115,34 +124,39 @@ public class VTypePV implements IPV
         return name;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void addListener(final IPVListener listener)
     {
         listeners.add(listener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeListener(final IPVListener listener)
     {
         listeners.remove(listener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getName()
     {
         return name;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void start() throws Exception
     {
         if (isStarted())
             throw new Exception("PV " + name + " already started");
         final PV the_pv = PVPool.getPV(name);
-        the_pv.addListener(listener);
         pv = Optional.of(the_pv);
+        the_pv.addListener(listener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void stop()
     {
@@ -155,64 +169,89 @@ public class VTypePV implements IPV
         }
     }
 
-    @Override
-    public boolean isBufferingValues()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isConnected()
-    {
-        return connected.get();
-    }
-
-    @Override
-    public boolean isPaused()
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
+    /** {@inheritDoc} */
     @Override
     public boolean isStarted()
     {
         return pv.isPresent();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean isConnected()
+    {
+        return connected.get();
+    }
+
+    /** {@inheritDoc} */
     @Override
     public boolean isWriteAllowed()
     {
-        // TODO Auto-generated method stub
-        return true;
+        final PV safe_pv = pv.orElse(null);
+        return safe_pv != null  &&  !safe_pv.isReadonly();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void setPaused(boolean paused)
+    public boolean isBufferingValues()
     {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setValue(Object value) throws Exception
-    {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public boolean setValue(Object value, int timeout) throws Exception
-    {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void setPaused(boolean paused)
+    {
+        // Not implemented because opibuilder never calls it
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPaused()
+    {
+        // Not implemented because opibuilder never pauses.
+        // Opibuilder will check isPaused in ShowPVInfoAction
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setValue(final Object value) throws Exception
+    {
+        final PV safe_pv = pv.orElse(null);
+        if (safe_pv == null)
+            throw new Exception("Cannot write to " + name + ", not started");
+        safe_pv.write(value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean setValue(final Object value, final int timeout) throws Exception
+    {
+        final PV safe_pv = pv.orElse(null);
+        if (safe_pv == null)
+            throw new Exception("Cannot write to " + name + ", not started");
+
+        final Future<?> done = safe_pv.asyncWrite(value);
+        try
+        {
+            done.get(timeout, TimeUnit.MILLISECONDS);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    /** {@inheritDoc} */
     @Override
     public List<VType> getAllBufferedValues()
     {
         return Arrays.asList(getValue());
     }
 
+    /** {@inheritDoc} */
     @Override
     public VType getValue()
     {
