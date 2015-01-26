@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.simplepv.vtype;
+package org.csstudio.simplepv.vtypepv;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +20,7 @@ import org.csstudio.simplepv.IPVListener;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
+import org.epics.vtype.VByteArray;
 import org.epics.vtype.VType;
 
 /** Opibuilder {@link IPV} based on vtype {@link PV}
@@ -34,11 +35,15 @@ public class VTypePV implements IPV
     final private List<IPVListener> listeners = new CopyOnWriteArrayList<>();
     private volatile Optional<PV> pv = Optional.empty();
     final private AtomicBoolean connected = new AtomicBoolean(false);
+    private volatile boolean is_long_string = false;
 
+    /** vtype.PV listener, forwards events to the IPV listener
+     *  on requested thread
+     */
     final private PVListener listener = new PVListener()
     {
         @Override
-        public void valueChanged(PV pv, VType value)
+        public void valueChanged(final PV pv, final VType value)
         {
             final boolean first_value = connected.compareAndSet(false, true);
             for (IPVListener l : listeners)
@@ -51,14 +56,14 @@ public class VTypePV implements IPV
         }
 
         @Override
-        public void permissionsChanged(PV pv, boolean readonly)
+        public void permissionsChanged(final PV pv, final boolean readonly)
         {
             for (IPVListener l : listeners)
                 notificationThread.execute(() -> l.writePermissionChanged(VTypePV.this));
         }
 
         @Override
-        public void disconnected(PV pv)
+        public void disconnected(final PV pv)
         {
             connected.set(false);
             for (IPVListener l : listeners)
@@ -66,13 +71,48 @@ public class VTypePV implements IPV
         }
     };
 
-    public VTypePV(final String name, final boolean readOnly,
+    VTypePV(final String name, final boolean readOnly,
             final Executor notificationThread,
             final ExceptionHandler exceptionHandler) throws Exception
     {
-        this.name = name;
+        this.name = parseName(name);
         this.notificationThread = notificationThread;
         this.exceptionHandler = exceptionHandler;
+    }
+
+    /** Check name for special cases used by the PVManager
+     *  @param name Original name
+     *  @return Potentially adjusted name
+     *  @throws Exception on error in name
+     */
+    private String parseName(final String name) throws Exception
+    {
+        // Byte array to be treated as long string?
+        final int ls = name.indexOf(" {\"longString\":true}");
+        if (ls > 0)
+        {
+            is_long_string = true;
+            return name.substring(0,  ls);
+        }
+
+        // Convert constant expressions into constant local PVs
+        if (name.startsWith("="))
+        {
+            final String constant = name.substring(1);
+            // String constant?
+            if (constant.startsWith("\"")  &&  constant.endsWith("\""))
+                return "loc://const(" + constant + ")";
+            try
+            {   // Numeric constant?
+                Double.parseDouble(constant);
+                return "loc://const(" + constant + ")";
+            }
+            catch (NumberFormatException ex)
+            {
+                throw new Exception("Can only handle constant formulas '=123' or '=\"text\"', not '" + name + "'");
+            }
+        }
+        return name;
     }
 
     @Override
@@ -179,6 +219,9 @@ public class VTypePV implements IPV
         final PV safe_pv = pv.orElse(null);
         if (safe_pv == null)
             return null;
-        return safe_pv.read();
+        final VType value = safe_pv.read();
+        if (is_long_string  &&  value instanceof VByteArray)
+            return ByteHelper.toString((VByteArray) value);
+        return value;
     }
 }
