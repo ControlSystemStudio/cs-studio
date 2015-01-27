@@ -14,5 +14,6 @@
   <modules>
   <module>logbook-plugins</module>
   <module>logbook-features</module>
+  <module>logbook-repository</module>
   </modules>
 </project>
