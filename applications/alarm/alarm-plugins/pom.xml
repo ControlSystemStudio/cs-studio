@@ -9,4 +9,27 @@
   <artifactId>alarm-plugins</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <modules>
+  	<module>org.csstudio.alarm.beast</module>
+  	<module>org.csstudio.alarm.beast.annunciator</module>
+  	<module>org.csstudio.alarm.beast.annunciator.test</module>
+  	<module>org.csstudio.alarm.beast.configtool</module>
+  	<module>org.csstudio.alarm.beast.configtool.test</module>
+  	<module>org.csstudio.alarm.beast.msghist</module>
+  	<module>org.csstudio.alarm.beast.msghist.test</module>
+  	<module>org.csstudio.alarm.beast.notifier</module>
+  	<module>org.csstudio.alarm.beast.notifier.intro</module>
+  	<module>org.csstudio.alarm.beast.notifier.logbook</module>
+  	<module>org.csstudio.alarm.beast.notifier.test</module>
+  	<module>org.csstudio.alarm.beast.server</module>
+  	<module>org.csstudio.alarm.beast.server.test</module>
+  	<module>org.csstudio.alarm.beast.ui</module>
+  	<module>org.csstudio.alarm.beast.ui.alarmtable</module>
+  	<module>org.csstudio.alarm.beast.ui.alarmtree</module>
+  	<module>org.csstudio.alarm.beast.ui.areapanel</module>
+  	<module>org.csstudio.alarm.beast.ui.globaltable</module>
+  	<module>org.csstudio.alarm.beast.ui.rap</module>
+  	<module>org.csstudio.alarm.beast.ui.test</module>
+  	<module>org.csstudio.alarm.intro</module>
+  </modules>
 </project>

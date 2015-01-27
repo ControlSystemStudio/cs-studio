@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>applications-plugins</artifactId>
+    <artifactId>alarm-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.alarm.beast.ui.rap</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
