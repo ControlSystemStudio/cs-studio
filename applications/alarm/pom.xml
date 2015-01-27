@@ -12,5 +12,6 @@
   <modules>
   	<module>alarm-plugins</module>
   	<module>alarm-features</module>
+  	<module>alarm-repository</module>
   </modules>
 </project>
