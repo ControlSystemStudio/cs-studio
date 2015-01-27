@@ -2,17 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>applications</artifactId>
-    <version>BUILD-VERSION</version>
+    <artifactId>logbook</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.csstudio</groupId>
-  <artifactId>logbook</artifactId>
+  <artifactId>logbook-features</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>cs-studio logbook project</name>
-  <description>plugins and features for logbook applications in cs-studio</description>
-  <modules>
-  <module>logbook-plugins</module>
-  <module>logbook-features</module>
-  </modules>
 </project>
