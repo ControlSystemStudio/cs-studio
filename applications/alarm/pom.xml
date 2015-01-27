@@ -11,5 +11,6 @@
   <packaging>pom</packaging>
   <modules>
   	<module>alarm-plugins</module>
+  	<module>alarm-features</module>
   </modules>
 </project>
