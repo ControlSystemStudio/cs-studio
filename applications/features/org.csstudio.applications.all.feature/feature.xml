@@ -175,13 +175,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archive.reader.archiverecord"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.archive.reader.channelarchiver"
          download-size="0"
          install-size="0"
@@ -693,7 +686,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.simplepv.utilitypv"
+         id="org.csstudio.simplepv.vtypepv"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -998,13 +991,6 @@
 
    <plugin
          id="org.csstudio.utility.product.default"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.pv.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

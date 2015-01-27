@@ -71,11 +71,13 @@
     <module>org.csstudio.ui.preferences</module>
     <module>org.csstudio.ui.util</module>
     <module>org.csstudio.utility.batik</module>
+    <!--
     <module>org.csstudio.utility.pv</module>
     <module>org.csstudio.utility.pv.epics</module>
     <module>org.csstudio.utility.pv.epics.test</module>
     <module>org.csstudio.utility.pv.simu</module>
     <module>org.csstudio.utility.pv.simu.test</module>
+    -->
     <module>org.csstudio.utility.pvmanager.ui</module>
     <module>org.csstudio.utility.pvmanager.ui.toolbox</module>
     <module>org.csstudio.utility.pvmanager.widgets</module>

@@ -8,7 +8,6 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
- org.csstudio.utility.pv;resolution:=optional,
  org.csstudio.utility.pvmanager;resolution:=optional
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
