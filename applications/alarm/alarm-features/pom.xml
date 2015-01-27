@@ -5,7 +5,6 @@
 		<groupId>org.csstudio</groupId>
 		<artifactId>alarm</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
 	</parent>
 	<artifactId>alarm-features</artifactId>
 	<packaging>pom</packaging>

@@ -9,4 +9,8 @@
   <artifactId>logbook-features</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <modules>
+  	<module>org.csstudio.logbook.shift.feature</module>
+  	<module>org.csstudio.logbook.viewer.feature</module>
+  </modules>
 </project>

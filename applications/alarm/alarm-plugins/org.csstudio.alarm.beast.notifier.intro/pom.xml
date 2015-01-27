@@ -6,7 +6,6 @@
     <groupId>org.csstudio</groupId>
     <artifactId>alarm-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>..</relativePath>
   </parent>
   <artifactId>org.csstudio.alarm.beast.notifier.intro</artifactId>
   <version>3.2.4-SNAPSHOT</version>

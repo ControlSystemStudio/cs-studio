@@ -5,7 +5,6 @@
 		<groupId>org.csstudio</groupId>
 		<artifactId>logbook</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>logbook-plugins</artifactId>
 	<packaging>pom</packaging>
