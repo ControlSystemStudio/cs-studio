@@ -4,10 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>applications-features</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <artifactId>logbook-features</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.olog.feature</artifactId>
   <version>1.2.0-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>

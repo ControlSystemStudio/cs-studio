@@ -12,5 +12,6 @@
   <modules>
   	<module>org.csstudio.logbook.shift.feature</module>
   	<module>org.csstudio.logbook.viewer.feature</module>
+  	<module>org.csstudio.olog.feature</module>
   </modules>
 </project>
