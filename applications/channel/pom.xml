@@ -11,5 +11,7 @@
   <packaging>pom</packaging>
   <modules>
   	<module>channel-repository</module>
+  	<module>channel-features</module>
+  	<module>channel-plugins</module>
   </modules>
 </project>
