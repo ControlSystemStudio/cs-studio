@@ -10,6 +10,7 @@ package org.csstudio.vtype.pv;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.vtype.pv.RefCountMap.ReferencedEntry;
 
@@ -63,6 +64,13 @@ public class PVPool
     /** Singleton */
     private PVPool()
     {
+    }
+
+    /** @return Supported PV type prefixes */
+    public static String[] getSupportedPrefixes()
+    {
+        final Set<String> keys = factories.keySet();
+        return keys.toArray(new String[keys.size()]);
     }
 
     /** Set default PV name type prefix.
