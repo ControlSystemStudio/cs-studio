@@ -5,7 +5,6 @@
     <artifactId>applications</artifactId>
     <version>BUILD-VERSION</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>channel</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>

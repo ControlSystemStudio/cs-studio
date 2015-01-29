@@ -12,21 +12,21 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>org.csstudio.alarm.beast</module>
-    <module>org.csstudio.alarm.beast.annunciator</module>
-    <module>org.csstudio.alarm.beast.configtool</module>
-    <module>org.csstudio.alarm.beast.msghist</module>
-    <module>org.csstudio.alarm.beast.notifier</module>
-    <module>org.csstudio.alarm.beast.notifier.logbook</module>
-    <module>org.csstudio.alarm.beast.notifier.intro</module>
-    <module>org.csstudio.alarm.beast.server</module>
-    <module>org.csstudio.alarm.beast.ui</module>
-    <module>org.csstudio.alarm.beast.ui.alarmtable</module>
-    <module>org.csstudio.alarm.beast.ui.alarmtree</module>
-    <module>org.csstudio.alarm.beast.ui.areapanel</module>
-    <module>org.csstudio.alarm.beast.ui.globaltable</module>
-    <module>org.csstudio.alarm.beast.ui.rap</module>
-    <module>org.csstudio.alarm.intro</module>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <module>org.csstudio.apputil</module>
     <module>org.csstudio.apputil.test</module>
     <module>org.csstudio.apputil.ui</module>
@@ -48,12 +48,12 @@
     <module>org.csstudio.archive.writer</module>
     <module>org.csstudio.archive.writer.rdb</module>
     <module>org.csstudio.archive.writer.test</module>
-    <module>org.csstudio.autocomplete.channelfinder</module>
+    
     <module>org.csstudio.autocomplete.logbook</module>
-    <module>org.csstudio.channel.intro</module>
-    <module>org.csstudio.channel.opiwidgets</module>
-    <module>org.csstudio.channel.views</module>
-    <module>org.csstudio.channel.widgets</module>
+    
+    
+    
+    
     <module>org.csstudio.csdata.clipboard</module>
     <!--<module>org.csstudio.dct</module>-->
     <!--<module>org.csstudio.dct.intro</module>-->
@@ -80,12 +80,12 @@
     <module>org.csstudio.examples</module>
     <module>org.csstudio.graphene</module>
     <module>org.csstudio.graphene.opiwidgets</module>
-    <module>org.csstudio.logbook</module>
-    <module>org.csstudio.logbook.olog</module>
-    <module>org.csstudio.logbook.olog.properties</module>
-    <module>org.csstudio.logbook.ui</module>
-    <module>org.csstudio.logbook.ui.extra</module>
-    <module>org.csstudio.logbook.viewer</module>
+    
+    
+    
+    
+    
+    
     <module>org.csstudio.logging.jms2rdb</module>
     <module>org.csstudio.navigator.applaunch</module>
     <module>org.csstudio.ndarray</module>
@@ -169,10 +169,10 @@
 	<!--module>org.csstudio.utility.adlConverter.test</module--><!-- depends on org.csstudio.utility.adlConverter -->
     <module>org.csstudio.utility.adlParser</module>
     <module>org.csstudio.utility.caSnooperUi</module>
-    <module>org.csstudio.utility.channel</module>
-    <module>org.csstudio.utility.channel.adapters</module>
-    <module>org.csstudio.utility.channelfinder</module>
-    <module>org.csstudio.utility.channelfinder.ui</module>
+    
+    
+    
+    
     <module>org.csstudio.utility.clock</module>
     <module>org.csstudio.utility.eliza</module>
     <module>org.csstudio.utility.file</module>
@@ -189,8 +189,8 @@
     <module>org.csstudio.utility.nameSpaceBrowser</module>
     <module>org.csstudio.utility.nameSpaceSearch</module>
     <module>org.csstudio.utility.namespace.utility</module>
-    <module>org.csstudio.utility.olog</module>
-    <module>org.csstudio.utility.olog.ui</module>
+    
+    
     <module>org.csstudio.utility.product</module>
     <module>org.csstudio.utility.product.default</module>
     <module>org.csstudio.utility.pv.ui</module>
@@ -204,11 +204,11 @@
     <module>org.csstudio.utility.treemodel.test</module>
     <module>org.csstudio.vtype.pv</module>
     <!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
-    <module>org.csstudio.alarm.beast.annunciator.test</module>
-    <module>org.csstudio.alarm.beast.msghist.test</module>
-    <module>org.csstudio.alarm.beast.notifier.test</module>
-    <module>org.csstudio.alarm.beast.server.test</module>
-    <module>org.csstudio.alarm.beast.ui.test</module>
+    
+    
+    
+    
+    
     <module>org.csstudio.archive.engine.test</module>
     <module>org.csstudio.archive.reader.test</module>
     <module>org.csstudio.archive.reader.appliance.test</module>
@@ -217,18 +217,18 @@
     <module>org.csstudio.diag.epics.pvtree.test</module>    
     <module>org.csstudio.diag.postanalyser.test</module>
     <!--module>org.csstudio.diag.pvfields.test</module--> <!--Tests do not end.-->
-    <module>org.csstudio.logbook.test</module>
+    
     <module>org.csstudio.ndarray.test</module>
     <module>org.csstudio.scan.test</module>
     <!--module>org.csstudio.scan.server.test</module--> <!--Error at runtime.-->
     <!--module>org.csstudio.trends.databrowser2.test</module--> <!--Error at runtime.-->
     <!--module>org.csstudio.vtype.pv.test</module-->
-    <module>org.csstudio.utility.channel.test</module>
+    
     <module>org.csstudio.display.pace.test</module>
-    <module>org.csstudio.alarm.beast.configtool.test</module>
+    
     <!--module>org.csstudio.apputil.ui.test</module--> <!--UI tests - wrong naming.-->
     <module>org.csstudio.archive.reader.aapi.test</module>
-    <module>org.csstudio.logbook.olog.property.shift</module>
+    
     <module>org.csstudio.shift</module>
     <module>org.csstudio.shift.ui</module>
     <module>org.csstudio.shift.viewer</module>
