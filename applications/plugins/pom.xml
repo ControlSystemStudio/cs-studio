@@ -203,7 +203,6 @@
     <!--<module>org.csstudio.utility.tine.ui</module>--><!-- depends on org.csstudio.utility.tine -->
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
-    <module>org.csstudio.vtype.pv</module>
     <!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
     <module>org.csstudio.alarm.beast.annunciator.test</module>
     <module>org.csstudio.alarm.beast.msghist.test</module>
@@ -223,7 +222,6 @@
     <module>org.csstudio.scan.test</module>
     <!--module>org.csstudio.scan.server.test</module--> <!--Error at runtime.-->
     <!--module>org.csstudio.trends.databrowser2.test</module--> <!--Error at runtime.-->
-    <!--module>org.csstudio.vtype.pv.test</module-->
     <module>org.csstudio.utility.channel.test</module>
     <module>org.csstudio.display.pace.test</module>
     <module>org.csstudio.alarm.beast.configtool.test</module>

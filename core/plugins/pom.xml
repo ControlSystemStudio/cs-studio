@@ -87,6 +87,8 @@
     <module>org.csstudio.utility.singlesource.rcp</module>
     <module>org.csstudio.utility.singlesource.test</module>
     <module>org.csstudio.utility.test</module>
+    <module>org.csstudio.vtype.pv</module>
+    <!-- <module>org.csstudio.vtype.pv.test</module> -->
     <module>org.csstudio.workspace</module>
   </modules>
 </project>
