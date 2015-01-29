@@ -503,4 +503,15 @@ public class OPIRuntimeDelegate implements IAdaptable{
                     .getZoomManager();
         return null;
     }
+    
+    /**
+     * Dispose of all resources.
+     */
+    public void dispose() {
+        getActionRegistry().dispose();
+        if (displayOpenManager != null) {
+        	displayOpenManager.dispose();
+            displayOpenManager = null;
+        }
+    }
 }

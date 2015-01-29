@@ -43,5 +43,10 @@ public class OPIRunnerToolBarContributor extends EditorActionBarContributor {
 		opiRuntimeToolBarDelegate
 				.setActiveOPIRuntime((IOPIRuntime) targetEditor);
 	}
+	
+	@Override
+	public void dispose() {
+	    opiRuntimeToolBarDelegate.dispose();
+	}
 
 }

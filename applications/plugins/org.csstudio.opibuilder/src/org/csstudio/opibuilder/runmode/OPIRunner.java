@@ -46,6 +46,15 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 	@Override
 	public void doSaveAs() {
 	}
+	
+	@Override
+	public void dispose() {
+	    if (opiRuntimeDelegate != null) {
+    	    opiRuntimeDelegate.dispose();
+    	    opiRuntimeDelegate = null;
+	    }
+	    super.dispose();
+	}
 
 	@Override
 	public void init(final IEditorSite site, final IEditorInput input)
@@ -117,11 +126,12 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class adapter) {
-		Object obj = opiRuntimeDelegate.getAdapter(adapter);
-		if(obj != null)
-			return obj;
-		else
-			return super.getAdapter(adapter);
+		if (opiRuntimeDelegate != null) {
+			Object obj = opiRuntimeDelegate.getAdapter(adapter);
+			if(obj != null)
+				return obj;
+		}
+		return super.getAdapter(adapter);
 
 	}
 
