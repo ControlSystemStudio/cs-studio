@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -36,8 +35,8 @@ public class PartZoomComboContributionItem extends ContributionItem implements
 	private String[] initStrings;
 	private ToolItem toolitem;
 	private ZoomManager zoomManager;
+	@SuppressWarnings("unused")
 	private IPartService service;
-	private IPartListener partListener;
 	private IWorkbenchPart part;
 
 	/**
@@ -154,15 +153,13 @@ public class PartZoomComboContributionItem extends ContributionItem implements
 	 * @see org.eclipse.jface.action.ContributionItem#dispose()
 	 */
 	public void dispose() {
-		if (partListener == null)
-			return;
-		service.removePartListener(partListener);
 		if (zoomManager != null) {
 			zoomManager.removeZoomListener(this);
 			zoomManager = null;
 		}
+		service = null;
+		part = null;
 		combo = null;
-		partListener = null;
 	}
 
 	/**
