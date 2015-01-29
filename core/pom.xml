@@ -202,8 +202,6 @@
 
 	<!-- CHILD MODULES -->
 	<modules>
-		<module>plugins</module>
-		<module>features</module>
 		<module>repository</module>
 		<module>utility</module>
 		<module>diirt</module>
