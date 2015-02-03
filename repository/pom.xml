@@ -45,11 +45,11 @@
 								
 								<!--  EPICS artifacts -->
 								<artifact>
-									<id>org.epics:pvDataJava:4.1.0-SNAPSHOT</id>
+									<id>org.epics:pvDataJava:${pvdata.version}</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
-									<id>org.epics:pvAccessJava:4.1.0-SNAPSHOT</id>
+									<id>org.epics:pvAccessJava:${pvaccess.version}</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
