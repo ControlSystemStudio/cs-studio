@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>utility-plugins</artifactId>
-    <version>BUILD-VERSION</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.utility.pvmanager.ui.toolbox</artifactId>

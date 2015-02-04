@@ -25,9 +25,6 @@
    <feature id="org.csstudio.pvmanager.jdbc.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
-   <feature id="org.csstudio.pvmanager.pva.feature">
-      <category name="org.csstudio.category.core"/>
-   </feature>
 
    <category-def name="org.csstudio.category.core" label="CS-Studio Core"/>
 

@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>unorganized-features</artifactId>
-    <version>BUILD-VERSION</version>
+    <version>4.1.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>org.csstudio.core.all.feature</artifactId>

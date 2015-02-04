@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>unorganized</artifactId>
-    <version>BUILD-VERSION</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>unorganized-plugins</artifactId>
   <packaging>pom</packaging>
@@ -24,11 +24,11 @@
   	<module>org.csstudio.csdata</module>
   	<module>org.csstudio.csdata.test</module>
   	<module>org.csstudio.dal</module>
-  	<module>org.csstudio.dal.epics</module>
-  	<module>org.csstudio.dal.simulator</module>
-  	<module>org.csstudio.dal.test</module>
-  	<module>org.csstudio.dal.tine</module>
-  	<module>org.csstudio.dal.ui</module>
+<!--   	<module>org.csstudio.dal.epics</module> -->
+<!--   	<module>org.csstudio.dal.simulator</module> -->
+<!--   	<module>org.csstudio.dal.test</module> -->
+<!--   	<module>org.csstudio.dal.tine</module> -->
+<!--   	<module>org.csstudio.dal.ui</module> -->
   	<module>org.csstudio.data</module>
   	<module>org.csstudio.data.test</module>
   	<module>org.csstudio.java</module>
