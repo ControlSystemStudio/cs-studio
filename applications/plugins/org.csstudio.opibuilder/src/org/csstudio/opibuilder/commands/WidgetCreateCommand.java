@@ -14,6 +14,7 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractLayoutModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
+import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.util.SchemaService;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -157,6 +158,13 @@ public class WidgetCreateCommand extends Command {
 		}
 		container.addChild(index, newWidget);
 		container.selectWidget(newWidget, append);
+		if(newWidget instanceof AbstractContainerModel) {
+			try {
+				XMLUtil.fillLinkingContainers((AbstractContainerModel)newWidget);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

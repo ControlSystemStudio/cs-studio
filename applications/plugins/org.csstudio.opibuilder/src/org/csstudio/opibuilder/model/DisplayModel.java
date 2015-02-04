@@ -335,4 +335,5 @@ public class DisplayModel extends AbstractContainerModel {
 	public void setFrameRate(double rate) {
 		setPropertyValue(PROP_FRAME_RATE, rate);
 	}
+	
 }

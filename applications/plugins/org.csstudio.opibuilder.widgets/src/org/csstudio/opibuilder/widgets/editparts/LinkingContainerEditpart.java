@@ -15,10 +15,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
+import org.csstudio.opibuilder.editparts.AbstractLinkingContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
@@ -34,7 +33,6 @@ import org.csstudio.swt.widgets.figures.LinkingContainerFigure;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -45,15 +43,12 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.ui.IActionFilter;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 
 /**The Editpart Controller for a linking Container
  * @author Xihui Chen
  *
  */
-public class LinkingContainerEditpart extends AbstractContainerEditpart{
+public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	
 	private static int linkingContainerID = 0;
 
@@ -109,7 +104,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		
-		loadWidgets(getWidgetModel().getOPIFilePath(), false);		
+		configureDisplayModel();
 		
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -120,6 +115,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 						absolutePath = ResourceUtil.buildAbsolutePath(
 								getWidgetModel(), absolutePath);
 					loadWidgets(absolutePath, true);
+					configureDisplayModel();
 				}
 				return true;
 			}
@@ -131,6 +127,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				loadWidgets(getWidgetModel().getOPIFilePath(), true);
+				configureDisplayModel();
 				return false;
 			}
 		};
@@ -172,93 +169,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			return;
 
 		try {
-			if(checkSelf && getExecutionMode() == ExecutionMode.EDIT_MODE){
-				IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-					getActivePage().getActiveEditor();
-				if(activeEditor != null){
-					IEditorInput input = activeEditor.getEditorInput();
-					if(path.equals(ResourceUtil.getPathInEditor(input))){
-						getWidgetModel().getProperty(
-								LinkingContainerModel.PROP_OPI_FILE).
-								setPropertyValue(new Path(""), false);
-						throw new Exception("It is not allowed to link to the OPI file itself.");
-					}
-				}
-			}
-			final DisplayModel tempDisplayModel = new DisplayModel(path);
-			tempDisplayModel.setViewer((GraphicalViewer) getViewer());
-			tempDisplayModel.setDisplayID(getWidgetModel().getRootDisplayModel().getDisplayID());
-			//This need to be executed after GUI created.
-			UIBundlingThread.getInstance().addRunnable(new Runnable() {				
-				@Override
-				public void run() {
-					tempDisplayModel.setExecutionMode(getExecutionMode());
-					tempDisplayModel.setOpiRuntime(getWidgetModel().getRootDisplayModel().getOpiRuntime());					
-				}
-			});
-
-			XMLUtil.fillDisplayModelFromInputStream(
-					ResourceUtil.pathToInputStream(path), tempDisplayModel,
-					getViewer().getControl().getDisplay());
-			AbstractContainerModel loadTarget = tempDisplayModel;
-
-			if(!getWidgetModel().getGroupName().trim().equals("")){ //$NON-NLS-1$
-				AbstractWidgetModel group =
-					tempDisplayModel.getChildByName(getWidgetModel().getGroupName());
-				if(group != null && group instanceof AbstractContainerModel){
-					loadTarget = (AbstractContainerModel) group;
-				}
-			}
-			// Load "LCID" macro whose value is unique to this instance of Linking Container.
-			if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-				linkingContainerID++;
-				loadTarget.getMacroMap().put("LCID", "LCID_" + linkingContainerID);
-			}
-			//Load system macro
-			if(loadTarget.getMacrosInput().isInclude_parent_macros()){				
-				loadTarget.getMacroMap().putAll(
-						(LinkedHashMap<String, String>) tempDisplayModel.getParentMacroMap());
-			}
-			//Load macro from its macrosInput
-			loadTarget.getMacroMap().putAll(loadTarget.getMacrosInput().getMacrosMap());
-			//It also include the macros on this linking container 
-			//which includes the macros from action and global macros if included
-			//It will replace the old one too.
-			loadTarget.getMacroMap().putAll(getWidgetModel().getMacroMap());
-//			if(connectionList == null)
-				//load it again to update connections, because it needs to refer current loaded widgets.				
-				
-			connectionList = tempDisplayModel.getConnectionList();
-			if(connectionList !=null && !connectionList.isEmpty()){
-				if(originalPoints != null)
-					originalPoints.clear();
-				else
-					originalPoints = new HashMap<ConnectionModel, PointList>();
-			}
-			
-			for (ConnectionModel conn : connectionList) {
-				if(conn.getPoints()!=null)
-					originalPoints.put(conn, conn.getPoints().getCopy());
-			}			
-			if (originalPoints != null && !originalPoints.isEmpty())
-				//update connections after the figure is repainted.
-				getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
-					@Override
-					public void run() {
-						updateConnectionList();				
-					}
-				});
-			
-			for(AbstractWidgetModel child : loadTarget.getChildren()){
-				getWidgetModel().addChild(child, false); //don't change model's parent.
-			}
-			getWidgetModel().setBackgroundColor(loadTarget.getBackgroundColor());
-			getWidgetModel().setDisplayModel(tempDisplayModel);		
-			//Add scripts on display model
-			if(getExecutionMode() == ExecutionMode.RUN_MODE)
-				getWidgetModel().getScriptsInput().getScriptList().addAll(
-					loadTarget.getScriptsInput().getScriptList());
-			//tempDisplayModel.removeAllChildren();
+			XMLUtil.fillLinkingContainer(getWidgetModel());
 		} catch (Exception e) {
 			LabelModel loadingErrorLabel = new LabelModel();
 			loadingErrorLabel.setLocation(0, 0);
@@ -271,6 +182,74 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			Activator.getLogger().log(Level.WARNING, message , e);
 			ConsoleService.getInstance().writeError(message);
 		}
+	}
+
+	/**
+	 * @param path the path of the OPI file
+	 */
+	private synchronized void configureDisplayModel() {
+		//This need to be executed after GUI created.
+		if(getWidgetModel().getDisplayModel() == null) 
+			getWidgetModel().setDisplayModel(new DisplayModel());
+
+		getWidgetModel().getDisplayModel().setViewer((GraphicalViewer) getViewer());
+		getWidgetModel().getDisplayModel().setDisplayID(getWidgetModel().getRootDisplayModel().getDisplayID());
+
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {				
+			@Override
+			public void run() {
+				getWidgetModel().getDisplayModel().setExecutionMode(getExecutionMode());
+				getWidgetModel().getDisplayModel().setOpiRuntime(getWidgetModel().getRootDisplayModel().getOpiRuntime());					
+			}
+		});
+
+		// Load "LCID" macro whose value is unique to this instance of Linking Container.
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			linkingContainerID++;
+			getWidgetModel().getDisplayModel().getMacroMap().put("LCID", "LCID_" + linkingContainerID);
+		}
+		//Load system macro
+		if(getWidgetModel().getDisplayModel().getMacrosInput().isInclude_parent_macros()){				
+			getWidgetModel().getDisplayModel().getMacroMap().putAll(
+					(LinkedHashMap<String, String>) getWidgetModel().getDisplayModel().getParentMacroMap());
+		}
+		//Load macro from its macrosInput
+		getWidgetModel().getDisplayModel().getMacroMap().putAll(
+				getWidgetModel().getDisplayModel().getMacrosInput().getMacrosMap());
+		//It also include the macros on this linking container 
+		//which includes the macros from action and global macros if included
+		//It will replace the old one too.
+		getWidgetModel().getDisplayModel().getMacroMap().putAll(
+				getWidgetModel().getMacroMap());
+		//			if(connectionList == null)
+		//load it again to update connections, because it needs to refer current loaded widgets.				
+
+		connectionList = getWidgetModel().getDisplayModel().getConnectionList();
+		if(connectionList !=null && !connectionList.isEmpty()){
+			if(originalPoints != null)
+				originalPoints.clear();
+			else
+				originalPoints = new HashMap<ConnectionModel, PointList>();
+		}
+
+		for (ConnectionModel conn : connectionList) {
+			if(conn.getPoints()!=null)
+				originalPoints.put(conn, conn.getPoints().getCopy());
+		}			
+		if (originalPoints != null && !originalPoints.isEmpty())
+			//update connections after the figure is repainted.
+			getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
+				@Override
+				public void run() {
+					updateConnectionList();				
+				}
+			});
+
+		//Add scripts on display model
+		if(getExecutionMode() == ExecutionMode.RUN_MODE)
+			getWidgetModel().getScriptsInput().getScriptList().addAll(
+					getWidgetModel().getDisplayModel().getScriptsInput().getScriptList());
+		//tempDisplayModel.removeAllChildren();
 		if(getWidgetModel().isAutoSize()){
 			performAutosize();
 		}
