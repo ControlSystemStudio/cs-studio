@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.util.swt.meter;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.eclipse.swt.SWT;
@@ -65,8 +66,8 @@ public class MeterWidget extends Canvas implements DisposeListener,
     /** Maximum value. */
     private double max = +10.0;
 
-    /** Display precision. */
-    private int precision = 4;
+    /** Display format. */
+    private NumberFormat format = DecimalFormat.getInstance();
 
     /** Current value. */
     private double value = 1.0;
@@ -114,7 +115,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
      *  @param high_warning Upper warning limit.
      *  @param high_alarm Upper alarm limit.
      *  @param max Maximum value.
-     *  @param precision Display precision
+     *  @param numberFormat Display format
      */
     public void configure(final double min,
                           final double low_alarm,
@@ -122,7 +123,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
                           final double high_warning,
                           final double high_alarm,
                           final double max,
-                          final int precision)
+                          final NumberFormat format)
     {
         if (min > max)
         {   // swap
@@ -163,7 +164,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         else
             this.high_warning = this.high_alarm;
 
-        this.precision = precision;
+        this.format = format;
         resetScale();
         redraw();
     }
@@ -319,11 +320,9 @@ public class MeterWidget extends Canvas implements DisposeListener,
         // Auto-scale everything. Probably sucks.
         pivot_x = real_client_rect.x + real_client_rect.width / 2;
         pivot_y = real_client_rect.y + real_client_rect.height;
-        final NumberFormat fmt = NumberFormat.getNumberInstance();
-        fmt.setMaximumFractionDigits(precision);
 
-        final Point min_size = scale_gc.textExtent(fmt.format(min));
-        final Point max_size = scale_gc.textExtent(fmt.format(max));
+        final Point min_size = scale_gc.textExtent(format.format(min));
+        final Point max_size = scale_gc.textExtent(format.format(max));
         final int text_width_idea = Math.max(min_size.x, max_size.x);
         final int text_height_idea = min_size.y;
 
@@ -412,7 +411,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
                 (int)(pivot_x + tick_x_radius*cos_angle),
                 (int)(pivot_y - tick_y_radius*sin_angle));
 
-            final String label_text = fmt.format(label_value);
+            final String label_text = format.format(label_value);
             final Point size = scale_gc.textExtent(label_text);
             scale_gc.drawString(label_text,
                           (int)(pivot_x + tick_x_radius*cos_angle)-size.x/2,

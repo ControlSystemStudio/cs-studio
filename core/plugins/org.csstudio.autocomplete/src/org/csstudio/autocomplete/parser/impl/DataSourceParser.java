@@ -35,7 +35,7 @@ public class DataSourceParser implements IContentParser {
 
 	private void loadDataSources() {
 		Set<String> supportedTypes = new HashSet<String>();
-		supportedTypes.addAll(AutoCompleteHelper.retrieveUtilityPVSupported());
+		supportedTypes.addAll(AutoCompleteHelper.retrieveVTypePVSupported());
 		supportedTypes.addAll(AutoCompleteHelper.retrievePVManagerSupported());
 		dataSources = new ArrayList<String>();
 		for (String supportedType : supportedTypes)

@@ -26,9 +26,9 @@ import org.epics.pvmanager.DataSource;
 public class PreferencePage extends FieldEditorPreferencePage
  implements IWorkbenchPreferencePage
 {
-	
+
 	private static final Logger log = Logger.getLogger(PreferencePage.class.getName());
-	
+
     /** Constructor */
     public PreferencePage()
     {
@@ -45,6 +45,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     }
 
     /** {@inheritDoc */
+    @Override
     public void init(IWorkbench workbench)
     { /* NOP */ }
 
@@ -59,18 +60,18 @@ public class PreferencePage extends FieldEditorPreferencePage
         try
         {
         	Set<String> supportedTypes = new HashSet<String>();
-        	supportedTypes.addAll(retrieveUtilityPVSupported());
+        	supportedTypes.addAll(retrieveVTypePVSupported());
         	supportedTypes.addAll(retrievePVManagerSupported());
         	List<String> sortedList = new ArrayList<String>(supportedTypes);
         	Collections.sort(sortedList);
             final String prefixes[] = sortedList.toArray(new String[sortedList.size()]);
             final String values[][] = new String[prefixes.length][2];
             for (int i = 0; i < prefixes.length; i++)
-            {           
+            {
                 values[i][0] = prefixes[i] + "://";
                 values[i][1] = prefixes[i];
             }
-            
+
             // Note: "default_type" is a common setting between pv, pv.ui, pvmanager and pvmanager.ui
         	//       They need to be kept synchronized.
             addField(new ComboFieldEditor("default_type",
@@ -81,25 +82,25 @@ public class PreferencePage extends FieldEditorPreferencePage
             setMessage("Error: " + ex.getMessage(), ERROR); //$NON-NLS-1$
         }
     }
-    
-    private Set<String> retrieveUtilityPVSupported() {
+
+    private Set<String> retrieveVTypePVSupported() {
 		Set<String> items = new HashSet<String>();
-		
+
 		try {
-			Class<?> clazz = Class.forName("org.csstudio.utility.pv.PVFactory");
+			Class<?> clazz = Class.forName("org.csstudio.vtype.pv.PVPool");
 			String[] parameters = (String[]) clazz.getMethod("getSupportedPrefixes").invoke(null);
 			items.addAll(Arrays.asList(parameters));
-			log.config("Loading utility.pv supported types: " + items);
+			log.config("Loading vtype.pv supported types: " + items);
 			return items;
 		} catch (Exception ex) {
-			log.config("utility.pv not found: " + ex.getMessage());
+			log.config("vtype.pv not found: " + ex.getMessage());
 			return Collections.emptySet();
 		}
     }
-    
+
     private Set<String> retrievePVManagerSupported() {
 		Set<String> items = new HashSet<String>();
-		
+
 		try {
 			Class<?> clazz = Class.forName("org.csstudio.utility.pvmanager.ConfigurationHelper");
 			@SuppressWarnings("unchecked")

@@ -7,11 +7,22 @@
  ******************************************************************************/
 package org.csstudio.diag.probe;
 
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.epics.util.time.Timestamp;
+import org.epics.vtype.Display;
+import org.epics.vtype.Time;
+import org.epics.vtype.VEnum;
+import org.epics.vtype.VNumber;
+import org.epics.vtype.VString;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueUtil;
 
 /** Info about the most recent value.
  *  <p>
@@ -20,44 +31,34 @@ import org.csstudio.data.values.ValueUtil;
  *  this class holds the data and handles the synchronization.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ValueInfo
 {
-    /** The most recent value of the PV. */
-    private String value_txt = ""; //$NON-NLS-1$
-
     /** The most recent numeric meta data of the PV, or <code>null</code> */
-    private INumericMetaData numeric_metadata = null;
+    private volatile Optional<Display> display_info = Optional.empty();
 
-    /** The most recent numeric value of the PV.
-     *  <p>
-     *  Only valid if numeric_metatdata != null.
-     */
-    private double value_dbl;
+    /** The most recent numeric value of the PV. */
+    private volatile double value_dbl;
 
     /** The most recent time stamp of the PV. */
-    private ITimestamp time = null;
+    private volatile Instant time = null;
 
     /** Smoothed period in seconds between received values. */
     private SmoothedDouble value_period = new SmoothedDouble();
 
-	/**
-	 * The most recent value of the PV, as a string.
-	 */
-	private String value_str = ""; //$NON-NLS-1$
+	/** The most recent value of the PV, as a string. */
+	private volatile String value_str = "";
 
-    synchronized public String getValueDisplayText()
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.000");
+
+    public String getValueString()
     {
-        return value_txt == null ? "" : value_txt; //$NON-NLS-1$
+        return value_str;
     }
 
-    synchronized public String getValueString()
+    Optional<Display>  getDisplayInfo()
     {
-    	return value_str == null ? "" : value_str; //$NON-NLS-1$
-    }
-
-    synchronized INumericMetaData getNumericMetaData()
-    {
-        return numeric_metadata;
+        return display_info;
     }
 
     public double getDouble()
@@ -65,40 +66,57 @@ public class ValueInfo
         return value_dbl;
     }
 
-    synchronized public String getTimeText()
+    public String getTimeText()
     {
-        return time == null ? "" : time.toString(); //$NON-NLS-1$
+        final Instant safe_time = time;
+        if (safe_time == null)
+            return "";
+        final LocalDateTime local = LocalDateTime.ofInstant(safe_time, ZoneId.systemDefault());
+        return local.format(formatter);
     }
 
-    synchronized double getUpdatePeriod()
+    double getUpdatePeriod()
     {
         return value_period.get();
     }
 
-    synchronized void reset()
+    void reset()
     {
-        value_txt = ""; //$NON-NLS-1$
+        value_str = "";
         time = null;
     }
 
-    synchronized public void update(IValue value)
+    public void update(final VType value)
     {
-        value_txt = ValueUtil.formatValueAndSeverity(value);
-        value_str = ValueUtil.getString(value);
+        display_info = Optional.ofNullable(ValueUtil.displayOf(value));
+        if (display_info.isPresent())
+            value_dbl = ValueUtil.numericValueOf(value).doubleValue();
 
-        final IMetaData meta = value.getMetaData();
-        if (meta instanceof INumericMetaData)
+        if (value instanceof VNumber)
+            value_str = Double.toString(((VNumber) value).getValue().doubleValue());
+        else if (value instanceof VEnum)
         {
-            numeric_metadata = (INumericMetaData) meta;
-            value_dbl = ValueUtil.getDouble(value);
+            final VEnum ev = (VEnum) value;
+            if (ev.getIndex() >= 0  &&  ev.getIndex() < ev.getLabels().size())
+                value_str = ev.getLabels().get(ev.getIndex());
+            else
+                value_str = Integer.toString(ev.getIndex());
         }
+        else if (value instanceof VString)
+            value_str = ((VString) value).getValue();
         else
-            numeric_metadata = null;
+            value_str = Objects.toString(value);
 
-        final ITimestamp new_time = value.getTime();
+        final Time vtime = ValueUtil.timeOf(value);
+        if (vtime == null)
+            return;
+
+        final Timestamp stamp = vtime.getTimestamp();
+        final Instant new_time = Instant.ofEpochSecond(stamp.getSec(), stamp.getNanoSec());
         if (time != null)
         {
-            final double period = new_time.toDouble() - time.toDouble();
+            final Duration duration = Duration.between(time,  new_time);
+            final double period = duration.getSeconds() + duration.getNano() * 1e-9;
             value_period.add(period);
         }
         else
