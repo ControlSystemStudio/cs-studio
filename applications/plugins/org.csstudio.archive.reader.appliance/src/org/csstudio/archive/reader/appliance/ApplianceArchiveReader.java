@@ -7,7 +7,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
@@ -26,11 +29,14 @@ import org.epics.util.time.Timestamp;
  * 
  * @author Miha Novak <miha.novak@cosylab.com>
  */
-public class ApplianceArchiveReader implements ArchiveReader {
-	
+public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
+	    
 	private final String httpURL;
 	private final String pbrawURL;
 	private final boolean useStatistics;
+	
+	private Map<ApplianceValueIterator, ApplianceArchiveReader> iterators = Collections.synchronizedMap(
+	           new WeakHashMap<ApplianceValueIterator, ApplianceArchiveReader>()); 
 			
 	/**
 	 * Constructor that sets appliance archiver reader url.
@@ -116,9 +122,11 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	 * @see org.csstudio.archive.reader.ArchiveReader#getRawValues(int, java.lang.String, org.epics.util.time.Timestamp, org.epics.util.time.Timestamp)
 	 */
 	@Override
-	public ValueIterator getRawValues(int key, String name, Timestamp start, Timestamp end) throws UnknownChannelException, Exception {
+	public ApplianceValueIterator getRawValues(int key, String name, Timestamp start, Timestamp end) throws UnknownChannelException, Exception {
 		try {
-			return new ApplianceRawValueIterator(this, name, start, end);
+		    ApplianceRawValueIterator it = new ApplianceRawValueIterator(this, name, start, end, this);
+		    iterators.put(it,this);
+		    return it;
 		} catch (ArchiverApplianceException ex) {
 			throw new UnknownChannelException(name);
 		} 
@@ -129,31 +137,34 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	 */
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
+	    ApplianceValueIterator it;
 		try {
 			int points = getNumberOfPoints(name, start, end);
 			if (points <= count) {
-				return getRawValues(key, name, start, end);
+				it = new ApplianceRawValueIterator(this, name, start, end, this);
 			} else {
 				try {
 					//try to bin the values using the mean and std etc. This will work for numeric scalar PVs
 					if (useStatistics) {
-						return new ApplianceStatisticsValueIterator(this, name, start, end, count);
+						it = new ApplianceStatisticsValueIterator(this, name, start, end, count,this);
 					} else {
-						return new ApplianceMeanValueIterator(this, name, start, end, count);
+						it = new ApplianceMeanValueIterator(this, name, start, end, count,this);
 					}
 				} catch (ArchiverApplianceException e) {
 					//if binning is not supported, try nth operator
-					return new ApplianceNonNumericOptimizedValueIterator(this, name, start, end, count, points);
+					it = new ApplianceNonNumericOptimizedValueIterator(this, name, start, end, count, points,this);
 				}
 			}
 		} catch (ArchiverApplianceException e) {
 			//fallback for older archiver appliance, which didn't have the nth operator
 			try {
-				return getRawValues(key, name, start, end);
+				it = new ApplianceRawValueIterator(this, name, start, end, this);
 			} catch (ArchiverApplianceException exc) {
 				throw new UnknownChannelException(name);	
 			}
 		} 
+		iterators.put(it,this);
+        return it;
 	}
 
 	/* (non-Javadoc)
@@ -161,7 +172,10 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	 */
 	@Override
 	public void cancel() {
-		//there is no way to cancel the active iterators
+	    ApplianceValueIterator[] its = iterators.keySet().toArray(new ApplianceValueIterator[0]);
+	    for (ApplianceValueIterator a : its) {
+	        a.close();
+	    }
 	}
 
 	/* (non-Javadoc)
@@ -169,7 +183,7 @@ public class ApplianceArchiveReader implements ArchiveReader {
 	 */
 	@Override
 	public void close() {
-		//ignore
+	    cancel();
 	}
 	
 	/**
@@ -289,5 +303,10 @@ public class ApplianceArchiveReader implements ArchiveReader {
 			}
 		}
 		return 0;
+	}
+	
+	@Override
+	public void finished(ApplianceValueIterator iterator) {
+	    iterators.remove(iterator);
 	}
 }

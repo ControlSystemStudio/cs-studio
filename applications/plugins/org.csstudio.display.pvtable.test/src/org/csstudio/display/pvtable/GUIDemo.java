@@ -31,7 +31,7 @@ public class GUIDemo
         TestSettings.setup();
     }
 
-    
+
     @Test
     public void demoGUI() throws Exception
     {
@@ -40,7 +40,7 @@ public class GUIDemo
         shell.setLayout(new GridLayout(1, false));
 
         final PVTablePersistence persistence = new PVTableXMLPersistence();
-        final PVTableModel model = persistence.read(new FileInputStream("lib/example.xml"));
+        final PVTableModel model = persistence.read(new FileInputStream("lib/example.pvs"));
         final PVTable table = new PVTable(shell, null);
         table.setModel(model);
 

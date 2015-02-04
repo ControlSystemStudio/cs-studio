@@ -67,6 +67,7 @@ abstract class PartZoomAction extends Action implements ZoomListener, Disposable
 	public void dispose() {
 		if(zoomManager != null)
 			zoomManager.removeZoomListener(this);
+		zoomManager = null;
+		part = null;
 	}
-
 }

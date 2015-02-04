@@ -206,7 +206,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		addProperty(new StringProperty(PROP_TITLE, "Title",
 				WidgetPropertyCategory.Display, ""));	
 		addProperty(new FontProperty(PROP_TITLE_FONT, "Title Font",
-				WidgetPropertyCategory.Display,new FontData("Arial", 12, SWT.BOLD))); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, MediaService.DEFAULT_BOLD_FONT)); //$NON-NLS-1$
 		addProperty(new BooleanProperty(PROP_SHOW_LEGEND, "Show Legend",
 				WidgetPropertyCategory.Display,true));		
 		addProperty(new BooleanProperty(PROP_SHOW_PLOTAREA_BORDER, "Show Plot Area Border",
@@ -282,7 +282,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			break;
 		case TITLE_FONT:
 			addProperty(new FontProperty(
-					propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD))); //$NON-NLS-1$
+					propID, axisProperty.toString(), category, MediaService.DEFAULT_BOLD_FONT)); //$NON-NLS-1$
 			break;
 		case SCALE_FONT:
 			addProperty(new FontProperty(propID, axisProperty.toString(), category,

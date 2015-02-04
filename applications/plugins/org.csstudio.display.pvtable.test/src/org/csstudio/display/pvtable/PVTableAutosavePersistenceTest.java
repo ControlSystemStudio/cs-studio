@@ -9,11 +9,12 @@ package org.csstudio.display.pvtable;
 
 import static org.csstudio.display.pvtable.FileTestUtil.linesInFile;
 import static org.csstudio.display.pvtable.FileTestUtil.matchLinesIn;
+import static org.csstudio.utility.test.HamcrestMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.csstudio.utility.test.HamcrestMatchers.containsString;
+
 import java.io.FileInputStream;
 
 import org.csstudio.display.pvtable.model.PVTableItem;
@@ -35,7 +36,7 @@ public class PVTableAutosavePersistenceTest
     {
         TestSettings.setup();
     }
-    
+
     @Test
     public void testReadAutosave() throws Exception
     {
@@ -47,18 +48,18 @@ public class PVTableAutosavePersistenceTest
             System.out.println(item.getName() + " = " + item.getSavedValue());
         }
         assertThat(model.getItemCount(), equalTo(83));
-        
+
         assertThat(model.getItem(0).getName(), equalTo("BL7:test_ai.VAL"));
-        assertThat(model.getItem(0).getSavedValue().toString(), equalTo("3.16"));
-        
+        assertThat(model.getItem(0).getSavedValue().get().toString(), equalTo("3.16"));
+
         assertThat(model.getItem(3).getName(), equalTo("BL7:test_ai.DESC"));
-        assertThat(model.getItem(3).getSavedValue().toString(), equalTo("Howdy?"));
+        assertThat(model.getItem(3).getSavedValue().get().toString(), equalTo("Howdy?"));
 
         assertThat(model.getItem(4).getName(), equalTo("BL7:test_ls.VAL"));
-        assertThat(model.getItem(4).getSavedValue().toString(), equalTo("51, 32, 34, 71, 117, 121, 115, 63, 0"));
-        
+        assertThat(model.getItem(4).getSavedValue().get().toString(), equalTo("51, 32, 34, 71, 117, 121, 115, 63, 0"));
+
         assertThat(model.getItem(6).getName(), equalTo("DTL_LLRF:IOC1:vxiRead0.A"));
-        assertThat(model.getItem(6).getSavedValue().toString(), equalTo("212"));
+        assertThat(model.getItem(6).getSavedValue().get().toString(), equalTo("212"));
         model.dispose();
     }
 
@@ -68,7 +69,7 @@ public class PVTableAutosavePersistenceTest
         final PVTableAutosavePersistence persistence = new PVTableAutosavePersistence();
         SavedValue value = persistence.parseValue("3.14");
         assertThat(value.toString(), equalTo("3.14"));
-        
+
         value = persistence.parseValue("@array@ { \"72\" \"101\" \"10\\8\" \"108\" \"111\" \"0\" }");
         assertThat(value.toString(), equalTo("72, 101, 108, 108, 111, 0"));
 
@@ -96,12 +97,12 @@ public class PVTableAutosavePersistenceTest
         final PVTableModel model = persistence.read(new FileInputStream("lib/test.sav"));
         persistence.write(model, "/tmp/compare.sav");
         model.dispose();
-        
+
         String[] original = linesInFile("lib/test.sav");
         String[] copy = linesInFile("/tmp/compare.sav");
         // We know that the initial comment is different
         assertThat(original[0], not(equalTo(copy[0])));
-        
+
         // Correct that, and rest should match
         copy[0] = original[0];
         assertThat(original, matchLinesIn(copy));

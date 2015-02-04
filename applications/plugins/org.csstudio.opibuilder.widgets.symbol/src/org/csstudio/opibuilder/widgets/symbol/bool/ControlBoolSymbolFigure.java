@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolUtils;
 import org.csstudio.swt.widgets.figures.AbstractBoolControlFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImage;
@@ -29,6 +30,7 @@ import org.csstudio.swt.widgets.util.TextPainter;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -299,7 +301,8 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 
 	public synchronized void resizeImage() {
 		Rectangle bounds = getBounds().getCopy();
-		ImageUtils.crop(bounds, this.getInsets());
+		if (!hasDisconnectedBorder())
+			ImageUtils.crop(bounds, this.getInsets());
 		for (SymbolImage si : getAllImages())
 			si.setBounds(bounds);
 		repaint();
@@ -317,10 +320,22 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 	public synchronized Dimension getAutoSizedDimension() {
 		// Widget dimension = Symbol Image + insets
 		Dimension dim = getCurrentImage().getAutoSizedDimension();
-		if (dim != null)
-			return new Dimension(dim.width + getInsets().getWidth(), 
-					dim.height + getInsets().getHeight());
-		return null;
+		if (dim == null) return null;
+		if (hasDisconnectedBorder()) return dim;
+		return new Dimension(dim.width + getInsets().getWidth(), dim.height
+				+ getInsets().getHeight());
+	}
+
+	private boolean hasDisconnectedBorder() {
+		return getBorder() != null
+				&& getBorder().equals(
+						AlarmRepresentationScheme.getDisonnectedBorder());
+	}
+
+	@Override
+	public void setBorder(Border b) {
+		super.setBorder(b);
+		sizeChanged();
 	}
 
 	// ************************************************************
@@ -403,7 +418,8 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
 		if (isLoadingImage())
 			return;
 		Rectangle bounds = getBounds().getCopy();
-		ImageUtils.crop(bounds, this.getInsets());
+		if (!hasDisconnectedBorder())
+			ImageUtils.crop(bounds, this.getInsets());
 		if (bounds.width <= 0 || bounds.height <= 0)
 			return;
 		SymbolImage symbolImage = getCurrentImage();

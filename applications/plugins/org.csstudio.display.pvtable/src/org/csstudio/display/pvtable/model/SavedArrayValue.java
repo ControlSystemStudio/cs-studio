@@ -9,9 +9,11 @@ package org.csstudio.display.pvtable.model;
 
 import java.util.List;
 
+import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.vtype.pv.PV;
 import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
+import org.epics.vtype.VByteArray;
 import org.epics.vtype.VDoubleArray;
 import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VFloatArray;
@@ -23,10 +25,11 @@ import org.epics.vtype.VType;
 /** Saved value of an array table item
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SavedArrayValue extends SavedValue
 {
     final private List<String> saved_value;
-    
+
     /** Initialize from text
      *  @param value_text
      */
@@ -34,13 +37,13 @@ public class SavedArrayValue extends SavedValue
     {
         saved_value = value_texts;
     }
-    
+
     /** @return Number of array elements */
     public int size()
     {
         return saved_value.size();
     }
-    
+
     /** @param index Array index, <code>0 .. size()-1</code>
      *  @return Array element
      */
@@ -48,12 +51,30 @@ public class SavedArrayValue extends SavedValue
     {
         return saved_value.get(index);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception
     {
         if (current_value == null)
             return true;
+        if (current_value instanceof VByteArray  &&  Preferences.treatByteArrayAsString())
+        {
+            // Compare as text
+            final String text = VTypeHelper.toString(current_value);
+            final int N = Math.min(text.length(), saved_value.size());
+            for (int i=0; i<N; ++i)
+            {
+                final int v1 = text.charAt(i);
+                final int v2 = getSavedNumber(saved_value.get(i)).intValue();
+                if (Math.abs(v2 - v1) > tolerance)
+                    return false;
+                // End comparison when reaching end-of-string, not comparing remaining array elements
+                if (v1 == 0)
+                    break;
+            }
+            return true;
+        }
         if (current_value instanceof VNumberArray)
         {
             final ListNumber values = ((VNumberArray)current_value).getData();
@@ -63,7 +84,7 @@ public class SavedArrayValue extends SavedValue
             for (int i=0; i<N; ++i)
             {
                 final double v1 = values.getDouble(i);
-                final double v2 = Double.parseDouble(saved_value.get(i));
+                final double v2 = getSavedNumber(saved_value.get(i)).doubleValue();
                 if (Math.abs(v2 - v1) > tolerance)
                     return false;
             }
@@ -78,9 +99,9 @@ public class SavedArrayValue extends SavedValue
             if (N != saved_value.size())
                 return false;
             for (int i=0; i<N; ++i)
-            {   // Treat saved value as double to allow for "1e2"
+            {
                 final int v1 = indices.getInt(i);
-                final double v2 = Double.parseDouble(saved_value.get(i));
+                final int v2 = getSavedNumber(saved_value.get(i)).intValue();
                 if (Math.abs(v2 - v1) > tolerance)
                     return false;
             }
@@ -92,8 +113,9 @@ public class SavedArrayValue extends SavedValue
             return false;
         throw new Exception("Cannot compare against unhandled type " + current_value.getClass().getName());
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void restore(final PV pv) throws Exception
     {
         // Determine what type to write based on current value of the PV
@@ -103,7 +125,7 @@ public class SavedArrayValue extends SavedValue
             final int N = saved_value.size();
             final double[] data = new double[N];
             for (int i=0; i<N; ++i)
-                data[i] = Double.parseDouble(saved_value.get(i));
+                data[i] = getSavedNumber(saved_value.get(i)).doubleValue();
             pv.write(data);
         }
         else if (pv_type instanceof VNumberArray  ||  pv_type instanceof VEnumArray)
@@ -112,16 +134,14 @@ public class SavedArrayValue extends SavedValue
             // so int[] is the widest type
             final int N = saved_value.size();
             final int[] data = new int[N];
-            // Parse as double to allow "1e10" or "100.0"
-            // If it's "3.14", only "3" will of course be restored.
             for (int i=0; i<N; ++i)
-                data[i] = (int) Double.parseDouble(saved_value.get(i));
+                data[i] = getSavedNumber(saved_value.get(i)).intValue();
             pv.write(data);
         }
         else
             throw new Exception("Cannot write type " + pv_type.getClass().getName());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString()

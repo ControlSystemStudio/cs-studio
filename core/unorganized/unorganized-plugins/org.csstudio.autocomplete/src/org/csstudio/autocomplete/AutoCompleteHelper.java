@@ -54,17 +54,17 @@ public class AutoCompleteHelper {
 		cleaned = cleaned.replaceAll("[\\*\\?]+$", "");
 		return cleaned;
 	}
-	
-	public static Set<String> retrieveUtilityPVSupported() {
+    
+	public static Set<String> retrieveVTypePVSupported() {
 		Set<String> items = new HashSet<String>();
 		try {
-			Class<?> clazz = Class.forName("org.csstudio.utility.pv.PVFactory");
+			Class<?> clazz = Class.forName("org.csstudio.vtype.pv.PVPool");
 			String[] parameters = (String[]) clazz.getMethod("getSupportedPrefixes").invoke(null);
 			items.addAll(Arrays.asList(parameters));
-			AutoCompletePlugin.getLogger().config("Loading utility.pv supported types: " + items);
+			AutoCompletePlugin.getLogger().config("Loading vtype.pv supported types: " + items);
 			return items;
 		} catch (Exception ex) {
-			AutoCompletePlugin.getLogger().config("utility.pv not found: " + ex.getMessage());
+			AutoCompletePlugin.getLogger().config("vtype.pv not found: " + ex.getMessage());
 			return Collections.emptySet();
 		}
 	}

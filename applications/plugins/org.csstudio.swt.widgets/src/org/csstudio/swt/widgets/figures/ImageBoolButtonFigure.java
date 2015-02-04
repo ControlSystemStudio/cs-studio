@@ -17,6 +17,7 @@ import org.csstudio.swt.widgets.symbol.SymbolImageListener;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -122,12 +123,17 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 		SymbolImage temp = booleanValue ? onImage : offImage;
 		if (temp != null) {
 			Dimension dim = temp.getAutoSizedDimension();
-			if (dim != null)
-				return new Dimension(dim.width + getInsets().left
-						+ getInsets().right, dim.height + getInsets().bottom
-						+ getInsets().top);
+			if (dim == null) return null;
+			return new Dimension(dim.width + getInsets().left + getInsets().right, 
+					dim.height + getInsets().bottom + getInsets().top);
 		}
 		return null;
+	}
+
+	@Override
+	public void setBorder(Border b) {
+		super.setBorder(b);
+		sizeChanged();
 	}
 
 	public boolean isLoadingImage() {

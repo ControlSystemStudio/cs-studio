@@ -163,8 +163,13 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	}
 	
 	public void setDisplayOpenManager(DisplayOpenManager manager) {
+		if (this.manager != null) {
+	        this.manager.removeListener(this);
+	    }
 		this.manager = manager;
-		manager.addListener(this);
+		if (this.manager != null) {
+		    this.manager.addListener(this);
+		}
 		update();
 	}
 
@@ -173,6 +178,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	}
 	
 	public void update(){
+		if (manager == null) return;
 		setEnabled(isEnabled());
 		recreateMenu = true;
 		if(forward){
@@ -186,6 +192,13 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 			else
 				setToolTipText(BACK);
 		}
+	}
+	
+	/**
+	 * Disposes of all resources allocated by this action.
+	 */
+	public void dispose() {
+	    setDisplayOpenManager(null);
 	}
 	
 }

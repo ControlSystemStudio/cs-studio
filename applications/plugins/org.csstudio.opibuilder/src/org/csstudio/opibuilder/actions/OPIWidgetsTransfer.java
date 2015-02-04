@@ -88,7 +88,7 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 			return null;
 		try {		
 			DisplayModel displayModel = 
-					(DisplayModel) XMLUtil.XMLStringToWidget(new String(bytes, "UTF-8")); //$NON-NLS-1$
+					(DisplayModel) XMLUtil.fillWidgetsFromXMLString(new String(bytes, "UTF-8"), null); //$NON-NLS-1$
 			List<AbstractWidgetModel> widgets = displayModel.getChildren();
 			return widgets;
 		} catch (Exception e) {
