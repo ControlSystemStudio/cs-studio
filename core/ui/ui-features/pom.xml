@@ -2,14 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>ui</artifactId>
     <version>4.1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>ui</artifactId>
+  <artifactId>ui-features</artifactId>
+  <version>4.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-  	<module>ui-plugins</module>
-  	<module>ui-repository</module>
-  	<module>ui-features</module>
+  	<module>org.csstudio.ui.feature</module>
   </modules>
 </project>
