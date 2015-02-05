@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>utility</artifactId>
+    <version>4.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>utility-plugins</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+  	<module>org.csstudio.utility.batik</module>
+  	<module>org.csstudio.utility.pv</module>
+  	<module>org.csstudio.utility.pv.epics</module>
+  	<module>org.csstudio.utility.pv.epics.test</module>
+  	<module>org.csstudio.utility.pv.simu</module>
+  	<module>org.csstudio.utility.pv.simu.test</module>
+  	<module>org.csstudio.utility.pvmanager.ui</module>
+  	<module>org.csstudio.utility.pvmanager.ui.toolbox</module>
+  	<module>org.csstudio.utility.pvmanager.widgets</module>
+  	<module>org.csstudio.utility.singlesource</module>
+  	<module>org.csstudio.utility.singlesource.rap</module>
+  	<module>org.csstudio.utility.singlesource.rcp</module>
+  	<module>org.csstudio.utility.singlesource.test</module>
+  	<module>org.csstudio.utility.test</module>
+  	<module>org.csstudio.utility.pvmanager.widgets.test</module>
+  </modules>
+</project>
