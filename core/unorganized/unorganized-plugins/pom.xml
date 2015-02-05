@@ -48,6 +48,6 @@
   	<module>org.csstudio.simplepv.testutil</module>
   	<module>org.csstudio.startup</module>
   	<module>org.csstudio.startup.helper</module>
-  	<module>org.csstudio.workspace</module>
+<!--   	<module>org.csstudio.workspace</module> -->
   </modules>
 </project>
