@@ -10,6 +10,7 @@
   <modules>
   	<module>org.csstudio.auth</module>
   	<module>org.csstudio.auth.ui</module>
+  	<module>org.csstudio.vtype.pv</module>
   </modules>
   <groupId>org.csstudio</groupId>
   <version>0.0.1-SNAPSHOT</version>
