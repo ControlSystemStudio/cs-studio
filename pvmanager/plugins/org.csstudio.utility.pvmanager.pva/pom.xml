@@ -17,7 +17,11 @@
 			<artifactId>pvmanager-pva</artifactId>
 			<version>${pvmanager.version}</version>
 		</dependency>
-	
+		<dependency>
+			<groupId>org.epics</groupId>
+			<artifactId>pvAccessJava</artifactId>
+			<version>${pvaccess.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -42,7 +46,7 @@
 				<configuration>
 				<unpackBundle>true</unpackBundle>
 					<instructions>
-						<Private-Package>org.csstudio.utility.*</Private-Package>
+						<Private-Package>org.csstudio.utility.*,org.epics.pvaccess.*</Private-Package>
 						<Bundle-Activator>org.csstudio.utility.pvmanager.pva.Activator</Bundle-Activator>
 						<Bundle-Name>PVManager EPICS PVAccess Support</Bundle-Name>
 						<Bundle-SymbolicName>org.csstudio.utility.pvmanager.pva;singleton:=true</Bundle-SymbolicName>
@@ -54,7 +58,7 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 						<Export-Package>org.epics.pvmanager.pva,org.epics.pvmanager.pva.adapters,org.epics.pvmanager.pva.rpcservice.rpcclient,org.epics.pvmanager.pva.rpcservice</Export-Package>
-						<Import-Package>*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
+						<Import-Package>sun.misc;resolution:=optional,*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
 						<_snapshot>${maven.build.timestamp}</_snapshot>
 					</instructions>
 				</configuration>
