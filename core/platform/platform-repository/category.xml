@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.csstudio.platform.feature_0.0.1.qualifier.jar" id="org.csstudio.platform.feature" version="0.0.1.qualifier">
+   <feature id="org.csstudio.platform.feature" version="0.0.1.qualifier">
+      <category name="org.csstudio.category.core"/>
+   </feature>
+   <feature id="org.csstudio.platform.feature.source" version="0.0.1.qualifier">
       <category name="org.csstudio.category.core"/>
    </feature>
    <category-def name="org.csstudio.category.core" label="CS-Studio Core"/>

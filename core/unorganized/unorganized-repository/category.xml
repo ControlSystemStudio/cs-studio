@@ -6,7 +6,13 @@
    <feature id="org.csstudio.core.unorganized.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
+   <feature id="org.csstudio.core.unorganized.feature.source">
+      <category name="org.csstudio.category.core"/>
+   </feature>
    <feature id="org.csstudio.pvmanager.autocomplete.feature">
+      <category name="org.csstudio.category.core"/>
+   </feature>
+   <feature id="org.csstudio.pvmanager.autocomplete.feature.source">
       <category name="org.csstudio.category.core"/>
    </feature>
    <feature id="org.csstudio.pvmanager.exec.feature">
