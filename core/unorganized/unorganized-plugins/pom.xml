@@ -31,8 +31,6 @@
 <!--   	<module>org.csstudio.dal.ui</module> -->
   	<module>org.csstudio.data</module>
   	<module>org.csstudio.data.test</module>
-  	<module>org.csstudio.java</module>
-  	<module>org.csstudio.java.test</module>
   	<module>org.csstudio.logging</module>
   	<module>org.csstudio.logging.test</module>
   	<module>org.csstudio.logging.ui</module>
@@ -48,6 +46,5 @@
   	<module>org.csstudio.simplepv.testutil</module>
   	<module>org.csstudio.startup</module>
   	<module>org.csstudio.startup.helper</module>
-<!--   	<module>org.csstudio.workspace</module> -->
   </modules>
 </project>
