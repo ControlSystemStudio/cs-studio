@@ -18,9 +18,6 @@
   	<module>org.csstudio.autocomplete.pvmanager.sim.test</module>
   	<module>org.csstudio.autocomplete.pvmanager.sys</module>
   	<module>org.csstudio.autocomplete.pvmanager.sys.test</module>
-  	<module>org.csstudio.autocomplete.ui</module>
-  	<module>org.csstudio.autocomplete.ui.rap</module>
-  	<module>org.csstudio.autocomplete.ui.rcp</module>
   	<module>org.csstudio.csdata</module>
   	<module>org.csstudio.csdata.test</module>
   	<module>org.csstudio.dal</module>
