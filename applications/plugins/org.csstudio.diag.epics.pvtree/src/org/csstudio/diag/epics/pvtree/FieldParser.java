@@ -61,8 +61,15 @@ public class FieldParser
 				    char first = field_spec.charAt(range_sep-1);
 				    // 'L'
                     char last = field_spec.charAt(range_sep+1);
-                    for (char c = first; c<=last; ++c)
-                        fields.add(base + c);
+                    if (last=='X') {
+                    	for (int i=1; i<=128; i++) {
+                    		String tmp = String.format("%03d", i);
+                    		fields.add(base + tmp);
+                    	}
+                    } else {
+	                    for (char c = first; c<=last; ++c)
+	                        fields.add(base + c);
+                    }
 				}
 				else
 				    fields.add(field_spec);
