@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.csstudio.ui.feature">
+      <category name="org.csstudio.category.core"/>
+   </feature>
+   <category-def name="org.csstudio.category.core" label="CS-Studio Core"/>
+</site>

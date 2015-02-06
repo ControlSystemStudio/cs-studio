@@ -9,5 +9,7 @@
   <packaging>pom</packaging>
   <modules>
   	<module>ui-plugins</module>
+  	<module>ui-repository</module>
+  	<module>ui-features</module>
   </modules>
 </project>
