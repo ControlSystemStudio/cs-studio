@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <!--<feature url="URL" id="org.csstudio.dmtest" version="X.Y.Z.qualifier">
-      <category name="CATEGORY"/>
-   </feature>-->
-
    <feature id="org.csstudio.applications.all.feature.source">
       <category name="org.csstudio.category.applications"/>
    </feature>
@@ -16,10 +12,7 @@
    <feature id="org.csstudio.core.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-   <feature id="org.csstudio.core.util.feature">
-      <category name="org.csstudio.category.applications"/>
-   </feature>
-    <feature id="org.csstudio.pvmanager.ca.feature">
+   <feature id="org.csstudio.pvmanager.ca.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
    <feature id="org.csstudio.utilities.feature">
@@ -46,9 +39,6 @@
    <feature id="org.csstudio.logbook.shift.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-   <feature id="org.csstudio.olog.feature">
-      <category name="org.csstudio.category.applications"/>
-   </feature>
    <feature id="org.csstudio.opibuilder.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
@@ -67,7 +57,5 @@
    <feature id="org.csstudio.shift.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
-   
 </site>
