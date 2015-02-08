@@ -26,10 +26,14 @@
 							<failOnError>true</failOnError>
 							<target>
 								<mkdir dir="${project.build.directory}/centralrepository" />
-								<get src="${cs-studio-central.url}/artifacts.jar" dest="${project.build.directory}/centralrepository"
-									verbose="false" ignoreerrors="true" usetimestamp="true" />
-								<get src="${cs-studio-central.url}/content.jar" dest="${project.build.directory}/centralrepository"
-									verbose="false" ignoreerrors="true" usetimestamp="true" />
+								<get
+									src="${cs-studio-central.url}/${project.parent.artifactId}/artifacts.jar"
+									dest="${project.build.directory}/centralrepository" verbose="false"
+									ignoreerrors="true" usetimestamp="true" />
+								<get
+									src="${cs-studio-central.url}/${project.parent.artifactId}/content.jar"
+									dest="${project.build.directory}/centralrepository" verbose="false"
+									ignoreerrors="true" usetimestamp="true" />
 							</target>
 						</configuration>
 					</execution>
@@ -74,6 +78,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<profiles>
 		<profile>
 			<id>csstudio-local-repo-mirror</id>
@@ -120,6 +125,38 @@
 							<repositoryName>cs-studio-core</repositoryName>
 							<includeAllDependencies>true</includeAllDependencies>
 						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>uploadRepo</id>
+			<properties>
+				<!-- Properties relative to the distant host where to upload the repo -->
+				<ftp.url>s3://download.controlsystemstudio.org/core/${cs-studio.version}/${project.parent.artifactId}</ftp.url>
+			</properties>
+			<build>
+				<plugins>
+					<!-- Upload the repo to the server -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>wagon-maven-plugin</artifactId>
+						<version>1.0-beta-4</version>
+						<executions>
+							<execution>
+								<id>upload-repo</id>
+								<phase>install</phase>
+								<goals>
+									<goal>upload</goal>
+								</goals>
+								<configuration>
+									<fromDir>target/centralrepository</fromDir>
+									<includes>**</includes>
+									<url>${ftp.url}</url>
+									<serverId>s3.site</serverId>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
