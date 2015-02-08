@@ -22,7 +22,9 @@
 		<!-- VERSIONS -->
 		<tycho.version>0.22.0</tycho.version>
 		<tycho-extras.version>0.22.0</tycho-extras.version>
+		<cs-studio.version>4.1</cs-studio.version>
 		<cs-studio-central.url>http://download.controlsystemstudio.org/core/4.1</cs-studio-central.url>
+		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<baselineMode>fail</baselineMode>
@@ -151,7 +153,7 @@
 			</pluginRepositories>
 		</profile>
 		<profile>
-			<id>cs-studio</id>
+			<id>cs-studio-sites</id>
 			<activation>
 				<property>
 					<name>!cs-studio</name>
@@ -170,35 +172,42 @@
 				</repository>
 			</repositories>
 		</profile>
+		<profile>
+			<id>eclipse-sites</id>
+			<activation>
+				<property>
+					<name>!eclipse</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>eclipse</id>
+					<url>${eclipse-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>eclipse-updates</id>
+					<url>${eclipse-update-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>rap</id>
+					<url>${rap-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>rap-incubator</id>
+					<url>${rap-incubator-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>orbit</id>
+					<url>${orbit-site}</url>
+					<layout>p2</layout>
+				</repository>
+			</repositories>
+		</profile>
 	</profiles>
-
-	<repositories>
-		<repository>
-			<id>eclipse</id>
-			<url>${eclipse-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>eclipse-updates</id>
-			<url>${eclipse-update-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>rap</id>
-			<url>${rap-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>rap-incubator</id>
-			<url>${rap-incubator-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>orbit</id>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
-			<layout>p2</layout>
-		</repository>
-	</repositories>
 
 	<distributionManagement>
 		<site>
@@ -217,8 +226,6 @@
 
 	<!-- CHILD MODULES -->
 	<modules>
-		
-		
 		<module>repository</module>
 		<module>utility</module>
 		<module>diirt</module>
