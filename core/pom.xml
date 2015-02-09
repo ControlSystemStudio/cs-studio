@@ -25,6 +25,8 @@
 		<cs-studio.version>4.1</cs-studio.version>
 		<cs-studio-central.url>http://download.controlsystemstudio.org/core/4.1</cs-studio-central.url>
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
+		<diirt.version>master</diirt.version>
+		<diirt-site>http://diirt.download.controlsystemstudio.org/diirt/${diirt.version}</diirt-site>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<baselineMode>fail</baselineMode>
@@ -170,6 +172,11 @@
 					<url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</url>
 					<layout>p2</layout>
 				</repository>
+				<repository>
+					<id>diirt-bundles</id>
+					<url>${diirt-site}</url>
+					<layout>p2</layout>
+				</repository>
 			</repositories>
 		</profile>
 		<profile>
@@ -203,6 +210,11 @@
 				<repository>
 					<id>orbit</id>
 					<url>${orbit-site}</url>
+					<layout>p2</layout>
+				</repository>
+				<repository>
+					<id>efx</id>
+					<url>http://download.eclipse.org/efxclipse/runtime-nightly/site</url>
 					<layout>p2</layout>
 				</repository>
 			</repositories>
