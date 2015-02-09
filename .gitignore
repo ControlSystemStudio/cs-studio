@@ -1,6 +1,8 @@
 *CVS/
 .git/*
 
+.classpath
+
 *~
 *.swp
 *.orig
