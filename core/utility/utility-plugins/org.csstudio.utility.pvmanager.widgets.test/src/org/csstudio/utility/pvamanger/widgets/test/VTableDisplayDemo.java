@@ -1,11 +1,11 @@
 package org.csstudio.utility.pvamanger.widgets.test;
 
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.column;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vDoubles;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vStringConstants;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vTable;
-import static org.epics.util.time.TimeDuration.ofMillis;
+import static org.diirt.datasource.ExpressionLanguage.latestValueOf;
+import static org.diirt.datasource.vtype.ExpressionLanguage.column;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vDoubles;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vStringConstants;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vTable;
+import static org.diirt.util.time.TimeDuration.ofMillis;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,11 +18,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VTable;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.vtype.VTable;
 
 public class VTableDisplayDemo extends ViewPart {
 

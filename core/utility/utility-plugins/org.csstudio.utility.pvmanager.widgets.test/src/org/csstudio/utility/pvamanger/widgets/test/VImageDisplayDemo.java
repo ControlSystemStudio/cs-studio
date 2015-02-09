@@ -1,11 +1,16 @@
 package org.csstudio.utility.pvamanger.widgets.test;
 
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vDoubleArray;
-import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
-import static org.epics.util.time.TimeDuration.ofHertz;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vDoubleArray;
+import static org.diirt.datasource.extra.ExpressionLanguage.waterfallPlotOf;
+import static org.diirt.util.time.TimeDuration.ofHertz;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.vtype.VImage;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -17,11 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VImage;
+
 
 public class VImageDisplayDemo extends ViewPart {
 
