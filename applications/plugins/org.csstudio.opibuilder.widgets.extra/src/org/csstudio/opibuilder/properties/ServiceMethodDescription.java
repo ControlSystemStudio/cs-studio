@@ -7,7 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.epics.pvmanager.service.ServiceMethod;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceMethod.DataDescription;
 
 /**
  * @author shroffk
@@ -19,8 +20,8 @@ public class ServiceMethodDescription {
     private String service;
     private String method;
     private String description;
-    private Map<String, String> argumentPvs;
-    private Map<String, String> resultPvs;
+    private Map<String, DataDescription> argumentPvs;
+    private Map<String, DataDescription> resultPvs;
 
     /**
      * @param serviceMethod
@@ -28,8 +29,8 @@ public class ServiceMethodDescription {
      * @param resultPvs
      */
     private ServiceMethodDescription(String service, String method,
-	    String description, Map<String, String> argumentPvs,
-	    Map<String, String> resultPvs) {
+	    String description, Map<String, DataDescription> argumentPvs,
+	    Map<String, DataDescription> resultPvs) {
 	this.service = service;
 	this.method = method;
 	this.description = description;
@@ -39,25 +40,24 @@ public class ServiceMethodDescription {
 
     public static ServiceMethodDescription createServiceMethodDescription() {
 	return new ServiceMethodDescription("", "", "",
-		Collections.<String, String> emptyMap(),
-		Collections.<String, String> emptyMap());
+		Collections.<String, DataDescription> emptyMap(),
+		Collections.<String, DataDescription> emptyMap());
     }
 
     public static ServiceMethodDescription createServiceMethodDescription(
 	    String service, String method, String description,
-	    Map<String, String> argumentPvs, Map<String, String> resultPvs) {
+	    Map<String, DataDescription> argumentPvs, Map<String, DataDescription> resultPvs) {
 	return new ServiceMethodDescription(service, method, description,
-		new HashMap<String, String>(argumentPvs),
-		new HashMap<String, String>(resultPvs));
+		new HashMap<String, DataDescription>(argumentPvs),
+		new HashMap<String, DataDescription>(resultPvs));
     }
 
     public static ServiceMethodDescription createServiceMethodDescription(
 	    String service, ServiceMethod serviceMethod) {
 	return new ServiceMethodDescription(service, serviceMethod.getName(),
-		serviceMethod.getDescription(), new HashMap<String, String>(
-			serviceMethod.getArgumentDescriptions()),
-		new HashMap<String, String>(serviceMethod
-			.getResultDescriptions()));
+		serviceMethod.getDescription(),
+		serviceMethod.getArgumentMap(),
+		serviceMethod.getResultMap());
     }
 
     /**
@@ -84,7 +84,7 @@ public class ServiceMethodDescription {
     /**
      * @return the arguments
      */
-    public Map<String, String> getArgumentPvs() {
+    public Map<String, DataDescription> getArgumentPvs() {
 	return argumentPvs;
     }
 
@@ -92,7 +92,7 @@ public class ServiceMethodDescription {
      * @param argumentPvs
      *            the argumentPvs to set
      */
-    public void setArgumentPvs(Map<String, String> argumentPvs) {
+    public void setArgumentPvs(Map<String, DataDescription> argumentPvs) {
 	if (this.argumentPvs.keySet().equals(argumentPvs.keySet())) {
 	    this.argumentPvs = argumentPvs;
 	} else {
@@ -106,7 +106,7 @@ public class ServiceMethodDescription {
     /**
      * @return the results
      */
-    public Map<String, String> getResultPvs() {
+    public Map<String, DataDescription> getResultPvs() {
 	return resultPvs;
     }
 
@@ -114,7 +114,7 @@ public class ServiceMethodDescription {
      * @param resultPvs
      *            the resultPvs to set
      */
-    public void setResultPvs(Map<String, String> resultPvs) {
+    public void setResultPvs(Map<String, DataDescription> resultPvs) {
 	if (this.resultPvs.keySet().equals(resultPvs.keySet())) {
 	    this.resultPvs = resultPvs;
 	} else {
@@ -129,7 +129,7 @@ public class ServiceMethodDescription {
      * @param argName
      * @param value
      */
-    public void setArgumentPv(String argName, String value) {
+    public void setArgumentPv(String argName, DataDescription value) {
 	if (argumentPvs.containsKey(argName)) {
 	    argumentPvs.put(argName, value);
 	} else {
@@ -144,7 +144,7 @@ public class ServiceMethodDescription {
      * @param resultName
      * @param value
      */
-    public void setResultPv(String resultName, String value) {
+    public void setResultPv(String resultName, DataDescription value) {
 	if (resultPvs.containsKey(resultName)) {
 	    resultPvs.put(resultName, value);
 	} else {

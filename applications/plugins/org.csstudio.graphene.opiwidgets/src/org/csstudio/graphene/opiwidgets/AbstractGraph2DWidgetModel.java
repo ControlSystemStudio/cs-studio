@@ -9,8 +9,8 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
-import org.epics.graphene.AxisRange;
-import org.epics.graphene.AxisRanges;
+import org.diirt.graphene.AxisRange;
+import org.diirt.graphene.AxisRanges;
 
 import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 

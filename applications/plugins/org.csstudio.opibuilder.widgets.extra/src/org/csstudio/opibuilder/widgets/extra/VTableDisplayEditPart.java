@@ -8,19 +8,19 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.utility.pvmanager.widgets.VTableWidget;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVWriter;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.ValueUtil;
 
-import static org.epics.pvmanager.ExpressionLanguage.*;
+
+
+import static org.diirt.datasource.ExpressionLanguage.*;
+import static org.diirt.datasource.vtype.ExpressionLanguage.*;
 
 public class VTableDisplayEditPart extends AbstractSelectionWidgetEditpart<VTableDisplayFigure, VTableDisplayModel> {
 
