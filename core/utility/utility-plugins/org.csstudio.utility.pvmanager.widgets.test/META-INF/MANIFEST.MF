@@ -8,12 +8,14 @@ Bundle-Description: Test views and classes for org.csstudio.utility.pvmanager.wi
 Require-Bundle: org.eclipse.jface;bundle-version="3.6.2",
  org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.runtime;bundle-version="3.6.0",
- org.csstudio.utility.pvmanager.widgets;bundle-version="1.0.0",
- org.csstudio.utility.pvmanager;bundle-version="2.0.0",
- org.csstudio.utility.pvmanager.ui;bundle-version="1.0.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
- org.epics.util;bundle-version="0.1.0",
- org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.csstudio.utility.pvmanager.extra;bundle-version="2.0.0",
- org.epics.vtype;bundle-version="2.0.0"
+ org.csstudio.utility.pvmanager.ui,
+ org.csstudio.utility.pvmanager.widgets;bundle-version="3.2.0"
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Import-Package: org.diirt.datasource;version="3.0.0",
+ org.diirt.datasource.extra;version="3.0.0",
+ org.diirt.datasource.util;version="3.0.0",
+ org.diirt.datasource.vtype;version="3.0.0",
+ org.diirt.util.time;version="3.0.0",
+ org.diirt.vtype;version="3.0.0",
+ org.diirt.vtype.table;version="3.0.0"

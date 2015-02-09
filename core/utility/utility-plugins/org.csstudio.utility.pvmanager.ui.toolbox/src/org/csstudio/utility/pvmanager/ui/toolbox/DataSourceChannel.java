@@ -22,7 +22,7 @@ public class DataSourceChannel implements Comparable<DataSourceChannel> {
 	}
 	
 	private String getDelimiter() {
-		return ((CompositeDataSource) PVManager.getDefaultDataSource()).getDelimiter();
+		return ((CompositeDataSource) PVManager.getDefaultDataSource()).getConfiguration().getDelimiter();
 	}
 	
 	public String getFullChannelName() {
