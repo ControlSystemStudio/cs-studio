@@ -1,37 +1,35 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.readMapOf;
-import static org.epics.pvmanager.ExpressionLanguage.writeMapOf;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
+import static org.diirt.datasource.ExpressionLanguage.readMapOf;
+import static org.diirt.datasource.ExpressionLanguage.writeMapOf;
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVWriter;
+import org.diirt.datasource.WriteFunction;
+import org.diirt.datasource.expression.DesiredRateExpression;
+import org.diirt.datasource.expression.ReadMap;
+import org.diirt.datasource.expression.WriteExpression;
+import org.diirt.datasource.expression.WriteMap;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceRegistry;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.WriteFunction;
-import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.expression.ReadMap;
-import org.epics.pvmanager.expression.WriteExpression;
-import org.epics.pvmanager.expression.WriteMap;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceRegistry;
-import org.epics.util.time.TimeDuration;
 
 /**
  *
@@ -70,17 +68,17 @@ public class ServiceButton extends Composite {
 	    public void widgetSelected(SelectionEvent e) {
 		Map<String, Object> args = argReader.getValue();
 		serviceMethod.execute(args,
-			new WriteFunction<Map<String, Object>>() {
+			new Consumer<Map<String, Object>>() {
 
 			    @Override
-			    public void writeValue(
+			    public void accept(
 				    final Map<String, Object> newValue) {
 				resultWriter.write(newValue);
 			    }
-			}, new WriteFunction<Exception>() {
+			}, new Consumer<Exception>() {
 
 			    @Override
-			    public void writeValue(final Exception error) {
+			    public void accept(final Exception error) {
 				SWTUtil.swtThread(ServiceButton.this)
 					.execute(new Runnable() {
 
@@ -176,7 +174,7 @@ public class ServiceButton extends Composite {
 	if (serviceMethod == null) {
 	    return;
 	}
-	if(serviceMethod.getArgumentDescriptions().keySet().containsAll(argumentPvs.keySet())){
+	if(serviceMethod.getArgumentMap().keySet().containsAll(argumentPvs.keySet())){
 	    ReadMap<Object> map = readMapOf(Object.class);
 		for (Entry<String, String> argumentPV : argumentPvs.entrySet()) {
 		    map.add(formula(argumentPV.getValue(),Object.class).as(argumentPV.getKey()));
@@ -192,7 +190,7 @@ public class ServiceButton extends Composite {
 	if (serviceMethod == null) {
 	    return;
 	}
-	if (serviceMethod.getResultDescriptions().keySet()
+	if (serviceMethod.getResultMap().keySet()
 		.containsAll(resultPvs.keySet())) {
 	    WriteMap<Object> map = writeMapOf(Object.class);
 	    for (Entry<String, String> resultPV : resultPvs.entrySet()) {

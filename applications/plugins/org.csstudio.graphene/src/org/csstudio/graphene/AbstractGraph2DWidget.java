@@ -3,7 +3,7 @@
  */
 package org.csstudio.graphene;
 
-import static org.epics.util.time.TimeDuration.ofHertz;
+import static org.diirt.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -18,6 +18,16 @@ import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.graphene.Graph2DExpression;
+import org.diirt.datasource.graphene.Graph2DResult;
+import org.diirt.datasource.graphene.GraphDataRange;
+import org.diirt.graphene.AxisRange;
+import org.diirt.graphene.AxisRanges;
+import org.diirt.graphene.Graph2DRendererUpdate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -29,16 +39,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.AxisRange;
-import org.epics.graphene.AxisRanges;
-import org.epics.graphene.Graph2DRendererUpdate;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.graphene.Graph2DExpression;
-import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.GraphDataRange;
 
 /**
  * @author shroffk
@@ -306,12 +306,10 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 	private void setRange(StartEndRangeWidget control, GraphDataRange plotDataRange) {
         if (isResizableAxis() && plotDataRange.getPlotRange() != null && control != null) {
-            control.setRange(plotDataRange.getPlotRange().getMinimum()
-                    .doubleValue(), plotDataRange.getPlotRange().getMaximum()
-                    .doubleValue());
-            control.setSelectedRange(plotDataRange.getPlotRange().getMinimum()
-                    .doubleValue(), plotDataRange.getPlotRange().getMaximum()
-                    .doubleValue());
+            control.setRange(plotDataRange.getPlotRange().getMinimum(),
+            		plotDataRange.getPlotRange().getMaximum());
+            control.setSelectedRange(plotDataRange.getPlotRange().getMinimum(),
+            		plotDataRange.getPlotRange().getMaximum());
         }
  	}
 

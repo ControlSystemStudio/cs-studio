@@ -7,19 +7,19 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
-import static org.epics.util.time.TimeDuration.ofMillis;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vType;
+import static org.diirt.util.time.TimeDuration.ofMillis;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
 
 /** One item in the PV tree model.
  *  <p>

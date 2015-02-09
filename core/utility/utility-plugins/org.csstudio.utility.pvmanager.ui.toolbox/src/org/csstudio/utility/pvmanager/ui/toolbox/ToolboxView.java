@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -32,10 +33,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.PVManager;
+import org.diirt.datasource.ChannelHandler;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.DataSource;
+import org.diirt.datasource.PVManager;
 
 public class ToolboxView extends ViewPart {
 
@@ -342,7 +343,7 @@ public class ToolboxView extends ViewPart {
 			Collections.sort(dataSourceNames);
 			
 			for (String dataSourceName : dataSourceNames) {
-				createDataSourceMenuItem(datasourceSelectionMenu, dataSourceName);
+				MenuItem dataSourceItem = createDataSourceMenuItem(datasourceSelectionMenu, dataSourceName);
 			}
 			
 			selectDataSourceAction = new Action("Select Data Source", SWT.DROP_DOWN) {
@@ -404,7 +405,8 @@ public class ToolboxView extends ViewPart {
 	 * Initialize the menu.
 	 */
 	private void initializeMenu() {
-		getViewSite().getActionBars().getMenuManager();
+		IMenuManager menuManager = getViewSite().getActionBars()
+				.getMenuManager();
 	}
 
 	@Override

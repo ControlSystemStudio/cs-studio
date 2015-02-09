@@ -1,7 +1,7 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.epics.vtype.VType;
 
 /**
  * An adapter factory that transforms VTypeAdaptable object to VTypes.

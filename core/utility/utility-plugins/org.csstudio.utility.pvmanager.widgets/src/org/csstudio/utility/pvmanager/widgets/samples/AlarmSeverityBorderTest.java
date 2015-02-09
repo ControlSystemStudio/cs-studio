@@ -3,6 +3,7 @@ package org.csstudio.utility.pvmanager.widgets.samples;
 import java.util.Random;
 
 import org.csstudio.utility.pvmanager.widgets.AlarmSeverityBorder;
+import org.diirt.vtype.AlarmSeverity;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -13,7 +14,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.epics.vtype.AlarmSeverity;
 
 public class AlarmSeverityBorderTest extends ApplicationWindow {
 	

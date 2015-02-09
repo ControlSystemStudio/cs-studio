@@ -2,15 +2,15 @@ package org.csstudio.diag.pvmanager.probe;
 
 import java.text.NumberFormat;
 
+import org.diirt.vtype.Display;
+import org.diirt.vtype.Enum;
+import org.diirt.vtype.ValueUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.vtype.Display;
-import org.epics.vtype.Enum;
-import org.epics.vtype.ValueUtil;
 
 /**
  * Probe panel that allows to show the metadata of thevalue.
