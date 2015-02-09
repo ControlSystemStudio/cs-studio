@@ -13,6 +13,8 @@
   	<module>org.csstudio.rap.core</module>
   	<module>org.csstudio.rap.ui.util</module>
   	<module>org.csstudio.utility.batik</module>
+  	<module>org.csstudio.utility.product</module>
+  	<module>org.csstudio.utility.product.default</module>
   	<module>org.csstudio.utility.pv</module>
   	<module>org.csstudio.utility.pv.epics</module>
   	<module>org.csstudio.utility.pv.epics.test</module>
