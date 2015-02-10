@@ -57,7 +57,7 @@
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  The name of this PV factory
+                  The name of this PV factory, should match the PV &apos;type&apos; prefix
                </documentation>
             </annotation>
          </attribute>
