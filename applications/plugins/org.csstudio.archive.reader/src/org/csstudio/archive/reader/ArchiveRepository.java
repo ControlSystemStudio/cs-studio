@@ -10,6 +10,8 @@ package org.csstudio.archive.reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -50,6 +52,7 @@ public class ArchiveRepository
      */
     private ArchiveRepository() throws Exception
     {
+        final Logger logger = Logger.getLogger(getClass().getName());
         final IExtensionRegistry registry = RegistryFactory.getRegistry();
         if (registry == null)
             throw new Exception("Not running as plugin");
@@ -59,14 +62,23 @@ public class ArchiveRepository
             throw new Exception("No extensions to " + EXTENSION_ID + " found");
         for (IConfigurationElement config : configs)
         {
-//            final String plugin = config.getContributor().getName();
-//            final String name = config.getAttribute("name");
+            final String plugin = config.getContributor().getName();
             final String prefix = config.getAttribute("prefix");
-//          System.out.println(plugin + " provides '" + name +
-//          "', prefix '" + prefix + "'");
-            final ArchiveReaderFactory factory =
-                (ArchiveReaderFactory)config.createExecutableExtension("class");
-            reader_factories.put(prefix, factory);
+            try
+            {
+                final ArchiveReaderFactory factory =
+                    (ArchiveReaderFactory)config.createExecutableExtension("class");
+                logger.log(Level.CONFIG,
+                        "Archive reader for {0} provided by {1}",
+                        new Object[] { prefix, plugin });
+                reader_factories.put(prefix, factory);
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.SEVERE,
+                           "Failed to initialize archive reader for '" + prefix + "' from " + plugin,
+                           ex);
+            }
         }
     }
 
