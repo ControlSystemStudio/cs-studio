@@ -16,7 +16,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface;bundle-version="3.10.0",
  org.jdom;bundle-version="1.1.0"
 Export-Package: org.csstudio.opibuilder.widgets.extra
-Import-Package: org.diirt.datasource;version="3.0.0",
+Import-Package: com.google.common.base;version="12.0.0",
+ com.google.common.collect;version="12.0.0",
+ org.diirt.datasource;version="3.0.0",
  org.diirt.datasource.vtype;version="3.0.0",
  org.diirt.service;version="3.0.0",
  org.diirt.vtype;version="3.0.0"
