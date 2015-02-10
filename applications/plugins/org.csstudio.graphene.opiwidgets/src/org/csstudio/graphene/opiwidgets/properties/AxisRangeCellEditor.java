@@ -11,8 +11,8 @@ import org.csstudio.opibuilder.visualparts.AbstractDialogCellEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.graphene.AxisRange;
-import org.epics.graphene.AxisRanges;
+import org.diirt.graphene.AxisRange;
+import org.diirt.graphene.AxisRanges;
 
 /**
  * Editor for AxisRange.

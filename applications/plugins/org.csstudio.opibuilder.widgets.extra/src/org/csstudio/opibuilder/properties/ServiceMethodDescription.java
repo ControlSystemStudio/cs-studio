@@ -7,9 +7,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.epics.pvmanager.service.ServiceMethod;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceMethod.DataDescription;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Maps.EntryTransformer;
 
 /**
+ * 
+ * This class described a service method
+ * 
+ * TODO: replace with the ServiceMethod description provided by diirt
  * @author shroffk
  * 
  */
@@ -37,12 +47,25 @@ public class ServiceMethodDescription {
 	this.resultPvs = resultPvs;
     }
 
+    /**
+     * 
+     * @return
+     */
     public static ServiceMethodDescription createServiceMethodDescription() {
 	return new ServiceMethodDescription("", "", "",
 		Collections.<String, String> emptyMap(),
 		Collections.<String, String> emptyMap());
     }
 
+    /**
+     * 
+     * @param service
+     * @param method
+     * @param description
+     * @param argumentPvs
+     * @param resultPvs
+     * @return
+     */
     public static ServiceMethodDescription createServiceMethodDescription(
 	    String service, String method, String description,
 	    Map<String, String> argumentPvs, Map<String, String> resultPvs) {
@@ -53,11 +76,33 @@ public class ServiceMethodDescription {
 
     public static ServiceMethodDescription createServiceMethodDescription(
 	    String service, ServiceMethod serviceMethod) {
-	return new ServiceMethodDescription(service, serviceMethod.getName(),
-		serviceMethod.getDescription(), new HashMap<String, String>(
-			serviceMethod.getArgumentDescriptions()),
-		new HashMap<String, String>(serviceMethod
-			.getResultDescriptions()));
+    	
+		return new ServiceMethodDescription(
+				service,
+				serviceMethod.getName(),
+				serviceMethod.getDescription(),
+				Maps.transformEntries(
+						serviceMethod.getArgumentMap(),
+						new EntryTransformer<String, DataDescription, String>() {
+
+							@Override
+							public String transformEntry(String key,
+									DataDescription value) {
+								return value.getDescription();
+							}
+
+						}),
+				Maps.transformEntries(
+						serviceMethod.getResultMap(),
+						new EntryTransformer<String, DataDescription, String>() {
+
+							@Override
+							public String transformEntry(String key,
+									DataDescription value) {
+								return value.getDescription();
+							}
+
+						}));
     }
 
     /**
