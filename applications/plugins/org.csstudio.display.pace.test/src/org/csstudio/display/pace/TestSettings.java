@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.display.pace;
 
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.jca.JCADataSource;
-import org.epics.pvmanager.loc.LocalDataSource;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.PVManager;
+import org.diirt.support.ca.JCADataSource;
+import org.diirt.datasource.loc.LocalDataSource;
 
 /** Settings for unit tests
  *

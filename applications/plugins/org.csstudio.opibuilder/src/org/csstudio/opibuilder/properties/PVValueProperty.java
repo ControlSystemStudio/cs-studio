@@ -8,8 +8,8 @@
 package org.csstudio.opibuilder.properties;
 
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 import org.jdom.Element;
 
 /**

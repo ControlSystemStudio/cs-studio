@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.editparts;
 
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.vtype.AlarmSeverity;
 
 /**
  * Interface for listening to changes of alarm severity.

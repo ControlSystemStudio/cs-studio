@@ -4,9 +4,11 @@ Bundle-Name: Jdbcsample
 Bundle-SymbolicName: org.csstudio.service.jdbcsample;singleton:=true
 Bundle-Version: 3.2.0.qualifier
 Bundle-Activator: org.csstudio.service.jdbcsample.Activator
-Require-Bundle: org.eclipse.core.runtime,
- org.epics.vtype,
- org.csstudio.utility.pvmanager,
- org.csstudio.utility.pvmanager.jdbc
+Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.diirt.datasource;version="3.0.0",
+ org.diirt.service;version="3.0.0",
+ org.diirt.service.jdbc;version="3.0.0",
+ org.diirt.util.concurrent;version="3.0.0",
+ org.diirt.vtype;version="3.0.0"

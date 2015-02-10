@@ -18,12 +18,12 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
-import org.epics.util.array.IteratorNumber;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.util.array.IteratorNumber;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 
 /** Implementation of the {@link ScanScriptContext}
  *

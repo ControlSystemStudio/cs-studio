@@ -23,7 +23,7 @@ import org.csstudio.simplepv.AbstractPVFactory;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.SimplePVLayer;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 import org.junit.Test;
 
 /** JUnit test for reading with PVManagerPVFactory

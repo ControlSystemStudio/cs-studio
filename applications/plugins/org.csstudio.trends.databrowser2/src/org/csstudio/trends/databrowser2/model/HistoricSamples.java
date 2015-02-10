@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Holder for 'historic' samples.
  *  <p>

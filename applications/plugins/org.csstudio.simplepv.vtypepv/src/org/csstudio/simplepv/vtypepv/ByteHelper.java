@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.simplepv.vtypepv;
 
-import org.epics.util.array.ListByte;
-import org.epics.vtype.VByteArray;
-import org.epics.vtype.VString;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.array.ListByte;
+import org.diirt.vtype.VByteArray;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.ValueFactory;
 
 /** Helper for handling byte arrays
  *  @author Kay Kasemir

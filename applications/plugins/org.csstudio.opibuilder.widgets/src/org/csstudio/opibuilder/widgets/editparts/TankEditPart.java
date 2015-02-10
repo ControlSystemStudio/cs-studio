@@ -13,7 +13,7 @@ import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.TankModel;
 import org.csstudio.swt.widgets.figures.TankFigure;
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.vtype.AlarmSeverity;
 
 /**
  * EditPart controller for the tank widget. The controller mediates between

@@ -15,7 +15,7 @@
             adaptableType="org.csstudio.utility.pvmanager.widgets.VTypeAdaptable"
             class="org.csstudio.utility.pvmanager.widgets.VTypeAdapterFactory">
          <adapter
-               type="org.epics.vtype.VType">
+               type="org.diirt.vtype.VType">
          </adapter>
       </factory>
    </extension>
@@ -32,7 +32,7 @@
             <or>
                <with variable="activeMenuSelection">
                   <iterate>
-                     <adapt type="org.epics.vtype.VType"/>
+                     <adapt type="org.diirt.vtype.VType"/>
                   </iterate>
                   <and>
                      <count value="+"/>
@@ -42,7 +42,7 @@
                      variable="activeMenuSelection">
                   <iterate>
                      <adapt
-                           type="[Lorg.epics.vtype.VType;">
+                           type="[Lorg.diirt.vtype.VType;">
                      </adapt>
                   </iterate>
                   <and>

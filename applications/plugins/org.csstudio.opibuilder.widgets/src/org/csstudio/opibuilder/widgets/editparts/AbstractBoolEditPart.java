@@ -22,7 +22,7 @@ import org.csstudio.swt.widgets.figures.AbstractBoolFigure.BoolLabelPosition;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure.TotalBits;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractBoolWidgetModel}.

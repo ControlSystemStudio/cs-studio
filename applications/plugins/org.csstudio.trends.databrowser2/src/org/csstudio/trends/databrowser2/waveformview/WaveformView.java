@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** View for inspecting Waveform (Array) Samples of the current Model
  *  @author Kay Kasemir

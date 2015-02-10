@@ -9,7 +9,7 @@ package org.csstudio.platform.data;
 
 import org.csstudio.opibuilder.scriptUtil.PVUtil;
 import org.csstudio.simplepv.VTypeHelper;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 
 /** Helper for decoding the data in a {@link IValue},

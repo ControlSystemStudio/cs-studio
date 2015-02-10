@@ -10,8 +10,8 @@ package org.csstudio.simplepv;
 
 import java.util.List;
 
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 
 /**
  * A simple PV interface for common UI applications. <p>
@@ -65,7 +65,7 @@ public interface IPV {
 
 	/**If the PV is connected. If the PV is an aggregate of multiple PVs,
 	 * the connection state should be determined by the aggregator. For example,
-	 * the aggregator countConnected(‘pv1’, ‘pv2’, ‘pv3’,…) should always return 
+	 * the aggregator countConnected(ï¿½pv1ï¿½, ï¿½pv2ï¿½, ï¿½pv3ï¿½,ï¿½) should always return 
 	 * connected. 
 	 * @return true if the PV is connected.
 	 */

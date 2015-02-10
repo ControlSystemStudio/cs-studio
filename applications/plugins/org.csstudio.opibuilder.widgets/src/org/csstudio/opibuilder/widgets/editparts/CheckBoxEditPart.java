@@ -23,7 +23,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.widgets.Display;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /**The editpart of a checkbox.
  * @author Xihui Chen

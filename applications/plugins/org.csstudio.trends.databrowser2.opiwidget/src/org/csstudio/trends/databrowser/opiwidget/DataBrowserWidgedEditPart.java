@@ -34,8 +34,8 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
 import org.epics.util.array.ArrayDouble;
 import org.epics.util.array.ListDouble;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** EditPart that interfaces between the {@link DataBrowserWidgetFigure} visible on the screen
  *  and the {@link DataBrowserWidgedModel} that stores the persistent configuration.

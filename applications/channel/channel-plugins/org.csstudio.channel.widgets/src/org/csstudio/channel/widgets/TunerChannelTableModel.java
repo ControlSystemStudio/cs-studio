@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.epics.vtype.VDouble;
+import org.diirt.vtype.VDouble;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;

@@ -4,8 +4,9 @@ Bundle-Name: Math Service
 Bundle-SymbolicName: org.csstudio.service.math;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.service.math.Activator
-Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager,
- org.epics.vtype
+Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.diirt.datasource;version="3.0.0",
+ org.diirt.service;version="3.0.0",
+ org.diirt.vtype;version="3.0.0"

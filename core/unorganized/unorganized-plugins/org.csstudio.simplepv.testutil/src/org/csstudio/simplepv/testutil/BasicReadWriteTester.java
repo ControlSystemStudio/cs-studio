@@ -20,7 +20,7 @@ import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.SimplePVLayer;
 import org.csstudio.simplepv.VTypeHelper;
-import org.epics.vtype.VDouble;
+import org.diirt.vtype.VDouble;
 
 /**
  * An utility class that provides basic PV test functionalities.

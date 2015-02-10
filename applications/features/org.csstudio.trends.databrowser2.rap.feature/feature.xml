@@ -151,7 +151,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.epics.vtype"
+         id="org.diirt.vtype"
          download-size="0"
          install-size="0"
          version="0.0.0"

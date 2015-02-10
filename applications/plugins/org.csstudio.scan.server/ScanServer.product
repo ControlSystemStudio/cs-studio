@@ -75,8 +75,9 @@
       <plugin id="org.epics.pvDataJava"/>
       <plugin id="org.epics.pvaccess"/>
       <plugin id="org.epics.pvdata"/>
-      <plugin id="org.epics.util"/>
-      <plugin id="org.epics.vtype"/>
+      <plugin id="org.diirt.util.array"/>
+      <plugin id="org.diirt.util.time"/>
+      <plugin id="org.diirt.vtype"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
       <plugin id="org.python.jython"/>

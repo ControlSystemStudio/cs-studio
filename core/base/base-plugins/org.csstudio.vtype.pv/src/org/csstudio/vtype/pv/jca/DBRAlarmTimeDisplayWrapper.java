@@ -14,8 +14,8 @@ import gov.aps.jca.dbr.TIME;
 
 import java.text.NumberFormat;
 
-import org.epics.util.text.NumberFormats;
-import org.epics.vtype.Display;
+import org.diirt.util.text.NumberFormats;
+import org.diirt.vtype.Display;
 
 /** Wrap DBR as VType
  *

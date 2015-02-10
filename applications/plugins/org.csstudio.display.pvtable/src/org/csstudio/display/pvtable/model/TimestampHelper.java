@@ -9,8 +9,8 @@ package org.csstudio.display.pvtable.model;
 
 import java.text.Format;
 
-import org.epics.util.time.Timestamp;
-import org.epics.util.time.TimestampFormat;
+import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimestampFormat;
 
 /** Time stamp gymnastics
  *  @author Kay Kasemir

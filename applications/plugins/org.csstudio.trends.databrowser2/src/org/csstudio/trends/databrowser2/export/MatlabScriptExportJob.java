@@ -18,7 +18,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Eclipse Job for exporting data from Model to Matlab-format file.
  *  @author Kay Kasemir

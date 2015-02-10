@@ -36,8 +36,6 @@ Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.csstudio.utility.pvmanager.sim;bundle-version="3.1.0";resolution:=optional,
  org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
  org.csstudio.autocomplete.ui,
- org.epics.vtype;bundle-version="2.7.1",
- org.epics.util;bundle-version="0.3.2",
  org.csstudio.archive.vtype;bundle-version="1.0.0",
  org.csstudio.email;bundle-version="1.2.0"
 Bundle-ActivationPolicy: lazy
@@ -53,3 +51,6 @@ Export-Package: org.csstudio.trends.databrowser2,
  org.csstudio.trends.databrowser2.propsheet,
  org.csstudio.trends.databrowser2.ui
 Bundle-ClassPath: .
+Import-Package: org.diirt.util.array;version="3.0.0",
+ org.diirt.util.time;version="3.0.0",
+ org.diirt.vtype;version="3.0.0"

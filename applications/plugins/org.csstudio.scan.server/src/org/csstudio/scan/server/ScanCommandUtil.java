@@ -14,8 +14,8 @@ import org.csstudio.scan.condition.TextValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VType;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VType;
 
 /** Utilities for command implementations
  *

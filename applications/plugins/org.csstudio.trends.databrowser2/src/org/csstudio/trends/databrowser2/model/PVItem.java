@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser2.model;
 
 import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
 import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
-import static org.epics.util.time.TimeDuration.ofSeconds;
+import static org.diirt.util.time.TimeDuration.ofSeconds;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 import org.w3c.dom.Element;
 
 

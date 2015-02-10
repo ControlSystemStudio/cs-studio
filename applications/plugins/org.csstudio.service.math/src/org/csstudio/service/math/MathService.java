@@ -1,7 +1,7 @@
 package org.csstudio.service.math;
 
-import org.epics.pvmanager.service.Service;
-import org.epics.pvmanager.service.ServiceDescription;
+import org.diirt.service.Service;
+import org.diirt.service.ServiceDescription;
 
 public class MathService  extends Service {
 

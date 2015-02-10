@@ -37,11 +37,11 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
-import org.epics.vtype.Array;
-import org.epics.vtype.Scalar;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VType;
+import org.diirt.vtype.Array;
+import org.diirt.vtype.Scalar;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VType;
 
 /**
  * The editpart for text input widget.)

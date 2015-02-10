@@ -19,7 +19,7 @@ import gov.aps.jca.dbr.DBR_TIME_Short;
 import gov.aps.jca.dbr.GR;
 import gov.aps.jca.dbr.LABELS;
 
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Helper for handling DBR types
  *  @author Kay Kasemir

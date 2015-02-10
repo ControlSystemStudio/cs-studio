@@ -3,10 +3,10 @@ package org.csstudio.service.math;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.epics.pvmanager.WriteFunction;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceMethodDescription;
-import org.epics.vtype.VNumber;
+import org.diirt.datasource.WriteFunction;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceMethodDescription;
+import org.diirt.vtype.VNumber;
 
 public class AddServiceMethod extends ServiceMethod {
 

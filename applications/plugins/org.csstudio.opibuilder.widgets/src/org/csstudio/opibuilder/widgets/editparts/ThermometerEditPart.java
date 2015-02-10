@@ -14,7 +14,7 @@ import org.csstudio.opibuilder.widgets.model.ThermometerModel;
 import org.csstudio.swt.widgets.figures.ThermometerFigure;
 import org.csstudio.swt.widgets.figures.ThermometerFigure.TemperatureUnit;
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.vtype.AlarmSeverity;
 
 /**
  * EditPart controller for the Thermometer widget. The controller mediates between

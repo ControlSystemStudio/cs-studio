@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartListener;
 import org.eclipse.swt.widgets.Display;
-import org.epics.util.time.Timestamp;
-import org.epics.util.time.TimestampFormat;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimestampFormat;
+import org.diirt.vtype.AlarmSeverity;
 
 /**The utility class to facilitate Javascript programming
  * for PV operation.

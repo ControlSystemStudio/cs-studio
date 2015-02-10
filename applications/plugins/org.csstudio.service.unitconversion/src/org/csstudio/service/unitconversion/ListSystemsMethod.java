@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.epics.pvmanager.WriteFunction;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceMethodDescription;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VStringArray;
-import org.epics.vtype.ValueFactory;
+import org.diirt.datasource.WriteFunction;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceMethodDescription;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.ValueFactory;
 
 /**
  * @author shroffk

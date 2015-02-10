@@ -1,12 +1,12 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.diirt.datasource.ExpressionLanguage.channel;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVWriter;
 
 /**
  * TODO remove class since it is not longer needed.

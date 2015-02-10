@@ -10,9 +10,9 @@ package org.csstudio.trends.databrowser2.export;
 import org.csstudio.archive.vtype.Style;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
-import org.epics.vtype.VString;
-import org.epics.vtype.VStringArray;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VType;
 
 /** Format an IValue to show the value as well as the severity/status
  *  @author Kay Kasemir

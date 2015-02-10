@@ -38,12 +38,12 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ListNumber;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.array.ListNumber;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /**The widget editpart of intensity graph widget.
  * @author Xihui Chen

@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
 import org.eclipse.swt.graphics.RGB;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.vtype.AlarmSeverity;
 
 /**The scheme for alarm color which provide unified colors and borders for alarms.
  * @author Xihui Chen

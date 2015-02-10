@@ -11,16 +11,16 @@ import java.util.List;
 
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.vtype.pv.PV;
-import org.epics.util.array.ListInt;
-import org.epics.util.array.ListNumber;
-import org.epics.vtype.VByteArray;
-import org.epics.vtype.VDoubleArray;
-import org.epics.vtype.VEnumArray;
-import org.epics.vtype.VFloatArray;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VString;
-import org.epics.vtype.VStringArray;
-import org.epics.vtype.VType;
+import org.diirt.util.array.ListInt;
+import org.diirt.util.array.ListNumber;
+import org.diirt.vtype.VByteArray;
+import org.diirt.vtype.VDoubleArray;
+import org.diirt.vtype.VEnumArray;
+import org.diirt.vtype.VFloatArray;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VType;
 
 /** Saved value of an array table item
  *  @author Kay Kasemir
