@@ -39,10 +39,19 @@ public class Activator implements BundleActivator
         {
             final String plugin = config.getContributor().getName();
             final String name = config.getAttribute("name");
-            final PVFactory factory = (PVFactory) config.createExecutableExtension("class");
-            logger.log(Level.CONFIG, "PV prefix {0} provided by {1} in {2}",
-                new Object[] { factory.getType(), name, plugin });
-            PVPool.addPVFactory(factory);
+            try
+            {
+                final PVFactory factory = (PVFactory) config.createExecutableExtension("class");
+                logger.log(Level.CONFIG, "PV prefix {0} provided by {1} in {2}",
+                    new Object[] { factory.getType(), name, plugin });
+                PVPool.addPVFactory(factory);
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.SEVERE,
+                           "Failed to initialize PV type '" + name + "' from " + plugin,
+                           ex);
+            }
         }
 
         // Set default type after adding factories
