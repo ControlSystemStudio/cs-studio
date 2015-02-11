@@ -137,7 +137,7 @@
 							pvManager</Bundle-Description>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-						<Export-Package>org.epics.pvmanager.pva,org.epics.pvmanager.pva.adapters,org.epics.pvmanager.pva.rpcservice.rpcclient,org.epics.pvmanager.pva.rpcservice</Export-Package>
+						<Export-Package>org.epics.pvmanager.pva,org.epics.pvmanager.pva.adapters,org.epics.pvmanager.pva.rpcservice.rpcclient,org.epics.pvmanager.pva.rpcservice,org.epics.pvmanger.pva.formula</Export-Package>
 						<Import-Package>sun.misc;resolution:=optional,*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
 						<Bundle-Version>$${replace;${csstudio.version};(.*)-SNAPSHOT;$1}.${cs-studio.timestamp}</Bundle-Version>
 						<_nouses>true</_nouses>
