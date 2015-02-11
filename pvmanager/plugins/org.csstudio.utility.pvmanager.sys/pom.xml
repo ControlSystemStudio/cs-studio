@@ -44,6 +44,86 @@
 			</resource>
 		</resources>
 		<plugins>
+		<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/sources</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<classifier>sources</classifier>
+							<excludeTransitive>true</excludeTransitive>
+							<includeArtifactIds>pvmanager-core</includeArtifactIds>
+							<outputDirectory>${project.build.directory}/sources</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>set-osgi-version</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>parse-version</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+							<Bundle-Name>PVManager Core Source</Bundle-Name>
+							<Bundle-SymbolicName>${project.artifactId}.source</Bundle-SymbolicName>
+							<Bundle-Vendor>Gabriele Carcassi carcassi@bnl.gov, Kunal Shroff
+								kshroff@bnl.gov - BNL</Bundle-Vendor>
+							<Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}</Bundle-Version>
+							<Eclipse-SourceBundle>${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${cs-studio.timestamp}";roots:="."</Eclipse-SourceBundle>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -62,7 +142,8 @@
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 						<Export-Package>org.epics.pvmanager.sys.*</Export-Package>
 						<Import-Package>*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
-						<_snapshot>${maven.build.timestamp}</_snapshot>
+						<Bundle-Version>$${replace;${csstudio.version};(.*)-SNAPSHOT;$1}.${cs-studio.timestamp}</Bundle-Version>
+						<_nouses>true</_nouses>
 					</instructions>
 				</configuration>
 			</plugin>
