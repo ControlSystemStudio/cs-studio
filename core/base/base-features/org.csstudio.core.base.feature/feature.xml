@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.core.base.feature"
+      label="Core Base Feature"
       version="0.0.1.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
@@ -33,4 +34,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
 </feature>

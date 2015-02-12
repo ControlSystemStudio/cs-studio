@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.utility.feature"
-      label="Utility Feature"
+      id="org.csstudio.core.ui.feature"
+      label="Core UI Feature"
       version="4.1.0.qualifier">
 
    <description url="http://www.example.com/description">
@@ -17,112 +17,77 @@
    </license>
 
    <plugin
-         id="org.csstudio.utility.batik"
+         id="org.csstudio.autocomplete"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.data"
+         id="org.csstudio.autocomplete.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.rap.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
- 
-   <plugin
-         id="org.csstudio.rap.ui.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-                 
-   <plugin
-         id="org.csstudio.utility.product.default"
+         id="org.csstudio.autocomplete.ui.rap"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.product"
+         id="org.csstudio.autocomplete.ui.rcp"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pv"
+         id="org.csstudio.platform.jaasAuthentication.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pv.epics"
+         id="org.csstudio.platform.ldapAuthorization.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pv.simu"
+         id="org.csstudio.ui.help"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager.ui"
+         id="org.csstudio.ui.menu"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager.ui.toolbox"
+         id="org.csstudio.ui.menu.app"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pvmanager.widgets"
+         id="org.csstudio.ui.preferences"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.singlesource"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.singlesource.rap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.singlesource.rcp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.test"
+         id="org.csstudio.ui.util"
          download-size="0"
          install-size="0"
          version="0.0.0"
