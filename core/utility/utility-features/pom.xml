@@ -9,7 +9,10 @@
   <packaging>pom</packaging>
   <modules>
   	<module>
-  		org.csstudio.utility.feature
+  		org.csstudio.core.utility.feature
+  	</module>
+  	<module>
+  		org.csstudio.core.utility.rap.feature
   	</module>
   </modules>
    <build>

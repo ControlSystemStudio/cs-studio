@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>ui-features</artifactId>
+    <artifactId>utility-features</artifactId>
     <version>4.1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>org.csstudio.ui.feature</artifactId>
+  <artifactId>org.csstudio.core.utility.rap.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 </project>

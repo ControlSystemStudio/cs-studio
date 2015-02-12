@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.core.unorganized.feature"
-      label="CS-Studio Core Unorganized"
+      label="Core Unorganized"
       version="1.0.0.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
@@ -61,13 +61,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.openfile"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.security"
          download-size="0"
          install-size="0"
@@ -97,20 +90,6 @@
 
    <plugin
          id="org.csstudio.simplepv.testutil"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.startup"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.startup.helper"
          download-size="0"
          install-size="0"
          version="0.0.0"
