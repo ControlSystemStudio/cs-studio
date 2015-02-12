@@ -309,9 +309,10 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         format_expo.setToolTipText(Messages.ExportFormat_ExponentialTT);
 
         format_digits = new Text(box, SWT.BORDER);
+        // Note that text starts with some spaces like "  6" to get initial minimum text field size
         format_digits.setText(Messages.ExportDefaultDigits);
         format_digits.setToolTipText(Messages.ExportDigitsTT);
-        format_digits.setEnabled(false);
+        format_digits.setEnabled(true);
 
         box.setTabList(new Control[] { format_default, format_decimal, format_expo, format_digits });
 
