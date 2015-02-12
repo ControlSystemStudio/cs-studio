@@ -23,9 +23,6 @@
 <!--   	<module>org.csstudio.dal.test</module> -->
 <!--   	<module>org.csstudio.dal.tine</module> -->
 <!--   	<module>org.csstudio.dal.ui</module> -->
-  	<module>org.csstudio.logging</module>
-  	<module>org.csstudio.logging.test</module>
-  	<module>org.csstudio.logging.ui</module>
   	<module>org.csstudio.security</module>
   	<module>org.csstudio.security.test</module>
   	<module>org.csstudio.security.ui</module>
