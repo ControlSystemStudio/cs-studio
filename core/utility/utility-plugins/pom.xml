@@ -10,6 +10,9 @@
   <modules>
   	<module>org.csstudio.data</module>
   	<module>org.csstudio.data.test</module>
+  	<module>org.csstudio.logging</module>
+  	<module>org.csstudio.logging.test</module>
+  	<module>org.csstudio.logging.ui</module>
   	<module>org.csstudio.openfile</module>
   	<module>org.csstudio.rap.core</module>
   	<module>org.csstudio.rap.ui.util</module>
