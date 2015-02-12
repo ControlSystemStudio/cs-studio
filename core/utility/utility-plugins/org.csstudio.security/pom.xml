@@ -4,11 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>unorganized-plugins</artifactId>
+    <artifactId>utility-plugins</artifactId>
     <version>4.1.0-SNAPSHOT</version>
   </parent>
+  <artifactId>org.csstudio.security</artifactId>
   <version>1.1.1-SNAPSHOT</version>
-  <packaging>eclipse-test-plugin</packaging>
-  
-  <artifactId>org.csstudio.security.test</artifactId>
+  <packaging>eclipse-plugin</packaging>
 </project>

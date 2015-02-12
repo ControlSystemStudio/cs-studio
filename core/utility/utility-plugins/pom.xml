@@ -16,6 +16,9 @@
   	<module>org.csstudio.openfile</module>
   	<module>org.csstudio.rap.core</module>
   	<module>org.csstudio.rap.ui.util</module>
+  	<module>org.csstudio.security</module>
+  	<module>org.csstudio.security.test</module>
+  	<module>org.csstudio.security.ui</module>
   	<module>org.csstudio.startup</module>
   	<module>org.csstudio.startup.helper</module>
   	<module>org.csstudio.utility.batik</module>

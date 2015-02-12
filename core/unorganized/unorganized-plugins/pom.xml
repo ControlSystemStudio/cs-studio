@@ -23,9 +23,6 @@
 <!--   	<module>org.csstudio.dal.test</module> -->
 <!--   	<module>org.csstudio.dal.tine</module> -->
 <!--   	<module>org.csstudio.dal.ui</module> -->
-  	<module>org.csstudio.security</module>
-  	<module>org.csstudio.security.test</module>
-  	<module>org.csstudio.security.ui</module>
   	<module>org.csstudio.simplepv</module>
   	<module>org.csstudio.simplepv.pvmanager</module>
   	<module>org.csstudio.simplepv.pvmanager.test</module>
