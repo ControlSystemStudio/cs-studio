@@ -28,7 +28,7 @@
 		<!-- VERSIONS -->
 		<tycho.version>0.20.0</tycho.version>
 		<tycho-extras.version>0.20.0</tycho-extras.version>
-		<cs-studio-central.url>http://download.controlsystemstudio.org/product/4.0</cs-studio-central.url>
+		<cs-studio-central.url>http://download.controlsystemstudio.org/product/4.1</cs-studio-central.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<baselineMode>fail</baselineMode>
@@ -165,7 +165,7 @@
 			<repositories>
 				<repository>
 					<id>csstudio-updates</id>
-					<url>http://download.controlsystemstudio.org/updates/4.0</url>
+					<url>http://download.controlsystemstudio.org/updates/4.1</url>
 					<layout>p2</layout>
 				</repository>
 			</repositories>
