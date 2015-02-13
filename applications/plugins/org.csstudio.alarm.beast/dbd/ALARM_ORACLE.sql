@@ -11,6 +11,7 @@ CREATE TABLE ALARM.ALARM_TREE(
     PARENT_CMPNT_ID    NUMBER(38, 0),
     NAME               VARCHAR2(80)     NOT NULL,
     CONFIG_TIME        TIMESTAMP(6),
+    ENABLED_IND        NUMBER(1, 0)      DEFAULT 0 NOT NULL,
     CONSTRAINT PK_ALARM_TREE PRIMARY KEY (COMPONENT_ID)
 )
 ;
@@ -25,6 +26,9 @@ COMMENT ON COLUMN ALARM.ALARM_TREE.NAME IS 'Name: Component name.'
 ;
 COMMENT ON COLUMN ALARM.ALARM_TREE.CONFIG_TIME IS 'Configuration Time: Time of last configuration update. '
 ;
+COMMENT ON COLUMN ALARM.ALARM_TREE.ENABLED_IND IS 'Enabled Indicator: Indicates if alarms are enabled for a given PV.'
+;
+
 -- 
 -- TABLE: ALARM.COMMAND 
 --
@@ -126,7 +130,6 @@ COMMENT ON COLUMN ALARM.AUTOMATED_ACTION.DELAY IS 'Delay: The action delay in se
 CREATE TABLE ALARM.PV(
     COMPONENT_ID       NUMBER(38, 0)     NOT NULL,
     DESCR              VARCHAR2(100),
-    ENABLED_IND        NUMBER(1, 0)      DEFAULT 0 NOT NULL,
     ANNUNCIATE_IND     NUMBER(1, 0)      DEFAULT 0 NOT NULL,
     LATCH_IND          NUMBER(1, 0)      DEFAULT 0 NOT NULL,
     DELAY              NUMBER(38, 0),
@@ -147,8 +150,6 @@ CREATE TABLE ALARM.PV(
 COMMENT ON COLUMN ALARM.PV.COMPONENT_ID IS 'Component Identifier: The id for identification of each component.'
 ;
 COMMENT ON COLUMN ALARM.PV.DESCR IS 'Description: Description that might be more meaningful than PV name.'
-;
-COMMENT ON COLUMN ALARM.PV.ENABLED_IND IS 'Enabled Indicator: Indicates if alarms are enabled for a given PV.'
 ;
 COMMENT ON COLUMN ALARM.PV.ANNUNCIATE_IND IS 'Annunciate Indicator:  Indicates if alarm should be annunciated.'
 ;

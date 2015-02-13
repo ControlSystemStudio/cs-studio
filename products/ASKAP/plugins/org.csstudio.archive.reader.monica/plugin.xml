@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.archive.reader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.archive.reader.monica.MonicaArchiveReaderFactory"
+            name="org.csstudio.archive.reader.monica.archivereader"
+            prefix="monica">
+      </ArchiveReader>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.trends"
+            class="org.csstudio.archive.reader.monica.MonicaPreferencePage"
+            id="org.csstudio.archive.reader.monica.preferences"
+            name="Monica Archiver">
+      </page>
+   </extension>
+
+</plugin>

@@ -102,9 +102,10 @@ public class AlarmConfigurationLoader
     {
         // New component, or modify existing component?
         final String name = loadName(component);
+        final boolean isEnabled = DOMHelper.getSubelementBoolean(component, XMLTags.ENABLED, true);
         AlarmTreeItem tree_component = parent.getChild(name);
         if (tree_component == null)
-            tree_component = config.addComponent(parent, name);
+            tree_component = config.addComponent(parent, name, isEnabled);
         else if (tree_component instanceof AlarmTreePV)
             throw new Exception("Cannot turn PV " + tree_component.getPathName() + " into component");
 
@@ -142,6 +143,8 @@ public class AlarmConfigurationLoader
         return name;
     }
 
+    
+    
     /** Load config items common to all alarm tree elements (guidance, ...)
      *  @param node DOM node
      *  @param item Alarm tree item to configure
@@ -164,11 +167,14 @@ public class AlarmConfigurationLoader
     private void loadPV(final Element node, final AlarmTreeItem parent) throws Exception
     {
         final String name = loadName(node);
+        final boolean isEnabled = DOMHelper.getSubelementBoolean(node, XMLTags.ENABLED, true);
+        
         // Existing or new PV?
         final AlarmTreePV pv;
         final AlarmTreeItem existing = parent.getChild(name);
         if (existing == null)
-            pv = config.addPV(parent, name);
+            pv = config.addPV(parent, name, isEnabled);
+        
         else if (existing instanceof AlarmTreePV)
             pv = (AlarmTreePV) existing;
         else
@@ -179,14 +185,13 @@ public class AlarmConfigurationLoader
 
         loadCommonConfig(node, pv);
 
-        pv.setEnabled(DOMHelper.getSubelementBoolean(node, XMLTags.ENABLED, true));
         pv.setDescription(DOMHelper.getSubelementString(node, XMLTags.DESCRIPTION));
         pv.setLatching(DOMHelper.getSubelementBoolean(node, XMLTags.LATCHING));
         pv.setAnnunciating(DOMHelper.getSubelementBoolean(node, XMLTags.ANNUNCIATING));
         pv.setFilter(DOMHelper.getSubelementString(node, XMLTags.FILTER));
         pv.setDelay(DOMHelper.getSubelementDouble(node, XMLTags.DELAY, 0.0));
         pv.setCount(DOMHelper.getSubelementInt(node, XMLTags.COUNT, 0));
-        config.configurePV(pv, pv.getDescription(), pv.isEnabled(),
+        config.configurePV(pv, pv.getDescription(),
                 pv.isAnnunciating(), pv.isLatching(),
                 pv.getDelay(), pv.getCount(), pv.getFilter(),
                 pv.getGuidance(), pv.getDisplays(), pv.getCommands(), pv.getAutomatedActions());

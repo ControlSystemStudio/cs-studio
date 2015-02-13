@@ -23,7 +23,6 @@ import org.epics.util.time.Timestamp;
  */
 public class AlarmTreePV extends AlarmTreeLeaf
 {
-    private boolean enabled = true;
     private boolean latching = true;
     private boolean annunciating = false;
 
@@ -79,7 +78,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
     @Override
     public synchronized SeverityLevel getCurrentSeverity()
     {
-        return enabled ? super.getCurrentSeverity() : SeverityLevel.OK;
+        return isEnabled() ? super.getCurrentSeverity() : SeverityLevel.OK;
     }
 
     /** @return Current message */
@@ -92,21 +91,16 @@ public class AlarmTreePV extends AlarmTreeLeaf
     @Override
     public synchronized SeverityLevel getSeverity()
     {
-        return enabled ? super.getSeverity() : SeverityLevel.OK;
+        return isEnabled() ? super.getSeverity() : SeverityLevel.OK;
     }
 
     /** @return Highest or latched alarm message */
     @Override
     public synchronized String getMessage()
     {
-        return enabled ? super.getMessage() : SeverityLevel.OK.getDisplayName();
+        return isEnabled() ? super.getMessage() : SeverityLevel.OK.getDisplayName();
     }
 
-    /** @return <code>true</code> if alarms from PV are enabled */
-    public synchronized boolean isEnabled()
-    {
-        return enabled;
-    }
 
     /** Set filter expression for enablement
 	 *  @param filter New filter
@@ -118,12 +112,6 @@ public class AlarmTreePV extends AlarmTreeLeaf
 		else
 			this.filter = filter;
 	}
-
-	/** @param enable Enable the PV? */
-    public synchronized void setEnabled(final boolean enable)
-    {
-        enabled = enable;
-    }
 
     /** @return Filter expression for enablement (never <code>null</code>) */
     public synchronized String getFilter()
@@ -250,7 +238,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
     protected synchronized void writeConfigXML(final PrintWriter out, final int level)
     {
         XMLWriter.XML(out, level, XMLTags.DESCRIPTION, getDescription());
-        if (!enabled)
+        if (!isEnabled())
             XMLWriter.XML(out, level, XMLTags.ENABLED, Boolean.FALSE.toString());
         if (latching)
             XMLWriter.XML(out, level, XMLTags.LATCHING, Boolean.TRUE.toString());

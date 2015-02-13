@@ -54,8 +54,7 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         cell.setText(getText(item));
 
         // Provide icon that represents the item's severity
-        if (item instanceof AlarmTreePV  &&
-            !((AlarmTreePV)item).isEnabled())
+        if (!item.isEnabled())
         {
             cell.setImage(icon_provider.getDisabledIcon());
             cell.setBackground(null);

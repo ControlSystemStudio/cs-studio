@@ -242,7 +242,7 @@ public class AlarmConfiguration
                 if (!create)
                     throw new Exception("Unknown alarm tree root " + root_name);
                 // Create new, empty alarm tree
-                return (AlarmTreeRoot) addRootOrComponent(null, root_name);
+                return (AlarmTreeRoot) addRootOrComponent(null, root_name, true);
             }
             final int id = result.getInt(1);
             final AlarmTreeRoot root = createAlarmTreeRoot(id, root_name);
@@ -284,6 +284,7 @@ public class AlarmConfiguration
             if (result.wasNull())
             {   // Component (area, system), not a PV
                 item = new AlarmTreeItem(parent, name, id);
+                item.setEnabled(result.getBoolean(5));
                 recurse_items.add(item);
             }
             else
@@ -320,11 +321,11 @@ public class AlarmConfiguration
      */
     @SuppressWarnings("nls")
     public AlarmTreeItem addComponent(final AlarmTreeItem parent,
-            final String name) throws Exception
+            final String name, final boolean isEnabled) throws Exception
     {
         if (parent instanceof AlarmTreePV)
            throw new Exception("Cannot add subtree to PV " + parent.getPathName());
-        return (AlarmTreeItem) addRootOrComponent(parent, name);
+        return (AlarmTreeItem) addRootOrComponent(parent, name, isEnabled);
     }
 
     /** Check if alarm configuration already contains an item
@@ -356,7 +357,7 @@ public class AlarmConfiguration
      */
     @SuppressWarnings("nls")
     private AlarmTreeItem addRootOrComponent(
-            final AlarmTreeItem parent, final String name) throws Exception
+            final AlarmTreeItem parent, final String name, final boolean isEnabled) throws Exception
     {
         if (parent instanceof AlarmTreePV)
             throw new Exception("Cannot add sub-element to PV " +
@@ -379,6 +380,7 @@ public class AlarmConfiguration
             else
                 statement.setInt(2, parent.getID());
             statement.setString(3, name);
+            statement.setBoolean(4, isEnabled);
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
@@ -426,7 +428,7 @@ public class AlarmConfiguration
      */
     @SuppressWarnings("nls")
     public AlarmTreePV addPV(final AlarmTreeItem parent,
-                      final String name) throws Exception
+                      final String name, final boolean isEnabled) throws Exception
     {
         // Check if item with that path already exists
         checkDuplicatePath(parent, name);
@@ -451,8 +453,9 @@ public class AlarmConfiguration
         {
             //Insert the PV as an item in the alarmtree table
             insert_item_statement.setInt(1, id);
-            insert_item_statement.setInt(2, parent.getID());
+            insert_item_statement.setInt(2, parent.getID());           
             insert_item_statement.setString(3, name);
+            insert_item_statement.setBoolean(4, isEnabled);
             insert_item_statement.executeUpdate();
             //Insert the PV into the pv table
             insert_pv_statement.setInt(1, id);
@@ -572,7 +575,7 @@ public class AlarmConfiguration
      *  @throws Exception on error
      */
     public void configurePV(final AlarmTreePV pv, final String description,
-        final boolean enabled, final boolean annunciate, final boolean latch,
+        final boolean annunciate, final boolean latch,
         final int delay, final int count, final String filter,
         final GDCDataStructure guidance[], final GDCDataStructure displays[],
         final GDCDataStructure commands[], final AADataStructure automated_actions[]) throws Exception
@@ -583,13 +586,12 @@ public class AlarmConfiguration
         try
         {
             update_pv_config_statement.setString(1, description);
-            update_pv_config_statement.setBoolean(2, enabled);
-            update_pv_config_statement.setBoolean(3, annunciate);
-            update_pv_config_statement.setBoolean(4, latch);
-            update_pv_config_statement.setInt(5, delay);
-            update_pv_config_statement.setInt(6, count);
-            update_pv_config_statement.setString(7, filter);
-            update_pv_config_statement.setInt(8, pv.getID());
+            update_pv_config_statement.setBoolean(2, annunciate);
+            update_pv_config_statement.setBoolean(3, latch);
+            update_pv_config_statement.setInt(4, delay);
+            update_pv_config_statement.setInt(5, count);
+            update_pv_config_statement.setString(6, filter);
+            update_pv_config_statement.setInt(7, pv.getID());
             update_pv_config_statement.executeUpdate();
             rdb.getConnection().commit();
         }
@@ -703,6 +705,76 @@ public class AlarmConfiguration
         else
             removeSubtree(item);
     }
+    
+    /** Enable/Disable item and all sub-items from alarm tree.
+     *  @param item Item to remove
+     *  @throws Exception on error
+     */
+    public synchronized void setEnabled(final AlarmTreeItem item, final boolean isEnabled) throws Exception
+    {
+        final Connection connection = rdb.getConnection();
+        connection.setAutoCommit(false);
+        
+        try{
+	        if (item instanceof AlarmTreePV)
+	            setEnabledItem((AlarmTreePV) item, isEnabled);
+	        else
+	            setEnabledSubtree(item, isEnabled);
+	        
+	        connection.commit();
+	        
+        } catch (SQLException ex) {
+        	
+	        connection.rollback();
+	        throw ex;
+	        
+	    } finally {
+	        connection.setAutoCommit(true);
+	    }
+
+    }
+
+    /** Change item's enabled
+     *  @param item Item to change
+     *  @param isEnabled
+     *  @throws Exception on error
+     */
+    @SuppressWarnings("nls")
+    private void setEnabledItem(final AlarmTreeItem item, final boolean isEnabled) throws Exception
+    {
+        // Update item's config time after RDB commit succeeded
+        final Connection connection = rdb.getConnection();
+        PreparedStatement update_item_enablement = connection.prepareStatement(sql.update_pv_enablement);
+    	update_item_enablement.setBoolean(1, isEnabled);
+    	update_item_enablement.setInt(2, item.getID());
+    	update_item_enablement.executeUpdate();
+        item.setEnabled(isEnabled);
+    }
+ 
+    
+    /** Recursively enable/disable subtree.
+     *  <p>
+     *  Does not send events.
+     *  @param item Item to enable/disable with child-items
+     *  @param isEnabled
+     *  @throws Exception on error
+     */
+    private void setEnabledSubtree(final AlarmTreeItem item, final boolean isEnabled) throws Exception
+    {
+        // First recurse down
+        for (int i=0; i<item.getChildCount(); i++)
+        {
+            final AlarmTreeItem child = item.getChild(i);
+            if (child instanceof AlarmTreePV)
+            	setEnabledItem(child, isEnabled);
+            else
+            	setEnabledSubtree(child, isEnabled);
+        }
+        
+        // Then en/disable item itself
+        setEnabledItem(item, isEnabled);
+    }
+    
 
     /** Recursively remove subtree.
      *  <p>

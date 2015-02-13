@@ -22,6 +22,7 @@ import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.actions.AddComponentAction;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
+import org.csstudio.alarm.beast.ui.actions.DisableComponentAction;
 import org.csstudio.alarm.beast.ui.actions.DuplicatePVAction;
 import org.csstudio.alarm.beast.ui.actions.MoveItemAction;
 import org.csstudio.alarm.beast.ui.actions.RemoveComponentAction;
@@ -312,6 +313,17 @@ public class GUI implements AlarmClientModelListener
 	        {   // Allow removal of one or more selected items
 	            manager.add(new MoveItemAction(shell, model, items));
 	            manager.add(new RemoveComponentAction(shell, model, items));
+	        }
+	        
+	        if (items.size() == 1) {
+	        	// can only enable/disable one component at a time
+	        	// can't enable or disable a component if itself and its parent are disabled
+	        	AlarmTreeItem item = items.get(0);
+	        	if (!item.getParent().isEnabled() && !item.isEnabled()) {
+	        		// do nothing
+	        	} else {
+	        		manager.add(new DisableComponentAction(shell, model, items));
+	        	}
 	        }
 		}
         manager.add(new Separator());

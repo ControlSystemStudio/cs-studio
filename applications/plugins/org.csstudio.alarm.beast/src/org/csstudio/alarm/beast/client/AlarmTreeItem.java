@@ -432,6 +432,9 @@ public class AlarmTreeItem extends TreeItem
      */
     protected synchronized void writeConfigXML(final PrintWriter out, final int level)
     {
+        if (!isEnabled())
+            XMLWriter.XML(out, level, XMLTags.ENABLED, Boolean.FALSE.toString());
+
         writeGCD_XML(out, level, XMLTags.GUIDANCE, guidance);
         writeGCD_XML(out, level, XMLTags.DISPLAY, displays);
         writeGCD_XML(out, level, XMLTags.COMMAND, commands);

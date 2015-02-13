@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ASKAP Product
+Bundle-SymbolicName: org.csstudio.askap.product;singleton:=true
+Bundle-Version: 3.2.14.qualifier
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.equinox.security;bundle-version="1.1.1",
+ org.eclipse.ui,
+ org.eclipse.ui.intro;bundle-version="3.4.100",
+ org.eclipse.ui.intro.universal;bundle-version="3.2.500",
+ org.eclipse.ui.ide;bundle-version="3.7.0",
+ org.csstudio.logging;bundle-version="3.2.1",
+ org.csstudio.logging.ui;bundle-version="3.2.1",
+ org.csstudio.startup;bundle-version="3.1.0",
+ org.csstudio.startup.helper;bundle-version="3.1.0",
+ org.csstudio.utility.product;bundle-version="1.1.0",
+ org.csstudio.workspace;bundle-version="3.2.0",
+ org.csstudio.auth;bundle-version="3.2.0",
+ org.csstudio.auth.ui;bundle-version="3.2.0",
+ org.csstudio.security;bundle-version="1.0.0",
+ org.csstudio.apputil.ui;bundle-version="3.2.0",
+ org.csstudio.ui.menu.app;bundle-version="3.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.csstudio.askap.product
+Bundle-ActivationPolicy: lazy

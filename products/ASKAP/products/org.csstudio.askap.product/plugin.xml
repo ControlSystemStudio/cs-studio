@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.askap.product.application"
+            name="CSS for ASKAP">
+         <property
+               name="appName"
+               value="CSS for ASKAP">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/aboutSide.png">
+         </property>
+         <property
+               name="aboutText"
+               value="Control System Studio (CSS) for ASKAP&#x0A;Version 3.2.14&#x0A;&#x0A;Control System Studio (CSS) is a combined&#x0A;effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN)&#x0A;- BNL (Brookhaven, NY)&#x0A;- KEK/J-PARC&#x0A;- CSIRO ASKAP (Australia)&#x0A;&#x0A;It provides a collection of control system&#x0A;tools in a common environment, based&#x0A;on Eclipse.&#x0A;&#x0A;http://sourceforge.net/apps/trac/cs-studio/wiki">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="105,115,350,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="105,135,350,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="introBrandingImageText"
+               value="ASKAP CSS">
+         </property>
+         <property
+               name="introBrandingImage"
+               value="icons/css64.png">
+         </property>
+         <property
+               name="introTitle"
+               value="Welcome to Control System Studio (CSS) for ASKAP!">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.startup.application.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.csstudio.startup.module">
+      <startupParameters
+            class="org.csstudio.askap.product.StartupParameters">
+      </startupParameters>
+      <project
+            class="org.csstudio.startup.module.defaults.DefaultProject">
+      </project>
+      <workbench
+            class="org.csstudio.utility.product.Workbench">
+      </workbench>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <introProductBinding
+            introId="org.eclipse.ui.intro.universal"
+            productId="org.csstudio.askap.product.product">
+      </introProductBinding>
+   </extension>
+
+</plugin>
