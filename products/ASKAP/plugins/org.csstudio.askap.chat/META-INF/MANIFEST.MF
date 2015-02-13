@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Chat
+Bundle-SymbolicName: org.csstudio.askap.chat;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.askap.chat.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.auth;bundle-version="3.1.0",
+ org.csstudio.auth.ui;bundle-version="3.2.0",
+ org.csstudio.platform.libs.jms;bundle-version="5.4.2",
+ org.csstudio.platform.utility.jms;bundle-version="1.1.3",
+ org.csstudio.askap.utility;bundle-version="1.0.0",
+ org.csstudio.security;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

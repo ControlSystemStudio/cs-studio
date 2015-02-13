@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ASKAP Alarm ConfigTool
+Bundle-SymbolicName: org.csstudio.askap.alarm.beast.configtool.product;singleton:=true
+Bundle-Version: 3.2.14.qualifier
+Bundle-Activator: org.csstudio.askap.alarm.beast.configtool.product.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.alarm.beast.configtool;bundle-version="3.1.1"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: CASS
+Export-Package: org.csstudio.askap.alarm.beast.configtool.product

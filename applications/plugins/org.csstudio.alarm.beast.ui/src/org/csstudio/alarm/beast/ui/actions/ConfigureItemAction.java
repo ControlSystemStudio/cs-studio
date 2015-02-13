@@ -110,7 +110,7 @@ public class ConfigureItemAction extends Action
         {
             if (item instanceof AlarmTreePV)
                 model.configurePV((AlarmTreePV) item, dlg.getDescription(),
-                        dlg.isEnabled(), dlg.isAnnunciate(), dlg.isLatch(),
+                        dlg.isAnnunciate(), dlg.isLatch(),
                         dlg.getDelay(), dlg.getCount(),
                         dlg.getFilter(),
                         dlg.getGuidance(), dlg.getDisplays(), dlg.getCommands(), dlg.getAutomatedActions());

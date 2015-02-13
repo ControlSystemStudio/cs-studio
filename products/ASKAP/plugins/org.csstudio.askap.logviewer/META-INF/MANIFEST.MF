@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Logviewer
+Bundle-SymbolicName: org.csstudio.askap.logviewer;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.askap.logviewer.Activator
+Bundle-Vendor: CSIRO ASKAP
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.askap.utility.icemanager;bundle-version="1.0.0",
+ org.csstudio.ui.util;bundle-version="3.1.0",
+ org.csstudio.askap.utility;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.csstudio.askap.logviewer,
+ org.csstudio.askap.logviewer.ui,
+ org.csstudio.askap.logviewer.util

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.askap.optional.feature"
+      label="Features"
+      version="3.2.14.qualifier">
+
+   <description url="http://www.example.com/description">
+      CSS BEAST for ASKAP
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.csstudio.alarm.beast.ui.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.singlesource" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.examples" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth.ui" version="3.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.jms" version="5.4.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.jms" version="1.1.3" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.askap.utility" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.security" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.askap.utility.icemanager" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.7.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.console" version="3.5.100" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.alarm.beast.ui.globaltable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.opibuilder.examples"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.utility"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.chat"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.sb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.askap.utility.pv.ice"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

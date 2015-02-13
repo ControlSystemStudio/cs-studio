@@ -56,9 +56,6 @@ public class ItemConfigDialog extends TitleAreaDialog
     /** PV alarm delay or null */
     private Text delay_text;
 
-    /** PV enable button or null */
-    private Button enable_button;
-
     /** PV latch enable or null */
     private Button latch_button;
 
@@ -66,7 +63,6 @@ public class ItemConfigDialog extends TitleAreaDialog
     private Button annunciate_button;
 
     private String description = ""; //$NON-NLS-1$
-    private boolean enabled = true;
     private boolean latch = true;
     private boolean annunciate = false;
     private String filter = ""; //$NON-NLS-1$
@@ -99,12 +95,6 @@ public class ItemConfigDialog extends TitleAreaDialog
     public String getDescription()
     {
         return description;
-    }
-
-    /** @return enabled */
-    public boolean isEnabled()
-    {
-        return enabled;
     }
 
     /** @return Filter expression */
@@ -225,21 +215,6 @@ public class ItemConfigDialog extends TitleAreaDialog
 			l.setText(Messages.Config_Behavior);
 			l.setLayoutData(new GridData());
 
-			enable_button = new Button(composite, SWT.CHECK);
-			enable_button.setText(Messages.Config_Enabled);
-			enable_button.setToolTipText(Messages.Config_EnabledTT);
-			enable_button.setLayoutData(new GridData());
-			enable_button.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					if (enable_button.getSelection())
-						setErrorMessage(null);
-					else
-						setErrorMessage(Messages.Config_DisableWarning);
-				}
-			});
-			enable_button.setSelection(pv.isEnabled());
-
 			latch_button = new Button(composite, SWT.CHECK);
 			latch_button.setText(Messages.Config_Latch);
 			latch_button.setToolTipText(Messages.Config_LatchingTT);
@@ -252,6 +227,9 @@ public class ItemConfigDialog extends TitleAreaDialog
 			annunciate_button.setSelection(pv.isAnnunciating());
 			annunciate_button.setLayoutData(new GridData());
 
+			Label dummy = new Label(composite, 0);
+			dummy.setLayoutData(new GridData());
+			
 			// Filter: _____________________
 			l = new Label(composite, 0);
 			l.setText(Messages.Config_Filter);
@@ -270,11 +248,9 @@ public class ItemConfigDialog extends TitleAreaDialog
 				public void modifyText(ModifyEvent e) {
 					final String filter_spec = filter_text.getText().trim();
 					final boolean have_filter = filter_spec.length() > 0;
-					enable_button.setEnabled(!have_filter);
 					if (have_filter) {
 						// When entering a filter, the manual 'enable' is always
 						// 'on'
-						enable_button.setSelection(true);
 						if (isFilterSpecOK(filter_spec))
 							setErrorMessage(null);
 						else
@@ -512,7 +488,6 @@ public class ItemConfigDialog extends TitleAreaDialog
 
         description = description_text == null
             ? "" : description_text.getText().trim(); //$NON-NLS-1$
-        enabled = enable_button == null ? true : enable_button.getSelection();
         annunciate = annunciate_button == null
             ? false : annunciate_button.getSelection();
         latch = latch_button == null
@@ -524,8 +499,6 @@ public class ItemConfigDialog extends TitleAreaDialog
         	setErrorMessage(Messages.ErrorInFilter);
         	return;
         }
-        if (filter.length() > 0)
-            enabled = true;
         try
         {
             delay  = delay_text == null

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.askap"
+            class="org.csstudio.askap.navigator.NavigatorView"
+            icon="icons/compass_20x20.png"
+            id="org.csstudio.askap.navigator.NavigatorView"
+            name="ASKAP Navigator"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.askap.navigator.OpenASKAPNavigator"
+            id="org.csstudio.askap.navigator.OpenASKAPNavigator"
+            name="Open ASKAP Navigator">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.csstudio.askap.navigator.toolbar">
+            <command
+                  commandId="org.csstudio.askap.navigator.OpenASKAPNavigator"
+                  icon="icons/compass_20x20.png"
+                  label="ASKAP Navigator"
+                  style="push"
+                  tooltip="Open ASKAP Navigator">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+
+</plugin>

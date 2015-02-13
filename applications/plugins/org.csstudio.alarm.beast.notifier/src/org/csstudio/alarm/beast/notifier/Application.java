@@ -63,6 +63,7 @@ public class Application implements IApplication {
         System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
         System.out.println("Notifier timer threshold: " + org.csstudio.alarm.beast.notifier.Preferences.getTimerThreshold());
         System.out.println("Notifier thread threshold: " + org.csstudio.alarm.beast.notifier.Preferences.getThreadThreshold());
+        System.out.println("Notifier notify_escalating_alarms_only: " + org.csstudio.alarm.beast.notifier.Preferences.getNotifyEscalatingAlarmsOnly());
         
 		try {
 			AutomatedActionFactory factory = AutomatedActionFactory.getInstance();
@@ -71,8 +72,9 @@ public class Application implements IApplication {
 			// TODO: define threshold in preferences
 			final int timer_threshold = org.csstudio.alarm.beast.notifier.Preferences.getTimerThreshold();
 			final int thread_threshold = org.csstudio.alarm.beast.notifier.Preferences.getThreadThreshold();
+			final boolean notify_escalating_alarms_only = org.csstudio.alarm.beast.notifier.Preferences.getNotifyEscalatingAlarmsOnly();
 			final AlarmNotifier alarm_notifer = new AlarmNotifier(
-					config_name.get(), rdbHandler, factory, timer_threshold, thread_threshold);
+					config_name.get(), rdbHandler, factory, timer_threshold, thread_threshold, notify_escalating_alarms_only);
 			rdbHandler.init(alarm_notifer);
 			alarm_notifer.start();
 			while (run) {

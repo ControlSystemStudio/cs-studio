@@ -216,9 +216,9 @@ public class AddComponentDialog extends TitleAreaDialog
         try
         {
             if (type_facility.getSelection())
-                model.addComponent(model.getConfigTree(), name);
+                model.addComponent(model.getConfigTree(), name, true);
             else if (type_component.getSelection())
-                model.addComponent(parent_item, name);
+                model.addComponent(parent_item, name, true);
             else
                 model.addPV(parent_item, name);
         }

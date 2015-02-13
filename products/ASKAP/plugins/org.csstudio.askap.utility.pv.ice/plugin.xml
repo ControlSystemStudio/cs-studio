@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.utility.pv.pvfactory">
+      <PVFactory
+            class="org.csstudio.askap.utility.pv.ice.IceMonitorPVFactory"
+            name="ICE Monitor PV"
+            prefix="ice">
+      </PVFactory>
+   </extension>
+   <extension
+         point="org.csstudio.utility.pvmanager.datasource">
+      <datasource
+            datasource="org.csstudio.askap.pvmanager.ice.IceDataSource"
+            name="Ice Datasource"
+            prefix="ice">
+      </datasource>
+   </extension>
+
+</plugin>

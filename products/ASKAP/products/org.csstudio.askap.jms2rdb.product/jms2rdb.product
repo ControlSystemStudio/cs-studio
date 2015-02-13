@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="org.csstudio.askap.jms2rdb.product.product" uid="org.csstudio.askap.jms2rdb.product" id="org.csstudio.askap.jms2rdb.product.product" application="org.csstudio.logging.jms2rdb.application" version="3.2.14.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>--launcher.suppressErrors</programArgs>
+      <vmArgs>-Djava.awt.headless=true
+-Xms64m
+-Xmx256m
+-Declipse.exitdata=</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <launcher name="JMS2RDB">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.csstudio.askap.core.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.jms2rdb.app.feature" version="3.2.14.qualifier"/>
+   </features>
+
+
+</product>

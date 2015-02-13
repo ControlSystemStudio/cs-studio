@@ -108,7 +108,7 @@ public class SQL
             //        1               2
             "SELECT t.COMPONENT_ID, t.CONFIG_TIME," +
             //  3               4        5              6
-            " p.COMPONENT_ID, p.DESCR, p.ENABLED_IND, p.ANNUNCIATE_IND," +
+            " p.COMPONENT_ID, p.DESCR, t.ENABLED_IND, p.ANNUNCIATE_IND," +
             //  7            8        9              10        11
             " p.LATCH_IND, p.DELAY, p.DELAY_COUNT, p.FILTER, p.CUR_SEVERITY_ID," +
             //  12               13             14           15          16
@@ -125,7 +125,7 @@ public class SQL
             //        1               2
             "SELECT t.COMPONENT_ID, t.CONFIG_TIME," +
             //  3               4        5              6
-            " p.COMPONENT_ID, p.DESCR, p.ENABLED_IND, p.ANNUNCIATE_IND," +
+            " p.COMPONENT_ID, p.DESCR, t.ENABLED_IND, p.ANNUNCIATE_IND," +
             //  7            8        9              10        11
             " p.LATCH_IND, p.DELAY, p.DELAY_COUNT, p.FILTER, p.CUR_SEVERITY_ID," +
             //  12               13             14           15          16
@@ -141,11 +141,13 @@ public class SQL
         // that in the INSERT statement
         final String now = rdb.getDialect() == Dialect.Oracle
                          ? "SYSDATE" : "NOW()";
-        insert_item =
-            "INSERT INTO " + schema_prefix +
-            "ALARM_TREE(COMPONENT_ID, PARENT_CMPNT_ID, NAME, CONFIG_TIME)" +
-            " VALUES (?,?,?," + now + ")";
 
+        insert_item =
+        "INSERT INTO " + schema_prefix +
+        "ALARM_TREE(COMPONENT_ID, PARENT_CMPNT_ID, NAME, ENABLED_IND, CONFIG_TIME)" +
+        " VALUES (?,?,?, ?, " + now + ")";
+        
+        
         delete_guidance_by_id =
             "DELETE FROM " + schema_prefix + "GUIDANCE WHERE COMPONENT_ID=?";
         insert_guidance =
@@ -169,8 +171,13 @@ public class SQL
         delete_component_by_id = "DELETE FROM " + schema_prefix + "ALARM_TREE WHERE COMPONENT_ID = ?";
 
         sel_pv_by_id =
-            "SELECT DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, DELAY, DELAY_COUNT, FILTER FROM " + schema_prefix + "PV WHERE COMPONENT_ID=?";
+//            "SELECT DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, DELAY, DELAY_COUNT, FILTER FROM " + schema_prefix + "PV WHERE COMPONENT_ID=?";
 
+        "SELECT p.DESCR, t.ENABLED_IND, p.ANNUNCIATE_IND, p.LATCH_IND, p.DELAY, p.DELAY_COUNT, p.FILTER "
+        + "FROM " + schema_prefix + "ALARM_TREE t LEFT JOIN " + schema_prefix + "PV p ON p.COMPONENT_ID = t.COMPONENT_ID "
+        + "WHERE t.COMPONENT_ID=?";
+        
+        
         sel_global_alarm_pvs =
             //        1                  2
             "SELECT t.PARENT_CMPNT_ID, t.NAME," +
@@ -186,19 +193,19 @@ public class SQL
 
         if (rdb.getDialect() == Dialect.PostgreSQL)
         	insert_pv =
-            "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND,ENABLED_IND) VALUES (?,?,?,?,true)";
+            "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND) VALUES (?,?,?,?)";
         else
         	insert_pv =
-            "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND,ENABLED_IND) VALUES (?,?,?,?,1)";
+            "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND) VALUES (?,?,?,?)";
 
         update_pv_config =
-            "UPDATE " + schema_prefix + "PV SET DESCR=?,ENABLED_IND=?,ANNUNCIATE_IND=?,LATCH_IND=?, DELAY=?,DELAY_COUNT=?,FILTER=? WHERE COMPONENT_ID=?";
+            "UPDATE " + schema_prefix + "PV SET DESCR=?,ANNUNCIATE_IND=?,LATCH_IND=?, DELAY=?,DELAY_COUNT=?,FILTER=? WHERE COMPONENT_ID=?";
         update_pv_state =
             "UPDATE " + schema_prefix + "PV SET CUR_SEVERITY_ID=?,CUR_STATUS_ID=?,SEVERITY_ID=?,STATUS_ID=?,PV_VALUE=?,ALARM_TIME=?  WHERE COMPONENT_ID=?";
         update_global_state =
             "UPDATE " + schema_prefix + "PV SET ACT_GLOBAL_ALARM_IND=? WHERE COMPONENT_ID=?";
         update_pv_enablement =
-            "UPDATE " + schema_prefix + "PV SET ENABLED_IND=?  WHERE COMPONENT_ID=?";
+            "UPDATE " + schema_prefix + "ALARM_TREE SET ENABLED_IND=?  WHERE COMPONENT_ID=?";
         delete_pv_by_id = "DELETE FROM " + schema_prefix + "PV WHERE COMPONENT_ID = ?";
         rename_item = "UPDATE " + schema_prefix + "ALARM_TREE SET NAME=? WHERE COMPONENT_ID=?";
         move_item = "UPDATE " + schema_prefix + "ALARM_TREE SET PARENT_CMPNT_ID=? WHERE COMPONENT_ID=?";

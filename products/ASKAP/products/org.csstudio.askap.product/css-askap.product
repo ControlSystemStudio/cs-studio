@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="CSS for ASKAP" uid="askap" id="org.csstudio.askap.product.product" application="org.csstudio.askap.product.application" version="3.2.16" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/org.csstudio.askap.product/icons/aboutSide.png"/>
+      <text>
+         Control System Studio (CSS) for ASKAP
+Version 3.2.14
+
+Control System Studio (CSS) is a combined
+effort of several parties, including
+- DESY (Hamburg, Germany)
+- SNS (Oak Ridge, TN)
+- BNL (Brookhaven, NY)
+- KEK/J-PARC
+- CSIRO ASKAP (Australia)
+
+It provides a collection of control system
+tools in a common environment, based
+on Eclipse.
+
+http://sourceforge.net/apps/trac/cs-studio/wiki
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="/org.csstudio.askap.product/icons/css16.png" i32="/org.csstudio.askap.product/icons/css32.png" i48="/org.csstudio.askap.product/icons/css48.png" i64="/org.csstudio.askap.product/icons/css64.png" i128="/org.csstudio.askap.product/icons/css128.png"/>
+
+   <splash
+      location="org.csstudio.askap.product"
+      startupProgressRect="105,135,350,15"
+      startupMessageRect="105,115,350,20"
+      startupForegroundColor="FFFFFF" />
+   <launcher name="css">
+      <linux icon="/org.csstudio.askap.product/icons/css48.xpm"/>
+      <macosx icon="/org.csstudio.askap.product/icons/css.icns"/>
+      <solaris/>
+      <win useIco="true">
+         <ico path="/org.csstudio.askap.product/icons/css.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="org.apache.ant"/>
+      <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.lucene.core"/>
+      <plugin id="org.apache.lucene.highlighter"/>
+      <plugin id="org.apache.lucene.memory"/>
+      <plugin id="org.apache.lucene.misc"/>
+      <plugin id="org.apache.lucene.queries"/>
+      <plugin id="org.apache.lucene.snowball"/>
+      <plugin id="org.apache.lucene.spellchecker"/>
+      <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.apputil.test" fragment="true"/>
+      <plugin id="org.csstudio.apputil.ui"/>
+      <plugin id="org.csstudio.askap.product"/>
+      <plugin id="org.csstudio.auth"/>
+      <plugin id="org.csstudio.auth.ui"/>
+      <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.data.test" fragment="true"/>
+      <plugin id="org.csstudio.diag.probe"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.java.test" fragment="true"/>
+      <plugin id="org.csstudio.logbook"/>
+      <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.logging.test" fragment="true"/>
+      <plugin id="org.csstudio.logging.ui"/>
+      <plugin id="org.csstudio.openfile"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.startup"/>
+      <plugin id="org.csstudio.ui.menu"/>
+      <plugin id="org.csstudio.ui.menu.app"/>
+      <plugin id="org.csstudio.ui.util"/>
+      <plugin id="org.csstudio.utility.product"/>
+      <plugin id="org.csstudio.utility.pv"/>
+      <plugin id="org.csstudio.workspace"/>
+      <plugin id="org.eclipse.ant.core"/>
+      <plugin id="org.eclipse.compare.core"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.http.jetty"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.http.servlet"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
+      <plugin id="org.eclipse.equinox.p2.core"/>
+      <plugin id="org.eclipse.equinox.p2.engine"/>
+      <plugin id="org.eclipse.equinox.p2.metadata"/>
+      <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+      <plugin id="org.eclipse.equinox.p2.repository"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.help.appserver"/>
+      <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.ui"/>
+      <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.text"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
+      <plugin id="org.eclipse.ui.console"/>
+      <plugin id="org.eclipse.ui.forms"/>
+      <plugin id="org.eclipse.ui.ide"/>
+      <plugin id="org.eclipse.ui.intro"/>
+      <plugin id="org.eclipse.ui.intro.universal"/>
+      <plugin id="org.eclipse.ui.views"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.ui.workbench.texteditor"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.junit4"/>
+      <plugin id="org.mortbay.jetty.server"/>
+      <plugin id="org.mortbay.jetty.util"/>
+   </plugins>
+
+   <features>
+      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.core.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.applications.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.optional.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.pydev.feature" version="1.0.0.qualifier"/>
+   </features>
+
+
+</product>

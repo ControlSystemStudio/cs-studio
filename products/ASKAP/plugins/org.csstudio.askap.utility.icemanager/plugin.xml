@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.askap"
+            class="org.csstudio.askap.utility.icemanager.PreferencePage"
+            id="org.csstudio.askap.utility.icemanager.PreferencePage"
+            name="ICE">
+      </page>
+   </extension>
+
+</plugin>

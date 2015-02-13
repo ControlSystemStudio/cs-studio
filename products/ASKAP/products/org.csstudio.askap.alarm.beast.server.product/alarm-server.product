@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Alarm Server" uid="org.csstudio.askap.alarm.beast.server.product" id="org.csstudio.askap.alarm.beast.server.product.product" application="org.csstudio.alarm.beast.server.application" version="3.2.14.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>--launcher.suppressErrors</programArgs>
+      <vmArgs>-Declipse.exitdata=
+-Djava.awt.headless=true -Xms64m -Xmx256m
+-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+-Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="AlarmServer">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="org.csstudio.alarm.beast"/>
+      <plugin id="org.csstudio.alarm.beast.server"/>
+      <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.apputil.test" fragment="true"/>
+      <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.java.test" fragment="true"/>
+      <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.logging.test" fragment="true"/>
+      <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.security"/>
+      <plugin id="org.csstudio.utility.pvmanager"/>
+      <plugin id="org.csstudio.utility.pvmanager.vtype"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.epics.util"/>
+      <plugin id="org.epics.vtype"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.junit4"/>
+   </plugins>
+
+   <features>
+      <feature id="org.csstudio.askap.eclipse.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.core.feature" version="3.2.14.qualifier"/>
+      <feature id="org.csstudio.askap.alarm.beast.server.app.feature" version="3.2.14.qualifier"/>
+   </features>
+
+
+</product>

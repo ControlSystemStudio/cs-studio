@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.Preferences;
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AADataStructure;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
@@ -40,14 +41,20 @@ public class AlarmNotifier {
 	
 	final private AutomatedActionInvoker invoker;
 
+	private boolean notify_escalating_alarms_only = false;
+
+	
+	
 	public AlarmNotifier(final String root_name,
 			final IAlarmRDBHandler rdbHandler,
 			final AutomatedActionFactory factory, 
 			final int timer_threshold, 
-			final int thread_threshold)
+			final int thread_threshold,
+			final boolean notify_escalating_alarms_only)
 			throws Exception {
 		this.rdb = rdbHandler;
 		this.factory = factory;
+		this.notify_escalating_alarms_only  = notify_escalating_alarms_only;
 		this.invoker = new AutomatedActionInvoker(timer_threshold, thread_threshold);
 	}
 
@@ -100,6 +107,11 @@ public class AlarmNotifier {
 	 */
 	public void handleAlarmUpdate(AlarmTreePV pvItem) {
 		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
+		
+		if (skipItem(snapshot)) {
+			return;
+		}
+		
 		// Process PV automated actions
 		if (pvItem.getAutomatedActions() != null) {
 			for (AADataStructure aa : pvItem.getAutomatedActions()) {
@@ -116,6 +128,28 @@ public class AlarmNotifier {
 			if (item.getPosition().equals(AlarmTreePosition.Root))
 				break;
 		}
+	}
+
+	private boolean skipItem(PVSnapshot snapshot) {
+		
+		// only skip if we only want to notify escalating alarms
+		if (!notify_escalating_alarms_only) {
+			return false;
+		}
+		
+		// skip if this is an ACK or OK
+		if (snapshot.getSeverity().compareTo(SeverityLevel.UNDEFINED_ACK) <= 0) {
+			return true;
+		}
+
+		// skip this item if current severity less than alarm severity
+		if (snapshot.getCurrentSeverity().compareTo(snapshot.getSeverity())<0) {
+			return true;
+		}
+		
+		
+		return false;
+		
 	}
 
 	private void handleAutomatedAction(PVSnapshot snapshot,
