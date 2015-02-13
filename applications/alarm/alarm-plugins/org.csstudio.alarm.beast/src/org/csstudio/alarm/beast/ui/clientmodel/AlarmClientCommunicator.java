@@ -220,7 +220,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         map.setString(JMSLogMessage.TEXT, text);
         map.setString(JMSLogMessage.APPLICATION_ID, APPLICATION);
         map.setString(JMSLogMessage.HOST, host);
-        
+
         final Subject subject = SecuritySupport.getSubject();
         if (subject == null)  //if no user logged in...
             user = System.getProperty("user.name"); //$NON-NLS-1$
@@ -293,7 +293,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
 
     /** Notify alarm server and other clients about updated PV configuration
      *  in RDB.
-     *  @param path Path name of the modified item or <code>null</code> if all changed
+     *  @param path Path name of a modified existing item, or <code>null</code> for new or removed item
      */
     public void sendConfigUpdate(final String path)
     {
