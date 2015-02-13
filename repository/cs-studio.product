@@ -20,6 +20,7 @@
 -Dosgi.configuration.cascaded=true
 -Dosgi.sharedConfiguration.area.readOnly=true
 -Dosgi.install.area.readOnly=true
+-Dosgi.requiredJavaVersion=1.8
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -62,9 +63,9 @@
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.csstudio.core.base.feature"/>
-      <feature id="org.csstudio.platform.feature"/>
-      <feature id="org.csstudio.utility.feature"/>
-      <feature id="org.csstudio.ui.feature"/>
+      <feature id="org.csstudio.core.platform.feature"/>
+      <feature id="org.csstudio.core.utility.feature"/>
+      <feature id="org.csstudio.core.ui.feature"/>
       <feature id="org.csstudio.product.feature"/>
       <feature id="org.csstudio.pvmanager.feature"/>
       <feature id="org.csstudio.pvmanager.ca.feature"/>
