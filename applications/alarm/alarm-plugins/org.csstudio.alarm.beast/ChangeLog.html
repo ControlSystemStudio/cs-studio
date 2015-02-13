@@ -13,6 +13,13 @@ by all other alarm system tools.
 Revisions before 3.1.0 refer to the associated SNS CSS update.
 </p>
 
+<h2>4.0.2 - 2015-02-13</h2>
+<ul>
+  <li>AlarmServer used via CA gateway would disconnect from all gateway PVs when one of the monitored IOCs reboots.
+      Reason was in the handling of subscribe/unsubscribe on reconnects.
+  </li>
+</ul>
+
 <h2>4.0.0 - 2014-09-03</h2>
 <ul>
   <li>AlarmServer ignored brief alarms because of the way it used the PVManager. For now on vtype.pv.</li>
