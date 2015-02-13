@@ -126,7 +126,7 @@ public class AlarmClientModel
     final private boolean allow_write = ! Preferences.isReadOnly();
 
 	/** Initialize client model */
-	private AlarmClientModel(String config_name) throws Exception 
+	private AlarmClientModel(final String config_name) throws Exception
 	{
 		this.config_name = config_name;
         // Initial dummy alarm info
@@ -143,7 +143,7 @@ public class AlarmClientModel
      *  @return Alarm client model instance
      *  @throws Exception on error
      */
-    public static AlarmClientModel getInstance(String config_name) throws Exception
+    public static AlarmClientModel getInstance(final String config_name) throws Exception
     {
     	if(config_name == null)
     		throw new Exception("Configuration name can't be null");
@@ -163,7 +163,7 @@ public class AlarmClientModel
      *  @return Alarm client model instance
      *  @throws Exception on error
      */
-	public static AlarmClientModel getInstance() throws Exception 
+	public static AlarmClientModel getInstance() throws Exception
 	{
 		return getInstance(Preferences.getAlarmTreeRoot());
 	}
@@ -619,8 +619,7 @@ public class AlarmClientModel
         synchronized (communicator_lock)
         {
         	if (communicator != null)
-                communicator.sendConfigUpdate(
-                        AlarmTreePath.makePath(component.getPathName(), name));
+                communicator.sendConfigUpdate(null);
         }
     }
 
@@ -799,7 +798,7 @@ public class AlarmClientModel
         synchronized (communicator_lock)
         {
         	if (communicator != null)
-        		communicator.sendConfigUpdate(new_path_and_pv);
+        		communicator.sendConfigUpdate(null);
         }
     }
 
@@ -852,7 +851,7 @@ public class AlarmClientModel
             	config.closeStatements();
             }
         }
-        
+
         // This could change the alarm tree after a PV was disabled or enabled.
         final AlarmTreeItem parent = pv.getParent();
         if (parent != null)
@@ -866,7 +865,7 @@ public class AlarmClientModel
         // updates by suppressing the display update if the PV
         // has not changed alarm state
         // -> Always update PVs with changed configuration
-        
+
         // Update alarm display
         fireNewAlarmState(pv, true);
     }
