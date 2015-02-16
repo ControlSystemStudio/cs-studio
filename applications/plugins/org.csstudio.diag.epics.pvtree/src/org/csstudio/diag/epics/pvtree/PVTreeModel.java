@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Tree;
 import org.epics.vtype.AlarmSeverity;
 
@@ -33,9 +34,16 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** The view to which we are connected. */
     final private TreeViewer viewer;
 
+    /** Root PV of the tree */
     private PVTreeItem root;
 
+    /** Map from record type to fields to read for that type */
     final private HashMap<String, List<String>> field_info;
+
+    private volatile boolean freeze_on_alarm = false;
+
+    /** 'frozen' = value updates should be ignored */
+    private volatile boolean frozen = false;
 
     /** @param view
      *  @throws Exception on error in preferences
@@ -55,9 +63,46 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         return field_info;
     }
 
+    public boolean isFreezingOnAlarm()
+    {
+        return freeze_on_alarm;
+    }
+
+    public void freezeOnAlarm(final boolean yes_no)
+    {
+        freeze_on_alarm = yes_no;
+        final boolean was_frozen = frozen;
+        frozen = false;
+        if (was_frozen)
+        {
+            final Tree tree = viewer.getTree();
+            tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+            updateValues(root);
+        }
+    }
+
+    /** @param item Item where to start updating the value,
+     *              recursively, in case the item has
+     *              updates that were 'frozen' and now
+     *              need to reflect the current value
+     */
+    private void updateValues(final PVTreeItem item)
+    {
+        item.updateValue();
+        for (PVTreeItem child : item.getLinks())
+            updateValues(child);
+    }
+
+    /** @return <code>true</code> if value updates should be ignored */
+    public boolean isFrozen()
+    {
+        return frozen;
+    }
+
     /** Re-initialize the model with a new root PV. */
     public void setRootPV(final String name)
     {
+        frozen = false;
         if (root != null)
         {
             root.dispose();
@@ -171,17 +216,24 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** Used by item to fresh the tree from the item on down. */
     public void itemUpdated(final PVTreeItem item)
     {
+        final boolean was_frozen = frozen;
+        if (freeze_on_alarm  &&
+            item == root  &&
+            item.getSeverity() != AlarmSeverity.NONE)
+            frozen = true;
+
         final Tree tree = viewer.getTree();
         if (tree.isDisposed())
             return;
-        tree.getDisplay().asyncExec(new Runnable()
+
+        tree.getDisplay().asyncExec(() ->
         {
-            @Override
-            public void run()
-            {
-               	if (! tree.isDisposed())
-	                viewer.update(item, null);
-            }
+           	if (tree.isDisposed())
+           	    return;
+
+            viewer.update(item, null);
+            if (frozen && !was_frozen)
+                tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
         });
     }
 
@@ -191,19 +243,15 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         final Tree tree = viewer.getTree();
         if (tree.isDisposed())
             return;
-        tree.getDisplay().asyncExec(new Runnable()
+        tree.getDisplay().asyncExec(() ->
         {
-            @Override
-            public void run()
-            {
-            	if (tree.isDisposed())
-            	    return;
-                if (item == root)
-                    viewer.refresh();
-                else
-                    viewer.refresh(item);
-                viewer.expandAll();
-            }
+        	if (tree.isDisposed())
+        	    return;
+            if (item == root)
+                viewer.refresh();
+            else
+                viewer.refresh(item);
+            viewer.expandAll();
         });
     }
 }

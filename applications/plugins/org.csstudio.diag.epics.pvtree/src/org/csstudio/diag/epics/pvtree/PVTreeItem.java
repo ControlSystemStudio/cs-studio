@@ -51,31 +51,38 @@ class PVTreeItem
 
     /** The PV used for getting the current value. */
     private PV pv;
-    
+
+    /** Value received while updates might have been were frozen */
+    private volatile String current_value = null;
+
+    /** Alarm received while updates might have been were frozen */
+    private volatile AlarmSeverity current_severity = AlarmSeverity.UNDEFINED;
+
+    /** Most recent value to show (may be frozen). */
+    private volatile String value = null;
+
+    /** Most recent severity (may be frozen). */
+    private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
+
+    /** Listener to value updates for this item */
     final private PVListener value_listener = new PVListenerAdapter()
     {
         @Override
         public void valueChanged(final PV pv, final VType pv_value)
         {
-            value = VTypeHelper.format(pv_value);
-            severity = VTypeHelper.getSeverity(pv_value);
-            model.itemUpdated(PVTreeItem.this);
+            current_value = VTypeHelper.format(pv_value);
+            current_severity = VTypeHelper.getSeverity(pv_value);
+            updateValue();
         }
 
         @Override
         public void disconnected(final PV pv)
         {
-            value = "Disconnected";
-            severity = AlarmSeverity.UNDEFINED;
-            model.itemUpdated(PVTreeItem.this);
+            current_value = "Disconnected";
+            current_severity = AlarmSeverity.UNDEFINED;
+            updateValue();
         }
     };
-
-    /** Most recent value. */
-    private volatile String value = null;
-
-    /** Most recent severity. */
-    private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
 
     /** The PV used for getting the record type. */
     private PV type_pv;
@@ -145,7 +152,7 @@ class PVTreeItem
         {
             Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e);
         }
-        
+
         // Avoid loops.
         // If the model already contains an entry with this name,
         // we simply display this new item, but we won't
@@ -197,7 +204,7 @@ class PVTreeItem
      */
     private PV createPV(final String name, final PVListener listener) throws Exception
     {
-        final PV pv = PVPool.getPV(name); 
+        final PV pv = PVPool.getPV(name);
         pv.addListener(listener);
         return pv;
     }
@@ -288,7 +295,7 @@ class PVTreeItem
             return links.get(0);
         return null;
     }
-    
+
     /** @return Returns the all links. */
     public PVTreeItem[] getLinks()
     {
@@ -353,7 +360,7 @@ class PVTreeItem
     /** Helper for reading next link from links_to_read. */
     private void getNextLink()
     {
-        // Probably superflous, but can't hurt
+        // Probably superfluous, but can't hurt
         disposeLinkPV();
         // Any more links to read?
         if (links_to_read.size() <= 0)
@@ -406,5 +413,17 @@ class PVTreeItem
             model.itemChanged(PVTreeItem.this);
         }
         getNextLink();
+    }
+
+    /** Update value (and severity) from 'current_value/severity'
+     *  .. unless the model is 'frozen'
+     */
+    public void updateValue()
+    {
+        if (model.isFrozen() && value != null)
+            return;
+        value = current_value;
+        severity = current_severity;
+        model.itemUpdated(PVTreeItem.this);
     }
 }
