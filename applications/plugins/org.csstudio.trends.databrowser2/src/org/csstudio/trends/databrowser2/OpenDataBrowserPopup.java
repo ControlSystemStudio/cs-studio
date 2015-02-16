@@ -7,13 +7,11 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2;
 
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.apputil.time.AbsoluteTimeParser;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.csdata.TimestampedPV;
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
@@ -39,7 +37,7 @@ public class OpenDataBrowserPopup extends AbstractHandler
 {
 
     final double period = Preferences.getScanPeriod();
-    
+
     /** {@inheritDoc} */
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
@@ -50,10 +48,9 @@ public class OpenDataBrowserPopup extends AbstractHandler
         final DataBrowserEditor editor = DataBrowserEditor.createInstance();
         if (editor == null)
             return null;
-        
+
         // Add received items
-        final Model model = editor.getModel(); 
-        
+        final Model model = editor.getModel();
         try
         {
             if (selection.getFirstElement() instanceof ChannelInfo)
@@ -64,32 +61,37 @@ public class OpenDataBrowserPopup extends AbstractHandler
                     final ChannelInfo info = (ChannelInfo) channel;
                     add(model, info.getProcessVariable(), info.getArchiveDataSource());
                 }
-            }else {
+            }
+            else
+            {
                 // Add received PVs with default archive data sources
                 final List<TimestampedPV> timestampedPVs = Arrays
                         .asList(AdapterUtil.convert(selection,
                                 TimestampedPV.class));
-                if (!timestampedPVs.isEmpty()) {
-
-                    // Add received items
-                    List<Long> timeStamps = new ArrayList<Long>();
-
-                    for (TimestampedPV timestampedPV : timestampedPVs) {
-                        timeStamps.add(timestampedPV.getTime());
-                        PVItem item = new PVItem(timestampedPV.getName().trim(), period);
-                        item.setAxis(model.addAxis(item.getDisplayName()));
+                if (!timestampedPVs.isEmpty())
+                {
+                    // Add received items, tracking their start..end time
+                    long start_ms = Long.MAX_VALUE,  end_ms = 0;
+                    for (TimestampedPV timestampedPV : timestampedPVs)
+                    {
+                        final long time = timestampedPV.getTime();
+                        if (time < start_ms)
+                            start_ms = time;
+                        if (time > end_ms)
+                            end_ms = time;
+                        final PVItem item = new PVItem(timestampedPV.getName().trim(), period);
+                        item.setAxis(model.addAxis());
                         item.useDefaultArchiveDataSources();
                         model.addItem(item);
                     }
 
-                    Calendar c = Calendar.getInstance();
-                    c.setTimeInMillis(Collections.min(timeStamps) - (30 * 60 * 1000));
-                    String start_spec = AbsoluteTimeParser.format(c);
-                    c.setTimeInMillis(Collections.max(timeStamps) + (30 * 60 * 1000));
-                    String end_spec = AbsoluteTimeParser.format(c);
+                    final Instant start = Instant.ofEpochMilli(start_ms).minus(Duration.ofMinutes(30));
+                    final Instant end = Instant.ofEpochMilli(end_ms).plus(Duration.ofMinutes(30));
                     model.enableScrolling(false);
-                    model.setTimerange(start_spec, end_spec);
-                } else {
+                    model.setTimerange(start, end);
+                }
+                else
+                {
                     final ProcessVariable[] pvs = AdapterUtil.convert(
                             selection, ProcessVariable.class);
                     for (ProcessVariable pv : pvs)
@@ -120,8 +122,8 @@ public class OpenDataBrowserPopup extends AbstractHandler
             item.useDefaultArchiveDataSources();
         else
             item.addArchiveDataSource(archive);
-        // Add item to new axes
-        item.setAxis(model.addAxis(item.getDisplayName()));
+        // Add item to new axis
+        item.setAxis(model.addAxis());
         model.addItem(item);
     }
 }

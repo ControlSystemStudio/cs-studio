@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RCP fragment of opibuilder
 Bundle-SymbolicName: org.csstudio.opibuilder.rcp;singleton:=true
-Bundle-Version: 3.2.0.qualifier
+Bundle-Version: 3.2.1.qualifier
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Fragment-Host: org.csstudio.opibuilder;bundle-version="2.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.4.0",
  org.eclipse.core.filesystem;bundle-version="1.2.0",
  org.eclipse.ui.console;bundle-version="3.3.0",
@@ -14,5 +14,6 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.4.0",
  org.eclipse.ui.ide,
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
  org.csstudio.email;bundle-version="1.2.0",
- org.csstudio.ui.util
+ org.csstudio.ui.util,
+ org.csstudio.utility.file;bundle-version="1.0.0"
 Import-Package: org.eclipse.gef.ui.actions

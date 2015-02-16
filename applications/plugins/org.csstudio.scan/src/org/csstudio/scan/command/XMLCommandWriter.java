@@ -38,13 +38,13 @@ public class XMLCommandWriter
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = dbf.newDocumentBuilder();
         final Document dom = builder.newDocument();
-        
+
         final Element root = dom.createElement("commands");
         dom.appendChild(root);
-        
+
         for (ScanCommand command : commands)
             command.writeXML(dom, root);
-        
+
         return dom;
     }
 
@@ -67,7 +67,7 @@ public class XMLCommandWriter
         final StreamResult result = new StreamResult(stream);
         transformer.transform(source, result);
     }
-    
+
     /** Convert commands to XML-formatted commands into stream
      *  @param commands Commands
      *  @return XML-formatted document text for the commands

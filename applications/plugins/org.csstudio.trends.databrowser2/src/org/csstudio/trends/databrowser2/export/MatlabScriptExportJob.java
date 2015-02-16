@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.export;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.VTypeHelper;
@@ -17,7 +18,6 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.Timestamp;
 import org.epics.vtype.VType;
 
 /** Eclipse Job for exporting data from Model to Matlab-format file.
@@ -26,8 +26,8 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class MatlabScriptExportJob extends ExportJob
 {
-    public MatlabScriptExportJob(final Model model, final Timestamp start,
-            final Timestamp end, final Source source,
+    public MatlabScriptExportJob(final Model model, final Instant start,
+            final Instant end, final Source source,
             final int optimize_parameter, final String filename,
             final ExportErrorHandler error_handler)
     {
@@ -48,18 +48,18 @@ public class MatlabScriptExportJob extends ExportJob
         out.println(comment + "Time Series Tools, see Matlab manual.");
         out.println();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void performExport(final IProgressMonitor monitor,
                                  final PrintStream out) throws Exception
     {
         final DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-        for (int i=0; i<model.getItemCount(); ++i)
+        int count = 0;
+        for (ModelItem item : model.getItems())
         {
-            final ModelItem item = model.getItem(i);
             // Item header
-            if (i > 0)
+            if (count > 0)
                 out.println();
             printItemInfo(out, item);
             // Get data
@@ -102,24 +102,25 @@ public class MatlabScriptExportJob extends ExportJob
             out.println(comment + "Convert into time series and plot");
             // Patch "_" in name because Matlab plot will interprete it as LaTeX sub-script
             final String channel_name = item.getDisplayName().replace("_", "\\_");
-            out.println("channel"+i+"=timeseries(pv', pt', pq', 'IsDatenum', true, 'Name', '"+channel_name+"');");
+            out.println("channel"+count+"=timeseries(pv', pt', pq', 'IsDatenum', true, 'Name', '"+channel_name+"');");
 
-            out.print("channel"+i+".QualityInfo.Code=[");
+            out.print("channel"+count+".QualityInfo.Code=[");
             for (int q=0; q<qualities.getNumCodes(); ++q)
                 out.print(" " + q);
             out.println(" ];");
 
-            out.print("channel"+i+".QualityInfo.Description={");
+            out.print("channel"+count+".QualityInfo.Description={");
             for (int q=0; q<qualities.getNumCodes(); ++q)
                 out.print(" '" + qualities.getQuality(q) + "'");
             out.println(" };");
-            
+
             out.println();
+            ++count;
         }
         out.println(comment + "Example for plotting the data");
-        for (int i=0; i<model.getItemCount(); ++i)
+        for (int i=0; i<count; ++i)
         {
-            out.println("subplot(1, " + model.getItemCount() + ", " + (i+1) + ");");
+            out.println("subplot(1, " + count + ", " + (i+1) + ");");
             out.println("plot(channel" + i + ");");
         }
     }

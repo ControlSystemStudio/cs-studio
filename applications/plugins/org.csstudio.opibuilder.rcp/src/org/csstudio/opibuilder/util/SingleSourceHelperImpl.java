@@ -1,5 +1,7 @@
 package org.csstudio.opibuilder.util;
 
+import java.net.URI;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.csstudio.email.EMailSender;
@@ -10,11 +12,10 @@ import org.csstudio.opibuilder.actions.SendToElogAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.runmode.OPIView;
-import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.widgetActions.OpenFileAction;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
+import org.csstudio.utility.file.IFileUtil;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -27,7 +28,6 @@ import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
@@ -49,65 +49,78 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 		return new GC(image);
 	}
 
+	/** Open the file in its associated editor,
+	 *  supporting workspace files, local file system files or URLs
+	 *  @param openFileAction Action for opening a file
+	 */
 	@Override
-	protected void iOpenFileActionRun(final OpenFileAction openFileAction) {
-
-		UIJob job = new UIJob(openFileAction.getDescription()){
-			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-				final IWorkbenchWindow dw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+	@SuppressWarnings("nls")
+	protected void iOpenFileActionRun(final OpenFileAction openFileAction)
+	{
+	    final UIJob job = new UIJob(openFileAction.getDescription()){
+            @Override
+			public IStatus runInUIThread(final IProgressMonitor monitor) {
 				// Open editor on new file.
-				IPath absolutePath = openFileAction.getPath();
-		        try {
-		            if (dw != null) {
-		                IWorkbenchPage page = dw.getActivePage();
+			    final IWorkbenchWindow dw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			    if (dw == null)
+			        return Status.OK_STATUS; // Not really OK..
+		        try
+		        {
+		            final IWorkbenchPage page = Objects.requireNonNull(dw.getActivePage());
 
-		                if (page != null) {
-		                	if(!openFileAction.getPath().isAbsolute()){
-		                		absolutePath =
-		                			ResourceUtil.buildAbsolutePath(
-		                					openFileAction.getWidgetModel(), openFileAction.getPath());
-		                	}
-			                	IFile file = ResourceUtilSSHelperImpl.getIFileFromIPath(absolutePath);
-			                	if(file != null) // if file exists in workspace
-			                		IDE.openEditor(page, file, true);
-			                	else if (ResourceUtil.isExistingLocalFile(absolutePath)){ //if it is on local file system.
-			                		try {			                			
-										IFileStore localFile =
-											EFS.getLocalFileSystem().getStore(absolutePath);
-										IDE.openEditorOnFileStore(page, localFile);
-									} catch (Exception e) {
-				                		throw new Exception("Cannot find the file at " +openFileAction.getPath());
-									}
-			                	}else 
-			                		throw new Exception("This action can only open file from workspace or local file system.");
+		            IPath absolutePath = openFileAction.getPath();
+                	if (!absolutePath.isAbsolute())
+                		absolutePath = ResourceUtil.buildAbsolutePath(
+                					openFileAction.getWidgetModel(), absolutePath);
 
-		                }
-		            }
-		        } catch (Exception e) {
-		        	String message = "Failed to open file " + openFileAction.getPath() + "\n" +  e.getMessage(); //$NON-NLS-2$
-		        	MessageDialog.openError(dw.getShell(), "Failed to open file", message);
-                    OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to file " +openFileAction.getPath(), e); //$NON-NLS-1$
+                	// Workspace file?
+                	IFile file = ResourceUtilSSHelperImpl.getIFileFromIPath(absolutePath);
+                	if (file != null)
+                		IDE.openEditor(page, file, true);
+                	else if (ResourceUtil.isExistingLocalFile(absolutePath))
+                	{   // Local file system
+                	    try
+                	    {
+							IFileStore localFile =	EFS.getLocalFileSystem().getStore(absolutePath);
+							IDE.openEditorOnFileStore(page, localFile);
+						}
+                	    catch (Exception e)
+                	    {
+	                		throw new Exception("Cannot open local file system location " + openFileAction.getPath(), e);
+						}
+                	}
+                	else
+                	{   // Attempt to download URL into local file (since IDE.openEditor needs local file)
+                	    final URI uri = new URI(openFileAction.getPath().toString());
+                	    file = IFileUtil.getInstance().createURLFileResource(uri);
+                	    IDE.openEditor(page, file, true);
+                	}
+		        }
+		        catch (Exception e)
+		        {
+		            final String message = "Failed to open file " + openFileAction.getPath();
+		            ExceptionDetailsErrorDialog.openError(dw.getShell(), "Failed to open file", message, e);
+                    OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 		        	ConsoleService.getInstance().writeError(message);
 		        }
 		        return Status.OK_STATUS;
 		    }
 		};
-		job.schedule();		
+		job.schedule();
 	}
 
 	@Override
 	protected void iAddPaintListener(Control control,
 			PaintListener paintListener) {
-		control.addPaintListener(paintListener);	
-		
+		control.addPaintListener(paintListener);
+
 	}
 
 	@Override
 	protected void iRemovePaintListener(Control control,
 			PaintListener paintListener) {
 		control.removePaintListener(paintListener);
-		
+
 	}
 
 	@Override
@@ -131,7 +144,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 		action = actionRegistry.getAction(SendEMailAction.ID);
 		if (action != null)
 			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
+		menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
 				actionRegistry.getAction(ActionFactory.PRINT.getId()));
 
 	}
@@ -142,60 +155,60 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 		ResourceSelectionDialog rsDialog = new ResourceSelectionDialog(
 				Display.getCurrent().getActiveShell(), "Choose File", extensions);
 		if(startPath != null)
-			rsDialog.setSelectedResource(startPath);	
-		
+			rsDialog.setSelectedResource(startPath);
+
 		if(rsDialog.open() == Window.OK){
 			return rsDialog.getSelectedResource();
 		}
 		return null;
 	}
-	
-	
+
+
 	//////////////////////////// RAP Related Stuff ///////////////////////////////
-	
-	
+
+
 	@Override
 	protected void iRapActivatebaseEditPart(AbstractBaseEditPart editPart) {
-		
+
 	}
 
 	@Override
 	protected void iRapDeactivatebaseEditPart(AbstractBaseEditPart editPart) {
-		
+
 	}
 
 	@Override
 	protected void iRapOpenOPIInNewWindow(IPath path) {
-		
+
 	}
 
 	@Override
 	protected void iRapAddDisplayDisposeListener(Display display,
 			Runnable runnable) {
-		
+
 	}
 
 	@Override
 	protected void iRapPlayWavFile(IPath absolutePath) {
-		
+
 	}
 
 	@Override
 	protected void iRapOPIViewCreatePartControl(OPIView opiView,
 			Composite parent) {
-		
+
 	}
 
 	@Override
 	protected void iRapPluginStartUp() {
-		
+
 	}
 
-	
+
 
 	@Override
 	protected void iRapOpenWebPage(String hyperLink) {
-		
+
 	}
 
 	@Override

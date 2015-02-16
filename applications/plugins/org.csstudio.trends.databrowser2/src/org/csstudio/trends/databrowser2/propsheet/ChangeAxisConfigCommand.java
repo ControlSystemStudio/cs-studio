@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 
 /** Undo-able command to change axis configuration
  *  @author Kay Kasemir
  */
-public class ChangeAxisConfigCommand implements IUndoableCommand
+public class ChangeAxisConfigCommand extends UndoableAction
 {
     final private AxisConfig axis;
     final private AxisConfig old_config;
@@ -25,12 +25,13 @@ public class ChangeAxisConfigCommand implements IUndoableCommand
      *  @param operations_manager OperationsManager where command will be reg'ed
      *  @param axis Axis configuration to undo/redo
      */
-    public ChangeAxisConfigCommand(final OperationsManager operations_manager,
+    public ChangeAxisConfigCommand(final UndoableActionManager operations_manager,
             final AxisConfig axis)
     {
+        super(Messages.Axis);
         this.axis = axis;
         this.old_config = axis.copy();
-        operations_manager.addCommand(this);
+        operations_manager.add(this);
     }
 
     /** Must be called after the original configuration was changed */
@@ -41,7 +42,7 @@ public class ChangeAxisConfigCommand implements IUndoableCommand
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         apply(new_config);
     }
@@ -62,21 +63,22 @@ public class ChangeAxisConfigCommand implements IUndoableCommand
     		axis.setVisible(config.isVisible());
         if (! axis.getName().equals(config.getName()))
             axis.setName(config.getName());
+        if (axis.isUsingAxisName() != config.isUsingAxisName())
+            axis.useAxisName(config.isUsingAxisName());
+        if (axis.isUsingTraceNames() != config.isUsingTraceNames())
+            axis.useTraceNames(config.isUsingTraceNames());
+        if (axis.isOnRight() != config.isOnRight())
+            axis.setOnRight(config.isOnRight());
+        if (! axis.getColor().equals(config.getColor()))
+            axis.setColor(config.getColor());
         if (axis.getMin() != config.getMin()  ||
             axis.getMax() != config.getMax())
             axis.setRange(config.getMin(), config.getMax());
-        if (! axis.getColor().equals(config.getColor()))
-            axis.setColor(config.getColor());
-        if (! axis.isLogScale() == config.isLogScale())
-            axis.setLogScale(config.isLogScale());
-        if (! axis.isAutoScale() == config.isAutoScale())
+        if (axis.isGridVisible() != config.isGridVisible())
+            axis.setGridVisible(config.isGridVisible());
+        if (axis.isAutoScale() != config.isAutoScale())
             axis.setAutoScale(config.isAutoScale());
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.Axis;
+        if (axis.isLogScale() != config.isLogScale())
+            axis.setLogScale(config.isLogScale());
     }
 }

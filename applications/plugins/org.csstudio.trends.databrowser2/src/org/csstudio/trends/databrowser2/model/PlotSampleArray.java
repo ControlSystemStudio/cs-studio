@@ -16,23 +16,23 @@ import java.util.List;
 public class PlotSampleArray extends PlotSamples
 {
     private List<PlotSample> samples = Collections.emptyList();
-    
+
     /** @param samples Samples <u>which are NOT copied</u> */
-    public synchronized void set(final List<PlotSample> samples)
+    public void set(final List<PlotSample> samples)
     {
         this.samples = samples;
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized int getSize()
+    public int size()
     {
         return samples.size();
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized PlotSample getSample(int index)
+    public PlotSample get(final int index)
     {
         return samples.get(index);
     }

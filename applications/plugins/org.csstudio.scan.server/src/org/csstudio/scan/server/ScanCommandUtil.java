@@ -21,7 +21,6 @@ import org.epics.vtype.VType;
  *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class ScanCommandUtil
 {
     /** Write to device with readback, waiting forever, logging if the context
@@ -39,7 +38,7 @@ public class ScanCommandUtil
     {
     	write(context, device_name, value, false, true, device_name, tolerance, timeout);
     }
-	
+
 	/** Write to device with optional completion and/or readback,
 	 *  logging if the context was configured to auto-log
      *
@@ -102,7 +101,7 @@ public class ScanCommandUtil
         {   // If we're waiting on the readback, log the readback.
             // Otherwise readback == device, so log that one
             final VType log_value = readback.read();
-            final DataLog log = context.getDataLog();
+            final DataLog log = context.getDataLog().get();
             final long serial = log.getNextScanDataSerial();
             log.log(readback.getAlias(), VTypeHelper.createSample(serial, log_value));
         }

@@ -8,6 +8,7 @@
 package org.csstudio.display.pvtable.model;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -29,6 +30,7 @@ import org.epics.vtype.ValueFactory;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTableItem implements PVListener
 {
     final private PVTableItemListener listener;
@@ -36,19 +38,19 @@ public class PVTableItem implements PVListener
     private boolean selected = true;
 
     private String name;
-    
+
     private volatile VType value;
 
-    private volatile SavedValue saved = null;
-    
+    private volatile Optional<SavedValue> saved = Optional.empty();
+
     private volatile boolean has_changed;
-    
+
     private double tolerance;
-    
+
     final private AtomicReference<PV> pv = new AtomicReference<PV>(null);
 
     /** Initialize
-     * 
+     *
      *  @param name
      *  @param tolerance
      *  @param saved
@@ -60,7 +62,7 @@ public class PVTableItem implements PVListener
     }
 
     /** Initialize
-     * 
+     *
      *  @param name
      *  @param tolerance
      *  @param saved
@@ -70,12 +72,12 @@ public class PVTableItem implements PVListener
     {
         this.listener = listener;
         this.tolerance = tolerance;
-        this.saved = saved;
+        this.saved = Optional.ofNullable(saved);
         this.value = initial_value;
         determineIfChanged();
         createPV(name);
     }
-    
+
     /** Set PV name and create reader/writer
      *  @param name PV name
      */
@@ -103,7 +105,7 @@ public class PVTableItem implements PVListener
     {
         return selected;
     }
-    
+
     /** @param selected Should item be selected to be restored? */
     public void setSelected(final boolean selected)
     {
@@ -117,8 +119,8 @@ public class PVTableItem implements PVListener
         return name;
     }
 
-    /** Update PV name 
-     * 
+    /** Update PV name
+     *
      *  <p>Also resets saved and current value,
      *  since it no longer applies to the new name.
      *  @param new_name PV Name
@@ -129,13 +131,13 @@ public class PVTableItem implements PVListener
         if (name.equals(new_name))
             return false;
         dispose();
-        saved = null;
+        saved = Optional.empty();
         value = null;
         has_changed = false;
         createPV(new_name);
         return true;
     }
-    
+
     /** PVListener
      *  {@inheritDoc}
      */
@@ -160,7 +162,7 @@ public class PVTableItem implements PVListener
     @Override
     public void disconnected(final PV pv)
     {
-        updateValue(ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"), ValueFactory.timeNow())); //$NON-NLS-1$        
+        updateValue(ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"), ValueFactory.timeNow())); //$NON-NLS-1$
     }
 
     /** @param new_value New value of item */
@@ -170,13 +172,13 @@ public class PVTableItem implements PVListener
         determineIfChanged();
         listener.tableItemChanged(this);
     }
-    
+
     /** @return Value */
     public VType getValue()
     {
         return value;
     }
-    
+
     /** @return Options for current value, not <code>null</code> if not enumerated */
     public String[] getValueOptions()
     {
@@ -248,14 +250,14 @@ public class PVTableItem implements PVListener
             Plugin.getLogger().log(Level.WARNING, "Cannot set " + getName() + " = " + new_value, ex);
         }
     }
-   
-    
+
+
     /** Save current value as saved value */
     public void save()
     {
         try
         {
-            saved = SavedValue.forCurrentValue(value);
+            saved = Optional.of(SavedValue.forCurrentValue(value));
         }
         catch (Exception ex)
         {
@@ -264,15 +266,16 @@ public class PVTableItem implements PVListener
         determineIfChanged();
     }
 
-    /** Write saved value back to PV (if item is selected) */
+    /** Write saved value back to PV */
     public void restore()
     {
         final PV the_pv = pv.get();
-        if (the_pv == null  ||  ! isSelected()  ||  ! isWritable())
+        final SavedValue the_value = saved.orElse(null);
+        if (the_pv == null  ||  ! isWritable()  || the_value == null)
             return;
         try
         {
-            saved.restore(the_pv);
+            the_value.restore(the_pv);
         }
         catch (Exception ex)
         {
@@ -280,8 +283,8 @@ public class PVTableItem implements PVListener
         }
     }
 
-    /** @return Returns the saved_value. */
-    public SavedValue getSavedValue()
+    /** @return Returns the saved_value */
+    public Optional<SavedValue> getSavedValue()
     {
         return saved;
     }
@@ -305,26 +308,26 @@ public class PVTableItem implements PVListener
     {
         return has_changed;
     }
-    
+
     /** Update <code>has_changed</code> based on current and saved value */
     private void determineIfChanged()
     {
-        final SavedValue saved_value = saved;
-        if (saved_value == null)
+        final Optional<SavedValue> saved_value = saved;
+        if (! saved_value.isPresent())
         {
             has_changed = false;
             return;
         }
         try
         {
-            has_changed = ! saved_value.isEqualTo(value, tolerance);
+            has_changed = ! saved_value.get().isEqualTo(value, tolerance);
         }
         catch (Exception ex)
         {
             Plugin.getLogger().log(Level.WARNING, "Change test failed for " + getName(), ex);
         }
     }
-    
+
     /** Must be called to release resources when item no longer in use */
     public void dispose()
     {
@@ -335,8 +338,7 @@ public class PVTableItem implements PVListener
             PVPool.releasePV(the_pv);
         }
     }
-    
-    @SuppressWarnings("nls")
+
     @Override
     public String toString()
     {
@@ -345,13 +347,14 @@ public class PVTableItem implements PVListener
         if (! isWritable())
             buf.append(" (read-only)");
         buf.append(" = ").append(VTypeHelper.toString(value));
-        if (saved != null)
+        final Optional<SavedValue> saved_value = saved;
+        if (saved_value.isPresent())
         {
             if (has_changed)
                 buf.append(" ( != ");
             else
                 buf.append(" ( == ");
-            buf.append(saved.toString()).append(" +- ").append(tolerance).append(")");
+            buf.append(saved_value.get().toString()).append(" +- ").append(tolerance).append(")");
         }
         return buf.toString();
     }

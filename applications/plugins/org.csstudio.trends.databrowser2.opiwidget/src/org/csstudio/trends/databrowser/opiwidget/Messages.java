@@ -18,6 +18,7 @@ public class Messages extends NLS
     public static String Error;
     public static String FileName;
     public static String NoFilename;
+    public static String OpenDataBrowser;
     public static String OpenDataBrowserErrorFmt;
     public static String ShowToolbar;
 

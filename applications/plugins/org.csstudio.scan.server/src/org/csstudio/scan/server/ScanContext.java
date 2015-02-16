@@ -16,6 +16,7 @@
 package org.csstudio.scan.server;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
@@ -58,14 +59,14 @@ public interface ScanContext
 	public boolean isAutomaticLogMode();
 
 	/** Obtain the active data log.
-	 *  
-	 *  <p>Only non-<code>null</code> while scan is being executed.
+	 *
+	 *  <p>Only present while scan is being executed.
 	 *  Caller must NOT close this log.
-	 *  
+	 *
 	 *  @return {@link DataLog}
 	 */
-	abstract public DataLog getDataLog();
-	
+	abstract public Optional<DataLog> getDataLog();
+
 	/** Execute a list of commands
      *  @param commands {@link ScanCommandImpl}s to execute
      *  @throws Exception on error in executing a command

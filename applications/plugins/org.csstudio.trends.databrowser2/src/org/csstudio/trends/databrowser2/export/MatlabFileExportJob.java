@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.export;
 
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class MatlabFileExportJob extends ExportJob
 {
     final private String filename;
 
-    public MatlabFileExportJob(final Model model, final Timestamp start,
-            final Timestamp end, final Source source,
+    public MatlabFileExportJob(final Model model, final Instant start,
+            final Instant end, final Source source,
             final int optimize_parameter, final String filename,
             final ExportErrorHandler error_handler)
     {
@@ -55,10 +56,9 @@ public class MatlabFileExportJob extends ExportJob
             throw new IllegalStateException();
 
         final MatFileIncrementalWriter writer = new MatFileIncrementalWriter(filename);
-        for (int i=0; i<model.getItemCount(); ++i)
-        {
-            final ModelItem item = model.getItem(i);
-            // Get data
+        int i = 0;
+        for (ModelItem item : model.getItems())
+        {   // Get data
             monitor.subTask(NLS.bind("Fetching data for {0}", item.getName()));
             final ValueIterator iter = createValueIterator(item);
             final List<Timestamp> times = new ArrayList<Timestamp>();
@@ -74,7 +74,7 @@ public class MatlabFileExportJob extends ExportJob
                     monitor.subTask(NLS.bind("{0}: Obtained {1} samples", item.getName(), values.size()));
             }
             // Add to Matlab file
-            final MLStructure struct = createMLStruct(i, item.getName(), times, values, severities);
+            final MLStructure struct = createMLStruct(i++, item.getName(), times, values, severities);
             writer.write(struct);
         }
 

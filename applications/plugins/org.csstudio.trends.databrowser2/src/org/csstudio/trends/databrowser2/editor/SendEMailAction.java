@@ -8,7 +8,7 @@
 package org.csstudio.trends.databrowser2.editor;
 
 import org.csstudio.email.ui.AbstractSendEMailAction;
-import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.rtplot.RTTimePlot;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -19,20 +19,20 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class SendEMailAction extends AbstractSendEMailAction
 {
-    final private XYGraph graph;
+    final private RTTimePlot graph;
 
     /** Initialize
      *  @param shell
      *  @param graph
      */
-    public SendEMailAction(final Shell shell, final XYGraph graph)
+    public SendEMailAction(final Shell shell, final RTTimePlot graph)
     {
 		super(shell, Preferences.getEmailDefaultSender(),
-				Messages.LogentryDefaultTitle, 
+				Messages.LogentryDefaultTitle,
 				Messages.LogentryDefaultBody);
         this.graph = graph;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected String getImage()

@@ -8,20 +8,17 @@
 package org.csstudio.diag.probe;
 
 import java.text.NumberFormat;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.data.values.IValue;
 import org.csstudio.util.swt.meter.MeterWidget;
-import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListener;
+import org.csstudio.vtype.pv.PVPool;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.CommandEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -71,6 +68,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+import org.epics.vtype.VType;
 
 /**
  * Main Eclipse ViewPart of the Probe plug-in.
@@ -113,8 +111,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 	private static final String VALUE_PARAMETER_ID =
 		"org.csstudio.platform.ui.commands.saveValue.value"; //$NON-NLS-1$
 
-    private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
-
 	/** Instance number, used to create a unique ID
      *  @see #createNewInstance()
      */
@@ -142,62 +138,59 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     /** Is this a new channel where we never received a value? */
     private boolean new_channel = true;
 
-    final Runnable update_value = new Runnable()
-    {
-        @Override
-        public void run()
-        {   // Might run after the view is already disposed...
-            if (lbl_value.isDisposed()) {
-                return;
-            }
-            lbl_value.setText(value.getValueDisplayText());
-            lbl_time.setText(value.getTimeText());
-            new_value.setText(value.getValueDisplayText());
-
-            final INumericMetaData meta = value.getNumericMetaData();
-            if (meta == null) {
-                meter.setEnabled(false);
-            } else
-            {   // Configure on first value from new channel
-                if (new_channel)
-                {
-                    if (meta.getDisplayLow() < meta.getDisplayHigh())
-                    {
-                        meter.configure(meta.getDisplayLow(),
-                                        meta.getAlarmLow(),
-                                        meta.getWarnLow(),
-                                        meta.getWarnHigh(),
-                                        meta.getAlarmHigh(),
-                                        meta.getDisplayHigh(),
-                                        meta.getPrecision());
-                        meter.setEnabled(true);
-                    } else {
-                        meter.setEnabled(false);
-                    }
-                }
-                meter.setValue(value.getDouble());
-            }
-            logger.log(Level.FINE, "Probe displays {0} {1}", //$NON-NLS-1$
-                    new Object[] { lbl_time.getText(),  lbl_value.getText() });
-
-            final double period = value.getUpdatePeriod();
-            if (period > 0) {
-                lbl_status.setText(Messages.S_Period
-                            + period_format.format(period)
-                            + Messages.S_Seconds);
-            } else {
-                lbl_status.setText(Messages.S_OK);
-            }
-            new_channel = false;
-        }
-    };
     private Composite top_box;
     private Composite bottom_box;
     private Button show_meter;
     private Button btn_save_to_ioc;
     private ICommandListener saveToIocCmdListener;
-
     private Text new_value;
+
+    final Runnable update_value = () ->
+    {   // Might run after the view is already disposed...
+        if (lbl_value.isDisposed())
+            return;
+
+        lbl_value.setText(value.getValueString());
+        lbl_time.setText(value.getTimeText());
+        new_value.setText(value.getValueString());
+
+        final Optional<org.epics.vtype.Display> display_info = value.getDisplayInfo();
+        if (display_info.isPresent())
+        {   // Configure on first value from new channel
+            if (new_channel)
+            {
+                final org.epics.vtype.Display meta = display_info.get();
+                if (meta.getLowerDisplayLimit() < meta.getUpperDisplayLimit())
+                {
+                    meter.configure(meta.getLowerDisplayLimit(),
+                                    meta.getLowerAlarmLimit(),
+                                    meta.getLowerWarningLimit(),
+                                    meta.getUpperWarningLimit(),
+                                    meta.getUpperAlarmLimit(),
+                                    meta.getUpperDisplayLimit(),
+                                    meta.getFormat());
+                    meter.setEnabled(true);
+                } else {
+                    meter.setEnabled(false);
+                }
+            }
+            meter.setValue(value.getDouble());
+        }
+        else
+            meter.setEnabled(false);
+        logger.log(Level.FINE, "Probe displays {0} {1}", //$NON-NLS-1$
+                new Object[] { lbl_time.getText(),  lbl_value.getText() });
+
+        final double period = value.getUpdatePeriod();
+        if (period > 0) {
+            lbl_status.setText(Messages.S_Period
+                        + period_format.format(period)
+                        + Messages.S_Seconds);
+        } else {
+            lbl_status.setText(Messages.S_OK);
+        }
+        new_channel = false;
+    };
 
 
     /** Create or re-display a probe view with the given PV name.
@@ -297,7 +290,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     /** Construct GUI. */
     private void createGUI(final Composite parent)
     {
-        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         final FormLayout layout = new FormLayout();
         parent.setLayout(layout);
 
@@ -330,7 +322,8 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         gd.horizontalAlignment = SWT.FILL;
         cbo_name.setLayoutData(gd);
 		cbo_name.addListener(SWT.DefaultSelection, new Listener() {
-			public void handleEvent(Event e) {
+			@Override
+            public void handleEvent(Event e) {
 				setPVName(cbo_name.getText());
 			}
 		});
@@ -384,7 +377,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         btn_save_to_ioc.setLayoutData(gd);
-        btn_save_to_ioc.setEnabled(canExecute);
 
         // New Row
         final Label new_value_label = new Label(bottom_box, 0);
@@ -396,13 +388,12 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         new_value.setToolTipText(Messages.S_NewValueTT);
         new_value.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         new_value.setVisible(false);
-        new_value.setText(value.getValueDisplayText());
+        new_value.setText(value.getValueString());
 
         final Button btn_adjust = new Button(bottom_box, SWT.CHECK);
         btn_adjust.setText(Messages.S_Adjust);
         btn_adjust.setToolTipText(Messages.S_ModValue);
         btn_adjust.setLayoutData(new GridData());
-        btn_adjust.setEnabled(canExecute);
 
         // Status bar
         label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -727,10 +718,9 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         {
             updateStatus(Messages.S_Searching);
 
-            final PV new_pv = PVFactory.createPV(pv_name);
+            final PV new_pv = PVPool.getPV(pv_name);
             setPV(new_pv);
             new_pv.addListener(this);
-            new_pv.start();
         }
         catch (final Exception ex)
         {
@@ -742,14 +732,21 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 
     // PVListener
     @Override
-    public void pvDisconnected(final PV pv)
+    public void permissionsChanged(PV pv, boolean readonly)
+    {
+        // Ignore
+    }
+
+    // PVListener
+    @Override
+    public void disconnected(final PV pv)
     {
         updateStatus(Messages.S_Disconnected);
     }
 
     // PVListener
     @Override
-    public void pvValueUpdate(final PV pv)
+    public void valueChanged(final PV pv, final VType newVal)
     {
         logger.log(Level.FINE, "Probe pvValueUpdate: {0}", pv.getName()); //$NON-NLS-1$
 
@@ -758,7 +755,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
             return;
         try
         {
-            final IValue newVal = pv.getValue();
             value.update(newVal);
             // Perform update in GUI thread.
             Display.getDefault().asyncExec(update_value);
@@ -778,7 +774,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     	{
             logger.log(Level.FINE, "Probe: disposeChannel {0}", pv.getName()); //$NON-NLS-1$
             pv.removeListener(this);
-	        pv.stop();
+            PVPool.releasePV(pv);
     	}
     	pv = new_pv;
     }
@@ -820,19 +816,11 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         else
         {
             info.append(nl + Messages.S_ChannelInfo + "  " + pv.getName() + nl); //$NON-NLS-1$
-            if (pv.isConnected()) {
-                info.append(Messages.S_STATEConn + nl);
-            } else {
-                info.append(Messages.S_STATEDisconn + nl);
-            }
-            final IValue value = pv.getValue();
+            final VType value = pv.read();
             if (value != null)
-            {
-                final IMetaData meta = value.getMetaData();
-                if (meta != null) {
-                    info.append(meta.toString());
-                }
-            }
+                info.append(Messages.S_STATEConn + nl);
+            else
+                info.append(Messages.S_STATEDisconn + nl);
         }
         if (info.length() == 0) {
             info.append(Messages.S_NoInfo);
@@ -854,12 +842,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
                 updateStatus(Messages.S_NoChannel);
                 return;
             }
-            if (!pv.isConnected())
-            {
-                updateStatus(Messages.S_NotConnected);
-                return;
-            }
-            pv.setValue(new_value);
+            pv.write(new_value);
         }
         catch (final Throwable ex)
         {

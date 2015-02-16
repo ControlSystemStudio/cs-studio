@@ -26,7 +26,7 @@ import org.csstudio.logging.LogConfigurator;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.httpd.ScanWebServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
-import org.csstudio.scan.server.pvaccess.PVAccessServer;
+//import org.csstudio.scan.server.pvaccess.PVAccessServer;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -48,7 +48,7 @@ public class Application implements IApplication
     // and then clients will get java.rmi.NoSuchObjectException
     // when they try to invoke methods in the server.
     private ScanServerImpl server;
-    
+
     /** @return Bundle version info */
     public static String getBundleVersion()
     {
@@ -63,13 +63,13 @@ public class Application implements IApplication
     public Object start(final IApplicationContext context) throws Exception
     {
 		// Display configuration info
-		synchronized (Application.class) 
+		synchronized (Application.class)
 		{
 			final String version = (String) context.getBrandingBundle()
 					.getHeaders().get("Bundle-Version");
 			bundle_version = context.getBrandingName() + " " + version;
 		}
-        
+
     	// Create parser for arguments and run it.
         final String args[] = (String []) context.getArguments().get("application.args");
 
@@ -91,16 +91,16 @@ public class Application implements IApplication
 			System.out.println(bundle_version);
 			return IApplication.EXIT_OK;
 		}
-    	
+
     	final Logger log = Logger.getLogger(getClass().getName());
     	try
     	{
 	        // Display config info
 	        final Bundle bundle = context.getBrandingBundle();
 	        log.info(bundle_version);
-            
+
             LogConfigurator.configureFromPreferences();
-            
+
 	        log.info("Scan config       : " + ScanSystemPreferences.getScanConfigPath());
 	        log.info("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
 	        log.info("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
@@ -112,11 +112,12 @@ public class Application implements IApplication
 	        final int port = ScanSystemPreferences.getServerPort();
 	        server = new ScanServerImpl();
 	        server.start();
-	        log.info("Scan Server running on port " + port + " (REST interface)");
+	        log.info("Scan Server REST interface on http://localhost:" + port + "/index.html");
 	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port);
-	        final PVAccessServer pva = new PVAccessServer(server);
-	        pva.initializeServerContext();
-        
+                // TODO
+	        //final PVAccessServer pva = new PVAccessServer(server);
+	        //pva.initializeServerContext();
+
 	        // Register console commands
 	        ConsoleCommands commands = new ConsoleCommands(server);
 	        final BundleContext bundle_context = bundle.getBundleContext();
@@ -127,7 +128,7 @@ public class Application implements IApplication
 	        server.stop();
 
 	        httpd.stop();
-	        pva.destroyServerContext();
+	        //pva.destroyServerContext();
 	        // Release commands
 	        commands = null;
     	}

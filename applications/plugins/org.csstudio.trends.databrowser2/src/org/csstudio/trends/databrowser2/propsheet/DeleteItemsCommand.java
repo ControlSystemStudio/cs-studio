@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to delete items
  *  @author Kay Kasemir
  */
-public class DeleteItemsCommand implements IUndoableCommand
+public class DeleteItemsCommand extends UndoableAction
 {
     final private Shell shell;
     final private Model model;
@@ -32,20 +32,20 @@ public class DeleteItemsCommand implements IUndoableCommand
      *  @param items Model items to delete
      */
     public DeleteItemsCommand(final Shell shell,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final Model model,
             final ModelItem items[])
     {
+        super(Messages.DeleteItem);
         this.shell = shell;
         this.model = model;
         this.items = items;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         for (ModelItem item : items)
             model.removeItem(item);
@@ -68,12 +68,5 @@ public class DeleteItemsCommand implements IUndoableCommand
                         NLS.bind(Messages.AddItemErrorFmt, item.getName(), ex.getMessage()));
             }
         }
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.DeleteItem;
     }
 }

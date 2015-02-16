@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -89,7 +89,7 @@ public class SampleImporters
      *  @return {@link IAction}
      *  @throws Exception on error initializing available importers
      */
-    public static IAction[] createImportActions(final OperationsManager op_manager,
+    public static IAction[] createImportActions(final UndoableActionManager op_manager,
             final Shell shell, final Model model) throws Exception
     {
         init();

@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /** Undo-able command to change item's name
  *  @author Kay Kasemir
  */
-public class ChangeNameCommand implements IUndoableCommand
+public class ChangeNameCommand extends UndoableAction
 {
     final private Shell shell;
     final private ModelItem item;
@@ -31,9 +31,10 @@ public class ChangeNameCommand implements IUndoableCommand
      *  @param new_name New value
      */
     public ChangeNameCommand(final Shell shell,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final ModelItem item, final String new_name)
     {
+        super(Messages.ItemName);
         this.shell = shell;
         this.item = item;
         this.old_name = item.getName();
@@ -50,12 +51,12 @@ public class ChangeNameCommand implements IUndoableCommand
             // Exit before registering for undo because there's nothing to undo
             return;
         }
-        operations_manager.addCommand(this);
+        operations_manager.add(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         try
         {
@@ -83,12 +84,5 @@ public class ChangeNameCommand implements IUndoableCommand
                     NLS.bind(Messages.ChangeNameErrorFmt,
                             new Object[] { new_name, old_name, ex.getMessage()}));
         }
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.ItemName;
     }
 }

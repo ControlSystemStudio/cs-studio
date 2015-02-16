@@ -30,6 +30,7 @@ import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ShowDevicesAction;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
@@ -76,10 +77,10 @@ public class GUI implements ScanInfoModelListener
 
     /** {@link TableViewer} for {@link ScanInfoModelContentProvider} */
     private TableViewer table_viewer;
-    
+
     /** Set when context menu is open, to suppress table refreshes */
     private boolean context_menu_is_active = false;
-    
+
     /** If table updates arrive while context menu is active,
      *  this flag is set instead of refreshing the table
      */
@@ -119,7 +120,7 @@ public class GUI implements ScanInfoModelListener
 
         // If more components are added, the table will need to be wrapped
         // into its own Composite.
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_box.setLayout(table_layout);
 
         table_viewer = new TableViewer(table_box, SWT.MULTI | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
@@ -275,11 +276,8 @@ public class GUI implements ScanInfoModelListener
             public String getToolTipText(final Object element)
             {
                 final ScanInfo info = (ScanInfo) element;
-                final String error = info.getError();
-                if (error != null)
-                {
-                    return NLS.bind(Messages.ErrorMsgFmt, error);
-                }
+                if (info.getError().isPresent())
+                    return NLS.bind(Messages.ErrorMsgFmt, info.getError().get());
                 else
                     return Messages.NoError;
             }
@@ -288,11 +286,7 @@ public class GUI implements ScanInfoModelListener
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                final String error = info.getError();
-                if (error == null)
-                    cell.setText(""); //$NON-NLS-1$
-                else
-                    cell.setText(error);
+                cell.setText(info.getError().orElse("")); //$NON-NLS-1$
             }
         });
 
@@ -429,7 +423,7 @@ public class GUI implements ScanInfoModelListener
             public void menuAboutToShow(final IMenuManager manager)
             {
                 final ScanInfo[] infos = getSelectedScans();
-                manager.add(new GroupMarker("scan"));
+                manager.add(new GroupMarker("scan")); //$NON-NLS-1$
                 if (infos == null)
                     return;
                 // Allow resume if anything's paused
@@ -476,7 +470,7 @@ public class GUI implements ScanInfoModelListener
             {
                 context_menu_is_active = true;
             }
-            
+
             @Override
             public void menuHidden(final MenuEvent e)
             {

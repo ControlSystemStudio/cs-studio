@@ -28,16 +28,16 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * An actions writing value to a PV.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class WritePVAction extends AbstractWidgetAction {
 
 	public static final String PROP_PVNAME = "pv_name";//$NON-NLS-1$
 	public static final String PROP_VALUE = "value";//$NON-NLS-1$
 	public static final String PROP_TIMEOUT = "timeout";//$NON-NLS-1$
-	public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$		
+	public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$
 	private Display display;
 
 	@Override
@@ -74,7 +74,7 @@ public class WritePVAction extends AbstractWidgetAction {
 	}
 
 	@Override
-	public void run() {		
+	public void run() {
 		display = null;
 		if(getWidgetModel() !=null){
 			display = getWidgetModel().getRootDisplayModel().getViewer().getControl()
@@ -105,41 +105,49 @@ public class WritePVAction extends AbstractWidgetAction {
 
 		Job job = new Job(getDescription()) {
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {				
-					return writePVInSync();				
+			protected IStatus run(IProgressMonitor monitor) {
+					return writePVInSync();
 			}
 
 		};
 
 		job.schedule();
 	}
-	
+
 
 	private IStatus writePVInSync(){
-		String text = getValue().trim();		
-		try {
+		String text = getValue().trim();
+		try	{
 			IPV pv = BOYPVFactory.createPV(getPVName());
-			if(!pv.setValue(text, getTimeout()*1000))
-				throw new Exception("Write Failed!");
+			pv.start();
+			try
+			{
+    			if (!pv.setValue(text, getTimeout()*1000))
+    				throw new Exception("Write Failed!");
+			}
+			finally
+			{
+			    pv.stop();
+			}
 		} catch (Exception e) {
 			popErrorDialog(e);
 			return Status.CANCEL_STATUS;
-		}		
-		return Status.OK_STATUS;	
-		
-	}	
-	
+		}
+		return Status.OK_STATUS;
+
+	}
+
 
 	/**
 	 * @param pv
 	 * @param e
 	 */
-	private void popErrorDialog(final Exception e) {					
+	private void popErrorDialog(final Exception e) {
 		UIBundlingThread.getInstance().addRunnable(
 				display, new Runnable() {
-					public void run() {
+                    public void run() {
 						String message = "Failed to write PV:" + getPVName()
-								+ "\n" + 
+								+ "\n" +
 								(e.getCause() != null? e.getCause().getMessage():e.getMessage());
 						ErrorHandlerUtil.handleError(message, e, true, true);
 						// ConsoleService.getInstance().writeError(message);

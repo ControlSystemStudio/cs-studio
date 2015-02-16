@@ -7,20 +7,22 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.archive;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.model.RequestType;
+import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,7 +30,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 import org.epics.vtype.VType;
-import org.epics.util.time.Timestamp;
 
 /** Eclipse Job for fetching archived data.
  *  <p>
@@ -46,12 +47,10 @@ public class ArchiveFetchJob extends Job
     final private PVItem item;
 
     /** Start/End time */
-    final private Timestamp start, end;
+    final private Instant start, end;
 
     /** Listener that's notified when (if) we completed OK */
     final private ArchiveFetchJobListener listener;
-
-    private static volatile int worker_instance = 0;
 
     /** Thread that performs the actual background work.
      *
@@ -61,22 +60,15 @@ public class ArchiveFetchJob extends Job
      *  necessary interrupt the WorkerThread which might be 'stuck'
      *  in a long running operation.
      */
-    class WorkerThread extends Thread
+    class WorkerThread implements Runnable
     {
         private String message = ""; //$NON-NLS-1$
         private volatile boolean cancelled = false;
-        private volatile boolean done = false;
 
         /** Archive reader that's currently queried.
          *  Synchronize 'this' on access.
          */
         private ArchiveReader reader = null;
-
-        /** Construct */
-        public WorkerThread()
-        {
-            super("ArchiveFetchJobWorker" + (++worker_instance)); //$NON-NLS-1$
-        }
 
         /** @return Message that somehow indicates progress */
         public synchronized String getMessage()
@@ -93,12 +85,6 @@ public class ArchiveFetchJob extends Job
                 if (reader != null)
                     reader.cancel();
             }
-        }
-
-        /** @return <code>true</code> when done (success, error, canceled) */
-        public synchronized boolean isDone()
-        {
-            return done;
         }
 
         /** {@inheritDoc} */
@@ -132,9 +118,11 @@ public class ArchiveFetchJob extends Job
                     }
                     final ValueIterator value_iter;
                     if (item.getRequestType() == RequestType.RAW)
-                        value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(), start, end);
+                        value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
+                                                             TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end));
                     else
-                        value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(), start, end, bins);
+                        value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(),
+                                                                   TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), bins);
                     // Get samples into array
                     final List<VType> result = new ArrayList<VType>();
                     while (value_iter.hasNext())
@@ -163,7 +151,6 @@ public class ArchiveFetchJob extends Job
             if (!cancelled)
                 listener.fetchCompleted(ArchiveFetchJob.this);
             Activator.getLogger().log(Level.FINE, "Ended {0}", ArchiveFetchJob.this); //$NON-NLS-1$
-            done = true;
         }
 
         @SuppressWarnings("nls")
@@ -180,12 +167,12 @@ public class ArchiveFetchJob extends Job
      *  @param end
      *  @param listener
      */
-    public ArchiveFetchJob(PVItem item, final Timestamp start,
-            final Timestamp end, final ArchiveFetchJobListener listener)
+    public ArchiveFetchJob(PVItem item, final Instant start,
+            final Instant end, final ArchiveFetchJobListener listener)
     {
 		super(NLS.bind(Messages.ArchiveFetchJobFmt,
-				new Object[] { item.getName(), TimestampHelper.format(start),
-						TimestampHelper.format(end) }));
+				new Object[] { item.getName(), TimeHelper.format(start),
+						TimeHelper.format(end) }));
 		this.item = item;
 		this.start = start;
 		this.end = end;
@@ -209,10 +196,10 @@ public class ArchiveFetchJob extends Job
 
         monitor.beginTask(Messages.ArchiveFetchStart, IProgressMonitor.UNKNOWN);
         final WorkerThread worker = new WorkerThread();
-        worker.start();
+        Future<?> done = Activator.getThreadPool().submit(worker);
         // Poll worker and progress monitor
         long seconds = 0;
-        while (true)
+        while (!done.isDone())
         {
             try
             {
@@ -222,8 +209,6 @@ public class ArchiveFetchJob extends Job
             {
                 // Ignore
             }
-            if (worker.isDone())
-                break;
             final String info = NLS.bind(Messages.ArchiveFetchProgressFmt,
                     worker.getMessage(), ++seconds);
             monitor.subTask(info);
@@ -241,10 +226,9 @@ public class ArchiveFetchJob extends Job
     }
 
     /** @return Debug string */
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
-        return "ArchiveFetchJob " + TimestampHelper.format(start) + " ... " + TimestampHelper.format(end) + " for " + item.getName();
+        return getName();
     }
 }

@@ -20,8 +20,8 @@ public class SelectAllAction extends PVTableAction
 {
     public SelectAllAction(final TableViewer viewer)
     {
-        super(Messages.SelectAll, "icons/checked.gif", viewer); //$NON-NLS-1$
-        setToolTipText(Messages.SelectAll_TT);
+        super(Messages.CheckAll, "icons/checked.gif", viewer); //$NON-NLS-1$
+        setToolTipText(Messages.CheckAll_TT);
     }
     
     public void run()

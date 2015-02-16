@@ -8,7 +8,7 @@
 package org.csstudio.trends.databrowser.opiwidget;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +27,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -37,25 +38,26 @@ import org.eclipse.core.runtime.Path;
  *  For the OPI, it holds the Data Browser config file name.
  *  For the Data Browser, it holds the {@link DataBrowserModel}.
  *
+ *  @author Jaka Bobnar - Original selection value PV support
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DataBrowserWidgedModel extends AbstractContainerModel
 {
     /** Widget ID registered in plugin.xml */
-    final public static String ID = "org.csstudio.trends.databrowser.opiwidget"; //$NON-NLS-1$
+    final public static String ID = "org.csstudio.trends.databrowser.opiwidget";
 
     /** Property for name of data browser configuration file */
-    final public static String PROP_FILENAME = "filename"; //$NON-NLS-1$
+    final public static String PROP_FILENAME = "filename";
 
     /** Property to show/hide the toolbar */
-    public static final String PROP_SHOW_TOOLBAR = "show_toolbar"; //$NON-NLS-1$
-    
-    public static final IPath EMPTY_PATH = new Path(""); //$NON-NLS-1$
+    public static final String PROP_SHOW_TOOLBAR = "show_toolbar";
+
+    public static final IPath EMPTY_PATH = new Path("");
 
     public static final String PROP_SELECTION_VALUE_PV = "selection_value_pv";
-	public static final String PROP_SHOW_AXIS_TRACE = "show_axis_trace";
 	public static final String PROP_SHOW_VALUE_LABELS = "show_value_labels";
-    
+
     /** Initialize */
     public DataBrowserWidgedModel()
     {
@@ -63,14 +65,32 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         setSize(400, 300);
     }
 
+    /** Create a Data Browser model, loaded with the configuration file
+     *  @return Data Browser Model
+     *  @throws Exception
+     */
+    public Model createDataBrowserModel() throws CoreException, Exception
+    {
+        final Model model = new Model();
+        model.setMacros(getAllMacros());
+        try
+        (
+            final InputStream input = SingleSourcePlugin.getResourceHelper().getInputStream(getExpandedFilename());
+        )
+        {
+            new XMLPersistence().load(model, input);
+        }
+        return model;
+    }
+
     /** No child widgets in the original sense
      *  of the {@link AbstractContainerModel}
-     *  {@inheritDoc}}
+     *  {@inheritDoc}
      */
 	@Override
 	public List<AbstractWidgetModel> getChildren()
 	{
-		return new ArrayList<AbstractWidgetModel>(0);
+		return Collections.emptyList();
 	}
 
     /** No editing of child widgets in the original sense
@@ -105,8 +125,6 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
                 WidgetPropertyCategory.Display, false));
         addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
 				"Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
-        addProperty(new BooleanProperty(PROP_SHOW_AXIS_TRACE,
-        		"Show Axis Trace", WidgetPropertyCategory.Display, false));
         addProperty(new BooleanProperty(PROP_SHOW_VALUE_LABELS,
         		"Show Value Labels", WidgetPropertyCategory.Display, false));
     }
@@ -149,53 +167,24 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     /** @return Tool bar visibility */
     public boolean isToolbarVisible()
     {
-        return (Boolean) getPropertyValue(PROP_SHOW_TOOLBAR);
+        return getCastedPropertyValue(PROP_SHOW_TOOLBAR);
     }
 
-    /** Create a Data Browser model, loaded with the configuration file
-     *  @return Data Browser Model
-     *  @throws Exception
-     */
-    public Model createDataBrowserModel() throws CoreException, Exception
+    /** @return Selection PV value. */
+    public String getSelectionValuePv()
     {
-        final Model model = new Model();
-        model.setMacros(getAllMacros());
-        final InputStream input = SingleSourcePlugin.getResourceHelper().getInputStream(getExpandedFilename());
-        model.read(input);
-        return model;
+    	return getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
     }
 
-    @SuppressWarnings("nls")
+    /** @return are value labels displayed? */
+    public boolean isShowValueLabels()
+    {
+    	return getCastedPropertyValue(PROP_SHOW_VALUE_LABELS);
+    }
+
     @Override
     public String toString()
     {
         return "DataBrowserWidgetModel: " + getPlainFilename().toString();
     }
-    
-    /**
-     * Returns selection PV value.
-     * 
-     * @return Selection PV value.
-     */
-	public String getSelectionValuePv() {
-		return getCastedPropertyValue(PROP_SELECTION_VALUE_PV);
-	}
-	
-	/**
-	 * Returns true if the axis trace is shown or false otherwise.
-	 * 
-	 * @return is axis trace displayed
-	 */
-	public boolean isShowAxisTrace() {
-		return getCastedPropertyValue(PROP_SHOW_AXIS_TRACE);
-	}
-	
-	/**
-	 * Returns true if the value labels are displayed or false otherwise.
-	 * 
-	 * @return are value labels displayed
-	 */
-	public boolean isShowValueLabels() {
-		return getCastedPropertyValue(PROP_SHOW_VALUE_LABELS);
-	}
 }

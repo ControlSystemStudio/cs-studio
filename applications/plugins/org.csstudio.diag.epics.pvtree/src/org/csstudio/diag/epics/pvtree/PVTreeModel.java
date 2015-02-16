@@ -8,8 +8,8 @@
 package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -35,7 +35,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
 
     private PVTreeItem root;
 
-    final private HashMap<String, List<String>> field_info;
+    final private Map<String, List<String>> field_info;
 
     /** @param view
      *  @throws Exception on error in preferences
@@ -50,7 +50,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** @return Field info for all record types
      *  @see FieldParser
      */
-    HashMap<String, List<String>> getFieldInfo()
+    Map<String, List<String>> getFieldInfo()
     {
         return field_info;
     }

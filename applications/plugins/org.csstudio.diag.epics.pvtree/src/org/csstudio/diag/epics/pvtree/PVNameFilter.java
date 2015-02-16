@@ -12,10 +12,11 @@ import java.util.regex.Pattern;
 /** Identify PV names
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVNameFilter
 {
     final private static Pattern number = Pattern.compile("^-?[0-9]+.*");
-        
+
     /** @param pvname Possible PV name as received from a link
      *  @return <code>true</code> if it looks like a valid PV name
      */
@@ -26,7 +27,7 @@ public class PVNameFilter
             return false;
         if (pvname.startsWith("@"))
             return false;
-        // Skip contants
+        // Skip constants
         if (number.matcher(pvname).matches())
             return false;
         return true;

@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 
 /** Undo-able command to change item's display name
  *  @author Kay Kasemir
  */
-public class ChangeDisplayNameCommand implements IUndoableCommand
+public class ChangeDisplayNameCommand extends UndoableAction
 {
     final private ModelItem item;
     final private String old_name, new_name;
@@ -25,19 +25,19 @@ public class ChangeDisplayNameCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_name New value
      */
-    public ChangeDisplayNameCommand(final OperationsManager operations_manager,
+    public ChangeDisplayNameCommand(final UndoableActionManager operations_manager,
             final ModelItem item, final String new_name)
     {
+        super(Messages.TraceDisplayName);
         this.item = item;
         this.old_name = item.getDisplayName();
         this.new_name = new_name;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         item.setDisplayName(new_name);
     }
@@ -47,12 +47,5 @@ public class ChangeDisplayNameCommand implements IUndoableCommand
     public void undo()
     {
         item.setDisplayName(old_name);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TraceDisplayName;
     }
 }

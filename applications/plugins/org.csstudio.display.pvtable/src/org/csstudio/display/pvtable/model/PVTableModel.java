@@ -32,17 +32,17 @@ public class PVTableModel implements PVTableItemListener
     private static final long UPDATE_PERIOD_MS = 200;
 
     final private int updateItemThreshold = Preferences.getUpdateItemThreshold();
-    
+
     /** The list of items in this table. */
     private List<PVTableItem> items = new ArrayList<PVTableItem>();
-    
+
     final private List<PVTableModelListener> listeners = new ArrayList<PVTableModelListener>();
 
     final private Timer update_timer = new Timer("PVTableUpdate", true); //$NON-NLS-1$
-    
+
     /** @see #performUpdates() */
     private Set<PVTableItem> changed_items = new HashSet<PVTableItem>();
-    
+
     /** Initialize */
     public PVTableModel()
     {
@@ -55,7 +55,7 @@ public class PVTableModel implements PVTableItemListener
             }
         }, UPDATE_PERIOD_MS, UPDATE_PERIOD_MS);
     }
-    
+
     /** @param listener Listener to add */
     public void addListener(final PVTableModelListener listener)
     {
@@ -67,10 +67,10 @@ public class PVTableModel implements PVTableItemListener
     {
     	listeners.remove(listener);
     }
-    
+
     /** @return Returns number of items (rows) in model. */
     public int getItemCount()
-    { 
+    {
     	return items.size();
     }
 
@@ -115,7 +115,7 @@ public class PVTableModel implements PVTableItemListener
             listener.modelChanged();
 		return item;
 	}
-	
+
 	/** Remove table item (also disposes it)
 	 *  @param item Item to remove from model
 	 */
@@ -128,7 +128,7 @@ public class PVTableModel implements PVTableItemListener
 	}
 
 	/** Invoked by timer to perform accumulated updates.
-	 * 
+	 *
 	 *  <p>If only one item changed, update that item.
 	 *  If multiple items changed, refresh the whole table.
 	 */
@@ -160,7 +160,7 @@ public class PVTableModel implements PVTableItemListener
                     listener.tableItemChanged(item);
         }
     }
-    
+
     /** {@inheritDoc} */
 	@Override
     public void tableItemSelectionChanged(final PVTableItem item)
@@ -178,26 +178,54 @@ public class PVTableModel implements PVTableItemListener
 	        changed_items.add(item);
 	    }
 	}
-	
-	/** Save snapshot value of each item */
+
+	/** Save snapshot value of all checked items */
 	public void save()
 	{
-		for (PVTableItem item : items)
-			item.save();
-		for (PVTableModelListener listener : listeners)
-		{
-			listener.tableItemsChanged();
+        for (PVTableItem item : items)
+        {
+            if (item.isSelected())
+                item.save();
+        }
+        for (PVTableModelListener listener : listeners)
+        {
+            listener.tableItemsChanged();
             listener.modelChanged();
-		}
+        }
 	}
 
-	/** Restore saved values */
+   /** Save snapshot value of each item
+    *  @param items Items to save
+    */
+    public void save(final List<PVTableItem> items)
+    {
+        for (PVTableItem item : items)
+            item.save();
+        for (PVTableModelListener listener : listeners)
+        {
+            listener.tableItemsChanged();
+            listener.modelChanged();
+        }
+    }
+
+	/** Restore saved values for all checked items */
 	public void restore()
 	{
 		for (PVTableItem item : items)
-			item.restore();
+		    if (item.isSelected())
+		        item.restore();
 	}
-	
+
+	/** Restore saved values
+    *  @param items Items to restore
+	 */
+    public void restore(final List<PVTableItem> items)
+    {
+        for (PVTableItem item : items)
+            item.restore();
+    }
+
+
 	/** Must be invoked when 'done' by the creator of the model. */
 	public void dispose()
 	{

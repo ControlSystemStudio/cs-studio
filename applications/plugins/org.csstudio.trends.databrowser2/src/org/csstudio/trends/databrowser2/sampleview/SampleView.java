@@ -7,19 +7,25 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.sampleview;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
 import org.csstudio.archive.vtype.DefaultVTypeFormat;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
+import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
-import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
-import org.csstudio.trends.databrowser2.model.PVItem;
+import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PlotSample;
+import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
+import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -54,22 +60,46 @@ import org.epics.vtype.VType;
  *              SampleTableLabelProvider to show numbers with 4 trailing digits.
  *              This implementation uses tooltips to show the Double.toString(number)
  *  @author Takashi Nakamoto changed SampleView to handle multiple items with the
- *                           same name correctly. 
+ *                           same name correctly.
  */
+@SuppressWarnings("nls")
 public class SampleView extends DataBrowserAwareView
-	implements ModelListener
 {
     /** View ID registered in plugin.xml */
-    final public static String ID = "org.csstudio.trends.databrowser.sample_view"; //$NON-NLS-1$
+    final public static String ID = "org.csstudio.trends.databrowser.sample_view";
 
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
-    
+
     /** GUI elements */
     private Combo items;
     private TableViewer sample_table;
-    
-    private VTypeFormat format = new DefaultVTypeFormat();
+
+    private VTypeFormat format = DefaultVTypeFormat.get();
+
+    final ModelListener model_listener = new ModelListenerAdapter()
+    {
+        /** {@inheritDoc} */
+        @Override
+        public void itemAdded(ModelItem item)
+        {   // Be aware of the addition of a new item to update combo box.
+            update(false);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void itemRemoved(ModelItem item)
+        {   // Be aware of the addition of a new item to update combo box.
+            update(false);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void changedItemLook(ModelItem item)
+        {   // Be aware of the change of the item name.
+            update(false);
+        }
+    };
 
     /** {@inheritDoc} */
     @Override
@@ -101,10 +131,19 @@ public class SampleView extends DataBrowserAwareView
                     sample_table.setInput(null);
                     return;
                 }
-                final ModelItem item = model.getItem(items.getSelectionIndex() - 1);
-                if (item == null)
-                    return;
-                sample_table.setInput(item);
+                final int selected = items.getSelectionIndex() - 1; /// Skip initial "Select item" entry
+                int index = 0;
+                for (ModelItem item : model.getItems())
+                {
+                    if (index == selected)
+                    {
+                        sample_table.setInput(item);
+                        return;
+                    }
+                    ++index;
+                }
+                Activator.getLogger().log(Level.WARNING,
+                        "Invalid item index " + selected);
             }
         });
 
@@ -125,7 +164,7 @@ public class SampleView extends DataBrowserAwareView
         // TableColumnLayout requires this to be in its own container
         final Composite table_parent = new Composite(parent, 0);
         table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        final TableColumnLayout table_layout = new TableColumnLayout();
+        final TableColumnLayout table_layout = new MinSizeTableColumnLayout(10);
         table_parent.setLayout(table_layout);
 
         sample_table = new TableViewer(table_parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.VIRTUAL);
@@ -142,7 +181,7 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(TimestampHelper.format(sample.getTime()));
+                cell.setText(TimestampHelper.format(TimeHelper.toTimestamp(sample.getPosition())));
             }
         });
         // Value column
@@ -153,14 +192,14 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(format.format(sample.getValue()));
+                cell.setText(format.format(sample.getVType()));
             }
 
             @Override
             public String getToolTipText(Object element)
             {
                 final PlotSample sample = (PlotSample) element;
-                final VType value = sample.getValue();
+                final VType value = sample.getVType();
                 // Show numbers in their 'natural' format which may differ from the Display settings
                 if (value instanceof VStatistics)
                 {
@@ -190,7 +229,7 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                final VType value = sample.getValue();
+                final VType value = sample.getVType();
                 final AlarmSeverity severity = VTypeHelper.getSeverity(value);
                 cell.setText(severity.toString());
                 if (severity == AlarmSeverity.NONE)
@@ -215,7 +254,7 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                final VType value = sample.getValue();
+                final VType value = sample.getVType();
                 cell.setText(VTypeHelper.getMessage(value));
             }
         });
@@ -231,7 +270,7 @@ public class SampleView extends DataBrowserAwareView
             }
         });
         ColumnViewerToolTipSupport.enableFor(sample_table);
-        
+
         // Be ignorant of any change of the current model after this view
         // is disposed.
         parent.addDisposeListener(new DisposeListener()
@@ -240,7 +279,7 @@ public class SampleView extends DataBrowserAwareView
             public void widgetDisposed(DisposeEvent e)
             {
             	if (model != null)
-            		model.removeListener(SampleView.this);
+            		model.removeListener(model_listener);
             }
         });
     }
@@ -250,16 +289,17 @@ public class SampleView extends DataBrowserAwareView
     protected void updateModel(final Model old_model, final Model model)
     {
     	this.model = model;
-    	if (old_model != model) {
+    	if (old_model != model)
+    	{
     		if (old_model != null)
-    			old_model.removeListener(this);
-    		
+    			old_model.removeListener(model_listener);
+
     		if (model != null)
-    			model.addListener(this);
+    			model.addListener(model_listener);
     	}
     	update(old_model != model);
     }
-    
+
     /** Update combo box of this view.
      * @param model_changed set true if the model was changed.
      */
@@ -274,24 +314,30 @@ public class SampleView extends DataBrowserAwareView
             return;
         }
 
-        // Show PV names
-        final String names[] = new String[model.getItemCount()+1];
-        names[0] = Messages.SampleView_SelectItem;
-        for (int i=1; i<names.length; ++i)
-            names[i] = model.getItem(i-1).getName();
+        // Show PV names.
+        // Also build array for following index-based check of selected item
+        final List<ModelItem> model_items = new ArrayList<>();
+        final List<String> names_list = new ArrayList<>();
+        names_list.add(Messages.SampleView_SelectItem);
+        for (ModelItem item : model.getItems())
+        {
+            model_items.add(item);
+            names_list.add(item.getName());
+        }
+        final String[] names = names_list.toArray(new String[names_list.size()]);
         if (!model_changed  &&  items.getSelectionIndex() > 0)
         {
             // Is the previously selected item still valid?
         	if (sample_table.getInput() instanceof ModelItem)
         	{
         		final ModelItem selected_item = (ModelItem) sample_table.getInput();
-        		if (model.indexOf(selected_item) != -1)
+        		if (model_items.indexOf(selected_item) != -1)
         		{   // Show same PV name again in combo box
         			items.setItems(names);
-        			items.select(model.indexOf(selected_item) + 1);
+        			items.select(model_items.indexOf(selected_item) + 1);
         			items.setEnabled(true);
-        			// Update sample table size
-        			sample_table.setItemCount(selected_item.getSamples().getSize());
+        			// Update sample table size. Not locking for size()
+        			sample_table.setItemCount(selected_item.getSamples().size());
         			sample_table.refresh();
         			return;
         		}
@@ -311,64 +357,4 @@ public class SampleView extends DataBrowserAwareView
     {
         items.setFocus();
     }
-    
-    /** {@inheritDoc} */
-	@Override
-	public void itemAdded(ModelItem item) {
-	    // Be aware of the addition of a new item to update combo box.
-		update(false);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void itemRemoved(ModelItem item) {
-	    // Be aware of the addition of a new item to update combo box.
-		update(false);
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public void changedItemLook(ModelItem item) {
-		// Be aware of the change of the item name.
-		update(false);
-	}
-
-	// Following methods are defined as they are mandatory to fulfill
-	// ModelListener interface, but they are not used at all to update
-	// this sample view.
-	@Override
-	public void changedUpdatePeriod() {}
-
-	@Override
-	public void changedArchiveRescale() {}
-
-	@Override
-	public void changedColors() {}
-
-	@Override
-	public void changedTimerange() {}
-
-	@Override
-	public void changedAxis(AxisConfig axis) {}
-
-	@Override
-	public void changedItemVisibility(ModelItem item) {}
-
-	@Override
-	public void changedItemDataConfig(PVItem item) {}
-
-	@Override
-	public void scrollEnabled(boolean scroll_enabled) {}
-
-	@Override
-	public void changedAnnotations() {}
-
-	@Override
-	public void changedXYGraphConfig() {}
-
-	@Override
-	public void itemRefreshRequested(PVItem item) {}
-
-	@Override
-	public void cursorDataChanged() {}
 }

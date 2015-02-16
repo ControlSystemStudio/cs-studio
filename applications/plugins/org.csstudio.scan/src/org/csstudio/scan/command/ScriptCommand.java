@@ -37,7 +37,7 @@ public class ScriptCommand extends ScanCommand
     /** Initialize empty script command */
     public ScriptCommand()
     {
-        this("the_script.py");
+        this("MyScanScript");
     }
 
 	/** Initialize
@@ -57,7 +57,7 @@ public class ScriptCommand extends ScanCommand
         this.script = script;
         this.args = args;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void configureProperties(final List<ScanCommandProperty> properties)
@@ -90,7 +90,7 @@ public class ScriptCommand extends ScanCommand
     {
         this.args = args;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void addXMLElements(final Document dom, final Element command_element)
@@ -107,7 +107,7 @@ public class ScriptCommand extends ScanCommand
             element.appendChild(arg_element);
         }
         command_element.appendChild(element);
-        
+
         super.addXMLElements(dom, command_element);
     }
 
@@ -116,7 +116,7 @@ public class ScriptCommand extends ScanCommand
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
         setScript(DOMHelper.getSubelementString(element, "path", ""));
-        
+
         final List<String> arguments = new ArrayList<String>();
         Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "arguments");
         if (node != null)
@@ -133,7 +133,7 @@ public class ScriptCommand extends ScanCommand
             }
             setArguments(arguments.toArray(new String[arguments.size()]));
         }
-        
+
         super.readXML(factory, element);
     }
 
@@ -144,7 +144,7 @@ public class ScriptCommand extends ScanCommand
 		final StringBuilder buf = new StringBuilder();
 		buf.append("Script ");
 		buf.append("'").append(script).append("'");
-		
+
 		boolean first = true;
 		for (String arg : args)
 		{
@@ -158,7 +158,7 @@ public class ScriptCommand extends ScanCommand
 		}
 		if (! first)
 		    buf.append(")");
-		
+
 	    return buf.toString();
 	}
 }

@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.exportview;
 
 import java.io.File;
+import java.time.Instant;
 
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.SecondsParser;
@@ -15,7 +16,6 @@ import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.archive.vtype.Style;
-import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser2.export.ExportErrorHandler;
@@ -27,6 +27,7 @@ import org.csstudio.trends.databrowser2.export.SpreadsheetExportJob;
 import org.csstudio.trends.databrowser2.export.ValueFormatter;
 import org.csstudio.trends.databrowser2.export.ValueWithInfoFormatter;
 import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
@@ -48,7 +49,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.util.time.Timestamp;
 
 /** View for exporting data from the current Data Browser plot
  *  to a file.
@@ -119,7 +119,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         start = new Text(group, SWT.BORDER);
         start.setToolTipText(Messages.StartTimeTT);
         start.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-2, 1));
-        start.setText(new RelativeTime(- Preferences.getTimeSpan()).toString());
+        start.setText(new RelativeTime(- TimeHelper.toSeconds(Preferences.getTimeSpan())).toString());
         start.setEnabled(false);
 
         sel_times = new Button(group, SWT.PUSH);
@@ -193,14 +193,14 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         source_lin.setText(Messages.ExportSource_Linear);
         source_lin.setToolTipText(Messages.ExportSource_LinearTT);
         source_lin.setLayoutData(new GridData());
-        
+
         linear = new Text(group, SWT.BORDER);
         linear.setText(Messages.ExportDefaultLinearInterpolation);
         linear.setToolTipText(Messages.ExportDefaultLinearInterpolationTT);
         linear.setLayoutData(new GridData());
         // Enable only when using linear interpolation
         linear.setEnabled(source_lin.getSelection());
-        
+
         source_plot.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -243,10 +243,10 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                     linear.setFocus();
             }
         });
-        
+
         // Default traversal gets confused because text boxes interleave the radio buttons
         group.setTabList(new Control[] { start, sel_times, end, use_plot_times, source_plot, source_raw, source_opt, optimize, source_lin, linear });
-        
+
         // Ghost label to fill the last column
         l = new Label(group, 0);
         l.setLayoutData(new GridData());
@@ -309,9 +309,10 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         format_expo.setToolTipText(Messages.ExportFormat_ExponentialTT);
 
         format_digits = new Text(box, SWT.BORDER);
+        // Note that text starts with some spaces like "  6" to get initial minimum text field size
         format_digits.setText(Messages.ExportDefaultDigits);
         format_digits.setToolTipText(Messages.ExportDigitsTT);
-        format_digits.setEnabled(false);
+        format_digits.setEnabled(true);
 
         box.setTabList(new Control[] { format_default, format_decimal, format_expo, format_digits });
 
@@ -491,7 +492,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             return;
 
         // Determine start/end time
-        final Timestamp start_time, end_time;
+        final Instant start_time, end_time;
         if (use_plot_times.getSelection())
         {
             start_time = model.getStartTime();
@@ -503,8 +504,8 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             {
                 final StartEndTimeParser times =
                     new StartEndTimeParser(start.getText(), end.getText());
-                start_time = TimestampHelper.fromCalendar(times.getStart());
-                end_time = TimestampHelper.fromCalendar(times.getEnd());
+                start_time = times.getStart().toInstant();
+                end_time = times.getEnd().toInstant();
             }
             catch (final Exception ex)
             {

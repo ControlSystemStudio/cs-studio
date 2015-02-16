@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.script;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.script.ScriptEngine;
@@ -27,32 +28,33 @@ import org.python.util.PythonInterpreter;
 
 /**The factory to return the corresponding script store according to the script type.
  * @author Xihui Chen
- * 
+ *
  * TODO Cleanup
  * This has getJavaScriptEngine() and getRhinoContext().
  * Callers invoke one or the other depending on defaultJsEngine = ..RHINO or JDK.
- * 
+ *
  * A true factory should just have one "getJava..()" call which internally decides
  * to return the Rhino from lib/, or the one bundled in Java 7, or Nashorn from Java 8.
  * After fixing the Java 7 Rhino issues (https://github.com/ControlSystemStudio/cs-studio/issues/723),
  * remove lib/rhino/js.jar
  */
+@SuppressWarnings("nls")
 public class ScriptStoreFactory {
-	
+
 	public static enum JavaScriptEngine {
 		RHINO,
 		JDK;
 	}
-	
+
 	final private static JavaScriptEngine defaultJsEngine;
-	
+
 	private static boolean pythonInterpreterInitialized = false;
-	
-	private static Map<Display, Context> displayContextMap = 
+
+	private static Map<Display, Context> displayContextMap =
 			new HashMap<Display, Context>();
 	private static Map<Display, ScriptEngine> displayScriptEngineMap = new HashMap<>();
-	
-	
+
+
 	static
 	{
 		String option = JavaScriptEngine.RHINO.name(); // Default
@@ -68,75 +70,86 @@ public class ScriptStoreFactory {
     		throw new RuntimeException("Invalid preference setting " + OPIBuilderPlugin.PLUGIN_ID + "/java_script_engine=" + option);
     	}
 	}
-	
-	@SuppressWarnings("nls")
-    public static void initPythonInterpreter() throws Exception{
+
+    public static void initPythonInterpreter() throws Exception
+	{
 		if(pythonInterpreterInitialized)
 			return;
-		//add org.python.jython/jython.jar/Lib to PYTHONPATH
+
+		// Add Jython's /lib PYTHONPATH
 		final Bundle bundle = Platform.getBundle("org.python.jython");
 		String pythonPath = null;
 		if (bundle == null)
 		    throw new Exception("Cannot locate jython bundle");
-		URL fileURL = FileLocator.find(bundle, new Path("jython.jar"), null);
-		if (fileURL != null){
+		// Used to be packed as org.python.jython/jython.jar/Lib
+		final URL fileURL = FileLocator.find(bundle, new Path("jython.jar"), null);
+		if (fileURL != null)
 			pythonPath = FileLocator.resolve(fileURL).getPath() + "/Lib";
-		} else {
+		else
+		{   // Different packaging where jython.jar is expanded, /Lib at plugin root
 			pythonPath = FileLocator.resolve(new URL("platform:/plugin/org.python.jython/Lib/")).getPath();
-			if (pythonPath.startsWith("file:/")) {
+			// Turn politically correct URL path digestible by jython
+			if (pythonPath.startsWith("file:/"))
 				pythonPath = pythonPath.substring(5);
-			}
 			pythonPath = pythonPath.replace(".jar!", ".jar");
 		}
-			
-		
-		String prefPath = PreferencesHelper.getPythonPath();
-		if( prefPath!=null)
-			pythonPath = pythonPath + System.getProperty("path.separator") +
-				prefPath;
-    	Properties props = new Properties();
+
+		final Optional<String> prefPath = PreferencesHelper.getPythonPath();
+		if (prefPath.isPresent())
+			pythonPath += System.getProperty("path.separator") + prefPath.get();
+    	final Properties props = new Properties();
     	props.setProperty("python.path", pythonPath);
-    	//Disable cachedir so jython can start fast and no cachedir fold created.
-    	//See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
-    	//and http://wiki.python.org/jython/PackageScanning
+    	// Disable cachedir to avoid creation of cachedir folder.
+    	// See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
+    	// and http://wiki.python.org/jython/PackageScanning
     	props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true");
+
+    	// Jython 2.7(b2, b3) need these to set sys.prefix and sys.executable.
+    	// If left undefined, initialization of Lib/site.py fails with
+    	// posixpath.py", line 394, in normpath AttributeError:
+    	// 'NoneType' object has no attribute 'startswith'
+    	props.setProperty("python.home", ".");
+        props.setProperty("python.executable", "css");
+
         PythonInterpreter.initialize(System.getProperties(), props,
-                 new String[] {""}); //$NON-NLS-1$
+                 new String[] {""});
 		pythonInterpreterInitialized = true;
 	}
-	
+
 	public static JavaScriptEngine getDefaultJavaScriptEngine()
 	{
 		return defaultJsEngine;
 	}
-	
+
 	/**
 	 * Must be called in UI Thread.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private static void initRhinoJSEngine() throws Exception {
 		Context scriptContext = Context.enter();
 		final Display display = Display.getCurrent();
 		displayContextMap.put(display, scriptContext);
 		SingleSourceHelper.rapAddDisplayDisposeListener(display, new Runnable() {
-			
-			public void run() {
+
+			@Override
+            public void run() {
 				displayContextMap.remove(display);
 			}
 		});
 	}
-	
+
 	/**
 	 * Must be called in UI Thread.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private static void initJdkJSEngine() throws Exception {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("javascript");
 		final Display display = Display.getCurrent();
 		displayScriptEngineMap.put(display, engine);
 		SingleSourceHelper.rapAddDisplayDisposeListener(display, new Runnable() {
-			
-			public void run() {
+
+			@Override
+            public void run() {
 				displayContextMap.remove(display);
 			}
 		});
@@ -151,7 +164,7 @@ public class ScriptStoreFactory {
 	 */
 	public static AbstractScriptStore getScriptStore(
 			ScriptData scriptData, AbstractBaseEditPart editpart, IPV[] pvArray) throws Exception{
-		if(!scriptData.isEmbedded() && 
+		if(!scriptData.isEmbedded() &&
 				(scriptData.getPath() == null || scriptData.getPath().getFileExtension() == null)){
 			if(scriptData instanceof RuleScriptData){
 				return getJavaScriptStore(scriptData, editpart, pvArray);
@@ -164,13 +177,13 @@ public class ScriptStoreFactory {
 			if(scriptData.getScriptType() == ScriptType.JAVASCRIPT)
 				fileExt = ScriptService.JS;
 			else if (scriptData.getScriptType() == ScriptType.PYTHON)
-				fileExt = ScriptService.PY;				
+				fileExt = ScriptService.PY;
 		}else
 			fileExt= scriptData.getPath().getFileExtension().trim().toLowerCase();
-		if(fileExt.equals(ScriptService.JS)){ //$NON-NLS-1$
+		if(fileExt.equals(ScriptService.JS)){
 			return getJavaScriptStore(scriptData, editpart, pvArray);
 		}
-		else if (fileExt.equals(ScriptService.PY)){ //$NON-NLS-1$
+		else if (fileExt.equals(ScriptService.PY)){
 			if(!pythonInterpreterInitialized)
 				initPythonInterpreter();
 			return new JythonScriptStore(scriptData, editpart, pvArray);
@@ -178,7 +191,7 @@ public class ScriptStoreFactory {
 		else
 			throw new RuntimeException("No Script Engine for this type of script");
 	}
-	
+
 	private static AbstractScriptStore getJavaScriptStore(
 			ScriptData scriptData, AbstractBaseEditPart editpart, IPV[] pvArray) throws Exception {
 		if (defaultJsEngine == JavaScriptEngine.RHINO) {
@@ -195,7 +208,7 @@ public class ScriptStoreFactory {
 			return new JavaScriptStore(scriptData, editpart, pvArray);
 		}
 	}
-	
+
 	/**This method must be executed in UI Thread!
 	 * @return the Rhino script context.
 	 * @throws Exception on error, including invocation when not using <code>JavaScriptEngine.RHINO</code>
@@ -206,20 +219,21 @@ public class ScriptStoreFactory {
 		Display display = Display.getCurrent();
 		boolean jsEngineInitialized = displayContextMap.containsKey(display);
 		if(!jsEngineInitialized)
-			initRhinoJSEngine();		
+			initRhinoJSEngine();
 		return displayContextMap.get(display);
 	}
-	
+
 	public static void exit(){
 		boolean jsEngineInitialized = displayContextMap.containsKey(Display.getCurrent());
 		if(jsEngineInitialized)
 			UIBundlingThread.getInstance().addRunnable(Display.getCurrent(), new Runnable(){
-				public void run() {
+				@Override
+                public void run() {
 					Context.exit();
 				}
 			});
 	}
-	
+
 	/**This method must be executed in UI Thread!
 	 * @return the JDK's Javascript script engine.
 	 * @throws Exception on error, including invocation when not using <code>JavaScriptEngine.JDK</code>
@@ -230,8 +244,8 @@ public class ScriptStoreFactory {
 		Display display = Display.getCurrent();
 		boolean jsEngineInitialized = displayScriptEngineMap.containsKey(display);
 		if(!jsEngineInitialized)
-			initJdkJSEngine();		
+			initJdkJSEngine();
 		return displayScriptEngineMap.get(display);
 	}
-	
+
 }

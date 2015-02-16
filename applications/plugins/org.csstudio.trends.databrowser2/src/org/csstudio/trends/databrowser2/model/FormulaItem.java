@@ -20,6 +20,7 @@ import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVType;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.Display;
@@ -295,20 +296,20 @@ public class FormulaItem extends ModelItem
     @Override
     synchronized public void write(final PrintWriter writer)
     {
-        XMLWriter.start(writer, 2, Model.TAG_FORMULA);
+        XMLWriter.start(writer, 2, XMLPersistence.TAG_FORMULA);
         writer.println();
         writeCommonConfig(writer);
-        XMLWriter.XML(writer, 3, Model.TAG_FORMULA, formula.getFormula());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_FORMULA, formula.getFormula());
         for (FormulaInput input : inputs)
         {
-            XMLWriter.start(writer, 3, Model.TAG_INPUT);
+            XMLWriter.start(writer, 3, XMLPersistence.TAG_INPUT);
             writer.println();
-            XMLWriter.XML(writer, 4, Model.TAG_PV, input.getItem().getName());
-            XMLWriter.XML(writer, 4, Model.TAG_NAME, input.getVariableName());
-            XMLWriter.end(writer, 3, Model.TAG_INPUT);
+            XMLWriter.XML(writer, 4, XMLPersistence.TAG_PV, input.getItem().getName());
+            XMLWriter.XML(writer, 4, XMLPersistence.TAG_NAME, input.getVariableName());
+            XMLWriter.end(writer, 3, XMLPersistence.TAG_INPUT);
             writer.println();
         }
-        XMLWriter.end(writer, 2, Model.TAG_FORMULA);
+        XMLWriter.end(writer, 2, XMLPersistence.TAG_FORMULA);
         writer.println();
     }
 
@@ -320,33 +321,24 @@ public class FormulaItem extends ModelItem
      */
     public static FormulaItem fromDocument(final Model model, final Element node) throws Exception
     {
-        final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);
-        final String expression = DOMHelper.getSubelementString(node, Model.TAG_FORMULA);
+        final String name = DOMHelper.getSubelementString(node, XMLPersistence.TAG_NAME);
+        final String expression = DOMHelper.getSubelementString(node, XMLPersistence.TAG_FORMULA);
         // Get inputs
         final ArrayList<FormulaInput> inputs = new ArrayList<FormulaInput>();
-        Element input = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_INPUT);
+        Element input = DOMHelper.findFirstElementNode(node.getFirstChild(), XMLPersistence.TAG_INPUT);
         while (input != null)
         {
-            final String pv = DOMHelper.getSubelementString(input, Model.TAG_PV);
-            final String var = DOMHelper.getSubelementString(input, Model.TAG_NAME);
+            final String pv = DOMHelper.getSubelementString(input, XMLPersistence.TAG_PV);
+            final String var = DOMHelper.getSubelementString(input, XMLPersistence.TAG_NAME);
             final ModelItem item = model.getItem(pv);
             if (item == null)
                 throw new Exception("Formula " + name + " refers to unknown input " + pv);
             inputs.add(new FormulaInput(item, var));
-            input = DOMHelper.findNextElementNode(input, Model.TAG_INPUT);
+            input = DOMHelper.findNextElementNode(input, XMLPersistence.TAG_INPUT);
         }
         // Create model item, parse common properties
         final FormulaItem formula = new FormulaItem(name, expression, (FormulaInput[]) inputs.toArray(new FormulaInput[inputs.size()]));
         formula.configureFromDocument(model, node);
         return formula;
     }
-    
-	public FormulaItem clone() {
-		FormulaItem ret = (FormulaItem)super.clone();
-		ret.formula = formula;
-		ret.inputs = inputs;
-		ret.variables = variables;
-		ret.samples = samples;
-		return ret;
-	}
 }

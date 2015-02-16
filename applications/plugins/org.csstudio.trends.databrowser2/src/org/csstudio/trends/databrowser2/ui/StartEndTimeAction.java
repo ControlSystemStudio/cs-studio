@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser2.ui;
 
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.ui.time.StartEndDialog;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.propsheet.ChangeTimerangeCommand;
 import org.eclipse.jface.window.Window;
@@ -26,7 +26,7 @@ public class StartEndTimeAction
      *  @param operations_manager Undo/Redo operations manager
      */
     public static void run(final Shell shell, final Model model,
-            final OperationsManager operations_manager)
+            final UndoableActionManager operations_manager)
     {
         final String start_time = model.getStartSpecification();
         final String end_time = model.getEndSpecification();
@@ -46,7 +46,7 @@ public class StartEndTimeAction
      *  @throws Exception on error in start/end time
      */
     public static void run(final Model model,
-            final OperationsManager operations_manager,
+            final UndoableActionManager operations_manager,
             final String start_time, final String end_time) throws Exception
     {
     	// Parsing somewhat redundant, but gives exception 'right away' for better error display

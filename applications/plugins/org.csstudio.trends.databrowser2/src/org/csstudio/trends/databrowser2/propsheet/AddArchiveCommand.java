@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 /** Undo-able command to add or replace archive data sources.
  *  @author Kay Kasemir
  */
-public class AddArchiveCommand implements IUndoableCommand
+public class AddArchiveCommand extends UndoableAction
 {
     /** PVs on which to set archive data sources */
     final private PVItem pvs[];
@@ -36,7 +36,7 @@ public class AddArchiveCommand implements IUndoableCommand
      *  @param archive Archive data source to add
      *  @p
      */
-    public AddArchiveCommand(final OperationsManager operations_manager,
+    public AddArchiveCommand(final UndoableActionManager operations_manager,
             final PVItem pv, final ArchiveDataSource archive)
     {
         this(operations_manager, new PVItem[] { pv }, new ArchiveDataSource[] { archive }, false);
@@ -48,9 +48,10 @@ public class AddArchiveCommand implements IUndoableCommand
      *  @param archives Archive data sources to add
      *  @param replace <code>true</code> to replace existing archive data sources. Else: 'add'
      */
-    public AddArchiveCommand(final OperationsManager operations_manager,
+    public AddArchiveCommand(final UndoableActionManager operations_manager,
             final PVItem pvs[], final ArchiveDataSource archives[], final boolean replace)
     {
+        super(Messages.AddArchive);
         this.pvs = pvs;
         this.archives = archives;
         // Remember original archives
@@ -58,13 +59,12 @@ public class AddArchiveCommand implements IUndoableCommand
         for (int i=0; i<original.length; ++i)
             original[i] = pvs[i].getArchiveDataSources();
         this.replace = replace;
-        operations_manager.addCommand(this);
-        redo();
+        operations_manager.execute(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         if (replace)
             for (PVItem pv : pvs)
@@ -80,12 +80,5 @@ public class AddArchiveCommand implements IUndoableCommand
     {
         for (int i=0; i<original.length; ++i)
             pvs[i].setArchiveDataSource(original[i]);
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.AddArchive;
     }
 }

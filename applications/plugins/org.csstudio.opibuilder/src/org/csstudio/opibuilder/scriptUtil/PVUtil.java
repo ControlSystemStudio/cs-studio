@@ -32,28 +32,28 @@ import org.epics.vtype.AlarmSeverity;
  *
  */
 public class PVUtil{
-	
+
 	private static final TimestampFormat timeFormat = new TimestampFormat("yyyy/MM/dd HH:mm:ss.SSS"); //$NON-NLS-1$
-	
+
 	/**Create a PV and start it. PVListener can be added to the PV to monitor its
 	 * value change, but please note that the listener is executed in non-UI thread.
 	 * If the code need be executed in UI thread, please use {@link ScriptUtil#execInUI(Runnable, AbstractBaseEditPart)}.
 	 * The monitor's maximum update rate is 50hz. If the PV updates faster than this rate, some updates
-	 * will be discarded.  
+	 * will be discarded.
 	 * <br>Example Jython script:
-	 * 
+	 *
 	 *  <pre>
 	from org.csstudio.opibuilder.scriptUtil import PVUtil
 	from org.csstudio.simplepv import IPVListener
-		
+
 	class MyPVListener(IPVListener):
 		def valueChanged(self, pv):
 			widget.setPropertyValue("text", PVUtil.getString(pv))
-		
+
 	pv = PVUtil.createPV("sim://noise", widget)
-	pv.addListener(MyPVListener())  
+	pv.addListener(MyPVListener())
 	 *  </pre>
-	 * 
+	 *
 	 * @param name name of the PV.
 	 * @param widget the reference widget. The PV will stop when the widget is deactivated,
 	 * so it is not needed to stop the pv in script.
@@ -61,18 +61,18 @@ public class PVUtil{
 	 * @throws Exception the exception that might happen while creating the pv.
 	 */
 	public final static IPV createPV(String name, AbstractBaseEditPart widget) throws Exception{
-		
+
 		final IPV pv = BOYPVFactory.createPV(name, false, 20);
 		pv.start();
 		widget.addEditPartListener(new EditPartListener.Stub(){
-			
+
 			@Override
 			public void partDeactivated(EditPart arg0) {
 				pv.stop();
-			}	
-			
+			}
+
 		});
-		return pv;		
+		return pv;
 	}
 
 	 /** Try to get a double number from the PV.
@@ -235,7 +235,7 @@ public class PVUtil{
 		AlarmSeverity severity = VTypeHelper.getAlarmSeverity(pv.getValue());
 		if(severity == null)
 			return -1;
-		switch (severity) {		
+		switch (severity) {
 		case MAJOR:
 			return 1;
 		case MINOR:
@@ -246,9 +246,9 @@ public class PVUtil{
 		case INVALID:
 		default:
 			return -1;
-		}		
+		}
 	}
-	
+
 	/**Get severity of the PV as a string.
 	 * @param pv the PV.
 	 * @return The string representation of the severity.
@@ -260,7 +260,7 @@ public class PVUtil{
 			return "No Severity Info.";
 		return severity.toString();
 	}
-	
+
 	/**Get the status text that might describe the severity.
 	 * @param pv the PV.
 	 * @return the status string.
@@ -271,8 +271,8 @@ public class PVUtil{
 	}
 
     /**Write a PV in a background job. It will first creates and connects to the PV. After
-     * PV is connected, it will set the PV with the value. If it fails to write, an error 
- 	 * dialog will pop up. 
+     * PV is connected, it will set the PV with the value. If it fails to write, an error
+ 	 * dialog will pop up.
      * @param pvName name of the PV.
      * @param value value to write.
      * @param timeout maximum time to try connection.
@@ -282,25 +282,33 @@ public class PVUtil{
     	final Display display = DisplayUtils.getDisplay();
 		Job job = new Job("Writing PV: " + pvName) {
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {			
-					
+			protected IStatus run(IProgressMonitor monitor) {
+
 				try {
 					IPV pv = BOYPVFactory.createPV(pvName);
-					if(!pv.setValue(value, timeout*1000))
-						throw new Exception("Write Failed!");
+					pv.start();
+					try
+					{
+					    if(!pv.setValue(value, timeout*1000))
+					        throw new Exception("Write Failed!");
+					}
+					finally
+					{
+					    pv.stop();
+					}
 				} catch (final Exception e) {
 					UIBundlingThread.getInstance().addRunnable(
 							display, new Runnable() {
-								public void run() {
+                                public void run() {
 									String message = "Failed to write PV:" + pvName
-											+ "\n" + 
+											+ "\n" +
 											(e.getCause() != null? e.getCause().getMessage():e.getMessage());
 									ErrorHandlerUtil.handleError(message, e, true, true);
 								}
 							});
 					return Status.CANCEL_STATUS;
-				}		
-				return Status.OK_STATUS;				
+				}
+				return Status.OK_STATUS;
 			}
 
 		};
@@ -309,10 +317,10 @@ public class PVUtil{
     }
 
     /**Write a PV in a background job. It will first creates and connects to the PV. After
-     * PV is connected, it will set the PV with the value. If it fails to write, an error 
+     * PV is connected, it will set the PV with the value. If it fails to write, an error
  	 * dialog will pop up. The maximum time to try connection is 10 second.
      * @param pvName name of the PV.
-     * @param value value to write.  
+     * @param value value to write.
      */
     public final static void writePV(String pvName, Object value){
     	writePV(pvName, value, 10);

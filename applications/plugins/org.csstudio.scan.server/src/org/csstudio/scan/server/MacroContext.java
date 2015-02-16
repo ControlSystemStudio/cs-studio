@@ -18,6 +18,7 @@ import org.csstudio.java.string.StringSplitter;
 /** Stack of macros, allows pushing new values and popping back to previous macros
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class MacroContext implements IMacroTableProvider
 {
     /** Map of macro names to values */
@@ -63,7 +64,7 @@ public class MacroContext implements IMacroTableProvider
             stack.pop();
         else
             throw new IllegalStateException("No macros have been pushed");
-    } 
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -71,7 +72,7 @@ public class MacroContext implements IMacroTableProvider
     {
         return stack.peek().get(name);
     }
-    
+
     /** @param text Text that may contain "$(macro)"
      *  @return Text where macros have been replaced by their values
      *  @throws Exception on error in macros

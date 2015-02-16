@@ -13,10 +13,9 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
-import org.csstudio.opibuilder.script.JythonScriptStore;
+import org.csstudio.opibuilder.script.PythonInterpreter;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
-import org.csstudio.opibuilder.script.PythonInterpreter;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
@@ -41,7 +40,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 	private PyCode code;
 	private PythonInterpreter interpreter;
 	private DisplayEditpart displayEditpart;
-	private AbstractBaseEditPart widgetEditPart;	
+	private AbstractBaseEditPart widgetEditPart;
 
 	@Override
 	public ActionType getActionType() {
@@ -50,7 +49,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
 	@Override
 	public void run() {
-		if(code == null){			
+		if(code == null){
 			try {
 				ScriptStoreFactory.initPythonInterpreter();
 			} catch (Exception e) {
@@ -60,11 +59,10 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 			}
 			//read file
 			IPath absolutePath = getAbsolutePath();
-			PySystemState state = new PySystemState();				
-			state.setClassLoader(JythonScriptStore.COMBINDED_CLASS_LOADER);
-			
+			PySystemState state = new PySystemState();
+
 			//Add the path of script to python module search path
-			if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){				
+			if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){
 				//If it is a workspace file.
 				if(ResourceUtil.isExistingWorkspaceFile(absolutePath)){
 					IPath folderPath = absolutePath.removeLastSegments(1);
@@ -73,44 +71,44 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 				}else if(ResourceUtil.isExistingLocalFile(absolutePath)){
 					IPath folderPath = absolutePath.removeLastSegments(1);
 					state.path.append(new PyString(folderPath.toOSString()));
-				}				
+				}
 			}
-			
+
 			interpreter = new PythonInterpreter(null,state);
-			
+
 			GraphicalViewer viewer = getWidgetModel().getRootDisplayModel().getViewer();
 			if(viewer != null){
 				Object obj = viewer.getEditPartRegistry().get(getWidgetModel());
 				if(obj != null && obj instanceof AbstractBaseEditPart){
 					displayEditpart = (DisplayEditpart)(viewer.getContents());
-					widgetEditPart = (AbstractBaseEditPart)obj;					
+					widgetEditPart = (AbstractBaseEditPart)obj;
 				}
 			}
 		}
-		
+
 		Job job = new Job("Execute Python Script") {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				String taskName = isEmbedded()?"Execute Python Script" : 
+				String taskName = isEmbedded()?"Execute Python Script" :
 					"Connecting to " + getAbsolutePath();
 				monitor.beginTask(taskName,
-						IProgressMonitor.UNKNOWN);				
+						IProgressMonitor.UNKNOWN);
 				runTask();
 				monitor.done();
 				return Status.OK_STATUS;
 			}
 		};
 		job.setUser(true);
-		job.schedule();	
+		job.schedule();
 	}
-	
+
 	public void runTask() {
 		Display display = getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
 
 		try {
 			if(code == null){
-											
+
 				//compile
 				if(isEmbedded())
 					code = interpreter.compile(getScriptText());
@@ -124,11 +122,12 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
 			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
-				public void run() {
+				@Override
+                public void run() {
 
 						try {
 							interpreter.set(ScriptService.WIDGET, widgetEditPart);
-							interpreter.set(ScriptService.DISPLAY, displayEditpart);	
+							interpreter.set(ScriptService.DISPLAY, displayEditpart);
 							interpreter.exec(code);
 						} catch (Exception e) {
 							final String message =  "Error exists in script " + getPath();
@@ -144,7 +143,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 		}
 	}
 
-	
+
 	@Override
 	protected String getFileExtension() {
 		return ScriptService.PY;
@@ -156,5 +155,5 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 	}
 
 
-	
+
 }

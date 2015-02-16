@@ -7,15 +7,35 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.opiwidget;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.swt.rtplot.PlotListener;
+import org.csstudio.swt.rtplot.PlotListenerAdapter;
+import org.csstudio.swt.rtplot.Trace;
+import org.csstudio.swt.rtplot.data.PlotDataItem;
+import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.ui.Controller;
-import org.eclipse.core.runtime.IPath;
+import org.csstudio.trends.databrowser2.ui.ModelBasedPlot;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.epics.pvmanager.ExpressionLanguage;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.PVWriter;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ListDouble;
+import org.epics.vtype.VType;
+import org.epics.vtype.ValueFactory;
 
 /** EditPart that interfaces between the {@link DataBrowserWidgetFigure} visible on the screen
  *  and the {@link DataBrowserWidgedModel} that stores the persistent configuration.
@@ -29,13 +49,68 @@ import org.eclipse.draw2d.IFigure;
  *  </ol>
  *  For now, it does NOT support execution mode changes while activated.
  *
+ *  @author Jaka Bobnar - Original selection value PV support
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
 {
+    private DataBrowserWidgetFigure gui;
+
     /** Data Browser controller for D.B. Model and Plot, used in run mode */
     private Controller controller = null;
+
+    /** PV for writing the selected values */
+    private AtomicReference<PVWriter<Object>> pv = new AtomicReference<>();
+
+    /** Listener to plot, writing cursor data to pv.
+     *  Only listening to plot if PV is defined
+     */
+    final private PlotListener<Instant> plot_listener = new PlotListenerAdapter<Instant>()
+    {
+        @Override
+        public void changedCursors()
+        {
+            // Create VTable value from selected samples
+            final List<String> names = new ArrayList<>();
+            final List<String> times = new ArrayList<>();
+            final List<Double> values = new ArrayList<>();
+            for (Trace<Instant> trace : gui.getDataBrowserPlot().getPlot().getTraces())
+            {
+                names.add(trace.getName());
+                final Optional<PlotDataItem<Instant>> sample = trace.getSelectedSample();
+                if (sample.isPresent())
+                {
+                    times.add(TimeHelper.format(sample.get().getPosition()));
+                    values.add(sample.get().getValue());
+                }
+                else
+                {
+                    times.add("-");
+                    values.add(Double.NaN);
+                }
+            }
+            final VType value = ValueFactory.newVTable(
+                Arrays.asList(String.class, String.class, double.class),
+                Arrays.asList("Trace", "Timestamp", "Value"),
+                Arrays.<Object>asList(names,times, convert(values)));
+
+            final PVWriter<Object> safe_pv = pv.get();
+            if (safe_pv != null)
+                safe_pv.write(value);
+        }
+    };
+
+    /** @param values {@link List} of {@link Double}
+     *  @return {@link ListDouble}
+     */
+    private static ListDouble convert(final List<Double> values)
+    {
+        final double[] array = new double[values.size()];
+        for (int i=0; i<array.length; ++i)
+            array[i] = values.get(i);
+        return new ArrayDouble(array);
+    }
 
     /** @return Casted widget model */
     @Override
@@ -55,40 +130,8 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     protected IFigure doCreateFigure()
     {
         final DataBrowserWidgedModel model = getWidgetModel();
-
-        // Creating the figure/UI
-        final boolean running = getExecutionMode() == ExecutionMode.RUN_MODE;
-        // In edit mode, display the file name.
-        // In runmode, hide the file name, unless there _is_ no filename,
-        // then display the message.
-        final String filename;
-        if (running)
-        {
-            if (model.getPlainFilename().isEmpty())
-                filename = "";
-            else
-                filename = null;
-        }
-        else
-            filename = model.getPlainFilename().toString();
-        final DataBrowserWidgetFigure gui =
-            new DataBrowserWidgetFigure(filename, model.isToolbarVisible(), 
-            		model.getSelectionValuePv(), model.isShowAxisTrace(), model.isShowValueLabels());
-
-        if (running)
-        {   // In run mode, create a controller
-            try
-            {
-                // Connect plot to model (created by OPI/GEF)
-                controller = new Controller(null, model.createDataBrowserModel(),
-                        gui.getDataBrowserPlot());
-            }
-            catch (Exception ex)
-            {
-                Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot run Data Browser", ex);
-            }
-        }
-
+        gui = new DataBrowserWidgetFigure(this, model.isToolbarVisible(),
+        		model.getSelectionValuePv(), model.isShowValueLabels());
         return gui;
     }
 
@@ -96,54 +139,21 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     @Override
     protected void registerPropertyChangeHandlers()
     {
-        // File name
-        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_FILENAME, new IWidgetPropertyChangeHandler()
-        {
-            @Override
-            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure)
-            {
-                getWidgetFigure().setFilename(((IPath) newValue).toString());
-                return false;
-            }
-        });
-
-        // File name
-        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_TOOLBAR, new IWidgetPropertyChangeHandler()
-        {
-            @Override
-            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure)
+        // Tool bar
+        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_TOOLBAR,
+            (final Object oldValue, final Object newValue, final IFigure figure) ->
             {
                 getWidgetFigure().setToolbarVisible((Boolean) newValue);
                 return false;
-            }
-        });
-        
-        // Selection PV value
-        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SELECTION_VALUE_PV, new IWidgetPropertyChangeHandler() {			
-			@Override
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				getWidgetFigure().setSelectionValuePv((String) newValue.toString());
-				return false;
-			}
-		});
-        
-        // Show axis trace
-        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_AXIS_TRACE, new IWidgetPropertyChangeHandler() {			
-			@Override
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				getWidgetFigure().setShowAxisTrace((boolean) newValue);
-				return false;
-			}
-		});
-        
+            });
+
         // Show hover value labels
-        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_VALUE_LABELS, new IWidgetPropertyChangeHandler() {			
-			@Override
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				getWidgetFigure().setShowAxisTrace((boolean) newValue);
+        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_VALUE_LABELS,
+            (Object oldValue, Object newValue, IFigure figure) ->
+			{
+				getWidgetFigure().setShowValueLabels((boolean) newValue);
 				return false;
-			}
-		});
+			});
     }
 
     /** {@inheritDoc}} */
@@ -155,8 +165,26 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         {
             try
             {
-                if (controller != null  &&  !controller.isRunning())
-                    controller.start();
+                // Connect plot to model (created by OPI/GEF)
+                final ModelBasedPlot plot_widget = gui.getDataBrowserPlot();
+                controller = new Controller(null, getWidgetModel().createDataBrowserModel(),
+                        plot_widget);
+                controller.start();
+
+                // Have PV for cursor data?
+                final String pv_name = getWidgetModel().getSelectionValuePv();
+                if (! pv_name.isEmpty())
+                {
+                    pv.set(PVManager.write(ExpressionLanguage.channel(pv_name)).async());
+                    plot_widget.getPlot().addListener(plot_listener);
+                }
+
+                final MenuManager mm = new MenuManager();
+                mm.add(plot_widget.getPlot().getToolbarAction());
+                mm.add(new OpenDataBrowserAction(this));
+                final Control control = plot_widget.getPlot().getPlotControl();
+                final Menu menu = mm.createContextMenu(control);
+                control.setMenu(menu);
             }
             catch (Exception ex)
             {
@@ -173,8 +201,14 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         // In run mode, stop the controller, which will stop the model
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
         {
-            if (controller != null  &&  controller.isRunning())
-                controller.stop();
+            controller.stop();
+
+            final PVWriter<Object> safe_pv = pv.getAndSet(null);
+            if (safe_pv != null)
+            {
+                gui.getDataBrowserPlot().getPlot().removeListener(plot_listener);
+                safe_pv.close();
+            }
         }
         super.deactivate();
     }

@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.csstudio</groupId>
+		<artifactId>platform</artifactId>
+		<version>4.1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>platform-plugins</artifactId>
+	<packaging>pom</packaging>
+	<modules>
+		<module>org.csstudio.platform.jaasAuthentication</module>
+		<module>org.csstudio.platform.ldapAuthorization</module>
+		<module>org.csstudio.platform.libs.epics.ui</module>
+		<module>org.csstudio.platform.libs.hibernate.ui</module>
+		<module>org.csstudio.platform.utility.jms</module>
+		<module>org.csstudio.platform.utility.jms.test</module>
+		<module>org.csstudio.platform.utility.jms.ui</module>
+		<module>org.csstudio.platform.utility.rdb</module>
+		<module>org.csstudio.platform.utility.rdb.test</module>
+<!-- 		<module>org.csstudio.platform.simpledal</module> -->
+		<module>org.csstudio.java</module>
+		<module>org.csstudio.java.test</module>
+	</modules>
+</project>

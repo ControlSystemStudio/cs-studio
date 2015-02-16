@@ -27,10 +27,10 @@ public class FieldParserUnitTest
 	public void testFieldParser() throws Exception
 	{
 		final Map<String, List<String>> rec_fields =
-			FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK, SCAN )  ; calc(X, INPA-L)");
-		
+			FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK, SCAN )  ; calc(X, INPA-L);bigASub(INP001-128); Odd(ODD0-5)");
+
 		assertThat(rec_fields.get("quirk"), is(nullValue()));
-		
+
 		List<String> fields = rec_fields.get("ao");
 		assertThat(fields.size(), equalTo(4));
 		assertThat(fields.get(0), equalTo("DOL"));
@@ -43,5 +43,16 @@ public class FieldParserUnitTest
         assertThat(fields.get(0), equalTo("X"));
         assertThat(fields.get(1), equalTo("INPA"));
         assertThat(fields.get(12), equalTo("INPL"));
+
+        fields = rec_fields.get("bigASub");
+        assertThat(fields.size(), equalTo(128));
+        assertThat(fields.get(0), equalTo("INP001"));
+        assertThat(fields.get(1), equalTo("INP002"));
+        assertThat(fields.get(127), equalTo("INP128"));
+
+        fields = rec_fields.get("Odd");
+        assertThat(fields.size(), equalTo(6));
+        assertThat(fields.get(0), equalTo("ODD0"));
+        assertThat(fields.get(5), equalTo("ODD5"));
 	}
 }

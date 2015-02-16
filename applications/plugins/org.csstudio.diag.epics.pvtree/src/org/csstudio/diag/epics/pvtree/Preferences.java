@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -34,7 +34,7 @@ public class Preferences
      *  @throws Exception on error in the preference setting
      *  @see FieldParser
      */
-    public static HashMap<String, List<String>> getFieldInfo() throws Exception
+    public static Map<String, List<String>> getFieldInfo() throws Exception
     {
         final IPreferencesService preferences = Platform.getPreferencesService();
         final String fields_pref =

@@ -35,7 +35,7 @@ public class ExportTest implements ExportErrorHandler
         model.addItem(createPVItem("DTL_LLRF:IOC1:Load"));
         model.addItem(createPVItem("DTL_Vac:CCG301:Pcalc"));
         model.addItem(createPVItem("SCL_LLRF:IOC01a:Load"));
-        model.getItem(0).setDisplayName("CPU Load");
+        model.getItem("DTL_LLRF:IOC1:Load").setDisplayName("CPU Load");
         model.setTimerange("-48 hours", "now");
         return model;
     }

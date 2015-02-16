@@ -10,15 +10,16 @@ package org.csstudio.trends.databrowser2.propsheet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.swt.xygraph.undo.IUndoableCommand;
-import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.rtplot.undo.UndoableAction;
+import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 
 /** Undo-able command to change time axis
  *  @author Kay Kasemir
  */
-public class ChangeTimerangeCommand implements IUndoableCommand
+@SuppressWarnings("nls")
+public class ChangeTimerangeCommand extends UndoableAction
 {
     final private Model model;
     final private boolean old_scroll, new_scroll;
@@ -31,9 +32,10 @@ public class ChangeTimerangeCommand implements IUndoableCommand
      *  @param start
      *  @param end
      */
-    public ChangeTimerangeCommand(final Model model, final OperationsManager operationsManager,
+    public ChangeTimerangeCommand(final Model model, final UndoableActionManager operationsManager,
             final boolean scroll, final String start, final String end)
     {
+        super(Messages.TimeAxis);
         this.model = model;
         this.old_scroll = model.isScrollEnabled();
         this.old_start = model.getStartSpec();
@@ -41,13 +43,13 @@ public class ChangeTimerangeCommand implements IUndoableCommand
         this.new_scroll = scroll;
         this.new_start = start;
         this.new_end = end;
-        operationsManager.addCommand(this);
-        redo();
+        operationsManager.add(this);
+        run();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void redo()
+    public void run()
     {
         apply(new_scroll, new_start, new_end);
     }
@@ -76,12 +78,5 @@ public class ChangeTimerangeCommand implements IUndoableCommand
     		Logger.getLogger(getClass().getName()).log(Level.WARNING,
 				"Cannot update time range to " + start + " .. " + end, ex);
     	}
-    }
-
-    /** @return Command name that appears in undo/redo menu */
-    @Override
-    public String toString()
-    {
-        return Messages.TimeAxis;
     }
 }

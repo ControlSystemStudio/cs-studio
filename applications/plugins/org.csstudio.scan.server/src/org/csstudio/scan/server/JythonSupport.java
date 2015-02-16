@@ -10,8 +10,8 @@ package org.csstudio.scan.server;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,149 +20,129 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.python.core.Py;
 import org.python.core.PyException;
 import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
-import org.python.core.imp;
 import org.python.util.PythonInterpreter;
 
 /** Helper for obtaining Jython interpreter
+ *
+ *  TODO Join with org.csstudio.opibuilder.script.ScriptStoreFactory into a new org.csstudio.jython
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class JythonSupport
 {
-    private static boolean initialized = false;
-    private static List<String> paths = new ArrayList<String>();
-    private static ClassLoader plugin_class_loader;
+    private static List<String> paths = init();
 
 	final private PythonInterpreter interpreter;
 
-	/** Locate a path inside a bundle.
-	 *
-	 *  <p>If the bundle is JAR-ed up, the {@link FileLocator} will
-	 *  return a location with "file:" and "..jar!/path".
-	 *  This method patches the location such that it can be used
-	 *  on the Jython path.
-	 *
-	 *  @param bundle_name Name of bundle
-	 *  @param path_in_bundle Path within bundle
-	 *  @return Location of that path within bundle, or <code>null</code> if not found or no bundle support
-	 *  @throws IOException on error
-	 */
-	private static String getPluginPath(final String bundle_name, final String path_in_bundle) throws IOException
+	/** Perform static, one-time initialization */
+	private static List<String> init()
 	{
-	    final Bundle bundle = Platform.getBundle(bundle_name);
-        if (bundle == null)
-            return null;
-        final URL url = FileLocator.find(bundle, new Path(path_in_bundle), null);
-        if (url == null)
-            return null;
-        String path = FileLocator.resolve(url).getPath();
+        final List<String> paths = new ArrayList<String>();
+        try
+        {   // Add Jython's /Lib to path
+            final Bundle bundle = Platform.getBundle("org.python.jython");
+            if (bundle == null)
+                throw new Exception("Cannot locate jython bundle");
+            // Different packaging where jython.jar is expanded, /Lib at plugin root
+            String home = FileLocator.resolve(new URL("platform:/plugin/org.python.jython")).getPath();
+            // Turn politically correct URL path digestible by jython
+            if (home.startsWith("file:/"))
+                home = home.substring(5);
+            home = home.replace(".jar!", ".jar");
+            paths.add(home + "Lib/");
 
-        path = path.replace("file:/", "/");
-        path = path.replace(".jar!/", ".jar/");
-
-        return path;
-	}
-
-	/** Perform static, one-time initialization
-	 *  @throws Exception on error
-	 */
-	private static synchronized void init() throws Exception
-	{
-	    if (!initialized)
-	    {
-	        // Add org.python.jython/jython.jar/Lib to Python path
-	        String path = getPluginPath("org.python.jython", "jython.jar");
-	        if (path != null)
-	        {
-	            paths.add(path + "/Lib");
-
-	            // Have Platform support, so create combined class loader that
-	            // first uses this plugin's class loaded and has thus access
-	            // to everything that the plugin can reach.
-	            // Fall back to the original Jython class loaded.
-	            plugin_class_loader = new ClassLoader()
+            // Add scan script paths
+            final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
+            for (String pref_path : pref_paths)
+            {   // Resolve platform:/plugin/...
+                if (pref_path.startsWith("platform:/plugin/"))
                 {
-	                @Override
-	                public Class<?> loadClass(final String name) throws ClassNotFoundException
-	                {
-	                    // Temporarily set class loader to null,
-	                    // which is the original status of SystemState.
-	                    final ClassLoader saveClassLoader = Py.getSystemState().getClassLoader();
-	                    Py.getSystemState().setClassLoader(null);
-	                    try
-	                    {
-	                        return JythonSupport.class.getClassLoader().loadClass(name);
-	                    }
-	                    catch (Exception e)
-	                    {
-	                        return imp.getSyspathJavaLoader().loadClass(name);
-	                    }
-	                    finally {
-	                        Py.getSystemState().setClassLoader(saveClassLoader);
-	                    }
-	                }
+                    final String plugin_path = pref_path.substring(17);
+                    // Locate name of plugin and path within plugin
+                    final int sep = plugin_path.indexOf('/');
+                    final String plugin, path_within;
+                    if (sep < 0)
+                    {
+                        plugin = plugin_path;
+                        path_within = "/";
+                    }
+                    else
+                    {
+                        plugin = plugin_path.substring(0, sep);
+                        path_within = plugin_path.substring(sep + 1);
+                    }
+                    final String path = getPluginPath(plugin, path_within);
+                    if (path == null)
+                        throw new Exception("Error in scan script path " + pref_path);
+                    else
+                        paths.add(path);
+                }
+                else // Add as-is
+                    paths.add(pref_path);
+            }
 
-	                @Override
-	                public Enumeration<URL> getResources(final String name) throws IOException
-	                {
-	                    return JythonSupport.class.getClassLoader().getResources(name);
-	                }
-                };
-	        }
+            // Disable cachedir to avoid creation of cachedir folder.
+            // See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
+            // and http://wiki.python.org/jython/PackageScanning
+            final Properties props = new Properties();
+            props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true");
 
-	        // Add numji
-	        path = getPluginPath("org.csstudio.numjy", "jython");
-	        if (path != null)
-                paths.add(path);
+            // Jython 2.7(b3) needs these to set sys.prefix and sys.executable.
+            // If left undefined, initialization of Lib/site.py fails with
+            // posixpath.py", line 394, in normpath AttributeError:
+            // 'NoneType' object has no attribute 'startswith'
+            props.setProperty("python.home", home);
+            props.setProperty("python.executable", "css");
 
-	        // Add scan script paths
-	        final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
-	        for (String pref_path : pref_paths)
-	        {   // Resolve platform:/plugin/...
-	            if (pref_path.startsWith("platform:/plugin/"))
-	            {
-	                final String plugin_path = pref_path.substring(17);
-	                // Locate name of plugin and path within plugin
-	                final int sep = plugin_path.indexOf('/');
-	                final String plugin;
-	                if (sep < 0)
-	                {
-	                    plugin = plugin_path;
-	                    path = "/";
-	                }
-	                else
-	                {
-	                    plugin = plugin_path.substring(0, sep);
-	                    path = plugin_path.substring(sep + 1);
-	                }
-	                path = getPluginPath(plugin, path);
-	                if (path == null)
-	                    throw new Exception("Error in scan script path " + pref_path);
-	                else
-	                    paths.add(path);
-	            }
-	            else // Add as-is
-	                paths.add(pref_path);
-	        }
-
-	        initialized = true;
-	    }
+            PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(JythonSupport.class.getName()).
+                log(Level.SEVERE, "Once this worked OK, but now the Jython initialization failed. Don't you hate computers?", ex);
+        }
+        return paths;
 	}
+
+    /** Locate a path inside a bundle.
+    *
+    *  <p>If the bundle is JAR-ed up, the {@link FileLocator} will
+    *  return a location with "file:" and "..jar!/path".
+    *  This method patches the location such that it can be used
+    *  on the Jython path.
+    *
+    *  @param bundle_name Name of bundle
+    *  @param path_in_bundle Path within bundle
+    *  @return Location of that path within bundle, or <code>null</code> if not found or no bundle support
+    *  @throws IOException on error
+    */
+   private static String getPluginPath(final String bundle_name, final String path_in_bundle) throws IOException
+   {
+       final Bundle bundle = Platform.getBundle(bundle_name);
+       if (bundle == null)
+           return null;
+       final URL url = FileLocator.find(bundle, new Path(path_in_bundle), null);
+       if (url == null)
+           return null;
+       String path = FileLocator.resolve(url).getPath();
+
+       path = path.replace("file:/", "/");
+       path = path.replace(".jar!/", ".jar/");
+
+       return path;
+   }
 
     /** Initialize
      *  @throws Exception on error
      */
 	public JythonSupport() throws Exception
 	{
-	    init();
 		final PySystemState state = new PySystemState();
-		if (plugin_class_loader != null)
-		    state.setClassLoader(plugin_class_loader);
 
 		// Path to Python standard lib, numjy, scan system
         for (String path : paths)
