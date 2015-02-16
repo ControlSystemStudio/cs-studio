@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
@@ -52,7 +53,7 @@ public class PVTreeView extends ViewPart
 
     // Memento tags
     private static final String PV_TAG = "pv"; //$NON-NLS-1$
-    // private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
+    private static final String PV_FREEZE = "freeze_on_alarm"; //$NON-NLS-1$
 
     private IMemento memento;
 
@@ -88,6 +89,7 @@ public class PVTreeView extends ViewPart
     {
         super.saveState(memento);
         memento.putString(PV_TAG, pv_name.getText());
+        memento.putBoolean(PV_FREEZE, model.isFreezingOnAlarm());
     }
 
     /** Create the GUI. */
@@ -195,14 +197,12 @@ public class PVTreeView extends ViewPart
             }
         });
 
-        // Populate PV list
-        // pv_name_helper.loadSettings();
-
         if (memento != null)
         {
-            String pv_name = memento.getString(PV_TAG);
+            final String pv_name = memento.getString(PV_TAG);
             if (pv_name != null  &&  pv_name.length() > 0)
                 setPVName(pv_name);
+            model.freezeOnAlarm(Optional.ofNullable(memento.getBoolean(PV_FREEZE)).orElse(false));
         }
     }
 

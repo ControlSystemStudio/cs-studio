@@ -233,7 +233,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
 
             viewer.update(item, null);
             if (frozen && !was_frozen)
-                tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
+                tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND));
         });
     }
 
