@@ -13,11 +13,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
@@ -26,6 +24,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SeverityIconProvider
 {
+    private static final int GRAY = 192;
+
     /** Pixel widths/height of icon */
     final private static int ICON_SIZE = 12;
 
@@ -35,8 +35,11 @@ public class SeverityIconProvider
     /** Icon to use for disabled items */
     final private Image disabled;
 
-    /** Icons to use for the various severity levels */
-    final private Image icons[][];
+    /** Icons to use for the various severity levels.
+     *  Index 0: Alarm severity
+     *  Index 1: Current alarm severity
+     *  Index 2: Anything disabled? */
+    final private Image icons[][][];
 
     /** Initialize
      *  @param parent Parent widget
@@ -45,7 +48,6 @@ public class SeverityIconProvider
     {
         final Display display = parent.getDisplay();
 
-        RGB gray = display.getSystemColor(SWT.COLOR_GRAY).getRGB();
         final  BufferedImage awtImage = new BufferedImage(ICON_SIZE, ICON_SIZE,
         				BufferedImage.TYPE_INT_RGB);
 		Graphics g = awtImage.getGraphics();
@@ -53,12 +55,12 @@ public class SeverityIconProvider
         g.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
 
         // Left rectangle for 'latched', right for 'current' indicator
-        g.setColor(new Color(gray.red,gray.green,gray.blue));
+        g.setColor(new Color(GRAY, GRAY, GRAY));
         g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
-        
+
         disabled = makeSWTImage(display, awtImage);
         g.dispose();
-        
+
         icons = createIcons(display);
         parent.addDisposeListener(new DisposeListener()
         {
@@ -68,15 +70,16 @@ public class SeverityIconProvider
                 final int N = icons.length;
                 for (int c=0; c<N; ++c)
                     for (int s=0; s<N; ++s)
-                        icons[c][s].dispose();
+                        for (int d=0; d<2; ++d)
+                            icons[c][s][d].dispose();
                 disabled.dispose();
             }
         });
     }
 
     /**
-     * Convert AWT image to SWT Image (usefull for RAP)
-     * 
+     * Convert AWT image to SWT Image (useful for RAP)
+     *
      * @param display
      * @param awtImage
      * @return
@@ -89,16 +92,16 @@ public class SeverityIconProvider
 		final Graphics2D g2d = bufferedImage.createGraphics();
 		g2d.drawImage(awtImage, 0, 0, null);
 		g2d.dispose();
-		
+
 		return new Image(display,
 				AWT2SWTImageConverter.convertToSWT(bufferedImage));
 	}
 
     /** @return Array of icons */
-    private Image[][] createIcons(final Display display)
+    private Image[][][] createIcons(final Display display)
     {
         final SeverityLevel[] severities = SeverityLevel.values();
-        final Image icons[][] = new Image[severities.length][severities.length];
+        final Image icons[][][] = new Image[severities.length][severities.length][2];
         // Use AWT to be able to draw icon in RAP version
         for (int c = 0; c < severities.length; c++)
         {
@@ -106,7 +109,8 @@ public class SeverityIconProvider
 					severities[c].getRed(),
 					severities[c].getGreen(),
 					severities[c].getBlue());
-			for (int s = 0; s < severities.length; s++) {
+			for (int s = 0; s < severities.length; s++)
+			{
 				final Color s_col = new Color(
 						severities[s].getRed(),
 						severities[s].getGreen(),
@@ -121,12 +125,20 @@ public class SeverityIconProvider
                 g.setColor(s_col);
                 g.setClip(0, 0, ICON_SIZE/2, ICON_SIZE);
                 g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
-                
+
                 g.setColor(c_col);
                 g.setClip(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE);
                 g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
 
-                icons[c][s] = makeSWTImage(display, awtImage);
+                // Icon without indicator for any disabled alarms
+                icons[c][s][0] = makeSWTImage(display, awtImage);
+
+                // Add grey area to indicate disabled alarms
+                g.setClip(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE/2);
+                g.setColor(new Color(GRAY, GRAY, GRAY));
+                g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
+                icons[c][s][1] = makeSWTImage(display, awtImage);
+
                 g.dispose();
             }
         }
@@ -144,11 +156,12 @@ public class SeverityIconProvider
     /** Obtain icon suitable for displaying a severity level
      *  @param current_severity Current severity
      *  @param severity Latched SeverityLevel
+     *  @param anything_disabled Well, is there?
      *  @return Icon for those severities
      */
     public Image getIcon(final SeverityLevel current_severity,
-            final SeverityLevel severity)
+            final SeverityLevel severity, final boolean anything_disabled)
     {
-        return icons[current_severity.ordinal()][severity.ordinal()];
+        return icons[current_severity.ordinal()][severity.ordinal()][anything_disabled ? 1 : 0];
     }
 }

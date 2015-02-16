@@ -66,7 +66,8 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         }
         else
             cell.setImage(icon_provider.getIcon(item.getCurrentSeverity(),
-                          item.getSeverity()));
+                          item.getSeverity(),
+                          item.getDisabledChildCount() > 0));
 
         // Color-code AlarmTreePV based on severity.
         final SeverityLevel severity = item.getSeverity();

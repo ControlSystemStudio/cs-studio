@@ -66,7 +66,6 @@ public class DisableComponentAction extends Action
 	    final List<AlarmTreePV> pvs = new ArrayList<>();
         for (AlarmTreeItem item : items)
             addPVs(pvs, item);
-
         if (pvs.size() > 0)
             if (!MessageDialog.openConfirm(shell, getText(),
                 NLS.bind(doEnable()
@@ -88,10 +87,17 @@ public class DisableComponentAction extends Action
         }
 	}
 
+	/** @param pvs List where PVs to enable/disable will be added
+	 *  @param item Item for which to locate PVs, recursively
+	 */
     protected void addPVs(final List<AlarmTreePV> pvs, final AlarmTreeItem item)
     {
         if (item instanceof AlarmTreePV)
-            pvs.add((AlarmTreePV) item);
+        {
+            final AlarmTreePV pv = (AlarmTreePV) item;
+            if (pv.isEnabled() != doEnable())
+                pvs.add(pv);
+        }
         else
         {
             final int N = item.getChildCount();
