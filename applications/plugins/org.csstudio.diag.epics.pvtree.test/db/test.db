@@ -1,0 +1,16 @@
+record(calc, "ramp")
+{
+    field(INPA, "ramp")
+    field(CALC, "A<10?A+1:0")
+    field(HSV,  "MINOR")
+    field(HIGH, "8")
+    field(HHSV, "MAJOR")
+    field(HIHI, "9")
+}
+
+record(calc, "tree")
+{
+    field(INPA, "ramp PP MS")
+    field(SCAN, "1 second")
+}
+    
