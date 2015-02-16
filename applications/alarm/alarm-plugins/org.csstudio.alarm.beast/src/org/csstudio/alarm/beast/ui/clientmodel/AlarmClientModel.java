@@ -702,6 +702,37 @@ public class AlarmClientModel
         }
     }
 
+    /** Change a PV's enable/disable state in RDB
+     *  and send JMS config update.
+     *  Receiving that update will then adjust PV in this model.
+     *  @param pv PV
+     *  @param enabled Are alarms enabled?
+     *  @throws Exception on error
+     */
+    public void enable(final AlarmTreePV pv, final boolean enabled) throws Exception
+    {
+        if (! allow_write)
+            return;
+        synchronized (this)
+        {
+            if (config == null)
+                return;
+            try
+            {
+                config.updatePVEnablement(pv, enabled);
+            }
+            finally
+            {
+                config.closeStatements();
+            }
+        }
+        synchronized (communicator_lock)
+        {
+            if (communicator != null)
+                communicator.sendConfigUpdate(pv.getPathName());
+        }
+    }
+
     /** Change item's name
      *  @param item Item to change
      *  @param new_name New name for the item
