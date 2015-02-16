@@ -2,6 +2,8 @@ record(calc, "ramp")
 {
     field(INPA, "ramp")
     field(CALC, "A<10?A+1:0")
+    field(HSV,  "MINOR")
+    field(HIGH, "8")
     field(HHSV, "MAJOR")
     field(HIHI, "9")
 }

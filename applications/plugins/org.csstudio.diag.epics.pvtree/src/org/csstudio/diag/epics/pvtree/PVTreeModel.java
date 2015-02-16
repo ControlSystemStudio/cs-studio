@@ -8,8 +8,8 @@
 package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -38,7 +38,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     private PVTreeItem root;
 
     /** Map from record type to fields to read for that type */
-    final private HashMap<String, List<String>> field_info;
+    final private Map<String, List<String>> field_info;
 
     private volatile boolean freeze_on_alarm = false;
 
@@ -58,16 +58,18 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** @return Field info for all record types
      *  @see FieldParser
      */
-    HashMap<String, List<String>> getFieldInfo()
+    Map<String, List<String>> getFieldInfo()
     {
         return field_info;
     }
 
+	/** @return Is model configured to freeze on alarm? */
     public boolean isFreezingOnAlarm()
     {
         return freeze_on_alarm;
     }
 
+    /** @param yes_no Should updates freeze on alarm? */
     public void freezeOnAlarm(final boolean yes_no)
     {
         freeze_on_alarm = yes_no;
@@ -102,7 +104,13 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** Re-initialize the model with a new root PV. */
     public void setRootPV(final String name)
     {
+        final boolean was_frozen = frozen;
         frozen = false;
+        if (was_frozen)
+        {
+            final Tree tree = viewer.getTree();
+            tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        }
         if (root != null)
         {
             root.dispose();
