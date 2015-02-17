@@ -28,9 +28,9 @@ import org.csstudio.logging.JMSLogMessage;
 
 /**
  * Main thread for automated actions.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ * @author Xinyu Wu - notify only on escalating alarms
  */
 public class AlarmNotifier {
 
@@ -45,6 +45,9 @@ public class AlarmNotifier {
 	/** Automated actions factory */
 	final private AutomatedActionFactory factory;
 
+	final private boolean notify_escalating_alarms_only;
+
+
 	/** Queue which handles pending actions */
 	final private WorkQueue workQueue;
 
@@ -52,10 +55,12 @@ public class AlarmNotifier {
 
 	public AlarmNotifier(final String root_name,
 			final IAlarmRDBHandler rdbHandler,
-			final AutomatedActionFactory factory, final int timer_threshold)
+			final AutomatedActionFactory factory, final int timer_threshold,
+			final boolean notify_escalating_alarms_only)
 			throws Exception {
 		this.rdb = rdbHandler;
 		this.factory = factory;
+		this.notify_escalating_alarms_only = notify_escalating_alarms_only;
 		this.workQueue = new WorkQueue(timer_threshold, 60000); // 60s
 	}
 
@@ -78,7 +83,7 @@ public class AlarmNotifier {
 
 	/**
 	 * Read info about {@link AlarmTreeItem} from model.
-	 * 
+	 *
 	 * @param path, path of the item
 	 * @return ItemInfo
 	 */
@@ -89,11 +94,13 @@ public class AlarmNotifier {
 
 	/**
 	 * Start automated action for the given PV and its parents.
-	 * 
+	 *
 	 * @param pvItem
 	 */
 	public synchronized void handleAlarmUpdate(AlarmTreePV pvItem) {
 		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
+		if (skipItem(snapshot))
+		    return;
 		if (!pvItem.isEnabled()) {
 			// Ignore PV, it's disabled
 			AlarmNotifierHistory.getInstance().clear(snapshot);
@@ -128,6 +135,25 @@ public class AlarmNotifier {
 				break;
 		}
 		AlarmNotifierHistory.getInstance().addSnapshot(snapshot);
+	}
+
+	/** Check if an alarm update can be ignored for notification purposes
+	 *  @param snapshot Alarm update
+	 *  @return <code>true</code> if update can be ignored
+	 */
+	private boolean skipItem(final PVSnapshot snapshot) {
+	    // only skip if we only want to notify escalating alarms
+	    if (!notify_escalating_alarms_only)
+	        return false;
+
+	    // skip if this is an ACK or OK
+	    if (snapshot.getSeverity().compareTo(SeverityLevel.UNDEFINED_ACK) <= 0)
+	        return true;
+
+	    // skip this item if current severity less than alarm severity
+	    if (snapshot.getCurrentSeverity().compareTo(snapshot.getSeverity())<0)
+	        return true;
+	    return false;
 	}
 
 	private void handleAutomatedAction(PVSnapshot snapshot,

@@ -28,6 +28,10 @@ import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
+/**
+ *  @author Fred Arnaud (Sopra Group)
+ *  @author Xinyu Wu - notify only on escalating alarms
+ */
 public class Application implements IApplication {
 
 	private static final String[] VERBOSE_PACKAGES = new String[] {
@@ -41,7 +45,7 @@ public class Application implements IApplication {
 
     /** {@inheritDoc} */
     @Override
-	public Object start(final IApplicationContext context) throws Exception 
+	public Object start(final IApplicationContext context) throws Exception
 	{
 		// Set upper log level on too verbose packages
 		Level verboseLogLevel = org.csstudio.alarm.beast.notifier.Preferences.getVerboseLogLevel();
@@ -52,13 +56,13 @@ public class Application implements IApplication {
 				handler.setLevel(verboseLogLevel);
 			}
 			//keep strong references so log manager doesn't release and recreate the loggers with default level
-			strongRefLoggers.add(logger); 
+			strongRefLoggers.add(logger);
 		}
 
 		// Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-        
+
     	// Create parser for arguments and run it.
         final String args[] = (String []) context.getArguments().get("application.args");
 
@@ -103,12 +107,16 @@ public class Application implements IApplication {
         LogConfigurator.configureFromPreferences();
         Activator.getLogger().info(app_info + " started for '" + config_name.get() + "' configuration");
         System.out.println(app_info);
+
+        final int timer_threshold = org.csstudio.alarm.beast.notifier.Preferences.getTimerThreshold();
+        final boolean notify_escalating_alarms_only = org.csstudio.alarm.beast.notifier.Preferences.getNotifyEscalatingAlarmsOnly();
         System.out.println("Configuration Root: " + config_name.get());
         System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name.get()));
         System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name.get()));
         System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
-        System.out.println("Notifier timer threshold: " + org.csstudio.alarm.beast.notifier.Preferences.getTimerThreshold());
-        
+        System.out.println("Notifier timer threshold: " + timer_threshold);
+        System.out.println("Notifier notify_escalating_alarms_only: " + notify_escalating_alarms_only);
+
 		try {
 			List<IApplicationListener> listeners = NotifierUtils.getListeners();
 			if (listeners != null)
@@ -117,9 +125,8 @@ public class Application implements IApplication {
 			AutomatedActionFactory factory = AutomatedActionFactory.getInstance();
 			factory.init(NotifierUtils.getActions());
 			final IAlarmRDBHandler rdbHandler = new AlarmRDBHandler(config_name.get());
-			final int timer_threshold = org.csstudio.alarm.beast.notifier.Preferences.getTimerThreshold();
 			final AlarmNotifier alarm_notifier = new AlarmNotifier(
-					config_name.get(), rdbHandler, factory, timer_threshold);
+					config_name.get(), rdbHandler, factory, timer_threshold, notify_escalating_alarms_only);
 			rdbHandler.init(alarm_notifier);
 			alarm_notifier.start();
 			while (run) {
