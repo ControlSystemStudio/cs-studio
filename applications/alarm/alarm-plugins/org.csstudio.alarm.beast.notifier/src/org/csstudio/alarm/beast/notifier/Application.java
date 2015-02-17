@@ -37,7 +37,10 @@ public class Application implements IApplication {
 	private static final String[] VERBOSE_PACKAGES = new String[] {
 			"com.sun.jersey.core.spi.component",
 			"com.sun.jersey.core.spi.component.ProviderServices",
-			"com.sun.jersey.spi.service.ServiceFinder" };
+			"com.sun.jersey.spi.service.ServiceFinder",
+			"org.apache.activemq",
+			"com.sun.mail"
+	};
 	private final List<Logger> strongRefLoggers = new ArrayList<>();
 
 	final public static String APPLICATION_NAME = "AlarmNotifier";
