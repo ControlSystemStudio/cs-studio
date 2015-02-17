@@ -38,6 +38,8 @@ import org.epics.util.time.Timestamp;
  */
 public class AlarmTreeItem extends TreeItem
 {
+    private int disabled_children = 0;
+
     /** Sub-tree elements of this item which are currently in alarm */
     final private List<AlarmTreeItem> alarm_children = new ArrayList<AlarmTreeItem>();
 
@@ -118,6 +120,12 @@ public class AlarmTreeItem extends TreeItem
         return (AlarmTreeItem) super.getParent();
     }
 
+    /** @return Number of child nodes */
+    final public synchronized int getDisabledChildCount()
+    {
+        return disabled_children;
+    }
+
     /** {@inheritDoc} */
     @Override
     public AlarmTreeItem getChild(final int i)
@@ -141,7 +149,7 @@ public class AlarmTreeItem extends TreeItem
     {
         return (AlarmTreeItem) super.getItemByPath(path);
     }
-    
+
     /** @return Guidance messages */
     public synchronized GDCDataStructure[] getGuidance()
     {
@@ -311,8 +319,8 @@ public class AlarmTreeItem extends TreeItem
     /** Set severity/status of this item by maximizing over its child
      *  severities.
      *  Recursively updates parent items.
-     *  
-     *  @return <code>true</code> if the severity of this item or any of its parents changed after 
+     *
+     *  @return <code>true</code> if the severity of this item or any of its parents changed after
      *  		this method is executed, or <code>false</code> if the severity remained the same
      */
     public synchronized boolean maximizeSeverity()
@@ -323,6 +331,7 @@ public class AlarmTreeItem extends TreeItem
     	SeverityLevel new_severity = SeverityLevel.OK;
         String new_message = SeverityLevel.OK.getDisplayName();
         alarm_children.clear();
+        disabled_children = 0;
         final int n = getChildCount();
         for (int i=0; i<n; ++i)
         {
@@ -340,6 +349,13 @@ public class AlarmTreeItem extends TreeItem
             	new_severity = child_sevr;
             	new_message = child.getMessage();
             }
+            if (child instanceof AlarmTreePV)
+            {
+                if ( ((AlarmTreePV) child).isEnabled() == false)
+                    ++disabled_children;
+            }
+            else
+                disabled_children += child.getDisabledChildCount();
         }
 
         if (new_current_severity != current_severity  ||
