@@ -37,6 +37,6 @@
   	<module>org.csstudio.utility.singlesource.rcp</module>
   	<module>org.csstudio.utility.singlesource.test</module>
   	<module>org.csstudio.utility.test</module>
-  	<module>org.csstudio.utility.pvmanager.widgets.test</module>
+  	<!--module>org.csstudio.utility.pvmanager.widgets.test</module-->
   </modules>
 </project>
