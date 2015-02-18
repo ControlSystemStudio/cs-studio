@@ -31,6 +31,7 @@ public class Messages extends NLS {
 	public static String Status_FAILED;
 
 	public static String Reason_Recovered;
+    public static String Reason_RecoveredFmt;
 	public static String Reason_Acknowledged;
 	public static String Reason_NoDelay;
 	public static String Reason_SubActionsCanceled;

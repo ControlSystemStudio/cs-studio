@@ -11,10 +11,11 @@ import org.eclipse.equinox.app.IApplicationContext;
 
 /**
  * Listener called when application is started.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
+@SuppressWarnings("nls")
 public interface IApplicationListener {
 
 	/** ID of the extension point, defined in plugin.xml */
