@@ -19,21 +19,23 @@ import org.csstudio.email.EmailUtils;
 /**
  * Handler for EMail command:
  * Parse {@link AADataStructure} details to extract information.
- * Exemple: 
+ * Exemple:
  *     mailto:rf_support@iter.org;rf_operator@iter.org?cc=rf.ro@iter.org&subject=RF Source 1 in error&body=Major Alarm raised
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class EMailCommandHandler extends AbstractCommandHandler {
-	
+
 	private List<String> to, cc, cci;
 	private String subject, body;
-	
+
 	public EMailCommandHandler(String details) {
 		super(details, "mailto");
 	}
-	
-	protected void handleParameter(String data, ParamType type) throws Exception {
+
+	@Override
+    protected void handleParameter(String data, ParamType type) throws Exception {
 		if (type == null || data == null) return;
 		switch (type) {
 		case To:
@@ -56,7 +58,7 @@ public class EMailCommandHandler extends AbstractCommandHandler {
 			break;
 		}
 	}
-	
+
 	private List<String> extractEmailAdresses(String data) throws Exception {
 		final Pattern emailPattern = Pattern.compile(EmailUtils.EMAIL_REG_EXP);
 		StringTokenizer st = new StringTokenizer(data, DELIMITERS);
@@ -74,10 +76,10 @@ public class EMailCommandHandler extends AbstractCommandHandler {
 	/** @return <code>true</code> if the EMail command define a recipient, a subject and a body */
 	public boolean isComplete() {
 		return ((getTo() != null && !getTo().isEmpty())
-				&& (getSubject() != null && !"".equals(getSubject().trim())) 
+				&& (getSubject() != null && !"".equals(getSubject().trim()))
 				&& (getBody() != null && !"".equals(getBody().trim())));
 	}
-	
+
 	public List<String> getTo() {
 		return to;
 	}

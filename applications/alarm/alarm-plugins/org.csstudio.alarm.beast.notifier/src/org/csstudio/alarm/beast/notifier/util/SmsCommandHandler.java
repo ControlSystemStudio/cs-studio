@@ -17,21 +17,23 @@ import org.csstudio.alarm.beast.client.AADataStructure;
 /**
  * Handler for SMS command:
  * Parse {@link AADataStructure} details to extract information.
- * Exemple: 
+ * Exemple:
  *     sms:+33 6 03 74 36 61?body={0} Alarm raised - Water below {1} m3
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class SmsCommandHandler extends AbstractCommandHandler {
 
 	private List<String> to;
 	private String body;
-	
+
 	public SmsCommandHandler(String details) {
 		super(details, "sms");
 	}
-	
-	protected void handleParameter(String data, ParamType type) throws Exception {
+
+	@Override
+    protected void handleParameter(String data, ParamType type) throws Exception {
 		if (type == null || data == null) return;
 		switch (type) {
 		case To:
@@ -45,7 +47,7 @@ public class SmsCommandHandler extends AbstractCommandHandler {
 			break;
 		}
 	}
-	
+
 	private List<String> extractSMSNumbers(String data) throws Exception {
 		StringTokenizer st = new StringTokenizer(data, DELIMITERS);
 		List<String> smsList = new ArrayList<String>();
@@ -58,7 +60,7 @@ public class SmsCommandHandler extends AbstractCommandHandler {
 		}
 		return smsList;
 	}
-	
+
 	public List<String> getTo() {
 		return to;
 	}

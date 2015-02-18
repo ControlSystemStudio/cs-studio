@@ -23,6 +23,7 @@ import org.csstudio.email.JavaxMailSender;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class SmsActionImpl extends AbstractMailActionImpl {
 
 	/** {@inheritDoc} */
@@ -57,7 +58,7 @@ public class SmsActionImpl extends AbstractMailActionImpl {
 		mailSender.setBody(buildBody());
 		mailSender.send();
 	}
-	
+
 	public void dump() {
 		System.out.println("SmsActionImpl [\n\tto= " + mailSender.getTo()
 				+ "\n\tsubject= " + mailSender.getSubject() + "\n]");

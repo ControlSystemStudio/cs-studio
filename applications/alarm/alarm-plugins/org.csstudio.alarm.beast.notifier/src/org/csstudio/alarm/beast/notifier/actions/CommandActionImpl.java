@@ -28,6 +28,7 @@ import org.csstudio.java.string.StringSplitter;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class CommandActionImpl implements IAutomatedAction {
 
 	/** Command to run. Format depends on OS */
@@ -88,7 +89,7 @@ public class CommandActionImpl implements IAutomatedAction {
 			execCmd(dir, expanded_command, wait);
 		} else execCmd(dir, command, wait);
 	}
-	
+
 	public void execCmd(String dir_name, String command, int wait) {
 		// Execute command in a certain directory
 		final File dir = new File(dir_name);
@@ -138,13 +139,13 @@ public class CommandActionImpl implements IAutomatedAction {
 		state = CommandState.FINISHED_ERROR;
 		error(exit_code, stderr.getText());
 	}
-	
+
 	private void error(final int exit_code, final String stderr) {
 		Activator.getLogger().log(Level.WARNING,
 						"Failed to execute command: {0}, exit code: {1}, stderr: {2}",
 						new Object[] { command, exit_code, stderr });
 	}
-	
+
 	/** @return Command state */
 	public CommandState getCommandState() {
 		return state;

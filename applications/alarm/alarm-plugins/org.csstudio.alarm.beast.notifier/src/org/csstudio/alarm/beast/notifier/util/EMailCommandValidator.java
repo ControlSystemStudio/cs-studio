@@ -16,21 +16,24 @@ import org.csstudio.alarm.beast.notifier.model.IActionValidator;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class EMailCommandValidator implements IActionValidator {
 
 	private String details;
 	private EMailCommandHandler handler;
-	
-	public void init(String details) {
+
+	@Override
+    public void init(String details) {
 		this.details = details == null ? null : details.trim();
 		handler = new EMailCommandHandler(details);
 	}
-	
+
 	/** @return handler for EMail command */
-	public EMailCommandHandler getHandler() {
+	@Override
+    public EMailCommandHandler getHandler() {
 		return handler;
 	}
-	
+
 	@Override
 	public boolean validate() throws Exception {
 		if (details == null || "".equals(details)) {
@@ -42,5 +45,5 @@ public class EMailCommandValidator implements IActionValidator {
 		}
 		return true;
 	}
-	
+
 }
