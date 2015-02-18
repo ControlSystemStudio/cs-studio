@@ -30,11 +30,12 @@ import org.csstudio.logging.JMSLogMessage;
  * Main thread for automated actions.
  *
  * @author Fred Arnaud (Sopra Group)
- * @author Xinyu Wu - notify only on escalating alarms
+ * @author Kay Kasemir - One loop in handleAlarmUpdate for all actions up the tree
  */
+@SuppressWarnings("nls")
 public class AlarmNotifier {
-
-	private boolean debug = false;
+	
+    private boolean debug = false;
 
 	/** Name of alarm tree root element */
 	final String rootName = Preferences.getAlarmTreeRoot();
@@ -45,9 +46,6 @@ public class AlarmNotifier {
 	/** Automated actions factory */
 	final private AutomatedActionFactory factory;
 
-	final private boolean notify_escalating_alarms_only;
-
-
 	/** Queue which handles pending actions */
 	final private WorkQueue workQueue;
 
@@ -55,12 +53,10 @@ public class AlarmNotifier {
 
 	public AlarmNotifier(final String root_name,
 			final IAlarmRDBHandler rdbHandler,
-			final AutomatedActionFactory factory, final int timer_threshold,
-			final boolean notify_escalating_alarms_only)
+			final AutomatedActionFactory factory, final int timer_threshold)
 			throws Exception {
 		this.rdb = rdbHandler;
 		this.factory = factory;
-		this.notify_escalating_alarms_only = notify_escalating_alarms_only;
 		this.workQueue = new WorkQueue(timer_threshold, 60000); // 60s
 	}
 
@@ -70,7 +66,7 @@ public class AlarmNotifier {
 	}
 
 	/** Connect to JMS */
-	public void start() {
+    public void start() {
 		Activator.getLogger().log(Level.INFO, "Alarm Notifier started");
 	}
 
@@ -97,20 +93,19 @@ public class AlarmNotifier {
 	 *
 	 * @param pvItem
 	 */
-	public synchronized void handleAlarmUpdate(AlarmTreePV pvItem) {
-		final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
-		if (skipItem(snapshot))
-		    return;
-		if (!pvItem.isEnabled()) {
-			// Ignore PV, it's disabled
-			AlarmNotifierHistory.getInstance().clear(snapshot);
-			return;
-		}
+	public synchronized void handleAlarmUpdate(final AlarmTreePV pvItem) {
+	    final PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
+	    final AlarmNotifierHistory history = AlarmNotifierHistory.getInstance();
+        if (!pvItem.isEnabled()) {
+            // Ignore PV, it's disabled
+            history.clear(snapshot);
+            return;
+        }
 		// Avoid to send 'fake' alarms when the PV is re-enabled for example
 		if (snapshot.getValue() != null && snapshot.getValue().isEmpty())
 			return;
 		// Configuration update results in an alarm update with no changes
-		PVHistoryEntry pv_history = AlarmNotifierHistory.getInstance().getPV(snapshot.getPath());
+		final PVHistoryEntry pv_history = history.getPV(snapshot.getPath());
 		if (pv_history == null
 				&& snapshot.getSeverity().equals(SeverityLevel.OK))
 			return;
@@ -118,42 +113,14 @@ public class AlarmNotifier {
 				&& snapshot.getSeverity().equals(pv_history.getSeverity())
 				&& snapshot.getCurrentSeverity().equals(pv_history.getCurrentSeverity()))
 			return;
-		// Process PV automated actions
-		if (pvItem.getAutomatedActions() != null) {
-			for (AADataStructure aa : pvItem.getAutomatedActions()) {
-				handleAutomatedAction(snapshot, pvItem, aa);
-			}
-		}
-		// Process System automated actions
-		AlarmTreeItem item = pvItem.getParent();
-		while (item != null) {
-			for (AADataStructure aa : item.getAutomatedActions()) {
-				handleAutomatedAction(snapshot, item, aa);
-			}
-			item = item.getParent();
-			if (item.getPosition().equals(AlarmTreePosition.Root))
-				break;
-		}
-		AlarmNotifierHistory.getInstance().addSnapshot(snapshot);
-	}
-
-	/** Check if an alarm update can be ignored for notification purposes
-	 *  @param snapshot Alarm update
-	 *  @return <code>true</code> if update can be ignored
-	 */
-	private boolean skipItem(final PVSnapshot snapshot) {
-	    // only skip if we only want to notify escalating alarms
-	    if (!notify_escalating_alarms_only)
-	        return false;
-
-	    // skip if this is an ACK or OK
-	    if (snapshot.getSeverity().compareTo(SeverityLevel.UNDEFINED_ACK) <= 0)
-	        return true;
-
-	    // skip this item if current severity less than alarm severity
-	    if (snapshot.getCurrentSeverity().compareTo(snapshot.getSeverity())<0)
-	        return true;
-	    return false;
+		// Process automated actions of PV, recursing up to root
+        for (AlarmTreeItem item = pvItem;
+             item != null  &&  !item.getPosition().equals(AlarmTreePosition.Root);
+             item = item.getParent()) {
+            for (AADataStructure aa : item.getAutomatedActions())
+                handleAutomatedAction(snapshot, item, aa);
+        }
+        history.addSnapshot(snapshot);
 	}
 
 	private void handleAutomatedAction(PVSnapshot snapshot,

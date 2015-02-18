@@ -30,16 +30,21 @@ import org.eclipse.equinox.app.IApplicationContext;
 
 /**
  *  @author Fred Arnaud (Sopra Group)
- *  @author Xinyu Wu - notify only on escalating alarms
+ *  @author Xinyu Wu, Kay Kasemir - notify only on escalating alarms
  */
+@SuppressWarnings("nls")
 public class Application implements IApplication {
 
-	private static final String[] VERBOSE_PACKAGES = new String[] {
+    private static final String[] VERBOSE_PACKAGES = new String[] {
 			"com.sun.jersey.core.spi.component",
 			"com.sun.jersey.core.spi.component.ProviderServices",
 			"com.sun.jersey.spi.service.ServiceFinder",
 			"org.apache.activemq",
-			"com.sun.mail"
+			// "com.sun" disables com.sun.mail.smtp.SMTPTransport.
+			// Should also disable "com.sun.activation.registries.LogSupport",
+			// but doesn't ?!
+			"com.sun",
+			"javax.mail"
 	};
 	private final List<Logger> strongRefLoggers = new ArrayList<>();
 
@@ -50,7 +55,10 @@ public class Application implements IApplication {
     @Override
 	public Object start(final IApplicationContext context) throws Exception
 	{
-		// Set upper log level on too verbose packages
+        // Initialize logging
+        LogConfigurator.configureFromPreferences();
+
+        // Adjust log level of verbose packages
 		Level verboseLogLevel = org.csstudio.alarm.beast.notifier.Preferences.getVerboseLogLevel();
 		for (String verbosePackage : VERBOSE_PACKAGES) {
 			Logger logger = Logger.getLogger(verbosePackage);
@@ -106,19 +114,16 @@ public class Application implements IApplication {
 			return IApplication.EXIT_OK;
 		}
 
-		// Initialize logging
-        LogConfigurator.configureFromPreferences();
         Activator.getLogger().info(app_info + " started for '" + config_name.get() + "' configuration");
         System.out.println(app_info);
 
         final int timer_threshold = org.csstudio.alarm.beast.notifier.Preferences.getTimerThreshold();
-        final boolean notify_escalating_alarms_only = org.csstudio.alarm.beast.notifier.Preferences.getNotifyEscalatingAlarmsOnly();
         System.out.println("Configuration Root: " + config_name.get());
         System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name.get()));
         System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name.get()));
         System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
         System.out.println("Notifier timer threshold: " + timer_threshold);
-        System.out.println("Notifier notify_escalating_alarms_only: " + notify_escalating_alarms_only);
+        System.out.println("Notifie only escalating alarms: " + PVAlarmHandler.notify_escalating_alarms_only);
 
 		try {
 			List<IApplicationListener> listeners = NotifierUtils.getListeners();
@@ -129,7 +134,7 @@ public class Application implements IApplication {
 			factory.init(NotifierUtils.getActions());
 			final IAlarmRDBHandler rdbHandler = new AlarmRDBHandler(config_name.get());
 			final AlarmNotifier alarm_notifier = new AlarmNotifier(
-					config_name.get(), rdbHandler, factory, timer_threshold, notify_escalating_alarms_only);
+					config_name.get(), rdbHandler, factory, timer_threshold);
 			rdbHandler.init(alarm_notifier);
 			alarm_notifier.start();
 			while (run) {

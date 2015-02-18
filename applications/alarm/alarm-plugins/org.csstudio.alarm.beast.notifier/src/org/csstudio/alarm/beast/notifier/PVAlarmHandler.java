@@ -13,16 +13,18 @@ import java.util.List;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.notifier.history.AlarmNotifierHistory;
 import org.csstudio.alarm.beast.notifier.history.PVHistoryEntry;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Handler for alarm updates. Receive alarm updates and store information. Used
  * {@link AbstractNotificationAction} to validate if an automated action can be
  * executed or not regarding to last alarm updates.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ * @author Kay Kasemir - notify only on escalating alarms, idea by Xinyu Wu
  */
 public class PVAlarmHandler {
+    final public static boolean notify_escalating_alarms_only = org.csstudio.alarm.beast.notifier.Preferences.getNotifyEscalatingAlarmsOnly();
 
 	private List<PVSnapshot> snapshots;
 	private EActionStatus status = EActionStatus.PENDING;
@@ -55,6 +57,24 @@ public class PVAlarmHandler {
 		PVSnapshot current_snapshot = getCurrent();
 		PVHistoryEntry pv_history = AlarmNotifierHistory.getInstance().getPV(
 				current_snapshot.getPath());
+
+        if (notify_escalating_alarms_only)
+        {   // Cancel alarms that are not escalating the severity
+            final SeverityLevel current = current_snapshot.getCurrentSeverity(),
+                                latched = current_snapshot.getSeverity();
+            if (! latched.isActive())
+            {
+                this.status = EActionStatus.CANCELED;
+                this.reason = Messages.Reason_Acknowledged;
+                return;
+            }
+            else if (! current.isActive()) // For now really same as current == OK
+            {
+                 this.status = EActionStatus.CANCELED;
+                 this.reason = NLS.bind(Messages.Reason_RecoveredFmt, latched.name(), current.name());
+                 return;
+            }
+        }
 
 		if (snapshots.size() == 1) {
 			if (pv_history == null) {
@@ -134,12 +154,15 @@ public class PVAlarmHandler {
 		}
 	}
 
-	private boolean unACK(SeverityLevel previous, SeverityLevel current) {
-		if (previous.name().endsWith("ACK")
-				&& previous.name().startsWith(current.name())
-				&& !current.name().endsWith("ACK"))
-			return true;
-		return false;
+	/** @param previous Previous severity
+	 *  @param current Current severity
+	 *  @return Is current the un-acked version of the previous {@link SeverityLevel}?
+	 */
+	private boolean unACK(final SeverityLevel previous, final SeverityLevel current)
+	{
+	    return current.isActive()  == true   &&
+		       previous.isActive() == false  &&
+			   previous.name().startsWith(current.name());
 	}
 
 	public EActionStatus getStatus() {

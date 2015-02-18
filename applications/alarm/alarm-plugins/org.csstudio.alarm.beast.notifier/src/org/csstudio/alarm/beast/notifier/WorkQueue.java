@@ -25,10 +25,11 @@ import org.csstudio.alarm.beast.notifier.util.OverflowManager;
  * Automated actions work queue. Each action is scheduled in a timer and then
  * executed in a stand-alone thread. A scheduled task is executed only if its
  * status is OK.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
+@SuppressWarnings("nls")
 public class WorkQueue {
 
 	private class ScheduledActionTask extends TimerTask {

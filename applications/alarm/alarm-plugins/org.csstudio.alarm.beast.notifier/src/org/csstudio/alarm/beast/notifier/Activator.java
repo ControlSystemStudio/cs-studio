@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.notifier;
 
 import java.util.logging.Logger;
 
+@SuppressWarnings("nls")
 public class Activator {
 
 	/** Plugin ID defined in MANIFEST.MF */
