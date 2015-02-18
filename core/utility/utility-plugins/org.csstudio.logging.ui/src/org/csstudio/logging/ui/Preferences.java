@@ -77,7 +77,7 @@ public class Preferences {
         if (text == null) {
             return new RGB(0, 0, 0);
         }
-        String[] rgb = text.split("[,]");
+        String[] rgb = text.split("\\,");
         if (rgb.length == 3) {
             return new RGB(Integer.parseInt(rgb[0]),Integer.parseInt(rgb[1]),Integer.parseInt(rgb[2]));
         } else {
