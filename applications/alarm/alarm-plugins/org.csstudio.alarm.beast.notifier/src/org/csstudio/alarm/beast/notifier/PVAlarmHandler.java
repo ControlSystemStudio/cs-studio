@@ -54,9 +54,9 @@ public class PVAlarmHandler {
     }
 
     private void validate() {
-        PVSnapshot current_snapshot = getCurrent();
-        PVHistoryEntry pv_history = AlarmNotifierHistory.getInstance().getPV(
-                current_snapshot.getPath());
+        final PVSnapshot current_snapshot = getCurrent();
+        final AlarmNotifierHistory history = AlarmNotifierHistory.getInstance();
+        final PVHistoryEntry pv_history = history.getPV(current_snapshot.getPath());
 
         if (notify_escalating_alarms_only)
         {   // Cancel alarms that are not escalating the severity
@@ -66,12 +66,14 @@ public class PVAlarmHandler {
             {
                 this.status = EActionStatus.CANCELED;
                 this.reason = Messages.Reason_Acknowledged;
+                history.clear(current_snapshot);
                 return;
             }
             else if (! current.isActive()) // For now really same as current == OK
             {
                  this.status = EActionStatus.CANCELED;
                  this.reason = NLS.bind(Messages.Reason_RecoveredFmt, latched.name(), current.name());
+                 history.clear(current_snapshot);
                  return;
             }
         }

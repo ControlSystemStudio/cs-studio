@@ -120,7 +120,14 @@ public class AlarmNotifier {
             for (AADataStructure aa : item.getAutomatedActions())
                 handleAutomatedAction(snapshot, item, aa);
         }
-        history.addSnapshot(snapshot);
+
+        // When only notifying on escalation, and the current
+        // severity is OK, forget that this happened.
+        // Otherwise remember so that we can notify with NO_DELAY
+        // as the PV re-enters an alarm
+        if (PVAlarmHandler.notify_escalating_alarms_only == false  ||
+            snapshot.getCurrentSeverity() != SeverityLevel.OK)
+            history.addSnapshot(snapshot);
     }
 
     private void handleAutomatedAction(PVSnapshot snapshot,
