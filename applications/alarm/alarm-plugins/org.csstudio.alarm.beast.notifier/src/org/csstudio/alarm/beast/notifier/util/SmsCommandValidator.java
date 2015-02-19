@@ -16,18 +16,21 @@ import org.csstudio.alarm.beast.notifier.model.IActionValidator;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class SmsCommandValidator implements IActionValidator {
 
 	private String details;
 	private SmsCommandHandler handler;
 
-	public void init(String details) {
+	@Override
+    public void init(String details) {
 		this.details = details == null ? null : details.trim();
 		handler = new SmsCommandHandler(details);
 	}
 
 	/** @return handler for SMS command */
-	public SmsCommandHandler getHandler() {
+	@Override
+    public SmsCommandHandler getHandler() {
 		return handler;
 	}
 

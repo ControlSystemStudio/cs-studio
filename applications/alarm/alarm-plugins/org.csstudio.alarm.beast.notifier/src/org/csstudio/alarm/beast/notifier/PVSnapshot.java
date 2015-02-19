@@ -21,28 +21,29 @@ import org.epics.util.time.Timestamp;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class PVSnapshot implements Comparable<PVSnapshot> {
 
 	/** Parser for received time stamp */
     final protected static SimpleDateFormat date_format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-    
+
     /** Pattern for important priority */
     final protected static Pattern IMPPattern = Pattern.compile("^\\ *\\*?\\!.*");
-	
+
 	final int id;
 	final private String name, path, parentPath, description;
 	final private boolean enabled, latching;
-	
+
     final private SeverityLevel current_severity, severity;
     final private String current_message, message, value;
     final private Timestamp timestamp;
-	
+
     /**
      * Create {@link PVSnapshot} from an {@link AlarmTreePV}
      * @param pv
      * @return
      */
-	public static PVSnapshot fromPVItem(final AlarmTreePV pv) 
+	public static PVSnapshot fromPVItem(final AlarmTreePV pv)
 	{
 		final int id = pv.getID();
 		final String name = pv.getName();
@@ -58,12 +59,12 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
 		final String current_message = pv.getCurrentMessage();
 		final String value = pv.getValue();
 		final Timestamp timestamp = pv.getTimestamp();
-		
+
 		return new PVSnapshot(id, name, path, parentPath, description, enabled, latching,
 				current_severity, current_message, severity, status, value,
 				timestamp);
 	}
-    
+
     public PVSnapshot(final int id,
 			final String name,
 			final String path,
@@ -73,7 +74,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
             final boolean latching,
             final SeverityLevel current_severity,
             final String current_message,
-            final SeverityLevel severity, 
+            final SeverityLevel severity,
             final String message,
             final String value,
             final Timestamp timestamp)
@@ -92,7 +93,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
 		this.value = value;
 		this.timestamp = timestamp;
     }
-    
+
     /** Return <code>true</code> if PV has an important priority defined in description */
     public boolean isImportant() {
 		if (description == null || "".equals(description))
@@ -102,7 +103,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
 			return true;
 		return false;
 	}
-    
+
 	/** Return <code>true</code> if the alarm severity is NOT OK */
 	public boolean isUnderAlarm() {
 		return !this.current_severity.equals(SeverityLevel.OK);
