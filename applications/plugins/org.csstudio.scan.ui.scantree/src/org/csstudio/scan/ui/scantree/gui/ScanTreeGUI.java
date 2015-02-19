@@ -18,10 +18,10 @@ import java.util.Map;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.scan.command.CommandSequence;
-import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.ScanCommandProperty;
+import org.csstudio.scan.command.ScanCommandWithBody;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
@@ -75,6 +75,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 /** GUI for the scan tree
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanTreeGUI implements ScanTreeModelListener
 {
     /** Associated editor */
@@ -172,15 +173,15 @@ public class ScanTreeGUI implements ScanTreeModelListener
         // edit commands cut/copy/paste/delete here,
         // using localization and default key bindings,
         // as well as the submit command
-        manager.add(new Separator("edit")); //$NON-NLS-1$
+        manager.add(new Separator("edit"));
 
         manager.add(new Separator("scan"));
         manager.add(new AddCommandAction());
         manager.add(new OpenPropertiesAction());
         manager.add(new OpenCommandListAction());
-        manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/scantree.gif"), //$NON-NLS-1$
+        manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/scantree.gif"),
                 Messages.OpenScanTreePerspective, Perspective.ID));
-        manager.add(new Separator("additions")); //$NON-NLS-1$
+        manager.add(new Separator("additions"));
 
         final Menu menu = manager.createContextMenu(tree_view.getControl());
         tree_view.getControl().setMenu(menu);
@@ -218,7 +219,6 @@ public class ScanTreeGUI implements ScanTreeModelListener
             this.section = section;
         }
 
-        @SuppressWarnings("nls")
         @Override
         public String toString()
         {
@@ -441,12 +441,12 @@ public class ScanTreeGUI implements ScanTreeModelListener
                     dropped_commands, true));
         }
         else
-        {   // Special handling for loop
-            if (target.command instanceof LoopCommand  &&
+        {   // Special handling for commands with body
+            if (target.command instanceof ScanCommandWithBody  &&
                 target.section == TreeItemInfo.Section.CENTER)
-            {   // Dropping exactly onto a loop means add to that loop
-                final LoopCommand loop = (LoopCommand) target.command;
-                final List<ScanCommand> body = loop.getBody();
+            {   // Dropping exactly onto a command means add to its body
+                final ScanCommandWithBody cmd = (ScanCommandWithBody) target.command;
+                final List<ScanCommand> body = cmd.getBody();
                 final ScanCommand location = body.size() > 0
                         ? body.get(body.size()-1)
                         : null;
@@ -486,7 +486,7 @@ public class ScanTreeGUI implements ScanTreeModelListener
      */
     protected boolean isPossiblePVName(final String text)
     {
-        return text.matches("[A-Za-z0-9:-_]+"); //$NON-NLS-1$
+        return text.matches("[A-Za-z0-9:-_]+");
     }
 
     /** Set focus */
@@ -512,8 +512,8 @@ public class ScanTreeGUI implements ScanTreeModelListener
         for (ScanCommand command : commands)
         {
             address_map.put(command.getAddress(), command);
-            if (command instanceof LoopCommand)
-                setAddressMap(((LoopCommand)command).getBody());
+            if (command instanceof ScanCommandWithBody)
+                setAddressMap(((ScanCommandWithBody)command).getBody());
         }
     }
 
