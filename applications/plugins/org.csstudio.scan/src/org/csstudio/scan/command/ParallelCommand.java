@@ -100,7 +100,7 @@ public class ParallelCommand extends ScanCommandWithBody
 	public String toString()
 	{
         final StringBuilder buf = new StringBuilder();
-        buf.append("Parallel '");
+        buf.append("Parallel");
         if (timeout > 0)
             buf.append(", ").append(timeout).append(" sec timeout");
         return buf.toString();
