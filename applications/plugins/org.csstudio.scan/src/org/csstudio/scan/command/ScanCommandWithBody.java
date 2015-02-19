@@ -93,8 +93,11 @@ abstract public class ScanCommandWithBody extends ScanCommand
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
-        final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
-        setBody(body);
+        if (body_node != null)
+        {
+            final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
+            setBody(body);
+        }
         super.readXML(factory, element);
     }
 

@@ -30,6 +30,7 @@ Or run standalone validation  (use double'-', can't show that in XML comment):
       <xs:element name="delay" type="delay_command"/>
       <xs:element name="log" type="log_command"/>
       <xs:element name="loop" type="loop_command"/>
+      <xs:element name="parallel" type="parallel_command"/>
       <xs:element name="script" type="script_command"/>
       <xs:element name="set" type="set_command"/>
       <xs:element name="wait" type="wait_command"/>
@@ -87,6 +88,15 @@ Or run standalone validation  (use double'-', can't show that in XML comment):
     <xs:element name="tolerance" type="xs:string" minOccurs="0"/>
     <xs:element name="timeout" type="xs:string" minOccurs="0"/>
     <xs:element name="body" type="command_sequence"/>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parallel_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="timeout" type="xs:string" minOccurs="0"/>
+    <xs:element name="body" type="command_sequence" minOccurs="0"/>
     <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
   </xs:sequence>
 </xs:complexType>
