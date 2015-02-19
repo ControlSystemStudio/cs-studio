@@ -145,6 +145,7 @@
     <module>org.csstudio.snl.intro</module>
     <module>org.csstudio.swt.chart</module>
     <module>org.csstudio.swt.rtplot</module>
+    <module>org.csstudio.rap.rtplot</module>
     <!-- <module>org.csstudio.swt.rtplot.test</module> -->
     <module>org.csstudio.swt.widgets</module>
     <module>org.csstudio.swt.widgets.rcp</module>
