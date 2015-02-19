@@ -468,9 +468,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             if (device_active.isPresent())
             {
             	getDevice(device_status.get()).write(getName());
-            	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
-            	ScanCommandUtil.write(this, device_active.get(), Double.valueOf(1.0), 0.1, timeout);
-            	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(0.0), 0.1, timeout);
+            	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
+            	ScanCommandUtil.write(this, device_active.get(), Double.valueOf(1.0));
+            	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(0.0));
             	getDevice(device_finish.get()).write("Starting ...");
             }
 
@@ -525,10 +525,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 if (device_active.isPresent())
                 {
                     getDevice(device_status.get()).write("");
-                	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+                	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
                     getDevice(device_finish.get()).write(ScanSampleFormatter.format(new Date()));
-                    ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(100.0), 0.1, timeout);
-                    ScanCommandUtil.write(this, device_active.get(), Double.valueOf(0.0), 0.1, timeout);
+                    ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(100.0));
+                    ScanCommandUtil.write(this, device_active.get(), Double.valueOf(0.0));
                 }
             }
             catch (Exception ex)
@@ -617,7 +617,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
 			    final ScanInfo info = getScanInfo();
 			    try
 			    {
-                	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(info.getPercentage()), 0.1, timeout);
+                	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(info.getPercentage()));
                 	getDevice(device_finish.get()).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
 			    }
 			    catch (Exception ex)
