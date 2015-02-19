@@ -198,13 +198,15 @@ public class Controller
             // Update 'iconized' state from shell
             shell.addShellListener(new ShellAdapter()
             {
-                @Override
+            	//Remove Override annotation, because this method does not exist in RAP
+                //@Override
                 public void shellIconified(ShellEvent e)
                 {
                     window_is_iconized = true;
                 }
 
-                @Override
+                //Remove Override annotation, because this method does not exist in RAP
+                //@Override
                 public void shellDeiconified(ShellEvent e)
                 {
                     window_is_iconized = false;

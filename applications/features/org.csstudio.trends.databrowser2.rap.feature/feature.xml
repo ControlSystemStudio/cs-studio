@@ -586,7 +586,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.swt.rtplot"
+         id="org.csstudio.rap.rtplot"
          download-size="0"
          install-size="0"
          version="0.0.0"
