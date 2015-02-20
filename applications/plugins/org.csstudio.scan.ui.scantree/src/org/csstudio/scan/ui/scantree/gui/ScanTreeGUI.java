@@ -11,10 +11,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.scan.command.CommandSequence;
@@ -62,7 +62,6 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -76,7 +75,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanTreeGUI implements ScanTreeModelListener
+public class ScanTreeGUI
 {
     /** Associated editor */
     final private ScanEditor editor;
@@ -85,13 +84,51 @@ public class ScanTreeGUI implements ScanTreeModelListener
     final private ScanTreeModel model;
 
     /** Map from addresses to commands */
-    final Map<Long, ScanCommand> address_map = new HashMap<Long, ScanCommand>();
+    final Map<Long, ScanCommand> address_map = new ConcurrentHashMap<>();
 
     /** Tree that shows commands */
     private TreeViewer tree_view;
 
     /** Label provider */
     private CommandTreeLabelProvider label_provider;
+
+    final private ScanTreeModelListener listener = new ScanTreeModelListener()
+    {
+        @Override
+        public void commandsChanged()
+        {
+            tree_view.refresh();
+            // When there are many commands, the tree expansion is expensive
+            final List<ScanCommand> commands = model.getCommands();
+            if (commands.size() < 1000)
+                tree_view.expandAll();
+            updateAddresses();
+        }
+
+        @Override
+        public void commandAdded(final ScanCommand command)
+        {
+            final ScanCommand parent = model.getParent(command);
+            if (parent == null)
+                tree_view.add(model, command);
+            else
+                tree_view.add(parent, command);
+            updateAddresses();
+        }
+
+        @Override
+        public void commandRemoved(final ScanCommand command)
+        {
+            tree_view.remove(command);
+            updateAddresses();
+        }
+
+        @Override
+        public void commandPropertyChanged(final ScanCommand command)
+        {
+            tree_view.refresh(command);
+        }
+    };
 
     /** Initialize
      *  @param parent
@@ -106,15 +143,8 @@ public class ScanTreeGUI implements ScanTreeModelListener
         createContextMenu(editor == null ? null : editor.getSite());
         addDragDrop();
 
-        model.addListener(this);
-        parent.addDisposeListener(new DisposeListener()
-        {
-            @Override
-            public void widgetDisposed(DisposeEvent e)
-            {
-                model.removeListener(ScanTreeGUI.this);
-            }
-        });
+        model.addListener(listener);
+        parent.addDisposeListener((DisposeEvent e) -> model.removeListener(listener));
     }
 
     /** Create GUI elements
@@ -500,20 +530,20 @@ public class ScanTreeGUI implements ScanTreeModelListener
     {
         final List<ScanCommand> commands = model.getCommands();
         CommandSequence.setAddresses(commands);
-        setAddressMap(commands);
+        address_map.clear();
+        addToAddressMap(commands);
     }
 
     /** @param commands Commands to add to address map
      *  @see #findCommand()
      */
-    private void setAddressMap(List<ScanCommand> commands)
+    private void addToAddressMap(final List<ScanCommand> commands)
     {
-        address_map.clear();
         for (ScanCommand command : commands)
         {
             address_map.put(command.getAddress(), command);
             if (command instanceof ScanCommandWithBody)
-                setAddressMap(((ScanCommandWithBody)command).getBody());
+                addToAddressMap(((ScanCommandWithBody)command).getBody());
         }
     }
 
@@ -542,10 +572,7 @@ public class ScanTreeGUI implements ScanTreeModelListener
             return;
         final ScanCommand previous = label_provider.setActiveCommand(command);
         // Perform update in UI thread
-        control.getDisplay().asyncExec(new Runnable()
-        {
-            @Override
-            public void run()
+        control.getDisplay().asyncExec(() ->
             {
                 if (control.isDisposed())
                     return;
@@ -557,52 +584,12 @@ public class ScanTreeGUI implements ScanTreeModelListener
                     tree_view.update(command, null);
                     tree_view.reveal(command);
                 }
-            }
-        });
+            });
     }
 
     /** @return Selection provider for commands in scan tree */
     public ISelectionProvider getSelectionProvider()
     {
         return tree_view;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void commandsChanged()
-    {
-        tree_view.refresh();
-        // When there are many commands, the tree expansion is expensive
-        final List<ScanCommand> commands = model.getCommands();
-        if (commands.size() < 1000)
-            tree_view.expandAll();
-        updateAddresses();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void commandAdded(final ScanCommand command)
-    {
-        final ScanCommand parent = model.getParent(command);
-        if (parent == null)
-            tree_view.add(model, command);
-        else
-            tree_view.add(parent, command);
-        updateAddresses();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void commandRemoved(final ScanCommand command)
-    {
-        tree_view.remove(command);
-        updateAddresses();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void commandPropertyChanged(ScanCommand command)
-    {
-        tree_view.refresh(command);
     }
 }
