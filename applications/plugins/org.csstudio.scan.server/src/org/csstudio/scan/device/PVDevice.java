@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
+import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -35,25 +36,25 @@ import org.epics.vtype.ValueUtil;
 
 /** {@link Device} that is connected to a Process Variable,
  *  supporting read and write access to that PV.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class PVDevice extends Device
 {
     final Logger logger = Logger.getLogger(getClass().getName());
-    
+
     /** 'compile time' option to treat byte arrays as string */
     final private static boolean TREAT_BYTES_AS_STRING = true; // TODO Make configurable
-    
+
     /** Alarm that is used to identify a disconnected PV */
    final private static Alarm DISCONNECTED = ValueFactory.newAlarm(AlarmSeverity.INVALID, "Disconnected");
-    
+
 	/** Is the underlying PV type a BYTE[]?
 	 *  @see #TREAT_BYTES_AS_STRING
 	 */
 	private boolean is_byte_array = false;
-	
+
 	/** Most recent value of the PV
 	 *  SYNC on this
 	 */
@@ -63,7 +64,7 @@ public class PVDevice extends Device
 	 *  SYNC on this
 	 */
 	private PV pv;
-	
+
 	final private PVListener pv_listener = new PVListenerAdapter()
     {
         @Override
@@ -77,7 +78,7 @@ public class PVDevice extends Device
             }
             fireDeviceUpdate();
         }
-        
+
         @Override
         public void disconnected(PV pv)
         {
@@ -105,7 +106,7 @@ public class PVDevice extends Device
             return new_value;
 
     }
-    
+
 	/** Initialize
 	 *  @param info {@link DeviceInfo}
 	 *  @throws Exception on error during PV setup
@@ -114,7 +115,7 @@ public class PVDevice extends Device
     {
 	    super(info);
     }
-	
+
 	/** {@inheritDoc} */
 	@Override
     public void start() throws Exception
@@ -181,7 +182,7 @@ public class PVDevice extends Device
 				new Object[] { getName(), current });
 		return current;
     }
-	
+
 	/** Turn {@link TimeDuration} into millisecs for {@link TimeUnit} API
 	 *  @param timeout {@link TimeDuration}
 	 *  @return Milliseconds or 0
@@ -192,11 +193,11 @@ public class PVDevice extends Device
 	        return 0;
 	    return timeout.getSec() * 1000L  +  timeout.getNanoSec() / 1000;
 	}
-	
+
 	/** {@inheritDoc} */
     @Override
     public VType read(final TimeDuration timeout) throws Exception
-    {        
+    {
         final PV pv; // Copy to access PV outside of lock
         synchronized (this)
         {
@@ -226,8 +227,8 @@ public class PVDevice extends Device
                 throw new InterruptedException("Failed to read " + getName());
             throw new Exception("Failed to read " + getName(), ex);
         }
-    }	
-	
+    }
+
     /** @return 'Disconnected' Value with current time stamp */
     final private static VType getDisconnectedValue()
     {
@@ -251,8 +252,8 @@ public class PVDevice extends Device
         }
         return value;
     }
-    
-	/** Write value to device, with special handling of EPICS BYTE[] as String 
+
+	/** Write value to device, with special handling of EPICS BYTE[] as String
      *  @param value Value to write (Double, String)
      *  @throws Exception on error: Cannot write, ...
      */
@@ -264,11 +265,11 @@ public class PVDevice extends Device
 		try
 		{
 	        value = wrapSentValue(value);
-	
+
 	        final PV pv; // Copy to access PV outside of lock
 	        synchronized (this)
 	        {
-	            pv = this.pv;
+	            pv = Objects.requireNonNull(this.pv, "PV not ready");
 	        }
 	        pv.write(value);
 		}
@@ -277,8 +278,8 @@ public class PVDevice extends Device
 			throw new Exception("Failed to write " + value + " to " + getName(), ex);
 		}
     }
-	
-	/** Write value to device, with special handling of EPICS BYTE[] as String 
+
+	/** Write value to device, with special handling of EPICS BYTE[] as String
      *  @param value Value to write (Double, String)
      *  @param timeout Timeout, <code>null</code> as "forever"
      *  @throws Exception on error: Cannot write, ...
@@ -291,7 +292,7 @@ public class PVDevice extends Device
 		try
 		{
 		    value = wrapSentValue(value);
-	
+
 		    final PV pv; // Copy to access PV outside of lock
 		    synchronized (this)
 			{
