@@ -62,8 +62,11 @@ public class ScanClient
     final private String host;
     final private int port;
 
-    /** Timeout in seconds */
-    final private long timeout = 10;
+    /** Timeout in seconds for most operations */
+    final private int default_timeout = 10;
+
+    /** Timeout in seconds for operations that tend to take longer */
+    final private int long_timeout = 60;
 
     /** Initialize */
     public ScanClient()
@@ -84,18 +87,29 @@ public class ScanClient
 
     /** Connect to "http://server:port/path"
      *  @param path Path to use in scan server REST interface
+     *  @param timeout_seconds Timeout to use for operations
      *  @return {@link HttpURLConnection}
      *  @throws Exception on error
      */
-    private HttpURLConnection connect(final String path) throws Exception
+    private HttpURLConnection connect(final String path, final int timeout_seconds) throws Exception
     {
         // URI will properly escape content of path
         final URI uri = new URI("http", null, host, port, path, null, null);
         final URL url = uri.toURL();
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "text/xml");
-        connection.setReadTimeout((int) SECONDS.toMillis(timeout));
+        connection.setReadTimeout((int) SECONDS.toMillis(timeout_seconds));
         return connection;
+    }
+
+    /** Connect to "http://server:port/path"
+     *  @param path Path to use in scan server REST interface
+     *  @return {@link HttpURLConnection}
+     *  @throws Exception on error
+     */
+    private HttpURLConnection connect(final String path) throws Exception
+    {
+        return connect(path, default_timeout);
     }
 
     /** POST data to connection
@@ -394,7 +408,8 @@ public class ScanClient
      */
     public long submitScan(final String name, final String xml_commands) throws Exception
     {
-        final HttpURLConnection connection = connect("/scan/" + name);
+        final HttpURLConnection connection = connect("/scan/" + name, long_timeout);
+        connection.setReadTimeout(0);
         try
         {
             post(connection, xml_commands);
@@ -404,6 +419,7 @@ public class ScanClient
             if (! "id".equals(root_node.getNodeName()))
                 throw new Exception("Expected <id/>");
             final long id = Long.parseLong(root_node.getFirstChild().getNodeValue());
+
             return id;
         }
         finally
@@ -419,7 +435,7 @@ public class ScanClient
      */
     public SimulationResult simulateScan(final String xml_commands) throws Exception
     {
-        final HttpURLConnection connection = connect("/simulate");
+        final HttpURLConnection connection = connect("/simulate", long_timeout);
         try
         {
             post(connection, xml_commands);
