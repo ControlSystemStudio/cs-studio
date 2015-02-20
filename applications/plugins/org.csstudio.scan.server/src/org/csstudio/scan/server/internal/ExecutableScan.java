@@ -504,7 +504,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     	        error = Optional.of(ScanState.Aborted.name());
     	    else
     	    {
-    	        error = Optional.of(ex.getMessage());
+    	        if (ex.getMessage() != null)
+    	            error = Optional.of(ex.getMessage());
+    	        else
+    	            error = Optional.of(ex.getClass().getName());
     	        state.set(ScanState.Failed);
     	        logger.log(Level.WARNING, "Scan " + getName() + " failed", ex);
     	    }

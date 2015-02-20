@@ -23,6 +23,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,7 +72,7 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
 	@Override
     public long getWorkUnits()
     {
-        long body_units = 0;
+        long body_units = 1; // One unit for this command, rest for body
         for (ScanCommandImpl<?> command : implementation)
             body_units += command.getWorkUnits();
         return body_units;
@@ -106,24 +108,41 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
         step_logger = Logger.getLogger(getClass().getName());
         try
         {
+            final long end = command.getTimeout() > 0.0
+                    ? Math.round(System.currentTimeMillis() + command.getTimeout()*1000)
+                    : -1;
             final List<Future<Object>> results = new ArrayList<>();
             // Start commands in parallel
             for (ScanCommandImpl<?> body_command : implementation)
                 results.add(launch(context, body_command));
 
     		// Wait for commands to finish
-            // TODO Handle timeout, handle exceptions
-            for (Future<Object> result : results)
-                result.get();
-//                result.get(Math.round(command.getTimeout()*1000), TimeUnit.SECONDS);
-
-            // TODO Body commands handle this?
-            // context.workPerformed(implementation.size());
+            try
+            {
+                for (Future<Object> result : results)
+                {
+                    if (end > 0)
+                    {
+                        final long time_left = end - System.currentTimeMillis();
+                        if (time_left <= 0)
+                            throw new TimeoutException();
+                        else
+                            result.get(time_left, TimeUnit.MILLISECONDS);
+                    }
+                    else
+                        result.get();
+                }
+            }
+            catch (TimeoutException ex)
+            {
+                throw new Exception("Parallel time out (" + command.getTimeout() + " sec)", ex);
+            }
         }
         finally
         {
             step_logger = null;
         }
+        context.workPerformed(1);
 	}
 
 	/** Launch one of the body commands
