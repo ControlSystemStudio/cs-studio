@@ -384,7 +384,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     public Object call() throws Exception
     {
         final Logger log = Logger.getLogger(getClass().getName());
-        log.log(Level.INFO, "Executing {0} [{1}]", new Object[] { getName(), new MemoryInfo()});
+        log.log(Level.CONFIG, "Executing \"{0}\" [{1}]", new Object[] { getName(), new MemoryInfo()});
 
         try
         (
@@ -578,7 +578,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 current_command = command;
                 if (current_command.getCommand().getAddress() >= 0)
                     current_address = current_command.getCommand().getAddress();
-                Logger.getLogger(getClass().getName()).log(Level.FINE, "@{0}: {1}", new Object[] { current_address, command });
+                Logger.getLogger(getClass().getName()).log(Level.INFO, "@{0}: {1}", new Object[] { current_address, command });
                 command.execute(this);
             }
             catch (Exception error)
