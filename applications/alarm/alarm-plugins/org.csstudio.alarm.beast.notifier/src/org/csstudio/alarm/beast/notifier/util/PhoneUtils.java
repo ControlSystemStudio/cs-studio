@@ -12,10 +12,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("nls")
 public class PhoneUtils {
-	
+
 	final public static Pattern PhonePattern = Pattern.compile("(\\+?[0-9\\(\\)\\/\\-\\.\\ ]+)");
-	
+
 	public static List<String> parse(String data) throws Exception {
 		List<String> phoneNumbers = new ArrayList<String>();
 		Matcher m = PhonePattern.matcher(data);

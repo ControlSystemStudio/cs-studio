@@ -16,10 +16,13 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *  <p>
  *  See preferences.ini for explanation of supported preferences.
  *  @author Fred Arnaud (Sopra Group)
+ *  @author Xinyu Wu - notify only on escalating alarms
  */
+@SuppressWarnings("nls")
 public class Preferences {
-	final public static String TIMER_THRESHOLD = "timer_threshold";
-	final public static String VERBOSE_LOG_LEVEL = "verbose_log.level";
+    final public static String TIMER_THRESHOLD = "timer_threshold";
+    final public static String VERBOSE_LOG_LEVEL = "verbose_log.level";
+    final public static String NOTIFY_ESCALATING_ALARMS_ONLY = "notify_escalating_alarms_only";
 
 	/**
 	 * @param setting Preference identifier
@@ -60,7 +63,13 @@ public class Preferences {
 					"Illegal console log level '" + levelStr + "'");
 			return Level.WARNING;
 		}
-
 	}
 
+	/** @return NOTIFY_ESCALATING_ALARMS_ONLY for automated actions */
+	public static boolean getNotifyEscalatingAlarmsOnly() {
+	    final IPreferencesService service = Platform.getPreferencesService();
+	    if (service == null)
+	        return false; // default
+	    return service.getBoolean(Activator.ID, NOTIFY_ESCALATING_ALARMS_ONLY, false, null);
+	}
 }

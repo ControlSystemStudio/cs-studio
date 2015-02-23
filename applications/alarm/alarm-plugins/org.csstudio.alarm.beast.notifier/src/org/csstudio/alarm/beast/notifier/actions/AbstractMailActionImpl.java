@@ -19,20 +19,21 @@ import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 import org.csstudio.email.JavaxMailSender;
 import org.eclipse.osgi.util.NLS;
 
+@SuppressWarnings("nls")
 public abstract class AbstractMailActionImpl implements IAutomatedAction {
-	
+
 	/** Information from {@link AlarmTreeItem} providing the automated action */
 	protected ItemInfo item;
-	
+
 	protected List<PVSnapshot> pvs;
-	
+
 	protected boolean manuallyExecuted = false;
 
 	protected JavaxMailSender mailSender;
 
 	final private static Pattern NLSPattern = Pattern.compile("\\{\\ *\\d+\\ *\\}");
     final private static Pattern PrefixPattern = Pattern.compile("^\\*(.*)$");
-    
+
     protected String buildSubject() {
 		String subject = mailSender.getSubject().trim();
 		StringBuilder builder = new StringBuilder();
@@ -80,7 +81,7 @@ public abstract class AbstractMailActionImpl implements IAutomatedAction {
 		}
 		return builder.toString();
 	}
-	
+
 	protected String buildBody() {
 		String body = mailSender.getBody().trim();
 		StringBuilder builder = new StringBuilder();
@@ -112,7 +113,7 @@ public abstract class AbstractMailActionImpl implements IAutomatedAction {
 		}
 		return builder.toString();
 	}
-	
+
 	// Handle NLS
 	private String fillNLS(final String message) {
 		Matcher nlsMatcher = NLSPattern.matcher(message);
@@ -129,7 +130,7 @@ public abstract class AbstractMailActionImpl implements IAutomatedAction {
 		}
 		return filledMessage;
 	}
-	
+
 	// Build a summary of underlying alarms
 	private String buildAlarmCount() {
 		StringBuilder builder = new StringBuilder();

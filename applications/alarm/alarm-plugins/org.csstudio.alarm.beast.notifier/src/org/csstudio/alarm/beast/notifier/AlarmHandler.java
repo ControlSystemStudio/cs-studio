@@ -20,10 +20,11 @@ import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 /**
  * Manager of an automated action scheduled task.. Handle alarm update
  * management.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
+@SuppressWarnings("nls")
 public class AlarmHandler {
 
 	/** Unique action identifier */
@@ -58,7 +59,7 @@ public class AlarmHandler {
 
 	/**
 	 * Update current status & priority
-	 * 
+	 *
 	 * @param pv, snapshot of the pv on which an alarm event was raised.
 	 */
 	public void updateAlarms(PVSnapshot pv) {
@@ -107,7 +108,7 @@ public class AlarmHandler {
 						this.reason = buildReason();
 					}
 				}
-				if (!(this.status.equals(EActionStatus.NO_DELAY) 
+				if (!(this.status.equals(EActionStatus.NO_DELAY)
 						|| this.status.equals(EActionStatus.CANCELED_NO_DELAY))) {
 					boolean allCanceled = true;
 					for (PVAlarmHandler ah : pvs.values())
@@ -125,7 +126,7 @@ public class AlarmHandler {
 		}
 	}
 
-	private String buildReason() {
+    private String buildReason() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Messages.Reason_SubActionsCanceled);
 		sb.append(":\n");

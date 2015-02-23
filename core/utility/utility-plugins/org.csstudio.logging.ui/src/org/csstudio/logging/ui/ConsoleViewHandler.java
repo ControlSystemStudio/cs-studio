@@ -12,9 +12,11 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
 import org.csstudio.logging.LogFormatter;
 import org.csstudio.logging.Preferences;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -49,6 +51,8 @@ public class ConsoleViewHandler extends Handler
 
     /** Printable, color-coded stream of the <code>console</code> */
     final private MessageConsoleStream severe_stream, warning_stream, info_stream, basic_stream;
+    
+    private Color severeColor, warningColor, infoColor, basicColor;
 
     /** Add console view to the (root) logger.
      *  <p>
@@ -123,9 +127,16 @@ public class ConsoleViewHandler extends Handler
         // affect only the next message or the whole Console View.
         // Using different streams for the color-coded message levels
         // seem to work OK.
-        severe_stream.setColor(display.getSystemColor(SWT.COLOR_MAGENTA));
-        warning_stream.setColor(display.getSystemColor(SWT.COLOR_RED));
-        info_stream.setColor(display.getSystemColor(SWT.COLOR_BLUE));
+        
+        severeColor = new Color(display, org.csstudio.logging.ui.Preferences.getColorSevere());
+        warningColor = new Color(display, org.csstudio.logging.ui.Preferences.getColorWarning());
+        infoColor = new Color(display, org.csstudio.logging.ui.Preferences.getColorInfo());
+        basicColor = new Color(display, org.csstudio.logging.ui.Preferences.getColorBasic());
+        
+        severe_stream.setColor(severeColor);
+        warning_stream.setColor(warningColor);
+        info_stream.setColor(infoColor);
+        basic_stream.setColor(basicColor);
 
         // Suppress log messages when the Eclipse console system shuts down.
         // Unclear how to best do that. Console plugin will 'remove' all consoles on shutdown,
@@ -251,6 +262,10 @@ public class ConsoleViewHandler extends Handler
     @Override
     public void close() throws SecurityException
     {
+        basicColor.dispose();
+        infoColor.dispose();
+        severeColor.dispose();
+        warningColor.dispose();
         // Mark as detached from console
         final MessageConsole console_copy = console;
         if (console_copy == null)

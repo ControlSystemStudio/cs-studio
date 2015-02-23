@@ -18,15 +18,16 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class ItemInfo {
-	
+
 	final int id;
 	final private String name, path, description;
 	final private boolean enabled, isPV, latching;
-	
-	private static Pattern IMPPattern = Pattern.compile("^\\ *\\*?\\!.*");
 
-	public static ItemInfo fromItem(final AlarmTreeItem item) 
+    private static Pattern IMPPattern = Pattern.compile("^\\ *\\*?\\!.*");
+
+	public static ItemInfo fromItem(final AlarmTreeItem item)
     {
 		final int id = item.getID();
 		final String name = item.getName();
@@ -41,7 +42,7 @@ public class ItemInfo {
 			return new ItemInfo(id, name, path, null, false, false, false);
 		}
     }
-	
+
 	public ItemInfo(final int id,
 			final String name,
 			final String path,
@@ -52,13 +53,13 @@ public class ItemInfo {
     {
         this.id = id;
         this.name = name;
-        this.path = path; 
+        this.path = path;
         this.description = description;
         this.isPV = isPV;
         this.enabled = enabled;
         this.latching = latching;
     }
-	
+
 	public boolean isImportant() {
 		if (description == null || "".equals(description))
 			return false;
@@ -89,5 +90,5 @@ public class ItemInfo {
 	public boolean isLatching() {
 		return latching;
 	}
-	
+
 }

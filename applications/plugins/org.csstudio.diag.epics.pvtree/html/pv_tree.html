@@ -10,12 +10,25 @@
 
 <body>
 <h1>Overview</h1>
+<p>
 The CSS EPICS PV Tree displays the hierarchical data flow between EPICS
 records.
-It displays the record types, their current values as well as
+It displays the record types and their current values as well as
 severity/status.
-It attempts to follow the data flow by traversing input links
+It attempts to reflect the data flow by traversing input links
 (INP, INPA, DOL, ...).
+</p>
+<p>
+The PV Tree has two modes:
+<ul>
+<li><img alt="" src="../icons/run.png" /> "Run": In this mode it will always display the current value
+of each item in the tree.
+</li>
+<li><img alt="" src="../icons/pause_on_alarm.png" /> "Freeze on Alarm": In this mode, updates pause as soon as the
+root item of the PV Tree goes into alarm.
+</ul>
+</p>
+
 
 <h2>Usage</h2>
 Enter a name into the "PV" text box, and see what happens.
@@ -46,6 +59,11 @@ A binary input record (bi) reads from a calculation (calc), whose first input
 (INPA) reads from an mbbi which in turn reads from another calc and so on.
 Note how the color-coding indicates severities.
 </p>
+<p>
+In "Freeze on Alarm" mode, further updates of the PV Tree would cease.
+The background of the tree is then changed to gray to indicate the frozen state.
+Value updates continue after again selecting the "Run" mode. 
+</p>
 
 <p>
 <!--center-->
@@ -54,6 +72,11 @@ Note how the color-coding indicates severities.
 </p>
 
 <h2>Tool Bar Buttons</h2>
+<p><img alt="" src="../icons/run.png" /> / <img alt="" src="../icons/pause_on_alarm.png" />
+- Changes the PV Tree mode between "running" and "freeze on alarm".
+</p>
+
+
 <p><img alt="" src="../icons/collapse.gif" />
 - Collapse the tree, i.e. close all sub-sections of the tree.
 </p>

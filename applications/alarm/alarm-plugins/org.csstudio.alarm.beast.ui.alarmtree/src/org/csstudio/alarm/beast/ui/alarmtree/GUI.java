@@ -22,7 +22,9 @@ import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.actions.AddComponentAction;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
+import org.csstudio.alarm.beast.ui.actions.DisableComponentAction;
 import org.csstudio.alarm.beast.ui.actions.DuplicatePVAction;
+import org.csstudio.alarm.beast.ui.actions.EnableComponentAction;
 import org.csstudio.alarm.beast.ui.actions.MoveItemAction;
 import org.csstudio.alarm.beast.ui.actions.RemoveComponentAction;
 import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
@@ -84,7 +86,7 @@ public class GUI implements AlarmClientModelListener
 
     /** Show only alarms, or all items? */
     private boolean show_only_alarms;
-    
+
     private GUIUpdateThrottle throttle;
 
 
@@ -99,7 +101,7 @@ public class GUI implements AlarmClientModelListener
         this.model = model;
         this.display = parent.getDisplay();
         createGUI(parent);
-        
+
         throttle = new GUIUpdateThrottle() {
             @Override
             protected void fire() {
@@ -303,7 +305,9 @@ public class GUI implements AlarmClientModelListener
 	                                                    (AlarmTreePV)items.get(0)));
 	        }
 	        if (items.size() >= 1)
-	        {   // Allow removal of one or more selected items
+	        {   // Allow certain actions on one or more selected items
+                manager.add(new EnableComponentAction(shell, model, items));
+	            manager.add(new DisableComponentAction(shell, model, items));
 	            manager.add(new MoveItemAction(shell, model, items));
 	            manager.add(new RemoveComponentAction(shell, model, items));
 	        }
@@ -402,7 +406,7 @@ public class GUI implements AlarmClientModelListener
                 final Tree tree = tree_viewer.getTree();
                 if (tree.isDisposed())
                     return;
-                
+
                 if (model.isServerAlive()) {
                     setErrorMessage(null);
                 } else {
@@ -445,7 +449,7 @@ public class GUI implements AlarmClientModelListener
             final AlarmTreePV pv, final boolean parent_changed)
     {
         if (show_only_alarms || pv == null) {
-            //if only alarms are shown, redo the whole tree: 
+            //if only alarms are shown, redo the whole tree:
             //some PVs might have appeared, some disappeared
             //it is generally faster to refresh everything
             throttle.trigger();
