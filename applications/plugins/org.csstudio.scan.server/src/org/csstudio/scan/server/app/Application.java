@@ -101,18 +101,18 @@ public class Application implements IApplication
 
             LogConfigurator.configureFromPreferences();
 
-	        log.info("Scan config       : " + ScanSystemPreferences.getScanConfigPath());
-	        log.info("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
-	        log.info("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
-	        log.info("Pre-scan commands : " + Arrays.toString(ScanSystemPreferences.getPreScanPaths()));
-	        log.info("Post-scan commands: " + Arrays.toString(ScanSystemPreferences.getPostScanPaths()));
-	        log.info("Script paths      : " + Arrays.toString(ScanSystemPreferences.getScriptPaths()));
+	        log.config("Scan config       : " + ScanSystemPreferences.getScanConfigPath());
+	        log.config("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
+	        log.config("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
+	        log.config("Pre-scan commands : " + Arrays.toString(ScanSystemPreferences.getPreScanPaths()));
+	        log.config("Post-scan commands: " + Arrays.toString(ScanSystemPreferences.getPostScanPaths()));
+	        log.config("Script paths      : " + Arrays.toString(ScanSystemPreferences.getScriptPaths()));
 
 	        // Start server
 	        final int port = ScanSystemPreferences.getServerPort();
 	        server = new ScanServerImpl();
 	        server.start();
-	        log.info("Scan Server REST interface on http://localhost:" + port + "/index.html");
+	        log.config("Scan Server REST interface on http://localhost:" + port + "/index.html");
 	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port);
                 // TODO
 	        //final PVAccessServer pva = new PVAccessServer(server);

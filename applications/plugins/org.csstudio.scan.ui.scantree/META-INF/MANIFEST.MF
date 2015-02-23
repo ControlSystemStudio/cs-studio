@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tree display of Scan
 Bundle-SymbolicName: org.csstudio.scan.ui.scantree;singleton:=true
-Bundle-Version: 4.0.2.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-Activator: org.csstudio.scan.ui.scantree.Activator
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
@@ -16,7 +16,7 @@ Require-Bundle: org.junit;bundle-version="4.0.0",
  org.csstudio.csdata;bundle-version="3.1.0",
  org.csstudio.apputil.ui;bundle-version="3.0.1",
  org.csstudio.ui.util;bundle-version="3.1.0",
- org.csstudio.scan;bundle-version="4.0.0",
+ org.csstudio.scan;bundle-version="4.1.0",
  org.csstudio.scan.ui;bundle-version="1.0.0",
  org.csstudio.scan.client;bundle-version="1.0.0",
  org.csstudio.autocomplete.ui;bundle-version="1.0.0"

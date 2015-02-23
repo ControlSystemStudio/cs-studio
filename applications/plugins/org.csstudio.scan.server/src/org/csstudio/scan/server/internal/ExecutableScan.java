@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
@@ -64,6 +66,8 @@ import org.epics.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>
 {
+    final private Logger logger = Logger.getLogger(getClass().getName());
+
     /** Commands to execute */
     final private transient List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
@@ -97,15 +101,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Actual or estimated end time */
     private volatile long end_ms = 0;
 
-    /** Last valid address
-     *  <p>The current_command may be within an IncludeCommand,
-     *  where addresses are no longer set.
-     *  This address tracks the most recent valid address.
-     */
-    private volatile long current_address = -1;
-
-    /** Currently executed command or <code>null</code> */
-    private volatile ScanCommandImpl<?> current_command = null;
+    /** Currently active commands, empty when nothing executes */
+    final private Deque<ScanCommandImpl<?>> active_commands = new ConcurrentLinkedDeque<>();
 
     /** {@link Future}, set when scan has been submitted to {@link ExecutorService}. Not reset back to empty. */
     private volatile Optional<Future<Object>> future = Optional.empty();
@@ -202,8 +199,8 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public ScanInfo getScanInfo()
     {
-        final long address = current_address;
-        final ScanCommandImpl<?> command = current_command;
+        final ScanCommandImpl<?> command = active_commands.peekLast();
+        final long address = command == null ? -1 : command.getCommand().getAddress();
         final String command_name;
         final ScanState state = getScanState();
         final long runtime;
@@ -383,8 +380,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public Object call() throws Exception
     {
-        final Logger log = Logger.getLogger(getClass().getName());
-        log.log(Level.INFO, "Executing {0} [{1}]", new Object[] { getName(), new MemoryInfo()});
+        logger.log(Level.CONFIG, "Executing \"{0}\" [{1}]", new Object[] { getName(), new MemoryInfo()});
 
         try
         (
@@ -407,7 +403,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
             state.set(ScanState.Failed);
             error = Optional.of(ex.getMessage());
-            log.log(Level.WARNING, "Scan " + getName() + " failed", ex);
+            logger.log(Level.WARNING, "Scan " + getName() + " failed", ex);
         }
         // Set actual end time, not estimated
         end_ms = System.currentTimeMillis();
@@ -468,9 +464,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             if (device_active.isPresent())
             {
             	getDevice(device_status.get()).write(getName());
-            	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
-            	ScanCommandUtil.write(this, device_active.get(), Double.valueOf(1.0), 0.1, timeout);
-            	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(0.0), 0.1, timeout);
+            	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
+            	ScanCommandUtil.write(this, device_active.get(), Double.valueOf(1.0));
+            	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(0.0));
             	getDevice(device_finish.get()).write("Starting ...");
             }
 
@@ -508,15 +504,16 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     	        error = Optional.of(ScanState.Aborted.name());
     	    else
     	    {
-    	        error = Optional.of(ex.getMessage());
+    	        if (ex.getMessage() != null)
+    	            error = Optional.of(ex.getMessage());
+    	        else
+    	            error = Optional.of(ex.getClass().getName());
     	        state.set(ScanState.Failed);
-    	        Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan " + getName() + " failed", ex);
+    	        logger.log(Level.WARNING, "Scan " + getName() + " failed", ex);
     	    }
         }
         finally
         {
-            current_address = -1;
-            current_command = null;
             end_ms = System.currentTimeMillis();
 
             try
@@ -525,15 +522,15 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 if (device_active.isPresent())
                 {
                     getDevice(device_status.get()).write("");
-                	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+                	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
                     getDevice(device_finish.get()).write(ScanSampleFormatter.format(new Date()));
-                    ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(100.0), 0.1, timeout);
-                    ScanCommandUtil.write(this, device_active.get(), Double.valueOf(0.0), 0.1, timeout);
+                    ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(100.0));
+                    ScanCommandUtil.write(this, device_active.get(), Double.valueOf(0.0));
                 }
             }
             catch (Exception ex)
             {
-                Logger.getLogger(getClass().getName()).log(Level.WARNING, "Final Scan status PV update failed", ex);
+                logger.log(Level.WARNING, "Final Scan status PV update failed", ex);
             }
 
             // Stop devices
@@ -559,27 +556,52 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public void execute(final ScanCommandImpl<?> command) throws Exception
     {
-        while (state.get() == ScanState.Paused)
-        {   // Pause until resumed
-            synchronized (this)
+        active_commands.addLast(command);
+        try
+        {
+            while (state.get() == ScanState.Paused)
+            {   // Pause until resumed
+                synchronized (this)
+                {
+                    wait();
+                }
+            }
+
+            executeWithRetries(command);
+
+            // Try to update Scan PVs on progress. Log errors, but continue scan
+            if (device_progress.isPresent())
             {
-                wait();
+                final ScanInfo info = getScanInfo();
+                try
+                {
+                    ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(info.getPercentage()));
+                    getDevice(device_finish.get()).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
+                }
+                catch (Exception ex)
+                {
+                    logger.log(Level.WARNING, "Error updating status PVs", ex);
+                }
             }
         }
-
-        boolean retry;
-        do
+        finally
         {
-            retry = false;
+            active_commands.remove(command);
+        }
+    }
+
+    /** @param command Command to execute, allowing for error handling and retries
+     *  @throws Exception on error
+     */
+    private void executeWithRetries(final ScanCommandImpl<?> command) throws Exception
+    {
+        while (true)
+        {
             try
             {
-                // Update current command, but only track address if valid.
-                // Will NOT update the address when going into IncludeCommand.
-                current_command = command;
-                if (current_command.getCommand().getAddress() >= 0)
-                    current_address = current_command.getCommand().getAddress();
-                Logger.getLogger(getClass().getName()).log(Level.FINE, "@{0}: {1}", new Object[] { current_address, command });
+                logger.log(Level.INFO, "@{0}: {1}", new Object[] { command.getCommand().getAddress(), command });
                 command.execute(this);
+                return; // Command executed without error
             }
             catch (Exception error)
             {   // Was command interrupted on purpose?
@@ -590,13 +612,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 if (state.get() == ScanState.Aborted)
                 {
                     final String message = "Command aborted: " + command.toString();
-                    Logger.getLogger(getClass().getName()).log(Level.INFO, message, error);
+                    logger.log(Level.INFO, message, error);
                     throw error;
                 }
 
                 // Command generated an error
                 final String message = "Command failed: " + command.toString();
-                Logger.getLogger(getClass().getName()).log(Level.WARNING, message, error);
+                logger.log(Level.WARNING, message, error);
                 // Error handler determines how to proceed
                 switch (command.handleError(this, error))
                 {
@@ -607,26 +629,10 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                     // Ignore the error, move on
                     return;
                 case Retry:
-                    retry = true;
+                    // Stay in 'while' for a retry
                 }
             }
-
-            // Try to update Scan PVs on progress. Log errors, but continue scan
-			if (device_progress.isPresent())
-	        {
-			    final ScanInfo info = getScanInfo();
-			    try
-			    {
-                	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(info.getPercentage()), 0.1, timeout);
-                	getDevice(device_finish.get()).write(ScanSampleFormatter.formatCompactDateTime(info.getFinishTime()));
-			    }
-			    catch (Exception ex)
-			    {
-                    Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error updating status PVs", ex);
-			    }
-	        }
         }
-        while (retry);
     }
 
     /** Pause execution of a currently executing scan */
@@ -643,7 +649,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             }
             catch (Exception ex)
             {
-                Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error updating state PV", ex);
+                logger.log(Level.WARNING, "Error updating state PV", ex);
             }
         }
     }
@@ -662,7 +668,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             }
             catch (Exception ex)
             {
-                Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error updating state PV", ex);
+                logger.log(Level.WARNING, "Error updating state PV", ex);
             }
         }
 

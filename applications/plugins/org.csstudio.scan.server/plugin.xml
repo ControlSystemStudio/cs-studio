@@ -59,6 +59,11 @@
             name="Loop">
       </imp_factory>
       <imp_factory
+            command="org.csstudio.scan.command.ParallelCommand"
+            factory="org.csstudio.scan.commandimpl.ParallelCommandImplFactory"
+            name="Parallel">
+      </imp_factory>
+      <imp_factory
             command="org.csstudio.scan.command.SetCommand"
             factory="org.csstudio.scan.commandimpl.SetCommandImplFactory"
             name="Set">
