@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.trends.databrowser2.rap.feature"
       label="Feature"
-      version="1.0.0.qualifier"
+      version="1.0.1.qualifier"
       provider-name="Jaka Bobnar (jaka.bobnar@cosylab.com)">
 
    <description>
