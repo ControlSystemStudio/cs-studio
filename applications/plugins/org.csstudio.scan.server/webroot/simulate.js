@@ -14,7 +14,9 @@ $(function()
             data: commands,
             error: function(xhr, status, error)
             {
-                alert('Error: ' + error);
+                var message = $(xhr.responseXML).find("message").text()
+                var trace = $(xhr.responseXML).find("trace").text()
+                alert(message + trace);
             },
             success: function(xml)
             {

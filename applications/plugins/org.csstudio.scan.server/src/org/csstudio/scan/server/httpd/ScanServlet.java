@@ -9,6 +9,9 @@ package org.csstudio.scan.server.httpd;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -66,28 +69,40 @@ public class ScanServlet extends HttpServlet
             if (scan_name.startsWith("/"))
                 scan_name = scan_name.substring(1);
         }
-        
+
         // Read scan commands
         final String scan_commands = IOUtils.toString(request.getInputStream());
-        
+
+        // Return <id> or <error>
+        response.setContentType("text/xml");
+        final PrintWriter out = response.getWriter();
+
         // Submit scan
         try
         {
             final long scan_id = scan_server.submitScan(scan_name, scan_commands);
-            
+
             // Return scan ID
-            response.setContentType("text/xml");
-            final PrintWriter out = response.getWriter();
             out.print("<id>");
             out.print(scan_id);
             out.println("</id>");
         }
         catch (Exception ex)
         {
-            throw new ServletException("Error submitting scan", ex);
+            response.resetBuffer();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.println("<error>");
+            out.println("<message>" + scan_name + " failed to submit" + "</message>");
+            out.println("<trace>");
+            final StringWriter buf = new StringWriter();
+            ex.printStackTrace(new PrintWriter(buf));
+            out.println(buf.toString().replace("<", "&lt;"));
+            out.println("</trace>");
+            out.println("</error>");
+            response.flushBuffer();
         }
     }
-    
+
     /** 'Put' scan into new state
      *  <p>PUT scan/{id}/pause: Pause running scan
      *  <p>PUT scan/{id}/resume: Resume paused scan
@@ -171,8 +186,8 @@ public class ScanServlet extends HttpServlet
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
             return;
         }
-    }    
-    
+    }
+
     /** Get scan information
      *  <p>GET scan/{id} - get scan info
      *  <p>GET scan/{id}/commands - get scan commands
@@ -199,7 +214,7 @@ public class ScanServlet extends HttpServlet
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
             return;
         }
-        
+
         // Return requested object
         final String object = path.size() < 2 ? null : path.getString(1);
         try
@@ -247,7 +262,7 @@ public class ScanServlet extends HttpServlet
         catch (Exception ex)
         {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
-            ex.printStackTrace();
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scan failed", ex);
         }
-    }    
+    }
 }

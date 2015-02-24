@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class LoopCommand extends ScanCommand
+public class LoopCommand extends ScanCommandWithBody
 {
     private volatile String device_name;
     private volatile double start;
@@ -57,8 +57,6 @@ public class LoopCommand extends ScanCommand
     private volatile boolean wait = true;
     private volatile double tolerance = 0.1;
     private volatile double timeout = 0.0;
-
-	private List<ScanCommand> body;
 
     /** Initialize empty loop */
     public LoopCommand()
@@ -102,17 +100,6 @@ public class LoopCommand extends ScanCommand
         this(device_name, start, end, stepsize, toList(body));
     }
 
-    /** @param commands Array of commands
-     *  @return Mutable list of commands
-     */
-    private static List<ScanCommand> toList(final ScanCommand[] commands)
-    {
-        final List<ScanCommand> list = new ArrayList<ScanCommand>(commands.length);
-        for (ScanCommand command : commands)
-            list.add(command);
-        return list;
-    }
-
     /** Initialize
      *  @param device_name Device to update with the loop variable
      *  @param start Initial loop value
@@ -124,25 +111,11 @@ public class LoopCommand extends ScanCommand
             final double end, final double stepsize,
             final List<ScanCommand> body)
     {
-        if (device_name == null)
-            throw new NullPointerException();
-        this.device_name = device_name;
+        super(body);
+        this.device_name = Objects.requireNonNull(device_name);
         setStepSize(stepsize);
         this.start = start;
         this.end = end;
-        this.body = body;
-    }
-
-    /** Set address of loop as well as body commands
-     *  {@inheritDoc}
-     */
-    @Override
-    public long setAddress(final long address)
-    {
-        long next = super.setAddress(address);
-        for (ScanCommand command : body)
-            next = command.setAddress(next);
-        return next;
     }
 
     /** {@inheritDoc} */
@@ -227,7 +200,7 @@ public class LoopCommand extends ScanCommand
     {
         this.completion = completion;
     }
-    
+
     /** @return Wait for readback to match? */
     public boolean getWait()
     {
@@ -281,18 +254,6 @@ public class LoopCommand extends ScanCommand
         this.timeout = Math.max(0.0, timeout);
     }
 
-    /** @return Descriptions for loop body */
-    public List<ScanCommand> getBody()
-    {
-        return body;
-    }
-
-    /** @param body Loop body commands */
-    public void setBody(final List<ScanCommand> body)
-    {
-        this.body = body;
-    }
-
     /** {@inheritDoc} */
     @Override
     public void addXMLElements(final Document dom, final Element command_element)
@@ -343,12 +304,6 @@ public class LoopCommand extends ScanCommand
             element.appendChild(dom.createTextNode(Double.toString(timeout)));
             command_element.appendChild(element);
         }
-
-        element = dom.createElement("body");
-        for (ScanCommand cmd : body)
-            cmd.writeXML(dom, element);
-        command_element.appendChild(element);
-        
         super.addXMLElements(dom, command_element);
     }
 
@@ -357,8 +312,7 @@ public class LoopCommand extends ScanCommand
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
         // Read body first, so we don't update other loop params if this fails
-        final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
-        final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
+        super.readXML(factory, element);
 
         setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setStart(DOMHelper.getSubelementDouble(element, "start"));
@@ -369,8 +323,6 @@ public class LoopCommand extends ScanCommand
         setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
         setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
-        setBody(body);
-        super.readXML(factory, element);
     }
 
     /** @param buf If the set command uses a condition,

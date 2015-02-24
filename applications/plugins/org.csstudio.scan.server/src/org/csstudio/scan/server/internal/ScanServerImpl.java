@@ -84,9 +84,9 @@ public class ScanServerImpl implements ScanServer
     }
 
     /** Query server for devices used by a scan
-     * 
+     *
      *  <p>Meant to be called only inside the scan server.
-     *  
+     *
      *  @param id ID that uniquely identifies a scan
      *            or -1 for default devices
      *  @return {@link Device}s
@@ -121,7 +121,7 @@ public class ScanServerImpl implements ScanServer
     /** {@inheritDoc} */
     @Override
     public DeviceInfo[] getDeviceInfos(final long id) throws Exception
-    {    	
+    {
     	final Device[] devices = getDevices(id);
     	// Turn Device[] into DeviceInfo[]
     	final DeviceInfo[] infos = new DeviceInfo[devices.length];
@@ -139,7 +139,7 @@ public class ScanServerImpl implements ScanServer
         {   // Parse scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
-            
+
             // Create Jython interpreter for this scan
             final JythonSupport jython = new JythonSupport();
 
@@ -171,7 +171,8 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-            throw new Exception("Scan Engine error while simulating scan", ex);
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan simulation failed", ex);
+            throw ex;
         }
     }
 
@@ -215,9 +216,8 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-        	Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan submission failed", ex);
-            throw new Exception("Scan Engine error while submitting scan: " +
-            		ex.getClass().getName(), ex);
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan submission failed", ex);
+            throw ex;
         }
     }
 
@@ -285,7 +285,7 @@ public class ScanServerImpl implements ScanServer
             return scan;
         return null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public long getLastScanDataSerial(final long id) throws Exception

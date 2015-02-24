@@ -9,8 +9,7 @@ package org.csstudio.scan.server.httpd;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.StringWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -51,17 +50,17 @@ public class SimulateServlet extends HttpServlet
             return;
         }
 
+        response.setContentType("text/xml");
+        final PrintWriter out = response.getWriter();
+
         // Read scan commands
         final String scan_commands = IOUtils.toString(request.getInputStream());
-        
+
         // Simulate scan
         try
         {
             final SimulationResult simulation = scan_server.simulateScan(scan_commands);
-            
             // Return scan ID
-            response.setContentType("text/xml");
-            final PrintWriter out = response.getWriter();
             out.println("<simulation>");
             out.print("  <log>");
             out.print("<![CDATA[");
@@ -73,8 +72,17 @@ public class SimulateServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error simulating scan", ex);
-            throw new ServletException("Error simulating scan", ex);
+            response.resetBuffer();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.println("<error>");
+            out.println("<message>Failed to simulate</message>");
+            out.println("<trace>");
+            final StringWriter buf = new StringWriter();
+            ex.printStackTrace(new PrintWriter(buf));
+            out.println(buf.toString().replace("<", "&lt;"));
+            out.println("</trace>");
+            out.println("</error>");
+            response.flushBuffer();
         }
     }
 }

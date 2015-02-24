@@ -239,6 +239,18 @@ the alternating scan will be faster and reduce wear on the motors.
 </p>
 
 
+<h3><a name="ParallelCommand"><img alt="parallel" src="PLUGINS_ROOT/org.csstudio.scan/icons/parallelcommand.gif"/>&nbsp;Parallel Command</a></h3>
+<p>This command performs all commands in its body in parallel.
+Each of the individual commands in the body may wait for completion or a readback,
+and the parallel command completes when all the command in its body have completed.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Timeout: Time in seconds that the command will wait for all commands in ts body to complete.</li>
+<li>Body: Commands to be executed in parallel.</li>
+</ul>
+
+
 <h3><a name="IncludeCommand"><img alt="include" src="PLUGINS_ROOT/org.csstudio.scan/icons/includecommand.gif"/>&nbsp;Include Command</a></h3>
 <p>Include another <code>*.scn</code> file in a scan.
 </p>

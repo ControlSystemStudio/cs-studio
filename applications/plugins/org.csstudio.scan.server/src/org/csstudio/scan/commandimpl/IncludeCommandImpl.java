@@ -36,7 +36,6 @@ import org.csstudio.scan.server.internal.PathStreamTool;
 /** {@link ScanCommandImpl} that includes another scan
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
 {
     private List<ScanCommandImpl<?>> scan_impl;
@@ -51,12 +50,12 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
 	    final InputStream scan_stream = PathStreamTool.openStream(paths, command.getScanFile());
         final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
         final List<ScanCommand> commands = reader.readXMLStream(scan_stream);
-        
+
         // Implement
         final ScanCommandImplTool implementor = ScanCommandImplTool.getInstance();
         scan_impl = implementor.implement(commands, jython);
     }
-	
+
     /** {@inheritDoc} */
     @Override
     public long getWorkUnits()
@@ -66,7 +65,7 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
             included_units += command.getWorkUnits();
         return included_units;
     }
-	
+
     /** {@inheritDoc} */
 	@Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
@@ -87,7 +86,7 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
 	        macros.popMacros();
 	    }
 	}
-	
+
 	/** {@inheritDoc} */
     @Override
     public void simulate(final SimulationContext context) throws Exception

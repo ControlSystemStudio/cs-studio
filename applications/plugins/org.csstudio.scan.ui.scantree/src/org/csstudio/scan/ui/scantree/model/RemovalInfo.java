@@ -9,8 +9,8 @@ package org.csstudio.scan.ui.scantree.model;
 
 import java.util.List;
 
-import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.ScanCommandWithBody;
 
 /** Info about a removed item,
  *  allowing re-insertion at the original place
@@ -72,10 +72,10 @@ public class RemovalInfo
 
         // Descend down the tree
         for (ScanCommand item : commands)
-            if (item instanceof LoopCommand)
-            {   // Can command be re-inserted at or below this loop?
-                final LoopCommand loop = (LoopCommand) item;
-                if (reinsert(loop, loop.getBody()))
+            if (item instanceof ScanCommandWithBody)
+            {   // Can command be re-inserted at or below this command?
+                final ScanCommandWithBody cmd = (ScanCommandWithBody) item;
+                if (reinsert(cmd, cmd.getBody()))
                     return true;
                 // else: keep looking
             }

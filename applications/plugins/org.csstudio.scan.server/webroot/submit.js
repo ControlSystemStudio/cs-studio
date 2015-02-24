@@ -13,14 +13,16 @@ $(function()
             processData: false,
             contentType: 'text/xml',
             data: commands,
-            error: function(xhr, status, error)
+            error: function(xhr, status, message)
             {
-                alert('Error: ' + error);
+                var message = $(xhr.responseXML).find("message").text()
+                var trace = $(xhr.responseXML).find("trace").text()
+                alert(message + trace);
             },
             success: function(xml)
             {
-                // var id = +$(xml).find('id').text();
-                // alert('Submitted: ' + id);
+                var id = +$(xml).find('id').text();
+                alert('Submitted: ' + id);
                 document.location = '/scans.html';
             }
         });
