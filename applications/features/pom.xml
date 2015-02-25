@@ -30,5 +30,6 @@
     <module>org.csstudio.utilities.feature</module>
     <module>org.eclipse.nebula.widgets.grid.feature</module>
     <module>org.csstudio.shift.feature</module>
+    <module>org.csstudio.archive.reader.rdb.feature</module>
   </modules>
 </project>

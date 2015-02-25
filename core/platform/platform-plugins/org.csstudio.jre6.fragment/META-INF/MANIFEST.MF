@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: javax.activation,
  javax.transaction,
  javax.transaction.xa,
+ javax.activation;version="1.1.0",
  javax.xml;version="1.3.0",
  javax.xml.bind;version="1.3.0",
  javax.xml.bind.annotation;version="1.3.0",
