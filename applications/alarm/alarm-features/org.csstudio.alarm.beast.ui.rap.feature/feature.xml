@@ -2,11 +2,11 @@
 <feature
       id="org.csstudio.alarm.beast.ui.rap.feature"
       label="Feature"
-      version="1.0.0.qualifier"
+      version="1.1.0.qualifier"
       provider-name="Jaka Bobnar (jaka.bobnar@cosylab.com)">
 
    <description>
-      Provides a the set of plugins needed to build the opibuilder.rap WAR product.
+      Provides the set of plugins needed to build the Beast RAP product.
    </description>
 
    <plugin
@@ -438,21 +438,7 @@
          unpack="false"/>
 
    <plugin
-         id="javax.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.mail"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.activation"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -505,6 +491,14 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.jre6.fragment"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>
