@@ -11,6 +11,7 @@
 	<name>Logbook plugins</name>
 	<description>Logbook plugins</description>
 	<modules>
+		<module>org.csstudio.autocomplete.logbook</module>
 		<module>org.csstudio.logbook</module>
 		<module>org.csstudio.logbook.olog</module>
 		<module>org.csstudio.logbook.olog.properties</module>
