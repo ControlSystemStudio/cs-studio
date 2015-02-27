@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.csstudio.platform.libs.epics.ui;singleton:=true
 Bundle-Version: 1.1.1.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.help,
- org.eclipse.help.ui,
+ org.eclipse.core.runtime,
  org.csstudio.platform.libs.epics
 Bundle-Vendor: DESY/ORNL/SLAC

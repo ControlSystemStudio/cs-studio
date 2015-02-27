@@ -4,11 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>applications-plugins</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
+    <artifactId>platform-plugins</artifactId>
   </parent>
-  <groupId>org.csstudio</groupId>
-  <artifactId>org.csstudio.autocomplete.logbook</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <artifactId>org.csstudio.jre6.fragment</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

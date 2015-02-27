@@ -51,14 +51,14 @@ import org.eclipse.ui.part.ViewPart;
 public class LoggingConfiguration extends ViewPart {
 
     private final static Logger LOGGER = Logger.getLogger(LoggingConfiguration.class.getName());
-    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     
     private static final String ID = "org.csstudio.logging.ui.LoggingConfiguration";
     
     private Handler consoleViewHandler;
     private Handler consoleHandler;
     private ScrolledComposite sc;
-    private static final Map<String, Logger> loggerMap = new TreeMap<String, Logger>();
+    private final Map<String, Logger> loggerMap = new TreeMap<String, Logger>();
     
     public LoggingConfiguration() {     
         
@@ -81,7 +81,11 @@ public class LoggingConfiguration extends ViewPart {
                         
                         @Override
                         public void run() {
-                            createComposite(parent);                            
+                            if (!parent.isDisposed()) {
+                                //FIXME do not recreate the whole view every time it 
+                                //becomes active (it happens on every focus gained event)
+                                createComposite(parent);
+                            }
                         }
                     });
                 }

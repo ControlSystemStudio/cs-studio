@@ -49,7 +49,6 @@
     <module>org.csstudio.archive.writer.rdb</module>
     <module>org.csstudio.archive.writer.test</module>
     
-    <module>org.csstudio.autocomplete.logbook</module>
     
     
     

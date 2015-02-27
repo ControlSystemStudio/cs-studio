@@ -15,8 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanClient;
-import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
@@ -72,6 +72,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -677,10 +678,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 catch (Exception ex)
                 {
                     scan_id = -1;
-                    return new Status(IStatus.ERROR,
-                            Activator.PLUGIN_ID,
+                    final Shell shell = getSite().getShell();
+                    shell.getDisplay().asyncExec(() ->
+                    {
+                        ExceptionDetailsErrorDialog.openError(shell,
+                            Messages.SubmitScan,
                             NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()),
                             ex);
+                    } );
                 }
                 return Status.OK_STATUS;
             }

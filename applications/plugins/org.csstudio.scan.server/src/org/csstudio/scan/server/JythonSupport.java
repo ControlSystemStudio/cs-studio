@@ -148,7 +148,20 @@ public class JythonSupport
         for (String path : paths)
             state.path.append(new PyString(path));
 
-    	interpreter = new PythonInterpreter(null, state);
+        // Creating a PythonInterpreter is very slow.
+        //
+        // In addition, concurrent creation is not supported, resulting in
+        //     Lib/site.py", line 571, in <module> ..
+        //     Lib/sysconfig.py", line 159, in _subst_vars AttributeError: {'userbase'}
+        // or  Lib/site.py", line 122, in removeduppaths java.util.ConcurrentModificationException
+        //
+        // Sync. on JythonSupport to serialize the interpreter creation and avoid above errors.
+        // Curiously, this speeds the interpreter creation up,
+        // presumably because they're not concurrently trying to access the same resources?
+        synchronized (JythonSupport.class)
+        {
+            interpreter = new PythonInterpreter(null, state);
+        }
 	}
 
 	/** Load a Jython class

@@ -6,6 +6,15 @@
      Depends on cs-studio/applications already having been built
      via the maven command line, so that ../../repository/target/repository/plugins
      contains external dependencies.
+     
+     Have also seen problems with older ant and Java 8.
+     What works:
+     
+     export JAVA_HOME=/path/to/java8
+     export ANT_HOME=/path/to/ant1.9.4
+     export PATH=$ANT_HOME/bin:$JAVA_HOME/bin:$PATH
+     
+     ant all
 
      Kay Kasemir
   -->
@@ -37,7 +46,7 @@
     <!-- Compile Java sources -->
     <target name="compile" depends="prepare">
         <!-- org.csstudio.java -->
-        <javac srcdir="../../../core/plugins/org.csstudio.java/src" destdir="${classes}"
+        <javac srcdir="../../../core/platform/platform-plugins/org.csstudio.java/src" destdir="${classes}"
                includeantruntime="true" deprecation="on" debug="on">
             <classpath><path refid="build.classpath"/></classpath>
         </javac>
