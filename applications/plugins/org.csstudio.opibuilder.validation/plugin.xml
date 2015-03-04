@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="opi"
+         name="OPI Validator"
+         point="org.eclipse.wst.validation.validatorV2">
+      <validator
+            build="true"
+            class="org.csstudio.opibuilder.validation.core.Validator"
+            manual="true"
+            markerId="org.csstudio.opibuilder.validation.opiValidationProblem">
+         <include>
+            <rules>
+               <fileext
+                     caseSensitive="false"
+                     ext="opi">
+               </fileext>
+            </rules>
+         </include>
+      </validator>
+   </extension>
+   <extension
+         id="opiValidationProblem"
+         name="OPI Validation Problem"
+         point="org.eclipse.core.resources.markers">
+         <super type="org.eclipse.wst.validation.problemmarker"/>
+         <persistent value="false"/>
+         <attribute
+               name="validationFailure">
+         </attribute>
+   </extension>
+   <extension
+         id="opiLoadingError"
+         name="OPI Loading Error"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.wst.validation.problemmarker">
+      </super>
+      <persistent
+            value="false">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="org.csstudio.opibuilder.validation.core.QuickFixer"
+            markerType="org.csstudio.opibuilder.validation.opiValidationProblem">
+      </markerResolutionGenerator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="ValidationPreferencePage"
+            class="org.csstudio.opibuilder.validation.ui.PreferencesPage"
+            id="org.csstudio.opibuilder.validation.opiValidationPreference"
+            name="Opi Validation">
+      </page>
+   </extension>
+   
+
+</plugin>
