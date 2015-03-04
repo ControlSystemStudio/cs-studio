@@ -5,6 +5,9 @@
    <extension-point id="graphicalFeedbackFactory" name="graphicalFeedbackFactory" schema="schema/graphicalFeedbackFactory.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
+      <!-- To be removed,
+           only using org.csstudio.opibuilder.runmode.OPIView,
+           started from Navigator or *.opi file via org.csstudio.opibuilder.DisplayLauncher
       <editor
             class="org.csstudio.opibuilder.runmode.OPIRunner"
             contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
@@ -13,6 +16,15 @@
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.OPIRunner"
             name="OPI Runtime">
+      </editor>
+       -->
+      <editor
+            default="true"
+            extensions="opi"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.DisplayLauncher"
+            launcher="org.csstudio.opibuilder.runmode.DisplayLauncher"
+            name="Workbench OPI Runtime">
       </editor>
    </extension>
    <extension
@@ -304,8 +316,52 @@
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.opiView"
-            name="OPI View"
-            restorable="true">
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiViewLEFT"
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiViewRIGHT"
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiViewTOP"
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiViewBOTTOM"
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.PlaceHolderView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.placeHolder"
+            name="OPI Placeholder">
       </view>
    </extension>
    <extension

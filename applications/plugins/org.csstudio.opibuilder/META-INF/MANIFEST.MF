@@ -9,6 +9,8 @@ Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
+ org.eclipse.e4.ui.model.workbench;bundle-version="1.1.0",
+ org.eclipse.e4.ui.workbench;bundle-version="1.2.1",
  org.eclipse.gef;resolution:=optional,
  org.eclipse.ui.views;bundle-version="3.3.0";resolution:=optional,
  org.csstudio.apputil;bundle-version="1.0.11",

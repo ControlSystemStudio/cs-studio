@@ -57,20 +57,20 @@ public class ResourceUtil {
 	private static final int CACHE_TIMEOUT_SECONDS = 120;
 
 	private static final ResourceUtilSSHelper IMPL;
-	
+
 	/**
-	 *Cache the file from URL. 
+	 *Cache the file from URL.
 	 */
 	private static final TimedCache<URL, File> URL_CACHE = new TimedCache<>(CACHE_TIMEOUT_SECONDS);
 
-	
+
 	static {
 		IMPL = (ResourceUtilSSHelper)ImplementationLoader.newInstance(
 				ResourceUtilSSHelper.class);
 	}
-	
-	
-		
+
+
+
 	/**
 	 *Return the {@link InputStream} of the file that is available on the
 	 * specified path. The task will run in UIJob. Caller must be in UI thread too.
@@ -93,11 +93,11 @@ public class ResourceUtil {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("nls")
-    public static InputStream pathToInputStream(final IPath path, boolean runInUIJob) throws Exception {	
+    public static InputStream pathToInputStream(final IPath path, boolean runInUIJob) throws Exception {
     	return IMPL.pathToInputStream(path, runInUIJob);
-	}	
-	
-	
+	}
+
+
 	/**
 	 * Returns a stream which can be used to read this editors input data.
 	 * @param editorInput
@@ -106,9 +106,9 @@ public class ResourceUtil {
 	 */
 	public static InputStream getInputStreamFromEditorInput(IEditorInput editorInput){
 		return IMPL.getInputStreamFromEditorInput(editorInput);
-		
+
 	}
-	
+
 	/**
 	 * @param path the file path
 	 * @return true if the file path is an existing workspace file.
@@ -116,11 +116,11 @@ public class ResourceUtil {
 	public static boolean isExistingWorkspaceFile(IPath path){
 		return IMPL.isExistingWorkspaceFile(path);
 	}
-	
+
 	public static boolean isExistingLocalFile(IPath path){
 		 // Not a workspace file. Try local file system
         File local_file = path.toFile();
-       
+
 //        // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
             local_file = new File(local_file.getPath().substring(5));
@@ -135,9 +135,14 @@ public class ResourceUtil {
 //            return false;
 //        }
 //        return true;
-        
+
 	}
 
+    // TODO Check handling of "absolute" path and search path.
+    //      Why is AbstractOpenOPIAction resolving a path,
+    //      and not the OPIRuntimeDelegate itself?
+    //      Resolve this after settling on use of "Editor" or "View" for runtime,
+    //      since that will result in less code that needs to be updated.
 	/**Build the absolute path from the file path (without the file name part)
 	 * of the widget model and the relative path.
 	 * @param model the widget model
@@ -182,13 +187,13 @@ public class ResourceUtil {
 		else
 			return new Path(input);
 	}
-	
+
 	/**Convert workspace path to OS system path.
 	 * @param path the workspace path
 	 * @return the corresponding system path. null if it is not exist.
 	 */
 	public static IPath workspacePathToSysPath(IPath path){
-		return IMPL.workspacePathToSysPath(path);		
+		return IMPL.workspacePathToSysPath(path);
 	}
 
 	/** Check if a URL is actually a URL
@@ -205,12 +210,12 @@ public class ResourceUtil {
 		return true;
 //		return urlString.contains(":/");  //$NON-NLS-1$
 	}
-	
+
     /**Open URL stream in UI Job if runInUIJob is true.
      * @param url
-     * @param runInUIJob true if this method should run as an UI Job. 
+     * @param runInUIJob true if this method should run as an UI Job.
      * If it is true, this method must be called in UI thread.
-     * 
+     *
      * TODO Unclear why the runInUIJob is actually used, because
      *      it will in fact NOT run in the UI, but in a background job.
      *      It will wait for the result in either case, so why a background job??
@@ -249,25 +254,25 @@ public class ResourceUtil {
             stream.set(openURLStream(url));
         return stream.get();
     }
-	
+
 	private static InputStream openURLStream(final URL url) throws IOException{
 		File tempFilePath = URL_CACHE.getValue(url);
 		if(tempFilePath != null){
             OPIBuilderPlugin.getLogger().log(Level.FINE, "Found cached file for URL '" + url + "'");
 			return new FileInputStream(tempFilePath);
 		}else{
-			InputStream inputStream = openRawURLStream(url);			
+			InputStream inputStream = openRawURLStream(url);
 			if(inputStream !=null){
 				try {
 					IPath urlPath = new URLPath(url.toString());
-					
+
 					// createTempFile(), at least with jdk1.7.0_45,
 					// requires at least 3 chars for the 'prefix', so add "opicache"
 					// to assert a minimum length
 					final String cache_file_prefix = "opicache" + urlPath.removeFileExtension().lastSegment();
                     final String cache_file_suffix = "."+urlPath.getFileExtension();
-					final File file = File.createTempFile(cache_file_prefix, cache_file_suffix);			
-					file.deleteOnExit();	
+					final File file = File.createTempFile(cache_file_prefix, cache_file_suffix);
+					file.deleteOnExit();
 					if(!file.canWrite())
 						throw new Exception("Unable to write temporary file.");
 					FileOutputStream outputStream = new FileOutputStream(file);
@@ -275,12 +280,12 @@ public class ResourceUtil {
 					int bytesRead;
 					while((bytesRead = inputStream.read(buffer))!=-1){
 						outputStream.write(buffer, 0, bytesRead);
-					}					
+					}
 					outputStream.close();
 					URL_CACHE.remember(url, file);
 					inputStream.close();
 					ExecutionService.getInstance().getScheduledExecutorService().schedule(new Runnable() {
-						
+
 						@Override
 						public void run() {
 							file.delete();
@@ -290,13 +295,13 @@ public class ResourceUtil {
 				} catch (Exception e) {
 					OPIBuilderPlugin.getLogger().log(Level.WARNING,
 							"Error to cache file from URL '" + url + "'", e);
-				}	            
-			}			
+				}
+			}
 			return inputStream;
 		}
-		
+
 	}
-	
+
 	/**Open URL Stream from remote.
 	 * @param url
 	 * @return
@@ -307,16 +312,19 @@ public class ResourceUtil {
 			//The code to support https protocol is provided by Eric Berryman (eric.berryman@gmail.com) from Frib
 	        // Create a trust manager that does not validate certificate chains
 	        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-	                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 	                    return null;
 	                }
-	                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+	                @Override
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
 	                }
-	                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+	                @Override
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
 	                }
 	            }
 	        };
-	
+
 	        // Install the all-trusting trust manager
 	        SSLContext sc = null;
 	        try {
@@ -330,32 +338,33 @@ public class ResourceUtil {
 	            e.printStackTrace();
 	        }
 	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-	
+
 	        // Create all-trusting host name verifier
 	        HostnameVerifier allHostsValid = new HostnameVerifier() {
-	            public boolean verify(String hostname, SSLSession session) {
+	            @Override
+                public boolean verify(String hostname, SSLSession session) {
 	                return true;
 	            }
 	        };
-	
+
 	        // Install the all-trusting host verifier
 	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 		}
-		
+
 		URLConnection connection = url.openConnection();
 		connection.setReadTimeout(PreferencesHelper.getURLFileLoadingTimeout());
 		return connection.getInputStream();
 	}
-	
+
 	/**If the path is an connectable URL. .
 	 * @param path
-	 * @param runInUIJob true if this method should run as an UI Job. 
+	 * @param runInUIJob true if this method should run as an UI Job.
 	 * If it is true, this method must be called in UI thread.
 	 * @return
 	 */
 	public static boolean isExistingURL(final IPath path, boolean runInUIJob){
 		try {
-			
+
 			URL url = new URL(path.toString());
 			if(URL_CACHE.getValue(url)!= null)
 				return true;
@@ -369,10 +378,11 @@ public class ResourceUtil {
 			return false;
 		}
 	}
-	
+
+    // TODO Rename to isExistingFile, but that also affects editor, symbol widget, ..
 	/**If the file on path is an existing file in workspace, local file system or available URL.
 	 * @param absolutePath
-	 * @param runInUIJob true if this method should run as an UI Job. 
+	 * @param runInUIJob true if this method should run as an UI Job.
 	 * If it is true, this method must be called in UI thread.
 	 * @return
 	 */
@@ -380,7 +390,7 @@ public class ResourceUtil {
 		if(absolutePath instanceof URLPath)
 			if(isExistingURL(absolutePath, runInUIJob))
 				return true;
-		
+
 		if(isExistingWorkspaceFile(absolutePath))
 			return true;
 		if(isExistingLocalFile(absolutePath))
@@ -390,12 +400,12 @@ public class ResourceUtil {
 			return true;
 		return false;
 	}
-	
+
 	/**Get the first existing file on search path. Search path is a BOY preference.
 	 * @param relativePath
 	 * @param runInUIJob true if this method should run as an UI Job, in which cases
-	 *  this method must be called in UI thread.	 
-	 * @return the first existing file on search path. null if search path doesn't exist or 
+	 *  this method must be called in UI thread.
+	 * @return the first existing file on search path. null if search path doesn't exist or
 	 * no such file exist on search path.
 	 */
 	public static IPath getFileOnSearchPath(final IPath relativePath, boolean runInUIJob){
@@ -407,24 +417,24 @@ public class ResourceUtil {
 			for(IPath searchPath : searchPaths){
 				IPath absolutePath = searchPath.append(relativePath);
 				if(isExsitingFile(absolutePath, runInUIJob))
-					return absolutePath;			
+					return absolutePath;
 			}
 		} catch (Exception e) {
 			return null;
 		}
-		
-		return null;		
+
+		return null;
 	}
-	
-	
+
+
 	/**Get screenshot image from GraphicalViewer
 	 * @param viewer the GraphicalViewer
 	 * @return the screenshot image
 	 */
-	public static Image getScreenshotImage(GraphicalViewer viewer){		
+	public static Image getScreenshotImage(GraphicalViewer viewer){
 		return IMPL.getScreenShotImage(viewer);
 	}
-	
+
 	@SuppressWarnings("nls")
     public static String getScreenshotFile(GraphicalViewer viewer) throws Exception{
 		File file;

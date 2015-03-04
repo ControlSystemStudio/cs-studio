@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgetActions;
 
-import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,9 +25,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * The abstract action opening an OPI file. It can be subclassed to be opened in view or editor.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 
@@ -48,30 +47,30 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 	}
 
 	@Override
-	public void run() {
-		// read file
+	public void run()
+	{
+        // Determine absolute path
+        // TODO Do this in RuntimeDelegate, after settling View-or-Editor
 		IPath absolutePath = getPath();
-		if (!absolutePath.isAbsolute()) {
+		if (!absolutePath.isAbsolute())
+		{
 			absolutePath = ResourceUtil.buildAbsolutePath(getWidgetModel(),
-					getPath());		
-			if(!ResourceUtil.isExsitingFile(absolutePath, true)){
+					getPath());
+			if (!ResourceUtil.isExsitingFile(absolutePath, true))
+			{
 				//search from OPI search path
 				absolutePath = ResourceUtil.getFileOnSearchPath(getPath(), true);
 			}
 		}
-		if (absolutePath == null || !ResourceUtil.isExsitingFile(absolutePath, true)) {
-			try {
-				throw new FileNotFoundException(
-						NLS.bind("The file {0} does not exist.",
-								getPath().toString()));
-			} catch (FileNotFoundException e) {
-				MessageDialog.openError(Display.getDefault().getActiveShell(),
-						"File Open Error", e.getMessage());
-				ConsoleService.getInstance().writeError(e.toString());
-				return;
-			}
+		if (absolutePath != null  &&  ResourceUtil.isExsitingFile(absolutePath, true))
+		    openOPI(absolutePath);
+	    else
+	    {
+	        final String error = NLS.bind("The file {0} does not exist.", getPath().toString());
+	        ConsoleService.getInstance().writeError(error);
+			MessageDialog.openError(Display.getDefault().getActiveShell(),
+						"File Open Error", error);
 		}
-		openOPI(absolutePath);
 	}
 
 	abstract protected void openOPI(IPath absolutePath);
@@ -112,7 +111,7 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 	public final void setShiftPressed(boolean shiftPressed) {
 		this.shiftPressed = shiftPressed;
 	}
-	
+
 
 	@Override
 	public String getDefaultDescription() {

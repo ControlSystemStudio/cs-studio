@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
+import java.util.logging.Level;
+
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -28,23 +31,29 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /** RCP 'View' for display runtime
- * 
+ *
  *  <p>Similar to an RCP editor it is associated to an 'input',
  *  but provides only a view to that *.opi, executing its content.
- *  
- *  <p>Being a 'View' allows save/restore within a 'Perspective'. 
- *  
+ *
+ *  <p>Being a 'View' allows save/restore within a 'Perspective'.
+ *
  *  @author Xihui Chen - Original author
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class OPIView extends ViewPart implements IOPIRuntime
 {
-    /** View ID registered in plugin.xml */
-    public static final String ID = "org.csstudio.opibuilder.opiView"; //$NON-NLS-1$
+    /** View ID registered in plugin.xml for use as a 'default' view.
+     *
+     *  <p>For views to be displayed in designated
+     *  OPIRunnerPerspective.Position,
+     *  that Position.name() is added to the basic ID
+     */
+    public static final String ID = "org.csstudio.opibuilder.opiView";
 
     /** Memento tags */
-    private static final String TAG_INPUT = "input", //$NON-NLS-1$
-                                TAG_FACTORY_ID = "factory_id"; //$NON-NLS-1$
+    private static final String TAG_INPUT = "input",
+                                TAG_FACTORY_ID = "factory_id";
 
     protected OPIRuntimeDelegate opiRuntimeDelegate;
 
@@ -63,11 +72,11 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     /** See {@link #ignoreMemento()} */
     private static boolean ignoreMemento = false;
-    
+
     private static boolean openFromPerspective = false;
-    
+
     private static boolean openedByUser = false;
-    
+
     /** When application starts up, restored views use the memento
      *  provided by RCP to restore their original content.
      *
@@ -81,7 +90,7 @@ public class OPIView extends ViewPart implements IOPIRuntime
     {
         OPIView.ignoreMemento = true;
     }
-    
+
     public OPIView()
     {
         opiRuntimeDelegate = new OPIRuntimeDelegate(this);
@@ -101,7 +110,7 @@ public class OPIView extends ViewPart implements IOPIRuntime
     {
         super.init(site, memento);
         this.site = site;
-        
+
         // When RCP restores Views on CSS restart, the view ID is already set.
         // Adjust instance to not conflict with such restored views.
         synchronized (OPIView.class)
@@ -120,19 +129,24 @@ public class OPIView extends ViewPart implements IOPIRuntime
                 }
             }
         }
-        
+
         if (ignoreMemento  ||  memento == null)
             return;
-        
+
         // Load previously displayed input from memento
-        final IMemento inputMem = memento.getChild(TAG_INPUT);
         final String  factoryID = memento.getString(TAG_FACTORY_ID);
+        if (factoryID == null)
+        {
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, toString() + " has memento with empty factory ID");
+            return;
+        }
+        final IMemento inputMem = memento.getChild(TAG_INPUT);
         final IElementFactory factory = PlatformUI.getWorkbench().getElementFactory(factoryID);
         if (factory == null)
             throw new PartInitException(NLS.bind(
                     "Cannot instantiate input element factory {0} for OPIView",
                     factoryID));
-                    
+
         final IAdaptable element = factory.createElement(inputMem);
         if (!(element instanceof IEditorInput))
             throw new PartInitException("Instead of OPIView, " + factoryID + " returned " + element);
@@ -140,11 +154,12 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     /** @param input Display file that this view should execute */
+    @Override
     public void setOPIInput(final IEditorInput input) throws PartInitException
     {
         IViewSite view = getViewSite();
         System.out.println(view.getId() + ":" + view.getSecondaryId() + " for " + input.getName());
-        
+
         this.input = input;
         setTitleToolTip(input.getToolTipText());
         opiRuntimeDelegate.init(site, input);
@@ -154,11 +169,11 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     @Override
     public void createPartControl(final Composite parent) {
-        if(SWT.getPlatform().startsWith("rap")){ //$NON-NLS-1$
+        if(SWT.getPlatform().startsWith("rap")){
             SingleSourceHelper.rapOPIViewCreatePartControl(this, parent);
             return;
         }
-            
+
         opiRuntimeDelegate.createGUI(parent);
         createToolbarButtons();
         parent.addControlListener(new ControlAdapter() {
@@ -166,8 +181,9 @@ public class OPIView extends ViewPart implements IOPIRuntime
             public void controlResized(ControlEvent e) {
                 if(parent.getShell().getText().length() == 0){ //the only way to know it is detached.
                     if(!detached){
-                        detached = true;                        
-                        UIBundlingThread.getInstance().addRunnable(new Runnable() {                        
+                        detached = true;
+                        UIBundlingThread.getInstance().addRunnable(new Runnable() {
+                            @Override
                             public void run() {
                                 final Rectangle bounds;
                                 if(opiRuntimeDelegate.getDisplayModel() != null)
@@ -187,16 +203,16 @@ public class OPIView extends ViewPart implements IOPIRuntime
                                                         + (int) (Math.random() * 100));
                                     }
                                 }
-                                parent.getShell().setSize(bounds.width+45, bounds.height+65);                            
+                                parent.getShell().setSize(bounds.width+45, bounds.height+65);
                             }
                         });
-                    }            
+                    }
                 }else
                     detached = false;
             }
         });
     }
-    
+
     public void createToolbarButtons(){
         opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();
         IActionBars bars = getViewSite().getActionBars();
@@ -204,7 +220,7 @@ public class OPIView extends ViewPart implements IOPIRuntime
         opiRuntimeToolBarDelegate.contributeToToolBar(bars.getToolBarManager());
         opiRuntimeToolBarDelegate.setActiveOPIRuntime(this);
     }
-    
+
 
     @Override
     public void saveState(IMemento memento) {
@@ -237,6 +253,7 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     }
 
+    @Override
     public void setWorkbenchPartName(String name) {
         setPartName(name);
         setTitleToolTip(getOPIInput().getToolTipText());
@@ -246,10 +263,12 @@ public class OPIView extends ViewPart implements IOPIRuntime
         return opiRuntimeDelegate;
     }
 
+    @Override
     public IEditorInput getOPIInput() {
         return getOPIRuntimeDelegate().getEditorInput();
     }
 
+    @Override
     public DisplayModel getDisplayModel() {
         return getOPIRuntimeDelegate().getDisplayModel();
     }
@@ -272,15 +291,22 @@ public class OPIView extends ViewPart implements IOPIRuntime
     public static void setOpenFromPerspective(boolean openFromPerspective) {
         OPIView.openFromPerspective = openFromPerspective;
     }
-    
+
     /** Mark as opened by user, interactively
-     * 
+     *
      *  <p>Detached view, when opened by user, will be positioned
      *  somewhere within the Workbench window, so user can find it.
-     * 
+     *
      *  @param openedByUser Mark as opened interactively?
      */
     public static void setOpenedByUser(boolean openedByUser) {
         OPIView.openedByUser = openedByUser;
+    }
+
+    /** @return Debug info for view, shows location and *.opi file */
+    @Override
+    public String toString()
+    {
+        return "OPIView " + getViewSite().getId() + ":" + getViewSite().getSecondaryId() + ", " + input;
     }
 }
