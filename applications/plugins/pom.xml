@@ -91,6 +91,7 @@
     <module>org.csstudio.ndarray</module>
     <module>org.csstudio.numjy</module>
     <module>org.csstudio.opibuilder</module>
+    <module>org.csstudio.opibuilder.validation</module>
     <module>org.csstudio.opibuilder.adl2boy</module>
     <module>org.csstudio.opibuilder.alarm</module>
     <module>org.csstudio.opibuilder.converter</module>
