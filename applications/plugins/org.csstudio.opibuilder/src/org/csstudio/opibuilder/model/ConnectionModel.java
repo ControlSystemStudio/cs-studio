@@ -297,11 +297,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 		if(root == null) return null;
 
 		if(paths == null || paths.isEmpty()) {
-			for(AbstractWidgetModel w : root.getChildren()) 
-				if(w.getWUID().equals(wuid)) 
-					return w;
-
-			return null;
+			return getTerminal(root,wuid);
 		}
 
 		AbstractContainerModel widget = root;
@@ -315,6 +311,19 @@ public class ConnectionModel extends AbstractWidgetModel {
 		}
 
 		return null;
+	}
+	
+	private AbstractWidgetModel getTerminal(AbstractContainerModel model, String wuid) {
+	    for(AbstractWidgetModel w : model.getChildren()) { 
+            if(w.getWUID().equals(wuid)) { 
+                return w;
+            }
+            if (w instanceof AbstractContainerModel) {
+                AbstractWidgetModel m = getTerminal((AbstractContainerModel)w, wuid);
+                if (m != null) return m;
+            }
+	    }
+	    return null;
 	}
 
 	@Override
