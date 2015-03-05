@@ -20,6 +20,7 @@
     <tycho-extras.version>0.22.0</tycho-extras.version>
     <cs-studio.version>4.1</cs-studio.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.1</cs-studio-central.url>
+    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
@@ -230,7 +231,7 @@
     </repository>
     <repository>
       <id>orbit</id>
-      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
+      <url>${orbit-site}</url>
       <layout>p2</layout>
     </repository>
     <repository>
