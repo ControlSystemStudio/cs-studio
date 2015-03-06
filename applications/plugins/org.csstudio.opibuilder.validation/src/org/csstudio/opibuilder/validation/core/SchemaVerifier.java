@@ -8,44 +8,49 @@
 package org.csstudio.opibuilder.validation.core;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Stack;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.properties.ActionsProperty;
+import org.csstudio.opibuilder.properties.RulesProperty;
+import org.csstudio.opibuilder.properties.ScriptProperty;
+import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.script.RuleData;
+import org.csstudio.opibuilder.script.RulesInput;
+import org.csstudio.opibuilder.script.ScriptData;
+import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.validation.core.XMLParser.LinedElement;
+import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.widgets.Display;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.filter.ElementFilter;
+import org.jdom.input.SAXBuilder;
 
 /**
  * 
@@ -58,10 +63,27 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SchemaVerifier {
             
-    private static final String LINE_NUMBER_KEY_NAME = "lineNumber";
-    private static final String TAG_NAME = "name";
+    private static final Logger LOGGER = Logger.getLogger(SchemaVerifier.class.getName());
     
-    private List<ValidationFailure> validationFails = new ArrayList<>();
+    /**
+     * 
+     * <code>NonNullArrayList</code> is an extension of the array list, which does
+     * not accept a null value when passed via the {@link #add(Object)} method.
+     *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
+     * @param <T>
+     */
+    private static class NonNullArrayList<T> extends ArrayList<T> {
+        private static final long serialVersionUID = 5274768886178889837L;
+        @Override
+        public boolean add(T e) {
+            if (e == null) return false;
+            return super.add(e);
+        }
+    }
+    
+    private List<ValidationFailure> validationFailures = new ArrayList<>();
     private IPath validatedPath;
     private Map<String, AbstractWidgetModel> schema;
     private OPIColor[] colors;
@@ -80,14 +102,17 @@ public class SchemaVerifier {
     private IPath schemaPath;
         
     private final Map<String, ValidationRule> rules;
+    private final Map<Pattern, ValidationRule> patternRules;
     
     /**
      * Constructs a new schema verifier using the schema path defined in the preferences.
      * 
      * @param rules the validation rules to use (keys are the property names, values are the rules for that property)
+     * @param patternRules the rules given as pattern. If a property matches the pattern (and there is no specific
+     *          rule for that property in the rules) it will obey the rule of the matched pattern
      */
-    public SchemaVerifier(Map<String,ValidationRule> rules) {
-        this(PreferencesHelper.getSchemaOPIPath(), rules);
+    public SchemaVerifier(Map<String,ValidationRule> rules, Map<Pattern,ValidationRule> patternRules) {
+        this(PreferencesHelper.getSchemaOPIPath(), rules, patternRules);
     }
     
     /**
@@ -95,13 +120,17 @@ public class SchemaVerifier {
      * 
      * @param pathToSchema the path to the OPI schema against which the opis will be validated
      * @param rules the validation rules to use (keys are the property names, values are the rules for that property)
+     * @param patternRules the rules given as pattern. If a property matches the pattern (and there is no specific
+     *          rule for that property in the rules) it will obey the rule of the matched pattern
      */
-    public SchemaVerifier(IPath pathToSchema, Map<String,ValidationRule> rules) {
+    public SchemaVerifier(IPath pathToSchema, Map<String,ValidationRule> rules,  
+            Map<Pattern,ValidationRule> patternRules) {
         if (pathToSchema == null) {
             throw new IllegalArgumentException("There is no OPI schema defined.");
         }
         this.schemaPath = pathToSchema;
-        this.rules = new HashMap<String, ValidationRule>(rules);
+        this.rules = new HashMap<>(rules);
+        this.patternRules = new HashMap<>(patternRules);
     }
     
     /**
@@ -110,14 +139,14 @@ public class SchemaVerifier {
      * @return the list of validation failures
      */
     public ValidationFailure[] getValidationFailures() {
-        return validationFails.toArray(new ValidationFailure[validationFails.size()]);
+        return validationFailures.toArray(new ValidationFailure[validationFailures.size()]);
     }
     
     /**
      * Removes all validation failures and resets the counters.
      */
     public void clean() {
-        validationFails.clear();
+        validationFailures.clear();
         numberOfAnalyzedWidgets = 0;
         numberOfAnalyzedFiles = 0;
         numberOfROProperties = 0;
@@ -206,7 +235,7 @@ public class SchemaVerifier {
             throw new IOException("Cannot access null path.");
         }
         if (schema == null) {
-            schema = loadSchema(schemaPath);
+            schema = Utilities.loadSchema(schemaPath);
             colors = MediaService.getInstance().getAllPredefinedColors();
             fonts = MediaService.getInstance().getAllPredefinedFonts();
         }
@@ -223,7 +252,7 @@ public class SchemaVerifier {
                 failures.addAll(check(new Path(f.getAbsolutePath())));
             }
         }
-        validationFails.addAll(failures);
+        validationFailures.addAll(failures);
         return failures.toArray(new ValidationFailure[failures.size()]);
     }
     
@@ -260,7 +289,7 @@ public class SchemaVerifier {
         }
         
         numberOfAnalyzedFiles++;
-        List<ValidationFailure> failures = new ArrayList<>();
+        List<ValidationFailure> failures = new NonNullArrayList<>();
         check(opi, displayModel, failures);    
         findCoordinates(failures.toArray(new ValidationFailure[failures.size()]), opi);
         if (!failures.isEmpty()) {
@@ -269,7 +298,6 @@ public class SchemaVerifier {
         return failures;
     }
     
-
     /**
      * Scans the OPI given by path to find the occurrences of the failures. If they are found it stores the line and 
      * column number into the failure object. All failures are expected to belong to the same OPI.
@@ -279,34 +307,27 @@ public class SchemaVerifier {
      * @throws IOException if there was an error opening the file
      */
     private void findCoordinates(ValidationFailure[] failures, IPath path) throws IOException {
-        //It is slightly inefficient that we read the whole file once again, because we already read
-        //it when the failures were created. However, the scanning of a file doesn't take that long 
-        //that this should worry anyone 
-        if (failures.length == 0) return;
-        for (ValidationFailure f : failures) {
-            if (!path.equals(f.getPath())) {
-                throw new IllegalArgumentException("All validation failures should belong to the same path. " 
-                        + f.getPath() + " is not the same as " + path);
-            }
-        }
         try (InputStream stream = ResourceUtil.pathToInputStream(path, false)) {
-            Document document = readXMLWithLineNumbers(stream);
-            NodeList widgetNodes = document.getElementsByTagName(XMLUtil.XMLTAG_WIDGET);
-            NodeList displayNodes = document.getElementsByTagName(XMLUtil.XMLTAG_DISPLAY);
-            NodeList connectionNodes = document.getElementsByTagName(XMLUtil.XMLTAG_CONNECTION);
+            SAXBuilder saxBuilder = XMLParser.createBuilder();
+            Document document = saxBuilder.build(stream);
+            Element root = document.getRootElement();
+            
+            Iterator<?> widgetNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_WIDGET));
+            Iterator<?> displayNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_DISPLAY));
+            Iterator<?> connectionNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_CONNECTION));
+            
             //gather all widgets, displays, and connectors in the same array
-            Node[] widgets = new Node[widgetNodes.getLength() + displayNodes.getLength() + connectionNodes.getLength()];
-            int displays = displayNodes.getLength();
-            int widgetCount = widgetNodes.getLength();
-            for (int i = 0; i < displays; i++) {
-                widgets[i] = displayNodes.item(i);
+            List<LinedElement> list = new ArrayList<>();
+            while(widgetNodes.hasNext()) {
+                list.add((LinedElement)widgetNodes.next());
             }
-            for (int i = 0; i < widgetCount; i++) {
-                widgets[displays + i] = widgetNodes.item(i);
+            while(displayNodes.hasNext()) {
+                list.add((LinedElement)displayNodes.next());
             }
-            for (int i = 0; i < connectionNodes.getLength(); i++) {
-                widgets[displays + widgetCount + i] = connectionNodes.item(i);
+            while(connectionNodes.hasNext()) {
+                list.add((LinedElement)connectionNodes.next());
             }
+            LinedElement[] widgets = list.toArray(new LinedElement[list.size()]);
             
             for (int m = 0; m < failures.length; m++) {
                 String type = failures[m].getWidgetType();
@@ -314,16 +335,25 @@ public class SchemaVerifier {
                 //for every failure find the widget that match the widget typeId 
                 for (int i = 0; i < widgets.length; i++) {
                     findProperty:
-                    if (type.equals(widgets[i].getAttributes().getNamedItem(XMLUtil.XMLATTR_TYPEID).getTextContent())) {
+                    if (type.equals(widgets[i].getAttribute(XMLUtil.XMLATTR_TYPEID).getValue())) {
+                        //find the WUID node to get the match
+                        Element wuidNode = findPropertyElement(widgets[i],name,AbstractWidgetModel.PROP_WIDGET_UID);
+                        if (wuidNode != null) {
+                            if (!failures[m].getWUID().equals(wuidNode.getValue())) {
+                                break findProperty;
+                            }
+                        }                        
+                        //if wuid is null, wuids are not defined
                         //find the node describing the property, but only if the name of the widget matches the one in the failure
-                        Node node = findNode(widgets[i],name,failures[m].getProperty());
+                        LinedElement node = findPropertyElement(widgets[i],name,failures[m].getProperty());
                         if (node == null && failures[m].getRule() == ValidationRule.WRITE) {
-                            //if no such property is find and the property has a write rule, it is not defined in the XML, so mark the widget itself 
+                            //if no such property is find and the property has a write rule, it is not defined in the XML, 
+                            //so mark the widget itself 
                             node = widgets[i];
                         } 
                         
                         if (node != null) {
-                            int line = (Integer)node.getUserData(LINE_NUMBER_KEY_NAME);
+                            int line = (Integer)node.getLineNumber();
                             //the widgets may have identical names, so check that we didn't have this line in any of the previous failures
                             for (int n = 0; n < m; n++) {
                                 if (failures[n].getLineNumber() == line) {
@@ -333,46 +363,80 @@ public class SchemaVerifier {
                             }
                             //otherwise continue with the next failure
                             failures[m].setLineNumber(line);
+                            //check if there are subvalidation failures and find those as well
+                            if (failures[m].hasSubFailures()) {
+                                SubValidationFailure[] subs = failures[m].getSubFailures();
+                                for (SubValidationFailure s : subs) {
+                                    if (s.getActualValue() != null) {
+                                        LinedElement n = findSubNode(node, s.getSubPropertyTag(), s.getActualValue());
+                                        if (n != null) {
+                                            s.setLineNumber(n.getLineNumber());
+                                        }
+                                    } else {
+                                        s.setLineNumber(line);
+                                    }
+                                }
+                            }
                             break;
                         }
                     }                    
                 }
             }
+            
         } catch (Exception e) {
-            throw new IOException("Unable to load opi '" + path + "'.");
+            throw new IOException("Unable to load opi '" + path + "'.",e);
         }
+        
+            
     }
     
-    /**
-     * Returns the child node of the given node, which has the tag name identical to property. The node is only
-     * returned if there is a child node with the tag name that has the value identical to the given name.
-     *  
-     * @param node the parent node to search its children
-     * @param name the value of the name tag, which needs to match
-     * @param property the tag of the node that is returned
-     * @return the node if found or null otherwise
-     */
-    private static Node findNode(Node node, String name, String property) {
-        NodeList nodes = node.getChildNodes();
-        Node n;
-        Node retVal = null;
-        boolean isCorrect = false;
-        for (int i = 0; i < nodes.getLength(); i++) {
-            n = nodes.item(i);
-            if (TAG_NAME.equals(n.getNodeName())) {
-                isCorrect = name.equals(n.getTextContent());
-                if (retVal != null) {
-                    return retVal;
+    private static LinedElement findSubNode(LinedElement parent, String tagName, Object actualValue) throws Exception {
+        if (parent.getName().equals(tagName)) return parent;
+        List<?> children = parent.getChildren();
+        try {
+            if (actualValue instanceof RuleData) {
+                RulesProperty prop = new RulesProperty(AbstractWidgetModel.PROP_RULES, "Rules", 
+                        WidgetPropertyCategory.Behavior);
+                prop.setWidgetModel(new DisplayModel());
+                List<RuleData> rules = prop.readValueFromXML(parent).getRuleDataList();
+                for (int i = 0; i < rules.size(); i++) {
+                    if (Utilities.areRulesIdentical(rules.get(i), (RuleData)actualValue) == 0) {
+                        return (LinedElement)children.get(i);
+                    }
                 }
-            } else if (property.equals(n.getNodeName())) {
-                retVal = n;
-                if (isCorrect) {
-                    return retVal;
+            } else if (actualValue instanceof ScriptData) {
+                ScriptProperty prop = new ScriptProperty(AbstractWidgetModel.PROP_SCRIPTS, "Scripts", 
+                        WidgetPropertyCategory.Behavior);
+                List<ScriptData> scripts = prop.readValueFromXML(parent).getScriptList();
+                for (int i = 0; i < scripts.size(); i++) {
+                    if (Utilities.areScriptsIdentical(scripts.get(i), (ScriptData)actualValue) == 0) {
+                        return (LinedElement)children.get(i);
+                    }
+                }
+            } else if (actualValue instanceof AbstractWidgetAction) {
+                ActionsProperty prop = new ActionsProperty(AbstractWidgetModel.PROP_ACTIONS, "Actions", 
+                        WidgetPropertyCategory.Behavior);
+                List<AbstractWidgetAction> actions = prop.readValueFromXML(parent).getActionsList();
+                for (int i = 0; i < actions.size(); i++) {
+                    if (Utilities.areActionsIdentical(actions.get(i), (AbstractWidgetAction)actualValue) == 0) {
+                        return (LinedElement)children.get(i);
+                    }
                 }
             }
+        } catch (Exception e) {
+            //just in case if something gets updated in the opibuilder
+            LOGGER.log(Level.SEVERE, "Cannot find the node for " + tagName, e);
         }
         return null;
     }
+    
+    private static LinedElement findPropertyElement(Element node, String name, String property) {
+        Element n = node.getChild(Utilities.TAG_NAME);
+        if (n.getValue().equals(name)) {
+            return (LinedElement)node.getChild(property);
+        }
+        return null;
+    }    
         
     /**
      * Checks the container model and its children if they match the definitions in the schema.
@@ -392,41 +456,68 @@ public class SchemaVerifier {
             numberOfAnalyzedWidgets++;
             widgetType = model.getTypeID();
             original = schema.get(widgetType);
-            Set<String> properties = model.getAllPropertyIDs() ;
-            for (String p : properties) {
-                rule = getRuleForProperty(p, widgetType);
-                if (rule == ValidationRule.RW) {
-                    //nothing to do in the case of read/write properties
-                    continue;
-                } else if (rule == ValidationRule.RO) {
-                    //read-only properties must have identical values, otherwise it is a failure
-                    numberOfROProperties++;
+            if (original != null) {
+                Set<String> properties = model.getAllPropertyIDs() ;
+                for (String p : properties) {
+                    rule = getRuleForProperty(p.toLowerCase(), widgetType.toLowerCase());
+                    if (rule == ValidationRule.RW) {
+                        //nothing to do in the case of read/write properties
+                        continue;
+                    }
+                    
                     modelVal = model.getPropertyValue(p);
                     orgVal = original.getPropertyValue(p);
-                    if (!Objects.equals(modelVal, orgVal)) {
-                        //the failure is always critical, except for fonts and colors if a predefined value was used
-                        boolean critical = !isPropertyDefined(modelVal);
-                        failures.add(new ValidationFailure(pathToFile, widgetType, 
-                            model.getName(), p, orgVal, modelVal, rule, critical));
-                        if (critical) {
-                            numberOfCriticalROFailures++;
-                        } else {
-                            numberOfMajorROFailures++;
+                    //actions, rules and scripts are a bit nasty
+                    if (AbstractWidgetModel.PROP_ACTIONS.equals(p)) {
+                        ActionsInput mi = ((ActionsInput)modelVal);
+                        ActionsInput oi = ((ActionsInput)orgVal);
+                        failures.add(checkAction(pathToFile,mi,oi,model,rule));
+                    } else if (AbstractWidgetModel.PROP_RULES.equals(p)) {
+                        List<RuleData> modelRules = ((RulesInput)modelVal).getRuleDataList();
+                        List<RuleData> originalRules = ((RulesInput)orgVal).getRuleDataList();
+                        failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType, 
+                                model.getName(), p, modelRules, originalRules, modelVal, orgVal, rule,  
+                                (orgRule,modelRule) -> Utilities.areRulesIdentical(orgRule,modelRule),
+                                (theRule) -> RulesProperty.XML_ELEMENT_RULE,
+                                (therule) -> therule.getName(),
+                                (match) -> Utilities.ruleMatchValueToMessage(match)));
+                    } else if (AbstractWidgetModel.PROP_SCRIPTS.equals(p)) {
+                        List<ScriptData> modelScripts = ((ScriptsInput)modelVal).getScriptList();
+                        List<ScriptData> originalScripts = ((ScriptsInput)orgVal).getScriptList();
+                        failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType, 
+                                model.getName(), p, modelScripts, originalScripts, modelVal, orgVal, rule, 
+                                (orgScript,modelScript) -> Utilities.areScriptsIdentical(orgScript, modelScript),
+                                (script) -> ScriptProperty.XML_ELEMENT_PATH,
+                                (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString(),
+                                (match) -> Utilities.scriptMatchValueToMessage(match)));
+                    } else {
+                        if (rule == ValidationRule.RO) {
+                            //read-only properties must have identical values, otherwise it is a failure
+                            numberOfROProperties++;
+                            if (!Objects.equals(modelVal, orgVal)) {
+                                //the failure is always critical, except for fonts and colors if a predefined value was used
+                                boolean critical = !isPropertyDefined(modelVal);
+                                failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                    model.getName(), p, orgVal, modelVal, rule, critical,true, null));
+                                if (critical) {
+                                    numberOfCriticalROFailures++;
+                                } else {
+                                    numberOfMajorROFailures++;
+                                }
+                            }
+                        } else if (rule == ValidationRule.WRITE) {
+                            //write properties must be different and non null
+                            numberOfWRITEProperties++;
+                            if (Objects.equals(modelVal, orgVal) || modelVal == null) {
+                                //simple write properties are never critical
+                                failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                    model.getName(), p, orgVal, modelVal, rule, false, false, null)); 
+                                numberOfWRITEFailures++;
+                            }
                         }
                     }
-                } else if (rule == ValidationRule.WRITE) {
-                    //write properties must be different and non null
-                    numberOfWRITEProperties++;
-                    modelVal = model.getPropertyValue(p);
-                    orgVal = original.getPropertyValue(p);
-                    if (Objects.equals(modelVal, orgVal) || modelVal == null) {
-                        failures.add(new ValidationFailure(pathToFile, widgetType, 
-                            model.getName(), p, orgVal, modelVal, rule, false));
-                        numberOfWRITEFailures++;
-                    }
                 }
-            }
-            
+            }        
             if (model instanceof AbstractContainerModel) {
                 check(pathToFile, (AbstractContainerModel)model, failures);
             }
@@ -434,6 +525,153 @@ public class SchemaVerifier {
         if (failures.size() != startingFailures) {
             numberOfWidgetsFailures++;
         }
+    }
+    
+    private ValidationFailure checkAction(IPath pathToFile, ActionsInput modelInput, ActionsInput originalInput,
+            AbstractWidgetModel model, ValidationRule rule) {
+        List<AbstractWidgetAction> modelActions = modelInput.getActionsList();
+        List<AbstractWidgetAction> originalActions = originalInput.getActionsList();
+        ValidationFailure f = handleActionsScriptsRules(pathToFile, model.getWUID(), model.getTypeID(), 
+                model.getName(), AbstractWidgetModel.PROP_ACTIONS, modelActions, originalActions, 
+                modelInput, originalInput, rule, 
+                (orgAction,modelAction) -> Utilities.areActionsIdentical(orgAction, modelAction),
+                (action) -> ActionsProperty.XML_ELEMENT_ACTION,
+                (action) -> action.getActionType().getDescription() + ": " + action.getDescription(),
+                (match) -> Utilities.actionMatchValueToMessage(match));
+        List<SubValidationFailure> ff = new ArrayList<>(2);
+        if (rule == ValidationRule.RO) {
+            if (modelInput.isFirstActionHookedUpToWidget() != originalInput.isFirstActionHookedUpToWidget()) {
+                ff.add(new SubValidationFailure(pathToFile, model.getWUID(),
+                        model.getTypeID(), model.getName(), AbstractWidgetModel.PROP_ACTIONS, 
+                        AbstractWidgetModel.PROP_ACTIONS, 
+                        Utilities.PROP_ACTION_HOOK, originalInput.isFirstActionHookedUpToWidget(),
+                        modelInput.isFirstActionHookedUpToWidget(), rule, true, true, null));
+            }
+            if (modelInput.isHookUpAllActionsToWidget() != originalInput.isHookUpAllActionsToWidget()) {
+                ff.add(new SubValidationFailure(pathToFile, model.getWUID(),
+                        model.getTypeID(), model.getName(), AbstractWidgetModel.PROP_ACTIONS,
+                        AbstractWidgetModel.PROP_ACTIONS,
+                        Utilities.PROP_ACTION_HOOK_ALL, originalInput.isHookUpAllActionsToWidget(),
+                        modelInput.isHookUpAllActionsToWidget(), rule, true, true, null));
+            }
+        }
+        if (!ff.isEmpty()) {
+            if (f == null) {
+                numberOfCriticalROFailures++;
+                f = new ValidationFailure(pathToFile, model.getWUID(), model.getTypeID(), model.getName(), 
+                        AbstractWidgetModel.PROP_ACTIONS, originalInput, modelInput, rule, true, true,
+                        AbstractWidgetModel.PROP_ACTIONS + ": settings of a READ-ONLY property have been changed");
+            }
+            f.addSubFailure(ff);
+        }
+        return f;
+    }
+    
+    /**
+     * Handles the check of the actions, scripts, and rules (stuff).
+     * 
+     * @param resource the path to the checked file
+     * @param wuid the widget unique id that owns the stuff
+     * @param widgetType the widget type
+     * @param widgetName the widget name
+     * @param property the property (actions, scripts, rules)
+     * @param model the list containing the stuff from the validated model
+     * @param original the list containing the stuff from the schema
+     * @param modelVal the model property
+     * @param orgVal the schema property
+     * @param rule the rule for the property
+     * @param comparator the comparator to use when comparing stuff
+     * @param subPropertyTagger the function that returns the tag of the sub property that did not match 
+     * @param subPropertyDescriptor the helper that can transform the stuff into the sub property name used in the 
+     *              failure description
+     * @return the validation failure if it was detected or null if everything is OK
+     */
+    private <T> ValidationFailure handleActionsScriptsRules(IPath resource, String wuid, String widgetType, 
+            String widgetName, String property, List<T> model, List<T> original, Object modelVal, Object orgVal,
+            ValidationRule rule, Comparator<T> comparator, Function<T,String> subPropertyTagger, 
+            Function<T,String> subPropDescriptor, Function<Integer,String> messageGenerator) {
+        if (rule == ValidationRule.WRITE) {
+            numberOfWRITEProperties++;
+            //make sure that all original items are in the checked model
+            List<SubValidationFailure> ff = new ArrayList<>();
+            for (T stuff : original) {
+                findStuff: {
+                    int mostTightMatchValue = Integer.MAX_VALUE;
+                    for (T m : model) {
+                        int v = comparator.compare(stuff, m);
+                        if (v == 0) {
+                            break findStuff;
+                        }
+                        if (v < mostTightMatchValue) {
+                            mostTightMatchValue = v;
+                        }
+                    }
+                    
+                    ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
+                            property, subPropertyTagger.apply(stuff), subPropDescriptor.apply(stuff), 
+                            stuff,null,rule,false,true,messageGenerator.apply(mostTightMatchValue)));
+                }
+            }
+            if (!ff.isEmpty()) {
+                numberOfWRITEFailures++;
+                //if not all the originals are defined, it is a critical failure
+                ValidationFailure f = new ValidationFailure(resource,wuid,widgetType,widgetName,
+                        property,original,model,rule,true,true,
+                        property +": predefined items are missing in a WRITE property");
+                f.addSubFailure(ff);
+                return f;
+            } else if (original.size() == model.size()) {
+                numberOfWRITEFailures++;
+                //if nothing was changed at all, it is a non critical failure
+                return new ValidationFailure(resource,wuid,widgetType,widgetName,
+                        property,orgVal,modelVal,rule,false,false,
+                        property +": nothing has been changed on a WRITE property");                
+            }            
+        } else if (rule == ValidationRule.RO) {
+            numberOfROProperties++;
+            //make sure that all original items are in the checked model
+            List<SubValidationFailure> ff = new ArrayList<>();
+            //the list of items actions that are in the model, but are not defined in the original
+            List<T> notInOriginalStuff = new ArrayList<>(model);
+            for (T stuff : original) {
+                findStuff: {
+                    int mostTightMatchValue = Integer.MAX_VALUE;
+                    for (T m : model) {
+                        int v = comparator.compare(stuff, m);
+                        if (v == 0) {
+                            notInOriginalStuff.remove(m);
+                            break findStuff;
+                        }
+                        if (v < mostTightMatchValue) {
+                            mostTightMatchValue = v;
+                        }
+                    }
+                    
+                    ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
+                            property, subPropertyTagger.apply(stuff), subPropDescriptor.apply(stuff), 
+                            stuff,null,rule,true,true,messageGenerator.apply(mostTightMatchValue)));
+                }
+            }
+                
+            if (!notInOriginalStuff.isEmpty()) {
+                //model has items that are not in the schema
+                for (T a : notInOriginalStuff) {
+                    ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
+                            property, subPropertyTagger.apply(a), subPropDescriptor.apply(a), 
+                            null, a, rule,false,true,null));
+                }
+            }
+            
+            if (!ff.isEmpty()) {
+                numberOfCriticalROFailures++;
+                ValidationFailure f = new ValidationFailure(resource,wuid,widgetType,widgetName,
+                        property,orgVal,modelVal,rule,true,true,
+                        property + ": READ-ONLY property was changed");
+                f.addSubFailure(ff);
+                return f;
+            }
+        }        
+        return null;
     }
     
     /**
@@ -462,202 +700,48 @@ public class SchemaVerifier {
      * widget is loaded. If it exist it is returned otherwise a general property rule definition is searched 
      * for. If none is found the property is of read/write type. 
      * 
-     * @param property the name of the property
-     * @param widget the type of the widget
+     * @param property the name of the property (should be in lower case)
+     * @param widget the type of the widget (should be in lower case)
      * @return the rule for the property
      */
     private ValidationRule getRuleForProperty(String property, String widget) {
-        String prop = widget + "." + property;
-        ValidationRule value = rules.get(prop);
+        String fullProp = widget + "." + property;
+        String prop = null;
+        ValidationRule value = rules.get(fullProp);
         if (value == null) {
             //try with abbreviated widget - omit org.csstudio.opibuilder.widgets
             prop = widget.substring(widget.lastIndexOf('.')+1) + "." + property;
             value = rules.get(prop);
         }
-        if (value == null ) {
+        if (value == null) {
+            //try general proeprty definition
             value = rules.get(property);
         }
+        
+        if (value == null) {
+            //no match was found yet, check patterns
+            //if one of the patterns match, add the property to the rules, so we can find it more quicklyr next time
+            for (Entry<Pattern,ValidationRule> e : patternRules.entrySet()) {
+                if (e.getKey().matcher(fullProp).matches()) {
+                    value = e.getValue();
+                    rules.put(fullProp, value);
+                    return value;
+                } else if (e.getKey().matcher(prop).matches()) {
+                    value = e.getValue();
+                    rules.put(prop, value);
+                    return value;
+                } else if (e.getKey().matcher(property).matches()) {
+                    value = e.getValue();
+                    rules.put(property, value);
+                    return value;
+                }
+            }
+        }
+        
         if (value == null) {
             return ValidationRule.RW;
         } else {
             return value;
         }        
-    }
-        
-    /**
-     * Loads the schema from the given path and stores data into a map, where the keys are the widget IDs and
-     * the values are the widget models.
-     * 
-     * @param path the path to the schema
-     * @return a map containing all elements defined in the schema
-     * @throws IOException if there was an error reading the schema
-     */
-    private static Map<String,AbstractWidgetModel> loadSchema(IPath path) throws IOException {
-        try (InputStream inputStream = ResourceUtil.pathToInputStream(path, false)) {
-            DisplayModel displayModel = new DisplayModel(path);
-            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault());
-    
-            Map<String, AbstractWidgetModel> map = new HashMap<>();
-            map.put(displayModel.getTypeID(), displayModel);
-            loadModelFromContainer(displayModel,map);
-            if (!displayModel.getConnectionList().isEmpty()) {
-                map.put(ConnectionModel.ID, displayModel.getConnectionList().get(0));
-            }
-            return map;
-        } catch (Exception e) {
-            throw new IOException("Unable to load the OPI from " + path.toOSString() + ".",e);
-        }
-    }
-
-    private static void loadModelFromContainer(AbstractContainerModel containerModel,
-            Map<String, AbstractWidgetModel> map) {
-        for (AbstractWidgetModel model : containerModel.getChildren()) {
-            if (!map.containsKey(model.getTypeID())) {
-                map.put(model.getTypeID(), model);
-            }
-            if (model instanceof AbstractContainerModel) {
-                loadModelFromContainer((AbstractContainerModel) model, map);
-            }
-        }
-    }
-    
-    /**
-     * Fix the given validation failures. All failures are expected to belong to the same OPI file. The fix replaces
-     * the actual value of the validated property with the expected value.
-     * 
-     * @param failureToFix the validation failures to fix
-     * @throws IOException if there was an exception in reading the OPI
-     * @throws IllegalArgumentException if the failures do not belong to the same OPI
-     */
-    public static void fixOPIFailure(ValidationFailure[] failureToFix) throws IOException, IllegalArgumentException {
-        if (failureToFix.length == 0) return;
-        IPath path = failureToFix[0].getPath();
-        for (ValidationFailure f : failureToFix) {
-            if (!f.getPath().equals(path)) {
-                throw new IllegalArgumentException("All validation failures must belong to the same path.");
-            }
-        }
-        DisplayModel displayModel = null;
-        try (InputStream inputStream = ResourceUtil.pathToInputStream(path, false)) {
-            displayModel = new DisplayModel(failureToFix[0].getPath());
-            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault());
-        } catch (Exception e) {
-            throw new IOException("Could not read the opi " + path.toOSString() +".",e);
-        }
-        
-        for (ValidationFailure f : failureToFix) {
-            AbstractWidgetModel model = findWidget(displayModel, f);
-            if (model == null) {
-                continue;
-            }
-            model.setPropertyValue(f.getProperty(), f.getExpectedValue());
-        }
-        
-        try (FileOutputStream output = new FileOutputStream(path.toFile())) {
-            XMLUtil.widgetToOutputStream(displayModel, output, true);
-        }        
-    }
-    
-   
-    /**
-     * Finds the widget model that matches the validation failure.
-     * 
-     * @param parent the parent to look for the widget model in
-     * @param failure the failure to match
-     * @return the widget model if found, or null if match was not found
-     */
-    private static AbstractWidgetModel findWidget(AbstractContainerModel parent, ValidationFailure failure) {
-        String widgetType;
-        String widgetName;
-        for (AbstractWidgetModel model : parent.getChildren()) {
-            widgetType = model.getTypeID();
-            widgetName = model.getName();
-            if (widgetType.equals(failure.getWidgetType()) && widgetName.equals(failure.getWidgetName())) {
-                Object obj = model.getPropertyValue(failure.getProperty());
-                if (obj.equals(failure.getActualValue())) {
-                    return model;
-                }
-            }
-            if (model instanceof AbstractContainerModel) {
-                AbstractWidgetModel result = findWidget((AbstractContainerModel)model, failure);
-                if (result != null) return result;
-            }
-        }  
-        return null;
-    }
-    
-
-    /**
-     * Creates a document that contains the line numbers of each node.
-     * 
-     * @param is the input stream
-     * @return the document
-     * 
-     * @throws IOException 
-     * @throws SAXException
-     */
-    private static Document readXMLWithLineNumbers(final InputStream is) throws IOException, SAXException {
-        final Document doc;
-        final SAXParser parser;
-        try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            parser = factory.newSAXParser();
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            doc = docBuilder.newDocument();
-        } catch (final ParserConfigurationException e) {
-            throw new RuntimeException("Can't create SAX parser / DOM builder.", e);
-        }
-
-        Stack<Element> elementStack = new Stack<Element>();
-        StringBuilder textBuffer = new StringBuilder();
-        DefaultHandler handler = new DefaultHandler() {
-            private Locator locator;
-
-            @Override
-            public void setDocumentLocator(final Locator locator) {
-                this.locator = locator; 
-            }
-
-            @Override
-            public void startElement(final String uri, final String localName, final String qName, 
-                    final Attributes attributes) throws SAXException {
-                addTextIfNeeded();
-                final Element el = doc.createElement(qName);
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    el.setAttribute(attributes.getQName(i), attributes.getValue(i));
-                }
-                el.setUserData(LINE_NUMBER_KEY_NAME, Integer.valueOf(this.locator.getLineNumber()), null);
-                elementStack.push(el);
-            }
-
-            @Override
-            public void endElement(final String uri, final String localName, final String qName) {
-                addTextIfNeeded();
-                final Element closedEl = elementStack.pop();
-                if (elementStack.isEmpty()) { // Is this the root element?
-                    doc.appendChild(closedEl);
-                } else {
-                    elementStack.peek().appendChild(closedEl);
-                }
-            }
-
-            @Override
-            public void characters(final char ch[], final int start, final int length) throws SAXException {
-                textBuffer.append(ch, start, length);
-            }
-
-            private void addTextIfNeeded() {
-                if (textBuffer.length() > 0) {
-                    Element el = elementStack.peek();
-                    Node textNode = doc.createTextNode(textBuffer.toString());
-                    el.appendChild(textNode);
-                    textBuffer.delete(0, textBuffer.length());
-                }
-            }
-        };
-        parser.parse(is, handler);
-
-        return doc;
     }
 }
