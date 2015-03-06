@@ -24,7 +24,7 @@
       <!-- Note regarding name:
            In Navigator, the "Open With.." context menu lists *.opi 'editors'
            in alphabetical order:
-           OPI Display
+           OPI Display (Workspace)
            OPI Display in legacy Editor
            OPI Editor
        -->
@@ -34,7 +34,7 @@
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.DisplayLauncher"
             launcher="org.csstudio.opibuilder.runmode.DisplayLauncher"
-            name="OPI Display">
+            name="OPI Display (Workspace)">
       </editor>
    </extension>
    <extension
