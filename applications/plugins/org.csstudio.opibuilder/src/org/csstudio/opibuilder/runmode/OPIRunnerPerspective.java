@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -146,13 +147,15 @@ public class OPIRunnerPerspective implements IPerspectiveFactory
 
 
         // Placeholder views show location of folders for debugging purposes
-        // TODO Remove when done, or make this an option
-        center.addView(PlaceHolderView.ID + ":CENTER");
-        left.addView(PlaceHolderView.ID + ":LEFT");
-        right.addView(PlaceHolderView.ID + ":RIGHT");
-        top.addView(PlaceHolderView.ID + ":TOP");
-        bottom.addView(PlaceHolderView.ID + ":BOTTOM");
-
+        if ("true".equalsIgnoreCase(Platform.getDebugOption(OPIBuilderPlugin.PLUGIN_ID + "/runtime_perspective")))
+        {
+            center.addView(PlaceHolderView.ID + ":CENTER");
+            left.addView(PlaceHolderView.ID + ":LEFT");
+            right.addView(PlaceHolderView.ID + ":RIGHT");
+            top.addView(PlaceHolderView.ID + ":TOP");
+            bottom.addView(PlaceHolderView.ID + ":BOTTOM");
+        }
+        
         if (!OPIBuilderPlugin.isRAP())
         {
             bottom.addPlaceholder(ID_CONSOLE_VIEW);

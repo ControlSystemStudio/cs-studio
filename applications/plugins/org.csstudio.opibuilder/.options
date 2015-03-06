@@ -1,0 +1,6 @@
+# Debug options.
+# Enable in IDE: 'Tracing' tab of the run configuration
+# Command line: -debug /path/to/my.options
+
+# Show 'PlaceHolderView' in runtime
+org.csstudio.opibuilder/runtime_perspective
