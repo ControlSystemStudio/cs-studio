@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.validation.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -24,18 +27,24 @@ public class ValidationFailure {
     private final String property;
     private final String expected;
     private final String actual;
+    private final String wuid;
     private final IPath path;
     private final Object expectedValue;
     private final Object actualValue;
     private final ValidationRule rule;
     private final boolean isCritical;
+    private final boolean isFixable;
+    private final String forcedMessage;
     
     private int lineNumber;
+    
+    private final List<SubValidationFailure> subFailures = new ArrayList<>();
     
     /**
      * Constructs a new validation failure.
      * 
      * @param path the path to the file, in which the failure originates
+     * @param wuid the widget unique id
      * @param widgetType the type of the widget
      * @param widgetName the name of the widget
      * @param property the property name which is failing
@@ -44,9 +53,13 @@ public class ValidationFailure {
      * @param rule the rule, which was violated
      * @param isCritical defines if the failure is critical or not (failure is critical when a RO rule is violated
      *          using a non-predefined value)
+     * @param isFixable true if the failure can be fixed automatically or false otherwise
+     * @param forcedMessage the forced message to be returned by {@link #getMessage()}. If null, it will be composed
+     *          when the {@link #getMessage()} is called 
      */
-    ValidationFailure(IPath path, String widgetType, String widgetName, 
-            String property, Object expected, Object actual, ValidationRule rule, boolean isCritical) {
+    ValidationFailure(IPath path, String wuid, String widgetType, String widgetName, 
+            String property, Object expected, Object actual, ValidationRule rule, boolean isCritical,
+            boolean isFixable, String forcedMessage) {
         this.widgetType = widgetType;
         this.widgetName = widgetName;
         this.property = property;
@@ -57,6 +70,9 @@ public class ValidationFailure {
         this.path = path;
         this.rule = rule;
         this.isCritical = isCritical;
+        this.wuid = wuid == null ? "" : wuid; //old OPIs might not have the WUIDs
+        this.isFixable = isFixable;
+        this.forcedMessage = forcedMessage;
     }
     
     /**
@@ -65,10 +81,15 @@ public class ValidationFailure {
      * @return the message describing the failure
      */
     public String getMessage() {
+        if (forcedMessage != null) {
+            return forcedMessage;
+        }
         if (rule == ValidationRule.RO) {
-            return property + ": expected: '" + String.valueOf(expected) + "' but was: '" + String.valueOf(actual) + "'";
+            return new StringBuilder(property.length() + expected.length() + actual.length() + 26)
+                    .append(property).append(": expected: '").append(expected).append("' but was: '")
+                    .append(actual).append('\'').toString();
         } else if (rule == ValidationRule.WRITE) {
-            return property + " is not set";
+            return new StringBuilder(property.length() + 11).append(property).append(" is not set").toString();
         } else {
             return "What could be wrong?";
         }
@@ -169,4 +190,53 @@ public class ValidationFailure {
         return isCritical;
     }
     
+    /**
+     * Adds sub failures to this validation failure. Sub failure is a failure that is a failure in the sub property,
+     * such as the property of action, script, or rule.
+     * 
+     * @param failures the list of failures to add
+     */
+    public void addSubFailure(List<SubValidationFailure> failures) {
+        for (SubValidationFailure f : failures) {
+            f.setParent(this);
+        }
+        subFailures.addAll(failures);
+    }
+    
+    /**
+     * @return the list of all sub failures
+     */
+    public SubValidationFailure[] getSubFailures() {
+        return subFailures.toArray(new SubValidationFailure[subFailures.size()]);
+    }
+    
+    /**
+     * @return true if this failure has sub failures
+     */
+    public boolean hasSubFailures() {
+        return !subFailures.isEmpty();
+    }
+    
+    /**
+     * @return the widget unique ID
+     */
+    public String getWUID() {
+        return wuid;
+    }
+    
+    /**
+     * @return true if the failure can be fixed automatically or false otherwise
+     */
+    public boolean isFixable() {
+        return isFixable;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return getMessage();
+    }
 }

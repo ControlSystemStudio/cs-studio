@@ -146,7 +146,7 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                         monitor.worked(1);
                         for (List<ValidationFailure> l : toFix.values()) {
                             //one call per file
-                            SchemaVerifier.fixOPIFailure(l.toArray(new ValidationFailure[l.size()]));
+                            SchemaFixer.fixOPIFailure(l.toArray(new ValidationFailure[l.size()]));
                             monitor.worked(1);
                         }
                         for (IMarker m : markers) {
@@ -201,17 +201,18 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
         @Override
         public IMarker[] findOtherMarkers(IMarker[] markers) {
             List<IMarker> list = new ArrayList<>();
-            try {
-                for (IMarker marker : markers) {
-                    if (marker == this.marker) continue;
-                    if (!Validator.MARKER_PROBLEM.equals(marker.getType())) continue;
-                    if (((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).getRule() != ValidationRule.RO) continue;
-                    
-                    list.add(marker);
-                }
-            } catch (CoreException e) {
+            for (IMarker marker : markers) {
+                try {
+                if (marker == this.marker) continue;
+                if (!Validator.MARKER_PROBLEM.equals(marker.getType())) continue;
+                if (!((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable()) continue;
                 
+                list.add(marker);
+                } catch (CoreException e) {
+                    //ignore
+                }
             }
+            
             return list.toArray(new IMarker[list.size()]);
         }
     }
@@ -232,9 +233,7 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
     @Override
     public boolean hasResolutions(IMarker marker) {
         try {
-            //only read-only markers have resolutions
-            return ((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE))
-                    .getRule() == ValidationRule.RO;
+            return ((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable();
         } catch (CoreException e) {
             return false;
         }

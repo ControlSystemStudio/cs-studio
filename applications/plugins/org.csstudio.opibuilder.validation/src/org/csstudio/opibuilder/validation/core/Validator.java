@@ -9,26 +9,39 @@ package org.csstudio.opibuilder.validation.core;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.csstudio.opibuilder.validation.Activator;
+import org.csstudio.opibuilder.validation.core.ui.ContentProvider;
+import org.csstudio.opibuilder.validation.core.ui.TreeViewerListener;
 import org.csstudio.opibuilder.validation.ui.ResultsDialog;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.views.markers.ExtendedMarkersView;
+import org.eclipse.ui.internal.views.markers.ProblemsView;
 import org.eclipse.wst.validation.AbstractValidator;
 import org.eclipse.wst.validation.ValidationResult;
 import org.eclipse.wst.validation.ValidationState;
@@ -42,6 +55,7 @@ import org.eclipse.wst.validation.ValidatorMessage;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
+@SuppressWarnings("restriction")
 public class Validator extends AbstractValidator {
 
     private static final Logger LOGGER = Logger.getLogger(Validator.class.getName());
@@ -55,29 +69,11 @@ public class Validator extends AbstractValidator {
     /** The name of the marker attribute that contains the validation failure */
     public static final String ATTR_VALIDATION_FAILURE = "validationFailure";
     
-    private final SchemaVerifier verifier;
+    private SchemaVerifier verifier;
 
-    /**
-     * Construct the validator.
-     */
-    public Validator() {
-        IPath rulesFile = Activator.getInstance().getRulesFile();
-        Map<String, ValidationRule> rules = new HashMap<String, ValidationRule>();
-        if (rulesFile != null) {
-            Properties p = new Properties();
-            try (FileInputStream stream = new FileInputStream(rulesFile.toFile())) {
-                p.load(stream);
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Cannot read the rules definition file: " + rulesFile.toOSString(), e);
-            }
-            
-            for (Entry<Object,Object> e : p.entrySet()) {
-                rules.put((String)e.getKey(), ValidationRule.valueOf((String)e.getValue()));
-            }
-        }
-        verifier = new SchemaVerifier(rules);
-    }
-
+    //if a rule matches this pattern it defines a property, if it doesn't match, the rule is a regex
+    private static final Pattern TRUE_PROPERTY_PATTERN = Pattern.compile("[0-9a-z_\\.]*");
+    
     /*
      * (non-Javadoc)
      * @see org.eclipse.wst.validation.AbstractValidator#validate(org.eclipse.core.resources.IResource, int, org.eclipse.wst.validation.ValidationState, org.eclipse.core.runtime.IProgressMonitor)
@@ -95,24 +91,16 @@ public class Validator extends AbstractValidator {
         ValidationResult result = new ValidationResult();
         try {
             ValidationFailure[] failures = verifier.validate(resource.getLocation());
-            for (ValidationFailure vf : failures) {
-                ValidatorMessage message = ValidatorMessage.create(vf.getMessage(), resource);
-                message.setType(MARKER_PROBLEM);
-                if (vf.getRule() == ValidationRule.RO) {
-                    if (vf.isCritical()) {
-                        message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-                    } else {
-                        message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
-                    }
-                } else if (vf.getRule() == ValidationRule.WRITE) {
-                    message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
-                }
-                message.setAttribute(IMarker.LOCATION, vf.getLocation());
-                message.setAttribute(IMarker.LINE_NUMBER, vf.getLineNumber());
-                message.setAttribute(ATTR_VALIDATION_FAILURE, vf);
-                message.setAttribute(IDE.EDITOR_ID_ATTR, DEFAULT_TEXT_EDITOR);
-                
+            ValidatorMessage message;
+            for (ValidationFailure vf : failures) {     
+                message = createMessage(vf, resource);
                 result.add(message);
+                if (vf.hasSubFailures()) {
+                    for (SubValidationFailure f : vf.getSubFailures()) {
+                        message = createMessage(f, resource);
+                        result.add(message);
+                    }
+                }                 
             }
         } catch (IOException e) {
             ValidatorMessage message = ValidatorMessage.create(e.getMessage(), resource);
@@ -124,6 +112,30 @@ public class Validator extends AbstractValidator {
 
         return result;
     }
+    
+    private ValidatorMessage createMessage(ValidationFailure vf, IResource resource) {
+        ValidatorMessage message = ValidatorMessage.create(vf.getMessage(), resource);
+        message.setType(MARKER_PROBLEM);
+        if (vf.getRule() == ValidationRule.RO) {
+            if (vf.isCritical()) {
+                message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+            } else {
+                message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+            }
+        } else if (vf.getRule() == ValidationRule.WRITE) {
+            if (vf.isCritical()) {
+                message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+            } else {
+                message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
+            }
+            
+        }
+        message.setAttribute(IMarker.LOCATION, vf.getLocation());
+        message.setAttribute(IMarker.LINE_NUMBER, vf.getLineNumber());
+        message.setAttribute(ATTR_VALIDATION_FAILURE, vf);
+        message.setAttribute(IDE.EDITOR_ID_ATTR, DEFAULT_TEXT_EDITOR);
+        return message;
+    }
 
     /*
      * (non-Javadoc)
@@ -133,9 +145,37 @@ public class Validator extends AbstractValidator {
      */
     @Override
     public void validationStarting(IProject project, ValidationState state, IProgressMonitor monitor) {
-        verifier.clean();
         if (project == null) {
-            showView("org.eclipse.ui.views.ProgressView");
+            //bring the progress view to the top
+            showView("org.eclipse.ui.views.ProgressView",false);
+            //reload the rules, just in case they have been changed
+            IPath rulesFile = Activator.getInstance().getRulesFile();
+            Map<String, ValidationRule> rules = new HashMap<String, ValidationRule>();
+            Map<Pattern, ValidationRule> rulePatterns = new HashMap<Pattern, ValidationRule>();
+            if (rulesFile != null) {
+                Properties p = new Properties();
+                try (FileInputStream stream = new FileInputStream(rulesFile.toFile())) {
+                    p.load(stream);
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Cannot read the rules definition file: " + rulesFile.toOSString(), e);
+                    monitor.setCanceled(true);
+                }
+                
+                for (Entry<Object,Object> e : p.entrySet()) {
+                    String key = ((String)e.getKey()).toLowerCase();
+                    try {
+                        ValidationRule rule = ValidationRule.valueOf(((String)e.getValue()).toUpperCase());
+                        if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
+                            rules.put(key, rule);
+                        } else {
+                            rulePatterns.put(Pattern.compile(key), rule);
+                        }
+                    } catch(IllegalArgumentException ex) {
+                        LOGGER.log(Level.WARNING, e.getKey() + " is not defined correctly.");
+                    }
+                }
+            }
+            verifier = new SchemaVerifier(rules, rulePatterns);
         }
     }
 
@@ -149,40 +189,82 @@ public class Validator extends AbstractValidator {
     public void validationFinishing(IProject project, ValidationState state, IProgressMonitor monitor) {
         if (project == null) {
             //at the end bring the problems view to the top and if requested show the summary dialog
-            showView("org.eclipse.ui.views.ProblemView");
+            showView("org.eclipse.ui.views.ProblemView", true);
             if (Activator.getInstance().isShowSummaryDialog()) {
+                final SchemaVerifier sv = verifier;
                 Display.getDefault().asyncExec(() -> {
                     IWorkbenchPage page = getPage();
-                    ResultsDialog dialog = new ResultsDialog(page.getWorkbenchWindow().getShell(),
-                            verifier.getNumberOfAnalyzedFiles(),
-                            verifier.getNumberOfFilesFailures(),
-                            verifier.getNumberOfAnalyzedWidgets(),
-                            verifier.getNumberOfWidgetsFailures(),
-                            verifier.getNumberOfROProperties(),
-                            verifier.getNumberOfCriticalROFailures(),
-                            verifier.getNumberOfMajorROFailures(),
-                            verifier.getNumberOfWRITEProperties(),
-                            verifier.getNumberOfWRITEFailures()
-                            );
-                    dialog.open();
+                    new ResultsDialog(page.getWorkbenchWindow().getShell(),
+                            sv.getNumberOfAnalyzedFiles(),
+                            sv.getNumberOfFilesFailures(),
+                            sv.getNumberOfAnalyzedWidgets(),
+                            sv.getNumberOfWidgetsFailures(),
+                            sv.getNumberOfROProperties(),
+                            sv.getNumberOfCriticalROFailures(),
+                            sv.getNumberOfMajorROFailures(),
+                            sv.getNumberOfWRITEProperties(),
+                            sv.getNumberOfWRITEFailures())
+                        .open();
                 });
             }
         }
     }
     
-    private void showView(String view) {
+    private static void showView(final String view, final boolean update) {
         Display.getDefault().asyncExec(() -> {
             try {
                 IWorkbenchPage page = getPage();
                 if (page != null) {
                     page.showView(view);
+                    if (update) {
+                        updateProblemsView(page);
+                    }
                 }
             } catch (PartInitException e) {
+                LOGGER.log(Level.WARNING, "Could not open the view '" + view + "'.",e);
             }
         });
     }
     
-    private IWorkbenchPage getPage() {
+    private static void updateProblemsView(IWorkbenchPage page) {
+        try {
+            ProblemsView v = (ProblemsView)page.showView("org.eclipse.ui.views.ProblemView");
+            Field f = ExtendedMarkersView.class.getDeclaredField("viewer");
+            f.setAccessible(true);
+            TreeViewer viewer = (TreeViewer)f.get(v);
+            ITreeContentProvider provider = (ITreeContentProvider) viewer.getContentProvider();
+            if (!(provider instanceof ContentProvider)) {
+                viewer.setContentProvider(new ContentProvider(provider));
+                Listener[] exp = viewer.getTree().getListeners(SWT.Expand);
+                Listener[] col = viewer.getTree().getListeners(SWT.Collapse);
+                for (int i = 0; i < exp.length; i++) {
+                    if (exp[i] instanceof TypedListener) {
+                        SWTEventListener l = ((TypedListener)exp[i]).getEventListener();
+                        if (l.getClass().getName().contains("ExtendedMarkersView")) {
+                            viewer.getTree().removeListener(SWT.Expand, exp[i]);
+                            viewer.getTree().addListener(SWT.Expand, 
+                                    new TypedListener(new TreeViewerListener((TreeListener)l)));
+                        }
+                    }
+                }
+                for (int i = 0; i < col.length; i++) {
+                    if (col[i] instanceof TypedListener) {
+                        SWTEventListener l = ((TypedListener)col[i]).getEventListener();
+                        if (l.getClass().getName().contains("ExtendedMarkersView")) {
+                            viewer.getTree().removeListener(SWT.Collapse, col[i]);
+                            viewer.getTree().addListener(SWT.Collapse, 
+                                    new TypedListener(new TreeViewerListener((TreeListener)l)));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            //ignore
+            //cannot update view, we will use the original one
+        }
+    }
+    
+    private static IWorkbenchPage getPage() {
         IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (window == null && PlatformUI.getWorkbench().getWorkbenchWindowCount() > 0) {
             window = PlatformUI.getWorkbench().getWorkbenchWindows()[0];
@@ -196,5 +278,4 @@ public class Validator extends AbstractValidator {
         }
         return page;
     }
-
 }
