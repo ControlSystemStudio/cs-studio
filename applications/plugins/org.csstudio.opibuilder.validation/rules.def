@@ -16,6 +16,13 @@
 #! pv_name property is obligatory writable
 #! pv_name=WRITE
 
+#! You can also use regular expressions to define the properties. If you have a numbered property, 
+#! such as trace_0_trace_color, trace_1_trace_color, you can specify the name of the property
+#! using regular expression:   
+#! trace_[0-9]+_trace_color=RO
+#! Or properties that ends with name
+#! [a-zA-Z0-9_]*name=RO
+
 border_color=RO
 pv_name=WRITE
 ActionButton.font=RO
