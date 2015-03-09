@@ -42,6 +42,8 @@ public class Activator extends AbstractUIPlugin {
     public static final String PREF_RULES_FILE = "rulesFile";
     /** Preference if the markers in the problem view should be nested */
     public static final String PREF_NEST_MARKERS = "nestMarkers";
+    /** Preference if all workspace makers should be cleared at the start of each validation */
+    public static final String PREF_CLEAR_MARKERS = "clearMarkers";
     
     private static Activator instance; 
     
@@ -127,6 +129,13 @@ public class Activator extends AbstractUIPlugin {
      */
     public boolean isNestMarkers() {
         return getPreferenceStore().getBoolean(PREF_NEST_MARKERS);
+    }
+    
+    /**
+     * @return true if all markers are cleared before each validation run
+     */
+    public boolean isClearMarkers() {
+        return getPreferenceStore().getBoolean(PREF_CLEAR_MARKERS);
     }
     
     private static IPath getExistFileInRepoAndSearchPath(String pathString){

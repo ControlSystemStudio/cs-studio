@@ -96,7 +96,11 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         nestMarkers.getDescriptionControl(parent).setToolTipText(
                 "Display sub validation failures (action, script, rule) as children of their parent properties (actions, scripts, rules)");
         addField(nestMarkers);
-    }
-    
-    
+        
+        BooleanFieldEditor clearMarkers = new BooleanFieldEditor(Activator.PREF_CLEAR_MARKERS, 
+                "Clear old markers when validation starts?", parent);
+        clearMarkers.getDescriptionControl(parent).setToolTipText(
+                "Clear all validation markers on every new validation restart");
+        addField(clearMarkers);        
+    }    
 }

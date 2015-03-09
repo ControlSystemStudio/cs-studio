@@ -25,6 +25,8 @@ import org.csstudio.opibuilder.validation.ui.ResultsDialog;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -146,6 +148,15 @@ public class Validator extends AbstractValidator {
     @Override
     public void validationStarting(IProject project, ValidationState state, IProgressMonitor monitor) {
         if (project == null) {
+            if (Activator.getInstance().isClearMarkers()) {
+                try {
+                    //cleanup all opi validation markers
+                    ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(MARKER_PROBLEM, true, IProject.DEPTH_INFINITE);
+                    ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(MARKER_ERROR, true, IProject.DEPTH_INFINITE);
+                } catch (CoreException e) {
+                    LOGGER.log(Level.WARNING, "Could not delete opi validation markers.",e);
+                }
+            }
             //bring the progress view to the top
             showView("org.eclipse.ui.views.ProgressView",false);
             //reload the rules, just in case they have been changed
