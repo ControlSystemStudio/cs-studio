@@ -112,13 +112,15 @@ public class ContentProvider implements ITreeContentProvider {
      * .lang.Object)
      */
     public boolean hasChildren(Object element) {
-        ValidationFailure f = getValidationFailure(element);
-        if (f != null) return f.hasSubFailures();
-        if (original.hasChildren(element)) {
-            Object[] obj = filterChildren(original.getChildren(element));
-            return obj.length > 0;
-        }
-        return false;
+        if (Activator.getInstance().isNestMarkers()) {
+            ValidationFailure f = getValidationFailure(element);
+            if (f != null) return f.hasSubFailures();
+            if (original.hasChildren(element)) {
+                Object[] obj = filterChildren(original.getChildren(element));
+                return obj.length > 0;
+            }
+            return false;
+        } return original.hasChildren(element);
     }
     
     private ValidationFailure getValidationFailure(Object element) {
