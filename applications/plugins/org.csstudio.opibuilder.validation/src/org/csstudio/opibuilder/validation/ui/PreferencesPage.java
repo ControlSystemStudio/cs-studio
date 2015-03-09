@@ -93,7 +93,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         
         BooleanFieldEditor nestMarkers = new BooleanFieldEditor(Activator.PREF_NEST_MARKERS, 
                 "Nest markers in the Problems View?", parent);
-        nestMarkers.getLabelControl(parent).setToolTipText(
+        nestMarkers.getDescriptionControl(parent).setToolTipText(
                 "Display sub validation failures (action, script, rule) as children of their parent properties (actions, scripts, rules)");
         addField(nestMarkers);
     }
