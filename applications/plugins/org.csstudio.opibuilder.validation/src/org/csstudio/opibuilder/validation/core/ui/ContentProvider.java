@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.opibuilder.validation.Activator;
 import org.csstudio.opibuilder.validation.core.SubValidationFailure;
 import org.csstudio.opibuilder.validation.core.ValidationFailure;
 import org.csstudio.opibuilder.validation.core.Validator;
@@ -137,48 +138,52 @@ public class ContentProvider implements ITreeContentProvider {
     }
     
     private Object[] filterElements(Object[] categories) {
-        try {
-            List<Object> list = new ArrayList<>();
-            for (Object o : categories) {
-                if ("MarkerCategory".equals(o.getClass().getSimpleName())) {
-                    if (hasChildren(o)) {
-                        list.add(o);
+        if (Activator.getInstance().isNestMarkers()) {
+            try {
+                List<Object> list = new ArrayList<>();
+                for (Object o : categories) {
+                    if ("MarkerCategory".equals(o.getClass().getSimpleName())) {
+                        if (hasChildren(o)) {
+                            list.add(o);
+                        }
                     }
                 }
+                return filterOut ? list.toArray(new Object[list.size()]) : categories;
+            } catch (Exception e) {
+                //ignore
             }
-            return filterOut ? list.toArray(new Object[list.size()]) : categories;
-        } catch (Exception e) {
-            //ignore
         }
         return categories;
     }
     
     private Object[] filterChildren(Object[] markers) {
-        try {
-            List<Object> list = new ArrayList<>(markers.length); 
-            for (Object o : markers) {
-                if ("MarkerEntry".equals(o.getClass().getSimpleName())) {
-                    if (markerField == null) {
-                        markerField = o.getClass().getDeclaredField("marker");
-                        markerField.setAccessible(true);
-                    }
-                    IMarker m = (IMarker)markerField.get(o);
-                    ValidationFailure v = (ValidationFailure)m.getAttribute(Validator.ATTR_VALIDATION_FAILURE);
-                    if (v instanceof SubValidationFailure) {
-                        Set<Object> mlist = markersMap.get(((SubValidationFailure) v).getParent());
-                        if (mlist == null) {
-                            mlist = new HashSet<>();
-                            markersMap.put(((SubValidationFailure)v).getParent(), mlist);
+        if (Activator.getInstance().isNestMarkers()) {
+            try {
+                List<Object> list = new ArrayList<>(markers.length); 
+                for (Object o : markers) {
+                    if ("MarkerEntry".equals(o.getClass().getSimpleName())) {
+                        if (markerField == null) {
+                            markerField = o.getClass().getDeclaredField("marker");
+                            markerField.setAccessible(true);
                         }
-                        mlist.add(o);
-                        continue;
+                        IMarker m = (IMarker)markerField.get(o);
+                        ValidationFailure v = (ValidationFailure)m.getAttribute(Validator.ATTR_VALIDATION_FAILURE);
+                        if (v instanceof SubValidationFailure) {
+                            Set<Object> mlist = markersMap.get(((SubValidationFailure) v).getParent());
+                            if (mlist == null) {
+                                mlist = new HashSet<>();
+                                markersMap.put(((SubValidationFailure)v).getParent(), mlist);
+                            }
+                            mlist.add(o);
+                            continue;
+                        }
                     }
+                    list.add(o);
                 }
-                list.add(o);
+                return filterOut ? list.toArray(new Object[list.size()]) : markers;
+            } catch (Exception e) {
+                //ignore
             }
-            return filterOut ? list.toArray(new Object[list.size()]) : markers;
-        } catch (Exception e) {
-            //ignore
         }
         return markers;
     }
