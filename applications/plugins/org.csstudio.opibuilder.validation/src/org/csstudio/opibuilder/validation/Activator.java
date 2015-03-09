@@ -40,6 +40,8 @@ public class Activator extends AbstractUIPlugin {
     public static final String PREF_SHOW_SUMMARY = "showSummary";
     /** Preference the name of the file that provides the rules */
     public static final String PREF_RULES_FILE = "rulesFile";
+    /** Preference if the markers in the problem view should be nested */
+    public static final String PREF_NEST_MARKERS = "nestMarkers";
     
     private static Activator instance; 
     
@@ -118,6 +120,13 @@ public class Activator extends AbstractUIPlugin {
             return null;
         }
         return getExistFileInRepoAndSearchPath(s);
+    }
+    
+    /**
+     * @return true if the markers in the problems view should be nested or false otherwise
+     */
+    public boolean isNestMarkers() {
+        return getPreferenceStore().getBoolean(PREF_NEST_MARKERS);
     }
     
     private static IPath getExistFileInRepoAndSearchPath(String pathString){
