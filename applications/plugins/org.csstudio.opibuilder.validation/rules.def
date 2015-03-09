@@ -1,0 +1,30 @@
+# The file lists all properties of all widgets that should obey specific rules.
+# If a certain property is listed in this file the validator will check if the 
+# OPI file follows this rule with respect to the schema OPI. Each property
+# can be either read only (RO), readable/writable (RW), or obligatory writable (WRITE).
+# Read only properties should have the same values as defined by the OPI schema, 
+# readable/writable properties can have any value, obligatory writable properties
+# must have a value, which is not null or empty. 
+# If the property is not listed here it is automatically assumed to be writable. If 
+# there is a property that is related to a specific widget it has priority 
+# over a general property.
+
+#! Example
+#! border_width will be read-only for all widgets, except for the polyline, for which it is writable
+#! border_width=RO
+#! polyline.border_width=RW
+#! pv_name property is obligatory writable
+#! pv_name=WRITE
+
+#! You can also use regular expressions to define the properties. If you have a numbered property, 
+#! such as trace_0_trace_color, trace_1_trace_color, you can specify the name of the property
+#! using regular expression:   
+#! trace_[0-9]+_trace_color=RO
+#! Or properties that ends with name
+#! [a-zA-Z0-9_]*name=RO
+
+border_color=RO
+pv_name=WRITE
+ActionButton.font=RO
+border_width=RO
+polyline.border_width=RW
