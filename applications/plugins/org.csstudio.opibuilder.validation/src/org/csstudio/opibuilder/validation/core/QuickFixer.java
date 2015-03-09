@@ -190,8 +190,14 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                 }
                 set.add(m.getResource());
             }
-            
-            ValidationRunner.validate(map, ValType.Manual, monitor, true);
+            boolean isClearMarkers = Activator.getInstance().isClearMarkers();
+            try {
+                //in case of revalidation after quick fix, do not clear the markers
+                Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_CLEAR_MARKERS, false);
+                ValidationRunner.validate(map, ValType.Manual, monitor, true);
+            } finally {
+                Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_CLEAR_MARKERS, isClearMarkers);
+            }
         }
 
         /*
