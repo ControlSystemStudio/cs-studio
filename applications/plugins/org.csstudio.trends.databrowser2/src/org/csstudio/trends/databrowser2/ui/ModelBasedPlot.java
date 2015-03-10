@@ -94,7 +94,8 @@ public class ModelBasedPlot
             public void changedXAxis(final Axis<Instant> x_axis)
             {
                 final AxisRange<Instant> range = x_axis.getValueRange();
-                listener.timeAxisChanged(plot.isScrolling(), range.getLow(), range.getHigh());
+                if (listener != null)
+                    listener.timeAxisChanged(plot.isScrolling(), range.getLow(), range.getHigh());  
             }
 
             @Override
@@ -102,7 +103,8 @@ public class ModelBasedPlot
             {
                 final int index = plot.getYAxes().indexOf(y_axis);
                 final AxisRange<Double> range = y_axis.getValueRange();
-                listener.valueAxisChanged(index, range.getLow(), range.getHigh());
+                if (listener != null)
+                    listener.valueAxisChanged(index, range.getLow(), range.getHigh());
             }
 
             @Override
@@ -119,7 +121,8 @@ public class ModelBasedPlot
                                                        annotation.getPosition(), annotation.getValue(),
                                                        annotation.getOffset(), annotation.getText()));
                 }
-                listener.changedAnnotations(annotations);
+                if (listener != null)
+                    listener.changedAnnotations(annotations);
             }
 
             @Override
@@ -127,7 +130,8 @@ public class ModelBasedPlot
             {
                 for (Trace<Instant> trace : plot.getTraces())
                     findModelItem(trace).setSelectedSample(trace.getSelectedSample());
-                listener.selectedSamplesChanged();
+                if (listener != null)
+                    listener.selectedSamplesChanged();
             }
         });
 

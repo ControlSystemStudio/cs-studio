@@ -13,11 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -443,7 +443,7 @@ public class XMLUtil {
 		fillLinkingContainerSub(container, new ArrayList<IPath>());
 	}
 
-	public static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)  
+	private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)  
 		throws Exception {
 
 		if(container == null) return;
@@ -483,7 +483,6 @@ public class XMLUtil {
 					container.addChild(w, true);
 
 				container.setDisplayModel(inside);
-				container.setBackgroundColor(inside.getBackgroundColor());
 			}
 		}
 	}
