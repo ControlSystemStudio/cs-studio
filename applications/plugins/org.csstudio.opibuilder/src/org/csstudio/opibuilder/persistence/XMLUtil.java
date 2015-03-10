@@ -168,11 +168,25 @@ public class XMLUtil {
 	 */
 	public static void fillDisplayModelFromInputStream(
 			final InputStream inputStream, final DisplayModel displayModel, Display display) throws Exception{
-		fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>());
+		fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(),true);
 	}
+	
+	   /**Fill the DisplayModel from an OPI file inputstream
+     * @param inputStream the inputstream will be closed in this method before return.
+     * @param displayModel. The {@link DisplayModel} to be filled.
+     * @param display the display in UI Thread.
+     * @param loadLinkingContainers indicates if the content of linking containers should be loaded, which 
+     *          is preferred when displaying the OPI, but not when validating it
+     * @throws Exception
+     */
+    public static void fillDisplayModelFromInputStream(
+            final InputStream inputStream, final DisplayModel displayModel, Display display, boolean loadLinkingContainers) throws Exception{
+        fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(), loadLinkingContainers);
+    }
 
 	private static void fillDisplayModelFromInputStreamSub(
-			final InputStream inputStream, final DisplayModel displayModel, Display display, List<IPath> trace) throws Exception{
+			final InputStream inputStream, final DisplayModel displayModel, Display display, List<IPath> trace,
+			boolean loadLinkingContainers) throws Exception{
 	
 		if(display == null){
 			display = Display.getCurrent();
@@ -216,7 +230,7 @@ public class XMLUtil {
 		
 		Element root = inputStreamToXML(inputStream);
 		if(root != null){
-			 XMLElementToWidgetSub(root, displayModel, trace);
+		     XMLElementToWidgetSub(root, displayModel, trace, loadLinkingContainers);
 			 
 			 //check version
 			 if(compareVersion(displayModel.getBOYVersion(),
@@ -268,10 +282,11 @@ public class XMLUtil {
 	 * @throws Exception
 	 */
 	public static AbstractWidgetModel XMLElementToWidget(Element element, DisplayModel displayModel) throws Exception{
-		return XMLElementToWidgetSub(element, displayModel, new ArrayList<IPath> ());
+		return XMLElementToWidgetSub(element, displayModel, new ArrayList<IPath> (),true);
 	}
 
-	private static AbstractWidgetModel XMLElementToWidgetSub(Element element, DisplayModel displayModel, List<IPath> trace) throws Exception{
+	private static AbstractWidgetModel XMLElementToWidgetSub(Element element, DisplayModel displayModel, List<IPath> trace,
+	        boolean loadLinkingContainers) throws Exception{
 		if(element == null) return null;
 
 		AbstractWidgetModel result = null;
@@ -279,7 +294,7 @@ public class XMLUtil {
 		if(WIDGET_TAGS.contains(element.getName())) {
 			result = fillWidgets(element, displayModel);
 			
-			if(result instanceof AbstractContainerModel)
+			if(loadLinkingContainers && result instanceof AbstractContainerModel)
 				fillLinkingContainersSub((AbstractContainerModel)result, trace);
 			fillConnections(element, displayModel);
 
@@ -461,7 +476,7 @@ public class XMLUtil {
 			if(path != null && !path.isEmpty()) {
 				final DisplayModel inside = new DisplayModel(path);
 
-				fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(), trace);
+				fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(), trace, true);
 				
 				// mark connection as it is loaded from linked opi
 				for(AbstractWidgetModel w : inside.getAllDescendants()) 
