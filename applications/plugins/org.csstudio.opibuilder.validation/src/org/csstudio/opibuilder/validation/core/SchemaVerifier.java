@@ -310,11 +310,10 @@ public class SchemaVerifier {
         try (InputStream stream = ResourceUtil.pathToInputStream(path, false)) {
             SAXBuilder saxBuilder = XMLParser.createBuilder();
             Document document = saxBuilder.build(stream);
-            Element root = document.getRootElement();
             
-            Iterator<?> widgetNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_WIDGET));
-            Iterator<?> displayNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_DISPLAY));
-            Iterator<?> connectionNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_CONNECTION));
+            Iterator<?> widgetNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_WIDGET));
+            Iterator<?> displayNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_DISPLAY));
+            Iterator<?> connectionNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_CONNECTION));
             
             //gather all widgets, displays, and connectors in the same array
             List<LinedElement> list = new ArrayList<>();
@@ -342,7 +341,12 @@ public class SchemaVerifier {
                             if (!failures[m].getWUID().equals(wuidNode.getValue())) {
                                 break findProperty;
                             }
-                        }                        
+                        } else {
+                            //if it doesn't have UID, assume it is the right widget, otherwise break
+                            if (widgets[i].getChild(AbstractWidgetModel.PROP_WIDGET_UID) != null) {
+                                break findProperty;
+                            }
+                        }
                         //if wuid is null, wuids are not defined
                         //find the node describing the property, but only if the name of the widget matches the one in the failure
                         LinedElement node = findPropertyElement(widgets[i],name,failures[m].getProperty());
