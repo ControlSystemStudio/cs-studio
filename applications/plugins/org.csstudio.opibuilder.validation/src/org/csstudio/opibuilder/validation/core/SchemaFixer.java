@@ -53,7 +53,7 @@ public class SchemaFixer {
         DisplayModel displayModel = null;
         try (InputStream inputStream = ResourceUtil.pathToInputStream(path, false)) {
             displayModel = new DisplayModel(failureToFix[0].getPath());
-            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault());
+            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault(),false);
         } catch (Exception e) {
             throw new IOException("Could not read the opi " + path.toOSString() +".",e);
         }
