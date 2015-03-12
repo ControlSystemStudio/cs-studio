@@ -283,7 +283,7 @@ public class SchemaVerifier {
         DisplayModel displayModel = null;
         try (InputStream inputStream = ResourceUtil.pathToInputStream(opi, false)) {
             displayModel = new DisplayModel(opi);
-            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault());
+            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault(),false);
         } catch (Exception e) {
             throw new IOException("Could not read the opi " + opi.toOSString() +".",e);
         }
@@ -310,11 +310,10 @@ public class SchemaVerifier {
         try (InputStream stream = ResourceUtil.pathToInputStream(path, false)) {
             SAXBuilder saxBuilder = XMLParser.createBuilder();
             Document document = saxBuilder.build(stream);
-            Element root = document.getRootElement();
             
-            Iterator<?> widgetNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_WIDGET));
-            Iterator<?> displayNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_DISPLAY));
-            Iterator<?> connectionNodes = root.getDescendants(new ElementFilter(XMLUtil.XMLTAG_CONNECTION));
+            Iterator<?> widgetNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_WIDGET));
+            Iterator<?> displayNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_DISPLAY));
+            Iterator<?> connectionNodes = document.getDescendants(new ElementFilter(XMLUtil.XMLTAG_CONNECTION));
             
             //gather all widgets, displays, and connectors in the same array
             List<LinedElement> list = new ArrayList<>();
@@ -342,7 +341,12 @@ public class SchemaVerifier {
                             if (!failures[m].getWUID().equals(wuidNode.getValue())) {
                                 break findProperty;
                             }
-                        }                        
+                        } else {
+                            //if it doesn't have UID, assume it is the right widget, otherwise break
+                            if (widgets[i].getChild(AbstractWidgetModel.PROP_WIDGET_UID) != null) {
+                                break findProperty;
+                            }
+                        }
                         //if wuid is null, wuids are not defined
                         //find the node describing the property, but only if the name of the widget matches the one in the failure
                         LinedElement node = findPropertyElement(widgets[i],name,failures[m].getProperty());
@@ -508,7 +512,7 @@ public class SchemaVerifier {
                         } else if (rule == ValidationRule.WRITE) {
                             //write properties must be different and non null
                             numberOfWRITEProperties++;
-                            if (Objects.equals(modelVal, orgVal) || modelVal == null) {
+                            if (modelVal == null || String.valueOf(modelVal).trim().isEmpty()) {
                                 //simple write properties are never critical
                                 failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
                                     model.getName(), p, orgVal, modelVal, rule, false, false, null)); 
@@ -620,12 +624,12 @@ public class SchemaVerifier {
                         property +": predefined items are missing in a WRITE property");
                 f.addSubFailure(ff);
                 return f;
-            } else if (original.size() == model.size()) {
+            } else if (model.isEmpty()) {
                 numberOfWRITEFailures++;
                 //if nothing was changed at all, it is a non critical failure
                 return new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,orgVal,modelVal,rule,false,false,
-                        property +": nothing has been changed on a WRITE property");                
+                        property +": nothing has been defined for a WRITE property");                
             }            
         } else if (rule == ValidationRule.RO) {
             numberOfROProperties++;
