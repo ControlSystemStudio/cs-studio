@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.csstudio.utility.product.module" name="org.csstudio.utility.product.module" schema="schema/org.csstudio.utility.product.module.exsd"/>
+   <extension-point id="module" name="org.csstudio.utility.product.module" schema="schema/org.csstudio.utility.product.module.exsd"/>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
