@@ -204,6 +204,11 @@
 			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
 			<layout>p2</layout>
 		</repository>
+		<repository>
+			<id>efx</id>
+			<url>http://download.eclipse.org/efxclipse/runtime-nightly/site</url>
+			<layout>p2</layout>
+		</repository>
 	</repositories>
 	<!-- CHILD MODULES -->
 	<modules>
