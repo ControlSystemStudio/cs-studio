@@ -29,6 +29,9 @@
          <attribute
                name="validationFailure">
          </attribute>
+         <attribute
+               name="wuid">
+         </attribute>
    </extension>
    <extension
          id="opiLoadingError"

@@ -103,6 +103,7 @@ public class SchemaVerifier {
         
     private final Map<String, ValidationRule> rules;
     private final Map<Pattern, ValidationRule> patternRules;
+    private final Map<String, String[]> additionalAcceptableValues;
     
     /**
      * Constructs a new schema verifier using the schema path defined in the preferences.
@@ -110,27 +111,35 @@ public class SchemaVerifier {
      * @param rules the validation rules to use (keys are the property names, values are the rules for that property)
      * @param patternRules the rules given as pattern. If a property matches the pattern (and there is no specific
      *          rule for that property in the rules) it will obey the rule of the matched pattern
+     * @param additionalAcceptableValues some properties have additional values (besides the one in the OPI Schema),
+     *          which are acceptable (e.g. background_color has acceptable values 'IO Background' and 
+     *          'IO Area Background'
      */
-    public SchemaVerifier(Map<String,ValidationRule> rules, Map<Pattern,ValidationRule> patternRules) {
-        this(PreferencesHelper.getSchemaOPIPath(), rules, patternRules);
+    public SchemaVerifier(Map<String,ValidationRule> rules, Map<Pattern,ValidationRule> patternRules,
+            Map<String,String[]> additionalAcceptableValues) {
+        this(PreferencesHelper.getSchemaOPIPath(), rules, patternRules, additionalAcceptableValues);
     }
     
     /**
      * Construct a new SchemaVerifier.
      * 
-     * @param pathToSchema the path to the OPI schema against which the opis will be validated
+     * @param pathToSchema the path to the OPI schema against which the OPIs will be validated
      * @param rules the validation rules to use (keys are the property names, values are the rules for that property)
      * @param patternRules the rules given as pattern. If a property matches the pattern (and there is no specific
      *          rule for that property in the rules) it will obey the rule of the matched pattern
+     * @param additionalAcceptableValues some properties have additional values (besides the one in the OPI Schema),
+     *          which are acceptable (e.g. background_color has acceptable values 'IO Background' and 
+     *          'IO Area Background'
      */
     public SchemaVerifier(IPath pathToSchema, Map<String,ValidationRule> rules,  
-            Map<Pattern,ValidationRule> patternRules) {
+            Map<Pattern,ValidationRule> patternRules, Map<String,String[]> additionalAcceptableValues) {
         if (pathToSchema == null) {
             throw new IllegalArgumentException("There is no OPI schema defined.");
         }
         this.schemaPath = pathToSchema;
         this.rules = new HashMap<>(rules);
         this.patternRules = new HashMap<>(patternRules);
+        this.additionalAcceptableValues = new HashMap<>(additionalAcceptableValues);
     }
     
     /**
@@ -498,7 +507,7 @@ public class SchemaVerifier {
                         if (rule == ValidationRule.RO) {
                             //read-only properties must have identical values, otherwise it is a failure
                             numberOfROProperties++;
-                            if (!Objects.equals(modelVal, orgVal)) {
+                            if (!isPropertyAccepted(p,orgVal,modelVal)) {
                                 //the failure is always critical, except for fonts and colors if a predefined value was used
                                 boolean critical = !isPropertyDefined(modelVal);
                                 failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
@@ -529,6 +538,34 @@ public class SchemaVerifier {
         if (failures.size() != startingFailures) {
             numberOfWidgetsFailures++;
         }
+    }
+    
+    /**
+     * Returns true if the modelVal is accepted value for the property given by the propertyName.
+     * Property value is accepted if it is identical to the schema value (orgVal) or if the value
+     * is represented by one of the additional acceptable values.
+     *  
+     * @param propertyName the name of the property to check
+     * @param orgVal the value from the schema
+     * @param modelVal the value to check
+     * @return true if accepted or false otherwise
+     */
+    private boolean isPropertyAccepted(String propertyName, Object orgVal, Object modelVal) {
+        //if values are identical, return true
+        if (Objects.equals(modelVal, orgVal)) {
+            return true;
+        }
+        
+        String[] acceptableValues = additionalAcceptableValues.get(propertyName);
+        //if there are no additional acceptable values, the value is not accepted
+        if (acceptableValues == null) {
+            return false;
+        }
+        String value = String.valueOf(modelVal);
+        for (String s : acceptableValues) {
+            if (value.equals(s)) return true;
+        }
+        return false;
     }
     
     private ValidationFailure checkAction(IPath pathToFile, ActionsInput modelInput, ActionsInput originalInput,

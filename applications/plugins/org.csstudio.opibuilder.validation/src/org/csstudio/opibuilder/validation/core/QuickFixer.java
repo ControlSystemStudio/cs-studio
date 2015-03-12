@@ -191,12 +191,15 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                 set.add(m.getResource());
             }
             boolean isClearMarkers = Activator.getInstance().isClearMarkers();
+            boolean isShowSummary = Activator.getInstance().isShowSummaryDialog();
             try {
                 //in case of revalidation after quick fix, do not clear the markers
                 Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_CLEAR_MARKERS, false);
+                Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_SHOW_SUMMARY, false);
                 ValidationRunner.validate(map, ValType.Manual, monitor, true);
             } finally {
                 Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_CLEAR_MARKERS, isClearMarkers);
+                Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_SHOW_SUMMARY, isShowSummary);
             }
         }
 
@@ -209,11 +212,10 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
             List<IMarker> list = new ArrayList<>();
             for (IMarker marker : markers) {
                 try {
-                if (marker == this.marker) continue;
-                if (!Validator.MARKER_PROBLEM.equals(marker.getType())) continue;
-                if (!((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable()) continue;
-                
-                list.add(marker);
+                    if (marker == this.marker) continue;
+                    if (!Validator.MARKER_PROBLEM.equals(marker.getType())) continue;
+                    if (!((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable()) continue;
+                    list.add(marker);
                 } catch (CoreException e) {
                     //ignore
                 }
