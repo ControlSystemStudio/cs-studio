@@ -207,6 +207,11 @@
 					<url>${orbit-site}</url>
 					<layout>p2</layout>
 				</repository>
+				<repository>
+					<id>efx</id>
+					<url>http://download.eclipse.org/efxclipse/runtime-nightly/site</url>
+					<layout>p2</layout>
+				</repository>
 			</repositories>
 		</profile>
 	</profiles>
