@@ -5,7 +5,7 @@
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <configExtension
-            content="intro/cs-studio-into.xml"
+            content="intro/cs-studio-intro.xml"
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
       <configExtension
