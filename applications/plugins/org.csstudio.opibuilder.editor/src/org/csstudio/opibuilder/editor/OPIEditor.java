@@ -661,15 +661,19 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 				@Override
 				public void gotoMarker(IMarker marker) {
 					try {
-						Integer charStart = (Integer) marker.getAttribute("charStart");
-						if (charStart == null) {
-							return;
-						}
-						String wuid = XMLUtil.findClosestWidgetUid(getInputStream(), charStart);
-						if (wuid == null) {
-							return;
-						}
-						// Get the closest widget to charStart position
+					    String wuid = (String) marker.getAttribute(AbstractWidgetModel.PROP_WIDGET_UID);
+					    if (wuid == null) {
+					        //if wuid is not stored in the marker try to find it based on character 
+    						Integer charStart = (Integer) marker.getAttribute(IMarker.CHAR_START);
+    						if (charStart == null) {
+    							return;
+    						}
+    	                    // Get the closest widget to charStart position
+    						wuid = XMLUtil.findClosestWidgetUid(getInputStream(), charStart);
+    						if (wuid == null) {
+                                return;
+                            }
+					    }
 						AbstractWidgetModel widget = getDisplayModel().getWidgetFromWUID(wuid);
 						if (widget == null) {
 							return;
