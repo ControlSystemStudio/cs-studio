@@ -94,30 +94,41 @@ public class SchemaVerifier {
     private int numberOfAnalyzedFiles = 0;
     private int numberOfFilesFailures = 0;
     private int numberOfROProperties = 0;
+    private int numberOfRWProperties = 0;
+    private int numberOfRWFailures = 0;
     private int numberOfWRITEProperties = 0;
     private int numberOfCriticalROFailures = 0;
     private int numberOfMajorROFailures = 0;
     private int numberOfWRITEFailures = 0;
     
     private IPath schemaPath;
+//    private WidgetEditPartFactory editPartFactory;
+//    private Method registerPropertyChangeHandlersMethod;
+//    private Method registerBasePropertyChangeHandlersMethod;
+//    private Method doCreateFigureMethod;
         
     private final Map<String, ValidationRule> rules;
     private final Map<Pattern, ValidationRule> patternRules;
     private final Map<String, String[]> additionalAcceptableValues;
+    private final Map<Pattern, String[]> patternsAdditionalAcceptableValues;
     
     /**
      * Constructs a new schema verifier using the schema path defined in the preferences.
      * 
      * @param rules the validation rules to use (keys are the property names, values are the rules for that property)
-     * @param patternRules the rules given as pattern. If a property matches the pattern (and there is no specific
+     * @param patternRules the rules defined by patterns. If a property matches the pattern (and there is no specific
      *          rule for that property in the rules) it will obey the rule of the matched pattern
      * @param additionalAcceptableValues some properties have additional values (besides the one in the OPI Schema),
      *          which are acceptable (e.g. background_color has acceptable values 'IO Background' and 
      *          'IO Area Background'
+     * @param acceptableValuesPatterns the acceptable values defined by patterns. If a property matches the pattern 
+     *          (and there is no specific acceptable value for that pattern) the values stored under that pattern
+     *          will be used
      */
     public SchemaVerifier(Map<String,ValidationRule> rules, Map<Pattern,ValidationRule> patternRules,
-            Map<String,String[]> additionalAcceptableValues) {
-        this(PreferencesHelper.getSchemaOPIPath(), rules, patternRules, additionalAcceptableValues);
+            Map<String,String[]> additionalAcceptableValues, Map<Pattern,String[]> acceptableValuesPatterns) {
+        this(PreferencesHelper.getSchemaOPIPath(), rules, patternRules, additionalAcceptableValues,
+                acceptableValuesPatterns);
     }
     
     /**
@@ -130,9 +141,13 @@ public class SchemaVerifier {
      * @param additionalAcceptableValues some properties have additional values (besides the one in the OPI Schema),
      *          which are acceptable (e.g. background_color has acceptable values 'IO Background' and 
      *          'IO Area Background'
+     * @param acceptableValuesPatterns the acceptable values defined by patterns. If a property matches the pattern 
+     *          (and there is no specific acceptable value for that pattern) the values stored under that pattern
+     *          will be used
      */
     public SchemaVerifier(IPath pathToSchema, Map<String,ValidationRule> rules,  
-            Map<Pattern,ValidationRule> patternRules, Map<String,String[]> additionalAcceptableValues) {
+            Map<Pattern,ValidationRule> patternRules, Map<String,String[]> additionalAcceptableValues,
+            Map<Pattern,String[]> acceptableValuesPatterns) {
         if (pathToSchema == null) {
             throw new IllegalArgumentException("There is no OPI schema defined.");
         }
@@ -140,6 +155,7 @@ public class SchemaVerifier {
         this.rules = new HashMap<>(rules);
         this.patternRules = new HashMap<>(patternRules);
         this.additionalAcceptableValues = new HashMap<>(additionalAcceptableValues);
+        this.patternsAdditionalAcceptableValues = new HashMap<>(acceptableValuesPatterns);
     }
     
     /**
@@ -231,6 +247,20 @@ public class SchemaVerifier {
     }
     
     /**
+     * @return the number of failed RW checks
+     */
+    public int getNumberOfRWFailures() {
+        return numberOfRWFailures;
+    }
+    
+    /**
+     * @return the number of checked RW properties
+     */
+    public int getNumberOfRWProperties() {
+        return numberOfRWProperties;
+    }
+    
+    /**
      * Validates the OPIs on the given path and returns the list of all validation failures. If the path is
      * a directory all OPIs below that path are validated.
      * 
@@ -247,6 +277,20 @@ public class SchemaVerifier {
             schema = Utilities.loadSchema(schemaPath);
             colors = MediaService.getInstance().getAllPredefinedColors();
             fonts = MediaService.getInstance().getAllPredefinedFonts();
+//            editPartFactory = new WidgetEditPartFactory(ExecutionMode.EDIT_MODE);
+//            try {
+//                registerPropertyChangeHandlersMethod = AbstractBaseEditPart.class
+//                        .getDeclaredMethod("registerPropertyChangeHandlers");
+//                registerPropertyChangeHandlersMethod.setAccessible(true);
+//                registerBasePropertyChangeHandlersMethod = AbstractBaseEditPart.class
+//                        .getDeclaredMethod("registerBasePropertyChangeHandlers");
+//                registerBasePropertyChangeHandlersMethod.setAccessible(true);
+//                doCreateFigureMethod = AbstractBaseEditPart.class
+//                        .getDeclaredMethod("doCreateFigure");
+//                doCreateFigureMethod.setAccessible(true);
+//            } catch (NoSuchMethodException | SecurityException e) {
+//                LOGGER.log(Level.WARNING, "Cannot register property change handlers.", e);
+//            }
         }
         this.validatedPath = validatedPath;
         
@@ -308,8 +352,8 @@ public class SchemaVerifier {
     }
     
     /**
-     * Scans the OPI given by path to find the occurrences of the failures. If they are found it stores the line and 
-     * column number into the failure object. All failures are expected to belong to the same OPI.
+     * Scans the OPI given by path to find the occurrences of the failures. If they are found it stores the line 
+     * number into the failure object. All failures are expected to belong to the same OPI.
      * 
      * @param failures the list of failures, which are to be found in the file (should belong to the same path)
      * @param path the path to scan
@@ -359,9 +403,9 @@ public class SchemaVerifier {
                         //if wuid is null, wuids are not defined
                         //find the node describing the property, but only if the name of the widget matches the one in the failure
                         LinedElement node = findPropertyElement(widgets[i],name,failures[m].getProperty());
-                        if (node == null && failures[m].getRule() == ValidationRule.WRITE) {
-                            //if no such property is find and the property has a write rule, it is not defined in the XML, 
-                            //so mark the widget itself 
+                        if (node == null && failures[m].getRule() != ValidationRule.RO) {
+                            //if no such property is find and the property has a write or RW rule, it is not defined 
+                            //in the XML, so mark the widget itself 
                             node = widgets[i];
                         } 
                         
@@ -395,12 +439,9 @@ public class SchemaVerifier {
                     }                    
                 }
             }
-            
         } catch (Exception e) {
             throw new IOException("Unable to load opi '" + path + "'.",e);
         }
-        
-            
     }
     
     private static LinedElement findSubNode(LinedElement parent, String tagName, Object actualValue) throws Exception {
@@ -465,21 +506,35 @@ public class SchemaVerifier {
         String widgetType;
         ValidationRule rule;
         int startingFailures = failures.size();
+        
         for (AbstractWidgetModel model : containerModel.getChildren()) {
             numberOfAnalyzedWidgets++;
             widgetType = model.getTypeID();
             original = schema.get(widgetType);
+//            initModel(model);
             if (original != null) {
                 Set<String> properties = model.getAllPropertyIDs() ;
                 for (String p : properties) {
-                    rule = getRuleForProperty(p.toLowerCase(), widgetType.toLowerCase());
+                    rule = getRuleForProperty(p, widgetType);
+                    modelVal = model.getPropertyValue(p);
+                    orgVal = original.getPropertyValue(p);
+                    //if the checked property is not savable (e.g. background color for action button), ignore it
+                    //TODO property is always savable, because one needs to activate the edit part to set up the 
+                    //visibility, but there are problems with org.eclipse.gef being a dependency to this plugin
+                    if (!model.getProperty(p).isSavable()) {
+                        continue;
+                    }
                     if (rule == ValidationRule.RW) {
-                        //nothing to do in the case of read/write properties
+                        numberOfRWProperties++;
+                        //nothing to do in the case of read/write properties except for fonts and colors
+                        if (!isFontColorPropertyDefined(modelVal)) {
+                            numberOfRWFailures++;
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                    model.getName(), p, null, modelVal, rule, false, false, null));
+                        }
                         continue;
                     }
                     
-                    modelVal = model.getPropertyValue(p);
-                    orgVal = original.getPropertyValue(p);
                     //actions, rules and scripts are a bit nasty
                     if (AbstractWidgetModel.PROP_ACTIONS.equals(p)) {
                         ActionsInput mi = ((ActionsInput)modelVal);
@@ -507,7 +562,7 @@ public class SchemaVerifier {
                         if (rule == ValidationRule.RO) {
                             //read-only properties must have identical values, otherwise it is a failure
                             numberOfROProperties++;
-                            if (!isPropertyAccepted(p,orgVal,modelVal)) {
+                            if (!isPropertyAccepted(widgetType,p,orgVal,modelVal)) {
                                 //the failure is always critical, except for fonts and colors if a predefined value was used
                                 boolean critical = !isPropertyDefined(modelVal);
                                 failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
@@ -517,6 +572,10 @@ public class SchemaVerifier {
                                 } else {
                                     numberOfMajorROFailures++;
                                 }
+                            } else if (!isFontColorPropertyDefined(modelVal)) {
+                                numberOfMajorROFailures++;
+                                failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                        model.getName(), p, null, modelVal, rule, false, false, null));
                             }
                         } else if (rule == ValidationRule.WRITE) {
                             //write properties must be different and non null
@@ -526,6 +585,10 @@ public class SchemaVerifier {
                                 failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
                                     model.getName(), p, orgVal, modelVal, rule, false, false, null)); 
                                 numberOfWRITEFailures++;
+                            } else if (!isFontColorPropertyDefined(modelVal)) {
+                                numberOfWRITEFailures++;
+                                failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                        model.getName(), p, null, modelVal, rule, false, false, null));
                             }
                         }
                     }
@@ -534,29 +597,53 @@ public class SchemaVerifier {
             if (model instanceof AbstractContainerModel) {
                 check(pathToFile, (AbstractContainerModel)model, failures);
             }
+            
         }  
         if (failures.size() != startingFailures) {
             numberOfWidgetsFailures++;
         }
     }
     
+//    private void initModel(AbstractWidgetModel model) {
+//        AbstractBaseEditPart editPart = (AbstractBaseEditPart)editPartFactory.createEditPart(null, model);
+//        try {
+//            if (doCreateFigureMethod != null) {
+//                doCreateFigureMethod.invoke(editPart);
+//            }
+//        } catch (Exception e) {
+//            //ignore whatever exception might be thrown, because the edit part is not fully initialised
+//            //we just need the properties to be in the proper visible/invisible state
+//        } 
+//        try {
+//            if (registerBasePropertyChangeHandlersMethod != null) {
+//                registerBasePropertyChangeHandlersMethod.invoke(editPart);
+//            }
+//        } catch (Exception e) {} 
+//        try{
+//            if (registerPropertyChangeHandlersMethod != null) {
+//                registerPropertyChangeHandlersMethod.invoke(editPart);
+//            }
+//        } catch (Exception e) {} 
+//    }
+    
     /**
      * Returns true if the modelVal is accepted value for the property given by the propertyName.
      * Property value is accepted if it is identical to the schema value (orgVal) or if the value
      * is represented by one of the additional acceptable values.
      *  
+     * @param widgetType the type of the widget to which the property belongs
      * @param propertyName the name of the property to check
      * @param orgVal the value from the schema
      * @param modelVal the value to check
      * @return true if accepted or false otherwise
      */
-    private boolean isPropertyAccepted(String propertyName, Object orgVal, Object modelVal) {
+    private boolean isPropertyAccepted(String widgetType, String propertyName, Object orgVal, Object modelVal) {
         //if values are identical, return true
         if (Objects.equals(modelVal, orgVal)) {
             return true;
         }
-        
-        String[] acceptableValues = additionalAcceptableValues.get(propertyName);
+        String[] acceptableValues = getValueFromMap(widgetType, propertyName,
+                additionalAcceptableValues, patternsAdditionalAcceptableValues);
         //if there are no additional acceptable values, the value is not accepted
         if (acceptableValues == null) {
             return false;
@@ -716,7 +803,8 @@ public class SchemaVerifier {
     }
     
     /**
-     * Checks the property matches one of the predefined colors or fonts. If yes it returns true otherwise it returns false.
+     * Checks if the property matches one of the predefined colours or fonts. 
+     * If yes it returns true otherwise it returns false.
      * 
      * @param modelVal the property value to check
      * @return true if a match was found or false otherwise
@@ -733,6 +821,21 @@ public class SchemaVerifier {
         }
         return false;
     }
+    
+    /**
+     * Checks if the value is a font or colour. If yes it checks if it uses one of the defined values and returns
+     * true if yes or false if not. If the value is not font or colour it always returns true.
+     *  
+     * @param modelVal the property value to check
+     * @return true if it is a font or colour and a match was found, true if it is any other property 
+     *          or false otherwise 
+     */
+    private boolean isFontColorPropertyDefined(Object modelVal) {
+        if (modelVal instanceof OPIColor || modelVal instanceof OPIFont) {
+            return isPropertyDefined(modelVal);
+        } 
+        return true;
+    }
 
     /**
      * Loads the validation rule from the rules map. First the rule for the property of the specified widget 
@@ -746,43 +849,61 @@ public class SchemaVerifier {
      * @return the rule for the property
      */
     private ValidationRule getRuleForProperty(String property, String widget) {
-        String fullProp = widget + "." + property;
-        String prop = null;
-        ValidationRule value = rules.get(fullProp);
-        if (value == null) {
-            //try with abbreviated widget - omit org.csstudio.opibuilder.widgets
-            prop = widget.substring(widget.lastIndexOf('.')+1) + "." + property;
-            value = rules.get(prop);
-        }
-        if (value == null) {
-            //try general proeprty definition
-            value = rules.get(property);
-        }
-        
-        if (value == null) {
-            //no match was found yet, check patterns
-            //if one of the patterns match, add the property to the rules, so we can find it more quicklyr next time
-            for (Entry<Pattern,ValidationRule> e : patternRules.entrySet()) {
-                if (e.getKey().matcher(fullProp).matches()) {
-                    value = e.getValue();
-                    rules.put(fullProp, value);
-                    return value;
-                } else if (e.getKey().matcher(prop).matches()) {
-                    value = e.getValue();
-                    rules.put(prop, value);
-                    return value;
-                } else if (e.getKey().matcher(property).matches()) {
-                    value = e.getValue();
-                    rules.put(property, value);
-                    return value;
-                }
-            }
-        }
-        
+        ValidationRule value = getValueFromMap(widget, property, rules, patternRules);
         if (value == null) {
             return ValidationRule.RW;
         } else {
             return value;
         }        
+    }
+    
+    /**
+     * Loads the value that matches the widget and property.
+     * 
+     * @see #getRuleForProperty(String, String)
+     * @param widget the type of the widget
+     * @param property the name of the property
+     * @param values the values map, where the keys are true widget/property combinations
+     * @param patterns the map of patterns that widget/property combinations may match
+     * @return the value if found or null if nothing matched
+     */
+    private static <T> T getValueFromMap(String widget, String property, Map<String,T> values,
+            Map<Pattern, T> patterns) {
+        widget = widget.toLowerCase();
+        property = property.toLowerCase();                
+        String fullProp = widget + "." + property;
+        String prop = null;
+        T value = values.get(fullProp);
+        if (value == null) {
+            //try with abbreviated widget - omit org.csstudio.opibuilder.widgets
+            prop = widget.substring(widget.lastIndexOf('.')+1) + "." + property;
+            value = values.get(prop);
+        }
+        if (value == null) {
+            //try general property definition
+            value = values.get(property);
+        }
+        
+        if (value == null) {
+            //no match was found yet, check patterns
+            //if one of the patterns matches, add the property to the rules, so we can find it more quickly next time
+            for (Entry<Pattern,T> e : patterns.entrySet()) {
+                if (e.getKey().matcher(fullProp).matches()) {
+                    value = e.getValue();
+                    values.put(fullProp, value);
+                    return value;
+                } else if (e.getKey().matcher(prop).matches()) {
+                    value = e.getValue();
+                    values.put(prop, value);
+                    return value;
+                } else if (e.getKey().matcher(property).matches()) {
+                    value = e.getValue();
+                    values.put(property, value);
+                    return value;
+                }
+            }
+        }
+        
+        return value;
     }
 }

@@ -44,6 +44,8 @@ public class ResultsDialog extends TitleAreaDialog {
     private final int noROPropertiesWithMajorFailures;
     private final int noValidatedWRITEProperties;
     private final int noWRITEPropertiesWithFailures;
+    private final int noValidatedRWProperties;
+    private final int noRWPropertiesWithFailures;
 
     private Font font;
 
@@ -64,7 +66,8 @@ public class ResultsDialog extends TitleAreaDialog {
     public ResultsDialog(Shell parentShell, int noValidatedFiles, int noFilesWithFailures,
             int noValidatedWidgets, int noWidgetsWithFailures, int noValidatedROProperties,
             int noROPropertiesWithCriticalFailures, int noROPropertiesWithMajorFailures,
-            int noValidatedWRITEProperties, int noWRITEPropertiesWithFailures) {
+            int noValidatedWRITEProperties, int noWRITEPropertiesWithFailures,
+            int noValidatedRWProperties, int noRWPropertiesWithFailures) {
         super(parentShell);
         this.noValidatedFiles = noValidatedFiles;
         this.noFilesWithFailures = noFilesWithFailures;
@@ -75,7 +78,8 @@ public class ResultsDialog extends TitleAreaDialog {
         this.noROPropertiesWithMajorFailures = noROPropertiesWithMajorFailures;
         this.noValidatedWRITEProperties = noValidatedWRITEProperties;
         this.noWRITEPropertiesWithFailures = noWRITEPropertiesWithFailures;
-        
+        this.noValidatedRWProperties = noValidatedRWProperties;
+        this.noRWPropertiesWithFailures = noRWPropertiesWithFailures;
     }
     
     /*
@@ -175,6 +179,15 @@ public class ResultsDialog extends TitleAreaDialog {
         l = new Label(parent, SWT.HORIZONTAL);
         ratio = (int)((noWRITEPropertiesWithFailures/(double)noValidatedWRITEProperties)*100);
         l.setText("WRITE properties with errors: " + noWRITEPropertiesWithFailures + " (" + ratio + " %)");
+        l.setLayoutData(createGridData(true));
+        l.setFont(font);
+        
+        l = new Label(parent, SWT.HORIZONTAL);
+        l.setText("Validated RW properties: " + noValidatedRWProperties);
+        l.setLayoutData(createGridData(false));
+        l = new Label(parent, SWT.HORIZONTAL);
+        ratio = (int)((noRWPropertiesWithFailures/(double)noValidatedRWProperties)*100);
+        l.setText("RW properties with errors: " + noRWPropertiesWithFailures + " (" + ratio + " %)");
         l.setLayoutData(createGridData(true));
         l.setFont(font);
     }

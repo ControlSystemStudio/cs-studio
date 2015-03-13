@@ -84,15 +84,30 @@ public class ValidationFailure {
         if (forcedMessage != null) {
             return forcedMessage;
         }
+        boolean usingNonDefined = false;
         if (rule == ValidationRule.RO) {
-            return new StringBuilder(property.length() + expected.length() + actual.length() + 26)
+            if (expectedValue == null) {
+                usingNonDefined = true;
+            } else {
+                return new StringBuilder(property.length() + expected.length() + actual.length() + 26)
                     .append(property).append(": expected: '").append(expected).append("' but was: '")
                     .append(actual).append('\'').toString();
+            }
         } else if (rule == ValidationRule.WRITE) {
-            return new StringBuilder(property.length() + 11).append(property).append(" is not set").toString();
-        } else {
-            return "What could be wrong?";
+            if (expectedValue == null) {
+                usingNonDefined = true;
+            } else {
+                return new StringBuilder(property.length() + 11).append(property).append(" is not set").toString();
+            }
+        } else if (rule == ValidationRule.RW) {
+            //can happen in the case of font and colour
+            usingNonDefined = true;
+        } 
+        if (usingNonDefined) {
+            return new StringBuilder(property.length() + actual.length() + 40).append(property)
+                    .append(": '").append(actual).append("' is not one of the predefined values").toString();
         }
+        return null;
     }
     
     /**

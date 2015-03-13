@@ -23,6 +23,14 @@
 #! Or properties that ends with name
 #! [a-zA-Z0-9_]*name=RO
 
+#! A rule can also specify additional aceptable values. These are the values may or may be not
+#! identical to whatever is used in the OPI schema, but they are acceptable to be used for the
+#! specified property. For example: the OPI schema defined that the background color of a
+#! groupingContainer should be 'IO Background', however the value 'IO Area Background' is also
+#! acceptable. Such rule can be defined like this (acceptable values should be placed in rectangular
+#! brackets and separated by a semi-colon):
+#! groupingContainer.background_color=RO [IO Background; IO Area Background]
+
 border_color=RO
 pv_name=WRITE
 ActionButton.font=RO

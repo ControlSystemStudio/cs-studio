@@ -13,6 +13,9 @@ import java.net.URL;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
@@ -59,6 +62,23 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {        
         instance = this;
         super.start(context);
+        //this will make sure that the xygraph plugin is loaded
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionPoint point = registry.getExtensionPoint("org.csstudio.opibuilder.widget");
+        IExtension[] extensions = point.getExtensions();
+        for (IExtension e : extensions) {
+            Platform.getBundle(e.getContributor().getName()).start();
+//            PlatformUI.getWorkbench().
+//            IConfigurationElement[] el = e.getConfigurationElements();
+//            for (IConfigurationElement ee : el) {
+//                
+//            }
+        }
+        
+//        boolean rap = org.csstudio.swt.xygraph.util.GraphicsUtil.isRAP();
+//        System.out.println(rap);
+//        boolean advanced = org.csstudio.swt.widgets.util.GraphicsUtil.useAdvancedGraphics();
+//        System.out.println(advanced);
     }
     
     /*

@@ -61,6 +61,15 @@ import org.eclipse.wst.validation.ValidatorMessage;
 @SuppressWarnings("restriction")
 public class Validator extends AbstractValidator {
 
+    private static class NonNullHashMap<K,T> extends HashMap<K,T> {
+        private static final long serialVersionUID = 7385574868370529896L;
+        @Override
+        public T put(K key, T value) {
+            if (value == null) return null;
+            return super.put(key, value);
+        }
+    }
+    
     private static final Logger LOGGER = Logger.getLogger(Validator.class.getName());
     
     /** Marker name for OPI validation failure */ 
@@ -132,7 +141,9 @@ public class Validator extends AbstractValidator {
             } else {
                 message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
             }
-            
+        } else if (vf.getRule() == ValidationRule.RW) {
+            //Can happen in the font and colour case
+            message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
         }
         message.setAttribute(IMarker.LOCATION, vf.getLocation());
         message.setAttribute(IMarker.LINE_NUMBER, vf.getLineNumber());
@@ -166,9 +177,10 @@ public class Validator extends AbstractValidator {
             showView("org.eclipse.ui.views.ProgressView",false);
             //reload the rules, just in case they have been changed
             IPath rulesFile = Activator.getInstance().getRulesFile();
-            Map<String, ValidationRule> rules = new HashMap<String, ValidationRule>();
-            Map<Pattern, ValidationRule> rulePatterns = new HashMap<Pattern, ValidationRule>();
-            Map<String, String[]> acceptableValues = new HashMap<String, String[]>();
+            Map<String, ValidationRule> rules = new HashMap<>();
+            Map<Pattern, ValidationRule> rulePatterns = new HashMap<>();
+            Map<String, String[]> acceptableValues = new NonNullHashMap<>();
+            Map<Pattern, String[]> acceptableValuesPatterns = new NonNullHashMap<>();
             if (rulesFile != null) {
                 Properties p = new Properties();
                 try (FileInputStream stream = new FileInputStream(rulesFile.toFile())) {
@@ -182,14 +194,14 @@ public class Validator extends AbstractValidator {
                     String key = ((String)e.getKey()).toLowerCase();
                     String value = (String)e.getValue();
                     int idx = value.indexOf('[');
+                    String[] acceptables = null;
                     if (idx > 0) {
                         ruleStr = value.substring(0,idx).trim();
                         try {
-                            String[] acceptables = value.substring(idx+1, value.indexOf(']')).split("\\;");
+                            acceptables = value.substring(idx+1, value.indexOf(']')).split("\\;");
                             for (int i = 0; i < acceptables.length; i++) {
                                 acceptables[i] = acceptables[i].trim();
                             }
-                            acceptableValues.put(key, acceptables);
                         } catch (Exception ex) {
                             //in case that acceptables cannot be parsed, just ignore them
                             LOGGER.log(Level.WARNING, "The rule for property '" + key + "' is incorrectly defined."
@@ -203,15 +215,17 @@ public class Validator extends AbstractValidator {
                         ValidationRule rule = ValidationRule.valueOf(ruleStr.toUpperCase());
                         if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
                             rules.put(key, rule);
+                            acceptableValues.put(key, acceptables);
                         } else {
                             rulePatterns.put(Pattern.compile(key), rule);
+                            acceptableValuesPatterns.put(Pattern.compile(key), acceptables);
                         }
                     } catch(IllegalArgumentException ex) {
                         LOGGER.log(Level.WARNING, e.getKey() + " is not defined correctly.");
                     }
                 }
             }
-            verifier = new SchemaVerifier(rules, rulePatterns, acceptableValues);
+            verifier = new SchemaVerifier(rules, rulePatterns, acceptableValues, acceptableValuesPatterns);
         }
     }
 
@@ -239,7 +253,9 @@ public class Validator extends AbstractValidator {
                             sv.getNumberOfCriticalROFailures(),
                             sv.getNumberOfMajorROFailures(),
                             sv.getNumberOfWRITEProperties(),
-                            sv.getNumberOfWRITEFailures())
+                            sv.getNumberOfWRITEFailures(),
+                            sv.getNumberOfRWProperties(),
+                            sv.getNumberOfRWFailures())
                         .open();
                 });
             }

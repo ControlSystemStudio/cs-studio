@@ -16,5 +16,3 @@ Require-Bundle: org.csstudio.opibuilder;bundle-version="4.0.0",
  org.jdom;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.opibuilder.validation.Activator
-Import-Package: org.w3c.dom;version="3.0.0",
- org.w3c.dom.events;version="3.0.0"
