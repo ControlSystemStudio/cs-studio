@@ -181,6 +181,8 @@ public class Validator extends AbstractValidator {
             Map<Pattern, ValidationRule> rulePatterns = new HashMap<>();
             Map<String, String[]> acceptableValues = new NonNullHashMap<>();
             Map<Pattern, String[]> acceptableValuesPatterns = new NonNullHashMap<>();
+            Map<String, String[]> removedValues = new NonNullHashMap<>();
+            Map<Pattern, String[]> removedValuesPatterns = new NonNullHashMap<>();
             if (rulesFile != null) {
                 Properties p = new Properties();
                 try (FileInputStream stream = new FileInputStream(rulesFile.toFile())) {
@@ -194,18 +196,34 @@ public class Validator extends AbstractValidator {
                     String key = ((String)e.getKey()).toLowerCase();
                     String value = (String)e.getValue();
                     int idx = value.indexOf('[');
+                    int idxRem = value.indexOf('{');
                     String[] acceptables = null;
-                    if (idx > 0) {
-                        ruleStr = value.substring(0,idx).trim();
+                    String[] removies = null;
+                    if (idx > 0 || idxRem > 0) {
+                        if (idx > 0 && idxRem > 0) {
+                            ruleStr = value.substring(0,Math.min(idx,idxRem)).trim();
+                        } else if (idx > 0) {
+                            ruleStr = value.substring(0,idx).trim();
+                        } else {
+                            ruleStr = value.substring(0,idxRem).trim();
+                        }
                         try {
-                            acceptables = value.substring(idx+1, value.indexOf(']')).split("\\;");
-                            for (int i = 0; i < acceptables.length; i++) {
-                                acceptables[i] = acceptables[i].trim();
+                            if (idx > 0) {
+                                acceptables = value.substring(idx+1, value.indexOf(']')).split("\\;");
+                                for (int i = 0; i < acceptables.length; i++) {
+                                    acceptables[i] = acceptables[i].trim();
+                                }
+                            }
+                            if (idxRem > 0) {
+                                removies = value.substring(idxRem+1, value.indexOf('}')).split("\\;");
+                                for (int i = 0; i < removies.length; i++) {
+                                    removies[i] = removies[i].trim();
+                                }
                             }
                         } catch (Exception ex) {
                             //in case that acceptables cannot be parsed, just ignore them
                             LOGGER.log(Level.WARNING, "The rule for property '" + key + "' is incorrectly defined."
-                                    + " Check the alternative acceptable values.");
+                                    + " Check the alternative acceptable and removed values definition.");
                         }
                     } else {
                         ruleStr = value;
@@ -216,16 +234,20 @@ public class Validator extends AbstractValidator {
                         if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
                             rules.put(key, rule);
                             acceptableValues.put(key, acceptables);
+                            removedValues.put(key, removies);
                         } else {
-                            rulePatterns.put(Pattern.compile(key), rule);
-                            acceptableValuesPatterns.put(Pattern.compile(key), acceptables);
+                            Pattern ptrn = Pattern.compile(key);
+                            rulePatterns.put(ptrn, rule);
+                            acceptableValuesPatterns.put(ptrn, acceptables);
+                            removedValuesPatterns.put(ptrn, removies);
                         }
                     } catch(IllegalArgumentException ex) {
                         LOGGER.log(Level.WARNING, e.getKey() + " is not defined correctly.");
                     }
                 }
             }
-            verifier = new SchemaVerifier(rules, rulePatterns, acceptableValues, acceptableValuesPatterns);
+            verifier = new SchemaVerifier(rules, rulePatterns, acceptableValues, acceptableValuesPatterns,
+                    removedValues, removedValuesPatterns);
         }
     }
 

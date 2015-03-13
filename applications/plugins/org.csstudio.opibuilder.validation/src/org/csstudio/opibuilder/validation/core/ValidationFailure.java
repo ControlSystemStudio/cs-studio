@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class ValidationFailure {
+public class ValidationFailure implements Comparable<ValidationFailure> {
     
     private final String widgetType;
     private final String widgetName;
@@ -56,10 +56,11 @@ public class ValidationFailure {
      * @param isFixable true if the failure can be fixed automatically or false otherwise
      * @param forcedMessage the forced message to be returned by {@link #getMessage()}. If null, it will be composed
      *          when the {@link #getMessage()} is called 
+     * @param lineNumber the line number at which the failure occurred
      */
     ValidationFailure(IPath path, String wuid, String widgetType, String widgetName, 
             String property, Object expected, Object actual, ValidationRule rule, boolean isCritical,
-            boolean isFixable, String forcedMessage) {
+            boolean isFixable, String forcedMessage, int lineNumber) {
         this.widgetType = widgetType;
         this.widgetName = widgetName;
         this.property = property;
@@ -73,6 +74,7 @@ public class ValidationFailure {
         this.wuid = wuid == null ? "" : wuid; //old OPIs might not have the WUIDs
         this.isFixable = isFixable;
         this.forcedMessage = forcedMessage;
+        this.lineNumber = lineNumber;
     }
     
     /**
@@ -253,5 +255,21 @@ public class ValidationFailure {
     @Override
     public String toString() {
         return getMessage();
+    }
+    
+    @Override
+    public int compareTo(ValidationFailure o) {
+        int c = this.lineNumber - o.lineNumber;
+        if (c != 0) return c;
+        if (this.wuid != null) {
+            c = this.wuid.compareTo(o.wuid);
+        } 
+        if (c != 0) return c;    
+        
+        if (this.widgetName != null) {
+            c = this.widgetName.compareTo(o.widgetName);
+        } 
+        if (c != 0) return c;
+        return this.widgetType.compareTo(o.widgetType);
     }
 }

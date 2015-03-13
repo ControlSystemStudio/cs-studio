@@ -23,6 +23,7 @@ public class SubValidationFailure extends ValidationFailure {
     private final String subPropertyTag;
     private final String subPropertyDesc;
     private final String forcedMessage;
+    private final boolean toRemove;
     
     private boolean isFixed = false;
     
@@ -41,14 +42,50 @@ public class SubValidationFailure extends ValidationFailure {
      * @param rule the rule that was violated
      * @param isCritical true if this is a critical failure or false otherwise
      * @param isFixable true if the failure can be quick fixed
+     * @param lineNumber the line number at which the faiure occurred
      */
     public SubValidationFailure(IPath path, String wuid, String widgetType, String widgetName, String property, 
             String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule, 
-            boolean isCritical, boolean isFixable, String forcedMessage) {
-        super(path, wuid, widgetType, widgetName, property, expected, actual, rule, isCritical, isFixable, forcedMessage);
+            boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber) {
+        this(path, wuid, widgetType, widgetName, property, subPropertyTag, subPropertyDesc, expected, actual, rule, 
+                isCritical, isFixable, forcedMessage, lineNumber, false);
+    }
+    
+    /**
+     * Constructs a new sub validation failure.
+     * 
+     * @param path the path to the file in which the failure was detected
+     * @param wuid the widget unique id that the failure was detected on
+     * @param widgetType the typeId of the widget
+     * @param widgetName the name of the widget
+     * @param property the name of the parent property
+     * @param subPropertyTag the tag of the subproperty 
+     * @param subPropertyDesc the descriptive string of the sub property (e.g. name, or type)
+     * @param expected the expected value of the property (from the schema)
+     * @param actual the actual value of the property (from the validated model)
+     * @param rule the rule that was violated
+     * @param isCritical true if this is a critical failure or false otherwise
+     * @param isFixable true if the failure can be quick fixed
+     * @param lineNumber the line number at which the failure occurred
+     * @param toRemove a flag indicating if this failure is about a sub property that should be removed
+     * 
+     */
+    public SubValidationFailure(IPath path, String wuid, String widgetType, String widgetName, String property, 
+            String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule, 
+            boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber, boolean toRemove) {
+        super(path, wuid, widgetType, widgetName, property, expected, actual, rule, 
+                isCritical, isFixable, forcedMessage, lineNumber);
         this.subPropertyTag = subPropertyTag;
         this.subPropertyDesc = subPropertyDesc;
         this.forcedMessage = forcedMessage;
+        this.toRemove = toRemove;
+    }
+    
+    /**
+     * @return true if describes a property that should be removed from the model
+     */
+    public boolean isToBeRemoved() {
+        return toRemove;
     }
     
     /**
@@ -98,6 +135,11 @@ public class SubValidationFailure extends ValidationFailure {
     @Override
     public String getMessage() {
         if (forcedMessage == null) {
+            if (toRemove) {
+                return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length() + 22)
+                .append(parent.getProperty()).append(": '").append(subPropertyDesc)
+                .append("' should be removed").toString();
+            }
             if (getRule() == ValidationRule.RO) {
                 if (getActualValue() == null) {
                     return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length() + 40)
