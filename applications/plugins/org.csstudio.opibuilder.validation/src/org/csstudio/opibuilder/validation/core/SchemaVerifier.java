@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.validation.core;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,6 +25,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
@@ -102,10 +106,10 @@ public class SchemaVerifier {
     private int numberOfWRITEFailures = 0;
     
     private IPath schemaPath;
-//    private WidgetEditPartFactory editPartFactory;
-//    private Method registerPropertyChangeHandlersMethod;
-//    private Method registerBasePropertyChangeHandlersMethod;
-//    private Method doCreateFigureMethod;
+    private WidgetEditPartFactory editPartFactory;
+    private Method registerPropertyChangeHandlersMethod;
+    private Method registerBasePropertyChangeHandlersMethod;
+    private Method doCreateFigureMethod;
         
     private final Map<String, ValidationRule> rules;
     private final Map<Pattern, ValidationRule> patternRules;
@@ -277,20 +281,20 @@ public class SchemaVerifier {
             schema = Utilities.loadSchema(schemaPath);
             colors = MediaService.getInstance().getAllPredefinedColors();
             fonts = MediaService.getInstance().getAllPredefinedFonts();
-//            editPartFactory = new WidgetEditPartFactory(ExecutionMode.EDIT_MODE);
-//            try {
-//                registerPropertyChangeHandlersMethod = AbstractBaseEditPart.class
-//                        .getDeclaredMethod("registerPropertyChangeHandlers");
-//                registerPropertyChangeHandlersMethod.setAccessible(true);
-//                registerBasePropertyChangeHandlersMethod = AbstractBaseEditPart.class
-//                        .getDeclaredMethod("registerBasePropertyChangeHandlers");
-//                registerBasePropertyChangeHandlersMethod.setAccessible(true);
-//                doCreateFigureMethod = AbstractBaseEditPart.class
-//                        .getDeclaredMethod("doCreateFigure");
-//                doCreateFigureMethod.setAccessible(true);
-//            } catch (NoSuchMethodException | SecurityException e) {
-//                LOGGER.log(Level.WARNING, "Cannot register property change handlers.", e);
-//            }
+            editPartFactory = new WidgetEditPartFactory(ExecutionMode.EDIT_MODE);
+            try {
+                registerPropertyChangeHandlersMethod = AbstractBaseEditPart.class
+                        .getDeclaredMethod("registerPropertyChangeHandlers");
+                registerPropertyChangeHandlersMethod.setAccessible(true);
+                registerBasePropertyChangeHandlersMethod = AbstractBaseEditPart.class
+                        .getDeclaredMethod("registerBasePropertyChangeHandlers");
+                registerBasePropertyChangeHandlersMethod.setAccessible(true);
+                doCreateFigureMethod = AbstractBaseEditPart.class
+                        .getDeclaredMethod("doCreateFigure");
+                doCreateFigureMethod.setAccessible(true);
+            } catch (NoSuchMethodException | SecurityException e) {
+                LOGGER.log(Level.WARNING, "Cannot register property change handlers.", e);
+            }
         }
         this.validatedPath = validatedPath;
         
@@ -511,7 +515,7 @@ public class SchemaVerifier {
             numberOfAnalyzedWidgets++;
             widgetType = model.getTypeID();
             original = schema.get(widgetType);
-//            initModel(model);
+            initModel(model);
             if (original != null) {
                 Set<String> properties = model.getAllPropertyIDs() ;
                 for (String p : properties) {
@@ -519,14 +523,13 @@ public class SchemaVerifier {
                     modelVal = model.getPropertyValue(p);
                     orgVal = original.getPropertyValue(p);
                     //if the checked property is not savable (e.g. background color for action button), ignore it
-                    //TODO property is always savable, because one needs to activate the edit part to set up the 
-                    //visibility, but there are problems with org.eclipse.gef being a dependency to this plugin
                     if (!model.getProperty(p).isSavable()) {
                         continue;
                     }
                     if (rule == ValidationRule.RW) {
                         numberOfRWProperties++;
                         //nothing to do in the case of read/write properties except for fonts and colors
+                        //TODO really, this seems to be identical to setting the color property to WRITE
                         if (!isFontColorPropertyDefined(modelVal)) {
                             numberOfRWFailures++;
                             failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
@@ -604,27 +607,35 @@ public class SchemaVerifier {
         }
     }
     
-//    private void initModel(AbstractWidgetModel model) {
-//        AbstractBaseEditPart editPart = (AbstractBaseEditPart)editPartFactory.createEditPart(null, model);
-//        try {
-//            if (doCreateFigureMethod != null) {
-//                doCreateFigureMethod.invoke(editPart);
-//            }
-//        } catch (Exception e) {
-//            //ignore whatever exception might be thrown, because the edit part is not fully initialised
-//            //we just need the properties to be in the proper visible/invisible state
-//        } 
-//        try {
-//            if (registerBasePropertyChangeHandlersMethod != null) {
-//                registerBasePropertyChangeHandlersMethod.invoke(editPart);
-//            }
-//        } catch (Exception e) {} 
-//        try{
-//            if (registerPropertyChangeHandlersMethod != null) {
-//                registerPropertyChangeHandlersMethod.invoke(editPart);
-//            }
-//        } catch (Exception e) {} 
-//    }
+    private void initModel(AbstractWidgetModel model) {
+        //initialize the model in the GUI thread
+        //Even if the GUI thread is not required, if some of the GUI stuff will be loaded directly
+        //it might end up being loaded with a wrong class loader. That will cause problems later when
+        //the same class will be needed by some other plugin.
+        Display.getDefault().syncExec(() -> {
+                AbstractBaseEditPart editPart = (AbstractBaseEditPart)editPartFactory.createEditPart(null, model);
+                try {
+                    if (doCreateFigureMethod != null) {
+                        doCreateFigureMethod.invoke(editPart);
+                    }
+                } catch (Exception e) {
+                    //ignore whatever exception might be thrown, because the edit part is not fully initialised
+                    //we just need the properties to be in the proper visible/invisible state
+                } 
+                try {
+                    if (registerBasePropertyChangeHandlersMethod != null) {
+                        registerBasePropertyChangeHandlersMethod.invoke(editPart);
+                    }
+                } catch (Exception e) {} 
+                try{
+                    if (registerPropertyChangeHandlersMethod != null) {
+                        registerPropertyChangeHandlersMethod.invoke(editPart);
+                    }
+                } catch (Exception e) {} 
+                
+            });
+        
+    }
     
     /**
      * Returns true if the modelVal is accepted value for the property given by the propertyName.
