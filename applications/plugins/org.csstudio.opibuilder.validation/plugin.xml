@@ -60,6 +60,23 @@
             name="Opi Validation">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.opibuilder.opieditor">
+         <view
+               closeable="true"
+               id="org.eclipse.ui.views.ProblemView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.console.ConsoleView"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
    
 
 </plugin>
