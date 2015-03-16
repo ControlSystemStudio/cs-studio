@@ -20,8 +20,11 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.draw2d.compatibility;resolution:=optional,
  org.apache.commons.lang,
  org.csstudio.ui.util;resolution:=optional,
- org.csstudio.rap.ui.util;resolution:=optional
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+ org.csstudio.rap.ui.util;resolution:=optional,
+ org.apache.batik.dom.svg,
+ org.apache.batik.util,
+ org.apache.batik.dom
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.swt.widgets.datadefinition,
  org.csstudio.swt.widgets.figureparts,
@@ -31,6 +34,4 @@ Export-Package: org.csstudio.swt.widgets.datadefinition,
  org.csstudio.swt.widgets.symbol,
  org.csstudio.swt.widgets.symbol.util,
  org.csstudio.swt.widgets.util
-Import-Package: org.apache.batik.dom.svg,
- org.apache.batik.util,
- org.w3c.dom.svg
+Import-Package: org.w3c.dom.svg
