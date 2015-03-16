@@ -107,7 +107,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	public SymbolImage getSymbolImage() {
 		if (ExecutionMode.RUN_MODE.equals(executionMode)
 				&& currentStateIndex >= 0) {
-			currentSymbolImage = images.get(currentStateIndex);
+			return images.get(currentStateIndex);
 		}
 		if (currentSymbolImage == null) { // create an empty image
 			currentSymbolImage = SymbolImageFactory
@@ -341,11 +341,13 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 					if (images != null)
 						images.put(stateIndex, img);
 				} else {
+					disposeCurrent();
 					currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(
 							imagePath, true, symbolProperties, this);
 				}
 				break;
 			case EDIT_MODE:
+				disposeCurrent();
 				currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(
 						imagePath, false, symbolProperties, this);
 				break;

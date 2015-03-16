@@ -121,14 +121,14 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 	}
 	
 	@Override
-	public void doActivate() {
+	protected void doActivate() {
 		super.doActivate();
 		registerLoadItemsListener();
 	}
 
 	@Override
-	public void deactivate() {
-		super.deactivate();
+	protected void doDeActivate() {
+		super.doDeActivate();
 		((CommonMultiSymbolFigure) getFigure()).disposeAll();
 		if (getWidgetModel().isItemsFromPV()) {
 			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
