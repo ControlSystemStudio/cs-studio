@@ -54,6 +54,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 	protected boolean animationDisabled = false;
 	protected boolean alignedToNearestSecond = false;
 	protected boolean visible = true;
+	protected boolean disposed = false;
 
 	public AbstractSymbolImage(SymbolImageProperties sip, boolean runMode) {
 		this.runMode = runMode;
@@ -93,6 +94,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 	}
 
 	public void dispose() {
+		disposed = true;
 		if (image != null && !image.isDisposed()) {
 			image.dispose();
 			image = null;
@@ -104,7 +106,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 	}
 
 	public boolean isDisposed() {
-		return image == null || image.isDisposed();
+		return disposed;
 	}
 
 	public boolean isEditMode() {
@@ -138,6 +140,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 				|| (colorToChange != null && colorToChange.equals(newColor)))
 			return;
 		this.colorToChange = newColor;
+		resetData();
 	}
 
 	public void setBackgroundColor(Color newColor) {

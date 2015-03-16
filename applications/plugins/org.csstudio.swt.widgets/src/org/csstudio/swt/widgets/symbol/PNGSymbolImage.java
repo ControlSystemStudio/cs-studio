@@ -43,12 +43,15 @@ public class PNGSymbolImage extends AbstractSymbolImage {
 	// ************************************************************
 
 	public synchronized void paintFigure(final Graphics gfx) {
-		if (loadingImage || originalImageData == null)
+		if (disposed || loadingImage || originalImageData == null)
 			return;
 		// Generate Data
 		if (imageData == null) {
-			dispose();
 			generatePNGData();
+			if (image != null && !image.isDisposed()) {
+				image.dispose();
+				image = null;
+			}
 		}
 		// Create image
 		if (image == null) {
@@ -77,7 +80,7 @@ public class PNGSymbolImage extends AbstractSymbolImage {
 	}
 
 	private void generatePNGData() {
-		if (originalImageData == null)
+		if (disposed || originalImageData == null)
 			return;
 
 		imageData = (ImageData) originalImageData.clone();

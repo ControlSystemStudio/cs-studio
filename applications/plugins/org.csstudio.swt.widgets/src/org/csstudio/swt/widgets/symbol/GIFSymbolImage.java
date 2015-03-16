@@ -78,6 +78,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		stopAnimation();
 		if (offScreenImage != null && !offScreenImage.isDisposed()) {
 			offScreenImage.dispose();
@@ -87,7 +88,6 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 			offScreenImageGC.dispose();
 			offScreenImage = null;
 		}
-		super.dispose();
 	}
 
 	public void setVisible(boolean visible) {
@@ -101,12 +101,15 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	// ************************************************************
 
 	public synchronized void paintFigure(final Graphics gfx) {
-		if (loadingImage || originalImageData == null)
+		if (disposed || loadingImage || originalImageData == null)
 			return;
 		// Generate Data
 		if (imageData == null) {
-			dispose();
 			generateAnimatedData();
+			if (image != null && !image.isDisposed()) {
+				image.dispose();
+				image = null;
+			}
 			if(animated)
 				startAnimation();
 		}
@@ -179,6 +182,9 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	}
 
 	private void generateAnimatedData() {
+		if (disposed) {
+			return;
+		}
 		if (animated) {
 			imageDataArray = new ImageData[originalImageDataArray.length];
 			for (int i = 0; i < originalImageDataArray.length; i++) {
@@ -340,7 +346,6 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 			long initialDelay = 100;
 			if(alignedToNearestSecond) {
 				Date now = new Date();
-				DateUtils.round(now, Calendar.SECOND);
 				Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
 				initialDelay = nearestSecond.getTime() - now.getTime();
 				if (initialDelay < 0)
