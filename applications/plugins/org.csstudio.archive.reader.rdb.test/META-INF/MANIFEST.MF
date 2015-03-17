@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: RDB archive reader Demo/Test
 Bundle-Description: JUnit test/demo for org.csstudio.archive(.)reader.rdb
 Bundle-SymbolicName: org.csstudio.archive.reader.rdb.test
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 3.1.1.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Fragment-Host: org.csstudio.archive.reader.rdb;bundle-version="3.2.0"
+Fragment-Host: org.csstudio.archive.reader.rdb;bundle-version="3.2.15"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.apputil;bundle-version="3.0.0"
