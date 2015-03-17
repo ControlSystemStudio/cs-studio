@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010-2015 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.batik;
 
 import java.awt.Dimension;
@@ -7,14 +14,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
@@ -38,7 +45,6 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
-import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGConstants;
 import org.apache.commons.lang.time.DateUtils;
 import org.csstudio.java.thread.ExecutionService;
@@ -124,7 +130,7 @@ public class SVGHandler {
 
 	private RenderingHints renderingHints;
 	private float canvasWidth = -1, canvasHeight = -1;
-	private Color colorToChange, colorToApply, appliedColor;
+	private Color colorToChange, colorToApply;
 	private double[][] matrix = new double[][] { { 1, 0 }, { 0, 1 } };
 
 	private boolean needRender = true;
@@ -143,18 +149,15 @@ public class SVGHandler {
 		originalSVGDocument = (SVGDocument) DOMUtilities.deepCloneDocument(doc, impl);
 		bridgeContext = createBridgeContext((SVGOMDocument) originalSVGDocument);
 		isDynamicDocument = bridgeContext.isDynamicDocument(originalSVGDocument);
-		if (isDynamicDocument) {
-			bridgeContext.setDynamicState(BridgeContext.DYNAMIC);
-		}
-		if (bridgeContext.isDynamic()) {
-			builder = new DynamicGVTBuilder();
-		} else {
-			builder = new GVTBuilder();
-		}
+		// As we update the DOM, it has to be considered as dynamic
+		bridgeContext.setDynamicState(BridgeContext.DYNAMIC);
+		builder = new DynamicGVTBuilder();
+		// Build to calculate original dimension
 		GraphicsNode gvtRoot = builder.build(bridgeContext, originalSVGDocument);
 		originalDimension = bridgeContext.getDocumentSize();
 
 		svgDocument = (SVGDocument) createWrapper(originalSVGDocument);
+		buildElementsToUpdateList(svgDocument);
 		updateMatrix();
 		if (isDynamicDocument) {
 			updateManager = new UpdateManager(bridgeContext, gvtRoot, svgDocument);
@@ -502,11 +505,7 @@ public class SVGHandler {
 			return;
 		}
 		updateMatrix();
-		if (appliedColor == null) {
-			appliedColor = colorToChange;
-		}
-		changeColor(svgDocument, appliedColor, colorToApply);
-		appliedColor = colorToApply;
+		changeColor(colorToChange, colorToApply);
 		GraphicsNode gvtRoot = builder.build(bridgeContext, svgDocument);
 
 		// get the 'width' and 'height' attributes of the SVG document
@@ -539,9 +538,8 @@ public class SVGHandler {
 					aspectRatio, width, height, bridgeContext);
 		} else {
 			// no viewBox has been specified, create a scale transform
-			float xscale, yscale;
-			xscale = width / docWidth;
-			yscale = height / docHeight;
+			float xscale = width / docWidth;
+			float yscale = height / docHeight;
 			float scale = Math.min(xscale, yscale);
 			Px = AffineTransform.getScaleInstance(scale, scale);
 		}
@@ -632,20 +630,20 @@ public class SVGHandler {
 	// Change color & matrix private methods
 	// //////////////////////////////////////////////////////////////////////
 
-	private void changeColor(Document doc, Color colorToChange, Color newColor) {
-		if (colorToChange == null || newColor == null
-				|| colorToChange.equals(newColor)) {
+	private List<AbstractNodeWrapper> elementsToUpdate = new ArrayList<AbstractNodeWrapper>();
+
+	private void changeColor(Color colorToChange, Color newColor) {
+		Iterator<AbstractNodeWrapper> it = elementsToUpdate.iterator();
+		while (it.hasNext()) {
+			it.next().update(colorToChange, newColor);
+		}
+	}
+
+	private void buildElementsToUpdateList(Document doc) {
+		if (doc == null) {
 			return;
 		}
-
-		Matcher matcher = null;
-		String svgOldColor = toHexString(colorToChange.getRed(), colorToChange.getGreen(), colorToChange.getBlue());
-		String svgNewColor = toHexString(newColor.getRed(), newColor.getGreen(), newColor.getBlue());
-		Pattern fillPattern = Pattern.compile("(?i)" + CSSConstants.CSS_FILL_PROPERTY + ":" + svgOldColor);
-		Pattern strokePattern = Pattern.compile("(?i)" + CSSConstants.CSS_STROKE_PROPERTY + ":" + svgOldColor);
-		String fillReplace = CSSConstants.CSS_FILL_PROPERTY + ":" + svgNewColor;
-		String strokeReplace = CSSConstants.CSS_STROKE_PROPERTY + ":" + svgNewColor;
-
+		elementsToUpdate.clear();
 		// Search for global style element <style type="text/css"></style>
 		NodeList styleList = doc.getElementsByTagName("style");
 		for (int i = 0; i < styleList.getLength(); i++) {
@@ -656,88 +654,31 @@ public class SVGHandler {
 					Node child = childList.item(j);
 					if (child instanceof GenericText
 							|| child instanceof GenericCDATASection) {
-						CharacterData cdata = (CharacterData) child;
-						String data = cdata.getData();
-						matcher = fillPattern.matcher(data);
-						data = matcher.replaceAll(fillReplace);
-						matcher = strokePattern.matcher(data);
-						data = matcher.replaceAll(strokeReplace);
-						data = replaceRGB(colorToChange, newColor, data);
-						cdata.setData(data);
+						elementsToUpdate.add(new CDataWrapper(
+								(CharacterData) child));
 					}
 				}
 			}
 		}
-		recursiveCC(doc.getDocumentElement(), colorToChange, newColor,
-				fillPattern, strokePattern, fillReplace, strokeReplace);
+		rBuidElementsList(doc.getDocumentElement());
 	}
 
-	private void recursiveCC(Element elmt, Color oldColor, Color newColor,
-			Pattern fillPattern, Pattern strokePattern, String fillReplace,
-			String strokeReplace) {
+	private void rBuidElementsList(Element elmt) {
 		if (elmt == null) {
 			return;
 		}
-		Matcher matcher = null;
 		NodeList styleList = elmt.getChildNodes();
 		if (styleList != null) {
 			for (int i = 0; i < styleList.getLength(); i++) {
 				Node child = styleList.item(i);
 				if (child instanceof SVGStylableElement) {
-					recursiveCC((Element) child, oldColor, newColor,
-							fillPattern, strokePattern, fillReplace,
-							strokeReplace);
+					rBuidElementsList((Element) child);
 				}
 			}
 		}
 		if (elmt instanceof SVGStylableElement) {
-			String style = elmt.getAttribute("style");
-			matcher = fillPattern.matcher(style);
-			style = matcher.replaceAll(fillReplace);
-			matcher = strokePattern.matcher(style);
-			style = matcher.replaceAll(strokeReplace);
-			style = replaceRGB(oldColor, newColor, style);
-			elmt.setAttribute("style", style);
+			elementsToUpdate.add(new ElementWrapper(elmt));
 		}
-	}
-
-	private String replaceRGB(Color oldColor, Color newColor, String data) {
-		Pattern rgbPattern = Pattern
-				.compile("(?i)rgb\\(([0-9]+\\.?[0-9]*)%,([0-9]+\\.?[0-9]*)%,([0-9]+\\.?[0-9]*)%\\)");
-		int nr = Math.round(newColor.getRed() / 255f * 100);
-		int ng = Math.round(newColor.getGreen() / 255f * 100);
-		int nb = Math.round(newColor.getBlue() / 255f * 100);
-		String rgbReplace = "rgb(" + nr + "%," + ng + "%," + nb + "%)";
-		Matcher matcher = rgbPattern.matcher(data);
-		StringBuilder sb = new StringBuilder();
-		int previousEnd = 0;
-		while (matcher.find()) {
-			int r = Math.round(Float.valueOf(matcher.group(1)) * 255 / 100);
-			int g = Math.round(Float.valueOf(matcher.group(2)) * 255 / 100);
-			int b = Math.round(Float.valueOf(matcher.group(3)) * 255 / 100);
-			if (r == oldColor.getRed() && g == oldColor.getGreen()
-					&& b == oldColor.getBlue()) {
-				int newStart = matcher.start();
-				int newEnd = matcher.end();
-				sb.append(data.subSequence(previousEnd, newStart));
-				sb.append(rgbReplace);
-				previousEnd = newEnd;
-			}
-		}
-		sb.append(data.subSequence(previousEnd, data.length()));
-		return sb.toString();
-	}
-
-	private String toHexString(int r, int g, int b) {
-		return "#" + toSVGHexValue(r) + toSVGHexValue(g) + toSVGHexValue(b);
-	}
-
-	private String toSVGHexValue(int number) {
-		StringBuilder builder = new StringBuilder(Integer.toHexString(number & 0xff));
-		while (builder.length() < 2) {
-			builder.insert(0, '0'); // pad with leading zero if needed
-		}
-		return builder.toString().toUpperCase();
 	}
 
 	private Element mainGraphicNode;
@@ -764,7 +705,8 @@ public class SVGHandler {
 		double width = originalDimension.getWidth();
 		double height = originalDimension.getHeight();
 
-		double[] flatmatrix = new double[] { matrix[0][0], matrix[1][0],
+		double[] flatmatrix = new double[] { 
+				matrix[0][0], matrix[1][0],
 				matrix[0][1], matrix[1][1] };
 		AffineTransform at = new AffineTransform(flatmatrix);
 		Shape curAOI = new Rectangle2D.Double(0, 0, width, height);
