@@ -37,7 +37,7 @@ import org.epics.pvmanager.CompositeDataSource;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PVManager;
 
-public class ToolboxView extends ViewPart {
+public class DataSourcesView extends ViewPart {
 
 	public static final String ID = "org.csstudio.utility.pvmanager.ui.debug.ChannelListView"; //$NON-NLS-1$
 	private Table table;
@@ -47,7 +47,7 @@ public class ToolboxView extends ViewPart {
 	private Table summaryTable;
 	private TableViewer summaryTableViewer;
 
-	public ToolboxView() {
+	public DataSourcesView() {
 	}
 
 	/**
