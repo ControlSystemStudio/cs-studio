@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -76,7 +75,6 @@ public class OPIRuntimeDelegate implements IAdaptable{
     
     private IEditorInput editorInput;
     
-    private static AtomicInteger displayID = new AtomicInteger(0);
 
     /**
      * The workbench part where the OPI is running on.
@@ -119,7 +117,6 @@ public class OPIRuntimeDelegate implements IAdaptable{
  
         displayModel = new DisplayModel(getOPIFilePath());
         displayModel.setOpiRuntime(opiRuntime);
-        displayModel.setDisplayID(displayID.incrementAndGet());
         displayModelFilled = false;
         InputStream inputStream = null;
         try

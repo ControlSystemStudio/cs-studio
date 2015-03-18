@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.opibuilder.datadefinition.DisplayScaleData;
 import org.csstudio.opibuilder.properties.ActionsProperty;
@@ -90,9 +91,10 @@ public class DisplayModel extends AbstractContainerModel {
 
 	private IPath opiFilePath;
 
-	private int displayID;
-	
 	private boolean FreshRateEnabled= false;
+
+	private int displayID;
+	private static AtomicInteger displayIDCounter = new AtomicInteger(0);
 	
 	/**
 	 * Create a Display Model which is the root model for an OPI.
@@ -112,6 +114,7 @@ public class DisplayModel extends AbstractContainerModel {
 		setLocation(-1, -1);
 		setSize(800, 600);
 		setOpiFilePath(opiFilePath);
+		displayID = displayIDCounter.incrementAndGet();
 	}
 
 	@Override
