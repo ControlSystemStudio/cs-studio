@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.widgetActions.ExecuteCommandAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgetActions.OpenOPIInViewAction;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -84,6 +85,18 @@ public class ScriptUtil {
 	}
 	
 	
+	/**
+	 * Close OPI associated with the provided widget.
+	 */
+	public static void closeAssociatedOPI(AbstractBaseEditPart widget) {
+		Shell widgetShell = widget.getWidgetModel().getRootDisplayModel().getViewer().getControl().getShell();
+		// Is the shell part of a workbench window, or its own OPIShell?
+		if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() != widgetShell) {
+			widgetShell.close();
+		} else {
+			closeCurrentOPI();
+		}
+	}
 	
 	/**{@link Deprecated} see {@link #makeLogbookEntry(String, String)}
 	 * @param filePath
