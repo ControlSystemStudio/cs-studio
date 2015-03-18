@@ -21,6 +21,8 @@
 -Dosgi.sharedConfiguration.area.readOnly=true
 -Dosgi.install.area.readOnly=true
 -Dosgi.requiredJavaVersion=1.8
+-Dorg.osgi.framework.bundle.parent=ext 
+-Dosgi.framework.extensions=org.eclipse.fx.osgi
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -78,6 +80,7 @@
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.opibuilder.feature"/>
       <feature id="org.csstudio.product.configuration.feature"/>
+      <feature id="org.eclipse.fx.target.feature"/>
    </features>
 
    <configurations>
