@@ -296,6 +296,7 @@ public class ModelBasedPlot
 		// Locate index of current Y Axis
 		if (trace.getYAxis() != item.getAxisIndex())
 		    plot.moveTrace(trace, item.getAxisIndex());
+		plot.requestUpdate();
 	}
 
 	/** @param item {@link ModelItem} for which to locate the {@link Trace}
