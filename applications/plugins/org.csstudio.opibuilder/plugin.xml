@@ -36,6 +36,14 @@
             launcher="org.csstudio.opibuilder.runmode.DisplayLauncher"
             name="OPI Display (Workspace)">
       </editor>
+      <editor
+            default="false"
+            extensions="opi"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.ShellLauncher"
+            launcher="org.csstudio.opibuilder.runmode.ShellLauncher"
+            name="OPI Display (New Window)">
+      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
