@@ -206,7 +206,7 @@
 		</repository>
 		<repository>
 			<id>efx</id>
-			<url>http://download.eclipse.org/efxclipse/runtime-nightly/site</url>
+			<url>http://download.eclipse.org/efxclipse/runtime-released/1.2.0/site</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
