@@ -33,6 +33,7 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.LineAwareXMLParser;
+import org.csstudio.opibuilder.persistence.LineAwareXMLParser.LineAwareElement;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.ActionsProperty;
@@ -47,11 +48,11 @@ import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.persistence.LineAwareXMLParser.LineAwareElement;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.widgets.Display;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -280,7 +281,7 @@ public class SchemaVerifier {
      * Validates the OPIs on the given path and returns the list of all validation failures. If the path is
      * a directory all OPIs below that path are validated.
      * 
-     * @param validatedPath the path the OPI or folder containing OPIs.
+     * @param validatedPath the path the OPI to validate
      * @return the list of all validation failures
      * @throws IOException if there was an error opening the OPI file or schema
      * @throws IllegalStateException if the schema is not defined
@@ -309,38 +310,18 @@ public class SchemaVerifier {
             }
         }
         this.validatedPath = validatedPath;
-        
-        File file = this.validatedPath.toFile();
+        IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(this.validatedPath);
+        File file = ifile.getLocation().toFile(); 
         List<ValidationFailure> failures = new ArrayList<>();
         if (file.isFile()) {
             failures.addAll(check(this.validatedPath));
-        } else if (file.isDirectory()) {
-            List<File> opis = new ArrayList<>();
-            gatherOPIFiles(file, opis);
-            for (File f : opis) {
-                failures.addAll(check(new Path(f.getAbsolutePath())));
-            }
+        } else  {
+            throw new IllegalArgumentException(validatedPath.toString() + " is a directory.");
         }
         validationFailures.addAll(failures);
         return failures.toArray(new ValidationFailure[failures.size()]);
     }
-    
-    /**
-     * Recursively scans the parent file for all files that have the extension opi.
-     * 
-     * @param parent the directory to scan
-     * @param opis the list into which the found opi files are stored
-     */
-    private static void gatherOPIFiles(File parent, List<File> opis) {
-        for (File f : parent.listFiles()) {
-            if (f.isDirectory()) {
-                gatherOPIFiles(parent, opis);
-            } else if (f.getAbsolutePath().toLowerCase().endsWith(".opi")) {
-                opis.add(f);
-            }
-        }
-    }
-    
+        
     /**
      * Checks if the given OPI matches the schema definition. All detected validation failures are stored into
      * {@link #validationFails} list.
