@@ -34,9 +34,9 @@ public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 		initializeCommonFigureProperties(xMeter, model);
 		xMeter.setNeedleColor((model.getNeedleColor()));
 		xMeter.setGradient(model.isRampGradient());
+		xMeter.setValueLabelVisibility(model.isShowValueLabelVisible());
 
 		return xMeter;
-
 	}
 
 	@Override
