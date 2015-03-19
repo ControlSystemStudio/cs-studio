@@ -78,6 +78,7 @@ public class PlotPart
     /** @return Part name */
     public void setName(final String name)
     {
+        Objects.requireNonNull(name);
         synchronized (this)
         {
             if (name.equals(this.name))

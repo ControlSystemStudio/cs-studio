@@ -271,9 +271,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     }
 
     /** @param title Title */
-    public void setTitle(final String title)
+    public void setTitle(final Optional<String> title)
     {
-        title_part.setName(title);
+        title_part.setName(title.orElse(""));
     }
     
     /** @param font Font to use for title */

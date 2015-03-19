@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.swt.rtplot.data.PlotDataItem;
@@ -129,13 +130,10 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         plot.setBackground(Objects.requireNonNull(color));
     }
 
-    /** @param title Title text, may be null */
-    public void setTitle(final String title)
+    /** @param title Title text */
+    public void setTitle(final Optional<String> title)
     {
-    	if (title == null)
-    		plot.setTitle("");
-    	else
-    		plot.setTitle(title);
+		plot.setTitle(title);
     }
     
     /** @param font Font to use for title */
