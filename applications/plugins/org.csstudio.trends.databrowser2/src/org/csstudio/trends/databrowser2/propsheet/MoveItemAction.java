@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.propsheet;
 
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
+import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.jface.action.Action;
@@ -32,7 +33,7 @@ public class MoveItemAction extends Action
     public MoveItemAction(final UndoableActionManager operations_manager,
             final Model model, final ModelItem item, final boolean up)
     {
-        super(up ? "Move Up" : "Move Down",
+        super(up ? Messages.MoveItemUp : Messages.MoveItemDown,
               Activator.getDefault().getImageDescriptor(up ? "icons/up.gif" : "icons/down.gif"));
         this.operations_manager = operations_manager;
         this.model = model;
