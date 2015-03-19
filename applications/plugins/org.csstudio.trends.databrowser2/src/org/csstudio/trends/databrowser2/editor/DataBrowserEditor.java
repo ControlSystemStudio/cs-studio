@@ -92,7 +92,7 @@ public class DataBrowserEditor extends EditorPart
     private Model model;
 
     /** Listener to model that updates this editor*/
-	private ModelListener model_listener;
+    private ModelListener model_listener;
 
     /** GUI for the plot */
     private ModelBasedPlot plot;
@@ -112,9 +112,9 @@ public class DataBrowserEditor extends EditorPart
         final DataBrowserEditor editor;
         try
         {
-        	final IWorkbench workbench = PlatformUI.getWorkbench();
-        	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        	final IWorkbenchPage page = window.getActivePage();
+            final IWorkbench workbench = PlatformUI.getWorkbench();
+            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            final IWorkbenchPage page = window.getActivePage();
             editor = (DataBrowserEditor) page.openEditor(input, ID);
         }
         catch (Exception ex)
@@ -170,28 +170,28 @@ public class DataBrowserEditor extends EditorPart
 
         if (input instanceof DataBrowserModelEditorInput)
         {   // Received model with input
-        	model = ((DataBrowserModelEditorInput)input).getModel();
-        	setInput(input);
+            model = ((DataBrowserModelEditorInput)input).getModel();
+            setInput(input);
         }
         else
         {   // Create new model
-	        model = new Model();
-	        setInput(new DataBrowserModelEditorInput(input, model));
+            model = new Model();
+            setInput(new DataBrowserModelEditorInput(input, model));
 
-			// Load model content from file
-	        try
-	        (
+            // Load model content from file
+            try
+            (
                 final InputStream stream = SingleSourcePlugin.getResourceHelper().getInputStream(input);
             )
-	        {
-        		if (stream != null)
-        		    new XMLPersistence().load(model, stream);
-			}
-	        catch (Exception ex)
-	        {
-				throw new PartInitException(NLS.bind(
-						Messages.ConfigFileErrorFmt, input.getName()), ex);
-			}
+            {
+                if (stream != null)
+                    new XMLPersistence().load(model, stream);
+            }
+            catch (Exception ex)
+            {
+                throw new PartInitException(NLS.bind(
+                        Messages.ConfigFileErrorFmt, input.getName()), ex);
+            }
         }
 
         // Update the editor's name from "Data Browser" to title of model or file name
@@ -206,6 +206,10 @@ public class DataBrowserEditor extends EditorPart
                 is_dirty = save_changes;
                 firePropertyChange(IEditorPart.PROP_DIRTY);
             }
+
+            @Override
+            public void changedTitle()
+            {   setDirty(true);   }
 
             @Override
             public void changedTiming()
@@ -255,9 +259,9 @@ public class DataBrowserEditor extends EditorPart
             public void scrollEnabled(final boolean scroll_enabled)
             {   setDirty(true);   }
 
-			@Override
-			public void changedAnnotations()
-			{   setDirty(true);   }
+            @Override
+            public void changedAnnotations()
+            {   setDirty(true);   }
         };
         model.addListener(model_listener);
     }
@@ -364,18 +368,18 @@ public class DataBrowserEditor extends EditorPart
         manager.add(new Separator());
         manager.add(new AddPVAction(op_manager, shell, model, false));
         manager.add(new AddPVAction(op_manager, shell, model, true));
-		final boolean is_rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
+        final boolean is_rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
         if (is_rcp)
         {
-	        try
-	        {
-	            for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
-	                    manager.add(imp);
-	        }
-	        catch (Exception ex)
-	        {
-	            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
-	        }
+            try
+            {
+                for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
+                        manager.add(imp);
+            }
+            catch (Exception ex)
+            {
+                ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
+            }
         }
         manager.add(new RemoveUnusedAxesAction(op_manager, model));
         manager.add(new RefreshAction(controller));
@@ -383,45 +387,45 @@ public class DataBrowserEditor extends EditorPart
 
         if (is_rcp  ||  ! Preferences.hidePropertiesView())
             manager.add(new OpenViewAction(
-            			IPageLayout.ID_PROP_SHEET,
-            			Messages.OpenPropertiesView,
-            			activator.getImageDescriptor("icons/prop_ps.gif")));
+                        IPageLayout.ID_PROP_SHEET,
+                        Messages.OpenPropertiesView,
+                        activator.getImageDescriptor("icons/prop_ps.gif")));
         if (is_rcp  ||  ! Preferences.hideSearchView())
             manager.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
                     activator.getImageDescriptor("icons/search.gif")));
         if (is_rcp)
             manager.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
                     activator.getImageDescriptor("icons/export.png")));
-		manager.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
-				activator.getImageDescriptor("icons/inspect.gif")));
+        manager.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
+                activator.getImageDescriptor("icons/inspect.gif")));
 
-		manager.add(new OpenPerspectiveAction(activator
-				.getImageDescriptor("icons/databrowser.png"),
-				Messages.OpenDataBrowserPerspective, Perspective.ID));
-		manager.add(new OpenViewAction(WaveformView.ID,
-				Messages.OpenWaveformView, activator
-						.getImageDescriptor("icons/wavesample.gif")));
+        manager.add(new OpenPerspectiveAction(activator
+                .getImageDescriptor("icons/databrowser.png"),
+                Messages.OpenDataBrowserPerspective, Perspective.ID));
+        manager.add(new OpenViewAction(WaveformView.ID,
+                Messages.OpenWaveformView, activator
+                        .getImageDescriptor("icons/wavesample.gif")));
 
-		manager.add(new Separator());
-		manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        manager.add(new Separator());
+        manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 
-		if (is_rcp)
-		{
-			manager.add(new Separator());
-			manager.add(plot.getPlot().getSnapshotAction());
-			if (EMailSender.isEmailSupported())
-				manager.add(new SendEMailAction(shell, plot.getPlot()));
-			manager.add(new PrintAction(shell, plot.getPlot()));
-			if (SendToElogAction.isElogAvailable())
-			    manager.add(new SendToElogAction(shell, plot.getPlot()));
-		}
+        if (is_rcp)
+        {
+            manager.add(new Separator());
+            manager.add(plot.getPlot().getSnapshotAction());
+            if (EMailSender.isEmailSupported())
+                manager.add(new SendEMailAction(shell, plot.getPlot()));
+            manager.add(new PrintAction(shell, plot.getPlot()));
+            if (SendToElogAction.isElogAvailable())
+                manager.add(new SendToElogAction(shell, plot.getPlot()));
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void dispose()
     {
-    	model.removeListener(model_listener);
+        model.removeListener(model_listener);
         if (controller != null)
         {
             controller.stop();
