@@ -545,7 +545,7 @@ public class SchemaVerifier {
                         if (!isFontColorPropertyDefined(modelVal)) {
                             numberOfRWFailures++;
                             failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                    model.getName(), p, null, modelVal, rule, false, false, null,lineNumber));
+                                    model.getName(), p, orgVal, modelVal, rule, false, true, null,lineNumber,true));
                         }
                     }
                     
@@ -582,7 +582,7 @@ public class SchemaVerifier {
                                 //the failure is always critical, except for fonts and colors if a predefined value was used
                                 boolean critical = !isPropertyDefined(modelVal);
                                 failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                    model.getName(), p, orgVal, modelVal, rule, critical,true, null, lineNumber));
+                                    model.getName(), p, orgVal, modelVal, rule, critical,true, null, lineNumber,false));
                                 if (critical) {
                                     numberOfCriticalROFailures++;
                                 } else {
@@ -591,7 +591,8 @@ public class SchemaVerifier {
                             } else if (!isFontColorPropertyDefined(modelVal)) {
                                 numberOfMajorROFailures++;
                                 failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                        model.getName(), p, null, modelVal, rule, false, false, null, lineNumber));
+                                        model.getName(), p, orgVal, modelVal, rule, false, true, null, 
+                                        lineNumber,true));
                             }
                         } else if (rule == ValidationRule.WRITE) {
                             //write properties must be different and non null
@@ -599,12 +600,13 @@ public class SchemaVerifier {
                             if (modelVal == null || String.valueOf(modelVal).trim().isEmpty()) {
                                 //simple write properties are never critical
                                 failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                    model.getName(), p, orgVal, modelVal, rule, false, false, null, lineNumber)); 
+                                    model.getName(), p, orgVal, modelVal, rule, false, false, null, lineNumber, false)); 
                                 numberOfWRITEFailures++;
                             } else if (!isFontColorPropertyDefined(modelVal)) {
                                 numberOfWRITEFailures++;
                                 failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                        model.getName(), p, null, modelVal, rule, false, false, null, lineNumber));
+                                        model.getName(), p, orgVal, modelVal, rule, false, true, null, 
+                                        lineNumber, true));
                             }
                         }
                     }
@@ -715,7 +717,7 @@ public class SchemaVerifier {
                 f = new ValidationFailure(pathToFile, model.getWUID(), model.getTypeID(), model.getName(), 
                         AbstractWidgetModel.PROP_ACTIONS, originalInput, modelInput, rule, true, true,
                         AbstractWidgetModel.PROP_ACTIONS + ": settings of a READ-ONLY property have been changed", 
-                        model.getLineNumber());
+                        model.getLineNumber(),false);
             }
             f.addSubFailure(ff);
         }
@@ -758,7 +760,7 @@ public class SchemaVerifier {
                 numberOfRWFailures++;
                 ValidationFailure f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,orgVal,modelVal,rule,false,true,
-                        property +": unneeded sub property present", lineNumber);
+                        property +": unneeded sub property present", lineNumber, false);
                 f.addSubFailure(ffs);
                 return f;
             }
@@ -790,14 +792,14 @@ public class SchemaVerifier {
                 //if not all the originals are defined, it is a critical failure
                 f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,original,model,rule,true,true,
-                        property +": predefined items are missing in a WRITE property", lineNumber);
+                        property +": predefined items are missing in a WRITE property", lineNumber,false);
                 f.addSubFailure(ff);
             } else if (model.isEmpty()) {
                 numberOfWRITEFailures++;
                 //if nothing was changed at all, it is a non critical failure
                 f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,orgVal,modelVal,rule,false,false,
-                        property +": nothing has been defined for a WRITE property", lineNumber);                
+                        property +": nothing has been defined for a WRITE property", lineNumber,false);                
             }     
             List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName,
                     property, model, rule, lineNumber,
@@ -807,7 +809,7 @@ public class SchemaVerifier {
                     numberOfWRITEFailures++;
                     f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                             property,orgVal,modelVal,rule,false,true,
-                            property +": unneeded sub property present", lineNumber);
+                            property +": unneeded sub property present", lineNumber,false);
                 }
                 f.addSubFailure(ffs);
             }
@@ -852,7 +854,7 @@ public class SchemaVerifier {
                 numberOfCriticalROFailures++;
                 ValidationFailure f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,orgVal,modelVal,rule,true,true,
-                        property + ": READ-ONLY property was changed", lineNumber);
+                        property + ": READ-ONLY property was changed", lineNumber,false);
                 f.addSubFailure(ff);
                 return f;
             }

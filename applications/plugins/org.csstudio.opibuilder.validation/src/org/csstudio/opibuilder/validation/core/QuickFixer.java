@@ -151,7 +151,7 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                         }
                         for (IMarker m : markers) {
                             //refresh all changed files
-                            m.getResource().refreshLocal(0, new NullProgressMonitor());
+                            m.getResource().refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
                         }
                         //revalidated all changed files to get rid of the fixed validations
                         revalidate(markers, monitor);

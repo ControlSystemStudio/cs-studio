@@ -62,7 +62,7 @@ public class SchemaFixer {
             fixFailure:
             if (f instanceof SubValidationFailure) {
                 //this is a sub failure in action, script or rule
-                if (((SubValidationFailure)f).isFixed()) return;
+                if (((SubValidationFailure)f).isFixed()) continue;
                 //if the parent is being fixed, do not fix this one, it will be fixed by the parent
                 ValidationFailure parent = ((SubValidationFailure) f).getParent();
                 for (ValidationFailure ff : failureToFix) {
@@ -90,6 +90,11 @@ public class SchemaFixer {
                     //in this case add the missing ones to the model
                     Object value = model.getPropertyValue(f.getProperty());
                     addToValue(value, f.getExpectedValue());
+                } else if (f.getRule() == ValidationRule.RW) {
+                    //if this is color
+                    if (f.isUsingUndefinedValue()) {
+                        model.setPropertyValue(f.getProperty(), f.getExpectedValue());
+                    }
                 }
                 if (f.hasSubFailures()) {
                     SubValidationFailure[] subs = f.getSubFailures();
