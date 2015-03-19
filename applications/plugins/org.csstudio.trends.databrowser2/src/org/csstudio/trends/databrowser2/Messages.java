@@ -254,6 +254,8 @@ public class Messages extends NLS
     public static String StatusColumn;
     public static String TimeAxis;
     public static String TimeColumn;
+    public static String TitleFontLbl;
+    public static String TitleFontTT;
     public static String TitleLbl;
     public static String TitleTT;
     public static String TraceDisplayName;

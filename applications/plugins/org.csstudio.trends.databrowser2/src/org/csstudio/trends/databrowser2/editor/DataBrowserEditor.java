@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -205,12 +205,6 @@ public class DataBrowserEditor extends EditorPart
             {
                 is_dirty = save_changes;
                 firePropertyChange(IEditorPart.PROP_DIRTY);
-            }
-
-            @Override
-            public void changedTitle()
-            {
-                setPartName(getEditorInput().getName());
             }
 
             @Override

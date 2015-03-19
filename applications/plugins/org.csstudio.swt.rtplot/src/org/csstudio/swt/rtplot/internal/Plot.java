@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Oak Ridge National Laboratory.
+ * Copyright (c) 2014-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     final private SWTMediaPool media;
 
-	/** Display */
+    /** Display */
     final private Display display;
 
     /** Background color */
@@ -80,7 +80,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     /** Font to use for, well, title */
     private volatile Font title_font;
-    
+
     /** Font to use for labels */
     private volatile Font label_font;
 
@@ -232,9 +232,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             @Override
             public void controlResized(final ControlEvent e)
             {
-            	area = getClientArea();
-            	need_layout.set(true);
-            	requestUpdate();
+                area = getClientArea();
+                need_layout.set(true);
+                requestUpdate();
             }
         });
         addPaintListener(this);
@@ -275,19 +275,21 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         title_part.setName(title.orElse(""));
     }
-    
+
     /** @param font Font to use for title */
     public void setTitleFont(final FontData font)
     {
         title_font = media.get(font);
         need_layout.set(true);
+        requestUpdate();
     }
-    
+
     /** @param font Font to use for labels */
     public void setLabelFont(final FontData font)
     {
         label_font = media.get(font);
         need_layout.set(true);
+        requestUpdate();
     }
 
     /** @param font Font to use for scale */
@@ -295,6 +297,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         scale_font = media.get(font);
         need_layout.set(true);
+        requestUpdate();
     }
 
     /** @return X/Time axis */
@@ -518,13 +521,13 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Compute layout of plot components */
     private void computeLayout(final GC gc, final Rectangle bounds)
     {
-    	final int title_height = title_part.getDesiredHeight(gc, title_font);
-        
-    	title_part.setBounds(0, 0, bounds.width, title_height);
-    	
+        final int title_height = title_part.getDesiredHeight(gc, title_font);
+
+        title_part.setBounds(0, 0, bounds.width, title_height);
+
         final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc, label_font, scale_font);
         final int y_axis_height = bounds.height - title_height - x_axis_height;
-        
+
         // Ask each Y Axis for its widths, which changes based on number of labels
         // and how they are laid out
         int total_left_axes_width = 0, total_right_axes_width = 0;
@@ -575,7 +578,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
         gc.setBackground(media.get(background));
         gc.fillRectangle(area_copy);
-        
+
         title_part.paint(gc, media, title_font);
 
         // Fetch x_axis transformation and use that to paint all traces,

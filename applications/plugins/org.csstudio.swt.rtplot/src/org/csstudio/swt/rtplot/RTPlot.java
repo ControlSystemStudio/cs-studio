@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Oak Ridge National Laboratory.
+ * Copyright (c) 2014-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,7 +123,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     {
         return snapshot;
     }
-    
+
     /** @param color Background color */
     public void setBackground(final RGB color)
     {
@@ -133,15 +133,15 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     /** @param title Title text */
     public void setTitle(final Optional<String> title)
     {
-		plot.setTitle(title);
+        plot.setTitle(title);
     }
-    
+
     /** @param font Font to use for title */
     public void setTitleFont(final FontData font)
     {
         plot.setTitleFont(Objects.requireNonNull(font));
     }
-    
+
     /** @param font Font to use for labels */
     public void setLabelFont(final FontData font)
     {
