@@ -426,8 +426,8 @@ public class Controller
             @Override
             public void itemAdded(final ModelItem item)
             {
-                if (item.isVisible())
-                    plot.addTrace(item);
+            	// Item may be added in 'middle' of existing traces
+            	createPlotTraces();
                 // Get archived data for new item (NOP for non-PVs)
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
             }

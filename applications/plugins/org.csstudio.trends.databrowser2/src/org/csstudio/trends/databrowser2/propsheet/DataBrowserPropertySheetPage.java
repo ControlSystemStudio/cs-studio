@@ -449,12 +449,16 @@ public class DataBrowserPropertySheetPage extends Page
             @Override
             public void menuAboutToShow(IMenuManager manager)
             {
+            	final PVItem pvs[] = getSelectedPVs();
                 menu.add(add_pv);
                 menu.add(add_formula);
                 menu.add(edit_pv);
+                if (pvs.length == 1)
+                	menu.add(new MoveItemAction(operations_manager, model, pvs[0], true));
                 menu.add(delete_pv);
+                if (pvs.length == 1)
+                	menu.add(new MoveItemAction(operations_manager, model, pvs[0], false));
                 menu.add(new RemoveUnusedAxesAction(operations_manager, model));
-                final PVItem pvs[] = getSelectedPVs();
                 if (pvs.length > 0) {
 	                menu.add(new AddArchiveAction(operations_manager, shell, pvs));
 	                menu.add(new UseDefaultArchivesAction(operations_manager, pvs));

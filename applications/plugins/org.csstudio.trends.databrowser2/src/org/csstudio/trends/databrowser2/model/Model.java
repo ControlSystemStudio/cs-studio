@@ -441,7 +441,7 @@ public class Model
      *  If the model and thus item are 'running',
      *  the item will be 'stopped'.
      *  @param item
-     *  @throws RuntimeException if item is already in model
+     *  @throws RuntimeException if item not in model
      */
     public void removeItem(final ModelItem item)
     {
@@ -466,6 +466,40 @@ public class Model
             listener.itemRemoved(item);
     }
 
+    /** Move item in model.
+     *  <p>
+     *  @param item
+     *  @param up Up? Otherwise down
+     *  @throws RuntimeException if item null or not in model
+     */
+    public void moveItem(final ModelItem item, final boolean up)
+    {
+        final int pos = items.indexOf(Objects.requireNonNull(item));
+        if (pos < 0)
+        	throw new RuntimeException("Unknown item " + item.getName());
+        if (up)
+        {
+        	if (pos == 0)
+        		return;
+        	items.remove(pos);
+        	items.add(pos-1, item);
+        }
+        else
+        {	// Move down
+        	if (pos >= items.size() -1)
+        		return;
+        	items.remove(pos);
+        	items.add(pos+1, item);
+        }
+        
+        // Notify listeners of moved item
+        for (ModelListener listener : listeners)
+        {
+            listener.itemRemoved(item);
+            listener.itemAdded(item);
+        }
+    }
+    
     /** @return Period in seconds for scrolling or refreshing */
     public double getUpdatePeriod()
     {
