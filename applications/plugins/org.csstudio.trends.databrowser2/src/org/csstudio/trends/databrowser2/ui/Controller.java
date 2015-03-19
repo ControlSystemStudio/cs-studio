@@ -441,10 +441,11 @@ public class Controller
             @Override
             public void changedItemVisibility(final ModelItem item)
             {   // Add/remove from plot, but don't need to get archived data
+            	// When made visible, note that item could be in 'middle'
+            	// of existing traces, so need to re-create all
                 if (item.isVisible())
-                    // itemAdded(item) would also get archived data
-                    plot.addTrace(item);
-                else
+                	createPlotTraces();
+                else // To hide, simply remove
                     plot.removeTrace(item);
             }
 
