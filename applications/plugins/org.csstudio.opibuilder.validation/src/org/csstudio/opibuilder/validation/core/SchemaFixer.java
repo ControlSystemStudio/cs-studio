@@ -72,13 +72,13 @@ public class SchemaFixer {
                 }
                 
                 //fix the sub validation failure
-                AbstractWidgetModel model = findWidget(displayModel, parent, true);
+                AbstractWidgetModel model = findWidget(displayModel, parent);
                 if (model == null) {
                     continue;
                 }
                 fixSubValidation((SubValidationFailure)f,model);
             } else {
-                AbstractWidgetModel model = findWidget(displayModel, f, true);
+                AbstractWidgetModel model = findWidget(displayModel, f);
                 if (model == null) {
                     continue;
                 }
@@ -160,11 +160,18 @@ public class SchemaFixer {
      * 
      * @param parent the parent to look for the widget model in
      * @param failure the failure to match
-     * @param useWuid if true the wuid of the model has to match the wuid of the failure
      * @return the widget model if found, or null if match was not found
      */
-    private static AbstractWidgetModel findWidget(AbstractContainerModel parent, ValidationFailure failure, 
-            boolean useWuid) {
+    private static AbstractWidgetModel findWidget(AbstractContainerModel parent, ValidationFailure failure) {
+        AbstractWidgetModel model = findWidgetInternal(parent,failure,true);
+        if (model == null) {
+            model = findWidgetInternal(parent, failure, false);
+        }
+        return model;
+    }
+        
+    private static AbstractWidgetModel findWidgetInternal(AbstractContainerModel parent, ValidationFailure failure, 
+                boolean useWuid) {
         String widgetType;
         String widgetName;
         boolean skipCheck = false;
@@ -185,13 +192,10 @@ public class SchemaFixer {
                 }
             }
             if (model instanceof AbstractContainerModel) {
-                AbstractWidgetModel result = findWidget((AbstractContainerModel)model, failure, useWuid);
+                AbstractWidgetModel result = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
                 if (result != null) return result;
             }
         }  
-        if (useWuid) {
-            return findWidget(parent, failure, false);
-        }
         return null;
     }
     
