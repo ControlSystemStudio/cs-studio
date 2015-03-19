@@ -10,6 +10,9 @@ public class Opi_activeLogMeterClass extends Opi_activeMeterClass {
 			System.out.println("Adding an exp");
 			new OpiBoolean(widgetContext, "log_scale", true);
 		}
+		new OpiBoolean(widgetContext, "show_value_label", false);
+		new OpiBoolean(widgetContext, "show_markers", false);
+		new OpiBoolean(widgetContext, "show_minor_ticks", false);
 	}
 
 }
