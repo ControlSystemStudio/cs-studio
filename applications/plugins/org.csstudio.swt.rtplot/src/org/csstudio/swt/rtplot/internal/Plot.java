@@ -318,6 +318,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         traces.add(trace);
         y_axes.get(trace.getYAxis()).addTrace(trace);
+        need_layout.set(true);
+        requestUpdate();
     }
 
     /** @param trace Trace to move from its current Y axis
@@ -345,6 +347,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         Objects.requireNonNull(trace);
         traces.remove(trace);
         y_axes.get(trace.getYAxis()).removeTrace(trace);
+        need_layout.set(true);
+        requestUpdate();
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */
