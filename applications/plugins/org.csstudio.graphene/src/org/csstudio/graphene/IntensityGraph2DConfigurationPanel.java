@@ -14,8 +14,6 @@ import org.eclipse.swt.widgets.Label;
 import org.epics.graphene.NumberColorMap;
 import org.epics.graphene.NumberColorMaps;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 public class IntensityGraph2DConfigurationPanel extends
 		AbstractGraph2DConfigurationPanel {
