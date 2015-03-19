@@ -126,22 +126,34 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     /** @param color Background color */
     public void setBackground(final RGB color)
     {
-        Objects.requireNonNull(color);
-        plot.setBackground(color);
+        plot.setBackground(Objects.requireNonNull(color));
     }
 
+    /** @param title Title text, may be null */
+    public void setTitle(final String title)
+    {
+    	if (title == null)
+    		plot.setTitle("");
+    	else
+    		plot.setTitle(title);
+    }
+    
+    /** @param font Font to use for title */
+    public void setTitleFont(final FontData font)
+    {
+        plot.setTitleFont(Objects.requireNonNull(font));
+    }
+    
     /** @param font Font to use for labels */
     public void setLabelFont(final FontData font)
     {
-        Objects.requireNonNull(font);
-        plot.setLabelFont(font);
+        plot.setLabelFont(Objects.requireNonNull(font));
     }
 
     /** @param font  Font to use for scale */
     public void setScaleFont(final FontData font)
     {
-        Objects.requireNonNull(font);
-        plot.setScaleFont(font);
+        plot.setScaleFont(Objects.requireNonNull(font));
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */

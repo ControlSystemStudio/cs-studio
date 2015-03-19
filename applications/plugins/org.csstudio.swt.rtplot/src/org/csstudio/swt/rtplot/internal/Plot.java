@@ -78,6 +78,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Background color */
     private volatile RGB background = new RGB(255, 255, 255);
 
+    /** Font to use for, well, title */
+    private volatile Font title_font;
+    
     /** Font to use for labels */
     private volatile Font label_font;
 
@@ -104,6 +107,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     final private UpdateThrottle update_throttle;
 
+    final private TitlePart title_part;
     final private List<Trace<XTYPE>> traces = new CopyOnWriteArrayList<>();
     final private AxisPart<XTYPE> x_axis;
     final private List<YAxisImpl<XTYPE>> y_axes = new CopyOnWriteArrayList<>();
@@ -159,7 +163,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             requestUpdate();
         }
     };
-    /** Listener to Y Axis and plot area {@link PlotPart}s */
+    /** Listener to Title, Y Axis and plot area {@link PlotPart}s */
     final PlotPartListener plot_part_listener = new PlotPartListener()
     {
         @Override
@@ -188,6 +192,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         super(parent, SWT.NO_BACKGROUND);
 
+        title_font = parent.getFont();
         label_font = parent.getFont();
         scale_font = parent.getFont();
 
@@ -208,6 +213,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             throw new IllegalArgumentException("Cannot handle " + type.getName());
 
         addYAxis("Value 1");
+        title_part = new TitlePart("", plot_part_listener);
         plot_area = new PlotPart("main", plot_part_listener);
 
         setMouseMode(MouseMode.PAN);
@@ -264,6 +270,19 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         background = color;
     }
 
+    /** @param title Title */
+    public void setTitle(final String title)
+    {
+        title_part.setName(title);
+    }
+    
+    /** @param font Font to use for title */
+    public void setTitleFont(final FontData font)
+    {
+        title_font = media.get(font);
+        need_layout.set(true);
+    }
+    
     /** @param font Font to use for labels */
     public void setLabelFont(final FontData font)
     {
@@ -499,9 +518,13 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Compute layout of plot components */
     private void computeLayout(final GC gc, final Rectangle bounds)
     {
+    	final int title_height = title_part.getDesiredHeight(gc, title_font);
+        
+    	title_part.setBounds(0, 0, bounds.width, title_height);
+    	
         final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc, label_font, scale_font);
-        final int y_axis_height = bounds.height - x_axis_height;
-
+        final int y_axis_height = bounds.height - title_height - x_axis_height;
+        
         // Ask each Y Axis for its widths, which changes based on number of labels
         // and how they are laid out
         int total_left_axes_width = 0, total_right_axes_width = 0;
@@ -512,7 +535,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         for (YAxisImpl<XTYPE> axis : save_copy)
             if (! axis.isOnRight())
             {
-                final Rectangle axis_region = new Rectangle(total_left_axes_width, 0, plot_width, y_axis_height);
+                final Rectangle axis_region = new Rectangle(total_left_axes_width, title_height, plot_width, y_axis_height);
                 axis_region.width = axis.getDesiredPixelSize(axis_region, gc, label_font, scale_font);
                 axis.setBounds(axis_region);
                 total_left_axes_width += axis_region.width;
@@ -522,7 +545,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         for (YAxisImpl<XTYPE> axis : save_copy)
             if (axis.isOnRight())
             {
-                final Rectangle axis_region = new Rectangle(total_left_axes_width, 0, plot_width, y_axis_height);
+                final Rectangle axis_region = new Rectangle(total_left_axes_width, title_height, plot_width, y_axis_height);
                 axis_region.width = axis.getDesiredPixelSize(axis_region, gc, label_font, scale_font);
                 total_right_axes_width += axis_region.width;
                 axis_region.x = bounds.width - total_right_axes_width;
@@ -530,9 +553,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 plot_width -= axis_region.width;
             }
 
-        x_axis.setBounds(total_left_axes_width, y_axis_height, plot_width, x_axis_height);
+        x_axis.setBounds(total_left_axes_width, title_height+y_axis_height, plot_width, x_axis_height);
 
-        plot_area.setBounds(total_left_axes_width, 0, plot_width, y_axis_height);
+        plot_area.setBounds(total_left_axes_width, title_height, plot_width, y_axis_height);
     }
 
     /** Draw all components into image buffer */
@@ -552,6 +575,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
         gc.setBackground(media.get(background));
         gc.fillRectangle(area_copy);
+        
+        title_part.paint(gc, media, title_font);
 
         // Fetch x_axis transformation and use that to paint all traces,
         // because X Axis tends to change from scrolling

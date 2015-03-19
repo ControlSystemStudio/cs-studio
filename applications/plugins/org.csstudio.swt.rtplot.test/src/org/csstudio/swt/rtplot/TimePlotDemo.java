@@ -49,6 +49,8 @@ public class TimePlotDemo
         final RTTimePlot plot = new RTTimePlot(shell);
 
         final String font_name = shell.getFont().getFontData()[0].getName();
+        plot.setTitle("Title of Time Demo");
+        plot.setTitleFont(new FontData(font_name, 20, SWT.BOLD));
         plot.setLabelFont(new FontData(font_name, 12, SWT.BOLD));
         plot.setScaleFont(new FontData(font_name, 8, SWT.ITALIC));
 
