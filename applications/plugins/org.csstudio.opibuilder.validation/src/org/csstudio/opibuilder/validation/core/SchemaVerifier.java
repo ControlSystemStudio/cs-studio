@@ -521,13 +521,7 @@ public class SchemaVerifier {
                     }
                     if (rule == ValidationRule.RW) {
                         numberOfRWProperties++;
-                        //nothing to do in the case of read/write properties except for fonts and colors
-                        //TODO really, this seems to be identical to setting the color property to WRITE
-                        if (!isFontColorPropertyDefined(modelVal)) {
-                            numberOfRWFailures++;
-                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                    model.getName(), p, orgVal, modelVal, rule, false, true, null,lineNumber,true));
-                        }
+                        //nothing to do in the case of read/write properties except removal, but that is handled below
                     }
                     
                     //actions, rules and scripts are a bit nasty
@@ -647,7 +641,9 @@ public class SchemaVerifier {
         //if values are identical, return true
         if (Objects.equals(modelVal, orgVal)) {
             return true;
-        }
+        } else if (String.valueOf(modelVal).equals(String.valueOf(orgVal))) {
+            return true;
+        } 
         String[] acceptableValues = getValueFromMap(widgetType, propertyName,
                 additionalAcceptableValues, patternsAdditionalAcceptableValues);
         //if there are no additional acceptable values, the value is not accepted
@@ -733,7 +729,6 @@ public class SchemaVerifier {
             Function<T,String> naming) {
                     
         if (rule == ValidationRule.RW) {
-            numberOfRWProperties++;     
             List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName,
                     property, model, rule, lineNumber,
                     subPropertyTagger, subPropDescriptor, messageGenerator, naming);

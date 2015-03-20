@@ -26,6 +26,9 @@ import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Display;
 
@@ -108,9 +111,15 @@ public class SchemaFixer {
             }
         }
         
-        try (FileOutputStream output = new FileOutputStream(path.toFile())) {
-            XMLUtil.widgetToOutputStream(displayModel, output, true);
-        }        
+        IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path, false);
+        if (r!= null && r instanceof IFile) {
+            IFile file = (IFile) r;
+            if (file.exists()) {
+                try (FileOutputStream output = new FileOutputStream(file.getLocation().toFile())) {
+                    XMLUtil.widgetToOutputStream(displayModel, output, true);
+                }              
+            }
+        }    
     }
     
     /**
