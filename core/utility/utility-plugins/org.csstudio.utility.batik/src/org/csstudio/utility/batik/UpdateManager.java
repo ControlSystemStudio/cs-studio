@@ -12,6 +12,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Document;
 
 /**
+ * Extension of standard {@link UpdateManager} which allows to update the root
+ * node and filters repaints.
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class UpdateManager extends org.apache.batik.bridge.UpdateManager {

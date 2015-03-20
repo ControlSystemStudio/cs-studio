@@ -33,8 +33,9 @@ import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.bridge.svg12.SVG12BridgeContext;
-import org.apache.batik.dom.GenericCDATASection;
-import org.apache.batik.dom.GenericText;
+import org.apache.batik.css.engine.CSSStyleSheetNode;
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGStylableElement;
@@ -48,8 +49,10 @@ import org.apache.batik.gvt.renderer.ImageRendererFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.commons.lang.time.DateUtils;
 import org.csstudio.java.thread.ExecutionService;
+import org.csstudio.utility.batik.util.ICSSHandler;
+import org.csstudio.utility.batik.util.SVGStylableElementCSSHandler;
+import org.csstudio.utility.batik.util.StyleSheetCSSHandler;
 import org.eclipse.swt.graphics.Color;
-import org.w3c.dom.CharacterData;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -59,6 +62,7 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
 /**
+ * {@link SVGDocument} handler. Handles render and animation of SVG files.
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class SVGHandler {
@@ -157,8 +161,8 @@ public class SVGHandler {
 		originalDimension = bridgeContext.getDocumentSize();
 
 		svgDocument = (SVGDocument) createWrapper(originalSVGDocument);
-		buildElementsToUpdateList(svgDocument);
-		updateMatrix();
+		builder.build(bridgeContext, svgDocument);
+		buildElementsToUpdateList(bridgeContext, svgDocument);
 		if (isDynamicDocument) {
 			updateManager = new UpdateManager(bridgeContext, gvtRoot, svgDocument);
 			updateManager.addUpdateManagerListener(listener);
@@ -475,6 +479,9 @@ public class SVGHandler {
 	// Rendering methods
 	// //////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return SVG static image.
+	 */
 	public BufferedImage getOffScreen() {
 		if (disposed) {
 			return null;
@@ -630,40 +637,38 @@ public class SVGHandler {
 	// Change color & matrix private methods
 	// //////////////////////////////////////////////////////////////////////
 
-	private List<AbstractNodeWrapper> elementsToUpdate = new ArrayList<AbstractNodeWrapper>();
+	private List<ICSSHandler> elementsToUpdate = new ArrayList<ICSSHandler>();
 
 	private void changeColor(Color colorToChange, Color newColor) {
-		Iterator<AbstractNodeWrapper> it = elementsToUpdate.iterator();
+		Iterator<ICSSHandler> it = elementsToUpdate.iterator();
 		while (it.hasNext()) {
-			it.next().update(colorToChange, newColor);
+			it.next().updateCSSColor(colorToChange, newColor);
 		}
+		((SVGOMDocument) svgDocument).clearViewCSS();
 	}
 
-	private void buildElementsToUpdateList(Document doc) {
+	private void buildElementsToUpdateList(BridgeContext ctx, Document doc) {
 		if (doc == null) {
 			return;
 		}
 		elementsToUpdate.clear();
-		// Search for global style element <style type="text/css"></style>
-		NodeList styleList = doc.getElementsByTagName("style");
-		for (int i = 0; i < styleList.getLength(); i++) {
-			Element style = (Element) styleList.item(i);
-			NodeList childList = style.getChildNodes();
-			if (childList != null) {
-				for (int j = 0; j < childList.getLength(); j++) {
-					Node child = childList.item(j);
-					if (child instanceof GenericText
-							|| child instanceof GenericCDATASection) {
-						elementsToUpdate.add(new CDataWrapper(
-								(CharacterData) child));
-					}
-				}
+		SVGCSSEngine cssEngine = (SVGCSSEngine) ctx.getCSSEngineForElement(
+				doc.getDocumentElement());
+		if (cssEngine == null) {
+			return;
+		}
+		List<?> styleSheetsList = cssEngine.getStyleSheetNodes();
+		for (Object node : styleSheetsList) {
+			if (node instanceof CSSStyleSheetNode) {
+				CSSStyleSheetNode cssNode = (CSSStyleSheetNode) node;
+				StyleSheet styleSheet = cssNode.getCSSStyleSheet();
+				elementsToUpdate.add(new StyleSheetCSSHandler(cssEngine, styleSheet));
 			}
 		}
-		rBuidElementsList(doc.getDocumentElement());
+		rBuidElementsList(cssEngine, doc.getDocumentElement());
 	}
 
-	private void rBuidElementsList(Element elmt) {
+	private void rBuidElementsList(SVGCSSEngine cssEngine, Element elmt) {
 		if (elmt == null) {
 			return;
 		}
@@ -672,12 +677,13 @@ public class SVGHandler {
 			for (int i = 0; i < styleList.getLength(); i++) {
 				Node child = styleList.item(i);
 				if (child instanceof SVGStylableElement) {
-					rBuidElementsList((Element) child);
+					rBuidElementsList(cssEngine, (Element) child);
 				}
 			}
 		}
 		if (elmt instanceof SVGStylableElement) {
-			elementsToUpdate.add(new ElementWrapper(elmt));
+			elementsToUpdate.add(new SVGStylableElementCSSHandler(cssEngine,
+					(SVGStylableElement) elmt));
 		}
 	}
 
@@ -698,6 +704,7 @@ public class SVGHandler {
 		Node copiedRoot = newDocument.importNode(doc.getDocumentElement(), true);
 		mainGraphicNode.appendChild(copiedRoot);
 		svgRootNode.appendChild(mainGraphicNode);
+		updateMatrix();
 		return newDocument;
 	}
 
