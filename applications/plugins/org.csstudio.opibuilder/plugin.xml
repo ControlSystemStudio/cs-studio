@@ -42,7 +42,7 @@
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.ShellLauncher"
             launcher="org.csstudio.opibuilder.runmode.ShellLauncher"
-            name="OPI Display (New Window)">
+            name="OPI Display (Standalone Window)">
       </editor>
    </extension>
    <extension
