@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
 <plugin>
 
    <extension
@@ -8,13 +7,13 @@
             name="CSS"
             id="org.csstudio">
       </category>
-      <view
-            name="Clock"
+      <e4view
+            name="%Clock"
             icon="icons/clock.png"
             category="org.csstudio"
             class="org.csstudio.utility.clock.ClockView"
-            id="org.csstudio.utility.clock.ClockView">
-      </view>
+            id="org.csstudio.utility.clock.view">
+      </e4view>
    </extension>
    <extension
          point="org.eclipse.help.toc">
@@ -35,7 +34,7 @@
                tooltip="%ShowClock">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.utility.clock.ClockView">
+                  value="org.csstudio.utility.clock.view">
             </parameter>
          </command>
       </menuContribution>

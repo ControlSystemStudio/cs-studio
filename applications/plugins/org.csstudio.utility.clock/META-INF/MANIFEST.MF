@@ -1,12 +1,17 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Clock Plug-in
-Bundle-SymbolicName: org.csstudio.utility.clock; singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-SymbolicName: org.csstudio.utility.clock;singleton:=true
+Bundle-Version: 4.0.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.e4.core.di,
+ org.eclipse.e4.core.di.extensions,
+ org.eclipse.e4.ui.model.workbench,
+ org.eclipse.e4.ui.di
+Import-Package: javax.annotation;version="1.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen 
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Configurable Clock
