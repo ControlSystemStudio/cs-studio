@@ -100,7 +100,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	// Image color & paint
 	// ************************************************************
 
-	public synchronized void paintFigure(final Graphics gfx) {
+	public void paintFigure(final Graphics gfx) {
 		if (disposed || loadingImage || originalImageData == null)
 			return;
 		// Generate Data
@@ -231,7 +231,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	// Image size calculation
 	// ************************************************************
 
-	public synchronized void resizeImage() {
+	public void resizeImage() {
 		super.resizeImage();
 		if (refreshing && animated) {
 			stopAnimation();
@@ -239,7 +239,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 		}
 	}
 
-	public synchronized Dimension getAutoSizedDimension() {
+	public Dimension getAutoSizedDimension() {
 		// if (imgDimension == null)
 		// generateAnimatedData();
 		return imgDimension;
@@ -249,7 +249,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	// Animated images
 	// ************************************************************
 
-	public synchronized void setAnimationDisabled(final boolean stop) {
+	public void setAnimationDisabled(final boolean stop) {
 		super.setAnimationDisabled(stop);
 		if (stop) {
 			stopAnimation();
@@ -270,7 +270,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	 * Start animation. The request will be pended until figure painted for the
 	 * first time.
 	 */
-	public synchronized void startAnimation() {
+	public void startAnimation() {
 		startAnimationRequested = true;
 		repaint();
 	}
@@ -278,7 +278,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 	/**
 	 * stop the animation if the image is an animated GIF image.
 	 */
-	public synchronized void stopAnimation() {
+	public void stopAnimation() {
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(true);
 			scheduledFuture = null;
@@ -440,7 +440,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 		});
 	}
 
-	private synchronized void loadAnimatedImage(IJobErrorHandler errorHandler) {
+	private void loadAnimatedImage(IJobErrorHandler errorHandler) {
 		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
 
 			@Override

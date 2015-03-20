@@ -190,7 +190,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 		this.scale = newScale;
 	}
 
-	public synchronized void setAutoSize(final boolean autoSize) {
+	public void setAutoSize(final boolean autoSize) {
 		if (this.autoSize == autoSize)
 			return;
 		this.autoSize = autoSize;
@@ -198,7 +198,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 			resizeImage();
 	}
 
-	public synchronized void setStretch(final boolean newval) {
+	public void setStretch(final boolean newval) {
 		if (stretch == newval)
 			return;
 		stretch = newval;
@@ -209,7 +209,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 	// Image crop calculation
 	// ************************************************************
 
-	public synchronized void setLeftCrop(final int newval) {
+	public void setLeftCrop(final int newval) {
 		if (leftCrop == newval || newval < 0) {
 			return;
 		}
@@ -217,7 +217,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 		resizeImage();
 	}
 
-	public synchronized void setRightCrop(final int newval) {
+	public void setRightCrop(final int newval) {
 		if (rightCrop == newval || newval < 0) {
 			return;
 		}
@@ -225,7 +225,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 		resizeImage();
 	}
 
-	public synchronized void setBottomCrop(final int newval) {
+	public void setBottomCrop(final int newval) {
 		if (bottomCrop == newval || newval < 0) {
 			return;
 		}
@@ -233,7 +233,7 @@ public abstract class AbstractSymbolImage implements SymbolImage {
 		resizeImage();
 	}
 
-	public synchronized void setTopCrop(final int newval) {
+	public void setTopCrop(final int newval) {
 		if (topCrop == newval || newval < 0) {
 			return;
 		}

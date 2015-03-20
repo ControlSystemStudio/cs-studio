@@ -71,7 +71,6 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 	// Image color & paint
 	// ************************************************************
 
-	// public synchronized void paintFigure(final Graphics gfx) {
 	public void paintFigure(final Graphics gfx) {
 		if (disposed || loadingImage || originalImageData == null) {
 			return;
@@ -185,7 +184,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 		    resizeImage();
 	}
 
-	public synchronized Dimension getAutoSizedDimension() {
+	public Dimension getAutoSizedDimension() {
 		// if (imgDimension == null)
 		// generateSVGData();
 		return imgDimension;
@@ -195,7 +194,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 	// Animated images
 	// ************************************************************
 
-	public synchronized void setAnimationDisabled(final boolean stop) {
+	public void setAnimationDisabled(final boolean stop) {
 		super.setAnimationDisabled(stop);
 		if (svgHandler == null) {
 			return;
@@ -301,6 +300,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 					+ imagePath.toString();
 			svgDocument = factory.createDocument(uri, inputStream);
 			svgHandler = new SVGHandler((SVGDocument) svgDocument);
+			svgHandler.setAlignedToNearestSecond(alignedToNearestSecond);
 			initRenderingHints();
 			BufferedImage awtImage = svgHandler.getOffScreen();
 			if (awtImage != null) {
