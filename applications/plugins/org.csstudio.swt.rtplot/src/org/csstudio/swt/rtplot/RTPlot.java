@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Oak Ridge National Laboratory.
+ * Copyright (c) 2014-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.swt.rtplot.data.PlotDataItem;
@@ -122,26 +123,35 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     {
         return snapshot;
     }
-    
+
     /** @param color Background color */
     public void setBackground(final RGB color)
     {
-        Objects.requireNonNull(color);
-        plot.setBackground(color);
+        plot.setBackground(Objects.requireNonNull(color));
+    }
+
+    /** @param title Title text */
+    public void setTitle(final Optional<String> title)
+    {
+        plot.setTitle(title);
+    }
+
+    /** @param font Font to use for title */
+    public void setTitleFont(final FontData font)
+    {
+        plot.setTitleFont(Objects.requireNonNull(font));
     }
 
     /** @param font Font to use for labels */
     public void setLabelFont(final FontData font)
     {
-        Objects.requireNonNull(font);
-        plot.setLabelFont(font);
+        plot.setLabelFont(Objects.requireNonNull(font));
     }
 
     /** @param font  Font to use for scale */
     public void setScaleFont(final FontData font)
     {
-        Objects.requireNonNull(font);
-        plot.setScaleFont(font);
+        plot.setScaleFont(Objects.requireNonNull(font));
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */

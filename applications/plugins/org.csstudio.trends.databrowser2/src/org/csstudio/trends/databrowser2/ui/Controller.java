@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -198,7 +198,7 @@ public class Controller
             // Update 'iconized' state from shell
             shell.addShellListener(new ShellAdapter()
             {
-            	//Remove Override annotation, because this method does not exist in RAP
+                //Remove Override annotation, because this method does not exist in RAP
                 //@Override
                 public void shellIconified(ShellEvent e)
                 {
@@ -362,6 +362,12 @@ public class Controller
         model_listener = new ModelListenerAdapter()
         {
             @Override
+            public void changedTitle()
+            {
+                plot.getPlot().setTitle(model.getTitle());
+            }
+
+            @Override
             public void changedTiming()
             {
                 plot.getPlot().setScrollStep(model.getScrollStep());
@@ -373,6 +379,7 @@ public class Controller
             public void changedColorsOrFonts()
             {
                 plot.getPlot().setBackground(model.getPlotBackground());
+                plot.getPlot().setTitleFont(model.getTitleFont());
                 plot.getPlot().setLabelFont(model.getLabelFont());
                 plot.getPlot().setScaleFont(model.getScaleFont());
             }
@@ -426,8 +433,8 @@ public class Controller
             @Override
             public void itemAdded(final ModelItem item)
             {
-                if (item.isVisible())
-                    plot.addTrace(item);
+                // Item may be added in 'middle' of existing traces
+                createPlotTraces();
                 // Get archived data for new item (NOP for non-PVs)
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
             }
@@ -441,10 +448,11 @@ public class Controller
             @Override
             public void changedItemVisibility(final ModelItem item)
             {   // Add/remove from plot, but don't need to get archived data
+                // When made visible, note that item could be in 'middle'
+                // of existing traces, so need to re-create all
                 if (item.isVisible())
-                    // itemAdded(item) would also get archived data
-                    plot.addTrace(item);
-                else
+                    createPlotTraces();
+                else // To hide, simply remove
                     plot.removeTrace(item);
             }
 
@@ -507,8 +515,10 @@ public class Controller
 
         plot.getPlot().setBackground(model.getPlotBackground());
         plot.getPlot().getXAxis().setGridVisible(model.isGridVisible());
+        plot.getPlot().setTitleFont(model.getTitleFont());
         plot.getPlot().setLabelFont(model.getLabelFont());
         plot.getPlot().setScaleFont(model.getScaleFont());
+        plot.getPlot().setTitle(model.getTitle());
         plot.getPlot().setScrollStep(model.getScrollStep());
 
         final List<Trace<Instant>> traces = new ArrayList<>();
