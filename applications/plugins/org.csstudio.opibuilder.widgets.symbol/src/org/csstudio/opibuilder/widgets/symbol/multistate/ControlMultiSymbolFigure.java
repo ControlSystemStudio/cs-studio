@@ -216,6 +216,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 						"ERROR in loading symbol browser images:\n"
 								+ e.getMessage());
 			}
+		if (currentStateIndex < 0 || currentStateIndex >= statesStr.size()) return;
 		String currentState = statesStr.get(currentStateIndex);
 		symbolBrowser.setCurrentState(currentState);
 		symbolBrowser.initCurrentDisplay();

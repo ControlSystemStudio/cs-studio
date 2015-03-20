@@ -28,19 +28,15 @@ public class Opi_activePngClass extends OpiWidget {
 		super(con, r);
 		setTypeId(typeId);
 		setName(name);
-		setVersion(version);		
-		
+		setVersion(version);
+
 		if(r.getAttribute("file").isExistInEDL()){
 			String path = r.getFile();
-			int i = path.indexOf('.');
-			if(i==-1||i!=path.length()-4)
-				path = path+".png";
+			if (!path.toLowerCase().endsWith(".png")) {
+				path = path + ".png";
+			}
 			new OpiString(widgetContext, "image_file", path);
 		}
-
 		log.debug("Edm_activePngClass written.");
-
 	}
-	
-
 }

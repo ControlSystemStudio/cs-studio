@@ -9,6 +9,6 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.opibuilder</artifactId>
-  <version>4.0.102-SNAPSHOT</version>
+  <version>4.0.103-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

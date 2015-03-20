@@ -17,6 +17,9 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
+import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.simplepv.IPV;
@@ -68,8 +71,30 @@ public abstract class AbstractScriptStore implements IScriptStore{
 		if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){			
 			absoluteScriptPath = scriptData.getPath();
 			if(!absoluteScriptPath.isAbsolute()){
-				absoluteScriptPath = ResourceUtil.buildAbsolutePath(
-						editpart.getWidgetModel(), absoluteScriptPath);
+                // The following looked like this:
+                // absoluteScriptPath = ResourceUtil.buildAbsolutePath(
+                //        editpart.getWidgetModel(), absoluteScriptPath);
+                // .. but that doesn't work when the editpart is already a LinkingContainer.
+                // It would fetch the parent's DisplayModel, i.e. look for scripts where the container is used,
+                // instead of where it's defined.
+                //
+                // After updating buildAbsolutePath() to handle (editpart instanceof LinkingContainer) as below,
+                // the resolution of related displays failed again as in #977 because buildAbsolutePath() is
+                // called in many placed while reading the *.opi file, and it would now build a different widget tree.
+                //
+                // The following just fixes the relative script lookup from linking containers for #998,
+                // without disturbing any other code.
+                //
+                // TODO Understand & redo the whole widget model and its quirks for linking containers,
+                //      so all the recently added (.. instanceof ..Linking..) can be removed.
+                final AbstractWidgetModel model = editpart.getWidgetModel();
+                final DisplayModel root;
+                if (model instanceof AbstractLinkingContainerModel)
+                    root = ((AbstractLinkingContainerModel) model).getDisplayModel();
+                else
+                    root = model.getRootDisplayModel();
+                absoluteScriptPath = root.getOpiFilePath().removeLastSegments(1).append(absoluteScriptPath);
+                // ---
 				if(!ResourceUtil.isExsitingFile(absoluteScriptPath, true)){
 					//search from OPI search path
 					absoluteScriptPath = ResourceUtil.getFileOnSearchPath(scriptData.getPath(), true);

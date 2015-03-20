@@ -201,7 +201,9 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         // In run mode, stop the controller, which will stop the model
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
         {
-            controller.stop();
+            if (controller != null) {
+                controller.stop();
+            }
 
             final PVWriter<Object> safe_pv = pv.getAndSet(null);
             if (safe_pv != null)

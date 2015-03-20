@@ -17,7 +17,13 @@
             id="org.csstudio.logging.ui.LoggingConfiguration"
             name="Logging Configuration"
             restorable="false">
-      </view>
+     </view>
+     <view
+            class="org.csstudio.logging.ui.FXLogginConfiguration"
+            id="org.csstudio.logging.ui.FXLoggingConfiguration"
+            name="Logging Configuration"
+            restorable="true">
+     </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -31,9 +37,26 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.logging.ui.LoggingConfiguration">
+                  value="org.csstudio.logging.ui.FXLoggingConfiguration">
             </parameter>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.logging.ui.FXLoggingConfiguration">
+         <command
+               commandId="org.csstudio.logging.ui.RefreshLoggers"
+               icon="platform:/plugin/org.csstudio.logging.ui/icons/arrow-refresh-small.ico"
+               tooltip="Refresh the logger list">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.logging.ui.RefreshLoggers"
+            id="org.csstudio.logging.ui.RefreshLoggers"
+            name="Refresh">
+      </command>
    </extension>
 </plugin>

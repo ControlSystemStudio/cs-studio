@@ -10,6 +10,7 @@
   <packaging>pom</packaging>
   <modules>
   	<module>org.csstudio.core.platform.feature</module>
+  	<module>org.csstudio.core.platform.rap.feature</module>
   </modules>
     <build>
     <plugins>
@@ -24,6 +25,11 @@
             <goals>
               <goal>source-feature</goal>
             </goals>
+            <configuration>
+				<excludes>
+					<plugin id="org.csstudio.jre6.fragment" />
+				</excludes>
+			</configuration>
           </execution>
         </executions>
       </plugin>
