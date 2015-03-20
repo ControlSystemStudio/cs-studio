@@ -74,7 +74,7 @@ public class SubValidationFailure extends ValidationFailure {
             String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule, 
             boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber, boolean toRemove) {
         super(path, wuid, widgetType, widgetName, property, expected, actual, rule, 
-                isCritical, isFixable, forcedMessage, lineNumber);
+                isCritical, isFixable, forcedMessage, lineNumber,false);
         this.subPropertyTag = subPropertyTag;
         this.subPropertyDesc = subPropertyDesc;
         this.forcedMessage = forcedMessage;

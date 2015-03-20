@@ -94,7 +94,11 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     @Override
     public void setGridVisible(final boolean grid)
     {
+    	if (show_grid == grid)
+    		return;
         show_grid = grid;
+        requestLayout();
+        requestRefresh();
     }
 
     /** {@inheritDoc} */
@@ -109,7 +113,10 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     public void setVisible(final boolean visible)
     {
         if (this.visible.getAndSet(visible) != visible)
+        {
             requestLayout();
+            requestRefresh();
+        }
     }
 
     /** Called by {@link RTPlot} to determine layout.

@@ -26,6 +26,9 @@ import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Display;
 
@@ -62,7 +65,7 @@ public class SchemaFixer {
             fixFailure:
             if (f instanceof SubValidationFailure) {
                 //this is a sub failure in action, script or rule
-                if (((SubValidationFailure)f).isFixed()) return;
+                if (((SubValidationFailure)f).isFixed()) continue;
                 //if the parent is being fixed, do not fix this one, it will be fixed by the parent
                 ValidationFailure parent = ((SubValidationFailure) f).getParent();
                 for (ValidationFailure ff : failureToFix) {
@@ -72,13 +75,13 @@ public class SchemaFixer {
                 }
                 
                 //fix the sub validation failure
-                AbstractWidgetModel model = findWidget(displayModel, parent, true);
+                AbstractWidgetModel model = findWidget(displayModel, parent);
                 if (model == null) {
                     continue;
                 }
                 fixSubValidation((SubValidationFailure)f,model);
             } else {
-                AbstractWidgetModel model = findWidget(displayModel, f, true);
+                AbstractWidgetModel model = findWidget(displayModel, f);
                 if (model == null) {
                     continue;
                 }
@@ -90,6 +93,11 @@ public class SchemaFixer {
                     //in this case add the missing ones to the model
                     Object value = model.getPropertyValue(f.getProperty());
                     addToValue(value, f.getExpectedValue());
+                } else if (f.getRule() == ValidationRule.RW) {
+                    //if this is color
+                    if (f.isUsingUndefinedValue()) {
+                        model.setPropertyValue(f.getProperty(), f.getExpectedValue());
+                    }
                 }
                 if (f.hasSubFailures()) {
                     SubValidationFailure[] subs = f.getSubFailures();
@@ -103,9 +111,15 @@ public class SchemaFixer {
             }
         }
         
-        try (FileOutputStream output = new FileOutputStream(path.toFile())) {
-            XMLUtil.widgetToOutputStream(displayModel, output, true);
-        }        
+        IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path, false);
+        if (r!= null && r instanceof IFile) {
+            IFile file = (IFile) r;
+            if (file.exists()) {
+                try (FileOutputStream output = new FileOutputStream(file.getLocation().toFile())) {
+                    XMLUtil.widgetToOutputStream(displayModel, output, true);
+                }              
+            }
+        }    
     }
     
     /**
@@ -155,11 +169,18 @@ public class SchemaFixer {
      * 
      * @param parent the parent to look for the widget model in
      * @param failure the failure to match
-     * @param useWuid if true the wuid of the model has to match the wuid of the failure
      * @return the widget model if found, or null if match was not found
      */
-    private static AbstractWidgetModel findWidget(AbstractContainerModel parent, ValidationFailure failure, 
-            boolean useWuid) {
+    private static AbstractWidgetModel findWidget(AbstractContainerModel parent, ValidationFailure failure) {
+        AbstractWidgetModel model = findWidgetInternal(parent,failure,true);
+        if (model == null) {
+            model = findWidgetInternal(parent, failure, false);
+        }
+        return model;
+    }
+        
+    private static AbstractWidgetModel findWidgetInternal(AbstractContainerModel parent, ValidationFailure failure, 
+                boolean useWuid) {
         String widgetType;
         String widgetName;
         boolean skipCheck = false;
@@ -180,13 +201,10 @@ public class SchemaFixer {
                 }
             }
             if (model instanceof AbstractContainerModel) {
-                AbstractWidgetModel result = findWidget((AbstractContainerModel)model, failure, useWuid);
+                AbstractWidgetModel result = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
                 if (result != null) return result;
             }
         }  
-        if (useWuid) {
-            return findWidget(parent, failure, false);
-        }
         return null;
     }
     

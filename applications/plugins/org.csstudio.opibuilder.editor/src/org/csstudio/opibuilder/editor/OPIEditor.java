@@ -71,13 +71,16 @@ import org.csstudio.opibuilder.runmode.PatchedConnectionLayerClippingStrategy;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.LightweightSystem;
@@ -792,6 +795,16 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			try {
 				result = ((FileEditorInput) editorInput).getFile()
 						.getContents();
+			} catch (ResourceException e) {
+			  //resource is out of sync: synchronized and try again
+                try {
+                    ((FileEditorInput) editorInput).getFile().refreshLocal(
+                            IResource.DEPTH_ZERO, new NullProgressMonitor());
+                    result = ((FileEditorInput) editorInput).getFile()
+                            .getContents();
+                } catch (CoreException ex) {
+                    ex.printStackTrace();
+                }
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}

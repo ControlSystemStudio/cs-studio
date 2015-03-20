@@ -103,7 +103,7 @@ public class Validator extends AbstractValidator {
         boolean useDefaultEditor = Activator.getInstance().isShowMarkersInDefaultEditor();
         ValidationResult result = new ValidationResult();
         try {
-            ValidationFailure[] failures = verifier.validate(resource.getLocation());
+            ValidationFailure[] failures = verifier.validate(resource.getFullPath());
             ValidatorMessage message;
             for (ValidationFailure vf : failures) {     
                 message = createMessage(vf, resource, useDefaultEditor);

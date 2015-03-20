@@ -35,6 +35,7 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
     private final boolean isCritical;
     private final boolean isFixable;
     private final String forcedMessage;
+    private final boolean usingNonDefinedValue;
     
     private int lineNumber;
     
@@ -57,10 +58,11 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
      * @param forcedMessage the forced message to be returned by {@link #getMessage()}. If null, it will be composed
      *          when the {@link #getMessage()} is called 
      * @param lineNumber the line number at which the failure occurred
+     * @param usingNonDefinedValue true if this failure is due to a font or color using one of the non defined values
      */
     ValidationFailure(IPath path, String wuid, String widgetType, String widgetName, 
             String property, Object expected, Object actual, ValidationRule rule, boolean isCritical,
-            boolean isFixable, String forcedMessage, int lineNumber) {
+            boolean isFixable, String forcedMessage, int lineNumber, boolean usingNonDefinedValue) {
         this.widgetType = widgetType;
         this.widgetName = widgetName;
         this.property = property;
@@ -75,6 +77,7 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
         this.isFixable = isFixable;
         this.forcedMessage = forcedMessage;
         this.lineNumber = lineNumber;
+        this.usingNonDefinedValue = usingNonDefinedValue;
     }
     
     /**
@@ -86,29 +89,22 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
         if (forcedMessage != null) {
             return forcedMessage;
         }
-        boolean usingNonDefined = false;
+        if (usingNonDefinedValue) {
+            return new StringBuilder(property.length() + actual.length() + 40).append(property)
+                    .append(": '").append(actual).append("' is not one of the predefined values").toString();
+        }
         if (rule == ValidationRule.RO) {
-            if (expectedValue == null) {
-                usingNonDefined = true;
-            } else {
+            if (expectedValue != null) {
                 return new StringBuilder(property.length() + expected.length() + actual.length() + 26)
                     .append(property).append(": expected: '").append(expected).append("' but was: '")
                     .append(actual).append('\'').toString();
             }
         } else if (rule == ValidationRule.WRITE) {
-            if (expectedValue == null) {
-                usingNonDefined = true;
-            } else {
+            if (expectedValue != null) {
                 return new StringBuilder(property.length() + 11).append(property).append(" is not set").toString();
             }
-        } else if (rule == ValidationRule.RW) {
-            //can happen in the case of font and colour
-            usingNonDefined = true;
         } 
-        if (usingNonDefined) {
-            return new StringBuilder(property.length() + actual.length() + 40).append(property)
-                    .append(": '").append(actual).append("' is not one of the predefined values").toString();
-        }
+        //should not happen
         return null;
     }
     
@@ -246,6 +242,13 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
      */
     public boolean isFixable() {
         return isFixable;
+    }
+    
+    /**
+     * @return true if an undefined value is being used or false otherwise (this is a hint for the quick fix)
+     */
+    public boolean isUsingUndefinedValue() {
+        return usingNonDefinedValue;
     }
     
     /*
