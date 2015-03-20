@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010, 2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,14 +62,5 @@ public class PreferencePage extends FieldEditorPreferencePage
                                              min, max));
         hour_editor.setValidRange(min, max);
         addField(hour_editor);
-    }
-
-    /** @return Total hour setting */
-    static public int getHours()
-    {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        if (prefs == null)
-            return DEFAULT_HOURS;
-        return prefs.getInt(Plugin.ID, P_HOURS, DEFAULT_HOURS, null);
     }
 }

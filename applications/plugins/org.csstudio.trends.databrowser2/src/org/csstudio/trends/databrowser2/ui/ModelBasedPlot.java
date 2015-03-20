@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.csstudio.csdata.ProcessVariable;
@@ -51,7 +52,7 @@ import org.eclipse.swt.widgets.ToolItem;
 public class ModelBasedPlot
 {
 	/** Plot Listener */
-	private PlotListener listener = null;
+	private Optional<PlotListener> listener = Optional.empty();
 
 	/** {@link Display} used by this plot */
 	final private Display display;
@@ -76,8 +77,7 @@ public class ModelBasedPlot
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                if (listener != null)
-                    listener.timeConfigRequested();
+            	listener.ifPresent((l) -> l.timeConfigRequested());
             }
         });
 
@@ -94,8 +94,7 @@ public class ModelBasedPlot
             public void changedXAxis(final Axis<Instant> x_axis)
             {
                 final AxisRange<Instant> range = x_axis.getValueRange();
-                if (listener != null)
-                    listener.timeAxisChanged(plot.isScrolling(), range.getLow(), range.getHigh());  
+                listener.ifPresent((l) -> l.timeAxisChanged(plot.isScrolling(), range.getLow(), range.getHigh()));  
             }
 
             @Override
@@ -103,8 +102,7 @@ public class ModelBasedPlot
             {
                 final int index = plot.getYAxes().indexOf(y_axis);
                 final AxisRange<Double> range = y_axis.getValueRange();
-                if (listener != null)
-                    listener.valueAxisChanged(index, range.getLow(), range.getHigh());
+                listener.ifPresent((l) -> l.valueAxisChanged(index, range.getLow(), range.getHigh()));
             }
 
             @Override
@@ -121,8 +119,7 @@ public class ModelBasedPlot
                                                        annotation.getPosition(), annotation.getValue(),
                                                        annotation.getOffset(), annotation.getText()));
                 }
-                if (listener != null)
-                    listener.changedAnnotations(annotations);
+                listener.ifPresent((l) -> l.changedAnnotations(annotations));
             }
 
             @Override
@@ -130,8 +127,7 @@ public class ModelBasedPlot
             {
                 for (Trace<Instant> trace : plot.getTraces())
                     findModelItem(trace).setSelectedSample(trace.getSelectedSample());
-                if (listener != null)
-                    listener.selectedSamplesChanged();
+                listener.ifPresent((l) -> l.selectedSamplesChanged());
             }
         });
 
@@ -160,37 +156,38 @@ public class ModelBasedPlot
 			@Override
 			public void handleDrop(final Object item)
 			{
-				if (listener == null)
+				final PlotListener lst = listener.orElse(null);
+				if (lst == null)
 					return;
 
 				if (item instanceof ChannelInfo[])
 				{
 					final ChannelInfo[] channels = (ChannelInfo[]) item;
 					for (ChannelInfo channel : channels)
-						listener.droppedPVName(channel.getProcessVariable(),
+						lst.droppedPVName(channel.getProcessVariable(),
 								channel.getArchiveDataSource());
 				}
 				else if (item instanceof ProcessVariable[])
 				{
 					final ProcessVariable[] pvs = (ProcessVariable[]) item;
 					for (ProcessVariable pv : pvs)
-						listener.droppedPVName(pv, null);
+						lst.droppedPVName(pv, null);
 				}
 				else if (item instanceof ArchiveDataSource[])
 				{
 					final ArchiveDataSource[] archives = (ArchiveDataSource[]) item;
 					for (ArchiveDataSource archive : archives)
-						listener.droppedPVName(null, archive);
+						lst.droppedPVName(null, archive);
 				}
 				else if (item instanceof String)
-					listener.droppedName(item.toString());
+					lst.droppedName(item.toString());
 				else if (item instanceof String[])
 				{   // File names arrive as String[]...
 				    final String[] files = (String[])item;
 				    try
 				    {
 				        for (String filename : files)
-    				        listener.droppedFilename(filename);
+				        	lst.droppedFilename(filename);
 				    }
 				    catch (Exception ex)
 				    {
@@ -204,9 +201,9 @@ public class ModelBasedPlot
 	/** Add a listener (currently only one supported) */
 	public void addListener(final PlotListener listener)
 	{
-		if (this.listener != null)
+		if (this.listener.isPresent())
 			throw new IllegalStateException("Only one listener supported");
-		this.listener = listener;
+		this.listener = Optional.of(listener);
 	}
 
 	/** Remove all axes and traces */
@@ -299,6 +296,7 @@ public class ModelBasedPlot
 		// Locate index of current Y Axis
 		if (trace.getYAxis() != item.getAxisIndex())
 		    plot.moveTrace(trace, item.getAxisIndex());
+		plot.requestUpdate();
 	}
 
 	/** @param item {@link ModelItem} for which to locate the {@link Trace}

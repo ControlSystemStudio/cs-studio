@@ -414,6 +414,7 @@ public class DataBrowserEditor extends EditorPart
 		if (is_rcp)
 		{
 			manager.add(new Separator());
+			manager.add(plot.getPlot().getSnapshotAction());
 			if (EMailSender.isEmailSupported())
 				manager.add(new SendEMailAction(shell, plot.getPlot()));
 			manager.add(new PrintAction(shell, plot.getPlot()));
