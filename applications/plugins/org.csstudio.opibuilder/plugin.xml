@@ -34,7 +34,7 @@
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.DisplayLauncher"
             launcher="org.csstudio.opibuilder.runmode.DisplayLauncher"
-            name="OPI Display (Workspace)">
+            name="OPI Display (Workbench)">
       </editor>
       <editor
             default="false"
