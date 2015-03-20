@@ -336,7 +336,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     public Image getImage()
     {
     	//TODO 
-        return new Image(display, 10, 10);
+    	
+        return new Image(display, area.width, area.height);        
     }
 
     /** Update the dormant time between updates

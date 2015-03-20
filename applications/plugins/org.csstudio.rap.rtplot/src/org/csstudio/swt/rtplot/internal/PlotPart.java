@@ -85,6 +85,7 @@ public class PlotPart
             this.name = name;
         }
         requestLayout();
+        requestRefresh();
     }
 
     /** @return Color to use for this part */
