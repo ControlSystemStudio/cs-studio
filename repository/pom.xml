@@ -109,7 +109,7 @@
 									<id>commons-beanutils:commons-beanutils:1.9.2</id>
 								</artifact>
 								<artifact>
-									<id>batik:batik:1.5</id>
+									<id>batik:batik:1.7</id>
 								</artifact>
 								<artifact>
 									<id>org.apache.ant:ant:1.9.4</id>
