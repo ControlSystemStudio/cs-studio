@@ -22,11 +22,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.views">
-      <view
-            name="View"
-            class="org.csstudio.utility.adlparser.View"
-            id="org.csstudio.utility.adlParser.view">
-      </view>
       <category
             id="org.csstudio.utility.adlParser.adlParserCategory"
             name="ADL Parser"
