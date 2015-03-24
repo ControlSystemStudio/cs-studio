@@ -478,7 +478,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 		if (getWidgetModel().isEnabled() && actions != null) {
 			figure.setCursor(Cursors.HAND);
 			figure.addMouseListener(new MouseListener.Stub() {
-
 				@Override
 				public void mousePressed(MouseEvent me) {
 					if (me.button != 1)
@@ -489,10 +488,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 									.setCtrlPressed(false);
 							((AbstractOpenOPIAction) action)
 									.setShiftPressed(false);
-							if (me.getState() == SWT.CONTROL) {
+							if ((me.getState() & SWT.CONTROL) != 0) {
 								((AbstractOpenOPIAction) action)
 										.setCtrlPressed(true);
-							} else if (me.getState() == SWT.SHIFT) {
+							}
+							if ((me.getState() & SWT.SHIFT) != 0) {
 								((AbstractOpenOPIAction) action)
 										.setShiftPressed(true);
 							}

@@ -58,6 +58,7 @@ public class OPIShell implements IOPIRuntime {
         this.macrosInput = macrosInput;
         this.shell = new Shell(display);
         this.displayModel = new DisplayModel(path);
+        this.displayModel.setOpiRuntime(this);
         this.actionRegistry = new ActionRegistry();
 
         final GraphicalViewer viewer = new GraphicalViewerImpl();

@@ -10,10 +10,12 @@ package org.csstudio.opibuilder.widgetActions;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OpenDisplayTarget;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.runmode.DisplayOpenManager;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
+import org.csstudio.opibuilder.runmode.OPIShell;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.runmode.RunnerInput;
@@ -33,34 +35,13 @@ import org.jdom.Element;
  */
 public class OpenDisplayAction extends AbstractOpenOPIAction {
 
-
 	public static final String PROP_REPLACE = "replace";//$NON-NLS-1$
-
-	private enum OpenDisplayTarget{
-		NEW_TAB("Open in new Tab"),
-		REPLACE("Replace"),		
-		NEW_WINDOW("Open in new Window");
-		
-		private String description;
-		private OpenDisplayTarget(String desc) {
-			this.description = desc;
-		}
-		
-		public static String[] stringValues(){
-			String[] sv = new String[values().length];
-			int i=0;
-			for(OpenDisplayTarget p : values())
-				sv[i++] = p.description;
-			return sv;
-		}
-	}
-	
 
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
 		addProperty(new ComboProperty(PROP_REPLACE, "Target",
-				WidgetPropertyCategory.Basic, OpenDisplayTarget.stringValues(), 1){
+				WidgetPropertyCategory.Basic, OpenDisplayTarget.stringValues(), 0){
 			@Override
 			public Object readValueFromXML(Element propElement) {
 				try {
@@ -76,24 +57,29 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 
 	@Override
 	protected void openOPI(IPath absolutePath) {
-		if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.REPLACE) {				
+		if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.DEFAULT) {
 			IOPIRuntime opiRuntime = getWidgetModel().getRootDisplayModel()
 					.getOpiRuntime();
-			DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
+			if (opiRuntime instanceof OPIShell) {
+				// Default behaviour for OPIShell is to open another OPIShell.
+				OPIShell.openOPIShell(absolutePath, getMacrosInput());
+			} else {
+				// Default behaviour for OPIView is to replace current OPIView.
+				DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
 					.getAdapter(DisplayOpenManager.class));
-			manager.openNewDisplay();
-			try {
-				RunModeService
-						.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
+				manager.openNewDisplay();
+				try {
+					RunModeService
+					.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
 								absolutePath, manager, getMacrosInput()));
-			} catch (PartInitException e) {
-				OPIBuilderPlugin.getLogger().log(Level.WARNING,
-						"Failed to open " + absolutePath, e); //$NON-NLS-1$
-				MessageDialog.openError(Display.getDefault().getActiveShell(),
-						"Open file error",
-						NLS.bind("Failed to open {0}", absolutePath));
+				} catch (PartInitException e) {
+					OPIBuilderPlugin.getLogger().log(Level.WARNING,
+							"Failed to open " + absolutePath, e); //$NON-NLS-1$
+					MessageDialog.openError(Display.getDefault().getActiveShell(),
+							"Open file error",
+							NLS.bind("Failed to open {0}", absolutePath));
+				}
 			}
-			
 		} else {
 			TargetWindow target;
 			if(!ctrlPressed && !shiftPressed){
@@ -108,14 +94,16 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 					target = TargetWindow.SAME_WINDOW;
 					break;
 				}
-			}else if (shiftPressed && !ctrlPressed)
+			}else if (shiftPressed && !ctrlPressed) {
 				target = TargetWindow.NEW_WINDOW;
-			else
+			} else if (ctrlPressed && !shiftPressed) {
 				target = TargetWindow.SAME_WINDOW;
-
+			} else {  // ctrl and shift pressed
+				target = TargetWindow.NEW_SHELL;
+			}
 			RunModeService.getInstance().runOPI(absolutePath, target, null,
 					getMacrosInput(), null);
-		}		
+		}
 	}
 
 	private OpenDisplayTarget getOpenDisplayTarget() {

@@ -60,7 +60,6 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 	 */
 	@Override
 	public void hookMouseClickAction() {
-
 		((ActionButtonFigure)editpart.getFigure()).addActionListener(new ButtonActionListener(){
 			public void actionPerformed(int mouseEventState) {					
 				List<AbstractWidgetAction> actions = editpart.getHookedActions();
@@ -69,25 +68,21 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 						if(action instanceof AbstractOpenOPIAction){
 							((AbstractOpenOPIAction) action).setCtrlPressed(false);
 							((AbstractOpenOPIAction) action).setShiftPressed(false);
-							if(mouseEventState == SWT.CONTROL){
+							if ((mouseEventState & SWT.CONTROL) != 0) {
 								((AbstractOpenOPIAction) action).setCtrlPressed(true);
-							}else if (mouseEventState == SWT.SHIFT){
+							}
+							if ((mouseEventState & SWT.SHIFT) != 0) {
 								((AbstractOpenOPIAction) action).setShiftPressed(true);
-							}	
+							}
 						}
 						action.run();
-					}					
-				}							
+					}
+				}
 			}
 		});
 	}
-	
 
 
-	
-
-
-	
 	/* (non-Javadoc)
 	 * @see org.csstudio.opibuilder.widgets.editparts.IButtonEditPartDelegate#deactivate()
 	 */

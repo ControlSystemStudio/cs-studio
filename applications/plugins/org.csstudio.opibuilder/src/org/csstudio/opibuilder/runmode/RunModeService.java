@@ -44,14 +44,14 @@ import org.eclipse.ui.WorkbenchException;
  */
 public class RunModeService {
 
-    public enum TargetWindow{
+    public enum TargetWindow {
         NEW_WINDOW,
         SAME_WINDOW,
-        RUN_WINDOW;
+        RUN_WINDOW,
+        NEW_SHELL;
     }
 
     private IWorkbenchWindow runWorkbenchWindow;
-
 
     private static RunModeService instance;
 
@@ -145,13 +145,14 @@ public class RunModeService {
                     }
                     targetWindow = runWorkbenchWindow;
                     break;
+                case NEW_SHELL:
+                    targetWindow = null;
+                    break;
                 case SAME_WINDOW:
                 default:
                     targetWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
                     break;
                 }
-
-
 
                 if(targetWindow != null){
                     try {
@@ -167,10 +168,11 @@ public class RunModeService {
                         OPIBuilderPlugin.getLogger().log(Level.WARNING,
                                 "Failed to run OPI " + path.lastSegment(), e);
                     }
+                } else {
+                    OPIShell.openOPIShell(path, macrosInput);
                 }
-
-                }
-            });
+            }
+        });
     }
 
 

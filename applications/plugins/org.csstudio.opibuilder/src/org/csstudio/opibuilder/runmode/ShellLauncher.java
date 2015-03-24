@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.runmode;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
-/** {@link IEditorLauncher} that opens display in runtime.
+/** {@link IEditorLauncher} that opens display in new OPIShell.
  *
  *  <p>Registered in plugin.xml as "Editor" for *.opi files,
  *  allowing users to launch displays from the Eclipse Navigator,
