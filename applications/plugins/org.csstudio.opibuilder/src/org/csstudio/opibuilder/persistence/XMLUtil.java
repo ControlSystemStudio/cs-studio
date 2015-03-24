@@ -15,9 +15,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -158,19 +161,39 @@ public class XMLUtil {
 	 * @throws Exception
 	 */
 	public static AbstractWidgetModel XMLElementToWidget(Element element) throws Exception {
-		return XMLElementToWidget(element, null);
+	    Map<Element,ConnectionModel> connections = new HashMap<>();
+		AbstractWidgetModel model = XMLElementToWidget(element, null, connections);
+		addConnections(connections);
+		return model;
 	}
 
 	/**Fill the DisplayModel from an OPI file inputstream
 	 * @param inputStream the inputstream will be closed in this method before return.
 	 * @param displayModel. The {@link DisplayModel} to be filled.
 	 * @param display the display in UI Thread.
+	 * @param mapToReceiveConnections a map to which all connections will be added so that they can be handled last
 	 * @throws Exception
 	 */
-	public static void fillDisplayModelFromInputStream(
-			final InputStream inputStream, final DisplayModel displayModel, Display display) throws Exception{
-		fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(),true);
+	private static void fillDisplayModelFromInputStream(
+			final InputStream inputStream, final DisplayModel displayModel, 
+			final Map<Element,ConnectionModel> mapToReceiveConnections, Display display) throws Exception{
+		fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(),
+		        mapToReceiveConnections,true);
 	}
+	
+	/**Fill the DisplayModel from an OPI file inputstream
+     * @param inputStream the inputstream will be closed in this method before return.
+     * @param displayModel. The {@link DisplayModel} to be filled.
+     * @param display the display in UI Thread.
+     * @throws Exception
+     */
+    public static void fillDisplayModelFromInputStream(
+            final InputStream inputStream, final DisplayModel displayModel, 
+            Display display) throws Exception{
+        Map<Element,ConnectionModel> connections = new HashMap<>();
+        fillDisplayModelFromInputStream(inputStream, displayModel, connections, display);
+        addConnections(connections);
+    }
 	
 	   /**Fill the DisplayModel from an OPI file inputstream
      * @param inputStream the inputstream will be closed in this method before return.
@@ -181,13 +204,30 @@ public class XMLUtil {
      * @throws Exception
      */
     public static void fillDisplayModelFromInputStream(
-            final InputStream inputStream, final DisplayModel displayModel, Display display, boolean loadLinkingContainers) throws Exception{
-        fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(), loadLinkingContainers);
+            final InputStream inputStream, final DisplayModel displayModel, Display display, 
+            boolean loadLinkingContainers) throws Exception{
+        Map<Element,ConnectionModel> connections = new HashMap<>();
+        fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(), connections,
+                loadLinkingContainers);
+        addConnections(connections);
+    }
+    
+    private static void addConnections(final Map<Element,ConnectionModel> connections) {
+        if (connections.isEmpty()) return;
+        
+        Display.getDefault().asyncExec(new Runnable(){
+            @Override
+            public void run() {
+                for (Map.Entry<Element,ConnectionModel> c : connections.entrySet()) {
+                    setPropertiesFromXML(c.getKey(), c.getValue());
+                }
+            }
+        });
     }
 
 	private static void fillDisplayModelFromInputStreamSub(
 			final InputStream inputStream, final DisplayModel displayModel, Display display, List<IPath> trace,
-			boolean loadLinkingContainers) throws Exception{
+			Map<Element,ConnectionModel> mapToReceiveConnections, boolean loadLinkingContainers) throws Exception{
 	
 		if(display == null){
 			display = Display.getCurrent();
@@ -231,7 +271,7 @@ public class XMLUtil {
 		
 		Element root = inputStreamToXML(inputStream);
 		if(root != null){
-		     XMLElementToWidgetSub(root, displayModel, trace, loadLinkingContainers);
+		     XMLElementToWidgetSub(root, displayModel, trace, mapToReceiveConnections, loadLinkingContainers);
 			 
 			 //check version
 			 if(compareVersion(displayModel.getBOYVersion(),
@@ -271,22 +311,28 @@ public class XMLUtil {
 	 */
 	public static void fillDisplayModelFromInputStream(
 			final InputStream inputStream, final DisplayModel displayModel) throws Exception {
-		fillDisplayModelFromInputStream(inputStream, displayModel, null);
+	    Map<Element,ConnectionModel> connections = new HashMap<>();
+	    fillDisplayModelFromInputStream(inputStream, displayModel, connections, null);
+		addConnections(connections);
 	}
 
 
 	/**Construct widget model from XML element. Sometimes it includes filling LinkingContainer and/or construct Connection model between widgets.
 	 * @param element
 	 * @param displayModel the root display model. If root of the element is a display, use this display model as root model 
-	 * instead of creating a new one. If this is null, a new one will be created. 
+	 * instead of creating a new one. If this is null, a new one will be created.
+	 * @param mapToReceiveConnections the map to which all found connections will be added so that they can be added 
+	 *         to the canvas last 
 	 * @return the root widget model
 	 * @throws Exception
 	 */
-	public static AbstractWidgetModel XMLElementToWidget(Element element, DisplayModel displayModel) throws Exception{
-		return XMLElementToWidgetSub(element, displayModel, new ArrayList<IPath> (),true);
+	public static AbstractWidgetModel XMLElementToWidget(Element element, DisplayModel displayModel,
+	        Map<Element,ConnectionModel> mapToReceiveConnections) throws Exception{
+		return XMLElementToWidgetSub(element, displayModel, new ArrayList<IPath>(),mapToReceiveConnections,true);
 	}
 
-	private static AbstractWidgetModel XMLElementToWidgetSub(Element element, DisplayModel displayModel, List<IPath> trace,
+	private static AbstractWidgetModel XMLElementToWidgetSub(Element element, DisplayModel displayModel, 
+	        List<IPath> trace, Map<Element,ConnectionModel> mapToReceiveConnections, 
 	        boolean loadLinkingContainers) throws Exception{
 		if(element == null) return null;
 
@@ -296,8 +342,8 @@ public class XMLUtil {
 			result = fillWidgets(element, displayModel);
 			
 			if(loadLinkingContainers && result instanceof AbstractContainerModel)
-				fillLinkingContainersSub((AbstractContainerModel)result, trace);
-			fillConnections(element, displayModel);
+				fillLinkingContainersSub((AbstractContainerModel)result, trace, mapToReceiveConnections);
+			fillConnections(element, displayModel, mapToReceiveConnections);
 
 			return result;
 		} else {
@@ -324,7 +370,7 @@ public class XMLUtil {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("rawtypes")
-	public static AbstractWidgetModel fillWidgets(Element element, DisplayModel displayModel) throws Exception{
+	private static AbstractWidgetModel fillWidgets(Element element, DisplayModel displayModel) throws Exception{
 		if(element == null) return null;
 		
 		AbstractWidgetModel rootWidgetModel = null;
@@ -381,15 +427,18 @@ public class XMLUtil {
 	 * @throws Exception
 	 */
 	public static void fillLinkingContainers(AbstractContainerModel container) throws Exception {
-		fillLinkingContainersSub(container, new ArrayList<IPath>());
+	    Map<Element, ConnectionModel> connections = new HashMap<>();
+		fillLinkingContainersSub(container, new ArrayList<IPath>(), connections);
+		addConnections(connections);
 	}
 	
-	private static void fillLinkingContainersSub(AbstractContainerModel container, List<IPath> trace) throws Exception{
+	private static void fillLinkingContainersSub(AbstractContainerModel container, List<IPath> trace, 
+	        Map<Element,ConnectionModel> mapToReceiveConnections) throws Exception{
 		if(container instanceof AbstractLinkingContainerModel) {
 			AbstractLinkingContainerModel linkingContainer = (AbstractLinkingContainerModel)container;
 			List<IPath> tempTrace = new ArrayList<IPath>();
 			tempTrace.addAll(trace);
-			fillLinkingContainerSub(linkingContainer, tempTrace);
+			fillLinkingContainerSub(linkingContainer, tempTrace, mapToReceiveConnections);
 		}
 
 		for(AbstractWidgetModel w : container.getAllDescendants()) {
@@ -397,23 +446,28 @@ public class XMLUtil {
 				AbstractLinkingContainerModel linkingContainer = (AbstractLinkingContainerModel)w;
 				List<IPath> tempTrace = new ArrayList<IPath>();
 				tempTrace.addAll(trace);
-				fillLinkingContainerSub(linkingContainer, tempTrace);
+				fillLinkingContainerSub(linkingContainer, tempTrace, mapToReceiveConnections);
 			}
 		}
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private static void fillConnections(Element element, DisplayModel displayModel) throws Exception {
+	private static void fillConnections(final Element element, final DisplayModel displayModel, 
+	        Map<Element,ConnectionModel> connections) throws Exception {
 		if(element.getName().equals(XMLTAG_CONNECTION)) {
-			ConnectionModel result = new ConnectionModel(displayModel);
-			setPropertiesFromXML(element, result); 
+		    //gather all connections - they need to be added last
+		    connections.put(element,new ConnectionModel(displayModel));
+//		    final ConnectionModel result = new ConnectionModel(displayModel);
+//            setPropertiesFromXML(element, result); 
+			
+	        
 		} else if(element.getName().equals(XMLTAG_DISPLAY)){
 			List children = element.getChildren();
 			Iterator iterator = children.iterator();
 			while (iterator.hasNext()) {
 				Element subElement = (Element) iterator.next();
 				if(subElement.getName().equals(XMLTAG_CONNECTION))  {
-					fillConnections(subElement, displayModel);
+					fillConnections(subElement, displayModel, connections);
 				}
 			}
 		}
@@ -460,10 +514,13 @@ public class XMLUtil {
 	 */
 	public static void fillLinkingContainer(final AbstractLinkingContainerModel container) 
 			throws Exception {
-		fillLinkingContainerSub(container, new ArrayList<IPath>());
+	    Map<Element,ConnectionModel> connections = new HashMap<>();
+		fillLinkingContainerSub(container, new ArrayList<IPath>(), connections);
+		addConnections(connections);
 	}
 
-	private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)  
+	private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace,
+	        Map<Element,ConnectionModel> mapToReceiveConnections)  
 		throws Exception {
 
 		if(container == null) return;
@@ -481,7 +538,8 @@ public class XMLUtil {
 			if(path != null && !path.isEmpty()) {
 				final DisplayModel inside = new DisplayModel(path);
 
-				fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(), trace, true);
+				fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(),
+				        trace, mapToReceiveConnections, true);
 				
 				// mark connection as it is loaded from linked opi
 				for(AbstractWidgetModel w : inside.getAllDescendants()) 
@@ -499,6 +557,13 @@ public class XMLUtil {
 					}
 				}
 
+		        if(loadTarget.getMacrosInput().isInclude_parent_macros()){              
+		            loadTarget.getMacroMap().putAll(
+		                    (LinkedHashMap<String, String>) inside.getParentMacroMap());
+		        }
+		        loadTarget.getMacroMap().putAll(loadTarget.getMacrosInput().getMacrosMap());
+		        loadTarget.getMacroMap().putAll(container.getMacroMap());
+				
 				for (AbstractWidgetModel w : loadTarget.getChildren()) 
 					container.addChild(w, true);
 

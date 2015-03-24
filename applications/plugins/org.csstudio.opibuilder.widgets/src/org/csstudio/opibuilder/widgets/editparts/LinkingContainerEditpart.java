@@ -50,7 +50,7 @@ import org.eclipse.ui.IActionFilter;
  */
 public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	
-	private static int linkingContainerID = 0;
+    private static int linkingContainerID = 0;
 
 	private List<ConnectionModel> connectionList;
 	private Map<ConnectionModel, PointList> originalPoints;
@@ -104,6 +104,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		
+	    loadWidgets(getWidgetModel().getOPIFilePath(), true); 
 		configureDisplayModel();
 		
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
@@ -167,20 +168,21 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		getWidgetModel().removeAllChildren();
 		if(path ==null || path.isEmpty())
 			return;
-
 		try {
 			XMLUtil.fillLinkingContainer(getWidgetModel());
 		} catch (Exception e) {
+		    //log first
+		    String message = "Failed to load: " + path.toString() + "\n"+ e.getMessage();
+            Activator.getLogger().log(Level.WARNING, message , e);
+            ConsoleService.getInstance().writeError(message);
+            //TODO this might not work - depends on the exception that happened
 			LabelModel loadingErrorLabel = new LabelModel();
 			loadingErrorLabel.setLocation(0, 0);
 			loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
 			loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
-			String message = "Failed to load: " + path.toString() + "\n"+ e.getMessage();
 			loadingErrorLabel.setText(message);
 			loadingErrorLabel.setName("Label");
 			getWidgetModel().addChild(loadingErrorLabel);
-			Activator.getLogger().log(Level.WARNING, message , e);
-			ConsoleService.getInstance().writeError(message);
 		}
 	}
 
