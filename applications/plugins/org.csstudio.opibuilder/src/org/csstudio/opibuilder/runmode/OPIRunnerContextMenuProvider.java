@@ -13,7 +13,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.AboutWebOPIAction;
 import org.csstudio.opibuilder.actions.ConfigureRuntimePropertiesAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction;
-import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OPEN_DISPLAY_TARGET;
+import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OpenDisplayTarget;
 import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -118,13 +118,13 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 					AbstractWidgetAction hookedAction = hookedActions.get(0);
 					if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
+								(AbstractOpenOPIAction) hookedAction, OpenDisplayTarget.DEFAULT));
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
+								(AbstractOpenOPIAction) hookedAction, OpenDisplayTarget.NEW_TAB));
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));
+								(AbstractOpenOPIAction) hookedAction, OpenDisplayTarget.NEW_WINDOW));
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_SHELL));
+								(AbstractOpenOPIAction) hookedAction, OpenDisplayTarget.NEW_SHELL));
 					}
 				}
 					

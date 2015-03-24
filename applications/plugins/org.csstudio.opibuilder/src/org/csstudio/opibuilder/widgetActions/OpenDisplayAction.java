@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgetActions;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OpenDisplayTarget;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.runmode.DisplayOpenManager;
@@ -34,29 +35,7 @@ import org.jdom.Element;
  */
 public class OpenDisplayAction extends AbstractOpenOPIAction {
 
-
 	public static final String PROP_REPLACE = "replace";//$NON-NLS-1$
-
-	private enum OpenDisplayTarget{
-		DEFAULT("Default"),
-		NEW_TAB("Open in workbench tab"),
-		NEW_WINDOW("Open in new workbench"),
-		NEW_SHELL("Open in standalone window");
-		
-		private String description;
-		private OpenDisplayTarget(String desc) {
-			this.description = desc;
-		}
-		
-		public static String[] stringValues(){
-			String[] sv = new String[values().length];
-			int i=0;
-			for(OpenDisplayTarget p : values())
-				sv[i++] = p.description;
-			return sv;
-		}
-	}
-	
 
 	@Override
 	protected void configureProperties() {

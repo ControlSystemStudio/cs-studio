@@ -17,24 +17,37 @@ import org.eclipse.jface.action.Action;
  */
 public class OpenRelatedDisplayAction extends Action {
 
-	public enum OPEN_DISPLAY_TARGET {
-		DEFAULT,
-		TAB,
-		NEW_WINDOW,
-		NEW_SHELL
+	public enum OpenDisplayTarget{
+		DEFAULT("Default"),
+		NEW_TAB("Open in workbench tab"),
+		NEW_WINDOW("Open in new workbench"),
+		NEW_SHELL("Open in standalone window");
+
+		private String description;
+		private OpenDisplayTarget(String desc) {
+			this.description = desc;
+		}
+
+		public static String[] stringValues(){
+			String[] sv = new String[values().length];
+			int i=0;
+			for(OpenDisplayTarget p : values())
+				sv[i++] = p.description;
+			return sv;
+		}
 	}
-	
+
 	private AbstractOpenOPIAction openDisplayAction;
 	
-	private OPEN_DISPLAY_TARGET  target;
+	private OpenDisplayTarget  target;
 
 	public OpenRelatedDisplayAction(AbstractOpenOPIAction openDisplayAction,
-			OPEN_DISPLAY_TARGET target) {
+			OpenDisplayTarget target) {
 		super();
 		this.openDisplayAction = openDisplayAction;
 		this.target = target;
 		switch (target) {
-		case TAB:
+		case NEW_TAB:
 			setText("Open in Workbench Tab");
 			break;
 		case NEW_WINDOW:
@@ -55,7 +68,7 @@ public class OpenRelatedDisplayAction extends Action {
 		openDisplayAction.setShiftPressed(false);
 
 		switch (target) {
-		case TAB:
+		case NEW_TAB:
 			openDisplayAction.setCtrlPressed(true);
 			break;
 		case NEW_WINDOW:
