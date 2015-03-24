@@ -20,7 +20,8 @@ public class OpenRelatedDisplayAction extends Action {
 	public enum OPEN_DISPLAY_TARGET {
 		DEFAULT,
 		TAB,
-		NEW_WINDOW
+		NEW_WINDOW,
+		NEW_SHELL
 	}
 	
 	private AbstractOpenOPIAction openDisplayAction;
@@ -34,10 +35,13 @@ public class OpenRelatedDisplayAction extends Action {
 		this.target = target;
 		switch (target) {
 		case TAB:
-			setText("Open in New Tab");
+			setText("Open in Workbench Tab");
 			break;
 		case NEW_WINDOW:
-			setText("Open in New Window");
+			setText("Open in New Workbench");
+			break;
+		case NEW_SHELL:
+			setText("Open in Standalone Window");
 			break;
 		default:
 			setText("Open");
@@ -49,7 +53,7 @@ public class OpenRelatedDisplayAction extends Action {
 	public void run() {
 		openDisplayAction.setCtrlPressed(false);
 		openDisplayAction.setShiftPressed(false);
-		
+
 		switch (target) {
 		case TAB:
 			openDisplayAction.setCtrlPressed(true);
@@ -57,12 +61,14 @@ public class OpenRelatedDisplayAction extends Action {
 		case NEW_WINDOW:
 			openDisplayAction.setShiftPressed(true);
 			break;
+		case NEW_SHELL:
+			openDisplayAction.setCtrlPressed(true);
+			openDisplayAction.setShiftPressed(true);
+			break;
 		default:
 			break;
-		}											
-		openDisplayAction.run();	
-		
-		
+		}
+		openDisplayAction.run();
 	}
 	
 }

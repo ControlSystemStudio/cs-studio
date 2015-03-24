@@ -122,7 +122,9 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 						menu.add(new OpenRelatedDisplayAction(
 								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_SHELL));
 					}
 				}
 					
