@@ -96,6 +96,16 @@
 								
 								
 								<!-- Thirdparty artifacts -->
+                                <artifact>
+									<id>org.codehaus.cargo:empty-jar:1.4.13</id>
+									<instructions>
+										<Bundle-Name>Batik DOM SVG bugfix</Bundle-Name>
+										<Bundle-SymbolicName>org.csstudio.batik.dom.svg.fragment</Bundle-SymbolicName>
+										<Bundle-Version>1.0.0</Bundle-Version>
+										<Fragment-Host>org.apache.batik.dom.svg;bundle-version="1.7.0"</Fragment-Host>
+										<Require-Bundle>org.apache.batik.ext.awt;bundle-version="1.7.0"</Require-Bundle>
+									</instructions>	
+								</artifact>
 								<artifact>
 									<id>com.google.guava:guava:18.0</id>
 								</artifact>
@@ -109,7 +119,7 @@
 									<id>commons-beanutils:commons-beanutils:1.9.2</id>
 								</artifact>
 								<artifact>
-									<id>batik:batik:1.7</id>
+									<id>batik:batik:1.5</id>
 								</artifact>
 								<artifact>
 									<id>org.apache.ant:ant:1.9.4</id>
