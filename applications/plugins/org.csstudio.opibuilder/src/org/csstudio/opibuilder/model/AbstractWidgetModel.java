@@ -934,8 +934,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		{
 		    // If parent is a linking container,
 		    // use the display model of that
-		    if (parent instanceof AbstractLinkingContainerModel)
-		        return ((AbstractLinkingContainerModel)parent).getDisplayModel();
+		    if (parent instanceof AbstractLinkingContainerModel) {
+		        DisplayModel m = ((AbstractLinkingContainerModel)parent).getDisplayModel();
+		        if (m != null) return m;
+		    }
 		    // Otherwise follow links up the parent chain
 			parent = parent.getParent();
 		}
