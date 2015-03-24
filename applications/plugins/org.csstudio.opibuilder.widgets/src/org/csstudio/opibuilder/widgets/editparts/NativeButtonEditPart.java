@@ -88,19 +88,18 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
 						if(action instanceof AbstractOpenOPIAction){
 							((AbstractOpenOPIAction) action).setCtrlPressed(false);
 							((AbstractOpenOPIAction) action).setShiftPressed(false);
-							if((e.stateMask & SWT.CTRL) !=0){
+							if ((e.stateMask & SWT.CTRL) != 0) {
 								((AbstractOpenOPIAction) action).setCtrlPressed(true);
-							}else if ((e.stateMask & SWT.SHIFT) !=0){
+							}
+							if ((e.stateMask & SWT.SHIFT) != 0) {
 								((AbstractOpenOPIAction) action).setShiftPressed(true);
-							}	
+							}
 						}
 						action.run();
-					}					
-				}		
+					}
+				}
 			}
 		});
-		
-		
 	}
 	
 	@Override
