@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,78 +53,78 @@ import org.eclipse.ui.IPersistableElement;
 @SuppressWarnings("nls")
 public class DataBrowserModelEditorInput implements IEditorInput, IPersistableElement
 {
-	final private IEditorInput input;
-	final private Model model;
+    final private IEditorInput input;
+    final private Model model;
 
-	public DataBrowserModelEditorInput(final IEditorInput input, final Model model)
-	{
-		this.input = input;
-		this.model = model;
-	}
+    public DataBrowserModelEditorInput(final IEditorInput input, final Model model)
+    {
+        this.input = input;
+        this.model = model;
+    }
 
-	public Model getModel()
-	{
-		return model;
-	}
+    public Model getModel()
+    {
+        return model;
+    }
 
-	@Override
+    @Override
     public boolean exists()
     {
-	    return input.exists();
+        return input.exists();
     }
 
-	@Override
+    @Override
     public ImageDescriptor getImageDescriptor()
     {
-	    return input.getImageDescriptor();
+        return input.getImageDescriptor();
     }
 
-	@Override
+    @Override
     public String getName()
-    {   // Use title of model, falling back to file name
-	    return model.getTitle().orElse(input.getName());
+    {
+        return input.getName();
     }
 
-	@Override
+    @Override
     public IPersistableElement getPersistable()
     {
-	    return input.getPersistable();
+        return input.getPersistable();
     }
 
-	@Override
+    @Override
     public String getToolTipText()
     {
-	    return input.getToolTipText();
+        return input.getToolTipText();
     }
 
-	@SuppressWarnings("rawtypes")
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Class adapter)
     {
-	    // See NoResourceEditorInput:
-	    // Do NOT adapt to IResource, because that will result
-	    // in context menu containing "Compare With.." and other
-	    // file related entries.
-	    //
+        // See NoResourceEditorInput:
+        // Do NOT adapt to IResource, because that will result
+        // in context menu containing "Compare With.." and other
+        // file related entries.
+        //
         // Compare name as string to compile with RAP,
         // where the RCP IResource class is not available
         if ("org.eclipse.core.resources.IResource".equals(adapter.getName()))
             return null;
-	    return input.getAdapter(adapter);
+        return input.getAdapter(adapter);
     }
 
-	@Override
+    @Override
     public void saveState(final IMemento memento)
     {
-		if (input instanceof IPersistableElement)
-			((IPersistableElement)input).saveState(memento);
+        if (input instanceof IPersistableElement)
+            ((IPersistableElement)input).saveState(memento);
     }
 
-	@Override
+    @Override
     public String getFactoryId()
     {
-		if (input instanceof IPersistableElement)
-			return ((IPersistableElement)input).getFactoryId();
-		return null;
+        if (input instanceof IPersistableElement)
+            return ((IPersistableElement)input).getFactoryId();
+        return null;
     }
 }

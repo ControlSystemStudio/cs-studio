@@ -33,6 +33,7 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
 	
 	private ScalableFreeformLayeredPane pane;
 	
+	private ScrollPane scrollPane;
 	
 	private ZoomManager zoomManager;
 	
@@ -40,7 +41,7 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
 	
 	@SuppressWarnings("deprecation")
 	public LinkingContainerFigure() {
-		ScrollPane scrollPane = new ScrollPane();
+		scrollPane = new ScrollPane();
 		pane = new ScalableFreeformLayeredPane();
 		pane.setLayoutManager(new FreeformLayout());
 		setLayoutManager(new StackLayout());
@@ -120,6 +121,16 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
 
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
+	}
+
+	public void setShowScrollBars(boolean showScrollBars) {
+		if(showScrollBars) {
+			scrollPane.setHorizontalScrollBarVisibility(ScrollPane.AUTOMATIC);
+			scrollPane.setVerticalScrollBarVisibility(ScrollPane.AUTOMATIC);
+		} else {
+			scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
+			scrollPane.setVerticalScrollBarVisibility(ScrollPane.NEVER);
+		}
 	}
 	
 
