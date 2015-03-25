@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Oak Ridge National Laboratory.
+ * Copyright (c) 2014-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ public class XMLPersistence
     final public static String TAG_END = "end";
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_BACKGROUND = "background";
+    final public static String TAG_TITLE_FONT = "title_font";
     final public static String TAG_LABEL_FONT = "label_font";
     final public static String TAG_SCALE_FONT = "scale_font";
     final public static String TAG_AXES = "axes";
@@ -223,6 +224,7 @@ public class XMLPersistence
 
         // New settings, possibly replacing settings from legacy <xyGraphSettings> <axisSettingsList>
         loadColorFromDocument(root_node, TAG_BACKGROUND).ifPresent(model::setPlotBackground);
+        loadFontFromDocument(root_node, TAG_TITLE_FONT).ifPresent(model::setTitleFont);
         loadFontFromDocument(root_node, TAG_LABEL_FONT).ifPresent(model::setLabelFont);
         loadFontFromDocument(root_node, TAG_SCALE_FONT).ifPresent(model::setScaleFont);
 
@@ -374,6 +376,7 @@ public class XMLPersistence
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, model.getArchiveRescale().name());
 
         writeColor(writer, 1, TAG_BACKGROUND, model.getPlotBackground());
+        XMLWriter.XML(writer, 1, TAG_TITLE_FONT, SWTMediaPool.getFontDescription(model.getTitleFont()));
         XMLWriter.XML(writer, 1, TAG_LABEL_FONT, SWTMediaPool.getFontDescription(model.getLabelFont()));
         XMLWriter.XML(writer, 1, TAG_SCALE_FONT, SWTMediaPool.getFontDescription(model.getScaleFont()));
 
