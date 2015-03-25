@@ -9,6 +9,7 @@ package org.csstudio.swt.rtplot;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Handler;
@@ -49,6 +50,8 @@ public class TimePlotDemo
         final RTTimePlot plot = new RTTimePlot(shell);
 
         final String font_name = shell.getFont().getFontData()[0].getName();
+        plot.setTitle(Optional.of("Title of Time Demo"));
+        plot.setTitleFont(new FontData(font_name, 20, SWT.BOLD));
         plot.setLabelFont(new FontData(font_name, 12, SWT.BOLD));
         plot.setScaleFont(new FontData(font_name, 8, SWT.ITALIC));
 

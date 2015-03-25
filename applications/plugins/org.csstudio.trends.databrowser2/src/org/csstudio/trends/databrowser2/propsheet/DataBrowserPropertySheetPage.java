@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,7 +116,7 @@ public class DataBrowserPropertySheetPage extends Page
 
     private ColorBlob background;
 
-    private Button label_font, scale_font, save_changes, show_grid, rescales[];
+    private Button title_font, label_font, scale_font, save_changes, show_grid, rescales[];
 
     final private ModelListener model_listener = new ModelListenerAdapter()
     {
@@ -159,6 +159,7 @@ public class DataBrowserPropertySheetPage extends Page
         public void changedColorsOrFonts()
         {
             background.setColor(model.getPlotBackground());
+            title_font.setText(SWTMediaPool.getFontDescription(model.getTitleFont()));
             label_font.setText(SWTMediaPool.getFontDescription(model.getLabelFont()));
             scale_font.setText(SWTMediaPool.getFontDescription(model.getScaleFont()));
         }
@@ -415,7 +416,7 @@ public class DataBrowserPropertySheetPage extends Page
             {
                 formula_panel.setVisible(false);
                 archive_panel.setVisible(true);
-                archive_table.setInput((PVItem)item);
+                archive_table.setInput(item);
                 return;
             }
             if (item instanceof FormulaItem)
@@ -449,18 +450,22 @@ public class DataBrowserPropertySheetPage extends Page
             @Override
             public void menuAboutToShow(IMenuManager manager)
             {
+                final PVItem pvs[] = getSelectedPVs();
                 menu.add(add_pv);
                 menu.add(add_formula);
                 menu.add(edit_pv);
+                if (pvs.length == 1)
+                    menu.add(new MoveItemAction(operations_manager, model, pvs[0], true));
                 menu.add(delete_pv);
+                if (pvs.length == 1)
+                    menu.add(new MoveItemAction(operations_manager, model, pvs[0], false));
                 menu.add(new RemoveUnusedAxesAction(operations_manager, model));
-                final PVItem pvs[] = getSelectedPVs();
                 if (pvs.length > 0) {
-	                menu.add(new AddArchiveAction(operations_manager, shell, pvs));
-	                menu.add(new UseDefaultArchivesAction(operations_manager, pvs));
+                    menu.add(new AddArchiveAction(operations_manager, shell, pvs));
+                    menu.add(new UseDefaultArchivesAction(operations_manager, pvs));
                 }
-        		menu.add(new Separator());
-        		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+                menu.add(new Separator());
+                menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
 
@@ -498,20 +503,20 @@ public class DataBrowserPropertySheetPage extends Page
 
                 // Only allow removal of archives from single PV
                 if (pvs.length == 1) {
-	                // Determine selected archives
-	                final IStructuredSelection arch_sel =
-	                    (IStructuredSelection)archive_table.getSelection();
-	                if (!arch_sel.isEmpty()) {
-		                final Object[] objects =
-		                    arch_sel.toArray();
-		                final ArchiveDataSource archives[] = new ArchiveDataSource[objects.length];
-		                for (int i = 0; i < archives.length; i++)
-		                    archives[i] = (ArchiveDataSource) objects[i];
-		                menu.add(new DeleteArchiveAction(operations_manager, pvs[0], archives));
-	                }
+                    // Determine selected archives
+                    final IStructuredSelection arch_sel =
+                        (IStructuredSelection)archive_table.getSelection();
+                    if (!arch_sel.isEmpty()) {
+                        final Object[] objects =
+                            arch_sel.toArray();
+                        final ArchiveDataSource archives[] = new ArchiveDataSource[objects.length];
+                        for (int i = 0; i < archives.length; i++)
+                            archives[i] = (ArchiveDataSource) objects[i];
+                        menu.add(new DeleteArchiveAction(operations_manager, pvs[0], archives));
+                    }
                 }
-        		menu.add(new Separator());
-        		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+                menu.add(new Separator());
+                menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
         final Table table = archive_table.getTable();
@@ -724,7 +729,7 @@ public class DataBrowserPropertySheetPage extends Page
         final Composite parent = new Composite(tab_folder, 0);
         parent.setLayout(new GridLayout(4, false));
 
-        // Title:         ______   Label Font: [Sans|14|1]
+        // Title:         ______   Title Font: [Sans|14|1]
         Label label = new Label(parent, 0);
         label.setText(Messages.TitleLbl);
         label.setLayoutData(new GridData());
@@ -742,26 +747,26 @@ public class DataBrowserPropertySheetPage extends Page
         });
 
         label = new Label(parent, 0);
-        label.setText(Messages.LabelFontLbl);
+        label.setText(Messages.TitleFontLbl);
         label.setLayoutData(new GridData());
 
-        label_font = new Button(parent, SWT.PUSH);
-        label_font.setToolTipText(Messages.LabelFontTT);
-        label_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        label_font.addSelectionListener(new SelectionAdapter()
+        title_font = new Button(parent, SWT.PUSH);
+        title_font.setToolTipText(Messages.TitleFontTT);
+        title_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        title_font.addSelectionListener(new SelectionAdapter()
         {
             @Override
             public void widgetSelected(final SelectionEvent e)
             {
                 final FontDialog dialog = new FontDialog(parent.getShell());
-                dialog.setFontList(new FontData[] { model.getLabelFont() });
+                dialog.setFontList(new FontData[] { model.getTitleFont() });
                 final FontData selected = dialog.open();
                 if (selected != null)
-                    new ChangeLabelFontCommand(model, operations_manager, selected);
+                    new ChangeTitleFontCommand(model, operations_manager, selected);
             }
         });
 
-        // Redraw period: ______   Scale Font: [Sans|10|2]
+        // Redraw period: ______   Label Font: [Sans|10|2]
         label = new Label(parent, 0);
         label.setText(Messages.UpdatePeriodLbl);
         label.setLayoutData(new GridData());
@@ -787,26 +792,26 @@ public class DataBrowserPropertySheetPage extends Page
         });
 
         label = new Label(parent, 0);
-        label.setText(Messages.ScaleFontLbl);
+        label.setText(Messages.LabelFontLbl);
         label.setLayoutData(new GridData());
 
-        scale_font = new Button(parent, SWT.PUSH);
-        scale_font.setToolTipText(Messages.AxesFontTT);
-        scale_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        scale_font.addSelectionListener(new SelectionAdapter()
+        label_font = new Button(parent, SWT.PUSH);
+        label_font.setToolTipText(Messages.LabelFontTT);
+        label_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        label_font.addSelectionListener(new SelectionAdapter()
         {
             @Override
             public void widgetSelected(final SelectionEvent e)
             {
                 final FontDialog dialog = new FontDialog(parent.getShell());
-                dialog.setFontList(new FontData[] { model.getScaleFont() });
+                dialog.setFontList(new FontData[] { model.getLabelFont() });
                 final FontData selected = dialog.open();
                 if (selected != null)
-                    new ChangeScaleFontCommand(model, operations_manager, selected);
+                    new ChangeLabelFontCommand(model, operations_manager, selected);
             }
         });
 
-        // Scroll Step [secs]: ______
+        // Scroll Step [secs]: ______   Scale Font: [Sans|9|0]
         label = new Label(parent, 0);
         label.setText(Messages.ScrollStepLbl);
         label.setLayoutData(new GridData());
@@ -832,9 +837,25 @@ public class DataBrowserPropertySheetPage extends Page
             }
         });
 
-        // Filler for currently unused right 2 columns
         label = new Label(parent, 0);
-        label.setLayoutData(new GridData(0, 0, true, false, 2, 1));
+        label.setText(Messages.ScaleFontLbl);
+        label.setLayoutData(new GridData());
+
+        scale_font = new Button(parent, SWT.PUSH);
+        scale_font.setToolTipText(Messages.AxesFontTT);
+        scale_font.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        scale_font.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                final FontDialog dialog = new FontDialog(parent.getShell());
+                dialog.setFontList(new FontData[] { model.getScaleFont() });
+                final FontData selected = dialog.open();
+                if (selected != null)
+                    new ChangeScaleFontCommand(model, operations_manager, selected);
+            }
+        });
 
         // Background Color: ______
         label = new Label(parent, 0);

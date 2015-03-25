@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,7 @@ public class Model
     /** Axes configurations */
     final private List<AxisConfig> axes = new CopyOnWriteArrayList<AxisConfig>();
 
-	/** All the items in this model */
+    /** All the items in this model */
     final private List<ModelItem> items = new CopyOnWriteArrayList<ModelItem>();
 
     /** 'run' flag
@@ -113,6 +113,9 @@ public class Model
     /** Background color */
     private volatile RGB background = new RGB(255, 255, 255);
 
+    /** Title font */
+    private volatile FontData title_font = new FontData("", 15, 0);
+
     /** Label font */
     private volatile FontData label_font = new FontData("", 10, 0);
 
@@ -120,26 +123,27 @@ public class Model
     private volatile FontData scale_font = new FontData("", 10, 0);
 
     /** Annotations */
-	private volatile List<AnnotationInfo> annotations = Collections.emptyList();
+    private volatile List<AnnotationInfo> annotations = Collections.emptyList();
 
     /** How should plot rescale when archived data arrives? */
     private volatile ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
     public Model()
-	{
-	    final Display display = Display.getCurrent();
-	    if (display != null)
-	    {   // Based on system font, use BOLD for labels, and smaller version for scales
-	        final FontData default_font = display.getSystemFont().getFontData()[0];
-	        label_font = new FontData(default_font.getName(), default_font.getHeight(), SWT.BOLD);
-	        scale_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
-	    }
-		start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
-		end_spec = RelativeTime.NOW;
-	}
+    {
+        final Display display = Display.getCurrent();
+        if (display != null)
+        {   // Based on system font, use BOLD for labels, and smaller version for scales
+            final FontData default_font = display.getSystemFont().getFontData()[0];
+            title_font = new FontData(default_font.getName(), (default_font.getHeight()*3)/2, SWT.BOLD);
+            label_font = new FontData(default_font.getName(), default_font.getHeight(), SWT.BOLD);
+            scale_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
+        }
+        start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
+        end_spec = RelativeTime.NOW;
+    }
 
     /** @return Should UI ask to save changes to the model? */
-	public boolean shouldSaveChanges()
+    public boolean shouldSaveChanges()
     {
         return save_changes.get();
     }
@@ -155,7 +159,7 @@ public class Model
     /** @param macros Macros to use in this model */
     public void setMacros(final IMacroTableProvider macros)
     {
-    	this.macros = Objects.requireNonNull(macros);
+        this.macros = Objects.requireNonNull(macros);
     }
 
     /** Resolve macros
@@ -164,19 +168,19 @@ public class Model
      */
     public String resolveMacros(final String text)
     {
-    	try
+        try
         {
-	        return MacroUtil.replaceMacros(text, macros);
+            return MacroUtil.replaceMacros(text, macros);
         }
         catch (InfiniteLoopException ex)
         {
-        	Activator.getLogger().log(Level.WARNING,
-        			"Problem in macro {0}: {1}", new Object[] { text, ex.getMessage()});
-        	return "Macro Error";
+            Activator.getLogger().log(Level.WARNING,
+                    "Problem in macro {0}: {1}", new Object[] { text, ex.getMessage()});
+            return "Macro Error";
         }
     }
 
-	/** @param listener New listener to notify */
+    /** @param listener New listener to notify */
     public void addListener(final ModelListener listener)
     {
         listeners.add(Objects.requireNonNull(listener));
@@ -282,11 +286,11 @@ public class Model
      */
     public AxisConfig addAxis()
     {
-		final String name = NLS.bind(Messages.Plot_ValueAxisNameFMT, axes.size() + 1);
-		final AxisConfig axis = new AxisConfig(name);
-		axis.setColor(new RGB(0, 0, 0));
-		addAxis(axis);
-		return axis;
+        final String name = NLS.bind(Messages.Plot_ValueAxisNameFMT, axes.size() + 1);
+        final AxisConfig axis = new AxisConfig(name);
+        axis.setColor(new RGB(0, 0, 0));
+        addAxis(axis);
+        return axis;
     }
 
     /** @param axis New axis to add */
@@ -404,16 +408,16 @@ public class Model
     public void addItem(final ModelItem item) throws Exception
     {
         Objects.requireNonNull(item);
-    	// A new item with the same PV name are allowed to be added in the
-    	// model. This way Data Browser can show the trend of the same PV
-    	// in different axes or with different waveform indexes. For example,
-    	// one may want to show the first element of epics://aaa:bbb in axis 1
-    	// while showing the third element of the same PV in axis 2 to compare
-    	// their trends in one chart.
-    	// But, if exactly the same instance of the given ModelItem already exists in this
-    	// model, it will not be added.
-    	if (items.indexOf(item) != -1)
-    		throw new RuntimeException("Item " + item.getName() + " already in Model");
+        // A new item with the same PV name are allowed to be added in the
+        // model. This way Data Browser can show the trend of the same PV
+        // in different axes or with different waveform indexes. For example,
+        // one may want to show the first element of epics://aaa:bbb in axis 1
+        // while showing the third element of the same PV in axis 2 to compare
+        // their trends in one chart.
+        // But, if exactly the same instance of the given ModelItem already exists in this
+        // model, it will not be added.
+        if (items.indexOf(item) != -1)
+            throw new RuntimeException("Item " + item.getName() + " already in Model");
 
         // Assign default color
         if (item.getColor() == null)
@@ -441,7 +445,7 @@ public class Model
      *  If the model and thus item are 'running',
      *  the item will be 'stopped'.
      *  @param item
-     *  @throws RuntimeException if item is already in model
+     *  @throws RuntimeException if item not in model
      */
     public void removeItem(final ModelItem item)
     {
@@ -464,6 +468,40 @@ public class Model
         // Notify listeners of removed item
         for (ModelListener listener : listeners)
             listener.itemRemoved(item);
+    }
+
+    /** Move item in model.
+     *  <p>
+     *  @param item
+     *  @param up Up? Otherwise down
+     *  @throws RuntimeException if item null or not in model
+     */
+    public void moveItem(final ModelItem item, final boolean up)
+    {
+        final int pos = items.indexOf(Objects.requireNonNull(item));
+        if (pos < 0)
+            throw new RuntimeException("Unknown item " + item.getName());
+        if (up)
+        {
+            if (pos == 0)
+                return;
+            items.remove(pos);
+            items.add(pos-1, item);
+        }
+        else
+        {    // Move down
+            if (pos >= items.size() -1)
+                return;
+            items.remove(pos);
+            items.add(pos+1, item);
+        }
+
+        // Notify listeners of moved item
+        for (ModelListener listener : listeners)
+        {
+            listener.itemRemoved(item);
+            listener.itemAdded(item);
+        }
     }
 
     /** @return Period in seconds for scrolling or refreshing */
@@ -582,18 +620,18 @@ public class Model
         {
             synchronized (this)
             {
-            	if (this.start_spec.equals(start_spec)  &&
-            	    this.end_spec.equals(end_spec))
-            		return;
-            	this.start_spec = start_spec;
-            	this.end_spec = end_spec;
+                if (this.start_spec.equals(start_spec)  &&
+                    this.end_spec.equals(end_spec))
+                    return;
+                this.start_spec = start_spec;
+                this.end_spec = end_spec;
                 this.end_time = end_time;
                 time_span = new_span;
                 scroll_enabled = times.isEndNow();
             }
             // Notify listeners
             for (ModelListener listener : listeners)
-            	listener.changedTimerange();
+                listener.changedTimerange();
         }
     }
 
@@ -614,7 +652,7 @@ public class Model
      */
     synchronized public Instant getStartTime()
     {
-		return getEndTime().minus(time_span);
+        return getEndTime().minus(time_span);
     }
 
     /** @return End time of the data range
@@ -637,8 +675,8 @@ public class Model
      */
     public boolean isAutomaticHistoryRefresh()
     {
-		return automaticHistoryRefresh;
-	}
+        return automaticHistoryRefresh;
+    }
 
     /** @return String representation of start time. While scrolling, this is
      *          a relative time, otherwise an absolute date/time.
@@ -694,6 +732,20 @@ public class Model
             listener.changeTimeAxisConfig();
     }
 
+    /** @return Title font */
+    public FontData getTitleFont()
+    {
+        return title_font;
+    }
+
+    /** @param font Title font */
+    public void setTitleFont(final FontData font)
+    {
+        title_font = font;
+        for (ModelListener listener : listeners)
+            listener.changedColorsOrFonts();
+    }
+
     /** @return Label font */
     public FontData getLabelFont()
     {
@@ -725,18 +777,18 @@ public class Model
     /** @param annotations Annotations to keep in model */
     public void setAnnotations(final List<AnnotationInfo> annotations)
     {
-    	this.annotations = Objects.requireNonNull(annotations);
+        this.annotations = Objects.requireNonNull(annotations);
         for (ModelListener listener : listeners)
             listener.changedAnnotations();
-	}
-
-    /** @return Annotation infos of model */
-	public List<AnnotationInfo> getAnnotations()
-    {
-    	return annotations;
     }
 
-	/** Start all items: Connect PVs, initiate scanning, ...
+    /** @return Annotation infos of model */
+    public List<AnnotationInfo> getAnnotations()
+    {
+        return annotations;
+    }
+
+    /** Start all items: Connect PVs, initiate scanning, ...
      *  @throws Exception on error
      */
     public void start() throws Exception
@@ -832,7 +884,7 @@ public class Model
 
     void fireItemRefreshRequested(final PVItem item)
     {
-    	for (ModelListener listener : listeners)
+        for (ModelListener listener : listeners)
             listener.itemRefreshRequested(item);
     }
 
