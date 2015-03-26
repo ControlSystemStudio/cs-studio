@@ -21,9 +21,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.validation.Activator;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -137,10 +139,12 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                         //if requested to do backup, copy all quick-fixed files to <file>~
                         if (doBackup) {
                             for (IPath path : toFix.keySet()) {
-                                String bck = path.toFile().getAbsolutePath();
+                                IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+                                File file = ifile.getLocation().toFile(); 
+                                String bck = file.getAbsolutePath();
                                 bck = bck + "~";
                                 File backup = new File(bck);
-                                Files.copy(path.toFile().toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
                             }
                         }
                         monitor.worked(1);

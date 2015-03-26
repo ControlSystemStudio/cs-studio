@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.script.RuleData;
@@ -56,7 +57,7 @@ public class SchemaFixer {
         DisplayModel displayModel = null;
         try (InputStream inputStream = ResourceUtil.pathToInputStream(path, false)) {
             displayModel = new DisplayModel(failureToFix[0].getPath());
-            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault(),false);
+            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault());
         } catch (Exception e) {
             throw new IOException("Could not read the opi " + path.toOSString() +".",e);
         }
@@ -181,30 +182,40 @@ public class SchemaFixer {
         
     private static AbstractWidgetModel findWidgetInternal(AbstractContainerModel parent, ValidationFailure failure, 
                 boolean useWuid) {
-        String widgetType;
-        String widgetName;
-        boolean skipCheck = false;
         for (AbstractWidgetModel model : parent.getChildren()) {
-            widgetType = model.getTypeID();
-            widgetName = model.getName();
-            skipCheck = false;
-            if (useWuid) {
-                if (!failure.getWUID().equals(model.getWUID())){
-                    skipCheck = true;
-                }
-            }
-            
-            if (!skipCheck && widgetType.equals(failure.getWidgetType()) && widgetName.equals(failure.getWidgetName())) {
-                Object obj = model.getPropertyValue(failure.getProperty());
-                if (equals(obj, failure.getActualValue())) {
-                    return model;
-                }
-            }
-            if (model instanceof AbstractContainerModel) {
-                AbstractWidgetModel result = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
-                if (result != null) return result;
-            }
+            AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
+            if (m != null) return m;
         }  
+        if (failure.getWidgetType().equals(ConnectionModel.ID) && parent instanceof DisplayModel) {
+            for (ConnectionModel model : ((DisplayModel)parent).getConnectionList()) {
+                AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
+                if (m != null) return m;
+            }
+        }
+        return null;
+    }
+    
+    private static AbstractWidgetModel doesWidgetMatch(AbstractWidgetModel model, ValidationFailure failure,
+            boolean useWuid) {
+        String widgetType = model.getTypeID();
+        String widgetName = model.getName();
+        boolean skipCheck = false;
+        if (useWuid) {
+            if (!failure.getWUID().equals(model.getWUID())){
+                skipCheck = true;
+            }
+        }
+        
+        if (!skipCheck && widgetType.equals(failure.getWidgetType()) && widgetName.equals(failure.getWidgetName())) {
+            Object obj = model.getPropertyValue(failure.getProperty());
+            if (equals(obj, failure.getActualValue())) {
+                return model;
+            }
+        }
+        if (model instanceof AbstractContainerModel) {
+            AbstractWidgetModel result = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
+            if (result != null) return result;
+        }
         return null;
     }
     

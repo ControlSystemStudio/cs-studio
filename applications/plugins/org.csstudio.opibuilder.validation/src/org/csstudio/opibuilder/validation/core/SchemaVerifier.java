@@ -31,6 +31,7 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.LineAwareXMLParser;
 import org.csstudio.opibuilder.persistence.LineAwareXMLParser.LineAwareElement;
@@ -50,9 +51,12 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.widgets.Display;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -302,8 +306,8 @@ public class SchemaVerifier {
                 registerBasePropertyChangeHandlersMethod = AbstractBaseEditPart.class
                         .getDeclaredMethod("registerBasePropertyChangeHandlers");
                 registerBasePropertyChangeHandlersMethod.setAccessible(true);
-                doCreateFigureMethod = AbstractBaseEditPart.class
-                        .getDeclaredMethod("doCreateFigure");
+                doCreateFigureMethod = AbstractGraphicalEditPart.class
+                        .getDeclaredMethod("createFigure");
                 doCreateFigureMethod.setAccessible(true);
             } catch (NoSuchMethodException | SecurityException e) {
                 LOGGER.log(Level.WARNING, "Cannot register property change handlers.", e);
@@ -333,7 +337,7 @@ public class SchemaVerifier {
         DisplayModel displayModel = null;
         try (InputStream inputStream = ResourceUtil.pathToInputStream(opi, false)) {
             displayModel = new DisplayModel(opi);
-            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault(),false);
+            XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault());
         } catch (Exception e) {
             throw new IOException("Could not read the opi " + opi.toOSString() +".",e);
         }
@@ -496,104 +500,109 @@ public class SchemaVerifier {
      * @param failures the list into which all validation failures are stored
      */
     private void check(IPath pathToFile, AbstractContainerModel containerModel, List<ValidationFailure> failures) {
-        AbstractWidgetModel original;
-        Object orgVal, modelVal;
-        String widgetType;
-        ValidationRule rule;
-        int lineNumber, startingFailures;
-        
         for (AbstractWidgetModel model : containerModel.getChildren()) {
-            numberOfAnalyzedWidgets++;
-            widgetType = model.getTypeID();
-            original = schema.get(widgetType);
-            lineNumber = model.getLineNumber();
-            startingFailures = failures.size();
-            initModel(model);
-            if (original != null) {
-                Set<String> properties = model.getAllPropertyIDs() ;
-                for (String p : properties) {
-                    rule = getRuleForProperty(p, widgetType);
-                    modelVal = model.getPropertyValue(p);
-                    orgVal = original.getPropertyValue(p);
-                    //if the checked property is not savable (e.g. background color for action button), ignore it
-                    if (!model.getProperty(p).isSavable()) {
-                        continue;
-                    }
-                    if (rule == ValidationRule.RW) {
-                        numberOfRWProperties++;
-                        //nothing to do in the case of read/write properties except removal, but that is handled below
-                    }
-                    
-                    //actions, rules and scripts are a bit nasty
-                    if (AbstractWidgetModel.PROP_ACTIONS.equals(p)) {
-                        ActionsInput mi = ((ActionsInput)modelVal);
-                        ActionsInput oi = ((ActionsInput)orgVal);
-                        failures.add(checkAction(pathToFile,mi,oi,model,rule));
-                    } else if (AbstractWidgetModel.PROP_RULES.equals(p)) {
-                        List<RuleData> modelRules = ((RulesInput)modelVal).getRuleDataList();
-                        List<RuleData> originalRules = ((RulesInput)orgVal).getRuleDataList();
-                        failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType, 
-                                model.getName(), p, modelRules, originalRules, modelVal, orgVal, rule, lineNumber,
-                                (orgRule,modelRule) -> Utilities.areRulesIdentical(orgRule,modelRule),
-                                (theRule) -> RulesProperty.XML_ELEMENT_RULE,
-                                (therule) -> therule.getName(),
-                                (match) -> Utilities.ruleMatchValueToMessage(match),
-                                (theRule) -> theRule.getName()));
-                    } else if (AbstractWidgetModel.PROP_SCRIPTS.equals(p)) {
-                        List<ScriptData> modelScripts = ((ScriptsInput)modelVal).getScriptList();
-                        List<ScriptData> originalScripts = ((ScriptsInput)orgVal).getScriptList();
-                        failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType, 
-                                model.getName(), p, modelScripts, originalScripts, modelVal, orgVal, rule, lineNumber, 
-                                (orgScript,modelScript) -> Utilities.areScriptsIdentical(orgScript, modelScript),
-                                (script) -> ScriptProperty.XML_ELEMENT_PATH,
-                                (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString(),
-                                (match) -> Utilities.scriptMatchValueToMessage(match),
-                                (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString()));
-                    } else {
-                        if (rule == ValidationRule.RO) {
-                            //read-only properties must have identical values, otherwise it is a failure
-                            numberOfROProperties++;
-                            if (!isPropertyAccepted(widgetType,p,orgVal,modelVal)) {
-                                //the failure is always critical, except for fonts and colors if a predefined value was used
-                                boolean critical = !isPropertyDefined(modelVal);
-                                failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                    model.getName(), p, orgVal, modelVal, rule, critical,true, null, lineNumber,false));
-                                if (critical) {
-                                    numberOfCriticalROFailures++;
-                                } else {
-                                    numberOfMajorROFailures++;
-                                }
-                            } else if (!isFontColorPropertyDefined(modelVal)) {
+            checkWidget(pathToFile, model, failures);
+        }  
+        if (containerModel instanceof DisplayModel) {
+            for (ConnectionModel model : ((DisplayModel) containerModel).getConnectionList()) {
+                checkWidget(pathToFile, model, failures);
+            }
+        }
+    }
+    
+    private void checkWidget(IPath pathToFile, AbstractWidgetModel model, List<ValidationFailure> failures) {
+        numberOfAnalyzedWidgets++;
+        ValidationRule rule;
+        Object orgVal, modelVal;
+        String widgetType = model.getTypeID();
+        AbstractWidgetModel original = schema.get(widgetType);
+        int lineNumber = model.getLineNumber();
+        int startingFailures = failures.size();
+        initModel(model);
+        if (original != null) {
+            Set<String> properties = model.getAllPropertyIDs() ;
+            for (String p : properties) {
+                rule = getRuleForProperty(p, widgetType);
+                modelVal = model.getPropertyValue(p);
+                orgVal = original.getPropertyValue(p);
+                //if the checked property is not savable (e.g. background color for action button), ignore it
+                if (!model.getProperty(p).isSavable()) {
+                    continue;
+                }
+                if (rule == ValidationRule.RW) {
+                    numberOfRWProperties++;
+                    //nothing to do in the case of read/write properties except removal, but that is handled below
+                }
+                //actions, rules and scripts are a bit nasty
+                if (AbstractWidgetModel.PROP_ACTIONS.equals(p)) {
+                    ActionsInput mi = ((ActionsInput)modelVal);
+                    ActionsInput oi = ((ActionsInput)orgVal);
+                    failures.add(checkAction(pathToFile,mi,oi,model,rule));
+                } else if (AbstractWidgetModel.PROP_RULES.equals(p)) {
+                    List<RuleData> modelRules = ((RulesInput)modelVal).getRuleDataList();
+                    List<RuleData> originalRules = ((RulesInput)orgVal).getRuleDataList();
+                    failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType, 
+                            model.getName(), p, modelRules, originalRules, modelVal, orgVal, rule, lineNumber,
+                            (orgRule,modelRule) -> Utilities.areRulesIdentical(orgRule,modelRule),
+                            (theRule) -> RulesProperty.XML_ELEMENT_RULE,
+                            (therule) -> therule.getName(),
+                            (match) -> Utilities.ruleMatchValueToMessage(match),
+                            (theRule) -> theRule.getName()));
+                } else if (AbstractWidgetModel.PROP_SCRIPTS.equals(p)) {
+                    List<ScriptData> modelScripts = ((ScriptsInput)modelVal).getScriptList();
+                    List<ScriptData> originalScripts = ((ScriptsInput)orgVal).getScriptList();
+                    failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType, 
+                            model.getName(), p, modelScripts, originalScripts, modelVal, orgVal, rule, lineNumber, 
+                            (orgScript,modelScript) -> Utilities.areScriptsIdentical(orgScript, modelScript),
+                            (script) -> ScriptProperty.XML_ELEMENT_PATH,
+                            (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString(),
+                            (match) -> Utilities.scriptMatchValueToMessage(match),
+                            (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString()));
+                } else {
+                    if (rule == ValidationRule.RO) {
+                        //read-only properties must have identical values, otherwise it is a failure
+                        numberOfROProperties++;
+                        if (!isPropertyAccepted(widgetType,p,orgVal,modelVal)) {
+                            //the failure is always critical, except for fonts and colors if a predefined value was used
+                            boolean critical = !isPropertyDefined(modelVal);
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                model.getName(), p, orgVal, modelVal, rule, critical,true, null, lineNumber,false));
+                            if (critical) {
+                                numberOfCriticalROFailures++;
+                            } else {
                                 numberOfMajorROFailures++;
-                                failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                        model.getName(), p, orgVal, modelVal, rule, false, true, null, 
-                                        lineNumber,true));
                             }
-                        } else if (rule == ValidationRule.WRITE) {
-                            //write properties must be different and non null
-                            numberOfWRITEProperties++;
-                            if (modelVal == null || String.valueOf(modelVal).trim().isEmpty()) {
-                                //simple write properties are never critical
-                                failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                    model.getName(), p, orgVal, modelVal, rule, false, false, null, lineNumber, false)); 
-                                numberOfWRITEFailures++;
-                            } else if (!isFontColorPropertyDefined(modelVal)) {
-                                numberOfWRITEFailures++;
-                                failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
-                                        model.getName(), p, orgVal, modelVal, rule, false, true, null, 
-                                        lineNumber, true));
-                            }
+                        } else if (!isFontColorPropertyDefined(modelVal)) {
+                            numberOfMajorROFailures++;
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                    model.getName(), p, orgVal, modelVal, rule, false, true, null, 
+                                    lineNumber,true));
+                        }
+                    } else if (rule == ValidationRule.WRITE) {
+                        //write properties must be different and non null
+                        numberOfWRITEProperties++;
+                        if (modelVal == null || String.valueOf(modelVal).trim().isEmpty()) {
+                            //simple write properties are never critical
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                model.getName(), p, orgVal, modelVal, rule, false, false, null, lineNumber, false)); 
+                            numberOfWRITEFailures++;
+                        } else if (!isFontColorPropertyDefined(modelVal)) {
+                            numberOfWRITEFailures++;
+                            failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType, 
+                                    model.getName(), p, orgVal, modelVal, rule, false, true, null, 
+                                    lineNumber, true));
                         }
                     }
                 }
             }
-            if (failures.size() != startingFailures) {
-                numberOfWidgetsFailures++;
-            }
-            if (model instanceof AbstractContainerModel) {
-                check(pathToFile, (AbstractContainerModel)model, failures);
-            }
-        }  
+        }
+        if (failures.size() != startingFailures) {
+            numberOfWidgetsFailures++;
+        }
+        if (model instanceof AbstractContainerModel && !(model instanceof LinkingContainerModel)) {
+            check(pathToFile, (AbstractContainerModel)model, failures);
+        }
+
     }
     
     private void initModel(AbstractWidgetModel model) {
@@ -601,26 +610,31 @@ public class SchemaVerifier {
         //Even if the GUI thread is not required, if some of the GUI stuff will be loaded directly
         //it might end up being loaded with a wrong class loader. That will cause problems later when
         //the same class will be needed by some other plugin.
+        
+       //do not create linking container, because that might try reload the linked OPI, which we don't want at this point
+        if (model instanceof LinkingContainerModel) return;
         Display.getDefault().syncExec(() -> {
-                AbstractBaseEditPart editPart = (AbstractBaseEditPart)editPartFactory.createEditPart(null, model);
-                try {
-                    if (doCreateFigureMethod != null) {
-                        doCreateFigureMethod.invoke(editPart);
+                EditPart editPart = editPartFactory.createEditPart(null, model);
+                if (editPart instanceof AbstractBaseEditPart) {
+                    try {
+                        if (doCreateFigureMethod != null) {
+                            doCreateFigureMethod.invoke(editPart);
+                        }
+                    } catch (Exception e) {
+                        //ignore whatever exception might be thrown, because the edit part is not fully initialised
+                        //we just need the properties to be in the proper visible/invisible state
                     }
-                } catch (Exception e) {
-                    //ignore whatever exception might be thrown, because the edit part is not fully initialised
-                    //we just need the properties to be in the proper visible/invisible state
-                } 
-                try {
-                    if (registerBasePropertyChangeHandlersMethod != null) {
-                        registerBasePropertyChangeHandlersMethod.invoke(editPart);
-                    }
-                } catch (Exception e) {} 
-                try{
-                    if (registerPropertyChangeHandlersMethod != null) {
-                        registerPropertyChangeHandlersMethod.invoke(editPart);
-                    }
-                } catch (Exception e) {} 
+                    try {
+                        if (registerBasePropertyChangeHandlersMethod != null) {
+                            registerBasePropertyChangeHandlersMethod.invoke(editPart);
+                        }
+                    } catch (Exception e) {} 
+                    try{
+                        if (registerPropertyChangeHandlersMethod != null) {
+                            registerPropertyChangeHandlersMethod.invoke(editPart);
+                        }
+                    } catch (Exception e) {}
+                }
                 
             });
         
