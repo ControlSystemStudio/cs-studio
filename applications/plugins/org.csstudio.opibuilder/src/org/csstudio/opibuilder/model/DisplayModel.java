@@ -8,7 +8,9 @@
 package org.csstudio.opibuilder.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.opibuilder.datadefinition.DisplayScaleData;
 import org.csstudio.opibuilder.properties.ActionsProperty;
@@ -268,7 +270,7 @@ public class DisplayModel extends AbstractContainerModel {
 	}
 	
 	private List<ConnectionModel> getConnectionList(AbstractContainerModel container){
-		List<ConnectionModel> connectionModels = new ArrayList<ConnectionModel>();
+		Set<ConnectionModel> connectionModels = new HashSet<ConnectionModel>();
 		List<AbstractWidgetModel> allDescendants = getAllDescendants();
 		for(AbstractWidgetModel widget : allDescendants){
 			if(!widget.getSourceConnections().isEmpty()){
@@ -277,9 +279,16 @@ public class DisplayModel extends AbstractContainerModel {
 						connectionModels.add(connectionModel);
 					}
 				}
-			}			
+			} 
+			if(!widget.getTargetConnections().isEmpty()){
+                for(ConnectionModel connectionModel: widget.getTargetConnections()){
+                    if(allDescendants.contains(connectionModel.getSource())){
+                        connectionModels.add(connectionModel);
+                    }
+                }
+            } 
 		}		
-		return connectionModels;
+		return new ArrayList<>(connectionModels);
 	}
 
 	public AbstractWidgetModel getWidgetFromWUID(String wuid) {
