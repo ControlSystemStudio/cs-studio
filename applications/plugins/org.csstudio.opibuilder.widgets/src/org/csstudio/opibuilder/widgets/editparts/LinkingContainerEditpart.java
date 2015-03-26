@@ -68,13 +68,8 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 					//can happen before the parent is set.
 					return;
 				}
-				getViewer().getControl().getDisplay().timerExec(100,new Runnable() {
+				getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionList());
 					
-					@Override
-					public void run() {
-						updateConnectionList();
-					}
-				});
 			}
 		});
 		return f;
@@ -98,15 +93,10 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	public LinkingContainerModel getWidgetModel() {
 		return (LinkingContainerModel)getModel();
 	}
-	
-
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		
-	    loadWidgets(getWidgetModel().getOPIFilePath(), true); 
-		configureDisplayModel();
-		
+				
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
@@ -151,6 +141,8 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 			}
 		};
 		setPropertyChangeHandler(LinkingContainerModel.PROP_RESIZE_BEHAVIOUR, handler);
+		loadWidgets(getWidgetModel().getOPIFilePath(), true);
+        configureDisplayModel();
 	}
 
 
@@ -233,12 +225,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		}			
 		if (originalPoints != null && !originalPoints.isEmpty())
 			//update connections after the figure is repainted.
-			getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
-				@Override
-				public void run() {
-					updateConnectionList();				
-				}
-			});
+			getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionList());
 
 		//Add scripts on display model
 		if(getExecutionMode() == ExecutionMode.RUN_MODE)
@@ -248,21 +235,19 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		if(getWidgetModel().isAutoSize()){
 			performAutosize();
 		}
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
-				layout();
-				if(//getExecutionMode() == ExecutionMode.RUN_MODE && 
-						!getWidgetModel().isAutoFit() && !getWidgetModel().isAutoSize()){					
-					Rectangle childrenRange = GeometryUtil.getChildrenRange(LinkingContainerEditpart.this);
-					getWidgetModel().setChildrenGeoSize(new Dimension(
-						childrenRange.width + childrenRange.x + figure.getInsets().left + figure.getInsets().right-1,
-						childrenRange.height +childrenRange.y+ figure.getInsets().top + figure.getInsets().bottom-1));
-					getWidgetModel().scaleChildren();
-				}
-				((LinkingContainerFigure)getFigure()).setShowScrollBars(getWidgetModel().isShowScrollBars());
-				((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
-				((LinkingContainerFigure)getFigure()).updateZoom();				
+		UIBundlingThread.getInstance().addRunnable(() -> {
+			layout();
+			if(//getExecutionMode() == ExecutionMode.RUN_MODE && 
+					!getWidgetModel().isAutoFit() && !getWidgetModel().isAutoSize()){					
+				Rectangle childrenRange = GeometryUtil.getChildrenRange(LinkingContainerEditpart.this);
+				getWidgetModel().setChildrenGeoSize(new Dimension(
+					childrenRange.width + childrenRange.x + figure.getInsets().left + figure.getInsets().right-1,
+					childrenRange.height +childrenRange.y+ figure.getInsets().top + figure.getInsets().bottom-1));
+				getWidgetModel().scaleChildren();
 			}
+			((LinkingContainerFigure)getFigure()).setShowScrollBars(getWidgetModel().isShowScrollBars());
+			((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
+			((LinkingContainerFigure)getFigure()).updateZoom();				
 		});
 	}
 
@@ -325,14 +310,8 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	@Override
 	protected synchronized void doRefreshVisuals(IFigure refreshableFigure) {
 		super.doRefreshVisuals(refreshableFigure);
-		
 		//update connections after the figure is repainted.
-		getViewer().getControl().getDisplay().timerExec(100, new Runnable() {			
-			@Override
-			public void run() {
-				updateConnectionList();				
-			}
-		});
+		getViewer().getControl().getDisplay().asyncExec(() ->updateConnectionList());				
 		
 	}
 	
