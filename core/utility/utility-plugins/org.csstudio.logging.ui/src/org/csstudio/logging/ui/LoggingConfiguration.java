@@ -1,8 +1,6 @@
 package org.csstudio.logging.ui;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
@@ -11,8 +9,6 @@ import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -55,8 +51,6 @@ public class LoggingConfiguration extends ViewPart {
     
     private static final String ID = "org.csstudio.logging.ui.LoggingConfiguration";
     
-    private Handler consoleViewHandler;
-    private Handler consoleHandler;
     private ScrolledComposite sc;
     private final Map<String, Logger> loggerMap = new TreeMap<String, Logger>();
     
@@ -125,7 +119,6 @@ public class LoggingConfiguration extends ViewPart {
         LOGGER.setUseParentHandlers(false);
         
         updateLoggerMap();
-        findConsoleViewHandler();
 
 //        Logger rootLogger = Logger.getLogger("");        
 //        final ArrayList<Handler> globalHandlers = new ArrayList<Handler>(Arrays.asList(rootLogger.getHandlers()));
@@ -249,23 +242,10 @@ public class LoggingConfiguration extends ViewPart {
         sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
     }
 
-    private void findConsoleViewHandler(){
-        
-        final ArrayList<Handler> globalHandlers = new ArrayList<Handler>(Arrays.asList(Logger.getLogger("").getHandlers()));
-
-        for (Handler handler : globalHandlers) {
-            if(handler.getClass().equals(ConsoleViewHandler.class)){
-                consoleViewHandler = handler;
-            } else if (handler.getClass().equals(ConsoleHandler.class)){
-                consoleHandler = handler;
-            }
-        }
-    }
-    
     private void updateLoggerMap(){
         LogManager manager = LogManager.getLogManager();
         Enumeration<String> loggerNames = manager.getLoggerNames();        
-        for (Enumeration<String> logger = loggerNames; loggerNames.hasMoreElements();){
+        while (loggerNames.hasMoreElements()) {
             String name = loggerNames.nextElement();
             Logger l = manager.getLogger(name);            
             loggerMap.put(name, l);
