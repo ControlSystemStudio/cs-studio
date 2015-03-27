@@ -36,6 +36,16 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
 	private static final String NOT_IMPLEMENTED = 
 			"This method has not been implemented yet for RAP";
 
+	@Override
+	public File getFile(IPath path) throws Exception {
+		File local_file = path.toFile();
+        // Path URL for "file:..." so that it opens as FileInputStream
+        if (local_file.getPath().startsWith("file:"))
+            local_file = new File(local_file.getPath().substring(5));
+        
+        return local_file.exists() ? local_file : null;
+	}
+	
 	/**
 	 * Return the {@link InputStream} of the file that is available on the
 	 * specified path.
@@ -177,9 +187,4 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
 	public Image getScreenShotImage(GraphicalViewer viewer) {
 		throw new RuntimeException(NOT_IMPLEMENTED);
 	}	
-
-	
-
-
-
 }
