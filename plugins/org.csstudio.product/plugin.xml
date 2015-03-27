@@ -34,10 +34,6 @@
                value="Control System Studio">
          </property>
          <property
-               name="introDescription"
-               value="org.csstudio.product.property5">
-         </property>
-         <property
                name="windowImages"
                value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png">
          </property>
@@ -58,12 +54,16 @@
                value="platform:/config/plugin_customization.ini">
          </property>
          <property
-               name="introDescription-overview "
-               value="An overview of the various CSS applications which are part of the cs-studio product">
+               name="introDescription-firststeps"
+               value="Getting started with CS-Studio">
          </property>
          <property
-               name="introDescription-firststeps"
-               value="The following documents....">
+               name="introDescription-tutorials"
+               value="Learn how to use CS-Studio">
+         </property>
+         <property
+               name="introDescription-whatsnew"
+               value="New features in CS-Studio">
          </property>
          <property
                name="aboutImage"
