@@ -27,11 +27,6 @@
 			<artifactId>epics-vtype</artifactId>
 			<version>${pvmanager.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.csstudio</groupId>
-			<artifactId>org.csstudio.platform.libs.epics</artifactId>
-			<version>${csstudio.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>

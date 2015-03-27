@@ -3,22 +3,15 @@ package org.csstudio.utility.pvmanager.extra;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.formula.FormulaFunctionSet;
 import org.epics.pvmanager.formula.FormulaRegistry;
-import org.epics.pvmanager.service.Service;
-import org.epics.pvmanager.service.ServiceRegistry;
 
 public class Activator extends Plugin {
 

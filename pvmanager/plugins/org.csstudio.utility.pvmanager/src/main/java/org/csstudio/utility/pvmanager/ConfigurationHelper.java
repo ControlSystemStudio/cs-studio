@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.service.Service;
 import org.epics.pvmanager.service.ServiceFactory;
-import org.epics.pvmanager.service.ServiceRegistry;
 
 /**
  * Helper class to configure PVManager data sources based on extension points.
