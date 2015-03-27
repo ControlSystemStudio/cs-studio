@@ -54,6 +54,9 @@ public class FileUtil {
 	 */
 	public static Element loadXMLFile(final String filePath, final AbstractBaseEditPart widget) throws Exception{	
 		final IPath path = buildAbsolutePath(filePath, widget);
+		//set this to resolve Xincludes
+		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration",
+		        "org.apache.xerces.parsers.XIncludeParserConfiguration");
 		SAXBuilder saxBuilder = new SAXBuilder();
 		File file = ResourceUtil.getFile(path);
 		final Document doc;
