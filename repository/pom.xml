@@ -31,7 +31,7 @@
 			<plugin>
 				<groupId>org.reficio</groupId>
 				<artifactId>p2-maven-plugin</artifactId>
-				<version>1.1.1-SNAPSHOT</version>
+				<version>1.1.1</version>
 				<executions>
 					<execution>
 						<id>default-cli</id>
@@ -39,59 +39,43 @@
 							<goal>site</goal>
 						</goals>
 						<configuration>
+							<categoryFileURL>${project.basedir}/category.xml</categoryFileURL>
 							<artifacts>
 								<!-- specify your dependecies here -->
 								<!-- groupId:artifactId:version -->
 								
 								<!--  EPICS artifacts -->
 								<artifact>
-									<id>epics:pvDataJava:${pvdata.version}</id>
-									<instructions>
-										<Bundle-Name>org.epics.pvdata</Bundle-Name>
-										<Bundle-SymbolicName>org.epics.pvdata</Bundle-SymbolicName>
-									</instructions>
-									<transitive>false</transitive>
+									<id>org.epics:pvDataJava:${pvdata.version}</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
-									<id>epics:pvAccessJava:${pvaccess.version}</id>
-									<instructions>
-										<Bundle-Name>org.epics.pvaccess</Bundle-Name>
-										<Bundle-SymbolicName>org.epics.pvaccess</Bundle-SymbolicName>
-										<Require-Bundle>org.epics.pvdata</Require-Bundle>
-									</instructions>
-									<transitive>false</transitive>
+									<id>org.epics:pvAccessJava:${pvaccess.version}</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
 									<id>org.epics:pvmanager-integration:${pvmanager.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.epics:pvmanager-graphene:${pvmanager.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.epics:graphene:${graphene.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.epics:epics-vtype:${pvmanager.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.epics:vtype-json:${pvmanager.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.epics:epics-util:${epics.util.version}</id>
 									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								
 								
@@ -222,71 +206,45 @@
 
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.epics:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.vtype:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.exec:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.file:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.file.json:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.jdbc:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.loc:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.pva:${csstudio.version}</id>
-									<source>true</source>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.sim:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.sys:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.extra:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.utility.pvmanager.graphene:${csstudio.version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
 								</artifact>
 								<artifact>
 									<id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
-									<source>true</source>
 								</artifact>
 							</artifacts>
 						</configuration>
