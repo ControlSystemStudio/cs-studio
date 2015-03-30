@@ -27,13 +27,13 @@ import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
 
-/** Command that executes the commands in its body in parallel
+/** Command that executes the commands in its body
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class SequenceCommandImpl extends ScanCommandImpl<SequenceCommand>
 {
-	final private List<ScanCommandImpl<?>> implementation;
+    final private List<ScanCommandImpl<?>> implementation;
 
     /** Initialize
      *  @param command Command description
@@ -54,7 +54,7 @@ public class SequenceCommandImpl extends ScanCommandImpl<SequenceCommand>
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public long getWorkUnits()
     {
         long body_units = 1; // One unit for this command, rest for body
@@ -77,26 +77,26 @@ public class SequenceCommandImpl extends ScanCommandImpl<SequenceCommand>
         return device_names.toArray(new String[device_names.size()]);
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-    	context.simulate(implementation);
+        context.simulate(implementation);
     }
 
-	/** {@inheritDoc} */
-	@Override
-	public void execute(final ScanContext context) throws Exception
-	{
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final ScanContext context) throws Exception
+    {
+        context.workPerformed(1);
         for (ScanCommandImpl<?> body_command : implementation)
             context.execute(body_command);
-        context.workPerformed(1);
-	}
+    }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    return command.toString();
-	}
+    @Override
+    public String toString()
+    {
+        return command.toString();
+    }
 }
