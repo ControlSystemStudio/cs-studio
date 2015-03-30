@@ -91,6 +91,11 @@
                label="Remove Tag"
                style="push">
          </command>
+         <command
+               commandId="org.csstudio.utility.channel.addProperty"
+               label="Add Property"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -109,9 +114,18 @@
       </command>
       <command
             defaultHandler="org.csstudio.utility.channel.actions.RemoveTagCommandHandler"
-            description="Tag the selected channels"
+            description="Remove tag from the selected channels"
             id="org.csstudio.utility.channel.removeTag"
             name="Remove Tag">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.AddPropertyCommandHandler"
+            id="org.csstudio.utility.channel.addProperty"
+            name="Add Property">
+      </command>
+      <command
+            id="org.csstudio.utility.channel.removeProperty"
+            name="Remove property">
       </command>
    </extension>
 
