@@ -78,6 +78,7 @@ public class PlotPart
     /** @return Part name */
     public void setName(final String name)
     {
+        Objects.requireNonNull(name);
         synchronized (this)
         {
             if (name.equals(this.name))
@@ -85,6 +86,7 @@ public class PlotPart
             this.name = name;
         }
         requestLayout();
+        requestRefresh();
     }
 
     /** @return Color to use for this part */
@@ -171,7 +173,7 @@ public class PlotPart
         }
     }
 
-    /** Derived part can implement to allow disposal of resou`rces */
+    /** Derived part can implement to allow disposal of resources */
     public void dispose()
     {
         // NOP

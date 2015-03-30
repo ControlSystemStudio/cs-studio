@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Oak Ridge National Laboratory.
+ * Copyright (c) 2014-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.swt.rtplot.data.PlotDataItem;
@@ -19,6 +20,7 @@ import org.csstudio.swt.rtplot.data.PlotDataProvider;
 import org.csstudio.swt.rtplot.internal.AnnotationImpl;
 import org.csstudio.swt.rtplot.internal.MouseMode;
 import org.csstudio.swt.rtplot.internal.Plot;
+import org.csstudio.swt.rtplot.internal.SnapshotAction;
 import org.csstudio.swt.rtplot.internal.ToggleToolbarAction;
 import org.csstudio.swt.rtplot.internal.ToolbarHandler;
 import org.csstudio.swt.rtplot.internal.TraceImpl;
@@ -46,6 +48,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     final protected Plot<XTYPE> plot;
     final protected ToolbarHandler<XTYPE> toolbar;
     final private ToggleToolbarAction<XTYPE> toggle_toolbar;
+    final private Action snapshot;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected RTPlot(final Composite parent, final Class<XTYPE> type)
@@ -64,12 +67,14 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
             plot = (Plot) new Plot<Double>(this, Double.class);
             toolbar = (ToolbarHandler) new ToolbarHandler<Double>((RTPlot)this);
             toggle_toolbar = (ToggleToolbarAction) new ToggleToolbarAction<Double>((RTPlot)this, true);
+            snapshot = new SnapshotAction(this);
         }
         else if (type == Instant.class)
         {
             plot = (Plot) new Plot<Instant>(this, Instant.class);
             toolbar = (ToolbarHandler) new ToolbarHandler<Instant>((RTPlot)this);
             toggle_toolbar = (ToggleToolbarAction) new ToggleToolbarAction<Double>((RTPlot)this, true);
+            snapshot = new SnapshotAction(this);
         }
         else
             throw new IllegalArgumentException("Cannot handle " + type.getName());
@@ -113,25 +118,40 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         return toggle_toolbar;
     }
 
+    /** @return {@link Action} that saves a snapshot of the plot */
+    public Action getSnapshotAction()
+    {
+        return snapshot;
+    }
+
     /** @param color Background color */
     public void setBackground(final RGB color)
     {
-        Objects.requireNonNull(color);
-        plot.setBackground(color);
+        plot.setBackground(Objects.requireNonNull(color));
+    }
+
+    /** @param title Title text */
+    public void setTitle(final Optional<String> title)
+    {
+        plot.setTitle(title);
+    }
+
+    /** @param font Font to use for title */
+    public void setTitleFont(final FontData font)
+    {
+        plot.setTitleFont(Objects.requireNonNull(font));
     }
 
     /** @param font Font to use for labels */
     public void setLabelFont(final FontData font)
     {
-        Objects.requireNonNull(font);
-        plot.setLabelFont(font);
+        plot.setLabelFont(Objects.requireNonNull(font));
     }
 
     /** @param font  Font to use for scale */
     public void setScaleFont(final FontData font)
     {
-        Objects.requireNonNull(font);
-        plot.setScaleFont(font);
+        plot.setScaleFont(Objects.requireNonNull(font));
     }
 
     /** @return {@link Image} of current plot. Caller must dispose */
