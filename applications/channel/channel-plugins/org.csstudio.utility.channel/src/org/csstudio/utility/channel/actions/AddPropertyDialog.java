@@ -41,6 +41,25 @@ public class AddPropertyDialog extends TitleAreaDialog {
         this.propertyNames = existingPropertyNames;
     }
 
+    /**
+     * Creates the dialog's contents
+     * 
+     * @param parent the parent composite
+     * @return Control
+     */
+    @Override
+    protected Control createContents(Composite parent) {
+      Control contents = super.createContents(parent);
+
+      // Set the title
+      setTitle("Add Property");
+
+      // Set the message
+      setMessage("Add the following selected property to all the selection channel");
+
+      return contents;
+    }
+    
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
@@ -64,12 +83,8 @@ public class AddPropertyDialog extends TitleAreaDialog {
             }
         });
 
-        combo.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-                propertyName = ((Combo) e.getSource()).getText();
-            }
+        combo.addModifyListener((ModifyEvent e) -> {
+            propertyName = ((Combo) e.getSource()).getText();
         });
 
         Label propertyValueLabel = new Label(composite, SWT.NONE);
@@ -77,12 +92,8 @@ public class AddPropertyDialog extends TitleAreaDialog {
         
         text = new Text(composite, SWT.NONE);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-        text.addModifyListener(new ModifyListener(){
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-                propertyValue = text.getText();
-            }            
+        text.addModifyListener((ModifyEvent e) -> {
+            propertyValue = text.getText();
         });
         
         return super.createDialogArea(parent);
