@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.util.Collections;
 import java.util.List;
 
 /** Command that executes commands it its body
@@ -24,6 +25,12 @@ import java.util.List;
 @SuppressWarnings("nls")
 public class SequenceCommand extends ScanCommandWithBody
 {
+    /** Initialize with empty body */
+    public SequenceCommand()
+    {
+        super(Collections.emptyList());
+    }
+
     /** Initialize
      *  @param body Body commands, may be empty
      */
