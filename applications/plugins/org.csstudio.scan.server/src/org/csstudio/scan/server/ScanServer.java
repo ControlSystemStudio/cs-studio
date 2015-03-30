@@ -30,7 +30,7 @@ import org.csstudio.scan.device.DeviceInfo;
 public interface ScanServer
 {
     /** Version */
-    final public static String VERSION = "4";
+    final public static String VERSION = "4.2";
 
     /** @return Info about the scan server
      *  @throws Exception on error
