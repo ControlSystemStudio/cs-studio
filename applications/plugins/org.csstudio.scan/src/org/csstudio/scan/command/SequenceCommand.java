@@ -49,11 +49,11 @@ public class SequenceCommand extends ScanCommandWithBody
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
+    @Override
+    public String toString()
+    {
         final StringBuilder buf = new StringBuilder();
         buf.append("Sequence");
         return buf.toString();
-	}
+    }
 }
