@@ -315,7 +315,10 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 					imageData = SVGUtils.toSWT(Display.getCurrent(), awtImage);
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							image = null;
+						    if (image != null && !image.isDisposed()) {
+						        image.dispose();
+						        image = null;
+						    }
 							repaint();
 						}
 					});
