@@ -3,10 +3,10 @@
  */
 package org.csstudio.utility.channel.actions;
 
-import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelNames;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderException;
+import gov.bnl.channelfinder.api.ChannelUtil;
 import gov.bnl.channelfinder.api.Property;
 
 import java.util.Collection;
@@ -43,7 +43,7 @@ public class AddProperty2ChannelsJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Adding Properties to channels", IProgressMonitor.UNKNOWN);		
 		try {
-			ChannelFinder.getClient().update(property, getCSSChannelNames(channels));
+			ChannelFinder.getClient().update(property, ChannelUtil.getChannelNames(channels));
 		} catch (ChannelFinderException e) {
 			return new Status(Status.ERROR,
 					Activator.PLUGIN_ID,

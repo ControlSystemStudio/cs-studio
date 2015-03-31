@@ -4,10 +4,10 @@
 package org.csstudio.utility.channel.actions;
 
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
-import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelNames;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderException;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -61,7 +61,7 @@ public class RemoveTagsJob extends Job {
 				String tagName = iterator.next();
 				monitor.subTask("Removing tag " + tagName);
 				ChannelFinder.getClient().delete(tag(tagName),
-						getCSSChannelNames(channels));
+				        ChannelUtil.getChannelNames(channels));
 				monitor.worked(1);
 			}
 		} catch (ChannelFinderException e) {
