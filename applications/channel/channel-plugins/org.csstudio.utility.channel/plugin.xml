@@ -96,6 +96,11 @@
                label="Add Property"
                style="push">
          </command>
+         <command
+               commandId="org.csstudio.utility.channel.removeProperty"
+               label="Remove Property"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -124,6 +129,7 @@
             name="Add Property">
       </command>
       <command
+            defaultHandler="org.csstudio.utility.channel.actions.RemovePropertyCommandHandler"
             id="org.csstudio.utility.channel.removeProperty"
             name="Remove property">
       </command>
