@@ -29,6 +29,9 @@
          <attribute
                name="validationFailure">
          </attribute>
+         <attribute
+               name="wuid">
+         </attribute>
    </extension>
    <extension
          id="opiLoadingError"
@@ -51,12 +54,35 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="ValidationPreferencePage"
+            category="org.csstudio.opibuilder.preferences"
             class="org.csstudio.opibuilder.validation.ui.PreferencesPage"
             id="org.csstudio.opibuilder.validation.opiValidationPreference"
             name="Opi Validation">
       </page>
    </extension>
-   
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.opibuilder.opieditor">
+         <view
+               closeable="true"
+               id="org.eclipse.ui.views.ProblemView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.console.ConsoleView"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+       point="org.eclipse.help.toc">
+    <toc
+          file="toc.xml"
+          primary="false">
+    </toc>
+ </extension>
 
 </plugin>

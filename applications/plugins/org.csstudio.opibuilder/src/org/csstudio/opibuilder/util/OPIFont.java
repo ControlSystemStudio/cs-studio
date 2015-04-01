@@ -121,5 +121,38 @@ public class OPIFont{
 	public String toString() {
 		return fontName;
 	}
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((fontData == null) ? 0 : fontData.hashCode());
+        result = prime * result + ((fontName == null) ? 0 : fontName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        OPIFont other = (OPIFont) obj;
+        if (fontData == null) {
+            if (other.fontData != null)
+                return false;
+        } else if (!fontData.equals(other.fontData))
+            return false;
+        if (fontName == null) {
+            if (other.fontName != null)
+                return false;
+        } else if (!fontName.equals(other.fontName))
+            return false;
+        return true;
+    }
+	
+	
 	
 }

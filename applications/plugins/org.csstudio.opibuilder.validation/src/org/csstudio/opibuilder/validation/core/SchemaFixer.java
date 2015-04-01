@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.script.RuleData;
@@ -26,6 +27,9 @@ import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Display;
 
@@ -62,7 +66,7 @@ public class SchemaFixer {
             fixFailure:
             if (f instanceof SubValidationFailure) {
                 //this is a sub failure in action, script or rule
-                if (((SubValidationFailure)f).isFixed()) return;
+                if (((SubValidationFailure)f).isFixed()) continue;
                 //if the parent is being fixed, do not fix this one, it will be fixed by the parent
                 ValidationFailure parent = ((SubValidationFailure) f).getParent();
                 for (ValidationFailure ff : failureToFix) {
@@ -72,16 +76,17 @@ public class SchemaFixer {
                 }
                 
                 //fix the sub validation failure
-                AbstractWidgetModel model = findWidget(displayModel, parent, true);
+                AbstractWidgetModel model = findWidget(displayModel, parent);
                 if (model == null) {
                     continue;
                 }
                 fixSubValidation((SubValidationFailure)f,model);
             } else {
-                AbstractWidgetModel model = findWidget(displayModel, f, true);
+                AbstractWidgetModel model = findWidget(displayModel, f);
                 if (model == null) {
                     continue;
                 }
+                
                 if (f.getRule() == ValidationRule.RO) {
                     model.setPropertyValue(f.getProperty(), f.getExpectedValue());
                 } else if (f.getRule() == ValidationRule.WRITE) {
@@ -89,19 +94,33 @@ public class SchemaFixer {
                     //in this case add the missing ones to the model
                     Object value = model.getPropertyValue(f.getProperty());
                     addToValue(value, f.getExpectedValue());
+                } else if (f.getRule() == ValidationRule.RW) {
+                    //if this is color
+                    if (f.isUsingUndefinedValue()) {
+                        model.setPropertyValue(f.getProperty(), f.getExpectedValue());
+                    }
                 }
                 if (f.hasSubFailures()) {
                     SubValidationFailure[] subs = f.getSubFailures();
                     for (SubValidationFailure s : subs) {
+                        if (s.isToBeRemoved()) {
+                            fixSubValidation(s, model);
+                        }
                         s.setFixed(true);
                     }
                 }
             }
         }
         
-        try (FileOutputStream output = new FileOutputStream(path.toFile())) {
-            XMLUtil.widgetToOutputStream(displayModel, output, true);
-        }        
+        IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path, false);
+        if (r!= null && r instanceof IFile) {
+            IFile file = (IFile) r;
+            if (file.exists()) {
+                try (FileOutputStream output = new FileOutputStream(file.getLocation().toFile())) {
+                    XMLUtil.widgetToOutputStream(displayModel, output, true);
+                }              
+            }
+        }    
     }
     
     /**
@@ -151,37 +170,51 @@ public class SchemaFixer {
      * 
      * @param parent the parent to look for the widget model in
      * @param failure the failure to match
-     * @param useWuid if true the wuid of the model has to match the wuid of the failure
      * @return the widget model if found, or null if match was not found
      */
-    private static AbstractWidgetModel findWidget(AbstractContainerModel parent, ValidationFailure failure, 
-            boolean useWuid) {
-        String widgetType;
-        String widgetName;
-        boolean skipCheck = false;
+    private static AbstractWidgetModel findWidget(AbstractContainerModel parent, ValidationFailure failure) {
+        AbstractWidgetModel model = findWidgetInternal(parent,failure,true);
+        if (model == null) {
+            model = findWidgetInternal(parent, failure, false);
+        }
+        return model;
+    }
+        
+    private static AbstractWidgetModel findWidgetInternal(AbstractContainerModel parent, ValidationFailure failure, 
+                boolean useWuid) {
         for (AbstractWidgetModel model : parent.getChildren()) {
-            widgetType = model.getTypeID();
-            widgetName = model.getName();
-            skipCheck = false;
-            if (useWuid) {
-                if (!failure.getWUID().equals(model.getWUID())){
-                    skipCheck = true;
-                }
-            }
-            
-            if (!skipCheck && widgetType.equals(failure.getWidgetType()) && widgetName.equals(failure.getWidgetName())) {
-                Object obj = model.getPropertyValue(failure.getProperty());
-                if (equals(obj, failure.getActualValue())) {
-                    return model;
-                }
-            }
-            if (model instanceof AbstractContainerModel) {
-                AbstractWidgetModel result = findWidget((AbstractContainerModel)model, failure, useWuid);
-                if (result != null) return result;
-            }
+            AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
+            if (m != null) return m;
         }  
+        if (failure.getWidgetType().equals(ConnectionModel.ID) && parent instanceof DisplayModel) {
+            for (ConnectionModel model : ((DisplayModel)parent).getConnectionList()) {
+                AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
+                if (m != null) return m;
+            }
+        }
+        return null;
+    }
+    
+    private static AbstractWidgetModel doesWidgetMatch(AbstractWidgetModel model, ValidationFailure failure,
+            boolean useWuid) {
+        String widgetType = model.getTypeID();
+        String widgetName = model.getName();
+        boolean skipCheck = false;
         if (useWuid) {
-            return findWidget(parent, failure, false);
+            if (!failure.getWUID().equals(model.getWUID())){
+                skipCheck = true;
+            }
+        }
+        
+        if (!skipCheck && widgetType.equals(failure.getWidgetType()) && widgetName.equals(failure.getWidgetName())) {
+            Object obj = model.getPropertyValue(failure.getProperty());
+            if (equals(obj, failure.getActualValue())) {
+                return model;
+            }
+        }
+        if (model instanceof AbstractContainerModel) {
+            AbstractWidgetModel result = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
+            if (result != null) return result;
         }
         return null;
     }
@@ -255,7 +288,35 @@ public class SchemaFixer {
         ValidationFailure parent = failure.getParent();
         Object propValue = model.getPropertyValue(parent.getProperty());
         ValidationRule rule = failure.getRule();
-        if (rule == ValidationRule.WRITE) {
+        if (failure.isToBeRemoved()) {
+            //describes a sub item that needs to be removed
+            Object toRemove = failure.getActualValue();
+            if (toRemove instanceof RuleData) {
+                List<RuleData> list = ((RulesInput)propValue).getRuleDataList();
+                for (int i = 0; i < list.size(); i++) {
+                    if (Utilities.areRulesIdentical(list.get(i), (RuleData)toRemove) == 0) {
+                        list.remove(i);
+                        break;
+                    }
+                }
+            } else if (toRemove instanceof ScriptData) {
+                List<ScriptData> list = ((ScriptsInput)propValue).getScriptList();
+                for (int i = 0; i < list.size(); i++) {
+                    if (Utilities.areScriptsIdentical(list.get(i), (ScriptData)toRemove) == 0) {
+                        list.remove(i);
+                        break;
+                    }
+                }
+            } else if (toRemove instanceof AbstractWidgetAction) {
+                List<AbstractWidgetAction> list = ((ActionsInput)propValue).getActionsList();
+                for (int i = 0; i < list.size(); i++) {
+                    if (Utilities.areActionsIdentical(list.get(i), (AbstractWidgetAction)toRemove) == 0) {
+                        list.remove(i);
+                        break;
+                    }
+                }
+            }  
+        } else if (rule == ValidationRule.WRITE) {
             //expected sub value is missing
             Object toAdd = failure.getExpectedValue();
             if (toAdd instanceof RuleData) {

@@ -57,7 +57,7 @@ public class ResourceUtil {
 	public static void pathToInputStreamInJob(final IPath path, 
 			final AbstractInputStreamRunnable uiTask, final String jobName,
 			final IJobErrorHandler errorHandler){
-		final Display display = Display.getCurrent();
+		final Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
 		Job job = new Job(jobName) {
 			
 			@Override

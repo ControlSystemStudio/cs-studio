@@ -605,7 +605,7 @@ public class XMLUtil {
 	}
 
 	private static Element inputStreamToXML(InputStream stream) throws JDOMException, IOException {
-		SAXBuilder saxBuilder = new SAXBuilder();	
+	    SAXBuilder saxBuilder = LineAwareXMLParser.createBuilder(); 
 		Document doc = saxBuilder.build(stream);
 		Element root = doc.getRootElement();
 		return root;

@@ -44,6 +44,8 @@ public class Activator extends AbstractUIPlugin {
     public static final String PREF_NEST_MARKERS = "nestMarkers";
     /** Preference if all workspace makers should be cleared at the start of each validation */
     public static final String PREF_CLEAR_MARKERS = "clearMarkers";
+    /** Preference if markers should be displayed in the default editor or in the text editor when double clicked */
+    public static final String PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR = "showMarkersInDefaultEditor";
     
     private static Activator instance; 
     
@@ -136,6 +138,14 @@ public class Activator extends AbstractUIPlugin {
      */
     public boolean isClearMarkers() {
         return getPreferenceStore().getBoolean(PREF_CLEAR_MARKERS);
+    }
+    
+    /**
+     * @return true if the markers are displayed in the default editor (e.g. OPI editor) or false if the markers
+     *          are displayed in the text editor
+     */
+    public boolean isShowMarkersInDefaultEditor() {
+        return getPreferenceStore().getBoolean(PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR);
     }
     
     private static IPath getExistFileInRepoAndSearchPath(String pathString){

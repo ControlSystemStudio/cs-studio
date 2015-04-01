@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class ValidationFailure {
+public class ValidationFailure implements Comparable<ValidationFailure> {
     
     private final String widgetType;
     private final String widgetName;
@@ -35,6 +35,7 @@ public class ValidationFailure {
     private final boolean isCritical;
     private final boolean isFixable;
     private final String forcedMessage;
+    private final boolean usingNonDefinedValue;
     
     private int lineNumber;
     
@@ -56,10 +57,12 @@ public class ValidationFailure {
      * @param isFixable true if the failure can be fixed automatically or false otherwise
      * @param forcedMessage the forced message to be returned by {@link #getMessage()}. If null, it will be composed
      *          when the {@link #getMessage()} is called 
+     * @param lineNumber the line number at which the failure occurred
+     * @param usingNonDefinedValue true if this failure is due to a font or color using one of the non defined values
      */
     ValidationFailure(IPath path, String wuid, String widgetType, String widgetName, 
             String property, Object expected, Object actual, ValidationRule rule, boolean isCritical,
-            boolean isFixable, String forcedMessage) {
+            boolean isFixable, String forcedMessage, int lineNumber, boolean usingNonDefinedValue) {
         this.widgetType = widgetType;
         this.widgetName = widgetName;
         this.property = property;
@@ -73,6 +76,8 @@ public class ValidationFailure {
         this.wuid = wuid == null ? "" : wuid; //old OPIs might not have the WUIDs
         this.isFixable = isFixable;
         this.forcedMessage = forcedMessage;
+        this.lineNumber = lineNumber;
+        this.usingNonDefinedValue = usingNonDefinedValue;
     }
     
     /**
@@ -84,15 +89,23 @@ public class ValidationFailure {
         if (forcedMessage != null) {
             return forcedMessage;
         }
+        if (usingNonDefinedValue) {
+            return new StringBuilder(property.length() + actual.length() + 40).append(property)
+                    .append(": '").append(actual).append("' is not one of the predefined values").toString();
+        }
         if (rule == ValidationRule.RO) {
-            return new StringBuilder(property.length() + expected.length() + actual.length() + 26)
+            if (expectedValue != null) {
+                return new StringBuilder(property.length() + expected.length() + actual.length() + 26)
                     .append(property).append(": expected: '").append(expected).append("' but was: '")
                     .append(actual).append('\'').toString();
+            }
         } else if (rule == ValidationRule.WRITE) {
-            return new StringBuilder(property.length() + 11).append(property).append(" is not set").toString();
-        } else {
-            return "What could be wrong?";
-        }
+            if (expectedValue != null) {
+                return new StringBuilder(property.length() + 11).append(property).append(" is not set").toString();
+            }
+        } 
+        //should not happen
+        return null;
     }
     
     /**
@@ -231,6 +244,13 @@ public class ValidationFailure {
         return isFixable;
     }
     
+    /**
+     * @return true if an undefined value is being used or false otherwise (this is a hint for the quick fix)
+     */
+    public boolean isUsingUndefinedValue() {
+        return usingNonDefinedValue;
+    }
+    
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -238,5 +258,21 @@ public class ValidationFailure {
     @Override
     public String toString() {
         return getMessage();
+    }
+    
+    @Override
+    public int compareTo(ValidationFailure o) {
+        int c = this.lineNumber - o.lineNumber;
+        if (c != 0) return c;
+        if (this.wuid != null) {
+            c = this.wuid.compareTo(o.wuid);
+        } 
+        if (c != 0) return c;    
+        
+        if (this.widgetName != null) {
+            c = this.widgetName.compareTo(o.widgetName);
+        } 
+        if (c != 0) return c;
+        return this.widgetType.compareTo(o.widgetType);
     }
 }

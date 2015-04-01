@@ -63,7 +63,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 			
 			@Override
 			public void zoomChanged(double arg0) {
-				if (getViewer() == null) {
+				if (getViewer() == null || getViewer().getControl() == null) {
 					//depending on the OPI and the current zoom value, the event
 					//can happen before the parent is set.
 					return;
