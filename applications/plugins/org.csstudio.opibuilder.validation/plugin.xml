@@ -57,7 +57,7 @@
             category="org.csstudio.opibuilder.preferences"
             class="org.csstudio.opibuilder.validation.ui.PreferencesPage"
             id="org.csstudio.opibuilder.validation.opiValidationPreference"
-            name="Opi Validation">
+            name="OPI Validation">
       </page>
    </extension>
    <extension

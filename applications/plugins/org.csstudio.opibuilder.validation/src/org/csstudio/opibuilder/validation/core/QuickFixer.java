@@ -39,6 +39,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator2;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.views.markers.WorkbenchMarkerResolution;
 import org.eclipse.wst.validation.internal.ValType;
 import org.eclipse.wst.validation.internal.ValidationRunner;
@@ -106,7 +107,23 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
          * @see org.eclipse.ui.views.markers.WorkbenchMarkerResolution#run(org.eclipse.core.resources.IMarker[], org.eclipse.core.runtime.IProgressMonitor)
          */
         @Override
-        public void run(IMarker[] markers, IProgressMonitor monitor) {
+        public void run(final IMarker[] markers, final IProgressMonitor monitor) {
+            Set<IResource> resources = new HashSet<>();
+            for (IMarker m : markers) {
+                resources.add(m.getResource());
+            }
+            try {
+                if(!Utilities.shouldContinueIfFileOpen("quick fix", 
+                        resources.toArray(new IResource[resources.size()]))) {
+                    monitor.setCanceled(true);
+                    return;
+                }
+            } catch (PartInitException e) {
+                LOGGER.log(Level.SEVERE, "Could not obtain editor inputs.", e);
+                monitor.setCanceled(true);
+                return;
+            }
+            
             final boolean doBackup;
             if (Activator.getInstance().isShowBackupDialog()) {
                 doBackup = MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Backup",
