@@ -150,7 +150,16 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	 * @param path the path of the OPI file
 	 */
 	private synchronized void loadWidgets(final IPath path, final boolean checkSelf) {
-		getWidgetModel().removeAllChildren();
+	  //remove all children of this linking container
+        DisplayModel display = getWidgetModel().getDisplayModel();
+        List<AbstractWidgetModel> models = new ArrayList<>(getWidgetModel().getChildren());
+        getWidgetModel().removeAllChildren();
+        if (display != null) {
+            //if any of the children are also present in the display, remove them as well
+            for (AbstractWidgetModel m : models) {
+                display.removeChild(m);
+            }
+        }
 		if(path ==null || path.isEmpty())
 			return;
 		try {
