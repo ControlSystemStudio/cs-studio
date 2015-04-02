@@ -167,6 +167,7 @@ public class SVGHandler {
 			updateManager = new UpdateManager(bridgeContext, gvtRoot, svgDocument);
 			updateManager.addUpdateManagerListener(listener);
 		}
+		setAnimationLimitingFPS(10);
 	}
 
 	public void dispose() {
