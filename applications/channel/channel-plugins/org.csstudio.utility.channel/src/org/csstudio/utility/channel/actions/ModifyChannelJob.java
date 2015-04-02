@@ -50,16 +50,17 @@ public class ModifyChannelJob extends Job{
     protected IStatus run(IProgressMonitor monitor) {
         ChannelFinderClient client = ChannelFinder.getClient();
         String channelName = orginalChannel.getName();
-        
-        Set<String> updateTags = new HashSet<String>(orginalChannel.getTagNames());
-        updateTags.removeAll(newChannel.getTagNames());
+        // new tags added to the channel
+        Set<String> updateTags = new HashSet<String>(newChannel.getTagNames());
+        updateTags.removeAll(orginalChannel.getTagNames());
         for (String tag : updateTags) {
             logger.info(() -> "add tag:" + tag );
-            client.set(tag(tag), channelName);
+            client.update(tag(tag), channelName);
         }
         
-        Set<String> removedTags = new HashSet<String>(newChannel.getTagNames());
-        removedTags.removeAll(orginalChannel.getTagNames());
+        // tags removed from the channel
+        Set<String> removedTags = new HashSet<String>(orginalChannel.getTagNames());
+        removedTags.removeAll(newChannel.getTagNames());
         for (String tag : removedTags) {
             logger.info(() -> "removed tag: "+ tag);
             client.delete(tag(tag), channelName);
@@ -79,12 +80,12 @@ public class ModifyChannelJob extends Job{
                             .contains(propertyName)) {
                 // This property has been added
                 logger.info(() -> "added property" + newChannel.getProperty(propertyName).toString());
-                client.set(property(newChannel.getProperty(propertyName)), channelName);
+                client.update(property(newChannel.getProperty(propertyName)), channelName);
             } else if (!newChannel.getProperty(propertyName).equals(
                     orginalChannel.getProperty(propertyName))) {
                 // A property with modified values
                 logger.info(() -> "modified property" + newChannel.getProperty(propertyName).toString());
-                client.set(property(newChannel.getProperty(propertyName)), channelName);
+                client.update(property(newChannel.getProperty(propertyName)), channelName);
             }
         }
         monitor.done();

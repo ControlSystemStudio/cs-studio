@@ -60,6 +60,7 @@ public class ModifyCommandHandler extends AbstractAdaptedHandler<Channel> {
             protected void okPressed() {
                 Job job = new ModifyChannelJob("modify channel", channel, getChannel());
                 job.schedule();
+                close();
             }
         };
         channelEditDialog.open();
