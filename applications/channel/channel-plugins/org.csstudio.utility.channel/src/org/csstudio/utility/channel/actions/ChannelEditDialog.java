@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * A Dialog to edit a channel
@@ -147,8 +148,8 @@ public class ChannelEditDialog extends TitleAreaDialog {
         comboTags.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         
         btnAddTag = new Button(composite_1, SWT.NONE);
+        btnAddTag.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/add_tag.png"));
         btnAddTag.setToolTipText("Add Tag");
-        btnAddTag.setText("New Button");
         btnAddTag.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -164,9 +165,9 @@ public class ChannelEditDialog extends TitleAreaDialog {
         listViewer.setContentProvider(new ArrayContentProvider());
         
         btnRemoveTag = new Button(composite_1, SWT.NONE);
+        btnRemoveTag.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/remove_tag.png"));
         btnRemoveTag.setToolTipText("Remove Tag");
         btnRemoveTag.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-        btnRemoveTag.setText("New Button");
         btnRemoveTag.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -182,8 +183,8 @@ public class ChannelEditDialog extends TitleAreaDialog {
         comboProperties.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         
         btnAddProperty = new Button(composite_1, SWT.NONE);
+        btnAddProperty.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/add_properties.png"));
         btnAddProperty.setToolTipText("Add Property");
-        btnAddProperty.setText("New Button");
         btnAddProperty.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -258,8 +259,8 @@ public class ChannelEditDialog extends TitleAreaDialog {
         tableColumnLayout.setColumnData(colValue.getColumn(), new ColumnWeightData(50, 100, true));
         
         btnRemoveProperty = new Button(composite_1, SWT.NONE);
+        btnRemoveProperty.setImage(ResourceManager.getPluginImage("org.csstudio.utility.channel", "icons/remove_properties.png"));
         btnRemoveProperty.setToolTipText("Remove Property");
-        btnRemoveProperty.setText("NewButton");
         btnRemoveProperty.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
         btnRemoveProperty.addSelectionListener(new SelectionAdapter() {
             @SuppressWarnings("unchecked")

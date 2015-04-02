@@ -81,6 +81,7 @@
          </command>
          <command
                commandId="org.csstudio.utility.channel.modifychannel"
+               icon="icons/channel_edit.png"
                label="Modify Channel"
                style="push">
          </command>
@@ -98,11 +99,13 @@
          </command>
          <command
                commandId="org.csstudio.utility.channel.addProperty"
+               icon="icons/add_properties.png"
                label="Add Property"
                style="push">
          </command>
          <command
                commandId="org.csstudio.utility.channel.removeProperty"
+               icon="icons/remove_properties.png"
                label="Remove Property"
                style="push">
          </command>
