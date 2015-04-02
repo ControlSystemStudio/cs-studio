@@ -80,6 +80,11 @@
                style="push">
          </command>
          <command
+               commandId="org.csstudio.utility.channel.modifychannel"
+               label="Modify Channel"
+               style="push">
+         </command>
+         <command
                commandId="org.csstudio.utility.channel.addTag"
                icon="icons/add_tag.png"
                label="Add Tag"
@@ -132,6 +137,11 @@
             defaultHandler="org.csstudio.utility.channel.actions.RemovePropertyCommandHandler"
             id="org.csstudio.utility.channel.removeProperty"
             name="Remove property">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.ModifyCommandHandler"
+            id="org.csstudio.utility.channel.modifychannel"
+            name="Modify Channel">
       </command>
    </extension>
 
