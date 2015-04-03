@@ -360,6 +360,41 @@ public class ConnectionModel extends AbstractWidgetModel {
 			isConnected = true;
 		}
 	}
+	
+	/**
+	 * Resync this connection with its source and target.
+	 */
+	public void resync() {
+	    if (source == null || target == null) {
+            return;
+        }
+	    boolean connected = isConnected;
+	    disconnect();
+	    String wuid = target.getWUID();
+        String path = getPropertyValue(PROP_TGT_PATH).toString();
+        AbstractWidgetModel w = null; 
+        if(path == null || path.equals("")){
+            w = getTerminal(displayModel, null, wuid);
+        }else {
+            List<String> paths = Arrays.asList(path.split(PATH_DELIMITER));
+            w = getTerminal(displayModel, paths, wuid);
+        }
+        setTarget(w);
+        
+        wuid = source.getWUID();
+        path = getPropertyValue(PROP_SRC_PATH).toString();
+        w = null;
+        if(path == null || path.equals("")){
+            w = getTerminal(displayModel, null, wuid);
+        }else {
+            List<String> paths = Arrays.asList(path.split(PATH_DELIMITER));
+            w = getTerminal(displayModel, paths, wuid);
+        }
+        setSource(w);
+        if (connected) {
+            reconnect();
+        }
+	}
 
 	/**
 	 * Reconnect to a different source and/or target shape. The connection will
@@ -430,6 +465,14 @@ public class ConnectionModel extends AbstractWidgetModel {
 	public int getLineWidth() {
 		return (Integer) getPropertyValue(PROP_LINE_WIDTH);
 	}
+	
+	public String[] getTargetPath() {
+	    return ((String)getPropertyValue(PROP_TGT_PATH)).split(PATH_DELIMITER);
+	}
+	
+	public String[] getSourcePath() {
+        return ((String)getPropertyValue(PROP_SRC_PATH)).split(PATH_DELIMITER);
+    }
 
 	/**
 	 * @return SWT line style

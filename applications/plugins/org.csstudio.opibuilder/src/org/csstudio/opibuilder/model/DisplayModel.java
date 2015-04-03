@@ -269,6 +269,33 @@ public class DisplayModel extends AbstractContainerModel {
 		return getConnectionList(this);
 	}
 	
+	/**
+	 * In connections are spanning over multiple display models (e.g. via linking containers),
+	 * and if one of those sub display models is reloaded, all the links will become invalid - 
+	 * the previously existing widgets will no longer exist. This methods intends to reconnect
+	 * such broken connections, by resetting the connectors sources and targets. 
+	 */
+	public void syncConnections() {
+        List<AbstractWidgetModel> allDescendants = getAllDescendants();
+        for(AbstractWidgetModel widget : allDescendants){
+            if(!widget.getSourceConnections().isEmpty()){
+                for(ConnectionModel connectionModel: widget.getSourceConnections()){
+                    if(!allDescendants.contains(connectionModel.getTarget())){
+                        //the target model no longer exists, perhaps it was reloaded
+                        connectionModel.resync();
+                    }
+                }
+            } 
+            if(!widget.getTargetConnections().isEmpty()){
+                for(ConnectionModel connectionModel: widget.getTargetConnections()){
+                    if(!allDescendants.contains(connectionModel.getSource())){
+                        connectionModel.resync();
+                    }
+                }
+            } 
+        }       
+	}
+		
 	private List<ConnectionModel> getConnectionList(AbstractContainerModel container){
 		Set<ConnectionModel> connectionModels = new HashSet<ConnectionModel>();
 		List<AbstractWidgetModel> allDescendants = getAllDescendants();
