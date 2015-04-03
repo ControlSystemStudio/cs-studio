@@ -795,16 +795,6 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			try {
 				result = ((FileEditorInput) editorInput).getFile()
 						.getContents();
-			} catch (ResourceException e) {
-			  //resource is out of sync: synchronized and try again
-                try {
-                    ((FileEditorInput) editorInput).getFile().refreshLocal(
-                            IResource.DEPTH_ZERO, new NullProgressMonitor());
-                    result = ((FileEditorInput) editorInput).getFile()
-                            .getContents();
-                } catch (CoreException ex) {
-                    ex.printStackTrace();
-                }
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
