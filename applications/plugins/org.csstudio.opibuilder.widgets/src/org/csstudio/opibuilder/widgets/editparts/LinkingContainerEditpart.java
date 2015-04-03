@@ -150,16 +150,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 	 * @param path the path of the OPI file
 	 */
 	private synchronized void loadWidgets(final IPath path, final boolean checkSelf) {
-	  //remove all children of this linking container
-        DisplayModel display = getWidgetModel().getDisplayModel();
-        List<AbstractWidgetModel> models = new ArrayList<>(getWidgetModel().getChildren());
-        getWidgetModel().removeAllChildren();
-        if (display != null) {
-            //if any of the children are also present in the display, remove them as well
-            for (AbstractWidgetModel m : models) {
-                display.removeChild(m);
-            }
-        }
+	    getWidgetModel().removeAllChildren();
 		if(path ==null || path.isEmpty())
 			return;
 		try {
@@ -169,7 +160,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 		    String message = "Failed to load: " + path.toString() + "\n"+ e.getMessage();
             Activator.getLogger().log(Level.WARNING, message , e);
             ConsoleService.getInstance().writeError(message);
-            //TODO this might not work - depends on the exception that happened
+            //TODO because this might not work - depends on the type of exception that happened
 			LabelModel loadingErrorLabel = new LabelModel();
 			loadingErrorLabel.setLocation(0, 0);
 			loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
@@ -258,6 +249,9 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 			((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
 			((LinkingContainerFigure)getFigure()).updateZoom();				
 		});
+		
+		DisplayModel parentDisplay = getWidgetModel().getRootDisplayModel();
+        parentDisplay.syncConnections();
 	}
 
 
