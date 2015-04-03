@@ -3,8 +3,8 @@
  */
 package org.csstudio.utility.channel.actions;
 
-import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelTagNames;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +39,7 @@ public class RemoveTagCommandHandler extends AbstractAdaptedHandler<Channel> {
 
 		selectTags.setMessage("Select the Tags to be removed (* = any string, ? = any char):");
 		selectTags.setMultipleSelection(true);
-		Collection<String> existingTagNames = getCSSChannelTagNames(channels);
+		Collection<String> existingTagNames = ChannelUtil.getAllTagNames(channels);
 		selectTags.setElements(existingTagNames
 				.toArray(new String[existingTagNames.size()]));
 		selectTags.setBlockOnOpen(true);

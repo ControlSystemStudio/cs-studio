@@ -1,10 +1,13 @@
+/**
+ * 
+ */
 package org.csstudio.utility.channel.actions;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 import gov.bnl.channelfinder.api.ChannelUtil;
-import gov.bnl.channelfinder.api.Tag;
+import gov.bnl.channelfinder.api.Property;
 
 import java.util.Collection;
 
@@ -14,9 +17,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-public class AddTag2ChannelsJob extends Job {
+/**
+ * @author Kunal Shroff
+ *
+ */
+public class AddProperty2ChannelsJob extends Job {
 
-	private Tag.Builder tag;
+	private Property.Builder property;
 	private Collection<Channel> channels;
 	
 	/**
@@ -26,17 +33,17 @@ public class AddTag2ChannelsJob extends Job {
 	 * @param channels - collection of channels to which the tag is to be added
 	 * @param tag - builder of the the tag to be added
 	 */
-	public AddTag2ChannelsJob(String name, Collection<Channel> channels, Tag.Builder tag) {
+	public AddProperty2ChannelsJob(String name, Collection<Channel> channels, Property.Builder property) {
 		super(name);
 		this.channels = channels;
-		this.tag = tag;
+		this.property = property;
 	}
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);		
+		monitor.beginTask("Adding Properties to channels", IProgressMonitor.UNKNOWN);		
 		try {
-			ChannelFinder.getClient().update(tag, ChannelUtil.getChannelNames(channels));
+			ChannelFinder.getClient().update(property, ChannelUtil.getChannelNames(channels));
 		} catch (ChannelFinderException e) {
 			return new Status(Status.ERROR,
 					Activator.PLUGIN_ID,
@@ -46,7 +53,7 @@ public class AddTag2ChannelsJob extends Job {
 							.getMessage(), e.getCause());
 		}		
 		monitor.done();
-        return Status.OK_STATUS;
+    return Status.OK_STATUS;
 	}
 
 }
