@@ -104,7 +104,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	/**
 	 * Dispose the image resources used by this figure.
 	 */
-	public synchronized void dispose() {
+	public void dispose() {
 		if (onImage != null && !onImage.isDisposed()) {
 			onImage.dispose();
 			onImage = null;
@@ -192,7 +192,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 			setCursor(Cursors.HAND);
 	}
 
-	public synchronized void setOffImagePath(IPath offImagePath) {
+	public void setOffImagePath(IPath offImagePath) {
 		this.offImagePath = offImagePath;
 		if (offImage != null) {
 			offImage.dispose();
@@ -204,7 +204,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 				true, symbolProperties, this);
 	}
 
-	public synchronized void setOnImagePath(IPath onImagePath) {
+	public void setOnImagePath(IPath onImagePath) {
 		this.onImagePath = onImagePath;
 		if (onImage != null) {
 			onImage.dispose();
@@ -255,11 +255,11 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 	/**
 	 * @return the animationDisabled
 	 */
-	public synchronized boolean isAnimationDisabled() {
+	public boolean isAnimationDisabled() {
 		return animationDisabled;
 	}
 
-	public synchronized void setAnimationDisabled(final boolean stop) {
+	public void setAnimationDisabled(final boolean stop) {
 		if (animationDisabled == stop)
 			return;
 		animationDisabled = stop;
@@ -271,7 +271,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
 		repaint();
 	}
 
-	public synchronized void setAlignedToNearestSecond(final boolean aligned) {
+	public void setAlignedToNearestSecond(final boolean aligned) {
 		if (symbolProperties != null) {
 			symbolProperties.setAlignedToNearestSecond(aligned);
 		}

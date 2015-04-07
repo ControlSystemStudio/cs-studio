@@ -42,13 +42,16 @@ public class PNGSymbolImage extends AbstractSymbolImage {
 	// Image color & paint
 	// ************************************************************
 
-	public synchronized void paintFigure(final Graphics gfx) {
-		if (loadingImage || originalImageData == null)
+	public void paintFigure(final Graphics gfx) {
+		if (disposed || loadingImage || originalImageData == null)
 			return;
 		// Generate Data
 		if (imageData == null) {
-			dispose();
 			generatePNGData();
+			if (image != null && !image.isDisposed()) {
+				image.dispose();
+				image = null;
+			}
 		}
 		// Create image
 		if (image == null) {
@@ -77,7 +80,7 @@ public class PNGSymbolImage extends AbstractSymbolImage {
 	}
 
 	private void generatePNGData() {
-		if (originalImageData == null)
+		if (disposed || originalImageData == null)
 			return;
 
 		imageData = (ImageData) originalImageData.clone();
@@ -111,7 +114,7 @@ public class PNGSymbolImage extends AbstractSymbolImage {
 	// Image size calculation
 	// ************************************************************
 
-	public synchronized Dimension getAutoSizedDimension() {
+	public Dimension getAutoSizedDimension() {
 		// if (imgDimension == null)
 		// generatePNGData();
 		return imgDimension;
