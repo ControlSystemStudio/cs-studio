@@ -85,7 +85,14 @@ public class ValueRequestIterator implements ValueIterator
         ++index;
         if (index < samples.length)
             return result;
-
+        if (optimized) {
+            // For optimized (binned) data there is no reason
+            // to make a second query as the first has returned
+            // values for all bins in the requested time range
+            close();
+            return result;
+        }
+        
         // Prepare next batch of samples
         fetch(VTypeHelper.getTimestamp(result));
         if (samples == null)

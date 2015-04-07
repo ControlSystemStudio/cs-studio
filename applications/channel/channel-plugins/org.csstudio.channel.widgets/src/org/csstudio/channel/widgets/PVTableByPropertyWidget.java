@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.csstudio.channel.widgets.util.MementoUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
-import org.csstudio.utility.channel.CSSChannelUtils;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
@@ -47,8 +46,8 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VTable;
 import org.epics.pvmanager.vtype.VTableColumn;
+import org.epics.vtype.VTable;
 
 public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider,
 	ConfigurableWidget {
@@ -255,7 +254,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		List<String> tagNames = this.columnTags;
 		if (tagNames == null)
 			tagNames = new ArrayList<String>();
-		Collection<Channel> channelsInTable = CSSChannelUtils.filterByOneOrMoreElements(channelsWithRow, propertyNames, tagNames);
+		Collection<Channel> channelsInTable = ChannelUtil.filterbyElements(channelsWithRow, propertyNames, tagNames);
 		if (channelsInTable.isEmpty()) {
 			propertyNames = null;
 			rowNames = null;
