@@ -29,6 +29,7 @@ import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.persistence.LineAwareXMLParser.LineAwareElement;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
@@ -409,6 +410,10 @@ public class XMLUtil {
 		
 		String versionOnFile = element.getAttributeValue(XMLATTR_VERSION);
 		model.setVersionOnFile(Version.parseVersion(versionOnFile));
+		
+		if (element instanceof LineAwareElement) {
+		    model.setLineNumber(((LineAwareElement) element).getLineNumber());
+		}
 		
 		List children = element.getChildren();
 		Iterator iterator = children.iterator();

@@ -37,7 +37,26 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.opibuilder.util.ResourceUtilSSHelper#getFile(org.eclipse.core.runtime.IPath)
+     */
+    @Override
+    public File getFile(IPath path) throws Exception {
+        final IFile workspace_file = getIFileFromIPath(path);
+        // Valid file should either open, or give meaningful exception
+        if (workspace_file != null  &&  workspace_file.exists())
+            return workspace_file.getLocation().toFile().getAbsoluteFile();
 
+        // Not a workspace file. Try local file system
+        File local_file = path.toFile();
+        // Path URL for "file:..." so that it opens as FileInputStream
+        if (local_file.getPath().startsWith("file:"))
+            local_file = new File(local_file.getPath().substring(5));
+        
+        return local_file.exists() ? local_file.getAbsoluteFile() : null;
+        
+    }
 
 	
 	/* (non-Javadoc)
