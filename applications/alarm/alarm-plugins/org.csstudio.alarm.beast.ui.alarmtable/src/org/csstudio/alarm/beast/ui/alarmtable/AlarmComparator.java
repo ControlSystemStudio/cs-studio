@@ -84,15 +84,15 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
 				@Override
 				protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
 				{
-				    Timestamp time1 = pv1.getTimestamp();
-					Timestamp time2 = pv2.getTimestamp();
-					if (time1 == null)
-						time1 = Timestamp.of(0, 0);
-					if (time2 == null)
-						time2 = Timestamp.of(0, 0);
-					final int cmp = time1.compareTo(time2);
-		            if (cmp != 0)
-		            	return cmp;
+//				    Timestamp time1 = pv1.getTimestamp();
+//					Timestamp time2 = pv2.getTimestamp();
+//					if (time1 == null)
+//						time1 = Timestamp.of(0, 0);
+//					if (time2 == null)
+//						time2 = Timestamp.of(0, 0);
+//					final int cmp = time1.compareTo(time2);
+//		            if (cmp != 0)
+//		            	return cmp;
 	                return super.doCompare(pv1, pv2);
 				}
 			};
@@ -130,6 +130,15 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
      */
     protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
     {
+        Timestamp time1 = pv1.getTimestamp();
+        Timestamp time2 = pv2.getTimestamp();
+        if (time1 == null)
+            time1 = Timestamp.of(0, 0);
+        if (time2 == null)
+            time2 = Timestamp.of(0, 0);
+        final int cmp = time1.compareTo(time2);
+        if (cmp != 0)
+            return cmp;
     	final String prop1 = pv1.getName();
         final String prop2 = pv2.getName();
         return prop1.compareTo(prop2);

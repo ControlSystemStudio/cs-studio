@@ -14,6 +14,8 @@ import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
 import org.csstudio.alarm.beast.ui.actions.MaintenanceModeAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
@@ -33,11 +35,34 @@ public class AlarmTableView extends ViewPart
     /** ID of view, defined in plugin.xml */
     public static final String ID = "org.csstudio.alarm.beast.ui.alarmtable.view"; //$NON-NLS-1$
 
+    private static final String ALARM_TABLE_GROUP_SETTING = "alarm_table_group";
+    
+    private static class GroupUngroupAction extends Action {
+        private final boolean group;
+        private final AlarmTableView view;
+        public GroupUngroupAction(AlarmTableView view, boolean group, boolean checked) {
+            super(group ? Messages.AlarmTableGroup : Messages.AlarmTableUngroup, AS_RADIO_BUTTON);
+            this.group = group;
+            this.view = view;
+            setChecked(checked);
+        }
+        @Override
+        public void run() {
+            view.group(group);
+        }
+    }
+    
     private AlarmClientModel model;
-
+    
+    private Composite parent;
+    private GUI gui;
+    //by default group the alarms: one group for acknowledged and one for active
+    private boolean group = true;  
+    
     @Override
     public void createPartControl(final Composite parent)
     {
+        this.parent = parent;
         try
         {
             model = AlarmClientModel.getInstance();
@@ -67,8 +92,12 @@ public class AlarmTableView extends ViewPart
             }
         });
 
-        // Add GUI to model
-        final GUI gui = new GUI(parent, model, getSite(), Activator.getDefault().getDialogSettings());
+        String groupSet = Activator.getDefault().getDialogSettings().get(ALARM_TABLE_GROUP_SETTING);
+        if (groupSet != null) {
+            this.group = Boolean.valueOf(groupSet);
+        }
+        makeGUI();
+        
         if (model.isWriteAllowed())
         {
             // Add Toolbar buttons
@@ -77,16 +106,44 @@ public class AlarmTableView extends ViewPart
             toolbar.add(new Separator());
             AcknowledgeAction action = new AcknowledgeAction(true, gui.getActiveAlarmTable());
             action.clearSelectionOnAcknowledgement(gui.getActiveAlarmTable());
-			toolbar.add(action);
-			action = new AcknowledgeAction(false, gui.getAcknowledgedAlarmTable());
+            toolbar.add(action);
+            action = new AcknowledgeAction(false, gui.getAcknowledgedAlarmTable());
             action.clearSelectionOnAcknowledgement(gui.getAcknowledgedAlarmTable());
-			toolbar.add(action);
+            toolbar.add(action);
         }
+        
+        final IMenuManager menu = getViewSite().getActionBars().getMenuManager();
+        menu.add(new GroupUngroupAction(this,true,group));
+        menu.add(new GroupUngroupAction(this,false,!group));
+    }
+    
+    private void makeGUI()
+    {
+     // Add GUI to model
+        if (parent.isDisposed()) return;
+        if (gui != null) 
+            gui.dispose();
+        gui = new GUI(parent, model, getSite(), Activator.getDefault().getDialogSettings(), group);
     }
 
     @Override
     public void setFocus()
     {
         // NOP
+    }
+    
+    /**
+     * 
+     * @param group
+     */
+    public void group(boolean group) {
+        this.group = group;
+        Activator.getDefault().getDialogSettings().put(ALARM_TABLE_GROUP_SETTING, this.group);
+        if (gui != null) {
+            parent.getDisplay().asyncExec(() -> { 
+                makeGUI();
+                parent.layout();
+            });
+        }
     }
 }

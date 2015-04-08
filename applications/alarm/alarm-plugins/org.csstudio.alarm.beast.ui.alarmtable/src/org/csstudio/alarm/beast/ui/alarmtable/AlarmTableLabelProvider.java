@@ -8,11 +8,15 @@
 package org.csstudio.alarm.beast.ui.alarmtable;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
+import org.csstudio.apputil.ui.swt.CheckBoxImages;
+import org.csstudio.ui.resources.alarms.AlarmIcons;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
 /** Provider of label/color/... for the alarm table.
@@ -23,6 +27,8 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     /** Description of one column in the alarm table */
     enum ColumnInfo
     {
+        ACK(Messages.AcknowledgeColumnHeader,25,10),
+        ICON("",16,0),
         PV(Messages.AlarmPV, 80, 50),
         DESCRIPTION(Messages.AlarmDescription, 80, 100),
         TIME(Messages.AlarmTime, 80, 70),
@@ -104,6 +110,14 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         // Special handling of 'info' entry that has no parent
         switch (column)
         {
+        case ACK:
+            cell.setImage(alarm.getSeverity().isActive() 
+                    ? CheckBoxImages.getInstance(cell.getControl()).getImage(false)
+                    : CheckBoxImages.getInstance(cell.getControl()).getImage(true));
+            break;
+        case ICON:
+            cell.setImage(getIcon(alarm));
+            break;
         case PV:
             cell.setText(alarm.getName());
             break;
@@ -144,6 +158,35 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         		return;
             cell.setText(alarm.getValue());
             break;
+        }
+    }
+    
+    /**
+     * Returns an icon representing the severity/state of the given alarm.
+     * There are 7 different icons: one for disconnected alarms, and two (major/minor) icons
+     * for each of the following: alarm, alarm acknowledged, alarm cleared but not acknowledged.
+     * 
+     * @param pv the alarm for which the icon should be returned
+     * @return the icon representing the alarm severity
+     */
+    private static Image getIcon(AlarmTreePV pv) {
+        SeverityLevel severity = pv.getSeverity();
+        SeverityLevel currentSeverity = pv.getCurrentSeverity();
+        AlarmIcons icons = AlarmIcons.getInstance();
+        switch(severity) {
+            case UNDEFINED: 
+            case INVALID: return icons.getInvalidNotAcknowledged();
+            case UNDEFINED_ACK: 
+            case INVALID_ACK: return currentSeverity == SeverityLevel.OK ?
+                    icons.getInvalidClearedNotAcknowledged() : icons.getInvalidAcknowledged(); 
+            case MAJOR: return currentSeverity == SeverityLevel.OK ?
+                    icons.getMajorClearedNotAcknowledged() : icons.getMajorNotAcknowledged();
+            case MAJOR_ACK: return icons.getMajorAcknowledged();
+            case MINOR: return currentSeverity == SeverityLevel.OK ? 
+                    icons.getMinorClearedNotAcknowledged() : icons.getMinorNotAcknowledged();
+            case MINOR_ACK: return icons.getMinorAcknowledged(); 
+            case OK: 
+            default: return null;
         }
     }
 }

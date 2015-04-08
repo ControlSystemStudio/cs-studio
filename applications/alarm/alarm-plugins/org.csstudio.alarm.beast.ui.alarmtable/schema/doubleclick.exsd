@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.csstudio.alarm.beast.ui.alarmtable" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.csstudio.alarm.beast.ui.alarmtable" id="doubleclick" name="Double Click Handler"/>
+      </appInfo>
+      <documentation>
+         Extension point defines custom actions that are executed when an alarm in the alarm table is double clicked.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="handler"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="handler">
+      <annotation>
+         <documentation>
+            Implementation of the DoubleClickHandler.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.alarm.beast.ui.alarmtable.DoubleClickHandler"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         4.1.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;pre&gt;
+   &lt;extension point=&quot;org.csstudio.alarm.beast.ui.alarmtable.doubleclick&quot;&gt;
+      &lt;handler 
+         class=&quot;foo.bar.MyDoubleClickHandler&quot;&gt;
+      &lt;/handler&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiinfo"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;
+To use this feature add the extension point org.csstudio.alarm.beast.ui.alarmtable.doubleclick to one of the plugins in your appliction. The only parameter that needs to be specified is the class that implements the interface org.csstudio.alarm.beast.ui.alarmtable.DoubleClickHandler.
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public void activeTableDoubleClicked(AlarmTreePV pv)&lt;/code&gt;: called when an item in the active table is double-clicked&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public void acknowledgedTableDoubleClicked(AlarmTreePV pv)&lt;/code&gt;: called when an item in the acknowledged table is double-clicked&lt;/li&gt;
+&lt;/ul&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The following implementation of the DoubleClickHandler are provided:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;OpenDisplayDoubleClickHandler&lt;/code&gt;: open the first related display of the clicked item&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;AcknowledgeDoubleClickHandler&lt;/code&gt;: acknowledge/unacknowledge the clicked item&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ExecuteCommandDoubleClickHandler&lt;/code&gt;: execute the first related action&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DisplayGuidanceDoubleClickHandler&lt;/code&gt;: show the first guidance of the clicked item&lt;/li&gt;
+&lt;/ul&gt;
+      </documentation>
+   </annotation>
+
+
+</schema>
