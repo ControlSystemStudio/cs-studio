@@ -99,7 +99,9 @@ if __name__ == '__main__':
             if d in allFeatures[f]['plugins']:
                 duplicatePluginMap[d].append(f)
         issues.append('Duplicate inclusion of plugin: ' + d + ' in features: ' + str(duplicatePluginMap[d]))
-        print 'Duplicate inclusion of plugin: ' + d + ' in features: ' + str(duplicatePluginMap[d])
+    issues.sort()
+    for issue in issues:
+        print issue
     if len(issues) != 0:
         sys.exit(-1)
     
