@@ -140,7 +140,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
             public void widgetSelected(final SelectionEvent e) {
                 IStructuredSelection selection =
                     (IStructuredSelection) viewer.getSelection();
-                for (Iterator i = selection.iterator(); i.hasNext(); ) {
+                for (Iterator<?> i = selection.iterator(); i.hasNext(); ) {
                     SystemPropertyPreferenceEntry entry =
                         (SystemPropertyPreferenceEntry) i.next();
                     _properties.remove(entry);

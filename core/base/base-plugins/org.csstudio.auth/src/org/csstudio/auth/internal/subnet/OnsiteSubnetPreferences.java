@@ -27,11 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.auth.internal.AuthActivator;
-import org.csstudio.auth.security.SecurityFacade;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * Preferences for the onsite/offsite settings.

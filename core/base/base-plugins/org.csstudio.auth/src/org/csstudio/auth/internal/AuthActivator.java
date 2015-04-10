@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.auth.internal.preferences.SystemPropertyPreferenceEntry;
-import org.csstudio.auth.security.SecurityFacade;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.widgets.extra;
 
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;

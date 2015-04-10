@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ui
 Bundle-SymbolicName: org.csstudio.platform.libs.hibernate.ui
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.csstudio.platform.libs.hibernate.ui.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.csstudio.platform.libs.hibernate;bundle-version="1.0.0",

@@ -112,8 +112,9 @@ public class Install extends AbstractHandler {
 	    String eol = System.getProperty("line.separator");
 	    StringBuffer sb = new StringBuffer(
 		    "The following example projects will be reinstalled:" + eol);
+	    sb.append(eol);
 	    for (String projectName : overwrite) {
-		sb.append("-");
+		sb.append(" \u2022 ");
 		sb.append(projectName);
 		sb.append(eol);
 	    }
