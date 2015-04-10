@@ -238,7 +238,7 @@ public class FXLogginConfiguration extends FXViewPart {
     public static void updateLoggerMap() {
 
 	Enumeration<String> loggerNames = manager.getLoggerNames();
-	for (Enumeration<String> loggerName = loggerNames; loggerNames.hasMoreElements();) {
+	while (loggerNames.hasMoreElements()) {
 	    String completeName = loggerNames.nextElement().trim();
 
 	    TreeItem<NameNode> parent = root;

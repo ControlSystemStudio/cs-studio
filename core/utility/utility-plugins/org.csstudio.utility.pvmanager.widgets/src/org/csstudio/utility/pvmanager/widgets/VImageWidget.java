@@ -1,15 +1,8 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -25,7 +18,6 @@ import org.epics.pvmanager.formula.ExpressionLanguage;
 import org.epics.util.time.TimeDuration;
 import org.epics.vtype.Alarm;
 import org.epics.vtype.VImage;
-import org.epics.vtype.VTable;
 import org.epics.vtype.ValueFactory;
 import org.epics.vtype.ValueUtil;
 

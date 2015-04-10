@@ -118,7 +118,7 @@ public class SecurePreferences
     	}
     	catch (Exception ex)
     	{
-    		Logger.getLogger(SecurePreferences.class.getClass().getName())
+    		Logger.getLogger(SecurePreferences.class.getName())
     			.log(Level.WARNING, "Cannot read " + plugin_id + "/" + key, ex);
     	}
     	// Give up

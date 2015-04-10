@@ -4,13 +4,10 @@
 package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.graphene.BubbleGraph2DWidget;
-import org.csstudio.graphene.opiwidgets.properties.AxisRangeProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
-import org.epics.graphene.AxisRange;
-import org.epics.graphene.AxisRanges;
 
 import static org.csstudio.graphene.opiwidgets.ModelPropertyConstants.*;
 
