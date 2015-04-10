@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -20,6 +21,16 @@ import org.eclipse.ui.IEditorInput;
  */
 public abstract class ResourceUtilSSHelper {
 	
+    /**
+     * Tries to return an absolute file represented by the given path.
+     * If such file does not exist null is returned.
+     * 
+     * @param path the path to the file
+     * @return the file 
+     * @throws Exception
+     */
+    public abstract File getFile(final IPath path) throws Exception;
+    
 	/**
 	 * Return the {@link InputStream} of the file that is available on the
 	 * specified path.

@@ -37,14 +37,14 @@ public class NoActivationAdapterFoundException extends ActivationServiceExceptio
 	 * Constructor.
 	 * @param clazz The class for which no IActivationAdapter could be found
 	 */
-	public NoActivationAdapterFoundException(final Class clazz) {
+	public NoActivationAdapterFoundException(final Class<?> clazz) {
 		super(clazz);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	protected final String getMessage(final Class clazz) {
+	protected final String getMessage(final Class<?> clazz) {
 		return "No ActivationAdapter found for "+clazz;
 	}
 	

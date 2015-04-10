@@ -179,7 +179,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * dispose the resources used by this figure
 	 */
-	public synchronized void dispose() {
+	public void dispose() {
 		stopAnimation();
 		if (offScreenImage != null && !offScreenImage.isDisposed()) {
 			offScreenImage.dispose();
@@ -200,7 +200,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * @return the auto sized widget dimension according to the static imageSize
 	 */
-	public synchronized Dimension getAutoSizedDimension() {
+	public Dimension getAutoSizedDimension() {
 		if (originalStaticImageData != null) {
 			ImageData imageData = (staticImageData == null) ? originalStaticImageData : staticImageData;
 			return new Dimension(imageData.width + getInsets().getWidth()
@@ -215,7 +215,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * 
 	 * @return The amount of pixels
 	 */
-	public synchronized int getBottomCrop() {
+	public int getBottomCrop() {
 		return bottomCrop;
 	}
 
@@ -224,7 +224,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * 
 	 * @return The path to the image
 	 */
-	public synchronized IPath getFilePath() {
+	public IPath getFilePath() {
 		return filePath;
 	}
 
@@ -233,7 +233,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * 
 	 * @return The amount of pixels
 	 */
-	public synchronized int getLeftCrop() {
+	public int getLeftCrop() {
 		return leftCrop;
 	}
 
@@ -242,7 +242,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * 
 	 * @return The amount of pixels
 	 */
-	public synchronized int getRightCrop() {
+	public int getRightCrop() {
 		return rightCrop;
 	}
 
@@ -251,7 +251,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * 
 	 * @return True, if it should be stretched, false otherwise
 	 */
-	public synchronized boolean getStretch() {
+	public boolean getStretch() {
 		return stretch;
 	}
 
@@ -260,14 +260,14 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * 
 	 * @return The amount of pixels
 	 */
-	public synchronized int getTopCrop() {
+	public int getTopCrop() {
 		return topCrop;
 	}
 
 	/**
 	 * @return the animationDisabled
 	 */
-	public synchronized boolean isAnimationDisabled() {
+	public boolean isAnimationDisabled() {
 		return animationDisabled;
 	}
 
@@ -279,11 +279,11 @@ public final class ImageFigure extends Figure implements Introspectable {
 		this.imageLoadedListener = listener;
 	}
 
-	private synchronized void fireImageLoadedListeners() {
+	private void fireImageLoadedListeners() {
 		imageLoadedListener.imageLoaded(this);
 	}
 	
-	private synchronized void loadImage(IPath path,
+	private void loadImage(IPath path,
 			IJobErrorHandler errorHandler) {		
 		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
 
@@ -337,7 +337,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *
 	 */
 	@SuppressWarnings("nls")
-	private synchronized void loadImageFromFile() {
+	private void loadImageFromFile() {
 		// load image from file
 		if (staticImage == null && !filePath.isEmpty()) {
 			loadingImage = true;
@@ -364,7 +364,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public synchronized void paintFigure(final Graphics gfx) {
+	public void paintFigure(final Graphics gfx) {
 		if(loadingImage)
 			return;
 		Rectangle bound = getBounds().getCopy();
@@ -562,7 +562,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * Resizes the image.
 	 */
-	public synchronized void resizeImage() {
+	public void resizeImage() {
 		if (staticImage != null && !staticImage.isDisposed()) {
 			staticImage.dispose();
 		}
@@ -580,12 +580,12 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * 
 	 * @param autoSize
 	 */
-	public synchronized void setAutoSize(final boolean autoSize) {
+	public void setAutoSize(final boolean autoSize) {
 		if (!stretch && autoSize)
 			resizeImage();
 	}
 
-	public synchronized void setAnimationDisabled(final boolean stop) {
+	public void setAnimationDisabled(final boolean stop) {
 		if (animationDisabled == stop)
 			return;
 		animationDisabled = stop;
@@ -602,7 +602,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval
 	 *            The amount of pixels
 	 */
-	public synchronized void setBottomCrop(final int newval) {
+	public void setBottomCrop(final int newval) {
 		if (bottomCrop == newval //|| (newval + topCrop) >= imgHeight
 				|| newval < 0 || (newval + topCrop) < 0)
 			return;
@@ -616,7 +616,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval
 	 *            The path to the image
 	 */
-	public synchronized void setFilePath(final IPath newval) {
+	public void setFilePath(final IPath newval) {
 		if (newval == null)
 			return;
 		if (animated) {
@@ -650,7 +650,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval
 	 *            The amount of pixels
 	 */
-	public synchronized void setLeftCrop(final int newval) {
+	public void setLeftCrop(final int newval) {
 		if (leftCrop == newval || newval < 0 //|| (newval + rightCrop) > imgWidth //image may not be loaded when this is set
 				|| (newval + rightCrop) < 0)
 			return;
@@ -664,7 +664,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval
 	 *            The amount of pixels
 	 */
-	public synchronized void setRightCrop(final int newval) {
+	public void setRightCrop(final int newval) {
 		if (rightCrop == newval || newval < 0 //|| (newval + leftCrop) > imgWidth
 				|| (newval + leftCrop) < 0)
 			return;
@@ -690,7 +690,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *            The new state (true, if it should be stretched, false
 	 *            otherwise)
 	 */
-	public synchronized void setStretch(final boolean newval) {
+	public void setStretch(final boolean newval) {
 		if (stretch == newval)
 			return;
 		stretch = newval;
@@ -711,7 +711,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval
 	 *            The amount of pixels
 	 */
-	public synchronized void setTopCrop(final int newval) {
+	public void setTopCrop(final int newval) {
 		if (topCrop == newval || newval < 0
 //				|| (newval + bottomCrop) > imgHeight
 				|| (newval + bottomCrop) < 0)
@@ -740,7 +740,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Start animation. The request will be pended until figure painted for the
 	 * first time.
 	 */
-	public synchronized void startAnimation() {
+	public void startAnimation() {
 		startAnimationRequested = true;
 		repaint();
 	}
@@ -833,7 +833,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * stop the animation if the image is an animated GIF image.
 	 */
-	public synchronized void stopAnimation() {
+	public void stopAnimation() {
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(true);
 			scheduledFuture = null;

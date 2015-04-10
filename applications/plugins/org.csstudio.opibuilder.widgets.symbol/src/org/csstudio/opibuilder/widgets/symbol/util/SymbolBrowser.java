@@ -156,12 +156,12 @@ public class SymbolBrowser extends Composite {
 		layout(true);
 	}
 	
-	public synchronized void clear() {
+	public void clear() {
 		states.clear();
 		images.clear();
 	}
 	
-	public synchronized void dispose() {
+	public void dispose() {
 		if (image != null && image.isDisposed()) {
 			image.dispose();
 			image = null;

@@ -34,14 +34,14 @@ public abstract class ActivationServiceException extends RuntimeException {
 	/**
 	 * The class for this Exception.
 	 */
-	private final Class _clazz;
+	private final Class<?> _clazz;
 
 
 	/**
 	 * Constructor.
 	 * @param clazz The class for this Exception
 	 */
-	public ActivationServiceException(final Class clazz) {
+	public ActivationServiceException(final Class<?> clazz) {
 		_clazz = clazz;
 	}
 	
@@ -58,6 +58,6 @@ public abstract class ActivationServiceException extends RuntimeException {
 	 * @param clazz The class
 	 * @return The message depended by the class
 	 */
-	protected abstract String getMessage(final Class clazz);
+	protected abstract String getMessage(final Class<?> clazz);
 
 }

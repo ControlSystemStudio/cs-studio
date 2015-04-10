@@ -69,7 +69,17 @@ public class ResourceUtil {
 				ResourceUtilSSHelper.class);
 	}
 
-
+	/**
+	 * Returns the absolute file represented by the <code>path</code> if such file exists.
+	 * If it does not exist null is returned.
+	 * 
+	 * @param path the path for which the file is requested
+	 * @return the absolute file
+	 * @throws Exception in case of an error
+	 */
+	public static File getFile(final IPath path) throws Exception {
+	    return IMPL.getFile(path);
+	}
 
 	/**
 	 *Return the {@link InputStream} of the file that is available on the
@@ -331,6 +341,7 @@ public class ResourceUtil {
 	            sc = SSLContext.getInstance("SSL");
 	        } catch (NoSuchAlgorithmException e) {
 	            e.printStackTrace();
+	            return null;
 	        }
 	        try {
 	            sc.init(null, trustAllCerts, new java.security.SecureRandom());

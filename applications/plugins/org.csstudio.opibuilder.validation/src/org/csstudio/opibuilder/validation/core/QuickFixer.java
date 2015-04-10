@@ -21,9 +21,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.validation.Activator;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -137,10 +139,12 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                         //if requested to do backup, copy all quick-fixed files to <file>~
                         if (doBackup) {
                             for (IPath path : toFix.keySet()) {
-                                String bck = path.toFile().getAbsolutePath();
+                                IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+                                File file = ifile.getLocation().toFile(); 
+                                String bck = file.getAbsolutePath();
                                 bck = bck + "~";
                                 File backup = new File(bck);
-                                Files.copy(path.toFile().toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
                             }
                         }
                         monitor.worked(1);
@@ -151,7 +155,7 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                         }
                         for (IMarker m : markers) {
                             //refresh all changed files
-                            m.getResource().refreshLocal(0, new NullProgressMonitor());
+                            m.getResource().refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
                         }
                         //revalidated all changed files to get rid of the fixed validations
                         revalidate(markers, monitor);
@@ -191,12 +195,15 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                 set.add(m.getResource());
             }
             boolean isClearMarkers = Activator.getInstance().isClearMarkers();
+            boolean isShowSummary = Activator.getInstance().isShowSummaryDialog();
             try {
                 //in case of revalidation after quick fix, do not clear the markers
                 Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_CLEAR_MARKERS, false);
+                Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_SHOW_SUMMARY, false);
                 ValidationRunner.validate(map, ValType.Manual, monitor, true);
             } finally {
                 Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_CLEAR_MARKERS, isClearMarkers);
+                Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_SHOW_SUMMARY, isShowSummary);
             }
         }
 
@@ -209,11 +216,10 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
             List<IMarker> list = new ArrayList<>();
             for (IMarker marker : markers) {
                 try {
-                if (marker == this.marker) continue;
-                if (!Validator.MARKER_PROBLEM.equals(marker.getType())) continue;
-                if (!((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable()) continue;
-                
-                list.add(marker);
+                    if (marker == this.marker) continue;
+                    if (!Validator.MARKER_PROBLEM.equals(marker.getType())) continue;
+                    if (!((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable()) continue;
+                    list.add(marker);
                 } catch (CoreException e) {
                     //ignore
                 }

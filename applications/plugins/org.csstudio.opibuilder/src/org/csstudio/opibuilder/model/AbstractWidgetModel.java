@@ -233,6 +233,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	private Point originLocation;
 
 	private Version versionOnFile;
+	
+	//If the model was parsed from the file, then this would be the line number in the file at which this widget is located
+	private int lineNumber = -1;
 
 	public AbstractWidgetModel() {
 		propertyMap = new HashMap<String, AbstractWidgetProperty>();
@@ -931,8 +934,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		{
 		    // If parent is a linking container,
 		    // use the display model of that
-		    if (parent instanceof AbstractLinkingContainerModel)
-		        return ((AbstractLinkingContainerModel)parent).getDisplayModel();
+		    if (parent instanceof AbstractLinkingContainerModel) {
+		        DisplayModel m = ((AbstractLinkingContainerModel)parent).getDisplayModel();
+		        if (m != null) return m;
+		    }
 		    // Otherwise follow links up the parent chain
 			parent = parent.getParent();
 		}
@@ -1083,4 +1088,25 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_WIDGET_UID, new UID().toString());
 	}
 
+	/**
+	 * Sets the line number at which this model is stored in the opi file. The line number can only be set once.
+	 * 
+	 * @param lineNumber the line number
+	 */
+	public void setLineNumber(int lineNumber) {
+	    if (this.lineNumber == -1) {
+	        this.lineNumber = lineNumber;
+	    }
+    }
+	
+	/**
+	 * Returns the line number at which this widget model is stored in the opi file. Be aware that this number might
+	 * not be accurate - if the widget was changed after it has been loaded or if it is new than there is no guarantee
+	 * that the line number represents the actual state.
+	 * 
+	 * @return the line number in the opi file
+	 */
+	public int getLineNumber() {
+        return lineNumber;
+    }
 }

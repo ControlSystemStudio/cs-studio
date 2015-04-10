@@ -94,13 +94,20 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         BooleanFieldEditor nestMarkers = new BooleanFieldEditor(Activator.PREF_NEST_MARKERS, 
                 "Nest markers in the Problems View?", parent);
         nestMarkers.getDescriptionControl(parent).setToolTipText(
-                "Display sub validation failures (action, script, rule) as children of their parent properties (actions, scripts, rules)");
+                "Display sub validation failures (action, script, rule) as children of their parent properties (actions, scripts, rules).");
         addField(nestMarkers);
         
         BooleanFieldEditor clearMarkers = new BooleanFieldEditor(Activator.PREF_CLEAR_MARKERS, 
                 "Clear old markers when validation starts?", parent);
         clearMarkers.getDescriptionControl(parent).setToolTipText(
                 "Clear all validation markers on every new validation restart");
-        addField(clearMarkers);        
+        addField(clearMarkers);
+        
+        BooleanFieldEditor useDefaultEditor = new BooleanFieldEditor(Activator.PREF_CLEAR_MARKERS, 
+                "Display markers in default editor?", parent);
+        useDefaultEditor.getDescriptionControl(parent).setToolTipText(
+                "If checked a validation marker will be displayed in the default editor. If unchecked, the marker will "
+                + "always be displayed in the text editor.");
+        addField(useDefaultEditor);        
     }    
 }

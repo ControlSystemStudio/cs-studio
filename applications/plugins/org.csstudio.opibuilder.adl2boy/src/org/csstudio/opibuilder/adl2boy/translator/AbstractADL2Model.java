@@ -27,7 +27,6 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.IWidgetWithColorsInBase;
-import org.csstudio.utility.adlparser.fileParser.widgets.RelatedDisplay;
 import org.eclipse.swt.graphics.RGB;
 
 /**

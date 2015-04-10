@@ -125,7 +125,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
 	}
 
 	@Override
-	public synchronized void paintFigure(final Graphics gfx) {
+	public void paintFigure(final Graphics gfx) {
 		super.paintFigure(gfx);
 		if (!isEnabled()) {
 			gfx.setAlpha(DISABLED_ALPHA);

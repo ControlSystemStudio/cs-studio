@@ -21,6 +21,5 @@
             name="BOY Examples"
             sampleset="org.csstudio.opibuilder.examples.Basic">
       </sampleset>
-  org.csstudio.opibuilder.examples.Basic </extension>
-
+   </extension>
 </plugin>

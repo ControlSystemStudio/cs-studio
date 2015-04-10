@@ -8,8 +8,9 @@
 package org.csstudio.opibuilder.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
 
 import org.csstudio.opibuilder.datadefinition.DisplayScaleData;
 import org.csstudio.opibuilder.properties.ActionsProperty;
@@ -94,8 +95,7 @@ public class DisplayModel extends AbstractContainerModel {
 	private boolean FreshRateEnabled= false;
 
 	private int displayID;
-	private static AtomicInteger displayIDCounter = new AtomicInteger(0);
-	
+
 	/**
 	 * Create a Display Model which is the root model for an OPI.
 	 * Only use this constructor if this model doesn't relate to
@@ -114,7 +114,6 @@ public class DisplayModel extends AbstractContainerModel {
 		setLocation(-1, -1);
 		setSize(800, 600);
 		setOpiFilePath(opiFilePath);
-		displayID = displayIDCounter.incrementAndGet();
 	}
 
 	@Override
@@ -134,7 +133,7 @@ public class DisplayModel extends AbstractContainerModel {
 		addProperty(new ComplexDataProperty(
 				PROP_AUTO_SCALE_WIDGETS, "Auto Scale Widgets (at Runtime)", 
 				WidgetPropertyCategory.Behavior, new DisplayScaleData(this), "Scale Widgets as windows resizes"));
-	
+		
 		addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON,
 				"Show Close Button", WidgetPropertyCategory.Display, true));
 		Version version = new Version(0, 0, 0);
@@ -266,12 +265,39 @@ public class DisplayModel extends AbstractContainerModel {
 	/**
 	 * @return the list of connections belongs to this display model.
 	 */
-	public List<ConnectionModel> getConnectionList() {		
+    public List<ConnectionModel> getConnectionList() {      
 		return getConnectionList(this);
 	}
 	
+	/**
+	 * In connections are spanning over multiple display models (e.g. via linking containers),
+	 * and if one of those sub display models is reloaded, all the links will become invalid -
+	 * the previously existing widgets will no longer exist. This methods intends to reconnect
+	 * such broken connections, by resetting the connectors sources and targets.
+	 */
+	public void syncConnections() {
+        List<AbstractWidgetModel> allDescendants = getAllDescendants();
+        for(AbstractWidgetModel widget : allDescendants){
+            if(!widget.getSourceConnections().isEmpty()){
+                for(ConnectionModel connectionModel: widget.getSourceConnections()){
+                    if(!allDescendants.contains(connectionModel.getTarget())){
+                        //the target model no longer exists, perhaps it was reloaded
+                        connectionModel.resync();
+                    }
+                }
+            }
+            if(!widget.getTargetConnections().isEmpty()){
+                for(ConnectionModel connectionModel: widget.getTargetConnections()){
+                    if(!allDescendants.contains(connectionModel.getSource())){
+                        connectionModel.resync();
+                    }
+                }
+            }
+        }
+	}
+
 	private List<ConnectionModel> getConnectionList(AbstractContainerModel container){
-		List<ConnectionModel> connectionModels = new ArrayList<ConnectionModel>();
+		Set<ConnectionModel> connectionModels = new HashSet<ConnectionModel>();
 		List<AbstractWidgetModel> allDescendants = getAllDescendants();
 		for(AbstractWidgetModel widget : allDescendants){
 			if(!widget.getSourceConnections().isEmpty()){
@@ -280,9 +306,16 @@ public class DisplayModel extends AbstractContainerModel {
 						connectionModels.add(connectionModel);
 					}
 				}
-			}			
-		}		
-		return connectionModels;
+			}
+			if(!widget.getTargetConnections().isEmpty()){
+                for(ConnectionModel connectionModel: widget.getTargetConnections()){
+                    if(allDescendants.contains(connectionModel.getSource())){
+                        connectionModels.add(connectionModel);
+                    }
+                }
+            }
+		}
+		return new ArrayList<>(connectionModels);
 	}
 
 	public AbstractWidgetModel getWidgetFromWUID(String wuid) {
@@ -314,7 +347,7 @@ public class DisplayModel extends AbstractContainerModel {
 		int minHeight = getDisplayScaleData().getMinimumHeight();
 		if(minHeight < 0){
 			minHeight = getHeight();
-		}		
+        }       
 		if(getWidth() *widthRatio < minWidth)
 			widthRatio = minWidth/(double)getWidth();
 		if(getHeight()*heightRatio < minHeight)
@@ -322,7 +355,7 @@ public class DisplayModel extends AbstractContainerModel {
 		for(AbstractWidgetModel child : getChildren())
 			child.scale(widthRatio, heightRatio);
 	}
-	
+    
 	/**!!! This is function only for test purpose. It might be removed in future!
 	 * @return true if calculating fresh rate is enabled.
 	 */

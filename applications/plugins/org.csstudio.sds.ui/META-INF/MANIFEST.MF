@@ -30,7 +30,7 @@ Require-Bundle: org.eclipse.ui,
  org.ehcache;bundle-version="2.5.2",
  org.csstudio.domain.common;bundle-version="1.0.0",
  org.junit
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  libaries/jl1.0.jar
 Export-Package: org.csstudio.sds.ui;

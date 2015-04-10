@@ -9,6 +9,7 @@
         <topic label="Wait" href="doc/scansystem.html#WaitCommand"/>
         <topic label="Loop" href="doc/scansystem.html#LoopCommand"/>
         <topic label="Parallel" href="doc/scansystem.html#ParallelCommand"/>
+        <topic label="Sequence" href="doc/scansystem.html#SequenceCommand"/>
         <topic label="Include" href="doc/scansystem.html#IncludeCommand"/>
         <topic label="Log" href="doc/scansystem.html#LogCommand"/>
         <topic label="Log Mode" href="doc/scansystem.html#LogConfig"/>

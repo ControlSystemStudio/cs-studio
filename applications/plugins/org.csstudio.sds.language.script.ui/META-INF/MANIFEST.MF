@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.sds.language.script,
  de.desy.language.editor.ui,
  org.eclipse.core.resources;bundle-version="3.4.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.ui.part
 Bundle-ClassPath: lib/rhino/js.jar,
  .
