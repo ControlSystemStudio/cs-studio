@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.eclipse.jface.action.Action;
 
 /** The action open default related display in different target.
@@ -37,11 +37,11 @@ public class OpenRelatedDisplayAction extends Action {
 		}
 	}
 
-	private AbstractOpenOPIAction openDisplayAction;
+	private OpenDisplayAction openDisplayAction;
 	
 	private OpenDisplayTarget  target;
 
-	public OpenRelatedDisplayAction(AbstractOpenOPIAction openDisplayAction,
+	public OpenRelatedDisplayAction(OpenDisplayAction openDisplayAction,
 			OpenDisplayTarget target) {
 		super();
 		this.openDisplayAction = openDisplayAction;

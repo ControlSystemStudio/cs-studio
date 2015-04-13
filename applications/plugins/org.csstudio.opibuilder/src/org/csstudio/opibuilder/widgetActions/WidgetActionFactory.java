@@ -21,7 +21,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class WidgetActionFactory {
 	public enum ActionType{
 		OPEN_DISPLAY("Open OPI", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
-		OPEN_OPI_IN_VIEW("Open OPI in View", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
+		OPEN_OPI_IN_VIEW("Open OPI in View (deprecated)", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
 		WRITE_PV("Write PV", createImage("icons/writePV.png")), //$NON-NLS-2$
 		EXECUTE_CMD("Execute Command", createImage("icons/command.gif")), //$NON-NLS-2$
 		EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/exeJS.png")),//$NON-NLS-2$
@@ -78,9 +78,8 @@ public class WidgetActionFactory {
 		Assert.isNotNull(actionType);
 		switch (actionType) {
 		case OPEN_DISPLAY:
-			return new OpenDisplayAction();		
 		case OPEN_OPI_IN_VIEW:
-			return new OpenOPIInViewAction();
+			return new OpenDisplayAction();		
 		case WRITE_PV:
 			return new WritePVAction();
 		case OPEN_FILE:

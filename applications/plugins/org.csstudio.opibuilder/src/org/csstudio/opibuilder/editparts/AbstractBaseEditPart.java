@@ -53,9 +53,9 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.TooltipLabel;
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -483,17 +483,17 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 					if (me.button != 1)
 						return;
 					for (AbstractWidgetAction action : actions) {
-						if (action instanceof AbstractOpenOPIAction) {
-							((AbstractOpenOPIAction) action)
+						if (action instanceof OpenDisplayAction) {
+							((OpenDisplayAction) action)
 									.setCtrlPressed(false);
-							((AbstractOpenOPIAction) action)
+							((OpenDisplayAction) action)
 									.setShiftPressed(false);
 							if ((me.getState() & SWT.CONTROL) != 0) {
-								((AbstractOpenOPIAction) action)
+								((OpenDisplayAction) action)
 										.setCtrlPressed(true);
 							}
 							if ((me.getState() & SWT.SHIFT) != 0) {
-								((AbstractOpenOPIAction) action)
+								((OpenDisplayAction) action)
 										.setShiftPressed(true);
 							}
 						}

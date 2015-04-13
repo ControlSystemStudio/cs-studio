@@ -19,9 +19,9 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.util.WorkbenchWindowService;
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
@@ -116,15 +116,15 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 
 				if(hookedActions != null && hookedActions.size() == 1){
 					AbstractWidgetAction hookedAction = hookedActions.get(0);
-					if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
+					if(hookedAction != null && hookedAction instanceof OpenDisplayAction){
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OpenDisplayTarget.DEFAULT));
+								(OpenDisplayAction) hookedAction, OpenDisplayTarget.DEFAULT));
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OpenDisplayTarget.NEW_TAB));
+								(OpenDisplayAction) hookedAction, OpenDisplayTarget.NEW_TAB));
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OpenDisplayTarget.NEW_WINDOW));
+								(OpenDisplayAction) hookedAction, OpenDisplayTarget.NEW_WINDOW));
 						menu.add(new OpenRelatedDisplayAction(
-								(AbstractOpenOPIAction) hookedAction, OpenDisplayTarget.NEW_SHELL));
+								(OpenDisplayAction) hookedAction, OpenDisplayTarget.NEW_SHELL));
 					}
 				}
 					
