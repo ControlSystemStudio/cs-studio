@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.scriptUtil;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.widgetActions.ExecuteCommandAction;
@@ -42,20 +43,49 @@ public class ScriptUtil {
      * @param target
      *            target place of the new OPI. 0: new tab; 1: replace current
      *            one; 2: new window; 3: view on left; 4: view on right; 5: view
-     *            on top; 6: view on bottom; 7: detached view
+     *            on top; 6: view on bottom; 7: detached view; 8: new shell
      * @param macrosInput
      *            the macrosInput. null if no macros needed.
      */
     public final static void openOPI(AbstractBaseEditPart widget,
             String opiPath, int target, MacrosInput macrosInput) {
         final OpenDisplayAction action = new OpenDisplayAction();
-        if (target < 3)
-            action.setPropertyValue(OpenDisplayAction.PROP_REPLACE, target);
-        else
-            action.setPropertyValue(OpenDisplayAction.PROP_POSITION, target - 3);
+        
+        // Map target IDs of this API to DisplayMode
+        final DisplayMode mode;
+        switch (target)
+        {
+        case 0:
+            mode = DisplayMode.NEW_TAB;
+            break;
+        case 2:
+            mode = DisplayMode.NEW_WINDOW;
+            break;
+        case 3:
+            mode = DisplayMode.NEW_TAB_LEFT;
+            break;
+        case 4:
+            mode = DisplayMode.NEW_TAB_RIGHT;
+            break;
+        case 5:
+            mode = DisplayMode.NEW_TAB_TOP;
+            break;
+        case 6:
+            mode = DisplayMode.NEW_TAB_BOTTOM;
+            break;
+        case 7:
+            mode = DisplayMode.NEW_TAB_DETACHED;
+            break;
+        case 8:
+            mode = DisplayMode.NEW_SHELL;
+            break;
+        default:
+            mode = DisplayMode.REPLACE;
+        }
         action.setWidgetModel(widget.getWidgetModel());
         action.setPropertyValue(OpenDisplayAction.PROP_PATH, opiPath);
         action.setPropertyValue(OpenDisplayAction.PROP_MACROS, macrosInput);
+        action.setPropertyValue(OpenDisplayAction.PROP_MODE, mode.ordinal());
         action.run();
     }
     

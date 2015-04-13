@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OpenDisplayTarget;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
@@ -23,6 +22,7 @@ import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.OPIShell;
 import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.util.ConsoleService;
@@ -60,107 +60,176 @@ import org.jdom.Element;
  */
 public class OpenDisplayAction extends AbstractWidgetAction
 {
-    public static final String PROP_PATH = "path";//$NON-NLS-1$
-    public static final String PROP_MACROS = "macros";//$NON-NLS-1$
-
-    // TODO Merge PROP_REPLACE and PROP_POSITION into one 'mode'
-    public static final String PROP_REPLACE = "replace";//$NON-NLS-1$
-    public static final String PROP_POSITION = "Position";//$NON-NLS-1$
+    public static final String PROP_PATH = "path";
+    public static final String PROP_MACROS = "macros";
+    public static final String PROP_MODE = "mode";
 
     @Override
     protected void configureProperties()
     {
         addProperty(new FilePathProperty(PROP_PATH, "File Path",
                     WidgetPropertyCategory.Basic, new Path(""),
-                    new String[] { "opi" }, false)); //$NON-NLS-1$
-        addProperty(new MacrosProperty(PROP_MACROS, "Macros",
-                    WidgetPropertyCategory.Basic, new MacrosInput(
-                    new LinkedHashMap<String, String>(), true)));
-        addProperty(new ComboProperty(PROP_REPLACE, "Target",
-                    WidgetPropertyCategory.Basic, OpenDisplayTarget.stringValues(), 0)
+                    new String[] { "opi" }, false)
         {
             @Override
             public Object readValueFromXML(Element propElement)
             {
-                try
-                {
-                    Integer index = Integer.parseInt(propElement.getValue());
-                    return index;
-                }
-                catch (NumberFormatException e)
-                {
-                    // Fall back for older files that stored True/false
-                    boolean b = Boolean.parseBoolean(propElement.getValue());
-                    return b?new Integer(1): new Integer(0);
-                }
+                handleLegacySettings(propElement);
+                return super.readValueFromXML(propElement);
             }
         });
+        addProperty(new MacrosProperty(PROP_MACROS, "Macros",
+                    WidgetPropertyCategory.Basic, new MacrosInput(
+                    new LinkedHashMap<String, String>(), true)));
+        addProperty(new ComboProperty(PROP_MODE, "Mode",
+                    WidgetPropertyCategory.Basic, DisplayMode.stringValues(),
+                    DisplayMode.REPLACE.ordinal()));        
+    }
+
+    protected void handleLegacySettings(final Element path_element)
+    {
+        // Original OpenDisplayAction had property "replace".
+        // True  - Replace existing display
+        // False - Open new display
         
-        addProperty(new ComboProperty(PROP_POSITION, "Position",
-                    WidgetPropertyCategory.Basic, Position.stringValues(),
-                    Position.DEFAULT_VIEW.ordinal()));
+        // Later OpenDisplayAction had property "replace" with options
+        // 0 - DEFAULT,
+        // 1 - NEW_TAB,
+        // 2 - NEW_WINDOW,
+        // 3 - NEW_SHELL.
+        
+        // Original OpenOPIInViewAction had property "Position"
+        // 0 - LEFT,
+        // 1 - RIGHT,
+        // 2 - TOP,
+        // 3 - BOTTOM,
+        // 4 - DETACHED,
+        // 5 - DEFAULT_VIEW
+        
+        // This OpenDisplayAction has a property "mode" that combines all of the above.
+        // For legacy displays, hook into loading the "path" property which was found
+        // in all versions and navigate the XML for older properties.
+        final Element action_element = path_element.getParentElement();
+        // action_element.getName() should be "action"
+        
+        Element legacy = action_element.getChild("Position");
+        if (legacy != null)
+        {
+            switch (Integer.parseInt(legacy.getValue()))
+            {
+            case 0:
+                setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB_LEFT.ordinal());
+                break;
+            case 1:
+                setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB_RIGHT.ordinal());
+                break;
+            case 2:
+                setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB_TOP.ordinal());
+                break;
+            case 3:
+                setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB_BOTTOM.ordinal());
+                break;
+            case 4:
+                setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB_DETACHED.ordinal());
+                break;
+            default:
+            }
+        }
+
+        legacy = action_element.getChild("replace");
+        if (legacy != null)
+        {
+            try
+            {
+                switch (Integer.parseInt(legacy.getValue()))
+                {
+                case 1:
+                    setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB.ordinal());
+                    break;
+                case 2:
+                    setPropertyValue(PROP_MODE, DisplayMode.NEW_WINDOW.ordinal());
+                    break;
+                case 3:
+                    setPropertyValue(PROP_MODE, DisplayMode.NEW_SHELL.ordinal());
+                    break;
+                default:
+                    setPropertyValue(PROP_MODE, DisplayMode.REPLACE.ordinal());
+                }
+            }
+            catch (NumberFormatException e)
+            {   // Fall back for older files that stored True/false
+                if (Boolean.parseBoolean(legacy.getValue()))
+                    setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB.ordinal());
+            }
+        }
     }
 
     private void openOPI(final IPath absolutePath, final boolean ctrlPressed, final boolean shiftPressed)
     {
-        if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.DEFAULT)
+        DisplayMode mode = getDisplayMode();
+        
+        if (ctrlPressed && !shiftPressed)
+            mode = DisplayMode.NEW_TAB;
+        else if (!ctrlPressed && shiftPressed)
+            mode = DisplayMode.NEW_WINDOW;
+        else if (ctrlPressed && shiftPressed)
+            mode = DisplayMode.NEW_SHELL;
+
+        // TODO: Have RunModeService handle the 'mode'
+        switch (mode)
         {
-            IOPIRuntime opiRuntime = getWidgetModel().getRootDisplayModel()
-                    .getOpiRuntime();
+        case NEW_TAB:
+            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.DEFAULT_VIEW);
+            return;
+        case NEW_TAB_LEFT:
+            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.LEFT);
+            return;
+        case NEW_TAB_RIGHT:
+            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.RIGHT);
+            return;
+        case NEW_TAB_TOP:
+            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.TOP);
+            return;
+        case NEW_TAB_BOTTOM:
+            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.BOTTOM);
+            return;
+        case NEW_TAB_DETACHED:
+            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.DETACHED);
+            return;
+        case NEW_WINDOW:
+            RunModeService.getInstance().runOPI(absolutePath, TargetWindow.NEW_WINDOW, null,
+                            getMacrosInput(), null);
+            return;
+        case NEW_SHELL:
+            OPIShell.openOPIShell(absolutePath, getMacrosInput());
+            return;
+            
+        case REPLACE:
+        default:
+            IOPIRuntime opiRuntime =
+                getWidgetModel().getRootDisplayModel().getOpiRuntime();
             if (opiRuntime instanceof OPIShell)
                 // Default behaviour for OPIShell is to open another OPIShell.
                 OPIShell.openOPIShell(absolutePath, getMacrosInput());
             else
-            {
-                // Default behaviour for OPIView is to replace current OPIView.
+            {   // Replace current OPIView.
                 DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
                     .getAdapter(DisplayOpenManager.class));
                 manager.openNewDisplay();
                 try
                 {
-                    // Open View in desired position
-                    if (getPosition() != Position.DEFAULT_VIEW)
-                        RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), getPosition());
-                    else
-                        RunModeService.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
-                                absolutePath, manager, getMacrosInput()));
+                    RunModeService.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
+                            absolutePath, manager, getMacrosInput()));
                 }
                 catch (PartInitException e)
                 {
                     OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                            "Failed to open " + absolutePath, e); //$NON-NLS-1$
+                            "Failed to open " + absolutePath, e);
                     MessageDialog.openError(Display.getDefault().getActiveShell(),
                             "Open file error",
                             NLS.bind("Failed to open {0}", absolutePath));
                 }
             }
-        }
-        else
-        {
-            TargetWindow target;
-            if (!ctrlPressed && !shiftPressed)
-            {
-                switch (getOpenDisplayTarget())
-                {
-                case NEW_TAB:
-                    target = TargetWindow.SAME_WINDOW;
-                    break;
-                case NEW_WINDOW:
-                    target = TargetWindow.NEW_WINDOW;
-                    break;
-                default:
-                    target = TargetWindow.SAME_WINDOW;
-                    break;
-                }
-            }
-            else if (shiftPressed && !ctrlPressed)
-                target = TargetWindow.NEW_WINDOW;
-            else if (ctrlPressed && !shiftPressed)
-                target = TargetWindow.SAME_WINDOW;
-            else // both ctrl and shift pressed
-                target = TargetWindow.NEW_SHELL;
-            RunModeService.getInstance().runOPI(absolutePath, target, null,
-                    getMacrosInput(), null);            
         }
     }
 
@@ -223,16 +292,10 @@ public class OpenDisplayAction extends AbstractWidgetAction
         result.getMacrosMap().putAll(macrosInput.getMacrosMap());
         return result;
     }
-
-    private OpenDisplayTarget getOpenDisplayTarget()
+    
+    protected DisplayMode getDisplayMode()
     {
-        int index = (Integer) getPropertyValue(PROP_REPLACE);
-        return OpenDisplayTarget.values()[index];
-    }
-
-    protected Position getPosition()
-    {
-        return Position.values()[(Integer)getPropertyValue(PROP_POSITION)];
+        return DisplayMode.values()[(Integer)getPropertyValue(PROP_MODE)];
     }
 
     @Override

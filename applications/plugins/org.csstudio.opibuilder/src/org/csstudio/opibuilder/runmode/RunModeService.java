@@ -39,15 +39,59 @@ import org.eclipse.ui.WorkbenchException;
  */
 public class RunModeService {
 
+    /** How/where a new display is presented */
+    public enum DisplayMode
+    {
+        /** Replace current view or shell with new display content */
+        REPLACE("Replace Current"),
+        
+        /** New view part within existing workbench */
+        NEW_TAB("Workbench Tab"),
+        
+        /** .. in desired location, if possible */
+        NEW_TAB_LEFT("Workbench Tab (Left)"),
+        NEW_TAB_RIGHT("Workbench Tab (Right)"),
+        NEW_TAB_TOP("Workbench Tab (Top)"),
+        NEW_TAB_BOTTOM("Workbench Tab (Bottom)"),
+        
+        /** .. detached */
+        NEW_TAB_DETACHED("Detached Tab"),
+        
+        /** New view part in new workbench window */
+        NEW_WINDOW("New workbench"),
+        
+        /** New standalone Shell */
+        NEW_SHELL("Standalone window");
+
+        private String description;
+        
+        private DisplayMode(String desc)
+        {
+            this.description = desc;
+        }
+
+        public static String[] stringValues()
+        {
+            String[] sv = new String[values().length];
+            int i=0;
+            for (DisplayMode p : values())
+                sv[i++] = p.description;
+            return sv;
+        }
+    }
+
+    // TODO Remove
     public enum TargetWindow {
         NEW_WINDOW,
         SAME_WINDOW,
         RUN_WINDOW,
         NEW_SHELL;
     }
-
+    
+    // TODO Check if used
     private IWorkbenchWindow runWorkbenchWindow;
 
+    // TODO Make all static?
     private static RunModeService instance;
 
     public static RunModeService getInstance(){
@@ -61,6 +105,8 @@ public class RunModeService {
         return runWorkbenchWindow;
     }
 
+    // TODO Update methods: Fewer, take DisplayMode
+    
     public static void replaceOPIRuntimeContent(
             final IOPIRuntime opiRuntime, final IEditorInput input) throws PartInitException{
         opiRuntime.setOPIInput(input);
