@@ -84,19 +84,14 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
 			public void widgetSelected(SelectionEvent e) {
 				List<AbstractWidgetAction> actions = getHookedActions();
 				if(actions!= null){
-					for(AbstractWidgetAction action: actions){
-						if(action instanceof OpenDisplayAction){
-							((OpenDisplayAction) action).setCtrlPressed(false);
-							((OpenDisplayAction) action).setShiftPressed(false);
-							if ((e.stateMask & SWT.CTRL) != 0) {
-								((OpenDisplayAction) action).setCtrlPressed(true);
-							}
-							if ((e.stateMask & SWT.SHIFT) != 0) {
-								((OpenDisplayAction) action).setShiftPressed(true);
-							}
-						}
-						action.run();
-					}
+                    for(AbstractWidgetAction action: actions)
+                    {
+                        if(action instanceof OpenDisplayAction)
+                            ((OpenDisplayAction) action).runWithModifiers((e.stateMask & SWT.CTRL) != 0,
+                                                                          (e.stateMask & SWT.SHIFT) != 0);
+                        else
+                            action.run();
+                    }
 				}
 			}
 		});

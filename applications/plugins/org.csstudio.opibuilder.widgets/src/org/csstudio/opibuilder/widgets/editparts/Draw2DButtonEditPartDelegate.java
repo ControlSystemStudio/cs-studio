@@ -65,17 +65,11 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 				List<AbstractWidgetAction> actions = editpart.getHookedActions();
 				if(actions!= null){
 					for(AbstractWidgetAction action: actions){
-						if(action instanceof OpenDisplayAction){
-							((OpenDisplayAction) action).setCtrlPressed(false);
-							((OpenDisplayAction) action).setShiftPressed(false);
-							if ((mouseEventState & SWT.CONTROL) != 0) {
-								((OpenDisplayAction) action).setCtrlPressed(true);
-							}
-							if ((mouseEventState & SWT.SHIFT) != 0) {
-								((OpenDisplayAction) action).setShiftPressed(true);
-							}
-						}
-						action.run();
+                        if (action instanceof OpenDisplayAction)
+                            ((OpenDisplayAction) action).runWithModifiers((mouseEventState & SWT.CONTROL) != 0,
+                                                                          (mouseEventState & SWT.SHIFT)   != 0);
+                        else
+                            action.run();
 					}
 				}
 			}

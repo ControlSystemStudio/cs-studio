@@ -64,24 +64,21 @@ public class OpenRelatedDisplayAction extends Action {
 	
 	@Override
 	public void run() {
-		openDisplayAction.setCtrlPressed(false);
-		openDisplayAction.setShiftPressed(false);
-
-		switch (target) {
-		case NEW_TAB:
-			openDisplayAction.setCtrlPressed(true);
-			break;
-		case NEW_WINDOW:
-			openDisplayAction.setShiftPressed(true);
-			break;
-		case NEW_SHELL:
-			openDisplayAction.setCtrlPressed(true);
-			openDisplayAction.setShiftPressed(true);
-			break;
-		default:
-			break;
-		}
-		openDisplayAction.run();
+        switch (target)
+        {
+        case NEW_TAB:
+            openDisplayAction.runWithModifiers(true, false);
+            break;
+        case NEW_WINDOW:
+            openDisplayAction.runWithModifiers(false, true);
+            break;
+        case NEW_SHELL:
+            openDisplayAction.runWithModifiers(true, true);
+            break;
+        default:
+            openDisplayAction.run();
+            break;
+        }
 	}
 	
 }

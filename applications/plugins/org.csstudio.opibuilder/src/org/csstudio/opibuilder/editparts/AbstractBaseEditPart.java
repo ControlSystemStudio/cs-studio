@@ -483,21 +483,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 					if (me.button != 1)
 						return;
 					for (AbstractWidgetAction action : actions) {
-						if (action instanceof OpenDisplayAction) {
-							((OpenDisplayAction) action)
-									.setCtrlPressed(false);
-							((OpenDisplayAction) action)
-									.setShiftPressed(false);
-							if ((me.getState() & SWT.CONTROL) != 0) {
-								((OpenDisplayAction) action)
-										.setCtrlPressed(true);
-							}
-							if ((me.getState() & SWT.SHIFT) != 0) {
-								((OpenDisplayAction) action)
-										.setShiftPressed(true);
-							}
-						}
-						action.run();
+                        if (action instanceof OpenDisplayAction)
+                            ((OpenDisplayAction) action).runWithModifiers((me.getState() & SWT.CONTROL) != 0,
+                                                                          (me.getState() & SWT.SHIFT) != 0);
+                        else
+                            action.run();
 					}
 				}
 			});
