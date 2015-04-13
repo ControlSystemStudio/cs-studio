@@ -10,19 +10,14 @@ package org.csstudio.opibuilder.runmode;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
-import org.csstudio.opibuilder.visualparts.TipDialog;
-import org.csstudio.ui.util.perspective.PerspectiveHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
@@ -229,27 +224,6 @@ public class RunModeService {
      */
     public static OPIView openNewOPIView(final RunnerInput runnerInput, final IWorkbenchPage page, final Position position) throws Exception
     {
-        // Switch to suitable perspective?
-        if (position != Position.DETACHED && position != Position.DEFAULT_VIEW &&
-            !(page.getPerspective().getId().equals(OPIRunnerPerspective.ID)))
-        {
-            if (!OPIBuilderPlugin.isRAP())
-            {
-                if (PreferencesHelper.isShowOpiRuntimePerspectiveDialog())
-                {
-                    TipDialog dialog = new TipDialog(page.getWorkbenchWindow().getShell(), MessageDialog.QUESTION,
-                            "Switch to OPI Runtime Perspective",
-                            "To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
-                            "\nDo you want to switch to it now?");
-                    PreferencesHelper.setSwitchToOpiRuntimePerspective(dialog.open() == Window.OK);
-                    if (!dialog.isShowThisDialogAgain())
-                        PreferencesHelper.setShowOpiRuntimePerspectiveDialog(false);
-                }
-                if (PreferencesHelper.isSwitchToOpiRuntimePerspective())
-                    PerspectiveHelper.showPerspective(OPIRunnerPerspective.ID, page);
-            }
-        }
-
         // Open new View
         // View will receive input from us, should ignore previous memento
         OPIView.ignoreMemento();
