@@ -19,6 +19,7 @@
   	<module>org.csstudio.security</module>
   	<module>org.csstudio.security.test</module>
   	<module>org.csstudio.security.ui</module>
+  	<module>org.csstudio.security.ui.test</module>
   	<module>org.csstudio.startup</module>
   	<module>org.csstudio.startup.helper</module>
   	<module>org.csstudio.utility.batik</module>
