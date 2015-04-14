@@ -12,9 +12,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
@@ -174,13 +172,6 @@ public class StartEndRangeWidgetHorizontalTest extends ApplicationWindow {
 	textLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
 
 	return container;
-    }
-
-    /**
-     * Create the actions.
-     */
-    private void createActions() {
-	// Create the actions
     }
 
     /**

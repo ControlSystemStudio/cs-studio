@@ -6,8 +6,6 @@ import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -172,13 +170,6 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 		textLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 	return container;
-    }
-
-    /**
-     * Create the actions.
-     */
-    private void createActions() {
-	// Create the actions
     }
 
     /**
