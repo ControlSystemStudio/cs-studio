@@ -38,7 +38,7 @@ public class ContextPropertyWidgetTest extends ApplicationWindow {
 		container.setLayout(new GridLayout(1, false));
 		final LogEntryChangeset logEntrychangeset = new LogEntryChangeset();
 		final ContextPropertyWidget contextPropertyWidget = new ContextPropertyWidget(
-				container, SWT.NONE, logEntrychangeset);
+				container, SWT.NONE, logEntrychangeset, true);
 		contextPropertyWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 				true, true, 1, 1));
 		return container;

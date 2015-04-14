@@ -46,7 +46,7 @@ public class TicketPropertyWidgetTest extends ApplicationWindow {
 	final LogEntryChangeset logEntrychangeset = new LogEntryChangeset();
 
 	final TicketPropertyWidget tracPropertyWidget = new TicketPropertyWidget(
-		container, SWT.NONE, logEntrychangeset);
+		container, SWT.NONE, logEntrychangeset, true);
 	tracPropertyWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 		true, 1, 1));
 

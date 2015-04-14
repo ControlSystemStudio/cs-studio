@@ -15,6 +15,7 @@
 		<module>org.csstudio.logbook</module>
 		<module>org.csstudio.logbook.olog</module>
 		<module>org.csstudio.logbook.olog.properties</module>
+		<module>org.csstudio.logbook.olog.properties.test</module>
 		<module>org.csstudio.logbook.olog.property.shift</module>
 		<module>org.csstudio.logbook.test</module>
 		<module>org.csstudio.logbook.ui</module>
