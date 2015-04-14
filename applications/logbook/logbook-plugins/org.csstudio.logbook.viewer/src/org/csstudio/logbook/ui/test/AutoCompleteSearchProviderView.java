@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.logbook.ui;
+package org.csstudio.logbook.ui.test;
 
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
 import org.eclipse.swt.widgets.Composite;
