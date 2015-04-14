@@ -17,6 +17,7 @@
   	<module>org.csstudio.ui.preferences</module>
 <!--   	<module>org.csstudio.ui.menu.test</module> -->
   	<module>org.csstudio.autocomplete</module>
+  	<module>org.csstudio.autocomplete.test</module>
   	<module>org.csstudio.autocomplete.ui</module>
   	<module>org.csstudio.autocomplete.ui.rap</module>
   	<module>org.csstudio.autocomplete.ui.rcp</module>
