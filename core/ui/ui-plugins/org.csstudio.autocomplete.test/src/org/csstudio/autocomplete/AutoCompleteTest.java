@@ -20,7 +20,7 @@ import org.junit.Test;
 /**
  * @author Fred Arnaud (Sopra Group) - ITER
  */
-public class AutoCompleteTests {
+public class AutoCompleteTest {
 
 	@Test
 	public void testTopProposalFinder() {
