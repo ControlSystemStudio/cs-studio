@@ -9,7 +9,7 @@
  *     Tom Schindl - initial API and implementation
  *******************************************************************************/
 
-package org.csstudio.alarm.beast.ui.alarmtree;
+package org.csstudio.alarm.beast.ui.alarmtree.test;
 
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
