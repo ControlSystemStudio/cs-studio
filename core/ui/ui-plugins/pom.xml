@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
   <modules>
   	<module>org.csstudio.ui.util</module>
+  	<module>org.csstudio.ui.util.test</module>
   	<module>org.csstudio.ui.help</module>
   	<module>org.csstudio.ui.menu</module>
   	<module>org.csstudio.ui.menu.app</module>
