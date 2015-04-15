@@ -24,9 +24,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
@@ -87,13 +84,9 @@ public class RunModeService {
     public enum TargetWindow {
         NEW_WINDOW,
         SAME_WINDOW,
-        RUN_WINDOW,
         NEW_SHELL;
     }
     
-    // TODO Check if used
-    private IWorkbenchWindow runWorkbenchWindow;
-
     // TODO Make all static?
     private static RunModeService instance;
 
@@ -104,116 +97,6 @@ public class RunModeService {
     }
 
     // TODO Update methods: Fewer, take DisplayMode
-    
-    public static void replaceOPIRuntimeContent(
-            final IOPIRuntime opiRuntime, final IEditorInput input) throws PartInitException{
-        opiRuntime.setOPIInput(input);
-    }
-
-    /**Run an OPI file with necessary parameters. This function should be called when open an OPI
-     * from another OPI.
-     * @param path
-     * @param targetWindow
-     * @param displayOpenManager
-     * @param macrosInput
-     */
-    public void runOPI(IPath path, TargetWindow targetWindow, DisplayOpenManager displayOpenManager,
-            MacrosInput macrosInput){
-        runOPI(path, targetWindow, displayOpenManager, macrosInput, null);
-    }
-
-    /**Run an OPI file in the target window.
-     * @param path
-     * @param targetWindow
-     */
-    public void runOPI(IPath path, TargetWindow targetWindow, Rectangle windowSize){
-        runOPI(path, targetWindow, null, null, windowSize);
-    }
-
-    /**Run an OPI file.
-     * @param path the file to be ran. If displayModel is not null, this will be ignored.
-     * @param displayModel the display model to be ran. null for file input only.
-     * @param displayOpenManager the manager help to manage the opened displays. null if the OPI is not
-     * replacing the current active display.
-     */
-    public void runOPI(final IPath path, final TargetWindow target,
-            final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Rectangle windowBounds){
-        final RunnerInput runnerInput = new RunnerInput(path, displayOpenManager, macrosInput);
-        UIBundlingThread.getInstance().addRunnable(new Runnable(){
-            @Override
-            public void run() {
-
-                IWorkbenchWindow targetWindow = null;
-                switch (target) {
-                case NEW_WINDOW:
-                    if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-                        SingleSourceHelper.rapOpenOPIInNewWindow(path);
-                    else
-                        targetWindow = createNewWindow(Optional.ofNullable(windowBounds));
-                    break;
-                case RUN_WINDOW:
-                    if(runWorkbenchWindow == null){
-                        runWorkbenchWindow = createNewWindow(Optional.ofNullable(windowBounds));
-                        runWorkbenchWindow.addPageListener(new IPageListener(){
-                            @Override
-                            public void pageClosed(IWorkbenchPage page) {
-                                runWorkbenchWindow = null;
-                            }
-
-                            @Override
-                            public void pageActivated(IWorkbenchPage page) {
-                                // NOP
-                            }
-
-                            @Override
-                            public void pageOpened(IWorkbenchPage page) {
-                                // NOP
-                            }
-                        });
-                    }else{
-                        for(IEditorReference editor :
-                            runWorkbenchWindow.getActivePage().getEditorReferences()){
-                            try {
-                                if(editor.getEditorInput().equals(runnerInput))
-                                    editor.getPage().closeEditor(editor.getEditor(false), false);
-                            } catch (PartInitException e) {
-                                 OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                            "Cannot close editor", e); //$NON-NLS-1$
-                            }
-                        }
-                    }
-                    targetWindow = runWorkbenchWindow;
-                    break;
-                case NEW_SHELL:
-                    targetWindow = null;
-                    break;
-                case SAME_WINDOW:
-                default:
-                    targetWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                    break;
-                }
-
-                if(targetWindow != null){
-                    try {
-                        Shell shell = targetWindow.getShell();
-                        if(shell.getMinimized())
-                            shell.setMinimized(false);
-                        targetWindow.getShell().forceActive();
-                        targetWindow.getShell().forceFocus();
-                        openNewOPIView(runnerInput, targetWindow.getActivePage(), Position.DEFAULT_VIEW);
-                        if(!SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-                            targetWindow.getShell().moveAbove(null);
-                    } catch (Exception e) {
-                        OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                "Failed to run OPI " + path.lastSegment(), e);
-                    }
-                } else {
-                    OPIShell.openOPIShell(path, macrosInput);
-                }
-            }
-        });
-    }
-
 
     public static void runOPIInView(final IPath path,
             final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Position position)
@@ -296,7 +179,7 @@ public class RunModeService {
      *  @param bounds Optional location (unless 0) and size (unless empty)
      *  @return Window
      */
-    private static IWorkbenchWindow createNewWindow(final Optional<Rectangle> bounds)
+    public static IWorkbenchWindow createNewWindow(final Optional<Rectangle> bounds)
     {
         try
         {
@@ -318,13 +201,13 @@ public class RunModeService {
     }
     
     // TODO: Use only this method
-    public static void openDisplay(final IPath path, final MacrosInput macros,
+    public static void openDisplay(final IPath path, final Optional<MacrosInput> macros,
                               DisplayMode mode,
                               final Optional<DisplayOpenManager> display_manager, // TODO remove display_manager?
                               final Optional<Rectangle> bounds,
                               final Optional<IOPIRuntime> runtime)
     {
-        final RunnerInput input = new RunnerInput(path, display_manager.orElse(null), macros);
+        final RunnerInput input = new RunnerInput(path, display_manager.orElse(null), macros.orElse(null));
         
         if (mode == DisplayMode.REPLACE)
         {   // Anything to replace?
@@ -340,7 +223,7 @@ public class RunModeService {
                 manager.openNewDisplay();
                 try
                 {
-                    runtime.get().setOPIInput(new RunnerInput(path, manager, macros));
+                    runtime.get().setOPIInput(new RunnerInput(path, manager, macros.orElse(null)));
                 }
                 catch (PartInitException e)
                 {
@@ -382,7 +265,7 @@ public class RunModeService {
             }
             break;
         case NEW_SHELL:
-            OPIShell.openOPIShell(path, macros);
+            OPIShell.openOPIShell(path, macros.orElse(null));
             break;
         case REPLACE:
             break;
@@ -392,7 +275,7 @@ public class RunModeService {
         
     }
     
-    private static void openDisplayInView(final IWorkbenchPage page, final RunnerInput input, final DisplayMode mode)
+    public static void openDisplayInView(final IWorkbenchPage page, final RunnerInput input, final DisplayMode mode)
     {
         OPIView.setOpenedByUser(true);
         UIBundlingThread.getInstance().addRunnable(new Runnable()

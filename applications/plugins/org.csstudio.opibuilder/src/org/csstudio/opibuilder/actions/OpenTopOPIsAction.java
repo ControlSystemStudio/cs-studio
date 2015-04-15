@@ -8,13 +8,14 @@
 package org.csstudio.opibuilder.actions;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.RunModeService;
-import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
@@ -117,8 +118,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 				return;
 			}
 		}
-		RunModeService.getInstance().runOPI(path, TargetWindow.SAME_WINDOW,
-				null, macrosInput);
+		RunModeService.openDisplay(path, Optional.ofNullable(macrosInput), DisplayMode.NEW_TAB, Optional.empty(), Optional.empty(), Optional.empty());
 	}
 
 	public static void runOther(final IPath path) {

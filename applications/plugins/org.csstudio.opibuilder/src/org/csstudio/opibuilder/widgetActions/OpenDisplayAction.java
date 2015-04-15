@@ -176,7 +176,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
 
         final IOPIRuntime runtime =
                 getWidgetModel().getRootDisplayModel().getOpiRuntime();
-        RunModeService.openDisplay(absolutePath, getMacrosInput(), mode,
+        RunModeService.openDisplay(absolutePath, Optional.ofNullable(getMacrosInput()), mode,
                     Optional.empty(), Optional.empty(), Optional.of(runtime));
     }
 
