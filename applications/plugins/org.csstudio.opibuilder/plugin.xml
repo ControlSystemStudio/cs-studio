@@ -5,27 +5,10 @@
    <extension-point id="graphicalFeedbackFactory" name="graphicalFeedbackFactory" schema="schema/graphicalFeedbackFactory.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
-      <!-- TODO: Remove this entry, its class and contributorClass because
-           *.opis should execute in a View or Shell.
-           Editor only used for OPI Editor.
-           Leaving in place so that older CSS instances, when restarted,
-           can still restore previously opened OPIRunner instances for the time being.
-       -->
-      <editor
-            class="org.csstudio.opibuilder.runmode.OPIRunner"
-            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
-            default="false"
-            extensions="opi"
-            icon="icons/OPIRunner.png"
-            id="org.csstudio.opibuilder.OPIRunner"
-            name="OPI Display in legacy Editor">
-      </editor>
-      <!--            ^^  remove ^^                                -->
       <!-- Note regarding name:
            In Navigator, the "Open With.." context menu lists *.opi 'editors'
            in alphabetical order:
            OPI Display (Workspace)
-           OPI Display in legacy Editor
            OPI Editor
        -->
       <editor
