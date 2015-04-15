@@ -24,6 +24,6 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.epics.vtype;bundle-version="2.9.1",
  org.csstudio.ui.resources;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.csstudio.alarm.beast.ui.alarmtable.Activator
 Export-Package: org.csstudio.alarm.beast.ui.alarmtable.doubleclick
