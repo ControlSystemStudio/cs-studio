@@ -9,22 +9,16 @@ package org.csstudio.opibuilder.widgetActions;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.Optional;
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.MacrosProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.runmode.DisplayOpenManager;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
-import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
-import org.csstudio.opibuilder.runmode.OPIShell;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
-import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
-import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -34,7 +28,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PartInitException;
 import org.jdom.Element;
 
 /** Action for executing a display.
@@ -93,10 +86,13 @@ public class OpenDisplayAction extends AbstractWidgetAction
         // False - Open new display
         
         // Later OpenDisplayAction had property "replace" with options
-        // 0 - DEFAULT,
-        // 1 - NEW_TAB,
-        // 2 - NEW_WINDOW,
-        // 3 - NEW_SHELL.
+        // 0 - NEW_TAB,
+        // 1 - REPLACE,
+        // 2 - NEW_WINDOW.
+        // On branch, this was added
+        // (and 0/1 were swapped, but we ignore that
+        //  because it's incompatible with older displays):
+        // 3 - NEW_SHELL
         
         // Original OpenOPIInViewAction had property "Position"
         // 0 - LEFT,
@@ -132,6 +128,9 @@ public class OpenDisplayAction extends AbstractWidgetAction
             case 4:
                 setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB_DETACHED.ordinal());
                 break;
+            case 5:
+                setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB.ordinal());
+                break;
             default:
             }
         }
@@ -143,7 +142,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
             {
                 switch (Integer.parseInt(legacy.getValue()))
                 {
-                case 1:
+                case 0:
                     setPropertyValue(PROP_MODE, DisplayMode.NEW_TAB.ordinal());
                     break;
                 case 2:
@@ -175,62 +174,10 @@ public class OpenDisplayAction extends AbstractWidgetAction
         else if (ctrlPressed && shiftPressed)
             mode = DisplayMode.NEW_SHELL;
 
-        // TODO: Have RunModeService handle the 'mode'
-        switch (mode)
-        {
-        case NEW_TAB:
-            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.DEFAULT_VIEW);
-            return;
-        case NEW_TAB_LEFT:
-            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.LEFT);
-            return;
-        case NEW_TAB_RIGHT:
-            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.RIGHT);
-            return;
-        case NEW_TAB_TOP:
-            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.TOP);
-            return;
-        case NEW_TAB_BOTTOM:
-            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.BOTTOM);
-            return;
-        case NEW_TAB_DETACHED:
-            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), Position.DETACHED);
-            return;
-        case NEW_WINDOW:
-            RunModeService.getInstance().runOPI(absolutePath, TargetWindow.NEW_WINDOW, null,
-                            getMacrosInput(), null);
-            return;
-        case NEW_SHELL:
-            OPIShell.openOPIShell(absolutePath, getMacrosInput());
-            return;
-            
-        case REPLACE:
-        default:
-            IOPIRuntime opiRuntime =
+        final IOPIRuntime runtime =
                 getWidgetModel().getRootDisplayModel().getOpiRuntime();
-            if (opiRuntime instanceof OPIShell)
-                // Default behaviour for OPIShell is to open another OPIShell.
-                OPIShell.openOPIShell(absolutePath, getMacrosInput());
-            else
-            {   // Replace current OPIView.
-                DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
-                    .getAdapter(DisplayOpenManager.class));
-                manager.openNewDisplay();
-                try
-                {
-                    RunModeService.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
-                            absolutePath, manager, getMacrosInput()));
-                }
-                catch (PartInitException e)
-                {
-                    OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                            "Failed to open " + absolutePath, e);
-                    MessageDialog.openError(Display.getDefault().getActiveShell(),
-                            "Open file error",
-                            NLS.bind("Failed to open {0}", absolutePath));
-                }
-            }
-        }
+        RunModeService.openDisplay(absolutePath, getMacrosInput(), mode,
+                    Optional.empty(), Optional.empty(), Optional.of(runtime));
     }
 
     /** Run the action, i.e. open display, with optional modifiers
